@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?language JavaScript?>
+<?scenebuilder-preview-i18n-resource ../bundles/labels.properties?>
+
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.ProgressIndicator?>
+<?import org.controlsfx.control.NotificationPane?>
+<NotificationPane xmlns:fx="http://javafx.com/fxml" xmlns="http://javafx.com/javafx/8"
+           fx:controller="sa.gov.nic.bio.bw.client.login.LoginPaneFxController"
+           fx:id="notificationPane" stylesheets="@../css/login.css">
+    <graphic>
+        <ImageView>
+            <Image url="@/sa/gov/nic/bio/bw/client/core/images/notification-pane-warning.png"/>
+        </ImageView>
+    </graphic>
+    <content>
+        <VBox alignment="CENTER" spacing="70">
+            <ImageView>
+                <Image url="@../images/login_logo.png"/>
+            </ImageView>
+            <VBox alignment="CENTER" spacing="20">
+                <HBox alignment="CENTER">
+                    <GridPane alignment="CENTER" vgap="5" hgap="20" styleClass="loginBox">
+                        <padding>
+                            <Insets top="20" right="20" bottom="20" left="20"/>
+                        </padding>
+                        <Label text="%label.username" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+                        <TextField fx:id="txtUsername" GridPane.columnIndex="1" GridPane.rowIndex="0" onAction="#onEnterPressed"/>
+                        <Label text="%label.password" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+                        <PasswordField fx:id="txtPassword" GridPane.columnIndex="1" GridPane.rowIndex="1" onAction="#onEnterPressed"/>
+                        <Label text="%label.language" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+                        <ComboBox fx:id="cbLanguage" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+                    </GridPane>
+                </HBox>
+                <FlowPane alignment="CENTER" hgap="10">
+                    <Button fx:id="btnLogin" text="%button.login" onAction="#onLoginButtonClicked"/>
+                    <Button fx:id="btnChangePassword" text="%button.changePassword"/>
+                    <ProgressIndicator fx:id="piLogin" prefHeight="25.0" prefWidth="25.0" managed="false" visible="false"/>
+                </FlowPane>
+            </VBox>
+        </VBox>
+    </content>
+</NotificationPane>

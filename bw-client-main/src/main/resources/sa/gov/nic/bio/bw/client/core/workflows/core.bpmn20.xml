@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions"
+             targetNamespace="http://activiti.org/bpmn20"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xmlns:activiti="http://activiti.org/bpmn">
+
+    <process id="coreProcess" name="Core Process">
+
+        <startEvent id="startEvent"/>
+
+        <sequenceFlow sourceRef="startEvent" targetRef="callLoginProcess"/>
+
+        <callActivity id="callLoginProcess" name="Login Process" calledElement="loginProcess">
+            <extensionElements>
+                <activiti:out source="someVariableInSubProcess" target="nameOfVariableInMainProcess"/>
+            </extensionElements>
+        </callActivity>
+
+        <sequenceFlow sourceRef="callLoginProcess" targetRef="callHomeProcess"/>
+
+        <callActivity id="callHomeProcess" name="Home Process" calledElement="homeProcess">
+            <extensionElements>
+                <activiti:out source="someVariableInSubProcess" target="nameOfVariableInMainProcess"/>
+            </extensionElements>
+        </callActivity>
+
+        <sequenceFlow sourceRef="callHomeProcess" targetRef="endEvent"/>
+
+        <endEvent id="endEvent"/>
+
+    </process>
+
+</definitions>

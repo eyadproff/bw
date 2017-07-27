@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jnlp xmlns:jfx="http://javafx.com" xmlns="http://java.com/jnlp"
+      spec="7.0+" href="bw.jnlp">
+    <information>
+        <title>BW Web Start Application</title>
+        <vendor>NIC</vendor>
+        <!--<icon href="" version="1" height="128" width="128" depth="24"/>-->
+        <offline-allowed/>
+        <shortcut online="false" install="true">
+            <desktop>BW Application</desktop>
+            <menu submenu="NIC Applications"/>
+        </shortcut>
+    </information>
+    <security>
+        <all-permissions/>
+    </security>
+    <update check="background" policy="always"/>
+    <resources>
+        <java version="1.8" href="http://www.oracle.com/technetwork/java/javase/downloads/index.html" java-vm-args="" initial-heap-size="" max-heap-size=""/>
+        <jfx:javafx-runtime version="8.0+"/>
+        <!--JARS PLACE HOLDER-->
+    </resources>
+    <!--<application-desc width="1024" height="768" main-clasa.gov.nic.bio.bw.client.AppEntryPointcher" name="BW Application"/>-->
+    <jfx:javafx-desc width="1024" height="768" main-class="sa.gov.nic.bio.bw.client.AppEntryPoint" name="BW Application" preloader-class="AppPreloader"/>
+</jnlp>

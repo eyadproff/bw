@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- status = the level of internal Log4j events that should be logged to the console -->
+<Configuration status="WARN">
+    <Properties>
+        <!-- %-5level Right pad with spaces if the logging level is less than 5 characters long -->
+        <!-- logger = the name of the logger that published the logging event -->
+        <!-- %n = the platform dependent line separator character or characters -->
+        <Property name="appenderPatternLayout">
+            %date{dd-MM-yyyy HH:mm:ss.SSS} [%threadName] %-5level %logger{36} - %message{nolookups}%n%throwable
+        </Property>
+    </Properties>
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout charset="UTF-8" pattern="${appenderPatternLayout}"/>
+        </Console>
+        <File name="File" fileName="logs/bw.log" immediateFlush="true" append="true">
+            <PatternLayout charset="UTF-8" pattern="${appenderPatternLayout}"/>
+        </File>
+    </Appenders>
+    <Loggers>
+        <Root level="DEBUG">
+            <AppenderRef ref="Console" />
+            <AppenderRef ref="File"/>
+        </Root>
+    </Loggers>
+</Configuration>

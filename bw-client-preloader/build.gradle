@@ -1,0 +1,16 @@
+apply plugin: 'java-library'
+
+project.version = '1.0'
+
+dependencies {
+    api project(':bw-client-commons')
+}
+
+jar {
+    manifest {
+        attributes('Implementation-Title': project.name,
+                   'Implementation-Version': project.version,
+                   'Implementation-Vendor': 'NIC',
+                   'Permissions': 'all-permissions')
+    }
+}
