@@ -1,25 +1,216 @@
-allprojects {
-    group = 'sa.gov.nic.bw'
+project.version = '1.0'
+group = 'sa.gov.nic.bio'
+
+apply plugin: 'java'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
 }
 
-subprojects {
-
-    apply plugin: 'java'
-
-    sourceCompatibility = 1.8
-    targetCompatibility = 1.8
-
-    tasks.withType(JavaCompile) {
-        options.encoding = 'UTF-8'
-    }
-
-    repositories {
-        mavenLocal()
-        jcenter()
-    }
-
-
-    dependencies {
-        testCompile group: 'junit', name: 'junit', version: '4.12'
+repositories {
+    flatDir {
+        dirs "libs"
     }
 }
+
+dependencies {
+    implementation name: "activation-1.1.1"
+    implementation name: "activiti-bpmn-converter-6.0.0"
+    implementation name: "activiti-bpmn-model-6.0.0"
+    implementation name: "activiti-dmn-api-6.0.0"
+    implementation name: "activiti-dmn-model-6.0.0"
+    implementation name: "activiti-engine-6.0.0"
+    implementation name: "activiti-form-api-6.0.0"
+    implementation name: "activiti-form-model-6.0.0"
+    implementation name: "activiti-image-generator-6.0.0"
+    implementation name: "activiti-process-validation-6.0.0"
+    implementation name: "commons-email-1.5"
+    implementation name: "commons-lang3-3.6"
+    implementation name: "commons-logging-1.2"
+    implementation name: "controlsfx-8.40.13"
+    implementation name: "converter-jackson-2.3.0"
+    implementation name: "h2-1.4.196"
+    implementation name: "jackson-annotations-2.9.0"
+    implementation name: "jackson-core-2.9.0"
+    implementation name: "jackson-databind-2.9.0"
+    implementation name: "javax.mail-api-1.6.0"
+    implementation name: "joda-time-2.9.9"
+    implementation name: "juel-api-2.2.7"
+    implementation name: "juel-impl-2.2.7"
+    implementation name: "juel-spi-2.2.7"
+    implementation name: "mybatis-3.4.4"
+    implementation name: "okhttp-3.8.1"
+    implementation name: "okio-1.13.0"
+    implementation name: "retrofit-2.3.0"
+    implementation name: "slf4j-api-1.7.25"
+    implementation name: "slf4j-nop-1.7.25"
+    testImplementation name: "junit-4.12"
+}
+
+jar {
+    manifest {
+        attributes('Implementation-Title': project.name,
+                'Implementation-Version': project.version,
+                'Implementation-Vendor': 'NIC',
+                'Permissions': 'all-permissions',
+                'Application-Library-Allowable-Codebase': 'http://bw.nic.gov.sa',
+                'Codebase': 'http://bw.nic.gov.sa',
+                'Application-Name': 'Biometrics Workstation',
+                'Built-By': 'Biometrics Team',
+                'JavaFX-Preloader-Class': 'sa.gov.nic.bio.bw.client.preloader.AppPreloader',
+                'JavaFX-Application-Class': 'sa.gov.nic.bio.bw.client.AppEntryPoint',
+                'Main-Class': 'sa.gov.nic.bio.bw.client.AppEntryPoint',
+                'Class-Path': configurations.runtimeClasspath.files.collect { it.getName() }.join(' '))
+    }
+}
+
+task copyDependentJarsTask(type: Copy) {
+    from configurations.runtimeClasspath.files
+    into 'build/libs'
+}
+copyDependentJarsTask.dependsOn(jar)
+
+/*
+
+Creating the keystore with pair keys bundled:
+
+keytool -genkeypair -keystore bw-keystore.p12
+-storetype PKCS12 -storepass bw#456321 -alias bw -keyalg RSA -keysize 2048 -validity 999999 -dname "
+CN=BW SSL Certificate, OU=Biometrics Team, O=NIC, L=Riyadh, ST=Riyadh, C=SA" -ext san=dns:bw.nic.gov.sa
+
+Importing the keystore certificate into Java trusted keystore (run cmd as administrator):
+
+keytool -importkeystore -srcstoretype PKCS12 -deststoretype JKS
+-srcstorepass bw#456321 -deststorepass changeit -srcalias bw -srckeystore bw-keystore.p12
+-destkeystore "C:\Program Files\Java\jre1.8.0_144\lib\security\cacerts"
+
+*/
+
+task packageWebStart {
+    doLast {
+        String jnlpTemplate = new File("build-resources/bw-template.jnlp").getText('UTF-8')
+        def jars = StringBuilder.getDeclaredConstructor().newInstance()
+
+        boolean first = true;
+        String preloaderJarFileName;
+
+        fileTree(dir: 'build/libs', include: '**/*.jar').visit { FileVisitDetails details ->
+
+            String fileName = details.file.name
+            long fileSize = details.file.size();
+            if(!fileName.endsWith(".jar")) return
+
+            int lastDashIndex = fileName.lastIndexOf('-')
+            String libraryName = fileName.substring(0, lastDashIndex)
+
+            if(first) first = false
+            else jars << '\n        '
+
+            jars << '<jar href="' + fileName + '" size="' + fileSize + '"'
+
+            if(libraryName.endsWith('main'))
+            {
+                jars << ' main="true"'
+                preloaderJarFileName = fileName
+            }
+
+            jars << '/>'
+        }
+
+        jnlpTemplate = jnlpTemplate.replace('<!--JARS PLACE HOLDER-->', jars)
+
+        if(!project.hasProperty('env') || project.getProperty('env') != 'dev')
+        {
+            jnlpTemplate = jnlpTemplate.replace('href="APPLICATION.JNLP"', 'codebase="http://bw.nic.gov.sa/bw/" href="APPLICATION.JNLP"')
+        }
+
+        File directory = new File("${projectDir}/build/web-start")
+        directory.mkdirs()
+        File file = new File(directory, 'APPLICATION.JNLP')
+        file.createNewFile()
+        file.text = jnlpTemplate
+
+        copy {
+            from 'build/libs'
+            into "build/web-start"
+        }
+
+        copy {
+            from 'src/main/resources/sa/gov/nic/bio/bw/client/core/images/app_icon.png'
+            into "build/web-start"
+        }
+
+        copy {
+            from 'src/main/resources/sa/gov/nic/bio/bw/client/preloader/images/splash.gif'
+            into "build/web-start"
+        }
+
+        copy {
+            from 'build/web-start/APPLICATION.JNLP'
+            into "build/JNLP-INF"
+        }
+
+        fileTree(dir: 'build/web-start', include: '**/*.jar').visit { FileVisitDetails details ->
+            ant.jar(destfile: details.file, update: true) {
+                delegate.manifest {
+                    attribute(name: 'Permissions', value: 'all-permissions')
+                    attribute(name: 'Application-Library-Allowable-Codebase', value: 'http://bw.nic.gov.sa')
+                    attribute(name: 'JavaFX-Preloader-Class', value: 'sa.gov.nic.bio.bw.client.preloader.AppPreloader')
+                    attribute(name: 'JavaFX-Application-Class', value: 'sa.gov.nic.bio.bw.client.AppEntryPoint')
+                    attribute(name: 'JavaFX-Class-Path', value: preloaderJarFileName)
+                }
+            }
+        }
+
+        fileTree(dir: 'build/web-start', include: '**/*.jar').visit { FileVisitDetails details ->
+            ant.jar(destfile: details.file, update: true) {
+                fileset(dir: "build", includes: 'JNLP-INF/**')
+            }
+        }
+
+        // normalize the jars
+        fileTree(dir: 'build/web-start', include: '**/*.jar').visit { FileVisitDetails details ->
+            String fileName = details.file.name
+            exec {
+                workingDir 'build/web-start'
+                commandLine 'pack200', '--repack', fileName
+            }
+        }
+
+        // sign the jars
+        ant.signjar(
+                jar: 'build/web-start/*.jar',
+                destDir: 'build/web-start',
+                keystore: "build-resources/bw-keystore.p12",
+                storetype: "PKCS12",
+                storepass: "bw#456321",
+                alias: "bw",
+                preservelastmodified: "true")
+
+        // compress the jars
+        fileTree(dir: 'build/web-start', include: '**/*.jar').visit { FileVisitDetails details ->
+            String fileName = details.file.name
+            exec {
+                workingDir 'build/web-start'
+                commandLine 'pack200', fileName + ".pack.gz", fileName
+            }
+        }
+    }
+}
+packageWebStart.dependsOn(copyDependentJarsTask)
+
+task runWebStart(type: Exec, group: 'run') {
+    workingDir 'build/web-start'
+    commandLine 'javaws', 'APPLICATION.JNLP'
+}
+runWebStart.dependsOn(packageWebStart)
+
+
+task run(type: JavaExec, group: 'run') {
+    main = "-jar" // workaround to "java -jar file.jar"
+    args = [jar.archivePath.absolutePath]
+}
+run.dependsOn(copyDependentJarsTask)

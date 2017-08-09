@@ -1,5 +1,0 @@
-rootProject.name = 'bw-client'
-include ':bw-client-main'
-include ':bw-client-preloader'
-include 'bw-client-commons'
-

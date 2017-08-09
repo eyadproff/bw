@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?language JavaScript?>
+<?scenebuilder-stylesheet ../css/core.css?>
+<?scenebuilder-preview-i18n-resource ../bundles/labels.properties?>
+
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.stage.Stage?>
+<?import javafx.scene.Scene?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.control.ProgressIndicator?>
+<Stage xmlns:fx="http://javafx.com/fxml" xmlns="http://javafx.com/javafx/8"
+       fx:controller="sa.gov.nic.bio.bw.client.core.CoreFxController"
+       fx:id="primaryStage" title="%window.title" height="600.0" width="800.0"
+       onShown="#onStageShown">
+    <icons>
+        <Image url="@../images/app_icon.png"/>
+    </icons>
+    <scene>
+        <Scene stylesheets="@../css/core.css">
+            <BorderPane id="mainPanel">
+                <top>
+                    <fx:include fx:id="headerPane" source="header.fxml" styleClass="header" visible="false" managed="false"/>
+                </top>
+                <center>
+                    <StackPane fx:id="bodyPane">
+                        <!-- default place holder -->
+                        <ProgressIndicator maxHeight="25.0" maxWidth="25.0"/>
+                    </StackPane>
+                </center>
+                <bottom>
+                    <fx:include fx:id="footerPane" source="footer.fxml" styleClass="footer"/>
+                </bottom>
+            </BorderPane>
+        </Scene>
+    </scene>
+</Stage>
+
+<!-- NOTE:
+    We need the IDs headerPane and footerPane in order to be
+    able to inject headerPaneController and footerPaneController
+-->

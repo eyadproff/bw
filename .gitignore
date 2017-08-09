@@ -1,6 +1,4 @@
 *.iml
 .idea
 .gradle
-bw-client-commons/build
-bw-client-main/build
-bw-client-preloader/build
+build
