@@ -6,10 +6,12 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import sa.gov.nic.bio.bw.client.core.*;
+import sa.gov.nic.bio.bw.client.core.beans.StateBundle;
 import sa.gov.nic.bio.bw.client.core.interfaces.*;
 import sa.gov.nic.bio.bw.client.core.utils.GuiLanguage;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -33,6 +35,10 @@ public class LoginPaneFxController extends BodyFxControllerBase implements Langu
 		BooleanBinding passwordEmptyBinding = txtPassword.textProperty().isEmpty();
 		
 		btnLogin.disableProperty().bind(usernameEmptyBinding.or(passwordEmptyBinding));
+		
+		// TODO: temp
+		txtUsername.setText("teuser");
+		txtPassword.setText("123456");
 	}
 	
 	@Override
@@ -57,6 +63,7 @@ public class LoginPaneFxController extends BodyFxControllerBase implements Langu
 	
 	private void onSwitchingLanguage(ObservableValue<? extends GuiLanguage> observable, GuiLanguage oldValue, GuiLanguage newValue)
 	{
+		Locale.setDefault(newValue.getLocale());
 		coreFxController.switchLanguage(newValue, this);
 	}
 	

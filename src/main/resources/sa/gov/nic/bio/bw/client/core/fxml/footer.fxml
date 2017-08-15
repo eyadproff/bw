@@ -6,7 +6,7 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <StackPane xmlns:fx="http://javafx.com/fxml" xmlns="http://javafx.com/javafx/8"
-           fx:id="footerPane" fx:controller="sa.gov.nic.bio.bw.client.core.FooterPaneFxController">
+           fx:id="rootPane" fx:controller="sa.gov.nic.bio.bw.client.core.FooterPaneFxController">
     <ImageView fx:id="ivLogoRTL">
         <Image url="@../images/moi_logo_footer_ar.png"/>
     </ImageView>

@@ -7,6 +7,10 @@ import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+import sa.gov.nic.bio.bw.client.core.beans.BusinessData;
+import sa.gov.nic.bio.bw.client.core.beans.GuiState;
+import sa.gov.nic.bio.bw.client.core.beans.StateBundle;
+import sa.gov.nic.bio.bw.client.core.beans.UserData;
 import sa.gov.nic.bio.bw.client.core.interfaces.*;
 import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.client.core.utils.DialogUtils;
@@ -41,6 +45,7 @@ public class CoreFxController
 	@FXML private Stage primaryStage;
 	@FXML private HeaderPaneFxController headerPaneController;
 	@FXML private FooterPaneFxController footerPaneController;
+	@FXML private MenuPaneFxController menuPaneController;
 	@FXML private StackPane bodyPane;
 	
 	private ResourceBundle errorsBundle;
@@ -48,8 +53,11 @@ public class CoreFxController
 	private Image appIcon;
 	
 	private GuiState guiState = new GuiState();
-	//private Executor executor = Executors.newWorkStealingPool();
-	private Executor executor = Executors.newSingleThreadExecutor();
+	private UserData userData = new UserData();
+	private BusinessData businessData = new BusinessData(); // TODO: fill it at startup?
+	
+	private Executor executor = Executors.newWorkStealingPool();
+	//private Executor executor = Executors.newSingleThreadExecutor();
 	
 	public void passInitialResources(ResourceBundle errorsBundle, ResourceBundle messagesBundle, Image appIcon)
 	{
@@ -59,8 +67,12 @@ public class CoreFxController
 	}
 	
 	public GuiState getGuiState(){return guiState;}
+	public UserData getUserData(){return userData;}
+	public BusinessData getBusinessData(){return businessData;}
+	
 	public HeaderPaneFxController getHeaderPaneController(){return headerPaneController;}
 	public FooterPaneFxController getFooterPaneController(){return footerPaneController;}
+	public MenuPaneFxController getMenuPaneController(){return menuPaneController;}
 	
 	@FXML
 	private void initialize(){}
@@ -68,7 +80,9 @@ public class CoreFxController
 	@FXML
 	private void onStageShown()
 	{
+		headerPaneController.attachCoreFxController(this);
 		footerPaneController.attachCoreFxController(this);
+		menuPaneController.attachCoreFxController(this);
 		
 		if(guiState.getBodyController() == null) // if this is the first load
 		{

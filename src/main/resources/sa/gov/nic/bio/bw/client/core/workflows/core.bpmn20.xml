@@ -13,7 +13,7 @@
 
         <callActivity id="callLoginProcess" name="Login Process" calledElement="loginProcess">
             <extensionElements>
-                <activiti:out source="someVariableInSubProcess" target="nameOfVariableInMainProcess"/>
+                <activiti:out source="loginBean" target="loginBean"/>
             </extensionElements>
         </callActivity>
 
@@ -21,7 +21,7 @@
 
         <callActivity id="callHomeProcess" name="Home Process" calledElement="homeProcess">
             <extensionElements>
-                <activiti:out source="someVariableInSubProcess" target="nameOfVariableInMainProcess"/>
+                <activiti:in source="loginBean" target="loginBean"/>
             </extensionElements>
         </callActivity>
 

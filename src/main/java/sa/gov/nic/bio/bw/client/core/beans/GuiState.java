@@ -1,4 +1,4 @@
-package sa.gov.nic.bio.bw.client.core;
+package sa.gov.nic.bio.bw.client.core.beans;
 
 import sa.gov.nic.bio.bw.client.core.interfaces.BodyFxController;
 import sa.gov.nic.bio.bw.client.core.utils.GuiLanguage;
@@ -11,7 +11,7 @@ public class GuiState
 	private GuiLanguage language;
 	private BodyFxController bodyController;
 	
-	GuiState(){}
+	public GuiState(){}
 	
 	public GuiLanguage getLanguage(){return language;}
 	public void setLanguage(GuiLanguage language){this.language = language;}

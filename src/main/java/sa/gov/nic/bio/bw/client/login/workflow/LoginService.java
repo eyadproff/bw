@@ -105,18 +105,19 @@ public class LoginService implements JavaDelegate
 		String accessToken = response.headers().get("AUTH");
 		LOGGER.fine("accessToken = " + accessToken);
 		
-		bypassSuccessResponse(execution);
+		bypassSuccessResponse(execution, loginBean);
 	}
 	
-	private void bypassSuccessResponse(DelegateExecution execution)
+	private void bypassSuccessResponse(DelegateExecution execution, LoginBean loginBean)
 	{
-		execution.setVariable("successfulLogin", true);
+		execution.setVariableLocal("successfulLogin", true);
+		execution.setVariable("loginBean", loginBean);
 	}
 	
 	private void bypassFailureResponse(DelegateExecution execution, String errorCode)
 	{
-		execution.setVariable("successfulLogin", false);
-		execution.setVariable("sameForm", true);
-		execution.setVariable("errorCode", errorCode);
+		execution.setVariableLocal("successfulLogin", false);
+		execution.setVariableLocal("sameForm", true);
+		execution.setVariableLocal("errorCode", errorCode);
 	}
 }

@@ -5,17 +5,23 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import org.activiti.engine.ActivitiIllegalArgumentException;
+import retrofit2.Call;
+import retrofit2.Response;
 import sa.gov.nic.bio.bw.client.core.ConfigManager;
 import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.CoreFxController;
 import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.client.core.utils.GuiLanguage;
 import sa.gov.nic.bio.bw.client.core.utils.ProgressMessage;
+import sa.gov.nic.bio.bw.client.core.webservice.LookupAPI;
+import sa.gov.nic.bio.bw.client.core.webservice.NicHijriCalendarData;
 import sa.gov.nic.bio.bw.client.core.webservice.WebserviceManager;
 import sa.gov.nic.bio.bw.client.core.workflow.WorkflowManager;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
+import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.util.List;
 import java.util.MissingResourceException;
@@ -42,7 +48,7 @@ public class AppEntryPoint extends Application
 	private GuiLanguage initialLanguage = GuiLanguage.ARABIC; // TODO: make it configurable from properties file
     
     @Override
-    public void init() throws Exception
+    public void init()
     {
 	    LOGGER.entering(AppEntryPoint.class.getName(), "init()");
 	    
@@ -113,6 +119,48 @@ public class AppEntryPoint extends Application
 	    webserviceManager.init(webserviceBaseUrl);
 	
 	    Context.setManagers(configManager, workflowManager, webserviceManager);
+	
+	    LookupAPI lookupAPI = webserviceManager.getApi(LookupAPI.class);
+	    Call<NicHijriCalendarData> hijriCalendarDataLookupBeanCall = lookupAPI.lookupNicHijriCalendarData();
+	    Response<NicHijriCalendarData> response;
+	    try
+	    {
+		    response = hijriCalendarDataLookupBeanCall.execute();
+	    }
+	    catch(SocketTimeoutException e)
+	    {
+		    e.printStackTrace();
+		    // TODO: report error
+		    return;
+	    }
+	    catch(IOException e)
+	    {
+	    	e.printStackTrace();
+		    // TODO: report error
+		    return;
+	    }
+	
+	    int httpCode = response.code();
+	    
+	    if(httpCode == 200)
+	    {
+		    NicHijriCalendarData nicHijriCalendarData = response.body();
+		    try
+		    {
+			    AppUtils.injectNicHijriCalendarData(nicHijriCalendarData);
+		    }
+		    catch(Exception e)
+		    {
+			    e.printStackTrace();
+			    // TODO: report warning
+		    }
+	    }
+	    else
+	    {
+		    System.out.println("httpCode = " + httpCode);
+		    // TODO: report error
+		    return;
+	    }
 	
 	    try
 	    {

@@ -22,6 +22,9 @@
                 <top>
                     <fx:include fx:id="headerPane" source="header.fxml" styleClass="header" visible="false" managed="false"/>
                 </top>
+                <left>
+                    <fx:include fx:id="menuPane" source="menu.fxml" styleClass="nav" visible="false" managed="false"/>
+                </left>
                 <center>
                     <StackPane fx:id="bodyPane">
                         <!-- default place holder -->
@@ -37,6 +40,6 @@
 </Stage>
 
 <!-- NOTE:
-    We need the IDs headerPane and footerPane in order to be
+    We need the IDs rootPane and rootPane in order to be
     able to inject headerPaneController and footerPaneController
 -->

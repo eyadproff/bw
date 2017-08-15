@@ -9,6 +9,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.concurrent.CountDownLatch;
@@ -17,15 +18,15 @@ import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
 import javafx.stage.StageStyle;
-import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
-import sa.gov.nic.bio.bw.client.core.utils.DialogUtils;
-import sa.gov.nic.bio.bw.client.core.utils.ProgressMessage;
+import sa.gov.nic.bio.bw.client.core.utils.*;
 
 
 public class AppPreloader extends Preloader
 {
 	static
 	{
+		Locale.setDefault(GuiLanguage.ARABIC.getLocale());
+		
 		InputStream inputStream = AppUtils.getResourceAsStream("sa/gov/nic/bio/bw/client/core/config/logging.properties");
 		try
 		{

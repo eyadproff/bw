@@ -16,7 +16,7 @@ import java.util.ResourceBundle;
 public class FooterPaneFxController implements VisibilityControl, AttachableController
 {
 	@FXML private ResourceBundle resources;
-	@FXML private Pane footerPane;
+	@FXML private Pane rootPane;
 	@FXML private ImageView ivLogoRTL;
 	@FXML private ImageView ivLogoLTR;
 	
@@ -56,6 +56,6 @@ public class FooterPaneFxController implements VisibilityControl, AttachableCont
 	@Override
 	public Pane getRootPane()
 	{
-		return footerPane;
+		return rootPane;
 	}
 }

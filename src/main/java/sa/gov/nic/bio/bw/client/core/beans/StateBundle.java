@@ -1,4 +1,4 @@
-package sa.gov.nic.bio.bw.client.core;
+package sa.gov.nic.bio.bw.client.core.beans;
 
 import java.util.HashMap;
 import java.util.Map;
