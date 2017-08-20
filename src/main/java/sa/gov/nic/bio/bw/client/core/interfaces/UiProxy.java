@@ -4,5 +4,5 @@ import java.util.Map;
 
 public interface UiProxy
 {
-	void showForm(String formKey, String taskId, Map<String, Object> inputData);
+	void showForm(String formKey, Map<String, Object> inputData);
 }

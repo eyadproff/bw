@@ -19,9 +19,18 @@
 
 .header {
     -fx-background-color: #f4f4f4;
-    -fx-padding: 10px;
     -fx-border-color: #23A967;
+    -fx-padding: 5px;
     -fx-border-width: 0 0 3px 0;
+}
+
+.header .glyph-font, .header .button, .header .text-input {
+    -fx-text-fill: #398755;
+}
+
+.userBox > .label {
+    -fx-text-fill: #398755;
+    -fx-graphic-text-gap: 5px;
 }
 
 .footer {

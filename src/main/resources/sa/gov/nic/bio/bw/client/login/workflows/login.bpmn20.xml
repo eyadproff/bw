@@ -33,16 +33,6 @@
 
         <sequenceFlow sourceRef="loginService" targetRef="endEvent"/>
 
-        <exclusiveGateway id="loginCheck" name="Login Check"/>
-
-        <sequenceFlow sourceRef="loginCheck" targetRef="userCredentialsEntry">
-            <conditionExpression xsi:type="tFormalExpression">${!successfulLogin}</conditionExpression>
-        </sequenceFlow>
-
-        <sequenceFlow sourceRef="loginCheck" targetRef="script">
-            <conditionExpression xsi:type="tFormalExpression">${successfulLogin}</conditionExpression>
-        </sequenceFlow>
-
         <scriptTask id="script" scriptFormat="JavaScript">
             <script>
                 print("Hello World");

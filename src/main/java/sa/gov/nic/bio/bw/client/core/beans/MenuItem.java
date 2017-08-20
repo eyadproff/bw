@@ -9,6 +9,7 @@ import java.util.Objects;
 
 public class MenuItem
 {
+	private String menuId;
 	private String label;
 	private BooleanProperty selected = new SimpleBooleanProperty();
 	
@@ -18,6 +19,9 @@ public class MenuItem
 	}
 	
 	public MenuItem(){}
+	
+	public String getMenuId(){ return menuId; }
+	public void setMenuId(String menuId){ this.menuId = menuId; }
 	
 	public String getLabel(){return label;}
 	public void setLabel(String label){ this.label = label;}
@@ -31,19 +35,19 @@ public class MenuItem
 	{
 		if(this == o) return true;
 		if(o == null || getClass() != o.getClass()) return false;
-		MenuItem menuItem = (MenuItem) o;
-		return Objects.equals(label, menuItem.label) && Objects.equals(selected, menuItem.selected);
+		MenuItem item = (MenuItem) o;
+		return Objects.equals(menuId, item.menuId) && Objects.equals(label, item.label) && Objects.equals(selected, item.selected);
 	}
 	
 	@Override
 	public int hashCode()
 	{
-		return Objects.hash(label, selected);
+		return Objects.hash(menuId, label, selected);
 	}
 	
 	@Override
 	public String toString()
 	{
-		return "MenuItem{" + "label='" + label + '\'' + ", selected=" + selected + '}';
+		return "MenuItem{" + "menuId='" + menuId + '\'' + ", label='" + label + '\'' + ", selected=" + selected + '}';
 	}
 }

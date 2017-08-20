@@ -7,6 +7,7 @@ import retrofit2.Call;
 import retrofit2.Response;
 import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
+import sa.gov.nic.bio.bw.client.home.HomePaneFxController;
 import sa.gov.nic.bio.bw.client.login.webservice.LoginAPI;
 import sa.gov.nic.bio.bw.client.login.webservice.LoginBean;
 
@@ -104,6 +105,8 @@ public class LoginService implements JavaDelegate
 		
 		String accessToken = response.headers().get("AUTH");
 		LOGGER.fine("accessToken = " + accessToken);
+		
+		LOGGER.info("the user is logged in");
 		
 		bypassSuccessResponse(execution, loginBean);
 	}

@@ -47,6 +47,7 @@ dependencies {
     implementation name: "retrofit-2.3.0"
     implementation name: "slf4j-api-1.7.25"
     implementation name: "slf4j-nop-1.7.25"
+    implementation name: "javaws-8.144"
     testImplementation name: "junit-4.12"
 }
 

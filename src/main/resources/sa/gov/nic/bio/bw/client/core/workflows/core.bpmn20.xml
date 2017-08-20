@@ -22,10 +22,38 @@
         <callActivity id="callHomeProcess" name="Home Process" calledElement="homeProcess">
             <extensionElements>
                 <activiti:in source="loginBean" target="loginBean"/>
+                <activiti:out source="menuId" target="menuId"/>
+                <activiti:out source="logoutRequested" target="logoutRequested"/>
             </extensionElements>
         </callActivity>
 
-        <sequenceFlow sourceRef="callHomeProcess" targetRef="endEvent"/>
+        <sequenceFlow sourceRef="callHomeProcess" targetRef="menuSelectionCheck"/>
+
+        <exclusiveGateway id="menuSelectionCheck" name="Menu Selection Check"/>
+
+        <sequenceFlow sourceRef="menuSelectionCheck" targetRef="logoutService">
+            <conditionExpression xsi:type="tFormalExpression">${logoutRequested != null and logoutRequested}</conditionExpression>
+        </sequenceFlow>
+
+        <serviceTask id="logoutService" name="Calling Logout API"
+                     activiti:class="sa.gov.nic.bio.bw.client.core.workflow.LogoutService"/>
+
+        <sequenceFlow sourceRef="logoutService" targetRef="callLoginProcess"/>
+
+        <sequenceFlow sourceRef="menuSelectionCheck" targetRef="callCancelLatentProcess">
+            <conditionExpression xsi:type="tFormalExpression">${menuId == 'menu.delete.cancelLatent'}</conditionExpression>
+        </sequenceFlow>
+
+        <callActivity id="callCancelLatentProcess" name="Cancel Latent Process" calledElement="cancelLatentProcess">
+            <extensionElements>
+                <activiti:in source="loginBean" target="loginBean"/>
+                <activiti:out source="logoutRequested" target="logoutRequested"/>
+            </extensionElements>
+        </callActivity>
+
+        <sequenceFlow sourceRef="callCancelLatentProcess" targetRef="logoutService">
+            <conditionExpression xsi:type="tFormalExpression">${logoutRequested != null and logoutRequested}</conditionExpression>
+        </sequenceFlow>
 
         <endEvent id="endEvent"/>
 

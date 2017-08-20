@@ -1,5 +1,6 @@
 package sa.gov.nic.bio.bw.client.home;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
@@ -11,9 +12,6 @@ import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.client.login.webservice.LoginBean;
 
-import java.time.ZonedDateTime;
-import java.time.chrono.ChronoZonedDateTime;
-import java.time.chrono.HijrahDate;
 import java.util.*;
 
 /**
@@ -21,6 +19,8 @@ import java.util.*;
  */
 public class HomePaneFxController extends BodyFxControllerBase
 {
+	@FXML private Label lblLoginTimeText;
+	@FXML private Label lblLoginTime;
 	@FXML private Label lblLastSuccessLoginText;
 	@FXML private Label lblLastSuccessLogin;
 	@FXML private Label lblLastFailedLoginText;
@@ -48,12 +48,31 @@ public class HomePaneFxController extends BodyFxControllerBase
 		LoginBean loginBean = (LoginBean) inputData.get("loginBean");
 		LoginBean.UserInfo userInfo = loginBean.getUserInfo();
 		
+		String username = userInfo.getUserName();
+		String operatorName = userInfo.getOperatorName() + " (" + userInfo.getOperatorId() + ")";
+		String location = userInfo.getLocationName() + " (" + userInfo.getLocationId() + ")";
+		
+		// remove extra spaces in between and on edges
+		username = username.trim().replaceAll("\\s+", " ");
+		operatorName = operatorName.trim().replaceAll("\\s+", " ");
+		location = location.trim().replaceAll("\\s+", " ");
+		
+		// localize numbers
+		operatorName = AppUtils.replaceNumbers(operatorName);
+		location = AppUtils.replaceNumbers(location);
+		
+		coreFxController.getHeaderPaneController().setUsername(username);
+		coreFxController.getHeaderPaneController().setOperatorName(operatorName);
+		coreFxController.getHeaderPaneController().setLocation(location);
+		
+		long loginTime = System.currentTimeMillis();
 		long lastLogonTime = userInfo.getLastLogonTime();
 		long lastFailedLoginTime = userInfo.getBadPasswordTime();
 		int failedLoginCount = userInfo.getBadPasswordTime();
 		long lastPasswordChangeTime = userInfo.getPasswordLastSet();
 		long passwordExpirationTime = userInfo.getAccountExperiyDate();
 		
+		setLabelsText(loginTime, true, lblLoginTimeText, lblLoginTime);
 		setLabelsText(lastLogonTime, true, lblLastSuccessLoginText, lblLastSuccessLogin);
 		setLabelsText(lastFailedLoginTime, true, lblLastFailedLoginText, lblLastFailedLogin);
 		setLabelsText(failedLoginCount, false, lblFailedLoginCountText, lblFailedLoginCount);
@@ -120,12 +139,14 @@ public class HomePaneFxController extends BodyFxControllerBase
 		
 		menus.sort(String.CASE_INSENSITIVE_ORDER);
 		coreFxController.getMenuPaneController().setMenus(menus, icons);
-	}
-	
-	@Override
-	public void onReturnFromTask()
-	{
-	
+		
+		if(menus.size() == 0)
+		{
+			Platform.runLater(() ->
+			{
+				notificationPane.show(errorsBundle.getString("B03-1000"));
+			});
+		}
 	}
 	
 	private void setLabelsText(long value, boolean isDate, Label textLabel, Label valueLabel)

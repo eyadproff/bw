@@ -3,9 +3,11 @@ package sa.gov.nic.bio.bw.client.core;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import org.controlsfx.control.NotificationPane;
 import sa.gov.nic.bio.bw.client.core.interfaces.BodyFxController;
 import sa.gov.nic.bio.bw.client.core.interfaces.ResourceBundleCollection;
+import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
 
 import java.net.URL;
 import java.util.Map;
@@ -17,10 +19,13 @@ public abstract class BodyFxControllerBase implements BodyFxController
 	protected ResourceBundle errorsBundle;
 	protected ResourceBundle messagesBundle;
 	protected Image appIcon;
-	protected String taskId;
 	protected Map<String, Object> inputData;
 	
 	@FXML protected NotificationPane notificationPane;
+	
+	private Image successIcon = new Image(AppUtils.getResourceAsStream("sa/gov/nic/bio/bw/client/core/images/success.png"));
+	private Image warningIcon = new Image(AppUtils.getResourceAsStream("sa/gov/nic/bio/bw/client/core/images/warning.png"));
+	private Image errorIcon = new Image(AppUtils.getResourceAsStream("sa/gov/nic/bio/bw/client/core/images/error.png"));
 	
 	@Override
 	public URL getFxmlLocation()
@@ -70,18 +75,6 @@ public abstract class BodyFxControllerBase implements BodyFxController
 	}
 	
 	@Override
-	public void attachTaskId(String taskId)
-	{
-		this.taskId = taskId;
-	}
-	
-	@Override
-	public String getTaskId()
-	{
-		return taskId;
-	}
-	
-	@Override
 	public void attachInputData(Map<String, Object> inputData)
 	{
 		this.inputData = inputData;
@@ -94,9 +87,8 @@ public abstract class BodyFxControllerBase implements BodyFxController
 	}
 	
 	@Override
-	public void onReturnFromTask(String taskId, Map<String, Object> inputData)
+	public void onReturnFromTask(Map<String, Object> inputData)
 	{
-		this.taskId = taskId;
 		this.inputData = inputData;
 		
 		String businessErrorCode = (String) inputData.get("businessErrorCode");
@@ -106,5 +98,36 @@ public abstract class BodyFxControllerBase implements BodyFxController
         	if(businessErrorCode != null) notificationPane.show(errorsBundle.getString(businessErrorCode));
         	onReturnFromTask();
         });
+	}
+	
+	public void onReturnFromTask(){}
+	
+	public void hideNotification()
+	{
+		notificationPane.hide();
+	}
+	
+	public void showNotification(String message, Image icon)
+	{
+		Platform.runLater(() ->
+        {
+            notificationPane.setGraphic(new ImageView(icon));
+            notificationPane.show(message);
+        });
+	}
+	
+	public void showSuccessNotification(String message)
+	{
+		showNotification(message, successIcon);
+	}
+	
+	public void showWarningNotification(String message)
+	{
+		showNotification(message, warningIcon);
+	}
+	
+	public void showErrorNotification(String message)
+	{
+		showNotification(message, errorIcon);
 	}
 }

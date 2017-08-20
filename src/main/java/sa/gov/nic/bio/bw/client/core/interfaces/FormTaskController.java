@@ -11,10 +11,8 @@ import java.util.ResourceBundle;
  */
 public interface FormTaskController
 {
-	void attachTaskId(String taskId);
 	void attachInputData(Map<String, Object> inputData);
-	String getTaskId();
 	Map<String, Object> getInputData();
-	void onReturnFromTask(String taskId, Map<String, Object> inputData); // background thread
+	void onReturnFromTask(Map<String, Object> inputData); // background thread
 	void onReturnFromTask(); // UI thread
 }

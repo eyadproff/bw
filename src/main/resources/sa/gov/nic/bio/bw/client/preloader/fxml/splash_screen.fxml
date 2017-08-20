@@ -22,16 +22,11 @@
                 <ImageView>
                     <Image url="@../images/splash_screen.jpg"/>
                 </ImageView>
-                <ProgressBar fx:id="progressBar" StackPane.alignment="BOTTOM_CENTER" maxWidth="Infinity" progress="0.0">
+                <ProgressBar fx:id="progressBar" StackPane.alignment="BOTTOM_CENTER" maxWidth="Infinity">
                     <padding>
                         <Insets bottom="15.0"/>
                     </padding>
                 </ProgressBar>
-                <Label fx:id="txtProgress" StackPane.alignment="BOTTOM_LEFT">
-                    <padding>
-                        <Insets left="5.0"/>
-                    </padding>
-                </Label>
             </StackPane>
         </Scene>
     </scene>

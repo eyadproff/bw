@@ -45,7 +45,6 @@ public class AppPreloader extends Preloader
 	private Image appIcon;
 	private URL fxmlUrl;
 	private Stage splashScreenStage;
-	private SplashScreenFxController splashScreenFxController;
 	
 	@Override
 	public void init() throws Exception
@@ -137,8 +136,6 @@ public class AppPreloader extends Preloader
 			return;
 		}
 		
-		splashScreenFxController = fxmlLoader.getController();
-		
 		splashScreenStage.initStyle(StageStyle.UNDECORATED);
 		splashScreenStage.show();
 		
@@ -149,10 +146,7 @@ public class AppPreloader extends Preloader
 	@Override
 	public void handleProgressNotification(ProgressNotification pn)
 	{
-		LOGGER.info("ProgressNotification = " + pn.getProgress());
-		if (pn.getProgress() != 1 && !splashScreenStage.isShowing()) {
-			splashScreenStage.show();
-		}
+		LOGGER.fine("ProgressNotification = " + pn.getProgress());
 	}
 	
 	@Override
@@ -179,16 +173,6 @@ public class AppPreloader extends Preloader
 			Exception exception = progressMessage.getException();
 			
 			showErrorDialogAndWait(appIcon, errorCode, exception);
-		}
-		else
-		{
-			double progress = progressMessage.getProgress();
-			String message = progressMessage.getMessage();
-			
-			LOGGER.info("New Progress: progress(" + progress + "), message(" + message + ")");
-			
-			splashScreenFxController.setProgress(progress);
-			splashScreenFxController.setProgressMessage(message);
 		}
 	}
 	

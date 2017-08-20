@@ -18,14 +18,18 @@ import sa.gov.nic.bio.bw.client.core.webservice.NicHijriCalendarData;
 import sa.gov.nic.bio.bw.client.core.webservice.WebserviceManager;
 import sa.gov.nic.bio.bw.client.core.workflow.WorkflowManager;
 
+import javax.jnlp.BasicService;
+import javax.jnlp.ServiceManager;
+import javax.jnlp.UnavailableServiceException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.InvocationTargetException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.util.List;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.logging.Logger;
 
 public class AppEntryPoint extends Application
@@ -36,6 +40,7 @@ public class AppEntryPoint extends Application
 	private ConfigManager configManager = new ConfigManager();
 	private WorkflowManager workflowManager = new WorkflowManager();
 	private WebserviceManager webserviceManager = new WebserviceManager();
+	private ExecutorService executorService = Executors.newWorkStealingPool();
 	
 	private ResourceBundle labelsBundle;
 	private ResourceBundle errorsBundle;
@@ -51,27 +56,6 @@ public class AppEntryPoint extends Application
     public void init()
     {
 	    LOGGER.entering(AppEntryPoint.class.getName(), "init()");
-	    
-	    // TEMPORARY: simulate long processing
-	    try
-	    {
-		    notifyPreloader(new ProgressMessage(0.0, "Loading module 1"));
-		    Thread.sleep(200);
-		    notifyPreloader(new ProgressMessage(0.2, "Loading module 2"));
-		    Thread.sleep(200);
-		    notifyPreloader(new ProgressMessage(0.4, "Loading module 3"));
-		    Thread.sleep(200);
-		    notifyPreloader(new ProgressMessage(0.6, "Loading module 4"));
-		    Thread.sleep(200);
-		    notifyPreloader(new ProgressMessage(0.8, "Loading module 5"));
-		    Thread.sleep(200);
-		    notifyPreloader(new ProgressMessage(1.0, "Loading module 6"));
-		    Thread.sleep(200);
-	    }
-	    catch(Exception e)
-	    {
-		    e.printStackTrace();
-	    }
 	    
 	    try
 	    {
@@ -109,16 +93,31 @@ public class AppEntryPoint extends Application
 	    }
 	
 	    String webserviceBaseUrl = configManager.getProperty("webservice.baseUrl");
+	    if(webserviceBaseUrl == null) LOGGER.warning("webserviceBaseUrl is null!");
+	
+	    try
+	    {
+		    BasicService bs = (BasicService) ServiceManager.lookup("javax.jnlp.BasicService");
+		    URL codebase = bs.getCodeBase();
+		    webserviceBaseUrl = codebase.getHost();
+	    }
+	    catch(UnavailableServiceException e)
+	    {
+		    LOGGER.warning("This is not a web-start application. The default server address will be used!");
+	    }
+	
 	    if(webserviceBaseUrl == null)
 	    {
 		    String errorCode = "E00-1008";
 		    notifyPreloader(new ProgressMessage(null, errorCode));
 		    return;
 	    }
+	    
+	    LOGGER.info("webserviceBaseUrl = " + webserviceBaseUrl);
 	
 	    webserviceManager.init(webserviceBaseUrl);
 	
-	    Context.setManagers(configManager, workflowManager, webserviceManager);
+	    Context.init(configManager, workflowManager, webserviceManager, executorService);
 	
 	    LookupAPI lookupAPI = webserviceManager.getApi(LookupAPI.class);
 	    Call<NicHijriCalendarData> hijriCalendarDataLookupBeanCall = lookupAPI.lookupNicHijriCalendarData();
@@ -211,7 +210,7 @@ public class AppEntryPoint extends Application
 		    notifyPreloader(new ProgressMessage(null, errorCode));
 		    return;
 	    }
-	
+	    
 	    successfulInit = true;
 	    LOGGER.exiting(AppEntryPoint.class.getName(), "init()");
     }

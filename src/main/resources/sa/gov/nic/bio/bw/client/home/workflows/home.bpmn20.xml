@@ -15,14 +15,13 @@
 
         <userTask id="menuChoosing" activiti:formKey="sa.gov.nic.bio.bw.client.home.HomePaneFxController">
             <extensionElements>
-                <activiti:formProperty id="username" type="string" required="true"/>
-                <activiti:formProperty id="password" type="string" required="true"/>
+                <activiti:formProperty id="menuId" type="string" required="true"/>
             </extensionElements>
         </userTask>
 
         <sequenceFlow sourceRef="menuChoosing" targetRef="endEvent"/>
 
-        <endEvent id="endEvent" />
+        <endEvent id="endEvent"/>
 
     </process>
 

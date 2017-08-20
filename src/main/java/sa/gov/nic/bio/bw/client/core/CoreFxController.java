@@ -22,8 +22,6 @@ import java.net.URL;
 import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
 import java.util.logging.Logger;
 
 @SuppressWarnings("unused")
@@ -56,9 +54,6 @@ public class CoreFxController
 	private UserData userData = new UserData();
 	private BusinessData businessData = new BusinessData(); // TODO: fill it at startup?
 	
-	private Executor executor = Executors.newWorkStealingPool();
-	//private Executor executor = Executors.newSingleThreadExecutor();
-	
 	public void passInitialResources(ResourceBundle errorsBundle, ResourceBundle messagesBundle, Image appIcon)
 	{
 		this.errorsBundle = errorsBundle;
@@ -86,22 +81,24 @@ public class CoreFxController
 		
 		if(guiState.getBodyController() == null) // if this is the first load
 		{
-			executor.execute(() -> Context.getWorkflowManager().startProcess(this::showPage));
+			Runnable runnable = () -> Context.getWorkflowManager().startProcess(this::showPage);
+			Context.getExecutorService().execute(runnable);
 		}
 	}
 	
-	public void submitFormTask(String taskId, Map<String, String> uiDataMap)
+	public void submitFormTask(Map<String, String> uiDataMap)
 	{
-		executor.execute(() -> Context.getWorkflowManager().submitFormTask(taskId, uiDataMap, this::showPage));
+		Runnable runnable = () -> Context.getWorkflowManager().submitFormTask(uiDataMap, this::showPage);
+		Context.getExecutorService().execute(runnable);
 	}
 	
-	private void showPage(String formKey, String taskId, Map<String, Object> inputData)
+	private void showPage(String formKey, Map<String, Object> inputData)
 	{
 		Boolean keepSameForm = (Boolean) inputData.get("keepSameForm");
 		
 		if(keepSameForm != null && keepSameForm)
 		{
-			guiState.getBodyController().onReturnFromTask(taskId, inputData);
+			guiState.getBodyController().onReturnFromTask(inputData);
 		}
 		else
 		{
@@ -118,11 +115,11 @@ public class CoreFxController
 				return;
 			}
 			
-			Platform.runLater(() -> showPage(bodyFxController, taskId, inputData, guiState.getLanguage()));
+			Platform.runLater(() -> showPage(bodyFxController, inputData, guiState.getLanguage()));
 		}
 	}
 	
-	private BodyFxController showPage(BodyFxController bodyFxController, String taskId, Map<String, Object> inputData, GuiLanguage language)
+	private BodyFxController showPage(BodyFxController bodyFxController, Map<String, Object> inputData, GuiLanguage language)
 	{
 		URL fxmlUrl = bodyFxController.getFxmlLocation();
 		if(fxmlUrl == null)
@@ -189,7 +186,6 @@ public class CoreFxController
 		
 		controller.attachCoreFxController(this);
 		controller.attachInitialResources(errorsBundle, messagesBundle, appIcon);
-		controller.attachTaskId(taskId);
 		controller.attachInputData(inputData);
 		
 		bodyPane.getChildren().setAll(loadedPane);
@@ -224,9 +220,9 @@ public class CoreFxController
 	/************* The following methods are used only while switching the language *************/
 	
 	
-	private boolean showOldPage(BodyFxController bodyFxController, String taskId, Map<String, Object> inputData, GuiLanguage language, StateBundle stateBundle)
+	private boolean showOldPage(BodyFxController bodyFxController, Map<String, Object> inputData, GuiLanguage language, StateBundle stateBundle)
 	{
-		BodyFxController newBodyController = showPage(bodyFxController, taskId, inputData, language);
+		BodyFxController newBodyController = showPage(bodyFxController, inputData, language);
 		guiState.setBodyController(newBodyController);
 		
 		if(newBodyController instanceof LanguageSwitchingController) // should always be true
@@ -347,9 +343,8 @@ public class CoreFxController
 		
 		if(oldBodyController instanceof LanguageSwitchingController) // should always be true
 		{
-			String taskId = oldBodyController.getTaskId();
 			Map<String, Object> inputData = oldBodyController.getInputData();
-			boolean success = showOldPage(oldBodyController, taskId, inputData, guiState.getLanguage(), stateBundle);
+			boolean success = showOldPage(oldBodyController, inputData, guiState.getLanguage(), stateBundle);
 			if(!success) return false;
 		}
 		else // should never happen

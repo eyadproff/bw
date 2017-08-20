@@ -21,6 +21,7 @@ public class WorkflowManager
 	private IdentityService identityService;
 	private TaskService taskService;
 	private FormService formService;
+	private String currentTaskId;
 	
 	public void load(List<String> workflowFilePaths)
 	{
@@ -54,9 +55,9 @@ public class WorkflowManager
 		executeUserTask(uiProxy);
 	}
 	
-	public void submitFormTask(String taskId, Map<String, String> uiDataMap, UiProxy uiProxy)
+	public void submitFormTask(Map<String, String> uiDataMap, UiProxy uiProxy)
 	{
-		formService.submitTaskFormData(taskId, uiDataMap); // executes as taskService.complete(taskId)
+		formService.submitTaskFormData(currentTaskId, uiDataMap); // executes as taskService.complete(taskId)
 		executeUserTask(uiProxy);
 	}
 	
@@ -66,10 +67,10 @@ public class WorkflowManager
 		
 		if(task != null)
 		{
-			String taskId = task.getId();
+			currentTaskId = task.getId();
 			Map<String, Object> processVariables = task.getProcessVariables();
-			String formKey = formService.getTaskFormData(taskId).getFormKey();
-			uiProxy.showForm(formKey, taskId, processVariables);
+			String formKey = formService.getTaskFormData(currentTaskId).getFormKey();
+			uiProxy.showForm(formKey, processVariables);
 		}
 		else // no task? that means the end of workflow? should never happen
 		{

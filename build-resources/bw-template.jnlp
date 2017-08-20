@@ -6,11 +6,6 @@
         <vendor>NIC</vendor>
         <icon href="app_icon.png" version="1" height="512" width="512" depth="24"/>
         <icon href="splash.gif" kind="splash"/>
-        <offline-allowed/>
-        <shortcut online="false" install="true">
-            <desktop>Biometrics Workstation</desktop>
-            <menu submenu="NIC Applications"/>
-        </shortcut>
     </information>
     <security>
         <all-permissions/>

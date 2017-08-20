@@ -19,50 +19,60 @@
         </ImageView>
     </graphic>
     <content>
-        <VBox alignment="CENTER" spacing="20">
+        <VBox alignment="CENTER">
             <HBox alignment="CENTER">
                 <GridPane alignment="CENTER" hgap="20" styleClass="loginBox">
                     <padding>
                         <Insets top="20" right="20" bottom="20" left="20"/>
                     </padding>
-                    <Label fx:id="lblLastSuccessLoginText" text="%label.lastSuccessLogin" style="-fx-font-weight: bold;" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
-                    <Label fx:id="lblLastSuccessLogin" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
-                    <Label fx:id="lblLastFailedLoginText" text="%label.lastFailedLogin" style="-fx-font-weight: bold;" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                    <Label fx:id="lblLoginTimeText" text="%label.loginTime" style="-fx-font-weight: bold;" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+                    <Label fx:id="lblLoginTime" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+                    <Label fx:id="lblLastSuccessLoginText" text="%label.lastSuccessLogin" style="-fx-font-weight: bold;" GridPane.columnIndex="0" GridPane.rowIndex="1">
                         <padding>
                             <Insets top="5"/>
                         </padding>
                     </Label>
-                    <Label fx:id="lblLastFailedLogin" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                    <Label fx:id="lblLastSuccessLogin" GridPane.columnIndex="1" GridPane.rowIndex="1">
                         <padding>
                             <Insets top="5"/>
                         </padding>
                     </Label>
-                    <Label fx:id="lblFailedLoginCountText" text="%label.failedLoginCount" style="-fx-font-weight: bold;" GridPane.columnIndex="0" GridPane.rowIndex="2">
+                    <Label fx:id="lblLastFailedLoginText" text="%label.lastFailedLogin" style="-fx-font-weight: bold;" GridPane.columnIndex="0" GridPane.rowIndex="2">
                         <padding>
                             <Insets top="5"/>
                         </padding>
                     </Label>
-                    <Label fx:id="lblFailedLoginCount" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                    <Label fx:id="lblLastFailedLogin" GridPane.columnIndex="1" GridPane.rowIndex="2">
                         <padding>
                             <Insets top="5"/>
                         </padding>
                     </Label>
-                    <Label fx:id="lblLastPasswordChangeTimeText" text="%label.lastPasswordChangeTime" style="-fx-font-weight: bold;" GridPane.columnIndex="0" GridPane.rowIndex="3">
+                    <Label fx:id="lblFailedLoginCountText" text="%label.failedLoginCount" style="-fx-font-weight: bold;" GridPane.columnIndex="0" GridPane.rowIndex="3">
                         <padding>
                             <Insets top="5"/>
                         </padding>
                     </Label>
-                    <Label fx:id="lblLastPasswordChangeTime" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                    <Label fx:id="lblFailedLoginCount" GridPane.columnIndex="1" GridPane.rowIndex="3">
                         <padding>
                             <Insets top="5"/>
                         </padding>
                     </Label>
-                    <Label fx:id="lblPasswordExpirationTimeText" text="%label.passwordExpirationTime" style="-fx-font-weight: bold;" GridPane.columnIndex="0" GridPane.rowIndex="4">
+                    <Label fx:id="lblLastPasswordChangeTimeText" text="%label.lastPasswordChangeTime" style="-fx-font-weight: bold;" GridPane.columnIndex="0" GridPane.rowIndex="4">
                         <padding>
                             <Insets top="5"/>
                         </padding>
                     </Label>
-                    <Label fx:id="lblPasswordExpirationTime" GridPane.columnIndex="1" GridPane.rowIndex="4">
+                    <Label fx:id="lblLastPasswordChangeTime" GridPane.columnIndex="1" GridPane.rowIndex="4">
+                        <padding>
+                            <Insets top="5"/>
+                        </padding>
+                    </Label>
+                    <Label fx:id="lblPasswordExpirationTimeText" text="%label.passwordExpirationTime" style="-fx-font-weight: bold;" GridPane.columnIndex="0" GridPane.rowIndex="5">
+                        <padding>
+                            <Insets top="5"/>
+                        </padding>
+                    </Label>
+                    <Label fx:id="lblPasswordExpirationTime" GridPane.columnIndex="1" GridPane.rowIndex="5">
                         <padding>
                             <Insets top="5"/>
                         </padding>

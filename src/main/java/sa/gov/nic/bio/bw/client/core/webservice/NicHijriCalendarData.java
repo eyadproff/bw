@@ -1,14 +1,11 @@
 package sa.gov.nic.bio.bw.client.core.webservice;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import java.io.Serializable;
 import java.util.Map;
 import java.util.Objects;
 
 public class NicHijriCalendarData implements Serializable
 {
-	@JsonProperty("isostartDate")
 	private long isoStartDate;
 	private Map<Integer, int[]> hijriYears;
 	

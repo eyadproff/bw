@@ -14,7 +14,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
-import org.controlsfx.glyphfont.FontAwesome;
 import org.controlsfx.glyphfont.Glyph;
 import sa.gov.nic.bio.bw.client.core.beans.MenuItem;
 import sa.gov.nic.bio.bw.client.core.interfaces.AttachableController;
@@ -22,10 +21,7 @@ import sa.gov.nic.bio.bw.client.core.interfaces.VisibilityControl;
 import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.ResourceBundle;
+import java.util.*;
 
 @SuppressWarnings("unused")
 public class MenuPaneFxController implements VisibilityControl, AttachableController
@@ -66,8 +62,10 @@ public class MenuPaneFxController implements VisibilityControl, AttachableContro
 	@SuppressWarnings("unchecked")
 	public void setMenus(List<String> menus, Map<String, Node> icons)
 	{
-		if(menus.isEmpty()) return;
+		accordion.getPanes().clear();
 		this.menus.clear();
+		
+		if(menus.isEmpty()) return;
 		
 		Font testFont = new Label().getFont();
 		testFont = Font.font(testFont.getFamily(), FontWeight.BOLD, testFont.getSize());
@@ -78,6 +76,7 @@ public class MenuPaneFxController implements VisibilityControl, AttachableContro
 		MenuItem menuItem = new MenuItem();
 		this.menus.add(menuItem);
 		menuItem.setLabel(resources.getString(previousMenuId));
+		menuItem.setMenuId(previousMenuId);
 		String parentMenuLabel = resources.getString(previousParentMenuId);
 		
 		double maxWidth = AppUtils.computeTextWidth(menuItem.getLabel(), testFont);
@@ -99,6 +98,7 @@ public class MenuPaneFxController implements VisibilityControl, AttachableContro
 			menuItem = new MenuItem();
 			this.menus.add(menuItem);
 			menuItem.setLabel(resources.getString(menuId));
+			menuItem.setMenuId(menuId);
 			
 			maxWidth = Math.max(maxWidth, AppUtils.computeTextWidth(menuItem.getLabel(), testFont));
 			
@@ -183,6 +183,8 @@ public class MenuPaneFxController implements VisibilityControl, AttachableContro
 			selectedMenu = newValue;
 			selectedListView = listView;
 			selectedMenu.setSelected(true);
+			
+			onSelectMenu(selectedMenu);
 		});
 		listView.setCellFactory(param ->
             new ListCell<MenuItem>()
@@ -209,7 +211,7 @@ public class MenuPaneFxController implements VisibilityControl, AttachableContro
 	                    labeledText.fontProperty().set(Font.font(font.getFamily(), item.isSelected() ? FontWeight.BOLD : FontWeight.NORMAL, font.getSize()));
 	                    
 	                    ListCell<MenuItem> listCell = this;
-	                    listCell.setCursor(Cursor.HAND);
+	                    listCell.setCursor(item.isSelected() ? Cursor.DEFAULT : Cursor.HAND);
 	
 	                    item.selectedProperty().addListener((observable, oldValue, newValue) ->
                         {
@@ -238,5 +240,13 @@ public class MenuPaneFxController implements VisibilityControl, AttachableContro
                 }
             });
 		return listView;
+	}
+	
+	private void onSelectMenu(MenuItem menuItem)
+	{
+		Map<String, String> uiDataMap = new HashMap<>();
+		uiDataMap.put("menuId", menuItem.getMenuId());
+		
+		coreFxController.submitFormTask(uiDataMap);
 	}
 }

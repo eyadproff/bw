@@ -48,7 +48,9 @@ public class LoginPaneFxController extends BodyFxControllerBase implements Langu
 		cbLanguage.getSelectionModel().select(currentLanguage);
 		cbLanguage.valueProperty().addListener(this::onSwitchingLanguage);
 		
+		coreFxController.getMenuPaneController().hideRootPane();
 		coreFxController.getHeaderPaneController().hideRootPane();
+		coreFxController.getFooterPaneController().showRootPane();
 		
 		// request focus once the scene is attached to txtUsername
 		txtUsername.sceneProperty().addListener((observable, oldValue, newValue) -> txtUsername.requestFocus());
@@ -80,7 +82,7 @@ public class LoginPaneFxController extends BodyFxControllerBase implements Langu
 		uiDataMap.put("username", username);
 		uiDataMap.put("password", password);
 		
-		coreFxController.submitFormTask(taskId, uiDataMap);
+		coreFxController.submitFormTask(uiDataMap);
 	}
 	
 	private void disableUiControls(boolean bool)
