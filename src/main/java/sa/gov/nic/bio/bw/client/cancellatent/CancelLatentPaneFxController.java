@@ -61,7 +61,7 @@ public class CancelLatentPaneFxController extends BodyFxControllerBase
 		{
 			CancelLatentAPI api = Context.getWebserviceManager().getApi(CancelLatentAPI.class);
 			Call<Boolean> call = api.cancelLatent();
-			Response<Boolean> response = null;
+			Response<Boolean> response;
 			try
 			{
 				response = call.execute();

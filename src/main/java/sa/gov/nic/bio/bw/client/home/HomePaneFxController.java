@@ -45,7 +45,7 @@ public class HomePaneFxController extends BodyFxControllerBase
 		coreFxController.getFooterPaneController().hideRootPane();
 		coreFxController.getMenuPaneController().showRootPane();
 		
-		LoginBean loginBean = (LoginBean) inputData.get("loginBean");
+		LoginBean loginBean = (LoginBean) inputData.get("resultBean");
 		LoginBean.UserInfo userInfo = loginBean.getUserInfo();
 		
 		String username = userInfo.getUserName();
@@ -87,7 +87,8 @@ public class HomePaneFxController extends BodyFxControllerBase
 		String topMenus = Context.getConfigManager().getProperty("menus");
 		if(topMenus == null)
 		{
-			// TODO: report error
+			String errorCode = "C004-00001";
+			coreFxController.showErrorDialogAndWait(errorCode, null);
 			return;
 		}
 		
@@ -99,14 +100,16 @@ public class HomePaneFxController extends BodyFxControllerBase
 			String subMenus = Context.getConfigManager().getProperty("menu." + topMenu + ".submenus");
 			if(subMenus == null)
 			{
-				// TODO: report error
+				String errorCode = "C004-00002";
+				coreFxController.showErrorDialogAndWaitForCore(errorCode, null, "menu." + topMenu + ".submenus");
 				return;
 			}
 			
 			String iconId = Context.getConfigManager().getProperty("menu." + topMenu + ".icon");
 			if(iconId == null)
 			{
-				// TODO: report error
+				String errorCode = "C004-00003";
+				coreFxController.showErrorDialogAndWaitForCore(errorCode, null, "menu." + topMenu + ".icon");
 				return;
 			}
 			
@@ -118,8 +121,8 @@ public class HomePaneFxController extends BodyFxControllerBase
 			}
 			catch(IllegalArgumentException e)
 			{
-				e.printStackTrace();
-				// TODO: report error
+				String errorCode = "C004-00004";
+				coreFxController.showErrorDialogAndWaitForCore(errorCode, e, iconId.toUpperCase());
 				return;
 			}
 			

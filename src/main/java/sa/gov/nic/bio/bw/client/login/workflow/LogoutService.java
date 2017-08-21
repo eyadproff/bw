@@ -1,11 +1,12 @@
-package sa.gov.nic.bio.bw.client.core.workflow;
+package sa.gov.nic.bio.bw.client.login.workflow;
 
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.JavaDelegate;
+import retrofit2.Call;
 import sa.gov.nic.bio.bw.client.core.Context;
-import sa.gov.nic.bio.bw.client.core.webservice.LogoutAPI;
+import sa.gov.nic.bio.bw.client.core.webservice.ApiResponse;
+import sa.gov.nic.bio.bw.client.login.webservice.LogoutAPI;
 
-import java.io.IOException;
 import java.util.logging.Logger;
 
 /**
@@ -23,13 +24,14 @@ public class LogoutService implements JavaDelegate
 		LOGGER.fine("token = " + token);
 		
 		LogoutAPI logoutAPI = Context.getWebserviceManager().getApi(LogoutAPI.class);
-		try
+		Call<Void> apiCall = logoutAPI.logout(token);
+		ApiResponse<Void> response = Context.getWebserviceManager().executeApi(apiCall);
+		
+		if(!response.isSuccess())
 		{
-			logoutAPI.logout(token).execute();
-		}
-		catch(IOException e)
-		{
-			e.printStackTrace();
+			int httpCode = response.getHttpCode();
+			String errorCode = response.getErrorCode();
+			LOGGER.warning("logout webservice returns non-200 response (httpCode = " + httpCode + ", errorCode = " + errorCode + ")");
 		}
 		
 		LOGGER.info("the user is logged out");

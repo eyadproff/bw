@@ -13,17 +13,19 @@ import sa.gov.nic.bio.bw.client.core.utils.GuiLanguage;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.logging.Logger;
 
 /**
  * Created by Fouad on 16-Jul-17.
  */
 public class LoginPaneFxController extends BodyFxControllerBase implements LanguageSwitchingController
 {
+	private static final Logger LOGGER = Logger.getLogger(LoginPaneFxController.class.getName());
 	@FXML private TextField txtUsername;
 	@FXML private PasswordField txtPassword;
 	@FXML private ComboBox<GuiLanguage> cbLanguage;
 	@FXML private Button btnLogin;
-	@FXML private Button btnChangePassword;
+	//@FXML private Button btnChangePassword;
 	@FXML private ProgressIndicator piLogin;
 	
 	@FXML
@@ -57,6 +59,43 @@ public class LoginPaneFxController extends BodyFxControllerBase implements Langu
 	{
 		txtPassword.clear();
 		disableUiControls(false);
+		
+		String errorCode = (String) inputData.get("errorCode");
+		Exception exception = (Exception) inputData.get("exception");
+		String apiUrl = (String) inputData.get("apiUrl");
+		Integer httpCode = (Integer) inputData.get("httpCode");
+		
+		if(errorCode != null)
+		{
+			if(errorCode.startsWith("C"))
+			{
+				String errorMessage = errorsBundle.getString(errorCode);
+				coreFxController.showErrorDialogAndWait(errorMessage, exception);
+				LOGGER.severe(errorsBundle.getString(errorCode + ".internal"));
+			}
+			else if(errorCode.startsWith("B"))
+			{
+				String errorMessage = errorsBundle.getString(errorCode);
+				showWarningNotification(errorMessage);
+			}
+			else // server error
+			{
+				String code = "S000-00000";
+				String guiErrorMessage = coreFxController.getErrorsBundle().getString(code);
+				String logErrorMessage = coreFxController.getErrorsBundle().getString(code + ".internal");
+				
+				guiErrorMessage = String.format(guiErrorMessage, errorCode);
+				logErrorMessage = String.format(logErrorMessage, errorCode);
+
+				showWarningNotification(guiErrorMessage);
+				LOGGER.severe(logErrorMessage);
+			}
+		}
+		else // the server didn't send an error code inside [400,401,403,500] response
+		{
+			errorCode = "C002-00018";
+			coreFxController.showErrorDialogAndWaitForCore(errorCode, exception, apiUrl, String.valueOf(httpCode));
+		}
 	}
 	
 	private void onSwitchingLanguage(ObservableValue<? extends GuiLanguage> observable, GuiLanguage oldValue, GuiLanguage newValue)
@@ -93,8 +132,8 @@ public class LoginPaneFxController extends BodyFxControllerBase implements Langu
 		btnLogin.setManaged(!bool);
 		btnLogin.setVisible(!bool);
 		
-		btnChangePassword.setManaged(!bool);
-		btnChangePassword.setVisible(!bool);
+		//btnChangePassword.setManaged(!bool);
+		//btnChangePassword.setVisible(!bool);
 	}
 	
 	@FXML

@@ -13,7 +13,7 @@
 
         <callActivity id="callLoginProcess" name="Login Process" calledElement="loginProcess">
             <extensionElements>
-                <activiti:out source="loginBean" target="loginBean"/>
+                <activiti:out source="resultBean" target="resultBean"/>
             </extensionElements>
         </callActivity>
 
@@ -21,7 +21,7 @@
 
         <callActivity id="callHomeProcess" name="Home Process" calledElement="homeProcess">
             <extensionElements>
-                <activiti:in source="loginBean" target="loginBean"/>
+                <activiti:in source="resultBean" target="resultBean"/>
                 <activiti:out source="menuId" target="menuId"/>
                 <activiti:out source="logoutRequested" target="logoutRequested"/>
             </extensionElements>
@@ -36,7 +36,7 @@
         </sequenceFlow>
 
         <serviceTask id="logoutService" name="Calling Logout API"
-                     activiti:class="sa.gov.nic.bio.bw.client.core.workflow.LogoutService"/>
+                     activiti:class="sa.gov.nic.bio.bw.client.login.workflow.LogoutService"/>
 
         <sequenceFlow sourceRef="logoutService" targetRef="callLoginProcess"/>
 

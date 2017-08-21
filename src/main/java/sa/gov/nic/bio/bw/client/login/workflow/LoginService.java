@@ -1,19 +1,15 @@
 package sa.gov.nic.bio.bw.client.login.workflow;
 
-import org.activiti.engine.delegate.BpmnError;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.JavaDelegate;
 import retrofit2.Call;
-import retrofit2.Response;
 import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
-import sa.gov.nic.bio.bw.client.home.HomePaneFxController;
+import sa.gov.nic.bio.bw.client.core.webservice.ApiResponse;
 import sa.gov.nic.bio.bw.client.login.webservice.LoginAPI;
 import sa.gov.nic.bio.bw.client.login.webservice.LoginBean;
 
-import java.io.IOException;
 import java.net.SocketException;
-import java.net.SocketTimeoutException;
 import java.util.logging.Logger;
 
 /**
@@ -39,88 +35,61 @@ public class LoginService implements JavaDelegate
 		}
 		catch(SocketException e)
 		{
-			String errorCode = "E02-1000";
-			bypassFailureResponse(execution, errorCode);
+			String errorCode = "C003-00001";
+			bypassErrorCode(execution, errorCode);
 			return;
 		}
 		
 		if(machineIpAddress == null)
 		{
-			String errorCode = "E02-1001";
-			bypassFailureResponse(execution, errorCode);
+			String errorCode = "C003-00002";
+			bypassErrorCode(execution, errorCode);
 			return;
 		}
 		
 		LOGGER.info("The machine IP address is " + machineIpAddress);
 		
 		LoginAPI loginAPI = Context.getWebserviceManager().getApi(LoginAPI.class);
-		Call<LoginBean> responseCall = loginAPI.login(username, password, machineIpAddress);
-		Response<LoginBean> response;
-		try
+		Call<LoginBean> apiCall = loginAPI.login(username, password, machineIpAddress);
+		ApiResponse<LoginBean> response = Context.getWebserviceManager().executeApi(apiCall);
+		bypassResponse(execution, response);
+		
+		if(response.isSuccess())
 		{
-			response = responseCall.execute();
+			LoginBean resultBean = response.getResult();
+			LOGGER.info("the user (" + resultBean.getUserInfo().getUserName() + ") is logged in");
 		}
-		catch(SocketTimeoutException e)
-		{
-			String errorCode = "E02-1002";
-			bypassFailureResponse(execution, errorCode);
-			return;
-		}
-		catch(IOException e)
-		{
-			String errorCode = "E02-1003";
-			bypassFailureResponse(execution, errorCode);
-			return;
-		}
-		
-		int httpCode = response.code();
-		LOGGER.info("service = \"loginAPI.login\", response = " + httpCode);
-		
-		if(httpCode == 401) // wrong username/password
-		{
-			String businessErrorCode = "B02-1000";
-			execution.setVariable("businessErrorCode", businessErrorCode);
-			execution.setVariable("keepSameForm", true);
-			throw new BpmnError(businessErrorCode);
-		}
-		
-		if(httpCode == 404) // api not found?
-		{
-			// TODO: handle this
-		}
-		
-		if(httpCode == 500) // server error
-		{
-			// TODO: handle this
-		}
-		
-		LoginBean loginBean = response.body();
-		
-		if(loginBean == null)
-		{
-			String errorCode = "E02-1004";
-			bypassFailureResponse(execution, errorCode);
-			return;
-		}
-		
-		String accessToken = response.headers().get("AUTH");
-		LOGGER.fine("accessToken = " + accessToken);
-		
-		LOGGER.info("the user is logged in");
-		
-		bypassSuccessResponse(execution, loginBean);
 	}
 	
-	private void bypassSuccessResponse(DelegateExecution execution, LoginBean loginBean)
+	private <T> void bypassResponse(DelegateExecution execution, ApiResponse<T> response)
 	{
-		execution.setVariableLocal("successfulLogin", true);
-		execution.setVariable("loginBean", loginBean);
+		boolean successResponse = response.isSuccess();
+		execution.setVariable("successResponse", successResponse);
+		
+		if(successResponse)
+		{
+			T resultBean = response.getResult();
+			execution.setVariable("resultBean", resultBean);
+		}
+		else
+		{
+			String apiUrl = response.getApiUrl();
+			String errorCode = response.getErrorCode();
+			int httpCode = response.getHttpCode();
+			Exception exception = response.getException();
+			
+			execution.setVariable("apiUrl", apiUrl);
+			execution.setVariable("httpCode", httpCode);
+			execution.setVariable("exception", exception);
+			
+			bypassErrorCode(execution, errorCode);
+		}
 	}
 	
-	private void bypassFailureResponse(DelegateExecution execution, String errorCode)
+	private void bypassErrorCode(DelegateExecution execution, String errorCode)
 	{
-		execution.setVariableLocal("successfulLogin", false);
-		execution.setVariableLocal("sameForm", true);
-		execution.setVariableLocal("errorCode", errorCode);
+		execution.setVariable("successResponse", false);
+		execution.setVariable("sameForm", true);
+		execution.setVariable("errorCode", errorCode);
 	}
 }

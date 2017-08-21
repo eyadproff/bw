@@ -11,3 +11,7 @@
     -fx-min-width: 200;
     -fx-pref-width: 200;
 }
+
+.button:default {
+    -fx-base: #ececec;
+}

@@ -5,8 +5,6 @@
              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
              xmlns:activiti="http://activiti.org/bpmn">
 
-    <error id="B02-1000" errorCode="B02-1000" name="Wrong Username/Password"/>
-
     <process id="homeProcess" name="Home Process">
 
         <startEvent id="startEvent"/>

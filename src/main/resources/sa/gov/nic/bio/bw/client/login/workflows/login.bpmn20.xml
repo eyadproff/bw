@@ -5,8 +5,6 @@
              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
              xmlns:activiti="http://activiti.org/bpmn">
 
-    <error id="B02-1000" errorCode="B02-1000" name="Wrong Username/Password"/>
-
     <process id="loginProcess" name="Login Process">
 
         <startEvent id="startEvent"/>
@@ -25,19 +23,20 @@
         <serviceTask id="loginService" name="Calling Login API"
                      activiti:class="sa.gov.nic.bio.bw.client.login.workflow.LoginService"/>
 
-        <boundaryEvent id="catchingLoginError" name="Catching Login Errors" attachedToRef="loginService">
-            <errorEventDefinition errorRef="B02-1000"/>
-        </boundaryEvent>
+        <sequenceFlow sourceRef="loginService" targetRef="loginCheck"/>
 
-        <sequenceFlow sourceRef="catchingLoginError" targetRef="userCredentialsEntry"/>
+        <exclusiveGateway id="loginCheck" name="Login Check"/>
 
-        <sequenceFlow sourceRef="loginService" targetRef="endEvent"/>
+        <sequenceFlow sourceRef="loginCheck" targetRef="endEvent">
+            <conditionExpression xsi:type="tFormalExpression">
+                <![CDATA[
+                    ${successResponse}
+                ]]>
+            </conditionExpression>
+        </sequenceFlow>
 
-        <scriptTask id="script" scriptFormat="JavaScript">
-            <script>
-                print("Hello World");
-            </script>
-        </scriptTask>
+        <!-- default flow -->
+        <sequenceFlow sourceRef="loginCheck" targetRef="userCredentialsEntry"/>
 
         <endEvent id="endEvent" />
 

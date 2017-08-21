@@ -11,7 +11,7 @@ public class LogFormatter extends SimpleFormatter
 	{
 		// inject thread name
 		String threadName = Thread.currentThread().getName();
-		String message = super.format(record).replace("(", "[" + threadName + "] (");
+		String message = super.format(record).replace("{{{", "[" + threadName + "] (").replace("}}}", ")");
 		return AppUtils.replaceNumbers(message, Locale.ENGLISH);
 	}
 }

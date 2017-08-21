@@ -90,14 +90,7 @@ public abstract class BodyFxControllerBase implements BodyFxController
 	public void onReturnFromTask(Map<String, Object> inputData)
 	{
 		this.inputData = inputData;
-		
-		String businessErrorCode = (String) inputData.get("businessErrorCode");
-		
-		Platform.runLater(() ->
-        {
-        	if(businessErrorCode != null) notificationPane.show(errorsBundle.getString(businessErrorCode));
-        	onReturnFromTask();
-        });
+		Platform.runLater(this::onReturnFromTask);
 	}
 	
 	public void onReturnFromTask(){}

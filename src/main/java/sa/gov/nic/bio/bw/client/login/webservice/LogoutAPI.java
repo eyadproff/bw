@@ -1,4 +1,4 @@
-package sa.gov.nic.bio.bw.client.core.webservice;
+package sa.gov.nic.bio.bw.client.login.webservice;
 
 import retrofit2.Call;
 import retrofit2.http.Field;
@@ -10,5 +10,5 @@ public interface LogoutAPI
 {
 	@FormUrlEncoded
 	@POST("services-gateway-identity/api/identity/logout/v1")
-	Call<LoginBean> logout(@Field("token") String token);
+	Call<Void> logout(@Field("token") String token);
 }

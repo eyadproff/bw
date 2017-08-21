@@ -33,11 +33,6 @@ public class CoreFxController
 	public static final String RB_LABELS_FILE = "sa/gov/nic/bio/bw/client/core/bundles/labels";
 	public static final String RB_ERRORS_FILE = "sa/gov/nic/bio/bw/client/core/bundles/errors";
 	public static final String RB_MESSAGES_FILE = "sa/gov/nic/bio/bw/client/core/bundles/messages";
-	private static final String KEY_STAGE_WIDTH = "stageWidth";
-	private static final String KEY_STAGE_HEIGHT = "stageHeight";
-	private static final String KEY_STAGE_X = "stageX";
-	private static final String KEY_STAGE_Y = "stageY";
-	private static final String KEY_STAGE_MAXIMIZED = "stageMaximized";
 	
 	@FXML private ResourceBundle resources;
 	@FXML private Stage primaryStage;
@@ -100,9 +95,9 @@ public class CoreFxController
 	
 	private void showForm(String formKey, Map<String, Object> inputData)
 	{
-		Boolean keepSameForm = (Boolean) inputData.get("keepSameForm");
+		Boolean sameForm = (Boolean) inputData.get("sameForm");
 		
-		if(keepSameForm != null && keepSameForm)
+		if(sameForm != null && sameForm)
 		{
 			guiState.getBodyController().onReturnFromTask(inputData);
 		}
@@ -117,7 +112,7 @@ public class CoreFxController
 			catch(InstantiationException | IllegalAccessException | ClassNotFoundException | NoSuchMethodException | InvocationTargetException e)
 			{
 				String errorCode = "C002-00001";
-				showErrorDialogAndWait(appIcon, errorCode, e, formKey);
+				showErrorDialogAndWaitForCore(errorCode, e, formKey);
 				return;
 			}
 			
@@ -131,7 +126,7 @@ public class CoreFxController
 		if(fxmlUrl == null)
 		{
 			String errorCode = "C002-00002";
-			showErrorDialogAndWait(appIcon, errorCode, null, bodyFxController.getClass().getName());
+			showErrorDialogAndWaitForCore(errorCode, null, bodyFxController.getClass().getName());
 			return null;
 		}
 		
@@ -145,7 +140,7 @@ public class CoreFxController
 		catch(MissingResourceException e)
 		{
 			String errorCode = "C002-00003";
-			showErrorDialogAndWait(appIcon, errorCode, e, bodyFxController.getClass().getName());
+			showErrorDialogAndWaitForCore(errorCode, e, bodyFxController.getClass().getName());
 			return null;
 		}
 		
@@ -157,7 +152,7 @@ public class CoreFxController
 		catch(MissingResourceException e)
 		{
 			String errorCode = "C002-00004";
-			showErrorDialogAndWait(appIcon, errorCode, e, bodyFxController.getClass().getName());
+			showErrorDialogAndWaitForCore(errorCode, e, bodyFxController.getClass().getName());
 			return null;
 		}
 		
@@ -169,7 +164,7 @@ public class CoreFxController
 		catch(MissingResourceException e)
 		{
 			String errorCode = "C002-00005";
-			showErrorDialogAndWait(appIcon, errorCode, e, bodyFxController.getClass().getName());
+			showErrorDialogAndWaitForCore(errorCode, e, bodyFxController.getClass().getName());
 			return null;
 		}
 		
@@ -183,7 +178,7 @@ public class CoreFxController
 		catch(IOException e)
 		{
 			String errorCode = "C002-00006";
-			showErrorDialogAndWait(appIcon, errorCode, e, bodyFxController.getClass().getName());
+			showErrorDialogAndWaitForCore(errorCode, e, bodyFxController.getClass().getName());
 			return null;
 		}
 		
@@ -200,31 +195,35 @@ public class CoreFxController
 		return controller;
 	}
 	
-	public void showErrorDialogAndWait(Image appIcon, String errorCode, Exception exception, String... additionalErrorText)
+	public void showErrorDialogAndWait(String errorMessage, Exception exception)
 	{
 		Platform.runLater(() ->
 		{
-			String logErrorText;
-			String guiErrorText;
 			String title;
 			String headerText;
 			String buttonOkText;
 			String moreDetailsText;
 			String lessDetailsText;
 			
-			logErrorText = String.format(errorCode + ": " + errorsBundle.getString(errorCode + ".internal"), (Object[]) additionalErrorText);
-			LOGGER.severe(logErrorText);
 			
-			guiErrorText = String.format(errorsBundle.getString(errorCode), (Object[]) additionalErrorText);
 			title = resources.getString("dialog.error.title");
 			headerText = resources.getString("dialog.error.header");
 			buttonOkText = resources.getString("dialog.error.buttons.ok");
 			moreDetailsText = resources.getString("dialog.error.buttons.showErrorDetails");
 			lessDetailsText = resources.getString("dialog.error.buttons.hideErrorDetails");
 			
-			DialogUtils.showErrorDialog(appIcon, title, headerText, guiErrorText, buttonOkText, moreDetailsText,
+			DialogUtils.showErrorDialog(appIcon, title, headerText, errorMessage, buttonOkText, moreDetailsText,
 			                            lessDetailsText, exception);
 		});
+	}
+	
+	public void showErrorDialogAndWaitForCore(String errorCode, Exception exception, String... additionalErrorText)
+	{
+		String logErrorText = String.format(errorCode + ": " + errorsBundle.getString(errorCode + ".internal"), (Object[]) additionalErrorText);
+		LOGGER.severe(logErrorText);
+		
+		String guiErrorText = String.format(errorsBundle.getString(errorCode), (Object[]) additionalErrorText);
+		showErrorDialogAndWait(guiErrorText, exception);
 	}
 	
 	/************* The following methods are used only while switching the language *************/
@@ -246,7 +245,7 @@ public class CoreFxController
 			else LOGGER.severe("newBodyController type = " + newBodyController.getClass().getName());
 			
 			String errorCode = "C002-00007";
-			showErrorDialogAndWait(appIcon, errorCode, null);
+			showErrorDialogAndWaitForCore(errorCode, null);
 			return false; // no success
 		}
 	}
@@ -264,7 +263,7 @@ public class CoreFxController
 		catch(MissingResourceException e)
 		{
 			String errorCode = "C002-00008";
-			showErrorDialogAndWait(appIcon, errorCode, e);
+			showErrorDialogAndWaitForCore(errorCode, e);
 			return;
 		}
 		
@@ -276,7 +275,7 @@ public class CoreFxController
 		catch(MissingResourceException e)
 		{
 			String errorCode = "C002-00009";
-			showErrorDialogAndWait(appIcon, errorCode, e);
+			showErrorDialogAndWaitForCore(errorCode, e);
 			return;
 		}
 		
@@ -288,7 +287,7 @@ public class CoreFxController
 		catch(MissingResourceException e)
 		{
 			String errorCode = "C002-00010";
-			showErrorDialogAndWait(appIcon, errorCode, e);
+			showErrorDialogAndWaitForCore(errorCode, e);
 			return;
 		}
 		
@@ -296,7 +295,7 @@ public class CoreFxController
 		if(fxmlUrl == null)
 		{
 			String errorCode = "C002-00011";
-			showErrorDialogAndWait(appIcon, errorCode, null);
+			showErrorDialogAndWaitForCore(errorCode, null);
 			return;
 		}
 		
@@ -316,7 +315,7 @@ public class CoreFxController
 		catch(IOException e)
 		{
 			String errorCode = "C002-00012";
-			showErrorDialogAndWait(appIcon, errorCode, e);
+			showErrorDialogAndWaitForCore(errorCode, e);
 			return;
 		}
 		
@@ -326,11 +325,11 @@ public class CoreFxController
 		StateBundle oldState = new StateBundle();
 		languageSwitchingController.onSaveState(oldState);
 		
-		oldState.putData(KEY_STAGE_WIDTH, oldStage.getWidth());
-		oldState.putData(KEY_STAGE_HEIGHT, oldStage.getHeight());
-		oldState.putData(KEY_STAGE_X, oldStage.getX());
-		oldState.putData(KEY_STAGE_Y, oldStage.getY());
-		oldState.putData(KEY_STAGE_MAXIMIZED, oldStage.isMaximized());
+		oldState.putData("stageWidth", oldStage.getWidth());
+		oldState.putData("stageHeight", oldStage.getHeight());
+		oldState.putData("stageX", oldStage.getX());
+		oldState.putData("stageY", oldStage.getY());
+		oldState.putData("stageMaximized", oldStage.isMaximized());
 		
 		CoreFxController newCoreFxController = newStageLoader.getController();
 		newCoreFxController.guiState = guiState;
@@ -367,15 +366,15 @@ public class CoreFxController
 			else LOGGER.severe("oldBodyController type = " + oldBodyController.getClass().getName());
 			
 			String errorCode = "C002-00013";
-			showErrorDialogAndWait(appIcon, errorCode, null);
+			showErrorDialogAndWaitForCore(errorCode, null);
 			return false; // no success
 		}
 		
-		double width = stateBundle.getDate(KEY_STAGE_WIDTH, Double.class);
-		double height = stateBundle.getDate(KEY_STAGE_HEIGHT, Double.class);
-		double x = stateBundle.getDate(KEY_STAGE_X, Double.class);
-		double y = stateBundle.getDate(KEY_STAGE_Y, Double.class);
-		boolean maximized = stateBundle.getDate(KEY_STAGE_MAXIMIZED, Boolean.class);
+		double width = stateBundle.getDate("stageWidth", Double.class);
+		double height = stateBundle.getDate("stageHeight", Double.class);
+		double x = stateBundle.getDate("stageX", Double.class);
+		double y = stateBundle.getDate("stageY", Double.class);
+		boolean maximized = stateBundle.getDate("stageMaximized", Boolean.class);
 		
 		if(maximized) primaryStage.setMaximized(true);
 		else
@@ -387,5 +386,10 @@ public class CoreFxController
 		}
 		
 		return true; // success
+	}
+	
+	public ResourceBundle getErrorsBundle()
+	{
+		return errorsBundle;
 	}
 }

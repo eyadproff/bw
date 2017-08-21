@@ -36,15 +36,15 @@
                             <Insets top="20" right="20" bottom="20" left="20"/>
                         </padding>
                         <Label text="%label.username" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
-                        <TextField fx:id="txtUsername" GridPane.columnIndex="1" GridPane.rowIndex="0" onAction="#onEnterPressed"/>
+                        <TextField fx:id="txtUsername" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
                         <Label text="%label.password" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
-                        <PasswordField fx:id="txtPassword" GridPane.columnIndex="1" GridPane.rowIndex="1" onAction="#onEnterPressed"/>
+                        <PasswordField fx:id="txtPassword" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
                         <Label text="%label.language" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
                         <ComboBox fx:id="cbLanguage" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
                     </GridPane>
                 </HBox>
                 <FlowPane alignment="CENTER" hgap="10">
-                    <Button fx:id="btnLogin" text="%button.login" onAction="#onLoginButtonClicked"/>
+                    <Button fx:id="btnLogin" text="%button.login" defaultButton="true" onAction="#onLoginButtonClicked"/>
                     <Button fx:id="btnChangePassword" text="%button.changePassword" visible="false" managed="false"/>
                     <ProgressIndicator fx:id="piLogin" prefHeight="25.0" prefWidth="25.0" managed="false" visible="false"/>
                 </FlowPane>

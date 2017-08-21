@@ -1,6 +1,7 @@
 package sa.gov.nic.bio.bw.client.login.webservice;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import sa.gov.nic.bio.bw.client.core.webservice.ApiResponseBase;
 
 import java.io.Serializable;
 import java.util.Arrays;
