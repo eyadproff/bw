@@ -1,3 +1,5 @@
+import sa.gov.nic.bio.bw.client.tools.SignJars
+
 project.version = '1.0'
 group = 'sa.gov.nic.bio'
 
@@ -47,7 +49,6 @@ dependencies {
     implementation name: "retrofit-2.3.0"
     implementation name: "slf4j-api-1.7.25"
     implementation name: "slf4j-nop-1.7.25"
-    implementation name: "javaws-8.144"
     testImplementation name: "junit-4.12"
 }
 
@@ -57,8 +58,6 @@ jar {
                 'Implementation-Version': project.version,
                 'Implementation-Vendor': 'NIC',
                 'Permissions': 'all-permissions',
-                'Application-Library-Allowable-Codebase': 'http://bw.nic.gov.sa',
-                'Codebase': 'http://bw.nic.gov.sa',
                 'Application-Name': 'Biometrics Workstation',
                 'Built-By': 'Biometrics Team',
                 'JavaFX-Preloader-Class': 'sa.gov.nic.bio.bw.client.preloader.AppPreloader',
@@ -78,15 +77,11 @@ copyDependentJarsTask.dependsOn(jar)
 
 Creating the keystore with pair keys bundled:
 
-keytool -genkeypair -keystore bw-keystore.p12
--storetype PKCS12 -storepass bw#456321 -alias bw -keyalg RSA -keysize 2048 -validity 999999 -dname "
-CN=BW SSL Certificate, OU=Biometrics Team, O=NIC, L=Riyadh, ST=Riyadh, C=SA" -ext san=dns:bw.nic.gov.sa
+keytool -genkeypair -keystore bw-keystore.p12 -storetype PKCS12 -storepass bw#456321 -alias bw -keyalg RSA -keysize 2048 -validity 999999 -dname "CN=BW SSL Certificate, OU=Biometrics Team, O=NIC, L=Riyadh, ST=Riyadh, C=SA" -ext san=dns:localhost,ip:10.0.73.80,ip:10.0.73.93
 
 Importing the keystore certificate into Java trusted keystore (run cmd as administrator):
 
-keytool -importkeystore -srcstoretype PKCS12 -deststoretype JKS
--srcstorepass bw#456321 -deststorepass changeit -srcalias bw -srckeystore bw-keystore.p12
--destkeystore "C:\Program Files\Java\jre1.8.0_144\lib\security\cacerts"
+keytool -importkeystore -srcstoretype PKCS12 -deststoretype JKS -srcstorepass bw#456321 -deststorepass changeit -srcalias bw -srckeystore bw-keystore.p12 -destkeystore "C:\Program Files\Java\jre1.8.0_144\lib\security\cacerts"
 
 */
 
@@ -96,12 +91,10 @@ task packageWebStart {
         def jars = StringBuilder.getDeclaredConstructor().newInstance()
 
         boolean first = true;
-        String preloaderJarFileName;
 
         fileTree(dir: 'build/libs', include: '**/*.jar').visit { FileVisitDetails details ->
 
             String fileName = details.file.name
-            long fileSize = details.file.size();
             if(!fileName.endsWith(".jar")) return
 
             int lastDashIndex = fileName.lastIndexOf('-')
@@ -110,12 +103,11 @@ task packageWebStart {
             if(first) first = false
             else jars << '\n        '
 
-            jars << '<jar href="' + fileName + '" size="' + fileSize + '"'
+            jars << '<jar href="' + fileName + '"'
 
             if(libraryName.endsWith('main'))
             {
                 jars << ' main="true"'
-                preloaderJarFileName = fileName
             }
 
             jars << '/>'
@@ -123,16 +115,26 @@ task packageWebStart {
 
         jnlpTemplate = jnlpTemplate.replace('<!--JARS PLACE HOLDER-->', jars)
 
-        if(!project.hasProperty('env') || project.getProperty('env') != 'dev')
-        {
-            jnlpTemplate = jnlpTemplate.replace('href="APPLICATION.JNLP"', 'codebase="http://bw.nic.gov.sa/bw/" href="APPLICATION.JNLP"')
-        }
-
         File directory = new File("${projectDir}/build/web-start")
         directory.mkdirs()
         File file = new File(directory, 'APPLICATION.JNLP')
         file.createNewFile()
         file.text = jnlpTemplate
+
+        copy {
+            from 'build-resources/index.html'
+            into "build/web-start"
+        }
+
+        copy {
+            from 'build-resources/deployJava.js'
+            into "build/web-start"
+        }
+
+        copy {
+            from 'build-resources/webstart.png'
+            into "build/web-start"
+        }
 
         copy {
             from 'build/libs'
@@ -158,10 +160,6 @@ task packageWebStart {
             ant.jar(destfile: details.file, update: true) {
                 delegate.manifest {
                     attribute(name: 'Permissions', value: 'all-permissions')
-                    attribute(name: 'Application-Library-Allowable-Codebase', value: 'http://bw.nic.gov.sa')
-                    attribute(name: 'JavaFX-Preloader-Class', value: 'sa.gov.nic.bio.bw.client.preloader.AppPreloader')
-                    attribute(name: 'JavaFX-Application-Class', value: 'sa.gov.nic.bio.bw.client.AppEntryPoint')
-                    attribute(name: 'JavaFX-Class-Path', value: preloaderJarFileName)
                 }
             }
         }
@@ -180,6 +178,11 @@ task packageWebStart {
                 commandLine 'pack200', '--repack', fileName
             }
         }
+
+        // TODO
+        /*signJars {
+            source = 'build/web-start'
+        }*/
 
         // sign the jars
         ant.signjar(
@@ -207,7 +210,7 @@ task runWebStart(type: Exec, group: 'run') {
     workingDir 'build/web-start'
     commandLine 'javaws', 'APPLICATION.JNLP'
 }
-runWebStart.dependsOn(packageWebStart)
+//runWebStart.dependsOn(packageWebStart)
 
 
 task run(type: JavaExec, group: 'run') {
@@ -215,3 +218,6 @@ task run(type: JavaExec, group: 'run') {
     args = [jar.archivePath.absolutePath]
 }
 run.dependsOn(copyDependentJarsTask)
+
+task signJars(type: SignJars) {
+}

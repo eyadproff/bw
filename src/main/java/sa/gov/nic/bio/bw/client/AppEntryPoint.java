@@ -18,11 +18,9 @@ import sa.gov.nic.bio.bw.client.core.webservice.NicHijriCalendarData;
 import sa.gov.nic.bio.bw.client.core.webservice.WebserviceManager;
 import sa.gov.nic.bio.bw.client.core.workflow.WorkflowManager;
 
-import javax.jnlp.BasicService;
-import javax.jnlp.ServiceManager;
-import javax.jnlp.UnavailableServiceException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Method;
 import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.util.List;
@@ -74,7 +72,7 @@ public class AppEntryPoint extends Application
 	    {
 		    workflowFilePaths = AppUtils.listResourceFiles(getClass().getProtectionDomain(), ".bpmn20.xml");
 	    }
-	    catch(IOException e)
+	    catch(Exception e)
 	    {
 		    String errorCode = "E00-1006";
 		    notifyPreloader(new ProgressMessage(e, errorCode));
@@ -97,11 +95,13 @@ public class AppEntryPoint extends Application
 	
 	    try
 	    {
-		    BasicService bs = (BasicService) ServiceManager.lookup("javax.jnlp.BasicService");
-		    URL codebase = bs.getCodeBase();
+		    Method lookupMethod = Class.forName("javax.jnlp.ServiceManager").getMethod("lookup", String.class);
+		    Object basicService = lookupMethod.invoke(null, "javax.jnlp.BasicService");
+		    Method getCodeBaseMethod = Class.forName("javax.jnlp.BasicService").getMethod("getCodeBase");
+		    URL codebase = (URL) getCodeBaseMethod.invoke(basicService);
 		    webserviceBaseUrl = codebase.getHost();
 	    }
-	    catch(UnavailableServiceException e)
+	    catch(Exception e)
 	    {
 		    LOGGER.warning("This is not a web-start application. The default server address will be used!");
 	    }
@@ -237,7 +237,7 @@ public class AppEntryPoint extends Application
 	    }
 	    
 	    CoreFxController coreFxController = coreStageLoader.getController();
-	    coreFxController.passInitialResources(errorsBundle, messagesBundle, appIcon);
+	    coreFxController.passInitialResources(labelsBundle, errorsBundle, messagesBundle, appIcon);
 	    coreFxController.getGuiState().setLanguage(initialLanguage);
 	    
 	    primaryStage.getScene().setNodeOrientation(initialLanguage.getNodeOrientation());
@@ -260,42 +260,6 @@ public class AppEntryPoint extends Application
     public static void main(String[] args) // not invoked in webstart!
     {
 	    LOGGER.entering(AppEntryPoint.class.getName(), "main(String[] args)");
-	
-	    /*DownloadService service = null;
-	    try
-	    {
-		    service = (DownloadService) ServiceManager.lookup("javax.jnlp.DownloadService");
-	    }
-	    catch(UnavailableServiceException e)
-	    {
-		    e.printStackTrace();
-	    }
-	    DownloadServiceListener progressWindow = service.getDefaultProgressWindow();
-	    // Search jars lazily downloaded
-	    String lazyParts = System.getProperty("com.eteks.sweethome3d.lazyParts", "");
-	    List<String> lazyPartsToDownload = new ArrayList<>();
-	    for (String lazyPart : lazyParts.split("\\s"))
-	    {
-		    if(!service.isPartCached(lazyPart))
-		    {
-			    lazyPartsToDownload.add(lazyPart);
-		    }
-	    }
-	    
-	    try
-	    {
-		    if(lazyPartsToDownload.size() > 0)
-		    {
-			    service.loadPart(lazyPartsToDownload.toArray(new String [lazyPartsToDownload.size()]), progressWindow);
-		    }
-	    }
-	    catch(IOException ex)
-	    {
-		    ex.printStackTrace();
-		    System.exit(1);
-	    }*/
-	    
-	    
 	    launch(args);
 	    LOGGER.exiting(AppEntryPoint.class.getName(), "main(String[] args)");
     }

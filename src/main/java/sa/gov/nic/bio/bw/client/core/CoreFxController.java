@@ -19,6 +19,7 @@ import sa.gov.nic.bio.bw.client.core.utils.GuiLanguage;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
+import java.util.Locale;
 import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
@@ -46,6 +47,7 @@ public class CoreFxController
 	@FXML private MenuPaneFxController menuPaneController;
 	@FXML private StackPane bodyPane;
 	
+	private ResourceBundle labelsBundle;
 	private ResourceBundle errorsBundle;
 	private ResourceBundle messagesBundle;
 	private Image appIcon;
@@ -54,8 +56,9 @@ public class CoreFxController
 	private UserData userData = new UserData();
 	private BusinessData businessData = new BusinessData(); // TODO: fill it at startup?
 	
-	public void passInitialResources(ResourceBundle errorsBundle, ResourceBundle messagesBundle, Image appIcon)
+	public void passInitialResources(ResourceBundle labelsBundle, ResourceBundle errorsBundle, ResourceBundle messagesBundle, Image appIcon)
 	{
+		this.labelsBundle = labelsBundle;
 		this.errorsBundle = errorsBundle;
 		this.messagesBundle = messagesBundle;
 		this.appIcon = appIcon;
@@ -84,6 +87,11 @@ public class CoreFxController
 			Runnable runnable = () -> Context.getWorkflowManager().startProcess(this::showPage);
 			Context.getExecutorService().execute(runnable);
 		}
+		
+		String version = Context.getConfigManager().getProperty("app.version");
+		String title = labelsBundle.getString("window.title") + " " + version;
+		title = AppUtils.replaceNumbers(title, Locale.getDefault());
+		primaryStage.setTitle(title);
 	}
 	
 	public void submitFormTask(Map<String, String> uiDataMap)
@@ -320,7 +328,7 @@ public class CoreFxController
 		
 		CoreFxController newCoreFxController = newStageLoader.getController();
 		newCoreFxController.guiState = guiState;
-		newCoreFxController.passInitialResources(errorsBundle, messagesBundle, appIcon);
+		newCoreFxController.passInitialResources(labelsBundle, errorsBundle, messagesBundle, appIcon);
 		newCoreFxController.guiState.setLanguage(toLanguage);
 		boolean success = newCoreFxController.applyStateBundle(oldState);
 		

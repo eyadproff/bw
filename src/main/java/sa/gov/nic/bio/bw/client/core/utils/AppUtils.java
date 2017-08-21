@@ -108,25 +108,25 @@ public final class AppUtils
 	
 	public static String formatDateTime(TemporalAccessor temporal)
 	{
-		return replaceNumbers(DATE_TIME_FORMATTER.withLocale(Locale.getDefault()).format(temporal));
+		return replaceNumbers(DATE_TIME_FORMATTER.withLocale(Locale.getDefault()).format(temporal), Locale.getDefault());
 		
 	}
 	
 	public static String formatDate(TemporalAccessor temporal)
 	{
-		return replaceNumbers(DATE_FORMATTER.withLocale(Locale.getDefault()).format(temporal));
+		return replaceNumbers(DATE_FORMATTER.withLocale(Locale.getDefault()).format(temporal), Locale.getDefault());
 		
 	}
 	
-	public static String replaceNumbers(long number)
+	public static String replaceNumbers(long number, Locale locale)
 	{
-		NumberFormat numberFormat = NumberFormat.getNumberInstance(Locale.getDefault());
+		NumberFormat numberFormat = NumberFormat.getNumberInstance(locale);
 		return numberFormat.format(number);
 	}
 	
-	public static String replaceNumbers(String text)
+	public static String replaceNumbers(String text, Locale locale)
 	{
-		NumberFormat numberFormat = NumberFormat.getNumberInstance(Locale.getDefault());
+		NumberFormat numberFormat = NumberFormat.getNumberInstance(locale);
 		
 		StringBuilder sb = new StringBuilder();
 		for(char c : text.toCharArray()) // not valid for 4-byte chars?

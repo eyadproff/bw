@@ -47,6 +47,7 @@
         <callActivity id="callCancelLatentProcess" name="Cancel Latent Process" calledElement="cancelLatentProcess">
             <extensionElements>
                 <activiti:in source="loginBean" target="loginBean"/>
+                <activiti:out source="menuId" target="menuId"/>
                 <activiti:out source="logoutRequested" target="logoutRequested"/>
             </extensionElements>
         </callActivity>

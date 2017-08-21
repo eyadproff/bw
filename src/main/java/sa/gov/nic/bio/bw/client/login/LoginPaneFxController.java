@@ -35,10 +35,6 @@ public class LoginPaneFxController extends BodyFxControllerBase implements Langu
 		BooleanBinding passwordEmptyBinding = txtPassword.textProperty().isEmpty();
 		
 		btnLogin.disableProperty().bind(usernameEmptyBinding.or(passwordEmptyBinding));
-		
-		// TODO: temp
-		txtUsername.setText("teuser");
-		txtPassword.setText("123456");
 	}
 	
 	@Override
