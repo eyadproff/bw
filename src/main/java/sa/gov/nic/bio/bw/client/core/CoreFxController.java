@@ -25,7 +25,6 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
 
-@SuppressWarnings("unused")
 public class CoreFxController
 {
 	private static final Logger LOGGER = Logger.getLogger(CoreFxController.class.getName());
@@ -86,7 +85,7 @@ public class CoreFxController
 		
 		if(guiState.getBodyController() == null) // if this is the first load
 		{
-			Runnable runnable = () -> Context.getWorkflowManager().startProcess(this::showPage);
+			Runnable runnable = () -> Context.getWorkflowManager().startProcess(this::showForm);
 			Context.getExecutorService().execute(runnable);
 		}
 		
@@ -95,11 +94,11 @@ public class CoreFxController
 	
 	public void submitFormTask(Map<String, String> uiDataMap)
 	{
-		Runnable runnable = () -> Context.getWorkflowManager().submitFormTask(uiDataMap, this::showPage);
+		Runnable runnable = () -> Context.getWorkflowManager().submitFormTask(uiDataMap, this::showForm);
 		Context.getExecutorService().execute(runnable);
 	}
 	
-	private void showPage(String formKey, Map<String, Object> inputData)
+	private void showForm(String formKey, Map<String, Object> inputData)
 	{
 		Boolean keepSameForm = (Boolean) inputData.get("keepSameForm");
 		
@@ -117,21 +116,21 @@ public class CoreFxController
 			}
 			catch(InstantiationException | IllegalAccessException | ClassNotFoundException | NoSuchMethodException | InvocationTargetException e)
 			{
-				// TODO: report for error
-				e.printStackTrace();
+				String errorCode = "C002-00001";
+				showErrorDialogAndWait(appIcon, errorCode, e, formKey);
 				return;
 			}
 			
-			Platform.runLater(() -> showPage(bodyFxController, inputData, guiState.getLanguage()));
+			Platform.runLater(() -> showForm(bodyFxController, inputData, guiState.getLanguage()));
 		}
 	}
 	
-	private BodyFxController showPage(BodyFxController bodyFxController, Map<String, Object> inputData, GuiLanguage language)
+	private BodyFxController showForm(BodyFxController bodyFxController, Map<String, Object> inputData, GuiLanguage language)
 	{
 		URL fxmlUrl = bodyFxController.getFxmlLocation();
 		if(fxmlUrl == null)
 		{
-			String errorCode = "E01-1001";
+			String errorCode = "C002-00002";
 			showErrorDialogAndWait(appIcon, errorCode, null, bodyFxController.getClass().getName());
 			return null;
 		}
@@ -145,7 +144,7 @@ public class CoreFxController
 		}
 		catch(MissingResourceException e)
 		{
-			String errorCode = "E01-1002";
+			String errorCode = "C002-00003";
 			showErrorDialogAndWait(appIcon, errorCode, e, bodyFxController.getClass().getName());
 			return null;
 		}
@@ -157,7 +156,7 @@ public class CoreFxController
 		}
 		catch(MissingResourceException e)
 		{
-			String errorCode = "E01-1003";
+			String errorCode = "C002-00004";
 			showErrorDialogAndWait(appIcon, errorCode, e, bodyFxController.getClass().getName());
 			return null;
 		}
@@ -169,7 +168,7 @@ public class CoreFxController
 		}
 		catch(MissingResourceException e)
 		{
-			String errorCode = "E01-1004";
+			String errorCode = "C002-00005";
 			showErrorDialogAndWait(appIcon, errorCode, e, bodyFxController.getClass().getName());
 			return null;
 		}
@@ -183,7 +182,7 @@ public class CoreFxController
 		}
 		catch(IOException e)
 		{
-			String errorCode = "E01-1005";
+			String errorCode = "C002-00006";
 			showErrorDialogAndWait(appIcon, errorCode, e, bodyFxController.getClass().getName());
 			return null;
 		}
@@ -201,27 +200,31 @@ public class CoreFxController
 		return controller;
 	}
 	
-	private void showErrorDialogAndWait(Image appIcon, String errorCode, Exception exception, String... additionalErrorText)
+	public void showErrorDialogAndWait(Image appIcon, String errorCode, Exception exception, String... additionalErrorText)
 	{
-		String contentText;
-		String title;
-		String headerText;
-		String buttonOkText;
-		String moreDetailsText;
-		String lessDetailsText;
-		
-		String errorText = String.format(errorCode + ": " + errorsBundle.getString(errorCode + ".internal"), (Object[]) additionalErrorText);
-		if(additionalErrorText != null) LOGGER.severe(errorText);
-		else LOGGER.severe(errorCode + ": " + errorsBundle.getString(errorCode + ".internal"));
-		contentText = errorsBundle.getString(errorCode);
-		title = resources.getString("dialog.error.title");
-		headerText = resources.getString("dialog.error.header");
-		buttonOkText = resources.getString("dialog.error.buttons.ok");
-		moreDetailsText = resources.getString("dialog.error.buttons.showErrorDetails");
-		lessDetailsText = resources.getString("dialog.error.buttons.hideErrorDetails");
-		
-		DialogUtils.showErrorDialog(appIcon, title, headerText, contentText, buttonOkText, moreDetailsText,
-		                            lessDetailsText, exception);
+		Platform.runLater(() ->
+		{
+			String logErrorText;
+			String guiErrorText;
+			String title;
+			String headerText;
+			String buttonOkText;
+			String moreDetailsText;
+			String lessDetailsText;
+			
+			logErrorText = String.format(errorCode + ": " + errorsBundle.getString(errorCode + ".internal"), (Object[]) additionalErrorText);
+			LOGGER.severe(logErrorText);
+			
+			guiErrorText = String.format(errorsBundle.getString(errorCode), (Object[]) additionalErrorText);
+			title = resources.getString("dialog.error.title");
+			headerText = resources.getString("dialog.error.header");
+			buttonOkText = resources.getString("dialog.error.buttons.ok");
+			moreDetailsText = resources.getString("dialog.error.buttons.showErrorDetails");
+			lessDetailsText = resources.getString("dialog.error.buttons.hideErrorDetails");
+			
+			DialogUtils.showErrorDialog(appIcon, title, headerText, guiErrorText, buttonOkText, moreDetailsText,
+			                            lessDetailsText, exception);
+		});
 	}
 	
 	/************* The following methods are used only while switching the language *************/
@@ -229,7 +232,7 @@ public class CoreFxController
 	
 	private boolean showOldPage(BodyFxController bodyFxController, Map<String, Object> inputData, GuiLanguage language, StateBundle stateBundle)
 	{
-		BodyFxController newBodyController = showPage(bodyFxController, inputData, language);
+		BodyFxController newBodyController = showForm(bodyFxController, inputData, language);
 		guiState.setBodyController(newBodyController);
 		
 		if(newBodyController instanceof LanguageSwitchingController) // should always be true
@@ -242,7 +245,7 @@ public class CoreFxController
 			if(newBodyController == null) LOGGER.severe("newBodyController = null");
 			else LOGGER.severe("newBodyController type = " + newBodyController.getClass().getName());
 			
-			String errorCode = "E01-1006";
+			String errorCode = "C002-00007";
 			showErrorDialogAndWait(appIcon, errorCode, null);
 			return false; // no success
 		}
@@ -260,7 +263,7 @@ public class CoreFxController
 		}
 		catch(MissingResourceException e)
 		{
-			String errorCode = "E01-1007";
+			String errorCode = "C002-00008";
 			showErrorDialogAndWait(appIcon, errorCode, e);
 			return;
 		}
@@ -272,7 +275,7 @@ public class CoreFxController
 		}
 		catch(MissingResourceException e)
 		{
-			String errorCode = "E01-1008";
+			String errorCode = "C002-00009";
 			showErrorDialogAndWait(appIcon, errorCode, e);
 			return;
 		}
@@ -284,7 +287,7 @@ public class CoreFxController
 		}
 		catch(MissingResourceException e)
 		{
-			String errorCode = "E01-1009";
+			String errorCode = "C002-00010";
 			showErrorDialogAndWait(appIcon, errorCode, e);
 			return;
 		}
@@ -292,7 +295,7 @@ public class CoreFxController
 		URL fxmlUrl = AppUtils.getResourceURL(FXML_FILE);
 		if(fxmlUrl == null)
 		{
-			String errorCode = "E01-1010";
+			String errorCode = "C002-00011";
 			showErrorDialogAndWait(appIcon, errorCode, null);
 			return;
 		}
@@ -312,7 +315,7 @@ public class CoreFxController
 		}
 		catch(IOException e)
 		{
-			String errorCode = "E01-1011";
+			String errorCode = "C002-00012";
 			showErrorDialogAndWait(appIcon, errorCode, e);
 			return;
 		}
@@ -363,7 +366,7 @@ public class CoreFxController
 			if(oldBodyController == null) LOGGER.severe("oldBodyController = null");
 			else LOGGER.severe("oldBodyController type = " + oldBodyController.getClass().getName());
 			
-			String errorCode = "E01-1012";
+			String errorCode = "C002-00013";
 			showErrorDialogAndWait(appIcon, errorCode, null);
 			return false; // no success
 		}

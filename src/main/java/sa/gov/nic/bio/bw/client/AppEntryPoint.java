@@ -154,6 +154,8 @@ public class AppEntryPoint extends Application
 	    }
 	    else
 	    {
+	    	// TODO: check if error code is attached to the response body. If so, show it
+		    
 		    String errorCode = "C001-00012";
 		    notifyPreloader(new ProgressMessage(null, errorCode, String.valueOf(httpCode)));
 		    return;

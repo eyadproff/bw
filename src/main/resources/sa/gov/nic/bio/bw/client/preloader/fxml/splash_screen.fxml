@@ -11,7 +11,6 @@
 <?import javafx.scene.control.ProgressBar?>
 <?import javafx.stage.Stage?>
 <Stage xmlns:fx="http://javafx.com/fxml" xmlns="http://javafx.com/javafx/8"
-       fx:controller="sa.gov.nic.bio.bw.client.preloader.SplashScreenFxController"
        height="300" width="620" alwaysOnTop="true">
     <icons>
         <Image url="@../images/app_icon.png"/>
@@ -22,7 +21,7 @@
                 <ImageView>
                     <Image url="@../images/splash_screen.jpg"/>
                 </ImageView>
-                <ProgressBar fx:id="progressBar" StackPane.alignment="BOTTOM_CENTER" maxWidth="Infinity">
+                <ProgressBar StackPane.alignment="BOTTOM_CENTER" maxWidth="Infinity">
                     <padding>
                         <Insets bottom="15.0"/>
                     </padding>

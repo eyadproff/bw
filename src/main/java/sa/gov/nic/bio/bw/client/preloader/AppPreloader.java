@@ -42,6 +42,11 @@ public class AppPreloader extends Preloader
 		}
 	}
 	
+	private static final String FXML_FILE = "sa/gov/nic/bio/bw/client/preloader/fxml/splash_screen.fxml";
+	private static final String APP_ICON_FILE = "sa/gov/nic/bio/bw/client/preloader/images/app_icon.png";
+	private static final String RB_LABELS_FILE = "sa/gov/nic/bio/bw/client/preloader/bundles/labels";
+	private static final String RB_ERRORS_FILE = "sa/gov/nic/bio/bw/client/preloader/bundles/errors";
+	
 	private static final Logger LOGGER = Logger.getLogger(AppPreloader.class.getName());
 	private ResourceBundle errorsBundle;
 	private ResourceBundle labelsBundle;
@@ -56,7 +61,7 @@ public class AppPreloader extends Preloader
 		
 		try
 		{
-			errorsBundle = AppUtils.getResourceBundle(SplashScreenFxController.RB_ERRORS_FILE, null);
+			errorsBundle = AppUtils.getResourceBundle(RB_ERRORS_FILE, null);
 		}
 		catch(MissingResourceException e)
 		{
@@ -74,7 +79,7 @@ public class AppPreloader extends Preloader
 		
 		try
 		{
-			labelsBundle = AppUtils.getResourceBundle(SplashScreenFxController.RB_LABELS_FILE, null);
+			labelsBundle = AppUtils.getResourceBundle(RB_LABELS_FILE, null);
 		}
 		catch(MissingResourceException e)
 		{
@@ -90,7 +95,7 @@ public class AppPreloader extends Preloader
 			return;
 		}
 		
-		InputStream appIconStream = AppUtils.getResourceAsStream(SplashScreenFxController.APP_ICON_FILE);
+		InputStream appIconStream = AppUtils.getResourceAsStream(APP_ICON_FILE);
 		if(appIconStream == null)
 		{
 			String errorCode = "C001-00003";
@@ -106,7 +111,7 @@ public class AppPreloader extends Preloader
 		}
 		appIcon = new Image(appIconStream);
 		
-		fxmlUrl = AppUtils.getResourceURL(SplashScreenFxController.FXML_FILE);
+		fxmlUrl = AppUtils.getResourceURL(FXML_FILE);
 		if(fxmlUrl == null)
 		{
 			String errorCode = "C001-00004";
@@ -174,7 +179,7 @@ public class AppPreloader extends Preloader
 			
 			String errorCode = progressMessage.getErrorCode();
 			Exception exception = progressMessage.getException();
-			Object[] errorMessageValues = progressMessage.getErrorMessageValues();
+			Object[] errorMessageValues = progressMessage.getAdditionalErrorText();
 			
 			showErrorDialogAndWait(appIcon, errorCode, exception, errorMessageValues);
 		}
