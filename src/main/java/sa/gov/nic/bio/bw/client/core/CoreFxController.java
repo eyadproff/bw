@@ -51,17 +51,19 @@ public class CoreFxController
 	private ResourceBundle errorsBundle;
 	private ResourceBundle messagesBundle;
 	private Image appIcon;
+	private String windowTitle;
 	
 	private GuiState guiState = new GuiState();
 	private UserData userData = new UserData();
 	private BusinessData businessData = new BusinessData(); // TODO: fill it at startup?
 	
-	public void passInitialResources(ResourceBundle labelsBundle, ResourceBundle errorsBundle, ResourceBundle messagesBundle, Image appIcon)
+	public void passInitialResources(ResourceBundle labelsBundle, ResourceBundle errorsBundle, ResourceBundle messagesBundle, Image appIcon, String windowTitle)
 	{
 		this.labelsBundle = labelsBundle;
 		this.errorsBundle = errorsBundle;
 		this.messagesBundle = messagesBundle;
 		this.appIcon = appIcon;
+		this.windowTitle = windowTitle;
 	}
 	
 	public GuiState getGuiState(){return guiState;}
@@ -88,10 +90,7 @@ public class CoreFxController
 			Context.getExecutorService().execute(runnable);
 		}
 		
-		String version = Context.getConfigManager().getProperty("app.version");
-		String title = labelsBundle.getString("window.title") + " " + version;
-		title = AppUtils.replaceNumbers(title, Locale.getDefault());
-		primaryStage.setTitle(title);
+		primaryStage.setTitle(windowTitle);
 	}
 	
 	public void submitFormTask(Map<String, String> uiDataMap)
@@ -298,6 +297,10 @@ public class CoreFxController
 			return;
 		}
 		
+		String version = Context.getConfigManager().getProperty("app.version");
+		String title = labelsBundle.getString("window.title") + " " + version;
+		windowTitle = AppUtils.replaceNumbers(title, Locale.getDefault());
+		
 		FXMLLoader newStageLoader = new FXMLLoader(fxmlUrl, labelsBundle);
 		
 		Stage oldStage = primaryStage;
@@ -328,7 +331,7 @@ public class CoreFxController
 		
 		CoreFxController newCoreFxController = newStageLoader.getController();
 		newCoreFxController.guiState = guiState;
-		newCoreFxController.passInitialResources(labelsBundle, errorsBundle, messagesBundle, appIcon);
+		newCoreFxController. passInitialResources(labelsBundle, errorsBundle, messagesBundle, appIcon, windowTitle);
 		newCoreFxController.guiState.setLanguage(toLanguage);
 		boolean success = newCoreFxController.applyStateBundle(oldState);
 		

@@ -18,7 +18,10 @@ import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
 import javafx.stage.StageStyle;
-import sa.gov.nic.bio.bw.client.core.utils.*;
+import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
+import sa.gov.nic.bio.bw.client.core.utils.DialogUtils;
+import sa.gov.nic.bio.bw.client.core.utils.GuiLanguage;
+import sa.gov.nic.bio.bw.client.core.utils.ProgressMessage;
 
 
 public class AppPreloader extends Preloader
@@ -34,7 +37,7 @@ public class AppPreloader extends Preloader
 		}
 		catch(IOException e)
 		{
-			Logger.getAnonymousLogger().severe("Could not load default logging.properties file");
+			Logger.getAnonymousLogger().severe("Could not load logging.properties file");
 			Logger.getAnonymousLogger().severe(e.getMessage());
 		}
 	}
@@ -57,7 +60,7 @@ public class AppPreloader extends Preloader
 		}
 		catch(MissingResourceException e)
 		{
-			String errorCode = "E00-1000";
+			String errorCode = "C001-00001";
 			
 			Platform.runLater(() ->
 			{
@@ -75,7 +78,7 @@ public class AppPreloader extends Preloader
 		}
 		catch(MissingResourceException e)
 		{
-			String errorCode = "E00-1001";
+			String errorCode = "C001-00002";
 			
 			Platform.runLater(() ->
 			{
@@ -90,7 +93,7 @@ public class AppPreloader extends Preloader
 		InputStream appIconStream = AppUtils.getResourceAsStream(SplashScreenFxController.APP_ICON_FILE);
 		if(appIconStream == null)
 		{
-			String errorCode = "E00-1002";
+			String errorCode = "C001-00003";
 			
 			Platform.runLater(() ->
 			{
@@ -106,7 +109,7 @@ public class AppPreloader extends Preloader
 		fxmlUrl = AppUtils.getResourceURL(SplashScreenFxController.FXML_FILE);
 		if(fxmlUrl == null)
 		{
-			String errorCode = "E00-1003";
+			String errorCode = "C001-00004";
 			
 			Platform.runLater(() ->
             {
@@ -131,7 +134,7 @@ public class AppPreloader extends Preloader
 		}
 		catch(IOException e)
 		{
-			String errorCode = "E00-1004";
+			String errorCode = "C001-00005";
 			showErrorDialogAndWait(appIcon, errorCode, e);
 			return;
 		}
@@ -171,12 +174,13 @@ public class AppPreloader extends Preloader
 			
 			String errorCode = progressMessage.getErrorCode();
 			Exception exception = progressMessage.getException();
+			Object[] errorMessageValues = progressMessage.getErrorMessageValues();
 			
-			showErrorDialogAndWait(appIcon, errorCode, exception);
+			showErrorDialogAndWait(appIcon, errorCode, exception, errorMessageValues);
 		}
 	}
 	
-	private void showErrorDialogAndWait(Image appIcon, String errorCode, Exception exception)
+	private void showErrorDialogAndWait(Image appIcon, String errorCode, Exception exception, Object... errorMessageValues)
 	{
 		String contentText;
 		String title;
@@ -190,11 +194,12 @@ public class AppPreloader extends Preloader
 			String message = errorCode + ": " + errorsBundle.getString(errorCode + ".internal");
 			LOGGER.log(Level.SEVERE, message, exception);
 			contentText = errorsBundle.getString(errorCode + ".ar") + " \n\n " + errorsBundle.getString(errorCode + ".en");
+			if(errorMessageValues != null) contentText = String.format(contentText, errorMessageValues);
 		}
 		else // default text
 		{
 			LOGGER.severe("\"errorsBundle\" resource bundle is missing!");
-			contentText = "رمز الخطأ: E00-1000" + " \n\n " + "Error code: E00-1000";
+			contentText = "رمز الخطأ: C001-00001" + " \n\n " + "Error code: C001-00001";
 		}
 		
 		if(labelsBundle != null)

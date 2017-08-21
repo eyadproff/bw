@@ -1,6 +1,7 @@
 package sa.gov.nic.bio.bw.client;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
@@ -21,9 +22,9 @@ import sa.gov.nic.bio.bw.client.core.workflow.WorkflowManager;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
-import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.util.List;
+import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.concurrent.ExecutorService;
@@ -46,6 +47,7 @@ public class AppEntryPoint extends Application
 	
 	private Image appIcon;
 	private URL fxmlUrl;
+	private String windowTitle;
 	
 	private boolean successfulInit = false;
 	private GuiLanguage initialLanguage = GuiLanguage.ARABIC; // TODO: make it configurable from properties file
@@ -61,7 +63,7 @@ public class AppEntryPoint extends Application
 	    }
 	    catch(IOException e)
 	    {
-		    String errorCode = "E00-1005";
+		    String errorCode = "C001-00006";
 		    notifyPreloader(new ProgressMessage(e, errorCode));
 		    return;
 	    }
@@ -74,7 +76,7 @@ public class AppEntryPoint extends Application
 	    }
 	    catch(Exception e)
 	    {
-		    String errorCode = "E00-1006";
+		    String errorCode = "C001-00007";
 		    notifyPreloader(new ProgressMessage(e, errorCode));
 		    return;
 	    }
@@ -85,7 +87,7 @@ public class AppEntryPoint extends Application
 	    }
 	    catch(ActivitiIllegalArgumentException e)
 	    {
-		    String errorCode = "E00-1007";
+		    String errorCode = "C001-00008";
 		    notifyPreloader(new ProgressMessage(e, errorCode));
 		    return;
 	    }
@@ -93,6 +95,7 @@ public class AppEntryPoint extends Application
 	    String webserviceBaseUrl = configManager.getProperty("webservice.baseUrl");
 	    if(webserviceBaseUrl == null) LOGGER.warning("webserviceBaseUrl is null!");
 	
+	    // retrieve the codebase URL from the JNLP
 	    try
 	    {
 		    Method lookupMethod = Class.forName("javax.jnlp.ServiceManager").getMethod("lookup", String.class);
@@ -108,7 +111,7 @@ public class AppEntryPoint extends Application
 	
 	    if(webserviceBaseUrl == null)
 	    {
-		    String errorCode = "E00-1008";
+		    String errorCode = "C001-00009";
 		    notifyPreloader(new ProgressMessage(null, errorCode));
 		    return;
 	    }
@@ -126,16 +129,10 @@ public class AppEntryPoint extends Application
 	    {
 		    response = hijriCalendarDataLookupBeanCall.execute();
 	    }
-	    catch(SocketTimeoutException e)
+	    catch(Exception e)
 	    {
-		    e.printStackTrace();
-		    // TODO: report error
-		    return;
-	    }
-	    catch(IOException e)
-	    {
-	    	e.printStackTrace();
-		    // TODO: report error
+		    String errorCode = "C001-00010";
+		    notifyPreloader(new ProgressMessage(e, errorCode));
 		    return;
 	    }
 	
@@ -150,14 +147,15 @@ public class AppEntryPoint extends Application
 		    }
 		    catch(Exception e)
 		    {
-			    e.printStackTrace();
-			    // TODO: report warning
+			    String errorCode = "C001-00011";
+			    notifyPreloader(new ProgressMessage(e, errorCode));
+			    return;
 		    }
 	    }
 	    else
 	    {
-		    System.out.println("httpCode = " + httpCode);
-		    // TODO: report error
+		    String errorCode = "C001-00012";
+		    notifyPreloader(new ProgressMessage(null, errorCode, String.valueOf(httpCode)));
 		    return;
 	    }
 	
@@ -167,7 +165,7 @@ public class AppEntryPoint extends Application
 	    }
 	    catch(MissingResourceException e)
 	    {
-		    String errorCode = "E00-1009";
+		    String errorCode = "C001-00013";
 		    notifyPreloader(new ProgressMessage(e, errorCode));
 		    return;
 	    }
@@ -178,7 +176,7 @@ public class AppEntryPoint extends Application
 	    }
 	    catch(MissingResourceException e)
 	    {
-		    String errorCode = "E00-1010";
+		    String errorCode = "C001-00014";
 		    notifyPreloader(new ProgressMessage(e, errorCode));
 		    return;
 	    }
@@ -189,7 +187,7 @@ public class AppEntryPoint extends Application
 	    }
 	    catch(MissingResourceException e)
 	    {
-		    String errorCode = "E00-1011";
+		    String errorCode = "C001-00015";
 		    notifyPreloader(new ProgressMessage(e, errorCode));
 		    return;
 	    }
@@ -197,7 +195,7 @@ public class AppEntryPoint extends Application
 	    InputStream appIconStream = AppUtils.getResourceAsStream(CoreFxController.APP_ICON_FILE);
 	    if(appIconStream == null)
 	    {
-		    String errorCode = "E00-1012";
+		    String errorCode = "C001-00016";
 		    notifyPreloader(new ProgressMessage(null, errorCode));
 		    return;
 	    }
@@ -206,10 +204,33 @@ public class AppEntryPoint extends Application
 	    fxmlUrl = AppUtils.getResourceURL(CoreFxController.FXML_FILE);
 	    if(fxmlUrl == null)
 	    {
-		    String errorCode = "E00-1013";
+		    String errorCode = "C001-00017";
 		    notifyPreloader(new ProgressMessage(null, errorCode));
 		    return;
 	    }
+	
+	    String version = configManager.getProperty("app.version");
+	    
+	    if(version == null)
+	    {
+		    String errorCode = "C001-00018";
+		    notifyPreloader(new ProgressMessage(null, errorCode));
+		    return;
+	    }
+	
+	    String title;
+	    try
+	    {
+		    title = labelsBundle.getString("window.title") + " " + version;
+	    }
+	    catch(MissingResourceException e)
+	    {
+		    String errorCode = "C001-00019";
+		    notifyPreloader(new ProgressMessage(e, errorCode));
+		    return;
+	    }
+	    
+	    windowTitle = AppUtils.replaceNumbers(title, Locale.getDefault());
 	    
 	    successfulInit = true;
 	    LOGGER.exiting(AppEntryPoint.class.getName(), "init()");
@@ -231,13 +252,13 @@ public class AppEntryPoint extends Application
 	    }
 	    catch(IOException e)
 	    {
-		    String errorCode = "E00-1014";
+		    String errorCode = "C001-00020";
 		    notifyPreloader(new ProgressMessage(e, errorCode));
 		    return;
 	    }
 	    
 	    CoreFxController coreFxController = coreStageLoader.getController();
-	    coreFxController.passInitialResources(labelsBundle, errorsBundle, messagesBundle, appIcon);
+	    coreFxController.passInitialResources(labelsBundle, errorsBundle, messagesBundle, appIcon, windowTitle);
 	    coreFxController.getGuiState().setLanguage(initialLanguage);
 	    
 	    primaryStage.getScene().setNodeOrientation(initialLanguage.getNodeOrientation());
@@ -246,7 +267,7 @@ public class AppEntryPoint extends Application
 	
 	    notifyPreloader(ProgressMessage.SUCCESSFULLY_DONE);
 	
-	    primaryStage.setOnCloseRequest(event -> System.exit(0)); // TODO: temporary
+	    primaryStage.setOnCloseRequest(event -> Platform.exit());
 	    primaryStage.show();
 	    LOGGER.info("The main window is shown");
 	

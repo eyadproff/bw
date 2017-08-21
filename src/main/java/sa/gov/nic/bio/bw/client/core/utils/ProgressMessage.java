@@ -2,6 +2,7 @@ package sa.gov.nic.bio.bw.client.core.utils;
 
 import javafx.application.Preloader;
 
+import java.util.Arrays;
 import java.util.Objects;
 
 /**
@@ -17,6 +18,7 @@ public class ProgressMessage implements Preloader.PreloaderNotification
 	private boolean failed;
 	private Exception exception;
 	private String errorCode;
+	private String[] errorMessageValues;
 	
 	public ProgressMessage(double progress, String message)
 	{
@@ -26,11 +28,12 @@ public class ProgressMessage implements Preloader.PreloaderNotification
 		this.failed = false;
 	}
 	
-	public ProgressMessage(Exception exception, String errorCode)
+	public ProgressMessage(Exception exception, String errorCode, String... errorMessageValues)
 	{
 		this.failed = true;
 		this.exception = exception;
 		this.errorCode = errorCode;
+		this.errorMessageValues = errorMessageValues;
 	}
 	
 	private ProgressMessage(boolean done)
@@ -44,22 +47,22 @@ public class ProgressMessage implements Preloader.PreloaderNotification
 	public boolean isFailed(){return failed;}
 	public Exception getException(){return exception;}
 	public String getErrorCode(){return errorCode;}
+	public String[] getErrorMessageValues(){ return errorMessageValues; }
 	
 	@Override
 	public boolean equals(Object o)
 	{
 		if(this == o) return true;
 		if(o == null || getClass() != o.getClass()) return false;
-		ProgressMessage message1 = (ProgressMessage) o;
-		return Double.compare(message1.progress, progress) == 0 && done == message1.done &&
-			   failed == message1.failed && Objects.equals(message, message1.message) &&
-			   Objects.equals(exception, message1.exception) && Objects.equals(errorCode, message1.errorCode);
+		ProgressMessage that = (ProgressMessage) o;
+		return Double.compare(that.progress, progress) == 0 && done == that.done && failed == that.failed && Objects.equals(message, that.message) && Objects.equals(exception, that.exception) && Objects.equals(errorCode, that.errorCode) && Arrays.equals(errorMessageValues, that.errorMessageValues);
 	}
 	
 	@Override
 	public int hashCode()
 	{
-		return Objects.hash(progress, message, done, failed, exception, errorCode);
+		return Objects.hash(progress, message, done, failed, exception, errorCode,
+		                    errorMessageValues);
 	}
 	
 	@Override
@@ -67,6 +70,7 @@ public class ProgressMessage implements Preloader.PreloaderNotification
 	{
 		return "ProgressMessage{" + "progress=" + progress + ", message='" + message + '\'' +
 			   ", done=" + done + ", failed=" + failed + ", exception=" + exception +
-			   ", errorCode='" + errorCode + '\'' + '}';
+			   ", errorCode='" + errorCode + '\'' + ", errorMessageValues=" +
+			   Arrays.toString(errorMessageValues) + '}';
 	}
 }
