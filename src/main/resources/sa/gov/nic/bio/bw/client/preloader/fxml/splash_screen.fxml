@@ -23,7 +23,7 @@
                 </ImageView>
                 <ProgressBar StackPane.alignment="BOTTOM_CENTER" maxWidth="Infinity">
                     <padding>
-                        <Insets bottom="15.0"/>
+                        <Insets bottom="15.0" right="3.0" left="3.0"/>
                     </padding>
                 </ProgressBar>
             </StackPane>

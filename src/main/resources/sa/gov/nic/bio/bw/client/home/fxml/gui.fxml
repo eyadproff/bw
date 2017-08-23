@@ -13,11 +13,6 @@
 <NotificationPane xmlns:fx="http://javafx.com/fxml" xmlns="http://javafx.com/javafx/8"
            fx:controller="sa.gov.nic.bio.bw.client.home.HomePaneFxController"
            fx:id="notificationPane" stylesheets="@../css/home.css">
-    <graphic>
-        <ImageView>
-            <Image url="@/sa/gov/nic/bio/bw/client/core/images/notification-pane-warning.png"/>
-        </ImageView>
-    </graphic>
     <content>
         <VBox alignment="CENTER">
             <HBox alignment="CENTER">

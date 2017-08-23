@@ -31,7 +31,7 @@
             </HBox>
             <VBox alignment="CENTER" spacing="10">
                 <Button fx:id="btnCancelLatent" text="%button.cancelLatent" onAction="#onCancelLatentButtonClicked"/>
-                <ProgressIndicator fx:id="piCancelLatent" prefHeight="25.0" prefWidth="25.0" visible="false"/>
+                <ProgressIndicator fx:id="piCancelLatent" prefHeight="25.0" prefWidth="25.0" visible="false" managed="false"/>
             </VBox>
         </VBox>
     </content>

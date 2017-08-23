@@ -1,6 +1,5 @@
 package sa.gov.nic.bio.bw.client.cancellatent;
 
-import javafx.application.Platform;
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.BooleanProperty;
 import javafx.event.ActionEvent;
@@ -8,14 +7,10 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TextField;
-import retrofit2.Call;
-import retrofit2.Response;
-import sa.gov.nic.bio.bw.client.cancellatent.webservice.CancelLatentAPI;
 import sa.gov.nic.bio.bw.client.core.BodyFxControllerBase;
-import sa.gov.nic.bio.bw.client.core.Context;
 
-import java.io.IOException;
-import java.util.Random;
+import java.util.HashMap;
+import java.util.Map;
 
 public class CancelLatentPaneFxController extends BodyFxControllerBase
 {
@@ -33,8 +28,6 @@ public class CancelLatentPaneFxController extends BodyFxControllerBase
 		
 		btnCancelLatent.disableProperty().bind(idNumberEmptyBinding.or(
 											latentNumberEmptyBinding).or(progressVisibility));
-		txtIdNumber.disableProperty().bind(progressVisibility);
-		txtLatentNumber.disableProperty().bind(progressVisibility);
 	}
 	
 	@Override
@@ -42,6 +35,32 @@ public class CancelLatentPaneFxController extends BodyFxControllerBase
 	{
 		// request focus once the scene is attached to txtUsername
 		txtIdNumber.sceneProperty().addListener((observable, oldValue, newValue) -> txtIdNumber.requestFocus());
+	}
+	
+	@Override
+	public void onReturnFromTask()
+	{
+		disableUiControls(false);
+		
+		Boolean successResponse = (Boolean) inputData.get("successResponse");
+		if(successResponse != null && successResponse)
+		{
+			String idNumber = txtIdNumber.getText();
+			String latentNumber = txtLatentNumber.getText();
+			
+			Boolean resultBean = (Boolean) inputData.get("resultBean");
+			if(resultBean != null && resultBean)
+			{
+				String message = String.format(messagesBundle.getString("cancelLatent.success"), latentNumber, idNumber);
+				showSuccessNotification(message);
+			}
+			else
+			{
+				String message = String.format(messagesBundle.getString("cancelLatent.failure"), latentNumber, idNumber);
+				showWarningNotification(message);
+			}
+		}
+		else super.onReturnFromTask();
 	}
 	
 	@FXML
@@ -52,55 +71,34 @@ public class CancelLatentPaneFxController extends BodyFxControllerBase
 	
 	public void onCancelLatentButtonClicked(ActionEvent actionEvent)
 	{
-		// TODO: confirmation dialog
+		String idNumber = txtIdNumber.getText();
+		String latentNumber = txtLatentNumber.getText();
+		
+		String headerText = messagesBundle.getString("cancelLatent.confirmation.header");
+		String contentText = String.format(messagesBundle.getString("cancelLatent.confirmation.message"), latentNumber, idNumber);
+		boolean confirmed = coreFxController.showConfirmationDialogAndWait(headerText, contentText);
+		
+		if(!confirmed) return;
 		
 		hideNotification();
-		piCancelLatent.setVisible(true);
+		disableUiControls(true);
 		
-		Context.getExecutorService().execute(() ->
-		{
-			CancelLatentAPI api = Context.getWebserviceManager().getApi(CancelLatentAPI.class);
-			Call<Boolean> call = api.cancelLatent();
-			Response<Boolean> response;
-			try
-			{
-				response = call.execute();
-			}
-			catch(IOException e)
-			{
-				// TODO: report error
-				e.printStackTrace();
-				Platform.runLater(() -> piCancelLatent.setVisible(false));
-				return;
-			}
-			
-			int statusCode = response.code();
-			System.out.println("statusCode = " + statusCode);
-			
-			if(statusCode == 200)
-			{
-				Boolean result = response.body();
-				
-				if(result != null && result)
-				{
-					showSuccessNotification("Success");
-				}
-				else
-				{
-					showWarningNotification("User has no latent");
-				}
-			}
-			else if(statusCode == 498)
-			{
-				if(new Random().nextBoolean()) showWarningNotification("Wrong id");
-				else showSuccessNotification("Correct");
-			}
-			else if(statusCode == 404)
-			{
-			
-			}
-			
-			Platform.runLater(() -> piCancelLatent.setVisible(false));
-		});
+		Map<String, String> uiDataMap = new HashMap<>();
+		uiDataMap.put("idNumber", idNumber);
+		uiDataMap.put("latentNumber", latentNumber);
+		
+		coreFxController.submitFormTask(uiDataMap);
+	}
+	
+	private void disableUiControls(boolean bool)
+	{
+		txtIdNumber.setDisable(bool);
+		txtLatentNumber.setDisable(bool);
+		
+		piCancelLatent.setVisible(bool);
+		piCancelLatent.setManaged(bool);
+		
+		btnCancelLatent.setManaged(!bool);
+		btnCancelLatent.setVisible(!bool);
 	}
 }

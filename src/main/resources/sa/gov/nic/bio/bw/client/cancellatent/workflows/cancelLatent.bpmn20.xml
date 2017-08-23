@@ -13,11 +13,31 @@
 
         <userTask id="dataEntry" activiti:formKey="sa.gov.nic.bio.bw.client.cancellatent.CancelLatentPaneFxController">
             <extensionElements>
-                <activiti:formProperty id="menuId" type="string" required="false"/>
+                <activiti:formProperty id="menuId" type="string"/>
+                <activiti:formProperty id="idNumber" type="string"/>
+                <activiti:formProperty id="latentNumber" type="string"/>
             </extensionElements>
         </userTask>
 
-        <sequenceFlow sourceRef="dataEntry" targetRef="endEvent"/>
+        <sequenceFlow sourceRef="dataEntry" targetRef="menuSelectionCheck"/>
+
+        <exclusiveGateway id="menuSelectionCheck" name="Menu Selection Check"/>
+
+        <sequenceFlow sourceRef="menuSelectionCheck" targetRef="endEvent">
+            <conditionExpression xsi:type="tFormalExpression">
+                <![CDATA[
+                    ${execution.getVariable('menuId') != null}
+                ]]>
+            </conditionExpression>
+        </sequenceFlow>
+
+        <!-- default flow -->
+        <sequenceFlow sourceRef="menuSelectionCheck" targetRef="cancelLatentService"/>
+
+        <serviceTask id="cancelLatentService" name="Calling CancelLatent API"
+                     activiti:class="sa.gov.nic.bio.bw.client.cancellatent.workflow.CancelLatentService"/>
+
+        <sequenceFlow sourceRef="cancelLatentService" targetRef="dataEntry"/>
 
         <endEvent id="endEvent" />
 

@@ -26,22 +26,6 @@ import sa.gov.nic.bio.bw.client.core.utils.ProgressMessage;
 
 public class AppPreloader extends Preloader
 {
-	static
-	{
-		Locale.setDefault(GuiLanguage.ARABIC.getLocale());
-		
-		InputStream inputStream = AppUtils.getResourceAsStream("sa/gov/nic/bio/bw/client/core/config/logging.properties");
-		try
-		{
-			LogManager.getLogManager().readConfiguration(inputStream);
-		}
-		catch(IOException e)
-		{
-			Logger.getAnonymousLogger().severe("Could not load logging.properties file");
-			Logger.getAnonymousLogger().severe(e.getMessage());
-		}
-	}
-	
 	private static final String FXML_FILE = "sa/gov/nic/bio/bw/client/preloader/fxml/splash_screen.fxml";
 	private static final String APP_ICON_FILE = "sa/gov/nic/bio/bw/client/preloader/images/app_icon.png";
 	private static final String RB_LABELS_FILE = "sa/gov/nic/bio/bw/client/preloader/bundles/labels";
@@ -57,6 +41,19 @@ public class AppPreloader extends Preloader
 	@Override
 	public void init() throws Exception
 	{
+		Locale.setDefault(GuiLanguage.ARABIC.getLocale());
+		
+		InputStream inputStream = AppUtils.getResourceAsStream("sa/gov/nic/bio/bw/client/core/config/logging.properties");
+		try
+		{
+			LogManager.getLogManager().readConfiguration(inputStream);
+		}
+		catch(IOException e)
+		{
+			Logger.getAnonymousLogger().severe("Could not load logging.properties file");
+			Logger.getAnonymousLogger().severe(e.getMessage());
+		}
+		
 		CountDownLatch latch = new CountDownLatch(1); // used to wait for the dialog exit before leaving init() method
 		
 		try
@@ -179,13 +176,13 @@ public class AppPreloader extends Preloader
 			
 			String errorCode = progressMessage.getErrorCode();
 			Exception exception = progressMessage.getException();
-			Object[] errorMessageValues = progressMessage.getAdditionalErrorText();
+			String[] errorMessageValues = progressMessage.getAdditionalErrorText();
 			
 			showErrorDialogAndWait(appIcon, errorCode, exception, errorMessageValues);
 		}
 	}
 	
-	private void showErrorDialogAndWait(Image appIcon, String errorCode, Exception exception, Object... errorMessageValues)
+	private void showErrorDialogAndWait(Image appIcon, String errorCode, Exception exception, String... additionalErrorText)
 	{
 		String contentText;
 		String title;
@@ -194,12 +191,19 @@ public class AppPreloader extends Preloader
 		String moreDetailsText;
 		String lessDetailsText;
 		
-		if(errorsBundle != null)
+		if(errorCode != null && !errorCode.startsWith("C001")) // most likely C002 error during calling webservices API during startup. TODO: change this later
+		{
+			String message = String.format(errorsBundle.getString("C000-00000.internal"), errorCode);
+			LOGGER.log(Level.SEVERE, message, exception);
+			contentText = String.format(errorsBundle.getString("C000-00000.ar"), errorCode) + " \n\n " + String.format(errorsBundle.getString("C000-00000.en"), errorCode);
+		}
+		else if(errorsBundle != null)
 		{
 			String message = errorCode + ": " + errorsBundle.getString(errorCode + ".internal");
+			if(additionalErrorText != null) message = String.format(message, (Object[]) additionalErrorText);
 			LOGGER.log(Level.SEVERE, message, exception);
 			contentText = errorsBundle.getString(errorCode + ".ar") + " \n\n " + errorsBundle.getString(errorCode + ".en");
-			if(errorMessageValues != null) contentText = String.format(contentText, errorMessageValues);
+			if(additionalErrorText != null) contentText = String.format(contentText, (Object[]) additionalErrorText);
 		}
 		else // default text
 		{
@@ -224,7 +228,7 @@ public class AppPreloader extends Preloader
 			lessDetailsText = "إخفاء تفاصيل الخطأ" + " - " + "Hide error details";
 		}
 		
-		DialogUtils.showErrorDialog(appIcon, title, headerText, contentText, buttonOkText, moreDetailsText, lessDetailsText, exception);
+		DialogUtils.showErrorDialog(appIcon, title, headerText, contentText, buttonOkText, moreDetailsText, lessDetailsText, exception, true);
 		
 		Platform.exit();
 		LOGGER.severe("Exiting the application due to an error during the startup!");

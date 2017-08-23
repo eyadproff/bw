@@ -19,20 +19,24 @@ public class LogoutService implements JavaDelegate
 	@Override
 	public void execute(DelegateExecution execution)
 	{
-		String token = (String) execution.getVariable("token");
+		String token = Context.getUserData().getLoginBean().getUserToken();
 		
 		LOGGER.fine("token = " + token);
 		
-		LogoutAPI logoutAPI = Context.getWebserviceManager().getApi(LogoutAPI.class);
-		Call<Void> apiCall = logoutAPI.logout(token);
-		ApiResponse<Void> response = Context.getWebserviceManager().executeApi(apiCall);
-		
-		if(!response.isSuccess())
+		// we don't care about logout response, so just make it asynchronous
+		Context.getExecutorService().execute(() ->
 		{
-			int httpCode = response.getHttpCode();
-			String errorCode = response.getErrorCode();
-			LOGGER.warning("logout webservice returns non-200 response (httpCode = " + httpCode + ", errorCode = " + errorCode + ")");
-		}
+			LogoutAPI logoutAPI = Context.getWebserviceManager().getApi(LogoutAPI.class);
+			Call<Void> apiCall = logoutAPI.logout(token);
+			ApiResponse<Void> response = Context.getWebserviceManager().executeApi(apiCall);
+			
+			if(response.getHttpCode() != 200)
+			{
+				int httpCode = response.getHttpCode();
+				String errorCode = response.getErrorCode();
+				LOGGER.warning("logout webservice returns non-200 response (httpCode = " + httpCode + ", errorCode = " + errorCode + ")");
+			}
+		});
 		
 		LOGGER.info("the user is logged out");
 	}

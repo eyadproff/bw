@@ -2,6 +2,7 @@ package sa.gov.nic.bio.bw.client.core.workflow;
 
 import org.activiti.engine.*;
 import org.activiti.engine.repository.DeploymentBuilder;
+import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import sa.gov.nic.bio.bw.client.core.interfaces.UiProxy;
@@ -16,17 +17,19 @@ import java.util.logging.Logger;
 public class WorkflowManager
 {
 	private static final Logger LOGGER = Logger.getLogger(WorkflowManager.class.getName());
+	private ProcessEngine processEngine;
 	private RepositoryService repositoryService;
 	private RuntimeService runtimeService;
 	private IdentityService identityService;
 	private TaskService taskService;
 	private FormService formService;
+	private ProcessInstance processInstance;
 	private String currentTaskId;
 	
 	public void load(List<String> workflowFilePaths)
 	{
 		ProcessEngineConfiguration configuration = ProcessEngineConfiguration.createStandaloneInMemProcessEngineConfiguration();
-		ProcessEngine processEngine = configuration.buildProcessEngine();
+		processEngine = configuration.buildProcessEngine();
 		
 		repositoryService = processEngine.getRepositoryService();
 		runtimeService = processEngine.getRuntimeService();
@@ -46,7 +49,7 @@ public class WorkflowManager
 		deploymentBuilder.deploy();
 		LOGGER.info("Deployment is completed successfully");
 		
-		ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("coreProcess");
+		processInstance = runtimeService.startProcessInstanceByKey("coreProcess");
 		LOGGER.info("The workflow process \"" + processInstance.getProcessDefinitionName() + "\" is started");
 	}
 	
@@ -59,6 +62,14 @@ public class WorkflowManager
 	{
 		formService.submitTaskFormData(currentTaskId, uiDataMap); // executes as taskService.complete(taskId)
 		executeUserTask(uiProxy);
+	}
+	
+	public void raiseSignalEvent(String menuId)
+	{
+		/*runtimeService.createExecutionQuery()
+				.list().stream().peek(e -> System.out.println(e.getId())).forEach(e -> runtimeService.signalEventReceived("The Signal", e.getId()));*/
+		//runtimeService.setVariable(execution.getId(), "menuId", menuId);
+		runtimeService.signalEventReceived("The Signal");
 	}
 	
 	private void executeUserTask(UiProxy uiProxy)

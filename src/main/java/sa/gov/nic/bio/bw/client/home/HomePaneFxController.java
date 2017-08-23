@@ -46,6 +46,7 @@ public class HomePaneFxController extends BodyFxControllerBase
 		coreFxController.getMenuPaneController().showRootPane();
 		
 		LoginBean loginBean = (LoginBean) inputData.get("resultBean");
+		Context.getUserData().setLoginBean(loginBean);
 		LoginBean.UserInfo userInfo = loginBean.getUserInfo();
 		
 		String username = userInfo.getUserName();
@@ -68,7 +69,7 @@ public class HomePaneFxController extends BodyFxControllerBase
 		long loginTime = System.currentTimeMillis();
 		long lastLogonTime = userInfo.getLastLogonTime();
 		long lastFailedLoginTime = userInfo.getBadPasswordTime();
-		int failedLoginCount = userInfo.getBadPasswordTime();
+		int failedLoginCount = userInfo.getBadPasswordCount();
 		long lastPasswordChangeTime = userInfo.getPasswordLastSet();
 		long passwordExpirationTime = userInfo.getAccountExperiyDate();
 		
@@ -80,7 +81,7 @@ public class HomePaneFxController extends BodyFxControllerBase
 		setLabelsText(passwordExpirationTime, true, lblPasswordExpirationTimeText, lblPasswordExpirationTime);
 		
 		List<String> userRoles = Arrays.asList(loginBean.getUserInfo().getOriginalStringRoles());
-		coreFxController.getUserData().addRoles(userRoles);
+		Context.getUserData().addRoles(userRoles);
 		
 		List<String> allMenus = new ArrayList<>();
 		
@@ -88,7 +89,8 @@ public class HomePaneFxController extends BodyFxControllerBase
 		if(topMenus == null)
 		{
 			String errorCode = "C004-00001";
-			coreFxController.showErrorDialogAndWait(errorCode, null);
+			String message = errorsBundle.getString(errorCode);
+			coreFxController.showErrorDialogAndWait(message, null);
 			return;
 		}
 		
@@ -101,7 +103,8 @@ public class HomePaneFxController extends BodyFxControllerBase
 			if(subMenus == null)
 			{
 				String errorCode = "C004-00002";
-				coreFxController.showErrorDialogAndWaitForCore(errorCode, null, "menu." + topMenu + ".submenus");
+				String message = String.format(errorsBundle.getString(errorCode), "menu." + topMenu + ".submenus");
+				coreFxController.showErrorDialogAndWait(message, null);
 				return;
 			}
 			
@@ -109,7 +112,8 @@ public class HomePaneFxController extends BodyFxControllerBase
 			if(iconId == null)
 			{
 				String errorCode = "C004-00003";
-				coreFxController.showErrorDialogAndWaitForCore(errorCode, null, "menu." + topMenu + ".icon");
+				String message = String.format(errorsBundle.getString(errorCode), "menu." + topMenu + ".icon");
+				coreFxController.showErrorDialogAndWait(message, null);
 				return;
 			}
 			
@@ -122,7 +126,8 @@ public class HomePaneFxController extends BodyFxControllerBase
 			catch(IllegalArgumentException e)
 			{
 				String errorCode = "C004-00004";
-				coreFxController.showErrorDialogAndWaitForCore(errorCode, e, iconId.toUpperCase());
+				String message = String.format(errorsBundle.getString(errorCode), iconId.toUpperCase());
+				coreFxController.showErrorDialogAndWait(message, e);
 				return;
 			}
 			
@@ -145,10 +150,8 @@ public class HomePaneFxController extends BodyFxControllerBase
 		
 		if(menus.size() == 0)
 		{
-			Platform.runLater(() ->
-			{
-				notificationPane.show(errorsBundle.getString("B03-1000"));
-			});
+			String message = errorsBundle.getString("B004-00000");
+			showWarningNotification(message);
 		}
 	}
 	

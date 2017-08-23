@@ -13,12 +13,14 @@ public class ApiResponse<T>
 	
 	public ApiResponse(String apiUrl, T result)
 	{
+		this.apiUrl = apiUrl;
 		this.success = true;
 		this.result = result;
 	}
 	
 	public ApiResponse(String apiUrl, String errorCode, Exception exception)
 	{
+		this.apiUrl = apiUrl;
 		this.success = false;
 		this.errorCode = errorCode;
 		this.exception = exception;
@@ -26,6 +28,7 @@ public class ApiResponse<T>
 	
 	public ApiResponse(String apiUrl, String errorCode, int httpCode)
 	{
+		this.apiUrl = apiUrl;
 		this.success = false;
 		this.httpCode = httpCode;
 		this.errorCode = errorCode;

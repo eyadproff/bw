@@ -84,10 +84,13 @@ public class HeaderPaneFxController implements VisibilityControl, AttachableCont
 	
 	public void onLogoutButtonClicked(ActionEvent actionEvent)
 	{
-		// TODO: confirmation dialog
+		String message = coreFxController.getMessagesBundle().getString("logout.confirm");
+		boolean confirmed = coreFxController.showConfirmationDialogAndWait(null, message);
+		
+		if(!confirmed) return;
 		
 		Map<String, String> uiDataMap = new HashMap<>();
-		uiDataMap.put("logoutRequested", "true");
+		uiDataMap.put("menuId", "logout");
 		
 		coreFxController.submitFormTask(uiDataMap);
 	}

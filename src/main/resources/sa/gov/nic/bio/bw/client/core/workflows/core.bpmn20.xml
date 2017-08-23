@@ -23,7 +23,6 @@
             <extensionElements>
                 <activiti:in source="resultBean" target="resultBean"/>
                 <activiti:out source="menuId" target="menuId"/>
-                <activiti:out source="logoutRequested" target="logoutRequested"/>
             </extensionElements>
         </callActivity>
 
@@ -32,7 +31,7 @@
         <exclusiveGateway id="menuSelectionCheck" name="Menu Selection Check"/>
 
         <sequenceFlow sourceRef="menuSelectionCheck" targetRef="logoutService">
-            <conditionExpression xsi:type="tFormalExpression">${logoutRequested != null and logoutRequested}</conditionExpression>
+            <conditionExpression xsi:type="tFormalExpression">${menuId == 'logout'}</conditionExpression>
         </sequenceFlow>
 
         <serviceTask id="logoutService" name="Calling Logout API"
@@ -44,17 +43,17 @@
             <conditionExpression xsi:type="tFormalExpression">${menuId == 'menu.delete.cancelLatent'}</conditionExpression>
         </sequenceFlow>
 
+        <!--<sequenceFlow sourceRef="menuSelectionCheck" targetRef="callLoginProcess">
+        </sequenceFlow>-->
+
         <callActivity id="callCancelLatentProcess" name="Cancel Latent Process" calledElement="cancelLatentProcess">
             <extensionElements>
                 <activiti:in source="loginBean" target="loginBean"/>
                 <activiti:out source="menuId" target="menuId"/>
-                <activiti:out source="logoutRequested" target="logoutRequested"/>
             </extensionElements>
         </callActivity>
 
-        <sequenceFlow sourceRef="callCancelLatentProcess" targetRef="logoutService">
-            <conditionExpression xsi:type="tFormalExpression">${logoutRequested != null and logoutRequested}</conditionExpression>
-        </sequenceFlow>
+        <sequenceFlow sourceRef="callCancelLatentProcess" targetRef="menuSelectionCheck"/>
 
         <endEvent id="endEvent"/>
 

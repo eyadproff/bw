@@ -248,5 +248,6 @@ public class MenuPaneFxController implements VisibilityControl, AttachableContro
 		uiDataMap.put("menuId", menuItem.getMenuId());
 		
 		coreFxController.submitFormTask(uiDataMap);
+		//Context.getWorkflowManager().raiseSignalEvent(menuItem.getMenuId());
 	}
 }

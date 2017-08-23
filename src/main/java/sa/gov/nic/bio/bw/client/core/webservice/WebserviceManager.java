@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class WebserviceManager
@@ -81,11 +82,12 @@ public class WebserviceManager
 			String errorCode = null;
 			
 			ResponseBody errorBody = response.errorBody(); // can be null?
+			String sErrorBody = null;
 			
 			if(errorBody == null) LOGGER.warning("cannot retrieve the errorCode because errorBody = null");
 			else try
 			{
-				String sErrorBody = errorBody.string();
+				sErrorBody = errorBody.string();
 				ObjectMapper mapper = new ObjectMapper();
 				JsonNode json = mapper.readTree(sErrorBody);
 				JsonNode errorCodeJson = json.get("errorCode");
@@ -93,12 +95,12 @@ public class WebserviceManager
 			}
 			catch(IOException e)
 			{
-				e.printStackTrace();
+				LOGGER.log(Level.WARNING, "failed to extract the error code from the error body!", e);
 			}
 			
 			if(errorCode == null) // the only case errorCode == null
 			{
-				LOGGER.warning("webservice = \"" + apiCall.request().url() + "\", responseCode = " + httpCode + ", errorCode = null");
+				LOGGER.warning("webservice = \"" + apiCall.request().url() + "\", responseCode = " + httpCode + ", errorCode = null, errorBody = " + sErrorBody);
 			}
 			else LOGGER.info("webservice = \"" + apiCall.request().url() + "\", responseCode = " + httpCode + ", errorCode = " + errorCode);
 			
@@ -106,6 +108,8 @@ public class WebserviceManager
 		}
 		else // we don't support other HTTP codes
 		{
+			LOGGER.warning("webservice = \"" + apiCall.request().url() + "\", responseCode = " + httpCode);
+			
 			String errorCode = "C002-00017";
 			return new ApiResponse<>(apiUrl, errorCode, httpCode);
 		}

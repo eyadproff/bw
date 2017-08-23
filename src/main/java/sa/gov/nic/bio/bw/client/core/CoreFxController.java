@@ -3,6 +3,7 @@ package sa.gov.nic.bio.bw.client.core;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.NodeOrientation;
 import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.layout.StackPane;
@@ -10,7 +11,6 @@ import javafx.stage.Stage;
 import sa.gov.nic.bio.bw.client.core.beans.BusinessData;
 import sa.gov.nic.bio.bw.client.core.beans.GuiState;
 import sa.gov.nic.bio.bw.client.core.beans.StateBundle;
-import sa.gov.nic.bio.bw.client.core.beans.UserData;
 import sa.gov.nic.bio.bw.client.core.interfaces.*;
 import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.client.core.utils.DialogUtils;
@@ -23,6 +23,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class CoreFxController
@@ -34,7 +35,6 @@ public class CoreFxController
 	public static final String RB_ERRORS_FILE = "sa/gov/nic/bio/bw/client/core/bundles/errors";
 	public static final String RB_MESSAGES_FILE = "sa/gov/nic/bio/bw/client/core/bundles/messages";
 	
-	@FXML private ResourceBundle resources;
 	@FXML private Stage primaryStage;
 	@FXML private HeaderPaneFxController headerPaneController;
 	@FXML private FooterPaneFxController footerPaneController;
@@ -48,7 +48,6 @@ public class CoreFxController
 	private String windowTitle;
 	
 	private GuiState guiState = new GuiState();
-	private UserData userData = new UserData();
 	private BusinessData businessData = new BusinessData(); // TODO: fill it at startup?
 	
 	public void passInitialResources(ResourceBundle labelsBundle, ResourceBundle errorsBundle, ResourceBundle messagesBundle, Image appIcon, String windowTitle)
@@ -61,7 +60,6 @@ public class CoreFxController
 	}
 	
 	public GuiState getGuiState(){return guiState;}
-	public UserData getUserData(){return userData;}
 	public BusinessData getBusinessData(){return businessData;}
 	
 	public HeaderPaneFxController getHeaderPaneController(){return headerPaneController;}
@@ -195,25 +193,31 @@ public class CoreFxController
 		return controller;
 	}
 	
+	// must be called from UI thread
+	public boolean showConfirmationDialogAndWait(String headerText, String contentMessage)
+	{
+		String title = labelsBundle.getString("dialog.confirm.title");
+		String buttonConfirmText = labelsBundle.getString("dialog.confirm.buttons.confirm");
+		String buttonCancelText = labelsBundle.getString("dialog.confirm.buttons.cancel");
+		boolean rtl = guiState.getLanguage().getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT;
+		
+		return DialogUtils.showConfirmationDialog(appIcon, title, headerText, contentMessage, buttonConfirmText, buttonCancelText, rtl);
+	}
+	
 	public void showErrorDialogAndWait(String errorMessage, Exception exception)
 	{
 		Platform.runLater(() ->
 		{
-			String title;
-			String headerText;
-			String buttonOkText;
-			String moreDetailsText;
-			String lessDetailsText;
+			String title = labelsBundle.getString("dialog.error.title");
+			String headerText = labelsBundle.getString("dialog.error.header");
+			String buttonOkText = labelsBundle.getString("dialog.error.buttons.ok");
+			String moreDetailsText = labelsBundle.getString("dialog.error.buttons.showErrorDetails");
+			String lessDetailsText = labelsBundle.getString("dialog.error.buttons.hideErrorDetails");
+			boolean rtl = guiState.getLanguage().getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT;
 			
-			
-			title = resources.getString("dialog.error.title");
-			headerText = resources.getString("dialog.error.header");
-			buttonOkText = resources.getString("dialog.error.buttons.ok");
-			moreDetailsText = resources.getString("dialog.error.buttons.showErrorDetails");
-			lessDetailsText = resources.getString("dialog.error.buttons.hideErrorDetails");
-			
+			LOGGER.log(Level.SEVERE, errorMessage, exception);
 			DialogUtils.showErrorDialog(appIcon, title, headerText, errorMessage, buttonOkText, moreDetailsText,
-			                            lessDetailsText, exception);
+			                            lessDetailsText, exception, rtl);
 		});
 	}
 	
@@ -391,5 +395,10 @@ public class CoreFxController
 	public ResourceBundle getErrorsBundle()
 	{
 		return errorsBundle;
+	}
+	
+	public ResourceBundle getMessagesBundle()
+	{
+		return messagesBundle;
 	}
 }

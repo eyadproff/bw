@@ -1,17 +1,21 @@
 package sa.gov.nic.bio.bw.client.core.utils;
 
 import javafx.beans.value.ObservableValue;
+import javafx.event.EventHandler;
 import javafx.geometry.NodeOrientation;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.stage.Stage;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.Optional;
 
 /**
  * Created by Fouad on 12-Jul-17.
@@ -19,12 +23,12 @@ import java.io.StringWriter;
 public class DialogUtils
 {
 	public static void showErrorDialog(Image appIcon, String title, String headerText, String contentText,
-	                            String buttonOkText, String moreDetailsText, String lessDetailsText, Exception exception)
+	                            String buttonOkText, String moreDetailsText, String lessDetailsText, Exception exception, boolean rtl)
 	{
 		Alert alert = new Alert(AlertType.ERROR);
 		Scene scene = alert.getDialogPane().getScene();
+		scene.setNodeOrientation(rtl ? NodeOrientation.RIGHT_TO_LEFT : NodeOrientation.LEFT_TO_RIGHT);
 		Stage stage = (Stage) scene.getWindow();
-		scene.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
 		if(appIcon != null) stage.getIcons().add(appIcon);
 		alert.setTitle(title);
 		alert.setHeaderText(headerText);
@@ -71,5 +75,45 @@ public class DialogUtils
 		
 		stage.sizeToScene();
 		alert.showAndWait();
+	}
+	
+	public static boolean showConfirmationDialog(Image appIcon, String title, String headerText, String contentText,
+	                                          String buttonConfirmText, String buttonCancelText, boolean rtl)
+	{
+		Alert alert = new Alert(AlertType.CONFIRMATION);
+		Scene scene = alert.getDialogPane().getScene();
+		scene.setNodeOrientation(rtl ? NodeOrientation.RIGHT_TO_LEFT : NodeOrientation.LEFT_TO_RIGHT);
+		Stage stage = (Stage) scene.getWindow();
+		if(appIcon != null) stage.getIcons().add(appIcon);
+		alert.setTitle(title);
+		
+		if(headerText != null)
+		{
+			alert.setHeaderText(headerText);
+			alert.setContentText(contentText);
+		}
+		else alert.setHeaderText(contentText);
+		
+		ButtonType buttonTypeConfirm = new ButtonType(buttonConfirmText, ButtonBar.ButtonData.OK_DONE);
+		ButtonType buttonTypeCancel = new ButtonType(buttonCancelText, ButtonBar.ButtonData.CANCEL_CLOSE);
+		alert.getButtonTypes().setAll(buttonTypeConfirm, buttonTypeCancel);
+		
+		Button btnConfirm = (Button) alert.getDialogPane().lookupButton(buttonTypeConfirm);
+		Button btnCancel = (Button) alert.getDialogPane().lookupButton(buttonTypeCancel);
+		
+		btnConfirm.setDefaultButton(false);
+		/*btnConfirm.setOnKeyReleased(event ->
+		{
+			if(event.getCode() == KeyCode.ENTER) alert.setResult(buttonTypeConfirm);
+		});
+		
+		btnCancel.setOnKeyReleased(event ->
+	    {
+	        if(event.getCode() == KeyCode.ENTER) alert.setResult(buttonTypeCancel);
+	    });*/
+		
+		stage.sizeToScene();
+		Optional<ButtonType> buttonType = alert.showAndWait();
+		return buttonType.isPresent() && buttonType.get() == buttonTypeConfirm;
 	}
 }

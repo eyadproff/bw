@@ -19,11 +19,6 @@
 <NotificationPane xmlns:fx="http://javafx.com/fxml" xmlns="http://javafx.com/javafx/8"
            fx:controller="sa.gov.nic.bio.bw.client.login.LoginPaneFxController"
            fx:id="notificationPane" stylesheets="@../css/login.css">
-    <graphic>
-        <ImageView>
-            <Image url="@/sa/gov/nic/bio/bw/client/core/images/notification-pane-warning.png"/>
-        </ImageView>
-    </graphic>
     <content>
         <VBox alignment="CENTER" spacing="70">
             <ImageView>

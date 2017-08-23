@@ -18,7 +18,7 @@ public class LoginBean implements Serializable
 		private String locationId;
 		private String[] originalStringRoles;
 		private int badPasswordCount;
-		private int badPasswordTime;
+		private long badPasswordTime;
 		private long lastLogonTime;
 		private String locationName;
 		private String operatorName;
@@ -98,12 +98,12 @@ public class LoginBean implements Serializable
 			this.badPasswordCount = badPasswordCount;
 		}
 		
-		public int getBadPasswordTime()
+		public long getBadPasswordTime()
 		{
 			return badPasswordTime;
 		}
 		
-		public void setBadPasswordTime(int badPasswordTime)
+		public void setBadPasswordTime(long badPasswordTime)
 		{
 			this.badPasswordTime = badPasswordTime;
 		}
