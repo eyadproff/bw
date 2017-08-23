@@ -2,12 +2,17 @@ package sa.gov.nic.bio.bw.client.cancellatent;
 
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextFormatter;
+import javafx.util.converter.NumberStringConverter;
 import sa.gov.nic.bio.bw.client.core.BodyFxControllerBase;
+import sa.gov.nic.bio.bw.client.core.utils.NumberStringFilteredConverter;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -22,6 +27,22 @@ public class CancelLatentPaneFxController extends BodyFxControllerBase
 	@FXML
 	private void initialize()
 	{
+		txtIdNumber.textProperty().addListener((observable, oldValue, newValue) ->
+		{
+			if(!newValue.matches("\\d*"))
+			{
+				txtIdNumber.setText(newValue.replaceAll("[^\\d]", ""));
+			}
+		});
+		
+		txtLatentNumber.textProperty().addListener((observable, oldValue, newValue) ->
+        {
+            if(!newValue.matches("\\d*"))
+            {
+	            txtLatentNumber.setText(newValue.replaceAll("[^\\d]", ""));
+            }
+        });
+		
 		BooleanBinding idNumberEmptyBinding = txtIdNumber.textProperty().isEmpty();
 		BooleanBinding latentNumberEmptyBinding = txtLatentNumber.textProperty().isEmpty();
 		BooleanProperty progressVisibility = piCancelLatent.visibleProperty();
