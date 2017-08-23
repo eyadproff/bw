@@ -93,7 +93,7 @@ public class WebserviceManager
 				JsonNode errorCodeJson = json.get("errorCode");
 				errorCode = errorCodeJson.asText();
 			}
-			catch(IOException e)
+			catch(Exception e)
 			{
 				LOGGER.log(Level.WARNING, "failed to extract the error code from the error body!", e);
 			}
