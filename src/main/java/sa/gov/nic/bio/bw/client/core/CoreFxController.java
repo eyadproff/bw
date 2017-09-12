@@ -195,6 +195,7 @@ public class CoreFxController
                     {
                         RefreshTokenBean refreshTokenBean = response.getResult();
                         String newToken = refreshTokenBean.getUserToken();
+                        Context.getUserData().getLoginBean().setUserToken(newToken);
                         scheduleRefreshToken(newToken);
                     }
                     else
