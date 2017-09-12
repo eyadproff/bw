@@ -7,7 +7,6 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import retrofit2.Call;
-import retrofit2.Response;
 import sa.gov.nic.bio.bw.client.core.ConfigManager;
 import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.CoreFxController;
@@ -57,6 +56,8 @@ public class AppEntryPoint extends Application
 	// default values
 	private int idleWarningBeforeSeconds = 480; // 8 minutes
 	private int idleWarningAfterSeconds = 120; // 2 minutes
+	private int readTimeoutSeconds = 60; // 1 minute
+	private int connectTimeoutSeconds = 60; // 1 minute
     
     @Override
     public void init()
@@ -100,6 +101,8 @@ public class AppEntryPoint extends Application
 	    
 	    String sIdleWarningBeforeSeconds = configManager.getProperty("idle.warning.before.seconds");
 	    String sIdleWarningAfterSeconds = configManager.getProperty("idle.warning.after.seconds");
+	    String sReadTimeoutSeconds = configManager.getProperty("webservice.readTimeoutSeconds");
+	    String sConnectTimeoutSeconds = configManager.getProperty("webservice.connectTimeoutSeconds");
 	
 	    if(sIdleWarningBeforeSeconds == null)
 	    {
@@ -128,8 +131,34 @@ public class AppEntryPoint extends Application
 	    {
 		    LOGGER.warning("Failed to parse sIdleWarningAfterSeconds as int! sIdleWarningAfterSeconds = " + sIdleWarningAfterSeconds);
 	    }
-	    
-	    
+	
+	    if(sReadTimeoutSeconds == null)
+	    {
+		    LOGGER.warning("sReadTimeoutSeconds is null! Default value is " + readTimeoutSeconds);
+	    }
+	    else try
+	    {
+		    readTimeoutSeconds = Integer.parseInt(sReadTimeoutSeconds);
+		    LOGGER.info("readTimeoutSeconds = " + readTimeoutSeconds);
+	    }
+	    catch(NumberFormatException e)
+	    {
+		    LOGGER.warning("Failed to parse sReadTimeoutSeconds as int! sReadTimeoutSeconds = " + sReadTimeoutSeconds);
+	    }
+	
+	    if(sConnectTimeoutSeconds == null)
+	    {
+		    LOGGER.warning("sConnectTimeoutSeconds is null! Default value is " + connectTimeoutSeconds);
+	    }
+	    else try
+	    {
+		    connectTimeoutSeconds = Integer.parseInt(sConnectTimeoutSeconds);
+		    LOGGER.info("connectTimeoutSeconds = " + connectTimeoutSeconds);
+	    }
+	    catch(NumberFormatException e)
+	    {
+		    LOGGER.warning("Failed to parse sConnectTimeoutSeconds as int! sConnectTimeoutSeconds = " + sConnectTimeoutSeconds);
+	    }
 	
 	    String webserviceBaseUrl = configManager.getProperty("webservice.baseUrl");
 	    if(webserviceBaseUrl == null) LOGGER.warning("webserviceBaseUrl is null!");
@@ -159,7 +188,7 @@ public class AppEntryPoint extends Application
 	
 	    LOGGER.info("webserviceBaseUrl = " + webserviceBaseUrl);
 	
-	    webserviceManager.init(webserviceBaseUrl);
+	    webserviceManager.init(webserviceBaseUrl, readTimeoutSeconds, connectTimeoutSeconds);
 	
 	    UserData userData = new UserData();
 	

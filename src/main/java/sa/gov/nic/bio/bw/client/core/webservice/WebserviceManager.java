@@ -2,6 +2,7 @@ package sa.gov.nic.bio.bw.client.core.webservice;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import okhttp3.OkHttpClient;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Response;
@@ -12,6 +13,7 @@ import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -22,11 +24,17 @@ public class WebserviceManager
 	private Retrofit retrofit;
 	private Map<Class<?>, Object> cache = new HashMap<>();
 	
-	public void init(String baseUrl)
+	public void init(String baseUrl, int readTimeoutSeconds, int connectTimeoutSeconds)
 	{
+		OkHttpClient okHttpClient = new OkHttpClient.Builder()
+													.readTimeout(readTimeoutSeconds, TimeUnit.SECONDS)
+													.connectTimeout(connectTimeoutSeconds, TimeUnit.SECONDS)
+													.build();
+		
 		retrofit = new Retrofit.Builder()
 							   .baseUrl(PROTOCOL + "://" + baseUrl)
 							   .addConverterFactory(JacksonConverterFactory.create())
+							   .client(okHttpClient)
 							   .build();
 	}
 	
