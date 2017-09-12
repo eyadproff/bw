@@ -160,21 +160,25 @@ public abstract class BodyFxControllerBase implements BodyFxController
         });
 	}
 	
+	@Override
 	public void hideNotification()
 	{
 		notificationPane.hide();
 	}
 	
+	@Override
 	public void showSuccessNotification(String message)
 	{
 		showNotification(message, successIcon);
 	}
 	
+	@Override
 	public void showWarningNotification(String message)
 	{
 		showNotification(message, warningIcon);
 	}
 	
+	@Override
 	public void showErrorNotification(String message)
 	{
 		showNotification(message, errorIcon);

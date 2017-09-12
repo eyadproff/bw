@@ -11,10 +11,14 @@
     -fx-accent: #23A967;
 }
 
-#mainPanel {
+#mainPane {
     -fx-background-color: white;
     -fx-border-color: #23A967;
     -fx-border-width: 1px 0 0 0;
+}
+
+.background-overlay {
+    -fx-background-color: rgba(0, 0, 0, 0.5);
 }
 
 .header {

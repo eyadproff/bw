@@ -191,7 +191,7 @@ public class AppPreloader extends Preloader
 		String moreDetailsText;
 		String lessDetailsText;
 		
-		if(errorCode != null && !errorCode.startsWith("C001")) // most likely C002 error during calling webservices API during startup. TODO: change this later
+		if(errorCode != null && errorCode.startsWith("C002")) // most likely C002 error during calling webservices API during startup. TODO: change this later
 		{
 			String message = String.format(errorsBundle.getString("C000-00000.internal"), errorCode);
 			LOGGER.log(Level.SEVERE, message, exception);

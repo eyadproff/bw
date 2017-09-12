@@ -53,6 +53,10 @@ public class AppEntryPoint extends Application
 	
 	private boolean successfulInit = false;
 	private GuiLanguage initialLanguage = GuiLanguage.ARABIC; // TODO: make it configurable from properties file
+	
+	// default values
+	private int idleWarningBeforeSeconds = 480; // 8 minutes
+	private int idleWarningAfterSeconds = 120; // 2 minutes
     
     @Override
     public void init()
@@ -93,6 +97,39 @@ public class AppEntryPoint extends Application
 		    notifyPreloader(new ProgressMessage(e, errorCode));
 		    return;
 	    }
+	    
+	    String sIdleWarningBeforeSeconds = configManager.getProperty("idle.warning.before.seconds");
+	    String sIdleWarningAfterSeconds = configManager.getProperty("idle.warning.after.seconds");
+	
+	    if(sIdleWarningBeforeSeconds == null)
+	    {
+	    	LOGGER.warning("idleWarningBeforeSeconds is null! Default value is " + idleWarningBeforeSeconds);
+	    }
+	    else try
+	    {
+	    	idleWarningBeforeSeconds = Integer.parseInt(sIdleWarningBeforeSeconds);
+		    LOGGER.info("idleWarningBeforeSeconds = " + idleWarningBeforeSeconds);
+	    }
+	    catch(NumberFormatException e)
+	    {
+		    LOGGER.warning("Failed to parse sIdleWarningBeforeSeconds as int! sIdleWarningBeforeSeconds = " + sIdleWarningBeforeSeconds);
+	    }
+	    
+	    if(sIdleWarningAfterSeconds == null)
+	    {
+	    	LOGGER.warning("sIdleWarningAfterSeconds is null! Default value is " + idleWarningAfterSeconds);
+	    }
+	    else try
+	    {
+		    idleWarningAfterSeconds = Integer.parseInt(sIdleWarningAfterSeconds);
+		    LOGGER.info("idleWarningAfterSeconds = " + idleWarningAfterSeconds);
+	    }
+	    catch(NumberFormatException e)
+	    {
+		    LOGGER.warning("Failed to parse sIdleWarningAfterSeconds as int! sIdleWarningAfterSeconds = " + sIdleWarningAfterSeconds);
+	    }
+	    
+	    
 	
 	    String webserviceBaseUrl = configManager.getProperty("webservice.baseUrl");
 	    if(webserviceBaseUrl == null) LOGGER.warning("webserviceBaseUrl is null!");
@@ -105,6 +142,8 @@ public class AppEntryPoint extends Application
 		    Method getCodeBaseMethod = Class.forName("javax.jnlp.BasicService").getMethod("getCodeBase");
 		    URL codebase = (URL) getCodeBaseMethod.invoke(basicService);
 		    webserviceBaseUrl = codebase.getHost();
+		    int port = codebase.getPort();
+		    if(port > 0) webserviceBaseUrl += ":" + port;
 	    }
 	    catch(Exception e)
 	    {
@@ -252,7 +291,7 @@ public class AppEntryPoint extends Application
 	    }
 	    
 	    CoreFxController coreFxController = coreStageLoader.getController();
-	    coreFxController.passInitialResources(labelsBundle, errorsBundle, messagesBundle, appIcon, windowTitle);
+	    coreFxController.passInitialResources(labelsBundle, errorsBundle, messagesBundle, appIcon, windowTitle, idleWarningBeforeSeconds, idleWarningAfterSeconds);
 	    coreFxController.getGuiState().setLanguage(initialLanguage);
 	    
 	    primaryStage.getScene().setNodeOrientation(initialLanguage.getNodeOrientation());

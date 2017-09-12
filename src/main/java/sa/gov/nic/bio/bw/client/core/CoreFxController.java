@@ -1,13 +1,18 @@
 package sa.gov.nic.bio.bw.client.core;
 
 import javafx.application.Platform;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.NodeOrientation;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.control.Alert;
 import javafx.scene.image.Image;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+import org.controlsfx.control.NotificationPane;
 import sa.gov.nic.bio.bw.client.core.beans.BusinessData;
 import sa.gov.nic.bio.bw.client.core.beans.GuiState;
 import sa.gov.nic.bio.bw.client.core.beans.StateBundle;
@@ -15,6 +20,7 @@ import sa.gov.nic.bio.bw.client.core.interfaces.*;
 import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.client.core.utils.DialogUtils;
 import sa.gov.nic.bio.bw.client.core.utils.GuiLanguage;
+import sa.gov.nic.bio.bw.client.core.utils.IdleMonitor;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -36,9 +42,11 @@ public class CoreFxController
 	public static final String RB_MESSAGES_FILE = "sa/gov/nic/bio/bw/client/core/bundles/messages";
 	
 	@FXML private Stage primaryStage;
+	@FXML private StackPane overlayPane;
 	@FXML private HeaderPaneFxController headerPaneController;
 	@FXML private FooterPaneFxController footerPaneController;
 	@FXML private MenuPaneFxController menuPaneController;
+	@FXML private NotificationPane idleNotifier;
 	@FXML private StackPane bodyPane;
 	
 	private ResourceBundle labelsBundle;
@@ -46,17 +54,23 @@ public class CoreFxController
 	private ResourceBundle messagesBundle;
 	private Image appIcon;
 	private String windowTitle;
+	private int idleWarningBeforeSeconds;
+	private int idleWarningAfterSeconds;
 	
 	private GuiState guiState = new GuiState();
 	private BusinessData businessData = new BusinessData(); // TODO: fill it at startup?
+	private IdleMonitor idleMonitor;
+	private boolean idleWarningOn = false;
 	
-	public void passInitialResources(ResourceBundle labelsBundle, ResourceBundle errorsBundle, ResourceBundle messagesBundle, Image appIcon, String windowTitle)
+	public void passInitialResources(ResourceBundle labelsBundle, ResourceBundle errorsBundle, ResourceBundle messagesBundle, Image appIcon, String windowTitle, int idleWarningBeforeSeconds, int idleWarningAfterSeconds)
 	{
 		this.labelsBundle = labelsBundle;
 		this.errorsBundle = errorsBundle;
 		this.messagesBundle = messagesBundle;
 		this.appIcon = appIcon;
 		this.windowTitle = windowTitle;
+		this.idleWarningBeforeSeconds = idleWarningBeforeSeconds;
+		this.idleWarningAfterSeconds = idleWarningAfterSeconds;
 	}
 	
 	public GuiState getGuiState(){return guiState;}
@@ -83,6 +97,72 @@ public class CoreFxController
 		}
 		
 		primaryStage.setTitle(windowTitle);
+		idleMonitor = new IdleMonitor(idleWarningBeforeSeconds, this::onShowingIdleWarning, idleWarningAfterSeconds, this::onIdle, this::onIdleInterrupt, this::onTick, idleNotifier);
+	}
+	
+	public void startIdleMonitor()
+	{
+		idleMonitor.register(primaryStage, Event.ANY);
+		idleMonitor.startMonitoring();
+		// TODO: register dialogs
+	}
+	
+	void stopIdleMonitor()
+	{
+		idleMonitor.unregister(primaryStage, Event.ANY);
+		idleMonitor.stopMonitoring();
+	}
+	
+	private void onShowingIdleWarning()
+	{
+		idleWarningOn = true;
+		idleNotifier.show();
+		setIdleWarningText(idleWarningAfterSeconds);
+	}
+	
+	private void onTick(Integer seconds)
+	{
+		setIdleWarningText(seconds);
+	}
+	
+	private void setIdleWarningText(int seconds)
+	{
+		String sSeconds;
+		if(seconds == 1) sSeconds = labelsBundle.getString("label.second");
+		else if(seconds == 2) sSeconds = labelsBundle.getString("label.seconds2");
+		else if(seconds >= 3 && seconds <= 10) sSeconds = String.format(labelsBundle.getString("label.seconds3To10"), seconds);
+		else sSeconds = String.format(labelsBundle.getString("label.seconds10Plus"), seconds);
+		
+		String message = String.format(messagesBundle.getString("idle.warning"), sSeconds);
+		idleNotifier.setText(message);
+	}
+	
+	private void onIdle()
+	{
+		idleNotifier.hide();
+		idleWarningOn = false;
+		
+		Platform.runLater(() ->
+		{
+			String title = labelsBundle.getString("dialog.idle.title");
+			String contentText = labelsBundle.getString("dialog.idle.content");
+			String buttonText = labelsBundle.getString("dialog.idle.buttons.goToLogin");
+			boolean rtl = guiState.getLanguage().getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT;
+			
+			overlayPane.setVisible(true);
+			DialogUtils.showWarningDialog(appIcon, title, null, contentText, buttonText, rtl);
+			overlayPane.setVisible(false);
+			headerPaneController.logout();
+		});
+	}
+	
+	private void onIdleInterrupt()
+	{
+		if(idleWarningOn)
+		{
+			idleWarningOn = false;
+			idleNotifier.hide();
+		}
 	}
 	
 	public void submitFormTask(Map<String, String> uiDataMap)
@@ -221,7 +301,7 @@ public class CoreFxController
 		});
 	}
 	
-	public void showErrorDialogAndWaitForCore(String errorCode, Exception exception, String... additionalErrorText)
+	private void showErrorDialogAndWaitForCore(String errorCode, Exception exception, String... additionalErrorText)
 	{
 		String logErrorText = String.format(errorCode + ": " + errorsBundle.getString(errorCode + ".internal"), (Object[]) additionalErrorText);
 		LOGGER.severe(logErrorText);
@@ -337,7 +417,7 @@ public class CoreFxController
 		
 		CoreFxController newCoreFxController = newStageLoader.getController();
 		newCoreFxController.guiState = guiState;
-		newCoreFxController. passInitialResources(labelsBundle, errorsBundle, messagesBundle, appIcon, windowTitle);
+		newCoreFxController. passInitialResources(labelsBundle, errorsBundle, messagesBundle, appIcon, windowTitle, idleWarningBeforeSeconds, idleWarningAfterSeconds);
 		newCoreFxController.guiState.setLanguage(toLanguage);
 		boolean success = newCoreFxController.applyStateBundle(oldState);
 		

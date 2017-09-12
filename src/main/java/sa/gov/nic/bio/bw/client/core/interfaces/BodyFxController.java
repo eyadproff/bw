@@ -10,4 +10,8 @@ public interface BodyFxController extends FormTaskController, AttachableControll
 	URL getFxmlLocation();
 	ResourceBundleCollection getResourceBundleCollection();
 	void onControllerReady();
+	void hideNotification();
+	void showSuccessNotification(String message);
+	void showWarningNotification(String message);
+	void showErrorNotification(String message);
 }

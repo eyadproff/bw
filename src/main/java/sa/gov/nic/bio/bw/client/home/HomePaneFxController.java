@@ -153,6 +153,8 @@ public class HomePaneFxController extends BodyFxControllerBase
 			String message = errorsBundle.getString("B004-00000");
 			showWarningNotification(message);
 		}
+		
+		coreFxController.startIdleMonitor();
 	}
 	
 	private void setLabelsText(long value, boolean isDate, Label textLabel, Label valueLabel)

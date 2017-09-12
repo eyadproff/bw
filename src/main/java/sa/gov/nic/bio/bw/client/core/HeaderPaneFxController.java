@@ -1,12 +1,9 @@
 package sa.gov.nic.bio.bw.client.core;
 
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 import org.controlsfx.glyphfont.FontAwesome;
@@ -87,7 +84,12 @@ public class HeaderPaneFxController implements VisibilityControl, AttachableCont
 		String message = coreFxController.getMessagesBundle().getString("logout.confirm");
 		boolean confirmed = coreFxController.showConfirmationDialogAndWait(null, message);
 		
-		if(!confirmed) return;
+		if(confirmed) logout();
+	}
+	
+	public void logout()
+	{
+		coreFxController.stopIdleMonitor();
 		
 		Map<String, String> uiDataMap = new HashMap<>();
 		uiDataMap.put("menuId", "logout");

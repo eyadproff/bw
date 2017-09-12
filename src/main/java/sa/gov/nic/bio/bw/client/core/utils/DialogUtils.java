@@ -116,4 +116,35 @@ public class DialogUtils
 		Optional<ButtonType> buttonType = alert.showAndWait();
 		return buttonType.isPresent() && buttonType.get() == buttonTypeConfirm;
 	}
+	
+	public static void showWarningDialog(Image appIcon, String title, String headerText, String contentText, String buttonText, boolean rtl)
+	{
+		Alert alert = new Alert(AlertType.WARNING);
+		Scene scene = alert.getDialogPane().getScene();
+		scene.setNodeOrientation(rtl ? NodeOrientation.RIGHT_TO_LEFT : NodeOrientation.LEFT_TO_RIGHT);
+		Stage stage = (Stage) scene.getWindow();
+		if(appIcon != null) stage.getIcons().add(appIcon);
+		alert.setTitle(title);
+		
+		if(headerText != null)
+		{
+			alert.setHeaderText(headerText);
+			alert.setContentText(contentText);
+		}
+		else alert.setHeaderText(contentText);
+		
+		ButtonType buttonType = new ButtonType(buttonText, ButtonBar.ButtonData.CANCEL_CLOSE);
+		alert.getButtonTypes().setAll(buttonType);
+		
+		Button button = (Button) alert.getDialogPane().lookupButton(buttonType);
+		
+		button.setDefaultButton(false);
+		button.setOnKeyReleased(event ->
+		{
+			if(event.getCode() == KeyCode.ENTER) alert.setResult(buttonType);
+		});
+		
+		stage.sizeToScene();
+		alert.showAndWait();
+	}
 }
