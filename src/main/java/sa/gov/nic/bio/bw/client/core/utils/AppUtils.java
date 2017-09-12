@@ -1,5 +1,8 @@
 package sa.gov.nic.bio.bw.client.core.utils;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import org.controlsfx.glyphfont.FontAwesome;
@@ -11,6 +14,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.*;
+import java.nio.charset.StandardCharsets;
 import java.security.ProtectionDomain;
 import java.text.NumberFormat;
 import java.time.Instant;
@@ -22,6 +26,7 @@ import java.time.chrono.HijrahDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
 import java.util.*;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -222,5 +227,54 @@ public final class AppUtils
 		ChronoZonedDateTime<HijrahDate> hijriDateTime = AppUtils.milliSecondsToHijriDataTime(milliSeconds);
 		ZonedDateTime gregorianDateTime = AppUtils.milliSecondsToGregorianDataTime(milliSeconds);
 		return AppUtils.formatDateTime(hijriDateTime) + " - " + AppUtils.formatDate(gregorianDateTime);
+	}
+	
+	public static LocalDateTime extractExpirationTimeFromJWT(String jwt)
+	{
+		String[] tokenParts = jwt.split("\\.");
+		
+		if(tokenParts.length != 3)
+		{
+			LOGGER.warning("userToken is not JWT! Failed to extract the expiration time!");
+		}
+		else
+		{
+			String payload = null;
+			try
+			{
+				payload = new String(Base64.getDecoder().decode(tokenParts[1]), StandardCharsets.UTF_8.displayName());
+			}
+			catch(IllegalArgumentException e)
+			{
+				LOGGER.warning("tokenParts[1] is not in valid Base64 scheme! tokenParts[1] = " + tokenParts[1]);
+			}
+			catch(UnsupportedEncodingException e) // thrown if UTF-8 is not supported, should never happen!
+			{
+				LOGGER.log(Level.SEVERE, "UTF-8 is not supported!!", e);
+			}
+			
+			if(payload == null) LOGGER.warning("payload is null!");
+			else
+			{
+				try
+				{
+					ObjectNode object = new ObjectMapper().readValue(payload, ObjectNode.class);
+					JsonNode node = object.get("exp");
+					
+					if(node == null) LOGGER.warning("The payload has no \"exp\"!");
+					else
+					{
+						String exp = node.asText();
+						return LocalDateTime.ofInstant(Instant.ofEpochMilli(Long.parseLong(exp) * 1000L), AppConstants.SAUDI_ZONE);
+					}
+				}
+				catch(IOException e)
+				{
+					LOGGER.log(Level.SEVERE,"Failed to extract \"exp\" from payload!", e);
+				}
+			}
+		}
+		
+		return null;
 	}
 }

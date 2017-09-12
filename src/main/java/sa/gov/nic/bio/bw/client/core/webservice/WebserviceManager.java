@@ -2,12 +2,16 @@ package sa.gov.nic.bio.bw.client.core.webservice;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
+import okhttp3.Request;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
+import sa.gov.nic.bio.bw.client.core.Context;
+import sa.gov.nic.bio.bw.client.login.webservice.LoginBean;
 
 import java.io.IOException;
 import java.net.SocketTimeoutException;
@@ -26,9 +30,28 @@ public class WebserviceManager
 	
 	public void init(String baseUrl, int readTimeoutSeconds, int connectTimeoutSeconds)
 	{
+		Interceptor tokenInterceptor = chain ->
+		{
+			LoginBean loginBean = Context.getUserData().getLoginBean();
+			Request.Builder requestBuilder = chain.request().newBuilder();
+			
+			if(loginBean != null)
+			{
+				String userToken = loginBean.getUserToken();
+				
+				if(userToken != null && userToken.length() > 0)
+				{
+					requestBuilder.addHeader("Authorization", "Bearer " + userToken);
+				}
+			}
+			
+			return chain.proceed(requestBuilder.build());
+		};
+		
 		OkHttpClient okHttpClient = new OkHttpClient.Builder()
 													.readTimeout(readTimeoutSeconds, TimeUnit.SECONDS)
 													.connectTimeout(connectTimeoutSeconds, TimeUnit.SECONDS)
+													.addInterceptor(tokenInterceptor)
 													.build();
 		
 		retrofit = new Retrofit.Builder()
@@ -51,7 +74,8 @@ public class WebserviceManager
 		return api;
 	}
 	
-	public <T> ApiResponse<T> executeApi(Call<T> apiCall)
+	// synchronized because we send only one request at a time
+	public synchronized <T> ApiResponse<T> executeApi(Call<T> apiCall)
 	{
 		String apiUrl = apiCall.request().url().toString();
 		

@@ -13,6 +13,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import org.controlsfx.control.NotificationPane;
+import retrofit2.Call;
 import sa.gov.nic.bio.bw.client.core.beans.BusinessData;
 import sa.gov.nic.bio.bw.client.core.beans.GuiState;
 import sa.gov.nic.bio.bw.client.core.beans.StateBundle;
@@ -21,14 +22,21 @@ import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.client.core.utils.DialogUtils;
 import sa.gov.nic.bio.bw.client.core.utils.GuiLanguage;
 import sa.gov.nic.bio.bw.client.core.utils.IdleMonitor;
+import sa.gov.nic.bio.bw.client.core.webservice.ApiResponse;
+import sa.gov.nic.bio.bw.client.home.webservice.RefreshTokenAPI;
+import sa.gov.nic.bio.bw.client.home.webservice.RefreshTokenBean;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Locale;
 import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -60,6 +68,7 @@ public class CoreFxController
 	private GuiState guiState = new GuiState();
 	private BusinessData businessData = new BusinessData(); // TODO: fill it at startup?
 	private IdleMonitor idleMonitor;
+	private ScheduledFuture<?> scheduledRefreshTokenFuture;
 	private boolean idleWarningOn = false;
 	
 	public void passInitialResources(ResourceBundle labelsBundle, ResourceBundle errorsBundle, ResourceBundle messagesBundle, Image appIcon, String windowTitle, int idleWarningBeforeSeconds, int idleWarningAfterSeconds)
@@ -163,6 +172,43 @@ public class CoreFxController
 			idleWarningOn = false;
 			idleNotifier.hide();
 		}
+	}
+	
+	public void scheduleRefreshToken(String userToken)
+	{
+		if(userToken == null) LOGGER.warning("userToken = null");
+		else
+		{
+			LocalDateTime expiration = AppUtils.extractExpirationTimeFromJWT(userToken);
+			if(expiration != null)
+			{
+				long seconds = Math.abs(expiration.until(LocalDateTime.now(), ChronoUnit.SECONDS));
+				long delay = seconds - seconds / 10L; // the last tenth of the token lifetime
+				
+				scheduledRefreshTokenFuture = Context.getScheduledExecutorService().schedule(() ->
+                {
+                    RefreshTokenAPI refreshTokenAPI = Context.getWebserviceManager().getApi(RefreshTokenAPI.class);
+                    Call<RefreshTokenBean> apiCall = refreshTokenAPI.refreshToken(userToken);
+                    ApiResponse<RefreshTokenBean> response = Context.getWebserviceManager().executeApi(apiCall);
+
+                    if(response.isSuccess())
+                    {
+                        RefreshTokenBean refreshTokenBean = response.getResult();
+                        String newToken = refreshTokenBean.getUserToken();
+                        scheduleRefreshToken(newToken);
+                    }
+                    else
+                    {
+                        LOGGER.warning("Failed to refresh the token! httpCode = " + response.getHttpCode() + ", errorCode = " + response.getErrorCode());
+                    }
+                }, delay, TimeUnit.SECONDS);
+			}
+		}
+	}
+	
+	public void cancelRefreshTokenScheduler()
+	{
+		if(scheduledRefreshTokenFuture != null) scheduledRefreshTokenFuture.cancel(true);
 	}
 	
 	public void submitFormTask(Map<String, String> uiDataMap)

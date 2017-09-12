@@ -18,13 +18,12 @@ public class CancelLatentService  extends ServiceBase
 	{
 		String idNumber = (String) execution.getVariable("idNumber");
 		String latentNumber = (String) execution.getVariable("latentNumber");
-		String token = "Bearer " + Context.getUserData().getLoginBean().getUserToken(); // TODO: inject the token in common way
 		
 		LOGGER.fine("idNumber = " + idNumber);
 		LOGGER.fine("latentNumber = " + latentNumber);
 		
 		CancelLatentAPI cancelLatentAPI = Context.getWebserviceManager().getApi(CancelLatentAPI.class);
-		Call<Boolean> apiCall = cancelLatentAPI.cancelLatent(token, idNumber, latentNumber);
+		Call<Boolean> apiCall = cancelLatentAPI.cancelLatent(idNumber, latentNumber);
 		ApiResponse<Boolean> response = Context.getWebserviceManager().executeApi(apiCall);
 		bypassResponse(execution, response, true);
 	}

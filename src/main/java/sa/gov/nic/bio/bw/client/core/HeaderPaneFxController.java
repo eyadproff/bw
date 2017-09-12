@@ -89,6 +89,7 @@ public class HeaderPaneFxController implements VisibilityControl, AttachableCont
 	
 	public void logout()
 	{
+		coreFxController.cancelRefreshTokenScheduler();
 		coreFxController.stopIdleMonitor();
 		
 		Map<String, String> uiDataMap = new HashMap<>();

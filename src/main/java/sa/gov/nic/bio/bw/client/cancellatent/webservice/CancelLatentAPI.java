@@ -10,5 +10,5 @@ public interface CancelLatentAPI
 {
 	@FormUrlEncoded
 	@POST("services-gateway-biooperation/api/latent/cancelhit/v1")
-	Call<Boolean> cancelLatent(@Header("Authorization") String token, @Field("personId") String personId, @Field("latentRecord") String latentRecord);
+	Call<Boolean> cancelLatent(@Field("personId") String personId, @Field("latentRecord") String latentRecord);
 }

@@ -1,24 +1,34 @@
 package sa.gov.nic.bio.bw.client.home;
 
-import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import org.controlsfx.glyphfont.FontAwesome;
 import org.controlsfx.glyphfont.Glyph;
+import retrofit2.Call;
 import sa.gov.nic.bio.bw.client.core.BodyFxControllerBase;
 import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
+import sa.gov.nic.bio.bw.client.core.webservice.ApiResponse;
+import sa.gov.nic.bio.bw.client.home.webservice.RefreshTokenAPI;
+import sa.gov.nic.bio.bw.client.home.webservice.RefreshTokenBean;
 import sa.gov.nic.bio.bw.client.login.webservice.LoginBean;
 
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.Logger;
 
 /**
  * Created by Fouad on 16-Jul-17.
  */
 public class HomePaneFxController extends BodyFxControllerBase
 {
+	private static final Logger LOGGER = Logger.getLogger(HomePaneFxController.class.getName());
+	
 	@FXML private Label lblLoginTimeText;
 	@FXML private Label lblLoginTime;
 	@FXML private Label lblLastSuccessLoginText;
@@ -48,6 +58,9 @@ public class HomePaneFxController extends BodyFxControllerBase
 		LoginBean loginBean = (LoginBean) inputData.get("resultBean");
 		Context.getUserData().setLoginBean(loginBean);
 		LoginBean.UserInfo userInfo = loginBean.getUserInfo();
+		
+		String userToken = loginBean.getUserToken();
+		coreFxController.scheduleRefreshToken(userToken);
 		
 		String username = userInfo.getUserName();
 		String operatorName = userInfo.getOperatorName() + " (" + userInfo.getOperatorId() + ")";

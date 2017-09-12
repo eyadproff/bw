@@ -30,6 +30,7 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.logging.Logger;
 
 public class AppEntryPoint extends Application
@@ -41,6 +42,7 @@ public class AppEntryPoint extends Application
 	private WorkflowManager workflowManager = new WorkflowManager();
 	private WebserviceManager webserviceManager = new WebserviceManager();
 	private ExecutorService executorService = Executors.newWorkStealingPool();
+	private ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
 	
 	private ResourceBundle labelsBundle;
 	private ResourceBundle errorsBundle;
@@ -192,7 +194,7 @@ public class AppEntryPoint extends Application
 	
 	    UserData userData = new UserData();
 	
-	    Context.init(configManager, workflowManager, webserviceManager, executorService, userData);
+	    Context.init(configManager, workflowManager, webserviceManager, executorService, scheduledExecutorService, userData);
 	
 	    LookupAPI lookupAPI = webserviceManager.getApi(LookupAPI.class);
 	    Call<NicHijriCalendarData> apiCall = lookupAPI.lookupNicHijriCalendarData();
