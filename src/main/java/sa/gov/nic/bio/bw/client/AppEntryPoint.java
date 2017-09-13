@@ -331,7 +331,12 @@ public class AppEntryPoint extends Application
 	
 	    notifyPreloader(ProgressMessage.SUCCESSFULLY_DONE);
 	
-	    primaryStage.setOnCloseRequest(event -> Platform.exit());
+	    primaryStage.setOnCloseRequest(event ->
+        {
+        	Context.getExecutorService().shutdownNow();
+        	Context.getScheduledExecutorService().shutdownNow();
+        	Platform.exit();
+        });
 	    primaryStage.show();
 	    LOGGER.info("The main window is shown");
 	
