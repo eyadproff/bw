@@ -107,7 +107,7 @@ public class HomePaneFxController extends BodyFxControllerBase
 			return;
 		}
 		
-		String[] topMenusArray = topMenus.split(",");
+		String[] topMenusArray = topMenus.split("[,\\s]+");
 		Map<String, Node> icons = new HashMap<>();
 		
 		for(String topMenu : topMenusArray)
@@ -145,7 +145,7 @@ public class HomePaneFxController extends BodyFxControllerBase
 			}
 			
 			String[] subMenusArray = subMenus.split(",");
-			Arrays.stream(subMenusArray).map(s -> "menu." + topMenu.trim() + "." + s.trim()).forEach(allMenus::add);
+			Arrays.stream(subMenusArray).map(s -> "menu." + topMenu + "." + s.trim()).forEach(allMenus::add);
 		}
 		
 		List<String> menus = new ArrayList<>();
@@ -158,7 +158,7 @@ public class HomePaneFxController extends BodyFxControllerBase
 			}
 		}
 		
-		menus.sort(String.CASE_INSENSITIVE_ORDER);
+		//menus.sort(String.CASE_INSENSITIVE_ORDER);
 		coreFxController.getMenuPaneController().setMenus(menus, icons);
 		
 		if(menus.size() == 0)

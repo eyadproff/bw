@@ -14,7 +14,9 @@ public class BusinessData
 		// TODO: temp
 		List<String> cancelLatentRoles = new ArrayList<>();
 		cancelLatentRoles.add("WSLatentDeleter");
+		//menuRolesMap.put("menu.query.queryXAfis", cancelLatentRoles);
 		menuRolesMap.put("menu.delete.cancelLatent", cancelLatentRoles);
+		menuRolesMap.put("menu.delete.delinkXAfis", cancelLatentRoles);
 	}
 	
 	public boolean userHasMenuAccess(List<String> userRoles, String menuId)

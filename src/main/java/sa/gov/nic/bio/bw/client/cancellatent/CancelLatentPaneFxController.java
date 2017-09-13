@@ -54,7 +54,7 @@ public class CancelLatentPaneFxController extends BodyFxControllerBase
 	@Override
 	public void onControllerReady()
 	{
-		// request focus once the scene is attached to txtUsername
+		// request focus once the scene is attached to txtIdNumber
 		txtIdNumber.sceneProperty().addListener((observable, oldValue, newValue) -> txtIdNumber.requestFocus());
 	}
 	

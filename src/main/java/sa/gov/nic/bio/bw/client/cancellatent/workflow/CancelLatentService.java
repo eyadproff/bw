@@ -18,6 +18,7 @@ public class CancelLatentService  extends ServiceBase
 	{
 		String idNumber = (String) execution.getVariable("idNumber");
 		String latentNumber = (String) execution.getVariable("latentNumber");
+		execution.removeVariables();
 		
 		LOGGER.fine("idNumber = " + idNumber);
 		LOGGER.fine("latentNumber = " + latentNumber);

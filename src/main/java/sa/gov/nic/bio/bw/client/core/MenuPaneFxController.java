@@ -178,67 +178,68 @@ public class MenuPaneFxController implements VisibilityControl, AttachableContro
 			if(newValue == null) return; // un-select action
 			
 			if(selectedMenu != null) selectedMenu.setSelected(false);
-			if(selectedListView != null && selectedListView != listView)
-				selectedListView.getSelectionModel().clearSelection();
+			if(selectedListView != null && selectedListView != listView) selectedListView.getSelectionModel().clearSelection();
+			
 			selectedMenu = newValue;
 			selectedListView = listView;
 			selectedMenu.setSelected(true);
 			
 			onSelectMenu(selectedMenu);
 		});
-		listView.setCellFactory(param ->
-            new ListCell<MenuItem>()
+		
+		listView.setCellFactory(param -> new ListCell<MenuItem>()
+        {
+            @Override
+            protected void updateItem(MenuItem item, boolean empty)
             {
-                @Override
-                protected void updateItem(MenuItem item, boolean empty)
-                {
-                    super.updateItem(item, empty);
+                super.updateItem(item, empty);
 
-                    if(empty || item == null)
-                    {
-                        setText(null);
-                        setGraphic(null);
-                    }
-                    else
-                    {
-	                    applyCss();
-	                    LabeledText labeledText = (LabeledText) lookup(".text");
-	                    
-                        setText(item.getLabel());
-	
-	                    Font font = labeledText.getFont();
-	                    labeledText.fontProperty().unbind();
-	                    labeledText.fontProperty().set(Font.font(font.getFamily(), item.isSelected() ? FontWeight.BOLD : FontWeight.NORMAL, font.getSize()));
-	                    
-	                    ListCell<MenuItem> listCell = this;
-	                    listCell.setCursor(item.isSelected() ? Cursor.DEFAULT : Cursor.HAND);
-	
-	                    item.selectedProperty().addListener((observable, oldValue, newValue) ->
-                        {
-                            Font f = labeledText.getFont();
-                            f = Font.font(f.getFamily(), newValue ?
-                                    FontWeight.BOLD : FontWeight.NORMAL, f.getSize());
-                            labeledText.fontProperty().set(f);
-	                        listCell.setCursor(newValue ? Cursor.DEFAULT : Cursor.HAND);
-                        });
-                        
-                        if(item.isSelected())
-                        {
-	                        AnchorPane arrowPane = new AnchorPane();
-	                        Polygon polygon = new Polygon();
-	                        polygon.getPoints().addAll(0.0, 5.0, 5.0, 0.0, 5.0, 10.0);
-	                        polygon.setFill(Color.rgb(0x39, 0x87,0x55));
-	                        arrowPane.getChildren().add(polygon);
-	                        setGraphic(arrowPane);
-	
-	                        arrowPane.translateXProperty().bind(widthProperty().subtract(
-			                    arrowPane.widthProperty().add(paddingProperty().getValue().getRight()))
-	                        );
-	                        labeledText.translateXProperty().bind(arrowPane.widthProperty().add(4).negate());
-                        }
-                    }
+                if(empty || item == null)
+                {
+                    setText(null);
+                    setGraphic(null);
                 }
-            });
+                else
+                {
+                    applyCss();
+                    LabeledText labeledText = (LabeledText) lookup(".text");
+                    
+                    setText(item.getLabel());
+
+                    Font font = labeledText.getFont();
+                    labeledText.fontProperty().unbind();
+                    labeledText.fontProperty().set(Font.font(font.getFamily(), item.isSelected() ? FontWeight.BOLD : FontWeight.NORMAL, font.getSize()));
+                    
+                    ListCell<MenuItem> listCell = this;
+                    listCell.setCursor(item.isSelected() ? Cursor.DEFAULT : Cursor.HAND);
+
+                    item.selectedProperty().addListener((observable, oldValue, newValue) ->
+                    {
+                        Font f = labeledText.getFont();
+                        f = Font.font(f.getFamily(), newValue ? FontWeight.BOLD : FontWeight.NORMAL, f.getSize());
+                        labeledText.fontProperty().set(f);
+                        listCell.setCursor(newValue ? Cursor.DEFAULT : Cursor.HAND);
+                    });
+                    
+                    if(item.isSelected())
+                    {
+                        AnchorPane arrowPane = new AnchorPane();
+                        Polygon polygon = new Polygon();
+                        polygon.getPoints().addAll(0.0, 5.0, 5.0, 0.0, 5.0, 10.0);
+                        polygon.setFill(Color.rgb(0x39, 0x87,0x55));
+                        arrowPane.getChildren().add(polygon);
+                        setGraphic(arrowPane);
+
+                        arrowPane.translateXProperty().bind(widthProperty().subtract(
+		                    arrowPane.widthProperty().add(paddingProperty().getValue().getRight()))
+                        );
+                        labeledText.translateXProperty().bind(arrowPane.widthProperty().add(4).negate());
+                    }
+                    else if(getGraphic() != null) getGraphic().setVisible(false); // hide the arrow due un-select
+                }
+            }
+        });
+		
 		return listView;
 	}
 	
@@ -248,6 +249,5 @@ public class MenuPaneFxController implements VisibilityControl, AttachableContro
 		uiDataMap.put("menuId", menuItem.getMenuId());
 		
 		coreFxController.submitFormTask(uiDataMap);
-		//Context.getWorkflowManager().raiseSignalEvent(menuItem.getMenuId());
 	}
 }

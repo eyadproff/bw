@@ -5,6 +5,7 @@ import org.activiti.engine.repository.DeploymentBuilder;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
+import org.activiti.engine.task.TaskInfo;
 import sa.gov.nic.bio.bw.client.core.interfaces.UiProxy;
 
 import java.util.List;
@@ -69,7 +70,7 @@ public class WorkflowManager
 		/*runtimeService.createExecutionQuery()
 				.list().stream().peek(e -> System.out.println(e.getId())).forEach(e -> runtimeService.signalEventReceived("The Signal", e.getId()));*/
 		//runtimeService.setVariable(execution.getId(), "menuId", menuId);
-		runtimeService.signalEventReceived("The Signal");
+		//runtimeService.signalEventReceived("The Signal");
 	}
 	
 	private void executeUserTask(UiProxy uiProxy)
