@@ -75,8 +75,8 @@ public class LoginPaneFxController extends BodyFxControllerBase implements Langu
 		notificationPane.hide();
 		disableUiControls(true);
 		
-		String username = txtUsername.getText();
-		String password = txtPassword.getText();
+		String username = txtUsername.getText().trim();
+		String password = txtPassword.getText().trim();
 		
 		Map<String, String> uiDataMap = new HashMap<>();
 		uiDataMap.put("username", username);

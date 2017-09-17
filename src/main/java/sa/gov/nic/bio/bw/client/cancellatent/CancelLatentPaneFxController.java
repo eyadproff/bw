@@ -92,8 +92,8 @@ public class CancelLatentPaneFxController extends BodyFxControllerBase
 	
 	public void onCancelLatentButtonClicked(ActionEvent actionEvent)
 	{
-		String idNumber = txtIdNumber.getText();
-		String latentNumber = txtLatentNumber.getText();
+		String idNumber = txtIdNumber.getText().trim();
+		String latentNumber = txtLatentNumber.getText().trim();
 		
 		String headerText = messagesBundle.getString("cancelLatent.confirmation.header");
 		String contentText = String.format(messagesBundle.getString("cancelLatent.confirmation.message"), latentNumber, idNumber);

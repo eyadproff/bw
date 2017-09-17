@@ -87,8 +87,8 @@ public class DelinkXAfisPaneFxController extends BodyFxControllerBase
 	
 	public void onDelinkXAfisButtonClicked(ActionEvent actionEvent)
 	{
-		String personId = txtPersonId.getText();
-		String criminalId = txtCriminalId.getText();
+		String personId = txtPersonId.getText().trim();
+		String criminalId = txtCriminalId.getText().trim();
 		
 		String headerText = messagesBundle.getString("delinkXAfis.confirmation.header");
 		String contentText = String.format(messagesBundle.getString("delinkXAfis.confirmation.message"), criminalId, personId);
