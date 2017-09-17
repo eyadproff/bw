@@ -11,23 +11,19 @@ import sa.gov.nic.bio.bw.client.core.ConfigManager;
 import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.CoreFxController;
 import sa.gov.nic.bio.bw.client.core.beans.UserData;
-import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
-import sa.gov.nic.bio.bw.client.core.utils.GuiLanguage;
-import sa.gov.nic.bio.bw.client.core.utils.ProgressMessage;
+import sa.gov.nic.bio.bw.client.core.utils.*;
 import sa.gov.nic.bio.bw.client.core.webservice.ApiResponse;
 import sa.gov.nic.bio.bw.client.core.webservice.LookupAPI;
 import sa.gov.nic.bio.bw.client.core.webservice.NicHijriCalendarData;
 import sa.gov.nic.bio.bw.client.core.webservice.WebserviceManager;
 import sa.gov.nic.bio.bw.client.core.workflow.WorkflowManager;
 
+import javax.jnlp.BasicService;
+import javax.jnlp.ServiceManager;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Method;
 import java.net.URL;
-import java.util.List;
-import java.util.Locale;
-import java.util.MissingResourceException;
-import java.util.ResourceBundle;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -66,13 +62,21 @@ public class AppEntryPoint extends Application
     {
 	    LOGGER.entering(AppEntryPoint.class.getName(), "init()");
 	
+	    if(AppInstanceManager.checkIfAlreadyRunning())
+	    {
+		    String errorCode = "C001-00006";
+		    notifyPreloader(new ProgressMessage(null, errorCode));
+		    return;
+	    }
+	    else AppInstanceManager.registerInstance();
+	
 	    try
 	    {
 		    configManager.load();
 	    }
 	    catch(IOException e)
 	    {
-		    String errorCode = "C001-00006";
+		    String errorCode = "C001-00007";
 		    notifyPreloader(new ProgressMessage(e, errorCode));
 		    return;
 	    }
@@ -85,7 +89,7 @@ public class AppEntryPoint extends Application
 	    }
 	    catch(Exception e)
 	    {
-		    String errorCode = "C001-00007";
+		    String errorCode = "C001-00008";
 		    notifyPreloader(new ProgressMessage(e, errorCode));
 		    return;
 	    }
@@ -96,7 +100,7 @@ public class AppEntryPoint extends Application
 	    }
 	    catch(ActivitiIllegalArgumentException e)
 	    {
-		    String errorCode = "C001-00008";
+		    String errorCode = "C001-00009";
 		    notifyPreloader(new ProgressMessage(e, errorCode));
 		    return;
 	    }
@@ -168,22 +172,21 @@ public class AppEntryPoint extends Application
 	    // retrieve the codebase URL from the JNLP
 	    try
 	    {
-		    Method lookupMethod = Class.forName("javax.jnlp.ServiceManager").getMethod("lookup", String.class);
-		    Object basicService = lookupMethod.invoke(null, "javax.jnlp.BasicService");
-		    Method getCodeBaseMethod = Class.forName("javax.jnlp.BasicService").getMethod("getCodeBase");
-		    URL codebase = (URL) getCodeBaseMethod.invoke(basicService);
+	    	BasicService basicService = (BasicService) ServiceManager.lookup("javax.jnlp.BasicService");
+		    URL codebase = basicService.getCodeBase();
+		    
 		    webserviceBaseUrl = codebase.getHost();
 		    int port = codebase.getPort();
 		    if(port > 0) webserviceBaseUrl += ":" + port;
 	    }
-	    catch(Exception e)
+	    catch(Exception | NoClassDefFoundError e)
 	    {
 		    LOGGER.warning("This is not a web-start application. The default server address will be used!");
 	    }
 	
 	    if(webserviceBaseUrl == null)
 	    {
-		    String errorCode = "C001-00009";
+		    String errorCode = "C001-00010";
 		    notifyPreloader(new ProgressMessage(null, errorCode));
 		    return;
 	    }
@@ -209,7 +212,7 @@ public class AppEntryPoint extends Application
 		    }
 		    catch(Exception e)
 		    {
-			    String errorCode = "C001-00010";
+			    String errorCode = "C001-00011";
 			    notifyPreloader(new ProgressMessage(e, errorCode));
 			    return;
 		    }
@@ -219,24 +222,13 @@ public class AppEntryPoint extends Application
 	    	int httpCode = apiResponse.getHttpCode();
 		    String errorCode = apiResponse.getErrorCode();
 		    if(errorCode != null) notifyPreloader(new ProgressMessage(null, errorCode, String.valueOf(httpCode)));
-		    else notifyPreloader(new ProgressMessage(null, "C001-00011"));
+		    else notifyPreloader(new ProgressMessage(null, "C001-00012"));
 		    return;
 	    }
 	
 	    try
 	    {
 		    labelsBundle = AppUtils.getResourceBundle(CoreFxController.RB_LABELS_FILE, initialLanguage);
-	    }
-	    catch(MissingResourceException e)
-	    {
-		    String errorCode = "C001-00012";
-		    notifyPreloader(new ProgressMessage(e, errorCode));
-		    return;
-	    }
-	
-	    try
-	    {
-		    errorsBundle = AppUtils.getResourceBundle(CoreFxController.RB_ERRORS_FILE, initialLanguage);
 	    }
 	    catch(MissingResourceException e)
 	    {
@@ -247,7 +239,7 @@ public class AppEntryPoint extends Application
 	
 	    try
 	    {
-		    messagesBundle = AppUtils.getResourceBundle(CoreFxController.RB_MESSAGES_FILE, initialLanguage);
+		    errorsBundle = AppUtils.getResourceBundle(CoreFxController.RB_ERRORS_FILE, initialLanguage);
 	    }
 	    catch(MissingResourceException e)
 	    {
@@ -256,10 +248,21 @@ public class AppEntryPoint extends Application
 		    return;
 	    }
 	
+	    try
+	    {
+		    messagesBundle = AppUtils.getResourceBundle(CoreFxController.RB_MESSAGES_FILE, initialLanguage);
+	    }
+	    catch(MissingResourceException e)
+	    {
+		    String errorCode = "C001-00015";
+		    notifyPreloader(new ProgressMessage(e, errorCode));
+		    return;
+	    }
+	
 	    InputStream appIconStream = AppUtils.getResourceAsStream(CoreFxController.APP_ICON_FILE);
 	    if(appIconStream == null)
 	    {
-		    String errorCode = "C001-00015";
+		    String errorCode = "C001-00016";
 		    notifyPreloader(new ProgressMessage(null, errorCode));
 		    return;
 	    }
@@ -268,7 +271,7 @@ public class AppEntryPoint extends Application
 	    fxmlUrl = AppUtils.getResourceURL(CoreFxController.FXML_FILE);
 	    if(fxmlUrl == null)
 	    {
-		    String errorCode = "C001-00016";
+		    String errorCode = "C001-00017";
 		    notifyPreloader(new ProgressMessage(null, errorCode));
 		    return;
 	    }
@@ -277,7 +280,7 @@ public class AppEntryPoint extends Application
 	    
 	    if(version == null)
 	    {
-		    String errorCode = "C001-00017";
+		    String errorCode = "C001-00018";
 		    notifyPreloader(new ProgressMessage(null, errorCode));
 		    return;
 	    }
@@ -289,7 +292,7 @@ public class AppEntryPoint extends Application
 	    }
 	    catch(MissingResourceException e)
 	    {
-		    String errorCode = "C001-00018";
+		    String errorCode = "C001-00019";
 		    notifyPreloader(new ProgressMessage(e, errorCode));
 		    return;
 	    }
@@ -316,7 +319,7 @@ public class AppEntryPoint extends Application
 	    }
 	    catch(IOException e)
 	    {
-		    String errorCode = "C001-00019";
+		    String errorCode = "C001-00020";
 		    notifyPreloader(new ProgressMessage(e, errorCode));
 		    return;
 	    }
