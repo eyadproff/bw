@@ -85,7 +85,7 @@ public class AppEntryPoint extends Application
 	
 	    try
 	    {
-		    workflowFilePaths = AppUtils.listResourceFiles(getClass().getProtectionDomain(), ".bpmn20.xml");
+		    workflowFilePaths = AppUtils.listResourceFiles(getClass().getProtectionDomain(), ".*\\.bpmn20.xml$");
 	    }
 	    catch(Exception e)
 	    {

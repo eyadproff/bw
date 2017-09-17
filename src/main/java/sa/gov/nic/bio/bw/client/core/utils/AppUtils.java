@@ -85,7 +85,7 @@ public final class AppUtils
 		return null;
 	}
 	
-	public static List<String> listResourceFiles(ProtectionDomain protectionDomain, String endsWith) throws IOException
+	public static List<String> listResourceFiles(ProtectionDomain protectionDomain, String matcher) throws IOException
 	{
 		List<String> resources = new ArrayList<>();
 		
@@ -98,7 +98,7 @@ public final class AppUtils
 			if(e == null) break;
 			String name = e.getName();
 			
-			if(name.endsWith(endsWith)) resources.add(name);
+			if(name.matches(matcher)) resources.add(name);
 		}
 		
 		return resources;

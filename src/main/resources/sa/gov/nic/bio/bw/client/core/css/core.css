@@ -127,3 +127,7 @@
 .nav > .accordion > .titled-pane .list-cell:hover:empty {
    -fx-background-color: transparent;
 }
+
+.notification-bar > .pane > .label {
+    -fx-wrap-text: true;
+}
