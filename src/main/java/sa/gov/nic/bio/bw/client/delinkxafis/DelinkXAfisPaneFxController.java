@@ -24,6 +24,8 @@ public class DelinkXAfisPaneFxController extends BodyFxControllerBase
 	{
 		txtPersonId.textProperty().addListener((observable, oldValue, newValue) ->
 		{
+			if(newValue.length() > 10) txtPersonId.setText(oldValue);
+			
 			if(!newValue.matches("\\d*"))
 			{
 				txtPersonId.setText(newValue.replaceAll("[^\\d]", ""));
