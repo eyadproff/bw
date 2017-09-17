@@ -16,15 +16,15 @@ public class CancelLatentService  extends ServiceBase
 	@Override
 	public void execute(DelegateExecution execution)
 	{
-		String idNumber = (String) execution.getVariable("idNumber");
-		String latentNumber = (String) execution.getVariable("latentNumber");
+		String personId = (String) execution.getVariable("personId");
+		String latentId = (String) execution.getVariable("latentId");
 		execution.removeVariables();
 		
-		LOGGER.fine("idNumber = " + idNumber);
-		LOGGER.fine("latentNumber = " + latentNumber);
+		LOGGER.fine("personId = " + personId);
+		LOGGER.fine("latentId = " + latentId);
 		
 		CancelLatentAPI cancelLatentAPI = Context.getWebserviceManager().getApi(CancelLatentAPI.class);
-		Call<Boolean> apiCall = cancelLatentAPI.cancelLatent(idNumber, latentNumber);
+		Call<Boolean> apiCall = cancelLatentAPI.cancelLatent(personId, latentId);
 		ApiResponse<Boolean> response = Context.getWebserviceManager().executeApi(apiCall);
 		bypassResponse(execution, response, true);
 	}

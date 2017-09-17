@@ -9,5 +9,5 @@ public interface DelinkXAfisAPI
 {
 	@FormUrlEncoded
 	@POST("services-gateway-biooperation/api/xafis/delink/v1")
-	Call<Boolean> delinkXAfis(@Field("personId") String personId, @Field("criminalId") String criminalId);
+	Call<Boolean> delinkXAfis(@Field("person-id") String personId, @Field("criminal-id") String criminalId);
 }

@@ -10,5 +10,5 @@ public interface CancelLatentAPI
 {
 	@FormUrlEncoded
 	@POST("services-gateway-biooperation/api/latent/delink/v1")
-	Call<Boolean> cancelLatent(@Field("personId") String personId, @Field("latentRecord") String latentRecord);
+	Call<Boolean> cancelLatent(@Field("person-id") String personId, @Field("latent-id") String latentId);
 }

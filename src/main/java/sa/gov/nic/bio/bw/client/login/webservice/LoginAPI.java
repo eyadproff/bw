@@ -9,5 +9,5 @@ public interface LoginAPI
 {
 	@FormUrlEncoded
 	@POST("services-gateway-identity/api/identity/login/v1")
-	Call<LoginBean> login(@Field("username") String username, @Field("password") String password, @Field("ipaddress") String ipAddress);
+	Call<LoginBean> login(@Field("username") String username, @Field("password") String password, @Field("ipaddress") String ipAddress, @Field("appcode") String appCode, @Field("useraccounttype") String userAccountType);
 }
