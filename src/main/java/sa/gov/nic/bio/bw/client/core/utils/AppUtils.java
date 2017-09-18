@@ -17,6 +17,7 @@ import java.net.*;
 import java.nio.charset.StandardCharsets;
 import java.security.ProtectionDomain;
 import java.text.NumberFormat;
+import java.time.DateTimeException;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
@@ -159,6 +160,7 @@ public final class AppUtils
 			minYear = Math.min(minYear, year);
 		}
 		
+		System.out.println(LocalDateTime.ofInstant(Instant.ofEpochMilli(nicHijriCalendarData.getIsoStartDate()), AppConstants.SAUDI_ZONE).toLocalDate());
 		int isoStart = (int) LocalDateTime.ofInstant(Instant.ofEpochMilli(nicHijriCalendarData.getIsoStartDate()), AppConstants.SAUDI_ZONE).toLocalDate().toEpochDay();
 		
 		Field initCompleteField = HijrahChronology.class.getDeclaredField("initComplete");
@@ -212,7 +214,7 @@ public final class AppUtils
 		}
 	}
 	
-	public static ChronoZonedDateTime<HijrahDate> milliSecondsToHijriDataTime(long milliSeconds)
+	public static ChronoZonedDateTime<HijrahDate> milliSecondsToHijriDataTime(long milliSeconds) throws DateTimeException // thrown in case of "Hijrah date out of range"
 	{
 		return nicChronology.zonedDateTime(Instant.ofEpochMilli(milliSeconds).atZone(AppConstants.SAUDI_ZONE));
 	}
@@ -222,7 +224,7 @@ public final class AppUtils
 		return Instant.ofEpochMilli(milliSeconds).atZone(AppConstants.SAUDI_ZONE);
 	}
 	
-	public static String formatHijriGregorianDateTime(long milliSeconds)
+	public static String formatHijriGregorianDateTime(long milliSeconds) throws DateTimeException // thrown in case of "Hijrah date out of range"
 	{
 		ChronoZonedDateTime<HijrahDate> hijriDateTime = AppUtils.milliSecondsToHijriDataTime(milliSeconds);
 		ZonedDateTime gregorianDateTime = AppUtils.milliSecondsToGregorianDataTime(milliSeconds);

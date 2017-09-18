@@ -15,6 +15,7 @@ import sa.gov.nic.bio.bw.client.home.webservice.RefreshTokenAPI;
 import sa.gov.nic.bio.bw.client.home.webservice.RefreshTokenBean;
 import sa.gov.nic.bio.bw.client.login.webservice.LoginBean;
 
+import java.time.DateTimeException;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
@@ -85,6 +86,7 @@ public class HomePaneFxController extends BodyFxControllerBase
 		int failedLoginCount = userInfo.getBadPasswordCount();
 		long lastPasswordChangeTime = userInfo.getPasswordLastSet();
 		long passwordExpirationTime = userInfo.getAccountExperiyDate();
+		System.out.println("passwordExpirationTime = " + passwordExpirationTime);
 		
 		setLabelsText(loginTime, true, lblLoginTimeText, lblLoginTime);
 		setLabelsText(lastLogonTime, true, lblLastSuccessLoginText, lblLastSuccessLogin);
@@ -172,13 +174,24 @@ public class HomePaneFxController extends BodyFxControllerBase
 	
 	private void setLabelsText(long value, boolean isDate, Label textLabel, Label valueLabel)
 	{
+		boolean hideIt = false;
+		
 		if(value > 0)
 		{
-			String sDateTime = isDate ? AppUtils.formatHijriGregorianDateTime(value) :
-										AppUtils.replaceNumbers(value, Locale.getDefault());
-			valueLabel.setText(sDateTime);
+			try
+			{
+				String sDateTime = isDate ? AppUtils.formatHijriGregorianDateTime(value) :
+						AppUtils.replaceNumbers(value, Locale.getDefault());
+				valueLabel.setText(sDateTime);
+			}
+			catch(DateTimeException e) // date out of range?
+			{
+				hideIt = true;
+			}
 		}
-		else
+		else hideIt = true;
+		
+		if(hideIt)
 		{
 			textLabel.setVisible(false);
 			textLabel.setManaged(false);
