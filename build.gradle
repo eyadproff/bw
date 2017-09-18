@@ -1,6 +1,7 @@
 import sa.gov.nic.bio.bw.client.tools.SignJars
+import org.apache.tools.ant.filters.ReplaceTokens
 
-project.version = '1.0'
+project.version = '1.0.0'
 group = 'sa.gov.nic.bio'
 
 apply plugin: 'java'
@@ -51,6 +52,15 @@ dependencies {
     implementation name: "slf4j-nop-1.7.25"
     compileOnly name: "javaws-8.144"
     testImplementation name: "junit-4.12"
+}
+
+processResources {
+    filesMatching('**/config.properties') {
+        def env = System.getenv('build-environemnt')
+        if(env == 'INT') filter(ReplaceTokens, tokens:['APP_VERSION': project.version + '-SNAPSHOT' + new Date().format('yyyyMMddHHmmss')])
+        else if(env == 'PROD') filter(ReplaceTokens, tokens:['APP_VERSION': project.version])
+        else /*(DEV)*/ filter(ReplaceTokens, tokens:['APP_VERSION': project.version + '-DEV'])
+    }
 }
 
 jar {

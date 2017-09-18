@@ -86,7 +86,6 @@ public class HomePaneFxController extends BodyFxControllerBase
 		int failedLoginCount = userInfo.getBadPasswordCount();
 		long lastPasswordChangeTime = userInfo.getPasswordLastSet();
 		long passwordExpirationTime = userInfo.getAccountExperiyDate();
-		System.out.println("passwordExpirationTime = " + passwordExpirationTime);
 		
 		setLabelsText(loginTime, true, lblLoginTimeText, lblLoginTime);
 		setLabelsText(lastLogonTime, true, lblLastSuccessLoginText, lblLastSuccessLogin);
