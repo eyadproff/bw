@@ -57,6 +57,7 @@ dependencies {
 processResources {
     filesMatching('**/config.properties') {
         def env = System.getenv('build-environemnt')
+        println System.getenv('build-environemnt = ' + env)
         if(env == 'INT') filter(ReplaceTokens, tokens:['APP_VERSION': project.version + '-SNAPSHOT' + new Date().format('yyyyMMddHHmmss')])
         else if(env == 'PROD') filter(ReplaceTokens, tokens:['APP_VERSION': project.version])
         else /*(DEV)*/ filter(ReplaceTokens, tokens:['APP_VERSION': project.version + '-DEV'])
