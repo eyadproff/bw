@@ -1,3 +1,10 @@
-# Biometrics Workstation (BW) desktop application
+# Biometrics Workstation (BW) Client
 
-TODO: write detailed description regarding the project structure and what libraries are used.
+To build then run the application locally as standalone:
+
+    gradle run
+
+
+To build then package the web-start files (`build/web-start`)
+
+    gradle packageWebStart
