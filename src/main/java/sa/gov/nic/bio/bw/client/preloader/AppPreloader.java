@@ -9,23 +9,38 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.concurrent.CountDownLatch;
-import java.util.logging.Level;
-import java.util.logging.LogManager;
-import java.util.logging.Logger;
+import java.util.logging.*;
 
 import javafx.stage.StageStyle;
-import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
-import sa.gov.nic.bio.bw.client.core.utils.DialogUtils;
-import sa.gov.nic.bio.bw.client.core.utils.GuiLanguage;
-import sa.gov.nic.bio.bw.client.core.utils.ProgressMessage;
+import sa.gov.nic.bio.bw.client.core.utils.*;
 
 
 public class AppPreloader extends Preloader
 {
+	static
+	{
+		Locale.setDefault(GuiLanguage.ARABIC.getLocale());
+		
+		InputStream inputStream = AppPreloader.class.getResourceAsStream("/sa/gov/nic/bio/bw/client/core/config/logging.properties");
+		try
+		{
+			LogManager.getLogManager().readConfiguration(inputStream);
+			Handler[] handlers = Logger.getGlobal().getParent().getHandlers();
+			Formatter formatter = new LogFormatter();
+			for(Handler h : handlers) h.setFormatter(formatter);
+		}
+		catch(IOException e)
+		{
+			Logger.getAnonymousLogger().severe("Could not load logging.properties file");
+			Logger.getAnonymousLogger().severe(e.getMessage());
+		}
+	}
+	
 	private static final String FXML_FILE = "sa/gov/nic/bio/bw/client/preloader/fxml/splash_screen.fxml";
 	private static final String APP_ICON_FILE = "sa/gov/nic/bio/bw/client/preloader/images/app_icon.png";
 	private static final String RB_LABELS_FILE = "sa/gov/nic/bio/bw/client/preloader/bundles/labels";
@@ -41,19 +56,6 @@ public class AppPreloader extends Preloader
 	@Override
 	public void init() throws Exception
 	{
-		Locale.setDefault(GuiLanguage.ARABIC.getLocale());
-		
-		InputStream inputStream = AppUtils.getResourceAsStream("sa/gov/nic/bio/bw/client/core/config/logging.properties");
-		try
-		{
-			LogManager.getLogManager().readConfiguration(inputStream);
-		}
-		catch(IOException e)
-		{
-			Logger.getAnonymousLogger().severe("Could not load logging.properties file");
-			Logger.getAnonymousLogger().severe(e.getMessage());
-		}
-		
 		CountDownLatch latch = new CountDownLatch(1); // used to wait for the dialog exit before leaving init() method
 		
 		try

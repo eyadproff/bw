@@ -160,7 +160,6 @@ public final class AppUtils
 			minYear = Math.min(minYear, year);
 		}
 		
-		System.out.println(LocalDateTime.ofInstant(Instant.ofEpochMilli(nicHijriCalendarData.getIsoStartDate()), AppConstants.SAUDI_ZONE).toLocalDate());
 		int isoStart = (int) LocalDateTime.ofInstant(Instant.ofEpochMilli(nicHijriCalendarData.getIsoStartDate()), AppConstants.SAUDI_ZONE).toLocalDate().toEpochDay();
 		
 		Field initCompleteField = HijrahChronology.class.getDeclaredField("initComplete");
