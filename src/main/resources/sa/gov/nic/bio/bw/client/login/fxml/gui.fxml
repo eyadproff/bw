@@ -16,9 +16,10 @@
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.ProgressIndicator?>
 <?import org.controlsfx.control.NotificationPane?>
+<?import javafx.scene.layout.AnchorPane?>
 <NotificationPane xmlns:fx="http://javafx.com/fxml" xmlns="http://javafx.com/javafx/8"
-           fx:controller="sa.gov.nic.bio.bw.client.login.LoginPaneFxController"
-           fx:id="notificationPane" stylesheets="@../css/login.css">
+                  fx:controller="sa.gov.nic.bio.bw.client.login.LoginPaneFxController"
+                  fx:id="notificationPane" stylesheets="@../css/login.css">
     <content>
         <VBox alignment="CENTER" spacing="70">
             <ImageView>
@@ -35,7 +36,10 @@
                         <Label text="%label.password" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
                         <PasswordField fx:id="txtPassword" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
                         <Label text="%label.language" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
-                        <ComboBox fx:id="cbLanguage" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+                        <VBox GridPane.columnIndex="1" GridPane.rowIndex="2">
+                            <ComboBox visible="false" managed="false"/> <!-- workaround to remove the additional arrow -->
+                            <ComboBox fx:id="cbLanguage"/>
+                        </VBox>
                     </GridPane>
                 </HBox>
                 <FlowPane alignment="CENTER" hgap="10">

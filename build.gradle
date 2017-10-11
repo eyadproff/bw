@@ -33,7 +33,7 @@ dependencies {
     implementation name: "commons-email-1.5"
     implementation name: "commons-lang3-3.6"
     implementation name: "commons-logging-1.2"
-    implementation name: "controlsfx-8.40.13"
+    implementation name: "controlsfx-8.40.14"
     implementation name: "converter-jackson-2.3.0"
     implementation name: "h2-1.4.196"
     implementation name: "jackson-annotations-2.9.0"
@@ -97,7 +97,7 @@ keytool -importkeystore -srcstoretype PKCS12 -deststoretype JKS -srcstorepass bw
 
 */
 
-task packageWebStart {
+task packageWebStart(group: 'web-start') {
     doLast {
         String jnlpTemplate = new File("build-resources/bw-template.jnlp").getText('UTF-8')
         def jars = StringBuilder.getDeclaredConstructor().newInstance()
@@ -214,11 +214,16 @@ task packageWebStart {
                 commandLine 'pack200', fileName + ".pack.gz", fileName
             }
         }
+
+        // delete the un-compressed jars
+        fileTree(dir: 'build/web-start', include: '**/*.jar').visit { FileVisitDetails details ->
+            details.file.delete()
+        }
     }
 }
 packageWebStart.dependsOn(copyDependentJarsTask)
 
-task runWebStart(type: Exec, group: 'run') {
+task runWebStart(type: Exec, group: 'web-start') {
     workingDir 'build/web-start'
     commandLine 'javaws', 'APPLICATION.JNLP'
 }

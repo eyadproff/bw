@@ -25,9 +25,9 @@ public abstract class BodyFxControllerBase implements BodyFxController
 	
 	@FXML protected NotificationPane notificationPane;
 	
-	private Image successIcon = new Image(AppUtils.getResourceAsStream("sa/gov/nic/bio/bw/client/core/images/success.png"));
-	private Image warningIcon = new Image(AppUtils.getResourceAsStream("sa/gov/nic/bio/bw/client/core/images/warning.png"));
-	private Image errorIcon = new Image(AppUtils.getResourceAsStream("sa/gov/nic/bio/bw/client/core/images/error.png"));
+	private Image successIcon = new Image(Thread.currentThread().getContextClassLoader().getResourceAsStream("sa/gov/nic/bio/bw/client/core/images/success.png"));
+	private Image warningIcon = new Image(Thread.currentThread().getContextClassLoader().getResourceAsStream("sa/gov/nic/bio/bw/client/core/images/warning.png"));
+	private Image errorIcon = new Image(Thread.currentThread().getContextClassLoader().getResourceAsStream("sa/gov/nic/bio/bw/client/core/images/error.png"));
 	
 	@Override
 	public URL getFxmlLocation()

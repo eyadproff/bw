@@ -15,10 +15,7 @@ import sa.gov.nic.bio.bw.client.core.beans.BusinessData;
 import sa.gov.nic.bio.bw.client.core.beans.GuiState;
 import sa.gov.nic.bio.bw.client.core.beans.StateBundle;
 import sa.gov.nic.bio.bw.client.core.interfaces.*;
-import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
-import sa.gov.nic.bio.bw.client.core.utils.DialogUtils;
-import sa.gov.nic.bio.bw.client.core.utils.GuiLanguage;
-import sa.gov.nic.bio.bw.client.core.utils.IdleMonitor;
+import sa.gov.nic.bio.bw.client.core.utils.*;
 import sa.gov.nic.bio.bw.client.core.webservice.ApiResponse;
 import sa.gov.nic.bio.bw.client.home.webservice.RefreshTokenAPI;
 import sa.gov.nic.bio.bw.client.home.webservice.RefreshTokenBean;
@@ -257,7 +254,7 @@ public class CoreFxController
 		ResourceBundle labelsBundle;
 		try
 		{
-			labelsBundle = AppUtils.getResourceBundle(resourceBundleCollection.getLabelsBundlePath(), language);
+			labelsBundle = ResourceBundle.getBundle(resourceBundleCollection.getLabelsBundlePath(), language.getLocale(), new UTF8Control());
 		}
 		catch(MissingResourceException e)
 		{
@@ -269,7 +266,7 @@ public class CoreFxController
 		ResourceBundle errorsBundle;
 		try
 		{
-			errorsBundle = AppUtils.getResourceBundle(resourceBundleCollection.getErrorsBundlePath(), language);
+			errorsBundle = ResourceBundle.getBundle(resourceBundleCollection.getErrorsBundlePath(), language.getLocale(), new UTF8Control());
 		}
 		catch(MissingResourceException e)
 		{
@@ -281,7 +278,7 @@ public class CoreFxController
 		ResourceBundle messagesBundle;
 		try
 		{
-			messagesBundle = AppUtils.getResourceBundle(resourceBundleCollection.getMessagesBundlePath(), language);
+			messagesBundle = ResourceBundle.getBundle(resourceBundleCollection.getMessagesBundlePath(), language.getLocale(), new UTF8Control());
 		}
 		catch(MissingResourceException e)
 		{
@@ -386,7 +383,7 @@ public class CoreFxController
 		ResourceBundle labelsBundle;
 		try
 		{
-			labelsBundle = AppUtils.getResourceBundle(RB_LABELS_FILE, toLanguage);
+			labelsBundle = ResourceBundle.getBundle(RB_LABELS_FILE, toLanguage.getLocale(), new UTF8Control());
 		}
 		catch(MissingResourceException e)
 		{
@@ -398,7 +395,7 @@ public class CoreFxController
 		ResourceBundle errorsBundle;
 		try
 		{
-			errorsBundle = AppUtils.getResourceBundle(RB_ERRORS_FILE, toLanguage);
+			errorsBundle = ResourceBundle.getBundle(RB_ERRORS_FILE, toLanguage.getLocale(), new UTF8Control());
 		}
 		catch(MissingResourceException e)
 		{
@@ -410,7 +407,7 @@ public class CoreFxController
 		ResourceBundle messagesBundle;
 		try
 		{
-			messagesBundle = AppUtils.getResourceBundle(RB_MESSAGES_FILE, toLanguage);
+			messagesBundle = ResourceBundle.getBundle(RB_MESSAGES_FILE, toLanguage.getLocale(), new UTF8Control());
 		}
 		catch(MissingResourceException e)
 		{
@@ -419,7 +416,7 @@ public class CoreFxController
 			return;
 		}
 		
-		URL fxmlUrl = AppUtils.getResourceURL(FXML_FILE);
+		URL fxmlUrl = Thread.currentThread().getContextClassLoader().getResource(FXML_FILE);
 		if(fxmlUrl == null)
 		{
 			String errorCode = "C002-00011";

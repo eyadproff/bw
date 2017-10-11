@@ -228,7 +228,7 @@ public class AppEntryPoint extends Application
 	
 	    try
 	    {
-		    labelsBundle = AppUtils.getResourceBundle(CoreFxController.RB_LABELS_FILE, initialLanguage);
+		    labelsBundle = ResourceBundle.getBundle(CoreFxController.RB_LABELS_FILE, initialLanguage.getLocale(), new UTF8Control());
 	    }
 	    catch(MissingResourceException e)
 	    {
@@ -239,7 +239,7 @@ public class AppEntryPoint extends Application
 	
 	    try
 	    {
-		    errorsBundle = AppUtils.getResourceBundle(CoreFxController.RB_ERRORS_FILE, initialLanguage);
+		    errorsBundle = ResourceBundle.getBundle(CoreFxController.RB_ERRORS_FILE, initialLanguage.getLocale(), new UTF8Control());
 	    }
 	    catch(MissingResourceException e)
 	    {
@@ -250,7 +250,7 @@ public class AppEntryPoint extends Application
 	
 	    try
 	    {
-		    messagesBundle = AppUtils.getResourceBundle(CoreFxController.RB_MESSAGES_FILE, initialLanguage);
+		    messagesBundle = ResourceBundle.getBundle(CoreFxController.RB_MESSAGES_FILE, initialLanguage.getLocale(), new UTF8Control());
 	    }
 	    catch(MissingResourceException e)
 	    {
@@ -259,7 +259,7 @@ public class AppEntryPoint extends Application
 		    return;
 	    }
 	
-	    InputStream appIconStream = AppUtils.getResourceAsStream(CoreFxController.APP_ICON_FILE);
+	    InputStream appIconStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(CoreFxController.APP_ICON_FILE);
 	    if(appIconStream == null)
 	    {
 		    String errorCode = "C001-00016";
@@ -268,7 +268,7 @@ public class AppEntryPoint extends Application
 	    }
 	    appIcon = new Image(appIconStream);
 	
-	    fxmlUrl = AppUtils.getResourceURL(CoreFxController.FXML_FILE);
+	    fxmlUrl = Thread.currentThread().getContextClassLoader().getResource(CoreFxController.FXML_FILE);
 	    if(fxmlUrl == null)
 	    {
 		    String errorCode = "C001-00017";

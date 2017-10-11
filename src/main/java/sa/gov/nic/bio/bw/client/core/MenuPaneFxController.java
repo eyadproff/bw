@@ -1,6 +1,5 @@
 package sa.gov.nic.bio.bw.client.core;
 
-import com.sun.javafx.scene.control.skin.LabeledText;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -14,6 +13,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
 import org.controlsfx.glyphfont.Glyph;
 import sa.gov.nic.bio.bw.client.core.beans.MenuItem;
 import sa.gov.nic.bio.bw.client.core.interfaces.AttachableController;
@@ -132,7 +132,7 @@ public class MenuPaneFxController implements VisibilityControl, AttachableContro
 		for(TitledPane pane : accordion.getPanes())
 		{
 			Pane arrow = (Pane) pane.lookup(".arrow");
-			LabeledText labeledText = (LabeledText) pane.lookup(".title > .text");
+			Text labeledText = (Text) pane.lookup(".title > .text");
 			Glyph glyphFont = (Glyph) pane.lookup(".glyph-font");
 			ListView<MenuItem> lv = (ListView<MenuItem>) pane.getContent();
 			List<MenuItem> items = lv.getItems();
@@ -202,7 +202,7 @@ public class MenuPaneFxController implements VisibilityControl, AttachableContro
                 else
                 {
                     applyCss();
-                    LabeledText labeledText = (LabeledText) lookup(".text");
+	                Text labeledText = (Text) lookup(".text");
                     
                     setText(item.getLabel());
 

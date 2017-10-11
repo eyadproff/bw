@@ -39,35 +39,11 @@ public final class AppUtils
 	private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("hh:mm:ss a - EEEE dd MMMM yyyy G");
 	private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd MMMM yyyy G");
 	private static final HijrahChronology nicChronology = HijrahChronology.INSTANCE;
-	private static final FontAwesome FONTAWESOME_INSTANCE = new FontAwesome(AppUtils.getResourceString(FONT_AWESOME_FILE));
+	private static final FontAwesome FONTAWESOME_INSTANCE = new FontAwesome(Thread.currentThread().getContextClassLoader().getResource(FONT_AWESOME_FILE).toExternalForm());
 	
 	public static Glyph createFontAwesomeIcon(FontAwesome.Glyph icon)
 	{
 		return FONTAWESOME_INSTANCE.create(icon);
-	}
-	
-	public static URL getResourceURL(String resourceName)
-	{
-		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-		return classLoader.getResource(resourceName);
-	}
-	
-	public static String getResourceString(String resourceName)
-	{
-		URL url = getResourceURL(resourceName);
-		return url != null ? url.toExternalForm() : null;
-	}
-	
-	public static InputStream getResourceAsStream(String resourceName)
-	{
-		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-		return classLoader.getResourceAsStream(resourceName);
-	}
-	
-	public static ResourceBundle getResourceBundle(String resourceBundlePath, GuiLanguage language)
-	{
-		if(language == null) return ResourceBundle.getBundle(resourceBundlePath, UTF8Control.INSTANCE);
-		else return ResourceBundle.getBundle(resourceBundlePath, language.getLocale(), UTF8Control.INSTANCE);
 	}
 	
 	public static String getMachineIpAddress() throws SocketException
@@ -165,14 +141,6 @@ public final class AppUtils
 		Field initCompleteField = HijrahChronology.class.getDeclaredField("initComplete");
 		initCompleteField.setAccessible(true);
 		initCompleteField.set(nicChronology, true);
-
-        /*Field typeIdField = HijrahChronology.class.getDeclaredField("typeId");
-        typeIdField.setAccessible(true);
-        typeIdField.set(nicChronology, "Hijrah-NIC");
-
-        Field calendarTypeField = HijrahChronology.class.getDeclaredField("calendarType");
-        calendarTypeField.setAccessible(true);
-        calendarTypeField.set(nicChronology, "NIC");*/
 		
 		Field hijrahStartEpochMonthField = HijrahChronology.class.getDeclaredField("hijrahStartEpochMonth");
 		hijrahStartEpochMonthField.setAccessible(true);

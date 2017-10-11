@@ -16,7 +16,7 @@ public class ConfigManager
 	
 	public void load() throws IOException
 	{
-		InputStream is = AppUtils.getResourceAsStream(CONFIG_FILE_PATH);
+		InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream(CONFIG_FILE_PATH);
 		InputStreamReader isr = new InputStreamReader(is, StandardCharsets.UTF_8);
 		properties.load(isr);
 	}

@@ -60,7 +60,7 @@ public class AppPreloader extends Preloader
 		
 		try
 		{
-			errorsBundle = AppUtils.getResourceBundle(RB_ERRORS_FILE, null);
+			errorsBundle = ResourceBundle.getBundle(RB_ERRORS_FILE, new UTF8Control());
 		}
 		catch(MissingResourceException e)
 		{
@@ -78,7 +78,7 @@ public class AppPreloader extends Preloader
 		
 		try
 		{
-			labelsBundle = AppUtils.getResourceBundle(RB_LABELS_FILE, null);
+			labelsBundle = ResourceBundle.getBundle(RB_LABELS_FILE, new UTF8Control());
 		}
 		catch(MissingResourceException e)
 		{
@@ -94,7 +94,7 @@ public class AppPreloader extends Preloader
 			return;
 		}
 		
-		InputStream appIconStream = AppUtils.getResourceAsStream(APP_ICON_FILE);
+		InputStream appIconStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(APP_ICON_FILE);
 		if(appIconStream == null)
 		{
 			String errorCode = "C001-00003";
@@ -110,7 +110,7 @@ public class AppPreloader extends Preloader
 		}
 		appIcon = new Image(appIconStream);
 		
-		fxmlUrl = AppUtils.getResourceURL(FXML_FILE);
+		fxmlUrl = Thread.currentThread().getContextClassLoader().getResource(FXML_FILE);
 		if(fxmlUrl == null)
 		{
 			String errorCode = "C001-00004";
