@@ -4,7 +4,11 @@
 
 <?import javafx.scene.control.Accordion?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.StackPane?>
 <VBox xmlns:fx="http://javafx.com/fxml" xmlns="http://javafx.com/javafx/8"
-      fx:id="rootPane" fx:controller="sa.gov.nic.bio.bw.client.core.MenuPaneFxController">
-    <Accordion fx:id="accordion"/>
+           fx:id="rootPane" fx:controller="sa.gov.nic.bio.bw.client.core.MenuPaneFxController">
+    <StackPane>
+        <Accordion fx:id="accordion"/>
+        <StackPane fx:id="overlayPane" styleClass="background-overlay-light" visible="false"/>
+    </StackPane>
 </VBox>

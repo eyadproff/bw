@@ -87,7 +87,8 @@ public class CancelLatentPaneFxController extends BodyFxControllerBase
 		btnCancelLatent.fire();
 	}
 	
-	public void onCancelLatentButtonClicked(ActionEvent actionEvent)
+	@FXML
+	private void onCancelLatentButtonClicked(ActionEvent actionEvent)
 	{
 		String personId = txtPersonId.getText().trim();
 		String latentId = txtLatentId.getText().trim();
@@ -110,6 +111,8 @@ public class CancelLatentPaneFxController extends BodyFxControllerBase
 	
 	private void disableUiControls(boolean bool)
 	{
+		coreFxController.getMenuPaneController().showOverlayPane(bool);
+		
 		txtPersonId.setDisable(bool);
 		txtLatentId.setDisable(bool);
 		

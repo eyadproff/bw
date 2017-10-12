@@ -87,7 +87,8 @@ public class CancelCriminalPaneFxController extends BodyFxControllerBase
 		btnCancelCriminal.fire();
 	}
 	
-	public void onCancelCriminalButtonClicked(ActionEvent actionEvent)
+	@FXML
+	private void onCancelCriminalButtonClicked(ActionEvent actionEvent)
 	{
 		String personId = txtPersonId.getText().trim();
 		String criminalId = txtCriminalId.getText().trim();
@@ -110,6 +111,8 @@ public class CancelCriminalPaneFxController extends BodyFxControllerBase
 	
 	private void disableUiControls(boolean bool)
 	{
+		coreFxController.getMenuPaneController().showOverlayPane(bool);
+		
 		txtPersonId.setDisable(bool);
 		txtCriminalId.setDisable(bool);
 		

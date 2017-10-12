@@ -21,6 +21,10 @@
     -fx-background-color: rgba(0, 0, 0, 0.5);
 }
 
+.background-overlay-light {
+    -fx-background-color: rgba(0, 0, 0, 0.25);
+}
+
 .header {
     -fx-background-color: #f4f4f4;
     -fx-border-color: #23A967;
@@ -51,7 +55,7 @@
     -fx-border-width: 0 1px 0 0;
 }
 
-.nav > .accordion > .titled-pane {
+.nav .accordion > .titled-pane {
     -fx-faint-focus-color: transparent;
     -fx-text-fill: #398755;
     -fx-font-weight: bold;
@@ -59,11 +63,11 @@
     -fx-padding: 0;
 }
 
-.nav > .accordion > .titled-pane > .content {
+.nav .accordion > .titled-pane > .content {
     -fx-border-width: 0;
 }
 
-.nav > .accordion > .titled-pane > .title {
+.nav .accordion > .titled-pane > .title {
     -fx-body-color: white;
     -fx-color: white;
     -fx-background-insets: 0;
@@ -72,41 +76,41 @@
     -fx-border-width: 0 0 1px 0;
 }
 
-.nav > .accordion > .titled-pane > .title:hover {
+.nav .accordion > .titled-pane > .title:hover {
     -fx-body-color: #edfff6;
     -fx-color: #edfff6;
 }
 
-.nav > .accordion > .titled-pane > .title > .glyph-font {
+.nav .accordion > .titled-pane > .title > .glyph-font {
     -fx-text-fill: #398755;
 }
 
-.nav > .accordion > .titled-pane > .title > .arrow-button > .arrow {
+.nav .accordion > .titled-pane > .title > .arrow-button > .arrow {
     -fx-shape: "M 32 48 L 50 16 L 46 16 L 32 40 L 18 16 L 14 16 z";
     -fx-background-color: #398755;
     -fx-focus-color: transparent;
     -fx-background-insets: 0;
 }
 
-.nav > .accordion > .titled-pane:focused > .title > .arrow-button > .arrow {
+.nav .accordion > .titled-pane:focused > .title > .arrow-button > .arrow {
     -fx-background-insets: 0;
 }
 
 /* hide scroll-bar from the list-view inside the navigation menu */
-.nav > .accordion > .titled-pane .list-view .scroll-bar:vertical .increment-arrow,
-.nav > .accordion > .titled-pane .list-view .scroll-bar:vertical .decrement-arrow,
-.nav > .accordion > .titled-pane .list-view .scroll-bar:vertical .increment-button,
-.nav > .accordion > .titled-pane .list-view .scroll-bar:vertical .decrement-button {
+.nav .accordion > .titled-pane .list-view .scroll-bar:vertical .increment-arrow,
+.nav .accordion > .titled-pane .list-view .scroll-bar:vertical .decrement-arrow,
+.nav .accordion > .titled-pane .list-view .scroll-bar:vertical .increment-button,
+.nav .accordion > .titled-pane .list-view .scroll-bar:vertical .decrement-button {
     -fx-padding:0;
 }
 
-.nav > .accordion > .titled-pane .list-view {
+.nav .accordion > .titled-pane .list-view {
     -fx-border-width: 0 0 1px 5px;
     -fx-border-color: #398755;
     -fx-effect: null;
 }
 
-.nav > .accordion > .titled-pane .list-cell {
+.nav .accordion > .titled-pane .list-cell {
     -fx-background-color: #f4f4f4;
     -fx-border-color: #398755;
     -fx-border-width: 0 0 1px 0;
@@ -116,15 +120,15 @@
     -fx-selection-bar-non-focused: #edfff6;
 }
 
-.nav > .accordion > .titled-pane .list-cell:empty {
+.nav .accordion > .titled-pane .list-cell:empty {
     -fx-border-width: 0;
 }
 
-.nav > .accordion > .titled-pane .list-cell:hover {
+.nav .accordion > .titled-pane .list-cell:hover {
     -fx-background-color: #edfff6;
 }
 
-.nav > .accordion > .titled-pane .list-cell:hover:empty {
+.nav .accordion > .titled-pane .list-cell:hover:empty {
    -fx-background-color: transparent;
 }
 

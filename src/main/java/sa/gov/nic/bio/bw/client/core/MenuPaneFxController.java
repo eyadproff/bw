@@ -29,6 +29,7 @@ public class MenuPaneFxController implements VisibilityControl, AttachableContro
 	@FXML private ResourceBundle resources;
 	@FXML private Pane rootPane;
 	@FXML private Accordion accordion;
+	@FXML private Pane overlayPane;
 	
 	private CoreFxController coreFxController;
 	private List<MenuItem> menus = new ArrayList<>();
@@ -57,6 +58,11 @@ public class MenuPaneFxController implements VisibilityControl, AttachableContro
 	public Pane getRootPane()
 	{
 		return rootPane;
+	}
+	
+	public void showOverlayPane(boolean bShow)
+	{
+		overlayPane.setVisible(bShow);
 	}
 	
 	@SuppressWarnings("unchecked")
