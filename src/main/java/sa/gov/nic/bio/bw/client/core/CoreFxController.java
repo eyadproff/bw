@@ -11,7 +11,6 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import org.controlsfx.control.NotificationPane;
 import retrofit2.Call;
-import sa.gov.nic.bio.bw.client.core.beans.BusinessData;
 import sa.gov.nic.bio.bw.client.core.beans.GuiState;
 import sa.gov.nic.bio.bw.client.core.beans.StateBundle;
 import sa.gov.nic.bio.bw.client.core.interfaces.*;
@@ -25,10 +24,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.Locale;
-import java.util.Map;
-import java.util.MissingResourceException;
-import java.util.ResourceBundle;
+import java.util.*;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
@@ -58,14 +54,14 @@ public class CoreFxController
 	private String windowTitle;
 	private int idleWarningBeforeSeconds;
 	private int idleWarningAfterSeconds;
+	private Map<String, Set<String>> menuRoles;
 	
 	private GuiState guiState = new GuiState();
-	private BusinessData businessData = new BusinessData(); // TODO: fill it at startup?
 	private IdleMonitor idleMonitor;
 	private ScheduledFuture<?> scheduledRefreshTokenFuture;
 	private boolean idleWarningOn = false;
 	
-	public void passInitialResources(ResourceBundle labelsBundle, ResourceBundle errorsBundle, ResourceBundle messagesBundle, Image appIcon, String windowTitle, int idleWarningBeforeSeconds, int idleWarningAfterSeconds)
+	public void passInitialResources(ResourceBundle labelsBundle, ResourceBundle errorsBundle, ResourceBundle messagesBundle, Image appIcon, String windowTitle, int idleWarningBeforeSeconds, int idleWarningAfterSeconds, Map<String, Set<String>> menuRoles)
 	{
 		this.labelsBundle = labelsBundle;
 		this.errorsBundle = errorsBundle;
@@ -74,10 +70,11 @@ public class CoreFxController
 		this.windowTitle = windowTitle;
 		this.idleWarningBeforeSeconds = idleWarningBeforeSeconds;
 		this.idleWarningAfterSeconds = idleWarningAfterSeconds;
+		this.menuRoles = menuRoles;
 	}
 	
 	public GuiState getGuiState(){return guiState;}
-	public BusinessData getBusinessData(){return businessData;}
+	public Map<String, Set<String>> getMenuRoles(){return menuRoles;}
 	
 	public HeaderPaneFxController getHeaderPaneController(){return headerPaneController;}
 	public FooterPaneFxController getFooterPaneController(){return footerPaneController;}
@@ -458,7 +455,7 @@ public class CoreFxController
 		
 		CoreFxController newCoreFxController = newStageLoader.getController();
 		newCoreFxController.guiState = guiState;
-		newCoreFxController. passInitialResources(labelsBundle, errorsBundle, messagesBundle, appIcon, windowTitle, idleWarningBeforeSeconds, idleWarningAfterSeconds);
+		newCoreFxController. passInitialResources(labelsBundle, errorsBundle, messagesBundle, appIcon, windowTitle, idleWarningBeforeSeconds, idleWarningAfterSeconds, menuRoles);
 		newCoreFxController.guiState.setLanguage(toLanguage);
 		boolean success = newCoreFxController.applyStateBundle(oldState);
 		

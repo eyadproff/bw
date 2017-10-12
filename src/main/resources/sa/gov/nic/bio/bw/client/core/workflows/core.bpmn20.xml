@@ -42,8 +42,8 @@
         <sequenceFlow sourceRef="menuSelectionCheck" targetRef="callCancelLatentProcess">
             <conditionExpression xsi:type="tFormalExpression">${menuId == 'menu.delete.cancelLatent'}</conditionExpression>
         </sequenceFlow>
-        <sequenceFlow sourceRef="menuSelectionCheck" targetRef="callDelinkXAfisProcess">
-            <conditionExpression xsi:type="tFormalExpression">${menuId == 'menu.delete.delinkXAfis'}</conditionExpression>
+        <sequenceFlow sourceRef="menuSelectionCheck" targetRef="callCancelCriminalProcess">
+            <conditionExpression xsi:type="tFormalExpression">${menuId == 'menu.delete.cancelCriminal'}</conditionExpression>
         </sequenceFlow>
 
         <!--<sequenceFlow sourceRef="menuSelectionCheck" targetRef="callLoginProcess">
@@ -57,13 +57,13 @@
 
         <sequenceFlow sourceRef="callCancelLatentProcess" targetRef="menuSelectionCheck"/>
 
-        <callActivity id="callDelinkXAfisProcess" name="Delink X-AFIS Process" calledElement="delinkXAfisProcess">
+        <callActivity id="callCancelCriminalProcess" name="Cancel Criminal Process" calledElement="cancelCriminalProcess">
             <extensionElements>
                 <activiti:out source="menuId" target="menuId"/>
             </extensionElements>
         </callActivity>
 
-        <sequenceFlow sourceRef="callDelinkXAfisProcess" targetRef="menuSelectionCheck"/>
+        <sequenceFlow sourceRef="callCancelCriminalProcess" targetRef="menuSelectionCheck"/>
 
         <endEvent id="endEvent"/>
 

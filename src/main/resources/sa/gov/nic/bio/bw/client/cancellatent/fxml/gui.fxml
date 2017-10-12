@@ -23,9 +23,9 @@
                     <padding>
                         <Insets top="20" right="20" bottom="20" left="20"/>
                     </padding>
-                    <Label text="%label.idNumber" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+                    <Label text="%label.personId" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
                     <TextField fx:id="txtPersonId" GridPane.columnIndex="1" GridPane.rowIndex="0" onAction="#onEnterPressed"/>
-                    <Label text="%label.latentNumber" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+                    <Label text="%label.latentId" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
                     <TextField fx:id="txtLatentId" GridPane.columnIndex="1" GridPane.rowIndex="1" onAction="#onEnterPressed"/>
                 </GridPane>
             </HBox>

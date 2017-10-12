@@ -6,21 +6,14 @@ import javafx.scene.Node;
 import javafx.scene.control.Label;
 import org.controlsfx.glyphfont.FontAwesome;
 import org.controlsfx.glyphfont.Glyph;
-import retrofit2.Call;
 import sa.gov.nic.bio.bw.client.core.BodyFxControllerBase;
 import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
-import sa.gov.nic.bio.bw.client.core.webservice.ApiResponse;
-import sa.gov.nic.bio.bw.client.home.webservice.RefreshTokenAPI;
-import sa.gov.nic.bio.bw.client.home.webservice.RefreshTokenBean;
 import sa.gov.nic.bio.bw.client.login.webservice.LoginBean;
 
+import javax.naming.ConfigurationException;
 import java.time.DateTimeException;
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.*;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 /**
@@ -104,7 +97,7 @@ public class HomePaneFxController extends BodyFxControllerBase
 		{
 			String errorCode = "C004-00001";
 			String message = errorsBundle.getString(errorCode);
-			coreFxController.showErrorDialogAndWait(message, null);
+			coreFxController.showErrorDialogAndWait(message, new ConfigurationException("Top menus are not configured!"));
 			return;
 		}
 		
@@ -118,7 +111,7 @@ public class HomePaneFxController extends BodyFxControllerBase
 			{
 				String errorCode = "C004-00002";
 				String message = String.format(errorsBundle.getString(errorCode), "menu." + topMenu + ".submenus");
-				coreFxController.showErrorDialogAndWait(message, null);
+				coreFxController.showErrorDialogAndWait(message, new ConfigurationException("The subMenus (menu." + topMenu + ".submenus) are not configured!"));
 				return;
 			}
 			
@@ -127,7 +120,7 @@ public class HomePaneFxController extends BodyFxControllerBase
 			{
 				String errorCode = "C004-00003";
 				String message = String.format(errorsBundle.getString(errorCode), "menu." + topMenu + ".icon");
-				coreFxController.showErrorDialogAndWait(message, null);
+				coreFxController.showErrorDialogAndWait(message, new ConfigurationException("The icon (menu." + topMenu + ".icon) is not configured!"));
 				return;
 			}
 			
@@ -153,7 +146,9 @@ public class HomePaneFxController extends BodyFxControllerBase
 		
 		for(String menuId : allMenus)
 		{
-			if(coreFxController.getBusinessData().userHasMenuAccess(userRoles, menuId))
+			Set<String> menuRoles = coreFxController.getMenuRoles().get(menuId);
+			
+			if(menuRoles != null && !Collections.disjoint(userRoles, menuRoles))
 			{
 				menus.add(menuId);
 			}

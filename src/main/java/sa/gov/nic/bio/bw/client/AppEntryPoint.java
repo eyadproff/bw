@@ -47,6 +47,7 @@ public class AppEntryPoint extends Application
 	private Image appIcon;
 	private URL fxmlUrl;
 	private String windowTitle;
+	private Map<String, Set<String>> menuRoles;
 	
 	private boolean successfulInit = false;
 	private GuiLanguage initialLanguage = GuiLanguage.ARABIC; // TODO: make it configurable from properties file
@@ -226,20 +227,25 @@ public class AppEntryPoint extends Application
 		    return;
 	    }
 	
-	    try
+	    Call<Map<String, Set<String>>> menuRolesCall = lookupAPI.lookupMenuRoles("BW");
+	    ApiResponse<Map<String, Set<String>>> menuRolesResponse = webserviceManager.executeApi(menuRolesCall);
+	
+	    if(menuRolesResponse.isSuccess())
 	    {
-		    labelsBundle = ResourceBundle.getBundle(CoreFxController.RB_LABELS_FILE, initialLanguage.getLocale(), new UTF8Control());
+		    menuRoles = menuRolesResponse.getResult();
 	    }
-	    catch(MissingResourceException e)
+	    else
 	    {
-		    String errorCode = "C001-00013";
-		    notifyPreloader(new ProgressMessage(e, errorCode));
+		    int httpCode = menuRolesResponse.getHttpCode();
+		    String errorCode = menuRolesResponse.getErrorCode();
+		    if(errorCode != null) notifyPreloader(new ProgressMessage(null, errorCode, String.valueOf(httpCode)));
+		    else notifyPreloader(new ProgressMessage(null, "C001-00013"));
 		    return;
 	    }
 	
 	    try
 	    {
-		    errorsBundle = ResourceBundle.getBundle(CoreFxController.RB_ERRORS_FILE, initialLanguage.getLocale(), new UTF8Control());
+		    labelsBundle = ResourceBundle.getBundle(CoreFxController.RB_LABELS_FILE, initialLanguage.getLocale(), new UTF8Control());
 	    }
 	    catch(MissingResourceException e)
 	    {
@@ -250,7 +256,7 @@ public class AppEntryPoint extends Application
 	
 	    try
 	    {
-		    messagesBundle = ResourceBundle.getBundle(CoreFxController.RB_MESSAGES_FILE, initialLanguage.getLocale(), new UTF8Control());
+		    errorsBundle = ResourceBundle.getBundle(CoreFxController.RB_ERRORS_FILE, initialLanguage.getLocale(), new UTF8Control());
 	    }
 	    catch(MissingResourceException e)
 	    {
@@ -259,10 +265,21 @@ public class AppEntryPoint extends Application
 		    return;
 	    }
 	
+	    try
+	    {
+		    messagesBundle = ResourceBundle.getBundle(CoreFxController.RB_MESSAGES_FILE, initialLanguage.getLocale(), new UTF8Control());
+	    }
+	    catch(MissingResourceException e)
+	    {
+		    String errorCode = "C001-00016";
+		    notifyPreloader(new ProgressMessage(e, errorCode));
+		    return;
+	    }
+	
 	    InputStream appIconStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(CoreFxController.APP_ICON_FILE);
 	    if(appIconStream == null)
 	    {
-		    String errorCode = "C001-00016";
+		    String errorCode = "C001-00017";
 		    notifyPreloader(new ProgressMessage(null, errorCode));
 		    return;
 	    }
@@ -271,7 +288,7 @@ public class AppEntryPoint extends Application
 	    fxmlUrl = Thread.currentThread().getContextClassLoader().getResource(CoreFxController.FXML_FILE);
 	    if(fxmlUrl == null)
 	    {
-		    String errorCode = "C001-00017";
+		    String errorCode = "C001-00018";
 		    notifyPreloader(new ProgressMessage(null, errorCode));
 		    return;
 	    }
@@ -280,7 +297,7 @@ public class AppEntryPoint extends Application
 	    
 	    if(version == null)
 	    {
-		    String errorCode = "C001-00018";
+		    String errorCode = "C001-00019";
 		    notifyPreloader(new ProgressMessage(null, errorCode));
 		    return;
 	    }
@@ -292,7 +309,7 @@ public class AppEntryPoint extends Application
 	    }
 	    catch(MissingResourceException e)
 	    {
-		    String errorCode = "C001-00019";
+		    String errorCode = "C001-00020";
 		    notifyPreloader(new ProgressMessage(e, errorCode));
 		    return;
 	    }
@@ -319,13 +336,13 @@ public class AppEntryPoint extends Application
 	    }
 	    catch(IOException e)
 	    {
-		    String errorCode = "C001-00020";
+		    String errorCode = "C001-00021";
 		    notifyPreloader(new ProgressMessage(e, errorCode));
 		    return;
 	    }
 	    
 	    CoreFxController coreFxController = coreStageLoader.getController();
-	    coreFxController.passInitialResources(labelsBundle, errorsBundle, messagesBundle, appIcon, windowTitle, idleWarningBeforeSeconds, idleWarningAfterSeconds);
+	    coreFxController.passInitialResources(labelsBundle, errorsBundle, messagesBundle, appIcon, windowTitle, idleWarningBeforeSeconds, idleWarningAfterSeconds, menuRoles);
 	    coreFxController.getGuiState().setLanguage(initialLanguage);
 	    
 	    primaryStage.getScene().setNodeOrientation(initialLanguage.getNodeOrientation());
