@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions"
+             targetNamespace="http://activiti.org/bpmn20"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xmlns:activiti="http://activiti.org/bpmn">
+
+    <process id="cancelCriminalProcess" name="Delink X-AFIS Process">
+
+        <startEvent id="startEvent"/>
+
+        <sequenceFlow sourceRef="startEvent" targetRef="dataEntry"/>
+
+        <userTask id="dataEntry" activiti:formKey="sa.gov.nic.bio.bw.client.cancelcriminal.CancelCriminalPaneFxController">
+            <extensionElements>
+                <activiti:formProperty id="menuId" type="string"/>
+                <activiti:formProperty id="personId" type="string"/>
+                <activiti:formProperty id="criminalId" type="string"/>
+            </extensionElements>
+        </userTask>
+
+        <sequenceFlow sourceRef="dataEntry" targetRef="menuSelectionCheck"/>
+
+        <exclusiveGateway id="menuSelectionCheck" name="Menu Selection Check"/>
+
+        <sequenceFlow sourceRef="menuSelectionCheck" targetRef="endEvent">
+            <conditionExpression xsi:type="tFormalExpression">
+                <![CDATA[
+                    ${execution.getVariable('menuId') != null}
+                ]]>
+            </conditionExpression>
+        </sequenceFlow>
+
+        <!-- default flow -->
+        <sequenceFlow sourceRef="menuSelectionCheck" targetRef="delinkXAfisService"/>
+
+        <serviceTask id="delinkXAfisService" name="Calling DelinkXAfis API"
+                     activiti:class="sa.gov.nic.bio.bw.client.cancelcriminal.workflow.CancelCriminalService"/>
+
+        <sequenceFlow sourceRef="delinkXAfisService" targetRef="dataEntry"/>
+
+        <endEvent id="endEvent" />
+
+    </process>
+
+</definitions>
