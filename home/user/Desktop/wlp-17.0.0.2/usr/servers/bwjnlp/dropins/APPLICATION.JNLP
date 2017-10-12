@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jnlp xmlns:jfx="http://javafx.com" xmlns="http://java.com/jnlp"
+      spec="8.20" href="APPLICATION.JNLP">
+    <information>
+        <title>Biometrics Workstation</title>
+        <vendor>NIC</vendor>
+        <icon href="app_icon.png" version="1" height="512" width="512" depth="24"/>
+        <icon href="splash.gif" kind="splash"/>
+    </information>
+    <security>
+        <all-permissions/>
+    </security>
+    <update check="always"/>
+    <resources>
+        <java version="1.8+" href="http://www.oracle.com/technetwork/java/javase/downloads/index.html"/>
+        <property name="jnlp.packEnabled" value="true"/>
+        <jar href="activation-1.1.1.jar"/>
+        <jar href="activiti-bpmn-converter-6.0.0.jar"/>
+        <jar href="activiti-bpmn-model-6.0.0.jar"/>
+        <jar href="activiti-dmn-api-6.0.0.jar"/>
+        <jar href="activiti-dmn-model-6.0.0.jar"/>
+        <jar href="activiti-engine-6.0.0.jar"/>
+        <jar href="activiti-form-api-6.0.0.jar"/>
+        <jar href="activiti-form-model-6.0.0.jar"/>
+        <jar href="activiti-image-generator-6.0.0.jar"/>
+        <jar href="activiti-process-validation-6.0.0.jar"/>
+        <jar href="bw-client-1.0.0.jar"/>
+        <jar href="commons-email-1.5.jar"/>
+        <jar href="commons-lang3-3.6.jar"/>
+        <jar href="commons-logging-1.2.jar"/>
+        <jar href="controlsfx-8.40.14.jar"/>
+        <jar href="converter-jackson-2.3.0.jar"/>
+        <jar href="h2-1.4.196.jar"/>
+        <jar href="jackson-annotations-2.9.0.jar"/>
+        <jar href="jackson-core-2.9.0.jar"/>
+        <jar href="jackson-databind-2.9.0.jar"/>
+        <jar href="javax.mail-api-1.6.0.jar"/>
+        <jar href="joda-time-2.9.9.jar"/>
+        <jar href="juel-api-2.2.7.jar"/>
+        <jar href="juel-impl-2.2.7.jar"/>
+        <jar href="juel-spi-2.2.7.jar"/>
+        <jar href="mybatis-3.4.4.jar"/>
+        <jar href="okhttp-3.8.1.jar"/>
+        <jar href="okio-1.13.0.jar"/>
+        <jar href="retrofit-2.3.0.jar"/>
+        <jar href="slf4j-api-1.7.25.jar"/>
+        <jar href="slf4j-nop-1.7.25.jar"/>
+    </resources>
+    <jfx:javafx-desc main-class="sa.gov.nic.bio.bw.client.AppEntryPoint" preloader-class="sa.gov.nic.bio.bw.client.preloader.AppPreloader"/>
+</jnlp>

@@ -1,10 +1,24 @@
 import sa.gov.nic.bio.bw.client.tools.SignJars
 import org.apache.tools.ant.filters.ReplaceTokens
 
+buildscript {
+    repositories {
+        flatDir {
+            dirs "libs/build"
+        }
+    }
+    dependencies {
+        classpath name: 'jsch-0.1.54'
+        classpath name: 'groovy-ssh-2.9.0'
+        classpath name: 'gradle-ssh-plugin-2.9.0'
+    }
+}
+
 project.version = '1.0.0'
 group = 'sa.gov.nic.bio'
 
 apply plugin: 'java'
+apply plugin: "org.hidetake.ssh"
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -15,7 +29,8 @@ tasks.withType(JavaCompile) {
 
 repositories {
     flatDir {
-        dirs "libs"
+        dirs "libs/compile"
+        dirs "libs/provided"
     }
 }
 
@@ -238,3 +253,40 @@ run.dependsOn(copyDependentJarsTask)
 
 task signJars(type: SignJars) {
 }
+
+
+remotes {
+    webServer {
+        host = '10.0.73.50'
+        user = 'root'
+        identity = file('build-resources/integration_server_id_rsa')
+    }
+}
+
+task deploy(group: 'web-start') {
+    doLast {
+        ssh.run {
+            session(remotes.webServer) {
+                remove '/home/user/Desktop/wlp-17.0.0.2/usr/servers/bwjnlp/dropins'
+                execute 'mkdir /home/user/Desktop/wlp-17.0.0.2/usr/servers/bwjnlp/dropins'
+                put from: new File('build/web-start').listFiles().toList(), into: '/home/user/Desktop/wlp-17.0.0.2/usr/servers/bwjnlp/dropins'
+            }
+        }
+    }
+}
+
+deploy.dependsOn(build)
+
+task packageWebStartAndDeploy(group: 'web-start') {
+    doLast {
+        ssh.run {
+            session(remotes.webServer) {
+                remove '/home/user/Desktop/wlp-17.0.0.2/usr/servers/bwjnlp/dropins'
+                execute 'mkdir /home/user/Desktop/wlp-17.0.0.2/usr/servers/bwjnlp/dropins'
+                put from: new File('build/web-start').listFiles().toList(), into: '/home/user/Desktop/wlp-17.0.0.2/usr/servers/bwjnlp/dropins'
+            }
+        }
+    }
+}
+
+packageWebStartAndDeploy.dependsOn(packageWebStart)
