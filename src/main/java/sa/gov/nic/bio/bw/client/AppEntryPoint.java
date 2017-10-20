@@ -224,7 +224,7 @@ public class AppEntryPoint extends Application
 	    Context.init(configManager, workflowManager, webserviceManager, executorService, scheduledExecutorService, userData);
 	
 	    LookupAPI lookupAPI = webserviceManager.getApi(LookupAPI.class);
-	    String url = System.getProperty("service.lookupNicHijriCalendarData");
+	    String url = System.getProperty("jnlp.bw.service.lookupNicHijriCalendarData");
 	    Call<NicHijriCalendarData> apiCall = lookupAPI.lookupNicHijriCalendarData(url);
 	    ApiResponse<NicHijriCalendarData> apiResponse = webserviceManager.executeApi(apiCall);
 	
@@ -251,7 +251,7 @@ public class AppEntryPoint extends Application
 		    return;
 	    }
 	    
-	    url = System.getProperty("service.lookupMenuRoles");
+	    url = System.getProperty("jnlp.bw.service.lookupMenuRoles");
 	    Call<Map<String, Set<String>>> menuRolesCall = lookupAPI.lookupMenuRoles(url, "BW");
 	    ApiResponse<Map<String, Set<String>>> menuRolesResponse = webserviceManager.executeApi(menuRolesCall);
 	
