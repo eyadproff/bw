@@ -114,11 +114,12 @@ keytool -importkeystore -srcstoretype PKCS12 -deststoretype JKS -srcstorepass bw
 
 task packageWebStart(group: 'web-start') {
     doLast {
+
         String jnlpTemplate = new File("build-resources/bw-template.jnlp").getText('UTF-8')
+
+        // add jars names to the JNLP file
         def jars = StringBuilder.getDeclaredConstructor().newInstance()
-
         boolean first = true;
-
         fileTree(dir: 'build/libs', include: '**/*.jar').visit { FileVisitDetails details ->
 
             String fileName = details.file.name
@@ -130,7 +131,7 @@ task packageWebStart(group: 'web-start') {
             if(first) first = false
             else jars << '\n        '
 
-            jars << '<jar href="' + fileName + '"'
+            jars << '<jar href="jars/' + fileName + '"'
 
             if(libraryName.endsWith('main'))
             {
@@ -139,8 +140,28 @@ task packageWebStart(group: 'web-start') {
 
             jars << '/>'
         }
+        jnlpTemplate = jnlpTemplate.replace('<!--JARS PLACE HOLDER-->', jars)
+
+        // add JNLP properties to the JNLP file
+        def sProperties = StringBuilder.getDeclaredConstructor().newInstance()
+        first = true;
+        Properties properties = new Properties()
+        InputStream inputStream = new FileInputStream("src/main/resources/sa/gov/nic/bio/bw/client/core/config/jnlp.properties")
+        properties.load(inputStream)
+        inputStream.close()
+        for(Object key : Collections.list(properties.propertyNames()))
+        {
+            String sKey = (String) key;
+            String value = properties.getProperty(sKey);
+
+            if(first) first = false
+            else sProperties << '\n        '
+
+            sProperties << '<property name="' + sKey + '" value="' + value + '"/>'
+        }
 
         jnlpTemplate = jnlpTemplate.replace('<!--JARS PLACE HOLDER-->', jars)
+        jnlpTemplate = jnlpTemplate.replace('<!--PROPERTIES PLACE HOLDER-->', sProperties)
 
         File directory = new File("${projectDir}/build/web-start")
         directory.mkdirs()
@@ -148,42 +169,49 @@ task packageWebStart(group: 'web-start') {
         file.createNewFile()
         file.text = jnlpTemplate
 
+        // copy jar files
+        copy {
+            from 'build/libs'
+            into "build/web-start/jars"
+        }
+
+        // copy resources
         copy {
             from 'build-resources/index.html'
             into "build/web-start"
         }
-
         copy {
             from 'build-resources/deployJava.js'
             into "build/web-start"
         }
-
         copy {
             from 'build-resources/webstart.png'
             into "build/web-start"
         }
-
-        copy {
-            from 'build/libs'
-            into "build/web-start"
-        }
-
         copy {
             from 'src/main/resources/sa/gov/nic/bio/bw/client/core/images/app_icon.png'
             into "build/web-start"
         }
-
         copy {
             from 'src/main/resources/sa/gov/nic/bio/bw/client/preloader/images/splash.gif'
             into "build/web-start"
         }
 
-        copy {
-            from 'build/web-start/APPLICATION.JNLP'
-            into "build/JNLP-INF"
-        }
+        /* JNLP-INF feature */
 
-        fileTree(dir: 'build/web-start', include: '**/*.jar').visit { FileVisitDetails details ->
+        //copy {
+        //    from 'build/web-start/APPLICATION.JNLP'
+        //    into "build/JNLP-INF"
+        //}
+        //
+        //fileTree(dir: 'build/web-start/jars', include: '**/*.jar').visit { FileVisitDetails details ->
+        //    ant.jar(destfile: details.file, update: true) {
+        //        fileset(dir: "build", includes: 'JNLP-INF/**')
+        //    }
+        //}
+
+        // add "all-permissions" to manifest of all jars
+        fileTree(dir: 'build/web-start/jars', include: '**/*.jar').visit { FileVisitDetails details ->
             ant.jar(destfile: details.file, update: true) {
                 delegate.manifest {
                     attribute(name: 'Permissions', value: 'all-permissions')
@@ -191,30 +219,24 @@ task packageWebStart(group: 'web-start') {
             }
         }
 
-        fileTree(dir: 'build/web-start', include: '**/*.jar').visit { FileVisitDetails details ->
-            ant.jar(destfile: details.file, update: true) {
-                fileset(dir: "build", includes: 'JNLP-INF/**')
-            }
-        }
-
         // normalize the jars
-        fileTree(dir: 'build/web-start', include: '**/*.jar').visit { FileVisitDetails details ->
+        fileTree(dir: 'build/web-start/jars', include: '**/*.jar').visit { FileVisitDetails details ->
             String fileName = details.file.name
             exec {
-                workingDir 'build/web-start'
+                workingDir 'build/web-start/jars'
                 commandLine 'pack200', '--repack', fileName
             }
         }
 
-        // TODO
+        // TODO: parallelize the signing and compressing of jars
         /*signJars {
             source = 'build/web-start'
         }*/
 
         // sign the jars
         ant.signjar(
-                jar: 'build/web-start/*.jar',
-                destDir: 'build/web-start',
+                jar: 'build/web-start/jars/*.jar',
+                destDir: 'build/web-start/jars',
                 keystore: "build-resources/bw-keystore.p12",
                 storetype: "PKCS12",
                 storepass: "bw#456321",
@@ -222,27 +244,27 @@ task packageWebStart(group: 'web-start') {
                 preservelastmodified: "true")
 
         // compress the jars
-        fileTree(dir: 'build/web-start', include: '**/*.jar').visit { FileVisitDetails details ->
+        fileTree(dir: 'build/web-start/jars', include: '**/*.jar').visit { FileVisitDetails details ->
             String fileName = details.file.name
             exec {
-                workingDir 'build/web-start'
+                workingDir 'build/web-start/jars'
                 commandLine 'pack200', fileName + ".pack.gz", fileName
             }
         }
 
         // delete the un-compressed jars
-        fileTree(dir: 'build/web-start', include: '**/*.jar').visit { FileVisitDetails details ->
+        fileTree(dir: 'build/web-start/jars', include: '**/*.jar').visit { FileVisitDetails details ->
             details.file.delete()
         }
     }
 }
 packageWebStart.dependsOn(copyDependentJarsTask)
 
-task runWebStart(type: Exec, group: 'web-start') {
+task runWebStartLocally(type: Exec, group: 'web-start') {
     workingDir 'build/web-start'
     commandLine 'javaws', 'APPLICATION.JNLP'
 }
-//runWebStart.dependsOn(packageWebStart)
+//runWebStartLocally.dependsOn(packageWebStart)
 
 
 task run(type: JavaExec, group: 'run') {

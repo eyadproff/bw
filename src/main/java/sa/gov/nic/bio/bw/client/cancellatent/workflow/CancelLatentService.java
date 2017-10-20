@@ -24,7 +24,8 @@ public class CancelLatentService  extends ServiceBase
 		LOGGER.fine("latentId = " + latentId);
 		
 		CancelLatentAPI cancelLatentAPI = Context.getWebserviceManager().getApi(CancelLatentAPI.class);
-		Call<Boolean> apiCall = cancelLatentAPI.cancelLatent(personId, latentId);
+		String url = System.getProperty("service.cancelLatent");
+		Call<Boolean> apiCall = cancelLatentAPI.cancelLatent(url, personId, latentId);
 		ApiResponse<Boolean> response = Context.getWebserviceManager().executeApi(apiCall);
 		bypassResponse(execution, response, true);
 	}

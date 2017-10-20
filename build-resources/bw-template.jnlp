@@ -13,8 +13,15 @@
     <update check="always"/>
     <resources>
         <java version="1.8+" href="http://www.oracle.com/technetwork/java/javase/downloads/index.html"/>
-        <property name="jnlp.packEnabled" value="true"/>
+
+        <!-- List of jars -->
         <!--JARS PLACE HOLDER-->
+
+        <!-- Enable jars compressing -->
+        <property name="jnlp.packEnabled" value="true"/>
+
+        <!-- Application properties -->
+        <!--PROPERTIES PLACE HOLDER-->
     </resources>
     <jfx:javafx-desc main-class="sa.gov.nic.bio.bw.client.AppEntryPoint" preloader-class="sa.gov.nic.bio.bw.client.preloader.AppPreloader"/>
 </jnlp>

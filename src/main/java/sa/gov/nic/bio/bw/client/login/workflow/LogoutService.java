@@ -27,7 +27,8 @@ public class LogoutService implements JavaDelegate
 		Context.getExecutorService().execute(() ->
 		{
 			LogoutAPI logoutAPI = Context.getWebserviceManager().getApi(LogoutAPI.class);
-			Call<Void> apiCall = logoutAPI.logout(token);
+			String url = System.getProperty("service.logout");
+			Call<Void> apiCall = logoutAPI.logout(url, token);
 			ApiResponse<Void> response = Context.getWebserviceManager().executeApi(apiCall);
 			
 			if(response.getHttpCode() != 200)

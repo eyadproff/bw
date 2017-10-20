@@ -51,7 +51,8 @@ public class LoginService extends ServiceBase
 		LOGGER.info("The machine IP address is " + machineIpAddress);
 		
 		LoginAPI loginAPI = Context.getWebserviceManager().getApi(LoginAPI.class);
-		Call<LoginBean> apiCall = loginAPI.login(username, password, machineIpAddress, "BW", "U");
+		String url = System.getProperty("service.login");
+		Call<LoginBean> apiCall = loginAPI.login(url, username, password, machineIpAddress, "BW", "U");
 		ApiResponse<LoginBean> response = Context.getWebserviceManager().executeApi(apiCall);
 		bypassResponse(execution, response, false);
 		

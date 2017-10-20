@@ -22,11 +22,14 @@ import javax.jnlp.BasicService;
 import javax.jnlp.ServiceManager;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class AppEntryPoint extends Application
@@ -180,9 +183,29 @@ public class AppEntryPoint extends Application
 		    int port = codebase.getPort();
 		    if(port > 0) webserviceBaseUrl += ":" + port;
 	    }
-	    catch(Exception | NoClassDefFoundError e)
+	    catch(Exception | NoClassDefFoundError e) // not web-start
 	    {
 		    LOGGER.warning("This is not a web-start application. The default server address will be used!");
+		    
+		    // populate the JNLP properties to the system properties
+		    InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream("sa/gov/nic/bio/bw/client/core/config/jnlp.properties");
+		    InputStreamReader isr = new InputStreamReader(is, StandardCharsets.UTF_8);
+		    Properties properties = new Properties();
+		    try
+		    {
+			    properties.load(isr);
+			    isr.close();
+			    for(Object key : Collections.list(properties.propertyNames()))
+			    {
+			    	String sKey = (String) key;
+				    String value = properties.getProperty(sKey);
+				    System.setProperty(sKey, value);
+			    }
+		    }
+		    catch(IOException e1)
+		    {
+			    LOGGER.log(Level.SEVERE, "Failed to load the file jnlp.properties!", e1);
+		    }
 	    }
 	
 	    if(webserviceBaseUrl == null)
@@ -201,7 +224,8 @@ public class AppEntryPoint extends Application
 	    Context.init(configManager, workflowManager, webserviceManager, executorService, scheduledExecutorService, userData);
 	
 	    LookupAPI lookupAPI = webserviceManager.getApi(LookupAPI.class);
-	    Call<NicHijriCalendarData> apiCall = lookupAPI.lookupNicHijriCalendarData();
+	    String url = System.getProperty("service.lookupNicHijriCalendarData");
+	    Call<NicHijriCalendarData> apiCall = lookupAPI.lookupNicHijriCalendarData(url);
 	    ApiResponse<NicHijriCalendarData> apiResponse = webserviceManager.executeApi(apiCall);
 	
 	    if(apiResponse.isSuccess())
@@ -226,8 +250,9 @@ public class AppEntryPoint extends Application
 		    else notifyPreloader(new ProgressMessage(null, "C001-00012"));
 		    return;
 	    }
-	
-	    Call<Map<String, Set<String>>> menuRolesCall = lookupAPI.lookupMenuRoles("BW");
+	    
+	    url = System.getProperty("service.lookupMenuRoles");
+	    Call<Map<String, Set<String>>> menuRolesCall = lookupAPI.lookupMenuRoles(url, "BW");
 	    ApiResponse<Map<String, Set<String>>> menuRolesResponse = webserviceManager.executeApi(menuRolesCall);
 	
 	    if(menuRolesResponse.isSuccess())

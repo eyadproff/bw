@@ -179,7 +179,8 @@ public class CoreFxController
 				scheduledRefreshTokenFuture = Context.getScheduledExecutorService().schedule(() ->
                 {
                     RefreshTokenAPI refreshTokenAPI = Context.getWebserviceManager().getApi(RefreshTokenAPI.class);
-                    Call<RefreshTokenBean> apiCall = refreshTokenAPI.refreshToken(userToken);
+	                String url = System.getProperty("service.refreshToken");
+                    Call<RefreshTokenBean> apiCall = refreshTokenAPI.refreshToken(url, userToken);
                     ApiResponse<RefreshTokenBean> response = Context.getWebserviceManager().executeApi(apiCall);
 
                     if(response.isSuccess())
