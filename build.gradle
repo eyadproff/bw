@@ -105,7 +105,7 @@ copyDependentJarsTask.dependsOn(jar)
 
 Creating the keystore with pair keys bundled:
 
-keytool -genkeypair -keystore bw-keystore.p12 -storetype PKCS12 -storepass bw#456321 -alias bw -keyalg RSA -keysize 2048 -validity 999999 -dname "CN=BW SSL Certificate, OU=Biometrics Team, O=NIC, L=Riyadh, ST=Riyadh, C=SA" -ext san=dns:localhost,ip:10.0.73.80,ip:10.0.73.93
+keytool -genkeypair -keystore bw-keystore.p12 -storetype PKCS12 -storepass bw#456321 -alias bw -keyalg RSA -keysize 2048 -validity 999999 -dname "CN=BW SSL Certificate, OU=Biometrics Team, O=NIC, L=Riyadh, ST=Riyadh, C=SA"
 
 Importing the keystore certificate into Java trusted keystore (run cmd as administrator):
 
@@ -166,7 +166,7 @@ task packageWebStart(group: 'web-start') {
 
         File directory = new File("${projectDir}/build/web-start")
         directory.mkdirs()
-        File file = new File(directory, 'APPLICATION.JNLP')
+        File file = new File(directory, 'APPLICATION_8.JNLP')
         file.createNewFile()
         file.text = jnlpTemplate
 
@@ -178,7 +178,7 @@ task packageWebStart(group: 'web-start') {
 
         // copy resources
         copy {
-            from 'build-resources/APPLICATION_6.JNLP'
+            from 'build-resources/APPLICATION.JNLP'
             into "build/web-start"
         }
         copy {
@@ -205,7 +205,7 @@ task packageWebStart(group: 'web-start') {
         /* JNLP-INF feature */
 
         //copy {
-        //    from 'build/web-start/APPLICATION.JNLP'
+        //    from 'build/web-start/APPLICATION_8.JNLP'
         //    into "build/JNLP-INF"
         //}
         //
@@ -267,7 +267,7 @@ packageWebStart.dependsOn(copyDependentJarsTask)
 
 task runWebStartLocally(type: Exec, group: 'web-start') {
     workingDir 'build/web-start'
-    commandLine 'javaws', 'APPLICATION.JNLP'
+    commandLine 'javaws', 'APPLICATION_8.JNLP'
 }
 //runWebStartLocally.dependsOn(packageWebStart)
 

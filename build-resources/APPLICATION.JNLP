@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jnlp xmlns:jfx="http://javafx.com" xmlns="http://java.com/jnlp"
-      spec="6.0.18" href="APPLICATION_6.JNLP">
+      spec="6.0+" href="APPLICATION_6.JNLP">
     <information>
         <title>Biometrics Workstation</title>
         <vendor>NIC</vendor>
@@ -12,7 +12,7 @@
     </security>
     <update check="always"/>
     <resources>
-        <java version="1.6+" href="http://www.oracle.com/technetwork/java/javase/downloads/index.html"/>
+        <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se"/>
 
         <!-- List of jars -->
         <jar href="jars/bw-client-jnlp-1.0.0.jar"/>
@@ -22,7 +22,7 @@
 
         <!-- Application properties -->
         <property name="jnlp.bw.javawsPath" value="C:/bio/jre8/bin/javaws.exe"/>
-        <property name="jnlp.bw.jnlpPath" value="/bw/APPLICATION.JNLP"/>
+        <property name="jnlp.bw.jnlpPath" value="/bw/APPLICATION_8.JNLP"/>
     </resources>
     <application-desc main-class="sa.gov.nic.bio.bw.client.jnlp.JnlpLauncher"/>
 </jnlp>

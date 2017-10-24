@@ -25,7 +25,7 @@ public class LogFormatter extends Formatter
 		String logMessage = timestamp + " - " + "[" + record.getLevel() + "][" +
 							Thread.currentThread().getName() + "][" + record.getSourceClassName() +
 							"." + record.getSourceMethodName() + "()] " +
-							formatMessage(record) + "\n";
+							formatMessage(record) + System.lineSeparator();
 		
 		Throwable thrown = record.getThrown();
 		

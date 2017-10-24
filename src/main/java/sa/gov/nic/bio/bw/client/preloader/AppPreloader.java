@@ -6,15 +6,15 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.net.URL;
-import java.util.Arrays;
-import java.util.Locale;
-import java.util.MissingResourceException;
-import java.util.ResourceBundle;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.*;
 import java.util.concurrent.CountDownLatch;
 import java.util.logging.*;
+import java.util.logging.Formatter;
 
 import javafx.stage.StageStyle;
 import sa.gov.nic.bio.bw.client.core.utils.*;
@@ -24,7 +24,35 @@ public class AppPreloader extends Preloader
 {
 	static
 	{
+		String deploymentFilePath = System.getProperty("user.home") + "/AppData/LocalLow/Sun/Java/Deployment/deployment.properties";
+		try
+		{
+			Files.deleteIfExists(Paths.get(deploymentFilePath));
+			System.out.println("Deleted the user-level deployment.properties.");
+		}
+		catch(IOException e)
+		{
+			System.out.println("Failed to delete the user-level deployment.properties!");
+			e.printStackTrace();
+		}
+		
 		Locale.setDefault(GuiLanguage.ARABIC.getLocale());
+		
+		// check if c:/bio/logs/bw exists. If not, create it
+		Path logFolderPath = Paths.get("c:/bio/logs/bw");
+		if(!Files.exists(logFolderPath))
+		{
+			try
+			{
+				Files.createDirectories(logFolderPath);
+				System.out.println("Created the log folder (C:\\bio\\logs\\bw).");
+			}
+			catch(IOException e)
+			{
+				System.out.println("Failed to create the log folder (C:\\bio\\logs\\bw)!");
+				e.printStackTrace();
+			}
+		}
 		
 		InputStream inputStream = AppPreloader.class.getResourceAsStream("/sa/gov/nic/bio/bw/client/core/config/logging.properties");
 		try
