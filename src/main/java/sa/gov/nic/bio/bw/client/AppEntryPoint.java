@@ -246,8 +246,8 @@ public class AppEntryPoint extends Application
 	    {
 	    	int httpCode = apiResponse.getHttpCode();
 		    String errorCode = apiResponse.getErrorCode();
-		    if(errorCode != null) notifyPreloader(new ProgressMessage(null, errorCode, String.valueOf(httpCode)));
-		    else notifyPreloader(new ProgressMessage(null, "C001-00012"));
+		    if(errorCode != null) notifyPreloader(new ProgressMessage(apiResponse.getException(), errorCode, String.valueOf(httpCode)));
+		    else notifyPreloader(new ProgressMessage(apiResponse.getException(), "C001-00012"));
 		    return;
 	    }
 	    
@@ -263,8 +263,8 @@ public class AppEntryPoint extends Application
 	    {
 		    int httpCode = menuRolesResponse.getHttpCode();
 		    String errorCode = menuRolesResponse.getErrorCode();
-		    if(errorCode != null) notifyPreloader(new ProgressMessage(null, errorCode, String.valueOf(httpCode)));
-		    else notifyPreloader(new ProgressMessage(null, "C001-00013"));
+		    if(errorCode != null) notifyPreloader(new ProgressMessage(apiResponse.getException(), errorCode, String.valueOf(httpCode)));
+		    else notifyPreloader(new ProgressMessage(apiResponse.getException(), "C001-00013"));
 		    return;
 	    }
 	

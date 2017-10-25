@@ -29,7 +29,7 @@ tasks.withType(JavaCompile) {
 
 repositories {
     flatDir {
-        dirs "libs/compile"
+        dirs "signed-libs/compile"
         dirs "libs/provided"
     }
 }
@@ -74,9 +74,13 @@ processResources {
     filesMatching('**/config.properties') {
         def env = System.getenv('build-environemnt')
         println 'build-environment = ' + env
+
+        filter(ReplaceTokens, tokens:['APP_VERSION': project.version])
+
         if(env == 'INT') filter(ReplaceTokens, tokens:['APP_VERSION': project.version + '-SNAPSHOT' + new Date().format('yyyyMMddHHmmss')])
         else if(env == 'PROD') filter(ReplaceTokens, tokens:['APP_VERSION': project.version])
         else /*(DEV)*/ filter(ReplaceTokens, tokens:['APP_VERSION': project.version + '-DEV'])
+
     }
 }
 
@@ -215,22 +219,17 @@ task packageWebStart(group: 'web-start') {
         //    }
         //}
 
-        // add "all-permissions" to manifest of all jars
-        fileTree(dir: 'build/web-start/jars', include: '**/*.jar').visit { FileVisitDetails details ->
-            ant.jar(destfile: details.file, update: true) {
-                delegate.manifest {
-                    attribute(name: 'Permissions', value: 'all-permissions')
-                }
+        // add "all-permissions" to manifest of main jar
+        ant.jar(destfile: 'build/web-start/jars/' + project.name + '-' + project.version + '.jar', update: true) {
+            delegate.manifest {
+                attribute(name: 'Permissions', value: 'all-permissions')
             }
         }
 
-        // normalize the jars
-        fileTree(dir: 'build/web-start/jars', include: '**/*.jar').visit { FileVisitDetails details ->
-            String fileName = details.file.name
-            exec {
-                workingDir 'build/web-start/jars'
-                commandLine 'pack200', '--repack', fileName
-            }
+        // normalize the main jar
+        exec {
+            workingDir 'build/web-start/jars'
+            commandLine 'pack200', '--repack', project.name + '-' + project.version + '.jar'
         }
 
         // TODO: parallelize the signing and compressing of jars
@@ -240,7 +239,7 @@ task packageWebStart(group: 'web-start') {
 
         // sign the jars
         ant.signjar(
-                jar: 'build/web-start/jars/*.jar',
+                jar: 'build/web-start/jars/' + project.name + '-' + project.version + '.jar',
                 destDir: 'build/web-start/jars',
                 keystore: "build-resources/bw-keystore.p12",
                 storetype: "PKCS12",
@@ -294,9 +293,9 @@ task deploy(group: 'web-start') {
     doLast {
         ssh.run {
             session(remotes.webServer) {
-                remove '/home/user/Desktop/wlp-17.0.0.2/usr/servers/bwjnlp/dropins'
-                execute 'mkdir /home/user/Desktop/wlp-17.0.0.2/usr/servers/bwjnlp/dropins'
-                put from: new File('build/web-start').listFiles().toList(), into: '/home/user/Desktop/wlp-17.0.0.2/usr/servers/bwjnlp/dropins'
+                remove '/home/user/Desktop/wlp-17.0.0.2/usr/servers/jnlp-downloader/dropins'
+                execute 'mkdir /home/user/Desktop/wlp-17.0.0.2/usr/servers/jnlp-downloader/dropins'
+                put from: new File('build/web-start').listFiles().toList(), into: '/home/user/Desktop/wlp-17.0.0.2/usr/servers/jnlp-downloader/dropins'
             }
         }
     }
@@ -308,12 +307,53 @@ task packageWebStartAndDeploy(group: 'web-start') {
     doLast {
         ssh.run {
             session(remotes.webServer) {
-                remove '/home/user/Desktop/wlp-17.0.0.2/usr/servers/bwjnlp/dropins'
-                execute 'mkdir /home/user/Desktop/wlp-17.0.0.2/usr/servers/bwjnlp/dropins'
-                put from: new File('build/web-start').listFiles().toList(), into: '/home/user/Desktop/wlp-17.0.0.2/usr/servers/bwjnlp/dropins'
+                remove '/home/user/Desktop/wlp-17.0.0.2/usr/servers/jnlp-downloader/dropins'
+                execute 'mkdir /home/user/Desktop/wlp-17.0.0.2/usr/servers/jnlp-downloader/dropins'
+                put from: new File('build/web-start').listFiles().toList(), into: '/home/user/Desktop/wlp-17.0.0.2/usr/servers/jnlp-downloader/dropins'
             }
         }
     }
 }
 
 packageWebStartAndDeploy.dependsOn(packageWebStart)
+
+// used only when there is a new library
+//task signLibJars {
+//
+//    File signedLibsFolder = new File("signed-libs")
+//    if(signedLibsFolder.exists()) new File("signed-libs").delete();
+//    signedLibsFolder.mkdirs()
+//
+//    copy {
+//        from 'libs/compile'
+//        into "signed-libs/compile"
+//    }
+//
+//    // add "all-permissions" to manifest of all jars
+//    fileTree(dir: 'signed-libs/compile', include: '**/*.jar').visit { FileVisitDetails details ->
+//        ant.jar(destfile: details.file, update: true) {
+//            delegate.manifest {
+//                attribute(name: 'Permissions', value: 'all-permissions')
+//            }
+//        }
+//    }
+//
+//    // normalize the jars
+//    fileTree(dir: 'signed-libs/compile', include: '**/*.jar').visit { FileVisitDetails details ->
+//        String fileName = details.file.name
+//        exec {
+//            workingDir 'signed-libs/compile'
+//            commandLine 'pack200', '--repack', fileName
+//        }
+//    }
+//
+//    // sign the jars
+//    ant.signjar(
+//            jar: 'signed-libs/compile/*.jar',
+//            destDir: 'signed-libs/compile',
+//            keystore: "build-resources/bw-keystore.p12",
+//            storetype: "PKCS12",
+//            storepass: "bw#456321",
+//            alias: "bw",
+//            preservelastmodified: "true")
+//}

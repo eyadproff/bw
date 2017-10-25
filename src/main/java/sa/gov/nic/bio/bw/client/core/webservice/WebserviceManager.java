@@ -89,7 +89,7 @@ public class WebserviceManager
 			String errorCode = "C002-00014";
 			return new ApiResponse<>(apiUrl, errorCode, e);
 		}
-		catch(IOException e)
+		catch(Exception e)
 		{
 			String errorCode = "C002-00015";
 			return new ApiResponse<>(apiUrl, errorCode, e);
