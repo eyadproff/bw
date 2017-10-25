@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jnlp xmlns:jfx="http://javafx.com" xmlns="http://java.com/jnlp"
-      spec="6.0+" href="APPLICATION_6.JNLP">
+      spec="6.0+" href="APPLICATION.JNLP">
     <information>
         <title>Biometrics Workstation</title>
         <vendor>NIC</vendor>
