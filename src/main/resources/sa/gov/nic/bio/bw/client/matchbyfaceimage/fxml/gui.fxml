@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?language JavaScript?>
+<?scenebuilder-preview-i18n-resource ../bundles/labels.properties?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.ProgressIndicator?>
+<?import org.controlsfx.control.NotificationPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.Separator?>
+<NotificationPane xmlns:fx="http://javafx.com/fxml" xmlns="http://javafx.com/javafx/8"
+                  fx:controller="sa.gov.nic.bio.bw.client.matchbyfaceimage.SearchByFaceImagePaneFxController"
+                  fx:id="notificationPane" stylesheets="@../css/match_by_face_image.css">
+    <content>
+        <BorderPane>
+            <center>
+                <HBox>
+                    <TitledPane text="%label.uploadedImage" expanded="false">
+                        <ImageView fx:id="ivUploadedImage"/>
+                    </TitledPane>
+                    <TitledPane text="%label.personImage" expanded="false">
+                        <ImageView fx:id="ivPersonImage"/>
+                    </TitledPane>
+                </HBox>
+            </center>
+            <bottom>
+                <BorderPane>
+                    <top>
+                        <FlowPane>
+                            <Label text="%label.personId"/>
+                            <TextField fx:id="txtPersonId"/>
+                            <Separator/>
+                            <Button fx:id="btnUploadImage" text="%button.uploadImage"/>
+                            <Button fx:id="btnGetPersonImageAndMatch" text="%button.getPersonImageAndMatch" visible="false" managed="false"/>
+                            <ProgressIndicator fx:id="piGetPersonImageAndMatch" prefHeight="25.0" prefWidth="25.0" visible="false" managed="false"/>
+                        </FlowPane>
+                    </top>
+                    <center>
+                        <TextArea fx:id="txtPersonDetails"/>
+                    </center>
+                </BorderPane>
+            </bottom>
+        </BorderPane>
+    </content>
+</NotificationPane>

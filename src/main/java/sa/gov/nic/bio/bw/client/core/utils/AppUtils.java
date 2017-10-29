@@ -70,6 +70,7 @@ public final class AppUtils
 		resources.add("sa/gov/nic/bio/bw/client/core/workflows/core.bpmn20.xml");
 		resources.add("sa/gov/nic/bio/bw/client/home/workflows/home.bpmn20.xml");
 		resources.add("sa/gov/nic/bio/bw/client/login/workflows/login.bpmn20.xml");
+		resources.add("sa/gov/nic/bio/bw/client/matchbyfaceimage/workflows/matchByFaceImage.bpmn20.xml");
 		
 		List<String> resources2 = new ArrayList<>();
 		URL jar = protectionDomain.getCodeSource().getLocation();

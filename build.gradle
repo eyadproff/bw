@@ -293,9 +293,9 @@ task deploy(group: 'web-start') {
     doLast {
         ssh.run {
             session(remotes.webServer) {
-                remove '/home/user/Desktop/wlp-17.0.0.2/usr/servers/jnlp-downloader/dropins'
-                execute 'mkdir /home/user/Desktop/wlp-17.0.0.2/usr/servers/jnlp-downloader/dropins'
-                put from: new File('build/web-start').listFiles().toList(), into: '/home/user/Desktop/wlp-17.0.0.2/usr/servers/jnlp-downloader/dropins'
+                remove '/home/user/Desktop/wlp/usr/servers/jnlp-downloader/dropins'
+                execute 'mkdir /home/user/Desktop/wlp/usr/servers/jnlp-downloader/dropins'
+                put from: new File('build/web-start').listFiles().toList(), into: '/home/user/Desktop/wlp/usr/servers/jnlp-downloader/dropins'
             }
         }
     }
@@ -307,9 +307,9 @@ task packageWebStartAndDeploy(group: 'web-start') {
     doLast {
         ssh.run {
             session(remotes.webServer) {
-                remove '/home/user/Desktop/wlp-17.0.0.2/usr/servers/jnlp-downloader/dropins'
-                execute 'mkdir /home/user/Desktop/wlp-17.0.0.2/usr/servers/jnlp-downloader/dropins'
-                put from: new File('build/web-start').listFiles().toList(), into: '/home/user/Desktop/wlp-17.0.0.2/usr/servers/jnlp-downloader/dropins'
+                remove '/home/user/Desktop/wlp/usr/servers/jnlp-downloader/dropins'
+                execute 'mkdir /home/user/Desktop/wlp/usr/servers/jnlp-downloader/dropins'
+                put from: new File('build/web-start').listFiles().toList(), into: '/home/user/Desktop/wlp/usr/servers/jnlp-downloader/dropins'
             }
         }
     }

@@ -45,6 +45,12 @@
         <sequenceFlow sourceRef="menuSelectionCheck" targetRef="callCancelCriminalProcess">
             <conditionExpression xsi:type="tFormalExpression">${menuId == 'menu.delete.cancelCriminal'}</conditionExpression>
         </sequenceFlow>
+        <sequenceFlow sourceRef="menuSelectionCheck" targetRef="callMatchByFaceImageProcess">
+            <conditionExpression xsi:type="tFormalExpression">${menuId == 'menu.query.matchByFaceImage'}</conditionExpression>
+        </sequenceFlow>
+        <sequenceFlow sourceRef="menuSelectionCheck" targetRef="callMatchByFaceImageProcess">
+            <conditionExpression xsi:type="tFormalExpression">${menuId == 'menu.query.searchByFaceImage'}</conditionExpression>
+        </sequenceFlow>
 
         <!--<sequenceFlow sourceRef="menuSelectionCheck" targetRef="callLoginProcess">
         </sequenceFlow>-->
@@ -64,6 +70,22 @@
         </callActivity>
 
         <sequenceFlow sourceRef="callCancelCriminalProcess" targetRef="menuSelectionCheck"/>
+
+        <callActivity id="callMatchByFaceImageProcess" name="Match By Face Image Process" calledElement="matchByFaceImageProcess">
+            <extensionElements>
+                <activiti:out source="menuId" target="menuId"/>
+            </extensionElements>
+        </callActivity>
+
+        <sequenceFlow sourceRef="callMatchByFaceImageProcess" targetRef="menuSelectionCheck"/>
+
+        <callActivity id="callSearchByFaceImageProcess" name="Search By Face Image Process" calledElement="searchByFaceImageProcess">
+            <extensionElements>
+                <activiti:out source="menuId" target="menuId"/>
+            </extensionElements>
+        </callActivity>
+
+        <sequenceFlow sourceRef="callSearchByFaceImageProcess" targetRef="menuSelectionCheck"/>
 
         <endEvent id="endEvent"/>
 
