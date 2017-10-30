@@ -24,7 +24,7 @@ public class AppPreloader extends Preloader
 {
 	static
 	{
-		String deploymentFilePath = System.getProperty("user.home") + "/AppData/LocalLow/Sun/Java/Deployment/deployment.properties";
+		String deploymentFilePath = System.getProperty("user.home") + "/AppData/LocalLow/Sun/Java/Deployment/deployment.properties"; // Windows 7 and newer
 		try
 		{
 			Files.deleteIfExists(Paths.get(deploymentFilePath));
@@ -39,19 +39,46 @@ public class AppPreloader extends Preloader
 		Locale.setDefault(GuiLanguage.ARABIC.getLocale());
 		
 		// check if c:/bio/logs/bw exists. If not, create it
-		Path logFolderPath = Paths.get("c:/bio/logs/bw");
+		Path logFolderPath = Paths.get(AppConstants.LOGS_FOLDER_PATH);
 		if(!Files.exists(logFolderPath))
 		{
 			try
 			{
 				Files.createDirectories(logFolderPath);
-				System.out.println("Created the log folder (C:\\bio\\logs\\bw).");
+				System.out.println("Created the log folder (" + AppConstants.LOGS_FOLDER_PATH + ").");
 			}
 			catch(IOException e)
 			{
-				System.out.println("Failed to create the log folder (C:\\bio\\logs\\bw)!");
+				System.out.println("Failed to create the log folder (" + AppConstants.LOGS_FOLDER_PATH + ")!");
 				e.printStackTrace();
 			}
+		}
+		
+		// check if c:/bio/temp/bw exists. If not, create it
+		Path tempFolderPath = Paths.get(AppConstants.TEMP_FOLDER_PATH);
+		if(!Files.exists(tempFolderPath))
+		{
+			try
+			{
+				Files.createDirectories(tempFolderPath);
+				System.out.println("Created the temp folder (" + AppConstants.TEMP_FOLDER_PATH + ").");
+			}
+			catch(IOException e)
+			{
+				System.out.println("Failed to create the temp folder (" + AppConstants.TEMP_FOLDER_PATH + ")!");
+				e.printStackTrace();
+			}
+		}
+		
+		// clean the temp folder
+		try
+		{
+			AppUtils.cleanDirectory(tempFolderPath);
+		}
+		catch(IOException e)
+		{
+			System.out.println("Failed to clean the temp folder (" + AppConstants.TEMP_FOLDER_PATH + ")!");
+			e.printStackTrace();
 		}
 		
 		InputStream inputStream = AppPreloader.class.getResourceAsStream("/sa/gov/nic/bio/bw/client/core/config/logging.properties");

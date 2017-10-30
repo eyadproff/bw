@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?language JavaScript?>
+<?scenebuilder-preview-i18n-resource ../bundles/labels.properties?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.ProgressIndicator?>
+<?import org.controlsfx.control.NotificationPane?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.control.Separator?>
+<NotificationPane xmlns:fx="http://javafx.com/fxml" xmlns="http://javafx.com/javafx/8"
+                  fx:controller="sa.gov.nic.bio.bw.client.searchbyfaceimage.SearchByFaceImagePaneFxController"
+                  fx:id="notificationPane" stylesheets="@../css/search_by_face_image.css">
+    <content>
+        <SplitPane fx:id="splitPane" orientation="VERTICAL" styleClass="white-background,hidden-divider">
+            <HBox fx:id="imagePane" alignment="CENTER" maxHeight="Infinity" maxWidth="Infinity">
+                <VBox alignment="CENTER" maxHeight="Infinity" maxWidth="Infinity" spacing="15.0">
+                    <HBox styleClass="image-border">
+                        <ImageView fx:id="ivCenterImage" preserveRatio="true">
+                            <Image url="@../images/avatar_placeholder.jpg"/>
+                        </ImageView>
+                    </HBox>
+                    <HBox alignment="CENTER" spacing="10.0">
+                        <Button fx:id="btnSelectImage" text="%button.selectImage" onAction="#onSelectImageClicked"/>
+                        <Button fx:id="btnSearchByImage" text="%button.searchByImage" onAction="#onSearchByImageClicked" disable="true"/>
+                        <ProgressIndicator fx:id="piSearchByImage" prefHeight="25.0" prefWidth="25.0" visible="false" managed="false"/>
+                    </HBox>
+                </VBox>
+            </HBox>
+            <ScrollPane fx:id="spCandidates" pannable="true" hbarPolicy="ALWAYS" vbarPolicy="NEVER" minHeight="100.0" managed="false" visible="false">
+                <HBox fx:id="hbCandidatesContainer">
+                    <TitledPane fx:id="tpUploadedImage" collapsible="false" text="%title.uploadedImage"/>
+                    <Separator styleClass="scroll-list-separator"/>
+                    <HBox fx:id="hbCandidatesImages"/>
+                </HBox>
+            </ScrollPane>
+        </SplitPane>
+    </content>
+</NotificationPane>

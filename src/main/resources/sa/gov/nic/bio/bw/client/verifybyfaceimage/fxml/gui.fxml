@@ -17,18 +17,23 @@
 <?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.Separator?>
+<?import javafx.scene.image.Image?>
 <NotificationPane xmlns:fx="http://javafx.com/fxml" xmlns="http://javafx.com/javafx/8"
-                  fx:controller="sa.gov.nic.bio.bw.client.matchbyfaceimage.SearchByFaceImagePaneFxController"
-                  fx:id="notificationPane" stylesheets="@../css/match_by_face_image.css">
+                  fx:controller="sa.gov.nic.bio.bw.client.matchbyfaceimage.VerifyByFaceImagePaneFxController"
+                  fx:id="notificationPane" stylesheets="@../css/verify_by_face_image.css">
     <content>
         <BorderPane>
             <center>
                 <HBox>
-                    <TitledPane text="%label.uploadedImage" expanded="false">
-                        <ImageView fx:id="ivUploadedImage"/>
+                    <TitledPane text="%label.uploadedImage" collapsible="false">
+                        <ImageView fx:id="ivUploadedImage">
+                            <Image url="@../images/avatar_placeholder.jpg"/>
+                        </ImageView>
                     </TitledPane>
-                    <TitledPane text="%label.personImage" expanded="false">
-                        <ImageView fx:id="ivPersonImage"/>
+                    <TitledPane text="%label.personImage" collapsible="false">
+                        <ImageView fx:id="ivPersonImage">
+                            <Image url="@../images/avatar_placeholder.jpg"/>
+                        </ImageView>
                     </TitledPane>
                 </HBox>
             </center>

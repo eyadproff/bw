@@ -39,7 +39,7 @@ public class HeaderPaneFxController implements VisibilityControl, AttachableCont
 	}
 	
 	@Override
-	public void attachInitialResources(ResourceBundle errorsBundle, ResourceBundle messagesBundle, Image appIcon)
+	public void attachInitialResources(ResourceBundle labelsBundle, ResourceBundle errorsBundle, ResourceBundle messagesBundle, Image appIcon)
 	{
 		// Not Used!
 	}

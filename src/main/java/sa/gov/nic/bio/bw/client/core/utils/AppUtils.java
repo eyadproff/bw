@@ -3,18 +3,24 @@ package sa.gov.nic.bio.bw.client.core.utils;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import javafx.embed.swing.SwingFXUtils;
+import javafx.scene.image.Image;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import org.controlsfx.glyphfont.FontAwesome;
 import org.controlsfx.glyphfont.Glyph;
 import sa.gov.nic.bio.bw.client.core.webservice.NicHijriCalendarData;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.*;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.*;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.security.ProtectionDomain;
 import java.text.NumberFormat;
 import java.time.DateTimeException;
@@ -70,7 +76,7 @@ public final class AppUtils
 		resources.add("sa/gov/nic/bio/bw/client/core/workflows/core.bpmn20.xml");
 		resources.add("sa/gov/nic/bio/bw/client/home/workflows/home.bpmn20.xml");
 		resources.add("sa/gov/nic/bio/bw/client/login/workflows/login.bpmn20.xml");
-		resources.add("sa/gov/nic/bio/bw/client/matchbyfaceimage/workflows/matchByFaceImage.bpmn20.xml");
+		resources.add("sa/gov/nic/bio/bw/client/searchbyfaceimage/workflows/searchByFaceImage.bpmn20.xml");
 		
 		List<String> resources2 = new ArrayList<>();
 		URL jar = protectionDomain.getCodeSource().getLocation();
@@ -254,5 +260,36 @@ public final class AppUtils
 		}
 		
 		return null;
+	}
+	
+	/*public static void saveImageToFile(Image image, String folderPath, String fileName) throws IOException
+	{
+		if(folderPath == null) throw new IllegalArgumentException("folderPath is null!");
+		if(fileName == null) throw new IllegalArgumentException("fileName is null!");
+		if(!fileName.matches(".+\\..+")) throw new IllegalArgumentException("fileName has no extension!");
+		
+		File outputFile = new File(folderPath + "/" + fileName);
+		BufferedImage bImage = SwingFXUtils.fromFXImage(image, null);
+		ImageIO.write(bImage, fileName.substring(fileName.lastIndexOf('.') + 1), outputFile);
+	}*/
+	
+	public static void cleanDirectory(Path directoryPath) throws IOException
+	{
+		Files.walkFileTree(directoryPath, new SimpleFileVisitor<Path>()
+		{
+			@Override
+			public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException
+			{
+				Files.delete(file);
+				return FileVisitResult.CONTINUE;
+			}
+			
+			@Override
+			public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException
+			{
+				if(!directoryPath.equals(dir)) Files.delete(dir);
+				return FileVisitResult.CONTINUE;
+			}
+		});
 	}
 }

@@ -19,7 +19,7 @@ public abstract class ServiceBase implements JavaDelegate
 {
 	private static final Logger LOGGER = Logger.getLogger(ServiceBase.class.getName());
 	
-	protected  <T> void bypassResponse(DelegateExecution execution, ApiResponse<T> response, boolean sameFormOnSuccess)
+	protected <T> void bypassResponse(DelegateExecution execution, ApiResponse<T> response, boolean sameFormOnSuccess)
 	{
 		boolean successResponse = response.isSuccess();
 		execution.setVariable("successResponse", successResponse);

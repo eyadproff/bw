@@ -43,7 +43,7 @@ public class MenuPaneFxController implements VisibilityControl, AttachableContro
 	}
 	
 	@Override
-	public void attachInitialResources(ResourceBundle errorsBundle, ResourceBundle messagesBundle, Image appIcon)
+	public void attachInitialResources(ResourceBundle labelsBundle, ResourceBundle errorsBundle, ResourceBundle messagesBundle, Image appIcon)
 	{
 		// Not Used!
 	}
@@ -168,7 +168,7 @@ public class MenuPaneFxController implements VisibilityControl, AttachableContro
 			labeledText.translateXProperty().bind(arrow.widthProperty().multiply(2).negate());
 			glyphFont.translateXProperty().bind(arrow.widthProperty().multiply(2).negate());
 			
-			lv.setPrefWidth(maxWidth * 1.5);
+			lv.setPrefWidth(maxWidth * 1.3);
 			lv.setPrefHeight(lv.getItems().size() * cellHeight + 30);
 		}
 	}

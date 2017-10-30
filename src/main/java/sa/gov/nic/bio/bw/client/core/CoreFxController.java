@@ -73,6 +73,8 @@ public class CoreFxController
 		this.menuRoles = menuRoles;
 	}
 	
+	public Stage getPrimaryStage(){return primaryStage;}
+	public StackPane getBodyPane(){return bodyPane;}
 	public GuiState getGuiState(){return guiState;}
 	public Map<String, Set<String>> getMenuRoles(){return menuRoles;}
 	
@@ -89,6 +91,8 @@ public class CoreFxController
 		headerPaneController.attachCoreFxController(this);
 		footerPaneController.attachCoreFxController(this);
 		menuPaneController.attachCoreFxController(this);
+		
+		headerPaneController.getRootPane().setMinHeight(headerPaneController.getRootPane().getHeight());
 		
 		if(guiState.getBodyController() == null) // if this is the first load
 		{
@@ -303,7 +307,7 @@ public class CoreFxController
 		guiState.setBodyController(controller);
 		
 		controller.attachCoreFxController(this);
-		controller.attachInitialResources(errorsBundle, messagesBundle, appIcon);
+		controller.attachInitialResources(labelsBundle, errorsBundle, messagesBundle, appIcon);
 		controller.attachInputData(inputData);
 		
 		bodyPane.getChildren().setAll(loadedPane);

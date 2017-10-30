@@ -14,7 +14,7 @@ import sa.gov.nic.bio.bw.client.core.BodyFxControllerBase;
 import java.util.HashMap;
 import java.util.Map;
 
-public class SearchByFaceImagePaneFxController extends BodyFxControllerBase
+public class VerifyByFaceImagePaneFxController extends BodyFxControllerBase
 {
 	@FXML private ImageView ivUploadedImage;
 	@FXML private ImageView ivPersonImage;

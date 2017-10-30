@@ -5,13 +5,13 @@
              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
              xmlns:activiti="http://activiti.org/bpmn">
 
-    <process id="matchByFaceImageProcess" name="Match By Face Image Process">
+    <process id="verifyByFaceImageProcess" name="Verify By Face Image Process">
 
         <startEvent id="startEvent"/>
 
         <sequenceFlow sourceRef="startEvent" targetRef="dataEntry"/>
 
-        <userTask id="dataEntry" activiti:formKey="sa.gov.nic.bio.bw.client.matchbyfaceimage.SearchByFaceImagePaneFxController">
+        <userTask id="dataEntry" activiti:formKey="sa.gov.nic.bio.bw.client.matchbyfaceimage.VerifyByFaceImagePaneFxController">
             <extensionElements>
                 <activiti:formProperty id="menuId" type="string"/>
                 <activiti:formProperty id="personId" type="string"/>

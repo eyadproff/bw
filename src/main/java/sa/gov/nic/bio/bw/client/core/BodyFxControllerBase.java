@@ -18,6 +18,7 @@ public abstract class BodyFxControllerBase implements BodyFxController
 {
 	private static final Logger LOGGER = Logger.getLogger(BodyFxControllerBase.class.getName());
 	protected CoreFxController coreFxController;
+	protected ResourceBundle labelsBundle;
 	protected ResourceBundle errorsBundle;
 	protected ResourceBundle messagesBundle;
 	protected Image appIcon;
@@ -69,8 +70,9 @@ public abstract class BodyFxControllerBase implements BodyFxController
 	}
 	
 	@Override
-	public void attachInitialResources(ResourceBundle errorsBundle, ResourceBundle messagesBundle, Image appIcon)
+	public void attachInitialResources(ResourceBundle labelsBundle, ResourceBundle errorsBundle, ResourceBundle messagesBundle, Image appIcon)
 	{
+		this.labelsBundle = labelsBundle;
 		this.errorsBundle = errorsBundle;
 		this.messagesBundle = messagesBundle;
 		this.appIcon = appIcon;
