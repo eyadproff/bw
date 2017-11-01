@@ -29,7 +29,7 @@ tasks.withType(JavaCompile) {
 
 repositories {
     flatDir {
-        dirs "signed-libs/compile"
+        dirs "libs/compile"
         dirs "libs/provided"
     }
 }
@@ -219,17 +219,22 @@ task packageWebStart(group: 'web-start') {
         //    }
         //}
 
-        // add "all-permissions" to manifest of main jar
-        ant.jar(destfile: 'build/web-start/jars/' + project.name + '-' + project.version + '.jar', update: true) {
-            delegate.manifest {
-                attribute(name: 'Permissions', value: 'all-permissions')
+        // add "all-permissions" to manifest of all jars
+        fileTree(dir: 'build/web-start/jars', include: '**/*.jar').visit { FileVisitDetails details ->
+            ant.jar(destfile: details.file, update: true) {
+                delegate.manifest {
+                    attribute(name: 'Permissions', value: 'all-permissions')
+                }
             }
         }
 
-        // normalize the main jar
-        exec {
-            workingDir 'build/web-start/jars'
-            commandLine 'pack200', '--repack', project.name + '-' + project.version + '.jar'
+        // normalize the jars
+        fileTree(dir: 'build/web-start/jars', include: '**/*.jar').visit { FileVisitDetails details ->
+            String fileName = details.file.name
+            exec {
+                workingDir 'build/web-start/jars'
+                commandLine 'pack200', '--repack', fileName
+            }
         }
 
         // TODO: parallelize the signing and compressing of jars
@@ -239,7 +244,7 @@ task packageWebStart(group: 'web-start') {
 
         // sign the jars
         ant.signjar(
-                jar: 'build/web-start/jars/' + project.name + '-' + project.version + '.jar',
+                jar: 'build/web-start/jars/*.jar',
                 destDir: 'build/web-start/jars',
                 keystore: "build-resources/bw-keystore.p12",
                 storetype: "PKCS12",
