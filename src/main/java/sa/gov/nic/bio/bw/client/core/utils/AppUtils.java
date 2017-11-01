@@ -288,4 +288,23 @@ public final class AppUtils
 			}
 		});
 	}
+	
+	public static String saveBase64PhotoToTemp(String photoBase64, String fileExtension)
+	{
+		byte[] photoByteArray = Base64.getDecoder().decode(photoBase64);
+		InputStream is = new ByteArrayInputStream(photoByteArray);
+		String fileName = System.nanoTime() + fileExtension;
+		String filePath = AppConstants.TEMP_FOLDER_PATH + "/" + fileName;
+		
+		try
+		{
+			Files.copy(is, Paths.get(filePath));
+		}
+		catch(IOException e)
+		{
+			e.printStackTrace();
+		}
+		
+		return filePath;
+	}
 }

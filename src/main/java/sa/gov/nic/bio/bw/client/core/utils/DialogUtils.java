@@ -151,39 +151,14 @@ public class DialogUtils
 		alert.showAndWait();
 	}
 	
-	public static /*Dialog<?>*/ Stage buildCustomDialog(Image appIcon, String title, Pane contentPane, String buttonCloseText, boolean rtl)
+	public static Stage buildCustomDialog(Image appIcon, String title, Pane contentPane, String buttonCloseText, boolean rtl)
 	{
-		/*Alert alert = new Alert(AlertType.NONE);
-		alert.initModality(Modality.APPLICATION_MODAL);
-		alert.initStyle(StageStyle.UNIFIED);
-		alert.setResizable(true);
-		Scene scene = alert.getDialogPane().getScene();
-		scene.setNodeOrientation(rtl ? NodeOrientation.RIGHT_TO_LEFT : NodeOrientation.LEFT_TO_RIGHT);
-		Stage stage = (Stage) scene.getWindow();
-		if(appIcon != null) stage.getIcons().add(appIcon);
-		alert.setHeaderText(null);
-		alert.setTitle(title);
-		
-		alert.getDialogPane().setContent(contentPane);
-		
-		ButtonType buttonTypeClose = new ButtonType(buttonCloseText, ButtonBar.ButtonData.CANCEL_CLOSE);
-		alert.getButtonTypes().setAll(buttonTypeClose);
-		
-		Button btnClose = (Button) alert.getDialogPane().lookupButton(buttonTypeClose);
-		btnClose.setDefaultButton(false);
-		
-		return alert;*/
-		
 		Stage stage = new Stage();
 		stage.setResizable(false);
 		stage.initModality(Modality.APPLICATION_MODAL);
 		stage.initStyle(StageStyle.UNDECORATED);
 		Scene scene = new Scene(contentPane);
 		scene.setNodeOrientation(rtl ? NodeOrientation.RIGHT_TO_LEFT : NodeOrientation.LEFT_TO_RIGHT);
-		scene.addEventHandler(KeyEvent.KEY_PRESSED, t ->
-		{
-			if(t.getCode() == KeyCode.ESCAPE) stage.close();
-		});
 		if(appIcon != null) stage.getIcons().add(appIcon);
 		stage.setTitle(title);
 		stage.setScene(scene);

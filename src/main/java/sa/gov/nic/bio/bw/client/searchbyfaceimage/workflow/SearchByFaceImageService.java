@@ -2,22 +2,19 @@ package sa.gov.nic.bio.bw.client.searchbyfaceimage.workflow;
 
 import org.activiti.engine.delegate.DelegateExecution;
 import retrofit2.Call;
-import sa.gov.nic.bio.bw.client.cancelcriminal.webservice.CancelCriminalAPI;
 import sa.gov.nic.bio.bw.client.core.Context;
-import sa.gov.nic.bio.bw.client.core.utils.AppConstants;
+import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.client.core.webservice.ApiResponse;
 import sa.gov.nic.bio.bw.client.core.workflow.ServiceBase;
 import sa.gov.nic.bio.bw.client.searchbyfaceimage.webservice.Candidate;
 import sa.gov.nic.bio.bw.client.searchbyfaceimage.webservice.SearchByFaceImageAPI;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class SearchByFaceImageService extends ServiceBase
@@ -37,8 +34,9 @@ public class SearchByFaceImageService extends ServiceBase
 		}
 		catch(IOException e)
 		{
-			// TODO: handle the exception
-			e.printStackTrace();
+			LOGGER.log(Level.SEVERE, "Failed to convert the file (" + uploadedImagePath + ") to base64-encoded image!", e);
+			String errorCode = "C005-00001";
+			bypassErrorCode(execution, errorCode);
 		}
 		
 		SearchByFaceImageAPI searchByFaceImageAPI = Context.getWebserviceManager().getApi(SearchByFaceImageAPI.class);
@@ -55,32 +53,13 @@ public class SearchByFaceImageService extends ServiceBase
 				candidates.forEach(candidate ->
 				{
 					String candidateImage = candidate.getImage();
-					String photoPath = savePhoto(candidateImage);
-					candidate.setImage(null);
+					String photoPath = AppUtils.saveBase64PhotoToTemp(candidateImage, ".jpg");
+					candidate.setImage(null); // because Activiti cannot handle big data
 					candidate.setPhotoPath(photoPath);
 				});
 			}
 		}
 		
 		bypassResponse(execution, response, true);
-	}
-	
-	private static String savePhoto(String photoBase64) // TODO: temp
-	{
-		byte[] photoByteArray = Base64.getDecoder().decode(photoBase64);
-		InputStream is = new ByteArrayInputStream(photoByteArray);
-		String fileName = System.nanoTime() + ".jpg";
-		String filePath = AppConstants.TEMP_FOLDER_PATH + "/" + fileName;
-		
-		try
-		{
-			Files.copy(is, Paths.get(filePath));
-		}
-		catch(IOException e)
-		{
-			e.printStackTrace();
-		}
-		
-		return filePath;
 	}
 }

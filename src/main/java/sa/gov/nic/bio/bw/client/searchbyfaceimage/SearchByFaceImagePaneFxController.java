@@ -15,6 +15,9 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCombination;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -32,11 +35,16 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.text.DecimalFormat;
 import java.util.*;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class SearchByFaceImagePaneFxController extends BodyFxControllerBase
 {
+	private static final Logger LOGGER = Logger.getLogger(SearchByFaceImagePaneFxController.class.getName());
+	
 	@FXML private SplitPane splitPane;
 	@FXML private HBox imagePane;
 	@FXML private ImageView ivCenterImage;
@@ -204,6 +212,8 @@ public class SearchByFaceImagePaneFxController extends BodyFxControllerBase
 	@FXML
 	private void onSelectImageButtonClicked(ActionEvent actionEvent)
 	{
+		hideNotification();
+		
 		if(spCandidates.isVisible())
 		{
 			String headerText = messagesBundle.getString("selectNewFaceImage.confirmation.header");
@@ -217,6 +227,38 @@ public class SearchByFaceImagePaneFxController extends BodyFxControllerBase
 		
 		if(selectedFile != null)
 		{
+			try
+			{
+				long fileSizeBytes = Files.size(selectedFile.toPath());
+				double fileSizeKB = fileSizeBytes / 1024.0;
+				String maxFileSizeKbProperty = System.getProperty("jnlp.bw.config.searchByFaceImage.fileMaxSizeKB");
+				if(maxFileSizeKbProperty == null)
+				{
+					LOGGER.warning("jnlp.bw.config.searchByFaceImage.fileMaxSizeKB is null!");
+				}
+				else
+				{
+					try
+					{
+						double maxFileSizeKb = Double.parseDouble(maxFileSizeKbProperty);
+						if(fileSizeKB > maxFileSizeKb)
+						{
+							DecimalFormat df = new DecimalFormat("#.00"); // 2 decimal places
+							showWarningNotification(String.format(messagesBundle.getString("selectNewFaceImage.fileChooser.exceedMaxFileSize"), df.format(fileSizeKB), df.format(maxFileSizeKb)));
+							return;
+						}
+					}
+					catch(NumberFormatException e)
+					{
+						LOGGER.log(Level.WARNING, "Failed to parse jnlp.bw.config.searchByFaceImage.fileMaxSizeKB (" + maxFileSizeKbProperty + ") as double!", e);
+					}
+				}
+			}
+			catch(IOException e)
+			{
+				LOGGER.log(Level.WARNING, "Failed to retrieve the file size (" + selectedFile.getAbsolutePath() + ")!", e);
+			}
+			
 			String fileName = selectedFile.getName();
 			String selectedFileExtension = fileName.substring(fileName.lastIndexOf('.') + 1);
 			fileName = System.nanoTime() + "." + selectedFileExtension;
@@ -238,7 +280,6 @@ public class SearchByFaceImagePaneFxController extends BodyFxControllerBase
 				ivCenterImage.setImage(image);
 				
 				// success image loading
-				// TODO: check if bigger than 1 MB, and make it configurable
 				
 				btnSearchByImage.setDisable(false);
 				btnSelectImage.setText(labelsBundle.getString("button.selectNewImage"));
@@ -363,6 +404,14 @@ public class SearchByFaceImagePaneFxController extends BodyFxControllerBase
 		borderPane.centerProperty().set(imageLayer);
 		
 		Stage dialogStage = DialogUtils.buildCustomDialog(appIcon, title, stackPane, buttonText, rtl);
+		dialogStage.getScene().addEventHandler(KeyEvent.KEY_PRESSED, t ->
+		{
+			if(t.getCode() == KeyCode.ESCAPE)
+			{
+				contextMenu.hide();
+				dialogStage.close();
+			}
+		});
 		dialogStage.initOwner(coreFxController.getPrimaryStage());
 		dialogStage.getScene().getRoot().setOnContextMenuRequested(event ->
         {
@@ -375,10 +424,15 @@ public class SearchByFaceImagePaneFxController extends BodyFxControllerBase
 		ivMergedImage.fitWidthProperty().bind(dialogStage.widthProperty());
 		
 		ivMergedImage.setImage(mergedImage);
-		btnClose.setOnAction(event -> dialogStage.close());
+		btnClose.setOnAction(event ->
+		{
+			dialogStage.close();
+			contextMenu.hide();
+		});
 		
 		dialogStage.setFullScreenExitHint("");
 		dialogStage.setFullScreen(true);
+		dialogStage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
 		dialogStage.show();
 	}
 	
