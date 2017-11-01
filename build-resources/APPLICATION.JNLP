@@ -21,7 +21,7 @@
         <property name="jnlp.packEnabled" value="true"/>
 
         <!-- Application properties -->
-        <property name="jnlp.bw.javawsPath" value="C:/bio/jre8/bin/javaws.exe"/>
+        <property name="jnlp.bw.javawsPath" value="C:/bio/jre8u152/bin/javaws.exe"/>
         <property name="jnlp.bw.jnlpPath" value="/bw/APPLICATION_8.JNLP"/>
     </resources>
     <application-desc main-class="sa.gov.nic.bio.bw.client.jnlp.JnlpLauncher"/>

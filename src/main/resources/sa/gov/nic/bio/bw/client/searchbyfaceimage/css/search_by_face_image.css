@@ -12,6 +12,35 @@
     -fx-padding: 1 0 1 0;
 }
 
-.scroll-list-separator {
+.slider .titled-pane > .title {
+    -fx-alignment: center;
+}
 
+.slider .titled-pane {
+    -fx-text-fill: #398755;
+}
+
+.slider .titled-pane > .content, .slider .titled-pane > .title {
+    -fx-border-color: #398755;
+    -fx-border-width: 1px;
+    -fx-border-style: solid;
+}
+
+.slider-first-item {
+    -fx-border-color: #398755;
+    -fx-border-width: 0 3 0 0;
+    -fx-border-style: dashed;
+}
+
+.slider .toggle-titled-pane:selected > .title {
+    -fx-background-color: #c7fad6;
+    -fx-font-weight: bolder;
+}
+
+.slider .toggle-titled-pane {
+    -fx-cursor: hand;
+}
+
+.slider .toggle-titled-pane:selected {
+    -fx-cursor: default;
 }
