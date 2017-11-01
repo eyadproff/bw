@@ -428,7 +428,7 @@ public class CoreFxController
 		
 		String version = Context.getConfigManager().getProperty("app.version");
 		String title = labelsBundle.getString("window.title") + " " + version;
-		windowTitle = AppUtils.replaceNumbers(title, Locale.getDefault());
+		windowTitle = AppUtils.replaceNumbersOnly(title, Locale.getDefault());
 		
 		FXMLLoader newStageLoader = new FXMLLoader(fxmlUrl, labelsBundle);
 		

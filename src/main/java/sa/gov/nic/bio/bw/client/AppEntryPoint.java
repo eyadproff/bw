@@ -339,7 +339,7 @@ public class AppEntryPoint extends Application
 		    return;
 	    }
 	    
-	    windowTitle = AppUtils.replaceNumbers(title, Locale.getDefault());
+	    windowTitle = AppUtils.replaceNumbersOnly(title, Locale.getDefault());
 	    
 	    successfulInit = true;
 	    LOGGER.exiting(AppEntryPoint.class.getName(), "init()");

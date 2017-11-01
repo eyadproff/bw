@@ -3,16 +3,12 @@ package sa.gov.nic.bio.bw.client.core.utils;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import javafx.embed.swing.SwingFXUtils;
-import javafx.scene.image.Image;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import org.controlsfx.glyphfont.FontAwesome;
 import org.controlsfx.glyphfont.Glyph;
 import sa.gov.nic.bio.bw.client.core.webservice.NicHijriCalendarData;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
 import java.io.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -105,23 +101,23 @@ public final class AppUtils
 	
 	public static String formatDateTime(TemporalAccessor temporal)
 	{
-		return replaceNumbers(DATE_TIME_FORMATTER.withLocale(Locale.getDefault()).format(temporal), Locale.getDefault());
+		return replaceNumbersOnly(DATE_TIME_FORMATTER.withLocale(Locale.getDefault()).format(temporal), Locale.getDefault());
 		
 	}
 	
 	public static String formatDate(TemporalAccessor temporal)
 	{
-		return replaceNumbers(DATE_FORMATTER.withLocale(Locale.getDefault()).format(temporal), Locale.getDefault());
+		return replaceNumbersOnly(DATE_FORMATTER.withLocale(Locale.getDefault()).format(temporal), Locale.getDefault());
 		
 	}
 	
-	public static String replaceNumbers(long number, Locale locale)
+	public static String replaceNumbersWithCommas(long number, Locale locale)
 	{
 		NumberFormat numberFormat = NumberFormat.getNumberInstance(locale);
 		return numberFormat.format(number);
 	}
 	
-	public static String replaceNumbers(String text, Locale locale)
+	public static String replaceNumbersOnly(String text, Locale locale)
 	{
 		NumberFormat numberFormat = NumberFormat.getNumberInstance(locale);
 		

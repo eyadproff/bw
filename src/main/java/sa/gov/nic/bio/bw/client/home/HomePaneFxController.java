@@ -66,8 +66,8 @@ public class HomePaneFxController extends BodyFxControllerBase
 		location = location.trim().replaceAll("\\s+", " ");
 		
 		// localize numbers
-		operatorName = AppUtils.replaceNumbers(operatorName, Locale.getDefault());
-		location = AppUtils.replaceNumbers(location, Locale.getDefault());
+		operatorName = AppUtils.replaceNumbersOnly(operatorName, Locale.getDefault());
+		location = AppUtils.replaceNumbersOnly(location, Locale.getDefault());
 		
 		coreFxController.getHeaderPaneController().setUsername(username);
 		coreFxController.getHeaderPaneController().setOperatorName(operatorName);
@@ -175,7 +175,7 @@ public class HomePaneFxController extends BodyFxControllerBase
 			try
 			{
 				String sDateTime = isDate ? AppUtils.formatHijriGregorianDateTime(value) :
-						AppUtils.replaceNumbers(value, Locale.getDefault());
+						AppUtils.replaceNumbersOnly(String.valueOf(value), Locale.getDefault());
 				valueLabel.setText(sDateTime);
 			}
 			catch(DateTimeException e) // date out of range?

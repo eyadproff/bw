@@ -10,6 +10,7 @@ import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
@@ -39,6 +40,13 @@ public class SearchByFaceImagePaneFxController extends BodyFxControllerBase
 	@FXML private SplitPane splitPane;
 	@FXML private HBox imagePane;
 	@FXML private ImageView ivCenterImage;
+	@FXML private VBox detailsPane;
+	@FXML private Label lblBioId;
+	@FXML private Label lblScore;
+	@FXML private Label lblSamisId;
+	@FXML private Label lblFirstName;
+	@FXML private Label lblFatherName;
+	@FXML private Label lblFamilyName;
 	@FXML private Button btnSelectImage;
 	@FXML private Button btnSearchByImage;
 	@FXML private Button btnCompareWithUploadedImage;
@@ -101,6 +109,8 @@ public class SearchByFaceImagePaneFxController extends BodyFxControllerBase
 			btnCompareWithUploadedImage.setManaged(true);
 			btnCompareWithUploadedImage.setVisible(true);
 			btnCompareWithUploadedImage.setDisable(true);
+			detailsPane.setManaged(true);
+			detailsPane.setVisible(true);
 			
 			// make the list scrollable horizontally
 			spCandidates.setOnScroll(event ->
@@ -138,6 +148,13 @@ public class SearchByFaceImagePaneFxController extends BodyFxControllerBase
                 toggleGroup.selectToggle(tpUploadedImage);
                 ivCenterImage.setImage(uploadedImage);
 	            btnCompareWithUploadedImage.setDisable(true);
+	            
+	            lblBioId.setText(labelsBundle.getString("label.notAvailable"));
+	            lblScore.setText(labelsBundle.getString("label.notAvailable"));
+	            lblSamisId.setText(labelsBundle.getString("label.notAvailable"));
+	            lblFirstName.setText(labelsBundle.getString("label.notAvailable"));
+	            lblFatherName.setText(labelsBundle.getString("label.notAvailable"));
+	            lblFamilyName.setText(labelsBundle.getString("label.notAvailable"));
             });
 			
 			hbCandidatesImages.getChildren().clear();
@@ -150,7 +167,7 @@ public class SearchByFaceImagePaneFxController extends BodyFxControllerBase
 				candidateImageView.setImage(candidateImage);
 				candidateImageView.setPreserveRatio(true);
 				candidateImageView.fitHeightProperty().bind(spCandidates.heightProperty().subtract(hScrollbarHeight[0] * 3 + 2)); // 2 = top border + bottom border
-				String scoreTitle = AppUtils.replaceNumbers(String.valueOf(candidate.getScore()), Locale.getDefault());
+				String scoreTitle = AppUtils.replaceNumbersOnly(String.valueOf(candidate.getScore()), Locale.getDefault());
 				ToggleTitledPane toggleTitledPane = new ToggleTitledPane(scoreTitle, candidateImageView);
 				toggleTitledPane.setToggleGroup(toggleGroup);
 				toggleTitledPane.setCollapsible(false);
@@ -159,6 +176,24 @@ public class SearchByFaceImagePaneFxController extends BodyFxControllerBase
                 	toggleGroup.selectToggle(toggleTitledPane);
 	                ivCenterImage.setImage(candidateImage);
 	                btnCompareWithUploadedImage.setDisable(false);
+	
+	                lblBioId.setText(AppUtils.replaceNumbersOnly(String.valueOf(candidate.getBioId()), Locale.getDefault()));
+	                lblScore.setText(AppUtils.replaceNumbersOnly(String.valueOf(candidate.getScore()), Locale.getDefault()));
+	                
+	                if(candidate.getSamisId() > 0)
+	                {
+		                lblSamisId.setText(AppUtils.replaceNumbersOnly(String.valueOf(candidate.getSamisId()), Locale.getDefault()));
+		                lblFirstName.setText(candidate.getFirstName());
+		                lblFatherName.setText(candidate.getFatherName());
+		                lblFamilyName.setText(candidate.getFamilyName());
+	                }
+	                else
+	                {
+		                lblSamisId.setText(labelsBundle.getString("label.notAvailable"));
+		                lblFirstName.setText(labelsBundle.getString("label.notAvailable"));
+		                lblFatherName.setText(labelsBundle.getString("label.notAvailable"));
+		                lblFamilyName.setText(labelsBundle.getString("label.notAvailable"));
+	                }
                 });
 				hbCandidatesImages.getChildren().add(toggleTitledPane);
 			}
@@ -215,6 +250,8 @@ public class SearchByFaceImagePaneFxController extends BodyFxControllerBase
 				spCandidates.setVisible(false);
 				btnCompareWithUploadedImage.setManaged(false);
 				btnCompareWithUploadedImage.setVisible(false);
+				detailsPane.setManaged(false);
+				detailsPane.setVisible(false);
 			}
 			catch(IOException e)
 			{
@@ -271,6 +308,9 @@ public class SearchByFaceImagePaneFxController extends BodyFxControllerBase
 		
 		btnCompareWithUploadedImage.setManaged(!bool);
 		btnCompareWithUploadedImage.setVisible(!bool);
+		
+		detailsPane.setManaged(!bool);
+		detailsPane.setVisible(!bool);
 	}
 	
 	@FXML
