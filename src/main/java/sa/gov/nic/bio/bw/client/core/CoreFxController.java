@@ -16,8 +16,8 @@ import sa.gov.nic.bio.bw.client.core.beans.StateBundle;
 import sa.gov.nic.bio.bw.client.core.interfaces.*;
 import sa.gov.nic.bio.bw.client.core.utils.*;
 import sa.gov.nic.bio.bw.client.core.webservice.ApiResponse;
-import sa.gov.nic.bio.bw.client.home.webservice.RefreshTokenAPI;
-import sa.gov.nic.bio.bw.client.home.webservice.RefreshTokenBean;
+import sa.gov.nic.bio.bw.client.core.webservice.RefreshTokenAPI;
+import sa.gov.nic.bio.bw.client.core.webservice.RefreshTokenBean;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;

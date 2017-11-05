@@ -1,4 +1,4 @@
-package sa.gov.nic.bio.bw.client.home.webservice;
+package sa.gov.nic.bio.bw.client.core.webservice;
 
 import retrofit2.Call;
 import retrofit2.http.Field;

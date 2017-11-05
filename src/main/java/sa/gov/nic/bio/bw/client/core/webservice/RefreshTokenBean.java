@@ -1,4 +1,4 @@
-package sa.gov.nic.bio.bw.client.home.webservice;
+package sa.gov.nic.bio.bw.client.core.webservice;
 
 import java.io.Serializable;
 

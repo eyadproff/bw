@@ -256,7 +256,7 @@ public class AppEntryPoint extends Application
 	    }
 	    catch(MissingResourceException e)
 	    {
-		    String errorCode = "C001-00014";
+		    String errorCode = "C001-00013";
 		    notifyPreloader(new ProgressMessage(e, errorCode));
 		    return;
 	    }
@@ -267,7 +267,7 @@ public class AppEntryPoint extends Application
 	    }
 	    catch(MissingResourceException e)
 	    {
-		    String errorCode = "C001-00015";
+		    String errorCode = "C001-00014";
 		    notifyPreloader(new ProgressMessage(e, errorCode));
 		    return;
 	    }
@@ -278,7 +278,7 @@ public class AppEntryPoint extends Application
 	    }
 	    catch(MissingResourceException e)
 	    {
-		    String errorCode = "C001-00016";
+		    String errorCode = "C001-00015";
 		    notifyPreloader(new ProgressMessage(e, errorCode));
 		    return;
 	    }
@@ -286,7 +286,7 @@ public class AppEntryPoint extends Application
 	    InputStream appIconStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(CoreFxController.APP_ICON_FILE);
 	    if(appIconStream == null)
 	    {
-		    String errorCode = "C001-00017";
+		    String errorCode = "C001-00016";
 		    notifyPreloader(new ProgressMessage(null, errorCode));
 		    return;
 	    }
@@ -295,7 +295,7 @@ public class AppEntryPoint extends Application
 	    fxmlUrl = Thread.currentThread().getContextClassLoader().getResource(CoreFxController.FXML_FILE);
 	    if(fxmlUrl == null)
 	    {
-		    String errorCode = "C001-00018";
+		    String errorCode = "C001-00017";
 		    notifyPreloader(new ProgressMessage(null, errorCode));
 		    return;
 	    }
@@ -304,7 +304,7 @@ public class AppEntryPoint extends Application
 	    
 	    if(version == null)
 	    {
-		    String errorCode = "C001-00019";
+		    String errorCode = "C001-00018";
 		    notifyPreloader(new ProgressMessage(null, errorCode));
 		    return;
 	    }
@@ -316,7 +316,7 @@ public class AppEntryPoint extends Application
 	    }
 	    catch(MissingResourceException e)
 	    {
-		    String errorCode = "C001-00020";
+		    String errorCode = "C001-00019";
 		    notifyPreloader(new ProgressMessage(e, errorCode));
 		    return;
 	    }
@@ -343,7 +343,7 @@ public class AppEntryPoint extends Application
 	    }
 	    catch(IOException e)
 	    {
-		    String errorCode = "C001-00021";
+		    String errorCode = "C001-00020";
 		    notifyPreloader(new ProgressMessage(e, errorCode));
 		    return;
 	    }
