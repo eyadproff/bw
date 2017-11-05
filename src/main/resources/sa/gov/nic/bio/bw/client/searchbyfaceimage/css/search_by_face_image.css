@@ -37,10 +37,10 @@
     -fx-font-weight: bolder;
 }
 
-.slider .toggle-titled-pane {
+.slider .toggle-titled-pane,.slider .toggle-titled-pane > .title {
     -fx-cursor: hand;
 }
 
-.slider .toggle-titled-pane:selected {
+.slider .toggle-titled-pane:selected,.slider .toggle-titled-pane:selected > .title {
     -fx-cursor: default;
 }

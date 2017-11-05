@@ -101,7 +101,18 @@ public class SearchByFaceImagePaneFxController extends BodyFxControllerBase
 	@Override
 	public void onReturnFromTask()
 	{
-		disableUiControls(false);
+		// hide the overlay on top of the side menus
+		coreFxController.getMenuPaneController().showOverlayPane(false);
+		
+		// hide the progress bar
+		piSearchByImage.setVisible(false);
+		piSearchByImage.setManaged(false);
+		
+		// show the the first two buttons
+		btnSelectImage.setManaged(true);
+		btnSelectImage.setVisible(true);
+		btnSearchByImage.setManaged(true);
+		btnSearchByImage.setVisible(true);
 		
 		Boolean successResponse = (Boolean) inputData.get("successResponse");
 		if(successResponse != null && successResponse)
@@ -184,31 +195,59 @@ public class SearchByFaceImagePaneFxController extends BodyFxControllerBase
                 	toggleGroup.selectToggle(toggleTitledPane);
 	                ivCenterImage.setImage(candidateImage);
 	                btnCompareWithUploadedImage.setDisable(false);
-	
-	                lblBioId.setText(AppUtils.replaceNumbersOnly(String.valueOf(candidate.getBioId()), Locale.getDefault()));
-	                lblScore.setText(AppUtils.replaceNumbersOnly(String.valueOf(candidate.getScore()), Locale.getDefault()));
 	                
-	                if(candidate.getSamisId() > 0)
+	                // default values
+	                lblBioId.setText(labelsBundle.getString("label.notAvailable"));
+	                lblScore.setText(labelsBundle.getString("label.notAvailable"));
+	                lblSamisId.setText(labelsBundle.getString("label.notAvailable"));
+	                lblFirstName.setText(labelsBundle.getString("label.notAvailable"));
+	                lblFatherName.setText(labelsBundle.getString("label.notAvailable"));
+	                lblFamilyName.setText(labelsBundle.getString("label.notAvailable"));
+	
+	                long bioId = candidate.getBioId();
+	                int score = candidate.getScore();
+	                long samisId = candidate.getSamisId();
+	                String firstName = candidate.getFirstName();
+	                String fatherName = candidate.getFatherName();
+	                String familyName = candidate.getFamilyName();
+	
+	                if(firstName != null && firstName.trim().isEmpty()) firstName = null;
+	                if(fatherName != null && fatherName.trim().isEmpty()) fatherName = null;
+	                if(familyName != null && familyName.trim().isEmpty()) familyName = null;
+	                
+	                String sBioId = AppUtils.replaceNumbersOnly(String.valueOf(bioId), Locale.getDefault());
+	                String sScore = AppUtils.replaceNumbersOnly(String.valueOf(score), Locale.getDefault());
+	
+	                lblBioId.setText(sBioId);
+	                lblScore.setText(sScore);
+	                
+	                if(samisId > 0)
 	                {
-		                lblSamisId.setText(AppUtils.replaceNumbersOnly(String.valueOf(candidate.getSamisId()), Locale.getDefault()));
-		                lblFirstName.setText(candidate.getFirstName());
-		                lblFatherName.setText(candidate.getFatherName());
-		                lblFamilyName.setText(candidate.getFamilyName());
+		                String sSamisId = AppUtils.replaceNumbersOnly(String.valueOf(samisId), Locale.getDefault());
+		                lblSamisId.setText(sSamisId);
 	                }
-	                else
-	                {
-		                lblSamisId.setText(labelsBundle.getString("label.notAvailable"));
-		                lblFirstName.setText(labelsBundle.getString("label.notAvailable"));
-		                lblFatherName.setText(labelsBundle.getString("label.notAvailable"));
-		                lblFamilyName.setText(labelsBundle.getString("label.notAvailable"));
-	                }
+	                
+	                if(firstName != null) lblFirstName.setText(firstName);
+	                if(fatherName != null) lblFatherName.setText(fatherName);
+	                if(familyName != null) lblFamilyName.setText(familyName);
                 });
 				hbCandidatesImages.getChildren().add(toggleTitledPane);
 			}
 			
 			spCandidates.setHvalue(0.0); // scroll to the beginning
 		}
-		else super.onReturnFromTask();
+		else // on failure response
+		{
+			spCandidates.maxHeightProperty().bind(new SimpleDoubleProperty(0.0));
+			spCandidates.setManaged(false);
+			spCandidates.setVisible(false);
+			btnCompareWithUploadedImage.setManaged(false);
+			btnCompareWithUploadedImage.setVisible(false);
+			detailsPane.setManaged(false);
+			detailsPane.setVisible(false);
+			
+			super.onReturnFromTask(); // let the parent class show the error message
+		}
 	}
 	
 	@FXML
@@ -328,32 +367,30 @@ public class SearchByFaceImagePaneFxController extends BodyFxControllerBase
 		spCandidates.setVisible(false);
 		
 		hideNotification();
-		disableUiControls(true);
+		
+		// show the overlay on top of the side menus
+		coreFxController.getMenuPaneController().showOverlayPane(true);
+		
+		// show the progress bar
+		piSearchByImage.setVisible(true);
+		piSearchByImage.setManaged(true);
+		
+		// hide the buttons
+		btnSelectImage.setManaged(false);
+		btnSelectImage.setVisible(false);
+		btnSearchByImage.setManaged(false);
+		btnSearchByImage.setVisible(false);
+		btnCompareWithUploadedImage.setManaged(false);
+		btnCompareWithUploadedImage.setVisible(false);
+		
+		// hide the details pane
+		detailsPane.setManaged(false);
+		detailsPane.setVisible(false);
 		
 		Map<String, String> uiDataMap = new HashMap<>();
 		uiDataMap.put("uploadedImagePath", uploadedImagePath);
 		
 		coreFxController.submitFormTask(uiDataMap);
-	}
-	
-	private void disableUiControls(boolean bool)
-	{
-		coreFxController.getMenuPaneController().showOverlayPane(bool);
-		
-		piSearchByImage.setVisible(bool);
-		piSearchByImage.setManaged(bool);
-		
-		btnSelectImage.setManaged(!bool);
-		btnSelectImage.setVisible(!bool);
-		
-		btnSearchByImage.setManaged(!bool);
-		btnSearchByImage.setVisible(!bool);
-		
-		btnCompareWithUploadedImage.setManaged(!bool);
-		btnCompareWithUploadedImage.setVisible(!bool);
-		
-		detailsPane.setManaged(!bool);
-		detailsPane.setVisible(!bool);
 	}
 	
 	@FXML
@@ -415,10 +452,7 @@ public class SearchByFaceImagePaneFxController extends BodyFxControllerBase
 			}
 		});
 		dialogStage.initOwner(coreFxController.getPrimaryStage());
-		dialogStage.getScene().getRoot().setOnContextMenuRequested(event ->
-        {
-            contextMenu.show(dialogStage.getScene().getRoot(), event.getScreenX(), event.getScreenY());
-        });
+		dialogStage.getScene().getRoot().setOnContextMenuRequested(event -> contextMenu.show(dialogStage.getScene().getRoot(), event.getScreenX(), event.getScreenY()));
 		
 		closeMenuItem.setOnAction(event -> dialogStage.close());
 		
