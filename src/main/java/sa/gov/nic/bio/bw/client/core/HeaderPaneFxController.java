@@ -38,12 +38,6 @@ public class HeaderPaneFxController implements VisibilityControl, AttachableCont
 		this.coreFxController = coreFxController;
 	}
 	
-	@Override
-	public void attachInitialResources(ResourceBundle labelsBundle, ResourceBundle errorsBundle, ResourceBundle messagesBundle, Image appIcon)
-	{
-		// Not Used!
-	}
-	
 	@FXML
 	private void initialize() throws IOException
 	{

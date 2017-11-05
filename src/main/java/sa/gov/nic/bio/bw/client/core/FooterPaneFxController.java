@@ -29,12 +29,6 @@ public class FooterPaneFxController implements VisibilityControl, AttachableCont
 		onPostAttachingCoreFxController();
 	}
 	
-	@Override
-	public void attachInitialResources(ResourceBundle labelsBundle, ResourceBundle errorsBundle, ResourceBundle messagesBundle, Image appIcon)
-	{
-		// Not Used!
-	}
-	
 	private void onPostAttachingCoreFxController()
 	{
 		GuiLanguage language = coreFxController.getGuiState().getLanguage();

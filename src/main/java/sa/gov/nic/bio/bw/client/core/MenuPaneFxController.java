@@ -42,12 +42,6 @@ public class MenuPaneFxController implements VisibilityControl, AttachableContro
 		this.coreFxController = coreFxController;
 	}
 	
-	@Override
-	public void attachInitialResources(ResourceBundle labelsBundle, ResourceBundle errorsBundle, ResourceBundle messagesBundle, Image appIcon)
-	{
-		// Not Used!
-	}
-	
 	@FXML
 	private void initialize() throws IOException
 	{

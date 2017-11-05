@@ -11,5 +11,5 @@ import java.util.ResourceBundle;
 public interface AttachableController
 {
 	void attachCoreFxController(CoreFxController coreFxController);
-	void attachInitialResources(ResourceBundle labelsBundle, ResourceBundle errorsBundle, ResourceBundle messagesBundle, Image appIcon);
+	default void attachInitialResources(ResourceBundle labelsBundle, ResourceBundle errorsBundle, ResourceBundle messagesBundle, Image appIcon){}
 }
