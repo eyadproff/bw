@@ -205,6 +205,8 @@ public class SearchByFaceImagePaneFxController extends BodyFxControllerBase
                 });
 				hbCandidatesImages.getChildren().add(toggleTitledPane);
 			}
+			
+			spCandidates.setHvalue(0.0); // scroll to the beginning
 		}
 		else super.onReturnFromTask();
 	}
