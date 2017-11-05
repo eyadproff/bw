@@ -12,6 +12,6 @@ public interface AppConstants
 	}
 	
 	ZoneId SAUDI_ZONE = ZoneId.of("GMT+3");
-	String LOGS_FOLDER_PATH = "C:/bio/temp/bw";
-	String TEMP_FOLDER_PATH = "C:/bio/logs/bw";
+	String LOGS_FOLDER_PATH = "C:/bio/logs/bw";
+	String TEMP_FOLDER_PATH = "C:/bio/temp/bw";
 }
