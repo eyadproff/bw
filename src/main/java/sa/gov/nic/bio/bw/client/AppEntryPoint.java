@@ -50,7 +50,6 @@ public class AppEntryPoint extends Application
 	private Image appIcon;
 	private URL fxmlUrl;
 	private String windowTitle;
-	private Map<String, Set<String>> menuRoles;
 	
 	private boolean successfulInit = false;
 	private GuiLanguage initialLanguage = GuiLanguage.ARABIC; // TODO: make it configurable from properties file
@@ -251,23 +250,6 @@ public class AppEntryPoint extends Application
 		    return;
 	    }
 	    
-	    url = System.getProperty("jnlp.bw.service.lookupMenuRoles");
-	    Call<Map<String, Set<String>>> menuRolesCall = lookupAPI.lookupMenuRoles(url, "BW");
-	    ApiResponse<Map<String, Set<String>>> menuRolesResponse = webserviceManager.executeApi(menuRolesCall);
-	
-	    if(menuRolesResponse.isSuccess())
-	    {
-		    menuRoles = menuRolesResponse.getResult();
-	    }
-	    else
-	    {
-		    int httpCode = menuRolesResponse.getHttpCode();
-		    String errorCode = menuRolesResponse.getErrorCode();
-		    if(errorCode != null) notifyPreloader(new ProgressMessage(apiResponse.getException(), errorCode, String.valueOf(httpCode)));
-		    else notifyPreloader(new ProgressMessage(apiResponse.getException(), "C001-00013"));
-		    return;
-	    }
-	
 	    try
 	    {
 		    labelsBundle = ResourceBundle.getBundle(CoreFxController.RB_LABELS_FILE, initialLanguage.getLocale(), new UTF8Control());
@@ -367,7 +349,7 @@ public class AppEntryPoint extends Application
 	    }
 	    
 	    CoreFxController coreFxController = coreStageLoader.getController();
-	    coreFxController.passInitialResources(labelsBundle, errorsBundle, messagesBundle, appIcon, windowTitle, idleWarningBeforeSeconds, idleWarningAfterSeconds, menuRoles);
+	    coreFxController.passInitialResources(labelsBundle, errorsBundle, messagesBundle, appIcon, windowTitle, idleWarningBeforeSeconds, idleWarningAfterSeconds);
 	    coreFxController.getGuiState().setLanguage(initialLanguage);
 	    
 	    primaryStage.getScene().setNodeOrientation(initialLanguage.getNodeOrientation());

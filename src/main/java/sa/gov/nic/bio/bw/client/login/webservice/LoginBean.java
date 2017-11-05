@@ -1,11 +1,8 @@
 package sa.gov.nic.bio.bw.client.login.webservice;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import sa.gov.nic.bio.bw.client.core.webservice.ApiResponseBase;
-
 import java.io.Serializable;
-import java.util.Arrays;
-import java.util.Objects;
+import java.util.Map;
+import java.util.Set;
 
 public class LoginBean implements Serializable
 {
@@ -191,6 +188,7 @@ public class LoginBean implements Serializable
 	
 	private UserInfo userInfo;
 	private String userToken;
+	private Map<String, Set<String>> menuRoles;
 	
 	public UserInfo getUserInfo()
 	{
@@ -210,5 +208,15 @@ public class LoginBean implements Serializable
 	public void setUserToken(String userToken)
 	{
 		this.userToken = userToken;
+	}
+	
+	public Map<String, Set<String>> getMenuRoles()
+	{
+		return menuRoles;
+	}
+	
+	public void setMenuRoles(Map<String, Set<String>> menuRoles)
+	{
+		this.menuRoles = menuRoles;
 	}
 }

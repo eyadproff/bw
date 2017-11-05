@@ -54,14 +54,13 @@ public class CoreFxController
 	private String windowTitle;
 	private int idleWarningBeforeSeconds;
 	private int idleWarningAfterSeconds;
-	private Map<String, Set<String>> menuRoles;
 	
 	private GuiState guiState = new GuiState();
 	private IdleMonitor idleMonitor;
 	private ScheduledFuture<?> scheduledRefreshTokenFuture;
 	private boolean idleWarningOn = false;
 	
-	public void passInitialResources(ResourceBundle labelsBundle, ResourceBundle errorsBundle, ResourceBundle messagesBundle, Image appIcon, String windowTitle, int idleWarningBeforeSeconds, int idleWarningAfterSeconds, Map<String, Set<String>> menuRoles)
+	public void passInitialResources(ResourceBundle labelsBundle, ResourceBundle errorsBundle, ResourceBundle messagesBundle, Image appIcon, String windowTitle, int idleWarningBeforeSeconds, int idleWarningAfterSeconds)
 	{
 		this.labelsBundle = labelsBundle;
 		this.errorsBundle = errorsBundle;
@@ -70,13 +69,11 @@ public class CoreFxController
 		this.windowTitle = windowTitle;
 		this.idleWarningBeforeSeconds = idleWarningBeforeSeconds;
 		this.idleWarningAfterSeconds = idleWarningAfterSeconds;
-		this.menuRoles = menuRoles;
 	}
 	
 	public Stage getPrimaryStage(){return primaryStage;}
 	public StackPane getBodyPane(){return bodyPane;}
 	public GuiState getGuiState(){return guiState;}
-	public Map<String, Set<String>> getMenuRoles(){return menuRoles;}
 	
 	public HeaderPaneFxController getHeaderPaneController(){return headerPaneController;}
 	public FooterPaneFxController getFooterPaneController(){return footerPaneController;}
@@ -460,7 +457,7 @@ public class CoreFxController
 		
 		CoreFxController newCoreFxController = newStageLoader.getController();
 		newCoreFxController.guiState = guiState;
-		newCoreFxController. passInitialResources(labelsBundle, errorsBundle, messagesBundle, appIcon, windowTitle, idleWarningBeforeSeconds, idleWarningAfterSeconds, menuRoles);
+		newCoreFxController. passInitialResources(labelsBundle, errorsBundle, messagesBundle, appIcon, windowTitle, idleWarningBeforeSeconds, idleWarningAfterSeconds);
 		newCoreFxController.guiState.setLanguage(toLanguage);
 		boolean success = newCoreFxController.applyStateBundle(oldState);
 		

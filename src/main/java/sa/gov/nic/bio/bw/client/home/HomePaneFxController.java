@@ -146,7 +146,7 @@ public class HomePaneFxController extends BodyFxControllerBase
 		
 		for(String menuId : allMenus)
 		{
-			Set<String> menuRoles = coreFxController.getMenuRoles().get(menuId);
+			Set<String> menuRoles = loginBean.getMenuRoles().get(menuId);
 			
 			if(menuRoles != null && !Collections.disjoint(userRoles, menuRoles))
 			{
@@ -154,7 +154,6 @@ public class HomePaneFxController extends BodyFxControllerBase
 			}
 		}
 		
-		//menus.sort(String.CASE_INSENSITIVE_ORDER);
 		coreFxController.getMenuPaneController().setMenus(menus, icons);
 		
 		if(menus.size() == 0)

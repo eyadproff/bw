@@ -1,16 +1,18 @@
 package sa.gov.nic.bio.bw.client.login.workflow;
 
 import org.activiti.engine.delegate.DelegateExecution;
-import org.activiti.engine.delegate.JavaDelegate;
 import retrofit2.Call;
 import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.client.core.webservice.ApiResponse;
+import sa.gov.nic.bio.bw.client.core.webservice.LookupAPI;
 import sa.gov.nic.bio.bw.client.core.workflow.ServiceBase;
 import sa.gov.nic.bio.bw.client.login.webservice.LoginAPI;
 import sa.gov.nic.bio.bw.client.login.webservice.LoginBean;
 
 import java.net.SocketException;
+import java.util.Map;
+import java.util.Set;
 import java.util.logging.Logger;
 
 /**
@@ -50,16 +52,31 @@ public class LoginService extends ServiceBase
 		
 		LOGGER.info("The machine IP address is " + machineIpAddress);
 		
+		String url = System.getProperty("jnlp.bw.service.lookupMenuRoles");
+		LookupAPI lookupAPI = Context.getWebserviceManager().getApi(LookupAPI.class);
+		Call<Map<String, Set<String>>> menuRolesCall = lookupAPI.lookupMenuRoles(url, "BW");
+		ApiResponse<Map<String, Set<String>>> menuRolesResponse = Context.getWebserviceManager().executeApi(menuRolesCall);
+		
+		Map<String, Set<String>> menuRoles;
+		if(menuRolesResponse.isSuccess()) menuRoles = menuRolesResponse.getResult();
+		else
+		{
+			bypassResponse(execution, menuRolesResponse, false);
+			return;
+		}
+		
 		LoginAPI loginAPI = Context.getWebserviceManager().getApi(LoginAPI.class);
-		String url = System.getProperty("jnlp.bw.service.login");
+		url = System.getProperty("jnlp.bw.service.login");
 		Call<LoginBean> apiCall = loginAPI.login(url, username, password, machineIpAddress, "BW", "U");
 		ApiResponse<LoginBean> response = Context.getWebserviceManager().executeApi(apiCall);
-		bypassResponse(execution, response, false);
 		
 		if(response.isSuccess())
 		{
 			LoginBean resultBean = response.getResult();
+			resultBean.setMenuRoles(menuRoles);
 			LOGGER.info("the user (" + resultBean.getUserInfo().getUserName() + ") is logged in");
 		}
+		
+		bypassResponse(execution, response, false);
 	}
 }
