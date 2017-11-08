@@ -7,7 +7,7 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import retrofit2.Call;
-import sa.gov.nic.bio.bw.client.core.ConfigManager;
+import sa.gov.nic.bio.bw.client.core.utils.ConfigManager;
 import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.CoreFxController;
 import sa.gov.nic.bio.bw.client.core.beans.UserData;

@@ -38,7 +38,7 @@ public class AppPreloader extends Preloader
 		
 		Locale.setDefault(GuiLanguage.ARABIC.getLocale());
 		
-		// check if c:/bio/logs/bw exists. If not, create it
+		// check if LOGS_FOLDER_PATH exists. If not, create it
 		Path logFolderPath = Paths.get(AppConstants.LOGS_FOLDER_PATH);
 		if(!Files.exists(logFolderPath))
 		{
@@ -54,7 +54,7 @@ public class AppPreloader extends Preloader
 			}
 		}
 		
-		// check if c:/bio/temp/bw exists. If not, create it
+		// check if TEMP_FOLDER_PATH exists. If not, create it
 		Path tempFolderPath = Paths.get(AppConstants.TEMP_FOLDER_PATH);
 		if(!Files.exists(tempFolderPath))
 		{

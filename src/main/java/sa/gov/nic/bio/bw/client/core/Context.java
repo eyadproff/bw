@@ -1,6 +1,7 @@
 package sa.gov.nic.bio.bw.client.core;
 
 import sa.gov.nic.bio.bw.client.core.beans.UserData;
+import sa.gov.nic.bio.bw.client.core.utils.ConfigManager;
 import sa.gov.nic.bio.bw.client.core.workflow.WorkflowManager;
 import sa.gov.nic.bio.bw.client.core.webservice.WebserviceManager;
 

@@ -1,4 +1,4 @@
-package sa.gov.nic.bio.bw.client.core;
+package sa.gov.nic.bio.bw.client.core.utils;
 
 import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
 
