@@ -34,6 +34,8 @@ public class CancelCriminalPaneFxController extends BodyFxControllerBase
 		
 		txtCriminalId.textProperty().addListener((observable, oldValue, newValue) ->
         {
+	        if(newValue.length() > 10) txtCriminalId.setText(oldValue);
+	        
             if(!newValue.matches("\\d*"))
             {
 	            txtCriminalId.setText(newValue.replaceAll("[^\\d]", ""));

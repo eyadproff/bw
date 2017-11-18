@@ -272,7 +272,7 @@ public class SearchByFaceImagePaneFxController extends BodyFxControllerBase
 			{
 				long fileSizeBytes = Files.size(selectedFile.toPath());
 				double fileSizeKB = fileSizeBytes / 1024.0;
-				String maxFileSizeKbProperty = System.getProperty("jnlp.bw.config.searchByFaceImage.fileMaxSizeKB");
+				String maxFileSizeKbProperty = System.getProperty("jnlp.bio.bw.config.searchByFaceImage.fileMaxSizeKB");
 				if(maxFileSizeKbProperty == null)
 				{
 					LOGGER.warning("jnlp.bw.config.searchByFaceImage.fileMaxSizeKB is null!");

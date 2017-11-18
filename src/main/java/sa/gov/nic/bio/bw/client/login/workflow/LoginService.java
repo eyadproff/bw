@@ -52,7 +52,7 @@ public class LoginService extends ServiceBase
 		
 		LOGGER.info("The machine IP address is " + machineIpAddress);
 		
-		String url = System.getProperty("jnlp.bw.service.lookupMenuRoles");
+		String url = System.getProperty("jnlp.bio.bw.service.lookupMenuRoles");
 		LookupAPI lookupAPI = Context.getWebserviceManager().getApi(LookupAPI.class);
 		Call<Map<String, Set<String>>> menuRolesCall = lookupAPI.lookupMenuRoles(url, "BW");
 		ApiResponse<Map<String, Set<String>>> menuRolesResponse = Context.getWebserviceManager().executeApi(menuRolesCall);
@@ -66,7 +66,7 @@ public class LoginService extends ServiceBase
 		}
 		
 		LoginAPI loginAPI = Context.getWebserviceManager().getApi(LoginAPI.class);
-		url = System.getProperty("jnlp.bw.service.login");
+		url = System.getProperty("jnlp.bio.bw.service.login");
 		Call<LoginBean> apiCall = loginAPI.login(url, username, password, machineIpAddress, "BW", "U");
 		ApiResponse<LoginBean> response = Context.getWebserviceManager().executeApi(apiCall);
 		

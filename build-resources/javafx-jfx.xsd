@@ -35,18 +35,18 @@
             <xs:sequence>
                 <xs:element ref="fx:param" minOccurs="0" maxOccurs="unbounded" />
             </xs:sequence>
-            <xs:attribute name="height" use="optional" type="xs:int"/>
-            <xs:attribute name="width" use="optional" type="xs:int"/>
+            <xs:attribute name="height" type="xs:int"/>
+            <xs:attribute name="width" type="xs:int"/>
             <xs:attribute name="main-class" use="required" type="xs:string"/>
-            <xs:attribute name="preloader-class" use="optional" type="xs:string"/>
-            <xs:attribute name="name" use="optional" type="xs:string" />
+            <xs:attribute name="preloader-class" type="xs:string"/>
+            <xs:attribute name="name" type="xs:string" />
         </xs:complexType>
     </xs:element>
 
     <xs:element name="details">
         <xs:complexType>
             <xs:sequence>
-                <xs:element ref="certificate-path" minOccurs="0" maxOccurs="1" />
+                <xs:element ref="certificate-path" minOccurs="0"/>
             </xs:sequence>
         </xs:complexType>
     </xs:element>

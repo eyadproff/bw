@@ -1,27 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jnlp xmlns:jfx="http://javafx.com" xmlns="http://java.com/jnlp"
-      spec="8.20" href="APPLICATION_8.JNLP">
+<jnlp xmlns="http://java.com/jnlp" spec="6.0+" href="APPLICATION.JNLP">
     <information>
-        <title>Biometrics Workstation</title>
+        <title>Biometrics Client Launcher</title>
         <vendor>NIC</vendor>
-        <icon href="app_icon.png" version="1" height="512" width="512" depth="24"/>
-        <icon href="splash.gif" kind="splash"/>
     </information>
     <security>
         <all-permissions/>
     </security>
     <update check="always"/>
     <resources>
-        <java version="1.8+" href="http://www.oracle.com/technetwork/java/javase/downloads/index.html"/>
+        <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se"/>
 
         <!-- List of jars -->
-        <!--JARS PLACE HOLDER-->
+        <jar href="jnlp-jars/bio-client-launcher-1.0.0.jar"/>
+        <jar href="jnlp-jars/gson-2.8.2.jar"/>
 
         <!-- Enable jars compressing -->
         <property name="jnlp.packEnabled" value="true"/>
 
-        <!-- Application properties -->
+        <!-- BCL properties -->
+        <property name="jnlp.bcl.jreVersion" value="jre8u152-32bit"/>
+        <property name="jnlp.bcl.logsLevel" value="INFO"/>
+        <property name="jnlp.bcl.serverBasePath" value="bio/client"/>
+        <property name="jnlp.bcl.bioFolderPath" value="C:/bio"/>
+        <property name="jnlp.bcl.hashingAlgorithm" value="SHA-256"/>
+        <!-- change the following properties -->
+        <property name="jnlp.bcl.appId" value="bw"/>
+        <property name="jnlp.bcl.mainClass" value="sa.gov.nic.bio.bw.client.AppEntryPoint"/>
+        <property name="jnlp.bcl.showProgressGUI" value="false"/>
+        <!-- Optional properties. Add "jnlp.noPrefix" as a prefix to remove it when bypassing it to the application
+             i.e. The key "jnlp.noPrefix.javafx.preloader" will be bypassed as "javafx.preloader" -->
+        <property name="jnlp.noPrefix.javafx.preloader" value="sa.gov.nic.bio.bw.client.preloader.AppPreloader"/>
+
+        <!-- application properties (NOTE: the property name should start with "jnlp.bio.") -->
         <!--PROPERTIES PLACE HOLDER-->
     </resources>
-    <jfx:javafx-desc main-class="sa.gov.nic.bio.bw.client.AppEntryPoint" preloader-class="sa.gov.nic.bio.bw.client.preloader.AppPreloader"/>
+    <application-desc main-class="sa.gov.nic.bio.bcl.ClientLauncher"/>
 </jnlp>

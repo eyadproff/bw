@@ -13,7 +13,6 @@ import retrofit2.converter.jackson.JacksonConverterFactory;
 import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.login.webservice.LoginBean;
 
-import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.util.HashMap;
 import java.util.Map;

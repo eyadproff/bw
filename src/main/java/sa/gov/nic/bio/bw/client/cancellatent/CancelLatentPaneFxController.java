@@ -34,6 +34,8 @@ public class CancelLatentPaneFxController extends BodyFxControllerBase
 		
 		txtLatentId.textProperty().addListener((observable, oldValue, newValue) ->
         {
+	        if(newValue.length() > 20) txtLatentId.setText(oldValue);
+        	
             if(!newValue.matches("\\d*"))
             {
 	            txtLatentId.setText(newValue.replaceAll("[^\\d]", ""));

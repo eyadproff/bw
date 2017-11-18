@@ -40,7 +40,7 @@ public class SearchByFaceImageService extends ServiceBase
 		}
 		
 		SearchByFaceImageAPI searchByFaceImageAPI = Context.getWebserviceManager().getApi(SearchByFaceImageAPI.class);
-		String url = System.getProperty("jnlp.bw.service.searchByFaceImage");
+		String url = System.getProperty("jnlp.bio.bw.service.searchByFaceImage");
 		Call<List<Candidate>> apiCall = searchByFaceImageAPI.searchByFaceImage(url, imageBase64);
 		ApiResponse<List<Candidate>> response = Context.getWebserviceManager().executeApi(apiCall);
 		

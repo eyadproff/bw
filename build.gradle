@@ -1,4 +1,3 @@
-import sa.gov.nic.bio.bw.client.tools.SignJars
 import org.apache.tools.ant.filters.ReplaceTokens
 
 buildscript {
@@ -14,7 +13,7 @@ buildscript {
     }
 }
 
-project.version = '1.1.1'
+project.version = '1.1.2'
 group = 'sa.gov.nic.bio'
 
 apply plugin: 'java'
@@ -65,8 +64,6 @@ dependencies {
     implementation name: "retrofit-2.3.0"
     implementation name: "slf4j-api-1.7.25"
     implementation name: "slf4j-nop-1.7.25"
-    implementation name: "bw-client-jnlp-1.0.0"
-    compileOnly name: "javaws-8.144"
     testImplementation name: "junit-4.12"
 }
 
@@ -77,10 +74,9 @@ processResources {
 
         filter(ReplaceTokens, tokens:['APP_VERSION': project.version])
 
-        if(env == 'INT') filter(ReplaceTokens, tokens:['APP_VERSION': project.version + '-SNAPSHOT' + new Date().format('yyyyMMddHHmmss')])
+        /*if(env == 'INT') filter(ReplaceTokens, tokens:['APP_VERSION': project.version + '-SNAPSHOT' + new Date().format('yyyyMMddHHmmss')])
         else if(env == 'PROD') filter(ReplaceTokens, tokens:['APP_VERSION': project.version])
-        else /*(DEV)*/ filter(ReplaceTokens, tokens:['APP_VERSION': project.version + '-DEV'])
-
+        else *//*(DEV)*//* filter(ReplaceTokens, tokens:['APP_VERSION': project.version + '-DEV'])*/
     }
 }
 
@@ -89,7 +85,6 @@ jar {
         attributes('Implementation-Title': project.name,
                 'Implementation-Version': project.version,
                 'Implementation-Vendor': 'NIC',
-                'Permissions': 'all-permissions',
                 'Application-Name': 'Biometrics Workstation',
                 'Built-By': 'Biometrics Team',
                 'JavaFX-Preloader-Class': 'sa.gov.nic.bio.bw.client.preloader.AppPreloader',
@@ -99,57 +94,20 @@ jar {
     }
 }
 
-task copyDependentJarsTask(type: Copy) {
+task collectDependencies(type: Copy) {
     from configurations.runtimeClasspath.files
     into 'build/libs'
 }
-copyDependentJarsTask.dependsOn(jar)
-
-/*
-
-Creating the keystore with pair keys bundled:
-
-keytool -genkeypair -keystore bw-keystore.p12 -storetype PKCS12 -storepass bw#456321 -alias bw -keyalg RSA -keysize 2048 -validity 999999 -dname "CN=BW SSL Certificate, OU=Biometrics Team, O=NIC, L=Riyadh, ST=Riyadh, C=SA"
-
-Importing the keystore certificate into Java trusted keystore (run cmd as administrator):
-
-keytool -importkeystore -srcstoretype PKCS12 -deststoretype JKS -srcstorepass bw#456321 -deststorepass changeit -srcalias bw -srckeystore bw-keystore.p12 -destkeystore "C:\Program Files\Java\jre1.8.0_144\lib\security\cacerts"
-
-*/
+collectDependencies.dependsOn(jar)
 
 task packageWebStart(group: 'web-start') {
     doLast {
 
         String jnlpTemplate = new File("build-resources/bw-template.jnlp").getText('UTF-8')
 
-        // add jars names to the JNLP file
-        def jars = StringBuilder.getDeclaredConstructor().newInstance()
-        boolean first = true;
-        fileTree(dir: 'build/libs', include: '**/*.jar').visit { FileVisitDetails details ->
-
-            String fileName = details.file.name
-            if(!fileName.endsWith(".jar")) return
-
-            int lastDashIndex = fileName.lastIndexOf('-')
-            String libraryName = fileName.substring(0, lastDashIndex)
-
-            if(first) first = false
-            else jars << '\n        '
-
-            jars << '<jar href="jars/' + fileName + '"'
-
-            if(libraryName.endsWith('main'))
-            {
-                jars << ' main="true"'
-            }
-
-            jars << '/>'
-        }
-        jnlpTemplate = jnlpTemplate.replace('<!--JARS PLACE HOLDER-->', jars)
-
         // add JNLP properties to the JNLP file
         def sProperties = StringBuilder.getDeclaredConstructor().newInstance()
-        first = true;
+        boolean first = true;
         Properties properties = new Properties()
         InputStream inputStream = new FileInputStream("src/main/resources/sa/gov/nic/bio/bw/client/core/config/jnlp.properties")
         properties.load(inputStream)
@@ -165,12 +123,11 @@ task packageWebStart(group: 'web-start') {
             sProperties << '<property name="' + sKey + '" value="' + value + '"/>'
         }
 
-        jnlpTemplate = jnlpTemplate.replace('<!--JARS PLACE HOLDER-->', jars)
         jnlpTemplate = jnlpTemplate.replace('<!--PROPERTIES PLACE HOLDER-->', sProperties)
 
         File directory = new File("${projectDir}/build/web-start")
         directory.mkdirs()
-        File file = new File(directory, 'APPLICATION_8.JNLP')
+        File file = new File(directory, 'APPLICATION.JNLP')
         file.createNewFile()
         file.text = jnlpTemplate
 
@@ -179,111 +136,15 @@ task packageWebStart(group: 'web-start') {
             from 'build/libs'
             into "build/web-start/jars"
         }
-
-        // copy resources
-        copy {
-            from 'build-resources/APPLICATION.JNLP'
-            into "build/web-start"
-        }
-        copy {
-            from 'build-resources/index.html'
-            into "build/web-start"
-        }
-        copy {
-            from 'build-resources/deployJava.js'
-            into "build/web-start"
-        }
-        copy {
-            from 'build-resources/webstart.png'
-            into "build/web-start"
-        }
-        copy {
-            from 'src/main/resources/sa/gov/nic/bio/bw/client/core/images/app_icon.png'
-            into "build/web-start"
-        }
-        copy {
-            from 'src/main/resources/sa/gov/nic/bio/bw/client/preloader/images/splash.gif'
-            into "build/web-start"
-        }
-
-        /* JNLP-INF feature */
-
-        //copy {
-        //    from 'build/web-start/APPLICATION_8.JNLP'
-        //    into "build/JNLP-INF"
-        //}
-        //
-        //fileTree(dir: 'build/web-start/jars', include: '**/*.jar').visit { FileVisitDetails details ->
-        //    ant.jar(destfile: details.file, update: true) {
-        //        fileset(dir: "build", includes: 'JNLP-INF/**')
-        //    }
-        //}
-
-        // add "all-permissions" to manifest of all jars
-        fileTree(dir: 'build/web-start/jars', include: '**/*.jar').visit { FileVisitDetails details ->
-            ant.jar(destfile: details.file, update: true) {
-                delegate.manifest {
-                    attribute(name: 'Permissions', value: 'all-permissions')
-                }
-            }
-        }
-
-        // normalize the jars
-        fileTree(dir: 'build/web-start/jars', include: '**/*.jar').visit { FileVisitDetails details ->
-            String fileName = details.file.name
-            exec {
-                workingDir 'build/web-start/jars'
-                commandLine 'pack200', '--repack', fileName
-            }
-        }
-
-        // TODO: parallelize the signing and compressing of jars
-        /*signJars {
-            source = 'build/web-start'
-        }*/
-
-        // sign the jars
-        ant.signjar(
-                jar: 'build/web-start/jars/*.jar',
-                destDir: 'build/web-start/jars',
-                keystore: "build-resources/bw-keystore.p12",
-                storetype: "PKCS12",
-                storepass: "bw#456321",
-                alias: "bw",
-                preservelastmodified: "true")
-
-        // compress the jars
-        fileTree(dir: 'build/web-start/jars', include: '**/*.jar').visit { FileVisitDetails details ->
-            String fileName = details.file.name
-            exec {
-                workingDir 'build/web-start/jars'
-                commandLine 'pack200', fileName + ".pack.gz", fileName
-            }
-        }
-
-        // delete the un-compressed jars
-        fileTree(dir: 'build/web-start/jars', include: '**/*.jar').visit { FileVisitDetails details ->
-            details.file.delete()
-        }
     }
 }
-packageWebStart.dependsOn(copyDependentJarsTask)
-
-task runWebStartLocally(type: Exec, group: 'web-start') {
-    workingDir 'build/web-start'
-    commandLine 'javaws', 'APPLICATION_8.JNLP'
-}
-//runWebStartLocally.dependsOn(packageWebStart)
-
+packageWebStart.dependsOn(collectDependencies)
 
 task run(type: JavaExec, group: 'run') {
     main = "-jar" // workaround to "java -jar file.jar"
     args = [jar.archivePath.absolutePath]
 }
-run.dependsOn(copyDependentJarsTask)
-
-task signJars(type: SignJars) {
-}
+run.dependsOn(collectDependencies)
 
 
 remotes {
@@ -294,71 +155,27 @@ remotes {
     }
 }
 
-task deploy(group: 'web-start') {
-    doLast {
-        ssh.run {
-            session(remotes.webServer) {
-                remove '/home/user/Desktop/wlp/usr/servers/jnlp-downloader/dropins'
-                execute 'mkdir /home/user/Desktop/wlp/usr/servers/jnlp-downloader/dropins'
-                put from: new File('build/web-start').listFiles().toList(), into: '/home/user/Desktop/wlp/usr/servers/jnlp-downloader/dropins'
-            }
-        }
-    }
-}
-
-deploy.dependsOn(build)
-
 task packageWebStartAndDeploy(group: 'web-start') {
     doLast {
         ssh.run {
             session(remotes.webServer) {
-                remove '/home/user/Desktop/wlp/usr/servers/jnlp-downloader/dropins'
-                execute 'mkdir /home/user/Desktop/wlp/usr/servers/jnlp-downloader/dropins'
-                put from: new File('build/web-start').listFiles().toList(), into: '/home/user/Desktop/wlp/usr/servers/jnlp-downloader/dropins'
+                remove '/home/user/Desktop/wlp/usr/servers/bio-client-downloader/dropins/bw'
+                execute 'mkdir /home/user/Desktop/wlp/usr/servers/bio-client-downloader/dropins/bw'
+                put from: new File('build/web-start').listFiles().toList(), into: '/home/user/Desktop/wlp/usr/servers/bio-client-downloader/dropins/bw'
             }
         }
     }
 }
-
 packageWebStartAndDeploy.dependsOn(packageWebStart)
 
-// used only when there is a new library
-//task signLibJars {
-//
-//    File signedLibsFolder = new File("signed-libs")
-//    if(signedLibsFolder.exists()) new File("signed-libs").delete();
-//    signedLibsFolder.mkdirs()
-//
-//    copy {
-//        from 'libs/compile'
-//        into "signed-libs/compile"
-//    }
-//
-//    // add "all-permissions" to manifest of all jars
-//    fileTree(dir: 'signed-libs/compile', include: '**/*.jar').visit { FileVisitDetails details ->
-//        ant.jar(destfile: details.file, update: true) {
-//            delegate.manifest {
-//                attribute(name: 'Permissions', value: 'all-permissions')
-//            }
-//        }
-//    }
-//
-//    // normalize the jars
-//    fileTree(dir: 'signed-libs/compile', include: '**/*.jar').visit { FileVisitDetails details ->
-//        String fileName = details.file.name
-//        exec {
-//            workingDir 'signed-libs/compile'
-//            commandLine 'pack200', '--repack', fileName
-//        }
-//    }
-//
-//    // sign the jars
-//    ant.signjar(
-//            jar: 'signed-libs/compile/*.jar',
-//            destDir: 'signed-libs/compile',
-//            keystore: "build-resources/bw-keystore.p12",
-//            storetype: "PKCS12",
-//            storepass: "bw#456321",
-//            alias: "bw",
-//            preservelastmodified: "true")
-//}
+task deploy(group: 'web-start') {
+    doLast {
+        ssh.run {
+            session(remotes.webServer) {
+                remove '/home/user/Desktop/wlp/usr/servers/bio-client-downloader/dropins/bw'
+                execute 'mkdir /home/user/Desktop/wlp/usr/servers/bio-client-downloader/dropins/bw'
+                put from: new File('build/web-start').listFiles().toList(), into: '/home/user/Desktop/wlp/usr/servers/bio-client-downloader/dropins/bw'
+            }
+        }
+    }
+}

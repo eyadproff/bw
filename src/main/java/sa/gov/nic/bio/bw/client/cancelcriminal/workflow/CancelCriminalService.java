@@ -24,7 +24,7 @@ public class CancelCriminalService extends ServiceBase
 		LOGGER.fine("criminalId = " + criminalId);
 		
 		CancelCriminalAPI cancelCriminalAPI = Context.getWebserviceManager().getApi(CancelCriminalAPI.class);
-		String url = System.getProperty("jnlp.bw.service.cancelCriminal");
+		String url = System.getProperty("jnlp.bio.bw.service.cancelCriminal");
 		Call<Boolean> apiCall = cancelCriminalAPI.cancelCriminal(url, personId, criminalId);
 		ApiResponse<Boolean> response = Context.getWebserviceManager().executeApi(apiCall);
 		bypassResponse(execution, response, true);

@@ -18,8 +18,6 @@ import sa.gov.nic.bio.bw.client.core.webservice.NicHijriCalendarData;
 import sa.gov.nic.bio.bw.client.core.webservice.WebserviceManager;
 import sa.gov.nic.bio.bw.client.core.workflow.WorkflowManager;
 
-import javax.jnlp.BasicService;
-import javax.jnlp.ServiceManager;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -169,23 +167,13 @@ public class AppEntryPoint extends Application
 		    LOGGER.warning("Failed to parse sConnectTimeoutSeconds as int! sConnectTimeoutSeconds = " + sConnectTimeoutSeconds);
 	    }
 	
-	    String webserviceBaseUrl = configManager.getProperty("webservice.baseUrl");
-	    if(webserviceBaseUrl == null) LOGGER.warning("webserviceBaseUrl is null!");
-	
-	    // retrieve the codebase URL from the JNLP
-	    try
+	    String webserviceBaseUrl = System.getProperty("bio.serverUrl");
+	    
+	    if(webserviceBaseUrl == null) // usually local run
 	    {
-	    	BasicService basicService = (BasicService) ServiceManager.lookup("javax.jnlp.BasicService");
-		    URL codebase = basicService.getCodeBase();
-		    
-		    webserviceBaseUrl = codebase.getHost();
-		    int port = codebase.getPort();
-		    if(port > 0) webserviceBaseUrl += ":" + port;
-	    }
-	    catch(Exception | NoClassDefFoundError e) // not web-start
-	    {
-		    LOGGER.warning("This is not a web-start application. The default server address will be used!");
-		    
+		    LOGGER.warning("webserviceBaseUrl is null! We will use the default one.");
+		    webserviceBaseUrl = configManager.getProperty("webservice.baseUrl");
+		
 		    // populate the JNLP properties to the system properties
 		    InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream("sa/gov/nic/bio/bw/client/core/config/jnlp.properties");
 		    InputStreamReader isr = new InputStreamReader(is, StandardCharsets.UTF_8);
@@ -196,7 +184,7 @@ public class AppEntryPoint extends Application
 			    isr.close();
 			    for(Object key : Collections.list(properties.propertyNames()))
 			    {
-			    	String sKey = (String) key;
+				    String sKey = (String) key;
 				    String value = properties.getProperty(sKey);
 				    System.setProperty(sKey, value);
 			    }
@@ -206,7 +194,7 @@ public class AppEntryPoint extends Application
 			    LOGGER.log(Level.SEVERE, "Failed to load the file jnlp.properties!", e1);
 		    }
 	    }
-	
+	    
 	    if(webserviceBaseUrl == null)
 	    {
 		    String errorCode = "C001-00010";
@@ -223,7 +211,7 @@ public class AppEntryPoint extends Application
 	    Context.init(configManager, workflowManager, webserviceManager, executorService, scheduledExecutorService, userData);
 	
 	    LookupAPI lookupAPI = webserviceManager.getApi(LookupAPI.class);
-	    String url = System.getProperty("jnlp.bw.service.lookupNicHijriCalendarData");
+	    String url = System.getProperty("jnlp.bio.bw.service.lookupNicHijriCalendarData");
 	    Call<NicHijriCalendarData> apiCall = lookupAPI.lookupNicHijriCalendarData(url);
 	    ApiResponse<NicHijriCalendarData> apiResponse = webserviceManager.executeApi(apiCall);
 	
