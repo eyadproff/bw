@@ -4,6 +4,7 @@ import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import org.controlsfx.glyphfont.FontAwesome;
 import org.controlsfx.glyphfont.Glyph;
 import sa.gov.nic.bio.bw.client.core.BodyFxControllerBase;
@@ -12,8 +13,10 @@ import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.client.login.webservice.LoginBean;
 
 import javax.naming.ConfigurationException;
+import java.io.ByteArrayInputStream;
 import java.time.DateTimeException;
 import java.util.*;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -37,10 +40,7 @@ public class HomePaneFxController extends BodyFxControllerBase
 	@FXML private Label lblPasswordExpirationTime;
 	
 	@FXML
-	private void initialize()
-	{
-	
-	}
+	private void initialize(){}
 	
 	@Override
 	public void onControllerReady()
@@ -59,6 +59,32 @@ public class HomePaneFxController extends BodyFxControllerBase
 		String username = userInfo.getUserName();
 		String operatorName = userInfo.getOperatorName() + " (" + userInfo.getOperatorId() + ")";
 		String location = userInfo.getLocationName() + " (" + userInfo.getLocationId() + ")";
+		
+		String encodedFaceImage = userInfo.getFaceImage();
+		byte[] faceImageByteArray = null;
+		Image image = null;
+		try
+		{
+			faceImageByteArray = Base64.getDecoder().decode(encodedFaceImage);
+		}
+		catch(Exception e)
+		{
+			LOGGER.log(Level.WARNING, "Failed to decode the Base64 string encodedFaceImage = " + encodedFaceImage, e);
+		}
+		
+		if(faceImageByteArray != null)
+		{
+			try
+			{
+				image = new Image(new ByteArrayInputStream(faceImageByteArray));
+			}
+			catch(Exception e)
+			{
+				LOGGER.log(Level.WARNING, "Failed to load the avatar image!", e);
+			}
+			
+			if(image != null) coreFxController.getHeaderPaneController().setAvatarImage(image);
+		}
 		
 		// remove extra spaces in between and on edges
 		username = username.trim().replaceAll("\\s+", " ");

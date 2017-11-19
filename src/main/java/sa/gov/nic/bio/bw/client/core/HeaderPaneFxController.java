@@ -5,6 +5,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import org.controlsfx.glyphfont.FontAwesome;
 import org.controlsfx.glyphfont.Glyph;
@@ -22,6 +23,7 @@ public class HeaderPaneFxController implements VisibilityControl, AttachableCont
 {
 	@FXML private ResourceBundle resources;
 	@FXML private Pane rootPane;
+	@FXML private ImageView ivAvatar;
 	@FXML private Label lblUsername;
 	@FXML private Label txtUsername;
 	@FXML private Label lblOperatorName;
@@ -71,6 +73,11 @@ public class HeaderPaneFxController implements VisibilityControl, AttachableCont
 	public void setLocation(String location)
 	{
 		txtLocation.setText(location);
+	}
+	
+	public void setAvatarImage(Image image)
+	{
+		if(image != null) ivAvatar.setImage(image);
 	}
 	
 	public void onLogoutButtonClicked(ActionEvent actionEvent)

@@ -24,6 +24,7 @@ public class LoginBean implements Serializable
 		private long passwordLastSet;
 		private int[] locations;
 		private int status;
+		private String faceImage;
 		
 		public String getDistinguishedName()
 		{
@@ -183,6 +184,16 @@ public class LoginBean implements Serializable
 		public void setStatus(int status)
 		{
 			this.status = status;
+		}
+		
+		public String getFaceImage()
+		{
+			return faceImage;
+		}
+		
+		public void setFaceImage(String faceImage)
+		{
+			this.faceImage = faceImage;
 		}
 	}
 	

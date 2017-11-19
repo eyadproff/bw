@@ -135,3 +135,9 @@
 .notification-bar > .pane > .label {
     -fx-wrap-text: true;
 }
+
+.avatar-border {
+    -fx-border-color: #398755;
+    -fx-border-width: 1px;
+    -fx-border-style: dashed;
+}

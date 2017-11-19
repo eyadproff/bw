@@ -8,17 +8,27 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
 <BorderPane xmlns:fx="http://javafx.com/fxml" xmlns="http://javafx.com/javafx/8"
             fx:id="rootPane" fx:controller="sa.gov.nic.bio.bw.client.core.HeaderPaneFxController">
     <left>
-        <GridPane alignment="CENTER" hgap="20" vgap="5" styleClass="userBox">
-            <Label fx:id="lblUsername" text="%label.username" style="-fx-font-weight: bold;" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
-            <Label fx:id="txtUsername" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
-            <Label fx:id="lblOperatorName" text="%label.operatorName" style="-fx-font-weight: bold;" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
-            <Label fx:id="txtOperatorName" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
-            <Label fx:id="lblLocation" text="%label.location" style="-fx-font-weight: bold;" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
-            <Label fx:id="txtLocation" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
-        </GridPane>
+        <HBox spacing="10">
+            <VBox styleClass="avatar-border">
+                <ImageView fx:id="ivAvatar" preserveRatio="true" fitHeight="70.0">
+                    <Image url="@../images/avatar_placeholder.jpg"/>
+                </ImageView>
+            </VBox>
+            <GridPane alignment="CENTER" hgap="20" vgap="5" styleClass="userBox">
+                <Label fx:id="lblUsername" text="%label.username" style="-fx-font-weight: bold;" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+                <Label fx:id="txtUsername" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+                <Label fx:id="lblOperatorName" text="%label.operatorName" style="-fx-font-weight: bold;" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+                <Label fx:id="txtOperatorName" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                <Label fx:id="lblLocation" text="%label.location" style="-fx-font-weight: bold;" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+                <Label fx:id="txtLocation" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+            </GridPane>
+        </HBox>
     </left>
     <right>
         <VBox alignment="CENTER">
