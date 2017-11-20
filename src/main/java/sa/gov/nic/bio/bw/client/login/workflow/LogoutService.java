@@ -20,6 +20,7 @@ public class LogoutService implements JavaDelegate
 	public void execute(DelegateExecution execution)
 	{
 		String token = Context.getUserData().getLoginBean().getUserToken();
+		Context.deleteUserData();
 		
 		LOGGER.fine("token = " + token);
 		

@@ -25,6 +25,7 @@ import java.util.logging.Logger;
 public class HomePaneFxController extends BodyFxControllerBase
 {
 	private static final Logger LOGGER = Logger.getLogger(HomePaneFxController.class.getName());
+	private static final String AVATAR_PLACEHOLDER_IMAGE = "sa/gov/nic/bio/bw/client/core/images/avatar_placeholder.jpg";
 	
 	@FXML private Label lblLoginTimeText;
 	@FXML private Label lblLoginTime;
@@ -63,28 +64,34 @@ public class HomePaneFxController extends BodyFxControllerBase
 		String encodedFaceImage = userInfo.getFaceImage();
 		byte[] faceImageByteArray = null;
 		Image image = null;
-		try
-		{
-			faceImageByteArray = Base64.getDecoder().decode(encodedFaceImage);
-		}
-		catch(Exception e)
-		{
-			LOGGER.log(Level.WARNING, "Failed to decode the Base64 string encodedFaceImage = " + encodedFaceImage, e);
-		}
 		
-		if(faceImageByteArray != null)
+		if(encodedFaceImage != null && !encodedFaceImage.isEmpty())
 		{
 			try
 			{
-				image = new Image(new ByteArrayInputStream(faceImageByteArray));
+				faceImageByteArray = Base64.getDecoder().decode(encodedFaceImage);
 			}
 			catch(Exception e)
 			{
-				LOGGER.log(Level.WARNING, "Failed to load the avatar image!", e);
+				LOGGER.log(Level.WARNING, "Failed to decode the Base64 string encodedFaceImage = " + encodedFaceImage, e);
 			}
 			
-			if(image != null) coreFxController.getHeaderPaneController().setAvatarImage(image);
+			if(faceImageByteArray != null)
+			{
+				try
+				{
+					image = new Image(new ByteArrayInputStream(faceImageByteArray));
+				}
+				catch(Exception e)
+				{
+					LOGGER.log(Level.WARNING, "Failed to load the avatar image!", e);
+				}
+				
+				if(image != null) coreFxController.getHeaderPaneController().setAvatarImage(image);
+			}
 		}
+		
+		if(image == null) coreFxController.getHeaderPaneController().setAvatarImage(new Image(AVATAR_PLACEHOLDER_IMAGE));
 		
 		// remove extra spaces in between and on edges
 		username = username.trim().replaceAll("\\s+", " ");

@@ -48,11 +48,7 @@ dependencies {
     implementation name: "commons-lang3-3.6"
     implementation name: "commons-logging-1.2"
     implementation name: "controlsfx-8.40.14"
-    implementation name: "converter-jackson-2.3.0"
     implementation name: "h2-1.4.196"
-    implementation name: "jackson-annotations-2.9.0"
-    implementation name: "jackson-core-2.9.0"
-    implementation name: "jackson-databind-2.9.0"
     implementation name: "javax.mail-api-1.6.0"
     implementation name: "joda-time-2.9.9"
     implementation name: "juel-api-2.2.7"
@@ -64,6 +60,10 @@ dependencies {
     implementation name: "retrofit-2.3.0"
     implementation name: "slf4j-api-1.7.25"
     implementation name: "slf4j-nop-1.7.25"
+    implementation name: "converter-jackson-2.3.0"
+    implementation name: "jackson-annotations-2.9.0"
+    implementation name: "jackson-core-2.9.0"
+    implementation name: "jackson-databind-2.9.0"
     testImplementation name: "junit-4.12"
 }
 

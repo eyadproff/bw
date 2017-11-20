@@ -4,6 +4,7 @@ import org.activiti.engine.delegate.DelegateExecution;
 import retrofit2.Call;
 import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
+import sa.gov.nic.bio.bw.client.core.utils.UpdateChecker;
 import sa.gov.nic.bio.bw.client.core.webservice.ApiResponse;
 import sa.gov.nic.bio.bw.client.core.webservice.LookupAPI;
 import sa.gov.nic.bio.bw.client.core.workflow.ServiceBase;
@@ -25,6 +26,25 @@ public class LoginService extends ServiceBase
 	@Override
 	public void execute(DelegateExecution execution)
 	{
+		if(!Context.isFirstLogin())
+		{
+			String serverUrl = Context.getWebserviceManager().getServerUrl();
+			String serverBasePath = System.getProperty("jnlp.bio.bw.updater.serverBasePath");
+			String hashingAlgorithm = System.getProperty("jnlp.bio.bw.updater.hashingAlgorithm");
+			String bioFolderPath = System.getProperty("jnlp.bio.bw.updater.bioFolderPath");
+			int serverConnectTimeoutSeconds = Integer.parseInt(System.getProperty("jnlp.bio.bw.updater.serverConnectTimeoutSeconds"));
+			int serverReadTimeoutSeconds = Integer.parseInt(System.getProperty("jnlp.bio.bw.updater.serverReadTimeoutSeconds"));
+			
+			UpdateChecker updateChecker = new UpdateChecker(serverUrl + "/" + serverBasePath, hashingAlgorithm, bioFolderPath, serverConnectTimeoutSeconds, serverReadTimeoutSeconds);
+			Boolean newUpdates = updateChecker.checkForUpdates();
+			if(newUpdates != null && newUpdates)
+			{
+				String errorCode = "B001-00000";
+				bypassErrorCode(execution, errorCode);
+				return;
+			}
+		}
+		
 		String username = (String) execution.getVariable("username");
 		String password = (String) execution.getVariable("password");
 		

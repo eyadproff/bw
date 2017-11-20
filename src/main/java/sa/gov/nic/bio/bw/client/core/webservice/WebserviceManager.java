@@ -24,11 +24,13 @@ public class WebserviceManager
 {
 	private static final Logger LOGGER = Logger.getLogger(WebserviceManager.class.getName());
 	private static final String PROTOCOL = "http";
+	private String baseUrl;
 	private Retrofit retrofit;
 	private Map<Class<?>, Object> cache = new HashMap<>();
 	
 	public void init(String baseUrl, int readTimeoutSeconds, int connectTimeoutSeconds)
 	{
+		this.baseUrl = baseUrl;
 		Interceptor tokenInterceptor = chain ->
 		{
 			LoginBean loginBean = Context.getUserData().getLoginBean();
@@ -58,6 +60,11 @@ public class WebserviceManager
 							   .addConverterFactory(JacksonConverterFactory.create())
 							   .client(okHttpClient)
 							   .build();
+	}
+	
+	public String getServerUrl()
+	{
+		return PROTOCOL + "://" + baseUrl;
 	}
 	
 	@SuppressWarnings("unchecked")
