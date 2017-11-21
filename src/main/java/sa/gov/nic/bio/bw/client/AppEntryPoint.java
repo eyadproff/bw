@@ -69,7 +69,6 @@ public class AppEntryPoint extends Application
 		    notifyPreloader(new ProgressMessage(null, errorCode));
 		    return;
 	    }
-	    else AppInstanceManager.registerInstance();
 	
 	    try
 	    {

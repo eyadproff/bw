@@ -20,3 +20,5 @@
 
 - Add avatar image of the operator.
 - Checking for new updates on second login.
+- Fix a bug: set the avatar image to the default placeholder in case the operator has associated image.
+- Fix a bug: fix the log rotation (rotate after 50MB).
