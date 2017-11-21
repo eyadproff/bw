@@ -22,3 +22,4 @@
 - Checking for new updates on second login.
 - Fix a bug: set the avatar image to the default placeholder in case the operator has associated image.
 - Fix a bug: fix the log rotation (rotate after 50MB).
+- Replace socket locking to file locking as a means to prevent multiple instance of the application per user instead of per machine.
