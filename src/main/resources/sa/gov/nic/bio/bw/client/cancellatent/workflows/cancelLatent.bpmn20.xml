@@ -5,7 +5,7 @@
              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
              xmlns:activiti="http://activiti.org/bpmn">
 
-    <process id="cancelLatentProcess" name="Cancel Latent Process">
+    <process id="menu.delete.cancelLatent" name="Cancel Latent Process">
 
         <startEvent id="startEvent"/>
 
@@ -19,23 +19,9 @@
             </extensionElements>
         </userTask>
 
-        <sequenceFlow sourceRef="dataEntry" targetRef="menuSelectionCheck"/>
+        <sequenceFlow sourceRef="dataEntry" targetRef="cancelLatentService"/>
 
-        <exclusiveGateway id="menuSelectionCheck" name="Menu Selection Check"/>
-
-        <sequenceFlow sourceRef="menuSelectionCheck" targetRef="endEvent">
-            <conditionExpression xsi:type="tFormalExpression">
-                <![CDATA[
-                    ${execution.getVariable('menuId') != null}
-                ]]>
-            </conditionExpression>
-        </sequenceFlow>
-
-        <!-- default flow -->
-        <sequenceFlow sourceRef="menuSelectionCheck" targetRef="cancelLatentService"/>
-
-        <serviceTask id="cancelLatentService" name="Calling CancelLatent API"
-                     activiti:class="sa.gov.nic.bio.bw.client.cancellatent.workflow.CancelLatentService"/>
+        <serviceTask id="cancelLatentService" name="Calling CancelLatent API" activiti:class="sa.gov.nic.bio.bw.client.cancellatent.workflow.CancelLatentService"/>
 
         <sequenceFlow sourceRef="cancelLatentService" targetRef="dataEntry"/>
 

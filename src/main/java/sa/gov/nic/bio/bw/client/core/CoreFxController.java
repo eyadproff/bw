@@ -211,6 +211,21 @@ public class CoreFxController
 		Context.getExecutorService().execute(runnable);
 	}
 	
+	public void goToMenu(String menuId)
+	{
+		Map<String, Object> variables = new HashMap<>();
+		variables.put("menuId", menuId);
+		
+		Runnable runnable = () -> Context.getWorkflowManager().raiseSignalEvent("menuSelection", variables, this::showForm);
+		Context.getExecutorService().execute(runnable);
+	}
+	
+	public void logout()
+	{
+		Runnable runnable = () -> Context.getWorkflowManager().raiseSignalEvent("logout", null, this::showForm);
+		Context.getExecutorService().execute(runnable);
+	}
+	
 	private void showForm(String formKey, Map<String, Object> inputData)
 	{
 		Boolean sameForm = (Boolean) inputData.get("sameForm");

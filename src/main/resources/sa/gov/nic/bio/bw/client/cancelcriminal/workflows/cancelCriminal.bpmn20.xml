@@ -5,7 +5,7 @@
              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
              xmlns:activiti="http://activiti.org/bpmn">
 
-    <process id="cancelCriminalProcess" name="Delink X-AFIS Process">
+    <process id="menu.delete.cancelCriminal" name="Delink X-AFIS Process">
 
         <startEvent id="startEvent"/>
 
@@ -19,25 +19,11 @@
             </extensionElements>
         </userTask>
 
-        <sequenceFlow sourceRef="dataEntry" targetRef="menuSelectionCheck"/>
+        <sequenceFlow sourceRef="dataEntry" targetRef="CancelCriminalService"/>
 
-        <exclusiveGateway id="menuSelectionCheck" name="Menu Selection Check"/>
+        <serviceTask id="CancelCriminalService" name="Calling Cancel Criminal API" activiti:class="sa.gov.nic.bio.bw.client.cancelcriminal.workflow.CancelCriminalService"/>
 
-        <sequenceFlow sourceRef="menuSelectionCheck" targetRef="endEvent">
-            <conditionExpression xsi:type="tFormalExpression">
-                <![CDATA[
-                    ${execution.getVariable('menuId') != null}
-                ]]>
-            </conditionExpression>
-        </sequenceFlow>
-
-        <!-- default flow -->
-        <sequenceFlow sourceRef="menuSelectionCheck" targetRef="delinkXAfisService"/>
-
-        <serviceTask id="delinkXAfisService" name="Calling DelinkXAfis API"
-                     activiti:class="sa.gov.nic.bio.bw.client.cancelcriminal.workflow.CancelCriminalService"/>
-
-        <sequenceFlow sourceRef="delinkXAfisService" targetRef="dataEntry"/>
+        <sequenceFlow sourceRef="CancelCriminalService" targetRef="dataEntry"/>
 
         <endEvent id="endEvent" />
 

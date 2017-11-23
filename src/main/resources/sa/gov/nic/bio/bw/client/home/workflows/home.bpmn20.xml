@@ -5,13 +5,7 @@
              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
              xmlns:activiti="http://activiti.org/bpmn">
 
-    <signal id="menuSignal" name="The Signal"/>
-
     <process id="homeProcess" name="Home Process">
-
-        <intermediateCatchEvent id="catchSignalEvent">
-            <signalEventDefinition signalRef="menuSignal" />
-        </intermediateCatchEvent>
 
         <startEvent id="startEvent"/>
 

@@ -5,9 +5,9 @@ import org.activiti.engine.repository.DeploymentBuilder;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
-import org.activiti.engine.task.TaskInfo;
 import sa.gov.nic.bio.bw.client.core.interfaces.UiProxy;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -24,7 +24,7 @@ public class WorkflowManager
 	private IdentityService identityService;
 	private TaskService taskService;
 	private FormService formService;
-	private ProcessInstance processInstance;
+	private ProcessInstance coreProcessInstance;
 	private String currentTaskId;
 	
 	public void load(List<String> workflowFilePaths)
@@ -50,30 +50,28 @@ public class WorkflowManager
 		deploymentBuilder.deploy();
 		LOGGER.info("Deployment is completed successfully");
 		
-		processInstance = runtimeService.startProcessInstanceByKey("coreProcess");
-		LOGGER.info("The workflow process \"" + processInstance.getProcessDefinitionName() + "\" is started");
+		coreProcessInstance = runtimeService.startProcessInstanceByKey("coreProcess");
+		LOGGER.info("The workflow process \"" + coreProcessInstance.getProcessDefinitionName() + "\" is started");
 	}
 	
 	public void startProcess(UiProxy uiProxy)
 	{
-		executeUserTask(uiProxy);
+		showPendingUiTask(uiProxy);
 	}
 	
 	public void submitFormTask(Map<String, String> uiDataMap, UiProxy uiProxy)
 	{
 		formService.submitTaskFormData(currentTaskId, uiDataMap); // executes as taskService.complete(taskId)
-		executeUserTask(uiProxy);
+		showPendingUiTask(uiProxy);
 	}
 	
-	public void raiseSignalEvent(String menuId)
+	public void raiseSignalEvent(String signalName, Map<String, Object> variables, UiProxy uiProxy)
 	{
-		/*runtimeService.createExecutionQuery()
-				.list().stream().peek(e -> System.out.println(e.getId())).forEach(e -> runtimeService.signalEventReceived("The Signal", e.getId()));*/
-		//runtimeService.setVariable(execution.getId(), "menuId", menuId);
-		//runtimeService.signalEventReceived("The Signal");
+		runtimeService.signalEventReceived(signalName, variables);
+		showPendingUiTask(uiProxy);
 	}
 	
-	private void executeUserTask(UiProxy uiProxy)
+	private void showPendingUiTask(UiProxy uiProxy)
 	{
 		Task task = taskService.createTaskQuery().includeProcessVariables().singleResult();
 		
@@ -86,7 +84,7 @@ public class WorkflowManager
 		}
 		else // no task? that means the end of workflow? should never happen
 		{
-			// TODO: report for error
+			LOGGER.severe("No pending tasks in the workflow manager! That should never happen!");
 		}
 	}
 }

@@ -6,7 +6,6 @@ import javafx.fxml.FXML;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -244,10 +243,10 @@ public class MenuPaneFxController implements VisibilityControl, AttachableContro
 	}
 	
 	private void onSelectMenu(MenuItem menuItem)
-	{
+	{/*
 		Map<String, String> uiDataMap = new HashMap<>();
 		uiDataMap.put("menuId", menuItem.getMenuId());
-		
-		coreFxController.submitFormTask(uiDataMap);
+		*/
+		coreFxController.goToMenu(menuItem.getMenuId());
 	}
 }

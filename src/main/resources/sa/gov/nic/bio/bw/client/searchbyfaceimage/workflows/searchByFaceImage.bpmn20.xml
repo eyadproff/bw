@@ -5,7 +5,7 @@
              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
              xmlns:activiti="http://activiti.org/bpmn">
 
-    <process id="searchByFaceImageProcess" name="search By Face Image Process">
+    <process id="menu.query.searchByFaceImage" name="search By Face Image Process">
 
         <startEvent id="startEvent"/>
 
@@ -18,23 +18,9 @@
             </extensionElements>
         </userTask>
 
-        <sequenceFlow sourceRef="dataEntry" targetRef="menuSelectionCheck"/>
+        <sequenceFlow sourceRef="dataEntry" targetRef="searchByFaceImageService"/>
 
-        <exclusiveGateway id="menuSelectionCheck" name="Menu Selection Check"/>
-
-        <sequenceFlow sourceRef="menuSelectionCheck" targetRef="endEvent">
-            <conditionExpression xsi:type="tFormalExpression">
-                <![CDATA[
-                    ${execution.getVariable('menuId') != null}
-                ]]>
-            </conditionExpression>
-        </sequenceFlow>
-
-        <!-- default flow -->
-        <sequenceFlow sourceRef="menuSelectionCheck" targetRef="searchByFaceImageService"/>
-
-        <serviceTask id="searchByFaceImageService" name="Calling DelinkXAfis API"
-                     activiti:class="sa.gov.nic.bio.bw.client.searchbyfaceimage.workflow.SearchByFaceImageService"/>
+        <serviceTask id="searchByFaceImageService" name="Calling Search By Face Image API" activiti:class="sa.gov.nic.bio.bw.client.searchbyfaceimage.workflow.SearchByFaceImageService"/>
 
         <sequenceFlow sourceRef="searchByFaceImageService" targetRef="dataEntry"/>
 

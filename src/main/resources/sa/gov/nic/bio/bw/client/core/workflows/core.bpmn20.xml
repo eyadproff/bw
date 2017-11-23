@@ -5,6 +5,9 @@
              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
              xmlns:activiti="http://activiti.org/bpmn">
 
+    <signal id="menuSelectionSignal" name="menuSelection"/>
+    <signal id="logoutSignal" name="logout"/>
+
     <process id="coreProcess" name="Core Process">
 
         <startEvent id="startEvent"/>
@@ -22,70 +25,30 @@
         <callActivity id="callHomeProcess" name="Home Process" calledElement="homeProcess">
             <extensionElements>
                 <activiti:in source="resultBean" target="resultBean"/>
-                <activiti:out source="menuId" target="menuId"/>
             </extensionElements>
         </callActivity>
 
-        <sequenceFlow sourceRef="callHomeProcess" targetRef="menuSelectionCheck"/>
+        <sequenceFlow sourceRef="callHomeProcess" targetRef="callXProcess"/>
 
-        <exclusiveGateway id="menuSelectionCheck" name="Menu Selection Check"/>
+        <callActivity id="callXProcess" name="X Process" calledElement="${menuId}"/>
 
-        <sequenceFlow sourceRef="menuSelectionCheck" targetRef="logoutService">
-            <conditionExpression xsi:type="tFormalExpression">${menuId == 'logout'}</conditionExpression>
-        </sequenceFlow>
+        <boundaryEvent id="menuSelectionEventHome" attachedToRef="callHomeProcess">
+            <signalEventDefinition signalRef="menuSelectionSignal"/>
+        </boundaryEvent>
 
-        <serviceTask id="logoutService" name="Calling Logout API"
-                     activiti:class="sa.gov.nic.bio.bw.client.login.workflow.LogoutService"/>
+        <sequenceFlow sourceRef="menuSelectionEventHome" targetRef="callXProcess"/>
 
-        <sequenceFlow sourceRef="logoutService" targetRef="callLoginProcess"/>
+        <boundaryEvent id="menuSelectionEventX" attachedToRef="callXProcess">
+            <signalEventDefinition signalRef="menuSelectionSignal"/>
+        </boundaryEvent>
 
-        <sequenceFlow sourceRef="menuSelectionCheck" targetRef="callCancelLatentProcess">
-            <conditionExpression xsi:type="tFormalExpression">${menuId == 'menu.delete.cancelLatent'}</conditionExpression>
-        </sequenceFlow>
-        <sequenceFlow sourceRef="menuSelectionCheck" targetRef="callCancelCriminalProcess">
-            <conditionExpression xsi:type="tFormalExpression">${menuId == 'menu.delete.cancelCriminal'}</conditionExpression>
-        </sequenceFlow>
-        <sequenceFlow sourceRef="menuSelectionCheck" targetRef="callVerifyByFaceImageProcess">
-            <conditionExpression xsi:type="tFormalExpression">${menuId == 'menu.query.verifyByFaceImage'}</conditionExpression>
-        </sequenceFlow>
-        <sequenceFlow sourceRef="menuSelectionCheck" targetRef="callSearchByFaceImageProcess">
-            <conditionExpression xsi:type="tFormalExpression">${menuId == 'menu.query.searchByFaceImage'}</conditionExpression>
-        </sequenceFlow>
+        <sequenceFlow sourceRef="menuSelectionEventX" targetRef="callXProcess"/>
 
-        <!--<sequenceFlow sourceRef="menuSelectionCheck" targetRef="callLoginProcess">
-        </sequenceFlow>-->
+        <boundaryEvent id="logoutEvent" attachedToRef="callXProcess">
+            <signalEventDefinition signalRef="logoutSignal"/>
+        </boundaryEvent>
 
-        <callActivity id="callCancelLatentProcess" name="Cancel Latent Process" calledElement="cancelLatentProcess">
-            <extensionElements>
-                <activiti:out source="menuId" target="menuId"/>
-            </extensionElements>
-        </callActivity>
-
-        <sequenceFlow sourceRef="callCancelLatentProcess" targetRef="menuSelectionCheck"/>
-
-        <callActivity id="callCancelCriminalProcess" name="Cancel Criminal Process" calledElement="cancelCriminalProcess">
-            <extensionElements>
-                <activiti:out source="menuId" target="menuId"/>
-            </extensionElements>
-        </callActivity>
-
-        <sequenceFlow sourceRef="callCancelCriminalProcess" targetRef="menuSelectionCheck"/>
-
-        <callActivity id="callVerifyByFaceImageProcess" name="Verify By Face Image Process" calledElement="verifyByFaceImageProcess">
-            <extensionElements>
-                <activiti:out source="menuId" target="menuId"/>
-            </extensionElements>
-        </callActivity>
-
-        <sequenceFlow sourceRef="callVerifyByFaceImageProcess" targetRef="menuSelectionCheck"/>
-
-        <callActivity id="callSearchByFaceImageProcess" name="Search By Face Image Process" calledElement="searchByFaceImageProcess">
-            <extensionElements>
-                <activiti:out source="menuId" target="menuId"/>
-            </extensionElements>
-        </callActivity>
-
-        <sequenceFlow sourceRef="callSearchByFaceImageProcess" targetRef="menuSelectionCheck"/>
+        <sequenceFlow sourceRef="logoutEvent" targetRef="callLoginProcess"/>
 
         <endEvent id="endEvent"/>
 
