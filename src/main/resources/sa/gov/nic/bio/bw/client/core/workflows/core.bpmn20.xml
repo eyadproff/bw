@@ -38,17 +38,23 @@
 
         <sequenceFlow sourceRef="menuSelectionEventHome" targetRef="callXProcess"/>
 
+        <boundaryEvent id="logoutEventHome" attachedToRef="callHomeProcess">
+            <signalEventDefinition signalRef="logoutSignal"/>
+        </boundaryEvent>
+
+        <sequenceFlow sourceRef="logoutEventHome" targetRef="callLoginProcess"/>
+
         <boundaryEvent id="menuSelectionEventX" attachedToRef="callXProcess">
             <signalEventDefinition signalRef="menuSelectionSignal"/>
         </boundaryEvent>
 
         <sequenceFlow sourceRef="menuSelectionEventX" targetRef="callXProcess"/>
 
-        <boundaryEvent id="logoutEvent" attachedToRef="callXProcess">
+        <boundaryEvent id="logoutEventX" attachedToRef="callXProcess">
             <signalEventDefinition signalRef="logoutSignal"/>
         </boundaryEvent>
 
-        <sequenceFlow sourceRef="logoutEvent" targetRef="callLoginProcess"/>
+        <sequenceFlow sourceRef="logoutEventX" targetRef="callLoginProcess"/>
 
         <endEvent id="endEvent"/>
 
