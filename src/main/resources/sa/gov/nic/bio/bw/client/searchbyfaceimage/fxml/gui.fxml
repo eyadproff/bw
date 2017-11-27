@@ -11,15 +11,12 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.SplitPane?>
-<?import javafx.scene.control.TitledPane?>
-<?import javafx.scene.control.Separator?>
 <?import sa.gov.nic.bio.bw.client.searchbyfaceimage.ui.ToggleTitledPane?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.control.Label?>
-<?import javafx.geometry.Insets?>
 <NotificationPane xmlns:fx="http://javafx.com/fxml" xmlns="http://javafx.com/javafx/8"
                   fx:controller="sa.gov.nic.bio.bw.client.searchbyfaceimage.SearchByFaceImagePaneFxController"
-                  fx:id="notificationPane" stylesheets="@../css/search_by_face_image.css">
+                  fx:id="notificationPane" stylesheets="@../css/style.css">
     <content>
         <SplitPane fx:id="splitPane" orientation="VERTICAL" styleClass="white-background,hidden-divider">
             <HBox fx:id="imagePane" alignment="CENTER" maxHeight="Infinity" maxWidth="Infinity">

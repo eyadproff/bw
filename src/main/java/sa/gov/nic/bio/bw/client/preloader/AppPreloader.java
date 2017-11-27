@@ -96,7 +96,7 @@ public class AppPreloader extends Preloader
 		}
 	}
 	
-	private static final String FXML_FILE = "sa/gov/nic/bio/bw/client/preloader/fxml/splash_screen.fxml";
+	private static final String FXML_FILE = "sa/gov/nic/bio/bw/client/preloader/fxml/gui.fxml";
 	private static final String APP_ICON_FILE = "sa/gov/nic/bio/bw/client/preloader/images/app_icon.png";
 	private static final String RB_LABELS_FILE = "sa/gov/nic/bio/bw/client/preloader/bundles/labels";
 	private static final String RB_ERRORS_FILE = "sa/gov/nic/bio/bw/client/preloader/bundles/errors";

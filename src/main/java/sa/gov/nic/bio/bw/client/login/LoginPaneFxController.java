@@ -25,7 +25,7 @@ public class LoginPaneFxController extends BodyFxControllerBase implements Langu
 	@FXML private PasswordField txtPassword;
 	@FXML private ComboBox<GuiLanguage> cbLanguage;
 	@FXML private Button btnLogin;
-	//@FXML private Button btnChangePassword;
+	@FXML private Button btnChangePassword;
 	@FXML private ProgressIndicator piLogin;
 	
 	@FXML

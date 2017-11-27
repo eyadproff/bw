@@ -42,7 +42,7 @@
             <signalEventDefinition signalRef="logoutSignal"/>
         </boundaryEvent>
 
-        <sequenceFlow sourceRef="logoutEventHome" targetRef="callLoginProcess"/>
+        <sequenceFlow sourceRef="logoutEventHome" targetRef="logoutService"/>
 
         <boundaryEvent id="menuSelectionEventX" attachedToRef="callXProcess">
             <signalEventDefinition signalRef="menuSelectionSignal"/>
@@ -54,7 +54,11 @@
             <signalEventDefinition signalRef="logoutSignal"/>
         </boundaryEvent>
 
-        <sequenceFlow sourceRef="logoutEventX" targetRef="callLoginProcess"/>
+        <sequenceFlow sourceRef="logoutEventX" targetRef="logoutService"/>
+
+        <serviceTask id="logoutService" name="Logout Service" activiti:class="sa.gov.nic.bio.bw.client.login.workflow.LogoutService"/>
+
+        <sequenceFlow sourceRef="logoutService" targetRef="callLoginProcess"/>
 
         <endEvent id="endEvent"/>
 

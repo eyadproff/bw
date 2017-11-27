@@ -16,10 +16,9 @@
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.ProgressIndicator?>
 <?import org.controlsfx.control.NotificationPane?>
-<?import javafx.scene.layout.AnchorPane?>
 <NotificationPane xmlns:fx="http://javafx.com/fxml" xmlns="http://javafx.com/javafx/8"
                   fx:controller="sa.gov.nic.bio.bw.client.login.LoginPaneFxController"
-                  fx:id="notificationPane" stylesheets="@../css/login.css">
+                  fx:id="notificationPane" stylesheets="@../css/style.css">
     <content>
         <VBox alignment="CENTER" spacing="70">
             <ImageView>

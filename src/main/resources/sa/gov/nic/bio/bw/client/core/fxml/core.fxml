@@ -19,7 +19,7 @@
         <Image url="@../images/app_icon.png"/>
     </icons>
     <scene>
-        <Scene stylesheets="@../css/core.css">
+        <Scene stylesheets="@../css/style.css">
             <StackPane id="mainPane">
                 <BorderPane>
                     <top>

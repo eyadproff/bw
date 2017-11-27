@@ -2,8 +2,6 @@
 <?language JavaScript?>
 <?scenebuilder-preview-i18n-resource ../bundles/labels.properties?>
 
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.control.Label?>
 <?import javafx.geometry.Insets?>
@@ -12,7 +10,7 @@
 <?import org.controlsfx.control.NotificationPane?>
 <NotificationPane xmlns:fx="http://javafx.com/fxml" xmlns="http://javafx.com/javafx/8"
            fx:controller="sa.gov.nic.bio.bw.client.home.HomePaneFxController"
-           fx:id="notificationPane" stylesheets="@../css/home.css">
+           fx:id="notificationPane" stylesheets="@../css/style.css">
     <content>
         <VBox alignment="CENTER">
             <HBox alignment="CENTER">

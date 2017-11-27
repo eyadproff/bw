@@ -7,6 +7,7 @@ import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.webservice.ApiResponse;
 import sa.gov.nic.bio.bw.client.login.webservice.LogoutAPI;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -19,8 +20,8 @@ public class LogoutService implements JavaDelegate
 	@Override
 	public void execute(DelegateExecution execution)
 	{
+		String username = Context.getUserData().getLoginBean().getUserInfo().getUserName();
 		String token = Context.getUserData().getLoginBean().getUserToken();
-		Context.deleteUserData();
 		
 		LOGGER.fine("token = " + token);
 		
@@ -36,10 +37,14 @@ public class LogoutService implements JavaDelegate
 			{
 				int httpCode = response.getHttpCode();
 				String errorCode = response.getErrorCode();
-				LOGGER.warning("logout webservice returns non-200 response (httpCode = " + httpCode + ", errorCode = " + errorCode + ")");
+				Exception exception = response.getException();
+				
+				LOGGER.log(Level.WARNING, "logout webservice failed (httpCode = " + httpCode + ", errorCode = " + errorCode + ")", exception);
 			}
+			
+			Context.deleteUserData();
 		});
 		
-		LOGGER.info("the user is logged out");
+		LOGGER.info("the user (" + username + ") is logged out");
 	}
 }

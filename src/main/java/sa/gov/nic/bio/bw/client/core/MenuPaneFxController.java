@@ -243,10 +243,7 @@ public class MenuPaneFxController implements VisibilityControl, AttachableContro
 	}
 	
 	private void onSelectMenu(MenuItem menuItem)
-	{/*
-		Map<String, String> uiDataMap = new HashMap<>();
-		uiDataMap.put("menuId", menuItem.getMenuId());
-		*/
+	{
 		coreFxController.goToMenu(menuItem.getMenuId());
 	}
 }
