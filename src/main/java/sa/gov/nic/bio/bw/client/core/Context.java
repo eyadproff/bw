@@ -17,7 +17,7 @@ public class Context
 	private WebserviceManager webserviceManager;
 	private ExecutorService executorService;
 	private ScheduledExecutorService scheduledExecutorService;
-	private UserData userData; // TODO: temp
+	private UserData userData;
 	private boolean firstLogin = true;
 	
 	public static void init(ConfigManager configManager, WorkflowManager workflowManager, WebserviceManager webserviceManager, ExecutorService executorService, ScheduledExecutorService scheduledExecutorService, UserData userData)
@@ -62,7 +62,8 @@ public class Context
 	
 	public static void deleteUserData()
 	{
-		INSTANCE.userData = null;
+		INSTANCE.userData.deleteLoginBean();
+		INSTANCE.userData.deleteRoles();
 	}
 	
 	public static boolean isFirstLogin()

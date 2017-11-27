@@ -67,14 +67,6 @@ public final class AppUtils
 	public static List<String> listResourceFiles(ProtectionDomain protectionDomain, String matcher) throws IOException
 	{
 		List<String> resources = new ArrayList<>();
-		resources.add("sa/gov/nic/bio/bw/client/cancelcriminal/workflows/cancelCriminal.bpmn20.xml");
-		resources.add("sa/gov/nic/bio/bw/client/cancellatent/workflows/cancelLatent.bpmn20.xml");
-		resources.add("sa/gov/nic/bio/bw/client/core/workflows/core.bpmn20.xml");
-		resources.add("sa/gov/nic/bio/bw/client/home/workflows/home.bpmn20.xml");
-		resources.add("sa/gov/nic/bio/bw/client/login/workflows/login.bpmn20.xml");
-		resources.add("sa/gov/nic/bio/bw/client/searchbyfaceimage/workflows/searchByFaceImage.bpmn20.xml");
-		
-		List<String> resources2 = new ArrayList<>();
 		URL jar = protectionDomain.getCodeSource().getLocation();
 		ZipInputStream zip = new ZipInputStream(jar.openStream());
 		
@@ -84,10 +76,8 @@ public final class AppUtils
 			if(e == null) break;
 			String name = e.getName();
 			
-			if(name.matches(matcher)) resources2.add(name);
+			if(name.matches(matcher)) resources.add(name);
 		}
-		
-		LOGGER.fine("resources2 = " + resources2);
 		
 		return resources;
 	}

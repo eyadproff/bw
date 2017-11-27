@@ -38,6 +38,7 @@ public class CoreFxController
 	public static final String RB_LABELS_FILE = "sa/gov/nic/bio/bw/client/core/bundles/labels";
 	public static final String RB_ERRORS_FILE = "sa/gov/nic/bio/bw/client/core/bundles/errors";
 	public static final String RB_MESSAGES_FILE = "sa/gov/nic/bio/bw/client/core/bundles/messages";
+	public static final String RB_TOP_MENUS_FILE = "sa/gov/nic/bio/bw/client/core/bundles/top_menus";
 	
 	@FXML private Stage primaryStage;
 	@FXML private StackPane overlayPane;
@@ -50,6 +51,7 @@ public class CoreFxController
 	private ResourceBundle labelsBundle;
 	private ResourceBundle errorsBundle;
 	private ResourceBundle messagesBundle;
+	private ResourceBundle topMenusBundle;
 	private Image appIcon;
 	private String windowTitle;
 	private int idleWarningBeforeSeconds;
@@ -60,11 +62,12 @@ public class CoreFxController
 	private ScheduledFuture<?> scheduledRefreshTokenFuture;
 	private boolean idleWarningOn = false;
 	
-	public void passInitialResources(ResourceBundle labelsBundle, ResourceBundle errorsBundle, ResourceBundle messagesBundle, Image appIcon, String windowTitle, int idleWarningBeforeSeconds, int idleWarningAfterSeconds)
+	public void passInitialResources(ResourceBundle labelsBundle, ResourceBundle errorsBundle, ResourceBundle messagesBundle, ResourceBundle topMenusBundle, Image appIcon, String windowTitle, int idleWarningBeforeSeconds, int idleWarningAfterSeconds)
 	{
 		this.labelsBundle = labelsBundle;
 		this.errorsBundle = errorsBundle;
 		this.messagesBundle = messagesBundle;
+		this.topMenusBundle = topMenusBundle;
 		this.appIcon = appIcon;
 		this.windowTitle = windowTitle;
 		this.idleWarningBeforeSeconds = idleWarningBeforeSeconds;
@@ -356,7 +359,7 @@ public class CoreFxController
 		});
 	}
 	
-	private void showErrorDialogAndWaitForCore(String errorCode, Exception exception, String... additionalErrorText)
+	public void showErrorDialogAndWaitForCore(String errorCode, Exception exception, String... additionalErrorText)
 	{
 		String logErrorText = String.format(errorCode + ": " + errorsBundle.getString(errorCode + ".internal"), (Object[]) additionalErrorText);
 		LOGGER.severe(logErrorText);
@@ -430,6 +433,18 @@ public class CoreFxController
 			return;
 		}
 		
+		ResourceBundle topMenusBundle;
+		try
+		{
+			topMenusBundle = ResourceBundle.getBundle(RB_TOP_MENUS_FILE, toLanguage.getLocale(), new UTF8Control());
+		}
+		catch(MissingResourceException e)
+		{
+			String errorCode = "C002-00014";
+			showErrorDialogAndWaitForCore(errorCode, e);
+			return;
+		}
+		
 		URL fxmlUrl = Thread.currentThread().getContextClassLoader().getResource(FXML_FILE);
 		if(fxmlUrl == null)
 		{
@@ -472,7 +487,7 @@ public class CoreFxController
 		
 		CoreFxController newCoreFxController = newStageLoader.getController();
 		newCoreFxController.guiState = guiState;
-		newCoreFxController. passInitialResources(labelsBundle, errorsBundle, messagesBundle, appIcon, windowTitle, idleWarningBeforeSeconds, idleWarningAfterSeconds);
+		newCoreFxController. passInitialResources(labelsBundle, errorsBundle, messagesBundle, topMenusBundle, appIcon, windowTitle, idleWarningBeforeSeconds, idleWarningAfterSeconds);
 		newCoreFxController.guiState.setLanguage(toLanguage);
 		boolean success = newCoreFxController.applyStateBundle(oldState);
 		
@@ -535,5 +550,10 @@ public class CoreFxController
 	public ResourceBundle getMessagesBundle()
 	{
 		return messagesBundle;
+	}
+	
+	public ResourceBundle getTopMenusBundle()
+	{
+		return topMenusBundle;
 	}
 }

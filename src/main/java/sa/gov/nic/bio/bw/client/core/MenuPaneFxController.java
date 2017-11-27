@@ -4,7 +4,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.Cursor;
-import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
@@ -13,6 +12,8 @@ import javafx.scene.shape.Polygon;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+import javafx.util.Pair;
+import org.controlsfx.glyphfont.FontAwesome;
 import org.controlsfx.glyphfont.Glyph;
 import sa.gov.nic.bio.bw.client.core.beans.MenuItem;
 import sa.gov.nic.bio.bw.client.core.interfaces.AttachableController;
@@ -31,7 +32,6 @@ public class MenuPaneFxController implements VisibilityControl, AttachableContro
 	@FXML private Pane overlayPane;
 	
 	private CoreFxController coreFxController;
-	private List<MenuItem> menus = new ArrayList<>();
 	private MenuItem selectedMenu;
 	private ListView<MenuItem> selectedListView;
 	
@@ -59,45 +59,43 @@ public class MenuPaneFxController implements VisibilityControl, AttachableContro
 	}
 	
 	@SuppressWarnings("unchecked")
-	public void setMenus(List<String> menus, Map<String, Node> icons)
+	public void setMenus(List<MenuItem> menus, Map<String, MenuItem> topMenus)
 	{
 		accordion.getPanes().clear();
-		this.menus.clear();
 		
 		if(menus.isEmpty()) return;
+		
+		List<Pair<TitledPane, Integer>> titledPanes = new ArrayList<>();
 		
 		Font testFont = new Label().getFont();
 		testFont = Font.font(testFont.getFamily(), FontWeight.BOLD, testFont.getSize());
 		
-		String previousMenuId = menus.get(0);
+		MenuItem menuItem = menus.get(0);
+		String previousMenuId = menuItem.getMenuId();
 		String previousParentMenuId = previousMenuId.substring(0, previousMenuId.lastIndexOf("."));
-		
-		MenuItem menuItem = new MenuItem();
-		this.menus.add(menuItem);
-		menuItem.setLabel(resources.getString(previousMenuId));
-		menuItem.setMenuId(previousMenuId);
-		String parentMenuLabel = resources.getString(previousParentMenuId);
+		String parentMenuLabel = topMenus.get(previousParentMenuId).getLabel();
 		
 		double maxWidth = AppUtils.computeTextWidth(menuItem.getLabel(), testFont);
 		maxWidth = Math.max(maxWidth, AppUtils.computeTextWidth(parentMenuLabel, testFont));
 		
 		ListView<MenuItem> listView = newListView();
-		listView.getItems().add(menuItem);
+		listView.getItems().add(menus.get(0));
 		TitledPane titledPane = new TitledPane();
-		titledPane.setText(parentMenuLabel);
+		titledPane.setText(topMenus.get(previousParentMenuId).getLabel());
 		titledPane.setContent(listView);
-		titledPane.setGraphic(icons.get(previousParentMenuId));
-		accordion.getPanes().add(titledPane);
+		
+		String iconId = topMenus.get(previousParentMenuId).getIconId();
+		FontAwesome.Glyph glyph = FontAwesome.Glyph.valueOf(iconId.toUpperCase());
+		Glyph icon = AppUtils.createFontAwesomeIcon(glyph);
+		
+		titledPane.setGraphic(icon);
+		titledPanes.add(new Pair<>(titledPane, topMenus.get(previousParentMenuId).getOrder()));
 		
 		for(int i = 1; i < menus.size(); i++)
 		{
-			String menuId = menus.get(i);
+			menuItem = menus.get(i);
+			String menuId = menuItem.getMenuId();
 			String parentMenuId = menuId.substring(0, menuId.lastIndexOf("."));
-			
-			menuItem = new MenuItem();
-			this.menus.add(menuItem);
-			menuItem.setLabel(resources.getString(menuId));
-			menuItem.setMenuId(menuId);
 			
 			maxWidth = Math.max(maxWidth, AppUtils.computeTextWidth(menuItem.getLabel(), testFont));
 			
@@ -107,7 +105,7 @@ public class MenuPaneFxController implements VisibilityControl, AttachableContro
 			}
 			else
 			{
-				parentMenuLabel = resources.getString(parentMenuId);
+				parentMenuLabel = topMenus.get(parentMenuId).getLabel();
 				maxWidth = Math.max(maxWidth, AppUtils.computeTextWidth(parentMenuLabel, testFont));
 				
 				listView = newListView();
@@ -115,12 +113,20 @@ public class MenuPaneFxController implements VisibilityControl, AttachableContro
 				titledPane = new TitledPane();
 				titledPane.setText(parentMenuLabel);
 				titledPane.setContent(listView);
-				titledPane.setGraphic(icons.get(parentMenuId));
-				accordion.getPanes().add(titledPane);
+				
+				iconId = topMenus.get(parentMenuId).getIconId();
+				glyph = FontAwesome.Glyph.valueOf(iconId.toUpperCase());
+				icon = AppUtils.createFontAwesomeIcon(glyph);
+				
+				titledPane.setGraphic(icon);
+				titledPanes.add(new Pair<>(titledPane, topMenus.get(parentMenuId).getOrder()));
 			}
 			
 			previousParentMenuId = parentMenuId;
 		}
+		
+		titledPanes.sort(Comparator.comparingInt(Pair::getValue));
+		titledPanes.forEach(titledPaneIntegerPair -> accordion.getPanes().add(titledPaneIntegerPair.getKey()));
 		
 		// lookups do not work until CSS is applied
 		rootPane.applyCss();

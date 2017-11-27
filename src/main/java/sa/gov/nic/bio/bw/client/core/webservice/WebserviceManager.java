@@ -11,6 +11,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 import sa.gov.nic.bio.bw.client.core.Context;
+import sa.gov.nic.bio.bw.client.core.beans.UserData;
 import sa.gov.nic.bio.bw.client.login.webservice.LoginBean;
 
 import java.net.SocketTimeoutException;
@@ -33,9 +34,9 @@ public class WebserviceManager
 		this.baseUrl = baseUrl;
 		Interceptor tokenInterceptor = chain ->
 		{
-			LoginBean loginBean = Context.getUserData().getLoginBean();
 			Request.Builder requestBuilder = chain.request().newBuilder();
 			
+			LoginBean loginBean = Context.getUserData().getLoginBean();
 			if(loginBean != null)
 			{
 				String userToken = loginBean.getUserToken();

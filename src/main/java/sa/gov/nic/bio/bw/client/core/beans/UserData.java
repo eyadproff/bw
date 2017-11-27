@@ -3,12 +3,11 @@ package sa.gov.nic.bio.bw.client.core.beans;
 import sa.gov.nic.bio.bw.client.login.webservice.LoginBean;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class UserData
 {
-	private LoginBean loginBean; // TODO: list all its fields here instead
+	private LoginBean loginBean;
 	private List<String> roles = new ArrayList<>();
 	
 	public UserData(){}
@@ -37,4 +36,7 @@ public class UserData
 	{
 		this.loginBean = loginBean;
 	}
+	
+	public void deleteLoginBean(){this.loginBean = null;}
+	public void deleteRoles(){this.roles.clear();}
 }

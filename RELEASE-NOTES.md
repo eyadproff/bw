@@ -8,6 +8,9 @@
 - Fix a bug: fix the log rotation (rotate after 50MB).
 - Replace socket locking with file locking as a means to prevent multiple instance of the application per user instead of per machine.
 - Improve the core workflow.
+- Fix a bug: call the logout webservice correctly.
+- Restructure the packages by collection all the features inside a single package.
+- Decentralize the menus.
 
 ## v1.1.2
 

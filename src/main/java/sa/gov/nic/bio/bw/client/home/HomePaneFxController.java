@@ -2,18 +2,18 @@ package sa.gov.nic.bio.bw.client.home;
 
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
-import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
-import org.controlsfx.glyphfont.FontAwesome;
-import org.controlsfx.glyphfont.Glyph;
 import sa.gov.nic.bio.bw.client.core.BodyFxControllerBase;
 import sa.gov.nic.bio.bw.client.core.Context;
+import sa.gov.nic.bio.bw.client.core.beans.MenuItem;
 import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
+import sa.gov.nic.bio.bw.client.core.utils.UTF8Control;
 import sa.gov.nic.bio.bw.client.login.webservice.LoginBean;
 
 import javax.naming.ConfigurationException;
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.time.DateTimeException;
 import java.util.*;
 import java.util.logging.Level;
@@ -123,67 +123,80 @@ public class HomePaneFxController extends BodyFxControllerBase
 		List<String> userRoles = Arrays.asList(loginBean.getUserInfo().getOriginalStringRoles());
 		Context.getUserData().addRoles(userRoles);
 		
-		List<String> allMenus = new ArrayList<>();
+		List<MenuItem> allMenus = new ArrayList<>();
 		
-		String topMenus = Context.getConfigManager().getProperty("menus");
-		if(topMenus == null)
+		List<String> menuFiles;
+		try
+		{
+			menuFiles = AppUtils.listResourceFiles(getClass().getProtectionDomain(), "^.*/menu.properties$");
+		}
+		catch(Exception e)
 		{
 			String errorCode = "C004-00001";
 			String message = errorsBundle.getString(errorCode);
-			coreFxController.showErrorDialogAndWait(message, new ConfigurationException("Top menus are not configured!"));
+			coreFxController.showErrorDialogAndWait(message, e);
 			return;
 		}
 		
-		String[] topMenusArray = topMenus.split("[,\\s]+");
-		Map<String, Node> icons = new HashMap<>();
+		UTF8Control utf8Control = new UTF8Control();
+		Map<String, MenuItem> icons = new HashMap<>();
 		
-		for(String topMenu : topMenusArray)
+		menuFiles.forEach(menuFile ->
 		{
-			String subMenus = Context.getConfigManager().getProperty("menu." + topMenu + ".submenus");
-			if(subMenus == null)
+			ResourceBundle rb = ResourceBundle.getBundle(menuFile.substring(0, menuFile.lastIndexOf('.')), Locale.getDefault(), utf8Control);
+			MenuItem menuItem = new MenuItem();
+			allMenus.add(menuItem);
+			
+			Set<String> keys = rb.keySet();
+			if(keys.size() > 2)
 			{
 				String errorCode = "C004-00002";
-				String message = String.format(errorsBundle.getString(errorCode), "menu." + topMenu + ".submenus");
-				coreFxController.showErrorDialogAndWait(message, new ConfigurationException("The subMenus (menu." + topMenu + ".submenus) are not configured!"));
+				coreFxController.showErrorDialogAndWaitForCore(errorCode, new ConfigurationException("The menu properties file (" + menuFile + ") has more than 2 lines!"), menuFile);
 				return;
 			}
 			
-			String iconId = Context.getConfigManager().getProperty("menu." + topMenu + ".icon");
-			if(iconId == null)
+			keys.forEach(key ->
 			{
-				String errorCode = "C004-00003";
-				String message = String.format(errorsBundle.getString(errorCode), "menu." + topMenu + ".icon");
-				coreFxController.showErrorDialogAndWait(message, new ConfigurationException("The icon (menu." + topMenu + ".icon) is not configured!"));
-				return;
-			}
-			
-			try
-			{
-				FontAwesome.Glyph glyph = FontAwesome.Glyph.valueOf(iconId.toUpperCase());
-				Glyph icon = AppUtils.createFontAwesomeIcon(glyph);
-				icons.put("menu." + topMenu, icon);
-			}
-			catch(IllegalArgumentException e)
-			{
-				String errorCode = "C004-00004";
-				String message = String.format(errorsBundle.getString(errorCode), iconId.toUpperCase());
-				coreFxController.showErrorDialogAndWait(message, e);
-				return;
-			}
-			
-			String[] subMenusArray = subMenus.split(",");
-			Arrays.stream(subMenusArray).map(s -> "menu." + topMenu + "." + s.trim()).forEach(allMenus::add);
-		}
+				String value = rb.getString(key);
+				if(key.equals("order"))
+				{
+					int order = Integer.parseInt(value);
+					menuItem.setOrder(order);
+				}
+				else
+				{
+					menuItem.setMenuId(key);
+					menuItem.setLabel(value);
+					
+					String topMenu = key.substring(0, key.lastIndexOf('.'));
+					
+					if(!icons.containsKey(topMenu))
+					{
+						String label = coreFxController.getTopMenusBundle().getString(topMenu);
+						String icon = coreFxController.getTopMenusBundle().getString(topMenu + ".icon");
+						int order = Integer.parseInt(coreFxController.getTopMenusBundle().getString(topMenu + ".order"));
+						
+						MenuItem topMenuItem = new MenuItem();
+						topMenuItem.setMenuId(topMenu);
+						topMenuItem.setLabel(label);
+						topMenuItem.setIconId(icon);
+						topMenuItem.setOrder(order);
+						
+						icons.put(topMenu, topMenuItem);
+					}
+				}
+			});
+		});
 		
-		List<String> menus = new ArrayList<>();
+		List<MenuItem> menus = new ArrayList<>();
 		
-		for(String menuId : allMenus)
+		for(MenuItem menuItem : allMenus)
 		{
-			Set<String> menuRoles = loginBean.getMenuRoles().get(menuId);
+			Set<String> menuRoles = loginBean.getMenuRoles().get(menuItem.getMenuId());
 			
 			if(menuRoles != null && !Collections.disjoint(userRoles, menuRoles))
 			{
-				menus.add(menuId);
+				menus.add(menuItem);
 			}
 		}
 		

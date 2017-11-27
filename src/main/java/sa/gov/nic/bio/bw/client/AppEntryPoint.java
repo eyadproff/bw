@@ -44,6 +44,7 @@ public class AppEntryPoint extends Application
 	private ResourceBundle labelsBundle;
 	private ResourceBundle errorsBundle;
 	private ResourceBundle messagesBundle;
+	private ResourceBundle topMenusBundle;
 	
 	private Image appIcon;
 	private URL fxmlUrl;
@@ -270,6 +271,17 @@ public class AppEntryPoint extends Application
 		    return;
 	    }
 	
+	    try
+	    {
+		    topMenusBundle = ResourceBundle.getBundle(CoreFxController.RB_TOP_MENUS_FILE, initialLanguage.getLocale(), new UTF8Control());
+	    }
+	    catch(MissingResourceException e)
+	    {
+		    String errorCode = "C001-00021";
+		    notifyPreloader(new ProgressMessage(e, errorCode));
+		    return;
+	    }
+	
 	    InputStream appIconStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(CoreFxController.APP_ICON_FILE);
 	    if(appIconStream == null)
 	    {
@@ -336,7 +348,7 @@ public class AppEntryPoint extends Application
 	    }
 	    
 	    CoreFxController coreFxController = coreStageLoader.getController();
-	    coreFxController.passInitialResources(labelsBundle, errorsBundle, messagesBundle, appIcon, windowTitle, idleWarningBeforeSeconds, idleWarningAfterSeconds);
+	    coreFxController.passInitialResources(labelsBundle, errorsBundle, messagesBundle, topMenusBundle, appIcon, windowTitle, idleWarningBeforeSeconds, idleWarningAfterSeconds);
 	    coreFxController.getGuiState().setLanguage(initialLanguage);
 	    
 	    primaryStage.getScene().setNodeOrientation(initialLanguage.getNodeOrientation());
