@@ -11,6 +11,8 @@
 - Fix a bug: call the logout webservice correctly.
 - Restructure the packages by collection all the features inside a single package.
 - Decentralize the menus.
+- Move all configurable properties from config.properties to APPLICATION.JNLP that is used by BCL.
+- Register all pop-up dialogs for idle monitoring.
 
 ## v1.1.2
 

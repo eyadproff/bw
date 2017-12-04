@@ -13,7 +13,6 @@ import sa.gov.nic.bio.bw.client.login.webservice.LoginBean;
 
 import javax.naming.ConfigurationException;
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.time.DateTimeException;
 import java.util.*;
 import java.util.logging.Level;

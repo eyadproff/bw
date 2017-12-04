@@ -106,28 +106,67 @@ public class AppEntryPoint extends Application
 		    return;
 	    }
 	    
-	    String sIdleWarningBeforeSeconds = configManager.getProperty("idle.warning.before.seconds");
-	    String sIdleWarningAfterSeconds = configManager.getProperty("idle.warning.after.seconds");
-	    String sReadTimeoutSeconds = configManager.getProperty("webservice.readTimeoutSeconds");
-	    String sConnectTimeoutSeconds = configManager.getProperty("webservice.connectTimeoutSeconds");
+	    String webserviceBaseUrl = System.getProperty("bio.serverUrl");
+	    
+	    if(webserviceBaseUrl == null) // usually local run
+	    {
+		    LOGGER.warning("webserviceBaseUrl is null! We will use the default one.");
+		    webserviceBaseUrl = configManager.getProperty("webservice.baseUrl");
+		
+		    // populate the JNLP properties to the system properties
+		    InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream("sa/gov/nic/bio/bw/client/core/config/jnlp.properties");
+		    InputStreamReader isr = new InputStreamReader(is, StandardCharsets.UTF_8);
+		    Properties properties = new Properties();
+		    try
+		    {
+			    properties.load(isr);
+			    isr.close();
+			    LOGGER.info("Populate jnlp.properties to System properties.");
+			    for(Object key : Collections.list(properties.propertyNames()))
+			    {
+				    String sKey = (String) key;
+				    String value = properties.getProperty(sKey);
+				    LOGGER.info(sKey + " = " + value);
+				    System.setProperty(sKey, value);
+			    }
+		    }
+		    catch(IOException e1)
+		    {
+			    LOGGER.log(Level.SEVERE, "Failed to load the file jnlp.properties!", e1);
+		    }
+	    }
+	    
+	    if(webserviceBaseUrl == null)
+	    {
+		    String errorCode = "C001-00010";
+		    notifyPreloader(new ProgressMessage(null, errorCode));
+		    return;
+	    }
+	
+	    LOGGER.info("webserviceBaseUrl = " + webserviceBaseUrl);
+	
+	    String sIdleWarningBeforeSeconds = System.getProperty("jnlp.bio.bw.idle.warning.before.seconds");
+	    String sIdleWarningAfterSeconds = System.getProperty("jnlp.bio.bw.idle.warning.after.seconds");
+	    String sReadTimeoutSeconds = System.getProperty("jnlp.bio.bw.webservice.readTimeoutSeconds");
+	    String sConnectTimeoutSeconds = System.getProperty("jnlp.bio.bw.webservice.connectTimeoutSeconds");
 	
 	    if(sIdleWarningBeforeSeconds == null)
 	    {
-	    	LOGGER.warning("idleWarningBeforeSeconds is null! Default value is " + idleWarningBeforeSeconds);
+		    LOGGER.warning("idleWarningBeforeSeconds is null! Default value is " + idleWarningBeforeSeconds);
 	    }
 	    else try
 	    {
-	    	idleWarningBeforeSeconds = Integer.parseInt(sIdleWarningBeforeSeconds);
+		    idleWarningBeforeSeconds = Integer.parseInt(sIdleWarningBeforeSeconds);
 		    LOGGER.info("idleWarningBeforeSeconds = " + idleWarningBeforeSeconds);
 	    }
 	    catch(NumberFormatException e)
 	    {
 		    LOGGER.warning("Failed to parse sIdleWarningBeforeSeconds as int! sIdleWarningBeforeSeconds = " + sIdleWarningBeforeSeconds);
 	    }
-	    
+	
 	    if(sIdleWarningAfterSeconds == null)
 	    {
-	    	LOGGER.warning("sIdleWarningAfterSeconds is null! Default value is " + idleWarningAfterSeconds);
+		    LOGGER.warning("sIdleWarningAfterSeconds is null! Default value is " + idleWarningAfterSeconds);
 	    }
 	    else try
 	    {
@@ -166,43 +205,6 @@ public class AppEntryPoint extends Application
 	    {
 		    LOGGER.warning("Failed to parse sConnectTimeoutSeconds as int! sConnectTimeoutSeconds = " + sConnectTimeoutSeconds);
 	    }
-	
-	    String webserviceBaseUrl = System.getProperty("bio.serverUrl");
-	    
-	    if(webserviceBaseUrl == null) // usually local run
-	    {
-		    LOGGER.warning("webserviceBaseUrl is null! We will use the default one.");
-		    webserviceBaseUrl = configManager.getProperty("webservice.baseUrl");
-		
-		    // populate the JNLP properties to the system properties
-		    InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream("sa/gov/nic/bio/bw/client/core/config/jnlp.properties");
-		    InputStreamReader isr = new InputStreamReader(is, StandardCharsets.UTF_8);
-		    Properties properties = new Properties();
-		    try
-		    {
-			    properties.load(isr);
-			    isr.close();
-			    for(Object key : Collections.list(properties.propertyNames()))
-			    {
-				    String sKey = (String) key;
-				    String value = properties.getProperty(sKey);
-				    System.setProperty(sKey, value);
-			    }
-		    }
-		    catch(IOException e1)
-		    {
-			    LOGGER.log(Level.SEVERE, "Failed to load the file jnlp.properties!", e1);
-		    }
-	    }
-	    
-	    if(webserviceBaseUrl == null)
-	    {
-		    String errorCode = "C001-00010";
-		    notifyPreloader(new ProgressMessage(null, errorCode));
-		    return;
-	    }
-	
-	    LOGGER.info("webserviceBaseUrl = " + webserviceBaseUrl);
 	
 	    webserviceManager.init(webserviceBaseUrl, readTimeoutSeconds, connectTimeoutSeconds);
 	

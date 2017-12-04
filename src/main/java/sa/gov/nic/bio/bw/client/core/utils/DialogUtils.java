@@ -15,6 +15,7 @@ import javafx.scene.layout.Priority;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import sa.gov.nic.bio.bw.client.core.interfaces.IdleMonitorRegisterer;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -25,8 +26,8 @@ import java.util.Optional;
  */
 public class DialogUtils
 {
-	public static void showErrorDialog(Image appIcon, String title, String headerText, String contentText,
-	                            String buttonOkText, String moreDetailsText, String lessDetailsText, Exception exception, boolean rtl)
+	public static void showErrorDialog(IdleMonitorRegisterer idleMonitorRegisterer, Image appIcon, String title, String headerText, String contentText,
+	                                   String buttonOkText, String moreDetailsText, String lessDetailsText, Exception exception, boolean rtl)
 	{
 		Alert alert = new Alert(AlertType.ERROR);
 		Scene scene = alert.getDialogPane().getScene();
@@ -77,10 +78,12 @@ public class DialogUtils
 		}
 		
 		stage.sizeToScene();
+		if(idleMonitorRegisterer != null) idleMonitorRegisterer.registerStageForIdleMonitoring(stage);
 		alert.showAndWait();
+		if(idleMonitorRegisterer != null) idleMonitorRegisterer.unregisterStageForIdleMonitoring(stage);
 	}
 	
-	public static boolean showConfirmationDialog(Image appIcon, String title, String headerText, String contentText,
+	public static boolean showConfirmationDialog(IdleMonitorRegisterer idleMonitorRegisterer, Image appIcon, String title, String headerText, String contentText,
 	                                          String buttonConfirmText, String buttonCancelText, boolean rtl)
 	{
 		Alert alert = new Alert(AlertType.CONFIRMATION);
@@ -116,11 +119,13 @@ public class DialogUtils
 	    });*/
 		
 		stage.sizeToScene();
+		if(idleMonitorRegisterer != null) idleMonitorRegisterer.registerStageForIdleMonitoring(stage);
 		Optional<ButtonType> buttonType = alert.showAndWait();
+		if(idleMonitorRegisterer != null) idleMonitorRegisterer.unregisterStageForIdleMonitoring(stage);
 		return buttonType.isPresent() && buttonType.get() == buttonTypeConfirm;
 	}
 	
-	public static void showWarningDialog(Image appIcon, String title, String headerText, String contentText, String buttonText, boolean rtl)
+	public static void showWarningDialog(IdleMonitorRegisterer idleMonitorRegisterer, Image appIcon, String title, String headerText, String contentText, String buttonText, boolean rtl)
 	{
 		Alert alert = new Alert(AlertType.WARNING);
 		Scene scene = alert.getDialogPane().getScene();
@@ -148,7 +153,9 @@ public class DialogUtils
 		});
 		
 		stage.sizeToScene();
+		if(idleMonitorRegisterer != null) idleMonitorRegisterer.registerStageForIdleMonitoring(stage);
 		alert.showAndWait();
+		if(idleMonitorRegisterer != null) idleMonitorRegisterer.unregisterStageForIdleMonitoring(stage);
 	}
 	
 	public static Stage buildCustomDialog(Image appIcon, String title, Pane contentPane, String buttonCloseText, boolean rtl)

@@ -469,6 +469,8 @@ public class SearchByFaceImagePaneFxController extends BodyFxControllerBase
 		dialogStage.setFullScreenExitHint("");
 		dialogStage.setFullScreen(true);
 		dialogStage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
+		dialogStage.setOnHidden(event -> coreFxController.unregisterStageForIdleMonitoring(dialogStage));
+		coreFxController.registerStageForIdleMonitoring(dialogStage);
 		dialogStage.show();
 	}
 	

@@ -30,7 +30,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class CoreFxController
+public class CoreFxController implements IdleMonitorRegisterer
 {
 	private static final Logger LOGGER = Logger.getLogger(CoreFxController.class.getName());
 	public static final String FXML_FILE = "sa/gov/nic/bio/bw/client/core/fxml/core.fxml";
@@ -81,6 +81,9 @@ public class CoreFxController
 	public HeaderPaneFxController getHeaderPaneController(){return headerPaneController;}
 	public FooterPaneFxController getFooterPaneController(){return footerPaneController;}
 	public MenuPaneFxController getMenuPaneController(){return menuPaneController;}
+	public ResourceBundle getErrorsBundle(){return errorsBundle;}
+	public ResourceBundle getMessagesBundle(){return messagesBundle;}
+	public ResourceBundle getTopMenusBundle(){return topMenusBundle;}
 	
 	@FXML
 	private void initialize(){}
@@ -104,16 +107,27 @@ public class CoreFxController
 		idleMonitor = new IdleMonitor(idleWarningBeforeSeconds, this::onShowingIdleWarning, idleWarningAfterSeconds, this::onIdle, this::onIdleInterrupt, this::onTick, idleNotifier);
 	}
 	
+	@Override
+	public void registerStageForIdleMonitoring(Stage stage)
+	{
+		idleMonitor.register(stage, Event.ANY);
+	}
+	
+	@Override
+	public void unregisterStageForIdleMonitoring(Stage stage)
+	{
+		idleMonitor.unregister(stage, Event.ANY);
+	}
+	
 	public void startIdleMonitor()
 	{
-		idleMonitor.register(primaryStage, Event.ANY);
+		registerStageForIdleMonitoring(primaryStage);
 		idleMonitor.startMonitoring();
-		// TODO: register dialogs
 	}
 	
 	void stopIdleMonitor()
 	{
-		idleMonitor.unregister(primaryStage, Event.ANY);
+		unregisterStageForIdleMonitoring(primaryStage);
 		idleMonitor.stopMonitoring();
 	}
 	
@@ -154,7 +168,7 @@ public class CoreFxController
 			boolean rtl = guiState.getLanguage().getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT;
 			
 			overlayPane.setVisible(true);
-			DialogUtils.showWarningDialog(appIcon, title, null, contentText, buttonText, rtl);
+			DialogUtils.showWarningDialog(this, appIcon, title, null, contentText, buttonText, rtl);
 			overlayPane.setVisible(false);
 			headerPaneController.logout();
 		});
@@ -339,7 +353,7 @@ public class CoreFxController
 		String buttonCancelText = labelsBundle.getString("dialog.confirm.buttons.cancel");
 		boolean rtl = guiState.getLanguage().getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT;
 		
-		return DialogUtils.showConfirmationDialog(appIcon, title, headerText, contentMessage, buttonConfirmText, buttonCancelText, rtl);
+		return DialogUtils.showConfirmationDialog(this, appIcon, title, headerText, contentMessage, buttonConfirmText, buttonCancelText, rtl);
 	}
 	
 	public void showErrorDialogAndWait(String errorMessage, Exception exception)
@@ -354,7 +368,7 @@ public class CoreFxController
 			boolean rtl = guiState.getLanguage().getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT;
 			
 			LOGGER.log(Level.SEVERE, errorMessage, exception);
-			DialogUtils.showErrorDialog(appIcon, title, headerText, errorMessage, buttonOkText, moreDetailsText,
+			DialogUtils.showErrorDialog(this, appIcon, title, headerText, errorMessage, buttonOkText, moreDetailsText,
 			                            lessDetailsText, exception, rtl);
 		});
 	}
@@ -540,20 +554,5 @@ public class CoreFxController
 		}
 		
 		return true; // success
-	}
-	
-	public ResourceBundle getErrorsBundle()
-	{
-		return errorsBundle;
-	}
-	
-	public ResourceBundle getMessagesBundle()
-	{
-		return messagesBundle;
-	}
-	
-	public ResourceBundle getTopMenusBundle()
-	{
-		return topMenusBundle;
 	}
 }
