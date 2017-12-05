@@ -11,6 +11,7 @@ public interface AppConstants
 		Locale SAUDI_EN_LOCALE = new Locale("en", "SA");
 	}
 	
+	String LOGGER_NAME = "sa.gov.nic.bio.bw.client";
 	ZoneId SAUDI_ZONE = ZoneId.of("GMT+3");
 	String LOGS_FOLDER_PATH = "C:/bio/apps/bw/logs";
 	String TEMP_FOLDER_PATH = "C:/bio/apps/bw/temp";

@@ -27,8 +27,8 @@ import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.logging.*;
+import java.util.logging.Formatter;
 
 public class AppEntryPoint extends Application
 {
@@ -107,11 +107,14 @@ public class AppEntryPoint extends Application
 	    }
 	    
 	    String webserviceBaseUrl = System.getProperty("bio.serverUrl");
+	    String runtimeEnvironment = System.getProperty("jnlp.bio.runtime.environment"); // PROD, INT, DEV
+	    
 	    
 	    if(webserviceBaseUrl == null) // usually local run
 	    {
 		    LOGGER.warning("webserviceBaseUrl is null! We will use the default one.");
 		    webserviceBaseUrl = configManager.getProperty("webservice.baseUrl");
+		    runtimeEnvironment = "DEV";
 		
 		    // populate the JNLP properties to the system properties
 		    InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream("sa/gov/nic/bio/bw/client/core/config/jnlp.properties");
@@ -144,6 +147,7 @@ public class AppEntryPoint extends Application
 	    }
 	
 	    LOGGER.info("webserviceBaseUrl = " + webserviceBaseUrl);
+	    LOGGER.info("runtimeEnvironment = " + runtimeEnvironment);
 	
 	    String sIdleWarningBeforeSeconds = System.getProperty("jnlp.bio.bw.idle.warning.before.seconds");
 	    String sIdleWarningAfterSeconds = System.getProperty("jnlp.bio.bw.idle.warning.after.seconds");
@@ -209,6 +213,7 @@ public class AppEntryPoint extends Application
 	    webserviceManager.init(webserviceBaseUrl, readTimeoutSeconds, connectTimeoutSeconds);
 	
 	    UserData userData = new UserData();
+	    LOGGER.fine("HELLO WORLD");
 	
 	    Context.init(configManager, workflowManager, webserviceManager, executorService, scheduledExecutorService, userData);
 	

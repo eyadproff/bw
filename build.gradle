@@ -135,7 +135,7 @@ task packageWebStart(group: 'web-start') {
         // copy jar files
         copy {
             from 'build/libs'
-            into "build/web-start/jars"
+            into "build/web-start/classpath-jars"
         }
     }
 }
@@ -160,9 +160,9 @@ task packageWebStartAndDeploy(group: 'web-start') {
     doLast {
         ssh.run {
             session(remotes.webServer) {
-                remove '/home/user/Desktop/wlp/usr/servers/bio-client-downloader/dropins/bw'
-                execute 'mkdir /home/user/Desktop/wlp/usr/servers/bio-client-downloader/dropins/bw'
-                put from: new File('build/web-start').listFiles().toList(), into: '/home/user/Desktop/wlp/usr/servers/bio-client-downloader/dropins/bw'
+                remove '/opt/wlp2/usr/servers/bio-client-downloader/clients/bw'
+                execute 'mkdir /opt/wlp2/usr/servers/bio-client-downloader/clients/bw'
+                put from: new File('build/web-start').listFiles().toList(), into: '/opt/wlp2/usr/servers/bio-client-downloader/clients/bw'
             }
         }
     }
@@ -173,9 +173,9 @@ task deploy(group: 'web-start') {
     doLast {
         ssh.run {
             session(remotes.webServer) {
-                remove '/home/user/Desktop/wlp/usr/servers/bio-client-downloader/dropins/bw'
-                execute 'mkdir /home/user/Desktop/wlp/usr/servers/bio-client-downloader/dropins/bw'
-                put from: new File('build/web-start').listFiles().toList(), into: '/home/user/Desktop/wlp/usr/servers/bio-client-downloader/dropins/bw'
+                remove '/opt/wlp2/usr/servers/bio-client-downloader/clients/bw'
+                execute 'mkdir /opt/wlp2/usr/servers/bio-client-downloader/clients/bw'
+                put from: new File('build/web-start').listFiles().toList(), into: '/opt/wlp2/usr/servers/bio-client-downloader/clients/bw'
             }
         }
     }
