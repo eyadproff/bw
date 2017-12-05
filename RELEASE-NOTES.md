@@ -14,6 +14,7 @@
 - Move all configurable properties from config.properties to APPLICATION.JNLP that is used by BCL.
 - Register all pop-up dialogs for idle monitoring.
 - Improve the logging configuration.
+- Allow the user to press ENTER from the keyboard to accept the confirmation dialog message.
 
 ## v1.1.2
 

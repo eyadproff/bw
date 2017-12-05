@@ -1,14 +1,12 @@
 package sa.gov.nic.bio.bw.client.core.utils;
 
 import javafx.beans.value.ObservableValue;
-import javafx.event.EventHandler;
 import javafx.geometry.NodeOrientation;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
@@ -20,6 +18,7 @@ import sa.gov.nic.bio.bw.client.core.interfaces.IdleMonitorRegisterer;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Created by Fouad on 12-Jul-17.
@@ -71,10 +70,7 @@ public class DialogUtils
 			detailsButton.setText(moreDetailsText);
 			
 			alert.getDialogPane().expandedProperty().addListener(
-				(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue ) ->
-				{
-					detailsButton.setText(newValue ? lessDetailsText : moreDetailsText);
-				});
+				(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue ) -> detailsButton.setText(newValue ? lessDetailsText : moreDetailsText));
 		}
 		
 		stage.sizeToScene();
@@ -108,15 +104,30 @@ public class DialogUtils
 		Button btnCancel = (Button) alert.getDialogPane().lookupButton(buttonTypeCancel);
 		
 		btnConfirm.setDefaultButton(false);
-		/*btnConfirm.setOnKeyReleased(event ->
+		
+		final int INITIAL = 0;
+		final int PRESSED = 1;
+		final int RELEASED = 2;
+		
+		AtomicInteger enterKeyState = new AtomicInteger(INITIAL);
+		
+		btnConfirm.setOnKeyPressed(event ->
 		{
-			if(event.getCode() == KeyCode.ENTER) alert.setResult(buttonTypeConfirm);
+			if(event.getCode() == KeyCode.ENTER) enterKeyState.set(PRESSED);
+		});
+		btnConfirm.setOnKeyReleased(event ->
+		{
+			if(event.getCode() == KeyCode.ENTER && enterKeyState.get() != INITIAL)
+			{
+				if(enterKeyState.get() == PRESSED) alert.setResult(buttonTypeConfirm);
+				enterKeyState.set(RELEASED);
+		    }
 		});
 		
 		btnCancel.setOnKeyReleased(event ->
 	    {
 	        if(event.getCode() == KeyCode.ENTER) alert.setResult(buttonTypeCancel);
-	    });*/
+	    });
 		
 		stage.sizeToScene();
 		if(idleMonitorRegisterer != null) idleMonitorRegisterer.registerStageForIdleMonitoring(stage);
@@ -158,7 +169,7 @@ public class DialogUtils
 		if(idleMonitorRegisterer != null) idleMonitorRegisterer.unregisterStageForIdleMonitoring(stage);
 	}
 	
-	public static Stage buildCustomDialog(Image appIcon, String title, Pane contentPane, String buttonCloseText, boolean rtl)
+	public static Stage buildCustomDialog(Image appIcon, String title, Pane contentPane, boolean rtl)
 	{
 		Stage stage = new Stage();
 		stage.setResizable(false);

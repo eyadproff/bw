@@ -442,7 +442,7 @@ public class SearchByFaceImagePaneFxController extends BodyFxControllerBase
 		imageLayer.getChildren().add(ivMergedImage);
 		borderPane.centerProperty().set(imageLayer);
 		
-		Stage dialogStage = DialogUtils.buildCustomDialog(appIcon, title, stackPane, buttonText, rtl);
+		Stage dialogStage = DialogUtils.buildCustomDialog(appIcon, title, stackPane, rtl);
 		dialogStage.getScene().addEventHandler(KeyEvent.KEY_PRESSED, t ->
 		{
 			if(t.getCode() == KeyCode.ESCAPE)
