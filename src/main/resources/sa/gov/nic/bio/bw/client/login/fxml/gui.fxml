@@ -43,7 +43,7 @@
                 </HBox>
                 <FlowPane alignment="CENTER" hgap="10">
                     <Button fx:id="btnLogin" text="%button.login" defaultButton="true" onAction="#onLoginButtonClicked"/>
-                    <Button fx:id="btnChangePassword" text="%button.changePassword" visible="false" managed="false"/>
+                    <Button fx:id="btnChangePassword" text="%button.changePassword" onAction="#onChangePasswordButtonClicked"/>
                     <ProgressIndicator fx:id="piLogin" prefHeight="25.0" prefWidth="25.0" managed="false" visible="false"/>
                 </FlowPane>
             </VBox>

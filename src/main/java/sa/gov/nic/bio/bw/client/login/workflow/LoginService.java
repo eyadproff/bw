@@ -4,6 +4,7 @@ import org.activiti.engine.delegate.DelegateExecution;
 import retrofit2.Call;
 import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
+import sa.gov.nic.bio.bw.client.core.utils.RuntimeEnvironment;
 import sa.gov.nic.bio.bw.client.core.utils.UpdateChecker;
 import sa.gov.nic.bio.bw.client.core.webservice.ApiResponse;
 import sa.gov.nic.bio.bw.client.core.webservice.LookupAPI;
@@ -26,7 +27,7 @@ public class LoginService extends ServiceBase
 	@Override
 	public void execute(DelegateExecution execution)
 	{
-		if(!Context.isFirstLogin())
+		if(Context.getRuntimeEnvironment() != null && Context.getRuntimeEnvironment() != RuntimeEnvironment.DEV)
 		{
 			String serverUrl = Context.getWebserviceManager().getServerUrl();
 			String serverBasePath = System.getProperty("jnlp.bio.bw.updater.serverBasePath");

@@ -1,9 +1,9 @@
 # Release Notes:
 
-## v1.1.3
+## v1.2.0
 
 - Add avatar image of the operator.
-- Checking for new updates on second login.
+- Checking for new updates on login.
 - Fix a bug: set the avatar image to the default placeholder in case the operator has associated image.
 - Fix a bug: fix the log rotation (rotate after 50MB).
 - Replace socket locking with file locking as a means to prevent multiple instance of the application per user instead of per machine.
@@ -15,6 +15,8 @@
 - Register all pop-up dialogs for idle monitoring.
 - Improve the logging configuration.
 - Allow the user to press ENTER from the keyboard to accept the confirmation dialog message.
+- Show the environment type in the window title.
+- Add "change-password" feature.
 
 ## v1.1.2
 

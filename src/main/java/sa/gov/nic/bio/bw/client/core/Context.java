@@ -2,6 +2,7 @@ package sa.gov.nic.bio.bw.client.core;
 
 import sa.gov.nic.bio.bw.client.core.beans.UserData;
 import sa.gov.nic.bio.bw.client.core.utils.ConfigManager;
+import sa.gov.nic.bio.bw.client.core.utils.RuntimeEnvironment;
 import sa.gov.nic.bio.bw.client.core.workflow.WorkflowManager;
 import sa.gov.nic.bio.bw.client.core.webservice.WebserviceManager;
 
@@ -18,16 +19,22 @@ public class Context
 	private ExecutorService executorService;
 	private ScheduledExecutorService scheduledExecutorService;
 	private UserData userData;
-	private boolean firstLogin = true;
+	private RuntimeEnvironment runtimeEnvironment;
 	
-	public static void init(ConfigManager configManager, WorkflowManager workflowManager, WebserviceManager webserviceManager, ExecutorService executorService, ScheduledExecutorService scheduledExecutorService, UserData userData)
+	public static void init(RuntimeEnvironment runtimeEnvironment, ConfigManager configManager, WorkflowManager workflowManager, WebserviceManager webserviceManager, ExecutorService executorService, ScheduledExecutorService scheduledExecutorService, UserData userData)
 	{
+		INSTANCE.runtimeEnvironment = runtimeEnvironment;
 		INSTANCE.configManager = configManager;
 		INSTANCE.workflowManager = workflowManager;
 		INSTANCE.webserviceManager = webserviceManager;
 		INSTANCE.executorService = executorService;
 		INSTANCE.scheduledExecutorService = scheduledExecutorService;
 		INSTANCE.userData = userData;
+	}
+	
+	public static RuntimeEnvironment getRuntimeEnvironment()
+	{
+		return INSTANCE.runtimeEnvironment;
 	}
 	
 	public static ConfigManager getConfigManager()
@@ -64,12 +71,5 @@ public class Context
 	{
 		INSTANCE.userData.deleteLoginBean();
 		INSTANCE.userData.deleteRoles();
-	}
-	
-	public static boolean isFirstLogin()
-	{
-		if(!INSTANCE.firstLogin) return false;
-		INSTANCE.firstLogin = false;
-		return true;
 	}
 }

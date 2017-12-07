@@ -28,7 +28,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.logging.*;
-import java.util.logging.Formatter;
 
 public class AppEntryPoint extends Application
 {
@@ -107,14 +106,14 @@ public class AppEntryPoint extends Application
 	    }
 	    
 	    String webserviceBaseUrl = System.getProperty("bio.serverUrl");
-	    String runtimeEnvironment = System.getProperty("jnlp.bio.runtime.environment"); // PROD, INT, DEV
+	    String sRuntimeEnvironment = System.getProperty("jnlp.bio.runtime.environment"); // PROD, INT, DEV
 	    
 	    
 	    if(webserviceBaseUrl == null) // usually local run
 	    {
 		    LOGGER.warning("webserviceBaseUrl is null! We will use the default one.");
 		    webserviceBaseUrl = configManager.getProperty("webservice.baseUrl");
-		    runtimeEnvironment = "DEV";
+		    sRuntimeEnvironment = "DEV";
 		
 		    // populate the JNLP properties to the system properties
 		    InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream("sa/gov/nic/bio/bw/client/core/config/jnlp.properties");
@@ -147,7 +146,7 @@ public class AppEntryPoint extends Application
 	    }
 	
 	    LOGGER.info("webserviceBaseUrl = " + webserviceBaseUrl);
-	    LOGGER.info("runtimeEnvironment = " + runtimeEnvironment);
+	    LOGGER.info("sRuntimeEnvironment = " + sRuntimeEnvironment);
 	
 	    String sIdleWarningBeforeSeconds = System.getProperty("jnlp.bio.bw.idle.warning.before.seconds");
 	    String sIdleWarningAfterSeconds = System.getProperty("jnlp.bio.bw.idle.warning.after.seconds");
@@ -211,11 +210,8 @@ public class AppEntryPoint extends Application
 	    }
 	
 	    webserviceManager.init(webserviceBaseUrl, readTimeoutSeconds, connectTimeoutSeconds);
-	
-	    UserData userData = new UserData();
-	    LOGGER.fine("HELLO WORLD");
-	
-	    Context.init(configManager, workflowManager, webserviceManager, executorService, scheduledExecutorService, userData);
+	    
+	    Context.init(RuntimeEnvironment.byName(sRuntimeEnvironment), configManager, workflowManager, webserviceManager, executorService, scheduledExecutorService, new UserData());
 	
 	    LookupAPI lookupAPI = webserviceManager.getApi(LookupAPI.class);
 	    String url = System.getProperty("jnlp.bio.bw.service.lookupNicHijriCalendarData");
@@ -318,7 +314,7 @@ public class AppEntryPoint extends Application
 	    String title;
 	    try
 	    {
-		    title = labelsBundle.getString("window.title") + " " + version;
+		    title = labelsBundle.getString("window.title") + " " + version + " - " + labelsBundle.getString("label.environment." + sRuntimeEnvironment.toLowerCase());
 	    }
 	    catch(MissingResourceException e)
 	    {

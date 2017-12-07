@@ -1,7 +1,9 @@
 package sa.gov.nic.bio.bw.client.core.utils;
 
 import javafx.beans.value.ObservableValue;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.NodeOrientation;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
@@ -15,9 +17,14 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import sa.gov.nic.bio.bw.client.core.interfaces.IdleMonitorRegisterer;
 
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.ResourceBundle;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -58,6 +65,7 @@ public class DialogUtils
 			textArea.setMaxHeight(Double.MAX_VALUE);
 			GridPane.setVgrow(textArea, Priority.ALWAYS);
 			GridPane.setHgrow(textArea, Priority.ALWAYS);
+			
 			
 			GridPane expContent = new GridPane();
 			expContent.setMaxWidth(Double.MAX_VALUE);
@@ -182,5 +190,36 @@ public class DialogUtils
 		stage.setScene(scene);
 		
 		return stage;
+	}
+	
+	public static <T> Dialog<T> buildCustomDialog(Image appIcon, String fxml, ResourceBundle resourceBundle, boolean rtl)
+	{
+		URL fxmlResource = Thread.currentThread().getContextClassLoader().getResource(fxml);
+		
+		if(fxmlResource == null)
+		{
+			// TODO: handle error
+			return null;
+		}
+		
+		Dialog<T> dialog;
+		try
+		{
+			dialog = FXMLLoader.load(fxmlResource, resourceBundle);
+		}
+		catch(IOException e)
+		{
+			e.printStackTrace();
+			// TODO: handle error
+			return null;
+		}
+		
+		Scene scene = dialog.getDialogPane().getScene();
+		scene.setNodeOrientation(rtl ? NodeOrientation.RIGHT_TO_LEFT : NodeOrientation.LEFT_TO_RIGHT);
+		
+		Stage stage = (Stage) scene.getWindow();
+		stage.getIcons().add(appIcon);
+		
+		return dialog;
 	}
 }
