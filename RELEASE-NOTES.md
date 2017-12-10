@@ -17,6 +17,7 @@
 - Allow the user to press ENTER from the keyboard to accept the confirmation dialog message.
 - Show the environment type in the window title.
 - Add "change-password" feature.
+- Make the change-password-thread daemon.
 
 ## v1.1.2
 
