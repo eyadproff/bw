@@ -5,7 +5,7 @@ import org.activiti.engine.delegate.JavaDelegate;
 import retrofit2.Call;
 import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.webservice.ApiResponse;
-import sa.gov.nic.bio.bw.client.login.webservice.LogoutAPI;
+import sa.gov.nic.bio.bw.client.login.webservice.IdentityAPI;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -28,9 +28,9 @@ public class LogoutService implements JavaDelegate
 		// we don't care about logout response, so just make it asynchronous
 		Context.getExecutorService().execute(() ->
 		{
-			LogoutAPI logoutAPI = Context.getWebserviceManager().getApi(LogoutAPI.class);
+			IdentityAPI identityAPI = Context.getWebserviceManager().getApi(IdentityAPI.class);
 			String url = System.getProperty("jnlp.bio.bw.service.logout");
-			Call<Void> apiCall = logoutAPI.logout(url, token);
+			Call<Void> apiCall = identityAPI.logout(url, token);
 			ApiResponse<Void> response = Context.getWebserviceManager().executeApi(apiCall);
 			
 			if(response.getHttpCode() != 200)

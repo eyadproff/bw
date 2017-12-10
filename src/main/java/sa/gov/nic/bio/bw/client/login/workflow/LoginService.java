@@ -9,7 +9,7 @@ import sa.gov.nic.bio.bw.client.core.utils.UpdateChecker;
 import sa.gov.nic.bio.bw.client.core.webservice.ApiResponse;
 import sa.gov.nic.bio.bw.client.core.webservice.LookupAPI;
 import sa.gov.nic.bio.bw.client.core.workflow.ServiceBase;
-import sa.gov.nic.bio.bw.client.login.webservice.LoginAPI;
+import sa.gov.nic.bio.bw.client.login.webservice.IdentityAPI;
 import sa.gov.nic.bio.bw.client.login.webservice.LoginBean;
 
 import java.net.SocketException;
@@ -86,9 +86,9 @@ public class LoginService extends ServiceBase
 			return;
 		}
 		
-		LoginAPI loginAPI = Context.getWebserviceManager().getApi(LoginAPI.class);
+		IdentityAPI identityAPI = Context.getWebserviceManager().getApi(IdentityAPI.class);
 		url = System.getProperty("jnlp.bio.bw.service.login");
-		Call<LoginBean> apiCall = loginAPI.login(url, username, password, machineIpAddress, "BW", "U");
+		Call<LoginBean> apiCall = identityAPI.login(url, username, password, machineIpAddress, "BW", "U"); // U = User?
 		ApiResponse<LoginBean> response = Context.getWebserviceManager().executeApi(apiCall);
 		
 		if(response.isSuccess())

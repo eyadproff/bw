@@ -2,14 +2,8 @@ package sa.gov.nic.bio.bw.client.core.workflow;
 
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.JavaDelegate;
-import retrofit2.Call;
-import sa.gov.nic.bio.bw.client.core.Context;
-import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.client.core.webservice.ApiResponse;
-import sa.gov.nic.bio.bw.client.login.webservice.LoginAPI;
-import sa.gov.nic.bio.bw.client.login.webservice.LoginBean;
 
-import java.net.SocketException;
 import java.util.logging.Logger;
 
 /**

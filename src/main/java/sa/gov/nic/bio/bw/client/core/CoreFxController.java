@@ -16,8 +16,8 @@ import sa.gov.nic.bio.bw.client.core.beans.StateBundle;
 import sa.gov.nic.bio.bw.client.core.interfaces.*;
 import sa.gov.nic.bio.bw.client.core.utils.*;
 import sa.gov.nic.bio.bw.client.core.webservice.ApiResponse;
-import sa.gov.nic.bio.bw.client.core.webservice.RefreshTokenAPI;
 import sa.gov.nic.bio.bw.client.core.webservice.RefreshTokenBean;
+import sa.gov.nic.bio.bw.client.login.webservice.IdentityAPI;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -205,9 +205,9 @@ public class CoreFxController implements IdleMonitorRegisterer
 				
 				scheduledRefreshTokenFuture = Context.getScheduledExecutorService().schedule(() ->
                 {
-                    RefreshTokenAPI refreshTokenAPI = Context.getWebserviceManager().getApi(RefreshTokenAPI.class);
+	                IdentityAPI identityAPI = Context.getWebserviceManager().getApi(IdentityAPI.class);
 	                String url = System.getProperty("jnlp.bio.bw.service.refreshToken");
-                    Call<RefreshTokenBean> apiCall = refreshTokenAPI.refreshToken(url, userToken);
+                    Call<RefreshTokenBean> apiCall = identityAPI.refreshToken(url, userToken);
                     ApiResponse<RefreshTokenBean> response = Context.getWebserviceManager().executeApi(apiCall);
 
                     if(response.isSuccess())

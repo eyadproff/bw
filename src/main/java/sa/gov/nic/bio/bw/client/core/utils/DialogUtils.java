@@ -192,7 +192,7 @@ public class DialogUtils
 		return stage;
 	}
 	
-	public static <T> Dialog<T> buildCustomDialog(Image appIcon, String fxml, ResourceBundle resourceBundle, boolean rtl)
+	public static <T> T buildCustomDialog(Image appIcon, String fxml, ResourceBundle resourceBundle, boolean rtl)
 	{
 		URL fxmlResource = Thread.currentThread().getContextClassLoader().getResource(fxml);
 		
@@ -202,10 +202,11 @@ public class DialogUtils
 			return null;
 		}
 		
-		Dialog<T> dialog;
+		FXMLLoader loader = new FXMLLoader(fxmlResource, resourceBundle);
+		Dialog<ButtonType> dialog;
 		try
 		{
-			dialog = FXMLLoader.load(fxmlResource, resourceBundle);
+			dialog = loader.load();
 		}
 		catch(IOException e)
 		{
@@ -219,7 +220,8 @@ public class DialogUtils
 		
 		Stage stage = (Stage) scene.getWindow();
 		stage.getIcons().add(appIcon);
+		stage.setOnCloseRequest(event -> stage.close());
 		
-		return dialog;
+		return loader.getController();
 	}
 }

@@ -5,7 +5,6 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.NodeOrientation;
 import javafx.scene.control.*;
-import javafx.stage.Stage;
 import sa.gov.nic.bio.bw.client.core.*;
 import sa.gov.nic.bio.bw.client.core.beans.StateBundle;
 import sa.gov.nic.bio.bw.client.core.interfaces.*;
@@ -92,12 +91,27 @@ public class LoginPaneFxController extends BodyFxControllerBase implements Langu
 	{
 		notificationPane.hide();
 		
-		// TODO: show dialog
-		//String title = labelsBundle.getString("dialog.compare.title");
 		boolean rtl = coreFxController.getGuiState().getLanguage().getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT;
+		ChangePasswordDialogController controller = DialogUtils.buildCustomDialog(appIcon, FXML_CHANGE_PASSWORD, labelsBundle, rtl);
 		
-		Dialog<Void> dialogStage = DialogUtils.buildCustomDialog(appIcon, FXML_CHANGE_PASSWORD, labelsBundle, rtl);
-		dialogStage.showAndWait();
+		if(controller != null)
+		{
+			controller.attachCoreFxController(coreFxController);
+			controller.attachInitialResources(labelsBundle, errorsBundle, messagesBundle, appIcon);
+			controller.setUsernameAndPassword(txtUsername.getText(), txtPassword.getText());
+			controller.requestFocus();
+			controller.showDialogAndWait();
+			boolean passwordChanged = controller.isPasswordChangedSuccessfully();
+			
+			if(passwordChanged)
+			{
+				txtPassword.setText("");
+				showSuccessNotification(messagesBundle.getString("changePassword.success"));
+			}
+			
+			if(txtUsername.getText().isEmpty()) txtUsername.requestFocus();
+			else txtPassword.requestFocus();
+		}
 	}
 	
 	private void disableUiControls(boolean bool)
