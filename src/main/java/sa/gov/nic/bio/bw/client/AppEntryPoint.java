@@ -27,18 +27,26 @@ import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ThreadFactory;
 import java.util.logging.*;
 
 public class AppEntryPoint extends Application
 {
 	private static final Logger LOGGER = Logger.getLogger(AppEntryPoint.class.getName());
 	
+	private static final ThreadFactory DAEMON_THREAD_FACTORY = runnable ->
+	{
+		Thread thread = Executors.defaultThreadFactory().newThread(runnable);
+		thread.setDaemon(true);
+		return thread;
+	};
+	
 	// initial resources
 	private ConfigManager configManager = new ConfigManager();
 	private WorkflowManager workflowManager = new WorkflowManager();
 	private WebserviceManager webserviceManager = new WebserviceManager();
 	private ExecutorService executorService = Executors.newWorkStealingPool();
-	private ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
+	private ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor(DAEMON_THREAD_FACTORY);
 	
 	private ResourceBundle labelsBundle;
 	private ResourceBundle errorsBundle;
