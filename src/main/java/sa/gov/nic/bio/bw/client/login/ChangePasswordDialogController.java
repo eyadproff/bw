@@ -61,6 +61,7 @@ public class ChangePasswordDialogController implements AttachableController
 										.or(btnChangeDisabledProperty);
 			
 			btnChange.disableProperty().bind(booleanBinding);
+			btnChange.setDefaultButton(true);
 			btnChange.addEventFilter(ActionEvent.ACTION, event1 ->
 			{
 				// validate inputs
@@ -121,6 +122,8 @@ public class ChangePasswordDialogController implements AttachableController
 							showErrorMessage(guiErrorMessage);
 							LOGGER.severe(logErrorMessage);
 						}
+						
+						txtUsername.requestFocus();
 					});
 					
 					Context.getExecutorService().submit(task);
@@ -129,6 +132,7 @@ public class ChangePasswordDialogController implements AttachableController
 				{
 					String message = messagesBundle.getString("changePassword.newPasswordConfirm.notMatch");
 					showWarningMessage(message);
+					txtNewPassword.requestFocus();
 				}
 				
 				event1.consume(); // prevent the bubble up
