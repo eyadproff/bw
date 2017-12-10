@@ -8,9 +8,11 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
-import javafx.stage.Stage;
 import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.CoreFxController;
 import sa.gov.nic.bio.bw.client.core.interfaces.AttachableController;
@@ -29,6 +31,7 @@ public class ChangePasswordDialogController implements AttachableController
 	@FXML private TextField txtCurrentPassword;
 	@FXML private TextField txtNewPassword;
 	@FXML private TextField txtNewPasswordConfirm;
+	@FXML private StackPane resultPane;
 	@FXML private ProgressIndicator piChangePassword;
 	@FXML private TextFlow tfResultMessage;
 	@FXML private ImageView ivWarningIcon;
@@ -54,6 +57,26 @@ public class ChangePasswordDialogController implements AttachableController
 			btnChange = (Button) dialog.getDialogPane().lookupButton(btChange);
 			btnCancel = (Button) dialog.getDialogPane().lookupButton(btCancel);
 			
+			btnChange.setDefaultButton(true);
+			btnCancel.setCancelButton(true);
+			
+			btnChange.addEventHandler(KeyEvent.KEY_PRESSED, e ->
+			{
+				if(e.getCode() == KeyCode.ENTER)
+				{
+					btnChange.fire();
+					e.consume();
+				}
+			});
+			btnCancel.addEventHandler(KeyEvent.KEY_PRESSED, e ->
+			{
+				if(e.getCode() == KeyCode.ENTER)
+				{
+					btnCancel.fire();
+					e.consume();
+				}
+			});
+			
 			BooleanBinding booleanBinding = txtUsername.textProperty().isEmpty()
 										.or(txtCurrentPassword.textProperty().isEmpty())
 										.or(txtNewPassword.textProperty().isEmpty())
@@ -61,9 +84,11 @@ public class ChangePasswordDialogController implements AttachableController
 										.or(btnChangeDisabledProperty);
 			
 			btnChange.disableProperty().bind(booleanBinding);
-			btnChange.setDefaultButton(true);
 			btnChange.addEventFilter(ActionEvent.ACTION, event1 ->
 			{
+				resultPane.setVisible(true);
+				resultPane.setManaged(true);
+				
 				// validate inputs
 				if(txtNewPassword.getText().equals(txtNewPasswordConfirm.getText()))
 				{
@@ -137,6 +162,8 @@ public class ChangePasswordDialogController implements AttachableController
 				
 				event1.consume(); // prevent the bubble up
 			});
+			
+			dialog.getDialogPane().getScene().getWindow().sizeToScene();
 		});
 	}
 	
@@ -174,29 +201,34 @@ public class ChangePasswordDialogController implements AttachableController
 		
 		piChangePassword.setVisible(bool);
 		piChangePassword.setManaged(bool);
-		tfResultMessage.setVisible(false);
+		tfResultMessage.setVisible(!bool);
+		tfResultMessage.setManaged(!bool);
+		
+		dialog.getDialogPane().getScene().getWindow().sizeToScene();
 	}
 	
 	private void showErrorMessage(String message)
 	{
 		tfResultMessage.setVisible(true);
+		tfResultMessage.setManaged(true);
 		ivErrorIcon.setVisible(true);
 		ivErrorIcon.setManaged(true);
 		ivWarningIcon.setVisible(false);
 		ivWarningIcon.setManaged(false);
 		txtResultMessage.setText(message);
-		txtResultMessage.getScene().getWindow().sizeToScene();
+		dialog.getDialogPane().getScene().getWindow().sizeToScene();
 	}
 	
 	private void showWarningMessage(String message)
 	{
 		tfResultMessage.setVisible(true);
+		tfResultMessage.setManaged(true);
 		ivErrorIcon.setVisible(false);
 		ivErrorIcon.setManaged(false);
 		ivWarningIcon.setVisible(true);
 		ivWarningIcon.setManaged(true);
 		txtResultMessage.setText(message);
-		txtResultMessage.getScene().getWindow().sizeToScene();
+		dialog.getDialogPane().getScene().getWindow().sizeToScene();
 	}
 	
 	@Override

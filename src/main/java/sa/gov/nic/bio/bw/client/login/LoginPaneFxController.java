@@ -5,6 +5,8 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.NodeOrientation;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import sa.gov.nic.bio.bw.client.core.*;
 import sa.gov.nic.bio.bw.client.core.beans.StateBundle;
 import sa.gov.nic.bio.bw.client.core.interfaces.*;
@@ -56,6 +58,24 @@ public class LoginPaneFxController extends BodyFxControllerBase implements Langu
 		coreFxController.getMenuPaneController().hideRootPane();
 		coreFxController.getHeaderPaneController().hideRootPane();
 		coreFxController.getFooterPaneController().showRootPane();
+		
+		btnLogin.addEventHandler(KeyEvent.KEY_PRESSED, event ->
+		{
+			if(event.getCode() == KeyCode.ENTER)
+			{
+				btnLogin.fire();
+				event.consume();
+			}
+		});
+		
+		btnChangePassword.addEventHandler(KeyEvent.KEY_PRESSED, event ->
+		{
+			if(event.getCode() == KeyCode.ENTER)
+			{
+				btnChangePassword.fire();
+				event.consume();
+			}
+		});
 		
 		// request focus once the scene is attached to txtUsername
 		txtUsername.sceneProperty().addListener((observable, oldValue, newValue) -> txtUsername.requestFocus());
@@ -131,7 +151,7 @@ public class LoginPaneFxController extends BodyFxControllerBase implements Langu
 	}
 	
 	@FXML
-	private void onEnterPressed(ActionEvent event)
+	private void onTextFieldEnterPressed(ActionEvent event)
 	{
 		btnLogin.fire();
 	}
