@@ -150,7 +150,8 @@ public class HomePaneFxController extends BodyFxControllerBase
 			if(keys.size() > 2)
 			{
 				String errorCode = "C004-00002";
-				coreFxController.showErrorDialogAndWaitForCore(errorCode, new ConfigurationException("The menu properties file (" + menuFile + ") has more than 2 lines!"), menuFile);
+				String message = String.format(errorsBundle.getString(errorCode), menuFile);
+				coreFxController.showErrorDialogAndWait(message, new ConfigurationException("The menu properties file (" + menuFile + ") has more than 2 lines!"));
 				return;
 			}
 			
