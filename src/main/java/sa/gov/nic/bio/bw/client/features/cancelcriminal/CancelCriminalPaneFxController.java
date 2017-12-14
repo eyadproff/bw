@@ -7,6 +7,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import sa.gov.nic.bio.bw.client.core.BodyFxControllerBase;
 
 import java.util.HashMap;
@@ -48,6 +50,15 @@ public class CancelCriminalPaneFxController extends BodyFxControllerBase
 		
 		btnCancelCriminal.disableProperty().bind(idNumberEmptyBinding.or(
 											latentNumberEmptyBinding).or(progressVisibility));
+		
+		btnCancelCriminal.addEventHandler(KeyEvent.KEY_PRESSED, event ->
+		{
+			if(event.getCode() == KeyCode.ENTER)
+			{
+				btnCancelCriminal.fire();
+				event.consume();
+			}
+		});
 	}
 	
 	@Override
@@ -81,6 +92,8 @@ public class CancelCriminalPaneFxController extends BodyFxControllerBase
 			}
 		}
 		else super.onReturnFromTask();
+		
+		txtPersonId.requestFocus();
 	}
 	
 	@FXML
