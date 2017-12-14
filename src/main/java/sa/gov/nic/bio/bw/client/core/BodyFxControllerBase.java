@@ -7,7 +7,6 @@ import javafx.scene.image.ImageView;
 import org.controlsfx.control.NotificationPane;
 import sa.gov.nic.bio.bw.client.core.interfaces.BodyFxController;
 import sa.gov.nic.bio.bw.client.core.interfaces.ResourceBundleCollection;
-import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
 
 import java.net.URL;
 import java.util.Map;
@@ -124,8 +123,22 @@ public abstract class BodyFxControllerBase implements BodyFxController
 				}
 				else if(errorCode.startsWith("B"))
 				{
-					String errorMessage = errorsBundle.getString(errorCode);
-					showWarningNotification(errorMessage);
+					String guiErrorMessage;
+					String logErrorMessage;
+					
+					if(errorCode.startsWith("B010"))
+					{
+						guiErrorMessage = coreFxController.getErrorsBundle().getString(errorCode);
+						logErrorMessage = coreFxController.getErrorsBundle().getString(errorCode + ".internal");
+					}
+					else
+					{
+						guiErrorMessage = errorsBundle.getString(errorCode);
+						logErrorMessage = errorsBundle.getString(errorCode + ".internal");
+					}
+					
+					showWarningNotification(guiErrorMessage);
+					LOGGER.info(logErrorMessage);
 				}
 				else // server error
 				{

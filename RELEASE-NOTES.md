@@ -19,6 +19,7 @@
 - Add "change-password" feature.
 - Make the change-password-thread daemon.
 - Start the application with the OS's language in the first run and save the language in user preferences on switching for subsequent launches of the application.
+- Improve the error logging.
 
 ## v1.1.2
 
