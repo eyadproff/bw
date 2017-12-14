@@ -331,7 +331,7 @@ public class AppEntryPoint extends Application
 	    String title;
 	    try
 	    {
-		    title = labelsBundle.getString("window.title") + " " + version + " - " + labelsBundle.getString("label.environment." + sRuntimeEnvironment.toLowerCase());
+		    title = labelsBundle.getString("window.title") + " " + version + " (" + labelsBundle.getString("label.environment." + Context.getRuntimeEnvironment().name().toLowerCase()) + ")";
 	    }
 	    catch(MissingResourceException e)
 	    {

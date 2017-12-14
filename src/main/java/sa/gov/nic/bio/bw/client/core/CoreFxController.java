@@ -478,7 +478,7 @@ public class CoreFxController implements IdleMonitorRegisterer
 		}
 		
 		String version = Context.getConfigManager().getProperty("app.version");
-		String title = labelsBundle.getString("window.title") + " " + version;
+		String title = labelsBundle.getString("window.title") + " " + version + " (" + labelsBundle.getString("label.environment." + Context.getRuntimeEnvironment().name().toLowerCase()) + ")";
 		windowTitle = AppUtils.replaceNumbersOnly(title, Locale.getDefault());
 		
 		FXMLLoader newStageLoader = new FXMLLoader(fxmlUrl, labelsBundle);
