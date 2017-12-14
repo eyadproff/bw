@@ -142,6 +142,8 @@ public class HomePaneFxController extends BodyFxControllerBase
 		
 		menuFiles.forEach(menuFile ->
 		{
+			LOGGER.fine("menuFile = " + menuFile);
+			
 			ResourceBundle rb = ResourceBundle.getBundle(menuFile.substring(0, menuFile.lastIndexOf('.')), Locale.getDefault(), utf8Control);
 			MenuItem menuItem = new MenuItem();
 			allMenus.add(menuItem);

@@ -72,8 +72,8 @@ public final class UpdateChecker
 	{
 		LOGGER.info("Checking for new updates...");
 		
-		List<FileInfo> localJars = getLocalFilesInfo(new File(bioFolderPath + "/apps/bw/jars"), hashingAlgorithm);
-		List<FileInfo> remoteJars = getRemoteFilesInfo(serverBaseUrl + "/bw/jars.hashes", serverConnectTimeoutSeconds, serverReadTimeoutSeconds);
+		List<FileInfo> localJars = getLocalFilesInfo(new File(bioFolderPath + "/apps/bw/classpath-jars"), hashingAlgorithm);
+		List<FileInfo> remoteJars = getRemoteFilesInfo(serverBaseUrl + "/bw/classpath-jars.hashes", serverConnectTimeoutSeconds, serverReadTimeoutSeconds);
 		if(localJars == null || remoteJars == null) return null;
 		
 		List<FileInfo> jarsToBeRemoved = new ArrayList<>(localJars);

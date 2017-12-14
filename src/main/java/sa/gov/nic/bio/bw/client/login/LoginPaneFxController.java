@@ -112,7 +112,7 @@ public class LoginPaneFxController extends BodyFxControllerBase implements Langu
 		notificationPane.hide();
 		
 		boolean rtl = coreFxController.getGuiState().getLanguage().getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT;
-		ChangePasswordDialogController controller = DialogUtils.buildCustomDialog(appIcon, FXML_CHANGE_PASSWORD, labelsBundle, rtl);
+		ChangePasswordDialogFxController controller = DialogUtils.buildCustomDialog(appIcon, FXML_CHANGE_PASSWORD, labelsBundle, rtl);
 		
 		if(controller != null)
 		{

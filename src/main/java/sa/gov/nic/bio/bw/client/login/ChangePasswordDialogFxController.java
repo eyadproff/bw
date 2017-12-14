@@ -22,9 +22,9 @@ import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class ChangePasswordDialogController implements AttachableController
+public class ChangePasswordDialogFxController implements AttachableController
 {
-	private static final Logger LOGGER = Logger.getLogger(ChangePasswordDialogController.class.getName());
+	private static final Logger LOGGER = Logger.getLogger(ChangePasswordDialogFxController.class.getName());
 	
 	@FXML private Dialog<ButtonType> dialog;
 	@FXML private TextField txtUsername;

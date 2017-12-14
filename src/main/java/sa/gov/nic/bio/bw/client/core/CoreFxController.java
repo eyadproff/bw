@@ -107,13 +107,13 @@ public class CoreFxController implements IdleMonitorRegisterer
 		idleMonitor = new IdleMonitor(idleWarningBeforeSeconds, this::onShowingIdleWarning, idleWarningAfterSeconds, this::onIdle, this::onIdleInterrupt, this::onTick, idleNotifier);
 		
 		// workaround to bring the primary stage to the front in case the application has lost the focus on startup.
-		Platform.runLater(() ->
+		/*Platform.runLater(() ->
 		{
 			primaryStage.setAlwaysOnTop(true);
 			primaryStage.setAlwaysOnTop(false);
 			primaryStage.setIconified(true);
 			primaryStage.setIconified(false);
-		});
+		});*/
 	}
 	
 	@Override
