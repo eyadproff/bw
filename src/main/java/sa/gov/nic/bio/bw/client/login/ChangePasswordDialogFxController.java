@@ -94,11 +94,18 @@ public class ChangePasswordDialogFxController implements AttachableController
 				{
 					showProgress(true);
 					
-					ChangePasswordTask task = new ChangePasswordTask(txtUsername.getText(), txtCurrentPassword.getText(), txtNewPassword.getText());
+					String username = txtUsername.getText();
+					String oldPassword = txtUsername.getText();
+					String newPassword = txtUsername.getText();
+					
+					
+					ChangePasswordTask task = new ChangePasswordTask(username, oldPassword, newPassword);
 					task.setOnSucceeded(event2 ->
 					{
+						LOGGER.info("The password of (" + username + ") has been changed successfully!");
 					    passwordChangedSuccessfully = true;
 						showProgress(false);
+						dialog.setResult(btChange); // the dialog will not be closed unless it has a result
 					    dialog.close();
 					});
 					task.setOnFailed(event2 ->
