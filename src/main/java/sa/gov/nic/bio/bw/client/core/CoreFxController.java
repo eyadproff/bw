@@ -29,6 +29,7 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.prefs.Preferences;
 
 public class CoreFxController implements IdleMonitorRegisterer
 {
@@ -512,6 +513,11 @@ public class CoreFxController implements IdleMonitorRegisterer
 		newCoreFxController.guiState = guiState;
 		newCoreFxController. passInitialResources(labelsBundle, errorsBundle, messagesBundle, topMenusBundle, appIcon, windowTitle, idleWarningBeforeSeconds, idleWarningAfterSeconds);
 		newCoreFxController.guiState.setLanguage(toLanguage);
+		
+		// save the language for later usage
+		Preferences prefs = Preferences.userNodeForPackage(AppConstants.PREF_NODE_CLASS);
+		prefs.put(AppConstants.UI_LANGUAGE_PREF_NAME, toLanguage.getLocale().getLanguage());
+		
 		boolean success = newCoreFxController.applyStateBundle(oldState);
 		
 		if(!success) return;

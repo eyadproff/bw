@@ -29,6 +29,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadFactory;
 import java.util.logging.*;
+import java.util.prefs.Preferences;
 
 public class AppEntryPoint extends Application
 {
@@ -58,7 +59,7 @@ public class AppEntryPoint extends Application
 	private String windowTitle;
 	
 	private boolean successfulInit = false;
-	private GuiLanguage initialLanguage = GuiLanguage.ARABIC; // TODO: make it configurable from properties file
+	private GuiLanguage initialLanguage;// = GuiLanguage.ARABIC; // TODO: make it configurable from properties file
 	
 	// default values
 	private int idleWarningBeforeSeconds = 480; // 8 minutes
@@ -115,7 +116,6 @@ public class AppEntryPoint extends Application
 	    
 	    String webserviceBaseUrl = System.getProperty("bio.serverUrl");
 	    String sRuntimeEnvironment = System.getProperty("jnlp.bio.runtime.environment"); // PROD, INT, DEV
-	    
 	    
 	    if(webserviceBaseUrl == null) // usually local run
 	    {
@@ -220,7 +220,7 @@ public class AppEntryPoint extends Application
 	    webserviceManager.init(webserviceBaseUrl, readTimeoutSeconds, connectTimeoutSeconds);
 	    
 	    Context.init(RuntimeEnvironment.byName(sRuntimeEnvironment), configManager, workflowManager, webserviceManager, executorService, scheduledExecutorService, new UserData());
-	
+	    
 	    LookupAPI lookupAPI = webserviceManager.getApi(LookupAPI.class);
 	    String url = System.getProperty("jnlp.bio.bw.service.lookupNicHijriCalendarData");
 	    Call<NicHijriCalendarData> apiCall = lookupAPI.lookupNicHijriCalendarData(url);
@@ -248,6 +248,15 @@ public class AppEntryPoint extends Application
 		    else notifyPreloader(new ProgressMessage(apiResponse.getException(), "C001-00012"));
 		    return;
 	    }
+	    
+	    // set the default language
+	    Preferences prefs = Preferences.userNodeForPackage(AppConstants.PREF_NODE_CLASS);
+	    String userLanguage = prefs.get(AppConstants.UI_LANGUAGE_PREF_NAME, null);
+	    if(userLanguage == null) userLanguage = System.getProperty("user.language", "en"); // Use the OS default language
+	    
+	    if("ar".equalsIgnoreCase(userLanguage)) initialLanguage = GuiLanguage.ARABIC;
+	    else initialLanguage = GuiLanguage.ENGLISH;
+	    Locale.setDefault(initialLanguage.getLocale());
 	    
 	    try
 	    {
