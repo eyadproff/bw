@@ -69,7 +69,35 @@ public class SearchByFaceImagePaneFxController extends BodyFxControllerBase
 	private Image uploadedImage;
 	
 	@FXML
-	private void initialize(){}
+	private void initialize()
+	{
+		btnSelectImage.addEventHandler(KeyEvent.KEY_PRESSED, event ->
+		{
+			if(event.getCode() == KeyCode.ENTER)
+			{
+				btnSelectImage.fire();
+				event.consume();
+			}
+		});
+		
+		btnSearchByImage.addEventHandler(KeyEvent.KEY_PRESSED, event ->
+		{
+			if(event.getCode() == KeyCode.ENTER)
+			{
+				btnSearchByImage.fire();
+				event.consume();
+			}
+		});
+		
+		btnCompareWithUploadedImage.addEventHandler(KeyEvent.KEY_PRESSED, event ->
+		{
+			if(event.getCode() == KeyCode.ENTER)
+			{
+				btnCompareWithUploadedImage.fire();
+				event.consume();
+			}
+		});
+	}
 	
 	@Override
 	public void onControllerReady()
