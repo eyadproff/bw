@@ -23,8 +23,6 @@ public abstract class BodyFxControllerBase implements BodyFxController
 	protected Image appIcon;
 	protected Map<String, Object> inputData;
 	
-	@FXML protected NotificationPane notificationPane;
-	
 	private Image successIcon = new Image(Thread.currentThread().getContextClassLoader().getResourceAsStream("sa/gov/nic/bio/bw/client/core/images/success.png"));
 	private Image warningIcon = new Image(Thread.currentThread().getContextClassLoader().getResourceAsStream("sa/gov/nic/bio/bw/client/core/images/warning.png"));
 	private Image errorIcon = new Image(Thread.currentThread().getContextClassLoader().getResourceAsStream("sa/gov/nic/bio/bw/client/core/images/error.png"));
@@ -170,15 +168,15 @@ public abstract class BodyFxControllerBase implements BodyFxController
 	{
 		Platform.runLater(() ->
         {
-            notificationPane.setGraphic(new ImageView(icon));
-            notificationPane.show(message);
+            coreFxController.getNotificationPane().setGraphic(new ImageView(icon));
+	        coreFxController.getNotificationPane().show(message);
         });
 	}
 	
 	@Override
 	public void hideNotification()
 	{
-		notificationPane.hide();
+		coreFxController.getNotificationPane().hide();
 	}
 	
 	@Override

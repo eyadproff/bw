@@ -24,7 +24,6 @@ import java.util.logging.Logger;
 public class LoginPaneFxController extends BodyFxControllerBase implements LanguageSwitchingController
 {
 	private static final String FXML_CHANGE_PASSWORD = "sa/gov/nic/bio/bw/client/login/fxml/change_password_dialog.fxml";
-	private static final Logger LOGGER = Logger.getLogger(LoginPaneFxController.class.getName());
 	
 	@FXML private TextField txtUsername;
 	@FXML private PasswordField txtPassword;
@@ -93,7 +92,7 @@ public class LoginPaneFxController extends BodyFxControllerBase implements Langu
 	@FXML
 	private void onLoginButtonClicked(ActionEvent event)
 	{
-		notificationPane.hide();
+		hideNotification();
 		disableUiControls(true);
 		
 		String username = txtUsername.getText().trim();
@@ -109,10 +108,10 @@ public class LoginPaneFxController extends BodyFxControllerBase implements Langu
 	@FXML
 	private void onChangePasswordButtonClicked(ActionEvent event)
 	{
-		notificationPane.hide();
+		hideNotification();
 		
 		boolean rtl = coreFxController.getGuiState().getLanguage().getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT;
-		ChangePasswordDialogFxController controller = DialogUtils.buildCustomDialog(appIcon, FXML_CHANGE_PASSWORD, labelsBundle, rtl);
+		ChangePasswordDialogFxController controller = DialogUtils.buildCustomDialog(coreFxController.getPrimaryStage(), appIcon, FXML_CHANGE_PASSWORD, labelsBundle, rtl);
 		
 		if(controller != null)
 		{

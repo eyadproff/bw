@@ -5,8 +5,11 @@ import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.NodeOrientation;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.image.Image;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import org.controlsfx.control.NotificationPane;
@@ -47,7 +50,8 @@ public class CoreFxController implements IdleMonitorRegisterer
 	@FXML private FooterPaneFxController footerPaneController;
 	@FXML private MenuPaneFxController menuPaneController;
 	@FXML private NotificationPane idleNotifier;
-	@FXML private StackPane bodyPane;
+	@FXML private NotificationPane notificationPane;
+	@FXML private BorderPane bodyPane;
 	
 	private ResourceBundle labelsBundle;
 	private ResourceBundle errorsBundle;
@@ -76,7 +80,8 @@ public class CoreFxController implements IdleMonitorRegisterer
 	}
 	
 	public Stage getPrimaryStage(){return primaryStage;}
-	public StackPane getBodyPane(){return bodyPane;}
+	public NotificationPane getNotificationPane(){return notificationPane;}
+	public BorderPane getBodyPane(){return bodyPane;}
 	public GuiState getGuiState(){return guiState;}
 	
 	public HeaderPaneFxController getHeaderPaneController(){return headerPaneController;}
@@ -106,6 +111,7 @@ public class CoreFxController implements IdleMonitorRegisterer
 		
 		primaryStage.setTitle(windowTitle);
 		idleMonitor = new IdleMonitor(idleWarningBeforeSeconds, this::onShowingIdleWarning, idleWarningAfterSeconds, this::onIdle, this::onIdleInterrupt, this::onTick, idleNotifier);
+		overlayPane.setVisible(false);
 		
 		// workaround to bring the primary stage to the front in case the application has lost the focus on startup.
 		/*Platform.runLater(() ->
@@ -178,7 +184,7 @@ public class CoreFxController implements IdleMonitorRegisterer
 			boolean rtl = guiState.getLanguage().getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT;
 			
 			overlayPane.setVisible(true);
-			DialogUtils.showWarningDialog(this, appIcon, title, null, contentText, buttonText, rtl);
+			DialogUtils.showWarningDialog(primaryStage, this, appIcon, title, null, contentText, buttonText, rtl);
 			overlayPane.setVisible(false);
 			headerPaneController.logout();
 		});
@@ -282,6 +288,8 @@ public class CoreFxController implements IdleMonitorRegisterer
 	
 	private BodyFxController showForm(BodyFxController bodyFxController, Map<String, Object> inputData, GuiLanguage language)
 	{
+		notificationPane.hide();
+		
 		URL fxmlUrl = bodyFxController.getFxmlLocation();
 		if(fxmlUrl == null)
 		{
@@ -349,7 +357,7 @@ public class CoreFxController implements IdleMonitorRegisterer
 		controller.attachInitialResources(labelsBundle, errorsBundle, messagesBundle, appIcon);
 		controller.attachInputData(inputData);
 		
-		bodyPane.getChildren().setAll(loadedPane);
+		bodyPane.setCenter(loadedPane);
 		controller.onControllerReady();
 		
 		return controller;
@@ -363,10 +371,10 @@ public class CoreFxController implements IdleMonitorRegisterer
 		String buttonCancelText = labelsBundle.getString("dialog.confirm.buttons.cancel");
 		boolean rtl = guiState.getLanguage().getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT;
 		
-		return DialogUtils.showConfirmationDialog(this, appIcon, title, headerText, contentMessage, buttonConfirmText, buttonCancelText, rtl);
+		return DialogUtils.showConfirmationDialog(primaryStage, this, appIcon, title, headerText, contentMessage, buttonConfirmText, buttonCancelText, rtl);
 	}
 	
-	public void showErrorDialogAndWait(String errorMessage, Exception exception)
+	public void showErrorDialogAndWait(String guiErrorMessage, Exception exception)
 	{
 		Platform.runLater(() ->
 		{
@@ -377,8 +385,7 @@ public class CoreFxController implements IdleMonitorRegisterer
 			String lessDetailsText = labelsBundle.getString("dialog.error.buttons.hideErrorDetails");
 			boolean rtl = guiState.getLanguage().getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT;
 			
-			LOGGER.log(Level.SEVERE, errorMessage, exception);
-			DialogUtils.showErrorDialog(this, appIcon, title, headerText, errorMessage, buttonOkText, moreDetailsText,
+			DialogUtils.showErrorDialog(primaryStage, this, appIcon, title, headerText, guiErrorMessage, buttonOkText, moreDetailsText,
 			                            lessDetailsText, exception, rtl);
 		});
 	}

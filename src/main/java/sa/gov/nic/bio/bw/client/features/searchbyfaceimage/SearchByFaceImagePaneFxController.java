@@ -371,7 +371,7 @@ public class SearchByFaceImagePaneFxController extends BodyFxControllerBase
 	}
 	
 	@FXML
-	private void onSearchByImageButtonClicked(ActionEvent actionEvent) throws IOException
+	private void onSearchByImageButtonClicked(ActionEvent actionEvent)
 	{
 		boolean confirmed;
 		
@@ -470,7 +470,7 @@ public class SearchByFaceImagePaneFxController extends BodyFxControllerBase
 		imageLayer.getChildren().add(ivMergedImage);
 		borderPane.centerProperty().set(imageLayer);
 		
-		Stage dialogStage = DialogUtils.buildCustomDialog(appIcon, title, stackPane, rtl);
+		Stage dialogStage = DialogUtils.buildCustomDialog(coreFxController.getPrimaryStage(), appIcon, title, stackPane, rtl);
 		dialogStage.getScene().addEventHandler(KeyEvent.KEY_PRESSED, t ->
 		{
 			if(t.getCode() == KeyCode.ESCAPE)

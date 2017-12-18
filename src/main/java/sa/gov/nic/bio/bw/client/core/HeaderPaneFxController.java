@@ -1,5 +1,7 @@
 package sa.gov.nic.bio.bw.client.core;
 
+import com.sun.javafx.stage.StageHelper;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -7,6 +9,7 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
+import javafx.stage.Stage;
 import org.controlsfx.glyphfont.FontAwesome;
 import org.controlsfx.glyphfont.Glyph;
 import sa.gov.nic.bio.bw.client.core.interfaces.AttachableController;
@@ -14,11 +17,8 @@ import sa.gov.nic.bio.bw.client.core.interfaces.VisibilityControl;
 import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.ResourceBundle;
 
-@SuppressWarnings("unused")
 public class HeaderPaneFxController implements VisibilityControl, AttachableController
 {
 	@FXML private ResourceBundle resources;
@@ -41,7 +41,7 @@ public class HeaderPaneFxController implements VisibilityControl, AttachableCont
 	}
 	
 	@FXML
-	private void initialize() throws IOException
+	private void initialize()
 	{
 		Glyph atIcon = AppUtils.createFontAwesomeIcon(FontAwesome.Glyph.AT);
 		Glyph userIcon = AppUtils.createFontAwesomeIcon(FontAwesome.Glyph.USER);
@@ -82,6 +82,7 @@ public class HeaderPaneFxController implements VisibilityControl, AttachableCont
 	
 	public void onLogoutButtonClicked(ActionEvent actionEvent)
 	{
+		coreFxController.getNotificationPane().hide();
 		String message = coreFxController.getMessagesBundle().getString("logout.confirm");
 		boolean confirmed = coreFxController.showConfirmationDialogAndWait(null, message);
 		
@@ -90,6 +91,15 @@ public class HeaderPaneFxController implements VisibilityControl, AttachableCont
 	
 	public void logout()
 	{
+		// close all opened dialogs (except the primary one)
+		ObservableList<Stage> stages = StageHelper.getStages();
+		for(int i = 0; i < stages.size(); i++)
+		{
+			Stage stage = stages.get(i);
+			if(stage != null && stage != coreFxController.getPrimaryStage()) stage.close();
+		}
+		
+		coreFxController.getNotificationPane().hide();
 		coreFxController.cancelRefreshTokenScheduler();
 		coreFxController.stopIdleMonitor();
 		coreFxController.logout();

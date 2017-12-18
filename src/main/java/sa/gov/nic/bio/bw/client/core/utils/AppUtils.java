@@ -48,6 +48,11 @@ public final class AppUtils
 		return FONTAWESOME_INSTANCE.create(icon);
 	}
 	
+	public static Glyph createFontAwesomeIcon(char character)
+	{
+		return FONTAWESOME_INSTANCE.create(character);
+	}
+	
 	public static String getMachineIpAddress() throws SocketException
 	{
 		for(NetworkInterface nic : Collections.list(NetworkInterface.getNetworkInterfaces()))

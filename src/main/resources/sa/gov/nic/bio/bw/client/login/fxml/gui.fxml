@@ -15,38 +15,33 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.ProgressIndicator?>
-<?import org.controlsfx.control.NotificationPane?>
-<NotificationPane xmlns:fx="http://javafx.com/fxml" xmlns="http://javafx.com/javafx/8"
-                  fx:controller="sa.gov.nic.bio.bw.client.login.LoginPaneFxController"
-                  fx:id="notificationPane" stylesheets="@../css/style.css">
-    <content>
-        <VBox alignment="CENTER" spacing="70">
-            <ImageView>
-                <Image url="@../images/login_logo.png"/>
-            </ImageView>
-            <VBox alignment="CENTER" spacing="20">
-                <HBox alignment="CENTER">
-                    <GridPane alignment="CENTER" vgap="5" hgap="20" styleClass="loginBox">
-                        <padding>
-                            <Insets top="20" right="20" bottom="20" left="20"/>
-                        </padding>
-                        <Label text="%label.username" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
-                        <TextField fx:id="txtUsername" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
-                        <Label text="%label.password" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
-                        <PasswordField fx:id="txtPassword" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
-                        <Label text="%label.language" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
-                        <VBox GridPane.columnIndex="1" GridPane.rowIndex="2">
-                            <ComboBox visible="false" managed="false"/> <!-- workaround to remove the additional arrow -->
-                            <ComboBox fx:id="cbLanguage"/>
-                        </VBox>
-                    </GridPane>
-                </HBox>
-                <FlowPane alignment="CENTER" hgap="10">
-                    <Button fx:id="btnLogin" text="%button.login" defaultButton="true" onAction="#onLoginButtonClicked"/>
-                    <Button fx:id="btnChangePassword" text="%button.changePassword" onAction="#onChangePasswordButtonClicked"/>
-                    <ProgressIndicator fx:id="piLogin" prefHeight="25.0" prefWidth="25.0" managed="false" visible="false"/>
-                </FlowPane>
-            </VBox>
-        </VBox>
-    </content>
-</NotificationPane>
+<VBox xmlns:fx="http://javafx.com/fxml" xmlns="http://javafx.com/javafx/8"
+      fx:controller="sa.gov.nic.bio.bw.client.login.LoginPaneFxController"
+      stylesheets="@../css/style.css" alignment="CENTER" spacing="70">
+    <ImageView>
+        <Image url="@../images/login_logo.png"/>
+    </ImageView>
+    <VBox alignment="CENTER" spacing="20">
+        <HBox alignment="CENTER">
+            <GridPane alignment="CENTER" vgap="5" hgap="20" styleClass="loginBox">
+                <padding>
+                    <Insets top="20" right="20" bottom="20" left="20"/>
+                </padding>
+                <Label text="%label.username" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+                <TextField fx:id="txtUsername" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+                <Label text="%label.password" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+                <PasswordField fx:id="txtPassword" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                <Label text="%label.language" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+                <VBox GridPane.columnIndex="1" GridPane.rowIndex="2">
+                    <ComboBox visible="false" managed="false"/> <!-- workaround to remove the additional arrow -->
+                    <ComboBox fx:id="cbLanguage"/>
+                </VBox>
+            </GridPane>
+        </HBox>
+        <FlowPane alignment="CENTER" hgap="10">
+            <Button fx:id="btnLogin" text="%button.login" defaultButton="true" onAction="#onLoginButtonClicked"/>
+            <Button fx:id="btnChangePassword" text="%button.changePassword" onAction="#onChangePasswordButtonClicked"/>
+            <ProgressIndicator fx:id="piLogin" prefHeight="25.0" prefWidth="25.0" managed="false" visible="false"/>
+        </FlowPane>
+    </VBox>
+</VBox>

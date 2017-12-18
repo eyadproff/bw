@@ -133,6 +133,7 @@ public class HomePaneFxController extends BodyFxControllerBase
 		{
 			String errorCode = "C004-00001";
 			String message = errorsBundle.getString(errorCode);
+			LOGGER.log(Level.SEVERE, "Failed to load the menu properties files!", e);
 			coreFxController.showErrorDialogAndWait(message, e);
 			return;
 		}
@@ -153,7 +154,8 @@ public class HomePaneFxController extends BodyFxControllerBase
 			{
 				String errorCode = "C004-00002";
 				String message = String.format(errorsBundle.getString(errorCode), menuFile);
-				coreFxController.showErrorDialogAndWait(message, new ConfigurationException("The menu properties file (" + menuFile + ") has more than 2 lines!"));
+				LOGGER.severe("The menu properties file (" + menuFile + ") has more than 2 lines!");
+				coreFxController.showErrorDialogAndWait(message, null);
 				return;
 			}
 			

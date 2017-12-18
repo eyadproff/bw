@@ -15,6 +15,7 @@ import javafx.scene.layout.Priority;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.stage.Window;
 import sa.gov.nic.bio.bw.client.core.interfaces.IdleMonitorRegisterer;
 
 import java.io.IOException;
@@ -32,10 +33,11 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class DialogUtils
 {
-	public static void showErrorDialog(IdleMonitorRegisterer idleMonitorRegisterer, Image appIcon, String title, String headerText, String contentText,
+	public static void showErrorDialog(Window ownerWindow, IdleMonitorRegisterer idleMonitorRegisterer, Image appIcon, String title, String headerText, String contentText,
 	                                   String buttonOkText, String moreDetailsText, String lessDetailsText, Exception exception, boolean rtl)
 	{
 		Alert alert = new Alert(AlertType.ERROR);
+		alert.initOwner(ownerWindow);
 		Scene scene = alert.getDialogPane().getScene();
 		scene.setNodeOrientation(rtl ? NodeOrientation.RIGHT_TO_LEFT : NodeOrientation.LEFT_TO_RIGHT);
 		Stage stage = (Stage) scene.getWindow();
@@ -87,10 +89,11 @@ public class DialogUtils
 		if(idleMonitorRegisterer != null) idleMonitorRegisterer.unregisterStageForIdleMonitoring(stage);
 	}
 	
-	public static boolean showConfirmationDialog(IdleMonitorRegisterer idleMonitorRegisterer, Image appIcon, String title, String headerText, String contentText,
+	public static boolean showConfirmationDialog(Window ownerWindow, IdleMonitorRegisterer idleMonitorRegisterer, Image appIcon, String title, String headerText, String contentText,
 	                                          String buttonConfirmText, String buttonCancelText, boolean rtl)
 	{
 		Alert alert = new Alert(AlertType.CONFIRMATION);
+		alert.initOwner(ownerWindow);
 		Scene scene = alert.getDialogPane().getScene();
 		scene.setNodeOrientation(rtl ? NodeOrientation.RIGHT_TO_LEFT : NodeOrientation.LEFT_TO_RIGHT);
 		Stage stage = (Stage) scene.getWindow();
@@ -144,9 +147,10 @@ public class DialogUtils
 		return buttonType.isPresent() && buttonType.get() == buttonTypeConfirm;
 	}
 	
-	public static void showWarningDialog(IdleMonitorRegisterer idleMonitorRegisterer, Image appIcon, String title, String headerText, String contentText, String buttonText, boolean rtl)
+	public static void showWarningDialog(Window ownerWindow, IdleMonitorRegisterer idleMonitorRegisterer, Image appIcon, String title, String headerText, String contentText, String buttonText, boolean rtl)
 	{
 		Alert alert = new Alert(AlertType.WARNING);
+		alert.initOwner(ownerWindow);
 		Scene scene = alert.getDialogPane().getScene();
 		scene.setNodeOrientation(rtl ? NodeOrientation.RIGHT_TO_LEFT : NodeOrientation.LEFT_TO_RIGHT);
 		Stage stage = (Stage) scene.getWindow();
@@ -177,9 +181,10 @@ public class DialogUtils
 		if(idleMonitorRegisterer != null) idleMonitorRegisterer.unregisterStageForIdleMonitoring(stage);
 	}
 	
-	public static Stage buildCustomDialog(Image appIcon, String title, Pane contentPane, boolean rtl)
+	public static Stage buildCustomDialog(Window ownerWindow, Image appIcon, String title, Pane contentPane, boolean rtl)
 	{
 		Stage stage = new Stage();
+		stage.initOwner(ownerWindow);
 		stage.setResizable(false);
 		stage.initModality(Modality.APPLICATION_MODAL);
 		stage.initStyle(StageStyle.UNDECORATED);
@@ -192,7 +197,7 @@ public class DialogUtils
 		return stage;
 	}
 	
-	public static <T> T buildCustomDialog(Image appIcon, String fxml, ResourceBundle resourceBundle, boolean rtl)
+	public static <T> T buildCustomDialog(Window ownerWindow, Image appIcon, String fxml, ResourceBundle resourceBundle, boolean rtl)
 	{
 		URL fxmlResource = Thread.currentThread().getContextClassLoader().getResource(fxml);
 		
@@ -215,6 +220,7 @@ public class DialogUtils
 			return null;
 		}
 		
+		dialog.initOwner(ownerWindow);
 		Scene scene = dialog.getDialogPane().getScene();
 		scene.setNodeOrientation(rtl ? NodeOrientation.RIGHT_TO_LEFT : NodeOrientation.LEFT_TO_RIGHT);
 		

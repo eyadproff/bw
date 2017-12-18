@@ -285,7 +285,7 @@ public class AppPreloader extends Preloader
 			lessDetailsText = "إخفاء تفاصيل الخطأ" + " - " + "Hide error details";
 		}
 		
-		DialogUtils.showErrorDialog(null, appIcon, title, headerText, contentText, buttonOkText, moreDetailsText, lessDetailsText, exception, true);
+		DialogUtils.showErrorDialog(null, null, appIcon, title, headerText, contentText, buttonOkText, moreDetailsText, lessDetailsText, exception, true);
 		
 		Platform.exit();
 		LOGGER.severe("Exiting the application due to an error during the startup!");

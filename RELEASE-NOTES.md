@@ -20,6 +20,7 @@
 - Make the change-password-thread daemon.
 - Start the application with the OS's language in the first run and save the language in user preferences on switching for subsequent launches of the application.
 - Improve the error logging.
+- Set the primary stage as owner for all dialogs.
 
 ## v1.1.2
 
