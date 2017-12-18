@@ -95,8 +95,8 @@ public class ChangePasswordDialogFxController implements AttachableController
 					showProgress(true);
 					
 					String username = txtUsername.getText();
-					String oldPassword = txtUsername.getText();
-					String newPassword = txtUsername.getText();
+					String oldPassword = txtCurrentPassword.getText();
+					String newPassword = txtNewPassword.getText();
 					
 					
 					ChangePasswordTask task = new ChangePasswordTask(username, oldPassword, newPassword);
