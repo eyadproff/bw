@@ -2,12 +2,13 @@ package sa.gov.nic.bio.bw.client.core.workflow;
 
 import org.activiti.engine.*;
 import org.activiti.engine.repository.DeploymentBuilder;
-import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import sa.gov.nic.bio.bw.client.core.interfaces.UiProxy;
+import sa.gov.nic.bio.bw.client.core.utils.RuntimeEnvironment;
 
-import java.util.HashMap;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -27,7 +28,7 @@ public class WorkflowManager
 	private ProcessInstance coreProcessInstance;
 	private String currentTaskId;
 	
-	public void load(List<String> workflowFilePaths)
+	public void load(List<String> workflowFilePaths, RuntimeEnvironment runtimeEnvironment) throws FileNotFoundException
 	{
 		ProcessEngineConfiguration configuration = ProcessEngineConfiguration.createStandaloneInMemProcessEngineConfiguration();
 		processEngine = configuration.buildProcessEngine();
@@ -43,7 +44,12 @@ public class WorkflowManager
 		LOGGER.info("Deploying the following workflows:");
 		for(String workflowFilePath : workflowFilePaths)
 		{
-			deploymentBuilder.addClasspathResource(workflowFilePath);
+			if(runtimeEnvironment == null || runtimeEnvironment == RuntimeEnvironment.DEV)
+			{
+				deploymentBuilder.addInputStream(workflowFilePath.substring(workflowFilePath.lastIndexOf("/")), new FileInputStream(workflowFilePath));
+			}
+			else deploymentBuilder.addClasspathResource(workflowFilePath);
+			
 			LOGGER.info(workflowFilePath);
 		}
 		

@@ -8,6 +8,7 @@ import javafx.stage.Stage;
 
 import java.io.*;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -82,17 +83,33 @@ public class AppPreloader extends Preloader
 		}
 		
 		InputStream inputStream = AppPreloader.class.getResourceAsStream("/sa/gov/nic/bio/bw/client/core/config/logging.properties");
+		
 		try
 		{
-			LogManager.getLogManager().readConfiguration(inputStream);
+			BufferedReader br = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
+			StringBuilder sb = new StringBuilder();
+			
+			String line;
+			while((line = br.readLine()) != null)
+			{
+				sb.append(line);
+				sb.append("\n");
+			}
+			br.close();
+			
+			String content = sb.toString();
+			
+			content = content.replace("${user.name}", System.getProperty("user.name"));
+			
+			InputStream is = new ByteArrayInputStream(content.getBytes(StandardCharsets.UTF_8));
+			LogManager.getLogManager().readConfiguration(is);
 			Handler[] handlers = Logger.getGlobal().getParent().getHandlers();
 			Formatter formatter = new LogFormatter();
 			for(Handler h : handlers) h.setFormatter(formatter);
 		}
-		catch(IOException e)
+		catch(Exception e)
 		{
-			Logger.getAnonymousLogger().severe("Could not load logging.properties file");
-			Logger.getAnonymousLogger().severe(e.getMessage());
+			Logger.getAnonymousLogger().log(Level.SEVERE, "Could not load logging.properties file", e);
 		}
 	}
 	
@@ -248,19 +265,23 @@ public class AppPreloader extends Preloader
 		String moreDetailsText;
 		String lessDetailsText;
 		
-		if(errorCode != null && errorCode.startsWith("C002")) // most likely C002 error during calling webservices API during startup. TODO: change this later
+		if(errorCode != null && errorCode.startsWith("C002")) // most likely C002 error during calling webservices API during startup.
 		{
-			String message = String.format(errorsBundle.getString("C000-00000.internal"), errorCode);
+			String message = String.format(errorsBundle.getString("C000-00000.internal"), errorCode) + " - " + Arrays.toString(additionalErrorText);
 			LOGGER.log(Level.SEVERE, message, exception);
-			contentText = String.format(errorsBundle.getString("C000-00000.ar"), errorCode) + " \n\n " + String.format(errorsBundle.getString("C000-00000.en"), errorCode);
+			contentText = String.format(errorsBundle.getString("C000-00000.ar"), errorCode) + " \n\n" + String.format(errorsBundle.getString("C000-00000.en"), errorCode) + "\n\n" + Arrays.toString(additionalErrorText);
 		}
 		else if(errorsBundle != null)
 		{
 			String message = errorCode + ": " + errorsBundle.getString(errorCode + ".internal");
 			if(additionalErrorText != null) message = String.format(message, (Object[]) additionalErrorText);
 			LOGGER.log(Level.SEVERE, message, exception);
-			contentText = errorsBundle.getString(errorCode + ".ar") + " \n\n " + errorsBundle.getString(errorCode + ".en");
+			contentText = errorsBundle.getString(errorCode + ".ar");
 			if(additionalErrorText != null) contentText = String.format(contentText, (Object[]) additionalErrorText);
+			contentText += " \n\n ";
+			String temp = errorsBundle.getString(errorCode + ".en");
+			if(additionalErrorText != null) temp = String.format(temp, (Object[]) additionalErrorText);
+			contentText += temp;
 		}
 		else // default text
 		{

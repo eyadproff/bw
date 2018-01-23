@@ -34,7 +34,7 @@
                 <Label text="%label.language" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
                 <VBox GridPane.columnIndex="1" GridPane.rowIndex="2">
                     <ComboBox visible="false" managed="false"/> <!-- workaround to remove the additional arrow -->
-                    <ComboBox fx:id="cbLanguage"/>
+                    <ComboBox fx:id="cboLanguage"/>
                 </VBox>
             </GridPane>
         </HBox>

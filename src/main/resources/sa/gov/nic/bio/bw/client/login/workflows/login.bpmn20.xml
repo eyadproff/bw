@@ -20,8 +20,7 @@
 
         <sequenceFlow sourceRef="userCredentialsEntry" targetRef="loginService"/>
 
-        <serviceTask id="loginService" name="Calling Login API"
-                     activiti:class="sa.gov.nic.bio.bw.client.login.workflow.LoginService"/>
+        <serviceTask id="loginService" name="Calling Login API" activiti:class="sa.gov.nic.bio.bw.client.login.workflow.LoginService"/>
 
         <sequenceFlow sourceRef="loginService" targetRef="loginCheck"/>
 

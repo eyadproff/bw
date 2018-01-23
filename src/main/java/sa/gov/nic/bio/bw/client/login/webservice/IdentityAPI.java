@@ -11,7 +11,7 @@ public interface IdentityAPI
 {
 	@FormUrlEncoded
 	@POST
-	Call<LoginBean> login(@Url String url, @Field("username") String username, @Field("password") String password, @Field("ipaddress") String ipAddress, @Field("appcode") String appCode, @Field("useraccounttype") String userAccountType);
+	Call<LoginBean> login(@Url String url, @Field("username") String username, @Field("password") String password, @Field("app-code") String appCode, @Field("user-account-type") String userAccountType);
 	
 	@FormUrlEncoded
 	@POST
@@ -19,7 +19,7 @@ public interface IdentityAPI
 	
 	@FormUrlEncoded
 	@POST
-	Call<Boolean> changePassword(@Url String url, @Field("username") String username, @Field("old-password") String oldPassword, @Field("new-password") String newPassword, @Field("app-code") String appCode, @Field("user-account-type") String userAccountType, @Field("ip-address") String ipAddress);
+	Call<Boolean> changePassword(@Url String url, @Field("username") String username, @Field("old-password") String oldPassword, @Field("new-password") String newPassword, @Field("app-code") String appCode, @Field("user-account-type") String userAccountType);
 	
 	@FormUrlEncoded
 	@POST

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+
+<fx:root xmlns="http://javafx.com/javafx"
+         xmlns:fx="http://javafx.com/fxml"
+         type="javafx.scene.layout.BorderPane"
+         stylesheets="@../css/style.css">
+
+    <top>
+        <HBox fx:id="stepsIndicatorPane" alignment="CENTER"/>
+    </top>
+
+    <center>
+        <StackPane fx:id="ContentPane"/>
+    </center>
+
+</fx:root>

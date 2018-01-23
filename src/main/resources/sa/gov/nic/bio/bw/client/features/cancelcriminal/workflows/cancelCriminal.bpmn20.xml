@@ -2,10 +2,9 @@
 <definitions id="definitions"
              targetNamespace="http://activiti.org/bpmn20"
              xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
-             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
              xmlns:activiti="http://activiti.org/bpmn">
 
-    <process id="menu.cancel.cancelCriminal" name="Delink X-AFIS Process">
+    <process id="menu.cancel.cancelCriminal" name="Cancel Criminal Process">
 
         <startEvent id="startEvent"/>
 
@@ -13,9 +12,8 @@
 
         <userTask id="dataEntry" activiti:formKey="sa.gov.nic.bio.bw.client.features.cancelcriminal.CancelCriminalPaneFxController">
             <extensionElements>
-                <activiti:formProperty id="menuId" type="string"/>
-                <activiti:formProperty id="personId" type="string"/>
-                <activiti:formProperty id="criminalId" type="string"/>
+                <activiti:formProperty id="personId" type="string" required="true"/>
+                <activiti:formProperty id="criminalId" type="string" required="true"/>
             </extensionElements>
         </userTask>
 

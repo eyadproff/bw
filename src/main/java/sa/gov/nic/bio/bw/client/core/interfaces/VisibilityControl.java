@@ -1,6 +1,7 @@
 package sa.gov.nic.bio.bw.client.core.interfaces;
 
 import javafx.scene.layout.Pane;
+import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 
 /**
  * Created by Fouad on 16-Jul-17.
@@ -19,8 +20,7 @@ public interface VisibilityControl
 	
 	default void setRootPaneVisibility(boolean bVisible)
 	{
-		getRootPane().setVisible(bVisible);
-		getRootPane().setManaged(bVisible);
+		GuiUtils.showNode(getRootPane(), bVisible);
 	}
 	
 	Pane getRootPane();

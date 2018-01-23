@@ -11,8 +11,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 import sa.gov.nic.bio.bw.client.core.Context;
-import sa.gov.nic.bio.bw.client.core.beans.UserData;
-import sa.gov.nic.bio.bw.client.login.webservice.LoginBean;
+import sa.gov.nic.bio.bw.client.core.beans.UserSession;
 
 import java.net.SocketTimeoutException;
 import java.util.HashMap;
@@ -36,10 +35,10 @@ public class WebserviceManager
 		{
 			Request.Builder requestBuilder = chain.request().newBuilder();
 			
-			LoginBean loginBean = Context.getUserData().getLoginBean();
-			if(loginBean != null)
+			UserSession userSession = Context.getUserSession();
+			if(userSession != null)
 			{
-				String userToken = loginBean.getUserToken();
+				String userToken = (String) userSession.getAttribute("userToken");
 				
 				if(userToken != null && userToken.length() > 0)
 				{
@@ -65,7 +64,7 @@ public class WebserviceManager
 	
 	public String getServerUrl()
 	{
-		return PROTOCOL + "://" + baseUrl;
+		return baseUrl;
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -114,6 +113,7 @@ public class WebserviceManager
 			}
 			
 			LOGGER.info("webservice = \"" + apiCall.request().url() + "\", responseCode = " + httpCode);
+			LOGGER.fine("resultBean = " + resultBean);
 			return new ApiResponse<>(apiUrl, resultBean);
 		}
 		else if(httpCode == 400 || httpCode == 401 || httpCode == 403 || httpCode == 500)

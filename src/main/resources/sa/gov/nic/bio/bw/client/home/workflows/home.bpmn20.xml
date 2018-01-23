@@ -2,7 +2,6 @@
 <definitions id="definitions"
              targetNamespace="http://activiti.org/bpmn20"
              xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
-             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
              xmlns:activiti="http://activiti.org/bpmn">
 
     <process id="homeProcess" name="Home Process">
@@ -11,12 +10,7 @@
 
         <sequenceFlow sourceRef="startEvent" targetRef="menuChoosing"/>
 
-        <userTask id="menuChoosing" activiti:formKey="sa.gov.nic.bio.bw.client.home.HomePaneFxController">
-            <extensionElements>
-                <activiti:formProperty id="menuId" type="string"/>
-                <activiti:formProperty id="logoutRequested" type="boolean"/>
-            </extensionElements>
-        </userTask>
+        <userTask id="menuChoosing" activiti:formKey="sa.gov.nic.bio.bw.client.home.HomePaneFxController"/>
 
         <sequenceFlow sourceRef="menuChoosing" targetRef="endEvent"/>
 

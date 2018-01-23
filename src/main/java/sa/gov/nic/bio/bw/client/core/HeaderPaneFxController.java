@@ -16,11 +16,13 @@ import sa.gov.nic.bio.bw.client.core.interfaces.AttachableController;
 import sa.gov.nic.bio.bw.client.core.interfaces.VisibilityControl;
 import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
 
-import java.io.IOException;
 import java.util.ResourceBundle;
+import java.util.logging.Logger;
 
 public class HeaderPaneFxController implements VisibilityControl, AttachableController
 {
+	private static final Logger LOGGER = Logger.getLogger(HeaderPaneFxController.class.getName());
+	
 	@FXML private ResourceBundle resources;
 	@FXML private Pane rootPane;
 	@FXML private ImageView ivAvatar;
@@ -80,7 +82,8 @@ public class HeaderPaneFxController implements VisibilityControl, AttachableCont
 		if(image != null) ivAvatar.setImage(image);
 	}
 	
-	public void onLogoutButtonClicked(ActionEvent actionEvent)
+	@FXML
+	private void onLogoutButtonClicked(ActionEvent actionEvent)
 	{
 		coreFxController.getNotificationPane().hide();
 		String message = coreFxController.getMessagesBundle().getString("logout.confirm");
@@ -93,10 +96,14 @@ public class HeaderPaneFxController implements VisibilityControl, AttachableCont
 	{
 		// close all opened dialogs (except the primary one)
 		ObservableList<Stage> stages = StageHelper.getStages();
-		for(int i = 0; i < stages.size(); i++)
+		for(int i = 1; i <= stages.size(); i++)
 		{
-			Stage stage = stages.get(i);
-			if(stage != null && stage != coreFxController.getPrimaryStage()) stage.close();
+			Stage stage = stages.get(i - 1);
+			if(stage != null && stage != coreFxController.getPrimaryStage())
+			{
+				LOGGER.fine("Closing stage #" + i + ": " + stage.getTitle());
+				stage.close();
+			}
 		}
 		
 		coreFxController.getNotificationPane().hide();

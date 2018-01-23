@@ -13,10 +13,11 @@ buildscript {
     }
 }
 
-project.version = '1.2.0'
+project.version = '1.2.1'
 group = 'sa.gov.nic.bio'
 
 apply plugin: 'java'
+apply plugin: 'application'
 apply plugin: "org.hidetake.ssh"
 
 sourceCompatibility = 1.8
@@ -25,6 +26,11 @@ targetCompatibility = 1.8
 tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
 }
+
+mainClassName = 'sa.gov.nic.bio.bw.client.AppEntryPoint'
+applicationDefaultJvmArgs = ['-Djava.ext.dirs=C:\\Program Files\\Java\\jdk1.8.0_152\\jre\\lib\\ext;extensions',
+                             '-Djava.locale.providers=SPI,CLDR,JRE,HOST',
+                             '-Djavafx.preloader=sa.gov.nic.bio.bw.client.preloader.AppPreloader']
 
 repositories {
     flatDir {
@@ -65,6 +71,7 @@ dependencies {
     implementation name: "jackson-annotations-2.9.0"
     implementation name: "jackson-core-2.9.0"
     implementation name: "jackson-databind-2.9.0"
+    implementation name: "bcl-utils-1.0.0"
     testImplementation name: "junit-4.12"
 }
 
@@ -108,15 +115,15 @@ task packageWebStart(group: 'web-start') {
 
         // add JNLP properties to the JNLP file
         def sProperties = StringBuilder.getDeclaredConstructor().newInstance()
-        boolean first = true;
+        boolean first = true
         Properties properties = new Properties()
         InputStream inputStream = new FileInputStream("src/main/resources/sa/gov/nic/bio/bw/client/core/config/jnlp.properties")
         properties.load(inputStream)
         inputStream.close()
         for(Object key : Collections.list(properties.propertyNames()))
         {
-            String sKey = (String) key;
-            String value = properties.getProperty(sKey);
+            String sKey = (String) key
+            String value = properties.getProperty(sKey)
 
             if(first) first = false
             else sProperties << '\n        '
@@ -137,14 +144,29 @@ task packageWebStart(group: 'web-start') {
             from 'build/libs'
             into "build/web-start/classpath-jars"
         }
+
+        // compress the jars
+        fileTree(dir: 'build/web-start/classpath-jars', include: '**/*.jar', excludes: ['bw-client-*.jar', 'controlsfx-8.40.14.jar']).visit { FileVisitDetails details ->
+            String fileName = details.file.name
+            exec {
+                workingDir 'build/web-start/classpath-jars'
+                commandLine 'pack200', fileName + ".pack.gz", fileName
+            }
+        }
+
+        // delete the un-compressed jars
+        fileTree(dir: 'build/web-start/classpath-jars', include: '**/*.jar', excludes: ['bw-client-*.jar', 'controlsfx-8.40.14.jar']).visit { FileVisitDetails details ->
+            details.file.delete()
+        }
+
+        // copy the extensions folder
+        copy {
+            from 'extensions'
+            into "build/web-start/resources/extensions"
+        }
     }
 }
 packageWebStart.dependsOn(collectDependencies)
-
-task run(type: JavaExec, group: 'run') {
-    main = "-jar" // workaround to "java -jar file.jar"
-    args = [jar.archivePath.absolutePath]
-}
 run.dependsOn(collectDependencies)
 
 
@@ -180,3 +202,23 @@ task deploy(group: 'web-start') {
         }
     }
 }
+
+task packageExtensions(type: Jar) {
+    delete fileTree('extensions').include('**/*')
+    from("build/classes/java/main") {
+        include '/sa/gov/nic/bio/bw/client/core/utils/ArabicCalendarDataProvider.class'
+    }
+
+    from("build/resources/main") {
+        include 'META-INF/**'
+    }
+
+
+    destinationDir file('extensions')
+    baseName 'arabic-calendar-data-provider'
+    version '1.0'
+    extension 'jar'
+}
+packageExtensions.dependsOn(build)
+run.dependsOn(packageExtensions)
+packageWebStart.dependsOn(packageExtensions)

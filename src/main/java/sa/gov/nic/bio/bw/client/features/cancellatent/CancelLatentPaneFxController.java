@@ -7,9 +7,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TextField;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import sa.gov.nic.bio.bw.client.core.BodyFxControllerBase;
+import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,48 +23,21 @@ public class CancelLatentPaneFxController extends BodyFxControllerBase
 	@FXML
 	private void initialize()
 	{
-		txtPersonId.textProperty().addListener((observable, oldValue, newValue) ->
-		{
-			if(newValue.length() > 10) txtPersonId.setText(oldValue);
-			
-			if(!newValue.matches("\\d*"))
-			{
-				txtPersonId.setText(newValue.replaceAll("[^\\d]", ""));
-			}
-		});
-		
-		txtLatentId.textProperty().addListener((observable, oldValue, newValue) ->
-        {
-	        if(newValue.length() > 20) txtLatentId.setText(oldValue);
-        	
-            if(!newValue.matches("\\d*"))
-            {
-	            txtLatentId.setText(newValue.replaceAll("[^\\d]", ""));
-            }
-        });
+		GuiUtils.applyValidatorToTextField(txtPersonId, "\\d*", "[^\\d]", 10);
+		GuiUtils.applyValidatorToTextField(txtLatentId, "\\d*", "[^\\d]", 20);
 		
 		BooleanBinding idNumberEmptyBinding = txtPersonId.textProperty().isEmpty();
 		BooleanBinding latentNumberEmptyBinding = txtLatentId.textProperty().isEmpty();
 		BooleanProperty progressVisibility = piCancelLatent.visibleProperty();
 		
-		btnCancelLatent.disableProperty().bind(idNumberEmptyBinding.or(
-											latentNumberEmptyBinding).or(progressVisibility));
-		
-		btnCancelLatent.addEventHandler(KeyEvent.KEY_PRESSED, event ->
-		{
-			if(event.getCode() == KeyCode.ENTER)
-			{
-				btnCancelLatent.fire();
-				event.consume();
-			}
-		});
+		btnCancelLatent.disableProperty().bind(idNumberEmptyBinding.or(latentNumberEmptyBinding).or(progressVisibility));
+		GuiUtils.makeButtonClickable(btnCancelLatent);
 	}
 	
 	@Override
 	public void onControllerReady()
 	{
-		// request focus once the scene is attached to txtPersonId
-		txtPersonId.sceneProperty().addListener((observable, oldValue, newValue) -> txtPersonId.requestFocus());
+		txtPersonId.requestFocus();
 	}
 	
 	@Override
@@ -131,10 +103,7 @@ public class CancelLatentPaneFxController extends BodyFxControllerBase
 		txtPersonId.setDisable(bool);
 		txtLatentId.setDisable(bool);
 		
-		piCancelLatent.setVisible(bool);
-		piCancelLatent.setManaged(bool);
-		
-		btnCancelLatent.setManaged(!bool);
-		btnCancelLatent.setVisible(!bool);
+		GuiUtils.showNode(piCancelLatent, bool);
+		GuiUtils.showNode(btnCancelLatent, !bool);
 	}
 }

@@ -5,8 +5,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.Cursor;
 import javafx.scene.control.*;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Pane;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
 import javafx.scene.text.Font;
@@ -20,7 +19,6 @@ import sa.gov.nic.bio.bw.client.core.interfaces.AttachableController;
 import sa.gov.nic.bio.bw.client.core.interfaces.VisibilityControl;
 import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
 
-import java.io.IOException;
 import java.util.*;
 
 @SuppressWarnings("unused")
@@ -42,9 +40,9 @@ public class MenuPaneFxController implements VisibilityControl, AttachableContro
 	}
 	
 	@FXML
-	private void initialize() throws IOException
+	private void initialize()
 	{
-	
+		accordion.setFocusTraversable(false);
 	}
 	
 	@Override
@@ -79,8 +77,10 @@ public class MenuPaneFxController implements VisibilityControl, AttachableContro
 		maxWidth = Math.max(maxWidth, AppUtils.computeTextWidth(parentMenuLabel, testFont));
 		
 		ListView<MenuItem> listView = newListView();
+		listView.setFocusTraversable(false);
 		listView.getItems().add(menus.get(0));
 		TitledPane titledPane = new TitledPane();
+		titledPane.setFocusTraversable(false);
 		titledPane.setText(topMenus.get(previousParentMenuId).getLabel());
 		titledPane.setContent(listView);
 		
@@ -109,8 +109,10 @@ public class MenuPaneFxController implements VisibilityControl, AttachableContro
 				maxWidth = Math.max(maxWidth, AppUtils.computeTextWidth(parentMenuLabel, testFont));
 				
 				listView = newListView();
+				listView.setFocusTraversable(false);
 				listView.getItems().add(menuItem);
 				titledPane = new TitledPane();
+				titledPane.setFocusTraversable(false);
 				titledPane.setText(parentMenuLabel);
 				titledPane.setContent(listView);
 				
@@ -149,21 +151,18 @@ public class MenuPaneFxController implements VisibilityControl, AttachableContro
 				// initial value
 				Font font = labeledText.getFont();
 				font = Font.font(font.getFamily(), item.isSelected() ?
-						FontWeight.BOLD : FontWeight.NORMAL, font.getSize());
+						FontWeight.EXTRA_BOLD : FontWeight.NORMAL, font.getSize());
 				labeledText.fontProperty().set(font);
 				
 				item.selectedProperty().addListener((observable, oldValue, newValue) ->
                 {
                     Font f = labeledText.getFont();
-	                f = Font.font(f.getFamily(), newValue ?
-                            FontWeight.BOLD : FontWeight.NORMAL, f.getSize());
+	                f = Font.font(f.getFamily(), newValue ? FontWeight.EXTRA_BOLD : FontWeight.NORMAL, f.getSize());
                     labeledText.fontProperty().set(f);
                 });
 			}
 			
-			arrow.translateXProperty().bind(
-					pane.widthProperty().subtract(arrow.widthProperty().multiply(3))
-			);
+			arrow.translateXProperty().bind(pane.widthProperty().subtract(arrow.widthProperty().multiply(3)));
 			labeledText.translateXProperty().bind(arrow.widthProperty().multiply(2).negate());
 			glyphFont.translateXProperty().bind(arrow.widthProperty().multiply(2).negate());
 			
@@ -213,7 +212,7 @@ public class MenuPaneFxController implements VisibilityControl, AttachableContro
 
                     Font font = labeledText.getFont();
                     labeledText.fontProperty().unbind();
-                    labeledText.fontProperty().set(Font.font(font.getFamily(), item.isSelected() ? FontWeight.BOLD : FontWeight.NORMAL, font.getSize()));
+                    labeledText.fontProperty().set(Font.font(font.getFamily(), item.isSelected() ? FontWeight.EXTRA_BOLD : FontWeight.NORMAL, font.getSize()));
                     
                     ListCell<MenuItem> listCell = this;
                     listCell.setCursor(item.isSelected() ? Cursor.DEFAULT : Cursor.HAND);
@@ -221,7 +220,7 @@ public class MenuPaneFxController implements VisibilityControl, AttachableContro
                     item.selectedProperty().addListener((observable, oldValue, newValue) ->
                     {
                         Font f = labeledText.getFont();
-                        f = Font.font(f.getFamily(), newValue ? FontWeight.BOLD : FontWeight.NORMAL, f.getSize());
+                        f = Font.font(f.getFamily(), newValue ? FontWeight.EXTRA_BOLD : FontWeight.NORMAL, f.getSize());
                         labeledText.fontProperty().set(f);
                         listCell.setCursor(newValue ? Cursor.DEFAULT : Cursor.HAND);
                     });

@@ -1,10 +1,8 @@
 package sa.gov.nic.bio.bw.client.core;
 
 import javafx.application.Platform;
-import javafx.fxml.FXML;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import org.controlsfx.control.NotificationPane;
 import sa.gov.nic.bio.bw.client.core.interfaces.BodyFxController;
 import sa.gov.nic.bio.bw.client.core.interfaces.ResourceBundleCollection;
 
@@ -88,7 +86,7 @@ public abstract class BodyFxControllerBase implements BodyFxController
 	}
 	
 	@Override
-	public void onReturnFromTask(Map<String, Object> inputData)
+	public final void onReturnFromTask(Map<String, Object> inputData)
 	{
 		this.inputData = inputData;
 		Platform.runLater(this::onReturnFromTask);
@@ -112,8 +110,8 @@ public abstract class BodyFxControllerBase implements BodyFxController
 					String guiErrorMessage = coreFxController.getErrorsBundle().getString(errorCode);
 					String logErrorMessage = coreFxController.getErrorsBundle().getString(errorCode + ".internal");
 					
-					guiErrorMessage = String.format(guiErrorMessage, httpCode);
-					logErrorMessage = String.format(logErrorMessage, httpCode);
+					guiErrorMessage = httpCode != null && httpCode > 0 ? String.format(guiErrorMessage, apiUrl, httpCode) : String.format(guiErrorMessage, apiUrl);
+					logErrorMessage = httpCode != null && httpCode > 0 ? String.format(logErrorMessage, apiUrl, httpCode) : String.format(logErrorMessage, apiUrl);
 					
 					if(exception != null) coreFxController.showErrorDialogAndWait(guiErrorMessage, exception);
 					else showErrorNotification(guiErrorMessage);
@@ -156,6 +154,7 @@ public abstract class BodyFxControllerBase implements BodyFxController
 				String code = "C002-00018";
 				String guiErrorMessage = coreFxController.getErrorsBundle().getString(code);
 				String logErrorMessage = coreFxController.getErrorsBundle().getString(code + ".internal");
+				guiErrorMessage = String.format(guiErrorMessage, apiUrl, String.valueOf(httpCode));
 				logErrorMessage = String.format(logErrorMessage, apiUrl, String.valueOf(httpCode));
 				
 				showWarningNotification(guiErrorMessage);

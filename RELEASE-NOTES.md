@@ -1,5 +1,20 @@
 # Release Notes:
 
+## v1.2.1
+
+- Improve error messages and fix some.
+- Build workflow wizard.
+- Fixed the login credentials on Dev environment.
+- Build auto-complete combo-box.
+- Show confirmation dialog on exit.
+- Logout before exiting.
+- Make Sunday as first day of the week when the language is Arabic.
+- Apply "application" gradle plugin when running in development environment.
+- Cancel sending the IP address from the client side.
+- Add support for BCL v1.1.
+- Package any java-6 compatible JARs as .pack.gz.
+- Use BCL-Utils to check for new updates.
+
 ## v1.2.0
 
 - Add avatar image of the operator.

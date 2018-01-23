@@ -7,9 +7,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TextField;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import sa.gov.nic.bio.bw.client.core.BodyFxControllerBase;
+import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,48 +23,21 @@ public class CancelCriminalPaneFxController extends BodyFxControllerBase
 	@FXML
 	private void initialize()
 	{
-		txtPersonId.textProperty().addListener((observable, oldValue, newValue) ->
-		{
-			if(newValue.length() > 10) txtPersonId.setText(oldValue);
-			
-			if(!newValue.matches("\\d*"))
-			{
-				txtPersonId.setText(newValue.replaceAll("[^\\d]", ""));
-			}
-		});
-		
-		txtCriminalId.textProperty().addListener((observable, oldValue, newValue) ->
-        {
-	        if(newValue.length() > 10) txtCriminalId.setText(oldValue);
-	        
-            if(!newValue.matches("\\d*"))
-            {
-	            txtCriminalId.setText(newValue.replaceAll("[^\\d]", ""));
-            }
-        });
+		GuiUtils.applyValidatorToTextField(txtPersonId, "\\d*", "[^\\d]", 10);
+		GuiUtils.applyValidatorToTextField(txtCriminalId, "\\d*", "[^\\d]", 10);
 		
 		BooleanBinding idNumberEmptyBinding = txtPersonId.textProperty().isEmpty();
 		BooleanBinding latentNumberEmptyBinding = txtCriminalId.textProperty().isEmpty();
 		BooleanProperty progressVisibility = piCancelCriminal.visibleProperty();
 		
-		btnCancelCriminal.disableProperty().bind(idNumberEmptyBinding.or(
-											latentNumberEmptyBinding).or(progressVisibility));
-		
-		btnCancelCriminal.addEventHandler(KeyEvent.KEY_PRESSED, event ->
-		{
-			if(event.getCode() == KeyCode.ENTER)
-			{
-				btnCancelCriminal.fire();
-				event.consume();
-			}
-		});
+		btnCancelCriminal.disableProperty().bind(idNumberEmptyBinding.or(latentNumberEmptyBinding).or(progressVisibility));
+		GuiUtils.makeButtonClickable(btnCancelCriminal);
 	}
 	
 	@Override
 	public void onControllerReady()
 	{
-		// request focus once the scene is attached to txtPersonId
-		txtPersonId.sceneProperty().addListener((observable, oldValue, newValue) -> txtPersonId.requestFocus());
+		txtPersonId.requestFocus();
 	}
 	
 	@Override
@@ -131,10 +103,7 @@ public class CancelCriminalPaneFxController extends BodyFxControllerBase
 		txtPersonId.setDisable(bool);
 		txtCriminalId.setDisable(bool);
 		
-		piCancelCriminal.setVisible(bool);
-		piCancelCriminal.setManaged(bool);
-		
-		btnCancelCriminal.setManaged(!bool);
-		btnCancelCriminal.setVisible(!bool);
+		GuiUtils.showNode(piCancelCriminal, bool);
+		GuiUtils.showNode(btnCancelCriminal, !bool);
 	}
 }

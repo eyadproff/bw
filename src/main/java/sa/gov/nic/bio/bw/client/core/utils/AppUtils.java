@@ -19,10 +19,7 @@ import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.security.ProtectionDomain;
 import java.text.NumberFormat;
-import java.time.DateTimeException;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
+import java.time.*;
 import java.time.chrono.ChronoZonedDateTime;
 import java.time.chrono.HijrahChronology;
 import java.time.chrono.HijrahDate;
@@ -40,8 +37,9 @@ public final class AppUtils
 	private static final String FONT_AWESOME_FILE = "sa/gov/nic/bio/bw/client/core/fonts/fontawesome-webfont-4.7.0.2016.ttf";
 	private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("hh:mm:ss a - EEEE dd MMMM yyyy G");
 	private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd MMMM yyyy G");
+	private static final DateTimeFormatter FORMAL_DATE_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 	private static final HijrahChronology nicChronology = HijrahChronology.INSTANCE;
-	private static final FontAwesome FONTAWESOME_INSTANCE = new FontAwesome(Thread.currentThread().getContextClassLoader().getResource(FONT_AWESOME_FILE).toExternalForm());
+	private static final FontAwesome FONTAWESOME_INSTANCE = new FontAwesome(Objects.requireNonNull(Thread.currentThread().getContextClassLoader().getResource(FONT_AWESOME_FILE)).toExternalForm());
 	
 	public static Glyph createFontAwesomeIcon(FontAwesome.Glyph icon)
 	{
@@ -53,7 +51,7 @@ public final class AppUtils
 		return FONTAWESOME_INSTANCE.create(character);
 	}
 	
-	public static String getMachineIpAddress() throws SocketException
+	/*public static String getMachineIpAddress() throws SocketException
 	{
 		for(NetworkInterface nic : Collections.list(NetworkInterface.getNetworkInterfaces()))
 		{
@@ -67,21 +65,32 @@ public final class AppUtils
 		}
 		
 		return null;
-	}
+	}*/
 	
-	public static List<String> listResourceFiles(ProtectionDomain protectionDomain, String matcher) throws IOException
+	public static List<String> listResourceFiles(ProtectionDomain protectionDomain, String matcher, RuntimeEnvironment runtimeEnvironment) throws IOException, URISyntaxException
 	{
 		List<String> resources = new ArrayList<>();
-		URL jar = protectionDomain.getCodeSource().getLocation();
-		ZipInputStream zip = new ZipInputStream(jar.openStream());
+		URL location = protectionDomain.getCodeSource().getLocation();
 		
-		while(true)
+		if(runtimeEnvironment == null || runtimeEnvironment == RuntimeEnvironment.DEV)
 		{
-			ZipEntry e = zip.getNextEntry();
-			if(e == null) break;
-			String name = e.getName();
+			Files.walk(Paths.get(location.toURI()).resolve("../../../resources").normalize())
+				 .map(path -> path.toAbsolutePath().toString().replace("\\", "/"))
+				 .filter(path -> path.matches(matcher))
+				 .forEach(resources::add);
+		}
+		else
+		{
+			ZipInputStream zip = new ZipInputStream(location.openStream());
 			
-			if(name.matches(matcher)) resources.add(name);
+			while(true)
+			{
+				ZipEntry e = zip.getNextEntry();
+				if(e == null) break;
+				String name = e.getName();
+				
+				if(name.matches(matcher)) resources.add(name);
+			}
 		}
 		
 		return resources;
@@ -97,20 +106,23 @@ public final class AppUtils
 	public static String formatDateTime(TemporalAccessor temporal)
 	{
 		return replaceNumbersOnly(DATE_TIME_FORMATTER.withLocale(Locale.getDefault()).format(temporal), Locale.getDefault());
-		
 	}
 	
 	public static String formatDate(TemporalAccessor temporal)
 	{
 		return replaceNumbersOnly(DATE_FORMATTER.withLocale(Locale.getDefault()).format(temporal), Locale.getDefault());
-		
 	}
 	
-	public static String replaceNumbersWithCommas(long number, Locale locale)
+	public static LocalDate parseFormalDate(String sDate)
+	{
+		return LocalDate.parse(sDate, FORMAL_DATE_FORMATTER);
+	}
+	
+	/*public static String replaceNumbersWithCommas(long number, Locale locale)
 	{
 		NumberFormat numberFormat = NumberFormat.getNumberInstance(locale);
 		return numberFormat.format(number);
-	}
+	}*/
 	
 	public static String replaceNumbersOnly(String text, Locale locale)
 	{
@@ -240,7 +252,9 @@ public final class AppUtils
 					else
 					{
 						String exp = node.asText();
-						return LocalDateTime.ofInstant(Instant.ofEpochMilli(Long.parseLong(exp) * 1000L), AppConstants.SAUDI_ZONE);
+						LocalDateTime expirationDateTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(Long.parseLong(exp) * 1000L), AppConstants.SAUDI_ZONE);
+						LOGGER.info("The expiration time for the new JWT is " + expirationDateTime);
+						return expirationDateTime;
 					}
 				}
 				catch(IOException e)
@@ -301,5 +315,16 @@ public final class AppUtils
 		}
 		
 		return filePath;
+	}
+	
+	public static String[] decodeJWT(String jwt)
+	{
+		String[] parts = jwt.split("\\.");
+		
+		parts[0] = "header = " + new String(Base64.getDecoder().decode(parts[0]), StandardCharsets.UTF_8);
+		parts[1] = "payload = " + new String(Base64.getDecoder().decode(parts[1]), StandardCharsets.UTF_8);
+		parts[2] = "signature = " + parts[2];
+		
+		return parts;
 	}
 }

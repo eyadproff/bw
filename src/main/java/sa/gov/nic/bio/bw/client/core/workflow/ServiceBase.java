@@ -4,15 +4,11 @@ import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.JavaDelegate;
 import sa.gov.nic.bio.bw.client.core.webservice.ApiResponse;
 
-import java.util.logging.Logger;
-
 /**
  * Created by Fouad on 18-Jul-17.
  */
 public abstract class ServiceBase implements JavaDelegate
 {
-	private static final Logger LOGGER = Logger.getLogger(ServiceBase.class.getName());
-	
 	protected <T> void bypassResponse(DelegateExecution execution, ApiResponse<T> response, boolean sameFormOnSuccess)
 	{
 		boolean successResponse = response.isSuccess();
@@ -37,6 +33,12 @@ public abstract class ServiceBase implements JavaDelegate
 			
 			bypassErrorCode(execution, errorCode);
 		}
+	}
+	
+	protected void bypassSuccessResponseWithNoResult(DelegateExecution execution, boolean sameFormOnSuccess)
+	{
+		execution.setVariable("successResponse", true);
+		execution.setVariable("sameFormOnSuccess", sameFormOnSuccess);
 	}
 	
 	protected void bypassErrorCode(DelegateExecution execution, String errorCode)

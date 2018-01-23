@@ -2,15 +2,11 @@ package sa.gov.nic.bio.bw.client.core.utils;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
 import java.util.Locale;
 import java.util.logging.Formatter;
 import java.util.logging.LogRecord;
-import java.util.logging.SimpleFormatter;
 
 public class LogFormatter extends Formatter
 {
@@ -35,7 +31,7 @@ public class LogFormatter extends Formatter
 			PrintWriter pw = new PrintWriter(sw);
 			thrown.printStackTrace(pw);
 			String sStackTrace = sw.toString();
-			logMessage += "~" + sStackTrace + "\n"; // added ~ to know whether the exception is coming through this formatter or not
+			logMessage += "~" + sStackTrace + System.lineSeparator(); // added ~ to know whether the exception is coming through this formatter or not
 		}
 		
 		return logMessage;

@@ -29,7 +29,7 @@
                         <fx:include fx:id="menuPane" source="menu.fxml" styleClass="nav" visible="false" managed="false"/>
                     </left>
                     <center>
-                        <NotificationPane fx:id="idleNotifier">
+                        <NotificationPane fx:id="idleNotifier" minHeight="0" minWidth="0">
                             <graphic>
                                 <ImageView>
                                     <Image url="@../images/warning.png"/>

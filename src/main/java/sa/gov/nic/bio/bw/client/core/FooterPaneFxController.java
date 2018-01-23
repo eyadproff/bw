@@ -8,6 +8,7 @@ import javafx.scene.layout.Pane;
 import sa.gov.nic.bio.bw.client.core.interfaces.AttachableController;
 import sa.gov.nic.bio.bw.client.core.interfaces.VisibilityControl;
 import sa.gov.nic.bio.bw.client.core.utils.GuiLanguage;
+import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 
 import java.io.IOException;
 import java.util.ResourceBundle;
@@ -35,10 +36,8 @@ public class FooterPaneFxController implements VisibilityControl, AttachableCont
 		
 		boolean rtl = language.getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT;
 		
-		ivLogoRTL.setVisible(rtl);
-		ivLogoRTL.setManaged(rtl);
-		ivLogoLTR.setVisible(!rtl);
-		ivLogoLTR.setManaged(!rtl);
+		GuiUtils.showNode(ivLogoRTL, rtl);
+		GuiUtils.showNode(ivLogoLTR, !rtl);
 	}
 	
 	@FXML

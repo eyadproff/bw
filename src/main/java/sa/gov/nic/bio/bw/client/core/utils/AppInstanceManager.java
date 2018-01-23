@@ -2,7 +2,6 @@ package sa.gov.nic.bio.bw.client.core.utils;
 
 import java.io.File;
 import java.io.RandomAccessFile;
-import java.net.InetAddress;
 import java.nio.channels.FileLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -10,8 +9,6 @@ import java.util.logging.Logger;
 public class AppInstanceManager
 {
 	private static final Logger LOGGER = Logger.getLogger(AppInstanceManager.class.getName());
-	private static final InetAddress LOCALHOST = InetAddress.getLoopbackAddress();
-	private static final int PORT = 55321;
 	
 	public static boolean checkIfAlreadyRunning()
 	{
@@ -34,7 +31,7 @@ public class AppInstanceManager
 						fileLock.release();
 						randomAccessFile.close();
 						boolean deleted = file.delete();
-						LOGGER.warning("Deleted the lock file (" + file.getAbsolutePath() + ")? " + deleted);
+						LOGGER.info("Deleted the lock file (" + file.getAbsolutePath() + ")? " + deleted);
 					}
 					catch(Exception e)
 					{

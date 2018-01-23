@@ -5,18 +5,14 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.NodeOrientation;
 import javafx.scene.control.*;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import sa.gov.nic.bio.bw.client.core.*;
 import sa.gov.nic.bio.bw.client.core.beans.StateBundle;
 import sa.gov.nic.bio.bw.client.core.interfaces.*;
-import sa.gov.nic.bio.bw.client.core.utils.DialogUtils;
-import sa.gov.nic.bio.bw.client.core.utils.GuiLanguage;
+import sa.gov.nic.bio.bw.client.core.utils.*;
 
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-import java.util.logging.Logger;
 
 /**
  * Created by Fouad on 16-Jul-17.
@@ -27,7 +23,7 @@ public class LoginPaneFxController extends BodyFxControllerBase implements Langu
 	
 	@FXML private TextField txtUsername;
 	@FXML private PasswordField txtPassword;
-	@FXML private ComboBox<GuiLanguage> cbLanguage;
+	@FXML private ComboBox<GuiLanguage> cboLanguage;
 	@FXML private Button btnLogin;
 	@FXML private Button btnChangePassword;
 	@FXML private ProgressIndicator piLogin;
@@ -35,7 +31,9 @@ public class LoginPaneFxController extends BodyFxControllerBase implements Langu
 	@FXML
 	private void initialize()
 	{
-		cbLanguage.getItems().setAll(GuiLanguage.values());
+		cboLanguage.getItems().setAll(GuiLanguage.values());
+		GuiUtils.applyValidatorToTextField(txtUsername, 256);
+		GuiUtils.applyValidatorToTextField(txtPassword, 256);
 		
 		BooleanBinding usernameEmptyBinding = txtUsername.textProperty().isEmpty();
 		BooleanBinding passwordEmptyBinding = txtPassword.textProperty().isEmpty();
@@ -47,37 +45,30 @@ public class LoginPaneFxController extends BodyFxControllerBase implements Langu
 	public void onControllerReady()
 	{
 		GuiLanguage currentLanguage = coreFxController.getGuiState().getLanguage();
-		cbLanguage.getSelectionModel().select(currentLanguage);
-		cbLanguage.valueProperty().addListener((observable, oldValue, newValue) ->
-		{
-			Locale.setDefault(newValue.getLocale());
-			coreFxController.switchLanguage(newValue, this);
-		});
+		cboLanguage.getSelectionModel().select(currentLanguage);
+		cboLanguage.setOnAction(event ->
+        {
+	        GuiLanguage guiLanguage = cboLanguage.getValue();
+	        Locale.setDefault(guiLanguage.getLocale());
+	        coreFxController.switchLanguage(guiLanguage, this);
+        });
 		
 		coreFxController.getMenuPaneController().hideRootPane();
 		coreFxController.getHeaderPaneController().hideRootPane();
 		coreFxController.getFooterPaneController().showRootPane();
 		
-		btnLogin.addEventHandler(KeyEvent.KEY_PRESSED, event ->
-		{
-			if(event.getCode() == KeyCode.ENTER)
-			{
-				btnLogin.fire();
-				event.consume();
-			}
-		});
-		
-		btnChangePassword.addEventHandler(KeyEvent.KEY_PRESSED, event ->
-		{
-			if(event.getCode() == KeyCode.ENTER)
-			{
-				btnChangePassword.fire();
-				event.consume();
-			}
-		});
+		GuiUtils.makeButtonClickable(btnLogin);
+		GuiUtils.makeButtonClickable(btnChangePassword);
+		GuiUtils.makeComboBoxOpenableByPressingSpaceBarAndEnter(cboLanguage);
 		
 		// request focus once the scene is attached to txtUsername
 		txtUsername.sceneProperty().addListener((observable, oldValue, newValue) -> txtUsername.requestFocus());
+		
+		if(Context.getRuntimeEnvironment() == RuntimeEnvironment.DEV)
+		{
+			txtUsername.setText(Context.getConfigManager().getProperty("dev.login.username"));
+			txtPassword.setText(Context.getConfigManager().getProperty("dev.login.password"));
+		}
 	}
 	
 	@Override
@@ -137,16 +128,11 @@ public class LoginPaneFxController extends BodyFxControllerBase implements Langu
 	{
 		txtUsername.setDisable(bool);
 		txtPassword.setDisable(bool);
-		cbLanguage.setDisable(bool);
+		cboLanguage.setDisable(bool);
 		
-		piLogin.setVisible(bool);
-		piLogin.setManaged(bool);
-		
-		btnLogin.setManaged(!bool);
-		btnLogin.setVisible(!bool);
-		
-		btnChangePassword.setManaged(!bool);
-		btnChangePassword.setVisible(!bool);
+		GuiUtils.showNode(piLogin, bool);
+		GuiUtils.showNode(btnLogin, !bool);
+		GuiUtils.showNode(btnChangePassword, !bool);
 	}
 	
 	@FXML
@@ -173,6 +159,6 @@ public class LoginPaneFxController extends BodyFxControllerBase implements Langu
 		
 		txtUsername.setText(username);
 		txtPassword.setText(password);
-		cbLanguage.requestFocus();
+		cboLanguage.requestFocus();
 	}
 }

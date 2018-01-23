@@ -5,18 +5,19 @@ import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.NodeOrientation;
-import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import org.controlsfx.control.NotificationPane;
 import retrofit2.Call;
 import sa.gov.nic.bio.bw.client.core.beans.GuiState;
 import sa.gov.nic.bio.bw.client.core.beans.StateBundle;
+import sa.gov.nic.bio.bw.client.core.beans.UserSession;
 import sa.gov.nic.bio.bw.client.core.interfaces.*;
+import sa.gov.nic.bio.bw.client.core.wizard.WizardPane;
+import sa.gov.nic.bio.bw.client.core.wizard.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.client.core.utils.*;
 import sa.gov.nic.bio.bw.client.core.webservice.ApiResponse;
 import sa.gov.nic.bio.bw.client.core.webservice.RefreshTokenBean;
@@ -52,6 +53,7 @@ public class CoreFxController implements IdleMonitorRegisterer
 	@FXML private NotificationPane idleNotifier;
 	@FXML private NotificationPane notificationPane;
 	@FXML private BorderPane bodyPane;
+	@FXML private WizardPane wizardPane;
 	
 	private ResourceBundle labelsBundle;
 	private ResourceBundle errorsBundle;
@@ -101,7 +103,8 @@ public class CoreFxController implements IdleMonitorRegisterer
 		footerPaneController.attachCoreFxController(this);
 		menuPaneController.attachCoreFxController(this);
 		
-		headerPaneController.getRootPane().setMinHeight(headerPaneController.getRootPane().getHeight());
+		headerPaneController.getRootPane().setMinSize(headerPaneController.getRootPane().getWidth(), headerPaneController.getRootPane().getHeight());
+		menuPaneController.getRootPane().setMinSize(menuPaneController.getRootPane().getWidth(), menuPaneController.getRootPane().getHeight());
 		
 		if(guiState.getBodyController() == null) // if this is the first load
 		{
@@ -220,8 +223,11 @@ public class CoreFxController implements IdleMonitorRegisterer
                     if(response.isSuccess())
                     {
                         RefreshTokenBean refreshTokenBean = response.getResult();
-                        String newToken = refreshTokenBean.getUserToken();
-                        Context.getUserData().getLoginBean().setUserToken(newToken);
+	                    String newToken = refreshTokenBean.getUserToken();
+	
+	                    UserSession userSession = Context.getUserSession();
+	                    userSession.setAttribute("userToken", newToken);
+	                    
                         scheduleRefreshToken(newToken);
                     }
                     else
@@ -358,6 +364,38 @@ public class CoreFxController implements IdleMonitorRegisterer
 		controller.attachInputData(inputData);
 		
 		bodyPane.setCenter(loadedPane);
+		
+		if(controller instanceof WizardStepFxControllerBase)
+		{
+			if(wizardPane == null)
+			{
+				URL wizardFxmlLocation = ((WizardStepFxControllerBase) controller).getWizardFxmlLocation();
+				FXMLLoader wizardPaneLoader = new FXMLLoader(wizardFxmlLocation, labelsBundle);
+				
+				try
+				{
+					wizardPane = wizardPaneLoader.load();
+				}
+				catch(IOException e)
+				{
+					String errorCode = "C002-00019";
+					showErrorDialogAndWaitForCore(errorCode, e, bodyFxController.getClass().getName());
+					return null;
+				}
+				
+				wizardPane.goNext();
+			}
+			else
+			{
+				String direction = (String) inputData.get("direction");
+				if("backward".equals(direction)) wizardPane.goPrevious();
+				else if("forward".equals(direction)) wizardPane.goNext();
+				else if("startOver".equals(direction)) wizardPane.startOver();
+			}
+		}
+		else wizardPane = null;
+		
+		bodyPane.setTop(wizardPane);
 		controller.onControllerReady();
 		
 		return controller;
@@ -390,10 +428,10 @@ public class CoreFxController implements IdleMonitorRegisterer
 		});
 	}
 	
-	public void showErrorDialogAndWaitForCore(String errorCode, Exception exception, String... additionalErrorText)
+	private void showErrorDialogAndWaitForCore(String errorCode, Exception exception, String... additionalErrorText)
 	{
-		String logErrorText = String.format(errorCode + ": " + errorsBundle.getString(errorCode + ".internal"), (Object[]) additionalErrorText);
-		LOGGER.severe(logErrorText);
+		String logErrorText = String.format(errorsBundle.getString(errorCode + ".internal"), (Object[]) additionalErrorText);
+		LOGGER.log(Level.SEVERE, logErrorText, exception);
 		
 		String guiErrorText = String.format(errorsBundle.getString(errorCode), (Object[]) additionalErrorText);
 		showErrorDialogAndWait(guiErrorText, exception);
@@ -426,7 +464,7 @@ public class CoreFxController implements IdleMonitorRegisterer
 	/* used when switching the language only */
 	public void switchLanguage(GuiLanguage toLanguage, LanguageSwitchingController languageSwitchingController)
 	{
-		LOGGER.info("Switching the GUI language to " + toLanguage.getText());
+		LOGGER.info("Switching the GUI language to " + toLanguage.name());
 		
 		ResourceBundle labelsBundle;
 		try
@@ -471,7 +509,7 @@ public class CoreFxController implements IdleMonitorRegisterer
 		}
 		catch(MissingResourceException e)
 		{
-			String errorCode = "C002-00014";
+			String errorCode = "C002-00020";
 			showErrorDialogAndWaitForCore(errorCode, e);
 			return;
 		}
@@ -505,7 +543,6 @@ public class CoreFxController implements IdleMonitorRegisterer
 		}
 		
 		newStage.getScene().setNodeOrientation(toLanguage.getNodeOrientation());
-		newStage.setOnCloseRequest(event -> LOGGER.info("The main window is closed"));
 		
 		StateBundle oldState = new StateBundle();
 		languageSwitchingController.onSaveState(oldState);
@@ -517,6 +554,8 @@ public class CoreFxController implements IdleMonitorRegisterer
 		oldState.putData("stageMaximized", oldStage.isMaximized());
 		
 		CoreFxController newCoreFxController = newStageLoader.getController();
+		newStage.setOnCloseRequest(GuiUtils.createOnExitHandler(primaryStage, newCoreFxController));
+		
 		newCoreFxController.guiState = guiState;
 		newCoreFxController. passInitialResources(labelsBundle, errorsBundle, messagesBundle, topMenusBundle, appIcon, windowTitle, idleWarningBeforeSeconds, idleWarningAfterSeconds);
 		newCoreFxController.guiState.setLanguage(toLanguage);

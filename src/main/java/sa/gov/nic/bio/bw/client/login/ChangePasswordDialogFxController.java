@@ -8,14 +8,13 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.CoreFxController;
 import sa.gov.nic.bio.bw.client.core.interfaces.AttachableController;
+import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.login.tasks.ChangePasswordTask;
 
 import java.util.ResourceBundle;
@@ -60,22 +59,8 @@ public class ChangePasswordDialogFxController implements AttachableController
 			btnChange.setDefaultButton(true);
 			btnCancel.setCancelButton(true);
 			
-			btnChange.addEventHandler(KeyEvent.KEY_PRESSED, e ->
-			{
-				if(e.getCode() == KeyCode.ENTER)
-				{
-					btnChange.fire();
-					e.consume();
-				}
-			});
-			btnCancel.addEventHandler(KeyEvent.KEY_PRESSED, e ->
-			{
-				if(e.getCode() == KeyCode.ENTER)
-				{
-					btnCancel.fire();
-					e.consume();
-				}
-			});
+			GuiUtils.makeButtonClickable(btnChange);
+			GuiUtils.makeButtonClickable(btnCancel);
 			
 			BooleanBinding booleanBinding = txtUsername.textProperty().isEmpty()
 										.or(txtCurrentPassword.textProperty().isEmpty())
@@ -86,8 +71,7 @@ public class ChangePasswordDialogFxController implements AttachableController
 			btnChange.disableProperty().bind(booleanBinding);
 			btnChange.addEventFilter(ActionEvent.ACTION, event1 ->
 			{
-				resultPane.setVisible(true);
-				resultPane.setManaged(true);
+				GuiUtils.showNode(resultPane, true);
 				
 				// validate inputs
 				if(txtNewPassword.getText().equals(txtNewPasswordConfirm.getText()))
@@ -206,34 +190,28 @@ public class ChangePasswordDialogFxController implements AttachableController
 		btnCancel.setDisable(bool);
 		btnChangeDisabledProperty.set(bool);
 		
-		piChangePassword.setVisible(bool);
-		piChangePassword.setManaged(bool);
-		tfResultMessage.setVisible(!bool);
-		tfResultMessage.setManaged(!bool);
+		GuiUtils.showNode(piChangePassword, bool);
+		GuiUtils.showNode(tfResultMessage, !bool);
 		
 		dialog.getDialogPane().getScene().getWindow().sizeToScene();
 	}
 	
 	private void showErrorMessage(String message)
 	{
-		tfResultMessage.setVisible(true);
-		tfResultMessage.setManaged(true);
-		ivErrorIcon.setVisible(true);
-		ivErrorIcon.setManaged(true);
-		ivWarningIcon.setVisible(false);
-		ivWarningIcon.setManaged(false);
+		GuiUtils.showNode(tfResultMessage, true);
+		GuiUtils.showNode(ivErrorIcon, true);
+		GuiUtils.showNode(ivWarningIcon, false);
+		
 		txtResultMessage.setText(message);
 		dialog.getDialogPane().getScene().getWindow().sizeToScene();
 	}
 	
 	private void showWarningMessage(String message)
 	{
-		tfResultMessage.setVisible(true);
-		tfResultMessage.setManaged(true);
-		ivErrorIcon.setVisible(false);
-		ivErrorIcon.setManaged(false);
-		ivWarningIcon.setVisible(true);
-		ivWarningIcon.setManaged(true);
+		GuiUtils.showNode(tfResultMessage, true);
+		GuiUtils.showNode(ivErrorIcon, false);
+		GuiUtils.showNode(ivWarningIcon, true);
+		
 		txtResultMessage.setText(message);
 		dialog.getDialogPane().getScene().getWindow().sizeToScene();
 	}

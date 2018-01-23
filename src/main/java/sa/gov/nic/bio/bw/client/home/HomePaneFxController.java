@@ -1,5 +1,6 @@
 package sa.gov.nic.bio.bw.client.home;
 
+import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
@@ -7,12 +8,22 @@ import javafx.scene.image.Image;
 import sa.gov.nic.bio.bw.client.core.BodyFxControllerBase;
 import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.beans.MenuItem;
+import sa.gov.nic.bio.bw.client.core.beans.UserSession;
 import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
+import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
+import sa.gov.nic.bio.bw.client.core.utils.RuntimeEnvironment;
 import sa.gov.nic.bio.bw.client.core.utils.UTF8Control;
-import sa.gov.nic.bio.bw.client.login.webservice.LoginBean;
+import sa.gov.nic.bio.bw.client.login.webservice.UserInfo;
 
-import javax.naming.ConfigurationException;
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.text.Normalizer;
 import java.time.DateTimeException;
 import java.util.*;
 import java.util.logging.Level;
@@ -49,16 +60,15 @@ public class HomePaneFxController extends BodyFxControllerBase
 		coreFxController.getFooterPaneController().hideRootPane();
 		coreFxController.getMenuPaneController().showRootPane();
 		
-		LoginBean loginBean = (LoginBean) inputData.get("resultBean");
-		Context.getUserData().setLoginBean(loginBean);
-		LoginBean.UserInfo userInfo = loginBean.getUserInfo();
+		UserSession userSession = Context.getUserSession();
+		UserInfo userInfo = (UserInfo) userSession.getAttribute("userInfo");
+		String userToken = (String) userSession.getAttribute("userToken");
 		
-		String userToken = loginBean.getUserToken();
 		coreFxController.scheduleRefreshToken(userToken);
 		
 		String username = userInfo.getUserName();
-		String operatorName = userInfo.getOperatorName() + " (" + userInfo.getOperatorId() + ")";
-		String location = userInfo.getLocationName() + " (" + userInfo.getLocationId() + ")";
+		String operatorName = Normalizer.normalize(userInfo.getOperatorName(), Normalizer.Form.NFKC) + " (" + userInfo.getOperatorId() + ")"; // we normalize because the backend characters are not the standard ones
+		String location = Normalizer.normalize(userInfo.getLocationName(), Normalizer.Form.NFKC) + " (" + userInfo.getLocationId() + ")";
 		
 		String encodedFaceImage = userInfo.getFaceImage();
 		byte[] faceImageByteArray = null;
@@ -80,6 +90,13 @@ public class HomePaneFxController extends BodyFxControllerBase
 				try
 				{
 					image = new Image(new ByteArrayInputStream(faceImageByteArray));
+					BufferedImage bImage = SwingFXUtils.fromFXImage(image, null);
+					try {
+						ImageIO.write(bImage, "png", new File("C:/bio/test.png"));
+					} catch (IOException e) {
+						throw new RuntimeException(e);
+					}
+					
 				}
 				catch(Exception e)
 				{
@@ -119,15 +136,15 @@ public class HomePaneFxController extends BodyFxControllerBase
 		setLabelsText(lastPasswordChangeTime, true, lblLastPasswordChangeTimeText, lblLastPasswordChangeTime);
 		setLabelsText(passwordExpirationTime, true, lblPasswordExpirationTimeText, lblPasswordExpirationTime);
 		
-		List<String> userRoles = Arrays.asList(loginBean.getUserInfo().getOriginalStringRoles());
-		Context.getUserData().addRoles(userRoles);
+		List<String> userRoles = Arrays.asList(userInfo.getOriginalStringRoles());
+		userSession.setAttribute("userRoles", userRoles);
 		
 		List<MenuItem> allMenus = new ArrayList<>();
 		
 		List<String> menuFiles;
 		try
 		{
-			menuFiles = AppUtils.listResourceFiles(getClass().getProtectionDomain(), "^.*/menu.properties$");
+			menuFiles = AppUtils.listResourceFiles(getClass().getProtectionDomain(), "^.*/menu.properties$", Context.getRuntimeEnvironment());
 		}
 		catch(Exception e)
 		{
@@ -145,7 +162,31 @@ public class HomePaneFxController extends BodyFxControllerBase
 		{
 			LOGGER.fine("menuFile = " + menuFile);
 			
-			ResourceBundle rb = ResourceBundle.getBundle(menuFile.substring(0, menuFile.lastIndexOf('.')), Locale.getDefault(), utf8Control);
+			ResourceBundle rb;
+			
+			if(Context.getRuntimeEnvironment() == RuntimeEnvironment.DEV)
+			{
+				File file = new File(menuFile.substring(0, menuFile.lastIndexOf("/")));
+				URL[] urls = null;
+				try
+				{
+					urls = new URL[]{file.toURI().toURL()};
+				}
+				catch(MalformedURLException e)
+				{
+					e.printStackTrace();
+					return;
+				}
+				
+				ClassLoader loader = new URLClassLoader(urls);
+				rb = ResourceBundle.getBundle(menuFile.substring(menuFile.lastIndexOf("/") + 1, menuFile.lastIndexOf('.')), Locale.getDefault(), loader, utf8Control);
+			}
+			else
+			{
+				rb = ResourceBundle.getBundle(menuFile.substring(0, menuFile.lastIndexOf('.')), Locale.getDefault(), utf8Control);
+			}
+			
+			
 			MenuItem menuItem = new MenuItem();
 			allMenus.add(menuItem);
 			
@@ -194,9 +235,12 @@ public class HomePaneFxController extends BodyFxControllerBase
 		
 		List<MenuItem> menus = new ArrayList<>();
 		
+		@SuppressWarnings("unchecked")
+		Map<String, Set<String>> menusRoles = (Map<String, Set<String>>) userSession.getAttribute("menusRoles");
+		
 		for(MenuItem menuItem : allMenus)
 		{
-			Set<String> menuRoles = loginBean.getMenuRoles().get(menuItem.getMenuId());
+			Set<String> menuRoles = menusRoles.get(menuItem.getMenuId());
 			
 			if(menuRoles != null && !Collections.disjoint(userRoles, menuRoles))
 			{
@@ -236,11 +280,10 @@ public class HomePaneFxController extends BodyFxControllerBase
 		
 		if(hideIt)
 		{
-			textLabel.setVisible(false);
-			textLabel.setManaged(false);
+			
+			GuiUtils.showNode(textLabel, false);
 			textLabel.setPadding(new Insets(0));
-			valueLabel.setVisible(false);
-			valueLabel.setManaged(false);
+			GuiUtils.showNode(valueLabel, false);
 			valueLabel.setPadding(new Insets(0));
 		}
 	}

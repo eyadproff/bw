@@ -1,7 +1,6 @@
 package sa.gov.nic.bio.bw.client;
 
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
@@ -10,7 +9,7 @@ import retrofit2.Call;
 import sa.gov.nic.bio.bw.client.core.utils.ConfigManager;
 import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.CoreFxController;
-import sa.gov.nic.bio.bw.client.core.beans.UserData;
+import sa.gov.nic.bio.bw.client.core.beans.UserSession;
 import sa.gov.nic.bio.bw.client.core.utils.*;
 import sa.gov.nic.bio.bw.client.core.webservice.ApiResponse;
 import sa.gov.nic.bio.bw.client.core.webservice.LookupAPI;
@@ -18,6 +17,7 @@ import sa.gov.nic.bio.bw.client.core.webservice.NicHijriCalendarData;
 import sa.gov.nic.bio.bw.client.core.webservice.WebserviceManager;
 import sa.gov.nic.bio.bw.client.core.workflow.WorkflowManager;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -59,7 +59,7 @@ public class AppEntryPoint extends Application
 	private String windowTitle;
 	
 	private boolean successfulInit = false;
-	private GuiLanguage initialLanguage;// = GuiLanguage.ARABIC; // TODO: make it configurable from properties file
+	private GuiLanguage initialLanguage;
 	
 	// default values
 	private int idleWarningBeforeSeconds = 480; // 8 minutes
@@ -90,37 +90,13 @@ public class AppEntryPoint extends Application
 		    return;
 	    }
 	
-	    List<String> workflowFilePaths;
-	
-	    try
-	    {
-		    workflowFilePaths = AppUtils.listResourceFiles(getClass().getProtectionDomain(), ".*\\.bpmn20.xml$");
-	    }
-	    catch(Exception e)
-	    {
-		    String errorCode = "C001-00008";
-		    notifyPreloader(new ProgressMessage(e, errorCode));
-		    return;
-	    }
-	
-	    try
-	    {
-		    workflowManager.load(workflowFilePaths);
-	    }
-	    catch(ActivitiIllegalArgumentException e)
-	    {
-		    String errorCode = "C001-00009";
-		    notifyPreloader(new ProgressMessage(e, errorCode));
-		    return;
-	    }
-	    
 	    String webserviceBaseUrl = System.getProperty("bio.serverUrl");
 	    String sRuntimeEnvironment = System.getProperty("jnlp.bio.runtime.environment"); // PROD, INT, DEV
 	    
 	    if(webserviceBaseUrl == null) // usually local run
 	    {
 		    LOGGER.warning("webserviceBaseUrl is null! We will use the default one.");
-		    webserviceBaseUrl = configManager.getProperty("webservice.baseUrl");
+		    webserviceBaseUrl = configManager.getProperty("dev.webservice.baseUrl");
 		    sRuntimeEnvironment = "DEV";
 		
 		    // populate the JNLP properties to the system properties
@@ -155,6 +131,32 @@ public class AppEntryPoint extends Application
 	
 	    LOGGER.info("webserviceBaseUrl = " + webserviceBaseUrl);
 	    LOGGER.info("sRuntimeEnvironment = " + sRuntimeEnvironment);
+	
+	    RuntimeEnvironment runtimeEnvironment = RuntimeEnvironment.byName(sRuntimeEnvironment);
+	
+	    List<String> workflowFilePaths;
+	
+	    try
+	    {
+		    workflowFilePaths = AppUtils.listResourceFiles(getClass().getProtectionDomain(), ".*\\.bpmn20.xml$", runtimeEnvironment);
+	    }
+	    catch(Exception e)
+	    {
+		    String errorCode = "C001-00008";
+		    notifyPreloader(new ProgressMessage(e, errorCode));
+		    return;
+	    }
+	
+	    try
+	    {
+		    workflowManager.load(workflowFilePaths, runtimeEnvironment);
+	    }
+	    catch(ActivitiIllegalArgumentException | FileNotFoundException e)
+	    {
+		    String errorCode = "C001-00009";
+		    notifyPreloader(new ProgressMessage(e, errorCode));
+		    return;
+	    }
 	
 	    String sIdleWarningBeforeSeconds = System.getProperty("jnlp.bio.bw.idle.warning.before.seconds");
 	    String sIdleWarningAfterSeconds = System.getProperty("jnlp.bio.bw.idle.warning.after.seconds");
@@ -219,7 +221,7 @@ public class AppEntryPoint extends Application
 	
 	    webserviceManager.init(webserviceBaseUrl, readTimeoutSeconds, connectTimeoutSeconds);
 	    
-	    Context.init(RuntimeEnvironment.byName(sRuntimeEnvironment), configManager, workflowManager, webserviceManager, executorService, scheduledExecutorService, new UserData());
+	    Context.init(runtimeEnvironment, configManager, workflowManager, webserviceManager, executorService, scheduledExecutorService, new UserSession());
 	    
 	    LookupAPI lookupAPI = webserviceManager.getApi(LookupAPI.class);
 	    String url = System.getProperty("jnlp.bio.bw.service.lookupNicHijriCalendarData");
@@ -242,10 +244,19 @@ public class AppEntryPoint extends Application
 	    }
 	    else
 	    {
+		    String apiUrl = apiResponse.getApiUrl();
 	    	int httpCode = apiResponse.getHttpCode();
 		    String errorCode = apiResponse.getErrorCode();
-		    if(errorCode != null) notifyPreloader(new ProgressMessage(apiResponse.getException(), errorCode, String.valueOf(httpCode)));
-		    else notifyPreloader(new ProgressMessage(apiResponse.getException(), "C001-00012"));
+		    if(errorCode != null)
+		    {
+		    	if(httpCode > 0) notifyPreloader(new ProgressMessage(apiResponse.getException(), errorCode, apiUrl, String.valueOf(httpCode)));
+		    	else notifyPreloader(new ProgressMessage(apiResponse.getException(), errorCode, apiUrl));
+		    }
+		    else
+	        {
+	        	if(httpCode > 0) notifyPreloader(new ProgressMessage(apiResponse.getException(), "C001-00012", String.valueOf(httpCode)));
+	        	else notifyPreloader(new ProgressMessage(apiResponse.getException(), "C001-00012"));
+		    }
 		    return;
 	    }
 	    
@@ -373,16 +384,9 @@ public class AppEntryPoint extends Application
 	    
 	    primaryStage.getScene().setNodeOrientation(initialLanguage.getNodeOrientation());
 	    primaryStage.centerOnScreen();
-	    primaryStage.setOnCloseRequest(event -> LOGGER.info("The main window is closed"));
+	    primaryStage.setOnCloseRequest(GuiUtils.createOnExitHandler(primaryStage, coreFxController));
 	
 	    notifyPreloader(ProgressMessage.SUCCESSFULLY_DONE);
-	
-	    primaryStage.setOnCloseRequest(event ->
-        {
-        	Context.getExecutorService().shutdownNow();
-        	Context.getScheduledExecutorService().shutdownNow();
-        	Platform.exit();
-        });
 	    primaryStage.show();
 	    LOGGER.info("The main window is shown");
 	
@@ -393,7 +397,7 @@ public class AppEntryPoint extends Application
 	    LOGGER.exiting(AppEntryPoint.class.getName(), "start(Stage ignoredStage)");
     }
     
-    public static void main(String[] args) // not invoked in webstart!
+    public static void main(String[] args)
     {
 	    LOGGER.entering(AppEntryPoint.class.getName(), "main(String[] args)");
 	    launch(args);

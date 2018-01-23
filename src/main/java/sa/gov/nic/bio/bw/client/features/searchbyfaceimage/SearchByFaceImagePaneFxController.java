@@ -25,6 +25,7 @@ import sa.gov.nic.bio.bw.client.core.BodyFxControllerBase;
 import sa.gov.nic.bio.bw.client.core.utils.AppConstants;
 import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.client.core.utils.DialogUtils;
+import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.features.searchbyfaceimage.ui.ToggleTitledPane;
 import sa.gov.nic.bio.bw.client.features.searchbyfaceimage.webservice.Candidate;
 
@@ -71,32 +72,9 @@ public class SearchByFaceImagePaneFxController extends BodyFxControllerBase
 	@FXML
 	private void initialize()
 	{
-		btnSelectImage.addEventHandler(KeyEvent.KEY_PRESSED, event ->
-		{
-			if(event.getCode() == KeyCode.ENTER)
-			{
-				btnSelectImage.fire();
-				event.consume();
-			}
-		});
-		
-		btnSearchByImage.addEventHandler(KeyEvent.KEY_PRESSED, event ->
-		{
-			if(event.getCode() == KeyCode.ENTER)
-			{
-				btnSearchByImage.fire();
-				event.consume();
-			}
-		});
-		
-		btnCompareWithUploadedImage.addEventHandler(KeyEvent.KEY_PRESSED, event ->
-		{
-			if(event.getCode() == KeyCode.ENTER)
-			{
-				btnCompareWithUploadedImage.fire();
-				event.consume();
-			}
-		});
+		GuiUtils.makeButtonClickable(btnSelectImage);
+		GuiUtils.makeButtonClickable(btnSearchByImage);
+		GuiUtils.makeButtonClickable(btnCompareWithUploadedImage);
 	}
 	
 	@Override
@@ -133,14 +111,11 @@ public class SearchByFaceImagePaneFxController extends BodyFxControllerBase
 		coreFxController.getMenuPaneController().showOverlayPane(false);
 		
 		// hide the progress bar
-		piSearchByImage.setVisible(false);
-		piSearchByImage.setManaged(false);
+		GuiUtils.showNode(piSearchByImage, false);
 		
 		// show the the first two buttons
-		btnSelectImage.setManaged(true);
-		btnSelectImage.setVisible(true);
-		btnSearchByImage.setManaged(true);
-		btnSearchByImage.setVisible(true);
+		GuiUtils.showNode(btnSelectImage, true);
+		GuiUtils.showNode(btnSearchByImage, true);
 		
 		Boolean successResponse = (Boolean) inputData.get("successResponse");
 		if(successResponse != null && successResponse)
@@ -151,13 +126,11 @@ public class SearchByFaceImagePaneFxController extends BodyFxControllerBase
 			Collections.sort(candidates);
 			
 			spCandidates.maxHeightProperty().bind(new SimpleDoubleProperty(Double.MAX_VALUE));
-			spCandidates.setManaged(true);
-			spCandidates.setVisible(true);
-			btnCompareWithUploadedImage.setManaged(true);
-			btnCompareWithUploadedImage.setVisible(true);
 			btnCompareWithUploadedImage.setDisable(true);
-			detailsPane.setManaged(true);
-			detailsPane.setVisible(true);
+			
+			GuiUtils.showNode(spCandidates, true);
+			GuiUtils.showNode(btnCompareWithUploadedImage, true);
+			GuiUtils.showNode(detailsPane, true);
 			
 			// make the list scrollable horizontally
 			spCandidates.setOnScroll(event ->
@@ -267,12 +240,10 @@ public class SearchByFaceImagePaneFxController extends BodyFxControllerBase
 		else // on failure response
 		{
 			spCandidates.maxHeightProperty().bind(new SimpleDoubleProperty(0.0));
-			spCandidates.setManaged(false);
-			spCandidates.setVisible(false);
-			btnCompareWithUploadedImage.setManaged(false);
-			btnCompareWithUploadedImage.setVisible(false);
-			detailsPane.setManaged(false);
-			detailsPane.setVisible(false);
+			
+			GuiUtils.showNode(spCandidates, false);
+			GuiUtils.showNode(btnCompareWithUploadedImage, false);
+			GuiUtils.showNode(detailsPane, false);
 			
 			super.onReturnFromTask(); // let the parent class show the error message
 		}
@@ -353,15 +324,12 @@ public class SearchByFaceImagePaneFxController extends BodyFxControllerBase
 				btnSearchByImage.setDisable(false);
 				btnSelectImage.setText(labelsBundle.getString("button.selectNewImage"));
 				btnSearchByImage.setText(labelsBundle.getString("button.searchByImage"));
-				btnSearchByImage.setManaged(true);
-				btnSearchByImage.setVisible(true);
 				spCandidates.maxHeightProperty().bind(new SimpleDoubleProperty(0.0));
-				spCandidates.setManaged(false);
-				spCandidates.setVisible(false);
-				btnCompareWithUploadedImage.setManaged(false);
-				btnCompareWithUploadedImage.setVisible(false);
-				detailsPane.setManaged(false);
-				detailsPane.setVisible(false);
+				
+				GuiUtils.showNode(btnSearchByImage, true);
+				GuiUtils.showNode(spCandidates, false);
+				GuiUtils.showNode(btnCompareWithUploadedImage, false);
+				GuiUtils.showNode(detailsPane, false);
 			}
 			catch(IOException e)
 			{
@@ -391,8 +359,7 @@ public class SearchByFaceImagePaneFxController extends BodyFxControllerBase
 		if(!confirmed) return;
 		
 		spCandidates.maxHeightProperty().bind(new SimpleDoubleProperty(0.0));
-		spCandidates.setManaged(false);
-		spCandidates.setVisible(false);
+		GuiUtils.showNode(spCandidates, false);
 		
 		hideNotification();
 		
@@ -400,20 +367,15 @@ public class SearchByFaceImagePaneFxController extends BodyFxControllerBase
 		coreFxController.getMenuPaneController().showOverlayPane(true);
 		
 		// show the progress bar
-		piSearchByImage.setVisible(true);
-		piSearchByImage.setManaged(true);
+		GuiUtils.showNode(piSearchByImage, true);
 		
 		// hide the buttons
-		btnSelectImage.setManaged(false);
-		btnSelectImage.setVisible(false);
-		btnSearchByImage.setManaged(false);
-		btnSearchByImage.setVisible(false);
-		btnCompareWithUploadedImage.setManaged(false);
-		btnCompareWithUploadedImage.setVisible(false);
+		GuiUtils.showNode(btnSelectImage, false);
+		GuiUtils.showNode(btnSearchByImage, false);
+		GuiUtils.showNode(btnCompareWithUploadedImage, false);
 		
 		// hide the details pane
-		detailsPane.setManaged(false);
-		detailsPane.setVisible(false);
+		GuiUtils.showNode(detailsPane, false);
 		
 		Map<String, String> uiDataMap = new HashMap<>();
 		uiDataMap.put("uploadedImagePath", uploadedImagePath);
