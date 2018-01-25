@@ -97,14 +97,14 @@ public class WizardPane extends BorderPane
 			lblTitle.setPrefWidth(TITLE_PREF_WIDTH);
 			
 			indicator.getCircle().fillProperty().addListener((observable, oldValue, newValue) ->
-			                                                 {
-				                                                 if(indicator.isVisited()) lblTitle.setTextFill(indicator.getCircle().getFill());
-			                                                 });
+			{
+				if(indicator.isVisited()) lblTitle.setTextFill(indicator.getCircle().getFill());
+			});
 			
 			indicator.getNormalIcon().textFillProperty().addListener((observable, oldValue, newValue) ->
-			                                                         {
-				                                                         if(!indicator.isVisited()) lblTitle.setTextFill(indicator.getNormalIcon().getTextFill());
-			                                                         });
+			{
+				if(!indicator.isVisited()) lblTitle.setTextFill(indicator.getNormalIcon().getTextFill());
+			});
 			
 			ChangeListener<Boolean> tChangeListener = (observable, oldValue, newValue) ->
 			{

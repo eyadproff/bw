@@ -1,5 +1,9 @@
 # Release Notes:
 
+## v1.3.0
+
+- Add "MOFA Enrollment" feature.
+
 ## v1.2.1
 
 - Improve error messages and fix some.
