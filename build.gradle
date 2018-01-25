@@ -28,7 +28,7 @@ tasks.withType(JavaCompile) {
 }
 
 mainClassName = 'sa.gov.nic.bio.bw.client.AppEntryPoint'
-applicationDefaultJvmArgs = ['-Djava.ext.dirs=C:\\Program Files\\Java\\jdk1.8.0_152\\jre\\lib\\ext;extensions',
+applicationDefaultJvmArgs = ['-Djava.ext.dirs=C:\\Program Files\\Java\\jdk1.8.0_152\\jre\\lib\\ext;build\\extensions',
                              '-Djava.locale.providers=SPI,CLDR,JRE,HOST',
                              '-Djavafx.preloader=sa.gov.nic.bio.bw.client.preloader.AppPreloader']
 
@@ -161,7 +161,7 @@ task packageWebStart(group: 'web-start') {
 
         // copy the extensions folder
         copy {
-            from 'extensions'
+            from 'build/extensions'
             into "build/web-start/resources/extensions"
         }
     }
@@ -204,7 +204,7 @@ task deploy(group: 'web-start') {
 }
 
 task packageExtensions(type: Jar) {
-    delete fileTree('extensions').include('**/*')
+    delete fileTree('build/extensions').include('**/*')
     from("build/classes/java/main") {
         include '/sa/gov/nic/bio/bw/client/core/utils/ArabicCalendarDataProvider.class'
     }
@@ -214,7 +214,7 @@ task packageExtensions(type: Jar) {
     }
 
 
-    destinationDir file('extensions')
+    destinationDir file('build/extensions')
     baseName 'arabic-calendar-data-provider'
     version '1.0'
     extension 'jar'
