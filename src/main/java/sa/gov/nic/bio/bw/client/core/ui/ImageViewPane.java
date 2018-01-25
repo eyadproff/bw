@@ -15,10 +15,10 @@ public class ImageViewPane extends Region
 	public ImageViewPane(@NamedArg("imageView") ImageView imageView)
 	{
 		imageViewProperty.addListener((arg0, oldIV, newIV) ->
-		                              {
-			                              if(oldIV != null) getChildren().remove(oldIV);
-			                              if(newIV != null) getChildren().add(newIV);
-		                              });
+		{
+		    if(oldIV != null) getChildren().remove(oldIV);
+		    if(newIV != null) getChildren().add(newIV);
+		});
 		
 		this.imageViewProperty.set(imageView);
 	}
