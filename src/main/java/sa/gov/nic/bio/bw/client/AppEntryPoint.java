@@ -4,33 +4,58 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
-import org.activiti.engine.ActivitiIllegalArgumentException;
 import retrofit2.Call;
-import sa.gov.nic.bio.bw.client.core.utils.ConfigManager;
 import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.CoreFxController;
 import sa.gov.nic.bio.bw.client.core.beans.UserSession;
-import sa.gov.nic.bio.bw.client.core.utils.*;
+import sa.gov.nic.bio.bw.client.core.utils.AppConstants;
+import sa.gov.nic.bio.bw.client.core.utils.AppInstanceManager;
+import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
+import sa.gov.nic.bio.bw.client.core.utils.ConfigManager;
+import sa.gov.nic.bio.bw.client.core.utils.GuiLanguage;
+import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
+import sa.gov.nic.bio.bw.client.core.utils.ProgressMessage;
+import sa.gov.nic.bio.bw.client.core.utils.RuntimeEnvironment;
+import sa.gov.nic.bio.bw.client.core.utils.UTF8Control;
 import sa.gov.nic.bio.bw.client.core.webservice.ApiResponse;
 import sa.gov.nic.bio.bw.client.core.webservice.LookupAPI;
 import sa.gov.nic.bio.bw.client.core.webservice.NicHijriCalendarData;
 import sa.gov.nic.bio.bw.client.core.webservice.WebserviceManager;
-import sa.gov.nic.bio.bw.client.core.workflow.WorkflowManager;
+import sa.gov.nic.bio.bw.client.core.workflow.WorkflowManager2;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.Collections;
+import java.util.Locale;
+import java.util.MissingResourceException;
+import java.util.Properties;
+import java.util.ResourceBundle;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadFactory;
-import java.util.logging.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 
+/**
+ * The entry point of the application. Since Java 8, the main method is not required as long as the entry point
+ * class extends <code>javafx.application.Application</code>. We kept the main method for old IDEs that don't
+ * support this behavior.
+ *
+ * When the app preloader shows the splash screen, <code>AppEntryPoint.init()</code> starts. It is responsible for
+ * the real initialization of the application. Whenever an error occurs, it notifies the app preloader with the error
+ * details to show it on the dialog. When <code>init()</code> finishes, <code>AppEntryPoint.start()</code> starts on
+ * the UI thread. <code>start()</code> is responsible for creating the primary stage. Once the primary stage is
+ * ready, it notifies the app preloader with a success message in order to close the splash screen. After that,
+ * the primary stage is shown.
+ *
+ * @author Fouad Almalki
+ * @since 1.0.0
+ */
 public class AppEntryPoint extends Application
 {
 	private static final Logger LOGGER = Logger.getLogger(AppEntryPoint.class.getName());
@@ -44,10 +69,11 @@ public class AppEntryPoint extends Application
 	
 	// initial resources
 	private ConfigManager configManager = new ConfigManager();
-	private WorkflowManager workflowManager = new WorkflowManager();
+	private WorkflowManager2 workflowManager = new WorkflowManager2();
 	private WebserviceManager webserviceManager = new WebserviceManager();
 	private ExecutorService executorService = Executors.newWorkStealingPool();
-	private ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor(DAEMON_THREAD_FACTORY);
+	private ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor(
+																								DAEMON_THREAD_FACTORY);
 	
 	private ResourceBundle labelsBundle;
 	private ResourceBundle errorsBundle;
@@ -61,9 +87,6 @@ public class AppEntryPoint extends Application
 	private boolean successfulInit = false;
 	private GuiLanguage initialLanguage;
 	
-	// default values
-	private int idleWarningBeforeSeconds = 480; // 8 minutes
-	private int idleWarningAfterSeconds = 120; // 2 minutes
 	private int readTimeoutSeconds = 60; // 1 minute
 	private int connectTimeoutSeconds = 60; // 1 minute
     
@@ -100,7 +123,8 @@ public class AppEntryPoint extends Application
 		    sRuntimeEnvironment = "DEV";
 		
 		    // populate the JNLP properties to the system properties
-		    InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream("sa/gov/nic/bio/bw/client/core/config/jnlp.properties");
+		    InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream(
+		    		                                    "sa/gov/nic/bio/bw/client/core/config/jnlp.properties");
 		    InputStreamReader isr = new InputStreamReader(is, StandardCharsets.UTF_8);
 		    Properties properties = new Properties();
 		    try
@@ -134,62 +158,19 @@ public class AppEntryPoint extends Application
 	
 	    RuntimeEnvironment runtimeEnvironment = RuntimeEnvironment.byName(sRuntimeEnvironment);
 	
-	    List<String> workflowFilePaths;
-	
 	    try
 	    {
-		    workflowFilePaths = AppUtils.listResourceFiles(getClass().getProtectionDomain(), ".*\\.bpmn20.xml$", runtimeEnvironment);
+		    workflowManager.load();
 	    }
 	    catch(Exception e)
-	    {
-		    String errorCode = "C001-00008";
-		    notifyPreloader(new ProgressMessage(e, errorCode));
-		    return;
-	    }
-	
-	    try
-	    {
-		    workflowManager.load(workflowFilePaths, runtimeEnvironment);
-	    }
-	    catch(ActivitiIllegalArgumentException | FileNotFoundException e)
 	    {
 		    String errorCode = "C001-00009";
 		    notifyPreloader(new ProgressMessage(e, errorCode));
 		    return;
 	    }
 	
-	    String sIdleWarningBeforeSeconds = System.getProperty("jnlp.bio.bw.idle.warning.before.seconds");
-	    String sIdleWarningAfterSeconds = System.getProperty("jnlp.bio.bw.idle.warning.after.seconds");
 	    String sReadTimeoutSeconds = System.getProperty("jnlp.bio.bw.webservice.readTimeoutSeconds");
 	    String sConnectTimeoutSeconds = System.getProperty("jnlp.bio.bw.webservice.connectTimeoutSeconds");
-	
-	    if(sIdleWarningBeforeSeconds == null)
-	    {
-		    LOGGER.warning("idleWarningBeforeSeconds is null! Default value is " + idleWarningBeforeSeconds);
-	    }
-	    else try
-	    {
-		    idleWarningBeforeSeconds = Integer.parseInt(sIdleWarningBeforeSeconds);
-		    LOGGER.info("idleWarningBeforeSeconds = " + idleWarningBeforeSeconds);
-	    }
-	    catch(NumberFormatException e)
-	    {
-		    LOGGER.warning("Failed to parse sIdleWarningBeforeSeconds as int! sIdleWarningBeforeSeconds = " + sIdleWarningBeforeSeconds);
-	    }
-	
-	    if(sIdleWarningAfterSeconds == null)
-	    {
-		    LOGGER.warning("sIdleWarningAfterSeconds is null! Default value is " + idleWarningAfterSeconds);
-	    }
-	    else try
-	    {
-		    idleWarningAfterSeconds = Integer.parseInt(sIdleWarningAfterSeconds);
-		    LOGGER.info("idleWarningAfterSeconds = " + idleWarningAfterSeconds);
-	    }
-	    catch(NumberFormatException e)
-	    {
-		    LOGGER.warning("Failed to parse sIdleWarningAfterSeconds as int! sIdleWarningAfterSeconds = " + sIdleWarningAfterSeconds);
-	    }
 	
 	    if(sReadTimeoutSeconds == null)
 	    {
@@ -202,7 +183,8 @@ public class AppEntryPoint extends Application
 	    }
 	    catch(NumberFormatException e)
 	    {
-		    LOGGER.warning("Failed to parse sReadTimeoutSeconds as int! sReadTimeoutSeconds = " + sReadTimeoutSeconds);
+		    LOGGER.warning("Failed to parse sReadTimeoutSeconds as int! sReadTimeoutSeconds = " +
+				           sReadTimeoutSeconds);
 	    }
 	
 	    if(sConnectTimeoutSeconds == null)
@@ -216,12 +198,14 @@ public class AppEntryPoint extends Application
 	    }
 	    catch(NumberFormatException e)
 	    {
-		    LOGGER.warning("Failed to parse sConnectTimeoutSeconds as int! sConnectTimeoutSeconds = " + sConnectTimeoutSeconds);
+		    LOGGER.warning("Failed to parse sConnectTimeoutSeconds as int! sConnectTimeoutSeconds = " +
+				           sConnectTimeoutSeconds);
 	    }
 	
 	    webserviceManager.init(webserviceBaseUrl, readTimeoutSeconds, connectTimeoutSeconds);
 	    
-	    Context.init(runtimeEnvironment, configManager, workflowManager, webserviceManager, executorService, scheduledExecutorService, new UserSession());
+	    Context.init(runtimeEnvironment, configManager, workflowManager, webserviceManager, executorService,
+	                 scheduledExecutorService, new UserSession());
 	    
 	    LookupAPI lookupAPI = webserviceManager.getApi(LookupAPI.class);
 	    String url = System.getProperty("jnlp.bio.bw.service.lookupNicHijriCalendarData");
@@ -249,12 +233,14 @@ public class AppEntryPoint extends Application
 		    String errorCode = apiResponse.getErrorCode();
 		    if(errorCode != null)
 		    {
-		    	if(httpCode > 0) notifyPreloader(new ProgressMessage(apiResponse.getException(), errorCode, apiUrl, String.valueOf(httpCode)));
+		    	if(httpCode > 0) notifyPreloader(new ProgressMessage(apiResponse.getException(), errorCode, apiUrl,
+			                                                         String.valueOf(httpCode)));
 		    	else notifyPreloader(new ProgressMessage(apiResponse.getException(), errorCode, apiUrl));
 		    }
 		    else
 	        {
-	        	if(httpCode > 0) notifyPreloader(new ProgressMessage(apiResponse.getException(), "C001-00012", String.valueOf(httpCode)));
+	        	if(httpCode > 0) notifyPreloader(new ProgressMessage(apiResponse.getException(), "C001-00012",
+		                                                             String.valueOf(httpCode)));
 	        	else notifyPreloader(new ProgressMessage(apiResponse.getException(), "C001-00012"));
 		    }
 		    return;
@@ -263,7 +249,10 @@ public class AppEntryPoint extends Application
 	    // set the default language
 	    Preferences prefs = Preferences.userNodeForPackage(AppConstants.PREF_NODE_CLASS);
 	    String userLanguage = prefs.get(AppConstants.UI_LANGUAGE_PREF_NAME, null);
-	    if(userLanguage == null) userLanguage = System.getProperty("user.language", "en"); // Use the OS default language
+	    if(userLanguage == null)
+	    {
+	    	userLanguage = System.getProperty("user.language","en"); // Use the OS default language
+	    }
 	    
 	    if("ar".equalsIgnoreCase(userLanguage)) initialLanguage = GuiLanguage.ARABIC;
 	    else initialLanguage = GuiLanguage.ENGLISH;
@@ -271,7 +260,8 @@ public class AppEntryPoint extends Application
 	    
 	    try
 	    {
-		    labelsBundle = ResourceBundle.getBundle(CoreFxController.RB_LABELS_FILE, initialLanguage.getLocale(), new UTF8Control());
+		    labelsBundle = ResourceBundle.getBundle(CoreFxController.RB_LABELS_FILE, initialLanguage.getLocale(),
+		                                            new UTF8Control());
 	    }
 	    catch(MissingResourceException e)
 	    {
@@ -282,7 +272,8 @@ public class AppEntryPoint extends Application
 	
 	    try
 	    {
-		    errorsBundle = ResourceBundle.getBundle(CoreFxController.RB_ERRORS_FILE, initialLanguage.getLocale(), new UTF8Control());
+		    errorsBundle = ResourceBundle.getBundle(CoreFxController.RB_ERRORS_FILE, initialLanguage.getLocale(),
+		                                            new UTF8Control());
 	    }
 	    catch(MissingResourceException e)
 	    {
@@ -293,7 +284,8 @@ public class AppEntryPoint extends Application
 	
 	    try
 	    {
-		    messagesBundle = ResourceBundle.getBundle(CoreFxController.RB_MESSAGES_FILE, initialLanguage.getLocale(), new UTF8Control());
+		    messagesBundle = ResourceBundle.getBundle(CoreFxController.RB_MESSAGES_FILE, initialLanguage.getLocale(),
+		                                              new UTF8Control());
 	    }
 	    catch(MissingResourceException e)
 	    {
@@ -304,7 +296,8 @@ public class AppEntryPoint extends Application
 	
 	    try
 	    {
-		    topMenusBundle = ResourceBundle.getBundle(CoreFxController.RB_TOP_MENUS_FILE, initialLanguage.getLocale(), new UTF8Control());
+		    topMenusBundle = ResourceBundle.getBundle(CoreFxController.RB_TOP_MENUS_FILE, initialLanguage.getLocale(),
+		                                              new UTF8Control());
 	    }
 	    catch(MissingResourceException e)
 	    {
@@ -313,7 +306,8 @@ public class AppEntryPoint extends Application
 		    return;
 	    }
 	
-	    InputStream appIconStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(CoreFxController.APP_ICON_FILE);
+	    InputStream appIconStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(
+	    		                    CoreFxController.APP_ICON_FILE);
 	    if(appIconStream == null)
 	    {
 		    String errorCode = "C001-00016";
@@ -342,7 +336,9 @@ public class AppEntryPoint extends Application
 	    String title;
 	    try
 	    {
-		    title = labelsBundle.getString("window.title") + " " + version + " (" + labelsBundle.getString("label.environment." + Context.getRuntimeEnvironment().name().toLowerCase()) + ")";
+		    title = labelsBundle.getString("window.title") + " " + version + " (" +
+				    labelsBundle.getString("label.environment." +
+						                   Context.getRuntimeEnvironment().name().toLowerCase()) + ")";
 	    }
 	    catch(MissingResourceException e)
 	    {
@@ -379,8 +375,8 @@ public class AppEntryPoint extends Application
 	    }
 	    
 	    CoreFxController coreFxController = coreStageLoader.getController();
-	    coreFxController.passInitialResources(labelsBundle, errorsBundle, messagesBundle, topMenusBundle, appIcon, windowTitle, idleWarningBeforeSeconds, idleWarningAfterSeconds);
-	    coreFxController.getGuiState().setLanguage(initialLanguage);
+	    coreFxController.passInitialResources(labelsBundle, errorsBundle, messagesBundle, topMenusBundle, appIcon,
+	                                          windowTitle, initialLanguage);
 	    
 	    primaryStage.getScene().setNodeOrientation(initialLanguage.getNodeOrientation());
 	    primaryStage.centerOnScreen();
@@ -397,7 +393,7 @@ public class AppEntryPoint extends Application
 	    LOGGER.exiting(AppEntryPoint.class.getName(), "start(Stage ignoredStage)");
     }
     
-    public static void main(String[] args)
+    public static void main(String[] args) // optional
     {
 	    LOGGER.entering(AppEntryPoint.class.getName(), "main(String[] args)");
 	    launch(args);

@@ -4,7 +4,7 @@ import org.activiti.engine.*;
 import org.activiti.engine.repository.DeploymentBuilder;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
-import sa.gov.nic.bio.bw.client.core.interfaces.UiProxy;
+import sa.gov.nic.bio.bw.client.core.interfaces.FormRenderer;
 import sa.gov.nic.bio.bw.client.core.utils.RuntimeEnvironment;
 
 import java.io.FileInputStream;
@@ -57,27 +57,27 @@ public class WorkflowManager
 		LOGGER.info("Deployment is completed successfully");
 		
 		coreProcessInstance = runtimeService.startProcessInstanceByKey("coreProcess");
-		LOGGER.info("The workflow process \"" + coreProcessInstance.getProcessDefinitionName() + "\" is started");
+		LOGGER.info("The workflow onProcess \"" + coreProcessInstance.getProcessDefinitionName() + "\" is started");
 	}
 	
-	public void startProcess(UiProxy uiProxy)
+	public void startProcess(FormRenderer formRenderer)
 	{
-		showPendingUiTask(uiProxy);
+		showPendingUiTask(formRenderer);
 	}
 	
-	public void submitFormTask(Map<String, String> uiDataMap, UiProxy uiProxy)
+	public void submitFormTask(Map<String, String> uiDataMap, FormRenderer formRenderer)
 	{
 		formService.submitTaskFormData(currentTaskId, uiDataMap); // executes as taskService.complete(taskId)
-		showPendingUiTask(uiProxy);
+		showPendingUiTask(formRenderer);
 	}
 	
-	public void raiseSignalEvent(String signalName, Map<String, Object> variables, UiProxy uiProxy)
+	public void raiseSignalEvent(String signalName, Map<String, Object> variables, FormRenderer formRenderer)
 	{
 		runtimeService.signalEventReceived(signalName, variables);
-		showPendingUiTask(uiProxy);
+		showPendingUiTask(formRenderer);
 	}
 	
-	private void showPendingUiTask(UiProxy uiProxy)
+	private void showPendingUiTask(FormRenderer formRenderer)
 	{
 		Task task = taskService.createTaskQuery().includeProcessVariables().singleResult();
 		
@@ -86,7 +86,7 @@ public class WorkflowManager
 			currentTaskId = task.getId();
 			Map<String, Object> processVariables = task.getProcessVariables();
 			String formKey = formService.getTaskFormData(currentTaskId).getFormKey();
-			uiProxy.showForm(formKey, processVariables);
+			//formRenderer.renderForm(formKey, processVariables);
 		}
 		else // no task? that means the end of workflow? should never happen
 		{

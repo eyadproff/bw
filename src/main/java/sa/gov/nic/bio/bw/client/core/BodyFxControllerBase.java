@@ -5,6 +5,9 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import sa.gov.nic.bio.bw.client.core.interfaces.BodyFxController;
 import sa.gov.nic.bio.bw.client.core.interfaces.ResourceBundleCollection;
+import sa.gov.nic.bio.bw.client.core.workflow.Workflow;
+import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
+import sa.gov.nic.bio.bw.client.login.workflow.WebServiceResponse;
 
 import java.net.URL;
 import java.util.Map;
@@ -19,7 +22,6 @@ public abstract class BodyFxControllerBase implements BodyFxController
 	protected ResourceBundle errorsBundle;
 	protected ResourceBundle messagesBundle;
 	protected Image appIcon;
-	protected Map<String, Object> inputData;
 	
 	private Image successIcon = new Image(Thread.currentThread().getContextClassLoader().getResourceAsStream("sa/gov/nic/bio/bw/client/core/images/success.png"));
 	private Image warningIcon = new Image(Thread.currentThread().getContextClassLoader().getResourceAsStream("sa/gov/nic/bio/bw/client/core/images/warning.png"));
@@ -74,91 +76,84 @@ public abstract class BodyFxControllerBase implements BodyFxController
 	}
 	
 	@Override
-	public void attachInputData(Map<String, Object> inputData)
+	public void onReturnFromServiceTask(boolean firstVisit, Map<String, Object> dataMap)
 	{
-		this.inputData = inputData;
-	}
-	
-	@Override
-	public Map<String, Object> getInputData()
-	{
-		return inputData;
-	}
-	
-	@Override
-	public final void onReturnFromTask(Map<String, Object> inputData)
-	{
-		this.inputData = inputData;
-		Platform.runLater(this::onReturnFromTask);
-	}
-	
-	public void onReturnFromTask()
-	{
-		Boolean successResponse = (Boolean) inputData.get("successResponse");
-		
-		if(successResponse == null || !successResponse)
+		if(!firstVisit)
 		{
-			String errorCode = (String) inputData.get("errorCode");
-			Exception exception = (Exception) inputData.get("exception");
-			String apiUrl = (String) inputData.get("apiUrl");
-			Integer httpCode = (Integer) inputData.get("httpCode");
+			ServiceResponse<?> serviceResponse = (ServiceResponse<?>) dataMap.get(Workflow.KEY_WEBSERVICE_RESPONSE);
 			
-			if(errorCode != null)
+			if(!serviceResponse.isSuccess())
 			{
-				if(errorCode.startsWith("C"))
+				String errorCode = serviceResponse.getErrorCode();
+				Exception exception = serviceResponse.getException();
+				String apiUrl = null;
+				int httpCode = 0;
+				
+				if(serviceResponse instanceof WebServiceResponse)
 				{
-					String guiErrorMessage = coreFxController.getErrorsBundle().getString(errorCode);
-					String logErrorMessage = coreFxController.getErrorsBundle().getString(errorCode + ".internal");
+					WebServiceResponse webServiceResponse = (WebServiceResponse) serviceResponse;
 					
-					guiErrorMessage = httpCode != null && httpCode > 0 ? String.format(guiErrorMessage, apiUrl, httpCode) : String.format(guiErrorMessage, apiUrl);
-					logErrorMessage = httpCode != null && httpCode > 0 ? String.format(logErrorMessage, apiUrl, httpCode) : String.format(logErrorMessage, apiUrl);
-					
-					if(exception != null) coreFxController.showErrorDialogAndWait(guiErrorMessage, exception);
-					else showErrorNotification(guiErrorMessage);
-					LOGGER.severe(logErrorMessage);
+					apiUrl = webServiceResponse.getUrl();
+					httpCode = webServiceResponse.getHttpCode();
 				}
-				else if(errorCode.startsWith("B"))
+				
+				if(errorCode != null)
 				{
-					String guiErrorMessage;
-					String logErrorMessage;
-					
-					if(errorCode.startsWith("B010"))
+					if(errorCode.startsWith("C"))
 					{
-						guiErrorMessage = coreFxController.getErrorsBundle().getString(errorCode);
-						logErrorMessage = coreFxController.getErrorsBundle().getString(errorCode + ".internal");
+						String guiErrorMessage = coreFxController.getErrorsBundle().getString(errorCode);
+						String logErrorMessage = coreFxController.getErrorsBundle().getString(errorCode + ".internal");
+						
+						guiErrorMessage = httpCode > 0 ? String.format(guiErrorMessage, apiUrl, httpCode) : String.format(guiErrorMessage, apiUrl);
+						logErrorMessage = httpCode > 0 ? String.format(logErrorMessage, apiUrl, httpCode) : String.format(logErrorMessage, apiUrl);
+						
+						if(exception != null) coreFxController.showErrorDialogAndWait(guiErrorMessage, exception);
+						else showErrorNotification(guiErrorMessage);
+						LOGGER.severe(logErrorMessage);
 					}
-					else
+					else if(errorCode.startsWith("B"))
 					{
-						guiErrorMessage = errorsBundle.getString(errorCode);
-						logErrorMessage = errorsBundle.getString(errorCode + ".internal");
+						String guiErrorMessage;
+						String logErrorMessage;
+						
+						if(errorCode.startsWith("B010"))
+						{
+							guiErrorMessage = coreFxController.getErrorsBundle().getString(errorCode);
+							logErrorMessage = coreFxController.getErrorsBundle().getString(errorCode + ".internal");
+						}
+						else
+						{
+							guiErrorMessage = errorsBundle.getString(errorCode);
+							logErrorMessage = errorsBundle.getString(errorCode + ".internal");
+						}
+						
+						showWarningNotification(guiErrorMessage);
+						LOGGER.info(logErrorMessage);
 					}
-					
-					showWarningNotification(guiErrorMessage);
-					LOGGER.info(logErrorMessage);
+					else // server error
+					{
+						String code = "S000-00000";
+						String guiErrorMessage = coreFxController.getErrorsBundle().getString(code);
+						String logErrorMessage = coreFxController.getErrorsBundle().getString(code + ".internal");
+						
+						guiErrorMessage = String.format(guiErrorMessage, errorCode);
+						logErrorMessage = String.format(logErrorMessage, errorCode);
+						
+						showWarningNotification(guiErrorMessage);
+						LOGGER.severe(logErrorMessage);
+					}
 				}
-				else // server error
+				else // the server didn't send an error code inside [400,401,403,500] response
 				{
-					String code = "S000-00000";
+					String code = "C002-00018";
 					String guiErrorMessage = coreFxController.getErrorsBundle().getString(code);
 					String logErrorMessage = coreFxController.getErrorsBundle().getString(code + ".internal");
-					
-					guiErrorMessage = String.format(guiErrorMessage, errorCode);
-					logErrorMessage = String.format(logErrorMessage, errorCode);
+					guiErrorMessage = String.format(guiErrorMessage, apiUrl, String.valueOf(httpCode));
+					logErrorMessage = String.format(logErrorMessage, apiUrl, String.valueOf(httpCode));
 					
 					showWarningNotification(guiErrorMessage);
 					LOGGER.severe(logErrorMessage);
 				}
-			}
-			else // the server didn't send an error code inside [400,401,403,500] response
-			{
-				String code = "C002-00018";
-				String guiErrorMessage = coreFxController.getErrorsBundle().getString(code);
-				String logErrorMessage = coreFxController.getErrorsBundle().getString(code + ".internal");
-				guiErrorMessage = String.format(guiErrorMessage, apiUrl, String.valueOf(httpCode));
-				logErrorMessage = String.format(logErrorMessage, apiUrl, String.valueOf(httpCode));
-				
-				showWarningNotification(guiErrorMessage);
-				LOGGER.severe(logErrorMessage);
 			}
 		}
 	}

@@ -106,9 +106,10 @@ public class HeaderPaneFxController implements VisibilityControl, AttachableCont
 			}
 		}
 		
+		Context.getWebserviceManager().cancelRefreshTokenScheduler();
+		
 		coreFxController.getNotificationPane().hide();
-		coreFxController.cancelRefreshTokenScheduler();
 		coreFxController.stopIdleMonitor();
-		coreFxController.logout();
+		//coreFxController.logout();
 	}
 }

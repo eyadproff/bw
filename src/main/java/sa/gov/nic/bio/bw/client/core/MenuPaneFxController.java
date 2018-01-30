@@ -4,8 +4,14 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.Cursor;
-import javafx.scene.control.*;
-import javafx.scene.layout.*;
+import javafx.scene.control.Accordion;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
+import javafx.scene.control.SelectionMode;
+import javafx.scene.control.TitledPane;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
 import javafx.scene.text.Font;
@@ -15,29 +21,25 @@ import javafx.util.Pair;
 import org.controlsfx.glyphfont.FontAwesome;
 import org.controlsfx.glyphfont.Glyph;
 import sa.gov.nic.bio.bw.client.core.beans.MenuItem;
-import sa.gov.nic.bio.bw.client.core.interfaces.AttachableController;
 import sa.gov.nic.bio.bw.client.core.interfaces.VisibilityControl;
 import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.ResourceBundle;
 
 @SuppressWarnings("unused")
-public class MenuPaneFxController implements VisibilityControl, AttachableController
+public class MenuPaneFxController implements VisibilityControl
 {
 	@FXML private ResourceBundle resources;
 	@FXML private Pane rootPane;
 	@FXML private Accordion accordion;
 	@FXML private Pane overlayPane;
 	
-	private CoreFxController coreFxController;
 	private MenuItem selectedMenu;
 	private ListView<MenuItem> selectedListView;
-	
-	@Override
-	public void attachCoreFxController(CoreFxController coreFxController)
-	{
-		this.coreFxController = coreFxController;
-	}
 	
 	@FXML
 	private void initialize()
@@ -249,6 +251,6 @@ public class MenuPaneFxController implements VisibilityControl, AttachableContro
 	
 	private void onSelectMenu(MenuItem menuItem)
 	{
-		coreFxController.goToMenu(menuItem.getMenuId());
+		//coreFxController.goToMenu(menuItem.getMenuId());
 	}
 }

@@ -12,10 +12,15 @@ import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.beans.UserSession;
+import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
+import sa.gov.nic.bio.bw.client.login.webservice.IdentityAPI;
 
 import java.net.SocketTimeoutException;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -26,7 +31,8 @@ public class WebserviceManager
 	private static final String PROTOCOL = "http";
 	private String baseUrl;
 	private Retrofit retrofit;
-	private Map<Class<?>, Object> cache = new HashMap<>();
+	private ScheduledFuture<?> scheduledRefreshTokenFuture;
+	private Map<Class<?>, Object> apiCache = new HashMap<>();
 	
 	public void init(String baseUrl, int readTimeoutSeconds, int connectTimeoutSeconds)
 	{
@@ -70,11 +76,11 @@ public class WebserviceManager
 	@SuppressWarnings("unchecked")
 	public <T> T getApi(Class<T> apiClass)
 	{
-		T api = (T) cache.get(apiClass);
+		T api = (T) apiCache.get(apiClass);
 		if(api == null)
 		{
 			api = retrofit.create(apiClass);
-			cache.put(apiClass, api);
+			apiCache.put(apiClass, api);
 		}
 		
 		return api;
@@ -152,5 +158,47 @@ public class WebserviceManager
 			String errorCode = "C002-00017";
 			return new ApiResponse<>(apiUrl, errorCode, httpCode);
 		}
+	}
+	
+	public void scheduleRefreshToken(String userToken)
+	{
+		if(userToken == null) LOGGER.warning("userToken = null");
+		else
+		{
+			LocalDateTime expiration = AppUtils.extractExpirationTimeFromJWT(userToken);
+			if(expiration != null)
+			{
+				long seconds = Math.abs(expiration.until(LocalDateTime.now(), ChronoUnit.SECONDS));
+				long delay = seconds - seconds / 10L; // the last tenth of the token lifetime
+				
+				scheduledRefreshTokenFuture = Context.getScheduledExecutorService().schedule(() ->
+				{
+				    IdentityAPI identityAPI = Context.getWebserviceManager().getApi(IdentityAPI.class);
+				    String url = System.getProperty("jnlp.bio.bw.service.refreshToken");
+				    Call<RefreshTokenBean> apiCall = identityAPI.refreshToken(url, userToken);
+				    ApiResponse<RefreshTokenBean> response = Context.getWebserviceManager().executeApi(apiCall);
+				
+				    if(response.isSuccess())
+				    {
+				        RefreshTokenBean refreshTokenBean = response.getResult();
+				        String newToken = refreshTokenBean.getUserToken();
+				
+				        UserSession userSession = Context.getUserSession();
+				        userSession.setAttribute("userToken", newToken);
+				
+				        scheduleRefreshToken(newToken);
+				    }
+				    else
+				    {
+				        LOGGER.warning("Failed to refresh the token! httpCode = " + response.getHttpCode() + ", errorCode = " + response.getErrorCode());
+				    }
+				}, delay, TimeUnit.SECONDS);
+			}
+		}
+	}
+	
+	public void cancelRefreshTokenScheduler()
+	{
+		if(scheduledRefreshTokenFuture != null) scheduledRefreshTokenFuture.cancel(true);
 	}
 }

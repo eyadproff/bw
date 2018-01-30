@@ -4,11 +4,19 @@ import javafx.beans.binding.BooleanBinding;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.NodeOrientation;
-import javafx.scene.control.*;
-import sa.gov.nic.bio.bw.client.core.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.ProgressIndicator;
+import javafx.scene.control.TextField;
+import sa.gov.nic.bio.bw.client.core.BodyFxControllerBase;
+import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.beans.StateBundle;
-import sa.gov.nic.bio.bw.client.core.interfaces.*;
-import sa.gov.nic.bio.bw.client.core.utils.*;
+import sa.gov.nic.bio.bw.client.core.interfaces.PersistableEntity;
+import sa.gov.nic.bio.bw.client.core.utils.DialogUtils;
+import sa.gov.nic.bio.bw.client.core.utils.GuiLanguage;
+import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
+import sa.gov.nic.bio.bw.client.core.utils.RuntimeEnvironment;
 
 import java.util.HashMap;
 import java.util.Locale;
@@ -17,7 +25,7 @@ import java.util.Map;
 /**
  * Created by Fouad on 16-Jul-17.
  */
-public class LoginPaneFxController extends BodyFxControllerBase implements LanguageSwitchingController
+public class LoginPaneFxController extends BodyFxControllerBase implements PersistableEntity
 {
 	private static final String FXML_CHANGE_PASSWORD = "sa/gov/nic/bio/bw/client/login/fxml/change_password_dialog.fxml";
 	
@@ -44,7 +52,7 @@ public class LoginPaneFxController extends BodyFxControllerBase implements Langu
 	@Override
 	public void onControllerReady()
 	{
-		GuiLanguage currentLanguage = coreFxController.getGuiState().getLanguage();
+		GuiLanguage currentLanguage = coreFxController.getCurrentLanguage();
 		cboLanguage.getSelectionModel().select(currentLanguage);
 		cboLanguage.setOnAction(event ->
         {
@@ -72,12 +80,15 @@ public class LoginPaneFxController extends BodyFxControllerBase implements Langu
 	}
 	
 	@Override
-	public void onReturnFromTask()
+	public void onReturnFromServiceTask(boolean firstVisit, Map<String, Object> dataMap)
 	{
-		super.onReturnFromTask();
-		
-		txtPassword.clear();
-		disableUiControls(false);
+		if(!firstVisit)
+		{
+			super.onReturnFromServiceTask(firstVisit, dataMap);
+			
+			txtPassword.clear();
+			disableUiControls(false);
+		}
 	}
 	
 	@FXML
@@ -89,7 +100,7 @@ public class LoginPaneFxController extends BodyFxControllerBase implements Langu
 		String username = txtUsername.getText().trim();
 		String password = txtPassword.getText().trim();
 		
-		Map<String, String> uiDataMap = new HashMap<>();
+		Map<String, Object> uiDataMap = new HashMap<>();
 		uiDataMap.put("username", username);
 		uiDataMap.put("password", password);
 		
@@ -101,7 +112,7 @@ public class LoginPaneFxController extends BodyFxControllerBase implements Langu
 	{
 		hideNotification();
 		
-		boolean rtl = coreFxController.getGuiState().getLanguage().getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT;
+		boolean rtl = coreFxController.getCurrentLanguage().getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT;
 		ChangePasswordDialogFxController controller = DialogUtils.buildCustomDialog(coreFxController.getPrimaryStage(), appIcon, FXML_CHANGE_PASSWORD, labelsBundle, rtl);
 		
 		if(controller != null)

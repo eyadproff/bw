@@ -26,8 +26,10 @@ import sa.gov.nic.bio.bw.client.core.utils.AppConstants;
 import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.client.core.utils.DialogUtils;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
+import sa.gov.nic.bio.bw.client.core.workflow.Workflow;
 import sa.gov.nic.bio.bw.client.features.searchbyfaceimage.ui.ToggleTitledPane;
 import sa.gov.nic.bio.bw.client.features.searchbyfaceimage.webservice.Candidate;
+import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -105,8 +107,10 @@ public class SearchByFaceImagePaneFxController extends BodyFxControllerBase
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public void onReturnFromTask()
+	public void onReturnFromServiceTask(boolean firstVisit, Map<String, Object> dataMap)
 	{
+		ServiceResponse<?> serviceResponse = (ServiceResponse<?>) dataMap.get(Workflow.KEY_WEBSERVICE_RESPONSE);
+		
 		// hide the overlay on top of the side menus
 		coreFxController.getMenuPaneController().showOverlayPane(false);
 		
@@ -117,12 +121,11 @@ public class SearchByFaceImagePaneFxController extends BodyFxControllerBase
 		GuiUtils.showNode(btnSelectImage, true);
 		GuiUtils.showNode(btnSearchByImage, true);
 		
-		Boolean successResponse = (Boolean) inputData.get("successResponse");
-		if(successResponse != null && successResponse)
+		if(serviceResponse.isSuccess())
 		{
 			btnSearchByImage.setText(labelsBundle.getString("button.searchByImageAgain"));
 			
-			List<Candidate> candidates = (List<Candidate>) inputData.get("resultBean");
+			List<Candidate> candidates = (List<Candidate>) serviceResponse.getResult();
 			Collections.sort(candidates);
 			
 			spCandidates.maxHeightProperty().bind(new SimpleDoubleProperty(Double.MAX_VALUE));
@@ -245,7 +248,7 @@ public class SearchByFaceImagePaneFxController extends BodyFxControllerBase
 			GuiUtils.showNode(btnCompareWithUploadedImage, false);
 			GuiUtils.showNode(detailsPane, false);
 			
-			super.onReturnFromTask(); // let the parent class show the error message
+			super.onReturnFromServiceTask(firstVisit, dataMap); // let the parent class show the error message
 		}
 	}
 	
@@ -377,7 +380,7 @@ public class SearchByFaceImagePaneFxController extends BodyFxControllerBase
 		// hide the details pane
 		GuiUtils.showNode(detailsPane, false);
 		
-		Map<String, String> uiDataMap = new HashMap<>();
+		Map<String, Object> uiDataMap = new HashMap<>();
 		uiDataMap.put("uploadedImagePath", uploadedImagePath);
 		
 		coreFxController.submitFormTask(uiDataMap);
@@ -408,7 +411,7 @@ public class SearchByFaceImagePaneFxController extends BodyFxControllerBase
 		
 		String title = labelsBundle.getString("dialog.compare.title");
 		String buttonText = labelsBundle.getString("dialog.compare.buttons.close");
-		boolean rtl = coreFxController.getGuiState().getLanguage().getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT;
+		boolean rtl = coreFxController.getCurrentLanguage().getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT;
 		
 		Image mergedImage;
 		if(rtl) mergedImage = mergeImage(uploadedImage, selectedImage);

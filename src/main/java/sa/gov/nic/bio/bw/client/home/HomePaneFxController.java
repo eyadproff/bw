@@ -64,7 +64,7 @@ public class HomePaneFxController extends BodyFxControllerBase
 		UserInfo userInfo = (UserInfo) userSession.getAttribute("userInfo");
 		String userToken = (String) userSession.getAttribute("userToken");
 		
-		coreFxController.scheduleRefreshToken(userToken);
+		Context.getWebserviceManager().scheduleRefreshToken(userToken);
 		
 		String username = userInfo.getUserName();
 		String operatorName = Normalizer.normalize(userInfo.getOperatorName(), Normalizer.Form.NFKC) + " (" + userInfo.getOperatorId() + ")"; // we normalize because the backend characters are not the standard ones

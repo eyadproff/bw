@@ -5,27 +5,59 @@ import javafx.application.Preloader;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
+import sa.gov.nic.bio.bw.client.core.utils.AppConstants;
+import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
+import sa.gov.nic.bio.bw.client.core.utils.DialogUtils;
+import sa.gov.nic.bio.bw.client.core.utils.LogFormatter;
+import sa.gov.nic.bio.bw.client.core.utils.ProgressMessage;
+import sa.gov.nic.bio.bw.client.core.utils.UTF8Control;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.Arrays;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
 import java.util.concurrent.CountDownLatch;
-import java.util.logging.*;
 import java.util.logging.Formatter;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.LogManager;
+import java.util.logging.Logger;
 
-import javafx.stage.StageStyle;
-import sa.gov.nic.bio.bw.client.core.utils.*;
-
-
+/**
+ * The app preloader that runs at the startup of the application. Its sole purpose is to perform initialization of
+ * the application. A splash screen appears until the preloader finishes its job.
+ *
+ * @author Fouad Almalki
+ * @since 1.0.0
+ */
 public class AppPreloader extends Preloader
 {
 	static
 	{
-		String deploymentFilePath = System.getProperty("user.home") + "/AppData/LocalLow/Sun/Java/Deployment/deployment.properties"; // Windows 7 and newer
+		// Delete the deployment file that is created by launching javaws. This is a workaround for the buggy
+		// webstart system. The users' machines have JRE6 installed on them. Whenever we run JRE8's javaws on
+		// a machine that has JRE6, a new record of JRE8 is added to the deployment file. Now, if we try to
+		// run any JNLP with JRE6's javaws, it will not run! The workaround solution to this bug is to delete
+		// the deployment file after launching by JRE8's javaws. The next time JRE6's javaws runs, it will not
+		// find the deployment file, it will create it as on new machines and run successfully.
+		
+		// NOTE: we needed this workaround when we was launching BW via as a webstart via JRE8's javaws.
+		// However, it is no longer the case now. BW is currently launched by BCL which in turn is launched
+		// by JRE6's javaws. I chose to keep this workaround just in case someone by mistake invokes JRE8's
+		// javaws that is downloaded by the BCL on a separate folder (not installed).
+		
+		String deploymentFilePath = System.getProperty("user.home") +
+								"/AppData/LocalLow/Sun/Java/Deployment/deployment.properties"; // Windows 7 and newer
 		try
 		{
 			Files.deleteIfExists(Paths.get(deploymentFilePath));
@@ -37,9 +69,7 @@ public class AppPreloader extends Preloader
 			e.printStackTrace();
 		}
 		
-		Locale.setDefault(GuiLanguage.ARABIC.getLocale());
-		
-		// check if LOGS_FOLDER_PATH exists. If not, create it
+		// check if LOGS_FOLDER_PATH exists. If not, create it.
 		Path logFolderPath = Paths.get(AppConstants.LOGS_FOLDER_PATH);
 		if(!Files.exists(logFolderPath))
 		{
@@ -55,7 +85,7 @@ public class AppPreloader extends Preloader
 			}
 		}
 		
-		// check if TEMP_FOLDER_PATH exists. If not, create it
+		// check if TEMP_FOLDER_PATH exists. If not, create it.
 		Path tempFolderPath = Paths.get(AppConstants.TEMP_FOLDER_PATH);
 		if(!Files.exists(tempFolderPath))
 		{
@@ -71,7 +101,7 @@ public class AppPreloader extends Preloader
 			}
 		}
 		
-		// clean the temp folder
+		// clean the temp folder.
 		try
 		{
 			AppUtils.cleanDirectory(tempFolderPath);
@@ -82,10 +112,11 @@ public class AppPreloader extends Preloader
 			e.printStackTrace();
 		}
 		
-		InputStream inputStream = AppPreloader.class.getResourceAsStream("/sa/gov/nic/bio/bw/client/core/config/logging.properties");
-		
+		// initialize the logging.
 		try
 		{
+			InputStream inputStream = AppPreloader.class.getResourceAsStream(
+													"/sa/gov/nic/bio/bw/client/core/config/logging.properties");
 			BufferedReader br = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
 			StringBuilder sb = new StringBuilder();
 			
@@ -98,7 +129,6 @@ public class AppPreloader extends Preloader
 			br.close();
 			
 			String content = sb.toString();
-			
 			content = content.replace("${user.name}", System.getProperty("user.name"));
 			
 			InputStream is = new ByteArrayInputStream(content.getBytes(StandardCharsets.UTF_8));
@@ -128,7 +158,8 @@ public class AppPreloader extends Preloader
 	@Override
 	public void init() throws Exception
 	{
-		CountDownLatch latch = new CountDownLatch(1); // used to wait for the dialog exit before leaving init() method
+		LOGGER.entering(AppPreloader.class.getName(), "init()");
+		CountDownLatch latch = new CountDownLatch(1); // used to wait for the dialog exit before leaving init() method.
 		
 		try
 		{
@@ -195,12 +226,18 @@ public class AppPreloader extends Preloader
 			
 			latch.await();
 		}
+		
+		LOGGER.exiting(AppPreloader.class.getName(), "init()");
 	}
 	
 	@Override
 	public void start(Stage ignoredStage)
 	{
 		LOGGER.entering(AppPreloader.class.getName(), "start(Stage ignoredStage)");
+		
+		// start() is called from the JavaFX UI thread. Creation of JavaFX Scene and Stage objects as well as
+		// modification of scene graph operations to live objects (those objects already attached to a scene)
+		// must be done on the JavaFX UI thread.
 		
 		FXMLLoader fxmlLoader = new FXMLLoader(fxmlUrl, labelsBundle);
 		
@@ -215,7 +252,7 @@ public class AppPreloader extends Preloader
 			return;
 		}
 		
-		splashScreenStage.initStyle(StageStyle.UNDECORATED);
+		splashScreenStage.initStyle(StageStyle.UNDECORATED); // remove the default system window's borders.
 		splashScreenStage.show();
 		
 		LOGGER.info("The splash screen is shown");
@@ -256,7 +293,16 @@ public class AppPreloader extends Preloader
 		}
 	}
 	
-	private void showErrorDialogAndWait(Image appIcon, String errorCode, Exception exception, String... additionalErrorText)
+	/**
+	 * Show details about the error that occurs during the startup in a dialog.
+	 *
+	 * @param appIcon icon that is used in the dialog
+	 * @param errorCode the error code
+	 * @param exception the exception, if any
+	 * @param additionalErrorText any extra parameters to the error message that is loaded by <code>errorCode</code>
+	 */
+	private void showErrorDialogAndWait(Image appIcon, String errorCode, Exception exception,
+	                                    String... additionalErrorText)
 	{
 		String contentText;
 		String title;
@@ -265,11 +311,17 @@ public class AppPreloader extends Preloader
 		String moreDetailsText;
 		String lessDetailsText;
 		
-		if(errorCode != null && errorCode.startsWith("C002")) // most likely C002 error during calling webservices API during startup.
+		if(errorCode != null && errorCode.startsWith("C002")) // most likely C002 error during calling
+															  // webservices API during startup.
 		{
-			String message = String.format(errorsBundle.getString("C000-00000.internal"), errorCode) + " - " + Arrays.toString(additionalErrorText);
+			String message = String.format(errorsBundle.getString("C000-00000.internal"), errorCode) + " - " +
+							 Arrays.toString(additionalErrorText);
+			
 			LOGGER.log(Level.SEVERE, message, exception);
-			contentText = String.format(errorsBundle.getString("C000-00000.ar"), errorCode) + " \n\n" + String.format(errorsBundle.getString("C000-00000.en"), errorCode) + "\n\n" + Arrays.toString(additionalErrorText);
+			
+			contentText = String.format(errorsBundle.getString("C000-00000.ar"), errorCode) + " \n\n" +
+						  String.format(errorsBundle.getString("C000-00000.en"), errorCode) + "\n\n" +
+						  Arrays.toString(additionalErrorText);
 		}
 		else if(errorsBundle != null)
 		{
@@ -291,11 +343,20 @@ public class AppPreloader extends Preloader
 		
 		if(labelsBundle != null)
 		{
-			title = labelsBundle.getString("dialog.error.title.ar") + " - " + labelsBundle.getString("dialog.error.title.en");
-			headerText = labelsBundle.getString("dialog.error.header.ar") + " \n\n " + labelsBundle.getString("dialog.error.header.en");
-			buttonOkText = labelsBundle.getString("dialog.error.buttons.ok.ar") + " - " + labelsBundle.getString("dialog.error.buttons.ok.en");
-			moreDetailsText = labelsBundle.getString("dialog.error.buttons.showErrorDetails.ar") + " - " + labelsBundle.getString("dialog.error.buttons.showErrorDetails.en");
-			lessDetailsText = labelsBundle.getString("dialog.error.buttons.hideErrorDetails.ar") + " - " + labelsBundle.getString("dialog.error.buttons.hideErrorDetails.en");
+			title = labelsBundle.getString("dialog.error.title.ar") + " - " +
+					labelsBundle.getString("dialog.error.title.en");
+			
+			headerText = labelsBundle.getString("dialog.error.header.ar") + " \n\n " +
+						 labelsBundle.getString("dialog.error.header.en");
+			
+			buttonOkText = labelsBundle.getString("dialog.error.buttons.ok.ar") + " - " +
+						   labelsBundle.getString("dialog.error.buttons.ok.en");
+			
+			moreDetailsText = labelsBundle.getString("dialog.error.buttons.showErrorDetails.ar") + " - " +
+							  labelsBundle.getString("dialog.error.buttons.showErrorDetails.en");
+			
+			lessDetailsText = labelsBundle.getString("dialog.error.buttons.hideErrorDetails.ar") + " - " +
+							  labelsBundle.getString("dialog.error.buttons.hideErrorDetails.en");
 		}
 		else // default text
 		{
@@ -306,7 +367,8 @@ public class AppPreloader extends Preloader
 			lessDetailsText = "إخفاء تفاصيل الخطأ" + " - " + "Hide error details";
 		}
 		
-		DialogUtils.showErrorDialog(null, null, appIcon, title, headerText, contentText, buttonOkText, moreDetailsText, lessDetailsText, exception, true);
+		DialogUtils.showErrorDialog(null, null, appIcon, title, headerText,
+		                            contentText, buttonOkText, moreDetailsText, lessDetailsText, exception, true);
 		
 		Platform.exit();
 		LOGGER.severe("Exiting the application due to an error during the startup!");

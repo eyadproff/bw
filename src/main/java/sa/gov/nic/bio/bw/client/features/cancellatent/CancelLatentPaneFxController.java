@@ -9,6 +9,8 @@ import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TextField;
 import sa.gov.nic.bio.bw.client.core.BodyFxControllerBase;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
+import sa.gov.nic.bio.bw.client.core.workflow.Workflow;
+import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -41,17 +43,18 @@ public class CancelLatentPaneFxController extends BodyFxControllerBase
 	}
 	
 	@Override
-	public void onReturnFromTask()
+	public void onReturnFromServiceTask(boolean firstVisit, Map<String, Object> dataMap)
 	{
+		ServiceResponse<?> serviceResponse = (ServiceResponse<?>) dataMap.get(Workflow.KEY_WEBSERVICE_RESPONSE);
+		
 		disableUiControls(false);
 		
-		Boolean successResponse = (Boolean) inputData.get("successResponse");
-		if(successResponse != null && successResponse)
+		if(serviceResponse.isSuccess())
 		{
 			String personId = txtPersonId.getText();
 			String latentId = txtLatentId.getText();
 			
-			Boolean resultBean = (Boolean) inputData.get("resultBean");
+			Boolean resultBean = (Boolean) serviceResponse.getResult();
 			if(resultBean != null && resultBean)
 			{
 				String message = String.format(messagesBundle.getString("cancelLatent.success"), latentId, personId);
@@ -63,7 +66,7 @@ public class CancelLatentPaneFxController extends BodyFxControllerBase
 				showWarningNotification(message);
 			}
 		}
-		else super.onReturnFromTask();
+		else super.onReturnFromServiceTask(firstVisit, dataMap);
 		
 		txtPersonId.requestFocus();
 	}
@@ -89,7 +92,7 @@ public class CancelLatentPaneFxController extends BodyFxControllerBase
 		hideNotification();
 		disableUiControls(true);
 		
-		Map<String, String> uiDataMap = new HashMap<>();
+		Map<String, Object> uiDataMap = new HashMap<>();
 		uiDataMap.put("personId", personId);
 		uiDataMap.put("latentId", latentId);
 		
