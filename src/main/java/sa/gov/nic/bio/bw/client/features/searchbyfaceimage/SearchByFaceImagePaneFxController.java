@@ -5,20 +5,30 @@ import javafx.beans.property.SimpleDoubleProperty;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.geometry.*;
 import javafx.geometry.Insets;
+import javafx.geometry.NodeOrientation;
+import javafx.geometry.Orientation;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.control.*;
 import javafx.scene.control.Button;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.ProgressIndicator;
+import javafx.scene.control.ScrollBar;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.SplitPane;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.*;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import sa.gov.nic.bio.bw.client.core.BodyFxControllerBase;
@@ -39,8 +49,12 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.DecimalFormat;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -107,148 +121,151 @@ public class SearchByFaceImagePaneFxController extends BodyFxControllerBase
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public void onReturnFromServiceTask(boolean firstVisit, Map<String, Object> dataMap)
+	public void onWorkflowUserTaskLoad(boolean newForm, Map<String, Object> dataMap)
 	{
-		ServiceResponse<?> serviceResponse = (ServiceResponse<?>) dataMap.get(Workflow.KEY_WEBSERVICE_RESPONSE);
-		
-		// hide the overlay on top of the side menus
-		coreFxController.getMenuPaneController().showOverlayPane(false);
-		
-		// hide the progress bar
-		GuiUtils.showNode(piSearchByImage, false);
-		
-		// show the the first two buttons
-		GuiUtils.showNode(btnSelectImage, true);
-		GuiUtils.showNode(btnSearchByImage, true);
-		
-		if(serviceResponse.isSuccess())
+		if(!newForm)
 		{
-			btnSearchByImage.setText(labelsBundle.getString("button.searchByImageAgain"));
+			ServiceResponse<?> serviceResponse = (ServiceResponse<?>) dataMap.get(Workflow.KEY_WEBSERVICE_RESPONSE);
 			
-			List<Candidate> candidates = (List<Candidate>) serviceResponse.getResult();
-			Collections.sort(candidates);
+			// hide the overlay on top of the side menus
+			coreFxController.getMenuPaneController().showOverlayPane(false);
 			
-			spCandidates.maxHeightProperty().bind(new SimpleDoubleProperty(Double.MAX_VALUE));
-			btnCompareWithUploadedImage.setDisable(true);
+			// hide the progress bar
+			GuiUtils.showNode(piSearchByImage, false);
 			
-			GuiUtils.showNode(spCandidates, true);
-			GuiUtils.showNode(btnCompareWithUploadedImage, true);
-			GuiUtils.showNode(detailsPane, true);
+			// show the the first two buttons
+			GuiUtils.showNode(btnSelectImage, true);
+			GuiUtils.showNode(btnSearchByImage, true);
 			
-			// make the list scrollable horizontally
-			spCandidates.setOnScroll(event ->
+			if(serviceResponse.isSuccess())
 			{
-				if(event.getDeltaX() == 0 && event.getDeltaY() != 0)
+				btnSearchByImage.setText(labelsBundle.getString("button.searchByImageAgain"));
+				
+				java.util.List<Candidate> candidates = (List<Candidate>) serviceResponse.getResult();
+				Collections.sort(candidates);
+				
+				spCandidates.maxHeightProperty().bind(new SimpleDoubleProperty(Double.MAX_VALUE));
+				btnCompareWithUploadedImage.setDisable(true);
+				
+				GuiUtils.showNode(spCandidates, true);
+				GuiUtils.showNode(btnCompareWithUploadedImage, true);
+				GuiUtils.showNode(detailsPane, true);
+				
+				// make the list scrollable horizontally
+				spCandidates.setOnScroll(event ->
 				{
-					spCandidates.setHvalue(spCandidates.getHvalue() - event.getDeltaY() * 3 / ((Pane) this.spCandidates.getContent()).getWidth());
+				    if(event.getDeltaX() == 0 && event.getDeltaY() != 0)
+				    {
+				        spCandidates.setHvalue(spCandidates.getHvalue() - event.getDeltaY() * 3 / ((Pane) this.spCandidates.getContent()).getWidth());
+				    }
+				});
+				
+				spCandidates.prefHeightProperty().bind(imagePane.heightProperty().divide(5));
+				splitPane.getStyleClass().remove("hidden-divider"); // show the divider
+				
+				ImageView imageView = new ImageView();
+				File imageFile = new File(uploadedImagePath);
+				uploadedImage = new Image(imageFile.toURI().toString());
+				imageView.setImage(uploadedImage);
+				imageView.setPreserveRatio(true);
+				final double[] hScrollbarHeight = {0.0};
+				Optional<Node> optional = spCandidates.lookupAll(".scroll-bar").stream().filter(node -> ((ScrollBar) node).getOrientation() == Orientation.HORIZONTAL).findFirst();
+				
+				if(optional.isPresent())
+				{
+					ScrollBar scrollBar = ((ScrollBar) optional.get());
+					hScrollbarHeight[0] = scrollBar.getHeight();
+					imageView.fitHeightProperty().bind(spCandidates.heightProperty().subtract(hScrollbarHeight[0] * 3 + 2)); // 2 = top border + bottom border
 				}
-			});
-			
-			spCandidates.prefHeightProperty().bind(imagePane.heightProperty().divide(5));
-			splitPane.getStyleClass().remove("hidden-divider"); // show the divider
-			
-			ImageView imageView = new ImageView();
-			File imageFile = new File(uploadedImagePath);
-			uploadedImage = new Image(imageFile.toURI().toString());
-			imageView.setImage(uploadedImage);
-			imageView.setPreserveRatio(true);
-			final double[] hScrollbarHeight = {0.0};
-			Optional<Node> optional = spCandidates.lookupAll(".scroll-bar").stream().filter(node -> ((ScrollBar) node).getOrientation() == Orientation.HORIZONTAL).findFirst();
-			
-			if(optional.isPresent())
-			{
-				ScrollBar scrollBar = ((ScrollBar) optional.get());
-				hScrollbarHeight[0] = scrollBar.getHeight();
-				imageView.fitHeightProperty().bind(spCandidates.heightProperty().subtract(hScrollbarHeight[0] * 3 + 2)); // 2 = top border + bottom border
+				
+				tpUploadedImage.setContent(imageView);
+				ToggleGroup toggleGroup = new ToggleGroup();
+				tpUploadedImage.setToggleGroup(toggleGroup);
+				toggleGroup.selectToggle(tpUploadedImage);
+				tpUploadedImage.setOnMouseClicked(event ->
+				{
+				    toggleGroup.selectToggle(tpUploadedImage);
+				    ivCenterImage.setImage(uploadedImage);
+				    btnCompareWithUploadedImage.setDisable(true);
+				
+				    lblBioId.setText(labelsBundle.getString("label.notAvailable"));
+				    lblScore.setText(labelsBundle.getString("label.notAvailable"));
+				    lblSamisId.setText(labelsBundle.getString("label.notAvailable"));
+				    lblFirstName.setText(labelsBundle.getString("label.notAvailable"));
+				    lblFatherName.setText(labelsBundle.getString("label.notAvailable"));
+				    lblFamilyName.setText(labelsBundle.getString("label.notAvailable"));
+				});
+				
+				hbCandidatesImages.getChildren().clear();
+				
+				for(Candidate candidate : candidates)
+				{
+					ImageView candidateImageView = new ImageView();
+					imageFile = new File(candidate.getPhotoPath());
+					Image candidateImage = new Image(imageFile.toURI().toString());
+					candidateImageView.setImage(candidateImage);
+					candidateImageView.setPreserveRatio(true);
+					candidateImageView.fitHeightProperty().bind(spCandidates.heightProperty().subtract(hScrollbarHeight[0] * 3 + 2)); // 2 = top border + bottom border
+					String scoreTitle = AppUtils.replaceNumbersOnly(String.valueOf(candidate.getScore()), Locale.getDefault());
+					ToggleTitledPane toggleTitledPane = new ToggleTitledPane(scoreTitle, candidateImageView);
+					toggleTitledPane.setToggleGroup(toggleGroup);
+					toggleTitledPane.setCollapsible(false);
+					toggleTitledPane.setOnMouseClicked(event ->
+					{
+					    toggleGroup.selectToggle(toggleTitledPane);
+					    ivCenterImage.setImage(candidateImage);
+					    btnCompareWithUploadedImage.setDisable(false);
+					
+					    // default values
+					    lblBioId.setText(labelsBundle.getString("label.notAvailable"));
+					    lblScore.setText(labelsBundle.getString("label.notAvailable"));
+					    lblSamisId.setText(labelsBundle.getString("label.notAvailable"));
+					    lblFirstName.setText(labelsBundle.getString("label.notAvailable"));
+					    lblFatherName.setText(labelsBundle.getString("label.notAvailable"));
+					    lblFamilyName.setText(labelsBundle.getString("label.notAvailable"));
+					
+					    long bioId = candidate.getBioId();
+					    int score = candidate.getScore();
+					    long samisId = candidate.getSamisId();
+					    String firstName = candidate.getFirstName();
+					    String fatherName = candidate.getFatherName();
+					    String familyName = candidate.getFamilyName();
+					
+					    if(firstName != null && firstName.trim().isEmpty()) firstName = null;
+					    if(fatherName != null && fatherName.trim().isEmpty()) fatherName = null;
+					    if(familyName != null && familyName.trim().isEmpty()) familyName = null;
+					
+					    String sBioId = AppUtils.replaceNumbersOnly(String.valueOf(bioId), Locale.getDefault());
+					    String sScore = AppUtils.replaceNumbersOnly(String.valueOf(score), Locale.getDefault());
+					
+					    lblBioId.setText(sBioId);
+					    lblScore.setText(sScore);
+					
+					    if(samisId > 0)
+					    {
+					        String sSamisId = AppUtils.replaceNumbersOnly(String.valueOf(samisId), Locale.getDefault());
+					        lblSamisId.setText(sSamisId);
+					    }
+					
+					    if(firstName != null) lblFirstName.setText(firstName);
+					    if(fatherName != null) lblFatherName.setText(fatherName);
+					    if(familyName != null) lblFamilyName.setText(familyName);
+					});
+					hbCandidatesImages.getChildren().add(toggleTitledPane);
+				}
+				
+				spCandidates.setHvalue(0.0); // scroll to the beginning
 			}
-			
-			tpUploadedImage.setContent(imageView);
-			ToggleGroup toggleGroup = new ToggleGroup();
-			tpUploadedImage.setToggleGroup(toggleGroup);
-			toggleGroup.selectToggle(tpUploadedImage);
-			tpUploadedImage.setOnMouseClicked(event ->
-            {
-                toggleGroup.selectToggle(tpUploadedImage);
-                ivCenterImage.setImage(uploadedImage);
-	            btnCompareWithUploadedImage.setDisable(true);
-	            
-	            lblBioId.setText(labelsBundle.getString("label.notAvailable"));
-	            lblScore.setText(labelsBundle.getString("label.notAvailable"));
-	            lblSamisId.setText(labelsBundle.getString("label.notAvailable"));
-	            lblFirstName.setText(labelsBundle.getString("label.notAvailable"));
-	            lblFatherName.setText(labelsBundle.getString("label.notAvailable"));
-	            lblFamilyName.setText(labelsBundle.getString("label.notAvailable"));
-            });
-			
-			hbCandidatesImages.getChildren().clear();
-			
-			for(Candidate candidate : candidates)
+			else // on failure response
 			{
-				ImageView candidateImageView = new ImageView();
-				imageFile = new File(candidate.getPhotoPath());
-				Image candidateImage = new Image(imageFile.toURI().toString());
-				candidateImageView.setImage(candidateImage);
-				candidateImageView.setPreserveRatio(true);
-				candidateImageView.fitHeightProperty().bind(spCandidates.heightProperty().subtract(hScrollbarHeight[0] * 3 + 2)); // 2 = top border + bottom border
-				String scoreTitle = AppUtils.replaceNumbersOnly(String.valueOf(candidate.getScore()), Locale.getDefault());
-				ToggleTitledPane toggleTitledPane = new ToggleTitledPane(scoreTitle, candidateImageView);
-				toggleTitledPane.setToggleGroup(toggleGroup);
-				toggleTitledPane.setCollapsible(false);
-				toggleTitledPane.setOnMouseClicked(event ->
-                {
-                	toggleGroup.selectToggle(toggleTitledPane);
-	                ivCenterImage.setImage(candidateImage);
-	                btnCompareWithUploadedImage.setDisable(false);
-	                
-	                // default values
-	                lblBioId.setText(labelsBundle.getString("label.notAvailable"));
-	                lblScore.setText(labelsBundle.getString("label.notAvailable"));
-	                lblSamisId.setText(labelsBundle.getString("label.notAvailable"));
-	                lblFirstName.setText(labelsBundle.getString("label.notAvailable"));
-	                lblFatherName.setText(labelsBundle.getString("label.notAvailable"));
-	                lblFamilyName.setText(labelsBundle.getString("label.notAvailable"));
-	
-	                long bioId = candidate.getBioId();
-	                int score = candidate.getScore();
-	                long samisId = candidate.getSamisId();
-	                String firstName = candidate.getFirstName();
-	                String fatherName = candidate.getFatherName();
-	                String familyName = candidate.getFamilyName();
-	
-	                if(firstName != null && firstName.trim().isEmpty()) firstName = null;
-	                if(fatherName != null && fatherName.trim().isEmpty()) fatherName = null;
-	                if(familyName != null && familyName.trim().isEmpty()) familyName = null;
-	                
-	                String sBioId = AppUtils.replaceNumbersOnly(String.valueOf(bioId), Locale.getDefault());
-	                String sScore = AppUtils.replaceNumbersOnly(String.valueOf(score), Locale.getDefault());
-	
-	                lblBioId.setText(sBioId);
-	                lblScore.setText(sScore);
-	                
-	                if(samisId > 0)
-	                {
-		                String sSamisId = AppUtils.replaceNumbersOnly(String.valueOf(samisId), Locale.getDefault());
-		                lblSamisId.setText(sSamisId);
-	                }
-	                
-	                if(firstName != null) lblFirstName.setText(firstName);
-	                if(fatherName != null) lblFatherName.setText(fatherName);
-	                if(familyName != null) lblFamilyName.setText(familyName);
-                });
-				hbCandidatesImages.getChildren().add(toggleTitledPane);
+				spCandidates.maxHeightProperty().bind(new SimpleDoubleProperty(0.0));
+				
+				GuiUtils.showNode(spCandidates, false);
+				GuiUtils.showNode(btnCompareWithUploadedImage, false);
+				GuiUtils.showNode(detailsPane, false);
+				
+				handleNegativeResponse(serviceResponse);
 			}
-			
-			spCandidates.setHvalue(0.0); // scroll to the beginning
-		}
-		else // on failure response
-		{
-			spCandidates.maxHeightProperty().bind(new SimpleDoubleProperty(0.0));
-			
-			GuiUtils.showNode(spCandidates, false);
-			GuiUtils.showNode(btnCompareWithUploadedImage, false);
-			GuiUtils.showNode(detailsPane, false);
-			
-			super.onReturnFromServiceTask(firstVisit, dataMap); // let the parent class show the error message
 		}
 	}
 	
@@ -383,7 +400,7 @@ public class SearchByFaceImagePaneFxController extends BodyFxControllerBase
 		Map<String, Object> uiDataMap = new HashMap<>();
 		uiDataMap.put("uploadedImagePath", uploadedImagePath);
 		
-		coreFxController.submitFormTask(uiDataMap);
+		coreFxController.submitForm(uiDataMap);
 	}
 	
 	@FXML
@@ -435,7 +452,7 @@ public class SearchByFaceImagePaneFxController extends BodyFxControllerBase
 		imageLayer.getChildren().add(ivMergedImage);
 		borderPane.centerProperty().set(imageLayer);
 		
-		Stage dialogStage = DialogUtils.buildCustomDialog(coreFxController.getPrimaryStage(), appIcon, title, stackPane, rtl);
+		Stage dialogStage = DialogUtils.buildCustomDialog(coreFxController.getPrimaryStage(), coreFxController.getAppIcon(), title, stackPane, rtl);
 		dialogStage.getScene().addEventHandler(KeyEvent.KEY_PRESSED, t ->
 		{
 			if(t.getCode() == KeyCode.ESCAPE)

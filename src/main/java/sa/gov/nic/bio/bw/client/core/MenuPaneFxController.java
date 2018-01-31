@@ -21,7 +21,6 @@ import javafx.util.Pair;
 import org.controlsfx.glyphfont.FontAwesome;
 import org.controlsfx.glyphfont.Glyph;
 import sa.gov.nic.bio.bw.client.core.beans.MenuItem;
-import sa.gov.nic.bio.bw.client.core.interfaces.VisibilityControl;
 import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
 
 import java.util.ArrayList;
@@ -31,13 +30,13 @@ import java.util.Map;
 import java.util.ResourceBundle;
 
 @SuppressWarnings("unused")
-public class MenuPaneFxController implements VisibilityControl
+public class MenuPaneFxController extends SubFxControllerBase
 {
 	@FXML private ResourceBundle resources;
-	@FXML private Pane rootPane;
 	@FXML private Accordion accordion;
 	@FXML private Pane overlayPane;
 	
+	private CoreFxController coreFxController;
 	private MenuItem selectedMenu;
 	private ListView<MenuItem> selectedListView;
 	
@@ -45,12 +44,6 @@ public class MenuPaneFxController implements VisibilityControl
 	private void initialize()
 	{
 		accordion.setFocusTraversable(false);
-	}
-	
-	@Override
-	public Pane getRootPane()
-	{
-		return rootPane;
 	}
 	
 	public void showOverlayPane(boolean bShow)
@@ -251,6 +244,12 @@ public class MenuPaneFxController implements VisibilityControl
 	
 	private void onSelectMenu(MenuItem menuItem)
 	{
-		//coreFxController.goToMenu(menuItem.getMenuId());
+		coreFxController.goToMenu(menuItem.getWorkflowClass());
+	}
+	
+	@Override
+	public void attachCoreFxController(CoreFxController coreFxController)
+	{
+		this.coreFxController = coreFxController;
 	}
 }

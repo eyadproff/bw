@@ -6,7 +6,7 @@ import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 /**
  * Created by Fouad on 16-Jul-17.
  */
-public interface VisibilityControl
+public interface HideableController
 {
 	default void showRootPane()
 	{

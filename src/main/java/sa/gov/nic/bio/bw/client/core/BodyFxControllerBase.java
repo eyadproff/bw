@@ -3,25 +3,21 @@ package sa.gov.nic.bio.bw.client.core;
 import javafx.application.Platform;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import sa.gov.nic.bio.bw.client.core.interfaces.BodyFxController;
 import sa.gov.nic.bio.bw.client.core.interfaces.ResourceBundleCollection;
-import sa.gov.nic.bio.bw.client.core.workflow.Workflow;
+import sa.gov.nic.bio.bw.client.core.interfaces.WorkflowUserTaskController;
 import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
 import sa.gov.nic.bio.bw.client.login.workflow.WebServiceResponse;
 
 import java.net.URL;
-import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
 
-public abstract class BodyFxControllerBase implements BodyFxController
+public abstract class BodyFxControllerBase extends SubFxControllerBase implements WorkflowUserTaskController
 {
 	private static final Logger LOGGER = Logger.getLogger(BodyFxControllerBase.class.getName());
-	protected CoreFxController coreFxController;
 	protected ResourceBundle labelsBundle;
 	protected ResourceBundle errorsBundle;
 	protected ResourceBundle messagesBundle;
-	protected Image appIcon;
 	
 	private Image successIcon = new Image(Thread.currentThread().getContextClassLoader().getResourceAsStream("sa/gov/nic/bio/bw/client/core/images/success.png"));
 	private Image warningIcon = new Image(Thread.currentThread().getContextClassLoader().getResourceAsStream("sa/gov/nic/bio/bw/client/core/images/warning.png"));
@@ -61,99 +57,88 @@ public abstract class BodyFxControllerBase implements BodyFxController
 	}
 	
 	@Override
-	public void attachCoreFxController(CoreFxController coreFxController)
-	{
-		this.coreFxController = coreFxController;
-	}
-	
-	@Override
-	public void attachInitialResources(ResourceBundle labelsBundle, ResourceBundle errorsBundle, ResourceBundle messagesBundle, Image appIcon)
+	public void attachBundleResources(ResourceBundle labelsBundle, ResourceBundle errorsBundle, ResourceBundle messagesBundle)
 	{
 		this.labelsBundle = labelsBundle;
 		this.errorsBundle = errorsBundle;
 		this.messagesBundle = messagesBundle;
-		this.appIcon = appIcon;
 	}
 	
-	@Override
-	public void onReturnFromServiceTask(boolean firstVisit, Map<String, Object> dataMap)
+	public void onControllerReady(){}
+	
+	protected void handleNegativeResponse(ServiceResponse<?> serviceResponse)
 	{
-		if(!firstVisit)
+		if(!serviceResponse.isSuccess())
 		{
-			ServiceResponse<?> serviceResponse = (ServiceResponse<?>) dataMap.get(Workflow.KEY_WEBSERVICE_RESPONSE);
+			String errorCode = serviceResponse.getErrorCode();
+			Exception exception = serviceResponse.getException();
+			String apiUrl = null;
+			int httpCode = 0;
 			
-			if(!serviceResponse.isSuccess())
+			if(serviceResponse instanceof WebServiceResponse)
 			{
-				String errorCode = serviceResponse.getErrorCode();
-				Exception exception = serviceResponse.getException();
-				String apiUrl = null;
-				int httpCode = 0;
+				WebServiceResponse webServiceResponse = (WebServiceResponse) serviceResponse;
 				
-				if(serviceResponse instanceof WebServiceResponse)
+				apiUrl = webServiceResponse.getUrl();
+				httpCode = webServiceResponse.getHttpCode();
+			}
+			
+			if(errorCode != null)
+			{
+				if(errorCode.startsWith("C"))
 				{
-					WebServiceResponse webServiceResponse = (WebServiceResponse) serviceResponse;
+					String guiErrorMessage = coreFxController.getErrorsBundle().getString(errorCode);
+					String logErrorMessage = coreFxController.getErrorsBundle().getString(errorCode + ".internal");
 					
-					apiUrl = webServiceResponse.getUrl();
-					httpCode = webServiceResponse.getHttpCode();
+					guiErrorMessage = httpCode > 0 ? String.format(guiErrorMessage, apiUrl, httpCode) : String.format(guiErrorMessage, apiUrl);
+					logErrorMessage = httpCode > 0 ? String.format(logErrorMessage, apiUrl, httpCode) : String.format(logErrorMessage, apiUrl);
+					
+					if(exception != null) coreFxController.showErrorDialogAndWait(guiErrorMessage, exception);
+					else showErrorNotification(guiErrorMessage);
+					LOGGER.severe(logErrorMessage);
 				}
-				
-				if(errorCode != null)
+				else if(errorCode.startsWith("B"))
 				{
-					if(errorCode.startsWith("C"))
+					String guiErrorMessage;
+					String logErrorMessage;
+					
+					if(errorCode.startsWith("B010"))
 					{
-						String guiErrorMessage = coreFxController.getErrorsBundle().getString(errorCode);
-						String logErrorMessage = coreFxController.getErrorsBundle().getString(errorCode + ".internal");
-						
-						guiErrorMessage = httpCode > 0 ? String.format(guiErrorMessage, apiUrl, httpCode) : String.format(guiErrorMessage, apiUrl);
-						logErrorMessage = httpCode > 0 ? String.format(logErrorMessage, apiUrl, httpCode) : String.format(logErrorMessage, apiUrl);
-						
-						if(exception != null) coreFxController.showErrorDialogAndWait(guiErrorMessage, exception);
-						else showErrorNotification(guiErrorMessage);
-						LOGGER.severe(logErrorMessage);
+						guiErrorMessage = coreFxController.getErrorsBundle().getString(errorCode);
+						logErrorMessage = coreFxController.getErrorsBundle().getString(errorCode + ".internal");
 					}
-					else if(errorCode.startsWith("B"))
+					else
 					{
-						String guiErrorMessage;
-						String logErrorMessage;
-						
-						if(errorCode.startsWith("B010"))
-						{
-							guiErrorMessage = coreFxController.getErrorsBundle().getString(errorCode);
-							logErrorMessage = coreFxController.getErrorsBundle().getString(errorCode + ".internal");
-						}
-						else
-						{
-							guiErrorMessage = errorsBundle.getString(errorCode);
-							logErrorMessage = errorsBundle.getString(errorCode + ".internal");
-						}
-						
-						showWarningNotification(guiErrorMessage);
-						LOGGER.info(logErrorMessage);
+						guiErrorMessage = errorsBundle.getString(errorCode);
+						logErrorMessage = errorsBundle.getString(errorCode + ".internal");
 					}
-					else // server error
-					{
-						String code = "S000-00000";
-						String guiErrorMessage = coreFxController.getErrorsBundle().getString(code);
-						String logErrorMessage = coreFxController.getErrorsBundle().getString(code + ".internal");
-						
-						guiErrorMessage = String.format(guiErrorMessage, errorCode);
-						logErrorMessage = String.format(logErrorMessage, errorCode);
-						
-						showWarningNotification(guiErrorMessage);
-						LOGGER.severe(logErrorMessage);
-					}
+					
+					showWarningNotification(guiErrorMessage);
+					LOGGER.info(logErrorMessage);
 				}
-				else // the server didn't send an error code inside [400,401,403,500] response
+				else // server error
 				{
-					String code = "C002-00018";
+					String code = "S000-00000";
 					String guiErrorMessage = coreFxController.getErrorsBundle().getString(code);
 					String logErrorMessage = coreFxController.getErrorsBundle().getString(code + ".internal");
-					guiErrorMessage = String.format(guiErrorMessage, apiUrl, String.valueOf(httpCode));
-					logErrorMessage = String.format(logErrorMessage, apiUrl, String.valueOf(httpCode));
+					
+					guiErrorMessage = String.format(guiErrorMessage, errorCode);
+					logErrorMessage = String.format(logErrorMessage, errorCode);
 					
 					showWarningNotification(guiErrorMessage);
 					LOGGER.severe(logErrorMessage);
 				}
+			}
+			else // the server didn't send an error code inside [400,401,403,500] response
+			{
+				String code = "C002-00018";
+				String guiErrorMessage = coreFxController.getErrorsBundle().getString(code);
+				String logErrorMessage = coreFxController.getErrorsBundle().getString(code + ".internal");
+				guiErrorMessage = String.format(guiErrorMessage, apiUrl, String.valueOf(httpCode));
+				logErrorMessage = String.format(logErrorMessage, apiUrl, String.valueOf(httpCode));
+				
+				showWarningNotification(guiErrorMessage);
+				LOGGER.severe(logErrorMessage);
 			}
 		}
 	}
@@ -167,26 +152,22 @@ public abstract class BodyFxControllerBase implements BodyFxController
         });
 	}
 	
-	@Override
-	public void hideNotification()
+	protected void hideNotification()
 	{
 		coreFxController.getNotificationPane().hide();
 	}
 	
-	@Override
-	public void showSuccessNotification(String message)
+	protected void showSuccessNotification(String message)
 	{
 		showNotification(message, successIcon);
 	}
 	
-	@Override
-	public void showWarningNotification(String message)
+	protected void showWarningNotification(String message)
 	{
 		showNotification(message, warningIcon);
 	}
 	
-	@Override
-	public void showErrorNotification(String message)
+	protected void showErrorNotification(String message)
 	{
 		showNotification(message, errorIcon);
 	}

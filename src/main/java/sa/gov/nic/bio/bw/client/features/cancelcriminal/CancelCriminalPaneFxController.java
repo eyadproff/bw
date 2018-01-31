@@ -43,32 +43,35 @@ public class CancelCriminalPaneFxController extends BodyFxControllerBase
 	}
 	
 	@Override
-	public void onReturnFromServiceTask(boolean firstVisit, Map<String, Object> dataMap)
+	public void onWorkflowUserTaskLoad(boolean newForm, Map<String, Object> dataMap)
 	{
-		ServiceResponse<?> serviceResponse = (ServiceResponse<?>) dataMap.get(Workflow.KEY_WEBSERVICE_RESPONSE);
-		
-		disableUiControls(false);
-		
-		if(serviceResponse.isSuccess())
+		if(!newForm)
 		{
-			String idNumber = txtPersonId.getText();
-			String latentNumber = txtCriminalId.getText();
+			ServiceResponse<?> serviceResponse = (ServiceResponse<?>) dataMap.get(Workflow.KEY_WEBSERVICE_RESPONSE);
 			
-			Boolean resultBean = (Boolean) serviceResponse.getResult();
-			if(resultBean != null && resultBean)
+			disableUiControls(false);
+			
+			if(serviceResponse.isSuccess())
 			{
-				String message = String.format(messagesBundle.getString("cancelCriminal.success"), latentNumber, idNumber);
-				showSuccessNotification(message);
+				String idNumber = txtPersonId.getText();
+				String latentNumber = txtCriminalId.getText();
+				
+				Boolean resultBean = (Boolean) serviceResponse.getResult();
+				if(resultBean != null && resultBean)
+				{
+					String message = String.format(messagesBundle.getString("cancelCriminal.success"), latentNumber, idNumber);
+					showSuccessNotification(message);
+				}
+				else
+				{
+					String message = String.format(messagesBundle.getString("cancelCriminal.failure"), latentNumber, idNumber);
+					showWarningNotification(message);
+				}
 			}
-			else
-			{
-				String message = String.format(messagesBundle.getString("cancelCriminal.failure"), latentNumber, idNumber);
-				showWarningNotification(message);
-			}
+			else handleNegativeResponse(serviceResponse);
+			
+			txtPersonId.requestFocus();
 		}
-		else super.onReturnFromServiceTask(firstVisit, dataMap);
-		
-		txtPersonId.requestFocus();
 	}
 	
 	@FXML
@@ -96,7 +99,7 @@ public class CancelCriminalPaneFxController extends BodyFxControllerBase
 		uiDataMap.put("personId", personId);
 		uiDataMap.put("criminalId", criminalId);
 		
-		coreFxController.submitFormTask(uiDataMap);
+		coreFxController.submitForm(uiDataMap);
 	}
 	
 	private void disableUiControls(boolean bool)

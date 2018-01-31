@@ -17,6 +17,8 @@ import sa.gov.nic.bio.bw.client.core.utils.DialogUtils;
 import sa.gov.nic.bio.bw.client.core.utils.GuiLanguage;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.utils.RuntimeEnvironment;
+import sa.gov.nic.bio.bw.client.core.workflow.Workflow;
+import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
 
 import java.util.HashMap;
 import java.util.Locale;
@@ -80,14 +82,15 @@ public class LoginPaneFxController extends BodyFxControllerBase implements Persi
 	}
 	
 	@Override
-	public void onReturnFromServiceTask(boolean firstVisit, Map<String, Object> dataMap)
+	public void onWorkflowUserTaskLoad(boolean newForm, Map<String, Object> dataMap)
 	{
-		if(!firstVisit)
+		if(!newForm)
 		{
-			super.onReturnFromServiceTask(firstVisit, dataMap);
-			
 			txtPassword.clear();
 			disableUiControls(false);
+			
+			ServiceResponse<?> serviceResponse = (ServiceResponse<?>) dataMap.get(Workflow.KEY_WEBSERVICE_RESPONSE);
+			handleNegativeResponse(serviceResponse);
 		}
 	}
 	
@@ -104,7 +107,7 @@ public class LoginPaneFxController extends BodyFxControllerBase implements Persi
 		uiDataMap.put("username", username);
 		uiDataMap.put("password", password);
 		
-		coreFxController.submitFormTask(uiDataMap);
+		coreFxController.submitForm(uiDataMap);
 	}
 	
 	@FXML
@@ -113,12 +116,12 @@ public class LoginPaneFxController extends BodyFxControllerBase implements Persi
 		hideNotification();
 		
 		boolean rtl = coreFxController.getCurrentLanguage().getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT;
-		ChangePasswordDialogFxController controller = DialogUtils.buildCustomDialog(coreFxController.getPrimaryStage(), appIcon, FXML_CHANGE_PASSWORD, labelsBundle, rtl);
+		ChangePasswordDialogFxController controller = DialogUtils.buildCustomDialog(coreFxController.getPrimaryStage(), coreFxController.getAppIcon(), FXML_CHANGE_PASSWORD, labelsBundle, rtl);
 		
 		if(controller != null)
 		{
 			controller.attachCoreFxController(coreFxController);
-			controller.attachInitialResources(labelsBundle, errorsBundle, messagesBundle, appIcon);
+			controller.attachBundleResources(labelsBundle, errorsBundle, messagesBundle);
 			controller.setUsernameAndPassword(txtUsername.getText(), txtPassword.getText());
 			controller.requestFocus();
 			controller.showDialogAndWait();

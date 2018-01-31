@@ -5,13 +5,16 @@ import java.util.Objects;
 
 public class Signal extends Throwable
 {
+	private final SignalType signalType;
 	private final Map<String, Object> payload;
 	
-	public Signal(Map<String, Object> payload)
+	public Signal(SignalType signalType, Map<String, Object> payload)
 	{
+		this.signalType = signalType;
 		this.payload = payload;
 	}
 	
+	public SignalType getSignalType(){return signalType;}
 	public Map<String, Object> getPayload(){return payload;}
 	
 	@Override
@@ -20,18 +23,18 @@ public class Signal extends Throwable
 		if(this == o) return true;
 		if(o == null || getClass() != o.getClass()) return false;
 		Signal signal = (Signal) o;
-		return Objects.equals(payload, signal.payload);
+		return signalType == signal.signalType && Objects.equals(payload, signal.payload);
 	}
 	
 	@Override
 	public int hashCode()
 	{
-		return Objects.hash(payload);
+		return Objects.hash(signalType, payload);
 	}
 	
 	@Override
 	public String toString()
 	{
-		return "Signal{" + "payload=" + payload + '}';
+		return "Signal{" + "signalType=" + signalType + ", payload=" + payload + '}';
 	}
 }

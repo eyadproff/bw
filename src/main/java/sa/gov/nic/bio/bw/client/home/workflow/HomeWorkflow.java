@@ -17,7 +17,6 @@ public class HomeWorkflow extends WorkflowBase<LoginBean, Void>
 {
 	private static final Logger LOGGER = Logger.getLogger(HomeWorkflow.class.getName());
 	
-	public static final String KEY_LOGOUT_REQUESTED = "LOGOUT_REQUESTED";
 	public static final String KEY_MENU_WORKFLOW_CLASS = "MENU_WORKFLOW_CLASS";
 	
 	public HomeWorkflow(FormRenderer formRenderer, BlockingQueue<Map<String, Object>> userTasks)
@@ -31,54 +30,76 @@ public class HomeWorkflow extends WorkflowBase<LoginBean, Void>
 		while(true)
 		{
 			formRenderer.renderForm(HomePaneFxController.class, null); // render home page
-			Map<String, Object> userTakDataMap = userTasks.take(); // user selects a menu or logout
 			
-			if(userTakDataMap.get(KEY_LOGOUT_REQUESTED) != null) return null;
-			
-			while(true)
+			try
 			{
-				Class<?> menuWorkflowClass = (Class<?>) userTakDataMap.get(KEY_MENU_WORKFLOW_CLASS);
+				waitForUserTask(); // user selects a menu or logout
+			}
+			catch(Signal signal)
+			{
+				Map<String, Object> payload = signal.getPayload();
 				
-				if(menuWorkflowClass == null)
+				switch(signal.getSignalType())
 				{
-					LOGGER.severe(KEY_MENU_WORKFLOW_CLASS + " is null!");
-					break;
-				}
-				
-				Constructor<?> declaredConstructor = null;
-				try
-				{
-					declaredConstructor = menuWorkflowClass.getDeclaredConstructor(FormRenderer.class, BlockingQueue.class);
-				}
-				catch(NoSuchMethodException e)
-				{
-					e.printStackTrace();
-				}
-				Workflow<?, ?> workflow = null;
-				try
-				{
-					workflow = (Workflow<?, ?>) declaredConstructor.newInstance(formRenderer, userTasks);
-				}
-				catch(InstantiationException e)
-				{
-					e.printStackTrace();
-				}
-				catch(IllegalAccessException e)
-				{
-					e.printStackTrace();
-				}
-				catch(InvocationTargetException e)
-				{
-					e.printStackTrace();
-				}
-				
-				try
-				{
-					workflow.onProcess(null);
-				}
-				catch(Signal signal)
-				{
-					Map<String, Object> payload = signal.getPayload();
+					case LOGOUT:
+					{
+						break;
+					}
+					case MENU_NAVIGATION:
+					{
+						Class<?> menuWorkflowClass = (Class<?>) payload.get(KEY_MENU_WORKFLOW_CLASS);
+						
+						Constructor<?> declaredConstructor = null;
+						try
+						{
+							declaredConstructor = menuWorkflowClass.getDeclaredConstructor(FormRenderer.class, BlockingQueue.class);
+						}
+						catch(NoSuchMethodException e)
+						{
+							// TODO:
+							e.printStackTrace();
+							continue;
+						}
+						
+						Workflow<?, ?> workflow = null;
+						try
+						{
+							workflow = (Workflow<?, ?>) declaredConstructor.newInstance(formRenderer, userTasks);
+						}
+						catch(InstantiationException e)
+						{
+							// TODO:
+							e.printStackTrace();
+							continue;
+						}
+						catch(IllegalAccessException e)
+						{
+							// TODO:
+							e.printStackTrace();
+							continue;
+						}
+						catch(InvocationTargetException e)
+						{
+							// TODO:
+							e.printStackTrace();
+							continue;
+						}
+						
+						try
+						{
+							workflow.onProcess(null);
+						}
+						catch(Signal subWorkflowSignal)
+						{
+							// TODO:
+						}
+						
+						break;
+					}
+					default:
+					{
+						// TODO
+					}
 				}
 			}
 		}

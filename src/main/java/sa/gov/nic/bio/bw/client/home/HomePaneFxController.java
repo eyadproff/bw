@@ -25,7 +25,16 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.text.Normalizer;
 import java.time.DateTimeException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Base64;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.ResourceBundle;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -35,7 +44,8 @@ import java.util.logging.Logger;
 public class HomePaneFxController extends BodyFxControllerBase
 {
 	private static final Logger LOGGER = Logger.getLogger(HomePaneFxController.class.getName());
-	private static final String AVATAR_PLACEHOLDER_IMAGE = "sa/gov/nic/bio/bw/client/core/images/avatar_placeholder.jpg";
+	private static final String AVATAR_PLACEHOLDER_IMAGE =
+														"sa/gov/nic/bio/bw/client/core/images/avatar_placeholder.jpg";
 	
 	@FXML private Label lblLoginTimeText;
 	@FXML private Label lblLoginTime;
@@ -67,8 +77,12 @@ public class HomePaneFxController extends BodyFxControllerBase
 		Context.getWebserviceManager().scheduleRefreshToken(userToken);
 		
 		String username = userInfo.getUserName();
-		String operatorName = Normalizer.normalize(userInfo.getOperatorName(), Normalizer.Form.NFKC) + " (" + userInfo.getOperatorId() + ")"; // we normalize because the backend characters are not the standard ones
-		String location = Normalizer.normalize(userInfo.getLocationName(), Normalizer.Form.NFKC) + " (" + userInfo.getLocationId() + ")";
+		
+		// we normalize because the backend characters are not the standard ones
+		String operatorName = Normalizer.normalize(userInfo.getOperatorName(), Normalizer.Form.NFKC) + " (" +
+												   userInfo.getOperatorId() + ")";
+		String location = Normalizer.normalize(userInfo.getLocationName(), Normalizer.Form.NFKC) + " (" +
+											   userInfo.getLocationId() + ")";
 		
 		String encodedFaceImage = userInfo.getFaceImage();
 		byte[] faceImageByteArray = null;
@@ -82,7 +96,8 @@ public class HomePaneFxController extends BodyFxControllerBase
 			}
 			catch(Exception e)
 			{
-				LOGGER.log(Level.WARNING, "Failed to decode the Base64 string encodedFaceImage = " + encodedFaceImage, e);
+				LOGGER.log(Level.WARNING, "Failed to decode the Base64 string encodedFaceImage = " +
+						   encodedFaceImage, e);
 			}
 			
 			if(faceImageByteArray != null)
@@ -107,7 +122,8 @@ public class HomePaneFxController extends BodyFxControllerBase
 			}
 		}
 		
-		if(image == null) coreFxController.getHeaderPaneController().setAvatarImage(new Image(AVATAR_PLACEHOLDER_IMAGE));
+		if(image == null) coreFxController.getHeaderPaneController()
+										  .setAvatarImage(new Image(AVATAR_PLACEHOLDER_IMAGE));
 		
 		// remove extra spaces in between and on edges
 		username = username.trim().replaceAll("\\s+", " ");
@@ -144,19 +160,21 @@ public class HomePaneFxController extends BodyFxControllerBase
 		List<String> menuFiles;
 		try
 		{
-			menuFiles = AppUtils.listResourceFiles(getClass().getProtectionDomain(), "^.*/menu.properties$", Context.getRuntimeEnvironment());
+			menuFiles = AppUtils.listResourceFiles(getClass().getProtectionDomain(), "^.*/menu.properties$",
+			                                       Context.getRuntimeEnvironment());
 		}
 		catch(Exception e)
 		{
 			String errorCode = "C004-00001";
-			String message = errorsBundle.getString(errorCode);
-			LOGGER.log(Level.SEVERE, "Failed to load the menu properties files!", e);
-			coreFxController.showErrorDialogAndWait(message, e);
+			String guiErrorMessage = errorsBundle.getString(errorCode);
+			String logErrorMessage = errorsBundle.getString(errorCode + ".internal");
+			LOGGER.log(Level.SEVERE, logErrorMessage, e);
+			coreFxController.showErrorDialogAndWait(guiErrorMessage, e);
 			return;
 		}
 		
 		UTF8Control utf8Control = new UTF8Control();
-		Map<String, MenuItem> icons = new HashMap<>();
+		Map<String, MenuItem> topMenus = new HashMap<>();
 		
 		menuFiles.forEach(menuFile ->
 		{
@@ -179,11 +197,13 @@ public class HomePaneFxController extends BodyFxControllerBase
 				}
 				
 				ClassLoader loader = new URLClassLoader(urls);
-				rb = ResourceBundle.getBundle(menuFile.substring(menuFile.lastIndexOf("/") + 1, menuFile.lastIndexOf('.')), Locale.getDefault(), loader, utf8Control);
+				rb = ResourceBundle.getBundle(menuFile.substring(menuFile.lastIndexOf("/") + 1,
+				                              menuFile.lastIndexOf('.')), Locale.getDefault(), loader, utf8Control);
 			}
 			else
 			{
-				rb = ResourceBundle.getBundle(menuFile.substring(0, menuFile.lastIndexOf('.')), Locale.getDefault(), utf8Control);
+				rb = ResourceBundle.getBundle(menuFile.substring(0, menuFile.lastIndexOf('.')),
+				                              Locale.getDefault(), utf8Control);
 			}
 			
 			
@@ -191,35 +211,23 @@ public class HomePaneFxController extends BodyFxControllerBase
 			allMenus.add(menuItem);
 			
 			Set<String> keys = rb.keySet();
-			if(keys.size() > 2)
-			{
-				String errorCode = "C004-00002";
-				String message = String.format(errorsBundle.getString(errorCode), menuFile);
-				LOGGER.severe("The menu properties file (" + menuFile + ") has more than 2 lines!");
-				coreFxController.showErrorDialogAndWait(message, null);
-				return;
-			}
 			
 			keys.forEach(key ->
 			{
 				String value = rb.getString(key);
-				if(key.equals("order"))
+				
+				if(key.equals("menu.id"))
 				{
-					int order = Integer.parseInt(value);
-					menuItem.setOrder(order);
-				}
-				else
-				{
-					menuItem.setMenuId(key);
-					menuItem.setLabel(value);
+					menuItem.setMenuId(value);
 					
-					String topMenu = key.substring(0, key.lastIndexOf('.'));
+					String topMenu = value.substring(0, value.lastIndexOf('.'));
 					
-					if(!icons.containsKey(topMenu))
+					if(!topMenus.containsKey(topMenu))
 					{
 						String label = coreFxController.getTopMenusBundle().getString(topMenu);
 						String icon = coreFxController.getTopMenusBundle().getString(topMenu + ".icon");
-						int order = Integer.parseInt(coreFxController.getTopMenusBundle().getString(topMenu + ".order"));
+						int order = Integer.parseInt(coreFxController.getTopMenusBundle().getString(topMenu +
+								                                                                    ".order"));
 						
 						MenuItem topMenuItem = new MenuItem();
 						topMenuItem.setMenuId(topMenu);
@@ -227,7 +235,33 @@ public class HomePaneFxController extends BodyFxControllerBase
 						topMenuItem.setIconId(icon);
 						topMenuItem.setOrder(order);
 						
-						icons.put(topMenu, topMenuItem);
+						topMenus.put(topMenu, topMenuItem);
+					}
+				}
+				else if(key.equals("menu.label"))
+				{
+					menuItem.setLabel(value);
+				}
+				else if(key.equals("menu.order"))
+				{
+					int order = Integer.parseInt(value);
+					menuItem.setOrder(order);
+				}
+				else if(key.equals("menu.workflow.class"))
+				{
+					try
+					{
+						Class<?> workflowClass = Class.forName(value);
+						menuItem.setWorkflowClass(workflowClass);
+					}
+					catch(ClassNotFoundException e)
+					{
+						String errorCode = "C004-00002";
+						String guiErrorMessage = String.format(errorsBundle.getString(errorCode), value);
+						String logErrorMessage = String.format(errorsBundle.getString(errorCode + ".internal"),
+						                                       value);
+						LOGGER.severe(logErrorMessage);
+						coreFxController.showErrorDialogAndWait(guiErrorMessage, null);
 					}
 				}
 			});
@@ -248,7 +282,7 @@ public class HomePaneFxController extends BodyFxControllerBase
 			}
 		}
 		
-		coreFxController.getMenuPaneController().setMenus(menus, icons);
+		coreFxController.getMenuPaneController().setMenus(menus, topMenus);
 		
 		if(menus.size() == 0)
 		{
@@ -280,11 +314,16 @@ public class HomePaneFxController extends BodyFxControllerBase
 		
 		if(hideIt)
 		{
-			
 			GuiUtils.showNode(textLabel, false);
 			textLabel.setPadding(new Insets(0));
 			GuiUtils.showNode(valueLabel, false);
 			valueLabel.setPadding(new Insets(0));
 		}
+	}
+	
+	@Override
+	public void onWorkflowUserTaskLoad(boolean newForm, Map<String, Object> dataMap)
+	{
+	
 	}
 }

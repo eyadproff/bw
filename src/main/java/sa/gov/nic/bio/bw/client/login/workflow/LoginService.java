@@ -1,7 +1,6 @@
 package sa.gov.nic.bio.bw.client.login.workflow;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.activiti.engine.delegate.DelegateExecution;
 import retrofit2.Call;
 import sa.gov.nic.bio.bcl.utils.BclUtils;
 import sa.gov.nic.bio.bw.client.core.Context;
@@ -10,7 +9,6 @@ import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.client.core.utils.RuntimeEnvironment;
 import sa.gov.nic.bio.bw.client.core.webservice.ApiResponse;
 import sa.gov.nic.bio.bw.client.core.webservice.LookupAPI;
-import sa.gov.nic.bio.bw.client.core.workflow.ServiceBase;
 import sa.gov.nic.bio.bw.client.login.webservice.IdentityAPI;
 import sa.gov.nic.bio.bw.client.login.webservice.LoginBean;
 import sa.gov.nic.bio.bw.client.login.webservice.UserInfo;
@@ -22,15 +20,11 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- * Created by Fouad on 18-Jul-17.
- */
-public class LoginService extends ServiceBase
+public class LoginService
 {
 	private static final Logger LOGGER = Logger.getLogger(LoginService.class.getName());
 	
-	@Override
-	public void execute(DelegateExecution execution)
+	public WebServiceResponse<LoginBean> execute(String username, String password)
 	{
 		if(Context.getRuntimeEnvironment() != null && Context.getRuntimeEnvironment() != RuntimeEnvironment.DEV)
 		{
@@ -58,13 +52,9 @@ public class LoginService extends ServiceBase
 			if(newUpdates)
 			{
 				String errorCode = "B001-00000";
-				bypassErrorCode(execution, errorCode);
-				return;
+				return WebServiceResponse.failure(errorCode);
 			}
 		}
-		
-		String username = (String) execution.getVariable("username");
-		String password = (String) execution.getVariable("password");
 		
 		LOGGER.fine("username = " + username);
 		LOGGER.fine("password = " + password);
@@ -78,8 +68,8 @@ public class LoginService extends ServiceBase
 		if(menusRolesResponse.isSuccess()) menusRoles = menusRolesResponse.getResult();
 		else
 		{
-			bypassResponse(execution, menusRolesResponse, false);
-			return;
+			return WebServiceResponse.failure(menusRolesResponse.getErrorCode(), menusRolesResponse.getException(),
+			                                  menusRolesResponse.getApiUrl(), menusRolesResponse.getHttpCode());
 		}
 		
 		IdentityAPI identityAPI = Context.getWebserviceManager().getApi(IdentityAPI.class);
@@ -104,8 +94,12 @@ public class LoginService extends ServiceBase
 			LOGGER.info("the user (" + userInfo.getUserName() + ") is logged in");
 			LOGGER.fine("userToken = " + userToken);
 			Arrays.stream(AppUtils.decodeJWT(userToken)).forEach(part -> LOGGER.fine(part)); // LOGGER::fine doesn't work, I don't know WHY!!!
+			
+			return WebServiceResponse.success(response.getResult(), response.getApiUrl(), response.getHttpCode());
 		}
-		
-		bypassResponse(execution, response, false);
+		else
+		{
+			return WebServiceResponse.failure(response.getErrorCode(), response.getException(), response.getApiUrl(), response.getHttpCode());
+		}
 	}
 }

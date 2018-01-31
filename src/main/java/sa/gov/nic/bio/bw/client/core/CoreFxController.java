@@ -1,6 +1,8 @@
 package sa.gov.nic.bio.bw.client.core;
 
+import com.sun.javafx.stage.StageHelper;
 import javafx.application.Platform;
+import javafx.collections.ObservableList;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -12,7 +14,6 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import org.controlsfx.control.NotificationPane;
 import sa.gov.nic.bio.bw.client.core.beans.StateBundle;
-import sa.gov.nic.bio.bw.client.core.interfaces.BodyFxController;
 import sa.gov.nic.bio.bw.client.core.interfaces.ControllerResourcesLocator;
 import sa.gov.nic.bio.bw.client.core.interfaces.IdleMonitorRegisterer;
 import sa.gov.nic.bio.bw.client.core.interfaces.PersistableEntity;
@@ -26,10 +27,14 @@ import sa.gov.nic.bio.bw.client.core.utils.IdleMonitor;
 import sa.gov.nic.bio.bw.client.core.utils.UTF8Control;
 import sa.gov.nic.bio.bw.client.core.wizard.WizardPane;
 import sa.gov.nic.bio.bw.client.core.wizard.WizardStepFxControllerBase;
+import sa.gov.nic.bio.bw.client.core.workflow.SignalType;
+import sa.gov.nic.bio.bw.client.core.workflow.Workflow;
+import sa.gov.nic.bio.bw.client.home.workflow.HomeWorkflow;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.MissingResourceException;
@@ -73,7 +78,7 @@ public class CoreFxController implements IdleMonitorRegisterer, PersistableEntit
 	
 	private IdleMonitor idleMonitor;
 	private GuiLanguage currentLanguage;
-	private BodyFxController currentBodyController;
+	private BodyFxControllerBase currentBodyController;
 	
 	public void passInitialResources(ResourceBundle labelsBundle, ResourceBundle errorsBundle,
 	                                 ResourceBundle messagesBundle, ResourceBundle topMenusBundle,
@@ -89,6 +94,7 @@ public class CoreFxController implements IdleMonitorRegisterer, PersistableEntit
 	}
 	
 	public Stage getPrimaryStage(){return primaryStage;}
+	public Image getAppIcon(){return appIcon;}
 	public NotificationPane getNotificationPane(){return notificationPane;}
 	public BorderPane getBodyPane(){return bodyPane;}
 	public GuiLanguage getCurrentLanguage(){return currentLanguage;}
@@ -100,32 +106,37 @@ public class CoreFxController implements IdleMonitorRegisterer, PersistableEntit
 	public ResourceBundle getMessagesBundle(){return messagesBundle;}
 	public ResourceBundle getTopMenusBundle(){return topMenusBundle;}
 	
+	@FXML
+	private void initialize()
+	{
+		idleMonitor = new IdleMonitor(this::onShowingIdleWarning, this::onIdle, this::onIdleInterrupt,
+		                              this::onTick, idleNotifier);
+		
+		if(currentBodyController == null) // if this is the first load, start the code workflow.
+		{
+			Context.getWorkflowManager().startCoreWorkflow(this::renderBodyForm);
+		}
+	}
+	
 	/**
 	 * Called once for every primary stage, when it is shown. It is called in the UI-thread.
+	 * It is called after initialize() and passInitialResources().
 	 */
 	@FXML
 	private void onStageShown()
 	{
+		primaryStage.setTitle(windowTitle);
+		
 		// attach this controller to the sub-controllers.
 		headerPaneController.attachCoreFxController(this);
 		footerPaneController.attachCoreFxController(this);
+		menuPaneController.attachCoreFxController(this);
 		
 		// fix the size of the header pane and the menu pane.
 		headerPaneController.getRootPane().setMinSize(headerPaneController.getRootPane().getWidth(),
 		                                              headerPaneController.getRootPane().getHeight());
 		menuPaneController.getRootPane().setMinSize(menuPaneController.getRootPane().getWidth(),
 		                                            menuPaneController.getRootPane().getHeight());
-		
-		overlayPane.setVisible(false);
-		primaryStage.setTitle(windowTitle);
-		idleMonitor = new IdleMonitor(this::onShowingIdleWarning, this::onIdle, this::onIdleInterrupt,
-		                              this::onTick, idleNotifier);
-		
-		if(currentBodyController == null) // if this is the first load, start the code workflow.
-		{
-			Runnable runnable = () -> Context.getWorkflowManager().startProcess(this::renderBodyForm);
-			Context.getExecutorService().execute(runnable);
-		}
 	}
 	
 	/**
@@ -133,27 +144,40 @@ public class CoreFxController implements IdleMonitorRegisterer, PersistableEntit
 	 *
 	 * @param uiDataMap the data submitted by the user when filling the form
 	 */
-	public void submitFormTask(Map<String, Object> uiDataMap)
+	public void submitForm(Map<String, Object> uiDataMap)
 	{
-		Runnable runnable = () -> Context.getWorkflowManager().submitFormTask(uiDataMap);
-		Context.getExecutorService().execute(runnable);
-	}
-	
-	/*public void goToMenu(String menuId)
-	{
-		Map<String, Object> variables = new HashMap<>();
-		variables.put("menuId", menuId);
-		
-		Runnable runnable = () -> Context.getWorkflowManager().raiseSignalEvent("menuSelection", variables,
-																				this::renderNewBodyForm);
-		Context.getExecutorService().execute(runnable);
+		Context.getWorkflowManager().submitUserTask(uiDataMap);
 	}
 	
 	public void logout()
 	{
-		Runnable runnable = () -> Context.getWorkflowManager().raiseSignalEvent("logout", null, this::renderNewBodyForm);
-		Context.getExecutorService().execute(runnable);
-	}*/
+		// close all opened dialogs (except the primary one)
+		ObservableList<Stage> stages = StageHelper.getStages();
+		for(int i = 1; i <= stages.size(); i++)
+		{
+			Stage stage = stages.get(i - 1);
+			if(stage != null && stage != primaryStage)
+			{
+				LOGGER.fine("Closing stage #" + i + ": " + stage.getTitle());
+				stage.close();
+			}
+		}
+		
+		stopIdleMonitor();
+		Context.getWebserviceManager().cancelRefreshTokenScheduler();
+		// TODO: send the logout request to the workflow manager
+		//Context.getWorkflowManager().submitUserTask();
+	}
+	
+	public void goToMenu(Class<?> menuControllerClass)
+	{
+		// TODO: send a request to the workflow manager
+		
+		Map<String, Object> dataMap = new HashMap<>();
+		dataMap.put(Workflow.KEY_SIGNAL_TYPE, SignalType.MENU_NAVIGATION);
+		dataMap.put(HomeWorkflow.KEY_MENU_WORKFLOW_CLASS, menuControllerClass);
+		Context.getWorkflowManager().submitUserTask(dataMap);
+	}
 	
 	/**
 	 * A callback that is called by the workflow manager to render the body form. This method is called from
@@ -168,7 +192,7 @@ public class CoreFxController implements IdleMonitorRegisterer, PersistableEntit
 		{
 			if(currentBodyController != null && currentBodyController.getClass() == controllerClass) // same form
 			{
-				currentBodyController.onReturnFromServiceTask(false, dataMap);
+				currentBodyController.onWorkflowUserTaskLoad(false, dataMap);
 			}
 			else // new form
 			{
@@ -176,10 +200,10 @@ public class CoreFxController implements IdleMonitorRegisterer, PersistableEntit
 				{
 					ControllerResourcesLocator controllerResourcesLocator = (ControllerResourcesLocator)
 																controllerClass.getDeclaredConstructor().newInstance();
-					currentBodyController = renderNewBodyForm(controllerResourcesLocator, dataMap);
+					currentBodyController = renderNewBodyForm(controllerResourcesLocator);
 					if(currentBodyController != null)
 					{
-						currentBodyController.onReturnFromServiceTask(true, dataMap);
+						currentBodyController.onWorkflowUserTaskLoad(true, dataMap);
 					}
 				}
 				catch(InstantiationException | IllegalAccessException | NoSuchMethodException |
@@ -197,12 +221,10 @@ public class CoreFxController implements IdleMonitorRegisterer, PersistableEntit
 	 * the existing body node with the created node.
 	 *
 	 * @param controllerResourcesLocator a locator for the FXML file and the resource bundles
-	 * @param dataMap the data passed from the workflow to the controller. It can be <code>null</code>
 	 *
 	 * @return the created JavaFX controller
 	 */
-	private BodyFxController renderNewBodyForm(ControllerResourcesLocator controllerResourcesLocator,
-	                                           Map<String, Object> dataMap)
+	private BodyFxControllerBase renderNewBodyForm(ControllerResourcesLocator controllerResourcesLocator)
 	{
 		notificationPane.hide();
 		
@@ -269,9 +291,9 @@ public class CoreFxController implements IdleMonitorRegisterer, PersistableEntit
 			return null;
 		}
 		
-		BodyFxController bodyFxController = paneLoader.getController();
+		BodyFxControllerBase bodyFxController = paneLoader.getController();
 		bodyFxController.attachCoreFxController(this);
-		bodyFxController.attachInitialResources(labelsBundle, errorsBundle, messagesBundle, appIcon);
+		bodyFxController.attachBundleResources(labelsBundle, errorsBundle, messagesBundle);
 		
 		bodyPane.setCenter(loadedPane);
 		
@@ -493,7 +515,7 @@ public class CoreFxController implements IdleMonitorRegisterer, PersistableEntit
 	{
 		if(currentBodyController instanceof PersistableEntity) // should always be true
 		{
-			BodyFxController newBodyController = renderNewBodyForm(currentBodyController, null);
+			BodyFxControllerBase newBodyController = renderNewBodyForm(currentBodyController);
 			currentBodyController = newBodyController;
 			
 			if(newBodyController instanceof PersistableEntity) // should always be true
@@ -640,7 +662,7 @@ public class CoreFxController implements IdleMonitorRegisterer, PersistableEntit
 		    DialogUtils.showWarningDialog(primaryStage, this, appIcon, title, null,
 		                                  contentText, buttonText, rtl);
 		    overlayPane.setVisible(false);
-		    headerPaneController.logout();
+		    logout();
 		});
 	}
 	

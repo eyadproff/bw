@@ -21,7 +21,7 @@ import sa.gov.nic.bio.bw.client.core.webservice.ApiResponse;
 import sa.gov.nic.bio.bw.client.core.webservice.LookupAPI;
 import sa.gov.nic.bio.bw.client.core.webservice.NicHijriCalendarData;
 import sa.gov.nic.bio.bw.client.core.webservice.WebserviceManager;
-import sa.gov.nic.bio.bw.client.core.workflow.WorkflowManager2;
+import sa.gov.nic.bio.bw.client.core.workflow.WorkflowManager;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -69,7 +69,7 @@ public class AppEntryPoint extends Application
 	
 	// initial resources
 	private ConfigManager configManager = new ConfigManager();
-	private WorkflowManager2 workflowManager = new WorkflowManager2();
+	private WorkflowManager workflowManager = new WorkflowManager();
 	private WebserviceManager webserviceManager = new WebserviceManager();
 	private ExecutorService executorService = Executors.newWorkStealingPool();
 	private ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor(
@@ -157,17 +157,6 @@ public class AppEntryPoint extends Application
 	    LOGGER.info("sRuntimeEnvironment = " + sRuntimeEnvironment);
 	
 	    RuntimeEnvironment runtimeEnvironment = RuntimeEnvironment.byName(sRuntimeEnvironment);
-	
-	    try
-	    {
-		    workflowManager.load();
-	    }
-	    catch(Exception e)
-	    {
-		    String errorCode = "C001-00009";
-		    notifyPreloader(new ProgressMessage(e, errorCode));
-		    return;
-	    }
 	
 	    String sReadTimeoutSeconds = System.getProperty("jnlp.bio.bw.webservice.readTimeoutSeconds");
 	    String sConnectTimeoutSeconds = System.getProperty("jnlp.bio.bw.webservice.connectTimeoutSeconds");

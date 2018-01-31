@@ -5,15 +5,18 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
-import javafx.scene.image.Image;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.ProgressIndicator;
+import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.CoreFxController;
-import sa.gov.nic.bio.bw.client.core.interfaces.AttachableController;
+import sa.gov.nic.bio.bw.client.core.SubFxControllerBase;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.login.tasks.ChangePasswordTask;
 
@@ -21,7 +24,7 @@ import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class ChangePasswordDialogFxController implements AttachableController
+public class ChangePasswordDialogFxController extends SubFxControllerBase
 {
 	private static final Logger LOGGER = Logger.getLogger(ChangePasswordDialogFxController.class.getName());
 	
@@ -223,7 +226,7 @@ public class ChangePasswordDialogFxController implements AttachableController
 	}
 	
 	@Override
-	public void attachInitialResources(ResourceBundle labelsBundle, ResourceBundle errorsBundle, ResourceBundle messagesBundle, Image appIcon)
+	public void attachBundleResources(ResourceBundle labelsBundle, ResourceBundle errorsBundle, ResourceBundle messagesBundle)
 	{
 		this.errorsBundle = errorsBundle;
 		this.messagesBundle = messagesBundle;

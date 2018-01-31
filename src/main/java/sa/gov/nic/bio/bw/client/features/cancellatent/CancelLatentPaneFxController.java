@@ -43,32 +43,35 @@ public class CancelLatentPaneFxController extends BodyFxControllerBase
 	}
 	
 	@Override
-	public void onReturnFromServiceTask(boolean firstVisit, Map<String, Object> dataMap)
+	public void onWorkflowUserTaskLoad(boolean newForm, Map<String, Object> dataMap)
 	{
-		ServiceResponse<?> serviceResponse = (ServiceResponse<?>) dataMap.get(Workflow.KEY_WEBSERVICE_RESPONSE);
-		
-		disableUiControls(false);
-		
-		if(serviceResponse.isSuccess())
+		if(!newForm)
 		{
-			String personId = txtPersonId.getText();
-			String latentId = txtLatentId.getText();
+			ServiceResponse<?> serviceResponse = (ServiceResponse<?>) dataMap.get(Workflow.KEY_WEBSERVICE_RESPONSE);
 			
-			Boolean resultBean = (Boolean) serviceResponse.getResult();
-			if(resultBean != null && resultBean)
+			disableUiControls(false);
+			
+			if(serviceResponse.isSuccess())
 			{
-				String message = String.format(messagesBundle.getString("cancelLatent.success"), latentId, personId);
-				showSuccessNotification(message);
+				String personId = txtPersonId.getText();
+				String latentId = txtLatentId.getText();
+				
+				Boolean resultBean = (Boolean) serviceResponse.getResult();
+				if(resultBean != null && resultBean)
+				{
+					String message = String.format(messagesBundle.getString("cancelLatent.success"), latentId, personId);
+					showSuccessNotification(message);
+				}
+				else
+				{
+					String message = String.format(messagesBundle.getString("cancelLatent.failure"), latentId, personId);
+					showWarningNotification(message);
+				}
 			}
-			else
-			{
-				String message = String.format(messagesBundle.getString("cancelLatent.failure"), latentId, personId);
-				showWarningNotification(message);
-			}
+			else handleNegativeResponse(serviceResponse);
+			
+			txtPersonId.requestFocus();
 		}
-		else super.onReturnFromServiceTask(firstVisit, dataMap);
-		
-		txtPersonId.requestFocus();
 	}
 	
 	@FXML
@@ -96,7 +99,7 @@ public class CancelLatentPaneFxController extends BodyFxControllerBase
 		uiDataMap.put("personId", personId);
 		uiDataMap.put("latentId", latentId);
 		
-		coreFxController.submitFormTask(uiDataMap);
+		coreFxController.submitForm(uiDataMap);
 	}
 	
 	private void disableUiControls(boolean bool)

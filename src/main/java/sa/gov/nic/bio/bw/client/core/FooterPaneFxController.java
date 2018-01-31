@@ -3,18 +3,19 @@ package sa.gov.nic.bio.bw.client.core;
 import javafx.fxml.FXML;
 import javafx.geometry.NodeOrientation;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.Pane;
-import sa.gov.nic.bio.bw.client.core.interfaces.AttachableController;
-import sa.gov.nic.bio.bw.client.core.interfaces.VisibilityControl;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 
 import java.util.ResourceBundle;
 
-@SuppressWarnings("unused")
-public class FooterPaneFxController implements VisibilityControl, AttachableController
+/**
+ * JavaFX controller for the footer. The footer is used only at login screen.
+ *
+ * @author Fouad Almalki
+ * @since 1.0.0
+ */
+public class FooterPaneFxController extends SubFxControllerBase
 {
 	@FXML private ResourceBundle resources;
-	@FXML private Pane rootPane;
 	@FXML private ImageView ivLogoRTL;
 	@FXML private ImageView ivLogoLTR;
 	
@@ -33,11 +34,5 @@ public class FooterPaneFxController implements VisibilityControl, AttachableCont
 		
 		GuiUtils.showNode(ivLogoRTL, rtl);
 		GuiUtils.showNode(ivLogoLTR, !rtl);
-	}
-	
-	@Override
-	public Pane getRootPane()
-	{
-		return rootPane;
 	}
 }

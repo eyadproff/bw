@@ -20,7 +20,7 @@ public class CoreWorkflow extends WorkflowBase<Void, Void>
 	}
 	
 	@Override
-	public Void onProcess(Void input) throws InterruptedException
+	public Void onProcess(Void input) throws InterruptedException, Signal
 	{
 		while(true)
 		{
