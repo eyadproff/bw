@@ -23,7 +23,7 @@ public class CancelCriminalPaneFxController extends BodyFxControllerBase
 	@FXML private ProgressIndicator piCancelCriminal;
 	
 	@FXML
-	private void initialize()
+	protected void initialize()
 	{
 		GuiUtils.applyValidatorToTextField(txtPersonId, "\\d*", "[^\\d]", 10);
 		GuiUtils.applyValidatorToTextField(txtCriminalId, "\\d*", "[^\\d]", 10);

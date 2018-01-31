@@ -67,16 +67,26 @@ public final class AppUtils
 		return null;
 	}*/
 	
-	public static List<String> listResourceFiles(ProtectionDomain protectionDomain, String matcher, RuntimeEnvironment runtimeEnvironment) throws IOException, URISyntaxException
+	public static List<String> listResourceFiles(ProtectionDomain protectionDomain, String matcher,
+	                                             boolean removeFileExtensions, RuntimeEnvironment runtimeEnvironment)
+																				throws IOException, URISyntaxException
 	{
 		List<String> resources = new ArrayList<>();
 		URL location = protectionDomain.getCodeSource().getLocation();
 		
-		if(runtimeEnvironment == null || runtimeEnvironment == RuntimeEnvironment.DEV)
+		if(runtimeEnvironment == RuntimeEnvironment.DEV)
 		{
-			Files.walk(Paths.get(location.toURI()).resolve("../../../resources").normalize())
-				 .map(path -> path.toAbsolutePath().toString().replace("\\", "/"))
+			// location.toURI() is ./build/classes/java/main
+			// we want ./build/resources/main
+			// the following line gets the absolute path of the folder "resources/main"
+			Path resourcesPath = Paths.get(location.toURI()).resolve("../../../resources/main").normalize();
+			
+			Files.walk(resourcesPath)
+				 .filter(Files::isRegularFile) // we want files only
+				 .map(path -> resourcesPath.relativize(path).toString()) // form absolute path to relative path string
+				 .map(path -> path.replace("\\", "/")) // replace back-slashes with forward-slashes
 				 .filter(path -> path.matches(matcher))
+				 .map(path -> removeFileExtensions ? path.substring(0, path.lastIndexOf('.')) : path)
 				 .forEach(resources::add);
 		}
 		else

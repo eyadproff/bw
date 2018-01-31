@@ -133,10 +133,10 @@ public class CoreFxController implements IdleMonitorRegisterer, PersistableEntit
 		menuPaneController.attachCoreFxController(this);
 		
 		// fix the size of the header pane and the menu pane.
-		headerPaneController.getRootPane().setMinSize(headerPaneController.getRootPane().getWidth(),
-		                                              headerPaneController.getRootPane().getHeight());
-		menuPaneController.getRootPane().setMinSize(menuPaneController.getRootPane().getWidth(),
-		                                            menuPaneController.getRootPane().getHeight());
+		headerPaneController.getRegionRootPane().setMinSize(headerPaneController.getRegionRootPane().getWidth(),
+		                                                    headerPaneController.getRegionRootPane().getHeight());
+		menuPaneController.getRegionRootPane().setMinSize(menuPaneController.getRegionRootPane().getWidth(),
+		                                                  menuPaneController.getRegionRootPane().getHeight());
 	}
 	
 	/**
@@ -251,19 +251,6 @@ public class CoreFxController implements IdleMonitorRegisterer, PersistableEntit
 			return null;
 		}
 		
-		ResourceBundle errorsBundle;
-		try
-		{
-			errorsBundle = ResourceBundle.getBundle(resourceBundleCollection.getErrorsBundlePath(),
-			                                        currentLanguage.getLocale(), new UTF8Control());
-		}
-		catch(MissingResourceException e)
-		{
-			String errorCode = "C002-00004";
-			showErrorDialogAndWaitForCore(errorCode, e, controllerResourcesLocator.getClass().getName());
-			return null;
-		}
-		
 		ResourceBundle messagesBundle;
 		try
 		{
@@ -293,7 +280,7 @@ public class CoreFxController implements IdleMonitorRegisterer, PersistableEntit
 		
 		BodyFxControllerBase bodyFxController = paneLoader.getController();
 		bodyFxController.attachCoreFxController(this);
-		bodyFxController.attachBundleResources(labelsBundle, errorsBundle, messagesBundle);
+		bodyFxController.attachResourceBundles(labelsBundle, messagesBundle);
 		
 		bodyPane.setCenter(loadedPane);
 		

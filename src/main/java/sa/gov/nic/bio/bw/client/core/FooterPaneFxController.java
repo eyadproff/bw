@@ -13,7 +13,7 @@ import java.util.ResourceBundle;
  * @author Fouad Almalki
  * @since 1.0.0
  */
-public class FooterPaneFxController extends SubFxControllerBase
+public class FooterPaneFxController extends RegionFxControllerBase
 {
 	@FXML private ResourceBundle resources;
 	@FXML private ImageView ivLogoRTL;

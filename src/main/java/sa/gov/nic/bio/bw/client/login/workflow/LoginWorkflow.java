@@ -31,13 +31,12 @@ public class LoginWorkflow extends WorkflowBase<Void, LoginBean>
 		while(true)
 		{
 			formRenderer.renderForm(LoginPaneFxController.class, loginWorkflowResponse);
-			loginWorkflowResponse.clear();
-			
 			Map<String, Object> userTaskDataMap = waitForUserTask();
 			
 			String username = (String) userTaskDataMap.get("username");
 			String password = (String) userTaskDataMap.get("password");
 			
+			loginWorkflowResponse.clear();
 			WebServiceResponse<LoginBean> response = new LoginService().execute(username, password);
 			
 			if(response.isSuccess()) return response.getResult();

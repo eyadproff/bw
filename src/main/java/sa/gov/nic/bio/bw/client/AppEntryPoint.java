@@ -11,6 +11,7 @@ import sa.gov.nic.bio.bw.client.core.beans.UserSession;
 import sa.gov.nic.bio.bw.client.core.utils.AppConstants;
 import sa.gov.nic.bio.bw.client.core.utils.AppInstanceManager;
 import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
+import sa.gov.nic.bio.bw.client.core.utils.CombinedResourceBundle;
 import sa.gov.nic.bio.bw.client.core.utils.ConfigManager;
 import sa.gov.nic.bio.bw.client.core.utils.GuiLanguage;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
@@ -29,6 +30,7 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
+import java.util.List;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.Properties;
@@ -75,8 +77,8 @@ public class AppEntryPoint extends Application
 	private ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor(
 																								DAEMON_THREAD_FACTORY);
 	
-	private ResourceBundle labelsBundle;
 	private ResourceBundle errorsBundle;
+	private ResourceBundle labelsBundle;
 	private ResourceBundle messagesBundle;
 	private ResourceBundle topMenusBundle;
 	
@@ -247,6 +249,24 @@ public class AppEntryPoint extends Application
 	    else initialLanguage = GuiLanguage.ENGLISH;
 	    Locale.setDefault(initialLanguage.getLocale());
 	    
+	    List<String> errorBundleNames;
+	
+	    try
+	    {
+		    errorBundleNames = AppUtils.listResourceFiles(getClass().getProtectionDomain(),
+		                                                  ".*/errors.properties$",
+		                                                  true, runtimeEnvironment);
+	    }
+	    catch(Exception e)
+	    {
+		    String errorCode = "C001-00008";
+		    notifyPreloader(new ProgressMessage(e, errorCode));
+		    return;
+	    }
+	    
+	    errorsBundle = new CombinedResourceBundle(errorBundleNames, initialLanguage.getLocale(), new UTF8Control());
+	    ((CombinedResourceBundle) errorsBundle).load();
+	    
 	    try
 	    {
 		    labelsBundle = ResourceBundle.getBundle(CoreFxController.RB_LABELS_FILE, initialLanguage.getLocale(),
@@ -259,7 +279,7 @@ public class AppEntryPoint extends Application
 		    return;
 	    }
 	
-	    try
+	    /*try
 	    {
 		    errorsBundle = ResourceBundle.getBundle(CoreFxController.RB_ERRORS_FILE, initialLanguage.getLocale(),
 		                                            new UTF8Control());
@@ -269,7 +289,7 @@ public class AppEntryPoint extends Application
 		    String errorCode = "C001-00014";
 		    notifyPreloader(new ProgressMessage(e, errorCode));
 		    return;
-	    }
+	    }*/
 	
 	    try
 	    {

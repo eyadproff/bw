@@ -30,7 +30,7 @@ import java.util.Map;
 import java.util.ResourceBundle;
 
 @SuppressWarnings("unused")
-public class MenuPaneFxController extends SubFxControllerBase
+public class MenuPaneFxController extends RegionFxControllerBase
 {
 	@FXML private ResourceBundle resources;
 	@FXML private Accordion accordion;
@@ -41,7 +41,7 @@ public class MenuPaneFxController extends SubFxControllerBase
 	private ListView<MenuItem> selectedListView;
 	
 	@FXML
-	private void initialize()
+	protected void initialize()
 	{
 		accordion.setFocusTraversable(false);
 	}

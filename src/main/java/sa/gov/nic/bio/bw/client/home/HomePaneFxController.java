@@ -11,7 +11,6 @@ import sa.gov.nic.bio.bw.client.core.beans.MenuItem;
 import sa.gov.nic.bio.bw.client.core.beans.UserSession;
 import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
-import sa.gov.nic.bio.bw.client.core.utils.RuntimeEnvironment;
 import sa.gov.nic.bio.bw.client.core.utils.UTF8Control;
 import sa.gov.nic.bio.bw.client.login.webservice.UserInfo;
 
@@ -20,9 +19,6 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLClassLoader;
 import java.text.Normalizer;
 import java.time.DateTimeException;
 import java.util.ArrayList;
@@ -61,14 +57,14 @@ public class HomePaneFxController extends BodyFxControllerBase
 	@FXML private Label lblPasswordExpirationTime;
 	
 	@FXML
-	private void initialize(){}
+	protected void initialize(){}
 	
 	@Override
 	public void onControllerReady()
 	{
-		coreFxController.getHeaderPaneController().showRootPane();
-		coreFxController.getFooterPaneController().hideRootPane();
-		coreFxController.getMenuPaneController().showRootPane();
+		coreFxController.getHeaderPaneController().showRegion();
+		coreFxController.getFooterPaneController().hideRegion();
+		coreFxController.getMenuPaneController().showRegion();
 		
 		UserSession userSession = Context.getUserSession();
 		UserInfo userInfo = (UserInfo) userSession.getAttribute("userInfo");
@@ -161,13 +157,13 @@ public class HomePaneFxController extends BodyFxControllerBase
 		try
 		{
 			menuFiles = AppUtils.listResourceFiles(getClass().getProtectionDomain(), "^.*/menu.properties$",
-			                                       Context.getRuntimeEnvironment());
+			                                       true, Context.getRuntimeEnvironment());
 		}
 		catch(Exception e)
 		{
 			String errorCode = "C004-00001";
-			String guiErrorMessage = errorsBundle.getString(errorCode);
-			String logErrorMessage = errorsBundle.getString(errorCode + ".internal");
+			String guiErrorMessage = coreFxController.getErrorsBundle().getString(errorCode);
+			String logErrorMessage = coreFxController.getErrorsBundle().getString(errorCode + ".internal");
 			LOGGER.log(Level.SEVERE, logErrorMessage, e);
 			coreFxController.showErrorDialogAndWait(guiErrorMessage, e);
 			return;
@@ -180,32 +176,7 @@ public class HomePaneFxController extends BodyFxControllerBase
 		{
 			LOGGER.fine("menuFile = " + menuFile);
 			
-			ResourceBundle rb;
-			
-			if(Context.getRuntimeEnvironment() == RuntimeEnvironment.DEV)
-			{
-				File file = new File(menuFile.substring(0, menuFile.lastIndexOf("/")));
-				URL[] urls = null;
-				try
-				{
-					urls = new URL[]{file.toURI().toURL()};
-				}
-				catch(MalformedURLException e)
-				{
-					e.printStackTrace();
-					return;
-				}
-				
-				ClassLoader loader = new URLClassLoader(urls);
-				rb = ResourceBundle.getBundle(menuFile.substring(menuFile.lastIndexOf("/") + 1,
-				                              menuFile.lastIndexOf('.')), Locale.getDefault(), loader, utf8Control);
-			}
-			else
-			{
-				rb = ResourceBundle.getBundle(menuFile.substring(0, menuFile.lastIndexOf('.')),
-				                              Locale.getDefault(), utf8Control);
-			}
-			
+			ResourceBundle rb = ResourceBundle.getBundle(menuFile, Locale.getDefault(), utf8Control);
 			
 			MenuItem menuItem = new MenuItem();
 			allMenus.add(menuItem);
@@ -257,8 +228,8 @@ public class HomePaneFxController extends BodyFxControllerBase
 					catch(ClassNotFoundException e)
 					{
 						String errorCode = "C004-00002";
-						String guiErrorMessage = String.format(errorsBundle.getString(errorCode), value);
-						String logErrorMessage = String.format(errorsBundle.getString(errorCode + ".internal"),
+						String guiErrorMessage = String.format(coreFxController.getErrorsBundle().getString(errorCode), value);
+						String logErrorMessage = String.format(coreFxController.getErrorsBundle().getString(errorCode + ".internal"),
 						                                       value);
 						LOGGER.severe(logErrorMessage);
 						coreFxController.showErrorDialogAndWait(guiErrorMessage, null);
@@ -286,7 +257,7 @@ public class HomePaneFxController extends BodyFxControllerBase
 		
 		if(menus.size() == 0)
 		{
-			String message = errorsBundle.getString("B004-00000");
+			String message = coreFxController.getErrorsBundle().getString("B004-00000");
 			showWarningNotification(message);
 		}
 		

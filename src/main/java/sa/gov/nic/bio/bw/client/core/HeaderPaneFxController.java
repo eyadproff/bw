@@ -20,7 +20,7 @@ import java.util.ResourceBundle;
  * @author Fouad Almalki
  * @since 1.0.0
  */
-public class HeaderPaneFxController extends SubFxControllerBase
+public class HeaderPaneFxController extends RegionFxControllerBase
 {
 	@FXML private ResourceBundle resources;
 	@FXML private Pane rootPane;
@@ -42,7 +42,7 @@ public class HeaderPaneFxController extends SubFxControllerBase
 	}
 	
 	@FXML
-	private void initialize()
+	protected void initialize()
 	{
 		Glyph atIcon = AppUtils.createFontAwesomeIcon(FontAwesome.Glyph.AT);
 		Glyph userIcon = AppUtils.createFontAwesomeIcon(FontAwesome.Glyph.USER);
@@ -56,7 +56,7 @@ public class HeaderPaneFxController extends SubFxControllerBase
 	}
 	
 	@Override
-	public Pane getRootPane()
+	public Pane getRegionRootPane()
 	{
 		return rootPane;
 	}

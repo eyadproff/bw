@@ -16,15 +16,14 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.CoreFxController;
-import sa.gov.nic.bio.bw.client.core.SubFxControllerBase;
+import sa.gov.nic.bio.bw.client.core.RegionFxControllerBase;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.login.tasks.ChangePasswordTask;
 
-import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class ChangePasswordDialogFxController extends SubFxControllerBase
+public class ChangePasswordDialogFxController extends RegionFxControllerBase
 {
 	private static final Logger LOGGER = Logger.getLogger(ChangePasswordDialogFxController.class.getName());
 	
@@ -47,12 +46,9 @@ public class ChangePasswordDialogFxController extends SubFxControllerBase
 	private BooleanProperty btnChangeDisabledProperty = new SimpleBooleanProperty(false);
 	
 	private boolean passwordChangedSuccessfully = false;
-	private CoreFxController coreFxController;
-	private  ResourceBundle errorsBundle;
-	private ResourceBundle messagesBundle;
 	
 	@FXML
-	private void initialize()
+	protected void initialize()
 	{
 		dialog.setOnShown(event ->
 		{
@@ -126,7 +122,7 @@ public class ChangePasswordDialogFxController extends SubFxControllerBase
 						}
 						else if(errorCode.startsWith("B"))
 						{
-							String message = errorsBundle.getString(errorCode);
+							String message = coreFxController.getErrorsBundle().getString(errorCode);
 							showWarningMessage(message);
 						}
 						else if(errorCode.startsWith("S"))
@@ -223,12 +219,5 @@ public class ChangePasswordDialogFxController extends SubFxControllerBase
 	public void attachCoreFxController(CoreFxController coreFxController)
 	{
 		this.coreFxController = coreFxController;
-	}
-	
-	@Override
-	public void attachBundleResources(ResourceBundle labelsBundle, ResourceBundle errorsBundle, ResourceBundle messagesBundle)
-	{
-		this.errorsBundle = errorsBundle;
-		this.messagesBundle = messagesBundle;
 	}
 }

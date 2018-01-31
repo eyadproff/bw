@@ -39,7 +39,7 @@ public class LoginPaneFxController extends BodyFxControllerBase implements Persi
 	@FXML private ProgressIndicator piLogin;
 	
 	@FXML
-	private void initialize()
+	protected void initialize()
 	{
 		cboLanguage.getItems().setAll(GuiLanguage.values());
 		GuiUtils.applyValidatorToTextField(txtUsername, 256);
@@ -63,9 +63,9 @@ public class LoginPaneFxController extends BodyFxControllerBase implements Persi
 	        coreFxController.switchLanguage(guiLanguage, this);
         });
 		
-		coreFxController.getMenuPaneController().hideRootPane();
-		coreFxController.getHeaderPaneController().hideRootPane();
-		coreFxController.getFooterPaneController().showRootPane();
+		coreFxController.getMenuPaneController().hideRegion();
+		coreFxController.getHeaderPaneController().hideRegion();
+		coreFxController.getFooterPaneController().showRegion();
 		
 		GuiUtils.makeButtonClickable(btnLogin);
 		GuiUtils.makeButtonClickable(btnChangePassword);
@@ -121,7 +121,7 @@ public class LoginPaneFxController extends BodyFxControllerBase implements Persi
 		if(controller != null)
 		{
 			controller.attachCoreFxController(coreFxController);
-			controller.attachBundleResources(labelsBundle, errorsBundle, messagesBundle);
+			controller.attachResourceBundles(labelsBundle, messagesBundle);
 			controller.setUsernameAndPassword(txtUsername.getText(), txtPassword.getText());
 			controller.requestFocus();
 			controller.showDialogAndWait();

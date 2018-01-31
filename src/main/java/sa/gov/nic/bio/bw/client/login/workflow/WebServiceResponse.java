@@ -7,7 +7,8 @@ public class WebServiceResponse<T> extends ServiceResponse<T>
 	private String url;
 	private int httpCode;
 	
-	public WebServiceResponse(boolean success, String errorCode, Exception exception, T result, String url, int httpCode)
+	public WebServiceResponse(boolean success, String errorCode, Exception exception, T result, String url,
+	                          int httpCode)
 	{
 		super(success, errorCode, exception, result);
 		

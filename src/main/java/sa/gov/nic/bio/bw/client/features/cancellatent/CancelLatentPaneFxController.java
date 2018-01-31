@@ -23,7 +23,7 @@ public class CancelLatentPaneFxController extends BodyFxControllerBase
 	@FXML private ProgressIndicator piCancelLatent;
 	
 	@FXML
-	private void initialize()
+	protected void initialize()
 	{
 		GuiUtils.applyValidatorToTextField(txtPersonId, "\\d*", "[^\\d]", 10);
 		GuiUtils.applyValidatorToTextField(txtLatentId, "\\d*", "[^\\d]", 20);

@@ -7,10 +7,17 @@ import java.net.URL;
  * and bundle resources.
  *
  * @author Fouad Almalki
- * @since 1.3.0
+ * @since 1.2.1
  */
 public interface ControllerResourcesLocator
 {
+	/**
+	 * @return the location of the FXML file
+	 */
 	URL getFxmlLocation();
+	
+	/**
+	 * @return a collection of paths to the resource bundles that are associated with this controller
+	 */
 	ResourceBundleCollection getResourceBundleCollection();
 }
