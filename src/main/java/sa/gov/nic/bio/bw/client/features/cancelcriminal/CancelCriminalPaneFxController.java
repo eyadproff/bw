@@ -1,5 +1,6 @@
 package sa.gov.nic.bio.bw.client.features.cancelcriminal;
 
+import javafx.application.Platform;
 import javafx.beans.binding.BooleanBinding;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -49,6 +50,16 @@ public class CancelCriminalPaneFxController extends BodyFxControllerBase
 	{
 		tabByPersonId.setGraphic(AppUtils.createFontAwesomeIcon('\uf2bb'));
 		tabByInquiryId.setGraphic(AppUtils.createFontAwesomeIcon('\uf1c0'));
+		
+		tabByPersonId.selectedProperty().addListener((observable, oldValue, newValue) ->
+		{
+			if(newValue) Platform.runLater(txtPersonId::requestFocus);
+		});
+		
+		tabByInquiryId.selectedProperty().addListener((observable, oldValue, newValue) ->
+		{
+			if(newValue) Platform.runLater(txtInquiryId::requestFocus);
+		});
 		
 		GuiUtils.applyValidatorToTextField(txtPersonId, "\\d*", "[^\\d]", 10);
 		GuiUtils.applyValidatorToTextField(txtCriminalId, "\\d*", "[^\\d]", 10);
@@ -276,6 +287,7 @@ public class CancelCriminalPaneFxController extends BodyFxControllerBase
 			GuiUtils.showNode(piLookupPersonIdTypes, false);
 			GuiUtils.showNode(tabPane, true);
 			GuiUtils.showNode(bottomBox, true);
+			txtPersonId.requestFocus();
 		}
 		else
 		{
