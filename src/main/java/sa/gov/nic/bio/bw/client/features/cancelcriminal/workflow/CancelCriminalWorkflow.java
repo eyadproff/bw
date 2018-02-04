@@ -29,9 +29,20 @@ public class CancelCriminalWorkflow extends WorkflowBase<Void, Void>
 			Map<String, Object> userTaskDataMap = waitForUserTask();
 			
 			String personId = (String) userTaskDataMap.get("personId");
+			String inquiryId = (String) userTaskDataMap.get("inquiryId");
+			Integer personIdType = (Integer) userTaskDataMap.get("personIdType");
 			String criminalId = (String) userTaskDataMap.get("criminalId");
 			
-			ServiceResponse<Boolean> response = CancelCriminalService.execute(personId, criminalId);
+			ServiceResponse<Boolean> response;
+			
+			if(personId != null) // by person id
+			{
+				response = CancelCriminalService.execute(personId, personIdType, criminalId);
+			}
+			else // by inquiry id
+			{
+				response = CancelCriminalService.execute(inquiryId, criminalId);
+			}
 			
 			workflowResponse.put(KEY_WEBSERVICE_RESPONSE, response);
 		}

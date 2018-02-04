@@ -5,17 +5,21 @@ import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.features.cancelcriminal.webservice.CancelCriminalAPI;
 import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
 
-import java.util.logging.Logger;
-
 public class CancelCriminalService
 {
-	private static final Logger LOGGER = Logger.getLogger(CancelCriminalService.class.getName());
-	
-	public static ServiceResponse<Boolean> execute(String personId, String criminalId)
+	public static ServiceResponse<Boolean> execute(String personId, int personIdType, String criminalId)
 	{
 		CancelCriminalAPI cancelCriminalAPI = Context.getWebserviceManager().getApi(CancelCriminalAPI.class);
-		String url = System.getProperty("jnlp.bio.bw.service.cancelCriminal");
-		Call<Boolean> apiCall = cancelCriminalAPI.cancelCriminal(url, personId, criminalId);
+		String url = System.getProperty("jnlp.bio.bw.service.cancelCriminal.byPersonId");
+		Call<Boolean> apiCall = cancelCriminalAPI.cancelCriminalByPersonId(url, personId, personIdType, criminalId);
+		return Context.getWebserviceManager().executeApi(apiCall);
+	}
+	
+	public static ServiceResponse<Boolean> execute(String inquiryId, String criminalId)
+	{
+		CancelCriminalAPI cancelCriminalAPI = Context.getWebserviceManager().getApi(CancelCriminalAPI.class);
+		String url = System.getProperty("jnlp.bio.bw.service.cancelCriminal.byInquiryId");
+		Call<Boolean> apiCall = cancelCriminalAPI.cancelCriminalByInquiryId(url, inquiryId, criminalId);
 		return Context.getWebserviceManager().executeApi(apiCall);
 	}
 }

@@ -15,7 +15,9 @@
       fx:controller="sa.gov.nic.bio.bw.client.features.cancelcriminal.CancelCriminalPaneFxController"
       stylesheets="@../css/style.css" alignment="CENTER" spacing="20">
     <HBox alignment="CENTER">
-        <TabPane styleClass="floating">
+        <ProgressIndicator fx:id="piLookupPersonIdTypes" prefHeight="25.0" prefWidth="25.0"/>
+        <Button fx:id="btnRetryLookupPersonIdTypes" text="%button.retryLookupPersonIdTypes" visible="false" managed="false" onAction="#onRetryLookupPersonIdTypesButtonClicked"/>
+        <TabPane fx:id="tabPane" styleClass="floating" visible="false" managed="false">
             <Tab fx:id="tabByPersonId" text="%tab.byPersonId" closable="false">
                 <GridPane alignment="CENTER" vgap="5" hgap="20" styleClass="formBox">
                     <padding>
@@ -42,7 +44,7 @@
             </Tab>
         </TabPane>
     </HBox>
-    <VBox alignment="CENTER" spacing="10">
+    <VBox fx:id="bottomBox" alignment="CENTER" spacing="10" visible="false" managed="false">
         <Button fx:id="btnCancelCriminal" text="%button.cancelCriminal" onAction="#onCancelCriminalButtonClicked"/>
         <ProgressIndicator fx:id="piCancelCriminal" prefHeight="25.0" prefWidth="25.0" visible="false" managed="false"/>
     </VBox>
