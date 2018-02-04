@@ -150,7 +150,7 @@ public class LoginPaneFxController extends BodyFxControllerBase implements Persi
 		
 		GuiUtils.showNode(piLogin, bool);
 		GuiUtils.showNode(btnLogin, !bool);
-		GuiUtils.showNode(btnChangePassword, !bool);
+		//GuiUtils.showNode(btnChangePassword, !bool);
 	}
 	
 	@FXML
