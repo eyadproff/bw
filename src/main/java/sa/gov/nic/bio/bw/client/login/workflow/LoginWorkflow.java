@@ -26,21 +26,20 @@ public class LoginWorkflow extends WorkflowBase<Void, LoginBean>
 	@Override
 	public LoginBean onProcess(Void input) throws InterruptedException, Signal
 	{
-		Map<String, Object> loginWorkflowResponse = new HashMap<>();
+		Map<String, Object> uiInputData = new HashMap<>();
 		
 		while(true)
 		{
-			formRenderer.renderForm(LoginPaneFxController.class, loginWorkflowResponse);
+			formRenderer.renderForm(LoginPaneFxController.class, uiInputData);
 			Map<String, Object> userTaskDataMap = waitForUserTask();
 			
 			String username = (String) userTaskDataMap.get("username");
 			String password = (String) userTaskDataMap.get("password");
 			
-			loginWorkflowResponse.clear();
-			WebServiceResponse<LoginBean> response = new LoginService().execute(username, password);
+			ServiceResponse<LoginBean> response = LoginService.execute(username, password);
 			
 			if(response.isSuccess()) return response.getResult();
-			else loginWorkflowResponse.put(KEY_WEBSERVICE_RESPONSE, response);
+			else uiInputData.put(KEY_WEBSERVICE_RESPONSE, response);
 		}
 	}
 }

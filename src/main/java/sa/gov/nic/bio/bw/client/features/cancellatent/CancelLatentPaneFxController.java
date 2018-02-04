@@ -59,16 +59,17 @@ public class CancelLatentPaneFxController extends BodyFxControllerBase
 				Boolean resultBean = (Boolean) serviceResponse.getResult();
 				if(resultBean != null && resultBean)
 				{
-					String message = String.format(messagesBundle.getString("cancelLatent.success"), latentId, personId);
+					String message = String.format(stringsBundle.getString("cancelLatent.success"), latentId, personId);
 					showSuccessNotification(message);
 				}
 				else
 				{
-					String message = String.format(messagesBundle.getString("cancelLatent.failure"), latentId, personId);
+					String message = String.format(stringsBundle.getString("cancelLatent.failure"), latentId, personId);
 					showWarningNotification(message);
 				}
 			}
-			else handleNegativeResponse(serviceResponse);
+			else reportNegativeResponse(serviceResponse.getErrorCode(), serviceResponse.getException(),
+			                            serviceResponse.getErrorDetails());
 			
 			txtPersonId.requestFocus();
 		}
@@ -86,8 +87,8 @@ public class CancelLatentPaneFxController extends BodyFxControllerBase
 		String personId = txtPersonId.getText().trim();
 		String latentId = txtLatentId.getText().trim();
 		
-		String headerText = messagesBundle.getString("cancelLatent.confirmation.header");
-		String contentText = String.format(messagesBundle.getString("cancelLatent.confirmation.message"), latentId, personId);
+		String headerText = stringsBundle.getString("cancelLatent.confirmation.header");
+		String contentText = String.format(stringsBundle.getString("cancelLatent.confirmation.message"), latentId, personId);
 		boolean confirmed = coreFxController.showConfirmationDialogAndWait(headerText, contentText);
 		
 		if(!confirmed) return;

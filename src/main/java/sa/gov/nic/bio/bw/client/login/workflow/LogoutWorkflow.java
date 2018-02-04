@@ -6,7 +6,7 @@ import sa.gov.nic.bio.bw.client.core.workflow.WorkflowBase;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 
-public class LogoutWorkflow extends WorkflowBase<Void, Boolean>
+public class LogoutWorkflow extends WorkflowBase<Void, Void>
 {
 	
 	public LogoutWorkflow(FormRenderer formRenderer, BlockingQueue<Map<String, Object>> userTasks)
@@ -15,8 +15,9 @@ public class LogoutWorkflow extends WorkflowBase<Void, Boolean>
 	}
 	
 	@Override
-	public Boolean onProcess(Void input) throws InterruptedException
+	public Void onProcess(Void input)
 	{
-		return Boolean.TRUE;
+		LogoutService.execute();
+		return null;
 	}
 }

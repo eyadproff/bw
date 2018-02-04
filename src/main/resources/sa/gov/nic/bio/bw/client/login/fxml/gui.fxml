@@ -1,6 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?language JavaScript?>
-<?scenebuilder-preview-i18n-resource ../bundles/labels.properties?>
 
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
@@ -15,7 +13,8 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.ProgressIndicator?>
-<VBox xmlns:fx="http://javafx.com/fxml" xmlns="http://javafx.com/javafx/8"
+
+<VBox xmlns="http://javafx.com/javafx/8.0.152" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="sa.gov.nic.bio.bw.client.login.LoginPaneFxController"
       stylesheets="@../css/style.css" alignment="CENTER" spacing="70">
     <ImageView>

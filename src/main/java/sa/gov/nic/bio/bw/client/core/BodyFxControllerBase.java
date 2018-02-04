@@ -5,8 +5,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import sa.gov.nic.bio.bw.client.core.interfaces.NotificationController;
 import sa.gov.nic.bio.bw.client.core.interfaces.WorkflowUserTaskController;
-import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
-import sa.gov.nic.bio.bw.client.login.workflow.WebServiceResponse;
 
 import java.util.logging.Logger;
 
@@ -86,80 +84,21 @@ public abstract class BodyFxControllerBase extends RegionFxControllerBase implem
 	public void onControllerReady(){}
 	
 	
-	protected void handleNegativeResponse(ServiceResponse<?> serviceResponse)
+	protected void reportNegativeResponse(String errorCode, Exception exception, String[] errorDetails)
 	{
-		if(!serviceResponse.isSuccess())
+		if(errorCode.startsWith("B") || errorCode.startsWith("N")) // business error
 		{
-			String errorCode = serviceResponse.getErrorCode();
-			Exception exception = serviceResponse.getException();
-			String apiUrl = null;
-			int httpCode = 0;
+			// no exceptions/errorDetails in case of business error
 			
-			if(serviceResponse instanceof WebServiceResponse)
-			{
-				WebServiceResponse webServiceResponse = (WebServiceResponse) serviceResponse;
-				
-				apiUrl = webServiceResponse.getUrl();
-				httpCode = webServiceResponse.getHttpCode();
-			}
+			String guiErrorMessage = Context.getErrorsBundle().getString(errorCode);
+			String logErrorMessage = Context.getErrorsBundle().getString(errorCode + ".internal");
 			
-			if(errorCode != null)
-			{
-				if(errorCode.startsWith("C"))
-				{
-					String guiErrorMessage = coreFxController.getErrorsBundle().getString(errorCode);
-					String logErrorMessage = coreFxController.getErrorsBundle().getString(errorCode + ".internal");
-					
-					guiErrorMessage = httpCode > 0 ? String.format(guiErrorMessage, apiUrl, httpCode) : String.format(guiErrorMessage, apiUrl);
-					logErrorMessage = httpCode > 0 ? String.format(logErrorMessage, apiUrl, httpCode) : String.format(logErrorMessage, apiUrl);
-					
-					if(exception != null) coreFxController.showErrorDialogAndWait(guiErrorMessage, exception);
-					else showErrorNotification(guiErrorMessage);
-					LOGGER.severe(logErrorMessage);
-				}
-				else if(errorCode.startsWith("B"))
-				{
-					String guiErrorMessage;
-					String logErrorMessage;
-					
-					if(errorCode.startsWith("B010"))
-					{
-						guiErrorMessage = coreFxController.getErrorsBundle().getString(errorCode);
-						logErrorMessage = coreFxController.getErrorsBundle().getString(errorCode + ".internal");
-					}
-					else
-					{
-						guiErrorMessage = coreFxController.getErrorsBundle().getString(errorCode);
-						logErrorMessage = coreFxController.getErrorsBundle().getString(errorCode + ".internal");
-					}
-					
-					showWarningNotification(guiErrorMessage);
-					LOGGER.info(logErrorMessage);
-				}
-				else // server error
-				{
-					String code = "S000-00000";
-					String guiErrorMessage = coreFxController.getErrorsBundle().getString(code);
-					String logErrorMessage = coreFxController.getErrorsBundle().getString(code + ".internal");
-					
-					guiErrorMessage = String.format(guiErrorMessage, errorCode);
-					logErrorMessage = String.format(logErrorMessage, errorCode);
-					
-					showWarningNotification(guiErrorMessage);
-					LOGGER.severe(logErrorMessage);
-				}
-			}
-			else // the server didn't send an error code inside [400,401,403,500] response
-			{
-				String code = "C002-00018";
-				String guiErrorMessage = coreFxController.getErrorsBundle().getString(code);
-				String logErrorMessage = coreFxController.getErrorsBundle().getString(code + ".internal");
-				guiErrorMessage = String.format(guiErrorMessage, apiUrl, String.valueOf(httpCode));
-				logErrorMessage = String.format(logErrorMessage, apiUrl, String.valueOf(httpCode));
-				
-				showWarningNotification(guiErrorMessage);
-				LOGGER.severe(logErrorMessage);
-			}
+			LOGGER.info(logErrorMessage);
+			showWarningNotification(guiErrorMessage);
+		}
+		else // client error, server error, or unknown error
+		{
+			coreFxController.showErrorDialog(errorCode, exception, errorDetails);
 		}
 	}
 }

@@ -59,16 +59,17 @@ public class CancelCriminalPaneFxController extends BodyFxControllerBase
 				Boolean resultBean = (Boolean) serviceResponse.getResult();
 				if(resultBean != null && resultBean)
 				{
-					String message = String.format(messagesBundle.getString("cancelCriminal.success"), latentNumber, idNumber);
+					String message = String.format(stringsBundle.getString("cancelCriminal.success"), latentNumber, idNumber);
 					showSuccessNotification(message);
 				}
 				else
 				{
-					String message = String.format(messagesBundle.getString("cancelCriminal.failure"), latentNumber, idNumber);
+					String message = String.format(stringsBundle.getString("cancelCriminal.failure"), latentNumber, idNumber);
 					showWarningNotification(message);
 				}
 			}
-			else handleNegativeResponse(serviceResponse);
+			else reportNegativeResponse(serviceResponse.getErrorCode(), serviceResponse.getException(),
+			                            serviceResponse.getErrorDetails());
 			
 			txtPersonId.requestFocus();
 		}
@@ -86,8 +87,8 @@ public class CancelCriminalPaneFxController extends BodyFxControllerBase
 		String personId = txtPersonId.getText().trim();
 		String criminalId = txtCriminalId.getText().trim();
 		
-		String headerText = messagesBundle.getString("cancelCriminal.confirmation.header");
-		String contentText = String.format(messagesBundle.getString("cancelCriminal.confirmation.message"), criminalId, personId);
+		String headerText = stringsBundle.getString("cancelCriminal.confirmation.header");
+		String contentText = String.format(stringsBundle.getString("cancelCriminal.confirmation.message"), criminalId, personId);
 		boolean confirmed = coreFxController.showConfirmationDialogAndWait(headerText, contentText);
 		
 		if(!confirmed) return;

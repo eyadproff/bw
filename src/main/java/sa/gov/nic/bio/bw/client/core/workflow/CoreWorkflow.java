@@ -32,10 +32,27 @@ public class CoreWorkflow extends WorkflowBase<Void, Void>
 				continue;
 			}
 			
-			new HomeWorkflow(formRenderer, userTasks).onProcess(loginBean);
-			Boolean exit = new LogoutWorkflow(formRenderer, userTasks).onProcess(null);
-			
-			if(exit) return null;
+			try
+			{
+				new HomeWorkflow(formRenderer, userTasks).onProcess(loginBean);
+			}
+			catch(Signal signal)
+			{
+				SignalType signalType = signal.getSignalType();
+				
+				switch(signalType)
+				{
+					case LOGOUT:
+					{
+						new LogoutWorkflow(formRenderer, userTasks).onProcess(null);
+						break;
+					}
+					default: // shouldn't happen
+					{
+					
+					}
+				}
+			}
 		}
 	}
 }

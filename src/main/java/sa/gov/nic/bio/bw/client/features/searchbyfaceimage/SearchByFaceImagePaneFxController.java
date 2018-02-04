@@ -44,11 +44,13 @@ import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.DecimalFormat;
+import java.util.Base64;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -96,8 +98,8 @@ public class SearchByFaceImagePaneFxController extends BodyFxControllerBase
 	@Override
 	public void onControllerReady()
 	{
-		fileChooser.setTitle(labelsBundle.getString("fileChooser.selectImage.title"));
-		FileChooser.ExtensionFilter extFilterJPG = new FileChooser.ExtensionFilter(labelsBundle.getString("fileChooser.selectImage.types"), "*.jpg");
+		fileChooser.setTitle(stringsBundle.getString("fileChooser.selectImage.title"));
+		FileChooser.ExtensionFilter extFilterJPG = new FileChooser.ExtensionFilter(stringsBundle.getString("fileChooser.selectImage.types"), "*.jpg");
 		fileChooser.getExtensionFilters().addAll(extFilterJPG);
 		
 		imagePane.maxWidthProperty().bind(coreFxController.getBodyPane().widthProperty());
@@ -139,9 +141,9 @@ public class SearchByFaceImagePaneFxController extends BodyFxControllerBase
 			
 			if(serviceResponse.isSuccess())
 			{
-				btnSearchByImage.setText(labelsBundle.getString("button.searchByImageAgain"));
+				btnSearchByImage.setText(stringsBundle.getString("button.searchByImageAgain"));
 				
-				java.util.List<Candidate> candidates = (List<Candidate>) serviceResponse.getResult();
+				List<Candidate> candidates = (List<Candidate>) serviceResponse.getResult();
 				Collections.sort(candidates);
 				
 				spCandidates.maxHeightProperty().bind(new SimpleDoubleProperty(Double.MAX_VALUE));
@@ -188,12 +190,12 @@ public class SearchByFaceImagePaneFxController extends BodyFxControllerBase
 				    ivCenterImage.setImage(uploadedImage);
 				    btnCompareWithUploadedImage.setDisable(true);
 				
-				    lblBioId.setText(labelsBundle.getString("label.notAvailable"));
-				    lblScore.setText(labelsBundle.getString("label.notAvailable"));
-				    lblSamisId.setText(labelsBundle.getString("label.notAvailable"));
-				    lblFirstName.setText(labelsBundle.getString("label.notAvailable"));
-				    lblFatherName.setText(labelsBundle.getString("label.notAvailable"));
-				    lblFamilyName.setText(labelsBundle.getString("label.notAvailable"));
+				    lblBioId.setText(stringsBundle.getString("label.notAvailable"));
+				    lblScore.setText(stringsBundle.getString("label.notAvailable"));
+				    lblSamisId.setText(stringsBundle.getString("label.notAvailable"));
+				    lblFirstName.setText(stringsBundle.getString("label.notAvailable"));
+				    lblFatherName.setText(stringsBundle.getString("label.notAvailable"));
+				    lblFamilyName.setText(stringsBundle.getString("label.notAvailable"));
 				});
 				
 				hbCandidatesImages.getChildren().clear();
@@ -201,8 +203,8 @@ public class SearchByFaceImagePaneFxController extends BodyFxControllerBase
 				for(Candidate candidate : candidates)
 				{
 					ImageView candidateImageView = new ImageView();
-					imageFile = new File(candidate.getPhotoPath());
-					Image candidateImage = new Image(imageFile.toURI().toString());
+					byte[] photoByteArray = Base64.getDecoder().decode(candidate.getImage());
+					Image candidateImage = new Image(new ByteArrayInputStream(photoByteArray));
 					candidateImageView.setImage(candidateImage);
 					candidateImageView.setPreserveRatio(true);
 					candidateImageView.fitHeightProperty().bind(spCandidates.heightProperty().subtract(hScrollbarHeight[0] * 3 + 2)); // 2 = top border + bottom border
@@ -217,12 +219,12 @@ public class SearchByFaceImagePaneFxController extends BodyFxControllerBase
 					    btnCompareWithUploadedImage.setDisable(false);
 					
 					    // default values
-					    lblBioId.setText(labelsBundle.getString("label.notAvailable"));
-					    lblScore.setText(labelsBundle.getString("label.notAvailable"));
-					    lblSamisId.setText(labelsBundle.getString("label.notAvailable"));
-					    lblFirstName.setText(labelsBundle.getString("label.notAvailable"));
-					    lblFatherName.setText(labelsBundle.getString("label.notAvailable"));
-					    lblFamilyName.setText(labelsBundle.getString("label.notAvailable"));
+					    lblBioId.setText(stringsBundle.getString("label.notAvailable"));
+					    lblScore.setText(stringsBundle.getString("label.notAvailable"));
+					    lblSamisId.setText(stringsBundle.getString("label.notAvailable"));
+					    lblFirstName.setText(stringsBundle.getString("label.notAvailable"));
+					    lblFatherName.setText(stringsBundle.getString("label.notAvailable"));
+					    lblFamilyName.setText(stringsBundle.getString("label.notAvailable"));
 					
 					    long bioId = candidate.getBioId();
 					    int score = candidate.getScore();
@@ -264,7 +266,8 @@ public class SearchByFaceImagePaneFxController extends BodyFxControllerBase
 				GuiUtils.showNode(btnCompareWithUploadedImage, false);
 				GuiUtils.showNode(detailsPane, false);
 				
-				handleNegativeResponse(serviceResponse);
+				reportNegativeResponse(serviceResponse.getErrorCode(), serviceResponse.getException(),
+				                       serviceResponse.getErrorDetails());
 			}
 		}
 	}
@@ -276,8 +279,8 @@ public class SearchByFaceImagePaneFxController extends BodyFxControllerBase
 		
 		if(spCandidates.isVisible())
 		{
-			String headerText = messagesBundle.getString("selectNewFaceImage.confirmation.header");
-			String contentText = messagesBundle.getString("selectNewFaceImage.confirmation.message");
+			String headerText = stringsBundle.getString("selectNewFaceImage.confirmation.header");
+			String contentText = stringsBundle.getString("selectNewFaceImage.confirmation.message");
 			boolean confirmed = coreFxController.showConfirmationDialogAndWait(headerText, contentText);
 			
 			if(!confirmed) return;
@@ -304,7 +307,7 @@ public class SearchByFaceImagePaneFxController extends BodyFxControllerBase
 						if(fileSizeKB > maxFileSizeKb)
 						{
 							DecimalFormat df = new DecimalFormat("#.00"); // 2 decimal places
-							showWarningNotification(String.format(messagesBundle.getString("selectNewFaceImage.fileChooser.exceedMaxFileSize"), df.format(fileSizeKB), df.format(maxFileSizeKb)));
+							showWarningNotification(String.format(stringsBundle.getString("selectNewFaceImage.fileChooser.exceedMaxFileSize"), df.format(fileSizeKB), df.format(maxFileSizeKb)));
 							return;
 						}
 					}
@@ -342,8 +345,8 @@ public class SearchByFaceImagePaneFxController extends BodyFxControllerBase
 				// success image loading
 				
 				btnSearchByImage.setDisable(false);
-				btnSelectImage.setText(labelsBundle.getString("button.selectNewImage"));
-				btnSearchByImage.setText(labelsBundle.getString("button.searchByImage"));
+				btnSelectImage.setText(stringsBundle.getString("button.selectNewImage"));
+				btnSearchByImage.setText(stringsBundle.getString("button.searchByImage"));
 				spCandidates.maxHeightProperty().bind(new SimpleDoubleProperty(0.0));
 				
 				GuiUtils.showNode(btnSearchByImage, true);
@@ -365,14 +368,14 @@ public class SearchByFaceImagePaneFxController extends BodyFxControllerBase
 		
 		if(spCandidates.isVisible())
 		{
-			String headerText = messagesBundle.getString("searchByFaceImageWithExisting.confirmation.header");
-			String contentText = messagesBundle.getString("searchByFaceImageWithExisting.confirmation.message");
+			String headerText = stringsBundle.getString("searchByFaceImageWithExisting.confirmation.header");
+			String contentText = stringsBundle.getString("searchByFaceImageWithExisting.confirmation.message");
 			confirmed = coreFxController.showConfirmationDialogAndWait(headerText, contentText);
 		}
 		else
 		{
-			String headerText = messagesBundle.getString("searchByFaceImage.confirmation.header");
-			String contentText = messagesBundle.getString("searchByFaceImage.confirmation.message");
+			String headerText = stringsBundle.getString("searchByFaceImage.confirmation.header");
+			String contentText = stringsBundle.getString("searchByFaceImage.confirmation.message");
 			confirmed = coreFxController.showConfirmationDialogAndWait(headerText, contentText);
 		}
 		
@@ -426,8 +429,8 @@ public class SearchByFaceImagePaneFxController extends BodyFxControllerBase
 			uploadedImage = scaleImage(uploadedImage, uploadedImage.getWidth() + extraWidth, uploadedImage.getHeight() + heightDiff);
 		}
 		
-		String title = labelsBundle.getString("dialog.compare.title");
-		String buttonText = labelsBundle.getString("dialog.compare.buttons.close");
+		String title = stringsBundle.getString("dialog.compare.title");
+		String buttonText = stringsBundle.getString("dialog.compare.buttons.close");
 		boolean rtl = coreFxController.getCurrentLanguage().getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT;
 		
 		Image mergedImage;
@@ -452,7 +455,7 @@ public class SearchByFaceImagePaneFxController extends BodyFxControllerBase
 		imageLayer.getChildren().add(ivMergedImage);
 		borderPane.centerProperty().set(imageLayer);
 		
-		Stage dialogStage = DialogUtils.buildCustomDialog(coreFxController.getPrimaryStage(), coreFxController.getAppIcon(), title, stackPane, rtl);
+		Stage dialogStage = DialogUtils.buildCustomDialog(coreFxController.getPrimaryStage(), title, stackPane, rtl);
 		dialogStage.getScene().addEventHandler(KeyEvent.KEY_PRESSED, t ->
 		{
 			if(t.getCode() == KeyCode.ESCAPE)

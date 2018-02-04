@@ -1,32 +1,21 @@
 package sa.gov.nic.bio.bw.client.features.cancelcriminal.workflow;
 
-import org.activiti.engine.delegate.DelegateExecution;
 import retrofit2.Call;
 import sa.gov.nic.bio.bw.client.core.Context;
-import sa.gov.nic.bio.bw.client.core.webservice.ApiResponse;
-import sa.gov.nic.bio.bw.client.core.workflow.ServiceBase;
 import sa.gov.nic.bio.bw.client.features.cancelcriminal.webservice.CancelCriminalAPI;
+import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
 
 import java.util.logging.Logger;
 
-public class CancelCriminalService extends ServiceBase
+public class CancelCriminalService
 {
 	private static final Logger LOGGER = Logger.getLogger(CancelCriminalService.class.getName());
 	
-	@Override
-	public void execute(DelegateExecution execution)
+	public static ServiceResponse<Boolean> execute(String personId, String criminalId)
 	{
-		String personId = (String) execution.getVariable("personId");
-		String criminalId = (String) execution.getVariable("criminalId");
-		execution.removeVariables();
-		
-		LOGGER.fine("personId = " + personId);
-		LOGGER.fine("criminalId = " + criminalId);
-		
 		CancelCriminalAPI cancelCriminalAPI = Context.getWebserviceManager().getApi(CancelCriminalAPI.class);
 		String url = System.getProperty("jnlp.bio.bw.service.cancelCriminal");
 		Call<Boolean> apiCall = cancelCriminalAPI.cancelCriminal(url, personId, criminalId);
-		ApiResponse<Boolean> response = Context.getWebserviceManager().executeApi(apiCall);
-		bypassResponse(execution, response, true);
+		return Context.getWebserviceManager().executeApi(apiCall);
 	}
 }

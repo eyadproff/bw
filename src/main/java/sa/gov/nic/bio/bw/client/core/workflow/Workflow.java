@@ -20,6 +20,9 @@ public interface Workflow<I, O>
 {
 	String KEY_WEBSERVICE_RESPONSE = "WEBSERVICE_RESPONSE";
 	String KEY_SIGNAL_TYPE = "SIGNAL_TYPE";
+	String KEY_ERROR_CODE = "ERROR_CODE";
+	String KEY_ERROR_DETAILS = "ERROR_DETAILS";
+	String KEY_EXCEPTION = "EXCEPTION";
 	
 	/**
 	 * The body of the workflow.

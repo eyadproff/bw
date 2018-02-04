@@ -85,7 +85,7 @@ public class HeaderPaneFxController extends RegionFxControllerBase
 	private void onLogoutButtonClicked(ActionEvent actionEvent)
 	{
 		coreFxController.getNotificationPane().hide();
-		String message = coreFxController.getMessagesBundle().getString("logout.confirm");
+		String message = coreFxController.getStringsBundle().getString("logout.confirm");
 		boolean confirmed = coreFxController.showConfirmationDialogAndWait(null, message);
 		
 		if(confirmed) coreFxController.logout();

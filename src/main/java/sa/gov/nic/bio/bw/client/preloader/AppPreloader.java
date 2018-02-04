@@ -3,15 +3,20 @@ package sa.gov.nic.bio.bw.client.preloader;
 import javafx.application.Platform;
 import javafx.application.Preloader;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.image.Image;
+import javafx.geometry.NodeOrientation;
+import javafx.scene.control.Alert.AlertType;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import sa.gov.nic.bio.bw.client.AppEntryPoint;
 import sa.gov.nic.bio.bw.client.core.utils.AppConstants;
+import sa.gov.nic.bio.bw.client.core.utils.AppInstanceManager;
 import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.client.core.utils.DialogUtils;
+import sa.gov.nic.bio.bw.client.core.utils.GuiLanguage;
+import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.utils.LogFormatter;
-import sa.gov.nic.bio.bw.client.core.utils.ProgressMessage;
 import sa.gov.nic.bio.bw.client.core.utils.UTF8Control;
+import sa.gov.nic.bio.bw.client.preloader.utils.StartupErrorCodes;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -23,7 +28,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
+import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.concurrent.CountDownLatch;
@@ -32,13 +37,13 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
+import java.util.prefs.Preferences;
 
 /**
  * The app preloader that runs at the startup of the application. Its sole purpose is to perform initialization of
  * the application. A splash screen appears until the preloader finishes its job.
  *
  * @author Fouad Almalki
- * @since 1.0.0
  */
 public class AppPreloader extends Preloader
 {
@@ -141,17 +146,26 @@ public class AppPreloader extends Preloader
 		{
 			Logger.getAnonymousLogger().log(Level.SEVERE, "Could not load logging.properties file", e);
 		}
+		
+		// set the default language
+		Preferences prefs = Preferences.userNodeForPackage(AppConstants.PREF_NODE_CLASS);
+		String userLanguage = prefs.get(AppConstants.UI_LANGUAGE_PREF_NAME, null);
+		if(userLanguage == null)
+		{
+			userLanguage = System.getProperty("user.language","en"); // Use the OS default language
+		}
+		
+		if("ar".equalsIgnoreCase(userLanguage)) AppEntryPoint.guiLanguage = GuiLanguage.ARABIC;
+		else AppEntryPoint.guiLanguage = GuiLanguage.ENGLISH;
+		
+		Locale.setDefault(AppEntryPoint.guiLanguage.getLocale());
 	}
 	
 	private static final String FXML_FILE = "sa/gov/nic/bio/bw/client/preloader/fxml/gui.fxml";
-	private static final String APP_ICON_FILE = "sa/gov/nic/bio/bw/client/preloader/images/app_icon.png";
-	private static final String RB_LABELS_FILE = "sa/gov/nic/bio/bw/client/preloader/bundles/labels";
-	private static final String RB_ERRORS_FILE = "sa/gov/nic/bio/bw/client/preloader/bundles/errors";
+	private static final String RB_STRINGS_FILE = "sa/gov/nic/bio/bw/client/preloader/bundles/strings";
 	
 	private static final Logger LOGGER = Logger.getLogger(AppPreloader.class.getName());
-	private ResourceBundle errorsBundle;
-	private ResourceBundle labelsBundle;
-	private Image appIcon;
+	private ResourceBundle stringsBundle;
 	private URL fxmlUrl;
 	private Stage splashScreenStage;
 	
@@ -159,19 +173,22 @@ public class AppPreloader extends Preloader
 	public void init() throws Exception
 	{
 		LOGGER.entering(AppPreloader.class.getName(), "init()");
-		CountDownLatch latch = new CountDownLatch(1); // used to wait for the dialog exit before leaving init() method.
+		
+		// used to wait for the dialog exit before leaving init() method.
+		CountDownLatch latch = new CountDownLatch(1);
 		
 		try
 		{
-			errorsBundle = ResourceBundle.getBundle(RB_ERRORS_FILE, new UTF8Control());
+			stringsBundle = ResourceBundle.getBundle(RB_STRINGS_FILE, new UTF8Control());
 		}
 		catch(MissingResourceException e)
 		{
-			String errorCode = "C001-00001";
+			String errorCode = StartupErrorCodes.C001_00001.getCode();
+			String[] errorDetails = {"Preloader \"stringsBundle\" resource bundle is missing!"};
 			
 			Platform.runLater(() ->
 			{
-				showErrorDialogAndWait(null, errorCode, e);
+				showErrorDialogAndExit(errorCode, e, errorDetails);
 				latch.countDown();
 			});
 			
@@ -179,49 +196,29 @@ public class AppPreloader extends Preloader
 			return;
 		}
 		
-		try
+		if(AppInstanceManager.checkIfAlreadyRunning())
 		{
-			labelsBundle = ResourceBundle.getBundle(RB_LABELS_FILE, new UTF8Control());
-		}
-		catch(MissingResourceException e)
-		{
-			String errorCode = "C001-00002";
-			
 			Platform.runLater(() ->
 			{
-				showErrorDialogAndWait(null, errorCode, e);
-				latch.countDown();
+				String message = stringsBundle.getString("message.alreadyRunning");
+			    showWarningDialogAndExit(message);
+			    latch.countDown();
 			});
 			
 			latch.await();
 			return;
 		}
-		
-		InputStream appIconStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(APP_ICON_FILE);
-		if(appIconStream == null)
-		{
-			String errorCode = "C001-00003";
-			
-			Platform.runLater(() ->
-			{
-				showErrorDialogAndWait(null, errorCode, null);
-				latch.countDown();
-			});
-			
-			latch.await();
-			return;
-		}
-		appIcon = new Image(appIconStream);
 		
 		fxmlUrl = Thread.currentThread().getContextClassLoader().getResource(FXML_FILE);
 		if(fxmlUrl == null)
 		{
-			String errorCode = "C001-00004";
+			String errorCode = StartupErrorCodes.C001_00002.getCode();
+			String[] errorDetails = {"Preloader \"fxmlUrl\" is null!"};
 			
 			Platform.runLater(() ->
             {
-                showErrorDialogAndWait(appIcon, errorCode, null);
-                latch.countDown();
+            	showErrorDialogAndExit(errorCode, null, errorDetails);
+            	latch.countDown();
             });
 			
 			latch.await();
@@ -239,7 +236,7 @@ public class AppPreloader extends Preloader
 		// modification of scene graph operations to live objects (those objects already attached to a scene)
 		// must be done on the JavaFX UI thread.
 		
-		FXMLLoader fxmlLoader = new FXMLLoader(fxmlUrl, labelsBundle);
+		FXMLLoader fxmlLoader = new FXMLLoader(fxmlUrl, stringsBundle);
 		
 		try
 		{
@@ -247,8 +244,9 @@ public class AppPreloader extends Preloader
 		}
 		catch(IOException e)
 		{
-			String errorCode = "C001-00005";
-			showErrorDialogAndWait(appIcon, errorCode, e);
+			String errorCode = StartupErrorCodes.C001_00003.getCode();
+			String[] errorDetails = {"Failed to load the splash screen FXML correctly!"};
+			showErrorDialogAndExit(errorCode, e, errorDetails);
 			return;
 		}
 		
@@ -274,103 +272,103 @@ public class AppPreloader extends Preloader
 	@Override
 	public void handleApplicationNotification(PreloaderNotification info)
 	{
-		ProgressMessage progressMessage = (ProgressMessage) info;
+		sa.gov.nic.bio.bw.client.core.utils.PreloaderNotification preloaderNotification =
+												(sa.gov.nic.bio.bw.client.core.utils.PreloaderNotification) info;
 		
-		if(progressMessage.isDone())
+		if(preloaderNotification.isDone())
 		{
 			splashScreenStage.hide();
 			LOGGER.info("The splash screen is closed");
 		}
-		else if(progressMessage.isFailed())
+		else if(!preloaderNotification.isSuccess())
 		{
 			splashScreenStage.hide();
 			
-			String errorCode = progressMessage.getErrorCode();
-			Exception exception = progressMessage.getException();
-			String[] errorMessageValues = progressMessage.getAdditionalErrorText();
+			String errorCode = preloaderNotification.getErrorCode();
+			Exception exception = preloaderNotification.getException();
+			String[] errorDetails = preloaderNotification.getErrorDetails();
 			
-			showErrorDialogAndWait(appIcon, errorCode, exception, errorMessageValues);
+			showErrorDialogAndExit(errorCode, exception, errorDetails);
 		}
 	}
 	
 	/**
-	 * Show details about the error that occurs during the startup in a dialog.
+	 * Show a warning message in a dialog and then exit.
 	 *
-	 * @param appIcon icon that is used in the dialog
+	 * @param message the warning message to show
+	 */
+	private void showWarningDialogAndExit(String message)
+	{
+		String title;
+		String buttonExitText;
+		
+		if(stringsBundle != null)
+		{
+			title = stringsBundle.getString("dialog.warning.title");
+			buttonExitText = stringsBundle.getString("dialog.warning.buttons.exit");
+		}
+		else
+		{
+			title = "Warning Message";
+			buttonExitText = "Exit";
+		}
+		
+		LOGGER.warning(message);
+		DialogUtils.showAlertDialog(AlertType.WARNING, null, null, title,
+		                           null, message, null, buttonExitText,
+		                           null, null,
+		                           AppEntryPoint.guiLanguage.getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT);
+		
+		LOGGER.severe("Exiting the application due to an error during the startup!");
+		Platform.exit();
+	}
+	
+	/**
+	 * Show details about the error that occurs during the startup in a dialog and then exit.
+	 *
 	 * @param errorCode the error code
 	 * @param exception the exception, if any
-	 * @param additionalErrorText any extra parameters to the error message that is loaded by <code>errorCode</code>
+	 * @param errorDetails details about the error
 	 */
-	private void showErrorDialogAndWait(Image appIcon, String errorCode, Exception exception,
-	                                    String... additionalErrorText)
+	private void showErrorDialogAndExit(String errorCode, Exception exception, String[] errorDetails)
 	{
-		String contentText;
 		String title;
 		String headerText;
-		String buttonOkText;
+		String contentText;
+		String buttonExitText;
 		String moreDetailsText;
 		String lessDetailsText;
+		String errorOccursText;
 		
-		if(errorCode != null && errorCode.startsWith("C002")) // most likely C002 error during calling
-															  // webservices API during startup.
+		if(stringsBundle != null)
 		{
-			String message = String.format(errorsBundle.getString("C000-00000.internal"), errorCode) + " - " +
-							 Arrays.toString(additionalErrorText);
-			
-			LOGGER.log(Level.SEVERE, message, exception);
-			
-			contentText = String.format(errorsBundle.getString("C000-00000.ar"), errorCode) + " \n\n" +
-						  String.format(errorsBundle.getString("C000-00000.en"), errorCode) + "\n\n" +
-						  Arrays.toString(additionalErrorText);
+			title = stringsBundle.getString("dialog.error.title");
+			headerText = stringsBundle.getString("dialog.error.header");
+			buttonExitText = stringsBundle.getString("dialog.error.buttons.exit");
+			moreDetailsText = stringsBundle.getString("dialog.error.buttons.showErrorDetails");
+			lessDetailsText = stringsBundle.getString("dialog.error.buttons.hideErrorDetails");
+			errorOccursText = stringsBundle.getString("message.errorOccurs");
 		}
-		else if(errorsBundle != null)
+		else
 		{
-			String message = errorCode + ": " + errorsBundle.getString(errorCode + ".internal");
-			if(additionalErrorText != null) message = String.format(message, (Object[]) additionalErrorText);
-			LOGGER.log(Level.SEVERE, message, exception);
-			contentText = errorsBundle.getString(errorCode + ".ar");
-			if(additionalErrorText != null) contentText = String.format(contentText, (Object[]) additionalErrorText);
-			contentText += " \n\n ";
-			String temp = errorsBundle.getString(errorCode + ".en");
-			if(additionalErrorText != null) temp = String.format(temp, (Object[]) additionalErrorText);
-			contentText += temp;
-		}
-		else // default text
-		{
-			LOGGER.severe("\"errorsBundle\" resource bundle is missing!");
-			contentText = "رمز الخطأ: C001-00001" + " \n\n " + "Error code: C001-00001";
+			title = "Error Message";
+			headerText = "An error occurs during application startup!";
+			buttonExitText = "Exit";
+			moreDetailsText = "Show error details";
+			lessDetailsText = "Hide error details";
+			errorOccursText = "An error occurs. Error code: %s";
 		}
 		
-		if(labelsBundle != null)
-		{
-			title = labelsBundle.getString("dialog.error.title.ar") + " - " +
-					labelsBundle.getString("dialog.error.title.en");
-			
-			headerText = labelsBundle.getString("dialog.error.header.ar") + " \n\n " +
-						 labelsBundle.getString("dialog.error.header.en");
-			
-			buttonOkText = labelsBundle.getString("dialog.error.buttons.ok.ar") + " - " +
-						   labelsBundle.getString("dialog.error.buttons.ok.en");
-			
-			moreDetailsText = labelsBundle.getString("dialog.error.buttons.showErrorDetails.ar") + " - " +
-							  labelsBundle.getString("dialog.error.buttons.showErrorDetails.en");
-			
-			lessDetailsText = labelsBundle.getString("dialog.error.buttons.hideErrorDetails.ar") + " - " +
-							  labelsBundle.getString("dialog.error.buttons.hideErrorDetails.en");
-		}
-		else // default text
-		{
-			title = "رسالة خطأ" + " - " + "Error Message";
-			headerText = "حدث خطأ أثناء تشغيل البرنامج!" + " \n\n " + "!An error occurs during application startup";
-			buttonOkText = "حسناً" + " - " + "OK";
-			moreDetailsText = "إظهار تفاصيل الخطأ" + " - " + "Show error details";
-			lessDetailsText = "إخفاء تفاصيل الخطأ" + " - " + "Hide error details";
-		}
+		StringBuilder sb = new StringBuilder();
+		contentText = String.format(errorOccursText, errorCode);
+		GuiUtils.buildErrorMessage(exception, errorDetails, sb);
 		
-		DialogUtils.showErrorDialog(null, null, appIcon, title, headerText,
-		                            contentText, buttonOkText, moreDetailsText, lessDetailsText, exception, true);
+		LOGGER.log(Level.SEVERE, contentText + (sb.length() > 0 ? "\n" : "") + sb.toString(), exception);
+		DialogUtils.showAlertDialog(AlertType.ERROR, null, null, title, headerText,
+		                            contentText, sb.toString(), buttonExitText, moreDetailsText, lessDetailsText,
+		                           AppEntryPoint.guiLanguage.getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT);
 		
-		Platform.exit();
 		LOGGER.severe("Exiting the application due to an error during the startup!");
+		Platform.exit();
 	}
 }

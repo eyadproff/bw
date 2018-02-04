@@ -19,8 +19,9 @@ import sa.gov.nic.bio.bw.client.core.CoreFxController;
 import sa.gov.nic.bio.bw.client.core.RegionFxControllerBase;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.login.tasks.ChangePasswordTask;
+import sa.gov.nic.bio.bw.client.login.utils.LoginErrorCodes;
+import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
 
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class ChangePasswordDialogFxController extends RegionFxControllerBase
@@ -81,71 +82,68 @@ public class ChangePasswordDialogFxController extends RegionFxControllerBase
 					String oldPassword = txtCurrentPassword.getText();
 					String newPassword = txtNewPassword.getText();
 					
-					
 					ChangePasswordTask task = new ChangePasswordTask(username, oldPassword, newPassword);
 					task.setOnSucceeded(event2 ->
 					{
-						LOGGER.info("The password of (" + username + ") has been changed successfully!");
-					    passwordChangedSuccessfully = true;
-						showProgress(false);
-						dialog.setResult(btChange); // the dialog will not be closed unless it has a result
-					    dialog.close();
+						ServiceResponse<Boolean> serviceResponse;
+						try
+						{
+							serviceResponse = task.get();
+						}
+						catch(Exception e)
+						{
+							String errorCode = LoginErrorCodes.C003_00001.getCode();
+							String[] errorDetails = {"Failed to get a response when changing the password!"};
+							coreFxController.showErrorDialog(errorCode, e, errorDetails);
+							return;
+						}
+						
+						if(serviceResponse.isSuccess())
+						{
+							LOGGER.info("The password of (" + username + ") has been changed successfully!");
+							passwordChangedSuccessfully = true;
+							showProgress(false);
+							dialog.setResult(btChange); // the dialog will not be closed unless it has a result
+							dialog.close();
+						}
+						else
+						{
+							String errorCode = serviceResponse.getErrorCode();
+							Exception exception = serviceResponse.getException();
+							String[] errorDetails = serviceResponse.getErrorDetails();
+							
+							if(errorCode.startsWith("B") || errorCode.startsWith("N")) // business error
+							{
+								// no exceptions/errorDetails in case of business error
+								
+								String guiErrorMessage = Context.getErrorsBundle().getString(errorCode);
+								String logErrorMessage = Context.getErrorsBundle()
+																.getString(errorCode + ".internal");
+								
+								LOGGER.info(logErrorMessage);
+								showWarningMessage(guiErrorMessage);
+							}
+							else // client error, server error, or unknown error
+							{
+								coreFxController.showErrorDialog(errorCode, exception, errorDetails);
+							}
+							
+							txtUsername.requestFocus();
+						}
 					});
 					task.setOnFailed(event2 ->
 					{
 						showProgress(false);
-						String errorCode = task.getErrorCode();
-						int httpCode = task.getHttpCode();
-						String apiUrl = task.getApiUrl();
-						Exception exception = (Exception) task.getException();
-						
-						if(errorCode == null || errorCode.isEmpty())
-						{
-							String code = "C002-00018";
-							String guiErrorMessage = coreFxController.getErrorsBundle().getString(code);
-							String logErrorMessage = coreFxController.getErrorsBundle().getString(code + ".internal");
-							logErrorMessage = String.format(logErrorMessage, apiUrl, String.valueOf(httpCode));
-							
-							showErrorMessage(guiErrorMessage);
-							LOGGER.log(Level.SEVERE, logErrorMessage, exception);
-						}
-						else if(errorCode.startsWith("C"))
-						{
-							String guiErrorMessage = coreFxController.getErrorsBundle().getString(errorCode);
-							String logErrorMessage = coreFxController.getErrorsBundle().getString(errorCode + ".internal");
-							
-							guiErrorMessage = String.format(guiErrorMessage, httpCode);
-							logErrorMessage = String.format(logErrorMessage, httpCode);
-							
-							showErrorMessage(guiErrorMessage);
-							LOGGER.log(Level.SEVERE, logErrorMessage, exception);
-						}
-						else if(errorCode.startsWith("B"))
-						{
-							String message = coreFxController.getErrorsBundle().getString(errorCode);
-							showWarningMessage(message);
-						}
-						else if(errorCode.startsWith("S"))
-						{
-							String code = "S000-00000";
-							String guiErrorMessage = coreFxController.getErrorsBundle().getString(code);
-							String logErrorMessage = coreFxController.getErrorsBundle().getString(code + ".internal");
-							
-							guiErrorMessage = String.format(guiErrorMessage, errorCode);
-							logErrorMessage = String.format(logErrorMessage, errorCode);
-							
-							showErrorMessage(guiErrorMessage);
-							LOGGER.severe(logErrorMessage);
-						}
-						
-						txtUsername.requestFocus();
+						String errorCode = LoginErrorCodes.C003_00002.getCode();
+						String[] errorDetails = {"Failure when executing ChangePasswordTask!"};
+						coreFxController.showErrorDialog(errorCode, null, errorDetails);
 					});
 					
 					Context.getExecutorService().submit(task);
 				}
 				else
 				{
-					String message = messagesBundle.getString("changePassword.newPasswordConfirm.notMatch");
+					String message = stringsBundle.getString("changePassword.newPasswordConfirm.notMatch");
 					showWarningMessage(message);
 					txtNewPassword.requestFocus();
 				}
@@ -192,16 +190,6 @@ public class ChangePasswordDialogFxController extends RegionFxControllerBase
 		GuiUtils.showNode(piChangePassword, bool);
 		GuiUtils.showNode(tfResultMessage, !bool);
 		
-		dialog.getDialogPane().getScene().getWindow().sizeToScene();
-	}
-	
-	private void showErrorMessage(String message)
-	{
-		GuiUtils.showNode(tfResultMessage, true);
-		GuiUtils.showNode(ivErrorIcon, true);
-		GuiUtils.showNode(ivWarningIcon, false);
-		
-		txtResultMessage.setText(message);
 		dialog.getDialogPane().getScene().getWindow().sizeToScene();
 	}
 	

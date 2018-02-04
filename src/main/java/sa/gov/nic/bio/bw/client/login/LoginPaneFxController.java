@@ -90,7 +90,11 @@ public class LoginPaneFxController extends BodyFxControllerBase implements Persi
 			disableUiControls(false);
 			
 			ServiceResponse<?> serviceResponse = (ServiceResponse<?>) dataMap.get(Workflow.KEY_WEBSERVICE_RESPONSE);
-			handleNegativeResponse(serviceResponse);
+			if(!serviceResponse.isSuccess())
+			{
+				reportNegativeResponse(serviceResponse.getErrorCode(), serviceResponse.getException(),
+				                       serviceResponse.getErrorDetails());
+			}
 		}
 	}
 	
@@ -116,12 +120,12 @@ public class LoginPaneFxController extends BodyFxControllerBase implements Persi
 		hideNotification();
 		
 		boolean rtl = coreFxController.getCurrentLanguage().getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT;
-		ChangePasswordDialogFxController controller = DialogUtils.buildCustomDialog(coreFxController.getPrimaryStage(), coreFxController.getAppIcon(), FXML_CHANGE_PASSWORD, labelsBundle, rtl);
+		ChangePasswordDialogFxController controller = DialogUtils.buildCustomDialog(coreFxController.getPrimaryStage(), FXML_CHANGE_PASSWORD, stringsBundle, rtl);
 		
 		if(controller != null)
 		{
 			controller.attachCoreFxController(coreFxController);
-			controller.attachResourceBundles(labelsBundle, messagesBundle);
+			controller.attachResourceBundles(stringsBundle);
 			controller.setUsernameAndPassword(txtUsername.getText(), txtPassword.getText());
 			controller.requestFocus();
 			controller.showDialogAndWait();
@@ -130,7 +134,7 @@ public class LoginPaneFxController extends BodyFxControllerBase implements Persi
 			if(passwordChanged)
 			{
 				txtPassword.setText("");
-				showSuccessNotification(messagesBundle.getString("changePassword.success"));
+				showSuccessNotification(stringsBundle.getString("changePassword.success"));
 			}
 			
 			if(txtUsername.getText().isEmpty()) txtUsername.requestFocus();

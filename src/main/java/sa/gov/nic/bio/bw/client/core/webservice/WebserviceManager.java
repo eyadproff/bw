@@ -1,7 +1,7 @@
 package sa.gov.nic.bio.bw.client.core.webservice;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -9,15 +9,19 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
-import retrofit2.converter.jackson.JacksonConverterFactory;
+import retrofit2.converter.gson.GsonConverterFactory;
 import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.beans.UserSession;
 import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
+import sa.gov.nic.bio.bw.client.core.utils.CoreErrorCodes;
 import sa.gov.nic.bio.bw.client.login.webservice.IdentityAPI;
+import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
 
+import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ScheduledFuture;
@@ -63,7 +67,7 @@ public class WebserviceManager
 		
 		retrofit = new Retrofit.Builder()
 							   .baseUrl(PROTOCOL + "://" + baseUrl)
-							   .addConverterFactory(JacksonConverterFactory.create())
+							   .addConverterFactory(GsonConverterFactory.create())
 							   .client(okHttpClient)
 							   .build();
 	}
@@ -87,7 +91,7 @@ public class WebserviceManager
 	}
 	
 	// synchronized because we send only one request at a time
-	public synchronized <T> ApiResponse<T> executeApi(Call<T> apiCall)
+	public synchronized <T> ServiceResponse<T> executeApi(Call<T> apiCall)
 	{
 		String apiUrl = apiCall.request().url().toString();
 		
@@ -98,65 +102,66 @@ public class WebserviceManager
 		}
 		catch(SocketTimeoutException e)
 		{
-			String errorCode = "C002-00014";
-			return new ApiResponse<>(apiUrl, errorCode, e);
+			String errorCode = CoreErrorCodes.C002_00010.getCode();
+			String[] errorDetails = {"webservice timeout!"};
+			return ServiceResponse.failure(errorCode, e, errorDetails);
 		}
-		catch(Exception e)
+		catch(IOException e)
 		{
-			String errorCode = "C002-00015";
-			return new ApiResponse<>(apiUrl, errorCode, e);
+			String errorCode = CoreErrorCodes.C002_00011.getCode();
+			String[] errorDetails = {"webservice IOException!"};
+			return ServiceResponse.failure(errorCode, e, errorDetails);
 		}
 		
 		int httpCode = response.code();
 		
 		if(httpCode == 200)
 		{
-			T resultBean = response.body(); // can be null?
-			if(resultBean == null)
-			{
-				String errorCode = "C002-00016";
-				return new ApiResponse<>(apiUrl, errorCode, httpCode);
-			}
+			T resultBean = response.body();
 			
 			LOGGER.info("webservice = \"" + apiCall.request().url() + "\", responseCode = " + httpCode);
 			LOGGER.fine("resultBean = " + resultBean);
-			return new ApiResponse<>(apiUrl, resultBean);
+			
+			return ServiceResponse.success(resultBean);
 		}
 		else if(httpCode == 400 || httpCode == 401 || httpCode == 403 || httpCode == 500)
 		{
-			String errorCode = null;
+			String errorCode;
+			ResponseBody errorBody = response.errorBody();
 			
-			ResponseBody errorBody = response.errorBody(); // can be null?
-			String sErrorBody = null;
-			
-			if(errorBody == null) LOGGER.warning("cannot retrieve the errorCode because errorBody = null");
-			else try
+			if(errorBody == null)
 			{
-				sErrorBody = errorBody.string();
-				ObjectMapper mapper = new ObjectMapper();
-				JsonNode json = mapper.readTree(sErrorBody);
-				JsonNode errorCodeJson = json.get("errorCode");
-				errorCode = errorCodeJson.asText();
+				errorCode = CoreErrorCodes.C002_00012.getCode();
+				String[] errorDetails = {"\"errorBody\" is null!", "apiUrl = " + apiUrl, "httpCode = " + httpCode};
+				return ServiceResponse.failure(errorCode, null, errorDetails);
+			}
+			
+			try
+			{
+				String sErrorBody = errorBody.string();
+				
+				JsonObject jsonObject = new JsonParser().parse(sErrorBody).getAsJsonObject();
+				errorCode = jsonObject.get("errorCode").getAsString(); // Business error, or server error
 			}
 			catch(Exception e)
 			{
-				LOGGER.log(Level.WARNING, "failed to extract the error code from the error body!", e);
+				errorCode = CoreErrorCodes.C002_00013.getCode();
+				String[] errorDetails = {"failed to extract the error code from the error body!", "apiUrl = " + apiUrl,
+										 "httpCode = " + httpCode};
+				return ServiceResponse.failure(errorCode, null, errorDetails);
 			}
 			
-			if(errorCode == null) // the only case errorCode == null
-			{
-				LOGGER.warning("webservice = \"" + apiCall.request().url() + "\", responseCode = " + httpCode + ", errorCode = null, errorBody = " + sErrorBody);
-			}
-			else LOGGER.info("webservice = \"" + apiCall.request().url() + "\", responseCode = " + httpCode + ", errorCode = " + errorCode);
+			LOGGER.info("webservice = \"" + apiCall.request().url() + "\", responseCode = " + httpCode +
+					    ", errorCode = " + errorCode);
 			
-			return new ApiResponse<>(apiUrl, errorCode, httpCode);
+			String[] errorDetails = {"apiUrl = " + apiUrl, "httpCode = " + httpCode};
+			return ServiceResponse.failure(errorCode, null, errorDetails);
 		}
 		else // we don't support other HTTP codes
 		{
-			LOGGER.warning("webservice = \"" + apiCall.request().url() + "\", responseCode = " + httpCode);
-			
-			String errorCode = "C002-00017";
-			return new ApiResponse<>(apiUrl, errorCode, httpCode);
+			String errorCode = CoreErrorCodes.C002_00014.getCode();
+			String[] errorDetails = {"Unsupported HTTP code!", "apiUrl = " + apiUrl, "httpCode = " + httpCode};
+			return ServiceResponse.failure(errorCode, null, errorDetails);
 		}
 	}
 	
@@ -176,7 +181,7 @@ public class WebserviceManager
 				    IdentityAPI identityAPI = Context.getWebserviceManager().getApi(IdentityAPI.class);
 				    String url = System.getProperty("jnlp.bio.bw.service.refreshToken");
 				    Call<RefreshTokenBean> apiCall = identityAPI.refreshToken(url, userToken);
-				    ApiResponse<RefreshTokenBean> response = Context.getWebserviceManager().executeApi(apiCall);
+					ServiceResponse<RefreshTokenBean> response = Context.getWebserviceManager().executeApi(apiCall);
 				
 				    if(response.isSuccess())
 				    {
@@ -190,7 +195,13 @@ public class WebserviceManager
 				    }
 				    else
 				    {
-				        LOGGER.warning("Failed to refresh the token! httpCode = " + response.getHttpCode() + ", errorCode = " + response.getErrorCode());
+					    Exception exception = response.getException();
+					    String errorMessage = "Failed to refresh the token! errorCode = " + response.getErrorCode() +
+							                  ", errorDetails = " + Arrays.toString(response.getErrorDetails());
+				    	
+					    if(exception != null) LOGGER.log(Level.WARNING, errorMessage, exception);
+					    else LOGGER.warning(errorMessage);
+				        
 				    }
 				}, delay, TimeUnit.SECONDS);
 			}

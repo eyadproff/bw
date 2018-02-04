@@ -2,6 +2,8 @@
 
 ## v1.2.1
 
+- Source code overhaul.
+- Replace the workflow engine "Activiti" with a custom solution.
 - Improve error messages and fix some.
 - Build workflow wizard.
 - Fixed the login credentials on Dev environment.

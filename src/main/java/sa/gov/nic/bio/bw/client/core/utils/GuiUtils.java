@@ -8,7 +8,11 @@ import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Control;
+import javafx.scene.control.ListView;
+import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
@@ -18,6 +22,9 @@ import sa.gov.nic.bio.bw.client.core.CoreFxController;
 import sa.gov.nic.bio.bw.client.core.beans.HideableItem;
 import sa.gov.nic.bio.bw.client.login.tasks.LogoutTask;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -35,13 +42,30 @@ public class GuiUtils
 		node.setManaged(bShow);
 	}
 	
+	public static void buildErrorMessage(Exception exception, String[] errorDetails, StringBuilder sb)
+	{
+		if(errorDetails != null)
+		{
+			Arrays.stream(errorDetails).forEach(s -> sb.append(s).append("\n"));
+		}
+		
+		if(exception != null)
+		{
+			StringWriter sw = new StringWriter();
+			PrintWriter pw = new PrintWriter(sw);
+			exception.printStackTrace(pw);
+			String exceptionText = sw.toString();
+			sb.append(exceptionText);
+		}
+	}
+	
 	public static EventHandler<WindowEvent> createOnExitHandler(Stage stage, CoreFxController coreFxController)
 	{
 		return event ->
 		{
 			event.consume(); // prevent the stage from closing
 			
-			String message = coreFxController.getMessagesBundle().getString("exit.confirm");
+			String message = coreFxController.getStringsBundle().getString("exit.confirm");
 			boolean confirmed = coreFxController.showConfirmationDialogAndWait(null, message);
 			
 			if(confirmed)
@@ -66,6 +90,7 @@ public class GuiUtils
 				
 				Context.getScheduledExecutorService().shutdownNow();
 				Context.getExecutorService().shutdownNow();
+				Context.getWorkflowManager().interruptTheWorkflow();
 				
 				Platform.exit();
 				LOGGER.info("The application is exited");

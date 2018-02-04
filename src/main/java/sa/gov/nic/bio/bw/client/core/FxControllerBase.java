@@ -15,8 +15,7 @@ import java.util.ResourceBundle;
  */
 public abstract class FxControllerBase implements ControllerResourcesLocator
 {
-	protected ResourceBundle labelsBundle;
-	protected ResourceBundle messagesBundle;
+	protected ResourceBundle stringsBundle;
 	
 	/**
 	 * Called after the FXML is completely processed and the JavaFX nodes are created. All fields annotated with @FXML
@@ -40,33 +39,16 @@ public abstract class FxControllerBase implements ControllerResourcesLocator
 	@Override
 	public final ResourceBundleCollection getResourceBundleCollection()
 	{
-		String base = getClass().getPackage().getName().replace(".", "/");
-		
-		return new ResourceBundleCollection()
-		{
-			@Override
-			public String getLabelsBundlePath()
-			{
-				return base + "/bundles/labels";
-			}
-			
-			@Override
-			public String getMessagesBundlePath()
-			{
-				return base + "/bundles/messages";
-			}
-		};
+		return () -> getClass().getPackage().getName().replace(".", "/") + "/bundles/strings";
 	}
 	
 	/**
 	 * Attach resource bundles to this controller.
 	 *
-	 * @param labelsBundle resource bundle for the labels
-	 * @param messagesBundle resource bundle for the messages
+	 * @param stringsBundle resource bundle for the strings
 	 */
-	public final void attachResourceBundles(ResourceBundle labelsBundle, ResourceBundle messagesBundle)
+	public final void attachResourceBundles(ResourceBundle stringsBundle)
 	{
-		this.labelsBundle = labelsBundle;
-		this.messagesBundle = messagesBundle;
+		this.stringsBundle = stringsBundle;
 	}
 }

@@ -5,6 +5,7 @@ import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
+import javafx.scene.layout.VBox;
 import sa.gov.nic.bio.bw.client.core.BodyFxControllerBase;
 import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.beans.MenuItem;
@@ -12,6 +13,8 @@ import sa.gov.nic.bio.bw.client.core.beans.UserSession;
 import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.utils.UTF8Control;
+import sa.gov.nic.bio.bw.client.core.workflow.Workflow;
+import sa.gov.nic.bio.bw.client.home.utils.HomeErrorCodes;
 import sa.gov.nic.bio.bw.client.login.webservice.UserInfo;
 
 import javax.imageio.ImageIO;
@@ -40,9 +43,8 @@ import java.util.logging.Logger;
 public class HomePaneFxController extends BodyFxControllerBase
 {
 	private static final Logger LOGGER = Logger.getLogger(HomePaneFxController.class.getName());
-	private static final String AVATAR_PLACEHOLDER_IMAGE =
-														"sa/gov/nic/bio/bw/client/core/images/avatar_placeholder.jpg";
 	
+	@FXML private VBox loginTimestampBox;
 	@FXML private Label lblLoginTimeText;
 	@FXML private Label lblLoginTime;
 	@FXML private Label lblLastSuccessLoginText;
@@ -56,16 +58,65 @@ public class HomePaneFxController extends BodyFxControllerBase
 	@FXML private Label lblPasswordExpirationTimeText;
 	@FXML private Label lblPasswordExpirationTime;
 	
-	@FXML
-	protected void initialize(){}
-	
 	@Override
 	public void onControllerReady()
 	{
 		coreFxController.getHeaderPaneController().showRegion();
 		coreFxController.getFooterPaneController().hideRegion();
 		coreFxController.getMenuPaneController().showRegion();
+	}
+	
+	private void setLabelsText(long value, boolean isDate, Label textLabel, Label valueLabel)
+	{
+		boolean hideIt = false;
 		
+		if(value > 0)
+		{
+			try
+			{
+				String sDateTime = isDate ? AppUtils.formatHijriGregorianDateTime(value) :
+						AppUtils.replaceNumbersOnly(String.valueOf(value), Locale.getDefault());
+				valueLabel.setText(sDateTime);
+			}
+			catch(DateTimeException e) // date out of range?
+			{
+				hideIt = true;
+			}
+		}
+		else hideIt = true;
+		
+		if(hideIt)
+		{
+			GuiUtils.showNode(textLabel, false);
+			textLabel.setPadding(new Insets(0));
+			GuiUtils.showNode(valueLabel, false);
+			valueLabel.setPadding(new Insets(0));
+		}
+	}
+	
+	@Override
+	public void onWorkflowUserTaskLoad(boolean newForm, Map<String, Object> dataMap)
+	{
+		String errorCode = (String) dataMap.get(Workflow.KEY_ERROR_CODE);
+		
+		if(errorCode != null)
+		{
+			loginTimestampBox.setManaged(false);
+			loginTimestampBox.setVisible(false);
+			
+			String[] errorDetails = (String[]) dataMap.get(Workflow.KEY_ERROR_DETAILS);
+			Exception exception = (Exception) dataMap.get(Workflow.KEY_EXCEPTION);
+			
+			coreFxController.showErrorDialog(errorCode, exception, errorDetails);
+		}
+		else
+		{
+			firstLoadAfterLogin();
+		}
+	}
+	
+	private void firstLoadAfterLogin()
+	{
 		UserSession userSession = Context.getUserSession();
 		UserInfo userInfo = (UserInfo) userSession.getAttribute("userInfo");
 		String userToken = (String) userSession.getAttribute("userToken");
@@ -76,9 +127,9 @@ public class HomePaneFxController extends BodyFxControllerBase
 		
 		// we normalize because the backend characters are not the standard ones
 		String operatorName = Normalizer.normalize(userInfo.getOperatorName(), Normalizer.Form.NFKC) + " (" +
-												   userInfo.getOperatorId() + ")";
+				userInfo.getOperatorId() + ")";
 		String location = Normalizer.normalize(userInfo.getLocationName(), Normalizer.Form.NFKC) + " (" +
-											   userInfo.getLocationId() + ")";
+				userInfo.getLocationId() + ")";
 		
 		String encodedFaceImage = userInfo.getFaceImage();
 		byte[] faceImageByteArray = null;
@@ -93,7 +144,7 @@ public class HomePaneFxController extends BodyFxControllerBase
 			catch(Exception e)
 			{
 				LOGGER.log(Level.WARNING, "Failed to decode the Base64 string encodedFaceImage = " +
-						   encodedFaceImage, e);
+						encodedFaceImage, e);
 			}
 			
 			if(faceImageByteArray != null)
@@ -117,9 +168,6 @@ public class HomePaneFxController extends BodyFxControllerBase
 				if(image != null) coreFxController.getHeaderPaneController().setAvatarImage(image);
 			}
 		}
-		
-		if(image == null) coreFxController.getHeaderPaneController()
-										  .setAvatarImage(new Image(AVATAR_PLACEHOLDER_IMAGE));
 		
 		// remove extra spaces in between and on edges
 		username = username.trim().replaceAll("\\s+", " ");
@@ -161,11 +209,9 @@ public class HomePaneFxController extends BodyFxControllerBase
 		}
 		catch(Exception e)
 		{
-			String errorCode = "C004-00001";
-			String guiErrorMessage = coreFxController.getErrorsBundle().getString(errorCode);
-			String logErrorMessage = coreFxController.getErrorsBundle().getString(errorCode + ".internal");
-			LOGGER.log(Level.SEVERE, logErrorMessage, e);
-			coreFxController.showErrorDialogAndWait(guiErrorMessage, e);
+			String errorCode = HomeErrorCodes.C004_00001.getCode();
+			String[] errorDetails = {"Failed to load menu.properties files!"};
+			coreFxController.showErrorDialog(errorCode, e, errorDetails);
 			return;
 		}
 		
@@ -174,68 +220,71 @@ public class HomePaneFxController extends BodyFxControllerBase
 		
 		menuFiles.forEach(menuFile ->
 		{
-			LOGGER.fine("menuFile = " + menuFile);
+		    LOGGER.fine("menuFile = " + menuFile);
+		
+		    ResourceBundle rb = ResourceBundle.getBundle(menuFile, Locale.getDefault(), utf8Control);
+		
+		    MenuItem menuItem = new MenuItem();
+		    allMenus.add(menuItem);
+		
+		    Set<String> keys = rb.keySet();
+		
+		    keys.forEach(key ->
+		    {
+		        String value = rb.getString(key);
 			
-			ResourceBundle rb = ResourceBundle.getBundle(menuFile, Locale.getDefault(), utf8Control);
-			
-			MenuItem menuItem = new MenuItem();
-			allMenus.add(menuItem);
-			
-			Set<String> keys = rb.keySet();
-			
-			keys.forEach(key ->
-			{
-				String value = rb.getString(key);
-				
-				if(key.equals("menu.id"))
-				{
-					menuItem.setMenuId(value);
+			    switch(key)
+			    {
+				    case "menu.id":
+				    {
+					    menuItem.setMenuId(value);
 					
-					String topMenu = value.substring(0, value.lastIndexOf('.'));
+					    String topMenu = value.substring(0, value.lastIndexOf('.'));
 					
-					if(!topMenus.containsKey(topMenu))
-					{
-						String label = coreFxController.getTopMenusBundle().getString(topMenu);
-						String icon = coreFxController.getTopMenusBundle().getString(topMenu + ".icon");
-						int order = Integer.parseInt(coreFxController.getTopMenusBundle().getString(topMenu +
-								                                                                    ".order"));
+					    if(!topMenus.containsKey(topMenu))
+					    {
+						    String label = coreFxController.getTopMenusBundle().getString(topMenu);
+						    String icon = coreFxController.getTopMenusBundle().getString(topMenu + ".icon");
+						    int order = Integer.parseInt(coreFxController.getTopMenusBundle().getString(topMenu + ".order"));
 						
-						MenuItem topMenuItem = new MenuItem();
-						topMenuItem.setMenuId(topMenu);
-						topMenuItem.setLabel(label);
-						topMenuItem.setIconId(icon);
-						topMenuItem.setOrder(order);
+						    MenuItem topMenuItem = new MenuItem();
+						    topMenuItem.setMenuId(topMenu);
+						    topMenuItem.setLabel(label);
+						    topMenuItem.setIconId(icon);
+						    topMenuItem.setOrder(order);
 						
-						topMenus.put(topMenu, topMenuItem);
-					}
-				}
-				else if(key.equals("menu.label"))
-				{
-					menuItem.setLabel(value);
-				}
-				else if(key.equals("menu.order"))
-				{
-					int order = Integer.parseInt(value);
-					menuItem.setOrder(order);
-				}
-				else if(key.equals("menu.workflow.class"))
-				{
-					try
-					{
-						Class<?> workflowClass = Class.forName(value);
-						menuItem.setWorkflowClass(workflowClass);
-					}
-					catch(ClassNotFoundException e)
-					{
-						String errorCode = "C004-00002";
-						String guiErrorMessage = String.format(coreFxController.getErrorsBundle().getString(errorCode), value);
-						String logErrorMessage = String.format(coreFxController.getErrorsBundle().getString(errorCode + ".internal"),
-						                                       value);
-						LOGGER.severe(logErrorMessage);
-						coreFxController.showErrorDialogAndWait(guiErrorMessage, null);
-					}
-				}
-			});
+						    topMenus.put(topMenu, topMenuItem);
+					    }
+					    break;
+				    }
+				    case "menu.label":
+				    {
+					    menuItem.setLabel(value);
+					    break;
+				    }
+				    case "menu.order":
+				    {
+					    int order = Integer.parseInt(value);
+					    menuItem.setOrder(order);
+					    break;
+				    }
+				    case "menu.workflow.class":
+				    {
+					    try
+					    {
+						    Class<?> workflowClass = Class.forName(value);
+						    menuItem.setWorkflowClass(workflowClass);
+					    }
+					    catch(ClassNotFoundException e)
+					    {
+						    String errorCode = HomeErrorCodes.C004_00002.getCode();
+						    String[] errorDetails = {"The menu workflow class (" + value + ") is not found!"};
+						    coreFxController.showErrorDialog(errorCode, e, errorDetails);
+					    }
+					    break;
+				    }
+			    }
+		    });
 		});
 		
 		List<MenuItem> menus = new ArrayList<>();
@@ -257,44 +306,15 @@ public class HomePaneFxController extends BodyFxControllerBase
 		
 		if(menus.size() == 0)
 		{
-			String message = coreFxController.getErrorsBundle().getString("B004-00000");
-			showWarningNotification(message);
+			String errorCode = HomeErrorCodes.N004_00001.getCode();
+			
+			String guiErrorMessage = Context.getErrorsBundle().getString(errorCode);
+			String logErrorMessage = Context.getErrorsBundle().getString(errorCode + ".internal");
+			
+			LOGGER.info(logErrorMessage);
+			showWarningNotification(guiErrorMessage);
 		}
 		
 		coreFxController.startIdleMonitor();
-	}
-	
-	private void setLabelsText(long value, boolean isDate, Label textLabel, Label valueLabel)
-	{
-		boolean hideIt = false;
-		
-		if(value > 0)
-		{
-			try
-			{
-				String sDateTime = isDate ? AppUtils.formatHijriGregorianDateTime(value) :
-						AppUtils.replaceNumbersOnly(String.valueOf(value), Locale.getDefault());
-				valueLabel.setText(sDateTime);
-			}
-			catch(DateTimeException e) // date out of range?
-			{
-				hideIt = true;
-			}
-		}
-		else hideIt = true;
-		
-		if(hideIt)
-		{
-			GuiUtils.showNode(textLabel, false);
-			textLabel.setPadding(new Insets(0));
-			GuiUtils.showNode(valueLabel, false);
-			valueLabel.setPadding(new Insets(0));
-		}
-	}
-	
-	@Override
-	public void onWorkflowUserTaskLoad(boolean newForm, Map<String, Object> dataMap)
-	{
-	
 	}
 }

@@ -3,16 +3,15 @@ package sa.gov.nic.bio.bw.client.features.cancelcriminal.workflow;
 import sa.gov.nic.bio.bw.client.core.interfaces.FormRenderer;
 import sa.gov.nic.bio.bw.client.core.workflow.Signal;
 import sa.gov.nic.bio.bw.client.core.workflow.WorkflowBase;
-import sa.gov.nic.bio.bw.client.features.cancellatent.CancelLatentPaneFxController;
+import sa.gov.nic.bio.bw.client.features.cancelcriminal.CancelCriminalPaneFxController;
+import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
-import java.util.logging.Logger;
 
 public class CancelCriminalWorkflow extends WorkflowBase<Void, Void>
 {
-	private static final Logger LOGGER = Logger.getLogger(CancelCriminalWorkflow.class.getName());
-	
 	public CancelCriminalWorkflow(FormRenderer formRenderer, BlockingQueue<Map<String, Object>> userTasks)
 	{
 		super(formRenderer, userTasks);
@@ -21,13 +20,19 @@ public class CancelCriminalWorkflow extends WorkflowBase<Void, Void>
 	@Override
 	public Void onProcess(Void input) throws InterruptedException, Signal
 	{
+		Map<String, Object> workflowResponse = new HashMap<>();
+		
 		while(true)
 		{
-			formRenderer.renderForm(CancelLatentPaneFxController.class, null);
+			formRenderer.renderForm(CancelCriminalPaneFxController.class, workflowResponse);
+			Map<String, Object> userTaskDataMap = waitForUserTask();
 			
-			// TODO: task service
+			String personId = (String) userTaskDataMap.get("personId");
+			String criminalId = (String) userTaskDataMap.get("criminalId");
 			
-			waitForUserTask();
+			ServiceResponse<Boolean> response = CancelCriminalService.execute(personId, criminalId);
+			
+			workflowResponse.put(KEY_WEBSERVICE_RESPONSE, response);
 		}
 	}
 }
