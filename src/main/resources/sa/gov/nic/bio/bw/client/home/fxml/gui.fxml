@@ -10,7 +10,7 @@
       fx:controller="sa.gov.nic.bio.bw.client.home.HomePaneFxController"
       stylesheets="@../css/style.css" alignment="CENTER" fx:id="loginTimestampBox">
     <HBox alignment="CENTER">
-        <GridPane alignment="CENTER" hgap="20" styleClass="loginBox">
+        <GridPane alignment="CENTER" hgap="20" styleClass="formBox">
             <padding>
                 <Insets top="20" right="20" bottom="20" left="20"/>
             </padding>

@@ -22,7 +22,7 @@
     </ImageView>
     <VBox alignment="CENTER" spacing="20">
         <HBox alignment="CENTER">
-            <GridPane alignment="CENTER" vgap="5" hgap="20" styleClass="loginBox">
+            <GridPane alignment="CENTER" vgap="5" hgap="20" styleClass="formBox">
                 <padding>
                     <Insets top="20" right="20" bottom="20" left="20"/>
                 </padding>

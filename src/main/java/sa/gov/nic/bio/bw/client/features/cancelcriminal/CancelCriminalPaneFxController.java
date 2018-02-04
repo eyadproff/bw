@@ -5,9 +5,12 @@ import javafx.beans.property.BooleanProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.ProgressIndicator;
+import javafx.scene.control.Tab;
 import javafx.scene.control.TextField;
 import sa.gov.nic.bio.bw.client.core.BodyFxControllerBase;
+import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.workflow.Workflow;
 import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
@@ -17,14 +20,22 @@ import java.util.Map;
 
 public class CancelCriminalPaneFxController extends BodyFxControllerBase
 {
+	@FXML private Tab tabByPersonId;
+	@FXML private Tab tabByInquiryId;
 	@FXML private TextField txtPersonId;
+	@FXML private ComboBox cboPersonIdType;
 	@FXML private TextField txtCriminalId;
+	@FXML private TextField txtInquiryId;
+	@FXML private TextField txtCriminalId2;
 	@FXML private Button btnCancelCriminal;
 	@FXML private ProgressIndicator piCancelCriminal;
 	
 	@FXML
 	protected void initialize()
 	{
+		tabByPersonId.setGraphic(AppUtils.createFontAwesomeIcon('\uf2bb'));
+		tabByInquiryId.setGraphic(AppUtils.createFontAwesomeIcon('\uf1c0'));
+		
 		GuiUtils.applyValidatorToTextField(txtPersonId, "\\d*", "[^\\d]", 10);
 		GuiUtils.applyValidatorToTextField(txtCriminalId, "\\d*", "[^\\d]", 10);
 		
