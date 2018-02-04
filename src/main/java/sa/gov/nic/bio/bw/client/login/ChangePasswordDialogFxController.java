@@ -128,6 +128,7 @@ public class ChangePasswordDialogFxController extends RegionFxControllerBase
 								coreFxController.showErrorDialog(errorCode, exception, errorDetails);
 							}
 							
+							showProgress(false);
 							txtUsername.requestFocus();
 						}
 					});
@@ -188,7 +189,7 @@ public class ChangePasswordDialogFxController extends RegionFxControllerBase
 		btnChangeDisabledProperty.set(bool);
 		
 		GuiUtils.showNode(piChangePassword, bool);
-		GuiUtils.showNode(tfResultMessage, !bool);
+		GuiUtils.showNode(tfResultMessage, false);
 		
 		dialog.getDialogPane().getScene().getWindow().sizeToScene();
 	}

@@ -278,17 +278,19 @@ public class AppPreloader extends Preloader
 		if(preloaderNotification.isDone())
 		{
 			splashScreenStage.hide();
-			LOGGER.info("The splash screen is closed");
-		}
-		else if(!preloaderNotification.isSuccess())
-		{
-			splashScreenStage.hide();
 			
-			String errorCode = preloaderNotification.getErrorCode();
-			Exception exception = preloaderNotification.getException();
-			String[] errorDetails = preloaderNotification.getErrorDetails();
-			
-			showErrorDialogAndExit(errorCode, exception, errorDetails);
+			if(preloaderNotification.isSuccess())
+			{
+				LOGGER.info("The splash screen is closed");
+			}
+			else
+			{
+				String errorCode = preloaderNotification.getErrorCode();
+				Exception exception = preloaderNotification.getException();
+				String[] errorDetails = preloaderNotification.getErrorDetails();
+				
+				showErrorDialogAndExit(errorCode, exception, errorDetails);
+			}
 		}
 	}
 	
@@ -315,7 +317,7 @@ public class AppPreloader extends Preloader
 		
 		LOGGER.warning(message);
 		DialogUtils.showAlertDialog(AlertType.WARNING, null, null, title,
-		                           null, message, null, buttonExitText,
+		                            message, null, null, buttonExitText,
 		                           null, null,
 		                           AppEntryPoint.guiLanguage.getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT);
 		

@@ -11,10 +11,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class SearchByFaceImageWorkflow extends WorkflowBase<Void, Void>
 {
-	public SearchByFaceImageWorkflow(FormRenderer formRenderer, BlockingQueue<Map<String, Object>> userTasks)
+	public SearchByFaceImageWorkflow(AtomicReference<FormRenderer> formRenderer, BlockingQueue<Map<String, Object>> userTasks)
 	{
 		super(formRenderer, userTasks);
 	}
@@ -26,7 +27,7 @@ public class SearchByFaceImageWorkflow extends WorkflowBase<Void, Void>
 		
 		while(true)
 		{
-			formRenderer.renderForm(SearchByFaceImagePaneFxController.class, uiInputData);
+			formRenderer.get().renderForm(SearchByFaceImagePaneFxController.class, uiInputData);
 			Map<String, Object> userTaskDataMap = waitForUserTask();
 			
 			String uploadedImagePath = (String) userTaskDataMap.get("uploadedImagePath");

@@ -44,8 +44,8 @@ dependencies {
     implementation name: "okhttp-3.8.1"
     implementation name: "okio-1.13.0"
     implementation name: "retrofit-2.3.0"
-    implementation name: "converter-gson-2.3.0"
     implementation name: "gson-2.8.2"
+    implementation name: "converter-gson-2.3.0"
     implementation name: "bcl-utils-1.0.0"
     testImplementation name: "junit-4.12"
 }

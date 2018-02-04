@@ -432,7 +432,9 @@ public class CoreFxController implements IdleMonitorRegisterer, PersistableEntit
 		newStage.setOnCloseRequest(GuiUtils.createOnExitHandler(primaryStage, newCoreFxController));
 		
 		newCoreFxController.currentBodyController = currentBodyController;
-		newCoreFxController. passInitialResources(stringsBundle, topMenusBundle, windowTitle, toLanguage);
+		newCoreFxController.passInitialResources(stringsBundle, topMenusBundle, windowTitle, toLanguage);
+		
+		Context.getWorkflowManager().changeFormRenderer(newCoreFxController::renderBodyForm);
 		
 		// save the language for later usage
 		Preferences prefs = Preferences.userNodeForPackage(AppConstants.PREF_NODE_CLASS);

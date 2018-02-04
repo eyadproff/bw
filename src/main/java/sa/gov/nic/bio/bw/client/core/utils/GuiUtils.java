@@ -24,7 +24,6 @@ import sa.gov.nic.bio.bw.client.login.tasks.LogoutTask;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -46,7 +45,12 @@ public class GuiUtils
 	{
 		if(errorDetails != null)
 		{
-			Arrays.stream(errorDetails).forEach(s -> sb.append(s).append("\n"));
+			for(int i = 0; i < errorDetails.length; i++)
+			{
+				String s = errorDetails[i];
+				sb.append(s);
+				if(i < errorDetails.length - 1) sb.append("\n");
+			}
 		}
 		
 		if(exception != null)

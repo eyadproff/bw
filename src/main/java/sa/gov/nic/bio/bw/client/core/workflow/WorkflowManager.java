@@ -4,6 +4,7 @@ import sa.gov.nic.bio.bw.client.core.interfaces.FormRenderer;
 
 import java.util.Map;
 import java.util.concurrent.SynchronousQueue;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Logger;
 
 /**
@@ -18,6 +19,12 @@ public class WorkflowManager
 	private static final Logger LOGGER = Logger.getLogger(WorkflowManager.class.getName());
 	private Workflow<Void, Void> coreWorkflow;
 	private Thread workflowThread;
+	private AtomicReference<FormRenderer> formRendererReference = new AtomicReference<>();
+	
+	public void changeFormRenderer(FormRenderer formRenderer)
+	{
+		this.formRendererReference.set(formRenderer);
+	}
 	
 	/**
 	 * Starts the core workflow and returns immediately.
@@ -26,6 +33,8 @@ public class WorkflowManager
 	 */
 	public synchronized void startCoreWorkflow(FormRenderer formRenderer)
 	{
+		formRendererReference.set(formRenderer);
+		
 		if(workflowThread != null && workflowThread.isAlive())
 		{
 			LOGGER.warning("The workflow thread is already active!");
@@ -36,7 +45,7 @@ public class WorkflowManager
 		{
 			try
 			{
-				coreWorkflow = new CoreWorkflow(formRenderer, new SynchronousQueue<>());
+				coreWorkflow = new CoreWorkflow(formRendererReference, new SynchronousQueue<>());
 				coreWorkflow.onProcess(null);
 				
 				LOGGER.info("The core workflow is finished.");

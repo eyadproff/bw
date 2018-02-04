@@ -5,6 +5,7 @@ import sa.gov.nic.bio.bw.client.core.interfaces.FormRenderer;
 
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Logger;
 
 /**
@@ -21,14 +22,14 @@ public abstract class WorkflowBase<I, O> implements Workflow<I, O>
 {
 	private static final Logger LOGGER = Logger.getLogger(WorkflowBase.class.getName());
 	
-	protected final FormRenderer formRenderer;
+	protected final AtomicReference<FormRenderer> formRenderer;
 	protected BlockingQueue<Map<String, Object>> userTasks;
 	
 	/**
 	 * @param formRenderer the form renderer that will render the form on the screen
 	 * @param userTasks the queue instance to hold the submitted user tasks
 	 */
-	public WorkflowBase(FormRenderer formRenderer, BlockingQueue<Map<String, Object>> userTasks)
+	public WorkflowBase(AtomicReference<FormRenderer> formRenderer, BlockingQueue<Map<String, Object>> userTasks)
 	{
 		this.formRenderer = formRenderer;
 		this.userTasks = userTasks;

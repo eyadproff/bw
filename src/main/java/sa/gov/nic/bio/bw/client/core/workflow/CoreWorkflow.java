@@ -8,13 +8,14 @@ import sa.gov.nic.bio.bw.client.login.workflow.LogoutWorkflow;
 
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Logger;
 
 public class CoreWorkflow extends WorkflowBase<Void, Void>
 {
 	private static final Logger LOGGER = Logger.getLogger(CoreWorkflow.class.getName());
 	
-	public CoreWorkflow(FormRenderer formRenderer, BlockingQueue<Map<String, Object>> userTasks)
+	public CoreWorkflow(AtomicReference<FormRenderer> formRenderer, BlockingQueue<Map<String, Object>> userTasks)
 	{
 		super(formRenderer, userTasks);
 	}

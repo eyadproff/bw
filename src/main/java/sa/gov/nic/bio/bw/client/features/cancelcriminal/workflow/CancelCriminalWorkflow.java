@@ -9,10 +9,11 @@ import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class CancelCriminalWorkflow extends WorkflowBase<Void, Void>
 {
-	public CancelCriminalWorkflow(FormRenderer formRenderer, BlockingQueue<Map<String, Object>> userTasks)
+	public CancelCriminalWorkflow(AtomicReference<FormRenderer> formRenderer, BlockingQueue<Map<String, Object>> userTasks)
 	{
 		super(formRenderer, userTasks);
 	}
@@ -24,7 +25,7 @@ public class CancelCriminalWorkflow extends WorkflowBase<Void, Void>
 		
 		while(true)
 		{
-			formRenderer.renderForm(CancelCriminalPaneFxController.class, workflowResponse);
+			formRenderer.get().renderForm(CancelCriminalPaneFxController.class, workflowResponse);
 			Map<String, Object> userTaskDataMap = waitForUserTask();
 			
 			String personId = (String) userTaskDataMap.get("personId");

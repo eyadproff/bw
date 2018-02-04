@@ -9,6 +9,7 @@ import sa.gov.nic.bio.bw.client.login.webservice.LoginBean;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * The login workflow.
@@ -18,7 +19,7 @@ import java.util.concurrent.BlockingQueue;
  */
 public class LoginWorkflow extends WorkflowBase<Void, LoginBean>
 {
-	public LoginWorkflow(FormRenderer formRenderer, BlockingQueue<Map<String, Object>> userTasks)
+	public LoginWorkflow(AtomicReference<FormRenderer> formRenderer, BlockingQueue<Map<String, Object>> userTasks)
 	{
 		super(formRenderer, userTasks);
 	}
@@ -30,7 +31,7 @@ public class LoginWorkflow extends WorkflowBase<Void, LoginBean>
 		
 		while(true)
 		{
-			formRenderer.renderForm(LoginPaneFxController.class, uiInputData);
+			formRenderer.get().renderForm(LoginPaneFxController.class, uiInputData);
 			Map<String, Object> userTaskDataMap = waitForUserTask();
 			
 			String username = (String) userTaskDataMap.get("username");

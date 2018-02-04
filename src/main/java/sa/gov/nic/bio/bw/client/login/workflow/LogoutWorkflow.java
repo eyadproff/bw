@@ -5,11 +5,12 @@ import sa.gov.nic.bio.bw.client.core.workflow.WorkflowBase;
 
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class LogoutWorkflow extends WorkflowBase<Void, Void>
 {
 	
-	public LogoutWorkflow(FormRenderer formRenderer, BlockingQueue<Map<String, Object>> userTasks)
+	public LogoutWorkflow(AtomicReference<FormRenderer> formRenderer, BlockingQueue<Map<String, Object>> userTasks)
 	{
 		super(formRenderer, userTasks);
 	}

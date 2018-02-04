@@ -13,12 +13,13 @@ import java.lang.reflect.Constructor;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class HomeWorkflow extends WorkflowBase<LoginBean, Void>
 {
 	public static final String KEY_MENU_WORKFLOW_CLASS = "MENU_WORKFLOW_CLASS";
 	
-	public HomeWorkflow(FormRenderer formRenderer, BlockingQueue<Map<String, Object>> userTasks)
+	public HomeWorkflow(AtomicReference<FormRenderer> formRenderer, BlockingQueue<Map<String, Object>> userTasks)
 	{
 		super(formRenderer, userTasks);
 	}
@@ -30,7 +31,7 @@ public class HomeWorkflow extends WorkflowBase<LoginBean, Void>
 		
 		while(true)
 		{
-			formRenderer.renderForm(HomePaneFxController.class, uiInputData); // render home page
+			formRenderer.get().renderForm(HomePaneFxController.class, uiInputData); // render home page
 			
 			try
 			{
@@ -64,7 +65,7 @@ public class HomeWorkflow extends WorkflowBase<LoginBean, Void>
 					try
 					{
 						Constructor<?> declaredConstructor = menuWorkflowClass
-								.getDeclaredConstructor(FormRenderer.class, BlockingQueue.class);
+								.getDeclaredConstructor(AtomicReference.class, BlockingQueue.class);
 						subWorkflow = (Workflow<?, ?>) declaredConstructor.newInstance(formRenderer, userTasks);
 					}
 					catch(Exception e)
