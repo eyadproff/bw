@@ -1,6 +1,5 @@
 package sa.gov.nic.bio.bw.client.home;
 
-import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
@@ -17,11 +16,7 @@ import sa.gov.nic.bio.bw.client.core.workflow.Workflow;
 import sa.gov.nic.bio.bw.client.home.utils.HomeErrorCodes;
 import sa.gov.nic.bio.bw.client.login.webservice.UserInfo;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.IOException;
 import java.text.Normalizer;
 import java.time.DateTimeException;
 import java.util.ArrayList;
@@ -152,13 +147,6 @@ public class HomePaneFxController extends BodyFxControllerBase
 				try
 				{
 					image = new Image(new ByteArrayInputStream(faceImageByteArray));
-					BufferedImage bImage = SwingFXUtils.fromFXImage(image, null);
-					try {
-						ImageIO.write(bImage, "png", new File("C:/bio/test.png"));
-					} catch (IOException e) {
-						throw new RuntimeException(e);
-					}
-					
 				}
 				catch(Exception e)
 				{

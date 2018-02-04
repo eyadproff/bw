@@ -58,10 +58,9 @@ public class AppPreloader extends Preloader
 		
 		// NOTE: we needed this workaround when we was launching BW via as a webstart via JRE8's javaws.
 		// However, it is no longer the case now. BW is currently launched by BCL which in turn is launched
-		// by JRE6's javaws. I chose to keep this workaround just in case someone by mistake invokes JRE8's
-		// javaws that is downloaded by the BCL on a separate folder (not installed).
+		// by JRE6's javaws.
 		
-		String deploymentFilePath = System.getProperty("user.home") +
+		/*String deploymentFilePath = System.getProperty("user.home") +
 								"/AppData/LocalLow/Sun/Java/Deployment/deployment.properties"; // Windows 7 and newer
 		try
 		{
@@ -72,7 +71,7 @@ public class AppPreloader extends Preloader
 		{
 			System.out.println("Failed to delete the user-level deployment.properties!");
 			e.printStackTrace();
-		}
+		}*/
 		
 		// check if LOGS_FOLDER_PATH exists. If not, create it.
 		Path logFolderPath = Paths.get(AppConstants.LOGS_FOLDER_PATH);

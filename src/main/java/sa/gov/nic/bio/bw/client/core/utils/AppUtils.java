@@ -115,7 +115,8 @@ public final class AppUtils
 				if(e == null) break;
 				String name = e.getName();
 				
-				if(name.matches(matcher)) resources.add(name);
+				if(name.matches(matcher)) resources.add(removeFileExtensions ?
+						                                name.substring(0, name.lastIndexOf('.')) : name);
 			}
 		}
 		
