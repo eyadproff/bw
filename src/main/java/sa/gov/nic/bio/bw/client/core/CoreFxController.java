@@ -20,6 +20,7 @@ import sa.gov.nic.bio.bw.client.core.interfaces.PersistableEntity;
 import sa.gov.nic.bio.bw.client.core.interfaces.ResourceBundleCollection;
 import sa.gov.nic.bio.bw.client.core.utils.AppConstants;
 import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
+import sa.gov.nic.bio.bw.client.core.utils.CombinedResourceBundle;
 import sa.gov.nic.bio.bw.client.core.utils.CoreErrorCodes;
 import sa.gov.nic.bio.bw.client.core.utils.DialogUtils;
 import sa.gov.nic.bio.bw.client.core.utils.GuiLanguage;
@@ -36,6 +37,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.MissingResourceException;
@@ -363,6 +365,27 @@ public class CoreFxController implements IdleMonitorRegisterer, PersistableEntit
 		
 		LOGGER.info("Switching the GUI language to " + toLanguage.name());
 		
+		List<String> errorBundleNames;
+		
+		try
+		{
+			errorBundleNames = AppUtils.listResourceFiles(getClass().getProtectionDomain(),
+			                                              ".*/errors.properties$",
+			                                              true, Context.getRuntimeEnvironment());
+		}
+		catch(Exception e)
+		{
+			String errorCode = CoreErrorCodes.C002_00006.getCode();
+			String[] errorDetails = {"Failed to load the error bundles!"};
+			showErrorDialog(errorCode, e, errorDetails);
+			return;
+		}
+		
+		ResourceBundle errorsBundle = new CombinedResourceBundle(errorBundleNames, toLanguage.getLocale(),
+		                                                         new UTF8Control());
+		((CombinedResourceBundle) errorsBundle).load();
+		Context.setErrorsBundle(errorsBundle);
+		
 		ResourceBundle stringsBundle;
 		try
 		{
@@ -370,7 +393,7 @@ public class CoreFxController implements IdleMonitorRegisterer, PersistableEntit
 		}
 		catch(MissingResourceException e)
 		{
-			String errorCode = CoreErrorCodes.C002_00006.getCode();
+			String errorCode = CoreErrorCodes.C002_00007.getCode();
 			String[] errorDetails = {"Core \"stringsBundle\" resource bundle is missing!"};
 			showErrorDialog(errorCode, e, errorDetails);
 			return;
@@ -383,7 +406,7 @@ public class CoreFxController implements IdleMonitorRegisterer, PersistableEntit
 		}
 		catch(MissingResourceException e)
 		{
-			String errorCode = CoreErrorCodes.C002_00007.getCode();
+			String errorCode = CoreErrorCodes.C002_00008.getCode();
 			String[] errorDetails = {"Core \"topMenusBundle\" resource bundle is missing!"};
 			showErrorDialog(errorCode, e, errorDetails);
 			return;
@@ -392,7 +415,7 @@ public class CoreFxController implements IdleMonitorRegisterer, PersistableEntit
 		URL fxmlUrl = Thread.currentThread().getContextClassLoader().getResource(FXML_FILE);
 		if(fxmlUrl == null)
 		{
-			String errorCode = CoreErrorCodes.C002_00008.getCode();
+			String errorCode = CoreErrorCodes.C002_00009.getCode();
 			String[] errorDetails = {"Core \"fxmlUrl\" is null!"};
 			showErrorDialog(errorCode, null, errorDetails);
 			return;
@@ -415,7 +438,7 @@ public class CoreFxController implements IdleMonitorRegisterer, PersistableEntit
 		}
 		catch(IOException e)
 		{
-			String errorCode = CoreErrorCodes.C002_00009.getCode();
+			String errorCode = CoreErrorCodes.C002_00010.getCode();
 			String[] errorDetails = {"Failed to load core FXML correctly!"};
 			showErrorDialog(errorCode, e, errorDetails);
 			return;

@@ -46,6 +46,8 @@ public class Context
 	public static WebserviceManager getWebserviceManager(){return INSTANCE.webserviceManager;}
 	public static ExecutorService getExecutorService(){return INSTANCE.executorService;}
 	public static ScheduledExecutorService getScheduledExecutorService(){return INSTANCE.scheduledExecutorService;}
+	
+	public static void setErrorsBundle(ResourceBundle errorsBundle){INSTANCE.errorsBundle = errorsBundle;}
 	public static ResourceBundle getErrorsBundle(){return INSTANCE.errorsBundle;}
 	
 	public static void setUserSession(UserSession userSession){INSTANCE.userSession = userSession;}
