@@ -35,7 +35,7 @@ public class WorkflowManager
 	{
 		formRendererReference.set(formRenderer);
 		
-		if(workflowThread != null && workflowThread.isAlive())
+		if(isRunning())
 		{
 			LOGGER.warning("The workflow thread is already active!");
 			return;
@@ -96,5 +96,10 @@ public class WorkflowManager
 		}
 		
 		workflowThread.interrupt();
+	}
+	
+	public boolean isRunning()
+	{
+		return workflowThread != null && workflowThread.isAlive();
 	}
 }

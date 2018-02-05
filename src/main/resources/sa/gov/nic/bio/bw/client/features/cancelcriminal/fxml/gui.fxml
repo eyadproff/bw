@@ -26,7 +26,7 @@
                     <Label text="%label.personId" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
                     <TextField fx:id="txtPersonId" GridPane.columnIndex="1" GridPane.rowIndex="0" onAction="#onEnterPressed"/>
                     <Label text="%label.personIdType" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
-                    <ComboBox fx:id="cboPersonIdType" GridPane.columnIndex="1" GridPane.rowIndex="1" onAction="#onEnterPressed"/>
+                    <ComboBox fx:id="cboPersonIdType" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
                     <Label text="%label.criminalId" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
                     <TextField fx:id="txtCriminalId" GridPane.columnIndex="1" GridPane.rowIndex="2" onAction="#onEnterPressed"/>
                 </GridPane>
@@ -45,7 +45,7 @@
         </TabPane>
     </HBox>
     <VBox fx:id="bottomBox" alignment="CENTER" spacing="10" visible="false" managed="false">
-        <Button fx:id="btnCancelCriminal" text="%button.cancelCriminal" defaultButton="true"  onAction="#onCancelCriminalButtonClicked"/>
+        <Button fx:id="btnCancelCriminal" text="%button.cancelCriminal" defaultButton="true" onAction="#onCancelCriminalButtonClicked"/>
         <ProgressIndicator fx:id="piCancelCriminal" prefHeight="25.0" prefWidth="25.0" visible="false" managed="false"/>
     </VBox>
 </VBox>

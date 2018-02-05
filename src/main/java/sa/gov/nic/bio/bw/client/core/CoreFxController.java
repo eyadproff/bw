@@ -100,7 +100,7 @@ public class CoreFxController implements IdleMonitorRegisterer, PersistableEntit
 		idleMonitor = new IdleMonitor(this::onShowingIdleWarning, this::onIdle, this::onIdleInterrupt,
 		                              this::onTick, idleNotifier);
 		
-		if(currentBodyController == null) // if this is the first load, start the code workflow.
+		if(!Context.getWorkflowManager().isRunning())
 		{
 			Context.getWorkflowManager().startCoreWorkflow(this::renderBodyForm);
 		}
