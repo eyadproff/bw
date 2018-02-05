@@ -25,7 +25,7 @@ public class LoginService
 	
 	public static ServiceResponse<LoginBean> execute(String username, String password)
 	{
-		if(Context.getRuntimeEnvironment() != null && Context.getRuntimeEnvironment() != RuntimeEnvironment.DEV)
+		if(Context.getRuntimeEnvironment() != RuntimeEnvironment.LOCAL) // if not local, check for updates
 		{
 			String serverUrl = Context.getWebserviceManager().getServerUrl();
 			

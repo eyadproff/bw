@@ -1,7 +1,9 @@
 package sa.gov.nic.bio.bw.client;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.NodeOrientation;
 import javafx.stage.Stage;
 import retrofit2.Call;
 import sa.gov.nic.bio.bw.client.core.Context;
@@ -10,6 +12,7 @@ import sa.gov.nic.bio.bw.client.core.beans.UserSession;
 import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.client.core.utils.CombinedResourceBundle;
 import sa.gov.nic.bio.bw.client.core.utils.ConfigManager;
+import sa.gov.nic.bio.bw.client.core.utils.DialogUtils;
 import sa.gov.nic.bio.bw.client.core.utils.GuiLanguage;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.utils.PreloaderNotification;
@@ -33,10 +36,12 @@ import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.Properties;
 import java.util.ResourceBundle;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -104,17 +109,16 @@ public class AppEntryPoint extends Application
 	    }
 	
 	    String webserviceBaseUrl = System.getProperty("bio.serverUrl");
-	    String sRuntimeEnvironment = System.getProperty("jnlp.bio.runtime.environment"); // PROD, INT, DEV
+	    String sRuntimeEnvironment = System.getProperty("jnlp.bio.runtime.environment", "LOCAL");
+	    LOGGER.info("sRuntimeEnvironment = " + sRuntimeEnvironment);
+	
+	    RuntimeEnvironment runtimeEnvironment = RuntimeEnvironment.byName(sRuntimeEnvironment);
 	    
-	    if(webserviceBaseUrl == null) // usually local run
+	    if(runtimeEnvironment == RuntimeEnvironment.LOCAL)
 	    {
-		    LOGGER.warning("webserviceBaseUrl is null! We will use the default one.");
-		    webserviceBaseUrl = configManager.getProperty("dev.webservice.baseUrl");
-		    sRuntimeEnvironment = "DEV";
-		
 		    // populate the JNLP properties to the system properties
 		    InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream(
-		    		                                    "sa/gov/nic/bio/bw/client/core/config/jnlp.properties");
+				    "sa/gov/nic/bio/bw/client/core/config/jnlp.properties");
 		    InputStreamReader isr = new InputStreamReader(is, StandardCharsets.UTF_8);
 		    Properties properties = new Properties();
 		    try
@@ -136,19 +140,6 @@ public class AppEntryPoint extends Application
 		    }
 	    }
 	    
-	    if(webserviceBaseUrl == null)
-	    {
-		    String errorCode = StartupErrorCodes.C001_00005.getCode();
-		    String[] errorDetails = {"\"webserviceBaseUrl\" is null!"};
-		    notifyPreloader(PreloaderNotification.failure(null, errorCode, errorDetails));
-		    return;
-	    }
-	
-	    LOGGER.info("webserviceBaseUrl = " + webserviceBaseUrl);
-	    LOGGER.info("sRuntimeEnvironment = " + sRuntimeEnvironment);
-	
-	    RuntimeEnvironment runtimeEnvironment = RuntimeEnvironment.byName(sRuntimeEnvironment);
-	
 	    String sReadTimeoutSeconds = System.getProperty("jnlp.bio.bw.webservice.readTimeoutSeconds");
 	    String sConnectTimeoutSeconds = System.getProperty("jnlp.bio.bw.webservice.connectTimeoutSeconds");
 	
@@ -182,8 +173,6 @@ public class AppEntryPoint extends Application
 				           sConnectTimeoutSeconds);
 	    }
 	
-	    webserviceManager.init(webserviceBaseUrl, readTimeoutSeconds, connectTimeoutSeconds);
-	
 	    List<String> errorBundleNames;
 	
 	    try
@@ -194,9 +183,9 @@ public class AppEntryPoint extends Application
 	    }
 	    catch(Exception e)
 	    {
-		    String errorCode = StartupErrorCodes.C001_00006.getCode();
+		    String errorCode = StartupErrorCodes.C001_00005.getCode();
 		    String[] errorDetails = {"Failed to load the error bundles!"};
-		    notifyPreloader(PreloaderNotification.failure(null, errorCode, errorDetails));
+		    notifyPreloader(PreloaderNotification.failure(e, errorCode, errorDetails));
 		    return;
 	    }
 	
@@ -204,9 +193,88 @@ public class AppEntryPoint extends Application
 	                                                             new UTF8Control());
 	    ((CombinedResourceBundle) errorsBundle).load();
 	    
+	    try
+	    {
+		    stringsBundle = ResourceBundle.getBundle(CoreFxController.RB_LABELS_FILE, guiLanguage.getLocale(),
+		                                             new UTF8Control());
+	    }
+	    catch(MissingResourceException e)
+	    {
+		    String errorCode = StartupErrorCodes.C001_00006.getCode();
+		    String[] errorDetails = {"Core \"stringsBundle\" resource bundle is missing!"};
+		    notifyPreloader(PreloaderNotification.failure(e, errorCode, errorDetails));
+		    return;
+	    }
+	
+	    try
+	    {
+		    topMenusBundle = ResourceBundle.getBundle(CoreFxController.RB_TOP_MENUS_FILE, guiLanguage.getLocale(),
+		                                              new UTF8Control());
+	    }
+	    catch(MissingResourceException e)
+	    {
+		    String errorCode = StartupErrorCodes.C001_00007.getCode();
+		    String[] errorDetails = {"Core \"topMenusBundle\" resource bundle is missing!"};
+		    notifyPreloader(PreloaderNotification.failure(e, errorCode, errorDetails));
+		    return;
+	    }
+	
+	    fxmlUrl = Thread.currentThread().getContextClassLoader().getResource(CoreFxController.FXML_FILE);
+	    if(fxmlUrl == null)
+	    {
+		    String errorCode = StartupErrorCodes.C001_00008.getCode();
+		    String[] errorDetails = {"Core \"fxmlUrl\" is null!"};
+		    notifyPreloader(PreloaderNotification.failure(null, errorCode, errorDetails));
+		    return;
+	    }
+	
+	    String[] urls = configManager.getProperty("dev.webservice.urls").split("[,\\s]+");
+	    
+	    if(runtimeEnvironment == RuntimeEnvironment.LOCAL)
+	    {
+		
+		    CountDownLatch latch = new CountDownLatch(1);
+		    AtomicReference<String> reference = new AtomicReference<>();
+		
+		    Platform.runLater(() ->
+		    {
+			    String dialogTitle = stringsBundle.getString("dialog.choice.title");
+			    String headerText = stringsBundle.getString("dialog.choice.selectServer.headerText");
+			    String buttonText = stringsBundle.getString("dialog.choice.selectServer.button");
+			
+			    reference.set(DialogUtils.showChoiceDialog(null, null, dialogTitle,
+			                                  headerText, urls, buttonText, true,
+			                                  guiLanguage.getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT));
+			    latch.countDown();
+		    });
+		
+		    try
+		    {
+			    latch.await(); // wait until the user choose a url
+			    webserviceBaseUrl = reference.get();
+		    }
+		    catch(InterruptedException e)
+		    {
+			    e.printStackTrace();
+		    }
+		
+	    }
+	
+	    if(webserviceBaseUrl == null)
+	    {
+		    String errorCode = StartupErrorCodes.C001_00009.getCode();
+		    String[] errorDetails = {"\"webserviceBaseUrl\" is null!"};
+		    notifyPreloader(PreloaderNotification.failure(null, errorCode, errorDetails));
+		    return;
+	    }
+	
+	    LOGGER.info("webserviceBaseUrl = " + webserviceBaseUrl);
+	
+	    webserviceManager.init(webserviceBaseUrl, readTimeoutSeconds, connectTimeoutSeconds);
+	
 	    Context.attach(runtimeEnvironment, configManager, workflowManager, webserviceManager, executorService,
 	                   scheduledExecutorService, errorsBundle, new UserSession());
-	    
+	
 	    LookupAPI lookupAPI = webserviceManager.getApi(LookupAPI.class);
 	    String url = System.getProperty("jnlp.bio.bw.service.lookupNicHijriCalendarData");
 	    Call<NicHijriCalendarData> apiCall = lookupAPI.lookupNicHijriCalendarData(url);
@@ -221,9 +289,9 @@ public class AppEntryPoint extends Application
 		    }
 		    catch(Exception e)
 		    {
-			    String errorCode = StartupErrorCodes.C001_00007.getCode();
+			    String errorCode = StartupErrorCodes.C001_00010.getCode();
 			    String[] errorDetails = {"Failed to inject NicHijriCalendarData!"};
-			    notifyPreloader(PreloaderNotification.failure(null, errorCode, errorDetails));
+			    notifyPreloader(PreloaderNotification.failure(e, errorCode, errorDetails));
 			    return;
 		    }
 	    }
@@ -235,44 +303,9 @@ public class AppEntryPoint extends Application
 		    notifyPreloader(PreloaderNotification.failure(exception, errorCode, errorDetails));
 		    return;
 	    }
-	    
-	    try
-	    {
-		    stringsBundle = ResourceBundle.getBundle(CoreFxController.RB_LABELS_FILE, guiLanguage.getLocale(),
-		                                             new UTF8Control());
-	    }
-	    catch(MissingResourceException e)
-	    {
-		    String errorCode = StartupErrorCodes.C001_00008.getCode();
-		    String[] errorDetails = {"Core \"stringsBundle\" resource bundle is missing!"};
-		    notifyPreloader(PreloaderNotification.failure(null, errorCode, errorDetails));
-		    return;
-	    }
-	
-	    try
-	    {
-		    topMenusBundle = ResourceBundle.getBundle(CoreFxController.RB_TOP_MENUS_FILE, guiLanguage.getLocale(),
-		                                              new UTF8Control());
-	    }
-	    catch(MissingResourceException e)
-	    {
-		    String errorCode = StartupErrorCodes.C001_00009.getCode();
-		    String[] errorDetails = {"Core \"topMenusBundle\" resource bundle is missing!"};
-		    notifyPreloader(PreloaderNotification.failure(null, errorCode, errorDetails));
-		    return;
-	    }
-	
-	    fxmlUrl = Thread.currentThread().getContextClassLoader().getResource(CoreFxController.FXML_FILE);
-	    if(fxmlUrl == null)
-	    {
-		    String errorCode = StartupErrorCodes.C001_00010.getCode();
-		    String[] errorDetails = {"Core \"fxmlUrl\" is null!"};
-		    notifyPreloader(PreloaderNotification.failure(null, errorCode, errorDetails));
-		    return;
-	    }
 	
 	    String version = configManager.getProperty("app.version");
-	    
+	
 	    if(version == null)
 	    {
 		    String errorCode = StartupErrorCodes.C001_00011.getCode();
@@ -286,16 +319,16 @@ public class AppEntryPoint extends Application
 	    {
 		    title = stringsBundle.getString("window.title") + " " + version + " (" +
 				    stringsBundle.getString("label.environment." +
-						                   Context.getRuntimeEnvironment().name().toLowerCase()) + ")";
+						                            Context.getRuntimeEnvironment().name().toLowerCase()) + ")";
 	    }
 	    catch(MissingResourceException e)
 	    {
 		    String errorCode = StartupErrorCodes.C001_00012.getCode();
 		    String[] errorDetails = {"Label text \"window.title\" is missing!"};
-		    notifyPreloader(PreloaderNotification.failure(null, errorCode, errorDetails));
+		    notifyPreloader(PreloaderNotification.failure(e, errorCode, errorDetails));
 		    return;
 	    }
-	    
+	
 	    windowTitle = AppUtils.replaceNumbersOnly(title, Locale.getDefault());
 	    
 	    successfulInit = true;
@@ -320,7 +353,7 @@ public class AppEntryPoint extends Application
 	    {
 		    String errorCode = StartupErrorCodes.C001_00013.getCode();
 		    String[] errorDetails = {"Failed to load the core FXML correctly!"};
-		    notifyPreloader(PreloaderNotification.failure(null, errorCode, errorDetails));
+		    notifyPreloader(PreloaderNotification.failure(e, errorCode, errorDetails));
 		    return;
 	    }
 	    

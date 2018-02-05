@@ -8,6 +8,7 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.ChoiceDialog;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.TextArea;
@@ -81,8 +82,39 @@ public class DialogUtils
 		if(idleMonitorRegisterer != null) idleMonitorRegisterer.unregisterStageForIdleMonitoring(stage);
 	}
 	
-	public static boolean showConfirmationDialog(Window ownerWindow, IdleMonitorRegisterer idleMonitorRegisterer, String title, String headerText, String contentText,
-	                                          String buttonConfirmText, String buttonCancelText, boolean rtl)
+	public static String showChoiceDialog(Window ownerWindow, IdleMonitorRegisterer idleMonitorRegisterer,
+	                                      String title, String headerText, String[] choices,
+	                                      String buttonConfirmText, boolean alwaysOnTop, boolean rtl)
+	{
+		ChoiceDialog<String> choiceDialog = new ChoiceDialog<>(choices[0], choices);
+		choiceDialog.initOwner(ownerWindow);
+		choiceDialog.initStyle(StageStyle.UTILITY);
+		Scene scene = choiceDialog.getDialogPane().getScene();
+		scene.setNodeOrientation(rtl ? NodeOrientation.RIGHT_TO_LEFT : NodeOrientation.LEFT_TO_RIGHT);
+		Stage stage = (Stage) scene.getWindow();
+		stage.setAlwaysOnTop(alwaysOnTop);
+		choiceDialog.setTitle(title);
+		choiceDialog.setHeaderText(headerText);
+		
+		ButtonType buttonTypeConfirm = new ButtonType(buttonConfirmText, ButtonBar.ButtonData.OK_DONE);
+		choiceDialog.getDialogPane().getButtonTypes().setAll(buttonTypeConfirm);
+		
+		Button btnConfirm = (Button) choiceDialog.getDialogPane().lookupButton(buttonTypeConfirm);
+		btnConfirm.setDefaultButton(true);
+		
+		stage.sizeToScene();
+		if(idleMonitorRegisterer != null) idleMonitorRegisterer.registerStageForIdleMonitoring(stage);
+		choiceDialog.showAndWait();
+		if(idleMonitorRegisterer != null) idleMonitorRegisterer.unregisterStageForIdleMonitoring(stage);
+		
+		String selectedItem = choiceDialog.getSelectedItem();
+		
+		return selectedItem != null ? selectedItem : choices[0];
+	}
+	
+	public static boolean showConfirmationDialog(Window ownerWindow, IdleMonitorRegisterer idleMonitorRegisterer,
+	                                             String title, String headerText, String contentText,
+	                                             String buttonConfirmText, String buttonCancelText, boolean rtl)
 	{
 		Alert alert = new Alert(AlertType.CONFIRMATION);
 		alert.initOwner(ownerWindow);

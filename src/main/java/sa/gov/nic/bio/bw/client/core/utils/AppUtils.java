@@ -90,7 +90,7 @@ public final class AppUtils
 		List<String> resources = new ArrayList<>();
 		URL location = protectionDomain.getCodeSource().getLocation();
 		
-		if(runtimeEnvironment == RuntimeEnvironment.DEV)
+		if(runtimeEnvironment == RuntimeEnvironment.LOCAL)
 		{
 			// location.toURI() is ./build/classes/java/main
 			// we want ./build/resources/main
