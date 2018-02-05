@@ -11,7 +11,7 @@
 <Stage xmlns="http://javafx.com/javafx/8.0.152"
        height="300" width="620" alwaysOnTop="true">
     <icons>
-        <Image url="@../images/app_icon.png"/>
+        <Image url="@../../core/images/app_icon.png"/>
     </icons>
     <scene>
         <Scene stylesheets="@../css/style.css">
