@@ -157,9 +157,9 @@ task packageWebStartAndDeploy(group: 'web-start') {
     doLast {
         ssh.run {
             session(remotes.webServer) {
-                remove '/opt/wlp2/usr/servers/bio-client-downloader/clients/bw'
-                execute 'mkdir /opt/wlp2/usr/servers/bio-client-downloader/clients/bw'
-                put from: new File('build/web-start').listFiles().toList(), into: '/opt/wlp2/usr/servers/bio-client-downloader/clients/bw'
+                remove '/opt/dev/wlp/usr/servers/bio-client-downloader/clients/bw'
+                execute 'mkdir /opt/dev/wlp/usr/servers/bio-client-downloader/clients/bw'
+                put from: new File('build/web-start').listFiles().toList(), into: '/opt/dev/wlp/usr/servers/bio-client-downloader/clients/bw'
             }
         }
     }
@@ -170,9 +170,9 @@ task deploy(group: 'web-start') {
     doLast {
         ssh.run {
             session(remotes.webServer) {
-                remove '/opt/wlp2/usr/servers/bio-client-downloader/clients/bw'
-                execute 'mkdir /opt/wlp2/usr/servers/bio-client-downloader/clients/bw'
-                put from: new File('build/web-start').listFiles().toList(), into: '/opt/wlp2/usr/servers/bio-client-downloader/clients/bw'
+                remove '/opt/dev/wlp/usr/servers/bio-client-downloader/clients/bw'
+                execute 'mkdir /opt/dev/wlp/usr/servers/bio-client-downloader/clients/bw'
+                put from: new File('build/web-start').listFiles().toList(), into: '/opt/dev/wlp/usr/servers/bio-client-downloader/clients/bw'
             }
         }
     }

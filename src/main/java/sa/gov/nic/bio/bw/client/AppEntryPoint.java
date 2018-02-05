@@ -230,7 +230,7 @@ public class AppEntryPoint extends Application
 	
 	    String[] urls = configManager.getProperty("dev.webservice.urls").split("[,\\s]+");
 	    
-	    if(runtimeEnvironment == RuntimeEnvironment.LOCAL)
+	    if(runtimeEnvironment == RuntimeEnvironment.LOCAL || runtimeEnvironment == RuntimeEnvironment.DEV)
 	    {
 		
 		    CountDownLatch latch = new CountDownLatch(1);
