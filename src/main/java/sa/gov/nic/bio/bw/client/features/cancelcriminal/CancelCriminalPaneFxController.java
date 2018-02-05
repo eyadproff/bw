@@ -204,12 +204,9 @@ public class CancelCriminalPaneFxController extends BodyFxControllerBase
 			hideNotification();
 			disableUiControls(true);
 			
-			if(tabByPersonId.isSelected())
-			{
-				uiDataMap.put("personId", personId);
-				uiDataMap.put("personIdType", personIdType.getCode());
-				uiDataMap.put("criminalId", criminalId);
-			}
+			uiDataMap.put("personId", Long.parseLong(personId));
+			uiDataMap.put("personIdType", personIdType.getCode());
+			uiDataMap.put("criminalId", Long.parseLong(criminalId));
 		}
 		else
 		{
@@ -226,11 +223,8 @@ public class CancelCriminalPaneFxController extends BodyFxControllerBase
 			hideNotification();
 			disableUiControls(true);
 			
-			if(tabByPersonId.isSelected())
-			{
-				uiDataMap.put("inquiryId", inquiryId);
-				uiDataMap.put("criminalId", criminalId);
-			}
+			uiDataMap.put("inquiryId", Long.parseLong(inquiryId));
+			uiDataMap.put("criminalId", Long.parseLong(criminalId));
 		}
 		
 		coreFxController.submitForm(uiDataMap);
@@ -239,7 +233,6 @@ public class CancelCriminalPaneFxController extends BodyFxControllerBase
 	private String formatPersonIdType(PersonIdType personIdType)
 	{
 		StringBuilder sb = new StringBuilder();
-		sb.append(personIdType.getCode()).append("- ");
 		
 		if(coreFxController.getCurrentLanguage() == GuiLanguage.ARABIC)
 		{

@@ -97,7 +97,7 @@ public class CancelLatentPaneFxController extends BodyFxControllerBase
 		disableUiControls(true);
 		
 		Map<String, Object> uiDataMap = new HashMap<>();
-		uiDataMap.put("personId", personId);
+		uiDataMap.put("personId", Long.parseLong(personId));
 		uiDataMap.put("latentId", latentId);
 		
 		coreFxController.submitForm(uiDataMap);

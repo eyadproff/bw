@@ -7,7 +7,7 @@ import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
 
 public class CancelCriminalService
 {
-	public static ServiceResponse<Boolean> execute(String personId, int personIdType, String criminalId)
+	public static ServiceResponse<Boolean> execute(long personId, int personIdType, long criminalId)
 	{
 		CancelCriminalAPI cancelCriminalAPI = Context.getWebserviceManager().getApi(CancelCriminalAPI.class);
 		String url = System.getProperty("jnlp.bio.bw.service.cancelCriminal.byPersonId");
@@ -15,7 +15,7 @@ public class CancelCriminalService
 		return Context.getWebserviceManager().executeApi(apiCall);
 	}
 	
-	public static ServiceResponse<Boolean> execute(String inquiryId, String criminalId)
+	public static ServiceResponse<Boolean> execute(long inquiryId, long criminalId)
 	{
 		CancelCriminalAPI cancelCriminalAPI = Context.getWebserviceManager().getApi(CancelCriminalAPI.class);
 		String url = System.getProperty("jnlp.bio.bw.service.cancelCriminal.byInquiryId");

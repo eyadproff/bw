@@ -129,11 +129,11 @@ public class GuiUtils
 		});
 	}
 	
-	public static void makeComboBoxOpenableByPressingSpaceBarAndEnter(ComboBox<?> comboBox)
+	public static void makeComboBoxOpenableByPressingSpaceBar(ComboBox<?> comboBox)
 	{
 		comboBox.addEventHandler(KeyEvent.KEY_PRESSED, event ->
 		{
-			if(event.getCode() == KeyCode.SPACE || event.getCode() == KeyCode.ENTER)
+			if(event.getCode() == KeyCode.SPACE)
 			{
 				if(!comboBox.isShowing()) comboBox.show();
 			}

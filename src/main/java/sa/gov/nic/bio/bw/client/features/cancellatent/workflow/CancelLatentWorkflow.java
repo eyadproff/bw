@@ -28,7 +28,7 @@ public class CancelLatentWorkflow extends WorkflowBase<Void, Void>
 			formRenderer.get().renderForm(CancelLatentPaneFxController.class, uiInputData);
 			Map<String, Object> userTaskDataMap = waitForUserTask();
 			
-			String personId = (String) userTaskDataMap.get("personId");
+			Long personId = (Long) userTaskDataMap.get("personId");
 			String latentId = (String) userTaskDataMap.get("latentId");
 			
 			ServiceResponse<Boolean> response = CancelLatentService.execute(personId, latentId);

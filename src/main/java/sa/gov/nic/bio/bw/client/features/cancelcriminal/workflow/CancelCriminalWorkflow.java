@@ -28,10 +28,10 @@ public class CancelCriminalWorkflow extends WorkflowBase<Void, Void>
 			formRenderer.get().renderForm(CancelCriminalPaneFxController.class, workflowResponse);
 			Map<String, Object> userTaskDataMap = waitForUserTask();
 			
-			String personId = (String) userTaskDataMap.get("personId");
-			String inquiryId = (String) userTaskDataMap.get("inquiryId");
+			Long personId = (Long) userTaskDataMap.get("personId");
+			Long inquiryId = (Long) userTaskDataMap.get("inquiryId");
 			Integer personIdType = (Integer) userTaskDataMap.get("personIdType");
-			String criminalId = (String) userTaskDataMap.get("criminalId");
+			Long criminalId = (Long) userTaskDataMap.get("criminalId");
 			
 			ServiceResponse<Boolean> response;
 			
