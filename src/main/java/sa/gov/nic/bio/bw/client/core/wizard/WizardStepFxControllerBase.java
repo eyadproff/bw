@@ -28,6 +28,7 @@ public abstract class WizardStepFxControllerBase extends BodyFxControllerBase im
 	{
 		Map<String, Object> uiDataMap = new HashMap<>();
 		uiDataMap.put("direction", "backward");
+		onGoingPrevious(uiDataMap);
 		coreFxController.submitForm(uiDataMap);
 	}
 	
@@ -41,5 +42,5 @@ public abstract class WizardStepFxControllerBase extends BodyFxControllerBase im
 	
 	protected void onGoingNext(Map<String, Object> uiDataMap){}
 	protected void onGoingPrevious(Map<String, Object> uiDataMap){}
-	//public abstract URL getFxmlLocation();
+	public abstract URL getFxmlLocation();
 }

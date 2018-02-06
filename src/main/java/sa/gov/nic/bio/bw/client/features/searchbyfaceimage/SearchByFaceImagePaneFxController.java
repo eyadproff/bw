@@ -87,7 +87,7 @@ public class SearchByFaceImagePaneFxController extends BodyFxControllerBase
 	private String uploadedImagePath;
 	private Image uploadedImage;
 	
-	@FXML
+	@Override
 	protected void initialize()
 	{
 		GuiUtils.makeButtonClickable(btnSelectImage);

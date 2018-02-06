@@ -45,7 +45,7 @@ public class CancelCriminalPaneFxController extends BodyFxControllerBase
 	
 	private LookupTask lookupTask;
 	
-	@FXML
+	@Override
 	protected void initialize()
 	{
 		tabByPersonId.setGraphic(AppUtils.createFontAwesomeIcon('\uf2bb'));

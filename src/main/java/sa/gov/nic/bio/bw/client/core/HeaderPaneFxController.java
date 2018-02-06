@@ -41,7 +41,7 @@ public class HeaderPaneFxController extends RegionFxControllerBase
 		this.coreFxController = coreFxController;
 	}
 	
-	@FXML
+	@Override
 	protected void initialize()
 	{
 		Glyph atIcon = AppUtils.createFontAwesomeIcon(FontAwesome.Glyph.AT);

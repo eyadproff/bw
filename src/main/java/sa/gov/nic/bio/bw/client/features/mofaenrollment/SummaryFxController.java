@@ -5,6 +5,7 @@ import javafx.scene.control.Button;
 import sa.gov.nic.bio.bw.client.core.wizard.WizardStepFxControllerBase;
 
 import java.net.URL;
+import java.util.Map;
 
 public class SummaryFxController extends WizardStepFxControllerBase
 {
@@ -17,8 +18,8 @@ public class SummaryFxController extends WizardStepFxControllerBase
 		return getClass().getResource("fxml/summary.fxml");
 	}
 	
-	@FXML
-	private void initialize()
+	@Override
+	protected void initialize()
 	{
 		btnPrevious.setOnAction(event -> goPrevious());
 		btnSubmit.setOnAction(event -> goNext());
@@ -26,6 +27,12 @@ public class SummaryFxController extends WizardStepFxControllerBase
 	
 	@Override
 	public void onControllerReady()
+	{
+	
+	}
+	
+	@Override
+	public void onWorkflowUserTaskLoad(boolean newForm, Map<String, Object> dataMap)
 	{
 	
 	}

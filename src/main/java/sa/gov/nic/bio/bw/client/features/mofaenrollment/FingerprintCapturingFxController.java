@@ -11,6 +11,7 @@ import javafx.scene.shape.SVGPath;
 import sa.gov.nic.bio.bw.client.core.wizard.WizardStepFxControllerBase;
 
 import java.net.URL;
+import java.util.Map;
 
 public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 {
@@ -69,8 +70,8 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 		return getClass().getResource("fxml/fingerprintCapturing.fxml");
 	}
 	
-	@FXML
-	private void initialize()
+	@Override
+	protected void initialize()
 	{
 		tpLeftHand.prefWidthProperty().bind(spFingerprints.widthProperty().multiply(0.5));
 		tpRightHand.prefWidthProperty().bind(spFingerprints.widthProperty().multiply(0.5));
@@ -116,6 +117,12 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 	
 	@Override
 	public void onControllerReady()
+	{
+	
+	}
+	
+	@Override
+	public void onWorkflowUserTaskLoad(boolean newForm, Map<String, Object> dataMap)
 	{
 	
 	}

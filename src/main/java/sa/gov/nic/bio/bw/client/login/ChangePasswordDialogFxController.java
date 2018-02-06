@@ -48,7 +48,7 @@ public class ChangePasswordDialogFxController extends RegionFxControllerBase
 	
 	private boolean passwordChangedSuccessfully = false;
 	
-	@FXML
+	@Override
 	protected void initialize()
 	{
 		dialog.setOnShown(event ->

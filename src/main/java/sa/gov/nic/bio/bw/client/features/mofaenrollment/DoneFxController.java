@@ -5,6 +5,7 @@ import javafx.scene.control.Button;
 import sa.gov.nic.bio.bw.client.core.wizard.WizardStepFxControllerBase;
 
 import java.net.URL;
+import java.util.Map;
 
 public class DoneFxController extends WizardStepFxControllerBase
 {
@@ -16,14 +17,20 @@ public class DoneFxController extends WizardStepFxControllerBase
 		return getClass().getResource("fxml/done.fxml");
 	}
 	
-	@FXML
-	private void initialize()
+	@Override
+	protected void initialize()
 	{
 		btnStartOver.setOnAction(event -> startOver());
 	}
 	
 	@Override
 	public void onControllerReady()
+	{
+	
+	}
+	
+	@Override
+	public void onWorkflowUserTaskLoad(boolean newForm, Map<String, Object> dataMap)
 	{
 	
 	}

@@ -38,7 +38,7 @@ public class LoginPaneFxController extends BodyFxControllerBase implements Persi
 	@FXML private Button btnChangePassword;
 	@FXML private ProgressIndicator piLogin;
 	
-	@FXML
+	@Override
 	protected void initialize()
 	{
 		cboLanguage.getItems().setAll(GuiLanguage.values());

@@ -40,7 +40,7 @@ public class MenuPaneFxController extends RegionFxControllerBase
 	private MenuItem selectedMenu;
 	private ListView<MenuItem> selectedListView;
 	
-	@FXML
+	@Override
 	protected void initialize()
 	{
 		accordion.setFocusTraversable(false);

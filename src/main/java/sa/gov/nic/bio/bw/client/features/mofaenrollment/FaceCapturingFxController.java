@@ -5,6 +5,7 @@ import javafx.scene.control.Button;
 import sa.gov.nic.bio.bw.client.core.wizard.WizardStepFxControllerBase;
 
 import java.net.URL;
+import java.util.Map;
 
 public class FaceCapturingFxController extends WizardStepFxControllerBase
 {
@@ -17,8 +18,8 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 		return getClass().getResource("fxml/faceCapturing.fxml");
 	}
 	
-	@FXML
-	private void initialize()
+	@Override
+	protected void initialize()
 	{
 		btnPrevious.setOnAction(event -> goPrevious());
 		btnNext.setOnAction(event -> goNext());
@@ -26,6 +27,12 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 	
 	@Override
 	public void onControllerReady()
+	{
+	
+	}
+	
+	@Override
+	public void onWorkflowUserTaskLoad(boolean newForm, Map<String, Object> dataMap)
 	{
 	
 	}

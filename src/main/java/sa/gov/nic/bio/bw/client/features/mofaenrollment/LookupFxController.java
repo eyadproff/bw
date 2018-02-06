@@ -6,9 +6,12 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ProgressIndicator;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.wizard.WizardStepFxControllerBase;
+import sa.gov.nic.bio.bw.client.core.workflow.Workflow;
+import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
 
 import java.net.URL;
 import java.util.HashMap;
+import java.util.Map;
 
 public class LookupFxController extends WizardStepFxControllerBase
 {
@@ -21,8 +24,8 @@ public class LookupFxController extends WizardStepFxControllerBase
 		return getClass().getResource("fxml/lookup.fxml");
 	}
 	
-	@FXML
-	private void initialize(){}
+	@Override
+	protected void initialize(){}
 	
 	@Override
 	public void onControllerReady()
@@ -31,12 +34,18 @@ public class LookupFxController extends WizardStepFxControllerBase
 	}
 	
 	@Override
-	public void onReturnFromTask() // return only in case of errors
+	public void onWorkflowUserTaskLoad(boolean newForm, Map<String, Object> dataMap)
 	{
-		GuiUtils.showNode(progressIndicator, false);
-		GuiUtils.showNode(btnTryAgain, true);
-		
-		super.onReturnFromTask(); // show the error message on the notification pane
+		if(!newForm)
+		{
+			GuiUtils.showNode(progressIndicator, false);
+			GuiUtils.showNode(btnTryAgain, true);
+			
+			ServiceResponse<?> serviceResponse = (ServiceResponse<?>) dataMap.get(Workflow.KEY_WEBSERVICE_RESPONSE);
+			if(!serviceResponse.isSuccess()) reportNegativeResponse(serviceResponse.getErrorCode(),
+			                                                        serviceResponse.getException(),
+			                                                        serviceResponse.getErrorDetails());
+		}
 	}
 	
 	@FXML
@@ -51,6 +60,6 @@ public class LookupFxController extends WizardStepFxControllerBase
 	
 	private void submitTask()
 	{
-		coreFxController.submitFormTask(new HashMap<>());
+		coreFxController.submitForm(new HashMap<>());
 	}
 }

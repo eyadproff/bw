@@ -61,8 +61,8 @@ public class ApplicantInfoFxController extends WizardStepFxControllerBase
 		return getClass().getResource("fxml/applicantInfo.fxml");
 	}
 	
-	@FXML
-	private void initialize()
+	@Override
+	protected void initialize()
 	{
 		btnNext.setOnAction(event -> goNext());
 		
@@ -77,9 +77,9 @@ public class ApplicantInfoFxController extends WizardStepFxControllerBase
 		GuiUtils.addAutoCompletionSupportToComboBox(cboNationality, nationalities);
 		GuiUtils.addAutoCompletionSupportToComboBox(cboVisaType, visaTypes);
 		
-		GuiUtils.makeComboBoxOpenableByPressingSpaceBarAndEnter(cboGender);
-		GuiUtils.makeComboBoxOpenableByPressingSpaceBarAndEnter(cboNationality);
-		GuiUtils.makeComboBoxOpenableByPressingSpaceBarAndEnter(cboVisaType);
+		GuiUtils.makeComboBoxOpenableByPressingSpaceBar(cboGender);
+		GuiUtils.makeComboBoxOpenableByPressingSpaceBar(cboNationality);
+		GuiUtils.makeComboBoxOpenableByPressingSpaceBar(cboVisaType);
 		
 		cbBirthDateShowHijri.selectedProperty().addListener(((observable, oldValue, newValue) ->
 		{
@@ -156,44 +156,51 @@ public class ApplicantInfoFxController extends WizardStepFxControllerBase
 	public void onControllerReady()
 	{
 		cboNationality.getItems().forEach(item ->
-		                                  {
-			                                  NationalityBean nationalityBean = item.getObject();
-			
-			                                  String text;
-			                                  if(coreFxController.getGuiState().getLanguage() == GuiLanguage.ARABIC) text = nationalityBean.getDescriptionAR();
-			                                  else text = nationalityBean.getDescriptionEN();
-			
-			                                  String resultText = text.trim() + " (" + nationalityBean.getMofaNationalityCode() + ")";
-			                                  String normalizedText = Normalizer.normalize(resultText, Normalizer.Form.NFKC);
-			
-			                                  item.setText(normalizedText);
-		                                  });
+		{
+		    NationalityBean nationalityBean = item.getObject();
+		
+		    String text;
+		    if(coreFxController.getCurrentLanguage() == GuiLanguage.ARABIC) text = nationalityBean.getDescriptionAR();
+		    else text = nationalityBean.getDescriptionEN();
+		
+		    String resultText = text.trim() + " (" + nationalityBean.getMofaNationalityCode() + ")";
+		    String normalizedText = Normalizer.normalize(resultText, Normalizer.Form.NFKC);
+		
+		    item.setText(normalizedText);
+		});
 		
 		cboVisaType.getItems().forEach(item ->
-		                               {
-			                               VisaTypeBean visaTypeBean = item.getObject();
-			
-			                               String text;
-			                               if(coreFxController.getGuiState().getLanguage() == GuiLanguage.ARABIC) text = visaTypeBean.getDescriptionAR();
-			                               else text = visaTypeBean.getDescriptionEN();
-			
-			                               String resultText = text.trim();
-			                               String normalizedText = Normalizer.normalize(resultText, Normalizer.Form.NFKC);
-			
-			                               item.setText(normalizedText);
-		                               });
+		{
+		    VisaTypeBean visaTypeBean = item.getObject();
+		
+		    String text;
+		    if(coreFxController.getCurrentLanguage() == GuiLanguage.ARABIC) text = visaTypeBean.getDescriptionAR();
+		    else text = visaTypeBean.getDescriptionEN();
+		
+		    String resultText = text.trim();
+		    String normalizedText = Normalizer.normalize(resultText, Normalizer.Form.NFKC);
+		
+		    item.setText(normalizedText);
+		});
 		
 		cboVisaType.setPrefWidth(cboVisaType.getWidth());
 		cboVisaType.setMinWidth(cboVisaType.getWidth());
-		
-		loadOldDateIfExist();
 		
 		txtFirstName.requestFocus();
 		txtFirstName.positionCaret(txtFirstName.getLength());
 	}
 	
 	@Override
-	protected void onGoingNext(Map<String, String> uiDataMap)
+	public void onWorkflowUserTaskLoad(boolean newForm, Map<String, Object> dataMap)
+	{
+		if(newForm)
+		{
+			loadOldDateIfExist(dataMap);
+		}
+	}
+	
+	@Override
+	protected void onGoingNext(Map<String, Object> uiDataMap)
 	{
 		uiDataMap.put(KEY_FIRST_NAME, txtFirstName.getText());
 		uiDataMap.put(KEY_SECOND_NAME, txtSecondName.getText());
@@ -225,18 +232,18 @@ public class ApplicantInfoFxController extends WizardStepFxControllerBase
 		uiDataMap.put(KEY_BIRTH_DATE_SHOW_HIJRI, birthDateShowHijri);
 	}
 	
-	private void loadOldDateIfExist()
+	private void loadOldDateIfExist(Map<String, Object> dataMap)
 	{
-		String firstName = (String) inputData.get(KEY_FIRST_NAME);
-		String secondName = (String) inputData.get(KEY_SECOND_NAME);
-		String otherName = (String) inputData.get(KEY_OTHER_NAME);
-		String familyName = (String) inputData.get(KEY_FAMILY_NAME);
-		String gender = (String) inputData.get(KEY_GENDER);
-		String nationality = (String) inputData.get(KEY_NATIONALITY);
-		String birthDate = (String) inputData.get(KEY_BIRTH_DATE);
-		String birthDateShowHijri = (String) inputData.get(KEY_BIRTH_DATE_SHOW_HIJRI);
-		String passportNumber = (String) inputData.get(KEY_PASSPORT_NUMBER);
-		String visaType = (String) inputData.get(KEY_VISA_TYPE);
+		String firstName = (String) dataMap.get(KEY_FIRST_NAME);
+		String secondName = (String) dataMap.get(KEY_SECOND_NAME);
+		String otherName = (String) dataMap.get(KEY_OTHER_NAME);
+		String familyName = (String) dataMap.get(KEY_FAMILY_NAME);
+		String gender = (String) dataMap.get(KEY_GENDER);
+		String nationality = (String) dataMap.get(KEY_NATIONALITY);
+		String birthDate = (String) dataMap.get(KEY_BIRTH_DATE);
+		String birthDateShowHijri = (String) dataMap.get(KEY_BIRTH_DATE_SHOW_HIJRI);
+		String passportNumber = (String) dataMap.get(KEY_PASSPORT_NUMBER);
+		String visaType = (String) dataMap.get(KEY_VISA_TYPE);
 		
 		if(firstName != null) txtFirstName.setText(firstName);
 		if(secondName != null) txtSecondName.setText(secondName);
@@ -284,8 +291,10 @@ public class ApplicantInfoFxController extends WizardStepFxControllerBase
 		
 		StringConverter<LocalDate> converter = new StringConverter<LocalDate>()
 		{
-			DateTimeFormatter dateFormatterForParsing = DateTimeFormatter.ofPattern("d/M/yyyy", AppConstants.Locales.SAUDI_EN_LOCALE);
-			DateTimeFormatter dateFormatterForFormatting = DateTimeFormatter.ofPattern("dd/MM/yyyy", AppConstants.Locales.SAUDI_EN_LOCALE);
+			DateTimeFormatter dateFormatterForParsing =
+					DateTimeFormatter.ofPattern("d/M/yyyy", AppConstants.Locales.SAUDI_EN_LOCALE);
+			DateTimeFormatter dateFormatterForFormatting =
+					DateTimeFormatter.ofPattern("dd/MM/yyyy", AppConstants.Locales.SAUDI_EN_LOCALE);
 			
 			@Override
 			public String toString(LocalDate date)
@@ -308,7 +317,8 @@ public class ApplicantInfoFxController extends WizardStepFxControllerBase
 					{
 						string = string.substring(0, 2) + "/" + string.substring(2, 4) + "/" + string.substring(4, 8);
 					}
-					// if the input is 6 characters long, we will consider day and month are both single digits and then add the separators
+					// if the input is 6 characters long, we will consider day and month are both single digits
+					// and then add the separators
 					else if(string.length() == 6 && !string.contains("/"))
 					{
 						string = string.substring(0, 1) + "/" + string.substring(1, 2) + "/" + string.substring(2, 6);
