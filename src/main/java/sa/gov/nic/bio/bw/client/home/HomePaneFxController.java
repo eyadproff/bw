@@ -263,7 +263,7 @@ public class HomePaneFxController extends BodyFxControllerBase
 						    Class<?> workflowClass = Class.forName(value);
 						    menuItem.setWorkflowClass(workflowClass);
 					    }
-					    catch(ClassNotFoundException e)
+					    catch(ClassNotFoundException | NoClassDefFoundError e)
 					    {
 						    String errorCode = HomeErrorCodes.C004_00002.getCode();
 						    String[] errorDetails = {"The menu workflow class (" + value + ") is not found!"};

@@ -173,6 +173,13 @@ public class AppPreloader extends Preloader
 	{
 		LOGGER.entering(AppPreloader.class.getName(), "init()");
 		
+		Thread.setDefaultUncaughtExceptionHandler((thread, throwable) ->
+		{
+		    String errorCode = StartupErrorCodes.C001_00014.getCode();
+		    String[] errorDetails = {"Uncaught exception!"};
+		    showErrorDialogAndExit(errorCode, throwable, errorDetails);
+		});
+		
 		// used to wait for the dialog exit before leaving init() method.
 		CountDownLatch latch = new CountDownLatch(1);
 		
@@ -328,10 +335,10 @@ public class AppPreloader extends Preloader
 	 * Show details about the error that occurs during the startup in a dialog and then exit.
 	 *
 	 * @param errorCode the error code
-	 * @param exception the exception, if any
+	 * @param throwable the throwable, if any
 	 * @param errorDetails details about the error
 	 */
-	private void showErrorDialogAndExit(String errorCode, Exception exception, String[] errorDetails)
+	private void showErrorDialogAndExit(String errorCode, Throwable throwable, String[] errorDetails)
 	{
 		String title;
 		String headerText;
@@ -362,9 +369,9 @@ public class AppPreloader extends Preloader
 		
 		StringBuilder sb = new StringBuilder();
 		contentText = String.format(errorOccursText, errorCode);
-		GuiUtils.buildErrorMessage(exception, errorDetails, sb);
+		GuiUtils.buildErrorMessage(throwable, errorDetails, sb);
 		
-		LOGGER.log(Level.SEVERE, contentText + (sb.length() > 0 ? "\n" : "") + sb.toString(), exception);
+		LOGGER.log(Level.SEVERE, contentText + (sb.length() > 0 ? "\n" : "") + sb.toString(), throwable);
 		DialogUtils.showAlertDialog(AlertType.ERROR, null, null, title, headerText,
 		                            contentText, sb.toString(), buttonExitText, moreDetailsText, lessDetailsText,
 		                           AppEntryPoint.guiLanguage.getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT);

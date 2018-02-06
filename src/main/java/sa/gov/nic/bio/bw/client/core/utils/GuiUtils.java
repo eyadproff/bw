@@ -41,23 +41,18 @@ public class GuiUtils
 		node.setManaged(bShow);
 	}
 	
-	public static void buildErrorMessage(Exception exception, String[] errorDetails, StringBuilder sb)
+	public static void buildErrorMessage(Throwable throwable, String[] errorDetails, StringBuilder sb)
 	{
 		if(errorDetails != null)
 		{
-			for(int i = 0; i < errorDetails.length; i++)
-			{
-				String s = errorDetails[i];
-				sb.append(s);
-				if(i < errorDetails.length - 1) sb.append("\n");
-			}
+			for(String s : errorDetails) sb.append(s).append("\n");
 		}
 		
-		if(exception != null)
+		if(throwable != null)
 		{
 			StringWriter sw = new StringWriter();
 			PrintWriter pw = new PrintWriter(sw);
-			exception.printStackTrace(pw);
+			throwable.printStackTrace(pw);
 			String exceptionText = sw.toString();
 			sb.append(exceptionText);
 		}
