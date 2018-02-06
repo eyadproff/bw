@@ -1,7 +1,5 @@
 package sa.gov.nic.bio.bw.client.core;
 
-import com.sun.javafx.stage.StageHelper;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -9,20 +7,21 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
-import javafx.stage.Stage;
 import org.controlsfx.glyphfont.FontAwesome;
 import org.controlsfx.glyphfont.Glyph;
-import sa.gov.nic.bio.bw.client.core.interfaces.AttachableController;
-import sa.gov.nic.bio.bw.client.core.interfaces.VisibilityControl;
 import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
 
 import java.util.ResourceBundle;
-import java.util.logging.Logger;
 
-public class HeaderPaneFxController implements VisibilityControl, AttachableController
+/**
+ * JavaFX controller for the header. Shown only after login. It contains information about the logged in
+ * user and also a button to logout from the current session.
+ *
+ * @author Fouad Almalki
+ * @since 1.0.0
+ */
+public class HeaderPaneFxController extends RegionFxControllerBase
 {
-	private static final Logger LOGGER = Logger.getLogger(HeaderPaneFxController.class.getName());
-	
 	@FXML private ResourceBundle resources;
 	@FXML private Pane rootPane;
 	@FXML private ImageView ivAvatar;
@@ -43,7 +42,7 @@ public class HeaderPaneFxController implements VisibilityControl, AttachableCont
 	}
 	
 	@FXML
-	private void initialize()
+	protected void initialize()
 	{
 		Glyph atIcon = AppUtils.createFontAwesomeIcon(FontAwesome.Glyph.AT);
 		Glyph userIcon = AppUtils.createFontAwesomeIcon(FontAwesome.Glyph.USER);
@@ -57,7 +56,7 @@ public class HeaderPaneFxController implements VisibilityControl, AttachableCont
 	}
 	
 	@Override
-	public Pane getRootPane()
+	public Pane getRegionRootPane()
 	{
 		return rootPane;
 	}
@@ -86,29 +85,9 @@ public class HeaderPaneFxController implements VisibilityControl, AttachableCont
 	private void onLogoutButtonClicked(ActionEvent actionEvent)
 	{
 		coreFxController.getNotificationPane().hide();
-		String message = coreFxController.getMessagesBundle().getString("logout.confirm");
+		String message = coreFxController.getStringsBundle().getString("logout.confirm");
 		boolean confirmed = coreFxController.showConfirmationDialogAndWait(null, message);
 		
-		if(confirmed) logout();
-	}
-	
-	public void logout()
-	{
-		// close all opened dialogs (except the primary one)
-		ObservableList<Stage> stages = StageHelper.getStages();
-		for(int i = 1; i <= stages.size(); i++)
-		{
-			Stage stage = stages.get(i - 1);
-			if(stage != null && stage != coreFxController.getPrimaryStage())
-			{
-				LOGGER.fine("Closing stage #" + i + ": " + stage.getTitle());
-				stage.close();
-			}
-		}
-		
-		coreFxController.getNotificationPane().hide();
-		coreFxController.cancelRefreshTokenScheduler();
-		coreFxController.stopIdleMonitor();
-		coreFxController.logout();
+		if(confirmed) coreFxController.logout();
 	}
 }

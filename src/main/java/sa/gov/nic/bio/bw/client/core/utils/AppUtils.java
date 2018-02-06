@@ -1,31 +1,47 @@
 package sa.gov.nic.bio.bw.client.core.utils;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import org.controlsfx.glyphfont.FontAwesome;
 import org.controlsfx.glyphfont.Glyph;
 import sa.gov.nic.bio.bw.client.core.webservice.NicHijriCalendarData;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.net.*;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.*;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.security.ProtectionDomain;
 import java.text.NumberFormat;
-import java.time.*;
+import java.time.DateTimeException;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.time.chrono.ChronoZonedDateTime;
 import java.time.chrono.HijrahChronology;
 import java.time.chrono.HijrahDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Base64;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
@@ -67,16 +83,26 @@ public final class AppUtils
 		return null;
 	}*/
 	
-	public static List<String> listResourceFiles(ProtectionDomain protectionDomain, String matcher, RuntimeEnvironment runtimeEnvironment) throws IOException, URISyntaxException
+	public static List<String> listResourceFiles(ProtectionDomain protectionDomain, String matcher,
+	                                             boolean removeFileExtensions, RuntimeEnvironment runtimeEnvironment)
+																				throws IOException, URISyntaxException
 	{
 		List<String> resources = new ArrayList<>();
 		URL location = protectionDomain.getCodeSource().getLocation();
 		
-		if(runtimeEnvironment == null || runtimeEnvironment == RuntimeEnvironment.DEV)
+		if(runtimeEnvironment == RuntimeEnvironment.LOCAL)
 		{
-			Files.walk(Paths.get(location.toURI()).resolve("../../../resources").normalize())
-				 .map(path -> path.toAbsolutePath().toString().replace("\\", "/"))
+			// location.toURI() is ./build/classes/java/main
+			// we want ./build/resources/main
+			// the following line gets the absolute path of the folder "resources/main"
+			Path resourcesPath = Paths.get(location.toURI()).resolve("../../../resources/main").normalize();
+			
+			Files.walk(resourcesPath)
+				 .filter(Files::isRegularFile) // we want files only
+				 .map(path -> resourcesPath.relativize(path).toString()) // form absolute path to relative path string
+				 .map(path -> path.replace("\\", "/")) // replace back-slashes with forward-slashes
 				 .filter(path -> path.matches(matcher))
+				 .map(path -> removeFileExtensions ? path.substring(0, path.lastIndexOf('.')) : path)
 				 .forEach(resources::add);
 		}
 		else
@@ -89,7 +115,8 @@ public final class AppUtils
 				if(e == null) break;
 				String name = e.getName();
 				
-				if(name.matches(matcher)) resources.add(name);
+				if(name.matches(matcher)) resources.add(removeFileExtensions ?
+						                                name.substring(0, name.lastIndexOf('.')) : name);
 			}
 		}
 		
@@ -245,19 +272,18 @@ public final class AppUtils
 			{
 				try
 				{
-					ObjectNode object = new ObjectMapper().readValue(payload, ObjectNode.class);
-					JsonNode node = object.get("exp");
+					JsonObject jsonObject = new JsonParser().parse(payload).getAsJsonObject();
+					String exp = jsonObject.get("exp").getAsString();
 					
-					if(node == null) LOGGER.warning("The payload has no \"exp\"!");
+					if(exp == null) LOGGER.warning("The payload has no \"exp\"!");
 					else
 					{
-						String exp = node.asText();
 						LocalDateTime expirationDateTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(Long.parseLong(exp) * 1000L), AppConstants.SAUDI_ZONE);
-						LOGGER.info("The expiration time for the new JWT is " + expirationDateTime);
+						LOGGER.fine("The expiration time for the new JWT is " + expirationDateTime);
 						return expirationDateTime;
 					}
 				}
-				catch(IOException e)
+				catch(Exception e)
 				{
 					LOGGER.log(Level.SEVERE,"Failed to extract \"exp\" from payload!", e);
 				}

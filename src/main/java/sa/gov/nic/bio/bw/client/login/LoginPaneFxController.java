@@ -4,11 +4,21 @@ import javafx.beans.binding.BooleanBinding;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.NodeOrientation;
-import javafx.scene.control.*;
-import sa.gov.nic.bio.bw.client.core.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.ProgressIndicator;
+import javafx.scene.control.TextField;
+import sa.gov.nic.bio.bw.client.core.BodyFxControllerBase;
+import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.beans.StateBundle;
-import sa.gov.nic.bio.bw.client.core.interfaces.*;
-import sa.gov.nic.bio.bw.client.core.utils.*;
+import sa.gov.nic.bio.bw.client.core.interfaces.PersistableEntity;
+import sa.gov.nic.bio.bw.client.core.utils.DialogUtils;
+import sa.gov.nic.bio.bw.client.core.utils.GuiLanguage;
+import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
+import sa.gov.nic.bio.bw.client.core.utils.RuntimeEnvironment;
+import sa.gov.nic.bio.bw.client.core.workflow.Workflow;
+import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
 
 import java.util.HashMap;
 import java.util.Locale;
@@ -17,7 +27,7 @@ import java.util.Map;
 /**
  * Created by Fouad on 16-Jul-17.
  */
-public class LoginPaneFxController extends BodyFxControllerBase implements LanguageSwitchingController
+public class LoginPaneFxController extends BodyFxControllerBase implements PersistableEntity
 {
 	private static final String FXML_CHANGE_PASSWORD = "sa/gov/nic/bio/bw/client/login/fxml/change_password_dialog.fxml";
 	
@@ -29,7 +39,7 @@ public class LoginPaneFxController extends BodyFxControllerBase implements Langu
 	@FXML private ProgressIndicator piLogin;
 	
 	@FXML
-	private void initialize()
+	protected void initialize()
 	{
 		cboLanguage.getItems().setAll(GuiLanguage.values());
 		GuiUtils.applyValidatorToTextField(txtUsername, 256);
@@ -44,7 +54,7 @@ public class LoginPaneFxController extends BodyFxControllerBase implements Langu
 	@Override
 	public void onControllerReady()
 	{
-		GuiLanguage currentLanguage = coreFxController.getGuiState().getLanguage();
+		GuiLanguage currentLanguage = coreFxController.getCurrentLanguage();
 		cboLanguage.getSelectionModel().select(currentLanguage);
 		cboLanguage.setOnAction(event ->
         {
@@ -53,18 +63,18 @@ public class LoginPaneFxController extends BodyFxControllerBase implements Langu
 	        coreFxController.switchLanguage(guiLanguage, this);
         });
 		
-		coreFxController.getMenuPaneController().hideRootPane();
-		coreFxController.getHeaderPaneController().hideRootPane();
-		coreFxController.getFooterPaneController().showRootPane();
+		coreFxController.getMenuPaneController().hideRegion();
+		coreFxController.getHeaderPaneController().hideRegion();
+		coreFxController.getFooterPaneController().showRegion();
 		
 		GuiUtils.makeButtonClickable(btnLogin);
 		GuiUtils.makeButtonClickable(btnChangePassword);
-		GuiUtils.makeComboBoxOpenableByPressingSpaceBarAndEnter(cboLanguage);
+		GuiUtils.makeComboBoxOpenableByPressingSpaceBar(cboLanguage);
 		
 		// request focus once the scene is attached to txtUsername
 		txtUsername.sceneProperty().addListener((observable, oldValue, newValue) -> txtUsername.requestFocus());
 		
-		if(Context.getRuntimeEnvironment() == RuntimeEnvironment.DEV)
+		if(Context.getRuntimeEnvironment() == RuntimeEnvironment.LOCAL)
 		{
 			txtUsername.setText(Context.getConfigManager().getProperty("dev.login.username"));
 			txtPassword.setText(Context.getConfigManager().getProperty("dev.login.password"));
@@ -72,12 +82,20 @@ public class LoginPaneFxController extends BodyFxControllerBase implements Langu
 	}
 	
 	@Override
-	public void onReturnFromTask()
+	public void onWorkflowUserTaskLoad(boolean newForm, Map<String, Object> dataMap)
 	{
-		super.onReturnFromTask();
-		
-		txtPassword.clear();
-		disableUiControls(false);
+		if(!newForm)
+		{
+			txtPassword.clear();
+			disableUiControls(false);
+			
+			ServiceResponse<?> serviceResponse = (ServiceResponse<?>) dataMap.get(Workflow.KEY_WEBSERVICE_RESPONSE);
+			if(!serviceResponse.isSuccess())
+			{
+				reportNegativeResponse(serviceResponse.getErrorCode(), serviceResponse.getException(),
+				                       serviceResponse.getErrorDetails());
+			}
+		}
 	}
 	
 	@FXML
@@ -89,11 +107,11 @@ public class LoginPaneFxController extends BodyFxControllerBase implements Langu
 		String username = txtUsername.getText().trim();
 		String password = txtPassword.getText().trim();
 		
-		Map<String, String> uiDataMap = new HashMap<>();
+		Map<String, Object> uiDataMap = new HashMap<>();
 		uiDataMap.put("username", username);
 		uiDataMap.put("password", password);
 		
-		coreFxController.submitFormTask(uiDataMap);
+		coreFxController.submitForm(uiDataMap);
 	}
 	
 	@FXML
@@ -101,13 +119,13 @@ public class LoginPaneFxController extends BodyFxControllerBase implements Langu
 	{
 		hideNotification();
 		
-		boolean rtl = coreFxController.getGuiState().getLanguage().getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT;
-		ChangePasswordDialogFxController controller = DialogUtils.buildCustomDialog(coreFxController.getPrimaryStage(), appIcon, FXML_CHANGE_PASSWORD, labelsBundle, rtl);
+		boolean rtl = coreFxController.getCurrentLanguage().getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT;
+		ChangePasswordDialogFxController controller = DialogUtils.buildCustomDialog(coreFxController.getPrimaryStage(), FXML_CHANGE_PASSWORD, stringsBundle, rtl);
 		
 		if(controller != null)
 		{
 			controller.attachCoreFxController(coreFxController);
-			controller.attachInitialResources(labelsBundle, errorsBundle, messagesBundle, appIcon);
+			controller.attachResourceBundles(stringsBundle);
 			controller.setUsernameAndPassword(txtUsername.getText(), txtPassword.getText());
 			controller.requestFocus();
 			controller.showDialogAndWait();
@@ -116,7 +134,7 @@ public class LoginPaneFxController extends BodyFxControllerBase implements Langu
 			if(passwordChanged)
 			{
 				txtPassword.setText("");
-				showSuccessNotification(messagesBundle.getString("changePassword.success"));
+				showSuccessNotification(stringsBundle.getString("changePassword.success"));
 			}
 			
 			if(txtUsername.getText().isEmpty()) txtUsername.requestFocus();
@@ -132,7 +150,7 @@ public class LoginPaneFxController extends BodyFxControllerBase implements Langu
 		
 		GuiUtils.showNode(piLogin, bool);
 		GuiUtils.showNode(btnLogin, !bool);
-		GuiUtils.showNode(btnChangePassword, !bool);
+		//GuiUtils.showNode(btnChangePassword, !bool);
 	}
 	
 	@FXML

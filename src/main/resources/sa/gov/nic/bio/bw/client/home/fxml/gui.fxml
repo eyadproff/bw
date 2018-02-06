@@ -1,17 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?language JavaScript?>
-<?scenebuilder-preview-i18n-resource ../bundles/labels.properties?>
 
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.control.Label?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.layout.HBox?>
-<VBox xmlns:fx="http://javafx.com/fxml" xmlns="http://javafx.com/javafx/8"
+
+<VBox xmlns="http://javafx.com/javafx/8.0.152" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="sa.gov.nic.bio.bw.client.home.HomePaneFxController"
-      stylesheets="@../css/style.css" alignment="CENTER">
+      stylesheets="@../css/style.css" alignment="CENTER" fx:id="loginTimestampBox">
     <HBox alignment="CENTER">
-        <GridPane alignment="CENTER" hgap="20" styleClass="loginBox">
+        <GridPane alignment="CENTER" hgap="20" styleClass="formBox">
             <padding>
                 <Insets top="20" right="20" bottom="20" left="20"/>
             </padding>

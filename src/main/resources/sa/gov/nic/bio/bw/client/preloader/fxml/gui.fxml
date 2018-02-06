@@ -1,6 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?language JavaScript?>
-<?scenebuilder-preview-i18n-resource ../bundles/labels.properties?>
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.image.Image?>
@@ -9,10 +7,11 @@
 <?import javafx.scene.Scene?>
 <?import javafx.scene.control.ProgressBar?>
 <?import javafx.stage.Stage?>
-<Stage xmlns="http://javafx.com/javafx/8"
+
+<Stage xmlns="http://javafx.com/javafx/8.0.152"
        height="300" width="620" alwaysOnTop="true">
     <icons>
-        <Image url="@../images/app_icon.png"/>
+        <Image url="@../../core/images/app_icon.png"/>
     </icons>
     <scene>
         <Scene stylesheets="@../css/style.css">

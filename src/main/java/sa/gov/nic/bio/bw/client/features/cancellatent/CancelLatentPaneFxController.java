@@ -9,6 +9,8 @@ import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TextField;
 import sa.gov.nic.bio.bw.client.core.BodyFxControllerBase;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
+import sa.gov.nic.bio.bw.client.core.workflow.Workflow;
+import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -21,7 +23,7 @@ public class CancelLatentPaneFxController extends BodyFxControllerBase
 	@FXML private ProgressIndicator piCancelLatent;
 	
 	@FXML
-	private void initialize()
+	protected void initialize()
 	{
 		GuiUtils.applyValidatorToTextField(txtPersonId, "\\d*", "[^\\d]", 10);
 		GuiUtils.applyValidatorToTextField(txtLatentId, "\\d*", "[^\\d]", 20);
@@ -41,31 +43,36 @@ public class CancelLatentPaneFxController extends BodyFxControllerBase
 	}
 	
 	@Override
-	public void onReturnFromTask()
+	public void onWorkflowUserTaskLoad(boolean newForm, Map<String, Object> dataMap)
 	{
-		disableUiControls(false);
-		
-		Boolean successResponse = (Boolean) inputData.get("successResponse");
-		if(successResponse != null && successResponse)
+		if(!newForm)
 		{
-			String personId = txtPersonId.getText();
-			String latentId = txtLatentId.getText();
+			ServiceResponse<?> serviceResponse = (ServiceResponse<?>) dataMap.get(Workflow.KEY_WEBSERVICE_RESPONSE);
 			
-			Boolean resultBean = (Boolean) inputData.get("resultBean");
-			if(resultBean != null && resultBean)
+			disableUiControls(false);
+			
+			if(serviceResponse.isSuccess())
 			{
-				String message = String.format(messagesBundle.getString("cancelLatent.success"), latentId, personId);
-				showSuccessNotification(message);
+				String personId = txtPersonId.getText();
+				String latentId = txtLatentId.getText();
+				
+				Boolean resultBean = (Boolean) serviceResponse.getResult();
+				if(resultBean != null && resultBean)
+				{
+					String message = String.format(stringsBundle.getString("cancelLatent.success"), latentId, personId);
+					showSuccessNotification(message);
+				}
+				else
+				{
+					String message = String.format(stringsBundle.getString("cancelLatent.failure"), latentId, personId);
+					showWarningNotification(message);
+				}
 			}
-			else
-			{
-				String message = String.format(messagesBundle.getString("cancelLatent.failure"), latentId, personId);
-				showWarningNotification(message);
-			}
+			else reportNegativeResponse(serviceResponse.getErrorCode(), serviceResponse.getException(),
+			                            serviceResponse.getErrorDetails());
+			
+			txtPersonId.requestFocus();
 		}
-		else super.onReturnFromTask();
-		
-		txtPersonId.requestFocus();
 	}
 	
 	@FXML
@@ -80,8 +87,8 @@ public class CancelLatentPaneFxController extends BodyFxControllerBase
 		String personId = txtPersonId.getText().trim();
 		String latentId = txtLatentId.getText().trim();
 		
-		String headerText = messagesBundle.getString("cancelLatent.confirmation.header");
-		String contentText = String.format(messagesBundle.getString("cancelLatent.confirmation.message"), latentId, personId);
+		String headerText = stringsBundle.getString("cancelLatent.confirmation.header");
+		String contentText = String.format(stringsBundle.getString("cancelLatent.confirmation.message"), latentId, personId);
 		boolean confirmed = coreFxController.showConfirmationDialogAndWait(headerText, contentText);
 		
 		if(!confirmed) return;
@@ -89,11 +96,11 @@ public class CancelLatentPaneFxController extends BodyFxControllerBase
 		hideNotification();
 		disableUiControls(true);
 		
-		Map<String, String> uiDataMap = new HashMap<>();
-		uiDataMap.put("personId", personId);
+		Map<String, Object> uiDataMap = new HashMap<>();
+		uiDataMap.put("personId", Long.parseLong(personId));
 		uiDataMap.put("latentId", latentId);
 		
-		coreFxController.submitFormTask(uiDataMap);
+		coreFxController.submitForm(uiDataMap);
 	}
 	
 	private void disableUiControls(boolean bool)

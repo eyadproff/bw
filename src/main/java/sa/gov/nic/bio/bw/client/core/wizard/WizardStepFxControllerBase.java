@@ -17,29 +17,29 @@ public abstract class WizardStepFxControllerBase extends BodyFxControllerBase im
 	@Override
 	public void goNext()
 	{
-		Map<String, String> uiDataMap = new HashMap<>();
+		Map<String, Object> uiDataMap = new HashMap<>();
 		uiDataMap.put("direction", "forward");
 		onGoingNext(uiDataMap);
-		coreFxController.submitFormTask(uiDataMap);
+		coreFxController.submitForm(uiDataMap);
 	}
 	
 	@Override
 	public void goPrevious()
 	{
-		Map<String, String> uiDataMap = new HashMap<>();
+		Map<String, Object> uiDataMap = new HashMap<>();
 		uiDataMap.put("direction", "backward");
-		coreFxController.submitFormTask(uiDataMap);
+		coreFxController.submitForm(uiDataMap);
 	}
 	
 	@Override
 	public void startOver()
 	{
-		Map<String, String> uiDataMap = new HashMap<>();
+		Map<String, Object> uiDataMap = new HashMap<>();
 		uiDataMap.put("direction", "startOver");
-		coreFxController.submitFormTask(uiDataMap);
+		coreFxController.submitForm(uiDataMap);
 	}
 	
-	protected void onGoingNext(Map<String, String> uiDataMap){}
-	protected void onGoingPrevious(Map<String, String> uiDataMap){}
-	public abstract URL getFxmlLocation();
+	protected void onGoingNext(Map<String, Object> uiDataMap){}
+	protected void onGoingPrevious(Map<String, Object> uiDataMap){}
+	//public abstract URL getFxmlLocation();
 }

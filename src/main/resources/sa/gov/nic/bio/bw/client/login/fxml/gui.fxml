@@ -1,6 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?language JavaScript?>
-<?scenebuilder-preview-i18n-resource ../bundles/labels.properties?>
 
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
@@ -15,7 +13,8 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.ProgressIndicator?>
-<VBox xmlns:fx="http://javafx.com/fxml" xmlns="http://javafx.com/javafx/8"
+
+<VBox xmlns="http://javafx.com/javafx/8.0.152" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="sa.gov.nic.bio.bw.client.login.LoginPaneFxController"
       stylesheets="@../css/style.css" alignment="CENTER" spacing="70">
     <ImageView>
@@ -23,7 +22,7 @@
     </ImageView>
     <VBox alignment="CENTER" spacing="20">
         <HBox alignment="CENTER">
-            <GridPane alignment="CENTER" vgap="5" hgap="20" styleClass="loginBox">
+            <GridPane alignment="CENTER" vgap="5" hgap="20" styleClass="formBox">
                 <padding>
                     <Insets top="20" right="20" bottom="20" left="20"/>
                 </padding>
@@ -40,7 +39,7 @@
         </HBox>
         <FlowPane alignment="CENTER" hgap="10">
             <Button fx:id="btnLogin" text="%button.login" defaultButton="true" onAction="#onLoginButtonClicked"/>
-            <Button fx:id="btnChangePassword" text="%button.changePassword" onAction="#onChangePasswordButtonClicked"/>
+            <Button fx:id="btnChangePassword" text="%button.changePassword" onAction="#onChangePasswordButtonClicked" visible="false" managed="false"/>
             <ProgressIndicator fx:id="piLogin" prefHeight="25.0" prefWidth="25.0" managed="false" visible="false"/>
         </FlowPane>
     </VBox>

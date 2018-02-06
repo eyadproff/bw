@@ -1,96 +1,105 @@
 package sa.gov.nic.bio.bw.client.core.workflow;
 
-import org.activiti.engine.*;
-import org.activiti.engine.repository.DeploymentBuilder;
-import org.activiti.engine.runtime.ProcessInstance;
-import org.activiti.engine.task.Task;
-import sa.gov.nic.bio.bw.client.core.interfaces.UiProxy;
-import sa.gov.nic.bio.bw.client.core.utils.RuntimeEnvironment;
+import sa.gov.nic.bio.bw.client.core.interfaces.FormRenderer;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.util.List;
 import java.util.Map;
+import java.util.concurrent.SynchronousQueue;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Logger;
 
 /**
- * Created by Fouad on 17-Jul-17.
+ * It manages starting the core workflow and submitting user tasks to the core workflow. A user task represents
+ * the user action of submitting the forms that are shown on the GUI.
+ *
+ * @author Fouad Almalki
+ * @since 1.0.0
  */
 public class WorkflowManager
 {
 	private static final Logger LOGGER = Logger.getLogger(WorkflowManager.class.getName());
-	private ProcessEngine processEngine;
-	private RepositoryService repositoryService;
-	private RuntimeService runtimeService;
-	private IdentityService identityService;
-	private TaskService taskService;
-	private FormService formService;
-	private ProcessInstance coreProcessInstance;
-	private String currentTaskId;
+	private Workflow<Void, Void> coreWorkflow;
+	private Thread workflowThread;
+	private AtomicReference<FormRenderer> formRendererReference = new AtomicReference<>();
 	
-	public void load(List<String> workflowFilePaths, RuntimeEnvironment runtimeEnvironment) throws FileNotFoundException
+	public void changeFormRenderer(FormRenderer formRenderer)
 	{
-		ProcessEngineConfiguration configuration = ProcessEngineConfiguration.createStandaloneInMemProcessEngineConfiguration();
-		processEngine = configuration.buildProcessEngine();
+		this.formRendererReference.set(formRenderer);
+	}
+	
+	/**
+	 * Starts the core workflow and returns immediately.
+	 *
+	 * @param formRenderer the UI proxy that is responsible for rendering the forms on the GUI
+	 */
+	public synchronized void startCoreWorkflow(FormRenderer formRenderer)
+	{
+		formRendererReference.set(formRenderer);
 		
-		repositoryService = processEngine.getRepositoryService();
-		runtimeService = processEngine.getRuntimeService();
-		identityService = processEngine.getIdentityService();
-		taskService = processEngine.getTaskService();
-		formService = processEngine.getFormService();
-		
-		DeploymentBuilder deploymentBuilder = repositoryService.createDeployment();
-		
-		LOGGER.info("Deploying the following workflows:");
-		for(String workflowFilePath : workflowFilePaths)
+		if(isRunning())
 		{
-			if(runtimeEnvironment == null || runtimeEnvironment == RuntimeEnvironment.DEV)
+			LOGGER.warning("The workflow thread is already active!");
+			return;
+		}
+		
+		workflowThread = new Thread(() ->
+		{
+			try
 			{
-				deploymentBuilder.addInputStream(workflowFilePath.substring(workflowFilePath.lastIndexOf("/")), new FileInputStream(workflowFilePath));
+				coreWorkflow = new CoreWorkflow(formRendererReference, new SynchronousQueue<>());
+				coreWorkflow.onProcess(null);
+				
+				LOGGER.info("The core workflow is finished.");
 			}
-			else deploymentBuilder.addClasspathResource(workflowFilePath);
-			
-			LOGGER.info(workflowFilePath);
-		}
+			catch(InterruptedException e)
+			{
+				LOGGER.info("The core workflow is interrupted.");
+			}
+			catch(Signal signal) // we don't use signals on the core workflow level
+			{
+				LOGGER.severe("The core workflow is interrupted by a signal! " + signal);
+			}
+		});
 		
-		deploymentBuilder.deploy();
-		LOGGER.info("Deployment is completed successfully");
-		
-		coreProcessInstance = runtimeService.startProcessInstanceByKey("coreProcess");
-		LOGGER.info("The workflow process \"" + coreProcessInstance.getProcessDefinitionName() + "\" is started");
+		workflowThread.start();
 	}
 	
-	public void startProcess(UiProxy uiProxy)
+	/**
+	 * Submit a user task to the core workflow.
+	 *
+	 * @param uiDataMap a map that contains user entries
+	 */
+	public void submitUserTask(Map<String, Object> uiDataMap)
 	{
-		showPendingUiTask(uiProxy);
-	}
-	
-	public void submitFormTask(Map<String, String> uiDataMap, UiProxy uiProxy)
-	{
-		formService.submitTaskFormData(currentTaskId, uiDataMap); // executes as taskService.complete(taskId)
-		showPendingUiTask(uiProxy);
-	}
-	
-	public void raiseSignalEvent(String signalName, Map<String, Object> variables, UiProxy uiProxy)
-	{
-		runtimeService.signalEventReceived(signalName, variables);
-		showPendingUiTask(uiProxy);
-	}
-	
-	private void showPendingUiTask(UiProxy uiProxy)
-	{
-		Task task = taskService.createTaskQuery().includeProcessVariables().singleResult();
-		
-		if(task != null)
+		if(coreWorkflow == null)
 		{
-			currentTaskId = task.getId();
-			Map<String, Object> processVariables = task.getProcessVariables();
-			String formKey = formService.getTaskFormData(currentTaskId).getFormKey();
-			uiProxy.showForm(formKey, processVariables);
+			LOGGER.warning("The core workflow is not yet initiated!");
+			return;
 		}
-		else // no task? that means the end of workflow? should never happen
+		
+		coreWorkflow.submitUserTask(uiDataMap);
+	}
+	
+	/**
+	 * Interrupt the core workflow. Useful on exiting the application.
+	 */
+	public synchronized void interruptTheWorkflow()
+	{
+		if(workflowThread == null)
 		{
-			LOGGER.severe("No pending tasks in the workflow manager! That should never happen!");
+			LOGGER.warning("The workflow thread is not yet initiated!");
+			return;
 		}
+		else if(!workflowThread.isAlive())
+		{
+			LOGGER.warning("The workflow thread is not active!");
+			return;
+		}
+		
+		workflowThread.interrupt();
+	}
+	
+	public boolean isRunning()
+	{
+		return workflowThread != null && workflowThread.isAlive();
 	}
 }

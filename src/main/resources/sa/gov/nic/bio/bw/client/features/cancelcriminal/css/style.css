@@ -1,7 +1,47 @@
-.loginBox {
-    -fx-background-color: #E6E6E6;
-    -fx-border-color: #A8A8A8;
+.tab-pane .tab-header-area .tab-header-background {
+    -fx-background-color: transparent;
+}
+
+.tab-pane > .tab-header-area > .headers-region > .tab > .tab-container > .tab-label > .glyph-font,
+.tab-pane > .tab-header-area > .headers-region > .tab > .tab-container > .tab-label {
+    -fx-text-fill: #398755;
+}
+
+.tab-pane > .tab-header-area > .headers-region > .tab:selected > .tab-container > .tab-label {
+    -fx-font-weight: bold;
+}
+
+.tab-pane > .tab-header-area > .headers-region > .tab:top {
+    -fx-background-color: -fx-outer-border, -fx-inner-border, #E6E6E6;
+}
+.tab-pane > .tab-header-area > .headers-region > .tab:right {
+    -fx-background-color: -fx-outer-border, -fx-inner-border-bottomup, #E6E6E6;
+}
+.tab-pane > .tab-header-area > .headers-region > .tab:bottom {
+    -fx-background-color: -fx-outer-border, -fx-inner-border-bottomup, #E6E6E6;
+}
+.tab-pane > .tab-header-area > .headers-region > .tab:left {
+    -fx-background-color: -fx-outer-border, -fx-inner-border, #E6E6E6;
+}
+
+.tab-pane.floating > .tab-content-area {
+    -fx-border-color: #23A967;
     -fx-border-width: 1px;
+}
+
+.tab-pane > .tab-header-area > .headers-region > .tab:selected .focus-indicator {
+    -fx-border-width: 1, 1;
+    -fx-border-color: -fx-focus-color, -fx-faint-focus-color;
+    -fx-border-insets: -4 -4 -6 -5, -2 -2 -5 -3;
+    -fx-border-radius: 2, 1; /* looks sharper if outer border has a tighter radius (2 instead of 3) */
+}
+
+.tab-pane > .tab-header-area > .headers-region > .tab:selected {
+    -fx-background-insets: 0 1 1 1, 1 2 0 1, 2 3 0 2;
+}
+
+.formBox {
+    -fx-background-color: #E6E6E6;
 }
 
 .text-field,

@@ -10,5 +10,12 @@ public interface CancelCriminalAPI
 {
 	@FormUrlEncoded
 	@POST
-	Call<Boolean> cancelCriminal(@Url String url, @Field("person-id") String personId, @Field("criminal-id") String criminalId);
+	Call<Boolean> cancelCriminalByPersonId(@Url String url, @Field("person-id") long personId,
+	                                       @Field("person-type") int personIdType,
+	                                       @Field("criminal-id") long criminalId);
+	
+	@FormUrlEncoded
+	@POST
+	Call<Boolean> cancelCriminalByInquiryId(@Url String url, @Field("inquiry-id") long inquiryId,
+	                                        @Field("criminal-id") long criminalId);
 }

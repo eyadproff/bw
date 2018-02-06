@@ -1,12 +1,17 @@
 package sa.gov.nic.bio.bw.client.core.utils;
 
-import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.NodeOrientation;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.image.Image;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.ChoiceDialog;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.Hyperlink;
+import javafx.scene.control.TextArea;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
@@ -18,8 +23,6 @@ import javafx.stage.Window;
 import sa.gov.nic.bio.bw.client.core.interfaces.IdleMonitorRegisterer;
 
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.net.URL;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -30,32 +33,27 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class DialogUtils
 {
-	public static void showErrorDialog(Window ownerWindow, IdleMonitorRegisterer idleMonitorRegisterer, Image appIcon, String title, String headerText, String contentText,
-	                                   String buttonOkText, String moreDetailsText, String lessDetailsText, Exception exception, boolean rtl)
+	public static void showAlertDialog(AlertType alertType, Window ownerWindow,
+	                                   IdleMonitorRegisterer idleMonitorRegisterer, String title, String headerText,
+	                                   String contentText, String extraDetailsText, String buttonText,
+	                                   String buttonMoreDetailsText, String buttonLessDetailsText, boolean rtl)
 	{
-		Alert alert = new Alert(AlertType.ERROR);
+		Alert alert = new Alert(alertType);
 		alert.initOwner(ownerWindow);
 		Scene scene = alert.getDialogPane().getScene();
 		scene.setNodeOrientation(rtl ? NodeOrientation.RIGHT_TO_LEFT : NodeOrientation.LEFT_TO_RIGHT);
 		Stage stage = (Stage) scene.getWindow();
-		if(appIcon != null) stage.getIcons().add(appIcon);
 		alert.setTitle(title);
 		alert.setHeaderText(headerText);
 		alert.setContentText(contentText);
 		
-		ButtonType buttonTypeCancel = new ButtonType(buttonOkText, ButtonBar.ButtonData.CANCEL_CLOSE);
+		ButtonType buttonTypeCancel = new ButtonType(buttonText, ButtonBar.ButtonData.CANCEL_CLOSE);
 		alert.getButtonTypes().setAll(buttonTypeCancel);
 		
 		
-		if(exception != null)
+		if(extraDetailsText != null)
 		{
-			// Create expandable Exception.
-			StringWriter sw = new StringWriter();
-			PrintWriter pw = new PrintWriter(sw);
-			exception.printStackTrace(pw);
-			String exceptionText = sw.toString();
-			
-			TextArea textArea = new TextArea(exceptionText);
+			TextArea textArea = new TextArea(extraDetailsText);
 			textArea.setNodeOrientation(NodeOrientation.LEFT_TO_RIGHT);
 			textArea.setEditable(false);
 			textArea.setWrapText(true);
@@ -65,19 +63,17 @@ public class DialogUtils
 			GridPane.setVgrow(textArea, Priority.ALWAYS);
 			GridPane.setHgrow(textArea, Priority.ALWAYS);
 			
-			
 			GridPane expContent = new GridPane();
 			expContent.setMaxWidth(Double.MAX_VALUE);
 			expContent.add(textArea, 0, 1);
 			
-			// Set expandable Exception into the dialog pane.
 			alert.getDialogPane().setExpandableContent(expContent);
 			
-			Hyperlink detailsButton = ( Hyperlink ) alert.getDialogPane().lookup( ".details-button" );
-			detailsButton.setText(moreDetailsText);
+			Hyperlink detailsButton = (Hyperlink) alert.getDialogPane().lookup(".details-button");
+			detailsButton.setText(buttonMoreDetailsText);
 			
-			alert.getDialogPane().expandedProperty().addListener(
-				(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue ) -> detailsButton.setText(newValue ? lessDetailsText : moreDetailsText));
+			alert.getDialogPane().expandedProperty().addListener((observable, oldValue, newValue) ->
+					             detailsButton.setText(newValue ? buttonLessDetailsText : buttonMoreDetailsText));
 		}
 		
 		stage.sizeToScene();
@@ -86,15 +82,45 @@ public class DialogUtils
 		if(idleMonitorRegisterer != null) idleMonitorRegisterer.unregisterStageForIdleMonitoring(stage);
 	}
 	
-	public static boolean showConfirmationDialog(Window ownerWindow, IdleMonitorRegisterer idleMonitorRegisterer, Image appIcon, String title, String headerText, String contentText,
-	                                          String buttonConfirmText, String buttonCancelText, boolean rtl)
+	public static String showChoiceDialog(Window ownerWindow, IdleMonitorRegisterer idleMonitorRegisterer,
+	                                      String title, String headerText, String[] choices,
+	                                      String buttonConfirmText, boolean alwaysOnTop, boolean rtl)
+	{
+		ChoiceDialog<String> choiceDialog = new ChoiceDialog<>(choices[0], choices);
+		choiceDialog.initOwner(ownerWindow);
+		choiceDialog.initStyle(StageStyle.UTILITY);
+		Scene scene = choiceDialog.getDialogPane().getScene();
+		scene.setNodeOrientation(rtl ? NodeOrientation.RIGHT_TO_LEFT : NodeOrientation.LEFT_TO_RIGHT);
+		Stage stage = (Stage) scene.getWindow();
+		stage.setAlwaysOnTop(alwaysOnTop);
+		choiceDialog.setTitle(title);
+		choiceDialog.setHeaderText(headerText);
+		
+		ButtonType buttonTypeConfirm = new ButtonType(buttonConfirmText, ButtonBar.ButtonData.OK_DONE);
+		choiceDialog.getDialogPane().getButtonTypes().setAll(buttonTypeConfirm);
+		
+		Button btnConfirm = (Button) choiceDialog.getDialogPane().lookupButton(buttonTypeConfirm);
+		btnConfirm.setDefaultButton(true);
+		
+		stage.sizeToScene();
+		if(idleMonitorRegisterer != null) idleMonitorRegisterer.registerStageForIdleMonitoring(stage);
+		choiceDialog.showAndWait();
+		if(idleMonitorRegisterer != null) idleMonitorRegisterer.unregisterStageForIdleMonitoring(stage);
+		
+		String selectedItem = choiceDialog.getSelectedItem();
+		
+		return selectedItem != null ? selectedItem : choices[0];
+	}
+	
+	public static boolean showConfirmationDialog(Window ownerWindow, IdleMonitorRegisterer idleMonitorRegisterer,
+	                                             String title, String headerText, String contentText,
+	                                             String buttonConfirmText, String buttonCancelText, boolean rtl)
 	{
 		Alert alert = new Alert(AlertType.CONFIRMATION);
 		alert.initOwner(ownerWindow);
 		Scene scene = alert.getDialogPane().getScene();
 		scene.setNodeOrientation(rtl ? NodeOrientation.RIGHT_TO_LEFT : NodeOrientation.LEFT_TO_RIGHT);
 		Stage stage = (Stage) scene.getWindow();
-		if(appIcon != null) stage.getIcons().add(appIcon);
 		alert.setTitle(title);
 		
 		if(headerText != null)
@@ -144,14 +170,13 @@ public class DialogUtils
 		return buttonType.isPresent() && buttonType.get() == buttonTypeConfirm;
 	}
 	
-	public static void showWarningDialog(Window ownerWindow, IdleMonitorRegisterer idleMonitorRegisterer, Image appIcon, String title, String headerText, String contentText, String buttonText, boolean rtl)
+	public static void showWarningDialog(Window ownerWindow, IdleMonitorRegisterer idleMonitorRegisterer, String title, String headerText, String contentText, String buttonText, boolean rtl)
 	{
 		Alert alert = new Alert(AlertType.WARNING);
 		alert.initOwner(ownerWindow);
 		Scene scene = alert.getDialogPane().getScene();
 		scene.setNodeOrientation(rtl ? NodeOrientation.RIGHT_TO_LEFT : NodeOrientation.LEFT_TO_RIGHT);
 		Stage stage = (Stage) scene.getWindow();
-		if(appIcon != null) stage.getIcons().add(appIcon);
 		alert.setTitle(title);
 		
 		if(headerText != null)
@@ -178,7 +203,7 @@ public class DialogUtils
 		if(idleMonitorRegisterer != null) idleMonitorRegisterer.unregisterStageForIdleMonitoring(stage);
 	}
 	
-	public static Stage buildCustomDialog(Window ownerWindow, Image appIcon, String title, Pane contentPane, boolean rtl)
+	public static Stage buildCustomDialog(Window ownerWindow, String title, Pane contentPane, boolean rtl)
 	{
 		Stage stage = new Stage();
 		stage.initOwner(ownerWindow);
@@ -187,14 +212,13 @@ public class DialogUtils
 		stage.initStyle(StageStyle.UNDECORATED);
 		Scene scene = new Scene(contentPane);
 		scene.setNodeOrientation(rtl ? NodeOrientation.RIGHT_TO_LEFT : NodeOrientation.LEFT_TO_RIGHT);
-		if(appIcon != null) stage.getIcons().add(appIcon);
 		stage.setTitle(title);
 		stage.setScene(scene);
 		
 		return stage;
 	}
 	
-	public static <T> T buildCustomDialog(Window ownerWindow, Image appIcon, String fxml, ResourceBundle resourceBundle, boolean rtl)
+	public static <T> T buildCustomDialog(Window ownerWindow, String fxml, ResourceBundle resourceBundle, boolean rtl)
 	{
 		URL fxmlResource = Thread.currentThread().getContextClassLoader().getResource(fxml);
 		
@@ -222,7 +246,6 @@ public class DialogUtils
 		scene.setNodeOrientation(rtl ? NodeOrientation.RIGHT_TO_LEFT : NodeOrientation.LEFT_TO_RIGHT);
 		
 		Stage stage = (Stage) scene.getWindow();
-		stage.getIcons().add(appIcon);
 		stage.setOnCloseRequest(event -> stage.close());
 		
 		return loader.getController();

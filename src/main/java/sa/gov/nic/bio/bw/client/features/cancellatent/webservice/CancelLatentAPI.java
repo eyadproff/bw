@@ -7,5 +7,5 @@ public interface CancelLatentAPI
 {
 	@FormUrlEncoded
 	@POST
-	Call<Boolean> cancelLatent(@Url String url, @Field("person-id") String personId, @Field("latent-id") String latentId);
+	Call<Boolean> cancelLatent(@Url String url, @Field("person-id") long personId, @Field("latent-id") String latentId);
 }

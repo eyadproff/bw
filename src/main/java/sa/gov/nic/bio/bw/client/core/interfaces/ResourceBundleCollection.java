@@ -1,13 +1,12 @@
 package sa.gov.nic.bio.bw.client.core.interfaces;
 
-import java.util.ResourceBundle;
-
 /**
- * Created by Fouad on 17-Jul-17.
+ * An interface to locate the resource bundles that is used by a JavaFX controller.
+ *
+ * @author Fouad Almalki
+ * @since 1.0.0
  */
 public interface ResourceBundleCollection
 {
-	String getLabelsBundlePath();
-	String getErrorsBundlePath();
-	String getMessagesBundlePath();
+	String getStringsBundlePath();
 }

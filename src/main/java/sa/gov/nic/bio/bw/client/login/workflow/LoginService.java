@@ -1,51 +1,43 @@
 package sa.gov.nic.bio.bw.client.login.workflow;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.activiti.engine.delegate.DelegateExecution;
+import com.google.gson.Gson;
 import retrofit2.Call;
 import sa.gov.nic.bio.bcl.utils.BclUtils;
 import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.beans.UserSession;
 import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.client.core.utils.RuntimeEnvironment;
-import sa.gov.nic.bio.bw.client.core.webservice.ApiResponse;
 import sa.gov.nic.bio.bw.client.core.webservice.LookupAPI;
-import sa.gov.nic.bio.bw.client.core.workflow.ServiceBase;
+import sa.gov.nic.bio.bw.client.login.utils.LoginErrorCodes;
 import sa.gov.nic.bio.bw.client.login.webservice.IdentityAPI;
 import sa.gov.nic.bio.bw.client.login.webservice.LoginBean;
 import sa.gov.nic.bio.bw.client.login.webservice.UserInfo;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- * Created by Fouad on 18-Jul-17.
- */
-public class LoginService extends ServiceBase
+public class LoginService
 {
 	private static final Logger LOGGER = Logger.getLogger(LoginService.class.getName());
 	
-	@Override
-	public void execute(DelegateExecution execution)
+	public static ServiceResponse<LoginBean> execute(String username, String password)
 	{
-		if(Context.getRuntimeEnvironment() != null && Context.getRuntimeEnvironment() != RuntimeEnvironment.DEV)
+		if(Context.getRuntimeEnvironment() != RuntimeEnvironment.LOCAL) // if not local, check for updates
 		{
 			String serverUrl = Context.getWebserviceManager().getServerUrl();
 			
 			boolean newUpdates = BclUtils.checkForAppUpdates(serverUrl, "bw", false, json ->
 			{
-				ObjectMapper mapper = new ObjectMapper();
 				try
 				{
 					@SuppressWarnings("unchecked")
-					Map<String, Map<String, String>> map = mapper.readValue(json, Map.class);
+					Map<String, Map<String, String>> map = new Gson().fromJson(json, Map.class);
 					return map;
 				}
-				catch(IOException e)
+				catch(Exception e)
 				{
 					LOGGER.log(Level.WARNING, "Failed to parse the JSON while checking for new updates!!", e);
 				}
@@ -57,14 +49,10 @@ public class LoginService extends ServiceBase
 			
 			if(newUpdates)
 			{
-				String errorCode = "B001-00000";
-				bypassErrorCode(execution, errorCode);
-				return;
+				String errorCode = LoginErrorCodes.N003_00001.getCode();
+				return ServiceResponse.failure(errorCode, null, null);
 			}
 		}
-		
-		String username = (String) execution.getVariable("username");
-		String password = (String) execution.getVariable("password");
 		
 		LOGGER.fine("username = " + username);
 		LOGGER.fine("password = " + password);
@@ -72,20 +60,20 @@ public class LoginService extends ServiceBase
 		String url = System.getProperty("jnlp.bio.bw.service.lookupMenusRoles");
 		LookupAPI lookupAPI = Context.getWebserviceManager().getApi(LookupAPI.class);
 		Call<Map<String, Set<String>>> menusRolesCall = lookupAPI.lookupMenuRoles(url, "BW");
-		ApiResponse<Map<String, Set<String>>> menusRolesResponse = Context.getWebserviceManager().executeApi(menusRolesCall);
+		ServiceResponse<Map<String, Set<String>>> menusRolesResponse = Context.getWebserviceManager().executeApi(menusRolesCall);
 		
 		Map<String, Set<String>> menusRoles;
 		if(menusRolesResponse.isSuccess()) menusRoles = menusRolesResponse.getResult();
-		else
+		else // bypass the negative response
 		{
-			bypassResponse(execution, menusRolesResponse, false);
-			return;
+			return ServiceResponse.failure(menusRolesResponse.getErrorCode(), menusRolesResponse.getException(),
+			                               menusRolesResponse.getErrorDetails());
 		}
 		
 		IdentityAPI identityAPI = Context.getWebserviceManager().getApi(IdentityAPI.class);
 		url = System.getProperty("jnlp.bio.bw.service.login");
 		Call<LoginBean> apiCall = identityAPI.login(url, username, password, "BW", "U"); // U = User?
-		ApiResponse<LoginBean> response = Context.getWebserviceManager().executeApi(apiCall);
+		ServiceResponse<LoginBean> response = Context.getWebserviceManager().executeApi(apiCall);
 		
 		if(response.isSuccess())
 		{
@@ -104,8 +92,13 @@ public class LoginService extends ServiceBase
 			LOGGER.info("the user (" + userInfo.getUserName() + ") is logged in");
 			LOGGER.fine("userToken = " + userToken);
 			Arrays.stream(AppUtils.decodeJWT(userToken)).forEach(part -> LOGGER.fine(part)); // LOGGER::fine doesn't work, I don't know WHY!!!
+			
+			return ServiceResponse.success(response.getResult());
 		}
-		
-		bypassResponse(execution, response, false);
+		else
+		{
+			return ServiceResponse.failure(response.getErrorCode(), response.getException(),
+			                               response.getErrorDetails());
+		}
 	}
 }
