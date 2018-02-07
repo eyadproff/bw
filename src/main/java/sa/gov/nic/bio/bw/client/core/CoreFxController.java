@@ -99,6 +99,13 @@ public class CoreFxController implements IdleMonitorRegisterer, PersistableEntit
 	@FXML
 	private void initialize()
 	{
+		Thread.setDefaultUncaughtExceptionHandler((thread, throwable) ->
+		{
+			String errorCode = CoreErrorCodes.C002_00016.getCode();
+			String[] errorDetails = {"Uncaught exception!"};
+			showErrorDialog(errorCode, throwable, errorDetails);
+		});
+		
 		idleMonitor = new IdleMonitor(this::onShowingIdleWarning, this::onIdle, this::onIdleInterrupt,
 		                              this::onTick, idleNotifier);
 		
@@ -320,7 +327,7 @@ public class CoreFxController implements IdleMonitorRegisterer, PersistableEntit
 		                                          contentMessage, buttonConfirmText, buttonCancelText, rtl);
 	}
 	
-	public void showErrorDialog(String errorCode, Exception exception, String[] errorDetails)
+	public void showErrorDialog(String errorCode, Throwable throwable, String[] errorDetails)
 	{
 		Platform.runLater(() ->
 		{
@@ -334,7 +341,7 @@ public class CoreFxController implements IdleMonitorRegisterer, PersistableEntit
 			String contentMessage = String.format(stringsBundle.getString("message.errorOccurs"), errorCode);
 			
 			StringBuilder sb = new StringBuilder();
-			GuiUtils.buildErrorMessage(exception, errorDetails, sb);
+			GuiUtils.buildErrorMessage(throwable, errorDetails, sb);
 			
 			LOGGER.severe(contentMessage + (sb.length() > 0 ? "\n" : "") + sb.toString());
 			DialogUtils.showAlertDialog(AlertType.ERROR, primaryStage, this, title, headerText,
