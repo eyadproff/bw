@@ -43,11 +43,11 @@ public class CancelLatentPaneFxController extends BodyFxControllerBase
 	}
 	
 	@Override
-	public void onWorkflowUserTaskLoad(boolean newForm, Map<String, Object> dataMap)
+	public void onWorkflowUserTaskLoad(boolean newForm, Map<String, Object> uiInputData)
 	{
 		if(!newForm)
 		{
-			ServiceResponse<?> serviceResponse = (ServiceResponse<?>) dataMap.get(Workflow.KEY_WEBSERVICE_RESPONSE);
+			ServiceResponse<?> serviceResponse = (ServiceResponse<?>) uiInputData.get(Workflow.KEY_WEBSERVICE_RESPONSE);
 			
 			disableUiControls(false);
 			

@@ -39,12 +39,9 @@ public class LookupService
 				nationalities = nationalitiesResponse.getResult();
 				nationalities.removeIf(nationalityBean -> nationalityBean.getMofaNationalityCode().trim().isEmpty());
 			}
-			else // TODO
-			{
-				//
-				//bypassResponse(execution, nationalitiesResponse, true);
-				//return;
-			}
+			else return ServiceResponse.failure(nationalitiesResponse.getErrorCode(),
+			                                    nationalitiesResponse.getException(),
+			                                    nationalitiesResponse.getErrorDetails());
 			
 			userSession.setAttribute("lookups.mofa.nationalities", nationalities);
 		}
@@ -54,14 +51,13 @@ public class LookupService
 			String url = System.getProperty("jnlp.bio.bw.service.lookupVisaTypes");
 			LookupAPI lookupAPI = Context.getWebserviceManager().getApi(LookupAPI.class);
 			Call<List<VisaTypeBean>> visaTypesCall = lookupAPI.lookupVisaTypes(url);
-			ServiceResponse<List<VisaTypeBean>> visaTypesResponse = Context.getWebserviceManager().executeApi(visaTypesCall);
+			ServiceResponse<List<VisaTypeBean>> visaTypesResponse = Context.getWebserviceManager()
+																		   .executeApi(visaTypesCall);
 			
 			if(visaTypesResponse.isSuccess()) visaTypes = visaTypesResponse.getResult();
-			else // TODO
-			{
-				//bypassResponse(execution, visaTypesResponse, true);
-				//return;
-			}
+			else return ServiceResponse.failure(visaTypesResponse.getErrorCode(),
+			                                    visaTypesResponse.getException(),
+			                                    visaTypesResponse.getErrorDetails());
 			
 			userSession.setAttribute("lookups.mofa.visaTypes", visaTypes);
 		}
@@ -69,7 +65,6 @@ public class LookupService
 		LOGGER.info("nationalities = " + nationalities);
 		LOGGER.info("visaTypes = " + visaTypes);
 		
-		//bypassSuccessResponseWithNoResult(execution, false);
-		return null;
+		return ServiceResponse.success(null);
 	}
 }

@@ -82,14 +82,14 @@ public class LoginPaneFxController extends BodyFxControllerBase implements Persi
 	}
 	
 	@Override
-	public void onWorkflowUserTaskLoad(boolean newForm, Map<String, Object> dataMap)
+	public void onWorkflowUserTaskLoad(boolean newForm, Map<String, Object> uiInputData)
 	{
 		if(!newForm)
 		{
 			txtPassword.clear();
 			disableUiControls(false);
 			
-			ServiceResponse<?> serviceResponse = (ServiceResponse<?>) dataMap.get(Workflow.KEY_WEBSERVICE_RESPONSE);
+			ServiceResponse<?> serviceResponse = (ServiceResponse<?>) uiInputData.get(Workflow.KEY_WEBSERVICE_RESPONSE);
 			if(!serviceResponse.isSuccess())
 			{
 				reportNegativeResponse(serviceResponse.getErrorCode(), serviceResponse.getException(),

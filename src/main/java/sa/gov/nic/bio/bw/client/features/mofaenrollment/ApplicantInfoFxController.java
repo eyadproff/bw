@@ -30,16 +30,16 @@ import java.util.function.Predicate;
 
 public class ApplicantInfoFxController extends WizardStepFxControllerBase
 {
-	private static final String KEY_FIRST_NAME = "ApplicantInfo.firstName";
-	private static final String KEY_SECOND_NAME = "ApplicantInfo.secondName";
-	private static final String KEY_OTHER_NAME = "ApplicantInfo.otherName";
-	private static final String KEY_FAMILY_NAME = "ApplicantInfo.familyName";
-	private static final String KEY_GENDER = "ApplicantInfo.gender";
-	private static final String KEY_NATIONALITY = "ApplicantInfo.nationality";
-	private static final String KEY_BIRTH_DATE = "ApplicantInfo.birthDate";
-	private static final String KEY_BIRTH_DATE_SHOW_HIJRI = "ApplicantInfo.birthDateShowHijri";
-	private static final String KEY_PASSPORT_NUMBER = "ApplicantInfo.passportNumber";
-	private static final String KEY_VISA_TYPE = "ApplicantInfo.visaType";
+	public static final String KEY_FIRST_NAME = "ApplicantInfo.firstName";
+	public static final String KEY_SECOND_NAME = "ApplicantInfo.secondName";
+	public static final String KEY_OTHER_NAME = "ApplicantInfo.otherName";
+	public static final String KEY_FAMILY_NAME = "ApplicantInfo.familyName";
+	public static final String KEY_GENDER = "ApplicantInfo.gender";
+	public static final String KEY_NATIONALITY = "ApplicantInfo.nationality";
+	public static final String KEY_BIRTH_DATE = "ApplicantInfo.birthDate";
+	public static final String KEY_BIRTH_DATE_SHOW_HIJRI = "ApplicantInfo.birthDateShowHijri";
+	public static final String KEY_PASSPORT_NUMBER = "ApplicantInfo.passportNumber";
+	public static final String KEY_VISA_TYPE = "ApplicantInfo.visaType";
 	
 	@FXML private TextField txtFirstName;
 	@FXML private TextField txtSecondName;
@@ -191,11 +191,11 @@ public class ApplicantInfoFxController extends WizardStepFxControllerBase
 	}
 	
 	@Override
-	public void onWorkflowUserTaskLoad(boolean newForm, Map<String, Object> dataMap)
+	public void onWorkflowUserTaskLoad(boolean newForm, Map<String, Object> uiInputData)
 	{
 		if(newForm)
 		{
-			loadOldDateIfExist(dataMap);
+			loadOldDateIfExist(uiInputData);
 		}
 	}
 	

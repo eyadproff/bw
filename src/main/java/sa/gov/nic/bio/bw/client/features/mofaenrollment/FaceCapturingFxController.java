@@ -32,7 +32,7 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 	}
 	
 	@Override
-	public void onWorkflowUserTaskLoad(boolean newForm, Map<String, Object> dataMap)
+	public void onWorkflowUserTaskLoad(boolean newForm, Map<String, Object> uiInputData)
 	{
 	
 	}

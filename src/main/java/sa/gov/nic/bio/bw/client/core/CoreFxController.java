@@ -168,13 +168,11 @@ public class CoreFxController implements IdleMonitorRegisterer, PersistableEntit
 		Context.getWorkflowManager().submitUserTask(uiDataMap);
 	}
 	
-	public void goToMenu(Class<?> menuControllerClass)
+	public void goToMenu(Class<?> menuWorkflowClass)
 	{
-		// TODO: send a request to the workflow manager
-		
 		Map<String, Object> dataMap = new HashMap<>();
 		dataMap.put(Workflow.KEY_SIGNAL_TYPE, SignalType.MENU_NAVIGATION);
-		dataMap.put(HomeWorkflow.KEY_MENU_WORKFLOW_CLASS, menuControllerClass);
+		dataMap.put(HomeWorkflow.KEY_MENU_WORKFLOW_CLASS, menuWorkflowClass);
 		Context.getWorkflowManager().submitUserTask(dataMap);
 	}
 	
@@ -183,15 +181,15 @@ public class CoreFxController implements IdleMonitorRegisterer, PersistableEntit
 	 * a non-UI thread.
 	 *
 	 * @param controllerClass class of the new/existing controller class of the body
-	 * @param dataMap data passed by the workflow manager to the controller
+	 * @param uiInputData data passed by the workflow manager to the controller
 	 */
-	private void renderBodyForm(Class<?> controllerClass, Map<String, Object> dataMap)
+	private void renderBodyForm(Class<?> controllerClass, Map<String, Object> uiInputData)
 	{
 		Platform.runLater(() ->
 		{
 			if(currentBodyController != null && currentBodyController.getClass() == controllerClass) // same form
 			{
-				currentBodyController.onWorkflowUserTaskLoad(false, dataMap);
+				currentBodyController.onWorkflowUserTaskLoad(false, uiInputData);
 			}
 			else // new form
 			{
@@ -199,10 +197,10 @@ public class CoreFxController implements IdleMonitorRegisterer, PersistableEntit
 				{
 					ControllerResourcesLocator controllerResourcesLocator = (ControllerResourcesLocator)
 																controllerClass.getDeclaredConstructor().newInstance();
-					currentBodyController = renderNewBodyForm(controllerResourcesLocator);
+					currentBodyController = renderNewBodyForm(controllerResourcesLocator, uiInputData);
 					if(currentBodyController != null)
 					{
-						currentBodyController.onWorkflowUserTaskLoad(true, dataMap);
+						currentBodyController.onWorkflowUserTaskLoad(true, uiInputData);
 					}
 				}
 				catch(InstantiationException | IllegalAccessException | NoSuchMethodException |
@@ -221,10 +219,12 @@ public class CoreFxController implements IdleMonitorRegisterer, PersistableEntit
 	 * the existing body node with the created node.
 	 *
 	 * @param controllerResourcesLocator a locator for the FXML file and the resource bundles
+	 * @param uiInputData data passed by the workflow manager to the controller
 	 *
 	 * @return the created JavaFX controller
 	 */
-	private BodyFxControllerBase renderNewBodyForm(ControllerResourcesLocator controllerResourcesLocator)
+	private BodyFxControllerBase renderNewBodyForm(ControllerResourcesLocator controllerResourcesLocator,
+	                                               Map<String, Object> uiInputData)
 	{
 		notificationPane.hide();
 		
@@ -299,12 +299,12 @@ public class CoreFxController implements IdleMonitorRegisterer, PersistableEntit
 				
 				wizardPane.goNext();
 			}
-			else
+			else // change the workflow indicator
 			{
-				/*String direction = (String) inputData.get("direction");
+				String direction = (String) uiInputData.get("direction");
 				if("backward".equals(direction)) wizardPane.goPrevious();
 				else if("forward".equals(direction)) wizardPane.goNext();
-				else if("startOver".equals(direction)) wizardPane.startOver();*/
+				else if("startOver".equals(direction)) wizardPane.startOver();
 			}
 		}
 		else wizardPane = null;
@@ -493,7 +493,7 @@ public class CoreFxController implements IdleMonitorRegisterer, PersistableEntit
 	 */
 	private boolean applyStateBundle(StateBundle stateBundle)
 	{
-		BodyFxControllerBase newBodyController = renderNewBodyForm(currentBodyController);
+		BodyFxControllerBase newBodyController = renderNewBodyForm(currentBodyController, new HashMap<>());
 		currentBodyController = newBodyController;
 		
 		if(newBodyController instanceof PersistableEntity)

@@ -123,11 +123,11 @@ public class SearchByFaceImagePaneFxController extends BodyFxControllerBase
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public void onWorkflowUserTaskLoad(boolean newForm, Map<String, Object> dataMap)
+	public void onWorkflowUserTaskLoad(boolean newForm, Map<String, Object> uiInputData)
 	{
 		if(!newForm)
 		{
-			ServiceResponse<?> serviceResponse = (ServiceResponse<?>) dataMap.get(Workflow.KEY_WEBSERVICE_RESPONSE);
+			ServiceResponse<?> serviceResponse = (ServiceResponse<?>) uiInputData.get(Workflow.KEY_WEBSERVICE_RESPONSE);
 			
 			// hide the overlay on top of the side menus
 			coreFxController.getMenuPaneController().showOverlayPane(false);
