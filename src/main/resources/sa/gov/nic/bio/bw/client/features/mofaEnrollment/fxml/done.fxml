@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.geometry.Insets?>
 <BorderPane xmlns:fx="http://javafx.com/fxml" xmlns="http://javafx.com/javafx/8"
-            fx:controller="sa.gov.nic.bio.bw.client.features.mofaenrollment.DoneFxController">
+            fx:id="rootPane" fx:controller="sa.gov.nic.bio.bw.client.features.mofaenrollment.DoneFxController">
     <center>
         <Label text="Done"/>
     </center>

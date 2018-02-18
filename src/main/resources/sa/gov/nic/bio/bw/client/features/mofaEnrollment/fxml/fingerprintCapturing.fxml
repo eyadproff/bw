@@ -2,22 +2,28 @@
 <?language JavaScript?>
 <?scenebuilder-preview-i18n-resource ../bundles/labels.properties?>
 
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.layout.BorderPane?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.shape.SVGPath?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.ProgressIndicator?>
+<?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.TitledPane?>
 <?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.SVGPath?>
 <?import sa.gov.nic.bio.bw.client.core.ui.AutoScalingStackPane?>
 <?import sa.gov.nic.bio.bw.client.core.ui.ImageViewPane?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.SeparatorMenuItem?>
 <BorderPane xmlns:fx="http://javafx.com/fxml" xmlns="http://javafx.com/javafx/8"
-            fx:controller="sa.gov.nic.bio.bw.client.features.mofaenrollment.FingerprintCapturingFxController"
+            fx:id="rootPane" fx:controller="sa.gov.nic.bio.bw.client.features.mofaenrollment.FingerprintCapturingFxController"
             stylesheets="@../css/style.css">
     <center>
         <VBox>
@@ -52,20 +58,30 @@
                         </TitledPane>
 
                     </VBox>
+                    <TitledPane text="%label.FingerprintDeviceControlPanel" maxHeight="Infinity" collapsible="false">
+                        <VBox alignment="CENTER" spacing="10" VBox.vgrow="NEVER">
+                            <padding>
+                                <Insets topRightBottomLeft="10"/>
+                            </padding>
+                            <ProgressIndicator fx:id="piProgress" prefHeight="25.0" prefWidth="25.0" managed="false" visible="false"/>
+                            <Label fx:id="lblStatus" wrapText="true"/>
+                            <VBox alignment="CENTER" spacing="5">
+                                <Button fx:id="btnCancel" text="%button.cancel" managed="false" visible="false"/>
+                                <Button fx:id="btnRestartDeviceManager" text="%button.restartDeviceManager" managed="false" visible="false" onAction="#onRestartDeviceManagerButtonClicked"/>
+                                <Button fx:id="btnConnectToDeviceManager" text="%button.connectToDeviceManager" managed="false" visible="false" onAction="#onConnectToDeviceManagerButtonClicked"/>
+                                <Button fx:id="btnDisconnectFromDeviceManager" text="%button.disconnectFromDeviceManager" managed="false" visible="false" onAction="#onDisconnectFromDeviceManagerButtonClicked"/>
+                                <Button fx:id="btnReinitializeDevice" text="%button.reinitializeDevice" managed="false" visible="false" onAction="#onReinitializeDeviceButtonClicked"/>
+                                <Button fx:id="btnStartFingerprintCapturing" text="%button.startFingerprintCapturing" managed="false" visible="false" onAction="#onStartFingerprintCapturingButtonClicked"/>
+                                <Button fx:id="btnStopFingerprintCapturing" text="%button.stopFingerprintCapturing" managed="false" visible="false" onAction="#onStopFingerprintCapturingButtonClicked"/>
+                            </VBox>
+                        </VBox>
+                    </TitledPane>
                     <TitledPane text="%label.FingerprintDeviceLivePreview" maxHeight="Infinity" collapsible="false">
                         <ImageViewPane minHeight="137.0">
                             <imageView>
                                 <ImageView fx:id="ivFingerprintDeviceLivePreview" preserveRatio="true"/>
                             </imageView>
                         </ImageViewPane>
-                    </TitledPane>
-                    <TitledPane text="%label.FingerprintDeviceControlPanel" maxHeight="Infinity" collapsible="false">
-                        <HBox alignment="CENTER" spacing="10" VBox.vgrow="NEVER">
-                            <padding>
-                                <Insets topRightBottomLeft="10"/>
-                            </padding>
-                            <Button text="%button.startFingerprintCapturing"/>
-                        </HBox>
                     </TitledPane>
                 </SplitPane>
                 <SplitPane fx:id="spFingerprints" dividerPositions="0.5,0.5" nodeOrientation="LEFT_TO_RIGHT">
