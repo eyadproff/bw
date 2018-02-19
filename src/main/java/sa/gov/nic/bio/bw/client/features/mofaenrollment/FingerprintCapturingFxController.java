@@ -4,18 +4,22 @@ import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.SplitPane;
+import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.SVGPath;
 import org.controlsfx.control.PopOver;
+import org.controlsfx.control.PopOver.ArrowLocation;
 import sa.gov.nic.bio.bcl.utils.BclUtils;
 import sa.gov.nic.bio.bcl.utils.CancelCommand;
 import sa.gov.nic.bio.biokit.ResponseProcessor;
@@ -28,6 +32,7 @@ import sa.gov.nic.bio.biokit.websocket.beans.DMFingerData;
 import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.biokit.BioKitManager;
 import sa.gov.nic.bio.bw.client.core.ui.ImageViewPane;
+import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.wizard.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.client.features.mofaenrollment.utils.MofaEnrollmentErrorCodes;
@@ -38,6 +43,7 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.Future;
@@ -95,6 +101,16 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 	@FXML private CheckBox cbLeftMiddle;
 	@FXML private CheckBox cbLeftIndex;
 	@FXML private CheckBox cbLeftThumb;
+	@FXML private Button btnLeftLittle;
+	@FXML private Button btnLeftRing;
+	@FXML private Button btnLeftMiddle;
+	@FXML private Button btnLeftIndex;
+	@FXML private Button btnLeftThumb;
+	@FXML private Button btnRightThumb;
+	@FXML private Button btnRightIndex;
+	@FXML private Button btnRightMiddle;
+	@FXML private Button btnRightRing;
+	@FXML private Button btnRightLittle;
 	@FXML private Button btnCancel;
 	@FXML private Button btnConnectToDeviceManager;
 	@FXML private Button btnDisconnectFromDeviceManager;
@@ -151,7 +167,55 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 	@Override
 	public void onControllerReady()
 	{
-	
+		GridPane gridPane = new GridPane();
+		gridPane.setPadding(new Insets(10));
+		gridPane.setVgap(5.0);
+		gridPane.setHgap(5.0);
+		
+		Label lblNfiq = new Label(stringsBundle.getString("label.tooltip.nfiq"));
+		Label lblMinutiaeCount = new Label(stringsBundle.getString("label.tooltip.minutiaeCount"));
+		Label lblIntensity = new Label(stringsBundle.getString("label.tooltip.intensity"));
+		
+		Image successImage = new Image(Thread.currentThread().getContextClassLoader().getResourceAsStream("sa/gov/nic/bio/bw/client/features/mofaenrollment/images/success.png"));
+		Image warningImage = new Image(Thread.currentThread().getContextClassLoader().getResourceAsStream("sa/gov/nic/bio/bw/client/features/mofaenrollment/images/warning.png"));
+		lblNfiq.setGraphic(new ImageView(successImage));
+		lblMinutiaeCount.setGraphic(new ImageView(successImage));
+		lblIntensity.setGraphic(new ImageView(warningImage));
+		
+		gridPane.add(lblNfiq, 0, 0);
+		gridPane.add(lblMinutiaeCount, 0, 1);
+		gridPane.add(lblIntensity, 0, 2);
+		
+		String nfiq = AppUtils.replaceNumbersOnly("1", Locale.getDefault());
+		String minutiaeCount = AppUtils.replaceNumbersOnly("42", Locale.getDefault());
+		String intensity = AppUtils.replaceNumbersOnly("70%", Locale.getDefault());
+		
+		TextField txtNfiq = new TextField(nfiq);
+		TextField txtMinutiaeCount = new TextField(minutiaeCount);
+		TextField txtIntensity = new TextField(intensity);
+		
+		txtNfiq.setFocusTraversable(false);
+		txtMinutiaeCount.setFocusTraversable(false);
+		txtIntensity.setFocusTraversable(false);
+		txtNfiq.setEditable(false);
+		txtMinutiaeCount.setEditable(false);
+		txtIntensity.setEditable(false);
+		txtNfiq.setPrefColumnCount(3);
+		txtMinutiaeCount.setPrefColumnCount(3);
+		txtIntensity.setPrefColumnCount(3);
+		
+		gridPane.add(txtNfiq, 1, 0);
+		gridPane.add(txtMinutiaeCount, 1, 1);
+		gridPane.add(txtIntensity, 1, 2);
+		
+		PopOver popOver = new PopOver(gridPane);
+		popOver.setDetachable(false);
+		popOver.setArrowLocation(ArrowLocation.BOTTOM_CENTER);
+		
+		GuiUtils.showNode(cbLeftLittle, false);
+		GuiUtils.showNode(btnLeftLittle, true);
+		
+		btnLeftLittle.setOnAction(actionEvent -> popOver.show(tpLeftLittle));
 	}
 	
 	@Override
@@ -473,19 +537,20 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 				        imageView.setPickOnBounds(true);
 				        ImageViewPane imageViewPane = new ImageViewPane(imageView);
 				
-				        Label lblName = new Label("John Doe");
-				        Label lblStreet = new Label("123 Hello Street");
-				        Label lblCityStateZip = new Label("MadeUpCity, XX 55555");
-				        VBox vBox = new VBox(lblName, lblStreet, lblCityStateZip);
+				        Label lblNfiq = new Label("NFIQ: " + fingerData.get(0).getNfiqQuality());
+				        Label lblMinutiaeCount = new Label("Minutiae Count: " + fingerData.get(0).getMinutiaeCount());
+				        Label lblIntensity = new Label("Intensity: " + fingerData.get(0).getIntensity());
+				        VBox vBox = new VBox(lblNfiq, lblMinutiaeCount, lblIntensity);
 				        
 				        //Create PopOver and add look and feel
 				        PopOver popOver = new PopOver(vBox);
+				        popOver.setDetachable(false);
+				        popOver.setArrowLocation(ArrowLocation.BOTTOM_CENTER);
+				        
+				        GuiUtils.showNode(cbLeftLittle, false);
+				        GuiUtils.showNode(btnLeftLittle, true);
 				
-				        cbLeftLittle.selectedProperty().addListener((observable, oldValue, newValue) ->
-				        {
-				        	if(newValue) popOver.show(imageView);
-				        	else popOver.hide();
-				        });
+				        btnLeftLittle.setOnAction(actionEvent -> popOver.show(imageView));
 				
 				        tpLeftLittle.setContent(imageViewPane);
 				
