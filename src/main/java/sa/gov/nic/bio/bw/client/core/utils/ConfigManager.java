@@ -1,8 +1,8 @@
 package sa.gov.nic.bio.bw.client.core.utils;
 
-import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
-
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.Properties;
 

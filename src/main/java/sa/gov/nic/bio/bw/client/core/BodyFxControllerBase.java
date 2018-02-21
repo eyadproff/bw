@@ -90,6 +90,8 @@ public abstract class BodyFxControllerBase extends RegionFxControllerBase implem
 		{
 			// no exceptions/errorDetails in case of business error
 			
+			if(errorCode.startsWith("N")) errorCode = errorCode.replace("-", "_");
+			
 			String guiErrorMessage = Context.getErrorsBundle().getString(errorCode);
 			String logErrorMessage = Context.getErrorsBundle().getString(errorCode + ".internal");
 			

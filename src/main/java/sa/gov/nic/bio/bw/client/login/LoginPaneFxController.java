@@ -120,7 +120,7 @@ public class LoginPaneFxController extends BodyFxControllerBase implements Persi
 		hideNotification();
 		
 		boolean rtl = coreFxController.getCurrentLanguage().getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT;
-		ChangePasswordDialogFxController controller = DialogUtils.buildCustomDialog(coreFxController.getPrimaryStage(), FXML_CHANGE_PASSWORD, stringsBundle, rtl);
+		ChangePasswordDialogFxController controller = DialogUtils.buildCustomDialogByFxml(coreFxController.getPrimaryStage(), FXML_CHANGE_PASSWORD, stringsBundle, rtl);
 		
 		if(controller != null)
 		{

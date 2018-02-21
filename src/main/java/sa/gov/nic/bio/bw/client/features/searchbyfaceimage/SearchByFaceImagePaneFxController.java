@@ -31,6 +31,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import sa.gov.nic.bio.bw.client.core.BodyFxControllerBase;
 import sa.gov.nic.bio.bw.client.core.utils.AppConstants;
 import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
@@ -42,7 +43,8 @@ import sa.gov.nic.bio.bw.client.features.searchbyfaceimage.webservice.Candidate;
 import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -456,6 +458,7 @@ public class SearchByFaceImagePaneFxController extends BodyFxControllerBase
 		borderPane.centerProperty().set(imageLayer);
 		
 		Stage dialogStage = DialogUtils.buildCustomDialog(coreFxController.getPrimaryStage(), title, stackPane, rtl);
+		dialogStage.initStyle(StageStyle.UNDECORATED);
 		dialogStage.getScene().addEventHandler(KeyEvent.KEY_PRESSED, t ->
 		{
 			if(t.getCode() == KeyCode.ESCAPE)
@@ -464,7 +467,6 @@ public class SearchByFaceImagePaneFxController extends BodyFxControllerBase
 				dialogStage.close();
 			}
 		});
-		dialogStage.initOwner(coreFxController.getPrimaryStage());
 		dialogStage.getScene().getRoot().setOnContextMenuRequested(event -> contextMenu.show(dialogStage.getScene().getRoot(), event.getScreenX(), event.getScreenY()));
 		
 		closeMenuItem.setOnAction(event -> dialogStage.close());
