@@ -12,6 +12,12 @@ public class Fingerprint implements Serializable
 	
 	public Fingerprint(){}
 	
+	public Fingerprint(DMFingerData dmFingerData, boolean acceptableQuality)
+	{
+		this.dmFingerData = dmFingerData;
+		this.acceptableQuality = acceptableQuality;
+	}
+	
 	public DMFingerData getDmFingerData(){return dmFingerData;}
 	public void setDmFingerData(DMFingerData dmFingerData){this.dmFingerData = dmFingerData;}
 	

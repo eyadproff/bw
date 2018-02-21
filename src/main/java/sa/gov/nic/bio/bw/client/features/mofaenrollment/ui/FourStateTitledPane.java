@@ -6,13 +6,14 @@ import javafx.css.PseudoClass;
 import javafx.scene.Node;
 import javafx.scene.control.TitledPane;
 
-public class ThreeStateTitledPane extends TitledPane
+public class FourStateTitledPane extends TitledPane
 {
 	private static final PseudoClass ACTIVE_PSEUDO_CLASS = PseudoClass.getPseudoClass("active");
 	private static final PseudoClass CAPTURED_PSEUDO_CLASS = PseudoClass.getPseudoClass("captured");
 	private static final PseudoClass VALID_PSEUDO_CLASS = PseudoClass.getPseudoClass("valid");
+	private static final PseudoClass DUPLICATED_PSEUDO_CLASS = PseudoClass.getPseudoClass("duplicated");
 	
-	public BooleanProperty active = new BooleanPropertyBase(false)
+	private BooleanProperty active = new BooleanPropertyBase(false)
 	{
 		@Override
 		protected void invalidated()
@@ -23,7 +24,7 @@ public class ThreeStateTitledPane extends TitledPane
 		@Override
 		public Object getBean()
 		{
-			return ThreeStateTitledPane.this;
+			return FourStateTitledPane.this;
 		}
 		
 		@Override
@@ -32,8 +33,7 @@ public class ThreeStateTitledPane extends TitledPane
 			return ACTIVE_PSEUDO_CLASS.getPseudoClassName();
 		}
 	};
-	
-	public BooleanProperty captured = new BooleanPropertyBase(false)
+	private BooleanProperty captured = new BooleanPropertyBase(false)
 	{
 		@Override
 		protected void invalidated()
@@ -44,7 +44,7 @@ public class ThreeStateTitledPane extends TitledPane
 		@Override
 		public Object getBean()
 		{
-			return ThreeStateTitledPane.this;
+			return FourStateTitledPane.this;
 		}
 		
 		@Override
@@ -53,8 +53,7 @@ public class ThreeStateTitledPane extends TitledPane
 			return CAPTURED_PSEUDO_CLASS.getPseudoClassName();
 		}
 	};
-	
-	public BooleanProperty valid = new BooleanPropertyBase(false)
+	private BooleanProperty valid = new BooleanPropertyBase(false)
 	{
 		@Override
 		protected void invalidated()
@@ -65,7 +64,7 @@ public class ThreeStateTitledPane extends TitledPane
 		@Override
 		public Object getBean()
 		{
-			return ThreeStateTitledPane.this;
+			return FourStateTitledPane.this;
 		}
 		
 		@Override
@@ -74,16 +73,36 @@ public class ThreeStateTitledPane extends TitledPane
 			return VALID_PSEUDO_CLASS.getPseudoClassName();
 		}
 	};
+	private BooleanProperty duplicated = new BooleanPropertyBase(false)
+	{
+		@Override
+		protected void invalidated()
+		{
+			pseudoClassStateChanged(DUPLICATED_PSEUDO_CLASS, get());
+		}
+		
+		@Override
+		public Object getBean()
+		{
+			return FourStateTitledPane.this;
+		}
+		
+		@Override
+		public String getName()
+		{
+			return DUPLICATED_PSEUDO_CLASS.getPseudoClassName();
+		}
+	};
 	
-	public ThreeStateTitledPane()
+	public FourStateTitledPane()
 	{
 		this(null, null);
 	}
 	
-	public ThreeStateTitledPane(String title, Node content)
+	public FourStateTitledPane(String title, Node content)
 	{
 		super(title, content);
-		getStyleClass().add("three-state-titled-pane");
+		getStyleClass().add("four-state-titled-pane");
 	}
 	
 	public boolean isActive(){return active.get();}
@@ -97,4 +116,8 @@ public class ThreeStateTitledPane extends TitledPane
 	public boolean isValid(){return valid.get();}
 	public BooleanProperty validProperty(){return valid;}
 	public void setValid(boolean valid){this.valid.set(valid);}
+	
+	public boolean isDuplicated(){return duplicated.get();}
+	public BooleanProperty duplicatedProperty(){return duplicated;}
+	public void setDuplicated(boolean duplicated){this.duplicated.set(duplicated);}
 }
