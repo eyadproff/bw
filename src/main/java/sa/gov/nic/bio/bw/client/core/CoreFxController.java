@@ -628,6 +628,9 @@ public class CoreFxController implements IdleMonitorRegisterer, PersistableEntit
 		    boolean rtl = currentLanguage.getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT;
 		
 		    overlayPane.setVisible(true);
+			
+			// make sure the stage is not iconified, otherwise the dialog will be invisible
+			primaryStage.setIconified(false);
 		    DialogUtils.showWarningDialog(primaryStage, this, title, null,
 		                                  contentText, buttonText, rtl);
 		    overlayPane.setVisible(false);

@@ -3,8 +3,8 @@ package sa.gov.nic.bio.bw.client.features.mofaenrollment.beans;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.image.ImageView;
+import javafx.scene.shape.SVGPath;
 import sa.gov.nic.bio.bw.client.core.biokit.FingerPosition;
-import sa.gov.nic.bio.bw.client.features.mofaenrollment.ui.FourStateSVGPath;
 import sa.gov.nic.bio.bw.client.features.mofaenrollment.ui.FourStateTitledPane;
 
 import java.util.Objects;
@@ -14,7 +14,7 @@ public class FingerprintUiComponents
 	private FingerPosition fingerPosition;
 	private FingerPosition slapPosition;
 	private ImageView imageView;
-	private FourStateSVGPath svgPath;
+	private SVGPath svgPath;
 	private FourStateTitledPane titledPane;
 	private CheckBox checkBox;
 	private Button button;
@@ -22,7 +22,7 @@ public class FingerprintUiComponents
 	private String handLabel;
 	
 	public FingerprintUiComponents(FingerPosition fingerPosition, FingerPosition slapPosition, ImageView imageView,
-	                               FourStateSVGPath svgPath, FourStateTitledPane titledPane, CheckBox checkBox,
+	                               SVGPath svgPath, FourStateTitledPane titledPane, CheckBox checkBox,
 	                               Button button, String fingerLabel, String handLabel)
 	{
 		this.fingerPosition = fingerPosition;
@@ -45,8 +45,8 @@ public class FingerprintUiComponents
 	public ImageView getImageView(){return imageView;}
 	public void setImageView(ImageView imageView){this.imageView = imageView;}
 	
-	public FourStateSVGPath getSvgPath(){return svgPath;}
-	public void setSvgPath(FourStateSVGPath svgPath){this.svgPath = svgPath;}
+	public SVGPath getSvgPath(){return svgPath;}
+	public void setSvgPath(SVGPath svgPath){this.svgPath = svgPath;}
 	
 	public FourStateTitledPane getTitledPane(){return titledPane;}
 	public void setTitledPane(FourStateTitledPane titledPane){this.titledPane = titledPane;}

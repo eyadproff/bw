@@ -63,26 +63,10 @@
     -fx-text-fill: fx-text-base-color;
 }
 
-.four-state-svg-path {
-    -fx-fill: black;
-}
-
-.four-state-svg-path:active {
+.finger-svg {
     -fx-fill: #2382b7;
 }
 
-.four-state-svg-path:active:captured {
-    -fx-fill: #cec100;
-}
-
-.four-state-svg-path:active:captured:valid {
-    -fx-fill: #398755;
-}
-
-.four-state-svg-path:active:captured:duplicated {
-    -fx-fill: #b30002;
-}
-
-.four-state-svg-path:disabled {
+.finger-svg:disabled {
     -fx-fill: #7f8787;
 }
