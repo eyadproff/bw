@@ -64,12 +64,13 @@
                             <ProgressIndicator fx:id="piProgress" prefHeight="25.0" prefWidth="25.0" managed="false" visible="false"/>
                             <Label fx:id="lblStatus" wrapText="true" textAlignment="CENTER"/>
                             <VBox alignment="CENTER" spacing="5">
-                                <Button fx:id="btnCancel" text="%button.cancel" managed="false" visible="false"/>
-                                <Button fx:id="btnConnectToDeviceManager" text="%button.connectToDeviceManager" managed="false" visible="false" onAction="#onConnectToDeviceManagerButtonClicked"/>
-                                <Button fx:id="btnDisconnectFromDeviceManager" text="%button.disconnectFromDeviceManager" managed="false" visible="false" onAction="#onDisconnectFromDeviceManagerButtonClicked"/>
-                                <Button fx:id="btnReinitializeDevice" text="%button.reinitializeDevice" managed="false" visible="false" onAction="#onReinitializeDeviceButtonClicked"/>
-                                <Button fx:id="btnStartFingerprintCapturing" text="%button.captureRightSlapFingerprints" managed="false" visible="false" onAction="#onStartFingerprintCapturingButtonClicked"/>
-                                <Button fx:id="btnStopFingerprintCapturing" text="%button.stopFingerprintCapturing" managed="false" visible="false" onAction="#onStopFingerprintCapturingButtonClicked"/>
+                                <Button fx:id="btnCancel" text="%button.cancel" managed="false" visible="false" wrapText="true" textAlignment="CENTER"/>
+                                <Button fx:id="btnConnectToDeviceManager" text="%button.connectToDeviceManager" managed="false" visible="false" wrapText="true" textAlignment="CENTER" onAction="#onConnectToDeviceManagerButtonClicked"/>
+                                <Button fx:id="btnDisconnectFromDeviceManager" text="%button.disconnectFromDeviceManager" managed="false" visible="false" wrapText="true" textAlignment="CENTER" onAction="#onDisconnectFromDeviceManagerButtonClicked"/>
+                                <Button fx:id="btnReinitializeDevice" text="%button.reinitializeDevice" managed="false" visible="false" wrapText="true" textAlignment="CENTER" onAction="#onReinitializeDeviceButtonClicked"/>
+                                <Button fx:id="btnStartFingerprintCapturing" text="%button.captureRightSlapFingerprints" managed="false" visible="false" wrapText="true" textAlignment="CENTER" onAction="#onStartFingerprintCapturingButtonClicked"/>
+                                <Button fx:id="btnStopFingerprintCapturing" text="%button.stopFingerprintCapturing" managed="false" visible="false" wrapText="true" textAlignment="CENTER" onAction="#onStopFingerprintCapturingButtonClicked"/>
+                                <Button fx:id="btnAcceptCurrentFingerprints" text="%button.acceptCurrentFingerprints" managed="false" visible="false" wrapText="true" textAlignment="CENTER" onAction="#onAcceptCurrentFingerprintsButtonClicked"/>
                             </VBox>
                         </VBox>
                     </TitledPane>
