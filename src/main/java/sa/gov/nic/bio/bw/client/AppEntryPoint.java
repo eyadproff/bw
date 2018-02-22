@@ -9,6 +9,7 @@ import javafx.stage.Stage;
 import retrofit2.Call;
 import sa.gov.nic.bio.biokit.exceptions.JsonMappingException;
 import sa.gov.nic.bio.biokit.utils.JsonMapper;
+import sa.gov.nic.bio.biokit.websocket.WebsocketLogger;
 import sa.gov.nic.bio.biokit.websocket.beans.Message;
 import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.CoreFxController;
@@ -30,6 +31,7 @@ import sa.gov.nic.bio.bw.client.core.workflow.WorkflowManager;
 import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
 import sa.gov.nic.bio.bw.client.preloader.utils.StartupErrorCodes;
 
+import javax.websocket.CloseReason;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -408,9 +410,34 @@ public class AppEntryPoint extends Application
 	
 	    BioKitManager bioKitManager = new BioKitManager(biokitBclId, biokitWebsocketPort, biokitWebsocketUrl,
 	                                                    maxTextMessageBufferSizeInBytes,
-	                                                    maxBinaryMessageBufferSizeInBytes, responseTimeoutSeconds,
-	                                                    jsonMapper, null, null,
-	                                                    null);
+	                                                    maxBinaryMessageBufferSizeInBytes,
+	                                                    responseTimeoutSeconds, jsonMapper, null,
+	                                                    new WebsocketLogger()
+	    {
+		    @Override
+		    public void logConnectionOpening()
+		    {
+			
+		    }
+		
+		    @Override
+		    public void logConnectionClosure(CloseReason closeReason)
+		    {
+			
+		    }
+		
+		    @Override
+		    public void logError(Throwable throwable)
+		    {
+			
+		    }
+		
+		    @Override
+		    public void logNewMessage(Message message)
+		    {
+			    System.out.println(message.toShortString());
+		    }
+	    }, null);
 	
 	    Context.attach(runtimeEnvironment, configManager, workflowManager, webserviceManager, bioKitManager,
 	                   executorService, scheduledExecutorService, errorsBundle, new UserSession(), serverUrl);

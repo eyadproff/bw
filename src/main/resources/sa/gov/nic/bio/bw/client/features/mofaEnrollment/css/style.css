@@ -45,6 +45,15 @@
     -fx-text-fill: #398755;
 }
 
+.four-state-titled-pane:active:captured:duplicated > .title {
+    -fx-background-color: linear-gradient(to bottom, derive(-fx-color,-15%) 95%, derive(-fx-color,-25%) 100%), #fab4ae;
+    -fx-font-weight: bolder;
+}
+
+.four-state-titled-pane:active:captured:duplicated {
+    -fx-text-fill: #b30002;
+}
+
 .four-state-titled-pane:disabled > .title {
     -fx-background-color: linear-gradient(to bottom, derive(-fx-color,-15%) 95%, derive(-fx-color,-25%) 100%), -fx-inner-border, -fx-body-color;
     -fx-font-weight: normal;
@@ -68,6 +77,10 @@
 
 .four-state-svg-path:active:captured:valid {
     -fx-fill: #398755;
+}
+
+.four-state-svg-path:active:captured:duplicated {
+    -fx-fill: #b30002;
 }
 
 .four-state-svg-path:disabled {
