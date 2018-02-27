@@ -2,15 +2,47 @@
 <?language JavaScript?>
 <?scenebuilder-preview-i18n-resource ../bundles/labels.properties?>
 
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.BorderPane?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import sa.gov.nic.bio.bw.client.core.ui.AutoScalingStackPane?>
 <BorderPane xmlns:fx="http://javafx.com/fxml" xmlns="http://javafx.com/javafx/8"
-            fx:id="rootPane" fx:controller="sa.gov.nic.bio.bw.client.features.mofaenrollment.FaceCapturingFxController">
+            fx:id="rootPane" fx:controller="sa.gov.nic.bio.bw.client.features.mofaenrollment.FaceCapturingFxController"
+            stylesheets="@../css/style.css">
     <center>
-        <Label text="Face Capturing"/>
+        <SplitPane styleClass="white-background" orientation="VERTICAL" dividerPositions="0.5,0.5" VBox.vgrow="ALWAYS">
+            <padding>
+                <Insets top="10.0" bottom="10.0"/>
+            </padding>
+            <SplitPane dividerPositions="0.5,0.5">
+                <TitledPane text="%label.cameraControlPanel" maxHeight="Infinity" collapsible="false" HBox.hgrow="ALWAYS">
+                </TitledPane>
+                <TitledPane text="%label.cameraLivePreview" maxHeight="Infinity" collapsible="false" HBox.hgrow="ALWAYS">
+
+                </TitledPane>
+            </SplitPane>
+            <SplitPane dividerPositions="0.5,0.5">
+                <TitledPane text="%label.icaoStandardChecklist" maxHeight="Infinity" collapsible="false" HBox.hgrow="ALWAYS">
+                    <GridPane>
+                        <VBox GridPane.rowIndex="0" GridPane.columnIndex="0" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS">
+                            <padding>
+                                <Insets topRightBottomLeft="10"/>
+                            </padding>
+                            <TitledPane text="%label.checklistResult" maxHeight="Infinity" collapsible="false" VBox.vgrow="ALWAYS">
+                            </TitledPane>
+                        </VBox>
+                        <AutoScalingStackPane fx:id="subScenePane" GridPane.rowIndex="0" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS"/>
+                    </GridPane>
+                </TitledPane>
+                <TitledPane text="%label.finalCapturedImage" maxHeight="Infinity" collapsible="false" HBox.hgrow="ALWAYS">
+                </TitledPane>
+            </SplitPane>
+        </SplitPane>
     </center>
     <bottom>
         <HBox alignment="CENTER" spacing="10">

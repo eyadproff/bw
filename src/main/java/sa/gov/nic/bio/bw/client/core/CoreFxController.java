@@ -12,6 +12,7 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import org.controlsfx.control.NotificationPane;
 import sa.gov.nic.bio.bw.client.core.beans.StateBundle;
 import sa.gov.nic.bio.bw.client.core.interfaces.ControllerResourcesLocator;
@@ -120,7 +121,7 @@ public class CoreFxController implements IdleMonitorRegisterer, PersistableEntit
 	 * It is called after initialize() and passInitialResources().
 	 */
 	@FXML
-	private void onStageShown()
+	private void onStageShown(WindowEvent windowEvent)
 	{
 		primaryStage.setTitle(windowTitle);
 		
@@ -148,21 +149,6 @@ public class CoreFxController implements IdleMonitorRegisterer, PersistableEntit
 	
 	public void logout()
 	{
-		// close all opened dialogs (except the primary one)
-		ObservableList<Stage> stages = StageHelper.getStages();
-		for(int i = 1; i <= stages.size(); i++)
-		{
-			Stage stage = stages.get(i - 1);
-			if(stage != null && stage != primaryStage)
-			{
-				LOGGER.fine("Closing stage #" + i + ": " + stage.getTitle());
-				stage.close();
-			}
-		}
-		
-		stopIdleMonitor();
-		Context.getWebserviceManager().cancelRefreshTokenScheduler();
-		
 		Map<String, Object> uiDataMap = new HashMap<>();
 		uiDataMap.put(Workflow.KEY_SIGNAL_TYPE, SignalType.LOGOUT);
 		Context.getWorkflowManager().submitUserTask(uiDataMap);
@@ -457,7 +443,6 @@ public class CoreFxController implements IdleMonitorRegisterer, PersistableEntit
 		persistableEntity.onSaveState(oldState);
 		this.onSaveState(oldState);
 		
-		
 		CoreFxController newCoreFxController = newStageLoader.getController();
 		newStage.setOnCloseRequest(GuiUtils.createOnExitHandler(primaryStage, newCoreFxController));
 		
@@ -614,11 +599,13 @@ public class CoreFxController implements IdleMonitorRegisterer, PersistableEntit
 	}
 	
 	/**
-	 * Callback that is called when the session is timed out because of user inactive
+	 * Callback that is called when the session is timed out because of the user being inactive
 	 */
 	private void onIdle()
 	{
 		idleNotifier.hide();
+		stopIdleMonitor();
+		Context.getWebserviceManager().cancelRefreshTokenScheduler();
 		
 		Platform.runLater(() ->
 		{
@@ -634,6 +621,19 @@ public class CoreFxController implements IdleMonitorRegisterer, PersistableEntit
 		    DialogUtils.showWarningDialog(primaryStage, this, title, null,
 		                                  contentText, buttonText, rtl);
 		    overlayPane.setVisible(false);
+			
+			// close all opened dialogs (except the primary one)
+			ObservableList<Stage> stages = StageHelper.getStages();
+			for(int i = 1; i <= stages.size(); i++)
+			{
+				Stage stage = stages.get(i - 1);
+				if(stage != null && stage != primaryStage)
+				{
+					LOGGER.fine("Closing stage #" + i + ": " + stage.getTitle());
+					stage.close();
+				}
+			}
+		    
 		    logout();
 		});
 	}

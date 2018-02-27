@@ -57,7 +57,7 @@
                         </TitledPane>
 
                     </VBox>
-                    <TitledPane text="%label.FingerprintDeviceControlPanel" maxHeight="Infinity" collapsible="false">
+                    <TitledPane text="%label.fingerprintDeviceControlPanel" maxHeight="Infinity" collapsible="false">
                         <VBox alignment="CENTER" spacing="10" VBox.vgrow="NEVER">
                             <padding>
                                 <Insets topRightBottomLeft="10"/>
@@ -75,7 +75,7 @@
                             </VBox>
                         </VBox>
                     </TitledPane>
-                    <FourStateTitledPane fx:id="tpFingerprintDeviceLivePreview" text="%label.FingerprintDeviceLivePreview" maxHeight="Infinity" collapsible="false">
+                    <FourStateTitledPane fx:id="tpFingerprintDeviceLivePreview" text="%label.fingerprintDeviceLivePreview" maxHeight="Infinity" collapsible="false">
                         <StackPane>
                             <ImageViewPane minHeight="115.0">
                                 <imageView>
