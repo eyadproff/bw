@@ -33,13 +33,9 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.controlsfx.control.PopOver;
 import org.controlsfx.control.PopOver.ArrowLocation;
-import sa.gov.nic.bio.bcl.utils.BclUtils;
-import sa.gov.nic.bio.bcl.utils.CancelCommand;
 import sa.gov.nic.bio.biokit.ResponseProcessor;
-import sa.gov.nic.bio.biokit.beans.InitializeResponse;
 import sa.gov.nic.bio.biokit.beans.ServiceResponse;
 import sa.gov.nic.bio.biokit.beans.StartPreviewResponse;
-import sa.gov.nic.bio.biokit.exceptions.AlreadyConnectedException;
 import sa.gov.nic.bio.biokit.fingerprint.beans.CaptureFingerprintResponse;
 import sa.gov.nic.bio.biokit.fingerprint.beans.DuplicatedFingerprintsResponse;
 import sa.gov.nic.bio.biokit.websocket.beans.DMFingerData;
@@ -47,7 +43,6 @@ import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.beans.Fingerprint;
 import sa.gov.nic.bio.bw.client.core.beans.FingerprintQualityThreshold;
 import sa.gov.nic.bio.bw.client.core.beans.UserSession;
-import sa.gov.nic.bio.bw.client.core.biokit.BioKitManager;
 import sa.gov.nic.bio.bw.client.core.biokit.FingerPosition;
 import sa.gov.nic.bio.bw.client.core.ui.AutoScalingStackPane;
 import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
@@ -56,7 +51,6 @@ import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.wizard.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.client.features.mofaenrollment.beans.FingerprintUiComponents;
 import sa.gov.nic.bio.bw.client.features.mofaenrollment.ui.FourStateTitledPane;
-import sa.gov.nic.bio.bw.client.features.mofaenrollment.utils.MofaEnrollmentErrorCodes;
 
 import java.io.ByteArrayInputStream;
 import java.net.URL;
@@ -66,7 +60,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.concurrent.CancellationException;
 import java.util.concurrent.Future;
 import java.util.logging.Logger;
 
@@ -136,9 +129,6 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 	@FXML private Button btnRightRing;
 	@FXML private Button btnRightLittle;
 	@FXML private Button btnCancel;
-	@FXML private Button btnConnectToDeviceManager;
-	@FXML private Button btnDisconnectFromDeviceManager;
-	@FXML private Button btnReinitializeDevice;
 	@FXML private Button btnStartFingerprintCapturing;
 	@FXML private Button btnStopFingerprintCapturing;
 	@FXML private Button btnAcceptCurrentFingerprints;
@@ -297,276 +287,7 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 	@Override
 	public void onWorkflowUserTaskLoad(boolean newForm, Map<String, Object> uiInputData)
 	{
-		if(newForm) btnConnectToDeviceManager.fire();
-	}
-	
-	@FXML
-	private void onConnectToDeviceManagerButtonClicked(ActionEvent event)
-	{
-		LOGGER.info("connecting to BioKit...");
-		
-		GuiUtils.showNode(btnConnectToDeviceManager, false);
-		GuiUtils.showNode(btnReinitializeDevice, false);
-		GuiUtils.showNode(btnStartFingerprintCapturing, false);
-		GuiUtils.showNode(piProgress, true);
-		GuiUtils.showNode(btnCancel, true);
-		
-		lblStatus.setText(stringsBundle.getString("label.status.connectingToDeviceManager"));
-		
-		BioKitManager bioKitManager = Context.getBioKitManager();
-		
-		final CancelCommand cancelCommand = new CancelCommand();
-		btnCancel.setOnAction(e ->
-		{
-			cancelCommand.cancel();
-		});
-		Task<Void> task = new Task<Void>()
-		{
-			@Override
-			protected Void call() throws Exception
-			{
-				boolean isListening = BclUtils.isLocalhostPortListening(bioKitManager.getWebsocketPort());
-				if(cancelCommand.isCanceled()) return null;
-				
-				if(!isListening)
-				{
-					LOGGER.info("Bio-Kit is not running! Launching via BCL...");
-					int checkEverySeconds = 1000; // TODO: make it configurable
-					BclUtils.launchAppByBCL(Context.getServerUrl(), bioKitManager.getBclId(),
-					                        bioKitManager.getWebsocketPort(), checkEverySeconds, cancelCommand);
-				}
-				
-				if(cancelCommand.isCanceled()) return null;
-				bioKitManager.connect();
-				return null;
-			}
-		};
-		task.setOnSucceeded(e ->
-		{
-			if(cancelCommand.isCanceled())
-			{
-				GuiUtils.showNode(piProgress, false);
-				GuiUtils.showNode(btnCancel, false);
-				GuiUtils.showNode(btnConnectToDeviceManager, true);
-				lblStatus.setText(stringsBundle.getString("label.status.connectingToDeviceManagerCancelled"));
-				return;
-			};
-			
-		    LOGGER.info("successfully connected to BioKit");
-		    
-		    // if the root pane is still on the scene
-		    if(coreFxController.getBodyPane().getChildren().contains(rootPane))
-		    {
-			    btnReinitializeDevice.fire();
-		    }
-		});
-		task.setOnFailed(e ->
-		{
-			lblStatus.setText(stringsBundle.getString("label.status.connectingToDeviceManagerFailed"));
-			Throwable exception = task.getException();
-		    
-		    if(exception instanceof AlreadyConnectedException) btnReinitializeDevice.fire();
-		    else
-		    {
-			    GuiUtils.showNode(piProgress, false);
-			    GuiUtils.showNode(btnCancel, false);
-			    GuiUtils.showNode(btnConnectToDeviceManager, true);
-		    	
-			    String errorCode = MofaEnrollmentErrorCodes.C007_00001.getCode();
-			    String[] errorDetails = {"failed to connect to BioKit!"};
-			    coreFxController.showErrorDialog(errorCode, exception, errorDetails);
-		    }
-		});
-		
-		Context.getExecutorService().submit(task);
-	}
-	
-	@FXML
-	private void onDisconnectFromDeviceManagerButtonClicked(ActionEvent event)
-	{
-		LOGGER.info("disconnecting from BioKit...");
-		
-		GuiUtils.showNode(btnDisconnectFromDeviceManager, false);
-		GuiUtils.showNode(btnConnectToDeviceManager, false);
-		GuiUtils.showNode(btnReinitializeDevice, false);
-		GuiUtils.showNode(piProgress, true);
-		GuiUtils.showNode(btnCancel, true);
-		
-		lblStatus.setText(stringsBundle.getString("label.status.disconnectingFromDeviceManager"));
-		
-		BioKitManager bioKitManager = Context.getBioKitManager();
-		
-		final CancelCommand cancelCommand = new CancelCommand();
-		btnCancel.setOnAction(e ->
-		{
-		    cancelCommand.cancel();
-		});
-		Task<Void> task = new Task<Void>()
-		{
-			@Override
-			protected Void call() throws Exception
-			{
-				bioKitManager.disconnect();
-				return null;
-			}
-		};
-		task.setOnSucceeded(e ->
-		{
-			GuiUtils.showNode(piProgress, false);
-			GuiUtils.showNode(btnCancel, false);
-			
-		    if(cancelCommand.isCanceled())
-		    {
-			    GuiUtils.showNode(btnConnectToDeviceManager, true);
-		        lblStatus.setText(stringsBundle.getString("label.status.disconnectingToDeviceManagerCancelled"));
-		        return;
-		    }
-			
-			GuiUtils.showNode(btnConnectToDeviceManager, true);
-			lblStatus.setText(stringsBundle.getString("label.status.successfullyDisconnectedFromDeviceManager"));
-		    LOGGER.info("successfully disconnected from BioKit");
-		});
-		task.setOnFailed(e ->
-		{
-		    Throwable exception = task.getException();
-			
-			GuiUtils.showNode(piProgress, false);
-			GuiUtils.showNode(btnCancel, false);
-			GuiUtils.showNode(btnConnectToDeviceManager, true);
-			
-			String errorCode = MofaEnrollmentErrorCodes.C007_00004.getCode();
-			String[] errorDetails = {"failed to disconnect from BioKit!"};
-			coreFxController.showErrorDialog(errorCode, exception, errorDetails);
-		});
-		
-		Context.getExecutorService().submit(task);
-	}
-	
-	@FXML
-	private void onReinitializeDeviceButtonClicked(ActionEvent event)
-	{
-		LOGGER.info("initializing fingerprint device...");
-		
-		GuiUtils.showNode(btnDisconnectFromDeviceManager, false);
-		GuiUtils.showNode(btnReinitializeDevice, false);
-		GuiUtils.showNode(btnStartFingerprintCapturing, false);
-		GuiUtils.showNode(piProgress, true);
-		GuiUtils.showNode(btnCancel, true);
-		
-		lblStatus.setText(stringsBundle.getString("label.status.initializingDevice"));
-		
-		// 13 is the position of the right slap
-		Future<ServiceResponse<InitializeResponse>> future = Context.getBioKitManager()
-																	.getFingerprintService()
-																	.initialize(13);
-		
-		btnCancel.setOnAction(e ->
-		{
-			future.cancel(true);
-		});
-		
-		Task<ServiceResponse<InitializeResponse>> task = new Task<ServiceResponse<InitializeResponse>>()
-		{
-			@Override
-			protected ServiceResponse<InitializeResponse> call() throws Exception
-			{
-				return future.get();
-			}
-		};
-		task.setOnSucceeded(e ->
-		{
-			GuiUtils.showNode(piProgress, false);
-			GuiUtils.showNode(btnCancel, false);
-			
-			ServiceResponse<InitializeResponse> serviceResponse = task.getValue();
-			
-			if(serviceResponse.isSuccess())
-			{
-				InitializeResponse result = serviceResponse.getResult();
-				
-				if(result.getReturnCode() == InitializeResponse.SuccessCodes.SUCCESS)
-				{
-					LOGGER.info("initialized fingerprint device successfully!");
-					GuiUtils.showNode(btnStartFingerprintCapturing, true);
-					fingerprintDeviceName = result.getCurrentDeviceName();
-					lblStatus.setText(stringsBundle.getString("label.status.DeviceInitializedSuccessfully"));
-					
-					int position = currentPosition;
-					activateFingerIndicatorsForNextCapturing(position);
-					
-					if(position == FingerPosition.RIGHT_SLAP.getPosition())
-					{
-						if(cbRightIndex.isSelected())
-						{
-							UserSession userSession = Context.getUserSession();
-							
-							Boolean shownBefore = (Boolean) userSession.getAttribute(
-																	"configs.fingerprint.tooltip.skipFinger");
-							
-							if(shownBefore == null || !shownBefore)
-							{
-								String message = stringsBundle.getString("label.tooltip.skipFinger");
-								
-								// if the root pane is still on the scene
-								if(coreFxController.getBodyPane().getChildren().contains(rootPane))
-								{
-									showMessageTooltip(cbRightIndex, message);
-								}
-								
-								userSession.setAttribute("configs.fingerprint.tooltip.skipFinger", Boolean.TRUE);
-							}
-						}
-					}
-					
-					renameCaptureFingerprintsButton(position, false);
-				}
-				else if(result.getReturnCode() == InitializeResponse.FailureCodes.DEVICE_NOT_FOUND_OR_UNPLUGGED)
-				{
-					GuiUtils.showNode(btnDisconnectFromDeviceManager, true);
-					GuiUtils.showNode(btnReinitializeDevice, true);
-					lblStatus.setText(stringsBundle.getString("label.status.DeviceIsUnplugged"));
-				}
-				else
-				{
-					GuiUtils.showNode(btnDisconnectFromDeviceManager, true);
-					GuiUtils.showNode(btnReinitializeDevice, true);
-					String status = String.format(stringsBundle.getString(
-										"label.status.DeviceFailedToInitialize"), result.getReturnCode());
-					lblStatus.setText(status);
-				}
-			}
-			else
-			{
-				GuiUtils.showNode(btnReinitializeDevice, true);
-				
-				String errorCode = MofaEnrollmentErrorCodes.C007_00002.getCode();
-				String[] errorDetails = {"failed to to receive a response when initializing the fingerprint device!",
-										 "service errorCode = " + serviceResponse.getErrorCode()};
-				coreFxController.showErrorDialog(errorCode, serviceResponse.getException(), errorDetails);
-			}
-		});
-		task.setOnFailed(e ->
-		{
-			GuiUtils.showNode(piProgress, false);
-			GuiUtils.showNode(btnCancel, false);
-			GuiUtils.showNode(btnDisconnectFromDeviceManager, true);
-			GuiUtils.showNode(btnReinitializeDevice, true);
-			
-		    Throwable exception = task.getException();
-		    
-		    if(exception instanceof CancellationException)
-		    {
-			    lblStatus.setText(stringsBundle.getString("label.status.initializingDeviceCancelled"));
-		    }
-			else
-		    {
-			    String errorCode = MofaEnrollmentErrorCodes.C007_00003.getCode();
-			    String[] errorDetails = {"failed to initialize the fingerprint device!"};
-			    coreFxController.showErrorDialog(errorCode, exception, errorDetails);
-		    }
-		});
-		
-		Context.getExecutorService().submit(task);
+		//if(newForm) btnReinitializeDevice.fire();
 	}
 	
 	@FXML

@@ -15,19 +15,15 @@ import javafx.scene.control.ProgressIndicator;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
-import sa.gov.nic.bio.bcl.utils.BclUtils;
-import sa.gov.nic.bio.bcl.utils.CancelCommand;
 import sa.gov.nic.bio.biokit.ResponseProcessor;
-import sa.gov.nic.bio.biokit.beans.InitializeResponse;
 import sa.gov.nic.bio.biokit.beans.ServiceResponse;
 import sa.gov.nic.bio.biokit.beans.StartPreviewResponse;
-import sa.gov.nic.bio.biokit.exceptions.AlreadyConnectedException;
 import sa.gov.nic.bio.biokit.exceptions.NotConnectedException;
 import sa.gov.nic.bio.biokit.exceptions.TimeoutException;
 import sa.gov.nic.bio.biokit.face.FaceStopPreviewResponse;
 import sa.gov.nic.bio.biokit.face.beans.CaptureFaceResponse;
 import sa.gov.nic.bio.bw.client.core.Context;
-import sa.gov.nic.bio.bw.client.core.biokit.BioKitManager;
+import sa.gov.nic.bio.bw.client.core.DevicesRunnerGadgetPaneFxController;
 import sa.gov.nic.bio.bw.client.core.ui.AutoScalingStackPane;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.wizard.WizardStepFxControllerBase;
@@ -39,6 +35,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Base64;
 import java.util.Map;
+import java.util.ResourceBundle;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.Future;
 import java.util.logging.Logger;
@@ -47,6 +44,7 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 {
 	private static final Logger LOGGER = Logger.getLogger(FaceCapturingFxController.class.getName());
 	
+	@FXML private ResourceBundle resources;
 	@FXML private FourStateTitledPane tpCameraLivePreview;
 	@FXML private ImageView ivCameraLivePreview;
 	@FXML private ImageView ivCapturedImage;
@@ -58,17 +56,14 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 	@FXML private ProgressIndicator piCapturedImage;
 	@FXML private ProgressIndicator piCroppedImage;
 	@FXML private Button btnCancel;
-	@FXML private Button btnConnectToDeviceManager;
-	@FXML private Button btnDisconnectFromDeviceManager;
-	@FXML private Button btnReinitializeDevice;
 	@FXML private Button btnStartFaceCapturing;
 	@FXML private Button btnCaptureFace;
 	@FXML private Button btnStopFaceCapturing;
 	@FXML private Button btnPrevious;
 	@FXML private Button btnNext;
 	
-	private String faceDeviceName;
 	private boolean applyIcao = true;
+	private boolean cameraInitializedAtLeastOnce = false;
 	
 	@Override
 	public URL getFxmlLocation()
@@ -98,7 +93,8 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 		
 		AutoScalingStackPane shapePane = new AutoScalingStackPane(shape3D);
 		
-		SubScene subScene = new SubScene(shapePane, 100.0, 100.0, true, SceneAntialiasing.BALANCED);
+		SubScene subScene = new SubScene(shapePane, 100.0, 100.0, true,
+		                                 SceneAntialiasing.BALANCED);
 		subScene.setFill(Color.TRANSPARENT);
 		subScene.setCamera(new PerspectiveCamera());
 		
@@ -109,243 +105,50 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 	@Override
 	public void onWorkflowUserTaskLoad(boolean newForm, Map<String, Object> uiInputData)
 	{
-		if(newForm) btnConnectToDeviceManager.fire();
-	}
-	
-	@FXML
-	private void onConnectToDeviceManagerButtonClicked(ActionEvent actionEvent)
-	{
-		LOGGER.info("connecting to BioKit...");
-		
-		GuiUtils.showNode(btnConnectToDeviceManager, false);
-		GuiUtils.showNode(btnReinitializeDevice, false);
-		GuiUtils.showNode(btnStartFaceCapturing, false);
-		GuiUtils.showNode(piProgress, true);
-		GuiUtils.showNode(btnCancel, true);
-		
-		lblStatus.setText(stringsBundle.getString("label.status.connectingToDeviceManager"));
-		
-		BioKitManager bioKitManager = Context.getBioKitManager();
-		
-		final CancelCommand cancelCommand = new CancelCommand();
-		btnCancel.setOnAction(e -> cancelCommand.cancel());
-		Task<Void> task = new Task<Void>()
+		if(newForm)
 		{
-			@Override
-			protected Void call() throws Exception
+			DevicesRunnerGadgetPaneFxController deviceManagerGadgetPaneController =
+															coreFxController.getDeviceManagerGadgetPaneController();
+			
+			if(deviceManagerGadgetPaneController.isCameraInitialized())
 			{
-				boolean isListening = BclUtils.isLocalhostPortListening(bioKitManager.getWebsocketPort());
-				if(cancelCommand.isCanceled()) return null;
+				GuiUtils.showNode(btnStartFaceCapturing, true);
+			}
+			else
+			{
+				lblStatus.setText(resources.getString("label.status.cameraNotInitialized"));
+				GuiUtils.showNode(lblStatus, true);
+			}
+			
+			deviceManagerGadgetPaneController.setCameraInitializationListener(initialized ->
+			{
+				GuiUtils.showNode(lblStatus, true);
+				GuiUtils.showNode(btnStopFaceCapturing, false);
+				GuiUtils.showNode(btnCaptureFace, false);
+				GuiUtils.showNode(btnCancel, false);
 				
-				if(!isListening)
+				tpCameraLivePreview.setActive(false);
+				ivCameraLivePreview.setImage(null);
+				
+				if(initialized)
 				{
-					LOGGER.info("Bio-Kit is not running! Launching via BCL...");
-					int checkEverySeconds = 1000; // TODO: make it configurable
-					BclUtils.launchAppByBCL(Context.getServerUrl(), bioKitManager.getBclId(),
-					                        bioKitManager.getWebsocketPort(), checkEverySeconds, cancelCommand);
+					GuiUtils.showNode(btnStartFaceCapturing, true);
+					lblStatus.setText(resources.getString("label.status.cameraInitializedSuccessfully"));
+					cameraInitializedAtLeastOnce = true;
 				}
-				
-				if(cancelCommand.isCanceled()) return null;
-				bioKitManager.connect();
-				return null;
-			}
-		};
-		task.setOnSucceeded(e ->
-		{
-		    if(cancelCommand.isCanceled())
-		    {
-		        GuiUtils.showNode(piProgress, false);
-		        GuiUtils.showNode(btnCancel, false);
-		        GuiUtils.showNode(btnConnectToDeviceManager, true);
-		        lblStatus.setText(stringsBundle.getString("label.status.connectingToDeviceManagerCancelled"));
-		        return;
-		    };
-		
-		    LOGGER.info("successfully connected to BioKit");
-		
-		    // if the root pane is still on the scene
-		    if(coreFxController.getBodyPane().getChildren().contains(rootPane))
-		    {
-		        btnReinitializeDevice.fire();
-		    }
-		});
-		task.setOnFailed(e ->
-		{
-		    lblStatus.setText(stringsBundle.getString("label.status.connectingToDeviceManagerFailed"));
-		    Throwable exception = task.getException();
-		
-		    if(exception instanceof AlreadyConnectedException) btnReinitializeDevice.fire();
-		    else
-		    {
-		        GuiUtils.showNode(piProgress, false);
-		        GuiUtils.showNode(btnCancel, false);
-		        GuiUtils.showNode(btnConnectToDeviceManager, true);
-		
-		        String errorCode = MofaEnrollmentErrorCodes.C007_00001.getCode();
-		        String[] errorDetails = {"failed to connect to BioKit!"};
-		        coreFxController.showErrorDialog(errorCode, exception, errorDetails);
-		    }
-		});
-		
-		Context.getExecutorService().submit(task);
+				else if(cameraInitializedAtLeastOnce)
+				{
+					GuiUtils.showNode(btnStartFaceCapturing, false);
+					lblStatus.setText(resources.getString("label.status.cameraDisconnected"));
+				}
+			});
+		}
 	}
 	
-	@FXML
-	private void onDisconnectFromDeviceManagerButtonClicked(ActionEvent actionEvent)
+	@Override
+	protected void onLeaving(Map<String, Object> uiDataMap)
 	{
-		LOGGER.info("disconnecting from BioKit...");
-		
-		GuiUtils.showNode(btnDisconnectFromDeviceManager, false);
-		GuiUtils.showNode(btnConnectToDeviceManager, false);
-		GuiUtils.showNode(btnReinitializeDevice, false);
-		GuiUtils.showNode(piProgress, true);
-		GuiUtils.showNode(btnCancel, true);
-		
-		lblStatus.setText(stringsBundle.getString("label.status.disconnectingFromDeviceManager"));
-		
-		BioKitManager bioKitManager = Context.getBioKitManager();
-		
-		final CancelCommand cancelCommand = new CancelCommand();
-		btnCancel.setOnAction(e ->
-		{
-		    cancelCommand.cancel();
-		});
-		Task<Void> task = new Task<Void>()
-		{
-			@Override
-			protected Void call() throws Exception
-			{
-				bioKitManager.disconnect();
-				return null;
-			}
-		};
-		task.setOnSucceeded(e ->
-		{
-		    GuiUtils.showNode(piProgress, false);
-		    GuiUtils.showNode(btnCancel, false);
-		
-		    if(cancelCommand.isCanceled())
-		    {
-		        GuiUtils.showNode(btnConnectToDeviceManager, true);
-		        lblStatus.setText(stringsBundle.getString("label.status.disconnectingToDeviceManagerCancelled"));
-		        return;
-		    }
-		
-		    GuiUtils.showNode(btnConnectToDeviceManager, true);
-		    lblStatus.setText(stringsBundle.getString("label.status.successfullyDisconnectedFromDeviceManager"));
-		    LOGGER.info("successfully disconnected from BioKit");
-		});
-		task.setOnFailed(e ->
-		{
-		    Throwable exception = task.getException();
-		
-		    GuiUtils.showNode(piProgress, false);
-		    GuiUtils.showNode(btnCancel, false);
-		    GuiUtils.showNode(btnConnectToDeviceManager, true);
-		
-		    String errorCode = MofaEnrollmentErrorCodes.C007_00004.getCode();
-		    String[] errorDetails = {"failed to disconnect from BioKit!"};
-		    coreFxController.showErrorDialog(errorCode, exception, errorDetails);
-		});
-		
-		Context.getExecutorService().submit(task);
-	}
-	
-	@FXML
-	private void onReinitializeDeviceButtonClicked(ActionEvent actionEvent)
-	{
-		LOGGER.info("initializing face device...");
-		
-		GuiUtils.showNode(btnDisconnectFromDeviceManager, false);
-		GuiUtils.showNode(btnReinitializeDevice, false);
-		GuiUtils.showNode(btnStartFaceCapturing, false);
-		GuiUtils.showNode(piProgress, true);
-		GuiUtils.showNode(btnCancel, true);
-		
-		lblStatus.setText(stringsBundle.getString("label.status.initializingDevice"));
-		
-		Future<ServiceResponse<InitializeResponse>> future = Context.getBioKitManager().getFaceService().initialize();
-		
-		btnCancel.setOnAction(e ->
-		{
-		    future.cancel(true);
-		});
-		
-		Task<ServiceResponse<InitializeResponse>> task = new Task<ServiceResponse<InitializeResponse>>()
-		{
-			@Override
-			protected ServiceResponse<InitializeResponse> call() throws Exception
-			{
-				return future.get();
-			}
-		};
-		task.setOnSucceeded(e ->
-		{
-		    GuiUtils.showNode(piProgress, false);
-		    GuiUtils.showNode(btnCancel, false);
-		
-		    ServiceResponse<InitializeResponse> serviceResponse = task.getValue();
-		
-		    if(serviceResponse.isSuccess())
-		    {
-		        InitializeResponse result = serviceResponse.getResult();
-		
-		        if(result.getReturnCode() == InitializeResponse.SuccessCodes.SUCCESS)
-		        {
-		            LOGGER.info("initialized face device successfully!");
-		            GuiUtils.showNode(btnStartFaceCapturing, true);
-		            faceDeviceName = result.getCurrentDeviceName();
-		            lblStatus.setText(stringsBundle.getString("label.status.DeviceInitializedSuccessfully"));
-		
-		            //renameCaptureFingerprintsButton(position, false);
-		        }
-		        else if(result.getReturnCode() == InitializeResponse.FailureCodes.DEVICE_NOT_FOUND_OR_UNPLUGGED)
-		        {
-		            GuiUtils.showNode(btnDisconnectFromDeviceManager, true);
-		            GuiUtils.showNode(btnReinitializeDevice, true);
-		            lblStatus.setText(stringsBundle.getString("label.status.DeviceIsUnplugged"));
-		        }
-		        else
-		        {
-		            GuiUtils.showNode(btnDisconnectFromDeviceManager, true);
-		            GuiUtils.showNode(btnReinitializeDevice, true);
-		            String status = String.format(stringsBundle.getString(
-		                    "label.status.DeviceFailedToInitialize"), result.getReturnCode());
-		            lblStatus.setText(status);
-		        }
-		    }
-		    else
-		    {
-		        GuiUtils.showNode(btnReinitializeDevice, true);
-		
-		        String errorCode = MofaEnrollmentErrorCodes.C007_00002.getCode();
-		        String[] errorDetails = {"failed to to receive a response when initializing the fingerprint device!",
-		                "service errorCode = " + serviceResponse.getErrorCode()};
-		        coreFxController.showErrorDialog(errorCode, serviceResponse.getException(), errorDetails);
-		    }
-		});
-		task.setOnFailed(e ->
-		{
-		    GuiUtils.showNode(piProgress, false);
-		    GuiUtils.showNode(btnCancel, false);
-		    GuiUtils.showNode(btnDisconnectFromDeviceManager, true);
-		    GuiUtils.showNode(btnReinitializeDevice, true);
-		
-		    Throwable exception = task.getException();
-		
-		    if(exception instanceof CancellationException)
-		    {
-		        lblStatus.setText(stringsBundle.getString("label.status.initializingDeviceCancelled"));
-		    }
-		    else
-		    {
-		        String errorCode = MofaEnrollmentErrorCodes.C007_00003.getCode();
-		        String[] errorDetails = {"failed to initialize the fingerprint device!"};
-		        coreFxController.showErrorDialog(errorCode, exception, errorDetails);
-		    }
-		});
-		
-		Context.getExecutorService().submit(task);
+		if(btnStopFaceCapturing.isVisible()) btnStopFaceCapturing.fire();
 	}
 	
 	@FXML
@@ -356,6 +159,7 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 		GuiUtils.showNode(btnStartFaceCapturing, false);
 		GuiUtils.showNode(btnCaptureFace, true);
 		GuiUtils.showNode(btnStopFaceCapturing, true);
+		GuiUtils.showNode(piCameraLivePreview, true);
 		
 		lblStatus.setText(stringsBundle.getString("label.status.waitingDeviceResponse"));
 		boolean[] first = {true};
@@ -374,20 +178,25 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 				        GuiUtils.showNode(piCameraLivePreview, false);
 				        tpCameraLivePreview.setActive(true);
 				    }
-				
+				    
 				    String previewImageBase64 = response.getPreviewImage();
 				    byte[] bytes = Base64.getDecoder().decode(previewImageBase64);
+					tpCameraLivePreview.setCaptured(false);
 				    ivCameraLivePreview.setImage(new Image(new ByteArrayInputStream(bytes)));
 				});
 				
+				String cameraDeviceName = coreFxController.getDeviceManagerGadgetPaneController().getCameraDeviceName();
 				Future<ServiceResponse<Void>> future = Context.getBioKitManager().getFaceService()
-															  .startPreview(faceDeviceName, responseProcessor);
+															  .startPreview(cameraDeviceName, responseProcessor);
 				return future.get();
 			}
 		};
 		task.setOnSucceeded(e ->
 		{
 			GuiUtils.showNode(piCameraLivePreview, false);
+			GuiUtils.showNode(btnStopFaceCapturing, false);
+			GuiUtils.showNode(btnCaptureFace, false);
+			
 		    ServiceResponse<Void> serviceResponse = task.getValue();
 			
 		    if(!serviceResponse.isSuccess())
@@ -404,20 +213,24 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 		task.setOnFailed(e ->
 		{
 		    GuiUtils.showNode(piCameraLivePreview, false);
+			GuiUtils.showNode(btnStopFaceCapturing, false);
+			GuiUtils.showNode(btnCaptureFace, false);
 			
 			Throwable exception = task.getException();
 			
 			if(exception instanceof TimeoutException)
 			{
-				GuiUtils.showNode(btnDisconnectFromDeviceManager, true);
-				GuiUtils.showNode(btnReinitializeDevice, true);
 				GuiUtils.showNode(btnStartFaceCapturing, true);
-				lblStatus.setText(stringsBundle.getString("label.status.deviceManagerReadTimeout"));
+				lblStatus.setText(stringsBundle.getString("label.status.devicesRunnerReadTimeout"));
 			}
 			else if(exception instanceof NotConnectedException)
 			{
-				GuiUtils.showNode(btnConnectToDeviceManager, true);
-				lblStatus.setText(stringsBundle.getString("label.status.disconnectedFromDeviceManager"));
+				lblStatus.setText(stringsBundle.getString("label.status.disconnectedFromDevicesRunner"));
+			}
+			else if(exception instanceof CancellationException)
+			{
+				lblStatus.setText(stringsBundle.getString("label.status.startingCameraLivePreviewingCancelled"));
+				GuiUtils.showNode(btnCancel, false);
 			}
 			else
 			{
@@ -446,11 +259,13 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 		
 		ivCapturedImage.setImage(null);
 		ivCroppedImage.setImage(null);
+		tpCameraLivePreview.setCaptured(true);
 		
 		lblStatus.setText(stringsBundle.getString("label.status.capturingFace"));
 		
+		String cameraDeviceName = coreFxController.getDeviceManagerGadgetPaneController().getCameraDeviceName();
 		Future<ServiceResponse<CaptureFaceResponse>> future = Context.getBioKitManager().getFaceService()
-																	 .captureFace(faceDeviceName, true);
+																	 .captureFace(cameraDeviceName, true);
 		
 		btnCancel.setOnAction(e ->
 		{
@@ -480,6 +295,8 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 			    
 			    if(result.getReturnCode() == CaptureFaceResponse.SuccessCodes.SUCCESS)
 			    {
+			    	GuiUtils.showNode(btnStartFaceCapturing, true);
+			    	
 				    String capturedImage = result.getCapturedImage();
 				    String croppedImage = result.getCroppedImage();
 				    
@@ -506,7 +323,8 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 			    }
 			    else
 			    {
-				    GuiUtils.showNode(btnCancel, false);
+				    GuiUtils.showNode(btnStopFaceCapturing, true);
+				    GuiUtils.showNode(btnCaptureFace, true);
 			    	
 				    lblStatus.setText(String.format(
 						    stringsBundle.getString("label.status.failedToCaptureTheFaceWithErrorCode"),
@@ -515,6 +333,9 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 		    }
 		    else
 		    {
+			    GuiUtils.showNode(btnStopFaceCapturing, true);
+			    GuiUtils.showNode(btnCaptureFace, true);
+			    
 			    lblStatus.setText(String.format(
 					    stringsBundle.getString("label.status.failedToCaptureTheFaceWithErrorCode"),
 					    serviceResponse.getErrorCode()));
@@ -528,25 +349,28 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 		{
 			GuiUtils.showNode(piCapturedImage, false);
 			GuiUtils.showNode(piCroppedImage, false);
-			GuiUtils.showNode(btnCancel, false);
+			GuiUtils.showNode(btnStopFaceCapturing, true);
+			GuiUtils.showNode(btnCaptureFace, true);
 			
 			Throwable exception = task.getException();
 			
 			if(exception instanceof TimeoutException)
 			{
-				GuiUtils.showNode(btnDisconnectFromDeviceManager, true);
-				GuiUtils.showNode(btnReinitializeDevice, true);
 				GuiUtils.showNode(btnStartFaceCapturing, true);
-				lblStatus.setText(stringsBundle.getString("label.status.deviceManagerReadTimeout"));
+				lblStatus.setText(stringsBundle.getString("label.status.devicesRunnerReadTimeout"));
 			}
 			else if(exception instanceof NotConnectedException)
 			{
-				GuiUtils.showNode(btnConnectToDeviceManager, true);
-				lblStatus.setText(stringsBundle.getString("label.status.disconnectedFromDeviceManager"));
+				lblStatus.setText(stringsBundle.getString("label.status.disconnectedFromDevicesRunner"));
+			}
+			else if(exception instanceof CancellationException)
+			{
+				lblStatus.setText(stringsBundle.getString("label.status.capturingFaceCancelled"));
+				GuiUtils.showNode(btnCancel, false);
 			}
 			else
 			{
-				lblStatus.setText(stringsBundle.getString("label.status.failedToStopCameraLivePreviewing"));
+				lblStatus.setText(stringsBundle.getString("label.status.failedToCaptureTheFace"));
 				
 				String errorCode = MofaEnrollmentErrorCodes.C007_00001.getCode();
 				String[] errorDetails = {"failed while capturing the face!"};
@@ -570,8 +394,9 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 		
 		lblStatus.setText(stringsBundle.getString("label.status.stoppingCameraLivePreviewing"));
 		
+		String cameraDeviceName = coreFxController.getDeviceManagerGadgetPaneController().getCameraDeviceName();
 		Future<ServiceResponse<FaceStopPreviewResponse>> future = Context.getBioKitManager().getFaceService()
-																		 .stopPreview(faceDeviceName);
+																		 .stopPreview(cameraDeviceName);
 		
 		btnCancel.setOnAction(e ->
 		{
@@ -635,20 +460,20 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 			
 			if(exception instanceof TimeoutException)
 			{
-				GuiUtils.showNode(btnDisconnectFromDeviceManager, true);
-				GuiUtils.showNode(btnReinitializeDevice, true);
 				GuiUtils.showNode(btnStartFaceCapturing, true);
-				lblStatus.setText(stringsBundle.getString("label.status.deviceManagerReadTimeout"));
+				lblStatus.setText(stringsBundle.getString("label.status.devicesRunnerReadTimeout"));
 			}
 			else if(exception instanceof NotConnectedException)
 			{
-				GuiUtils.showNode(btnConnectToDeviceManager, true);
-				lblStatus.setText(stringsBundle.getString("label.status.disconnectedFromDeviceManager"));
+				lblStatus.setText(stringsBundle.getString("label.status.disconnectedFromDevicesRunner"));
+			}
+			else if(exception instanceof CancellationException)
+			{
+				lblStatus.setText(stringsBundle.getString("label.status.stoppingCameraLivePreviewingCancelled"));
+				GuiUtils.showNode(btnCancel, false);
 			}
 			else
 			{
-				GuiUtils.showNode(btnDisconnectFromDeviceManager, true);
-				GuiUtils.showNode(btnReinitializeDevice, true);
 				GuiUtils.showNode(btnStartFaceCapturing, true);
 				lblStatus.setText(stringsBundle.getString("label.status.failedToStopCameraLivePreviewing"));
 				

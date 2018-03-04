@@ -65,9 +65,6 @@
                             <Label fx:id="lblStatus" wrapText="true" textAlignment="CENTER"/>
                             <VBox alignment="CENTER" spacing="5">
                                 <Button fx:id="btnCancel" text="%button.cancel" managed="false" visible="false" wrapText="true" textAlignment="CENTER"/>
-                                <Button fx:id="btnConnectToDeviceManager" text="%button.connectToDeviceManager" managed="false" visible="false" wrapText="true" textAlignment="CENTER" onAction="#onConnectToDeviceManagerButtonClicked"/>
-                                <Button fx:id="btnDisconnectFromDeviceManager" text="%button.disconnectFromDeviceManager" managed="false" visible="false" wrapText="true" textAlignment="CENTER" onAction="#onDisconnectFromDeviceManagerButtonClicked"/>
-                                <Button fx:id="btnReinitializeDevice" text="%button.reinitializeDevice" managed="false" visible="false" wrapText="true" textAlignment="CENTER" onAction="#onReinitializeDeviceButtonClicked"/>
                                 <Button fx:id="btnStartFingerprintCapturing" text="%button.captureRightSlapFingerprints" managed="false" visible="false" wrapText="true" textAlignment="CENTER" onAction="#onStartFingerprintCapturingButtonClicked"/>
                                 <Button fx:id="btnStopFingerprintCapturing" text="%button.stopFingerprintCapturing" managed="false" visible="false" wrapText="true" textAlignment="CENTER" onAction="#onStopFingerprintCapturingButtonClicked"/>
                                 <Button fx:id="btnAcceptCurrentFingerprints" text="%button.acceptCurrentFingerprints" managed="false" visible="false" wrapText="true" textAlignment="CENTER" onAction="#onAcceptCurrentFingerprintsButtonClicked"/>
@@ -88,6 +85,9 @@
                 <SplitPane fx:id="spFingerprints" dividerPositions="0.5" nodeOrientation="LEFT_TO_RIGHT">
                     <TitledPane fx:id="tpLeftHand" text="%label.leftHand" collapsible="false" wrapText="true" maxHeight="Infinity" graphicTextGap="0.0" HBox.hgrow="ALWAYS">
                         <GridPane vgap="5" maxHeight="Infinity">
+                            <padding>
+                                <Insets topRightBottomLeft="5.0"/>
+                            </padding>
                             <columnConstraints>
                                 <ColumnConstraints percentWidth="20"/>
                                 <ColumnConstraints percentWidth="20"/>
@@ -189,6 +189,9 @@
                     </TitledPane>
                     <TitledPane fx:id="tpRightHand" text="%label.rightHand" collapsible="false" wrapText="true" maxHeight="Infinity" graphicTextGap="0.0" HBox.hgrow="ALWAYS">
                         <GridPane vgap="5" maxHeight="Infinity">
+                            <padding>
+                                <Insets topRightBottomLeft="5.0"/>
+                            </padding>
                             <columnConstraints>
                                 <ColumnConstraints percentWidth="20"/>
                                 <ColumnConstraints percentWidth="20"/>

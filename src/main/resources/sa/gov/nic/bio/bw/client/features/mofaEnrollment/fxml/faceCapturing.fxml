@@ -35,9 +35,6 @@
                         <Label fx:id="lblStatus" wrapText="true" textAlignment="CENTER"/>
                         <VBox alignment="CENTER" spacing="5">
                             <Button fx:id="btnCancel" text="%button.cancel" managed="false" visible="false" wrapText="true" textAlignment="CENTER"/>
-                            <Button fx:id="btnConnectToDeviceManager" text="%button.connectToDeviceManager" managed="false" visible="false" wrapText="true" textAlignment="CENTER" onAction="#onConnectToDeviceManagerButtonClicked"/>
-                            <Button fx:id="btnDisconnectFromDeviceManager" text="%button.disconnectFromDeviceManager" managed="false" visible="false" wrapText="true" textAlignment="CENTER" onAction="#onDisconnectFromDeviceManagerButtonClicked"/>
-                            <Button fx:id="btnReinitializeDevice" text="%button.reinitializeDevice" managed="false" visible="false" wrapText="true" textAlignment="CENTER" onAction="#onReinitializeDeviceButtonClicked"/>
                             <Button fx:id="btnStartFaceCapturing" text="%button.startFaceCapturing" managed="false" visible="false" wrapText="true" textAlignment="CENTER" onAction="#onStartFaceCapturingButtonClicked"/>
                             <Button fx:id="btnCaptureFace" text="%button.captureFace" managed="false" visible="false" wrapText="true" textAlignment="CENTER" onAction="#onCaptureFaceButtonClicked"/>
                             <Button fx:id="btnStopFaceCapturing" text="%button.stopFaceCapturing" managed="false" visible="false" wrapText="true" textAlignment="CENTER" onAction="#onStopFaceCapturingButtonClicked"/>
