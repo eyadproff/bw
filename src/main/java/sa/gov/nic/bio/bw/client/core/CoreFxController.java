@@ -10,6 +10,7 @@ import javafx.geometry.NodeOrientation;
 import javafx.scene.Node;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
@@ -59,11 +60,18 @@ public class CoreFxController implements IdleMonitorRegisterer, PersistableEntit
 	public static final String RB_LABELS_FILE = "sa/gov/nic/bio/bw/client/core/bundles/strings";
 	public static final String RB_TOP_MENUS_FILE = "sa/gov/nic/bio/bw/client/core/bundles/top_menus";
 	
+	// the following are here only to avoid warnings in FXML files.
+	@FXML private Pane headerPane;
+	@FXML private Pane menuPane;
+	@FXML private Pane deviceRunnerGadgetPane;
+	@FXML private Pane footerPane;
+	
 	@FXML private Stage primaryStage;
 	@FXML private StackPane overlayPane;
 	@FXML private HeaderPaneFxController headerPaneController;
 	@FXML private FooterPaneFxController footerPaneController;
 	@FXML private MenuPaneFxController menuPaneController;
+	@FXML private DevicesRunnerGadgetPaneFxController deviceRunnerGadgetPaneController;
 	@FXML private NotificationPane idleNotifier;
 	@FXML private NotificationPane notificationPane;
 	@FXML private BorderPane bodyPane;
@@ -94,6 +102,9 @@ public class CoreFxController implements IdleMonitorRegisterer, PersistableEntit
 	public HeaderPaneFxController getHeaderPaneController(){return headerPaneController;}
 	public FooterPaneFxController getFooterPaneController(){return footerPaneController;}
 	public MenuPaneFxController getMenuPaneController(){return menuPaneController;}
+	public DevicesRunnerGadgetPaneFxController getDeviceManagerGadgetPaneController()
+	{return deviceRunnerGadgetPaneController;}
+	
 	public ResourceBundle getStringsBundle(){return stringsBundle;}
 	public ResourceBundle getTopMenusBundle(){return topMenusBundle;}
 	
@@ -129,6 +140,7 @@ public class CoreFxController implements IdleMonitorRegisterer, PersistableEntit
 		headerPaneController.attachCoreFxController(this);
 		footerPaneController.attachCoreFxController(this);
 		menuPaneController.attachCoreFxController(this);
+		deviceRunnerGadgetPaneController.attachCoreFxController(this);
 		
 		// fix the size of the header pane and the menu pane.
 		headerPaneController.getRegionRootPane().setMinSize(headerPaneController.getRegionRootPane().getWidth(),

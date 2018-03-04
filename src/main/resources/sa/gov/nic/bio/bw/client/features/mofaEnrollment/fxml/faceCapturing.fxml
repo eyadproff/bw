@@ -4,29 +4,46 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressIndicator?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import sa.gov.nic.bio.bw.client.core.ui.AutoScalingStackPane?>
+<?import sa.gov.nic.bio.bw.client.core.ui.ImageViewPane?>
+<?import sa.gov.nic.bio.bw.client.features.mofaenrollment.ui.FourStateTitledPane?>
 <BorderPane xmlns:fx="http://javafx.com/fxml" xmlns="http://javafx.com/javafx/8"
             fx:id="rootPane" fx:controller="sa.gov.nic.bio.bw.client.features.mofaenrollment.FaceCapturingFxController"
             stylesheets="@../css/style.css">
     <center>
-        <SplitPane styleClass="white-background" orientation="VERTICAL" dividerPositions="0.5,0.5" VBox.vgrow="ALWAYS">
+        <SplitPane styleClass="white-background" orientation="VERTICAL" dividerPositions="0.5" VBox.vgrow="ALWAYS">
             <padding>
                 <Insets top="10.0" bottom="10.0"/>
             </padding>
-            <SplitPane dividerPositions="0.5,0.5">
+            <SplitPane dividerPositions="0.5">
                 <TitledPane text="%label.cameraControlPanel" maxHeight="Infinity" collapsible="false" HBox.hgrow="ALWAYS">
+                    <VBox alignment="CENTER" spacing="10" VBox.vgrow="NEVER">
+                        <padding>
+                            <Insets topRightBottomLeft="10"/>
+                        </padding>
+                        <ProgressIndicator fx:id="piProgress" prefHeight="25.0" prefWidth="25.0" managed="false" visible="false"/>
+                        <Label fx:id="lblStatus" wrapText="true" textAlignment="CENTER"/>
+                        <VBox alignment="CENTER" spacing="5">
+                            <Button fx:id="btnCancel" text="%button.cancel" managed="false" visible="false" wrapText="true" textAlignment="CENTER"/>
+                            <Button fx:id="btnConnectToDeviceManager" text="%button.connectToDeviceManager" managed="false" visible="false" wrapText="true" textAlignment="CENTER" onAction="#onConnectToDeviceManagerButtonClicked"/>
+                            <Button fx:id="btnDisconnectFromDeviceManager" text="%button.disconnectFromDeviceManager" managed="false" visible="false" wrapText="true" textAlignment="CENTER" onAction="#onDisconnectFromDeviceManagerButtonClicked"/>
+                            <Button fx:id="btnReinitializeDevice" text="%button.reinitializeDevice" managed="false" visible="false" wrapText="true" textAlignment="CENTER" onAction="#onReinitializeDeviceButtonClicked"/>
+                            <Button fx:id="btnStartFaceCapturing" text="%button.startFaceCapturing" managed="false" visible="false" wrapText="true" textAlignment="CENTER" onAction="#onStartFaceCapturingButtonClicked"/>
+                            <Button fx:id="btnCaptureFace" text="%button.captureFace" managed="false" visible="false" wrapText="true" textAlignment="CENTER" onAction="#onCaptureFaceButtonClicked"/>
+                            <Button fx:id="btnStopFaceCapturing" text="%button.stopFaceCapturing" managed="false" visible="false" wrapText="true" textAlignment="CENTER" onAction="#onStopFaceCapturingButtonClicked"/>
+                        </VBox>
+                    </VBox>
                 </TitledPane>
-                <TitledPane text="%label.cameraLivePreview" maxHeight="Infinity" collapsible="false" HBox.hgrow="ALWAYS">
-
-                </TitledPane>
-            </SplitPane>
-            <SplitPane dividerPositions="0.5,0.5">
                 <TitledPane text="%label.icaoStandardChecklist" maxHeight="Infinity" collapsible="false" HBox.hgrow="ALWAYS">
                     <GridPane>
                         <VBox GridPane.rowIndex="0" GridPane.columnIndex="0" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS">
@@ -39,7 +56,37 @@
                         <AutoScalingStackPane fx:id="subScenePane" GridPane.rowIndex="0" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS"/>
                     </GridPane>
                 </TitledPane>
-                <TitledPane text="%label.finalCapturedImage" maxHeight="Infinity" collapsible="false" HBox.hgrow="ALWAYS">
+            </SplitPane>
+            <SplitPane dividerPositions="0.35,0.7">
+                <FourStateTitledPane fx:id="tpCameraLivePreview" text="%label.cameraLivePreview" HBox.hgrow="ALWAYS" maxHeight="Infinity" collapsible="false">
+                    <StackPane>
+                        <ImageViewPane>
+                            <imageView>
+                                <ImageView fx:id="ivCameraLivePreview" preserveRatio="true"/>
+                            </imageView>
+                        </ImageViewPane>
+                        <ProgressIndicator fx:id="piCameraLivePreview" maxHeight="25.0" maxWidth="25.0" managed="false" visible="false"/>
+                    </StackPane>
+                </FourStateTitledPane>
+                <TitledPane text="%label.capturedImage" maxHeight="Infinity" collapsible="false" HBox.hgrow="ALWAYS">
+                    <StackPane>
+                        <ImageViewPane>
+                            <imageView>
+                                <ImageView fx:id="ivCapturedImage" preserveRatio="true"/>
+                            </imageView>
+                        </ImageViewPane>
+                        <ProgressIndicator fx:id="piCapturedImage" maxHeight="25.0" maxWidth="25.0" managed="false" visible="false"/>
+                    </StackPane>
+                </TitledPane>
+                <TitledPane text="%label.croppedImage" maxHeight="Infinity" collapsible="false" HBox.hgrow="ALWAYS">
+                    <StackPane>
+                        <ImageViewPane>
+                            <imageView>
+                                <ImageView fx:id="ivCroppedImage" preserveRatio="true"/>
+                            </imageView>
+                        </ImageViewPane>
+                        <ProgressIndicator fx:id="piCroppedImage" maxHeight="25.0" maxWidth="25.0" managed="false" visible="false"/>
+                    </StackPane>
                 </TitledPane>
             </SplitPane>
         </SplitPane>

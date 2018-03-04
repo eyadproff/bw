@@ -27,16 +27,13 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.ResourceBundle;
 
 @SuppressWarnings("unused")
 public class MenuPaneFxController extends RegionFxControllerBase
 {
-	@FXML private ResourceBundle resources;
 	@FXML private Accordion accordion;
 	@FXML private Pane overlayPane;
 	
-	private CoreFxController coreFxController;
 	private MenuItem selectedMenu;
 	private ListView<MenuItem> selectedListView;
 	
@@ -245,11 +242,5 @@ public class MenuPaneFxController extends RegionFxControllerBase
 	private void onSelectMenu(MenuItem menuItem)
 	{
 		coreFxController.goToMenu(menuItem.getWorkflowClass());
-	}
-	
-	@Override
-	public void attachCoreFxController(CoreFxController coreFxController)
-	{
-		this.coreFxController = coreFxController;
 	}
 }

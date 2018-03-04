@@ -29,8 +29,8 @@
             <padding>
                 <Insets top="10" bottom="10"/>
             </padding>
-            <SplitPane orientation="VERTICAL" dividerPositions="0.5,0.5" VBox.vgrow="ALWAYS">
-                <SplitPane styleClass="white-background" dividerPositions="0.1,0.8,0.1">
+            <SplitPane orientation="VERTICAL" dividerPositions="0.5" VBox.vgrow="ALWAYS">
+                <SplitPane styleClass="white-background" dividerPositions="0.1,0.8">
                     <VBox>
                         <TitledPane text="%label.currentFingerprintsIndicator" maxHeight="Infinity" collapsible="false" VBox.vgrow="ALWAYS">
                             <HBox alignment="CENTER" nodeOrientation="LEFT_TO_RIGHT" maxHeight="Infinity" maxWidth="Infinity" spacing="10">
@@ -55,7 +55,6 @@
                                 </AutoScalingStackPane>
                             </HBox>
                         </TitledPane>
-
                     </VBox>
                     <TitledPane text="%label.fingerprintDeviceControlPanel" maxHeight="Infinity" collapsible="false">
                         <VBox alignment="CENTER" spacing="10" VBox.vgrow="NEVER">
@@ -86,7 +85,7 @@
                         </StackPane>
                     </FourStateTitledPane>
                 </SplitPane>
-                <SplitPane fx:id="spFingerprints" dividerPositions="0.5,0.5" nodeOrientation="LEFT_TO_RIGHT">
+                <SplitPane fx:id="spFingerprints" dividerPositions="0.5" nodeOrientation="LEFT_TO_RIGHT">
                     <TitledPane fx:id="tpLeftHand" text="%label.leftHand" collapsible="false" wrapText="true" maxHeight="Infinity" graphicTextGap="0.0" HBox.hgrow="ALWAYS">
                         <GridPane vgap="5" maxHeight="Infinity">
                             <columnConstraints>

@@ -27,8 +27,6 @@ public class BioKitManager
 	private FingerprintUtilitiesService fingerprintUtilitiesService;
 	private BiokitCommander biokitCommander;
 	
-	private String faceDeviceName;
-	
 	public BioKitManager(String bclId, int websocketPort, String websocketServerUrl,
 	                     int maxTextMessageBufferSizeInBytes, int maxBinaryMessageBufferSizeInBytes,
 	                     int responseTimeoutSeconds, JsonMapper<Message> jsonMapper, ClosureListener closureListener,
@@ -45,6 +43,16 @@ public class BioKitManager
 		fingerprintService = DeviceServiceFactory.getFingerprintService(websocketClient);
 		fingerprintUtilitiesService = DeviceUtilitiesServiceFactory.getFingerprintUtilitiesService(websocketClient);
 		biokitCommander = BiokitCommanderFactory.getBiokitCommander(websocketClient);
+	}
+	
+	public void setClosureListener(ClosureListener closureListener)
+	{
+		this.websocketClient.setClosureListener(closureListener);
+	}
+	
+	public void setUpdateListener(UpdateListener updateListener)
+	{
+		this.websocketClient.setUpdateListener(updateListener);
 	}
 	
 	public void connect() throws ConnectionException, AlreadyConnectedException

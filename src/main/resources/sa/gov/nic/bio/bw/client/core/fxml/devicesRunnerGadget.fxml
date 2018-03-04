@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<VBox xmlns="http://javafx.com/javafx/8.0.152" xmlns:fx="http://javafx.com/fxml/1"
+      fx:id="rootPane" fx:controller="sa.gov.nic.bio.bw.client.core.DevicesRunnerGadgetPaneFxController">
+    <TitledPane text="%label.devicesRunner" alignment="CENTER" styleClass="devices-runner-gadget" collapsible="false">
+        <HBox alignment="CENTER" spacing="10.0">
+            <Label fx:id="lblNotWorking" text="%label.deviceRunner.notWorking">
+                <graphic>
+                    <ImageView>
+                        <Image url="@../images/disconnected.png"/>
+                    </ImageView>
+                </graphic>
+            </Label>
+            <Label fx:id="lblWorking" text="%label.deviceRunner.working" visible="false" managed="false">
+                <graphic>
+                    <ImageView>
+                        <Image url="@../images/connected.png"/>
+                    </ImageView>
+                </graphic>
+            </Label>
+            <Button fx:id="btnAction" onMouseClicked="#onActionButtonClicked"/>
+        </HBox>
+    </TitledPane>
+</VBox>

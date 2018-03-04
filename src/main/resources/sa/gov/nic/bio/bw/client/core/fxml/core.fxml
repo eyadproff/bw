@@ -8,6 +8,7 @@
 <?import javafx.scene.Scene?>
 <?import javafx.stage.Stage?>
 <?import org.controlsfx.control.NotificationPane?>
+<?import javafx.scene.layout.VBox?>
 <Stage xmlns="http://javafx.com/javafx/8.0.152" xmlns:fx="http://javafx.com/fxml/1"
        fx:controller="sa.gov.nic.bio.bw.client.core.CoreFxController"
        fx:id="primaryStage" height="600.0" width="800.0"
@@ -23,7 +24,10 @@
                         <fx:include fx:id="headerPane" source="header.fxml" styleClass="header" visible="false" managed="false"/>
                     </top>
                     <left>
-                        <fx:include fx:id="menuPane" source="menu.fxml" styleClass="nav" visible="false" managed="false"/>
+                        <VBox>
+                            <fx:include fx:id="menuPane" source="menu.fxml" styleClass="nav" visible="false" managed="false" VBox.vgrow="ALWAYS"/>
+                            <fx:include fx:id="deviceRunnerGadgetPane" source="devicesRunnerGadget.fxml" visible="false" managed="false"/>
+                        </VBox>
                     </left>
                     <center>
                         <NotificationPane fx:id="idleNotifier" minHeight="0" minWidth="0">
@@ -55,6 +59,6 @@
 </Stage>
 
 <!-- NOTE:
-    We need the IDs rootPane and rootPane in order to be
+    We need the IDs headerPane and footerPane in order to be
     able to inject headerPaneController and footerPaneController
 -->
