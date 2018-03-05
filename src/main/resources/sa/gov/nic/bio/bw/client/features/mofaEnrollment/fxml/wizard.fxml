@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?language JavaScript?>
-<?scenebuilder-preview-i18n-resource ../bundles/labels.properties?>
 
 <?import sa.gov.nic.bio.bw.client.core.wizard.WizardPane?>
 <?import sa.gov.nic.bio.bw.client.core.wizard.WizardStep?>
-<WizardPane xmlns="http://javafx.com/javafx">
+
+<WizardPane xmlns="http://javafx.com/javafx/8.0.152">
     <steps>
         <WizardStep iconId="\\uf2bb" title="%wizard.applicantInfo"/>
         <WizardStep iconId="\\uf256" title="%wizard.fingerprintCapturing"/>

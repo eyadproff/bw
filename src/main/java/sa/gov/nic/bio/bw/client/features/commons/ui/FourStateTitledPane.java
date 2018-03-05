@@ -1,11 +1,12 @@
-package sa.gov.nic.bio.bw.client.features.mofaenrollment.ui;
+package sa.gov.nic.bio.bw.client.features.commons.ui;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.BooleanPropertyBase;
 import javafx.css.PseudoClass;
-import javafx.scene.shape.SVGPath;
+import javafx.scene.Node;
+import javafx.scene.control.TitledPane;
 
-public class FourStateSVGPath extends SVGPath
+public class FourStateTitledPane extends TitledPane
 {
 	private static final PseudoClass ACTIVE_PSEUDO_CLASS = PseudoClass.getPseudoClass("active");
 	private static final PseudoClass CAPTURED_PSEUDO_CLASS = PseudoClass.getPseudoClass("captured");
@@ -23,7 +24,7 @@ public class FourStateSVGPath extends SVGPath
 		@Override
 		public Object getBean()
 		{
-			return FourStateSVGPath.this;
+			return FourStateTitledPane.this;
 		}
 		
 		@Override
@@ -43,7 +44,7 @@ public class FourStateSVGPath extends SVGPath
 		@Override
 		public Object getBean()
 		{
-			return FourStateSVGPath.this;
+			return FourStateTitledPane.this;
 		}
 		
 		@Override
@@ -63,7 +64,7 @@ public class FourStateSVGPath extends SVGPath
 		@Override
 		public Object getBean()
 		{
-			return FourStateSVGPath.this;
+			return FourStateTitledPane.this;
 		}
 		
 		@Override
@@ -83,7 +84,7 @@ public class FourStateSVGPath extends SVGPath
 		@Override
 		public Object getBean()
 		{
-			return FourStateSVGPath.this;
+			return FourStateTitledPane.this;
 		}
 		
 		@Override
@@ -93,9 +94,15 @@ public class FourStateSVGPath extends SVGPath
 		}
 	};
 	
-	public FourStateSVGPath()
+	public FourStateTitledPane()
 	{
-		getStyleClass().add("four-state-svg-path");
+		this(null, null);
+	}
+	
+	public FourStateTitledPane(String title, Node content)
+	{
+		super(title, content);
+		getStyleClass().add("four-state-titled-pane");
 	}
 	
 	public boolean isActive(){return active.get();}

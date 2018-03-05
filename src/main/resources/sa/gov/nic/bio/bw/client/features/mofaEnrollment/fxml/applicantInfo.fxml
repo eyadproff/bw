@@ -1,6 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?language JavaScript?>
-<?scenebuilder-preview-i18n-resource ../bundles/labels.properties?>
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
@@ -15,7 +13,8 @@
 <?import javafx.collections.FXCollections?>
 <?import sa.gov.nic.bio.bw.client.core.beans.ItemWithText?>
 <?import sa.gov.nic.bio.bw.client.features.mofaenrollment.enums.Gender?>
-<BorderPane xmlns:fx="http://javafx.com/fxml" xmlns="http://javafx.com/javafx/8"
+
+<BorderPane xmlns="http://javafx.com/javafx/8.0.152" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="sa.gov.nic.bio.bw.client.features.mofaenrollment.ApplicantInfoFxController"
             fx:id="rootPane" stylesheets="@../css/style.css">
 

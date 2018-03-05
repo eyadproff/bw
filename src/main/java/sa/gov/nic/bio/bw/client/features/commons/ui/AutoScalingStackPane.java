@@ -1,4 +1,4 @@
-package sa.gov.nic.bio.bw.client.core.ui;
+package sa.gov.nic.bio.bw.client.features.commons.ui;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;

@@ -37,7 +37,7 @@
 
         <sequenceFlow sourceRef="applicantInfoEntry" targetRef="FingerprintCapturing"/>
 
-        <userTask id="FingerprintCapturing" activiti:formKey="sa.gov.nic.bio.bw.client.features.mofaenrollment.FingerprintCapturingFxController">
+        <userTask id="FingerprintCapturing" activiti:formKey="sa.gov.nic.bio.bw.client.features.commons.FingerprintCapturingFxController">
             <extensionElements>
             </extensionElements>
         </userTask>
@@ -55,7 +55,7 @@
         </sequenceFlow>
         <sequenceFlow sourceRef="FingerprintCapturingDirection" targetRef="FaceCapturing"/>
 
-        <userTask id="FaceCapturing" activiti:formKey="sa.gov.nic.bio.bw.client.features.mofaenrollment.FaceCapturingFxController">
+        <userTask id="FaceCapturing" activiti:formKey="sa.gov.nic.bio.bw.client.features.commons.FaceCapturingFxController">
             <extensionElements>
             </extensionElements>
         </userTask>

@@ -1,11 +1,11 @@
-package sa.gov.nic.bio.bw.client.features.mofaenrollment.beans;
+package sa.gov.nic.bio.bw.client.features.commons.beans;
 
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.image.ImageView;
 import javafx.scene.shape.SVGPath;
 import sa.gov.nic.bio.bw.client.core.biokit.FingerPosition;
-import sa.gov.nic.bio.bw.client.features.mofaenrollment.ui.FourStateTitledPane;
+import sa.gov.nic.bio.bw.client.features.commons.ui.FourStateTitledPane;
 
 import java.util.Objects;
 

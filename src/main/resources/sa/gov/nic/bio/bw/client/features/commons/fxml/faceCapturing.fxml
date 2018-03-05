@@ -1,6 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?language JavaScript?>
-<?scenebuilder-preview-i18n-resource ../bundles/labels.properties?>
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
@@ -14,11 +12,13 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
-<?import sa.gov.nic.bio.bw.client.core.ui.AutoScalingStackPane?>
-<?import sa.gov.nic.bio.bw.client.core.ui.ImageViewPane?>
-<?import sa.gov.nic.bio.bw.client.features.mofaenrollment.ui.FourStateTitledPane?>
-<BorderPane xmlns:fx="http://javafx.com/fxml" xmlns="http://javafx.com/javafx/8"
-            fx:id="rootPane" fx:controller="sa.gov.nic.bio.bw.client.features.mofaenrollment.FaceCapturingFxController"
+<?import sa.gov.nic.bio.bw.client.features.commons.ui.AutoScalingStackPane?>
+<?import sa.gov.nic.bio.bw.client.features.commons.ui.ImageViewPane?>
+<?import sa.gov.nic.bio.bw.client.features.commons.ui.FourStateTitledPane?>
+
+<?import javafx.scene.image.Image?>
+<BorderPane xmlns="http://javafx.com/javafx/8.0.152" xmlns:fx="http://javafx.com/fxml/1"
+            fx:id="rootPane" fx:controller="sa.gov.nic.bio.bw.client.features.commons.FaceCapturingFxController"
             stylesheets="@../css/style.css">
     <center>
         <SplitPane styleClass="white-background" orientation="VERTICAL" dividerPositions="0.5" VBox.vgrow="ALWAYS">
@@ -35,9 +35,9 @@
                         <Label fx:id="lblStatus" wrapText="true" textAlignment="CENTER"/>
                         <VBox alignment="CENTER" spacing="5">
                             <Button fx:id="btnCancel" text="%button.cancel" managed="false" visible="false" wrapText="true" textAlignment="CENTER"/>
-                            <Button fx:id="btnStartFaceCapturing" text="%button.startFaceCapturing" managed="false" visible="false" wrapText="true" textAlignment="CENTER" onAction="#onStartFaceCapturingButtonClicked"/>
+                            <Button fx:id="btnStartCameraLivePreview" text="%button.startCameraLivePreview" managed="false" visible="false" wrapText="true" textAlignment="CENTER" onAction="#onStartCameraLivePreviewButtonClicked"/>
                             <Button fx:id="btnCaptureFace" text="%button.captureFace" managed="false" visible="false" wrapText="true" textAlignment="CENTER" onAction="#onCaptureFaceButtonClicked"/>
-                            <Button fx:id="btnStopFaceCapturing" text="%button.stopFaceCapturing" managed="false" visible="false" wrapText="true" textAlignment="CENTER" onAction="#onStopFaceCapturingButtonClicked"/>
+                            <Button fx:id="btnStopCameraLivePreview" text="%button.stopCameraLivePreview" managed="false" visible="false" wrapText="true" textAlignment="CENTER" onAction="#onStopCameraLivePreviewButtonClicked"/>
                         </VBox>
                     </VBox>
                 </TitledPane>
@@ -47,7 +47,26 @@
                             <padding>
                                 <Insets topRightBottomLeft="10"/>
                             </padding>
-                            <TitledPane text="%label.checklistResult" maxHeight="Infinity" collapsible="false" VBox.vgrow="ALWAYS">
+                            <TitledPane text="%label.checklistResult" maxHeight="Infinity" minWidth="170.0" collapsible="false" VBox.vgrow="ALWAYS">
+                                <padding>
+                                    <Insets topRightBottomLeft="0.0"/>
+                                </padding>
+                                <VBox alignment="CENTER" spacing="5.0">
+                                    <padding>
+                                        <Insets topRightBottomLeft="5.0"/>
+                                    </padding>
+                                    <ProgressIndicator fx:id="piIcao" maxHeight="25.0" maxWidth="25.0" visible="false" managed="false"/>
+                                    <ImageView fx:id="ivSuccessIcao" visible="false" managed="false">
+                                        <Image url="@../images/success.png"/>
+                                    </ImageView>
+                                    <ImageView fx:id="ivWarningIcao" visible="false" managed="false">
+                                        <Image url="@../images/warning.png"/>
+                                    </ImageView>
+                                    <ImageView fx:id="ivErrorIcao" visible="false" managed="false">
+                                        <Image url="@../images/error.png"/>
+                                    </ImageView>
+                                    <Label fx:id="lblIcaoMessage" wrapText="true" alignment="CENTER" textAlignment="CENTER" visible="false" managed="false"/>
+                                </VBox>
                             </TitledPane>
                         </VBox>
                         <AutoScalingStackPane fx:id="subScenePane" GridPane.rowIndex="0" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS"/>
@@ -65,7 +84,7 @@
                         <ProgressIndicator fx:id="piCameraLivePreview" maxHeight="25.0" maxWidth="25.0" managed="false" visible="false"/>
                     </StackPane>
                 </FourStateTitledPane>
-                <TitledPane text="%label.capturedImage" maxHeight="Infinity" collapsible="false" HBox.hgrow="ALWAYS">
+                <FourStateTitledPane fx:id="tpCapturedImage" text="%label.capturedImage" maxHeight="Infinity" collapsible="false" HBox.hgrow="ALWAYS">
                     <StackPane>
                         <ImageViewPane>
                             <imageView>
@@ -74,8 +93,8 @@
                         </ImageViewPane>
                         <ProgressIndicator fx:id="piCapturedImage" maxHeight="25.0" maxWidth="25.0" managed="false" visible="false"/>
                     </StackPane>
-                </TitledPane>
-                <TitledPane text="%label.croppedImage" maxHeight="Infinity" collapsible="false" HBox.hgrow="ALWAYS">
+                </FourStateTitledPane>
+                <FourStateTitledPane fx:id="tpCroppedImage" text="%label.croppedImage" maxHeight="Infinity" collapsible="false" HBox.hgrow="ALWAYS">
                     <StackPane>
                         <ImageViewPane>
                             <imageView>
@@ -84,7 +103,7 @@
                         </ImageViewPane>
                         <ProgressIndicator fx:id="piCroppedImage" maxHeight="25.0" maxWidth="25.0" managed="false" visible="false"/>
                     </StackPane>
-                </TitledPane>
+                </FourStateTitledPane>
             </SplitPane>
         </SplitPane>
     </center>

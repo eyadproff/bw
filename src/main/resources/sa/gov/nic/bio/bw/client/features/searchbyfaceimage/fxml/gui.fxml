@@ -11,8 +11,8 @@
 <?import sa.gov.nic.bio.bw.client.features.searchbyfaceimage.ui.ToggleTitledPane?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.control.Label?>
-
 <?import javafx.scene.layout.BorderPane?>
+
 <BorderPane xmlns="http://javafx.com/javafx/8.0.152" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="sa.gov.nic.bio.bw.client.features.searchbyfaceimage.SearchByFaceImagePaneFxController"
             fx:id="rootPane" stylesheets="@../css/style.css">

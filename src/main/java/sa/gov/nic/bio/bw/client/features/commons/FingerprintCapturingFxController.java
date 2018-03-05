@@ -1,4 +1,4 @@
-package sa.gov.nic.bio.bw.client.features.mofaenrollment;
+package sa.gov.nic.bio.bw.client.features.commons;
 
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
@@ -34,8 +34,8 @@ import javafx.util.Duration;
 import org.controlsfx.control.PopOver;
 import org.controlsfx.control.PopOver.ArrowLocation;
 import sa.gov.nic.bio.biokit.ResponseProcessor;
+import sa.gov.nic.bio.biokit.beans.LivePreviewingResponse;
 import sa.gov.nic.bio.biokit.beans.ServiceResponse;
-import sa.gov.nic.bio.biokit.beans.StartPreviewResponse;
 import sa.gov.nic.bio.biokit.fingerprint.beans.CaptureFingerprintResponse;
 import sa.gov.nic.bio.biokit.fingerprint.beans.DuplicatedFingerprintsResponse;
 import sa.gov.nic.bio.biokit.websocket.beans.DMFingerData;
@@ -44,13 +44,13 @@ import sa.gov.nic.bio.bw.client.core.beans.Fingerprint;
 import sa.gov.nic.bio.bw.client.core.beans.FingerprintQualityThreshold;
 import sa.gov.nic.bio.bw.client.core.beans.UserSession;
 import sa.gov.nic.bio.bw.client.core.biokit.FingerPosition;
-import sa.gov.nic.bio.bw.client.core.ui.AutoScalingStackPane;
 import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.client.core.utils.DialogUtils;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.wizard.WizardStepFxControllerBase;
-import sa.gov.nic.bio.bw.client.features.mofaenrollment.beans.FingerprintUiComponents;
-import sa.gov.nic.bio.bw.client.features.mofaenrollment.ui.FourStateTitledPane;
+import sa.gov.nic.bio.bw.client.features.commons.beans.FingerprintUiComponents;
+import sa.gov.nic.bio.bw.client.features.commons.ui.AutoScalingStackPane;
+import sa.gov.nic.bio.bw.client.features.commons.ui.FourStateTitledPane;
 
 import java.io.ByteArrayInputStream;
 import java.net.URL;
@@ -134,10 +134,8 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 	@FXML private Button btnAcceptCurrentFingerprints;
 	@FXML private Button btnPrevious;
 	@FXML private Button btnNext;
-	// TODO: add restart biokit button
 	// TODO: add start over fingerprint capturing
 	
-	private String fingerprintDeviceName;
 	private int currentPosition = FingerPosition.RIGHT_SLAP.getPosition();
 	private Map<Integer, Fingerprint> capturedFingerprints = new HashMap<>();
 	private Map<Integer, FingerprintQualityThreshold> fingerprintQualityThresholdMap;
@@ -327,7 +325,7 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 			@Override
 			protected ServiceResponse<CaptureFingerprintResponse> call() throws Exception
 			{
-				ResponseProcessor<StartPreviewResponse> responseProcessor = response -> Platform.runLater(() ->
+				ResponseProcessor<LivePreviewingResponse> responseProcessor = response -> Platform.runLater(() ->
 				{
 					if(first[0])
 					{
@@ -374,6 +372,8 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 				}
 				else
 				{
+					String fingerprintDeviceName = coreFxController.getDeviceManagerGadgetPaneController()
+																   .getFingerprintScannerDeviceName();
 					Future<ServiceResponse<CaptureFingerprintResponse>> future = Context.getBioKitManager()
 							.getFingerprintService()
 							.startPreviewAndAutoCapture(fingerprintDeviceName, currentPosition,
@@ -743,16 +743,16 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 		Image successImage = new Image(Thread.currentThread()
 				                             .getContextClassLoader()
 				                             .getResourceAsStream("sa/gov/nic/bio/bw/client/features/" +
-						                                                  "mofaenrollment/images/success.png"));
+						                                                  "commons/images/success.png"));
 		Image warningImage = new Image(Thread.currentThread()
 				                             .getContextClassLoader()
 				                             .getResourceAsStream("sa/gov/nic/bio/bw/client/features/" +
-						                                                  "mofaenrollment/images/warning.png"));
+						                                                  "commons/images/warning.png"));
 		
 		Image errorImage = new Image(Thread.currentThread()
 				                               .getContextClassLoader()
 				                               .getResourceAsStream("sa/gov/nic/bio/bw/client/features/" +
-						                                                    "mofaenrollment/images/error.png"));
+						                                                    "commons/images/error.png"));
 		
 		lblNfiq.setGraphic(new ImageView(acceptableNfiq ? successImage : warningImage));
 		lblMinutiaeCount.setGraphic(new ImageView(acceptableMinutiaeCount ? successImage : warningImage));
