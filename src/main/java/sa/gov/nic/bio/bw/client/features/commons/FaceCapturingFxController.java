@@ -239,12 +239,6 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 			
 			    if(result.getReturnCode() != FaceStartPreviewResponse.SuccessCodes.SUCCESS)
 			    {
-				    lblStatus.setText(String.format(
-						    stringsBundle.getString("label.status.failedToCaptureTheFaceWithErrorCode"),
-						    result.getReturnCode()));
-			    }
-			    else
-			    {
 				    GuiUtils.showNode(btnStartCameraLivePreview, true);
 				    lblStatus.setText(String.format(
 						    stringsBundle.getString("label.status.failedToCaptureTheFaceWithErrorCode"),
@@ -342,7 +336,7 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 		    {
 		        FaceStopPreviewResponse result = serviceResponse.getResult();
 		
-		        if(result.getReturnCode() == CaptureFaceResponse.SuccessCodes.SUCCESS)
+		        if(result.getReturnCode() == FaceStopPreviewResponse.SuccessCodes.SUCCESS)
 		        {
 		            lblStatus.setText(
 		                    stringsBundle.getString("label.status.successfullyStoppedCameraLivePreviewing"));
@@ -491,6 +485,9 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 					    tpCapturedImage.setActive(true);
 					    tpCapturedImage.setCaptured(true);
 					    tpCapturedImage.setValid(true);
+					
+					    GuiUtils.attachImageDialog(coreFxController, ivCapturedImage, tpCapturedImage.getText(),
+					                               resources.getString("label.contextMenu.showImage"));
 				    }
 				    else
 				    {
@@ -506,6 +503,9 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 					    byte[] bytes = Base64.getDecoder().decode(croppedImage);
 					    ivCroppedImage.setImage(new Image(new ByteArrayInputStream(bytes)));
 					    croppedImageExists = true;
+					
+					    GuiUtils.attachImageDialog(coreFxController, ivCroppedImage, tpCroppedImage.getText(),
+					                               resources.getString("label.contextMenu.showImage"));
 				    }
 				    else
 				    {

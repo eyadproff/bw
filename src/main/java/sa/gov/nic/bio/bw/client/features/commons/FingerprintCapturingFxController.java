@@ -11,25 +11,19 @@ import javafx.geometry.NodeOrientation;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
-import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
-import javafx.scene.control.MenuItem;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.SVGPath;
 import javafx.scene.text.TextAlignment;
-import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.controlsfx.control.PopOver;
 import org.controlsfx.control.PopOver.ArrowLocation;
@@ -45,7 +39,6 @@ import sa.gov.nic.bio.bw.client.core.beans.FingerprintQualityThreshold;
 import sa.gov.nic.bio.bw.client.core.beans.UserSession;
 import sa.gov.nic.bio.bw.client.core.biokit.FingerPosition;
 import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
-import sa.gov.nic.bio.bw.client.core.utils.DialogUtils;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.wizard.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.client.features.commons.beans.FingerprintUiComponents;
@@ -623,7 +616,7 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 		
 		    allAcceptableQuality[0] = allAcceptableQuality[0] && acceptableQuality[0];
 			noDuplicates[0] = noDuplicates[0] && !duplicated;
-		    
+		 
 			components.getImageView().setImage(new Image(new ByteArrayInputStream(fingerprintImageBytes)));
 			attachFingerprintResultTooltip(components.getButton(), components.getTitledPane(),
 			                               dmFingerData.getNfiqQuality(),
@@ -639,7 +632,8 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 			GuiUtils.showNode(components.getCheckBox(), false);
 			GuiUtils.showNode(components.getButton(), true);
 			String dialogTitle = components.getFingerLabel() + " (" + components.getHandLabel() + ")";
-			attachImageDialog(components.getImageView(), dialogTitle);
+			GuiUtils.attachImageDialog(coreFxController, components.getImageView(), dialogTitle,
+			                           stringsBundle.getString("label.contextMenu.showImage"));
 			capturedFingerprints.put(dmFingerData.getPosition(), new Fingerprint(dmFingerData, acceptableQuality[0]));
 		});
 		
@@ -843,42 +837,6 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 				checkBox.fire();
 			}
 		});
-	}
-	
-	private void attachImageDialog(ImageView imageView, String dialogTitle)
-	{
-		Runnable runnable = () ->
-		{
-			ImageView iv = new ImageView(imageView.getImage());
-			BorderPane borderPane = new BorderPane();
-			borderPane.setCenter(iv);
-			Stage stage = DialogUtils.buildCustomDialog(coreFxController.getPrimaryStage(), dialogTitle, borderPane,
-			                                            coreFxController.getCurrentLanguage()
-					                                           .getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT);
-			stage.getScene().addEventHandler(KeyEvent.KEY_PRESSED, keyEvent ->
-			{
-				if(keyEvent.getCode() == KeyCode.ESCAPE) stage.close();
-			});
-			stage.show();
-		};
-		
-		imageView.setOnMouseClicked(mouseEvent ->
-		{
-			// left-double-click
-			if(mouseEvent.getButton() == MouseButton.PRIMARY && mouseEvent.getClickCount() == 2)
-			{
-				runnable.run();
-			}
-		});
-		
-		ContextMenu contextMenu = new ContextMenu();
-		MenuItem menuItem = new MenuItem(stringsBundle.getString("label.contextMenu.showImage"));
-		menuItem.setOnAction(event -> runnable.run());
-		contextMenu.getItems().add(menuItem);
-		
-		imageView.setOnContextMenuRequested(contextMenuEvent -> contextMenu.show(imageView,
-		                                                                         contextMenuEvent.getScreenX(),
-		                                                                         contextMenuEvent.getScreenY()));
 	}
 	
 	private boolean isAcceptableFingerprintNfiq(int fingerPosition, int nfiq)

@@ -7,14 +7,21 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.event.EventHandler;
+import javafx.geometry.NodeOrientation;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Control;
 import javafx.scene.control.ListView;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseButton;
+import javafx.scene.layout.BorderPane;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import sa.gov.nic.bio.bw.client.core.Context;
@@ -98,12 +105,14 @@ public class GuiUtils
 		};
 	}
 	
-	public static void applyValidatorToTextField(TextField textField, String validationRegex, String discardRegex, int maxCharCount)
+	public static void applyValidatorToTextField(TextField textField, String validationRegex, String discardRegex,
+	                                             int maxCharCount)
 	{
 		textField.textProperty().addListener((observable, oldValue, newValue) ->
 		{
 			if(newValue.length() > maxCharCount) textField.setText(oldValue);
-			if(validationRegex != null && discardRegex != null && !newValue.matches(validationRegex)) textField.setText(newValue.replaceAll(discardRegex, ""));
+			if(validationRegex != null && discardRegex != null && !newValue.matches(validationRegex))
+												textField.setText(newValue.replaceAll(discardRegex, ""));
 		});
 	}
 	
@@ -137,7 +146,8 @@ public class GuiUtils
 	
 	public static <T> void addAutoCompletionSupportToComboBox(ComboBox<HideableItem<T>> comboBox, List<T> items)
 	{
-		ObservableList<HideableItem<T>> hideableHideableItems = FXCollections.observableArrayList(hideableItem -> new Observable[]{hideableItem.hiddenProperty()});
+		ObservableList<HideableItem<T>> hideableHideableItems = FXCollections.observableArrayList(hideableItem ->
+                                                                    new Observable[]{hideableItem.hiddenProperty()});
 		
 		items.forEach(item ->
 		{
@@ -145,7 +155,8 @@ public class GuiUtils
 			hideableHideableItems.add(hideableItem);
 		});
 		
-		FilteredList<HideableItem<T>> filteredHideableItems = new FilteredList<>(hideableHideableItems, t -> !t.isHidden());
+		FilteredList<HideableItem<T>> filteredHideableItems = new FilteredList<>(hideableHideableItems,
+		                                                                         t -> !t.isHidden());
 		
 		comboBox.setItems(filteredHideableItems);
 		
@@ -159,9 +170,11 @@ public class GuiUtils
 				comboBox.setEditable(true);
 				comboBox.getEditor().clear();
 			}
-			else if(event.getCode() != KeyCode.ESCAPE && event.getCode() != KeyCode.UP && event.getCode() != KeyCode.DOWN &&
-					event.getCode() != KeyCode.TAB && event.getCode() != KeyCode.ENTER && event.getCode() != KeyCode.SPACE &&
-					event.getCode() != KeyCode.RIGHT && event.getCode() != KeyCode.LEFT && event.getCode() != KeyCode.SHIFT)
+			else if(event.getCode() != KeyCode.ESCAPE && event.getCode() != KeyCode.UP &&
+					event.getCode() != KeyCode.DOWN && event.getCode() != KeyCode.TAB &&
+					event.getCode() != KeyCode.ENTER && event.getCode() != KeyCode.SPACE &&
+					event.getCode() != KeyCode.RIGHT && event.getCode() != KeyCode.LEFT &&
+					event.getCode() != KeyCode.SHIFT)
 			{
 				comboBox.show();
 				comboBox.setEditable(true);
@@ -185,7 +198,8 @@ public class GuiUtils
 				        lv.setFixedCellSize(cellHeight);
 				        lv.setOnKeyPressed(event ->
 				        {
-				        	if(comboBox.isShowing() && (event.getCode() == KeyCode.ENTER || event.getCode() == KeyCode.ESCAPE)) comboBox.hide();
+				        	if(comboBox.isShowing() && (event.getCode() == KeyCode.ENTER ||
+					           event.getCode() == KeyCode.ESCAPE)) comboBox.hide();
 				        });
 			        }
 		        });
@@ -215,7 +229,8 @@ public class GuiUtils
 			{
 				if(comboBox.getSelectionModel().getSelectedItem() == null)
 				{
-					hideableHideableItems.forEach(item -> item.setHidden(!item.getText().toLowerCase().contains(newValue.toLowerCase())));
+					hideableHideableItems.forEach(item -> item.setHidden(!item.getText().toLowerCase()
+																			  .contains(newValue.toLowerCase())));
 				}
 				else
 				{
@@ -234,5 +249,67 @@ public class GuiUtils
 				}
 			});
 	    });
+	}
+	
+	public static void attachImageDialog(CoreFxController coreFxController, ImageView imageView, String dialogTitle,
+	                                     String showImageText)
+	{
+		Runnable runnable = () ->
+		{
+			ImageView iv = new ImageView(imageView.getImage());
+			iv.setPreserveRatio(true);
+			
+			double taskBarHeight = 40.0;
+			double rightLeftWindowBorders = 6.0;
+			double topBottomWindowBorders = 29.0;
+			double padding = 10.0;
+			
+			double maxWidth = Screen.getPrimary().getBounds().getWidth() - rightLeftWindowBorders - padding;
+			double maxHeight = Screen.getPrimary().getBounds().getHeight() - taskBarHeight - topBottomWindowBorders
+																						   - padding;
+			
+			double widthDiff = iv.getImage().getWidth() - maxWidth;
+			double heightDiff = iv.getImage().getHeight() - maxHeight;
+			
+			boolean beyondWidth = widthDiff > 0;
+			boolean beyondHeight = heightDiff > 0;
+			
+			if(beyondWidth && beyondHeight)
+			{
+				if(widthDiff >= heightDiff) iv.setFitWidth(maxWidth);
+				else iv.setFitHeight(maxHeight);
+			}
+			else if(beyondWidth) iv.setFitWidth(maxWidth);
+			else if(beyondHeight) iv.setFitHeight(maxHeight);
+			
+			BorderPane borderPane = new BorderPane();
+			borderPane.setCenter(iv);
+			Stage stage = DialogUtils.buildCustomDialog(coreFxController.getPrimaryStage(), dialogTitle, borderPane,
+			                                            coreFxController.getCurrentLanguage()
+				                                            .getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT);
+			stage.getScene().addEventHandler(KeyEvent.KEY_PRESSED, keyEvent ->
+			{
+				if(keyEvent.getCode() == KeyCode.ESCAPE) stage.close();
+			});
+			stage.show();
+		};
+		
+		imageView.setOnMouseClicked(mouseEvent ->
+		{
+		    // left-double-click
+		    if(mouseEvent.getButton() == MouseButton.PRIMARY && mouseEvent.getClickCount() == 2)
+		    {
+		        runnable.run();
+		    }
+		});
+		
+		ContextMenu contextMenu = new ContextMenu();
+		MenuItem menuItem = new MenuItem(showImageText);
+		menuItem.setOnAction(event -> runnable.run());
+		contextMenu.getItems().add(menuItem);
+		
+		imageView.setOnContextMenuRequested(contextMenuEvent -> contextMenu.show(imageView,
+		                                                                         contextMenuEvent.getScreenX(),
+		                                                                         contextMenuEvent.getScreenY()));
 	}
 }
