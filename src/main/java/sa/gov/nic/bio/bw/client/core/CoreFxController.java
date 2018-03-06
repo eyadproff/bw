@@ -10,8 +10,10 @@ import javafx.geometry.NodeOrientation;
 import javafx.scene.Node;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import org.controlsfx.control.NotificationPane;
 import sa.gov.nic.bio.bw.client.core.beans.StateBundle;
 import sa.gov.nic.bio.bw.client.core.interfaces.ControllerResourcesLocator;
@@ -57,6 +59,11 @@ public class CoreFxController implements IdleMonitorRegisterer, PersistableEntit
 	public static final String FXML_FILE = "sa/gov/nic/bio/bw/client/core/fxml/core.fxml";
 	public static final String RB_LABELS_FILE = "sa/gov/nic/bio/bw/client/core/bundles/strings";
 	public static final String RB_TOP_MENUS_FILE = "sa/gov/nic/bio/bw/client/core/bundles/top_menus";
+	
+	// the following are here only to avoid warnings in FXML files.
+	@FXML private Pane headerPane;
+	@FXML private Pane menuPane;
+	@FXML private Pane footerPane;
 	
 	@FXML private Stage primaryStage;
 	@FXML private StackPane overlayPane;
@@ -120,7 +127,7 @@ public class CoreFxController implements IdleMonitorRegisterer, PersistableEntit
 	 * It is called after initialize() and passInitialResources().
 	 */
 	@FXML
-	private void onStageShown()
+	private void onStageShown(WindowEvent windowEvent)
 	{
 		primaryStage.setTitle(windowTitle);
 		
@@ -148,33 +155,16 @@ public class CoreFxController implements IdleMonitorRegisterer, PersistableEntit
 	
 	public void logout()
 	{
-		// close all opened dialogs (except the primary one)
-		ObservableList<Stage> stages = StageHelper.getStages();
-		for(int i = 1; i <= stages.size(); i++)
-		{
-			Stage stage = stages.get(i - 1);
-			if(stage != null && stage != primaryStage)
-			{
-				LOGGER.fine("Closing stage #" + i + ": " + stage.getTitle());
-				stage.close();
-			}
-		}
-		
-		stopIdleMonitor();
-		Context.getWebserviceManager().cancelRefreshTokenScheduler();
-		
 		Map<String, Object> uiDataMap = new HashMap<>();
 		uiDataMap.put(Workflow.KEY_SIGNAL_TYPE, SignalType.LOGOUT);
 		Context.getWorkflowManager().submitUserTask(uiDataMap);
 	}
 	
-	public void goToMenu(Class<?> menuControllerClass)
+	public void goToMenu(Class<?> menuWorkflowClass)
 	{
-		// TODO: send a request to the workflow manager
-		
 		Map<String, Object> dataMap = new HashMap<>();
 		dataMap.put(Workflow.KEY_SIGNAL_TYPE, SignalType.MENU_NAVIGATION);
-		dataMap.put(HomeWorkflow.KEY_MENU_WORKFLOW_CLASS, menuControllerClass);
+		dataMap.put(HomeWorkflow.KEY_MENU_WORKFLOW_CLASS, menuWorkflowClass);
 		Context.getWorkflowManager().submitUserTask(dataMap);
 	}
 	
@@ -183,15 +173,15 @@ public class CoreFxController implements IdleMonitorRegisterer, PersistableEntit
 	 * a non-UI thread.
 	 *
 	 * @param controllerClass class of the new/existing controller class of the body
-	 * @param dataMap data passed by the workflow manager to the controller
+	 * @param uiInputData data passed by the workflow manager to the controller
 	 */
-	private void renderBodyForm(Class<?> controllerClass, Map<String, Object> dataMap)
+	private void renderBodyForm(Class<?> controllerClass, Map<String, Object> uiInputData)
 	{
 		Platform.runLater(() ->
 		{
 			if(currentBodyController != null && currentBodyController.getClass() == controllerClass) // same form
 			{
-				currentBodyController.onWorkflowUserTaskLoad(false, dataMap);
+				currentBodyController.onWorkflowUserTaskLoad(false, uiInputData);
 			}
 			else // new form
 			{
@@ -199,10 +189,10 @@ public class CoreFxController implements IdleMonitorRegisterer, PersistableEntit
 				{
 					ControllerResourcesLocator controllerResourcesLocator = (ControllerResourcesLocator)
 																controllerClass.getDeclaredConstructor().newInstance();
-					currentBodyController = renderNewBodyForm(controllerResourcesLocator);
+					currentBodyController = renderNewBodyForm(controllerResourcesLocator, uiInputData);
 					if(currentBodyController != null)
 					{
-						currentBodyController.onWorkflowUserTaskLoad(true, dataMap);
+						currentBodyController.onWorkflowUserTaskLoad(true, uiInputData);
 					}
 				}
 				catch(InstantiationException | IllegalAccessException | NoSuchMethodException |
@@ -221,10 +211,12 @@ public class CoreFxController implements IdleMonitorRegisterer, PersistableEntit
 	 * the existing body node with the created node.
 	 *
 	 * @param controllerResourcesLocator a locator for the FXML file and the resource bundles
+	 * @param uiInputData data passed by the workflow manager to the controller
 	 *
 	 * @return the created JavaFX controller
 	 */
-	private BodyFxControllerBase renderNewBodyForm(ControllerResourcesLocator controllerResourcesLocator)
+	private BodyFxControllerBase renderNewBodyForm(ControllerResourcesLocator controllerResourcesLocator,
+	                                               Map<String, Object> uiInputData)
 	{
 		notificationPane.hide();
 		
@@ -299,12 +291,12 @@ public class CoreFxController implements IdleMonitorRegisterer, PersistableEntit
 				
 				wizardPane.goNext();
 			}
-			else
+			else // change the workflow indicator
 			{
-				/*String direction = (String) inputData.get("direction");
+				String direction = (String) uiInputData.get("direction");
 				if("backward".equals(direction)) wizardPane.goPrevious();
 				else if("forward".equals(direction)) wizardPane.goNext();
-				else if("startOver".equals(direction)) wizardPane.startOver();*/
+				else if("startOver".equals(direction)) wizardPane.startOver();
 			}
 		}
 		else wizardPane = null;
@@ -457,7 +449,6 @@ public class CoreFxController implements IdleMonitorRegisterer, PersistableEntit
 		persistableEntity.onSaveState(oldState);
 		this.onSaveState(oldState);
 		
-		
 		CoreFxController newCoreFxController = newStageLoader.getController();
 		newStage.setOnCloseRequest(GuiUtils.createOnExitHandler(primaryStage, newCoreFxController));
 		
@@ -493,7 +484,7 @@ public class CoreFxController implements IdleMonitorRegisterer, PersistableEntit
 	 */
 	private boolean applyStateBundle(StateBundle stateBundle)
 	{
-		BodyFxControllerBase newBodyController = renderNewBodyForm(currentBodyController);
+		BodyFxControllerBase newBodyController = renderNewBodyForm(currentBodyController, new HashMap<>());
 		currentBodyController = newBodyController;
 		
 		if(newBodyController instanceof PersistableEntity)
@@ -614,11 +605,13 @@ public class CoreFxController implements IdleMonitorRegisterer, PersistableEntit
 	}
 	
 	/**
-	 * Callback that is called when the session is timed out because of user inactive
+	 * Callback that is called when the session is timed out because of the user being inactive
 	 */
 	private void onIdle()
 	{
 		idleNotifier.hide();
+		stopIdleMonitor();
+		Context.getWebserviceManager().cancelRefreshTokenScheduler();
 		
 		Platform.runLater(() ->
 		{
@@ -628,9 +621,25 @@ public class CoreFxController implements IdleMonitorRegisterer, PersistableEntit
 		    boolean rtl = currentLanguage.getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT;
 		
 		    overlayPane.setVisible(true);
+			
+			// make sure the stage is not iconified, otherwise the dialog will be invisible
+			primaryStage.setIconified(false);
 		    DialogUtils.showWarningDialog(primaryStage, this, title, null,
 		                                  contentText, buttonText, rtl);
 		    overlayPane.setVisible(false);
+			
+			// close all opened dialogs (except the primary one)
+			ObservableList<Stage> stages = StageHelper.getStages();
+			for(int i = 1; i <= stages.size(); i++)
+			{
+				Stage stage = stages.get(i - 1);
+				if(stage != null && stage != primaryStage)
+				{
+					LOGGER.fine("Closing stage #" + i + ": " + stage.getTitle());
+					stage.close();
+				}
+			}
+		    
 		    logout();
 		});
 	}

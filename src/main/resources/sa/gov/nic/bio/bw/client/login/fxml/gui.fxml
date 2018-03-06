@@ -16,7 +16,7 @@
 
 <VBox xmlns="http://javafx.com/javafx/8.0.152" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="sa.gov.nic.bio.bw.client.login.LoginPaneFxController"
-      stylesheets="@../css/style.css" alignment="CENTER" spacing="70">
+      fx:id="rootPane" stylesheets="@../css/style.css" alignment="CENTER" spacing="70">
     <ImageView>
         <Image url="@../images/login_logo.png"/>
     </ImageView>

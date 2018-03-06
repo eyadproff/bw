@@ -22,13 +22,14 @@ public class Context
 	private ScheduledExecutorService scheduledExecutorService;
 	private ResourceBundle errorsBundle;
 	private UserSession userSession;
+	private String serverUrl;
 	
 	private Context(){}
 	
 	public static void attach(RuntimeEnvironment runtimeEnvironment, ConfigManager configManager,
 	                          WorkflowManager workflowManager, WebserviceManager webserviceManager,
 	                          ExecutorService executorService, ScheduledExecutorService scheduledExecutorService,
-	                          ResourceBundle errorsBundle, UserSession userSession)
+	                          ResourceBundle errorsBundle, UserSession userSession, String serverUrl)
 	{
 		INSTANCE.runtimeEnvironment = runtimeEnvironment;
 		INSTANCE.configManager = configManager;
@@ -38,6 +39,7 @@ public class Context
 		INSTANCE.scheduledExecutorService = scheduledExecutorService;
 		INSTANCE.errorsBundle = errorsBundle;
 		INSTANCE.userSession = userSession;
+		INSTANCE.serverUrl = serverUrl;
 	}
 	
 	public static RuntimeEnvironment getRuntimeEnvironment(){return INSTANCE.runtimeEnvironment;}
@@ -52,4 +54,6 @@ public class Context
 	
 	public static void setUserSession(UserSession userSession){INSTANCE.userSession = userSession;}
 	public static UserSession getUserSession(){return INSTANCE.userSession;}
+	
+	public static String getServerUrl(){return INSTANCE.serverUrl;}
 }

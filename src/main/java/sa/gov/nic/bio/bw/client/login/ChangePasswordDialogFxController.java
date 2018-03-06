@@ -15,7 +15,6 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import sa.gov.nic.bio.bw.client.core.Context;
-import sa.gov.nic.bio.bw.client.core.CoreFxController;
 import sa.gov.nic.bio.bw.client.core.RegionFxControllerBase;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.login.tasks.ChangePasswordTask;
@@ -48,7 +47,7 @@ public class ChangePasswordDialogFxController extends RegionFxControllerBase
 	
 	private boolean passwordChangedSuccessfully = false;
 	
-	@FXML
+	@Override
 	protected void initialize()
 	{
 		dialog.setOnShown(event ->
@@ -202,11 +201,5 @@ public class ChangePasswordDialogFxController extends RegionFxControllerBase
 		
 		txtResultMessage.setText(message);
 		dialog.getDialogPane().getScene().getWindow().sizeToScene();
-	}
-	
-	@Override
-	public void attachCoreFxController(CoreFxController coreFxController)
-	{
-		this.coreFxController = coreFxController;
 	}
 }

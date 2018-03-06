@@ -203,13 +203,13 @@ public class DialogUtils
 		if(idleMonitorRegisterer != null) idleMonitorRegisterer.unregisterStageForIdleMonitoring(stage);
 	}
 	
-	public static Stage buildCustomDialog(Window ownerWindow, String title, Pane contentPane, boolean rtl)
+	public static Stage buildCustomDialog(Stage ownerStage, String title, Pane contentPane, boolean rtl)
 	{
 		Stage stage = new Stage();
-		stage.initOwner(ownerWindow);
+		stage.initOwner(ownerStage);
+		stage.getIcons().setAll(ownerStage.getIcons());
 		stage.setResizable(false);
-		stage.initModality(Modality.APPLICATION_MODAL);
-		stage.initStyle(StageStyle.UNDECORATED);
+		stage.initModality(Modality.WINDOW_MODAL);
 		Scene scene = new Scene(contentPane);
 		scene.setNodeOrientation(rtl ? NodeOrientation.RIGHT_TO_LEFT : NodeOrientation.LEFT_TO_RIGHT);
 		stage.setTitle(title);
@@ -218,7 +218,8 @@ public class DialogUtils
 		return stage;
 	}
 	
-	public static <T> T buildCustomDialog(Window ownerWindow, String fxml, ResourceBundle resourceBundle, boolean rtl)
+	public static <T> T buildCustomDialogByFxml(Stage ownerStage, String fxml, ResourceBundle resourceBundle,
+	                                            boolean rtl)
 	{
 		URL fxmlResource = Thread.currentThread().getContextClassLoader().getResource(fxml);
 		
@@ -241,11 +242,12 @@ public class DialogUtils
 			return null;
 		}
 		
-		dialog.initOwner(ownerWindow);
+		dialog.initOwner(ownerStage);
 		Scene scene = dialog.getDialogPane().getScene();
 		scene.setNodeOrientation(rtl ? NodeOrientation.RIGHT_TO_LEFT : NodeOrientation.LEFT_TO_RIGHT);
 		
 		Stage stage = (Stage) scene.getWindow();
+		stage.getIcons().setAll(ownerStage.getIcons());
 		stage.setOnCloseRequest(event -> stage.close());
 		
 		return loader.getController();

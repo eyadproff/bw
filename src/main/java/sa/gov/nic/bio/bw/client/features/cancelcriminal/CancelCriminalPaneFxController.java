@@ -45,7 +45,7 @@ public class CancelCriminalPaneFxController extends BodyFxControllerBase
 	
 	private LookupTask lookupTask;
 	
-	@FXML
+	@Override
 	protected void initialize()
 	{
 		tabByPersonId.setGraphic(AppUtils.createFontAwesomeIcon('\uf2bb'));
@@ -109,12 +109,12 @@ public class CancelCriminalPaneFxController extends BodyFxControllerBase
 	}
 	
 	@Override
-	public void onWorkflowUserTaskLoad(boolean newForm, Map<String, Object> dataMap)
+	public void onWorkflowUserTaskLoad(boolean newForm, Map<String, Object> uiInputData)
 	{
 		if(newForm) Context.getExecutorService().submit(lookupTask);
 		else
 		{
-			ServiceResponse<?> serviceResponse = (ServiceResponse<?>) dataMap.get(Workflow.KEY_WEBSERVICE_RESPONSE);
+			ServiceResponse<?> serviceResponse = (ServiceResponse<?>) uiInputData.get(Workflow.KEY_WEBSERVICE_RESPONSE);
 			
 			disableUiControls(false);
 			
