@@ -15,7 +15,7 @@ public class FooterPaneFxController extends RegionFxControllerBase
 {
 	@FXML private ImageView ivLogoRTL;
 	@FXML private ImageView ivLogoLTR;
-	
+
 	@Override
 	protected void onPostAttachingCoreFxController()
 	{

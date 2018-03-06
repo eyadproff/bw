@@ -29,7 +29,7 @@ public class HeaderPaneFxController extends RegionFxControllerBase
 	@FXML private Label lblLocation;
 	@FXML private Label txtLocation;
 	@FXML private Button btnLogout;
-	
+
 	@Override
 	protected void initialize()
 	{
@@ -76,7 +76,7 @@ public class HeaderPaneFxController extends RegionFxControllerBase
 		coreFxController.getNotificationPane().hide();
 		coreFxController.stopIdleMonitor();
 		Context.getWebserviceManager().cancelRefreshTokenScheduler();
-		
+
 		String message = coreFxController.getStringsBundle().getString("logout.confirm");
 		boolean confirmed = coreFxController.showConfirmationDialogAndWait(null, message);
 		

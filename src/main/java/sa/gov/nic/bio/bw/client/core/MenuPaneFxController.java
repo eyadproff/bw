@@ -33,7 +33,7 @@ public class MenuPaneFxController extends RegionFxControllerBase
 {
 	@FXML private Accordion accordion;
 	@FXML private Pane overlayPane;
-	
+
 	private MenuItem selectedMenu;
 	private ListView<MenuItem> selectedListView;
 	

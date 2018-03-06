@@ -12,7 +12,7 @@ import sa.gov.nic.bio.bw.client.core.interfaces.RegionHideableController;
  *     <li>header</li>
  *     <li>footer</li>
  *     <li>menu</li>
- *     <li>menu</li>
+ *     <li>devices-runner-gadget</li>
  * </ul>
  *
  * @author Fouad Almalki

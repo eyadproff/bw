@@ -1,10 +1,10 @@
 # Release Notes:
 
-## v1.3.0
+## v2018.03.1
 
 - Add "MOFA Enrollment" feature.
 
-## v1.2.1
+## v2018.02.1
 
 - Source code overhaul.
 - Replace the workflow engine "Activiti" with a custom solution.

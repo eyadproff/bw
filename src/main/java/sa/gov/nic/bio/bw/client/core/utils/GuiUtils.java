@@ -250,7 +250,7 @@ public class GuiUtils
 			});
 	    });
 	}
-	
+
 	public static void attachImageDialog(CoreFxController coreFxController, ImageView imageView, String dialogTitle,
 	                                     String showImageText)
 	{
@@ -258,22 +258,22 @@ public class GuiUtils
 		{
 			ImageView iv = new ImageView(imageView.getImage());
 			iv.setPreserveRatio(true);
-			
+
 			double taskBarHeight = 40.0;
 			double rightLeftWindowBorders = 6.0;
 			double topBottomWindowBorders = 29.0;
 			double padding = 10.0;
-			
+
 			double maxWidth = Screen.getPrimary().getBounds().getWidth() - rightLeftWindowBorders - padding;
 			double maxHeight = Screen.getPrimary().getBounds().getHeight() - taskBarHeight - topBottomWindowBorders
 																						   - padding;
-			
+
 			double widthDiff = iv.getImage().getWidth() - maxWidth;
 			double heightDiff = iv.getImage().getHeight() - maxHeight;
-			
+
 			boolean beyondWidth = widthDiff > 0;
 			boolean beyondHeight = heightDiff > 0;
-			
+
 			if(beyondWidth && beyondHeight)
 			{
 				if(widthDiff >= heightDiff) iv.setFitWidth(maxWidth);
@@ -281,7 +281,7 @@ public class GuiUtils
 			}
 			else if(beyondWidth) iv.setFitWidth(maxWidth);
 			else if(beyondHeight) iv.setFitHeight(maxHeight);
-			
+
 			BorderPane borderPane = new BorderPane();
 			borderPane.setCenter(iv);
 			Stage stage = DialogUtils.buildCustomDialog(coreFxController.getPrimaryStage(), dialogTitle, borderPane,
@@ -293,7 +293,7 @@ public class GuiUtils
 			});
 			stage.show();
 		};
-		
+
 		imageView.setOnMouseClicked(mouseEvent ->
 		{
 		    // left-double-click
@@ -302,12 +302,12 @@ public class GuiUtils
 		        runnable.run();
 		    }
 		});
-		
+
 		ContextMenu contextMenu = new ContextMenu();
 		MenuItem menuItem = new MenuItem(showImageText);
 		menuItem.setOnAction(event -> runnable.run());
 		contextMenu.getItems().add(menuItem);
-		
+
 		imageView.setOnContextMenuRequested(contextMenuEvent -> contextMenu.show(imageView,
 		                                                                         contextMenuEvent.getScreenX(),
 		                                                                         contextMenuEvent.getScreenY()));
