@@ -90,17 +90,17 @@ public class HomePaneFxController extends BodyFxControllerBase
 	}
 	
 	@Override
-	public void onWorkflowUserTaskLoad(boolean newForm, Map<String, Object> dataMap)
+	public void onWorkflowUserTaskLoad(boolean newForm, Map<String, Object> uiInputData)
 	{
-		String errorCode = (String) dataMap.get(Workflow.KEY_ERROR_CODE);
+		String errorCode = (String) uiInputData.get(Workflow.KEY_ERROR_CODE);
 		
 		if(errorCode != null)
 		{
 			loginTimestampBox.setManaged(false);
 			loginTimestampBox.setVisible(false);
 			
-			String[] errorDetails = (String[]) dataMap.get(Workflow.KEY_ERROR_DETAILS);
-			Exception exception = (Exception) dataMap.get(Workflow.KEY_EXCEPTION);
+			String[] errorDetails = (String[]) uiInputData.get(Workflow.KEY_ERROR_DETAILS);
+			Exception exception = (Exception) uiInputData.get(Workflow.KEY_EXCEPTION);
 			
 			coreFxController.showErrorDialog(errorCode, exception, errorDetails);
 		}

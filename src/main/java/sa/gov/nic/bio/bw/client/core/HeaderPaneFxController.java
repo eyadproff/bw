@@ -11,8 +11,6 @@ import org.controlsfx.glyphfont.FontAwesome;
 import org.controlsfx.glyphfont.Glyph;
 import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
 
-import java.util.ResourceBundle;
-
 /**
  * JavaFX controller for the header. Shown only after login. It contains information about the logged in
  * user and also a button to logout from the current session.
@@ -22,7 +20,6 @@ import java.util.ResourceBundle;
  */
 public class HeaderPaneFxController extends RegionFxControllerBase
 {
-	@FXML private ResourceBundle resources;
 	@FXML private Pane rootPane;
 	@FXML private ImageView ivAvatar;
 	@FXML private Label lblUsername;
@@ -32,16 +29,8 @@ public class HeaderPaneFxController extends RegionFxControllerBase
 	@FXML private Label lblLocation;
 	@FXML private Label txtLocation;
 	@FXML private Button btnLogout;
-	
-	private CoreFxController coreFxController;
-	
+
 	@Override
-	public void attachCoreFxController(CoreFxController coreFxController)
-	{
-		this.coreFxController = coreFxController;
-	}
-	
-	@FXML
 	protected void initialize()
 	{
 		Glyph atIcon = AppUtils.createFontAwesomeIcon(FontAwesome.Glyph.AT);
@@ -85,6 +74,9 @@ public class HeaderPaneFxController extends RegionFxControllerBase
 	private void onLogoutButtonClicked(ActionEvent actionEvent)
 	{
 		coreFxController.getNotificationPane().hide();
+		coreFxController.stopIdleMonitor();
+		Context.getWebserviceManager().cancelRefreshTokenScheduler();
+
 		String message = coreFxController.getStringsBundle().getString("logout.confirm");
 		boolean confirmed = coreFxController.showConfirmationDialogAndWait(null, message);
 		

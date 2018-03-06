@@ -14,7 +14,7 @@ public interface WorkflowUserTaskController
 	 * A callback that is called when the workflow begins a user task.
 	 *
 	 * @param newForm whether this is a new form or the existing form
-	 * @param dataMap data passed by the workflow to the controller
+	 * @param uiInputData data passed by the workflow to the controller
 	 */
-	void onWorkflowUserTaskLoad(boolean newForm, Map<String, Object> dataMap);
+	void onWorkflowUserTaskLoad(boolean newForm, Map<String, Object> uiInputData);
 }

@@ -28,7 +28,7 @@ public abstract class FxControllerBase implements ControllerResourcesLocator
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final URL getFxmlLocation()
+	public URL getFxmlLocation()
 	{
 		return getClass().getResource("fxml/gui.fxml");
 	}

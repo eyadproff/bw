@@ -87,10 +87,7 @@ public class AppEntryPoint extends Application
 	private String windowTitle;
 	
 	private boolean successfulInit = false;
-	
-	private int readTimeoutSeconds = 60; // 1 minute
-	private int connectTimeoutSeconds = 60; // 1 minute
-    
+
     @Override
     public void init()
     {
@@ -108,7 +105,7 @@ public class AppEntryPoint extends Application
 		    return;
 	    }
 	
-	    String webserviceBaseUrl = System.getProperty("bio.serverUrl");
+	    String serverUrl = System.getProperty("bio.serverUrl");
 	    String sRuntimeEnvironment = System.getProperty("jnlp.bio.runtime.environment", "LOCAL");
 	    LOGGER.info("sRuntimeEnvironment = " + sRuntimeEnvironment);
 	
@@ -142,7 +139,11 @@ public class AppEntryPoint extends Application
 	    
 	    String sReadTimeoutSeconds = System.getProperty("jnlp.bio.bw.webservice.readTimeoutSeconds");
 	    String sConnectTimeoutSeconds = System.getProperty("jnlp.bio.bw.webservice.connectTimeoutSeconds");
-	
+
+	    // default values
+	    int readTimeoutSeconds = 60; // 1 minute
+	    int connectTimeoutSeconds = 60; // 1 minute
+
 	    if(sReadTimeoutSeconds == null)
 	    {
 		    LOGGER.warning("sReadTimeoutSeconds is null! Default value is " + readTimeoutSeconds);
@@ -232,7 +233,6 @@ public class AppEntryPoint extends Application
 	    
 	    if(runtimeEnvironment == RuntimeEnvironment.LOCAL || runtimeEnvironment == RuntimeEnvironment.DEV)
 	    {
-		
 		    CountDownLatch latch = new CountDownLatch(1);
 		    AtomicReference<String> reference = new AtomicReference<>();
 		
@@ -251,7 +251,7 @@ public class AppEntryPoint extends Application
 		    try
 		    {
 			    latch.await(); // wait until the user choose a url
-			    webserviceBaseUrl = reference.get();
+			    serverUrl = reference.get();
 		    }
 		    catch(InterruptedException e)
 		    {
@@ -260,20 +260,20 @@ public class AppEntryPoint extends Application
 		
 	    }
 	
-	    if(webserviceBaseUrl == null)
+	    if(serverUrl == null)
 	    {
 		    String errorCode = StartupErrorCodes.C001_00009.getCode();
-		    String[] errorDetails = {"\"webserviceBaseUrl\" is null!"};
+		    String[] errorDetails = {"\"serverUrl\" is null!"};
 		    notifyPreloader(PreloaderNotification.failure(null, errorCode, errorDetails));
 		    return;
 	    }
 	
-	    LOGGER.info("webserviceBaseUrl = " + webserviceBaseUrl);
-	
-	    webserviceManager.init(webserviceBaseUrl, readTimeoutSeconds, connectTimeoutSeconds);
+	    LOGGER.info("serverUrl = " + serverUrl);
+
+	    webserviceManager.init(serverUrl, readTimeoutSeconds, connectTimeoutSeconds);
 	
 	    Context.attach(runtimeEnvironment, configManager, workflowManager, webserviceManager, executorService,
-	                   scheduledExecutorService, errorsBundle, new UserSession());
+	                   scheduledExecutorService, errorsBundle, new UserSession(), serverUrl);
 	
 	    LookupAPI lookupAPI = webserviceManager.getApi(LookupAPI.class);
 	    String url = System.getProperty("jnlp.bio.bw.service.lookupNicHijriCalendarData");

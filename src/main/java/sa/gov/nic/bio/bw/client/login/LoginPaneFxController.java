@@ -38,7 +38,7 @@ public class LoginPaneFxController extends BodyFxControllerBase implements Persi
 	@FXML private Button btnChangePassword;
 	@FXML private ProgressIndicator piLogin;
 	
-	@FXML
+	@Override
 	protected void initialize()
 	{
 		cboLanguage.getItems().setAll(GuiLanguage.values());
@@ -82,14 +82,14 @@ public class LoginPaneFxController extends BodyFxControllerBase implements Persi
 	}
 	
 	@Override
-	public void onWorkflowUserTaskLoad(boolean newForm, Map<String, Object> dataMap)
+	public void onWorkflowUserTaskLoad(boolean newForm, Map<String, Object> uiInputData)
 	{
 		if(!newForm)
 		{
 			txtPassword.clear();
 			disableUiControls(false);
 			
-			ServiceResponse<?> serviceResponse = (ServiceResponse<?>) dataMap.get(Workflow.KEY_WEBSERVICE_RESPONSE);
+			ServiceResponse<?> serviceResponse = (ServiceResponse<?>) uiInputData.get(Workflow.KEY_WEBSERVICE_RESPONSE);
 			if(!serviceResponse.isSuccess())
 			{
 				reportNegativeResponse(serviceResponse.getErrorCode(), serviceResponse.getException(),
@@ -120,7 +120,7 @@ public class LoginPaneFxController extends BodyFxControllerBase implements Persi
 		hideNotification();
 		
 		boolean rtl = coreFxController.getCurrentLanguage().getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT;
-		ChangePasswordDialogFxController controller = DialogUtils.buildCustomDialog(coreFxController.getPrimaryStage(), FXML_CHANGE_PASSWORD, stringsBundle, rtl);
+		ChangePasswordDialogFxController controller = DialogUtils.buildCustomDialogByFxml(coreFxController.getPrimaryStage(), FXML_CHANGE_PASSWORD, stringsBundle, rtl);
 		
 		if(controller != null)
 		{

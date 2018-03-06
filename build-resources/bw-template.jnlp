@@ -12,8 +12,8 @@
         <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se"/>
 
         <!-- List of jars -->
-        <jar href="jnlp-jars/bcl-1.1.0.jar"/>
-        <jar href="jnlp-jars/bcl-utils-1.0.0.jar"/>
+        <jar href="jnlp-jars/bcl-2018.03.1.jar"/>
+        <jar href="jnlp-jars/bcl-utils-2018.03.1.jar"/>
         <jar href="jnlp-jars/gson-2.8.2.jar"/>
 
         <!-- Enable jars compressing -->

@@ -39,5 +39,11 @@ public abstract class RegionFxControllerBase extends FxControllerBase implements
 	public void attachCoreFxController(CoreFxController coreFxController)
 	{
 		this.coreFxController = coreFxController;
+		onPostAttachingCoreFxController();
 	}
+
+	/**
+	 * A callback that is called after <code>attachCoreFxController(CoreFxController coreFxController)</code>
+	 */
+	protected void onPostAttachingCoreFxController(){};
 }
