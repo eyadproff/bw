@@ -156,10 +156,10 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 			Boolean bool = (Boolean) uiInputData.get(KEY_ICAO_REQUIRED);
 			if(bool != null) icaoRequired = bool;
 			
-			if(icaoRequired) btnNext.disableProperty().bind(ivCapturedImage.visibleProperty().not().and(
-											ivCroppedImage.imageProperty().isNull()).and(
-											ivSuccessIcao.imageProperty().isNull()));
-			else btnNext.disableProperty().bind(ivCapturedImage.imageProperty().isNull().or(
+			if(icaoRequired) btnNext.disableProperty().bind(ivCapturedImage.imageProperty().isNull().or(
+											ivCroppedImage.imageProperty().isNull()).or(
+											ivSuccessIcao.visibleProperty().not()));
+			else btnNext.disableProperty().bind(ivCapturedImage.imageProperty().isNull().and(
 											ivCroppedImage.imageProperty().isNull()));
 			
 			bool = (Boolean) uiInputData.get(KEY_ICAO_SUCCESS_ICON_VISIBLE);

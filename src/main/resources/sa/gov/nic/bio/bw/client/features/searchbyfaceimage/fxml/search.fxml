@@ -6,18 +6,24 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.geometry.Insets?>
 
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.ProgressIndicator?>
 <BorderPane xmlns="http://javafx.com/javafx/8.0.152" xmlns:fx="http://javafx.com/fxml/1"
-            fx:id="rootPane" fx:controller="sa.gov.nic.bio.bw.client.features.searchbyfaceimage.SearchFxController">
+            fx:id="rootPane" stylesheets="@../css/style.css"
+            fx:controller="sa.gov.nic.bio.bw.client.features.searchbyfaceimage.SearchFxController">
     <center>
-        <Label text="Search"/>
+        <VBox alignment="CENTER" spacing="5.0">
+            <ProgressIndicator fx:id="piProgress" maxWidth="25.0" maxHeight="25.0"/>
+            <Label fx:id="txtProgress" text="%label.searchInProgress"/>
+            <Button fx:id="btnRetry" text="%button.retry"/>
+        </VBox>
     </center>
     <bottom>
         <HBox alignment="CENTER" spacing="10">
             <padding>
                 <Insets bottom="10"/>
             </padding>
-            <Button fx:id="btnPrevious" text="%button.previous"/>
-            <Button fx:id="btnNext" text="%button.next"/>
+            <Button fx:id="btnStartOver" text="%button.startOver" disable="true"/>
         </HBox>
     </bottom>
 </BorderPane>

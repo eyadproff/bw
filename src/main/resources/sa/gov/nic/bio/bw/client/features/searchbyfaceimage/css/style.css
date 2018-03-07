@@ -10,6 +10,12 @@
     -fx-border-style: dashed;
 }
 
+.image-border-confirm {
+    -fx-border-color: #398755;
+    -fx-border-width: 3px;
+    -fx-border-style: solid;
+}
+
 .white-background {
     -fx-background-color: white;
 }

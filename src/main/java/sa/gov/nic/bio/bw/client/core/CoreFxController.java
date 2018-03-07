@@ -305,7 +305,11 @@ public class CoreFxController implements IdleMonitorRegisterer, PersistableEntit
 				String direction = (String) uiInputData.get("direction");
 				if("backward".equals(direction)) wizardPane.goPrevious();
 				else if("forward".equals(direction)) wizardPane.goNext();
-				else if("startOver".equals(direction)) wizardPane.startOver();
+				else if("startOver".equals(direction))
+				{
+					wizardPane.startOver();
+					uiInputData.clear();
+				}
 			}
 		}
 		else wizardPane = null;
