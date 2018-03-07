@@ -11,6 +11,9 @@ import org.controlsfx.glyphfont.FontAwesome;
 import org.controlsfx.glyphfont.Glyph;
 import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  * JavaFX controller for the header. Shown only after login. It contains information about the logged in
  * user and also a button to logout from the current session.
@@ -20,6 +23,7 @@ import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
  */
 public class HeaderPaneFxController extends RegionFxControllerBase
 {
+	private static final Logger LOGGER = Logger.getLogger(HeaderPaneFxController.class.getName());
 	@FXML private Pane rootPane;
 	@FXML private ImageView ivAvatar;
 	@FXML private Label lblUsername;
@@ -73,13 +77,25 @@ public class HeaderPaneFxController extends RegionFxControllerBase
 	@FXML
 	private void onLogoutButtonClicked(ActionEvent actionEvent)
 	{
-		coreFxController.getNotificationPane().hide();
-		coreFxController.stopIdleMonitor();
-		Context.getWebserviceManager().cancelRefreshTokenScheduler();
-
 		String message = coreFxController.getStringsBundle().getString("logout.confirm");
 		boolean confirmed = coreFxController.showConfirmationDialogAndWait(null, message);
 		
-		if(confirmed) coreFxController.logout();
+		if(confirmed)
+		{
+			coreFxController.getNotificationPane().hide();
+			coreFxController.stopIdleMonitor();
+			Context.getWebserviceManager().cancelRefreshTokenScheduler();
+			
+			try
+			{
+				Context.getBioKitManager().disconnect();
+			}
+			catch(Exception e)
+			{
+				LOGGER.log(Level.WARNING, "failed to disconnect with Biokit on logout!", e);
+			}
+			
+			coreFxController.logout();
+		}
 	}
 }

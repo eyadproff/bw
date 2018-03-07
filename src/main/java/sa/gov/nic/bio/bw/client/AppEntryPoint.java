@@ -435,7 +435,7 @@ public class AppEntryPoint extends Application
 		    @Override
 		    public void logNewMessage(Message message)
 		    {
-			    System.out.println(message.toShortString());
+		    	LOGGER.fine(message.toShortString());
 		    }
 	    }, null);
 	

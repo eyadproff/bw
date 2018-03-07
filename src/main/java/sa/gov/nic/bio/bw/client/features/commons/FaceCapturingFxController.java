@@ -46,6 +46,7 @@ import java.util.Base64;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.concurrent.CancellationException;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.logging.Logger;
 
@@ -151,27 +152,30 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 			
 			deviceManagerGadgetPaneController.setCameraInitializationListener(initialized ->
 			{
-				GuiUtils.showNode(lblStatus, true);
-				GuiUtils.showNode(btnStopCameraLivePreview, false);
-				GuiUtils.showNode(btnCaptureFace, false);
-				GuiUtils.showNode(btnCancel, false);
-				
-				tpCameraLivePreview.setActive(false);
-				ivCameraLivePreview.setImage(null);
-				
-				if(initialized)
+				Platform.runLater(() ->
 				{
-					GuiUtils.showNode(btnStartCameraLivePreview, true);
-					lblStatus.setText(resources.getString("label.status.cameraInitializedSuccessfully"));
-					cameraInitializedAtLeastOnce = true;
-					LOGGER.info("The camera is initialized!");
-				}
-				else if(cameraInitializedAtLeastOnce)
-				{
-					GuiUtils.showNode(btnStartCameraLivePreview, false);
-					lblStatus.setText(resources.getString("label.status.cameraDisconnected"));
-					LOGGER.info("The camera is disconnected!");
-				}
+					GuiUtils.showNode(lblStatus, true);
+					GuiUtils.showNode(btnStopCameraLivePreview, false);
+					GuiUtils.showNode(btnCaptureFace, false);
+					GuiUtils.showNode(btnCancel, false);
+					
+					tpCameraLivePreview.setActive(false);
+					ivCameraLivePreview.setImage(null);
+					
+					if(initialized)
+					{
+						GuiUtils.showNode(btnStartCameraLivePreview, true);
+						lblStatus.setText(resources.getString("label.status.cameraInitializedSuccessfully"));
+						cameraInitializedAtLeastOnce = true;
+						LOGGER.info("The camera is initialized!");
+					}
+					else if(cameraInitializedAtLeastOnce)
+					{
+						GuiUtils.showNode(btnStartCameraLivePreview, false);
+						lblStatus.setText(resources.getString("label.status.cameraDisconnected"));
+						LOGGER.info("The camera is disconnected!");
+					}
+				});
 			});
 		}
 	}
@@ -264,6 +268,8 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 			GuiUtils.showNode(btnCaptureFace, false);
 			
 			Throwable exception = task.getException();
+			
+			if(exception instanceof ExecutionException) exception = exception.getCause();
 			
 			if(exception instanceof TimeoutException)
 			{
@@ -367,6 +373,8 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 		    GuiUtils.showNode(btnCancel, false);
 		
 		    Throwable exception = task.getException();
+			
+			if(exception instanceof ExecutionException) exception = exception.getCause();
 		
 		    if(exception instanceof TimeoutException)
 		    {
@@ -639,6 +647,8 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 			captureInProgress = false;
 			
 			Throwable exception = task.getException();
+			
+			if(exception instanceof ExecutionException) exception = exception.getCause();
 			
 			if(exception instanceof TimeoutException)
 			{

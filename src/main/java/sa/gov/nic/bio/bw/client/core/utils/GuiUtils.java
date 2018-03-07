@@ -284,6 +284,7 @@ public class GuiUtils
 
 			BorderPane borderPane = new BorderPane();
 			borderPane.setCenter(iv);
+			
 			Stage stage = DialogUtils.buildCustomDialog(coreFxController.getPrimaryStage(), dialogTitle, borderPane,
 			                                            coreFxController.getCurrentLanguage()
 				                                            .getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT);
@@ -291,6 +292,9 @@ public class GuiUtils
 			{
 				if(keyEvent.getCode() == KeyCode.ESCAPE) stage.close();
 			});
+			
+			stage.setOnHidden(event -> coreFxController.unregisterStageForIdleMonitoring(stage));
+			coreFxController.registerStageForIdleMonitoring(stage);
 			stage.show();
 		};
 

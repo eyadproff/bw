@@ -162,15 +162,6 @@ public class CoreFxController implements IdleMonitorRegisterer, PersistableEntit
 	
 	public void logout()
 	{
-		try
-		{
-			Context.getBioKitManager().disconnect();
-		}
-		catch(Exception e)
-		{
-			LOGGER.log(Level.WARNING, "failed to disconnect with Biokit on logout!", e);
-		}
-		
 		Map<String, Object> uiDataMap = new HashMap<>();
 		uiDataMap.put(Workflow.KEY_SIGNAL_TYPE, SignalType.LOGOUT);
 		Context.getWorkflowManager().submitUserTask(uiDataMap);
@@ -628,6 +619,15 @@ public class CoreFxController implements IdleMonitorRegisterer, PersistableEntit
 		idleNotifier.hide();
 		stopIdleMonitor();
 		Context.getWebserviceManager().cancelRefreshTokenScheduler();
+		
+		try
+		{
+			Context.getBioKitManager().disconnect();
+		}
+		catch(Exception e)
+		{
+			LOGGER.log(Level.WARNING, "failed to disconnect with Biokit on logout!", e);
+		}
 		
 		Platform.runLater(() ->
 		{

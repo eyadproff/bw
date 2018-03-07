@@ -202,6 +202,9 @@ public class DevicesRunnerGadgetPaneFxController extends RegionFxControllerBase
 		String message = resources.getString("label.runningAndConnectingDevicesRunner");
 		Stage dialogStage = buildProgressDialog(cancelCommand, message, null);
 		runAndConnectDevicesRunner(cancelCommand, dialogStage);
+		
+		dialogStage.setOnHidden(event -> coreFxController.unregisterStageForIdleMonitoring(dialogStage));
+		coreFxController.registerStageForIdleMonitoring(dialogStage);
 		dialogStage.show();
 	}
 	
@@ -306,6 +309,9 @@ public class DevicesRunnerGadgetPaneFxController extends RegionFxControllerBase
 		});
 		
 		Context.getExecutorService().submit(runTask);
+		
+		dialogStage.setOnHidden(event -> coreFxController.unregisterStageForIdleMonitoring(dialogStage));
+		coreFxController.registerStageForIdleMonitoring(dialogStage);
 		dialogStage.show();
 	}
 	
@@ -388,6 +394,9 @@ public class DevicesRunnerGadgetPaneFxController extends RegionFxControllerBase
 		});
 		
 		Context.getExecutorService().submit(task);
+		
+		dialogStage.setOnHidden(event -> coreFxController.unregisterStageForIdleMonitoring(dialogStage));
+		coreFxController.registerStageForIdleMonitoring(dialogStage);
 		dialogStage.show();
 	}
 	
@@ -472,6 +481,9 @@ public class DevicesRunnerGadgetPaneFxController extends RegionFxControllerBase
 		});
 		
 		Context.getExecutorService().submit(task);
+		
+		dialogStage.setOnHidden(event -> coreFxController.unregisterStageForIdleMonitoring(dialogStage));
+		coreFxController.registerStageForIdleMonitoring(dialogStage);
 		dialogStage.show();
 	}
 	
@@ -555,6 +567,9 @@ public class DevicesRunnerGadgetPaneFxController extends RegionFxControllerBase
 		});
 		
 		Context.getExecutorService().submit(task);
+		
+		dialogStage.setOnHidden(event -> coreFxController.unregisterStageForIdleMonitoring(dialogStage));
+		coreFxController.registerStageForIdleMonitoring(dialogStage);
 		dialogStage.show();
 	}
 	
