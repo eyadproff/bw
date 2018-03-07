@@ -1,14 +1,20 @@
 package sa.gov.nic.bio.bw.client;
 
+import com.google.gson.Gson;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.NodeOrientation;
 import javafx.stage.Stage;
 import retrofit2.Call;
+import sa.gov.nic.bio.biokit.exceptions.JsonMappingException;
+import sa.gov.nic.bio.biokit.utils.JsonMapper;
+import sa.gov.nic.bio.biokit.websocket.WebsocketLogger;
+import sa.gov.nic.bio.biokit.websocket.beans.Message;
 import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.CoreFxController;
 import sa.gov.nic.bio.bw.client.core.beans.UserSession;
+import sa.gov.nic.bio.bw.client.core.biokit.BioKitManager;
 import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.client.core.utils.CombinedResourceBundle;
 import sa.gov.nic.bio.bw.client.core.utils.ConfigManager;
@@ -25,6 +31,7 @@ import sa.gov.nic.bio.bw.client.core.workflow.WorkflowManager;
 import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
 import sa.gov.nic.bio.bw.client.preloader.utils.StartupErrorCodes;
 
+import javax.websocket.CloseReason;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -272,8 +279,168 @@ public class AppEntryPoint extends Application
 
 	    webserviceManager.init(serverUrl, readTimeoutSeconds, connectTimeoutSeconds);
 	
-	    Context.attach(runtimeEnvironment, configManager, workflowManager, webserviceManager, executorService,
-	                   scheduledExecutorService, errorsBundle, new UserSession(), serverUrl);
+	    String sResponseTimeoutSeconds = System.getProperty("jnlp.bio.bw.biokit.responseTimeoutSeconds");
+	
+	    String sMaxTextMessageBufferSizeInBytes =
+			    System.getProperty("jnlp.bio.bw.biokit.maxTextMessageBufferSizeInBytes");
+	    String sMaxBinaryMessageBufferSizeInBytes =
+			    System.getProperty("jnlp.bio.bw.biokit.maxBinaryMessageBufferSizeInBytes");
+	
+	    // default values
+	    int maxTextMessageBufferSizeInBytes = 60; // 10 MB
+	    int maxBinaryMessageBufferSizeInBytes = 60; // 10 MB
+	    int responseTimeoutSeconds = 30; // 30 seconds
+	    int biokitWebsocketPort;
+	
+	    if(sMaxTextMessageBufferSizeInBytes == null)
+	    {
+		    LOGGER.warning("sMaxTextMessageBufferSizeInBytes is null! Default value is "
+				                   + maxTextMessageBufferSizeInBytes);
+	    }
+	    else try
+	    {
+		    maxTextMessageBufferSizeInBytes = Integer.parseInt(sMaxTextMessageBufferSizeInBytes);
+		    LOGGER.info("maxTextMessageBufferSizeInBytes = " + maxTextMessageBufferSizeInBytes);
+	    }
+	    catch(NumberFormatException e)
+	    {
+		    LOGGER.warning("Failed to parse sMaxTextMessageBufferSizeInBytes as int! " +
+				                   "sMaxTextMessageBufferSizeInBytes = " + sMaxTextMessageBufferSizeInBytes);
+	    }
+	
+	    if(sMaxBinaryMessageBufferSizeInBytes == null)
+	    {
+		    LOGGER.warning("sMaxBinaryMessageBufferSizeInBytes is null! Default value is "
+				                   + maxBinaryMessageBufferSizeInBytes);
+	    }
+	    else try
+	    {
+		    maxBinaryMessageBufferSizeInBytes = Integer.parseInt(sMaxBinaryMessageBufferSizeInBytes);
+		    LOGGER.info("maxBinaryMessageBufferSizeInBytes = " + maxBinaryMessageBufferSizeInBytes);
+	    }
+	    catch(NumberFormatException e)
+	    {
+		    LOGGER.warning("Failed to parse sMaxBinaryMessageBufferSizeInBytes as int! " +
+				                   "sMaxBinaryMessageBufferSizeInBytes = " + sMaxBinaryMessageBufferSizeInBytes);
+	    }
+	
+	    if(sResponseTimeoutSeconds == null)
+	    {
+		    LOGGER.warning("sResponseTimeoutSeconds is null! Default value is " + responseTimeoutSeconds);
+	    }
+	    else try
+	    {
+		    responseTimeoutSeconds = Integer.parseInt(sResponseTimeoutSeconds);
+		    LOGGER.info("responseTimeoutSeconds = " + responseTimeoutSeconds);
+	    }
+	    catch(NumberFormatException e)
+	    {
+		    LOGGER.warning("Failed to parse sResponseTimeoutSeconds as int! sResponseTimeoutSeconds = "
+				                   + sResponseTimeoutSeconds);
+	    }
+	
+	    String biokitWebsocketUrl = System.getProperty("jnlp.bio.bw.biokit.serverUrl");
+	    String sBiokitWebsocketPort = System.getProperty("jnlp.bio.bw.biokit.port");
+	    String biokitBclId = System.getProperty("jnlp.bio.bw.biokit.bclId");
+	
+	    if(biokitWebsocketUrl == null)
+	    {
+		    String errorCode = StartupErrorCodes.C001_00015.getCode();
+		    String[] errorDetails = {"\"biokitWebsocketUrl\" is null!"};
+		    notifyPreloader(PreloaderNotification.failure(null, errorCode, errorDetails));
+		    return;
+	    }
+	
+	    if(sBiokitWebsocketPort == null)
+	    {
+		    String errorCode = StartupErrorCodes.C001_00016.getCode();
+		    String[] errorDetails = {"\"sBiokitWebsocketPort\" is null!"};
+		    notifyPreloader(PreloaderNotification.failure(null, errorCode, errorDetails));
+		    return;
+	    }
+	    else try
+	    {
+		    biokitWebsocketPort = Integer.parseInt(sBiokitWebsocketPort);
+		    LOGGER.info("biokitWebsocketPort = " + biokitWebsocketPort);
+	    }
+	    catch(NumberFormatException e)
+	    {
+		    String errorCode = StartupErrorCodes.C001_00017.getCode();
+		    String[] errorDetails = {"\"sBiokitWebsocketPort\" is not int!"};
+		    notifyPreloader(PreloaderNotification.failure(null, errorCode, errorDetails));
+		    return;
+	    }
+	
+	    if(biokitBclId == null)
+	    {
+		    String errorCode = StartupErrorCodes.C001_00018.getCode();
+		    String[] errorDetails = {"\"biokitBclId\" is null!"};
+		    notifyPreloader(PreloaderNotification.failure(null, errorCode, errorDetails));
+		    return;
+	    }
+	
+	    JsonMapper<Message> jsonMapper = new JsonMapper<Message>()
+	    {
+		    @Override
+		    public Message fromJson(String json) throws JsonMappingException
+		    {
+			    try
+			    {
+				    return new Gson().fromJson(json, Message.class);
+			    }
+			    catch(Exception e)
+			    {
+				    throw new JsonMappingException(e);
+			    }
+		    }
+		
+		    @Override
+		    public String toJson(Message object) throws JsonMappingException
+		    {
+			    try
+			    {
+				    return new Gson().toJson(object);
+			    }
+			    catch(Exception e)
+			    {
+				    throw new JsonMappingException(e);
+			    }
+		    }
+	    };
+	
+	    BioKitManager bioKitManager = new BioKitManager(biokitBclId, biokitWebsocketPort, biokitWebsocketUrl,
+	                                                    maxTextMessageBufferSizeInBytes,
+	                                                    maxBinaryMessageBufferSizeInBytes,
+	                                                    responseTimeoutSeconds, jsonMapper, null,
+	                                                    new WebsocketLogger()
+	    {
+		    @Override
+		    public void logConnectionOpening()
+		    {
+		
+		    }
+		
+		    @Override
+		    public void logConnectionClosure(CloseReason closeReason)
+		    {
+		
+		    }
+		
+		    @Override
+		    public void logError(Throwable throwable)
+		    {
+		
+		    }
+		
+		    @Override
+		    public void logNewMessage(Message message)
+		    {
+		        LOGGER.fine(message.toShortString());
+		    }
+	    }, null);
+	
+	    Context.attach(runtimeEnvironment, configManager, workflowManager, webserviceManager, bioKitManager,
+	                   executorService, scheduledExecutorService, errorsBundle, new UserSession(), serverUrl);
 	
 	    LookupAPI lookupAPI = webserviceManager.getApi(LookupAPI.class);
 	    String url = System.getProperty("jnlp.bio.bw.service.lookupNicHijriCalendarData");

@@ -1,5 +1,10 @@
 # Release Notes:
 
+## v2018.03.1
+
+- Integrate with Biokit-library.
+- Add new common screens for fingerprint and face capturing (fingerprint's not ready yet).
+
 ## v2018.02.1
 
 - Source code overhaul.
