@@ -109,6 +109,8 @@ public class CoreFxController implements IdleMonitorRegisterer, PersistableEntit
 	public ResourceBundle getStringsBundle(){return stringsBundle;}
 	public ResourceBundle getTopMenusBundle(){return topMenusBundle;}
 	
+	public WizardPane getWizardPane(){return wizardPane;}
+	
 	@FXML
 	private void initialize()
 	{
