@@ -44,6 +44,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 
@@ -63,6 +64,7 @@ public class CoreFxController implements IdleMonitorRegisterer, PersistableEntit
 	// the following are here only to avoid warnings in FXML files.
 	@FXML private Pane headerPane;
 	@FXML private Pane menuPane;
+	@FXML private Pane deviceRunnerGadgetPane;
 	@FXML private Pane footerPane;
 	
 	@FXML private Stage primaryStage;
@@ -70,6 +72,7 @@ public class CoreFxController implements IdleMonitorRegisterer, PersistableEntit
 	@FXML private HeaderPaneFxController headerPaneController;
 	@FXML private FooterPaneFxController footerPaneController;
 	@FXML private MenuPaneFxController menuPaneController;
+	@FXML private DevicesRunnerGadgetPaneFxController deviceRunnerGadgetPaneController;
 	@FXML private NotificationPane idleNotifier;
 	@FXML private NotificationPane notificationPane;
 	@FXML private BorderPane bodyPane;
@@ -100,6 +103,9 @@ public class CoreFxController implements IdleMonitorRegisterer, PersistableEntit
 	public HeaderPaneFxController getHeaderPaneController(){return headerPaneController;}
 	public FooterPaneFxController getFooterPaneController(){return footerPaneController;}
 	public MenuPaneFxController getMenuPaneController(){return menuPaneController;}
+	public DevicesRunnerGadgetPaneFxController getDeviceManagerGadgetPaneController()
+	{return deviceRunnerGadgetPaneController;}
+	
 	public ResourceBundle getStringsBundle(){return stringsBundle;}
 	public ResourceBundle getTopMenusBundle(){return topMenusBundle;}
 	
@@ -135,6 +141,7 @@ public class CoreFxController implements IdleMonitorRegisterer, PersistableEntit
 		headerPaneController.attachCoreFxController(this);
 		footerPaneController.attachCoreFxController(this);
 		menuPaneController.attachCoreFxController(this);
+		deviceRunnerGadgetPaneController.attachCoreFxController(this);
 		
 		// fix the size of the header pane and the menu pane.
 		headerPaneController.getRegionRootPane().setMinSize(headerPaneController.getRegionRootPane().getWidth(),
@@ -612,6 +619,15 @@ public class CoreFxController implements IdleMonitorRegisterer, PersistableEntit
 		idleNotifier.hide();
 		stopIdleMonitor();
 		Context.getWebserviceManager().cancelRefreshTokenScheduler();
+		
+		try
+		{
+			Context.getBioKitManager().disconnect();
+		}
+		catch(Exception e)
+		{
+			LOGGER.log(Level.WARNING, "failed to disconnect with Biokit on logout!", e);
+		}
 		
 		Platform.runLater(() ->
 		{

@@ -45,8 +45,6 @@ public class LoginService
 				return null;
 			});
 			
-			System.out.println("newUpdates = " + newUpdates);
-			
 			if(newUpdates)
 			{
 				String errorCode = LoginErrorCodes.N003_00001.getCode();
