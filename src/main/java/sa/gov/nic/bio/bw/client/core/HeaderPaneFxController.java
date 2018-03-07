@@ -24,6 +24,7 @@ import java.util.logging.Logger;
 public class HeaderPaneFxController extends RegionFxControllerBase
 {
 	private static final Logger LOGGER = Logger.getLogger(HeaderPaneFxController.class.getName());
+	
 	@FXML private Pane rootPane;
 	@FXML private ImageView ivAvatar;
 	@FXML private Label lblUsername;

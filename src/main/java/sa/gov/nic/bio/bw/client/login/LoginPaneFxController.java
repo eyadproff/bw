@@ -62,7 +62,7 @@ public class LoginPaneFxController extends BodyFxControllerBase implements Persi
 	        Locale.setDefault(guiLanguage.getLocale());
 	        coreFxController.switchLanguage(guiLanguage, this);
         });
-		
+
 		coreFxController.getHeaderPaneController().hideRegion();
 		coreFxController.getMenuPaneController().hideRegion();
 		coreFxController.getDeviceManagerGadgetPaneController().hideRegion();

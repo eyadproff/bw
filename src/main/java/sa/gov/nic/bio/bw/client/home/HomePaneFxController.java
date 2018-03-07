@@ -63,10 +63,10 @@ public class HomePaneFxController extends BodyFxControllerBase
 		coreFxController.getFooterPaneController().hideRegion();
 		coreFxController.getMenuPaneController().showRegion();
 		coreFxController.getDeviceManagerGadgetPaneController().showRegion();
-		
+
 		ClosureListener closureListener = coreFxController.getDeviceManagerGadgetPaneController().getClosureListener();
 		Context.getBioKitManager().setClosureListener(closureListener);
-		
+
 		// connect if running
 		Task<Boolean> task = new Task<Boolean>()
 		{
@@ -79,10 +79,10 @@ public class HomePaneFxController extends BodyFxControllerBase
 		task.setOnSucceeded(event ->
 		{
 		    Boolean listening = task.getValue();
-		
+
 		    if(listening != null && listening)
 		    {
-			    coreFxController.getDeviceManagerGadgetPaneController().runAndConnectDevicesRunner();
+		        coreFxController.getDeviceManagerGadgetPaneController().runAndConnectDevicesRunner();
 		    }
 		});
 		Context.getExecutorService().submit(task);

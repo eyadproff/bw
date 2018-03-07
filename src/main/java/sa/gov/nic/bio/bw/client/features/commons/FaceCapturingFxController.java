@@ -37,7 +37,6 @@ import sa.gov.nic.bio.bw.client.core.wizard.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.client.features.commons.ui.AutoScalingStackPane;
 import sa.gov.nic.bio.bw.client.features.commons.ui.FourStateTitledPane;
 import sa.gov.nic.bio.bw.client.features.commons.utils.CommonsErrorCodes;
-import sa.gov.nic.bio.bw.client.features.mofaenrollment.utils.MofaEnrollmentErrorCodes;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -256,7 +255,7 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 					    stringsBundle.getString("label.status.failedToStartCameraLivePreviewingWithErrorCode"),
 					    serviceResponse.getErrorCode()));
 			
-			    String errorCode = MofaEnrollmentErrorCodes.C007_00001.getCode();
+			    String errorCode = CommonsErrorCodes.C008_00002.getCode();
 			    String[] errorDetails = {"failed while starting the camera live preview!"};
 			    coreFxController.showErrorDialog(errorCode, serviceResponse.getException(), errorDetails);
 		    }
@@ -291,7 +290,7 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 				GuiUtils.showNode(btnStartCameraLivePreview, true);
 				lblStatus.setText(stringsBundle.getString("label.status.failedToStartCameraLivePreviewing"));
 				
-				String errorCode = MofaEnrollmentErrorCodes.C007_00001.getCode();
+				String errorCode = CommonsErrorCodes.C008_00003.getCode();
 				String[] errorDetails = {"failed while starting the camera live preview!"};
 				coreFxController.showErrorDialog(errorCode, exception, errorDetails);
 			}
@@ -360,7 +359,7 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 		                stringsBundle.getString("label.status.failedToStopCameraLivePreviewingWithErrorCode"),
 		                serviceResponse.getErrorCode()));
 		
-		        String errorCode = MofaEnrollmentErrorCodes.C007_00001.getCode();
+		        String errorCode = CommonsErrorCodes.C008_00004.getCode();
 		        String[] errorDetails = {"failed while stopping the camera live preview!"};
 		        coreFxController.showErrorDialog(errorCode, serviceResponse.getException(), errorDetails);
 		    }
@@ -395,7 +394,7 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 		        GuiUtils.showNode(btnStartCameraLivePreview, true);
 		        lblStatus.setText(stringsBundle.getString("label.status.failedToStopCameraLivePreviewing"));
 		
-		        String errorCode = MofaEnrollmentErrorCodes.C007_00001.getCode();
+		        String errorCode = CommonsErrorCodes.C008_00005.getCode();
 		        String[] errorDetails = {"failed while stopping the camera live preview!"};
 		        coreFxController.showErrorDialog(errorCode, exception, errorDetails);
 		    }
@@ -630,7 +629,7 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 					    stringsBundle.getString("label.status.failedToCaptureTheFaceWithErrorCode"),
 					    serviceResponse.getErrorCode()));
 			
-			    String errorCode = MofaEnrollmentErrorCodes.C007_00001.getCode();
+			    String errorCode = CommonsErrorCodes.C008_00006.getCode();
 			    String[] errorDetails = {"failed while capturing the face!"};
 			    coreFxController.showErrorDialog(errorCode, serviceResponse.getException(), errorDetails);
 		    }
@@ -668,7 +667,7 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 			{
 				lblStatus.setText(stringsBundle.getString("label.status.failedToCaptureTheFace"));
 				
-				String errorCode = MofaEnrollmentErrorCodes.C007_00001.getCode();
+				String errorCode = CommonsErrorCodes.C008_00007.getCode();
 				String[] errorDetails = {"failed while capturing the face!"};
 				coreFxController.showErrorDialog(errorCode, exception, errorDetails);
 			}
