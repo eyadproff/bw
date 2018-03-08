@@ -58,8 +58,8 @@ public class ChangePasswordDialogFxController extends RegionFxControllerBase
 			btnChange.setDefaultButton(true);
 			btnCancel.setCancelButton(true);
 			
-			GuiUtils.makeButtonClickable(btnChange);
-			GuiUtils.makeButtonClickable(btnCancel);
+			GuiUtils.makeButtonClickableByPressingEnter(btnChange);
+			GuiUtils.makeButtonClickableByPressingEnter(btnCancel);
 			
 			BooleanBinding booleanBinding = txtUsername.textProperty().isEmpty()
 										.or(txtCurrentPassword.textProperty().isEmpty())

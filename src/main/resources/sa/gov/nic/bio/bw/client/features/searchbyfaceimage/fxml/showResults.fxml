@@ -30,27 +30,27 @@
                         </StackPane>
                         <VBox fx:id="detailsPane" spacing="5" managed="false" visible="false">
                             <HBox spacing="5">
-                                <Label text="%label.bioId" style="-fx-font-weight: bold"/>
+                                <Label text="%label.bioId" styleClass="bold-text"/>
                                 <Label fx:id="lblBioId" text="%label.notAvailable"/>
                             </HBox>
                             <HBox spacing="5">
-                                <Label text="%label.score" style="-fx-font-weight: bold"/>
+                                <Label text="%label.score" styleClass="bold-text"/>
                                 <Label fx:id="lblScore" text="%label.notAvailable"/>
                             </HBox>
                             <HBox spacing="5">
-                                <Label text="%label.samisId" style="-fx-font-weight: bold"/>
+                                <Label text="%label.samisId" styleClass="bold-text"/>
                                 <Label fx:id="lblSamisId" text="%label.notAvailable"/>
                             </HBox>
                             <HBox spacing="5">
-                                <Label text="%label.firstName" style="-fx-font-weight: bold"/>
+                                <Label text="%label.firstName" styleClass="bold-text"/>
                                 <Label fx:id="lblFirstName" text="%label.notAvailable"/>
                             </HBox>
                             <HBox spacing="5">
-                                <Label text="%label.fatherName" style="-fx-font-weight: bold"/>
+                                <Label text="%label.fatherName" styleClass="bold-text"/>
                                 <Label fx:id="lblFatherName" text="%label.notAvailable"/>
                             </HBox>
                             <HBox spacing="5">
-                                <Label text="%label.familyName" style="-fx-font-weight: bold"/>
+                                <Label text="%label.familyName" styleClass="bold-text"/>
                                 <Label fx:id="lblFamilyName" text="%label.notAvailable"/>
                             </HBox>
                         </VBox>
@@ -65,7 +65,7 @@
             </HBox>
             <ScrollPane fx:id="spCandidates" styleClass="slider" pannable="true" hbarPolicy="ALWAYS" vbarPolicy="NEVER" minHeight="100.0" managed="false" visible="false">
                 <HBox fx:id="hbCandidatesContainer">
-                    <ToggleTitledPane fx:id="tpFinalImage" styleClass="slider-first-item" collapsible="false" text="%title.uploadedImage"/>
+                    <ToggleTitledPane fx:id="tpFinalImage" styleClass="slider-first-item" collapsible="false" focusTraversable="false" text="%label.uploadedImage"/>
                     <HBox fx:id="hbCandidatesImages"/>
                 </HBox>
             </ScrollPane>

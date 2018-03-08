@@ -81,8 +81,8 @@ public class CancelCriminalPaneFxController extends BodyFxControllerBase
 																  .and(criminal2NumberEmptyBinding.not());
 		
 		btnCancelCriminal.disableProperty().bind(byPersonIdTabReadyBinding.not().and(byInquiryIdTabReadyBinding.not()));
-		GuiUtils.makeButtonClickable(btnCancelCriminal);
-		GuiUtils.makeButtonClickable(btnRetryLookupPersonIdTypes);
+		GuiUtils.makeButtonClickableByPressingEnter(btnCancelCriminal);
+		GuiUtils.makeButtonClickableByPressingEnter(btnRetryLookupPersonIdTypes);
 		
 		cboPersonIdType.setConverter(new StringConverter<PersonIdType>()
 		{

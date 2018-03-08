@@ -37,6 +37,9 @@ public class ConfirmImageFxController extends WizardStepFxControllerBase
 	@Override
 	protected void initialize()
 	{
+		GuiUtils.makeButtonClickableByPressingEnter(btnPrevious);
+		GuiUtils.makeButtonClickableByPressingEnter(btnSearch);
+		
 		btnPrevious.setOnAction(event -> goPrevious());
 		btnSearch.setOnAction(event -> goNext());
 	}

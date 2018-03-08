@@ -56,3 +56,7 @@
 .slider .toggle-titled-pane:selected,.slider .toggle-titled-pane:selected > .title {
     -fx-cursor: default;
 }
+
+.bold-text {
+    -fx-font-weight: bold;
+}

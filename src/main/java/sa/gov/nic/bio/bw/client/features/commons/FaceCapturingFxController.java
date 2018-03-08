@@ -115,6 +115,9 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 	@Override
 	protected void initialize()
 	{
+		GuiUtils.makeButtonClickableByPressingEnter(btnPrevious);
+		GuiUtils.makeButtonClickableByPressingEnter(btnNext);
+		
 		btnPrevious.setOnAction(event -> goPrevious());
 		btnNext.setOnAction(event -> goNext());
 	}

@@ -2,7 +2,6 @@ package sa.gov.nic.bio.bw.client.features.searchbyfaceimage;
 
 import javafx.application.Platform;
 import javafx.beans.property.SimpleDoubleProperty;
-import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
@@ -35,9 +34,6 @@ import sa.gov.nic.bio.bw.client.features.searchbyfaceimage.ui.ToggleTitledPane;
 import sa.gov.nic.bio.bw.client.features.searchbyfaceimage.webservice.Candidate;
 import sa.gov.nic.bio.bw.client.features.searchbyfaceimage.workflow.SearchByFaceImageWorkflow;
 
-import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.net.URL;
 import java.util.Base64;
@@ -78,6 +74,9 @@ public class ShowResultFxController extends WizardStepFxControllerBase
 	@Override
 	protected void initialize()
 	{
+		GuiUtils.makeButtonClickableByPressingEnter(btnStartOver);
+		GuiUtils.makeButtonClickableByPressingEnter(btnCompareWithUploadedImage);
+		
 		btnStartOver.setOnAction(event -> startOver());
 	}
 	
@@ -167,6 +166,8 @@ public class ShowResultFxController extends WizardStepFxControllerBase
 		    toggleGroup.selectToggle(tpFinalImage);
 		    ivCenterImage.setImage(finalImage);
 		    btnCompareWithUploadedImage.setDisable(true);
+			GuiUtils.attachImageDialog(coreFxController, ivCenterImage, tpFinalImage.getText(),
+			                           resources.getString("label.contextMenu.showImage"));
 		
 		    lblBioId.setText(stringsBundle.getString("label.notAvailable"));
 		    lblScore.setText(stringsBundle.getString("label.notAvailable"));
@@ -195,6 +196,7 @@ public class ShowResultFxController extends WizardStepFxControllerBase
 			ToggleTitledPane toggleTitledPane = new ToggleTitledPane(scoreTitle, candidateImageView);
 			toggleTitledPane.setToggleGroup(toggleGroup);
 			toggleTitledPane.setCollapsible(false);
+			toggleTitledPane.setFocusTraversable(false);
 			toggleTitledPane.setOnMouseClicked(event ->
 			{
 			    toggleGroup.selectToggle(toggleTitledPane);
@@ -247,7 +249,6 @@ public class ShowResultFxController extends WizardStepFxControllerBase
 	@FXML
 	private void onCompareWithUploadedImageButtonClicked(ActionEvent actionEvent)
 	{
-		// get screen visual bounds
 		Image selectedImage = ivCenterImage.getImage();
 		
 		if(finalImage.getHeight() >= selectedImage.getHeight())
@@ -256,7 +257,7 @@ public class ShowResultFxController extends WizardStepFxControllerBase
 			if(ratio < 1.0) ratio = 1.0 / ratio;
 			double heightDiff = finalImage.getHeight() - selectedImage.getHeight();
 			double extraWidth = heightDiff * ratio;
-			selectedImage = scaleImage(selectedImage, selectedImage.getWidth() + extraWidth,
+			selectedImage = GuiUtils.scaleImage(selectedImage, selectedImage.getWidth() + extraWidth,
 			                                                    selectedImage.getHeight() + heightDiff);
 		}
 		else
@@ -265,7 +266,7 @@ public class ShowResultFxController extends WizardStepFxControllerBase
 			if(ratio < 1.0) ratio = 1.0 / ratio;
 			double heightDiff = selectedImage.getHeight() - finalImage.getHeight();
 			double extraWidth = heightDiff * ratio;
-			finalImage = scaleImage(finalImage, finalImage.getWidth() + extraWidth,
+			finalImage = GuiUtils.scaleImage(finalImage, finalImage.getWidth() + extraWidth,
 			                        finalImage.getHeight() + heightDiff);
 		}
 		
@@ -274,15 +275,18 @@ public class ShowResultFxController extends WizardStepFxControllerBase
 		boolean rtl = coreFxController.getCurrentLanguage().getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT;
 		
 		Image mergedImage;
-		if(rtl) mergedImage = mergeImage(finalImage, selectedImage);
-		else mergedImage = mergeImage(selectedImage, finalImage);
+		if(rtl) mergedImage = GuiUtils.mergeImage(finalImage, selectedImage);
+		else mergedImage = GuiUtils.mergeImage(selectedImage, finalImage);
 		
 		ContextMenu contextMenu = new ContextMenu();
 		MenuItem closeMenuItem = new MenuItem(buttonText);
 		contextMenu.getItems().add(closeMenuItem);
 		
 		Button btnClose = new Button(buttonText);
+		btnClose.requestFocus();
 		btnClose.setPadding(new Insets(10));
+		GuiUtils.makeButtonClickableByPressingEnter(btnClose);
+		
 		StackPane stackPane = new StackPane();
 		BorderPane borderPane = new BorderPane();
 		StackPane.setAlignment(borderPane, Pos.CENTER);
@@ -326,36 +330,5 @@ public class ShowResultFxController extends WizardStepFxControllerBase
 		dialogStage.setOnHidden(event -> coreFxController.unregisterStageForIdleMonitoring(dialogStage));
 		coreFxController.registerStageForIdleMonitoring(dialogStage);
 		dialogStage.show();
-	}
-	
-	private static Image scaleImage(Image source, double targetWidth, double targetHeight)
-	{
-		ImageView imageView = new ImageView(source);
-		imageView.setPreserveRatio(true);
-		imageView.setFitWidth(targetWidth);
-		imageView.setFitHeight(targetHeight);
-		return imageView.snapshot(null, null);
-	}
-	
-	private static Image mergeImage(Image right, Image left)
-	{
-		//do some calculate first
-		int offset  = 5;
-		double width = left.getWidth() + right.getWidth() + offset;
-		double height = Math.max(left.getHeight(),right.getHeight()) + offset;
-		//create a new buffer and draw two image into the new image
-		BufferedImage newImage = new BufferedImage((int) width, (int) height, BufferedImage.TYPE_INT_ARGB);
-		Graphics2D g2 = newImage.createGraphics();
-		Color oldColor = g2.getColor();
-		//fill background
-		g2.setPaint(Color.WHITE);
-		g2.fillRect(0, 0, (int) width, (int) height);
-		//draw image
-		g2.setColor(oldColor);
-		g2.drawImage(SwingFXUtils.fromFXImage(left, null), null, 0, 0);
-		g2.drawImage(SwingFXUtils.fromFXImage(right, null), null, (int) left.getWidth() + offset, 0);
-		g2.dispose();
-		
-		return SwingFXUtils.toFXImage(newImage, null);
 	}
 }

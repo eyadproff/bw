@@ -35,7 +35,9 @@ public class SearchFxController extends WizardStepFxControllerBase
 	@Override
 	protected void initialize()
 	{
-		GuiUtils.makeButtonClickable(btnRetry);
+		GuiUtils.makeButtonClickableByPressingEnter(btnRetry);
+		GuiUtils.makeButtonClickableByPressingEnter(btnStartOver);
+		
 		btnStartOver.setOnAction(event -> startOver());
 	}
 	

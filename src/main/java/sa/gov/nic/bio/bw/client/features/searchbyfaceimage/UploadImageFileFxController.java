@@ -22,12 +22,9 @@ import java.nio.file.Files;
 import java.text.DecimalFormat;
 import java.util.Map;
 import java.util.ResourceBundle;
-import java.util.logging.Logger;
 
 public class UploadImageFileFxController extends WizardStepFxControllerBase
 {
-	private static final Logger LOGGER = Logger.getLogger(UploadImageFileFxController.class.getName());
-	
 	@FXML private ResourceBundle resources;
 	@FXML private HBox imagePane;
 	@FXML private ImageView ivUploadedImage;
@@ -47,7 +44,10 @@ public class UploadImageFileFxController extends WizardStepFxControllerBase
 	@Override
 	protected void initialize()
 	{
-		GuiUtils.makeButtonClickable(btnSelectImage);
+		GuiUtils.makeButtonClickableByPressingEnter(btnSelectImage);
+		GuiUtils.makeButtonClickableByPressingEnter(btnPrevious);
+		GuiUtils.makeButtonClickableByPressingEnter(btnNext);
+		
 		btnPrevious.setOnAction(event -> goPrevious());
 		btnNext.setOnAction(event -> goNext());
 	}
@@ -104,6 +104,7 @@ public class UploadImageFileFxController extends WizardStepFxControllerBase
 	@FXML
 	private void onSelectImageButtonClicked(ActionEvent actionEvent)
 	{
+		hideNotification();
 		File selectedFile = fileChooser.showOpenDialog(coreFxController.getPrimaryStage());
 		
 		if(selectedFile != null)
