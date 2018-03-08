@@ -32,9 +32,8 @@
                             <Insets topRightBottomLeft="10"/>
                         </padding>
                         <ProgressIndicator fx:id="piProgress" prefHeight="25.0" prefWidth="25.0" managed="false" visible="false"/>
-                        <Label fx:id="lblStatus" wrapText="true" textAlignment="CENTER"/>
+                        <Label fx:id="lblStatus" wrapText="true" textAlignment="CENTER" managed="false" visible="false"/>
                         <VBox alignment="CENTER" spacing="5">
-                            <Button fx:id="btnCancel" text="%button.cancel" managed="false" visible="false" wrapText="true" textAlignment="CENTER"/>
                             <Button fx:id="btnStartCameraLivePreview" text="%button.startCameraLivePreview" managed="false" visible="false" wrapText="true" textAlignment="CENTER" onAction="#onStartCameraLivePreviewButtonClicked"/>
                             <Button fx:id="btnCaptureFace" text="%button.captureFace" managed="false" visible="false" wrapText="true" textAlignment="CENTER" onAction="#onCaptureFaceButtonClicked"/>
                             <Button fx:id="btnStopCameraLivePreview" text="%button.stopCameraLivePreview" managed="false" visible="false" wrapText="true" textAlignment="CENTER" onAction="#onStopCameraLivePreviewButtonClicked"/>

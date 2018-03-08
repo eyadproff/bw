@@ -68,8 +68,8 @@ public class LoginPaneFxController extends BodyFxControllerBase implements Persi
 		coreFxController.getDeviceManagerGadgetPaneController().hideRegion();
 		coreFxController.getFooterPaneController().showRegion();
 		
-		GuiUtils.makeButtonClickable(btnLogin);
-		GuiUtils.makeButtonClickable(btnChangePassword);
+		GuiUtils.makeButtonClickableByPressingEnter(btnLogin);
+		GuiUtils.makeButtonClickableByPressingEnter(btnChangePassword);
 		GuiUtils.makeComboBoxOpenableByPressingSpaceBar(cboLanguage);
 		
 		// request focus once the scene is attached to txtUsername

@@ -6,6 +6,7 @@ import javafx.beans.Observable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.event.EventHandler;
 import javafx.geometry.NodeOrientation;
 import javafx.scene.Node;
@@ -16,6 +17,7 @@ import javafx.scene.control.Control;
 import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -29,6 +31,9 @@ import sa.gov.nic.bio.bw.client.core.CoreFxController;
 import sa.gov.nic.bio.bw.client.core.beans.HideableItem;
 import sa.gov.nic.bio.bw.client.login.tasks.LogoutTask;
 
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.List;
@@ -121,7 +126,7 @@ public class GuiUtils
 		applyValidatorToTextField(textField, null, null, maxCharCount);
 	}
 	
-	public static void makeButtonClickable(Button button)
+	public static void makeButtonClickableByPressingEnter(Button button)
 	{
 		button.addEventHandler(KeyEvent.KEY_PRESSED, event ->
 		{
@@ -315,5 +320,36 @@ public class GuiUtils
 		imageView.setOnContextMenuRequested(contextMenuEvent -> contextMenu.show(imageView,
 		                                                                         contextMenuEvent.getScreenX(),
 		                                                                         contextMenuEvent.getScreenY()));
+	}
+	
+	public static Image scaleImage(Image source, double targetWidth, double targetHeight)
+	{
+		ImageView imageView = new ImageView(source);
+		imageView.setPreserveRatio(true);
+		imageView.setFitWidth(targetWidth);
+		imageView.setFitHeight(targetHeight);
+		return imageView.snapshot(null, null);
+	}
+	
+	public static Image mergeImage(Image right, Image left)
+	{
+		//do some calculate first
+		int offset  = 5;
+		double width = left.getWidth() + right.getWidth() + offset;
+		double height = Math.max(left.getHeight(),right.getHeight()) + offset;
+		//create a new buffer and draw two image into the new image
+		BufferedImage newImage = new BufferedImage((int) width, (int) height, BufferedImage.TYPE_INT_ARGB);
+		Graphics2D g2 = newImage.createGraphics();
+		Color oldColor = g2.getColor();
+		//fill background
+		g2.setPaint(Color.WHITE);
+		g2.fillRect(0, 0, (int) width, (int) height);
+		//draw image
+		g2.setColor(oldColor);
+		g2.drawImage(SwingFXUtils.fromFXImage(left, null), null, 0, 0);
+		g2.drawImage(SwingFXUtils.fromFXImage(right, null), null, (int) left.getWidth() + offset, 0);
+		g2.dispose();
+		
+		return SwingFXUtils.toFXImage(newImage, null);
 	}
 }

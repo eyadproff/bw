@@ -33,7 +33,7 @@ public class CancelLatentPaneFxController extends BodyFxControllerBase
 		BooleanProperty progressVisibility = piCancelLatent.visibleProperty();
 		
 		btnCancelLatent.disableProperty().bind(idNumberEmptyBinding.or(latentNumberEmptyBinding).or(progressVisibility));
-		GuiUtils.makeButtonClickable(btnCancelLatent);
+		GuiUtils.makeButtonClickableByPressingEnter(btnCancelLatent);
 	}
 	
 	@Override

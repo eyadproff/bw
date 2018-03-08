@@ -52,6 +52,22 @@ import java.util.logging.Logger;
 public class FaceCapturingFxController extends WizardStepFxControllerBase
 {
 	private static final Logger LOGGER = Logger.getLogger(FaceCapturingFxController.class.getName());
+	public static final String KEY_ICAO_REQUIRED = "ICAO_REQUIRED";
+	public static final String KEY_CAPTURED_IMAGE = "CAPTURED_IMAGE";
+	public static final String KEY_CROPPED_IMAGE = "CROPPED_IMAGE";
+	private static final String KEY_ICAO_SUCCESS_ICON_VISIBLE = "ICAO_SUCCESS_ICON_VISIBLE";
+	private static final String KEY_ICAO_WARNING_ICON_VISIBLE = "ICAO_WARNING_ICON_VISIBLE";
+	private static final String KEY_ICAO_ERROR_ICON_VISIBLE = "ICAO_ERROR_ICON_VISIBLE";
+	private static final String KEY_ICAO_MESSAGE_VISIBLE = "ICAO_MESSAGE_VISIBLE";
+	private static final String KEY_ICAO_MESSAGE = "ICAO_MESSAGE";
+	private static final String KEY_CAPTURED_IMAGE_TP_ACTIVE = "CAPTURED_IMAGE_TP_ACTIVE";
+	private static final String KEY_CAPTURED_IMAGE_TP_CAPTURED = "CAPTURED_IMAGE_TP_CAPTURED";
+	private static final String KEY_CAPTURED_IMAGE_TP_DUPLICATED = "CAPTURED_IMAGE_TP_DUPLICATED";
+	private static final String KEY_CAPTURED_IMAGE_TP_VALID = "CAPTURED_IMAGE_TP_VALID";
+	private static final String KEY_CROPPED_IMAGE_TP_ACTIVE = "CROPPED_IMAGE_TP_ACTIVE";
+	private static final String KEY_CROPPED_IMAGE_TP_CAPTURED = "CROPPED_IMAGE_TP_CAPTURED";
+	private static final String KEY_CROPPED_IMAGE_TP_DUPLICATED = "CROPPED_IMAGE_TP_DUPLICATED";
+	private static final String KEY_CROPPED_IMAGE_TP_VALID = "CROPPED_IMAGE_TP_VALID";
 	
 	@FXML private ResourceBundle resources;
 	@FXML private FourStateTitledPane tpCameraLivePreview;
@@ -71,7 +87,6 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 	@FXML private ProgressIndicator piCameraLivePreview;
 	@FXML private ProgressIndicator piCapturedImage;
 	@FXML private ProgressIndicator piCroppedImage;
-	@FXML private Button btnCancel;
 	@FXML private Button btnStartCameraLivePreview;
 	@FXML private Button btnStopCameraLivePreview;
 	@FXML private Button btnCaptureFace;
@@ -83,6 +98,7 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 	private PerspectiveCamera perspectiveCamera = new PerspectiveCamera();
 	private boolean cameraInitializedAtLeastOnce = false;
 	private boolean captureInProgress = false;
+	private boolean icaoRequired = true;
 	
 	private Translate pivotBase = new Translate(0.0, 0.0, -1.0);
 	private Rotate xRotateBase = new Rotate(0.0, Rotate.X_AXIS);
@@ -98,6 +114,9 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 	@Override
 	protected void initialize()
 	{
+		GuiUtils.makeButtonClickableByPressingEnter(btnPrevious);
+		GuiUtils.makeButtonClickableByPressingEnter(btnNext);
+		
 		btnPrevious.setOnAction(event -> goPrevious());
 		btnNext.setOnAction(event -> goNext());
 	}
@@ -136,6 +155,70 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 	{
 		if(newForm)
 		{
+			Boolean bool = (Boolean) uiInputData.get(KEY_ICAO_REQUIRED);
+			if(bool != null) icaoRequired = bool;
+			
+			if(icaoRequired) btnNext.disableProperty().bind(ivCapturedImage.imageProperty().isNull().or(
+											ivCroppedImage.imageProperty().isNull()).or(
+											ivSuccessIcao.visibleProperty().not()));
+			else btnNext.disableProperty().bind(ivCapturedImage.imageProperty().isNull().and(
+											ivCroppedImage.imageProperty().isNull()));
+			
+			bool = (Boolean) uiInputData.get(KEY_ICAO_SUCCESS_ICON_VISIBLE);
+			if(bool != null) GuiUtils.showNode(ivSuccessIcao, bool);
+			
+			bool = (Boolean) uiInputData.get(KEY_ICAO_WARNING_ICON_VISIBLE);
+			if(bool != null) GuiUtils.showNode(ivWarningIcao, bool);
+			
+			bool = (Boolean) uiInputData.get(KEY_ICAO_ERROR_ICON_VISIBLE);
+			if(bool != null) GuiUtils.showNode(ivErrorIcao, bool);
+			
+			bool = (Boolean) uiInputData.get(KEY_ICAO_MESSAGE_VISIBLE);
+			if(bool != null) GuiUtils.showNode(lblIcaoMessage, bool);
+			
+			String icaoMessage = (String) uiInputData.get(KEY_ICAO_MESSAGE);
+			lblIcaoMessage.setText(icaoMessage);
+			
+			Image capturedImage = (Image) uiInputData.get(KEY_CAPTURED_IMAGE);
+			if(capturedImage != null)
+			{
+				ivCapturedImage.setImage(capturedImage);
+				GuiUtils.attachImageDialog(coreFxController, ivCapturedImage, tpCapturedImage.getText(),
+				                           resources.getString("label.contextMenu.showImage"));
+			}
+			
+			Image croppedImage = (Image) uiInputData.get(KEY_CROPPED_IMAGE);
+			if(croppedImage != null)
+			{
+				ivCroppedImage.setImage(croppedImage);
+				GuiUtils.attachImageDialog(coreFxController, ivCroppedImage, tpCroppedImage.getText(),
+				                           resources.getString("label.contextMenu.showImage"));
+			}
+			
+			bool = (Boolean) uiInputData.get(KEY_CAPTURED_IMAGE_TP_ACTIVE);
+			if(bool != null) tpCapturedImage.setActive(bool);
+			
+			bool = (Boolean) uiInputData.get(KEY_CAPTURED_IMAGE_TP_CAPTURED);
+			if(bool != null) tpCapturedImage.setCaptured(bool);
+			
+			bool = (Boolean) uiInputData.get(KEY_CAPTURED_IMAGE_TP_DUPLICATED);
+			if(bool != null) tpCapturedImage.setDuplicated(bool);
+			
+			bool = (Boolean) uiInputData.get(KEY_CAPTURED_IMAGE_TP_VALID);
+			if(bool != null) tpCapturedImage.setValid(bool);
+			
+			bool = (Boolean) uiInputData.get(KEY_CROPPED_IMAGE_TP_ACTIVE);
+			if(bool != null) tpCroppedImage.setActive(bool);
+			
+			bool = (Boolean) uiInputData.get(KEY_CROPPED_IMAGE_TP_CAPTURED);
+			if(bool != null) tpCroppedImage.setCaptured(bool);
+			
+			bool = (Boolean) uiInputData.get(KEY_CROPPED_IMAGE_TP_DUPLICATED);
+			if(bool != null) tpCroppedImage.setDuplicated(bool);
+			
+			bool = (Boolean) uiInputData.get(KEY_CROPPED_IMAGE_TP_VALID);
+			if(bool != null) tpCroppedImage.setValid(bool);
+			
 			DevicesRunnerGadgetPaneFxController deviceManagerGadgetPaneController =
 															coreFxController.getDeviceManagerGadgetPaneController();
 			
@@ -149,33 +232,29 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 				GuiUtils.showNode(lblStatus, true);
 			}
 			
-			deviceManagerGadgetPaneController.setCameraInitializationListener(initialized ->
+			deviceManagerGadgetPaneController.setCameraInitializationListener(initialized -> Platform.runLater(() ->
 			{
-				Platform.runLater(() ->
+				GuiUtils.showNode(lblStatus, true);
+				GuiUtils.showNode(btnStopCameraLivePreview, false);
+				GuiUtils.showNode(btnCaptureFace, false);
+				
+				tpCameraLivePreview.setActive(false);
+				ivCameraLivePreview.setImage(null);
+				
+				if(initialized)
 				{
-					GuiUtils.showNode(lblStatus, true);
-					GuiUtils.showNode(btnStopCameraLivePreview, false);
-					GuiUtils.showNode(btnCaptureFace, false);
-					GuiUtils.showNode(btnCancel, false);
-					
-					tpCameraLivePreview.setActive(false);
-					ivCameraLivePreview.setImage(null);
-					
-					if(initialized)
-					{
-						GuiUtils.showNode(btnStartCameraLivePreview, true);
-						lblStatus.setText(resources.getString("label.status.cameraInitializedSuccessfully"));
-						cameraInitializedAtLeastOnce = true;
-						LOGGER.info("The camera is initialized!");
-					}
-					else if(cameraInitializedAtLeastOnce)
-					{
-						GuiUtils.showNode(btnStartCameraLivePreview, false);
-						lblStatus.setText(resources.getString("label.status.cameraDisconnected"));
-						LOGGER.info("The camera is disconnected!");
-					}
-				});
-			});
+					GuiUtils.showNode(btnStartCameraLivePreview, true);
+					lblStatus.setText(resources.getString("label.status.cameraInitializedSuccessfully"));
+					cameraInitializedAtLeastOnce = true;
+					LOGGER.info("The camera is initialized!");
+				}
+				else if(cameraInitializedAtLeastOnce)
+				{
+					GuiUtils.showNode(btnStartCameraLivePreview, false);
+					lblStatus.setText(resources.getString("label.status.cameraDisconnected"));
+					LOGGER.info("The camera is disconnected!");
+				}
+			}));
 		}
 	}
 	
@@ -183,6 +262,30 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 	protected void onLeaving(Map<String, Object> uiDataMap)
 	{
 		if(btnStopCameraLivePreview.isVisible()) btnStopCameraLivePreview.fire();
+		
+		uiDataMap.put(KEY_ICAO_SUCCESS_ICON_VISIBLE, ivSuccessIcao.isVisible());
+		uiDataMap.put(KEY_ICAO_WARNING_ICON_VISIBLE, ivWarningIcao.isVisible());
+		uiDataMap.put(KEY_ICAO_ERROR_ICON_VISIBLE, ivErrorIcao.isVisible());
+		uiDataMap.put(KEY_ICAO_MESSAGE_VISIBLE, lblIcaoMessage.isVisible());
+		uiDataMap.put(KEY_ICAO_MESSAGE, lblIcaoMessage.getText());
+		uiDataMap.put(KEY_CAPTURED_IMAGE, ivCapturedImage.getImage());
+		uiDataMap.put(KEY_CROPPED_IMAGE, ivCroppedImage.getImage());
+		
+		if(tpCapturedImage.isCaptured())
+		{
+			uiDataMap.put(KEY_CAPTURED_IMAGE_TP_ACTIVE, tpCapturedImage.isActive());
+			uiDataMap.put(KEY_CAPTURED_IMAGE_TP_CAPTURED, true);
+			uiDataMap.put(KEY_CAPTURED_IMAGE_TP_DUPLICATED, tpCapturedImage.isDuplicated());
+			uiDataMap.put(KEY_CAPTURED_IMAGE_TP_VALID, tpCapturedImage.isValid());
+		}
+		
+		if(tpCroppedImage.isCaptured())
+		{
+			uiDataMap.put(KEY_CROPPED_IMAGE_TP_CAPTURED, true);
+			uiDataMap.put(KEY_CROPPED_IMAGE_TP_ACTIVE, tpCroppedImage.isActive());
+			uiDataMap.put(KEY_CROPPED_IMAGE_TP_DUPLICATED, tpCroppedImage.isDuplicated());
+			uiDataMap.put(KEY_CROPPED_IMAGE_TP_VALID, tpCroppedImage.isValid());
+		}
 	}
 	
 	@FXML
@@ -191,6 +294,7 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 		LOGGER.info("starting camera live preview...");
 		
 		GuiUtils.showNode(btnStartCameraLivePreview, false);
+		GuiUtils.showNode(piProgress, true);
 		GuiUtils.showNode(piCameraLivePreview, true);
 		
 		lblStatus.setText(stringsBundle.getString("label.status.waitingDeviceResponse"));
@@ -207,7 +311,8 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 				    {
 				        first[0] = false;
 				        lblStatus.setText(stringsBundle.getString("label.status.cameraLivePreviewing"));
-				        GuiUtils.showNode(piCameraLivePreview, false);
+					    GuiUtils.showNode(piProgress, false);
+					    GuiUtils.showNode(piCameraLivePreview, false);
 					    GuiUtils.showNode(btnStopCameraLivePreview, true);
 					    GuiUtils.showNode(btnCaptureFace, true);
 				    }
@@ -230,6 +335,7 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 		};
 		task.setOnSucceeded(e ->
 		{
+			GuiUtils.showNode(piProgress, false);
 			GuiUtils.showNode(piCameraLivePreview, false);
 			GuiUtils.showNode(btnStopCameraLivePreview, false);
 			GuiUtils.showNode(btnCaptureFace, false);
@@ -262,6 +368,7 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 		});
 		task.setOnFailed(e ->
 		{
+			GuiUtils.showNode(piProgress, false);
 		    GuiUtils.showNode(piCameraLivePreview, false);
 			GuiUtils.showNode(btnStopCameraLivePreview, false);
 			GuiUtils.showNode(btnCaptureFace, false);
@@ -281,7 +388,6 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 			}
 			else if(exception instanceof CancellationException)
 			{
-				GuiUtils.showNode(btnCancel, false);
 				GuiUtils.showNode(btnStartCameraLivePreview, true);
 				lblStatus.setText(stringsBundle.getString("label.status.startingCameraLivePreviewingCancelled"));
 			}
@@ -302,11 +408,11 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 	@FXML
 	private void onStopCameraLivePreviewButtonClicked(ActionEvent actionEvent)
 	{
-		LOGGER.info("stop capturing the face...");
+		LOGGER.info("stopping camera live preview...");
 		
 		GuiUtils.showNode(btnCaptureFace, false);
 		GuiUtils.showNode(btnStopCameraLivePreview, false);
-		GuiUtils.showNode(btnCancel, true);
+		GuiUtils.showNode(piProgress, true);
 		
 		ivCameraLivePreview.setImage(null);
 		
@@ -315,8 +421,6 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 		String cameraDeviceName = coreFxController.getDeviceManagerGadgetPaneController().getCameraDeviceName();
 		Future<ServiceResponse<FaceStopPreviewResponse>> future = Context.getBioKitManager().getFaceService()
 																		 .stopPreview(cameraDeviceName);
-		
-		btnCancel.setOnAction(e -> future.cancel(true));
 		
 		Task<ServiceResponse<FaceStopPreviewResponse>> task = new Task<ServiceResponse<FaceStopPreviewResponse>>()
 		{
@@ -329,10 +433,10 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 		
 		task.setOnSucceeded(e ->
 		{
+			GuiUtils.showNode(piProgress, false);
 		    tpCameraLivePreview.setActive(false);
 		    ivCameraLivePreview.setImage(null);
 		
-		    GuiUtils.showNode(btnCancel, false);
 		    GuiUtils.showNode(btnStartCameraLivePreview, true);
 		
 		    ServiceResponse<FaceStopPreviewResponse> serviceResponse = task.getValue();
@@ -366,10 +470,9 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 		});
 		task.setOnFailed(e ->
 		{
+			GuiUtils.showNode(piProgress, false);
 		    tpCameraLivePreview.setActive(false);
 		    ivCameraLivePreview.setImage(null);
-		
-		    GuiUtils.showNode(btnCancel, false);
 		
 		    Throwable exception = task.getException();
 			
@@ -387,7 +490,6 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 		    else if(exception instanceof CancellationException)
 		    {
 		        lblStatus.setText(stringsBundle.getString("label.status.stoppingCameraLivePreviewingCancelled"));
-		        GuiUtils.showNode(btnCancel, false);
 		    }
 		    else
 		    {
@@ -406,19 +508,18 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 	@FXML
 	private void onCaptureFaceButtonClicked(ActionEvent actionEvent)
 	{
-		LOGGER.info("capture the face...");
+		LOGGER.info("capturing the face...");
 		
 		GuiUtils.showNode(btnCaptureFace, false);
 		GuiUtils.showNode(btnStopCameraLivePreview, false);
-		GuiUtils.showNode(btnCancel, true);
 		GuiUtils.showNode(ivSuccessIcao, false);
 		GuiUtils.showNode(ivWarningIcao, false);
 		GuiUtils.showNode(ivErrorIcao, false);
 		GuiUtils.showNode(lblIcaoMessage, false);
+		GuiUtils.showNode(piProgress, true);
 		GuiUtils.showNode(piIcao, true);
 		GuiUtils.showNode(piCapturedImage, true);
 		GuiUtils.showNode(piCroppedImage, true);
-		GuiUtils.showNode(btnCancel, true);
 		
 		if(faceAnimationTimeline != null)
 		{
@@ -448,8 +549,6 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 		Future<ServiceResponse<CaptureFaceResponse>> future = Context.getBioKitManager().getFaceService()
 																	 .captureFace(cameraDeviceName, true);
 		
-		btnCancel.setOnAction(e -> future.cancel(true));
-		
 		Task<ServiceResponse<CaptureFaceResponse>> task = new Task<ServiceResponse<CaptureFaceResponse>>()
 		{
 			@Override
@@ -461,10 +560,10 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 		
 		task.setOnSucceeded(e ->
 		{
+			GuiUtils.showNode(piProgress, false);
 			GuiUtils.showNode(piIcao, false);
 			GuiUtils.showNode(piCapturedImage, false);
 			GuiUtils.showNode(piCroppedImage, false);
-			GuiUtils.showNode(btnCancel, false);
 			GuiUtils.showNode(btnStopCameraLivePreview, true);
 			GuiUtils.showNode(btnCaptureFace, true);
 			
@@ -562,21 +661,21 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 						    {
 							    GuiUtils.showNode(ivWarningIcao, true);
 							    lblIcaoMessage.setText(resources.getString("label.icao.pitch"));
-							    animateHeadRotation(Rotate.X_AXIS, 10.0, 5);
+							    animateHeadRotation(Rotate.X_AXIS, 10.0);
 							    break;
 						    }
 						    case CaptureFaceResponse.IcaoCodes.YAW_ERROR:
 						    {
 							    GuiUtils.showNode(ivWarningIcao, true);
 							    lblIcaoMessage.setText(resources.getString("label.icao.yaw"));
-							    animateHeadRotation(Rotate.Y_AXIS, 25.0, 5);
+							    animateHeadRotation(Rotate.Y_AXIS, 25.0);
 							    break;
 						    }
 						    case CaptureFaceResponse.IcaoCodes.ROLL_ERROR:
 						    {
 							    GuiUtils.showNode(ivWarningIcao, true);
 							    lblIcaoMessage.setText(resources.getString("label.icao.roll"));
-							    animateHeadRotation(Rotate.Z_AXIS, 10.0, 5);
+							    animateHeadRotation(Rotate.Z_AXIS, 10.0);
 							    break;
 						    }
 						    case CaptureFaceResponse.IcaoCodes.SHADOW_ERROR:
@@ -636,6 +735,7 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 		});
 		task.setOnFailed(e ->
 		{
+			GuiUtils.showNode(piProgress, false);
 			GuiUtils.showNode(piIcao, false);
 			GuiUtils.showNode(piCapturedImage, false);
 			GuiUtils.showNode(piCroppedImage, false);
@@ -661,7 +761,6 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 			else if(exception instanceof CancellationException)
 			{
 				lblStatus.setText(stringsBundle.getString("label.status.capturingFaceCancelled"));
-				GuiUtils.showNode(btnCancel, false);
 			}
 			else
 			{
@@ -676,7 +775,7 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 		Context.getExecutorService().submit(task);
 	}
 	
-	private void animateHeadRotation(Point3D axis, double degree, int cycleCount)
+	private void animateHeadRotation(Point3D axis, double degree)
 	{
 		Rotate rotate = new Rotate(0.0, 0.0, 0.0, 0.0, axis);
 		
@@ -703,7 +802,7 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 					new KeyValue(rotate.angleProperty(), 0.0)
 			)
 		);
-		faceAnimationTimeline.setCycleCount(cycleCount);
+		faceAnimationTimeline.setCycleCount(5);
 		faceAnimationTimeline.play();
 	}
 }

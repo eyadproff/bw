@@ -15,7 +15,7 @@ public class WizardStepIndicator extends StackPane
 	private static final PseudoClass SELECTED_PSEUDO_CLASS = PseudoClass.getPseudoClass("selected");
 	private static final PseudoClass VISITED_PSEUDO_CLASS = PseudoClass.getPseudoClass("visited");
 	
-	public BooleanProperty selected = new BooleanPropertyBase(false)
+	private BooleanProperty selected = new BooleanPropertyBase(false)
 	{
 		@Override
 		protected void invalidated()
@@ -36,7 +36,7 @@ public class WizardStepIndicator extends StackPane
 		}
 	};
 	
-	public BooleanProperty visited = new BooleanPropertyBase(false)
+	private BooleanProperty visited = new BooleanPropertyBase(false)
 	{
 		@Override
 		protected void invalidated()
@@ -61,7 +61,7 @@ public class WizardStepIndicator extends StackPane
 	private Glyph normalIcon;
 	private Glyph doneIcon;
 	
-	public WizardStepIndicator(String iconId)
+	WizardStepIndicator(String iconId)
 	{
 		final double CIRCLE_RADIUS = 20.0;
 		final double LINE_STROKE_WIDTH = 3.0;
