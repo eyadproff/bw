@@ -2,7 +2,6 @@ package sa.gov.nic.bio.bw.client.features.searchbyfaceimage;
 
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
-import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -15,8 +14,6 @@ import sa.gov.nic.bio.bw.client.core.wizard.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.client.features.searchbyfaceimage.utils.SearchByFaceImageErrorCodes;
 import sa.gov.nic.bio.bw.client.features.searchbyfaceimage.workflow.SearchByFaceImageWorkflow;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.net.URL;
 import java.nio.file.Files;
@@ -140,8 +137,7 @@ public class UploadImageFileFxController extends WizardStepFxControllerBase
 			
 			try
 			{
-				BufferedImage bufferedImage = ImageIO.read(selectedFile);
-				Image image = SwingFXUtils.toFXImage(bufferedImage, null);
+				Image image = new Image("file:///" + selectedFile.getAbsolutePath());
 				ivUploadedImage.setImage(image);
 				imageSelected = true;
 				btnNext.setDisable(false);
