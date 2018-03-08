@@ -149,7 +149,7 @@ public class ApplicantInfoFxController extends WizardStepFxControllerBase
 				                 .or(txtFamilyNameBinding).or(cboGenderBinding).or(cboNationalityBinding)
 				                 .or(dpBirthDateBinding).or(txtPassportNumberBinding).or(cboVisaTypeBinding));*/
 		
-		GuiUtils.makeButtonClickable(btnNext);
+		GuiUtils.makeButtonClickableByPressingEnter(btnNext);
 	}
 	
 	@Override
