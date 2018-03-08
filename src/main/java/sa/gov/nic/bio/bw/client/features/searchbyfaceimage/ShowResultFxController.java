@@ -45,9 +45,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.ResourceBundle;
 
 public class ShowResultFxController extends WizardStepFxControllerBase
 {
+	@FXML private ResourceBundle resources;
 	@FXML private SplitPane splitPane;
 	@FXML private HBox imagePane;
 	@FXML private ImageView ivCenterImage;
@@ -132,9 +134,12 @@ public class ShowResultFxController extends WizardStepFxControllerBase
 		finalImage = (Image) uiInputData.get(SearchByFaceImageWorkflow.KEY_FINAL_IMAGE);
 		imageView.setImage(finalImage);
 		imageView.setPreserveRatio(true);
+		
 		final double[] hScrollbarHeight = {13.0};
 		imageView.fitHeightProperty().bind(spCandidates.heightProperty()
                                    .subtract(hScrollbarHeight[0] * 3 + 2)); // 2 = top border + bottom border
+		GuiUtils.attachImageDialog(coreFxController, imageView, tpFinalImage.getText(),
+		                           resources.getString("label.contextMenu.showImage"));
 		
 		imagePane.autosize();
 		
@@ -148,6 +153,10 @@ public class ShowResultFxController extends WizardStepFxControllerBase
 		    catch(InterruptedException e){e.printStackTrace();}
 		    Platform.runLater(() -> imagePane.autosize());
 		}).start();
+		
+		ivCenterImage.setImage(finalImage);
+		GuiUtils.attachImageDialog(coreFxController, ivCenterImage, tpFinalImage.getText(),
+		                           resources.getString("label.contextMenu.showImage"));
 		
 		tpFinalImage.setContent(imageView);
 		ToggleGroup toggleGroup = new ToggleGroup();
@@ -179,6 +188,10 @@ public class ShowResultFxController extends WizardStepFxControllerBase
 			candidateImageView.fitHeightProperty().bind(spCandidates.heightProperty().subtract(
 											hScrollbarHeight[0] * 3 + 2)); // 2 = top border + bottom border
 			String scoreTitle = AppUtils.replaceNumbersOnly(String.valueOf(candidate.getScore()), Locale.getDefault());
+			
+			GuiUtils.attachImageDialog(coreFxController, candidateImageView, scoreTitle,
+			                           resources.getString("label.contextMenu.showImage"));
+			
 			ToggleTitledPane toggleTitledPane = new ToggleTitledPane(scoreTitle, candidateImageView);
 			toggleTitledPane.setToggleGroup(toggleGroup);
 			toggleTitledPane.setCollapsible(false);
@@ -187,6 +200,8 @@ public class ShowResultFxController extends WizardStepFxControllerBase
 			    toggleGroup.selectToggle(toggleTitledPane);
 			    ivCenterImage.setImage(candidateImage);
 			    btnCompareWithUploadedImage.setDisable(false);
+				GuiUtils.attachImageDialog(coreFxController, ivCenterImage, scoreTitle,
+				                           resources.getString("label.contextMenu.showImage"));
 			
 			    // default values
 			    lblBioId.setText(stringsBundle.getString("label.notAvailable"));
