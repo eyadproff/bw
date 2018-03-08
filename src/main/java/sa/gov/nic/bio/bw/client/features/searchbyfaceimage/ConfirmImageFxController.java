@@ -1,6 +1,7 @@
 package sa.gov.nic.bio.bw.client.features.searchbyfaceimage;
 
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -52,16 +53,21 @@ public class ConfirmImageFxController extends WizardStepFxControllerBase
 		ivFinalImage.fitWidthProperty().bind(imagePane.widthProperty().divide(1.8));
 		ivFinalImage.fitHeightProperty().bind(imagePane.heightProperty().divide(1.8));
 		
-		coreFxController.getPrimaryStage().maximizedProperty().addListener((observable, oldValue, newValue) ->
+		ChangeListener<Boolean> changeListener = (observable, oldValue, newValue) ->
 		{
-		    if(!newValue) // on un-maximize (workaround to fix JavaFX bug)
-		    {
-		        Platform.runLater(() ->
-		        {
-		            imagePane.autosize();
-		            coreFxController.getBodyPane().autosize();
-		        });
-		    }
+			if(!newValue) // on un-maximize (workaround to fix JavaFX bug)
+			{
+				Platform.runLater(() ->
+				{
+				    imagePane.autosize();
+				    coreFxController.getBodyPane().autosize();
+				});
+			}
+		};
+		coreFxController.getPrimaryStage().maximizedProperty().addListener(changeListener);
+		imagePane.sceneProperty().addListener((observable, oldValue, newValue) ->
+		{
+		    if(newValue == null) coreFxController.getPrimaryStage().maximizedProperty().removeListener(changeListener);
 		});
 	}
 	

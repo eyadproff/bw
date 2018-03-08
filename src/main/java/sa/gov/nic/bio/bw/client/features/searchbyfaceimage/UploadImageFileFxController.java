@@ -1,7 +1,7 @@
 package sa.gov.nic.bio.bw.client.features.searchbyfaceimage;
 
 import javafx.application.Platform;
-import javafx.embed.swing.SwingFXUtils;
+import javafx.beans.value.ChangeListener;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -14,8 +14,6 @@ import sa.gov.nic.bio.bw.client.core.wizard.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.client.features.searchbyfaceimage.utils.SearchByFaceImageErrorCodes;
 import sa.gov.nic.bio.bw.client.features.searchbyfaceimage.workflow.SearchByFaceImageWorkflow;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.net.URL;
 import java.nio.file.Files;
@@ -66,16 +64,21 @@ public class UploadImageFileFxController extends WizardStepFxControllerBase
 		ivUploadedImage.fitHeightProperty().bind(imagePane.heightProperty().divide(1.8));
 		imagePane.autosize();
 		
-		coreFxController.getPrimaryStage().maximizedProperty().addListener((observable, oldValue, newValue) ->
+		ChangeListener<Boolean> changeListener = (observable, oldValue, newValue) ->
 		{
-		    if(!newValue) // on un-maximize (workaround to fix JavaFX bug)
-		    {
-		        Platform.runLater(() ->
-		        {
-		            imagePane.autosize();
-		            coreFxController.getBodyPane().autosize();
-		        });
-		    }
+			if(!newValue) // on un-maximize (workaround to fix JavaFX bug)
+			{
+				Platform.runLater(() ->
+				{
+				    imagePane.autosize();
+				    coreFxController.getBodyPane().autosize();
+				});
+			}
+		};
+		coreFxController.getPrimaryStage().maximizedProperty().addListener(changeListener);
+		imagePane.sceneProperty().addListener((observable, oldValue, newValue) ->
+		{
+		    if(newValue == null) coreFxController.getPrimaryStage().maximizedProperty().removeListener(changeListener);
 		});
 	}
 	
@@ -134,8 +137,7 @@ public class UploadImageFileFxController extends WizardStepFxControllerBase
 			
 			try
 			{
-				BufferedImage bufferedImage = ImageIO.read(selectedFile);
-				Image image = SwingFXUtils.toFXImage(bufferedImage, null);
+				Image image = new Image("file:///" + selectedFile.getAbsolutePath());
 				ivUploadedImage.setImage(image);
 				imageSelected = true;
 				btnNext.setDisable(false);

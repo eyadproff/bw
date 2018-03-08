@@ -48,6 +48,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -99,6 +100,9 @@ public class AppEntryPoint extends Application
     public void init()
     {
 	    LOGGER.entering(AppEntryPoint.class.getName(), "init()");
+	
+	    Executors.newSingleThreadScheduledExecutor(DAEMON_THREAD_FACTORY).scheduleAtFixedRate(System::gc,
+                                                                          0, 2, TimeUnit.SECONDS);
 	
 	    try
 	    {
