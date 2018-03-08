@@ -2,6 +2,7 @@ package sa.gov.nic.bio.bw.client.features.searchbyfaceimage;
 
 import javafx.application.Platform;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.value.ChangeListener;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
@@ -89,16 +90,21 @@ public class ShowResultFxController extends WizardStepFxControllerBase
 		ivCenterImage.fitHeightProperty().bind(imagePane.heightProperty().divide(1.8));
 		spCandidates.maxHeightProperty().bind(new SimpleDoubleProperty(0.0));
 		
-		coreFxController.getPrimaryStage().maximizedProperty().addListener((observable, oldValue, newValue) ->
+		ChangeListener<Boolean> changeListener = (observable, oldValue, newValue) ->
 		{
-		    if(!newValue) // on un-maximize (workaround to fix JavaFX bug)
-		    {
-		        Platform.runLater(() ->
-		        {
-		            imagePane.autosize();
-		            coreFxController.getBodyPane().autosize();
-		        });
-		    }
+			if(!newValue) // on un-maximize (workaround to fix JavaFX bug)
+			{
+				Platform.runLater(() ->
+				{
+				    imagePane.autosize();
+				    coreFxController.getBodyPane().autosize();
+				});
+			}
+		};
+		coreFxController.getPrimaryStage().maximizedProperty().addListener(changeListener);
+		imagePane.sceneProperty().addListener((observable, oldValue, newValue) ->
+		{
+		    if(newValue == null) coreFxController.getPrimaryStage().maximizedProperty().removeListener(changeListener);
 		});
 	}
 	
