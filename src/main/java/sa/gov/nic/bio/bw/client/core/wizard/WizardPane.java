@@ -28,6 +28,7 @@ public class WizardPane extends BorderPane
 	
 	private ListProperty<WizardStep> steps;
 	private List<WizardStepIndicator> indicators = new ArrayList<>();
+	private int currentStep = -1;
 	
 	public WizardPane()
 	{
@@ -44,6 +45,9 @@ public class WizardPane extends BorderPane
 	public ListProperty<WizardStep> stepsProperty(){return this.steps;}
 	public void setSteps(ObservableList<WizardStep> value){this.steps.get().setAll(value); drawStepsIndicators();}
 	public ObservableList<WizardStep> getSteps(){return this.steps.get();}
+	
+	public int getCurrentStep(){return currentStep;}
+	public void setCurrentStep(int currentStep){this.currentStep = currentStep;}
 	
 	public void clearSteps()
 	{
@@ -66,9 +70,21 @@ public class WizardPane extends BorderPane
 		}
 	}
 	
+	public void updateStep(int stepIndex, String title, String iconId)
+	{
+		WizardStep wizardStep = steps.get(stepIndex);
+		wizardStep.setTitle(title);
+		wizardStep.setIconId(iconId);
+		
+		drawStepsIndicators();
+		
+		if(currentStep >= 0) currentStep--;
+		goNext();
+	}
+	
 	private void drawStepsIndicators()
 	{
-		final double TITLE_PREF_WIDTH = 70.0;
+		final double TITLE_PREF_WIDTH = 65.0;
 		
 		GridPane gridPane = new GridPane();
 		gridPane.setVgap(5.0);
@@ -122,6 +138,8 @@ public class WizardPane extends BorderPane
 	
 	public void goNext()
 	{
+		currentStep++;
+		
 		for(WizardStepIndicator indicator : indicators)
 		{
 			if(!indicator.isVisited())
@@ -137,6 +155,8 @@ public class WizardPane extends BorderPane
 	
 	public void goPrevious()
 	{
+		currentStep--;
+		
 		for(int i = indicators.size() - 1; i >= 0; i--)
 		{
 			WizardStepIndicator indicator = indicators.get(i);
@@ -157,6 +177,8 @@ public class WizardPane extends BorderPane
 	
 	public void startOver()
 	{
+		currentStep = 0;
+		
 		for(WizardStepIndicator indicator : indicators)
 		{
 			indicator.setVisited(false);
@@ -165,7 +187,4 @@ public class WizardPane extends BorderPane
 		
 		goNext();
 	}
-	
-	@FXML
-	private void initialize(){}
 }

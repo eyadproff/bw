@@ -29,6 +29,8 @@ public class LoginService
 		{
 			String serverUrl = Context.getWebserviceManager().getServerUrl();
 			
+			if(Context.getRuntimeEnvironment() == RuntimeEnvironment.DEV) serverUrl = "10.0.73.80:8080";
+			
 			boolean newUpdates = BclUtils.checkForAppUpdates(serverUrl, "bw", false, json ->
 			{
 				try

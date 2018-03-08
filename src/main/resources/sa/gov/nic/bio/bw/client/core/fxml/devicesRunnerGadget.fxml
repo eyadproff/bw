@@ -11,7 +11,7 @@
 <?import javafx.scene.control.ProgressIndicator?>
 <VBox xmlns="http://javafx.com/javafx/8.0.152" xmlns:fx="http://javafx.com/fxml/1"
       fx:id="rootPane" fx:controller="sa.gov.nic.bio.bw.client.core.DevicesRunnerGadgetPaneFxController">
-    <TitledPane fx:id="tpDevicesRunner" text="%label.devicesRunner" alignment="CENTER" styleClass="devices-runner-gadget" collapsible="false">
+    <TitledPane fx:id="tpDevicesRunner" text="%label.devicesRunner" alignment="CENTER" styleClass="devices-runner-gadget" collapsible="false" focusTraversable="false">
         <VBox alignment="CENTER" spacing="5.0">
             <padding>
                 <Insets topRightBottomLeft="5.0"/>
@@ -33,7 +33,7 @@
                 </Label>
                 <Button fx:id="btnDevicesRunnerAction" focusTraversable="false" onMouseClicked="#onDevicesRunnerActionButtonClicked"/>
             </HBox>
-            <TitledPane fx:id="tpFingerprintScanner" text="%label.fingerprintScanner" alignment="CENTER" collapsible="false">
+            <TitledPane fx:id="tpFingerprintScanner" text="%label.fingerprintScanner" alignment="CENTER" collapsible="false" focusTraversable="false">
                 <HBox alignment="CENTER" spacing="10.0">
                     <HBox fx:id="paneFingerprintScanner" alignment="CENTER" spacing="10.0">
                         <Label fx:id="lblFingerprintScannerNotInitialized" text="%label.notInitialized">
@@ -62,7 +62,7 @@
                     <ProgressIndicator fx:id="piFingerprintScanner" maxHeight="24.0" maxWidth="24.0" visible="false" managed="false"/>
                 </HBox>
             </TitledPane>
-            <TitledPane fx:id="tpCamera" text="%label.camera" alignment="CENTER" collapsible="false">
+            <TitledPane fx:id="tpCamera" text="%label.camera" alignment="CENTER" collapsible="false" focusTraversable="false">
                 <HBox alignment="CENTER" spacing="10.0">
                     <HBox fx:id="paneCamera" alignment="CENTER" spacing="10.0">
                         <Label fx:id="lblCameraNotInitialized" text="%label.notInitialized">

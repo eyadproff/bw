@@ -1,7 +1,19 @@
+.formBox {
+    -fx-background-color: #E6E6E6;
+    -fx-border-color: #23A967;
+    -fx-border-width: 1px;
+}
+
 .image-border {
     -fx-border-color: #398755;
     -fx-border-width: 1px;
     -fx-border-style: dashed;
+}
+
+.image-border-confirm {
+    -fx-border-color: #398755;
+    -fx-border-width: 3px;
+    -fx-border-style: solid;
 }
 
 .white-background {
@@ -43,4 +55,8 @@
 
 .slider .toggle-titled-pane:selected,.slider .toggle-titled-pane:selected > .title {
     -fx-cursor: default;
+}
+
+.bold-text {
+    -fx-font-weight: bold;
 }

@@ -10,7 +10,9 @@ import javafx.scene.layout.Pane;
 import org.controlsfx.glyphfont.FontAwesome;
 import org.controlsfx.glyphfont.Glyph;
 import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
+import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 
+import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -25,6 +27,7 @@ public class HeaderPaneFxController extends RegionFxControllerBase
 {
 	private static final Logger LOGGER = Logger.getLogger(HeaderPaneFxController.class.getName());
 	
+	@FXML private ResourceBundle resources;
 	@FXML private Pane rootPane;
 	@FXML private ImageView ivAvatar;
 	@FXML private Label lblUsername;
@@ -72,7 +75,13 @@ public class HeaderPaneFxController extends RegionFxControllerBase
 	
 	public void setAvatarImage(Image image)
 	{
-		if(image != null) ivAvatar.setImage(image);
+		if(image != null)
+		{
+			ivAvatar.setImage(image);
+			GuiUtils.attachImageDialog(coreFxController, ivAvatar,
+			                           resources.getString("label.operatorPhoto"),
+			                           resources.getString("label.contextMenu.showImage"));
+		}
 	}
 	
 	@FXML
