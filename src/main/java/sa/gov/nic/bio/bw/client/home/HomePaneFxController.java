@@ -277,6 +277,12 @@ public class HomePaneFxController extends BodyFxControllerBase
 					    menuItem.setLabel(value);
 					    break;
 				    }
+				    case "menu.lines":
+				    {
+					    int lines = Integer.parseInt(value);
+					    menuItem.setLines(lines);
+					    break;
+				    }
 				    case "menu.order":
 				    {
 					    int order = Integer.parseInt(value);

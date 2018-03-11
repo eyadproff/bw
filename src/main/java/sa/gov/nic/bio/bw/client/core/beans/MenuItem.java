@@ -9,8 +9,10 @@ import java.util.Objects;
 
 public class MenuItem implements Comparable<MenuItem>
 {
+	private int index;
 	private String menuId;
 	private String label;
+	private int lines = 1;
 	private int order; // lowest order == top menu
 	private Class<?> workflowClass;
 	private String iconId;
@@ -23,11 +25,17 @@ public class MenuItem implements Comparable<MenuItem>
 	
 	public MenuItem(){}
 	
+	public int getIndex(){return index;}
+	public void setIndex(int index){this.index = index;}
+	
 	public String getMenuId(){ return menuId; }
 	public void setMenuId(String menuId){ this.menuId = menuId; }
 	
 	public String getLabel(){return label;}
 	public void setLabel(String label){ this.label = label;}
+	
+	public int getLines(){return lines;}
+	public void setLines(int lines){this.lines = lines;}
 	
 	public int getOrder(){return order;}
 	public void setOrder(int order){this.order = order;}
@@ -48,22 +56,16 @@ public class MenuItem implements Comparable<MenuItem>
 		if(this == o) return true;
 		if(o == null || getClass() != o.getClass()) return false;
 		MenuItem menuItem = (MenuItem) o;
-		return order == menuItem.order && Objects.equals(menuId, menuItem.menuId) &&
-			   Objects.equals(label, menuItem.label) && Objects.equals(workflowClass, menuItem.workflowClass) &&
-			   Objects.equals(iconId, menuItem.iconId) && Objects.equals(selected, menuItem.selected);
+		return index == menuItem.index && lines == menuItem.lines && order == menuItem.order &&
+			   Objects.equals(menuId, menuItem.menuId) && Objects.equals(label, menuItem.label) &&
+			   Objects.equals(workflowClass, menuItem.workflowClass) && Objects.equals(iconId, menuItem.iconId) &&
+			   Objects.equals(selected, menuItem.selected);
 	}
 	
 	@Override
 	public int hashCode()
 	{
-		return Objects.hash(menuId, label, order, workflowClass, iconId, selected);
-	}
-	
-	@Override
-	public String toString()
-	{
-		return "MenuItem{" + "menuId='" + menuId + '\'' + ", label='" + label + '\'' + ", order=" + order +
-			   ", workflowClass=" + workflowClass + ", iconId='" + iconId + '\'' + ", selected=" + selected + '}';
+		return Objects.hash(index, menuId, label, lines, order, workflowClass, iconId, selected);
 	}
 	
 	@Override
