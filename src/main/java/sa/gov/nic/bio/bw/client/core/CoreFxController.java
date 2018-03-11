@@ -52,7 +52,6 @@ import java.util.prefs.Preferences;
  * The JavaFX controller of the primary stage, i.e. controller of the whole application.
  *
  * @author Fouad Almalki
- * @since 1.0.0
  */
 public class CoreFxController implements IdleMonitorRegisterer, PersistableEntity
 {
@@ -85,6 +84,7 @@ public class CoreFxController implements IdleMonitorRegisterer, PersistableEntit
 	private IdleMonitor idleMonitor;
 	private GuiLanguage currentLanguage;
 	private BodyFxControllerBase currentBodyController;
+	private URL currentWizardFxmlLocation;
 	
 	public void passInitialResources(ResourceBundle stringsBundle, ResourceBundle topMenusBundle, String windowTitle,
 	                                 GuiLanguage language)
@@ -274,22 +274,25 @@ public class CoreFxController implements IdleMonitorRegisterer, PersistableEntit
 		
 		BodyFxControllerBase bodyFxController = paneLoader.getController();
 		bodyFxController.attachCoreFxController(this);
-		bodyFxController.attachResourceBundles(stringsBundle);
 		
+		bodyFxController.onAttachedToScene();
 		bodyPane.setCenter(loadedPane);
+		bodyFxController.onDetachedFromScene();
 		
 		if(bodyFxController instanceof WizardStepFxControllerBase)
 		{
-			if(wizardPane == null)
+			URL wizardFxmlLocation = ((WizardStepFxControllerBase) bodyFxController).getWizardFxmlLocation();
+			
+			if(!wizardFxmlLocation.equals(currentWizardFxmlLocation))
 			{
-				URL wizardFxmlLocation = ((WizardStepFxControllerBase) bodyFxController).getWizardFxmlLocation();
+				currentWizardFxmlLocation = wizardFxmlLocation;
 				FXMLLoader wizardPaneLoader = new FXMLLoader(wizardFxmlLocation, stringsBundle);
 				
 				try
 				{
 					wizardPane = wizardPaneLoader.load();
 				}
-				catch(IOException e)
+				catch(Exception e)
 				{
 					String errorCode = CoreErrorCodes.C002_00005.getCode();
 					String[] errorDetails = {"Failed to load FXML correctly!", "controllerClass = " +
@@ -312,10 +315,13 @@ public class CoreFxController implements IdleMonitorRegisterer, PersistableEntit
 				}
 			}
 		}
-		else wizardPane = null;
+		else
+		{
+			wizardPane = null;
+			currentWizardFxmlLocation = null;
+		}
 		
 		bodyPane.setTop(wizardPane);
-		bodyFxController.onControllerReady();
 		
 		return bodyFxController;
 	}

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import sa.gov.nic.bio.bw.client.core.wizard.WizardPane?>
+<?import sa.gov.nic.bio.bw.client.core.wizard.WizardStep?>
+
+<WizardPane xmlns="http://javafx.com/javafx/8.0.152">
+    <steps>
+        <WizardStep iconId="\\uf256" title="%wizard.fingerprintCapturing"/>
+        <WizardStep iconId="camera" title="%wizard.facePhotoCapturing"/>
+        <WizardStep iconId="search" title="%wizard.inquiry"/>
+        <WizardStep iconId="unlock" title="%wizard.confirmInfo"/>
+        <WizardStep iconId="tag" title="%wizard.verdictDetails"/>
+        <WizardStep iconId="th_list" title="%wizard.reviewAndSubmit"/>
+        <WizardStep iconId="file_pdf_alt" title="%wizard.showReport"/>
+    </steps>
+</WizardPane>

@@ -6,7 +6,6 @@ import javafx.stage.Stage;
  * Registerer of new stages to be included in the idle monitoring process.
  *
  * @author Fouad Almalki
- * @since 1.0.0
  */
 public interface IdleMonitorRegisterer
 {

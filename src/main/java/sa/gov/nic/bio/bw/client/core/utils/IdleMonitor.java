@@ -26,7 +26,6 @@ import java.util.logging.Logger;
  * by the user should the interrupt the process and the first period starts over.
  *
  * @author Fouad Almalki
- * @since 1.0.0
  */
 public class IdleMonitor
 {

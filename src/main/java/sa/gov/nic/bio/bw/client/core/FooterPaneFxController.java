@@ -9,7 +9,6 @@ import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
  * JavaFX controller for the footer. The footer is used only at login screen.
  *
  * @author Fouad Almalki
- * @since 1.0.0
  */
 public class FooterPaneFxController extends RegionFxControllerBase
 {

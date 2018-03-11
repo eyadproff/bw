@@ -35,9 +35,6 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- * Created by Fouad on 16-Jul-17.
- */
 public class HomePaneFxController extends BodyFxControllerBase
 {
 	private static final Logger LOGGER = Logger.getLogger(HomePaneFxController.class.getName());
@@ -57,7 +54,7 @@ public class HomePaneFxController extends BodyFxControllerBase
 	@FXML private Label lblPasswordExpirationTime;
 	
 	@Override
-	public void onControllerReady()
+	protected void onAttachedToScene()
 	{
 		coreFxController.getHeaderPaneController().showRegion();
 		coreFxController.getFooterPaneController().hideRegion();

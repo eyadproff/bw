@@ -21,7 +21,6 @@ import java.util.logging.Logger;
  * user and also a button to logout from the current session.
  *
  * @author Fouad Almalki
- * @since 1.0.0
  */
 public class HeaderPaneFxController extends RegionFxControllerBase
 {

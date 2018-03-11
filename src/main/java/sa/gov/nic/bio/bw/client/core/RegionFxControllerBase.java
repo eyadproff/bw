@@ -16,7 +16,6 @@ import sa.gov.nic.bio.bw.client.core.interfaces.RegionHideableController;
  * </ul>
  *
  * @author Fouad Almalki
- * @since 1.2.1
  */
 public abstract class RegionFxControllerBase extends FxControllerBase implements RegionHideableController
 {

@@ -141,59 +141,59 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 	}
 	
 	@Override
-	public void onControllerReady()
+	protected void onAttachedToScene()
 	{
 		// accumulate all the fingerprint-related components in a map so that we can apply actions on them easily
 		fingerprintUiComponentsMap.put(FingerPosition.RIGHT_THUMB.getPosition(),
                     new FingerprintUiComponents(FingerPosition.RIGHT_THUMB, FingerPosition.TWO_THUMBS, ivRightThumb,
                                                 svgRightThumb, tpRightThumb, cbRightThumb, btnRightThumb,
-                                                stringsBundle.getString("label.fingers.thumb"),
-                                                stringsBundle.getString("label.rightHand")));
+                                                resources.getString("label.fingers.thumb"),
+                                                resources.getString("label.rightHand")));
 		fingerprintUiComponentsMap.put(FingerPosition.RIGHT_INDEX.getPosition(),
                     new FingerprintUiComponents(FingerPosition.RIGHT_INDEX, FingerPosition.RIGHT_SLAP, ivRightIndex,
                                                 svgRightIndex, tpRightIndex, cbRightIndex, btnRightIndex,
-                                                stringsBundle.getString("label.fingers.index"),
-                                                stringsBundle.getString("label.rightHand")));
+                                                resources.getString("label.fingers.index"),
+                                                resources.getString("label.rightHand")));
 		fingerprintUiComponentsMap.put(FingerPosition.RIGHT_MIDDLE.getPosition(),
                     new FingerprintUiComponents(FingerPosition.RIGHT_MIDDLE, FingerPosition.RIGHT_SLAP, ivRightMiddle,
                                                 svgRightMiddle, tpRightMiddle, cbRightMiddle, btnRightMiddle,
-                                                stringsBundle.getString("label.fingers.middle"),
-                                                stringsBundle.getString("label.rightHand")));
+                                                resources.getString("label.fingers.middle"),
+                                                resources.getString("label.rightHand")));
 		fingerprintUiComponentsMap.put(FingerPosition.RIGHT_RING.getPosition(),
                     new FingerprintUiComponents(FingerPosition.RIGHT_RING, FingerPosition.RIGHT_SLAP, ivRightRing,
                                                 svgRightRing, tpRightRing, cbRightRing, btnRightRing,
-                                                stringsBundle.getString("label.fingers.ring"),
-                                                stringsBundle.getString("label.rightHand")));
+                                                resources.getString("label.fingers.ring"),
+                                                resources.getString("label.rightHand")));
 		fingerprintUiComponentsMap.put(FingerPosition.RIGHT_LITTLE.getPosition(),
                     new FingerprintUiComponents(FingerPosition.RIGHT_LITTLE, FingerPosition.RIGHT_SLAP, ivRightLittle,
                                                 svgRightLittle, tpRightLittle, cbRightLittle, btnRightLittle,
-                                                stringsBundle.getString("label.fingers.little"),
-                                                stringsBundle.getString("label.rightHand")));
+                                                resources.getString("label.fingers.little"),
+                                                resources.getString("label.rightHand")));
 		fingerprintUiComponentsMap.put(FingerPosition.LEFT_THUMB.getPosition(),
                     new FingerprintUiComponents(FingerPosition.LEFT_THUMB, FingerPosition.TWO_THUMBS, ivLeftThumb,
                                                 svgLeftThumb, tpLeftThumb, cbLeftThumb, btnLeftThumb,
-                                                stringsBundle.getString("label.fingers.thumb"),
-                                                stringsBundle.getString("label.leftHand")));
+                                                resources.getString("label.fingers.thumb"),
+                                                resources.getString("label.leftHand")));
 		fingerprintUiComponentsMap.put(FingerPosition.LEFT_INDEX.getPosition(),
                     new FingerprintUiComponents(FingerPosition.LEFT_INDEX, FingerPosition.LEFT_SLAP, ivLeftIndex,
                                                 svgLeftIndex, tpLeftIndex, cbLeftIndex, btnLeftIndex,
-                                                stringsBundle.getString("label.fingers.index"),
-                                                stringsBundle.getString("label.leftHand")));
+                                                resources.getString("label.fingers.index"),
+                                                resources.getString("label.leftHand")));
 		fingerprintUiComponentsMap.put(FingerPosition.LEFT_MIDDLE.getPosition(),
                     new FingerprintUiComponents(FingerPosition.LEFT_MIDDLE, FingerPosition.LEFT_SLAP, ivLeftMiddle,
                                                 svgLeftMiddle, tpLeftMiddle, cbLeftMiddle, btnLeftMiddle,
-                                                stringsBundle.getString("label.fingers.middle"),
-                                                stringsBundle.getString("label.leftHand")));
+                                                resources.getString("label.fingers.middle"),
+                                                resources.getString("label.leftHand")));
 		fingerprintUiComponentsMap.put(FingerPosition.LEFT_RING.getPosition(),
                     new FingerprintUiComponents(FingerPosition.LEFT_RING, FingerPosition.LEFT_SLAP, ivLeftRing,
                                                 svgLeftRing, tpLeftRing, cbLeftRing, btnLeftRing,
-                                                stringsBundle.getString("label.fingers.ring"),
-                                                stringsBundle.getString("label.leftHand")));
+                                                resources.getString("label.fingers.ring"),
+                                                resources.getString("label.leftHand")));
 		fingerprintUiComponentsMap.put(FingerPosition.LEFT_LITTLE.getPosition(),
                     new FingerprintUiComponents(FingerPosition.LEFT_LITTLE, FingerPosition.LEFT_SLAP, ivLeftLittle,
                                                 svgLeftLittle, tpLeftLittle, cbLeftLittle, btnLeftLittle,
-                                                stringsBundle.getString("label.fingers.little"),
-                                                stringsBundle.getString("label.leftHand")));
+                                                resources.getString("label.fingers.little"),
+                                                resources.getString("label.leftHand")));
 		
 		tpLeftHand.prefWidthProperty().bind(spFingerprints.widthProperty().multiply(0.5));
 		tpRightHand.prefWidthProperty().bind(spFingerprints.widthProperty().multiply(0.5));
@@ -230,12 +230,12 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 			if(!newValue && !cbRightIndex.isSelected() && !cbRightMiddle.isSelected() &&
 					!cbRightRing.isSelected() && !cbRightLittle.isSelected())
 			{
-				btnStartFingerprintCapturing.setText(stringsBundle.getString("button.skipRightSlap"));
+				btnStartFingerprintCapturing.setText(resources.getString("button.skipRightSlap"));
 			}
 			else
 			{
 				btnStartFingerprintCapturing.setText(
-												stringsBundle.getString("button.captureRightSlapFingerprints"));
+												resources.getString("button.captureRightSlapFingerprints"));
 			}
 		};
 		ChangeListener<Boolean> leftSlapChangeListener = (observable, oldValue, newValue) ->
@@ -243,23 +243,23 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 			if(!newValue && !cbLeftIndex.isSelected() && !cbLeftMiddle.isSelected() &&
 					!cbLeftRing.isSelected() && !cbLeftLittle.isSelected())
 			{
-				btnStartFingerprintCapturing.setText(stringsBundle.getString("button.skipLeftSlap"));
+				btnStartFingerprintCapturing.setText(resources.getString("button.skipLeftSlap"));
 			}
 			else
 			{
 				btnStartFingerprintCapturing.setText(
-												stringsBundle.getString("button.captureLeftSlapFingerprints"));
+												resources.getString("button.captureLeftSlapFingerprints"));
 			}
 		};
 		ChangeListener<Boolean> thumbsChangeListener = (observable, oldValue, newValue) ->
 		{
 			if(!newValue && !cbRightThumb.isSelected() && !cbLeftThumb.isSelected())
 			{
-				btnStartFingerprintCapturing.setText(stringsBundle.getString("button.skipThumbs"));
+				btnStartFingerprintCapturing.setText(resources.getString("button.skipThumbs"));
 			}
 			else
 			{
-				btnStartFingerprintCapturing.setText(stringsBundle.getString("button.captureThumbsFingerprints"));
+				btnStartFingerprintCapturing.setText(resources.getString("button.captureThumbsFingerprints"));
 			}
 		};
 		
@@ -310,7 +310,7 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 		GuiUtils.showNode(btnStartFingerprintCapturing, false);
 		GuiUtils.showNode(btnStopFingerprintCapturing, true);
 		
-		lblStatus.setText(stringsBundle.getString("label.status.waitingDeviceResponse"));
+		lblStatus.setText(resources.getString("label.status.waitingDeviceResponse"));
 		boolean[] first = {true};
 		
 		Task<ServiceResponse<CaptureFingerprintResponse>> task = new Task<ServiceResponse<CaptureFingerprintResponse>>()
@@ -323,7 +323,7 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 					if(first[0])
 					{
 						first[0] = false;
-						lblStatus.setText(stringsBundle.getString("label.status.capturingFingerprints"));
+						lblStatus.setText(resources.getString("label.status.capturingFingerprints"));
 						GuiUtils.showNode(piFingerprintDeviceLivePreview, false);
 						tpFingerprintDeviceLivePreview.setActive(true);
 					}
@@ -345,15 +345,15 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 						
 						if(currentPosition == FingerPosition.RIGHT_SLAP.getPosition())
 						{
-							lblStatus.setText(stringsBundle.getString("label.status.skippedRightSlap"));
+							lblStatus.setText(resources.getString("label.status.skippedRightSlap"));
 						}
 						else if(currentPosition == FingerPosition.LEFT_SLAP.getPosition())
 						{
-							lblStatus.setText(stringsBundle.getString("label.status.skippedLeftSlap"));
+							lblStatus.setText(resources.getString("label.status.skippedLeftSlap"));
 						}
 						else if(currentPosition == FingerPosition.TWO_THUMBS.getPosition())
 						{
-							lblStatus.setText(stringsBundle.getString("label.status.skippedThumbs"));
+							lblStatus.setText(resources.getString("label.status.skippedThumbs"));
 						}
 					});
 					
@@ -397,15 +397,15 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 				        tpFingerprintDeviceLivePreview.setValid(false);
 				        if(currentPosition == FingerPosition.RIGHT_SLAP.getPosition())
 				        {
-					        lblStatus.setText(stringsBundle.getString("label.status.notRightSlap"));
+					        lblStatus.setText(resources.getString("label.status.notRightSlap"));
 					        btnStartFingerprintCapturing.setText(
-					        		        stringsBundle.getString("button.recaptureRightSlapFingerprints"));
+					        		        resources.getString("button.recaptureRightSlapFingerprints"));
 				        }
 				        else if(currentPosition == FingerPosition.LEFT_SLAP.getPosition())
 				        {
-					        lblStatus.setText(stringsBundle.getString("label.status.notLeftSlap"));
+					        lblStatus.setText(resources.getString("label.status.notLeftSlap"));
 					        btnStartFingerprintCapturing.setText(
-					        		        stringsBundle.getString("button.recaptureLeftSlapFingerprints"));
+					        		        resources.getString("button.recaptureLeftSlapFingerprints"));
 				        }
 				        
 				        GuiUtils.showNode(btnStartFingerprintCapturing, true);
@@ -545,8 +545,8 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 		
 		if(currentPosition == FingerPosition.RIGHT_SLAP.getPosition())
 		{
-			lblStatus.setText(stringsBundle.getString("label.status.acceptedRightSlapFingerprints"));
-			btnStartFingerprintCapturing.setText(stringsBundle.getString("button.captureLeftSlapFingerprints"));
+			lblStatus.setText(resources.getString("label.status.acceptedRightSlapFingerprints"));
+			btnStartFingerprintCapturing.setText(resources.getString("button.captureLeftSlapFingerprints"));
 			
 			for(int i = FingerPosition.RIGHT_INDEX.getPosition();
 			    i <= FingerPosition.RIGHT_LITTLE.getPosition(); i++)
@@ -556,8 +556,8 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 		}
 		else if(currentPosition == FingerPosition.LEFT_SLAP.getPosition())
 		{
-			lblStatus.setText(stringsBundle.getString("label.status.acceptedLeftSlapFingerprints"));
-			btnStartFingerprintCapturing.setText(stringsBundle.getString("button.captureThumbsFingerprints"));
+			lblStatus.setText(resources.getString("label.status.acceptedLeftSlapFingerprints"));
+			btnStartFingerprintCapturing.setText(resources.getString("button.captureThumbsFingerprints"));
 			
 			for(int i = FingerPosition.LEFT_INDEX.getPosition();
 			    i <= FingerPosition.LEFT_LITTLE.getPosition(); i++)
@@ -567,7 +567,7 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 		}
 		else if(currentPosition == FingerPosition.TWO_THUMBS.getPosition())
 		{
-			lblStatus.setText(stringsBundle.getString("label.status.acceptedThumbsFingerprints"));
+			lblStatus.setText(resources.getString("label.status.acceptedThumbsFingerprints"));
 			capturedFingerprints.get(FingerPosition.RIGHT_THUMB.getPosition()).setAcceptableQuality(true);
 			capturedFingerprints.get(FingerPosition.LEFT_THUMB.getPosition()).setAcceptableQuality(true);
 		}
@@ -633,7 +633,7 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 			GuiUtils.showNode(components.getButton(), true);
 			String dialogTitle = components.getFingerLabel() + " (" + components.getHandLabel() + ")";
 			GuiUtils.attachImageDialog(coreFxController, components.getImageView(), dialogTitle,
-			                           stringsBundle.getString("label.contextMenu.showImage"));
+			                           resources.getString("label.contextMenu.showImage"));
 			capturedFingerprints.put(dmFingerData.getPosition(), new Fingerprint(dmFingerData, acceptableQuality[0]));
 		});
 		
@@ -647,17 +647,17 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 				
 				if(currentPosition == FingerPosition.RIGHT_SLAP.getPosition())
 				{
-					lblStatus.setText(stringsBundle.getString("label.status.successfullyCapturedRightSlap"));
+					lblStatus.setText(resources.getString("label.status.successfullyCapturedRightSlap"));
 					GuiUtils.showNode(btnStartFingerprintCapturing, true);
 				}
 				else if(currentPosition == FingerPosition.LEFT_SLAP.getPosition())
 				{
-					lblStatus.setText(stringsBundle.getString("label.status.successfullyCapturedLeftSlap"));
+					lblStatus.setText(resources.getString("label.status.successfullyCapturedLeftSlap"));
 					GuiUtils.showNode(btnStartFingerprintCapturing, true);
 				}
 				else if(currentPosition == FingerPosition.TWO_THUMBS.getPosition())
 				{
-					lblStatus.setText(stringsBundle.getString("label.status.successfullyCapturedAllFingers"));
+					lblStatus.setText(resources.getString("label.status.successfullyCapturedAllFingers"));
 				}
 				
 				GuiUtils.showNode(btnAcceptCurrentFingerprints, false);
@@ -671,9 +671,9 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 			if(wrongSlap)
 			{
 				lblStatus.setText(lblStatus.getText() + " + " +
-				                  stringsBundle.getString("label.status.someFingerprintsAreNotAcceptable"));
+				                  resources.getString("label.status.someFingerprintsAreNotAcceptable"));
 			}
-			else lblStatus.setText(stringsBundle.getString("label.status.someFingerprintsAreNotAcceptable"));
+			else lblStatus.setText(resources.getString("label.status.someFingerprintsAreNotAcceptable"));
 			
 			GuiUtils.showNode(btnStartFingerprintCapturing, true);
 			GuiUtils.showNode(btnAcceptCurrentFingerprints, noDuplicates[0]);
@@ -702,18 +702,18 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 		
 		if(position == FingerPosition.RIGHT_SLAP.getPosition())
 		{
-			if(retry) buttonLabel = stringsBundle.getString("button.recaptureRightSlapFingerprints");
-			else buttonLabel = stringsBundle.getString("button.captureRightSlapFingerprints");
+			if(retry) buttonLabel = resources.getString("button.recaptureRightSlapFingerprints");
+			else buttonLabel = resources.getString("button.captureRightSlapFingerprints");
 		}
 		else if(position == FingerPosition.LEFT_SLAP.getPosition())
 		{
-			if(retry) buttonLabel = stringsBundle.getString("button.recaptureLeftSlapFingerprints");
-			else buttonLabel = stringsBundle.getString("button.captureLeftSlapFingerprints");
+			if(retry) buttonLabel = resources.getString("button.recaptureLeftSlapFingerprints");
+			else buttonLabel = resources.getString("button.captureLeftSlapFingerprints");
 		}
 		else if(position == FingerPosition.TWO_THUMBS.getPosition())
 		{
-			if(retry) buttonLabel = stringsBundle.getString("button.recaptureThumbsFingerprints");
-			else buttonLabel = stringsBundle.getString("button.captureThumbsFingerprints");
+			if(retry) buttonLabel = resources.getString("button.recaptureThumbsFingerprints");
+			else buttonLabel = resources.getString("button.captureThumbsFingerprints");
 		}
 		
 		btnStartFingerprintCapturing.setText(buttonLabel);
@@ -729,10 +729,10 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 		gridPane.setVgap(5.0);
 		gridPane.setHgap(5.0);
 		
-		Label lblNfiq = new Label(stringsBundle.getString("label.tooltip.nfiq"));
-		Label lblMinutiaeCount = new Label(stringsBundle.getString("label.tooltip.minutiaeCount"));
-		Label lblIntensity = new Label(stringsBundle.getString("label.tooltip.imageIntensity"));
-		Label lblDuplicatedFingerprint = new Label(stringsBundle.getString("label.tooltip.duplicatedFinger"));
+		Label lblNfiq = new Label(resources.getString("label.tooltip.nfiq"));
+		Label lblMinutiaeCount = new Label(resources.getString("label.tooltip.minutiaeCount"));
+		Label lblIntensity = new Label(resources.getString("label.tooltip.imageIntensity"));
+		Label lblDuplicatedFingerprint = new Label(resources.getString("label.tooltip.duplicatedFinger"));
 		
 		Image successImage = new Image(Thread.currentThread()
 				                             .getContextClassLoader()
@@ -761,7 +761,7 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 		String sNfiq = AppUtils.replaceNumbersOnly(String.valueOf(nfiq), Locale.getDefault());
 		String sMinutiaeCount = AppUtils.replaceNumbersOnly(String.valueOf(minutiaeCount), Locale.getDefault());
 		String sIntensity = AppUtils.replaceNumbersOnly(String.valueOf(imageIntensity), Locale.getDefault()) + "%";
-		String sDuplicatedFingerprint = stringsBundle.getString(duplicated ? "label.tooltip.yes" : "label.tooltip.no");
+		String sDuplicatedFingerprint = resources.getString(duplicated ? "label.tooltip.yes" : "label.tooltip.no");
 		
 		TextField txtNfiq = new TextField(sNfiq);
 		TextField txtMinutiaeCount = new TextField(sMinutiaeCount);

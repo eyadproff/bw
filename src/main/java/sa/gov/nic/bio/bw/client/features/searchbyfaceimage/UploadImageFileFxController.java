@@ -51,7 +51,7 @@ public class UploadImageFileFxController extends WizardStepFxControllerBase
 	}
 	
 	@Override
-	public void onControllerReady()
+	protected void onAttachedToScene()
 	{
 		fileChooser.setTitle(resources.getString("fileChooser.selectImage.title"));
 		FileChooser.ExtensionFilter extFilterJPG = new FileChooser.ExtensionFilter(
@@ -122,7 +122,7 @@ public class UploadImageFileFxController extends WizardStepFxControllerBase
 				if(fileSizeKB > maxFileSizeKb)
 				{
 					DecimalFormat df = new DecimalFormat("#.00"); // 2 decimal places
-					showWarningNotification(String.format(stringsBundle.getString(
+					showWarningNotification(String.format(resources.getString(
 							"selectNewFaceImage.fileChooser.exceedMaxFileSize"),
 					                                      df.format(fileSizeKB), df.format(maxFileSizeKb)));
 					return;

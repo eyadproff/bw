@@ -47,7 +47,7 @@ public class ImageSourceFxController extends WizardStepFxControllerBase
 	}
 	
 	@Override
-	public void onControllerReady()
+	protected void onAttachedToScene()
 	{
 		// change the wizard-step-indicator upon changing the image source
 		int INSERTING_IMAGE_STEP_INDEX = 1;

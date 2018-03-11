@@ -82,7 +82,7 @@ public class ShowResultFxController extends WizardStepFxControllerBase
 	}
 	
 	@Override
-	public void onControllerReady()
+	protected void onAttachedToScene()
 	{
 		imagePane.maxWidthProperty().bind(coreFxController.getBodyPane().widthProperty());
 		imagePane.maxHeightProperty().bind(coreFxController.getBodyPane().heightProperty());
@@ -175,12 +175,12 @@ public class ShowResultFxController extends WizardStepFxControllerBase
 			GuiUtils.attachImageDialog(coreFxController, ivCenterImage, tpFinalImage.getText(),
 			                           resources.getString("label.contextMenu.showImage"));
 		
-		    lblBioId.setText(stringsBundle.getString("label.notAvailable"));
-		    lblScore.setText(stringsBundle.getString("label.notAvailable"));
-		    lblSamisId.setText(stringsBundle.getString("label.notAvailable"));
-		    lblFirstName.setText(stringsBundle.getString("label.notAvailable"));
-		    lblFatherName.setText(stringsBundle.getString("label.notAvailable"));
-		    lblFamilyName.setText(stringsBundle.getString("label.notAvailable"));
+		    lblBioId.setText(resources.getString("label.notAvailable"));
+		    lblScore.setText(resources.getString("label.notAvailable"));
+		    lblSamisId.setText(resources.getString("label.notAvailable"));
+		    lblFirstName.setText(resources.getString("label.notAvailable"));
+		    lblFatherName.setText(resources.getString("label.notAvailable"));
+		    lblFamilyName.setText(resources.getString("label.notAvailable"));
 		});
 		
 		hbCandidatesImages.getChildren().clear();
@@ -212,12 +212,12 @@ public class ShowResultFxController extends WizardStepFxControllerBase
 				                           resources.getString("label.contextMenu.showImage"));
 			
 			    // default values
-			    lblBioId.setText(stringsBundle.getString("label.notAvailable"));
-			    lblScore.setText(stringsBundle.getString("label.notAvailable"));
-			    lblSamisId.setText(stringsBundle.getString("label.notAvailable"));
-			    lblFirstName.setText(stringsBundle.getString("label.notAvailable"));
-			    lblFatherName.setText(stringsBundle.getString("label.notAvailable"));
-			    lblFamilyName.setText(stringsBundle.getString("label.notAvailable"));
+			    lblBioId.setText(resources.getString("label.notAvailable"));
+			    lblScore.setText(resources.getString("label.notAvailable"));
+			    lblSamisId.setText(resources.getString("label.notAvailable"));
+			    lblFirstName.setText(resources.getString("label.notAvailable"));
+			    lblFatherName.setText(resources.getString("label.notAvailable"));
+			    lblFamilyName.setText(resources.getString("label.notAvailable"));
 			
 			    long bioId = candidate.getBioId();
 			    int score = candidate.getScore();
@@ -276,8 +276,8 @@ public class ShowResultFxController extends WizardStepFxControllerBase
 			                        finalImage.getHeight() + heightDiff);
 		}
 		
-		String title = stringsBundle.getString("dialog.compare.title");
-		String buttonText = stringsBundle.getString("dialog.compare.buttons.close");
+		String title = resources.getString("dialog.compare.title");
+		String buttonText = resources.getString("dialog.compare.buttons.close");
 		boolean rtl = coreFxController.getCurrentLanguage().getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT;
 		
 		Image mergedImage;

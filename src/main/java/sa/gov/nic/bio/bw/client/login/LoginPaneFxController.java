@@ -24,9 +24,6 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-/**
- * Created by Fouad on 16-Jul-17.
- */
 public class LoginPaneFxController extends BodyFxControllerBase implements PersistableEntity
 {
 	private static final String FXML_CHANGE_PASSWORD = "sa/gov/nic/bio/bw/client/login/fxml/change_password_dialog.fxml";
@@ -52,7 +49,7 @@ public class LoginPaneFxController extends BodyFxControllerBase implements Persi
 	}
 	
 	@Override
-	public void onControllerReady()
+	protected void onAttachedToScene()
 	{
 		GuiLanguage currentLanguage = coreFxController.getCurrentLanguage();
 		cboLanguage.getSelectionModel().select(currentLanguage);
@@ -121,12 +118,11 @@ public class LoginPaneFxController extends BodyFxControllerBase implements Persi
 		hideNotification();
 		
 		boolean rtl = coreFxController.getCurrentLanguage().getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT;
-		ChangePasswordDialogFxController controller = DialogUtils.buildCustomDialogByFxml(coreFxController.getPrimaryStage(), FXML_CHANGE_PASSWORD, stringsBundle, rtl);
+		ChangePasswordDialogFxController controller = DialogUtils.buildCustomDialogByFxml(coreFxController.getPrimaryStage(), FXML_CHANGE_PASSWORD, resources, rtl);
 		
 		if(controller != null)
 		{
 			controller.attachCoreFxController(coreFxController);
-			controller.attachResourceBundles(stringsBundle);
 			controller.setUsernameAndPassword(txtUsername.getText(), txtPassword.getText());
 			controller.requestFocus();
 			controller.showDialogAndWait();
@@ -135,7 +131,7 @@ public class LoginPaneFxController extends BodyFxControllerBase implements Persi
 			if(passwordChanged)
 			{
 				txtPassword.setText("");
-				showSuccessNotification(stringsBundle.getString("changePassword.success"));
+				showSuccessNotification(resources.getString("changePassword.success"));
 			}
 			
 			if(txtUsername.getText().isEmpty()) txtUsername.requestFocus();

@@ -12,7 +12,6 @@ import java.util.logging.Logger;
  * the user action of submitting the forms that are shown on the GUI.
  *
  * @author Fouad Almalki
- * @since 1.0.0
  */
 public class WorkflowManager
 {

@@ -7,7 +7,6 @@ import java.net.URL;
  * and bundle resources.
  *
  * @author Fouad Almalki
- * @since 1.2.1
  */
 public interface ControllerResourcesLocator
 {

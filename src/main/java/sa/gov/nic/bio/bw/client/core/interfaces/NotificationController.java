@@ -4,7 +4,6 @@ package sa.gov.nic.bio.bw.client.core.interfaces;
  * Every JavaFX controller that implements this interface will be able to show a notification on its region.
  *
  * @author Fouad Almalki
- * @since 1.2.1
  */
 public interface NotificationController
 {

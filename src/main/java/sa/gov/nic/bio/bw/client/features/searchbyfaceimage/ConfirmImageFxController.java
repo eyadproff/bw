@@ -46,7 +46,7 @@ public class ConfirmImageFxController extends WizardStepFxControllerBase
 	}
 	
 	@Override
-	public void onControllerReady()
+	protected void onAttachedToScene()
 	{
 		imagePane.maxWidthProperty().bind(coreFxController.getBodyPane().widthProperty());
 		imagePane.maxHeightProperty().bind(coreFxController.getBodyPane().heightProperty());

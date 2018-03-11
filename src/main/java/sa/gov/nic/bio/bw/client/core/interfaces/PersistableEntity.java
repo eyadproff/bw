@@ -6,7 +6,6 @@ import sa.gov.nic.bio.bw.client.core.beans.StateBundle;
  * An entity whose state can be saved in a <code>StateBundle</code> to be loaded later on.
  *
  * @author Fouad Almalki
- * @since 1.0.0
  */
 public interface PersistableEntity
 {

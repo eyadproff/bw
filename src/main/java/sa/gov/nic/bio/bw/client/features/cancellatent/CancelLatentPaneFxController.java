@@ -37,7 +37,7 @@ public class CancelLatentPaneFxController extends BodyFxControllerBase
 	}
 	
 	@Override
-	public void onControllerReady()
+	protected void onAttachedToScene()
 	{
 		txtPersonId.requestFocus();
 	}
@@ -59,12 +59,12 @@ public class CancelLatentPaneFxController extends BodyFxControllerBase
 				Boolean resultBean = (Boolean) serviceResponse.getResult();
 				if(resultBean != null && resultBean)
 				{
-					String message = String.format(stringsBundle.getString("cancelLatent.success"), latentId, personId);
+					String message = String.format(resources.getString("cancelLatent.success"), latentId, personId);
 					showSuccessNotification(message);
 				}
 				else
 				{
-					String message = String.format(stringsBundle.getString("cancelLatent.failure"), latentId, personId);
+					String message = String.format(resources.getString("cancelLatent.failure"), latentId, personId);
 					showWarningNotification(message);
 				}
 			}
@@ -87,8 +87,8 @@ public class CancelLatentPaneFxController extends BodyFxControllerBase
 		String personId = txtPersonId.getText().trim();
 		String latentId = txtLatentId.getText().trim();
 		
-		String headerText = stringsBundle.getString("cancelLatent.confirmation.header");
-		String contentText = String.format(stringsBundle.getString("cancelLatent.confirmation.message"), latentId, personId);
+		String headerText = resources.getString("cancelLatent.confirmation.header");
+		String contentText = String.format(resources.getString("cancelLatent.confirmation.message"), latentId, personId);
 		boolean confirmed = coreFxController.showConfirmationDialogAndWait(headerText, contentText);
 		
 		if(!confirmed) return;

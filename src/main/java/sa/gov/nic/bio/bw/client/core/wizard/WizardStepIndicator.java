@@ -73,7 +73,8 @@ public class WizardStepIndicator extends StackPane
 		line.endXProperty().bind(widthProperty());
 		line.setStrokeWidth(LINE_STROKE_WIDTH);
 		
-		if(iconId.startsWith("\\u")) normalIcon = AppUtils.createFontAwesomeIcon((char) Integer.parseInt(iconId.substring(2), 16));
+		if(iconId.startsWith("\\u")) normalIcon = AppUtils.createFontAwesomeIcon(
+															(char) Integer.parseInt(iconId.substring(2), 16));
 		else
 		{
 			FontAwesome.Glyph normalGlyph = FontAwesome.Glyph.valueOf(iconId.toUpperCase());

@@ -143,7 +143,7 @@ public class ChangePasswordDialogFxController extends RegionFxControllerBase
 				}
 				else
 				{
-					String message = stringsBundle.getString("changePassword.newPasswordConfirm.notMatch");
+					String message = resources.getString("changePassword.newPasswordConfirm.notMatch");
 					showWarningMessage(message);
 					txtNewPassword.requestFocus();
 				}

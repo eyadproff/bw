@@ -12,7 +12,6 @@ import java.util.logging.Logger;
  * A base class for any JavaFX controller that will be associated with the body region.
  *
  * @author Fouad Almalki
- * @since 1.0.0
  */
 public abstract class BodyFxControllerBase extends RegionFxControllerBase implements WorkflowUserTaskController,
 																					 NotificationController
@@ -78,10 +77,14 @@ public abstract class BodyFxControllerBase extends RegionFxControllerBase implem
 	}
 	
 	/**
-	 * A callback that is invoked after the controller is completely initialized. The core controller and the resource
-	 * bundles are attached to this controller before calling <code>onControllerReady()</code>.
+	 * A callback that is invoked after the root pane of this controller is attached to the scene.
 	 */
-	public void onControllerReady(){}
+	protected void onAttachedToScene(){}
+	
+	/**
+	 * A callback that is invoked after the root pane of this controller is detached from the scene.
+	 */
+	protected void onDetachedFromScene(){}
 	
 	
 	protected void reportNegativeResponse(String errorCode, Exception exception, String[] errorDetails)

@@ -28,9 +28,6 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.concurrent.atomic.AtomicInteger;
 
-/**
- * Created by Fouad on 12-Jul-17.
- */
 public class DialogUtils
 {
 	public static void showAlertDialog(AlertType alertType, Window ownerWindow,
