@@ -1,5 +1,9 @@
 # Release Notes:
 
+## v2018.03.2
+
+- Update bcl-utils-2018.03.1 to bcl-utils-2018.03.2, to avoid using JRE8's javaws.
+
 ## v2018.03.1
 
 - Integrate with Biokit-library.
