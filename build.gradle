@@ -127,7 +127,7 @@ task packageWebStart(group: 'web-start') {
         }
 
         // compress the jars
-        fileTree(dir: 'build/web-start/classpath-jars', include: '**/*.jar', excludes: ['bw-client-*.jar', 'controlsfx-8.40.14.jar']).visit { FileVisitDetails details ->
+        fileTree(dir: 'build/web-start/classpath-jars', include: '**/*.jar', excludes: ['bw-client-*.jar', 'controlsfx-8.40.14.jar', 'tomcat-*.jar']).visit { FileVisitDetails details ->
             String fileName = details.file.name
             exec {
                 workingDir 'build/web-start/classpath-jars'
@@ -136,7 +136,7 @@ task packageWebStart(group: 'web-start') {
         }
 
         // delete the un-compressed jars
-        fileTree(dir: 'build/web-start/classpath-jars', include: '**/*.jar', excludes: ['bw-client-*.jar', 'controlsfx-8.40.14.jar']).visit { FileVisitDetails details ->
+        fileTree(dir: 'build/web-start/classpath-jars', include: '**/*.jar', excludes: ['bw-client-*.jar', 'controlsfx-8.40.14.jar', 'tomcat-*.jar']).visit { FileVisitDetails details ->
             details.file.delete()
         }
 

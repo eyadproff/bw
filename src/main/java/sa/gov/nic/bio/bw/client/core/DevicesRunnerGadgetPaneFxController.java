@@ -182,7 +182,12 @@ public class DevicesRunnerGadgetPaneFxController extends RegionFxControllerBase
 			if(future != null) future.cancel(true);
 		});
 		
-		btnCancel.setOnAction(e -> dialogStage.close());
+		btnCancel.setOnAction(e ->
+		{
+			cancelCommand.cancel();
+			if(future != null) future.cancel(true);
+			dialogStage.close();
+		});
 		
 		dialogStage.addEventHandler(KeyEvent.KEY_PRESSED, event ->
 		{
