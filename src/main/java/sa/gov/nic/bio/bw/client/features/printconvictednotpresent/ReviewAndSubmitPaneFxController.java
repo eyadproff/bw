@@ -5,12 +5,12 @@ import sa.gov.nic.bio.bw.client.core.wizard.WizardStepFxControllerBase;
 import java.net.URL;
 import java.util.Map;
 
-public class PrintConvictedNotPresentPaneFxController extends WizardStepFxControllerBase
+public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 {
 	@Override
 	public URL getFxmlLocation()
 	{
-		return null;
+		return getClass().getResource("fxml/reviewAndSubmit.fxml");
 	}
 	
 	@Override

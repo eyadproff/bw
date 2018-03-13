@@ -8,6 +8,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TextField;
 import sa.gov.nic.bio.bw.client.core.BodyFxControllerBase;
+import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.workflow.Workflow;
 import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
@@ -32,7 +33,8 @@ public class CancelLatentPaneFxController extends BodyFxControllerBase
 		BooleanBinding latentNumberEmptyBinding = txtLatentId.textProperty().isEmpty();
 		BooleanProperty progressVisibility = piCancelLatent.visibleProperty();
 		
-		btnCancelLatent.disableProperty().bind(idNumberEmptyBinding.or(latentNumberEmptyBinding).or(progressVisibility));
+		btnCancelLatent.disableProperty().bind(idNumberEmptyBinding.or(latentNumberEmptyBinding)
+				                                                   .or(progressVisibility));
 		GuiUtils.makeButtonClickableByPressingEnter(btnCancelLatent);
 	}
 	
@@ -59,12 +61,14 @@ public class CancelLatentPaneFxController extends BodyFxControllerBase
 				Boolean resultBean = (Boolean) serviceResponse.getResult();
 				if(resultBean != null && resultBean)
 				{
-					String message = String.format(resources.getString("cancelLatent.success"), latentId, personId);
+					String message = String.format(resources.getString("cancelLatent.success"),
+					                               latentId, personId);
 					showSuccessNotification(message);
 				}
 				else
 				{
-					String message = String.format(resources.getString("cancelLatent.failure"), latentId, personId);
+					String message = String.format(resources.getString("cancelLatent.failure"),
+					                               latentId, personId);
 					showWarningNotification(message);
 				}
 			}
@@ -88,8 +92,9 @@ public class CancelLatentPaneFxController extends BodyFxControllerBase
 		String latentId = txtLatentId.getText().trim();
 		
 		String headerText = resources.getString("cancelLatent.confirmation.header");
-		String contentText = String.format(resources.getString("cancelLatent.confirmation.message"), latentId, personId);
-		boolean confirmed = coreFxController.showConfirmationDialogAndWait(headerText, contentText);
+		String contentText = String.format(resources.getString("cancelLatent.confirmation.message"),
+		                                   latentId, personId);
+		boolean confirmed = Context.getCoreFxController().showConfirmationDialogAndWait(headerText, contentText);
 		
 		if(!confirmed) return;
 		
@@ -100,12 +105,12 @@ public class CancelLatentPaneFxController extends BodyFxControllerBase
 		uiDataMap.put("personId", Long.parseLong(personId));
 		uiDataMap.put("latentId", latentId);
 		
-		coreFxController.submitForm(uiDataMap);
+		Context.getCoreFxController().submitForm(uiDataMap);
 	}
 	
 	private void disableUiControls(boolean bool)
 	{
-		coreFxController.getMenuPaneController().showOverlayPane(bool);
+		Context.getCoreFxController().getMenuPaneController().showOverlayPane(bool);
 		
 		txtPersonId.setDisable(bool);
 		txtLatentId.setDisable(bool);

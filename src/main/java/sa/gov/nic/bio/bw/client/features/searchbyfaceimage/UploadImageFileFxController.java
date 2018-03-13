@@ -9,6 +9,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser;
+import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.wizard.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.client.features.searchbyfaceimage.utils.SearchByFaceImageErrorCodes;
@@ -58,8 +59,8 @@ public class UploadImageFileFxController extends WizardStepFxControllerBase
 									resources.getString("fileChooser.selectImage.types"), "*.jpg");
 		fileChooser.getExtensionFilters().addAll(extFilterJPG);
 		
-		imagePane.maxWidthProperty().bind(coreFxController.getBodyPane().widthProperty());
-		imagePane.maxHeightProperty().bind(coreFxController.getBodyPane().heightProperty());
+		imagePane.maxWidthProperty().bind(Context.getCoreFxController().getBodyPane().widthProperty());
+		imagePane.maxHeightProperty().bind(Context.getCoreFxController().getBodyPane().heightProperty());
 		ivUploadedImage.fitWidthProperty().bind(imagePane.widthProperty().divide(1.8));
 		ivUploadedImage.fitHeightProperty().bind(imagePane.heightProperty().divide(1.8));
 		imagePane.autosize();
@@ -71,14 +72,15 @@ public class UploadImageFileFxController extends WizardStepFxControllerBase
 				Platform.runLater(() ->
 				{
 				    imagePane.autosize();
-				    coreFxController.getBodyPane().autosize();
+				    Context.getCoreFxController().getBodyPane().autosize();
 				});
 			}
 		};
-		coreFxController.getPrimaryStage().maximizedProperty().addListener(changeListener);
+		Context.getCoreFxController().getPrimaryStage().maximizedProperty().addListener(changeListener);
 		imagePane.sceneProperty().addListener((observable, oldValue, newValue) ->
 		{
-		    if(newValue == null) coreFxController.getPrimaryStage().maximizedProperty().removeListener(changeListener);
+		    if(newValue == null) Context.getCoreFxController().getPrimaryStage().maximizedProperty()
+				                                                                .removeListener(changeListener);
 		});
 	}
 	
@@ -108,7 +110,7 @@ public class UploadImageFileFxController extends WizardStepFxControllerBase
 	private void onSelectImageButtonClicked(ActionEvent actionEvent)
 	{
 		hideNotification();
-		File selectedFile = fileChooser.showOpenDialog(coreFxController.getPrimaryStage());
+		File selectedFile = fileChooser.showOpenDialog(Context.getCoreFxController().getPrimaryStage());
 		
 		if(selectedFile != null)
 		{
@@ -132,7 +134,7 @@ public class UploadImageFileFxController extends WizardStepFxControllerBase
 			{
 				String errorCode = SearchByFaceImageErrorCodes.C005_00002.getCode();
 				String[] errorDetails = {"Failed to retrieve the file size (" + selectedFile.getAbsolutePath() + ")!"};
-				coreFxController.showErrorDialog(errorCode, e, errorDetails);
+				Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails);
 			}
 			
 			try
@@ -143,7 +145,7 @@ public class UploadImageFileFxController extends WizardStepFxControllerBase
 				btnNext.setDisable(false);
 				btnSelectImage.setText(resources.getString("button.selectNewImage"));
 				
-				GuiUtils.attachImageDialog(coreFxController, ivUploadedImage,
+				GuiUtils.attachImageDialog(Context.getCoreFxController(), ivUploadedImage,
 				                           resources.getString("label.uploadedImage"),
 				                           resources.getString("label.contextMenu.showImage"));
 			}
@@ -151,7 +153,7 @@ public class UploadImageFileFxController extends WizardStepFxControllerBase
 			{
 				String errorCode = SearchByFaceImageErrorCodes.C005_00003.getCode();
 				String[] errorDetails = {"Failed to load the image (" + selectedFile.getAbsolutePath() + ")!"};
-				coreFxController.showErrorDialog(errorCode, e, errorDetails);
+				Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails);
 			}
 		}
 	}

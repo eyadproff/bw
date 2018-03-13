@@ -6,6 +6,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.RadioButton;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.wizard.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.client.features.searchbyfaceimage.workflow.SearchByFaceImageWorkflow;
@@ -53,10 +54,10 @@ public class ImageSourceFxController extends WizardStepFxControllerBase
 		int INSERTING_IMAGE_STEP_INDEX = 1;
 		rbByUploadingImage.selectedProperty().addListener((observable, oldValue, newValue) ->
 		{
-			if(newValue) coreFxController.getWizardPane().updateStep(INSERTING_IMAGE_STEP_INDEX,
-			                                                         resources.getString("wizard.uploadImage"),
-			                                                         "upload");
-			else coreFxController.getWizardPane().updateStep(INSERTING_IMAGE_STEP_INDEX,
+			if(newValue) Context.getCoreFxController().getWizardPane().updateStep(INSERTING_IMAGE_STEP_INDEX,
+                                                                      resources.getString("wizard.uploadImage"),
+                                                                      "upload");
+			else Context.getCoreFxController().getWizardPane().updateStep(INSERTING_IMAGE_STEP_INDEX,
 			                                                 resources.getString("wizard.capturePhotoByCamera"),
 			                                                 "camera");
 		});

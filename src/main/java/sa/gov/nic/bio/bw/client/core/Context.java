@@ -25,6 +25,7 @@ public class Context
 	private ResourceBundle errorsBundle;
 	private UserSession userSession;
 	private String serverUrl;
+	private CoreFxController coreFxController;
 	
 	private Context(){}
 	
@@ -61,4 +62,8 @@ public class Context
 	public static UserSession getUserSession(){return INSTANCE.userSession;}
 	
 	public static String getServerUrl(){return INSTANCE.serverUrl;}
+	
+	public static CoreFxController getCoreFxController(){return INSTANCE.coreFxController;}
+	public static void setCoreFxController(CoreFxController coreFxController)
+																	{INSTANCE.coreFxController = coreFxController;}
 }

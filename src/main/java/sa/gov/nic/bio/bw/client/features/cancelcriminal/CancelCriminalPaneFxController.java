@@ -197,7 +197,7 @@ public class CancelCriminalPaneFxController extends BodyFxControllerBase
 			String contentText = String.format(
 										resources.getString("cancelCriminal.byPersonId.confirmation.message"),
 			                            criminalId, personId, formatPersonIdType(personIdType));
-			boolean confirmed = coreFxController.showConfirmationDialogAndWait(headerText, contentText);
+			boolean confirmed = Context.getCoreFxController().showConfirmationDialogAndWait(headerText, contentText);
 			
 			if(!confirmed) return;
 			
@@ -216,7 +216,7 @@ public class CancelCriminalPaneFxController extends BodyFxControllerBase
 			String contentText = String.format(
 					resources.getString("cancelCriminal.byInquiryId.confirmation.message"),
 					criminalId, inquiryId);
-			boolean confirmed = coreFxController.showConfirmationDialogAndWait(headerText, contentText);
+			boolean confirmed = Context.getCoreFxController().showConfirmationDialogAndWait(headerText, contentText);
 			
 			if(!confirmed) return;
 			
@@ -227,20 +227,21 @@ public class CancelCriminalPaneFxController extends BodyFxControllerBase
 			uiDataMap.put("criminalId", Long.parseLong(criminalId));
 		}
 		
-		coreFxController.submitForm(uiDataMap);
+		Context.getCoreFxController().submitForm(uiDataMap);
 	}
 	
 	private String formatPersonIdType(PersonIdType personIdType)
 	{
 		StringBuilder sb = new StringBuilder();
 		
-		if(coreFxController.getCurrentLanguage() == GuiLanguage.ARABIC)
+		if(Context.getCoreFxController().getCurrentLanguage() == GuiLanguage.ARABIC)
 		{
 			sb.append(personIdType.getDescriptionAR());
 		}
 		else sb.append(personIdType.getDescriptionEN());
 		
-		return AppUtils.replaceNumbersOnly(sb.toString(), coreFxController.getCurrentLanguage().getLocale());
+		return AppUtils.replaceNumbersOnly(sb.toString(),
+		                                            Context.getCoreFxController().getCurrentLanguage().getLocale());
 	}
 	
 	private void initializeLookupTask()
@@ -269,7 +270,7 @@ public class CancelCriminalPaneFxController extends BodyFxControllerBase
 		    String errorCode = CancelCriminalErrorCodes.C006_00001.getCode();
 		    Exception exception = (Exception) lookupTask.getException();
 		    String[] errorDetails = {"Failed to load PersonIdTypes!"};
-		    coreFxController.showErrorDialog(errorCode, exception, errorDetails);
+		    Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails);
 		});
 	}
 	
@@ -291,7 +292,7 @@ public class CancelCriminalPaneFxController extends BodyFxControllerBase
 	
 	private void disableUiControls(boolean bool)
 	{
-		coreFxController.getMenuPaneController().showOverlayPane(bool);
+		Context.getCoreFxController().getMenuPaneController().showOverlayPane(bool);
 		
 		tabPane.setDisable(bool);
 		txtPersonId.setDisable(bool);

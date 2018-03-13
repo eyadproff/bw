@@ -1,5 +1,7 @@
 package sa.gov.nic.bio.bw.client.features.cancelcriminal.workflow;
 
+import javafx.application.Platform;
+import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.interfaces.FormRenderer;
 import sa.gov.nic.bio.bw.client.core.workflow.Signal;
 import sa.gov.nic.bio.bw.client.core.workflow.WorkflowBase;
@@ -22,6 +24,7 @@ public class CancelCriminalWorkflow extends WorkflowBase<Void, Void>
 	public Void onProcess(Void input) throws InterruptedException, Signal
 	{
 		Map<String, Object> workflowResponse = new HashMap<>();
+		Platform.runLater(() -> Context.getCoreFxController().hideWizardBar());
 		
 		while(true)
 		{

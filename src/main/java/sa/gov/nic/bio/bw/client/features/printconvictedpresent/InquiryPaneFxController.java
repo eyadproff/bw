@@ -1,16 +1,16 @@
-package sa.gov.nic.bio.bw.client.features.printconvictedunknown;
+package sa.gov.nic.bio.bw.client.features.printconvictedpresent;
 
 import sa.gov.nic.bio.bw.client.core.wizard.WizardStepFxControllerBase;
 
 import java.net.URL;
 import java.util.Map;
 
-public class PrintConvictedUnknownPaneFxController extends WizardStepFxControllerBase
+public class InquiryPaneFxController extends WizardStepFxControllerBase
 {
 	@Override
 	public URL getFxmlLocation()
 	{
-		return null;
+		return getClass().getResource("fxml/inquiry.fxml");
 	}
 	
 	@Override

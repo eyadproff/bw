@@ -76,7 +76,7 @@ public class GuiUtils
 		{
 			event.consume(); // prevent the stage from closing
 			
-			String message = coreFxController.getStringsBundle().getString("exit.confirm");
+			String message = coreFxController.getResourceBundle().getString("exit.confirm");
 			boolean confirmed = coreFxController.showConfirmationDialogAndWait(null, message);
 			
 			if(confirmed)
@@ -105,7 +105,7 @@ public class GuiUtils
 				
 				Platform.exit();
 				LOGGER.info("The application is exited");
-				System.exit(0);
+				System.exit(0); // last resort
 			}
 		};
 	}

@@ -280,6 +280,6 @@ public class MenuPaneFxController extends RegionFxControllerBase
 	
 	private void onSelectMenu(MenuItem menuItem)
 	{
-		coreFxController.goToMenu(menuItem.getWorkflowClass());
+		Context.getCoreFxController().goToMenu(menuItem.getWorkflowClass());
 	}
 }

@@ -133,7 +133,7 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 		{
 			String errorCode = CommonsErrorCodes.C008_00001.getCode();
 			String[] errorDetails = {"failed to load the face 3D model!"};
-			coreFxController.showErrorDialog(errorCode, e, errorDetails);
+			Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails);
 			
 			return;
 		}
@@ -183,7 +183,7 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 			if(capturedImage != null)
 			{
 				ivCapturedImage.setImage(capturedImage);
-				GuiUtils.attachImageDialog(coreFxController, ivCapturedImage, tpCapturedImage.getText(),
+				GuiUtils.attachImageDialog(Context.getCoreFxController(), ivCapturedImage, tpCapturedImage.getText(),
 				                           resources.getString("label.contextMenu.showImage"));
 			}
 			
@@ -191,7 +191,7 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 			if(croppedImage != null)
 			{
 				ivCroppedImage.setImage(croppedImage);
-				GuiUtils.attachImageDialog(coreFxController, ivCroppedImage, tpCroppedImage.getText(),
+				GuiUtils.attachImageDialog(Context.getCoreFxController(), ivCroppedImage, tpCroppedImage.getText(),
 				                           resources.getString("label.contextMenu.showImage"));
 			}
 			
@@ -220,7 +220,7 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 			if(bool != null) tpCroppedImage.setValid(bool);
 			
 			DevicesRunnerGadgetPaneFxController deviceManagerGadgetPaneController =
-															coreFxController.getDeviceManagerGadgetPaneController();
+												Context.getCoreFxController().getDeviceManagerGadgetPaneController();
 			
 			if(deviceManagerGadgetPaneController.isCameraInitialized())
 			{
@@ -327,7 +327,8 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 					}
 				});
 				
-				String cameraDeviceName = coreFxController.getDeviceManagerGadgetPaneController().getCameraDeviceName();
+				String cameraDeviceName = Context.getCoreFxController().getDeviceManagerGadgetPaneController()
+																	   .getCameraDeviceName();
 				Future<ServiceResponse<FaceStartPreviewResponse>> future = Context.getBioKitManager().getFaceService()
 															  .startPreview(cameraDeviceName, responseProcessor);
 				return future.get();
@@ -363,7 +364,7 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 			
 			    String errorCode = CommonsErrorCodes.C008_00002.getCode();
 			    String[] errorDetails = {"failed while starting the camera live preview!"};
-			    coreFxController.showErrorDialog(errorCode, serviceResponse.getException(), errorDetails);
+			    Context.getCoreFxController().showErrorDialog(errorCode, serviceResponse.getException(), errorDetails);
 		    }
 		});
 		task.setOnFailed(e ->
@@ -398,7 +399,7 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 				
 				String errorCode = CommonsErrorCodes.C008_00003.getCode();
 				String[] errorDetails = {"failed while starting the camera live preview!"};
-				coreFxController.showErrorDialog(errorCode, exception, errorDetails);
+				Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails);
 			}
 		});
 		
@@ -418,7 +419,8 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 		
 		lblStatus.setText(resources.getString("label.status.stoppingCameraLivePreviewing"));
 		
-		String cameraDeviceName = coreFxController.getDeviceManagerGadgetPaneController().getCameraDeviceName();
+		String cameraDeviceName = Context.getCoreFxController().getDeviceManagerGadgetPaneController()
+															   .getCameraDeviceName();
 		Future<ServiceResponse<FaceStopPreviewResponse>> future = Context.getBioKitManager().getFaceService()
 																		 .stopPreview(cameraDeviceName);
 		
@@ -465,7 +467,7 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 		
 		        String errorCode = CommonsErrorCodes.C008_00004.getCode();
 		        String[] errorDetails = {"failed while stopping the camera live preview!"};
-		        coreFxController.showErrorDialog(errorCode, serviceResponse.getException(), errorDetails);
+		        Context.getCoreFxController().showErrorDialog(errorCode, serviceResponse.getException(), errorDetails);
 		    }
 		});
 		task.setOnFailed(e ->
@@ -498,7 +500,7 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 		
 		        String errorCode = CommonsErrorCodes.C008_00005.getCode();
 		        String[] errorDetails = {"failed while stopping the camera live preview!"};
-		        coreFxController.showErrorDialog(errorCode, exception, errorDetails);
+		        Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails);
 		    }
 		});
 		
@@ -545,7 +547,8 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 		
 		lblStatus.setText(resources.getString("label.status.capturingFace"));
 		
-		String cameraDeviceName = coreFxController.getDeviceManagerGadgetPaneController().getCameraDeviceName();
+		String cameraDeviceName = Context.getCoreFxController().getDeviceManagerGadgetPaneController()
+															   .getCameraDeviceName();
 		Future<ServiceResponse<CaptureFaceResponse>> future = Context.getBioKitManager().getFaceService()
 																	 .captureFace(cameraDeviceName, true);
 		
@@ -592,7 +595,8 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 					    tpCapturedImage.setCaptured(true);
 					    tpCapturedImage.setValid(true);
 					
-					    GuiUtils.attachImageDialog(coreFxController, ivCapturedImage, tpCapturedImage.getText(),
+					    GuiUtils.attachImageDialog(Context.getCoreFxController(), ivCapturedImage,
+					                               tpCapturedImage.getText(),
 					                               resources.getString("label.contextMenu.showImage"));
 				    }
 				    else
@@ -610,7 +614,8 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 					    ivCroppedImage.setImage(new Image(new ByteArrayInputStream(bytes)));
 					    croppedImageExists = true;
 					
-					    GuiUtils.attachImageDialog(coreFxController, ivCroppedImage, tpCroppedImage.getText(),
+					    GuiUtils.attachImageDialog(Context.getCoreFxController(), ivCroppedImage,
+					                               tpCroppedImage.getText(),
 					                               resources.getString("label.contextMenu.showImage"));
 				    }
 				    else
@@ -730,7 +735,7 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 			
 			    String errorCode = CommonsErrorCodes.C008_00006.getCode();
 			    String[] errorDetails = {"failed while capturing the face!"};
-			    coreFxController.showErrorDialog(errorCode, serviceResponse.getException(), errorDetails);
+			    Context.getCoreFxController().showErrorDialog(errorCode, serviceResponse.getException(), errorDetails);
 		    }
 		});
 		task.setOnFailed(e ->
@@ -768,7 +773,7 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 				
 				String errorCode = CommonsErrorCodes.C008_00007.getCode();
 				String[] errorDetails = {"failed while capturing the face!"};
-				coreFxController.showErrorDialog(errorCode, exception, errorDetails);
+				Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails);
 			}
 		});
 		

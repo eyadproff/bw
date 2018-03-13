@@ -27,6 +27,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.client.core.utils.DialogUtils;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
@@ -84,8 +85,8 @@ public class ShowResultFxController extends WizardStepFxControllerBase
 	@Override
 	protected void onAttachedToScene()
 	{
-		imagePane.maxWidthProperty().bind(coreFxController.getBodyPane().widthProperty());
-		imagePane.maxHeightProperty().bind(coreFxController.getBodyPane().heightProperty());
+		imagePane.maxWidthProperty().bind(Context.getCoreFxController().getBodyPane().widthProperty());
+		imagePane.maxHeightProperty().bind(Context.getCoreFxController().getBodyPane().heightProperty());
 		ivCenterImage.fitWidthProperty().bind(imagePane.widthProperty().divide(1.8));
 		ivCenterImage.fitHeightProperty().bind(imagePane.heightProperty().divide(1.8));
 		spCandidates.maxHeightProperty().bind(new SimpleDoubleProperty(0.0));
@@ -97,14 +98,15 @@ public class ShowResultFxController extends WizardStepFxControllerBase
 				Platform.runLater(() ->
 				{
 				    imagePane.autosize();
-				    coreFxController.getBodyPane().autosize();
+				    Context.getCoreFxController().getBodyPane().autosize();
 				});
 			}
 		};
-		coreFxController.getPrimaryStage().maximizedProperty().addListener(changeListener);
+		Context.getCoreFxController().getPrimaryStage().maximizedProperty().addListener(changeListener);
 		imagePane.sceneProperty().addListener((observable, oldValue, newValue) ->
 		{
-		    if(newValue == null) coreFxController.getPrimaryStage().maximizedProperty().removeListener(changeListener);
+		    if(newValue == null) Context.getCoreFxController().getPrimaryStage().maximizedProperty()
+				                                                                .removeListener(changeListener);
 		});
 	}
 	
@@ -143,7 +145,7 @@ public class ShowResultFxController extends WizardStepFxControllerBase
 		final double[] hScrollbarHeight = {13.0};
 		imageView.fitHeightProperty().bind(spCandidates.heightProperty()
                                    .subtract(hScrollbarHeight[0] * 3 + 2)); // 2 = top border + bottom border
-		GuiUtils.attachImageDialog(coreFxController, imageView, tpFinalImage.getText(),
+		GuiUtils.attachImageDialog(Context.getCoreFxController(), imageView, tpFinalImage.getText(),
 		                           resources.getString("label.contextMenu.showImage"));
 		
 		imagePane.autosize();
@@ -160,7 +162,7 @@ public class ShowResultFxController extends WizardStepFxControllerBase
 		}).start();
 		
 		ivCenterImage.setImage(finalImage);
-		GuiUtils.attachImageDialog(coreFxController, ivCenterImage, tpFinalImage.getText(),
+		GuiUtils.attachImageDialog(Context.getCoreFxController(), ivCenterImage, tpFinalImage.getText(),
 		                           resources.getString("label.contextMenu.showImage"));
 		
 		tpFinalImage.setContent(imageView);
@@ -172,7 +174,7 @@ public class ShowResultFxController extends WizardStepFxControllerBase
 		    toggleGroup.selectToggle(tpFinalImage);
 		    ivCenterImage.setImage(finalImage);
 		    btnCompareWithUploadedImage.setDisable(true);
-			GuiUtils.attachImageDialog(coreFxController, ivCenterImage, tpFinalImage.getText(),
+			GuiUtils.attachImageDialog(Context.getCoreFxController(), ivCenterImage, tpFinalImage.getText(),
 			                           resources.getString("label.contextMenu.showImage"));
 		
 		    lblBioId.setText(resources.getString("label.notAvailable"));
@@ -196,7 +198,7 @@ public class ShowResultFxController extends WizardStepFxControllerBase
 											hScrollbarHeight[0] * 3 + 2)); // 2 = top border + bottom border
 			String scoreTitle = AppUtils.replaceNumbersOnly(String.valueOf(candidate.getScore()), Locale.getDefault());
 			
-			GuiUtils.attachImageDialog(coreFxController, candidateImageView, scoreTitle,
+			GuiUtils.attachImageDialog(Context.getCoreFxController(), candidateImageView, scoreTitle,
 			                           resources.getString("label.contextMenu.showImage"));
 			
 			ToggleTitledPane toggleTitledPane = new ToggleTitledPane(scoreTitle, candidateImageView);
@@ -208,7 +210,7 @@ public class ShowResultFxController extends WizardStepFxControllerBase
 			    toggleGroup.selectToggle(toggleTitledPane);
 			    ivCenterImage.setImage(candidateImage);
 			    btnCompareWithUploadedImage.setDisable(false);
-				GuiUtils.attachImageDialog(coreFxController, ivCenterImage, scoreTitle,
+				GuiUtils.attachImageDialog(Context.getCoreFxController(), ivCenterImage, scoreTitle,
 				                           resources.getString("label.contextMenu.showImage"));
 			
 			    // default values
@@ -278,7 +280,8 @@ public class ShowResultFxController extends WizardStepFxControllerBase
 		
 		String title = resources.getString("dialog.compare.title");
 		String buttonText = resources.getString("dialog.compare.buttons.close");
-		boolean rtl = coreFxController.getCurrentLanguage().getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT;
+		boolean rtl = Context.getCoreFxController().getCurrentLanguage().getNodeOrientation()
+																					== NodeOrientation.RIGHT_TO_LEFT;
 		
 		Image mergedImage;
 		if(rtl) mergedImage = GuiUtils.mergeImage(finalImage, selectedImage);
@@ -305,7 +308,8 @@ public class ShowResultFxController extends WizardStepFxControllerBase
 		imageLayer.getChildren().add(ivMergedImage);
 		borderPane.centerProperty().set(imageLayer);
 		
-		Stage dialogStage = DialogUtils.buildCustomDialog(coreFxController.getPrimaryStage(), title, stackPane, rtl);
+		Stage dialogStage = DialogUtils.buildCustomDialog(Context.getCoreFxController().getPrimaryStage(), title,
+		                                                  stackPane, rtl);
 		dialogStage.initStyle(StageStyle.UNDECORATED);
 		dialogStage.getScene().addEventHandler(KeyEvent.KEY_PRESSED, t ->
 		{
@@ -333,8 +337,8 @@ public class ShowResultFxController extends WizardStepFxControllerBase
 		dialogStage.setFullScreenExitHint("");
 		dialogStage.setFullScreen(true);
 		dialogStage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
-		dialogStage.setOnHidden(event -> coreFxController.unregisterStageForIdleMonitoring(dialogStage));
-		coreFxController.registerStageForIdleMonitoring(dialogStage);
+		dialogStage.setOnHidden(event -> Context.getCoreFxController().unregisterStageForIdleMonitoring(dialogStage));
+		Context.getCoreFxController().registerStageForIdleMonitoring(dialogStage);
 		dialogStage.show();
 	}
 }

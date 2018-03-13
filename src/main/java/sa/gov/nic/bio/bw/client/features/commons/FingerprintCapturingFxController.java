@@ -365,7 +365,7 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 				}
 				else
 				{
-					String fingerprintDeviceName = coreFxController.getDeviceManagerGadgetPaneController()
+					String fingerprintDeviceName = Context.getCoreFxController().getDeviceManagerGadgetPaneController()
 																   .getFingerprintScannerDeviceName();
 					Future<ServiceResponse<CaptureFingerprintResponse>> future = Context.getBioKitManager()
 							.getFingerprintService()
@@ -632,7 +632,7 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 			GuiUtils.showNode(components.getCheckBox(), false);
 			GuiUtils.showNode(components.getButton(), true);
 			String dialogTitle = components.getFingerLabel() + " (" + components.getHandLabel() + ")";
-			GuiUtils.attachImageDialog(coreFxController, components.getImageView(), dialogTitle,
+			GuiUtils.attachImageDialog(Context.getCoreFxController(), components.getImageView(), dialogTitle,
 			                           resources.getString("label.contextMenu.showImage"));
 			capturedFingerprints.put(dmFingerData.getPosition(), new Fingerprint(dmFingerData, acceptableQuality[0]));
 		});
@@ -818,7 +818,7 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 		
 		// fix the position
 		popOver.setY(popOver.getY() - 7.0);
-		popOver.setX(popOver.getX() - (coreFxController.getCurrentLanguage().getNodeOrientation() ==
+		popOver.setX(popOver.getX() - (Context.getCoreFxController().getCurrentLanguage().getNodeOrientation() ==
 																		NodeOrientation.RIGHT_TO_LEFT ? 7.0 : 5.0));
 		
 		// auto-hide after 2 seconds

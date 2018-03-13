@@ -152,7 +152,7 @@ public class DevicesRunnerGadgetPaneFxController extends RegionFxControllerBase
 	
 	private Stage buildProgressDialog(CancelCommand cancelCommand, String message, Future<?> future)
 	{
-		boolean rtl = coreFxController.getCurrentLanguage()
+		boolean rtl = Context.getCoreFxController().getCurrentLanguage()
 				.getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT;
 		
 		Button btnCancel = new Button(resources.getString("button.cancel"));
@@ -172,7 +172,7 @@ public class DevicesRunnerGadgetPaneFxController extends RegionFxControllerBase
 		outer.getChildren().addAll(inner, btnCancel);
 		outer.setPadding(new Insets(10.0));
 		
-		Stage dialogStage = DialogUtils.buildCustomDialog(coreFxController.getPrimaryStage(),
+		Stage dialogStage = DialogUtils.buildCustomDialog(Context.getCoreFxController().getPrimaryStage(),
 		                                                  null,
 		                                                  outer, rtl);
 		
@@ -208,8 +208,8 @@ public class DevicesRunnerGadgetPaneFxController extends RegionFxControllerBase
 		Stage dialogStage = buildProgressDialog(cancelCommand, message, null);
 		runAndConnectDevicesRunner(cancelCommand, dialogStage);
 		
-		dialogStage.setOnHidden(event -> coreFxController.unregisterStageForIdleMonitoring(dialogStage));
-		coreFxController.registerStageForIdleMonitoring(dialogStage);
+		dialogStage.setOnHidden(event -> Context.getCoreFxController().unregisterStageForIdleMonitoring(dialogStage));
+		Context.getCoreFxController().registerStageForIdleMonitoring(dialogStage);
 		dialogStage.show();
 	}
 	
@@ -261,7 +261,7 @@ public class DevicesRunnerGadgetPaneFxController extends RegionFxControllerBase
 		
 		        String errorCode = CoreErrorCodes.C002_00017.getCode();
 		        String[] errorDetails = {"failed to connect to the devices runner!"};
-		        coreFxController.showErrorDialog(errorCode, exception, errorDetails);
+		        Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails);
 		    }
 		});
 		
@@ -309,14 +309,14 @@ public class DevicesRunnerGadgetPaneFxController extends RegionFxControllerBase
 		
 		        String errorCode = CoreErrorCodes.C002_00018.getCode();
 		        String[] errorDetails = {"failed to connect to the devices runner!"};
-		        coreFxController.showErrorDialog(errorCode, exception, errorDetails);
+		        Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails);
 		    }
 		});
 		
 		Context.getExecutorService().submit(runTask);
 		
-		dialogStage.setOnHidden(event -> coreFxController.unregisterStageForIdleMonitoring(dialogStage));
-		coreFxController.registerStageForIdleMonitoring(dialogStage);
+		dialogStage.setOnHidden(event -> Context.getCoreFxController().unregisterStageForIdleMonitoring(dialogStage));
+		Context.getCoreFxController().registerStageForIdleMonitoring(dialogStage);
 		dialogStage.show();
 	}
 	
@@ -357,8 +357,8 @@ public class DevicesRunnerGadgetPaneFxController extends RegionFxControllerBase
 						
 						String[] errorDetails = {"failed to shutdown the devices runner!",
 												 "returnMessage = " + result.getReturnMessage()};
-						coreFxController.showErrorDialog(String.valueOf(result.getReturnCode()),null,
-						                                 errorDetails);
+						Context.getCoreFxController().showErrorDialog(String.valueOf(result.getReturnCode()),
+						                                              null, errorDetails);
 					}
 				}
 				else
@@ -367,8 +367,8 @@ public class DevicesRunnerGadgetPaneFxController extends RegionFxControllerBase
 					LOGGER.severe("failed to receive a response for shutting down the devices runner!");
 					
 					String[] errorDetails = {"failed to receive a response for shutting down the devices runner!"};
-					coreFxController.showErrorDialog(serviceResponse.getErrorCode(), serviceResponse.getException(),
-					                                 errorDetails);
+					Context.getCoreFxController().showErrorDialog(serviceResponse.getErrorCode(),
+					                                              serviceResponse.getException(), errorDetails);
 				}
 				
 				return null;
@@ -394,14 +394,14 @@ public class DevicesRunnerGadgetPaneFxController extends RegionFxControllerBase
 				
 				String errorCode = CoreErrorCodes.C002_00019.getCode();
 				String[] errorDetails = {"failed to shutdown the devices runner!"};
-				coreFxController.showErrorDialog(errorCode, exception, errorDetails);
+				Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails);
 			}
 		});
 		
 		Context.getExecutorService().submit(task);
 		
-		dialogStage.setOnHidden(event -> coreFxController.unregisterStageForIdleMonitoring(dialogStage));
-		coreFxController.registerStageForIdleMonitoring(dialogStage);
+		dialogStage.setOnHidden(event -> Context.getCoreFxController().unregisterStageForIdleMonitoring(dialogStage));
+		Context.getCoreFxController().registerStageForIdleMonitoring(dialogStage);
 		dialogStage.show();
 	}
 	
@@ -451,7 +451,7 @@ public class DevicesRunnerGadgetPaneFxController extends RegionFxControllerBase
 		
 		            String[] errorDetails = {"failed to initialize the fingerprint scanner!",
 		                    "returnMessage = " + result.getReturnMessage()};
-		            coreFxController.showErrorDialog(String.valueOf(result.getReturnCode()),null,
+		            Context.getCoreFxController().showErrorDialog(String.valueOf(result.getReturnCode()),null,
 		                                             errorDetails);
 		        }
 		    }
@@ -461,8 +461,8 @@ public class DevicesRunnerGadgetPaneFxController extends RegionFxControllerBase
 		        LOGGER.severe("failed to receive a response for initializing the fingerprint scanner!");
 		
 		        String[] errorDetails = {"failed to receive a response for initializing the fingerprint scanner!"};
-		        coreFxController.showErrorDialog(serviceResponse.getErrorCode(), serviceResponse.getException(),
-		                                         errorDetails);
+		        Context.getCoreFxController().showErrorDialog(serviceResponse.getErrorCode(),
+		                                                      serviceResponse.getException(), errorDetails);
 		    }
 		});
 		task.setOnFailed(e ->
@@ -481,14 +481,14 @@ public class DevicesRunnerGadgetPaneFxController extends RegionFxControllerBase
 		
 		        String errorCode = CoreErrorCodes.C002_00020.getCode();
 		        String[] errorDetails = {"failed to initialize the fingerprint scanner!"};
-		        coreFxController.showErrorDialog(errorCode, exception, errorDetails);
+		        Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails);
 		    }
 		});
 		
 		Context.getExecutorService().submit(task);
 		
-		dialogStage.setOnHidden(event -> coreFxController.unregisterStageForIdleMonitoring(dialogStage));
-		coreFxController.registerStageForIdleMonitoring(dialogStage);
+		dialogStage.setOnHidden(event -> Context.getCoreFxController().unregisterStageForIdleMonitoring(dialogStage));
+		Context.getCoreFxController().registerStageForIdleMonitoring(dialogStage);
 		dialogStage.show();
 	}
 	
@@ -537,7 +537,7 @@ public class DevicesRunnerGadgetPaneFxController extends RegionFxControllerBase
 			
 			        String[] errorDetails = {"failed to initialize the camera!",
 					                         "returnMessage = " + result.getReturnMessage()};
-			        coreFxController.showErrorDialog(String.valueOf(result.getReturnCode()),null,
+			        Context.getCoreFxController().showErrorDialog(String.valueOf(result.getReturnCode()),null,
 			                                         errorDetails);
 		        }
 		    }
@@ -547,8 +547,8 @@ public class DevicesRunnerGadgetPaneFxController extends RegionFxControllerBase
 			    LOGGER.severe("failed to receive a response for initializing the camera!");
 			
 			    String[] errorDetails = {"failed to receive a response for initializing the camera!"};
-			    coreFxController.showErrorDialog(serviceResponse.getErrorCode(), serviceResponse.getException(),
-			                                     errorDetails);
+			    Context.getCoreFxController().showErrorDialog(serviceResponse.getErrorCode(),
+			                                                  serviceResponse.getException(), errorDetails);
 		    }
 		});
 		task.setOnFailed(e ->
@@ -567,14 +567,14 @@ public class DevicesRunnerGadgetPaneFxController extends RegionFxControllerBase
 				
 				String errorCode = CoreErrorCodes.C002_00021.getCode();
 				String[] errorDetails = {"failed to initialize the camera!"};
-				coreFxController.showErrorDialog(errorCode, exception, errorDetails);
+				Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails);
 			}
 		});
 		
 		Context.getExecutorService().submit(task);
 		
-		dialogStage.setOnHidden(event -> coreFxController.unregisterStageForIdleMonitoring(dialogStage));
-		coreFxController.registerStageForIdleMonitoring(dialogStage);
+		dialogStage.setOnHidden(event -> Context.getCoreFxController().unregisterStageForIdleMonitoring(dialogStage));
+		Context.getCoreFxController().registerStageForIdleMonitoring(dialogStage);
 		dialogStage.show();
 	}
 	

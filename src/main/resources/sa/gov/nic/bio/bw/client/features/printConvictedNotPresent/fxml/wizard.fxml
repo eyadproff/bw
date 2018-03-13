@@ -5,10 +5,11 @@
 
 <WizardPane xmlns="http://javafx.com/javafx/8.0.152">
     <steps>
-        <WizardStep iconId="question" title="%wizard.imageSource"/>
-        <WizardStep iconId="upload" title="%wizard.uploadImage"/>
-        <WizardStep iconId="unlock" title="%wizard.confirm"/>
-        <WizardStep iconId="search" title="%wizard.search"/>
-        <WizardStep iconId="users" title="%wizard.showResults"/>
+        <WizardStep iconId="\\uf2bb" title="%wizard.PersonId"/>
+        <WizardStep iconId="unlock" title="%wizard.confirmInfo"/>
+        <WizardStep iconId="\\uf256" title="%wizard.fetchingFingerprints"/>
+        <WizardStep iconId="tag" title="%wizard.verdictDetails"/>
+        <WizardStep iconId="th_list" title="%wizard.reviewAndSubmit"/>
+        <WizardStep iconId="file_pdf_alt" title="%wizard.showReport"/>
     </steps>
 </WizardPane>

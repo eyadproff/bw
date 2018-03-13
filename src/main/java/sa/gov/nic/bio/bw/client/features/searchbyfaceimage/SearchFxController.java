@@ -5,6 +5,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
+import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.wizard.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.client.core.workflow.Workflow;
@@ -85,6 +86,6 @@ public class SearchFxController extends WizardStepFxControllerBase
 	{
 		Map<String, Object> uiDataMap = new HashMap<>();
 		uiDataMap.put(Workflow.KEY_WEBSERVICE_RESPONSE, null);
-		coreFxController.submitForm(uiDataMap);
+		Context.getCoreFxController().submitForm(uiDataMap);
 	}
 }

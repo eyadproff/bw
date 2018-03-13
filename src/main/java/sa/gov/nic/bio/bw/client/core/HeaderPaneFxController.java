@@ -77,7 +77,7 @@ public class HeaderPaneFxController extends RegionFxControllerBase
 		if(image != null)
 		{
 			ivAvatar.setImage(image);
-			GuiUtils.attachImageDialog(coreFxController, ivAvatar,
+			GuiUtils.attachImageDialog(Context.getCoreFxController(), ivAvatar,
 			                           resources.getString("label.operatorPhoto"),
 			                           resources.getString("label.contextMenu.showImage"));
 		}
@@ -86,13 +86,13 @@ public class HeaderPaneFxController extends RegionFxControllerBase
 	@FXML
 	private void onLogoutButtonClicked(ActionEvent actionEvent)
 	{
-		String message = coreFxController.getStringsBundle().getString("logout.confirm");
-		boolean confirmed = coreFxController.showConfirmationDialogAndWait(null, message);
+		String message = Context.getCoreFxController().getResourceBundle().getString("logout.confirm");
+		boolean confirmed = Context.getCoreFxController().showConfirmationDialogAndWait(null, message);
 		
 		if(confirmed)
 		{
-			coreFxController.getNotificationPane().hide();
-			coreFxController.stopIdleMonitor();
+			Context.getCoreFxController().getNotificationPane().hide();
+			Context.getCoreFxController().stopIdleMonitor();
 			Context.getWebserviceManager().cancelRefreshTokenScheduler();
 			
 			try
@@ -104,7 +104,7 @@ public class HeaderPaneFxController extends RegionFxControllerBase
 				LOGGER.log(Level.WARNING, "failed to disconnect with Biokit on logout!", e);
 			}
 			
-			coreFxController.logout();
+			Context.getCoreFxController().logout();
 		}
 	}
 }

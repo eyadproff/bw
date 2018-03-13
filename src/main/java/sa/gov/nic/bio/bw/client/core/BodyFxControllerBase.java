@@ -35,8 +35,8 @@ public abstract class BodyFxControllerBase extends RegionFxControllerBase implem
 	{
 		Platform.runLater(() ->
 		{
-		    coreFxController.getNotificationPane().setGraphic(new ImageView(icon));
-		    coreFxController.getNotificationPane().show(message);
+		    Context.getCoreFxController().getNotificationPane().setGraphic(new ImageView(icon));
+		    Context.getCoreFxController().getNotificationPane().show(message);
 		});
 	}
 	
@@ -46,7 +46,7 @@ public abstract class BodyFxControllerBase extends RegionFxControllerBase implem
 	@Override
 	public final void hideNotification()
 	{
-		coreFxController.getNotificationPane().hide();
+		Context.getCoreFxController().getNotificationPane().hide();
 	}
 	
 	/**
@@ -103,7 +103,7 @@ public abstract class BodyFxControllerBase extends RegionFxControllerBase implem
 		}
 		else // client error, server error, or unknown error
 		{
-			coreFxController.showErrorDialog(errorCode, exception, errorDetails);
+			Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails);
 		}
 	}
 }

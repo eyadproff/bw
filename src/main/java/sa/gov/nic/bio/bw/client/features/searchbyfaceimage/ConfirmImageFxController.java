@@ -8,6 +8,7 @@ import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.wizard.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.client.features.commons.FaceCapturingFxController;
@@ -48,8 +49,8 @@ public class ConfirmImageFxController extends WizardStepFxControllerBase
 	@Override
 	protected void onAttachedToScene()
 	{
-		imagePane.maxWidthProperty().bind(coreFxController.getBodyPane().widthProperty());
-		imagePane.maxHeightProperty().bind(coreFxController.getBodyPane().heightProperty());
+		imagePane.maxWidthProperty().bind(Context.getCoreFxController().getBodyPane().widthProperty());
+		imagePane.maxHeightProperty().bind(Context.getCoreFxController().getBodyPane().heightProperty());
 		ivFinalImage.fitWidthProperty().bind(imagePane.widthProperty().divide(1.8));
 		ivFinalImage.fitHeightProperty().bind(imagePane.heightProperty().divide(1.8));
 		
@@ -60,14 +61,15 @@ public class ConfirmImageFxController extends WizardStepFxControllerBase
 				Platform.runLater(() ->
 				{
 				    imagePane.autosize();
-				    coreFxController.getBodyPane().autosize();
+				    Context.getCoreFxController().getBodyPane().autosize();
 				});
 			}
 		};
-		coreFxController.getPrimaryStage().maximizedProperty().addListener(changeListener);
+		Context.getCoreFxController().getPrimaryStage().maximizedProperty().addListener(changeListener);
 		imagePane.sceneProperty().addListener((observable, oldValue, newValue) ->
 		{
-		    if(newValue == null) coreFxController.getPrimaryStage().maximizedProperty().removeListener(changeListener);
+		    if(newValue == null) Context.getCoreFxController().getPrimaryStage().maximizedProperty()
+				                                                                .removeListener(changeListener);
 		});
 	}
 	
@@ -108,14 +110,14 @@ public class ConfirmImageFxController extends WizardStepFxControllerBase
 				{
 					String errorCode = SearchByFaceImageErrorCodes.C005_00001.getCode();
 					String[] errorDetails = {"Failed to convert image to Base64-encoded representation!"};
-					coreFxController.showErrorDialog(errorCode, e, errorDetails);
+					Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails);
 					btnSearch.setDisable(true);
 				}
 				
 				Platform.runLater(() ->
 				{
 					ivFinalImage.setImage(finalImage[0]);
-					GuiUtils.attachImageDialog(coreFxController, ivFinalImage,
+					GuiUtils.attachImageDialog(Context.getCoreFxController(), ivFinalImage,
 					                           resources.getString("label.finalImage"),
 					                           resources.getString("label.contextMenu.showImage"));
 					imagePane.autosize();

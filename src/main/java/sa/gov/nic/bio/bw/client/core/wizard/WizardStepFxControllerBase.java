@@ -1,6 +1,7 @@
 package sa.gov.nic.bio.bw.client.core.wizard;
 
 import sa.gov.nic.bio.bw.client.core.BodyFxControllerBase;
+import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.interfaces.NavigableController;
 
 import java.net.URL;
@@ -21,7 +22,7 @@ public abstract class WizardStepFxControllerBase extends BodyFxControllerBase im
 		uiDataMap.put("direction", "forward");
 		onGoingNext(uiDataMap);
 		onLeaving(uiDataMap);
-		coreFxController.submitForm(uiDataMap);
+		Context.getCoreFxController().submitForm(uiDataMap);
 	}
 	
 	@Override
@@ -31,7 +32,7 @@ public abstract class WizardStepFxControllerBase extends BodyFxControllerBase im
 		uiDataMap.put("direction", "backward");
 		onGoingPrevious(uiDataMap);
 		onLeaving(uiDataMap);
-		coreFxController.submitForm(uiDataMap);
+		Context.getCoreFxController().submitForm(uiDataMap);
 	}
 	
 	@Override
@@ -40,7 +41,7 @@ public abstract class WizardStepFxControllerBase extends BodyFxControllerBase im
 		Map<String, Object> uiDataMap = new HashMap<>();
 		uiDataMap.put("direction", "startOver");
 		onLeaving(uiDataMap);
-		coreFxController.submitForm(uiDataMap);
+		Context.getCoreFxController().submitForm(uiDataMap);
 	}
 	
 	protected void onGoingNext(Map<String, Object> uiDataMap){}

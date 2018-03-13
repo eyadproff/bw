@@ -529,7 +529,7 @@ public class AppEntryPoint extends Application
 	    }
 	    
 	    CoreFxController coreFxController = coreStageLoader.getController();
-	    coreFxController.passInitialResources(stringsBundle, topMenusBundle, windowTitle, guiLanguage);
+	    coreFxController.passInitialResources(topMenusBundle, windowTitle, guiLanguage);
 	    
 	    primaryStage.getScene().setNodeOrientation(guiLanguage.getNodeOrientation());
 	    primaryStage.centerOnScreen();

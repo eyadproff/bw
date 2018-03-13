@@ -14,6 +14,7 @@ import java.util.ResourceBundle;
  */
 public abstract class FxControllerBase implements ControllerResourcesLocator
 {
+	@FXML
 	protected ResourceBundle resources;
 	
 	/**

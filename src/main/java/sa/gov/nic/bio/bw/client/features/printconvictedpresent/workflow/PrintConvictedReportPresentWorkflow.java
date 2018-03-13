@@ -1,10 +1,14 @@
 package sa.gov.nic.bio.bw.client.features.printconvictedpresent.workflow;
 
+import javafx.application.Platform;
+import javafx.fxml.FXMLLoader;
+import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.interfaces.FormRenderer;
+import sa.gov.nic.bio.bw.client.core.utils.UTF8Control;
 import sa.gov.nic.bio.bw.client.core.workflow.Signal;
 import sa.gov.nic.bio.bw.client.core.workflow.WorkflowBase;
 import sa.gov.nic.bio.bw.client.features.commons.FaceCapturingFxController;
-import sa.gov.nic.bio.bw.client.features.printconvictedpresent.PrintConvictedPresentPaneFxController;
+import sa.gov.nic.bio.bw.client.features.commons.FingerprintCapturingFxController;
 import sa.gov.nic.bio.bw.client.features.searchbyfaceimage.ConfirmImageFxController;
 import sa.gov.nic.bio.bw.client.features.searchbyfaceimage.SearchFxController;
 import sa.gov.nic.bio.bw.client.features.searchbyfaceimage.ShowResultFxController;
@@ -13,9 +17,12 @@ import sa.gov.nic.bio.bw.client.features.searchbyfaceimage.webservice.Candidate;
 import sa.gov.nic.bio.bw.client.features.searchbyfaceimage.workflow.SearchByFaceImageService;
 import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
 
+import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -40,9 +47,27 @@ public class PrintConvictedReportPresentWorkflow extends WorkflowBase<Void, Void
 	{
 		Map<String, Object> uiInputData = new HashMap<>();
 		
+		ResourceBundle stringsBundle;
+		try
+		{
+			stringsBundle = ResourceBundle.getBundle(
+					"sa/gov/nic/bio/bw/client/features/printconvictedpresent/bundles/strings",
+					Context.getCoreFxController().getCurrentLanguage().getLocale(),
+					new UTF8Control());
+		}
+		catch(MissingResourceException e)
+		{
+			e.printStackTrace();
+			return null;
+		}
+		
+		URL wizardFxmlLocation = getClass().getResource("../fxml/wizard.fxml");
+		FXMLLoader wizardPaneLoader = new FXMLLoader(wizardFxmlLocation, stringsBundle);
+		Platform.runLater(() -> Context.getCoreFxController().loadWizardBar(wizardPaneLoader));
+		
 		while(true)
 		{
-			int step = 1;
+			int step = 0;
 			
 			while(true)
 			{
@@ -50,14 +75,14 @@ public class PrintConvictedReportPresentWorkflow extends WorkflowBase<Void, Void
 				
 				switch(step)
 				{
-					case 1:
+					case 0:
 					{
-						formRenderer.get().renderForm(PrintConvictedPresentPaneFxController.class, uiInputData);
+						formRenderer.get().renderForm(FingerprintCapturingFxController.class, uiInputData);
 						uiOutputData = waitForUserTask();
 						uiInputData.putAll(uiOutputData);
 						break;
 					}
-					case 2:
+					case 1:
 					{
 						String imageInput = (String) uiInputData.get(KEY_IMAGE_SOURCE);
 						
@@ -75,14 +100,14 @@ public class PrintConvictedReportPresentWorkflow extends WorkflowBase<Void, Void
 						uiInputData.putAll(uiOutputData);
 						break;
 					}
-					case 3:
+					case 2:
 					{
 						formRenderer.get().renderForm(ConfirmImageFxController.class, uiInputData);
 						uiOutputData = waitForUserTask();
 						uiInputData.putAll(uiOutputData);
 						break;
 					}
-					case 4:
+					case 3:
 					{
 						// show progress indicator here
 						formRenderer.get().renderForm(SearchFxController.class, uiInputData);
@@ -97,7 +122,7 @@ public class PrintConvictedReportPresentWorkflow extends WorkflowBase<Void, Void
 						uiInputData.putAll(uiOutputData);
 						break;
 					}
-					case 5:
+					case 4:
 					{
 						formRenderer.get().renderForm(ShowResultFxController.class, uiInputData);
 						uiOutputData = waitForUserTask();
@@ -109,9 +134,22 @@ public class PrintConvictedReportPresentWorkflow extends WorkflowBase<Void, Void
 				if(uiOutputData != null)
 				{
 					Object direction = uiOutputData.get("direction");
-					if("backward".equals(direction)) step--;
-					else if("forward".equals(direction)) step++;
-					else if("startOver".equals(direction)) step = 1;
+					if("backward".equals(direction))
+					{
+						Context.getCoreFxController().moveWizardBackward();
+						step--;
+					}
+					else if("forward".equals(direction))
+					{
+						Context.getCoreFxController().moveWizardForward();
+						step++;
+					}
+					else if("startOver".equals(direction))
+					{
+						Context.getCoreFxController().moveWizardToTheBeginning();
+						uiInputData.clear();
+						step = 0;
+					}
 				}
 			}
 		}

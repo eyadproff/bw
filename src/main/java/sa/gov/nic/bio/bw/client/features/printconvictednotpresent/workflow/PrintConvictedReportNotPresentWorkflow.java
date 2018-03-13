@@ -1,4 +1,4 @@
-package sa.gov.nic.bio.bw.client.features.searchbyfaceimage.workflow;
+package sa.gov.nic.bio.bw.client.features.printconvictednotpresent.workflow;
 
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -8,12 +8,13 @@ import sa.gov.nic.bio.bw.client.core.utils.UTF8Control;
 import sa.gov.nic.bio.bw.client.core.workflow.Signal;
 import sa.gov.nic.bio.bw.client.core.workflow.WorkflowBase;
 import sa.gov.nic.bio.bw.client.features.commons.FaceCapturingFxController;
+import sa.gov.nic.bio.bw.client.features.printconvictednotpresent.PersonIdPaneFxController;
 import sa.gov.nic.bio.bw.client.features.searchbyfaceimage.ConfirmImageFxController;
-import sa.gov.nic.bio.bw.client.features.searchbyfaceimage.ImageSourceFxController;
 import sa.gov.nic.bio.bw.client.features.searchbyfaceimage.SearchFxController;
 import sa.gov.nic.bio.bw.client.features.searchbyfaceimage.ShowResultFxController;
 import sa.gov.nic.bio.bw.client.features.searchbyfaceimage.UploadImageFileFxController;
 import sa.gov.nic.bio.bw.client.features.searchbyfaceimage.webservice.Candidate;
+import sa.gov.nic.bio.bw.client.features.searchbyfaceimage.workflow.SearchByFaceImageService;
 import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
 
 import java.net.URL;
@@ -25,7 +26,7 @@ import java.util.ResourceBundle;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class SearchByFaceImageWorkflow extends WorkflowBase<Void, Void>
+public class PrintConvictedReportNotPresentWorkflow extends WorkflowBase<Void, Void>
 {
 	public static final String KEY_IMAGE_SOURCE = "IMAGE_SOURCE";
 	public static final String KEY_UPLOADED_IMAGE = "UPLOADED_IMAGE";
@@ -35,8 +36,8 @@ public class SearchByFaceImageWorkflow extends WorkflowBase<Void, Void>
 	public static final String VALUE_IMAGE_SOURCE_UPLOAD = "IMAGE_SOURCE_UPLOAD";
 	public static final String VALUE_IMAGE_SOURCE_CAMERA = "IMAGE_SOURCE_CAMERA";
 	
-	public SearchByFaceImageWorkflow(AtomicReference<FormRenderer> formRenderer,
-	                                 BlockingQueue<Map<String, Object>> userTasks)
+	public PrintConvictedReportNotPresentWorkflow(AtomicReference<FormRenderer> formRenderer,
+	                                              BlockingQueue<Map<String, Object>> userTasks)
 	{
 		super(formRenderer, userTasks);
 	}
@@ -50,9 +51,9 @@ public class SearchByFaceImageWorkflow extends WorkflowBase<Void, Void>
 		try
 		{
 			stringsBundle = ResourceBundle.getBundle(
-					"sa/gov/nic/bio/bw/client/features/searchbyfaceimage/bundles/strings",
-					Context.getCoreFxController().getCurrentLanguage().getLocale(),
-					new UTF8Control());
+							"sa/gov/nic/bio/bw/client/features/printconvictednotpresent/bundles/strings",
+			                Context.getCoreFxController().getCurrentLanguage().getLocale(),
+			                new UTF8Control());
 		}
 		catch(MissingResourceException e)
 		{
@@ -76,7 +77,7 @@ public class SearchByFaceImageWorkflow extends WorkflowBase<Void, Void>
 				{
 					case 0:
 					{
-						formRenderer.get().renderForm(ImageSourceFxController.class, uiInputData);
+						formRenderer.get().renderForm(PersonIdPaneFxController.class, uiInputData);
 						uiOutputData = waitForUserTask();
 						uiInputData.putAll(uiOutputData);
 						break;
@@ -111,7 +112,7 @@ public class SearchByFaceImageWorkflow extends WorkflowBase<Void, Void>
 						// show progress indicator here
 						formRenderer.get().renderForm(SearchFxController.class, uiInputData);
 						
-						String imageBase64 = (String) uiInputData.get(SearchByFaceImageWorkflow.KEY_FINAL_IMAGE_BASE64);
+						String imageBase64 = (String) uiInputData.get(PrintConvictedReportNotPresentWorkflow.KEY_FINAL_IMAGE_BASE64);
 						ServiceResponse<List<Candidate>> response = SearchByFaceImageService.execute(imageBase64);
 						uiInputData.put(KEY_WEBSERVICE_RESPONSE, response);
 						
