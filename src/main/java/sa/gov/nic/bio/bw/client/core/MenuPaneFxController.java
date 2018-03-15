@@ -37,7 +37,7 @@ public class MenuPaneFxController extends RegionFxControllerBase
 	private static final double MENU_MULTI_LINES_CELL_HEIGHT = 18.0;
 	
 	@FXML private Accordion accordion;
-	@FXML private Pane overlayPane;
+	@FXML private Pane menuOverlayPane;
 
 	private MenuItem selectedMenu;
 	private ListView<MenuItem> selectedListView;
@@ -55,7 +55,7 @@ public class MenuPaneFxController extends RegionFxControllerBase
 	
 	public void showOverlayPane(boolean bShow)
 	{
-		overlayPane.setVisible(bShow);
+		menuOverlayPane.setVisible(bShow);
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -189,6 +189,8 @@ public class MenuPaneFxController extends RegionFxControllerBase
 		listView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) ->
 		{
 			if(newValue == null) return; // un-select action
+			
+			Context.getCoreFxController().showBodyOverlayPane(true);
 			
 			if(selectedMenu != null) selectedMenu.setSelected(false);
 			if(selectedListView != null && selectedListView != listView)

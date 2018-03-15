@@ -3,6 +3,7 @@ package sa.gov.nic.bio.bw.client.features.commons;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
+import javafx.application.ConditionalFeature;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
@@ -148,6 +149,9 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 		subScene.setCamera(perspectiveCamera);
 		
 		subScenePane.getChildren().setAll(subScene);
+		
+		GuiUtils.showNode(subScenePane, Platform.isSupported(ConditionalFeature.SCENE3D));
+		
 	}
 	
 	@Override

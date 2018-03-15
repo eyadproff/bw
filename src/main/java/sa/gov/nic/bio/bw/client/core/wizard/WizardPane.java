@@ -16,6 +16,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.TextAlignment;
+import sa.gov.nic.bio.bw.client.core.Context;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -58,6 +59,7 @@ public class WizardPane extends BorderPane
 	private void loadFxml()
 	{
 		FXMLLoader fxmlLoader = new FXMLLoader(Thread.currentThread().getContextClassLoader().getResource(FXML_WIZARD));
+		fxmlLoader.setClassLoader(Context.getFxClassLoader());
 		fxmlLoader.setRoot(this);
 		fxmlLoader.setController(this);
 		

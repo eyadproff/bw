@@ -292,8 +292,6 @@ public class CancelCriminalPaneFxController extends BodyFxControllerBase
 	
 	private void disableUiControls(boolean bool)
 	{
-		Context.getCoreFxController().getMenuPaneController().showOverlayPane(bool);
-		
 		tabPane.setDisable(bool);
 		txtPersonId.setDisable(bool);
 		txtCriminalId.setDisable(bool);

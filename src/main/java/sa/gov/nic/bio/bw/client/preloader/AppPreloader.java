@@ -8,10 +8,12 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import sa.gov.nic.bio.bw.client.AppEntryPoint;
+import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.utils.AppConstants;
 import sa.gov.nic.bio.bw.client.core.utils.AppInstanceManager;
 import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.client.core.utils.DialogUtils;
+import sa.gov.nic.bio.bw.client.core.utils.FxClassLoader;
 import sa.gov.nic.bio.bw.client.core.utils.GuiLanguage;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.utils.LogFormatter;
@@ -246,6 +248,10 @@ public class AppPreloader extends Preloader
 		// must be done on the JavaFX UI thread.
 		
 		FXMLLoader fxmlLoader = new FXMLLoader(fxmlUrl, stringsBundle);
+		
+		FxClassLoader fxClassLoader = new FxClassLoader(Thread.currentThread().getContextClassLoader());
+		fxmlLoader.setClassLoader(fxClassLoader);
+		Context.setFxClassLoader(fxClassLoader);
 		
 		try
 		{

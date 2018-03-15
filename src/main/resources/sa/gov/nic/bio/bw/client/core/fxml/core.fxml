@@ -12,8 +12,9 @@
 
 <Stage xmlns="http://javafx.com/javafx/8.0.152" xmlns:fx="http://javafx.com/fxml/1"
        fx:controller="sa.gov.nic.bio.bw.client.core.CoreFxController"
-       fx:id="primaryStage" height="600.0" width="800.0"
+       fx:id="primaryStage" height="560.0" width="800.0"
        onShown="#onStageShown">
+    <!-- lowest resolution we support is 800x600, subtract from that the windows task bar 40px -->
     <icons>
         <Image url="@../images/app_icon.png"/>
     </icons>
@@ -31,29 +32,34 @@
                         </VBox>
                     </left>
                     <center>
-                        <NotificationPane fx:id="idleNotifier" minHeight="0" minWidth="0">
-                            <graphic>
-                                <ImageView>
-                                    <Image url="@../images/warning.png"/>
-                                </ImageView>
-                            </graphic>
-                            <content>
-                                <NotificationPane fx:id="notificationPane">
-                                    <content>
-                                        <BorderPane fx:id="bodyPane">
-                                            <!-- default place holder -->
-                                            <ProgressIndicator maxHeight="25.0" maxWidth="25.0"/>
-                                        </BorderPane>
-                                    </content>
-                                </NotificationPane>
-                            </content>
-                        </NotificationPane>
+                        <StackPane>
+                            <NotificationPane fx:id="idleNotifier" minHeight="0" minWidth="0">
+                                <graphic>
+                                    <ImageView>
+                                        <Image url="@../images/warning.png"/>
+                                    </ImageView>
+                                </graphic>
+                                <content>
+                                    <NotificationPane fx:id="notificationPane">
+                                        <content>
+                                            <BorderPane fx:id="bodyPane">
+                                                <!-- default place holder -->
+                                                <ProgressIndicator maxHeight="25.0" maxWidth="25.0"/>
+                                            </BorderPane>
+                                        </content>
+                                    </NotificationPane>
+                                </content>
+                            </NotificationPane>
+                            <StackPane fx:id="bodyOverlayPane" styleClass="background-overlay-light" visible="false">
+                                <ProgressIndicator maxHeight="25.0" maxWidth="25.0"/>
+                            </StackPane>
+                        </StackPane>
                     </center>
                     <bottom>
                         <fx:include fx:id="footerPane" source="footer.fxml" styleClass="footer"/>
                     </bottom>
                 </BorderPane>
-                <StackPane fx:id="overlayPane" styleClass="background-overlay" visible="false"/>
+                <StackPane fx:id="stageOverlayPane" styleClass="background-overlay" visible="false"/>
             </StackPane>
         </Scene>
     </scene>

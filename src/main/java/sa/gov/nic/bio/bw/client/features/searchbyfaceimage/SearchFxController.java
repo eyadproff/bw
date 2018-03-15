@@ -46,31 +46,25 @@ public class SearchFxController extends WizardStepFxControllerBase
 	@SuppressWarnings("unchecked")
 	public void onWorkflowUserTaskLoad(boolean newForm, Map<String, Object> uiInputData)
 	{
-		ServiceResponse<List<Candidate>> response = (ServiceResponse<List<Candidate>>)
+		if(newForm) showProgress(true);
+		else
+		{
+			ServiceResponse<List<Candidate>> response = (ServiceResponse<List<Candidate>>)
 																	uiInputData.get(Workflow.KEY_WEBSERVICE_RESPONSE);
-		
-		if(response == null) // first call, show a progress
-		{
-			GuiUtils.showNode(btnRetry, false);
-			GuiUtils.showNode(piProgress, true);
-			GuiUtils.showNode(txtProgress, true);
-			btnStartOver.setDisable(true);
-		}
-		else // there is a result
-		{
-			if(response.isSuccess())
+			
+			if(response != null) // there is a result
 			{
-				candidates = response.getResult();
-				goNext();
-			}
-			else
-			{
-				GuiUtils.showNode(piProgress, false);
-				GuiUtils.showNode(txtProgress, false);
-				GuiUtils.showNode(btnRetry, true);
-				btnStartOver.setDisable(false);
-				
-				reportNegativeResponse(response.getErrorCode(), response.getException(), response.getErrorDetails());
+				if(response.isSuccess())
+				{
+					candidates = response.getResult();
+					goNext();
+				}
+				else
+				{
+					showProgress(false);
+					reportNegativeResponse(response.getErrorCode(), response.getException(),
+					                       response.getErrorDetails());
+				}
 			}
 		}
 	}
@@ -84,8 +78,18 @@ public class SearchFxController extends WizardStepFxControllerBase
 	@FXML
 	private void onRetryButtonClicked(ActionEvent actionEvent)
 	{
+		showProgress(true);
+		
 		Map<String, Object> uiDataMap = new HashMap<>();
 		uiDataMap.put(Workflow.KEY_WEBSERVICE_RESPONSE, null);
 		Context.getCoreFxController().submitForm(uiDataMap);
+	}
+	
+	private void showProgress(boolean bShow)
+	{
+		GuiUtils.showNode(btnRetry, !bShow);
+		GuiUtils.showNode(piProgress, bShow);
+		GuiUtils.showNode(txtProgress, bShow);
+		btnStartOver.setDisable(bShow);
 	}
 }

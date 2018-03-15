@@ -514,6 +514,7 @@ public class AppEntryPoint extends Application
 	    if(!successfulInit) return;
 	
 	    FXMLLoader coreStageLoader = new FXMLLoader(fxmlUrl, stringsBundle);
+	    coreStageLoader.setClassLoader(Context.getFxClassLoader());
 	
 	    Stage primaryStage;
 	    try

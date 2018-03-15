@@ -13,7 +13,7 @@
 
         <!-- List of jars -->
         <jar href="jnlp-jars/bcl-2018.03.1.jar"/>
-        <jar href="jnlp-jars/bcl-utils-2018.03.1.jar"/>
+        <jar href="jnlp-jars/bcl-utils-2018.03.2.jar"/>
         <jar href="jnlp-jars/gson-2.8.2.jar"/>
 
         <!-- Enable jars compressing -->

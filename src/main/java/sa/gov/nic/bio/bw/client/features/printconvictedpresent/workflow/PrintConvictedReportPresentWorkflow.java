@@ -25,9 +25,12 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.logging.Logger;
 
 public class PrintConvictedReportPresentWorkflow extends WorkflowBase<Void, Void>
 {
+	private static final Logger LOGGER = Logger.getLogger(PrintConvictedReportPresentWorkflow.class.getName());
+	
 	public static final String KEY_IMAGE_SOURCE = "IMAGE_SOURCE";
 	public static final String KEY_UPLOADED_IMAGE = "UPLOADED_IMAGE";
 	public static final String KEY_FINAL_IMAGE_BASE64 = "FINAL_IMAGE_BASE64";
@@ -45,13 +48,14 @@ public class PrintConvictedReportPresentWorkflow extends WorkflowBase<Void, Void
 	@Override
 	public Void onProcess(Void input) throws InterruptedException, Signal
 	{
-		Map<String, Object> uiInputData = new HashMap<>();
+		String basePackage = getClass().getPackage().getName().replace(".", "/");
+		basePackage = basePackage.substring(0, basePackage.lastIndexOf('/'));
 		
+		Map<String, Object> uiInputData = new HashMap<>();
 		ResourceBundle stringsBundle;
 		try
 		{
-			stringsBundle = ResourceBundle.getBundle(
-					"sa/gov/nic/bio/bw/client/features/printconvictedpresent/bundles/strings",
+			stringsBundle = ResourceBundle.getBundle(basePackage + "/bundles/strings",
 					Context.getCoreFxController().getCurrentLanguage().getLocale(),
 					new UTF8Control());
 		}
@@ -61,8 +65,10 @@ public class PrintConvictedReportPresentWorkflow extends WorkflowBase<Void, Void
 			return null;
 		}
 		
-		URL wizardFxmlLocation = getClass().getResource("../fxml/wizard.fxml");
+		URL wizardFxmlLocation = Thread.currentThread().getContextClassLoader()
+				.getResource(basePackage + "/fxml/wizard.fxml");
 		FXMLLoader wizardPaneLoader = new FXMLLoader(wizardFxmlLocation, stringsBundle);
+		wizardPaneLoader.setClassLoader(Context.getFxClassLoader());
 		Platform.runLater(() -> Context.getCoreFxController().loadWizardBar(wizardPaneLoader));
 		
 		while(true)

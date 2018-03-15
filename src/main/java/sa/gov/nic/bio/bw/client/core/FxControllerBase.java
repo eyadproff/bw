@@ -2,7 +2,6 @@ package sa.gov.nic.bio.bw.client.core;
 
 import javafx.fxml.FXML;
 import sa.gov.nic.bio.bw.client.core.interfaces.ControllerResourcesLocator;
-import sa.gov.nic.bio.bw.client.core.interfaces.ResourceBundleCollection;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -37,8 +36,8 @@ public abstract class FxControllerBase implements ControllerResourcesLocator
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final ResourceBundleCollection getResourceBundleCollection()
+	public final String getStringsResourceBundle()
 	{
-		return () -> getClass().getPackage().getName().replace(".", "/") + "/bundles/strings";
+		return getClass().getPackage().getName().replace(".", "/") + "/bundles/strings";
 	}
 }

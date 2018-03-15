@@ -46,7 +46,7 @@
                             <padding>
                                 <Insets topRightBottomLeft="10"/>
                             </padding>
-                            <TitledPane text="%label.checklistResult" maxHeight="Infinity" minWidth="170.0" collapsible="false" VBox.vgrow="ALWAYS">
+                            <TitledPane text="%label.checklistResult" maxHeight="Infinity" minWidth="170.0" minHeight="90.0" collapsible="false" VBox.vgrow="ALWAYS">
                                 <padding>
                                     <Insets topRightBottomLeft="0.0"/>
                                 </padding>

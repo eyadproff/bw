@@ -3,6 +3,7 @@ package sa.gov.nic.bio.bw.client.core;
 import sa.gov.nic.bio.bw.client.core.beans.UserSession;
 import sa.gov.nic.bio.bw.client.core.biokit.BioKitManager;
 import sa.gov.nic.bio.bw.client.core.utils.ConfigManager;
+import sa.gov.nic.bio.bw.client.core.utils.FxClassLoader;
 import sa.gov.nic.bio.bw.client.core.utils.RuntimeEnvironment;
 import sa.gov.nic.bio.bw.client.core.webservice.WebserviceManager;
 import sa.gov.nic.bio.bw.client.core.workflow.WorkflowManager;
@@ -26,6 +27,7 @@ public class Context
 	private UserSession userSession;
 	private String serverUrl;
 	private CoreFxController coreFxController;
+	private FxClassLoader fxClassLoader;
 	
 	private Context(){}
 	
@@ -66,4 +68,7 @@ public class Context
 	public static CoreFxController getCoreFxController(){return INSTANCE.coreFxController;}
 	public static void setCoreFxController(CoreFxController coreFxController)
 																	{INSTANCE.coreFxController = coreFxController;}
+	
+	public static FxClassLoader getFxClassLoader(){return INSTANCE.fxClassLoader;}
+	public static void setFxClassLoader(FxClassLoader fxClassLoader){INSTANCE.fxClassLoader = fxClassLoader;}
 }

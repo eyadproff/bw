@@ -72,7 +72,7 @@
                     </TitledPane>
                     <FourStateTitledPane fx:id="tpFingerprintDeviceLivePreview" text="%label.fingerprintDeviceLivePreview" maxHeight="Infinity" collapsible="false">
                         <StackPane>
-                            <ImageViewPane minHeight="115.0">
+                            <ImageViewPane minHeight="85.0">
                                 <imageView>
                                     <ImageView fx:id="ivFingerprintDeviceLivePreview" preserveRatio="true"/>
                                 </imageView>

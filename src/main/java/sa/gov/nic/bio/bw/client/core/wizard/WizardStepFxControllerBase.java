@@ -18,6 +18,7 @@ public abstract class WizardStepFxControllerBase extends BodyFxControllerBase im
 	@Override
 	public void goNext()
 	{
+		Context.getCoreFxController().showBodyOverlayPane(true);
 		Map<String, Object> uiDataMap = new HashMap<>();
 		uiDataMap.put("direction", "forward");
 		onGoingNext(uiDataMap);
@@ -28,6 +29,7 @@ public abstract class WizardStepFxControllerBase extends BodyFxControllerBase im
 	@Override
 	public void goPrevious()
 	{
+		Context.getCoreFxController().showBodyOverlayPane(true);
 		Map<String, Object> uiDataMap = new HashMap<>();
 		uiDataMap.put("direction", "backward");
 		onGoingPrevious(uiDataMap);
@@ -38,6 +40,7 @@ public abstract class WizardStepFxControllerBase extends BodyFxControllerBase im
 	@Override
 	public void startOver()
 	{
+		Context.getCoreFxController().showBodyOverlayPane(true);
 		Map<String, Object> uiDataMap = new HashMap<>();
 		uiDataMap.put("direction", "startOver");
 		onLeaving(uiDataMap);

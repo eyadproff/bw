@@ -110,8 +110,6 @@ public class CancelLatentPaneFxController extends BodyFxControllerBase
 	
 	private void disableUiControls(boolean bool)
 	{
-		Context.getCoreFxController().getMenuPaneController().showOverlayPane(bool);
-		
 		txtPersonId.setDisable(bool);
 		txtLatentId.setDisable(bool);
 		

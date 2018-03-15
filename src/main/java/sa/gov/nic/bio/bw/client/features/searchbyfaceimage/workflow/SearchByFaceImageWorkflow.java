@@ -44,15 +44,16 @@ public class SearchByFaceImageWorkflow extends WorkflowBase<Void, Void>
 	@Override
 	public Void onProcess(Void input) throws InterruptedException, Signal
 	{
-		Map<String, Object> uiInputData = new HashMap<>();
+		String basePackage = getClass().getPackage().getName().replace(".", "/");
+		basePackage = basePackage.substring(0, basePackage.lastIndexOf('/'));
 		
+		Map<String, Object> uiInputData = new HashMap<>();
 		ResourceBundle stringsBundle;
 		try
 		{
-			stringsBundle = ResourceBundle.getBundle(
-					"sa/gov/nic/bio/bw/client/features/searchbyfaceimage/bundles/strings",
-					Context.getCoreFxController().getCurrentLanguage().getLocale(),
-					new UTF8Control());
+			stringsBundle = ResourceBundle.getBundle(basePackage + "/bundles/strings",
+			                                         Context.getCoreFxController().getCurrentLanguage().getLocale(),
+			                                         new UTF8Control());
 		}
 		catch(MissingResourceException e)
 		{
@@ -60,7 +61,8 @@ public class SearchByFaceImageWorkflow extends WorkflowBase<Void, Void>
 			return null;
 		}
 		
-		URL wizardFxmlLocation = getClass().getResource("../fxml/wizard.fxml");
+		URL wizardFxmlLocation = Thread.currentThread().getContextClassLoader()
+													   .getResource(basePackage + "/fxml/wizard.fxml");
 		FXMLLoader wizardPaneLoader = new FXMLLoader(wizardFxmlLocation, stringsBundle);
 		Platform.runLater(() -> Context.getCoreFxController().loadWizardBar(wizardPaneLoader));
 		

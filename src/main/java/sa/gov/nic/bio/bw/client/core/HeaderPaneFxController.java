@@ -13,7 +13,6 @@ import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 
 import java.util.ResourceBundle;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -91,19 +90,7 @@ public class HeaderPaneFxController extends RegionFxControllerBase
 		
 		if(confirmed)
 		{
-			Context.getCoreFxController().getNotificationPane().hide();
-			Context.getCoreFxController().stopIdleMonitor();
-			Context.getWebserviceManager().cancelRefreshTokenScheduler();
-			
-			try
-			{
-				Context.getBioKitManager().disconnect();
-			}
-			catch(Exception e)
-			{
-				LOGGER.log(Level.WARNING, "failed to disconnect with Biokit on logout!", e);
-			}
-			
+			Context.getCoreFxController().prepareToLogout();
 			Context.getCoreFxController().logout();
 		}
 	}

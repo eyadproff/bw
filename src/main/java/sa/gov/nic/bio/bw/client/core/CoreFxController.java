@@ -15,11 +15,11 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import org.controlsfx.control.NotificationPane;
+import sa.gov.nic.bio.biokit.exceptions.NotConnectedException;
 import sa.gov.nic.bio.bw.client.core.beans.StateBundle;
 import sa.gov.nic.bio.bw.client.core.interfaces.ControllerResourcesLocator;
 import sa.gov.nic.bio.bw.client.core.interfaces.IdleMonitorRegisterer;
 import sa.gov.nic.bio.bw.client.core.interfaces.PersistableEntity;
-import sa.gov.nic.bio.bw.client.core.interfaces.ResourceBundleCollection;
 import sa.gov.nic.bio.bw.client.core.utils.AppConstants;
 import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.client.core.utils.CombinedResourceBundle;
@@ -59,6 +59,7 @@ public class CoreFxController implements IdleMonitorRegisterer, PersistableEntit
 	public static final String RB_LABELS_FILE = "sa/gov/nic/bio/bw/client/core/bundles/strings";
 	public static final String RB_TOP_MENUS_FILE = "sa/gov/nic/bio/bw/client/core/bundles/top_menus";
 	
+	
 	// the following are here only to avoid warnings in FXML files.
 	@FXML private Pane headerPane;
 	@FXML private Pane menuPane;
@@ -67,7 +68,8 @@ public class CoreFxController implements IdleMonitorRegisterer, PersistableEntit
 	
 	@FXML private ResourceBundle resources;
 	@FXML private Stage primaryStage;
-	@FXML private StackPane overlayPane;
+	@FXML private StackPane stageOverlayPane;
+	@FXML private StackPane bodyOverlayPane;
 	@FXML private HeaderPaneFxController headerPaneController;
 	@FXML private FooterPaneFxController footerPaneController;
 	@FXML private MenuPaneFxController menuPaneController;
@@ -155,8 +157,26 @@ public class CoreFxController implements IdleMonitorRegisterer, PersistableEntit
 		Context.getWorkflowManager().submitUserTask(uiDataMap);
 	}
 	
+	public void prepareToLogout()
+	{
+		Context.getCoreFxController().getNotificationPane().hide();
+		Context.getCoreFxController().stopIdleMonitor();
+		Context.getWebserviceManager().cancelRefreshTokenScheduler();
+		
+		try
+		{
+			Context.getBioKitManager().disconnect();
+		}
+		catch(Exception e)
+		{
+			if(!(e instanceof NotConnectedException)) LOGGER.log(Level.WARNING,
+		                                                     "failed to disconnect with Biokit on logout!", e);
+		}
+	}
+	
 	public void logout()
 	{
+		clearWizardBar();
 		Map<String, Object> uiDataMap = new HashMap<>();
 		uiDataMap.put(Workflow.KEY_SIGNAL_TYPE, SignalType.LOGOUT);
 		Context.getWorkflowManager().submitUserTask(uiDataMap);
@@ -230,13 +250,13 @@ public class CoreFxController implements IdleMonitorRegisterer, PersistableEntit
 			return null;
 		}
 		
-		ResourceBundleCollection resourceBundleCollection = controllerResourcesLocator.getResourceBundleCollection();
+		String stringsResourceBundlePath = controllerResourcesLocator.getStringsResourceBundle();
 		
 		ResourceBundle stringsBundle;
 		try
 		{
-			stringsBundle = ResourceBundle.getBundle(resourceBundleCollection.getStringsBundlePath(),
-			                                        currentLanguage.getLocale(), new UTF8Control());
+			stringsBundle = ResourceBundle.getBundle(stringsResourceBundlePath, currentLanguage.getLocale(),
+			                                         new UTF8Control());
 		}
 		catch(MissingResourceException e)
 		{
@@ -248,6 +268,7 @@ public class CoreFxController implements IdleMonitorRegisterer, PersistableEntit
 		}
 		
 		FXMLLoader paneLoader = new FXMLLoader(fxmlUrl, stringsBundle);
+		paneLoader.setClassLoader(Context.getFxClassLoader());
 		
 		Node loadedPane;
 		try
@@ -266,9 +287,16 @@ public class CoreFxController implements IdleMonitorRegisterer, PersistableEntit
 		BodyFxControllerBase bodyFxController = paneLoader.getController();
 		bodyFxController.onAttachedToScene();
 		bodyPane.setCenter(loadedPane);
-		bodyFxController.onDetachedFromScene();
+		showBodyOverlayPane(false);
+		
+		if(currentBodyController != null) currentBodyController.onDetachedFromScene();
 		
 		return bodyFxController;
+	}
+	
+	public void showBodyOverlayPane(boolean bShow)
+	{
+		bodyOverlayPane.setVisible(bShow);
 	}
 	
 	public void loadWizardBar(FXMLLoader wizardPaneLoader)
@@ -288,7 +316,7 @@ public class CoreFxController implements IdleMonitorRegisterer, PersistableEntit
 		}
 	}
 	
-	public void hideWizardBar()
+	public void clearWizardBar()
 	{
 		wizardPane = null;
 		bodyPane.setTop(null);
@@ -301,7 +329,7 @@ public class CoreFxController implements IdleMonitorRegisterer, PersistableEntit
 	
 	public void moveWizardBackward()
 	{
-		wizardPane.goNext();
+		wizardPane.goPrevious();
 	}
 	
 	public void moveWizardToTheBeginning()
@@ -416,6 +444,7 @@ public class CoreFxController implements IdleMonitorRegisterer, PersistableEntit
 		windowTitle = AppUtils.replaceNumbersOnly(title, Locale.getDefault());
 		
 		FXMLLoader newStageLoader = new FXMLLoader(fxmlUrl, resources);
+		newStageLoader.setClassLoader(Context.getFxClassLoader());
 		
 		Stage oldStage = primaryStage;
 		
@@ -599,17 +628,7 @@ public class CoreFxController implements IdleMonitorRegisterer, PersistableEntit
 	private void onIdle()
 	{
 		idleNotifier.hide();
-		stopIdleMonitor();
-		Context.getWebserviceManager().cancelRefreshTokenScheduler();
-		
-		try
-		{
-			Context.getBioKitManager().disconnect();
-		}
-		catch(Exception e)
-		{
-			LOGGER.log(Level.WARNING, "failed to disconnect with Biokit on logout!", e);
-		}
+		prepareToLogout();
 		
 		Platform.runLater(() ->
 		{
@@ -618,13 +637,14 @@ public class CoreFxController implements IdleMonitorRegisterer, PersistableEntit
 		    String buttonText = resources.getString("dialog.idle.buttons.goToLogin");
 		    boolean rtl = currentLanguage.getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT;
 		
-		    overlayPane.setVisible(true);
+		    stageOverlayPane.setVisible(true);
 			
 			// make sure the stage is not iconified, otherwise the dialog will be invisible
 			primaryStage.setIconified(false);
 		    DialogUtils.showWarningDialog(primaryStage, this, title, null,
 		                                  contentText, buttonText, rtl);
-		    overlayPane.setVisible(false);
+		    stageOverlayPane.setVisible(false);
+		    clearWizardBar();
 			
 			// close all opened dialogs (except the primary one)
 			ObservableList<Stage> stages = StageHelper.getStages();

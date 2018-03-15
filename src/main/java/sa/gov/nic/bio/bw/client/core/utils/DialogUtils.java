@@ -20,6 +20,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.Window;
+import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.interfaces.IdleMonitorRegisterer;
 
 import java.io.IOException;
@@ -227,6 +228,7 @@ public class DialogUtils
 		}
 		
 		FXMLLoader loader = new FXMLLoader(fxmlResource, resourceBundle);
+		loader.setClassLoader(Context.getFxClassLoader());
 		Dialog<ButtonType> dialog;
 		try
 		{

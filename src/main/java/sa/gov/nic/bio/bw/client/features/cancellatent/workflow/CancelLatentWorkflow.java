@@ -24,7 +24,7 @@ public class CancelLatentWorkflow extends WorkflowBase<Void, Void>
 	public Void onProcess(Void input) throws InterruptedException, Signal
 	{
 		Map<String, Object> uiInputData = new HashMap<>();
-		Platform.runLater(() -> Context.getCoreFxController().hideWizardBar());
+		Platform.runLater(() -> Context.getCoreFxController().clearWizardBar());
 		
 		while(true)
 		{
