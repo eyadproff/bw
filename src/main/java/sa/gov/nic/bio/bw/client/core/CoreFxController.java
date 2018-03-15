@@ -415,6 +415,19 @@ public class CoreFxController implements IdleMonitorRegisterer, PersistableEntit
 		((CombinedResourceBundle) errorsBundle).load();
 		Context.setErrorsBundle(errorsBundle);
 		
+		ResourceBundle stringsBundle;
+		try
+		{
+			stringsBundle = ResourceBundle.getBundle(RB_LABELS_FILE, toLanguage.getLocale(), new UTF8Control());
+		}
+		catch(MissingResourceException e)
+		{
+			String errorCode = CoreErrorCodes.C002_00007.getCode();
+			String[] errorDetails = {"Core \"stringsBundle\" resource bundle is missing!"};
+			showErrorDialog(errorCode, e, errorDetails);
+			return;
+		}
+		
 		ResourceBundle topMenusBundle;
 		try
 		{
@@ -438,12 +451,12 @@ public class CoreFxController implements IdleMonitorRegisterer, PersistableEntit
 		}
 		
 		String version = Context.getConfigManager().getProperty("app.version");
-		String title = resources.getString("window.title") + " " + version + " (" +
-				resources.getString("label.environment." +
+		String title = stringsBundle.getString("window.title") + " " + version + " (" +
+				stringsBundle.getString("label.environment." +
 							                  Context.getRuntimeEnvironment().name().toLowerCase()) + ")";
 		windowTitle = AppUtils.replaceNumbersOnly(title, Locale.getDefault());
 		
-		FXMLLoader newStageLoader = new FXMLLoader(fxmlUrl, resources);
+		FXMLLoader newStageLoader = new FXMLLoader(fxmlUrl, stringsBundle);
 		newStageLoader.setClassLoader(Context.getFxClassLoader());
 		
 		Stage oldStage = primaryStage;

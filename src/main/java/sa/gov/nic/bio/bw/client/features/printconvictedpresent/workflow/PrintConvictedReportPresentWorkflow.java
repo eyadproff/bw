@@ -9,17 +9,14 @@ import sa.gov.nic.bio.bw.client.core.workflow.Signal;
 import sa.gov.nic.bio.bw.client.core.workflow.WorkflowBase;
 import sa.gov.nic.bio.bw.client.features.commons.FaceCapturingFxController;
 import sa.gov.nic.bio.bw.client.features.commons.FingerprintCapturingFxController;
-import sa.gov.nic.bio.bw.client.features.searchbyfaceimage.ConfirmImageFxController;
-import sa.gov.nic.bio.bw.client.features.searchbyfaceimage.SearchFxController;
-import sa.gov.nic.bio.bw.client.features.searchbyfaceimage.ShowResultFxController;
-import sa.gov.nic.bio.bw.client.features.searchbyfaceimage.UploadImageFileFxController;
-import sa.gov.nic.bio.bw.client.features.searchbyfaceimage.webservice.Candidate;
-import sa.gov.nic.bio.bw.client.features.searchbyfaceimage.workflow.SearchByFaceImageService;
-import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
+import sa.gov.nic.bio.bw.client.features.printconvictedpresent.ConfirmInfoPaneFxController;
+import sa.gov.nic.bio.bw.client.features.printconvictedpresent.InquiryPaneFxController;
+import sa.gov.nic.bio.bw.client.features.printconvictedpresent.ReviewAndSubmitPaneFxController;
+import sa.gov.nic.bio.bw.client.features.printconvictedpresent.ShowReportPaneFxController;
+import sa.gov.nic.bio.bw.client.features.printconvictedpresent.VerdictDetailsPaneFxController;
 
 import java.net.URL;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
@@ -90,47 +87,42 @@ public class PrintConvictedReportPresentWorkflow extends WorkflowBase<Void, Void
 					}
 					case 1:
 					{
-						String imageInput = (String) uiInputData.get(KEY_IMAGE_SOURCE);
-						
-						if(VALUE_IMAGE_SOURCE_CAMERA.equals(imageInput))
-						{
-							uiInputData.put(FaceCapturingFxController.KEY_ICAO_REQUIRED, Boolean.FALSE);
-							formRenderer.get().renderForm(FaceCapturingFxController.class, uiInputData);
-						}
-						else if(VALUE_IMAGE_SOURCE_UPLOAD.equals(imageInput))
-						{
-							formRenderer.get().renderForm(UploadImageFileFxController.class, uiInputData);
-						}
-						
+						formRenderer.get().renderForm(FaceCapturingFxController.class, uiInputData);
 						uiOutputData = waitForUserTask();
 						uiInputData.putAll(uiOutputData);
 						break;
 					}
 					case 2:
 					{
-						formRenderer.get().renderForm(ConfirmImageFxController.class, uiInputData);
+						formRenderer.get().renderForm(InquiryPaneFxController.class, uiInputData);
 						uiOutputData = waitForUserTask();
 						uiInputData.putAll(uiOutputData);
 						break;
 					}
 					case 3:
 					{
-						// show progress indicator here
-						formRenderer.get().renderForm(SearchFxController.class, uiInputData);
-						
-						String imageBase64 = (String) uiInputData.get(PrintConvictedReportPresentWorkflow.KEY_FINAL_IMAGE_BASE64);
-						ServiceResponse<List<Candidate>> response = SearchByFaceImageService.execute(imageBase64);
-						uiInputData.put(KEY_WEBSERVICE_RESPONSE, response);
-						
-						// if success, ask for goNext() automatically. Otherwise, show failure message and retry button
-						formRenderer.get().renderForm(SearchFxController.class, uiInputData);
+						formRenderer.get().renderForm(ConfirmInfoPaneFxController.class, uiInputData);
 						uiOutputData = waitForUserTask();
 						uiInputData.putAll(uiOutputData);
 						break;
 					}
 					case 4:
 					{
-						formRenderer.get().renderForm(ShowResultFxController.class, uiInputData);
+						formRenderer.get().renderForm(VerdictDetailsPaneFxController.class, uiInputData);
+						uiOutputData = waitForUserTask();
+						uiInputData.putAll(uiOutputData);
+						break;
+					}
+					case 5:
+					{
+						formRenderer.get().renderForm(ReviewAndSubmitPaneFxController.class, uiInputData);
+						uiOutputData = waitForUserTask();
+						uiInputData.putAll(uiOutputData);
+						break;
+					}
+					case 6:
+					{
+						formRenderer.get().renderForm(ShowReportPaneFxController.class, uiInputData);
 						uiOutputData = waitForUserTask();
 						uiInputData.putAll(uiOutputData);
 						break;
