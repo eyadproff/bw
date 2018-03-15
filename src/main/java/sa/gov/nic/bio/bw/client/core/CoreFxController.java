@@ -608,7 +608,7 @@ public class CoreFxController implements IdleMonitorRegisterer, PersistableEntit
 	/**
 	 * Stop the idle monitoring.
 	 */
-	public void stopIdleMonitor()
+	private void stopIdleMonitor()
 	{
 		unregisterStageForIdleMonitoring(primaryStage);
 		idleMonitor.stopMonitoring();

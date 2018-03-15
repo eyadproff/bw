@@ -240,6 +240,9 @@ public class DevicesRunnerGadgetPaneFxController extends RegionFxControllerBase
 		runTask.setOnSucceeded(e ->
 		{
 		    dialogStage.close();
+		    Context.getCoreFxController().getPrimaryStage().setIconified(false);
+			Context.getCoreFxController().getPrimaryStage().toFront();
+			
 		    if(cancelCommand.isCanceled()) return;
 		
 		    LOGGER.info("successfully connected to the devices runner");
@@ -248,6 +251,9 @@ public class DevicesRunnerGadgetPaneFxController extends RegionFxControllerBase
 		runTask.setOnFailed(e ->
 		{
 		    dialogStage.close();
+			Context.getCoreFxController().getPrimaryStage().setIconified(false);
+			Context.getCoreFxController().getPrimaryStage().toFront();
+			
 		    Throwable exception = runTask.getException();
 		
 		    if(exception instanceof AlreadyConnectedException)
