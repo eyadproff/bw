@@ -8,7 +8,7 @@
         <WizardStep iconId="\\uf2bb" title="%wizard.PersonId"/>
         <WizardStep iconId="unlock" title="%wizard.confirmInfo"/>
         <WizardStep iconId="\\uf256" title="%wizard.fetchingFingerprints"/>
-        <WizardStep iconId="tag" title="%wizard.verdictDetails"/>
+        <WizardStep iconId="tag" title="%wizard.judgementDetails"/>
         <WizardStep iconId="th_list" title="%wizard.reviewAndSubmit"/>
         <WizardStep iconId="file_pdf_alt" title="%wizard.showReport"/>
     </steps>

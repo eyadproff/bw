@@ -34,6 +34,7 @@ import sa.gov.nic.bio.biokit.fingerprint.beans.CaptureFingerprintResponse;
 import sa.gov.nic.bio.biokit.fingerprint.beans.DuplicatedFingerprintsResponse;
 import sa.gov.nic.bio.biokit.websocket.beans.DMFingerData;
 import sa.gov.nic.bio.bw.client.core.Context;
+import sa.gov.nic.bio.bw.client.core.DevicesRunnerGadgetPaneFxController;
 import sa.gov.nic.bio.bw.client.core.beans.Fingerprint;
 import sa.gov.nic.bio.bw.client.core.beans.FingerprintQualityThreshold;
 import sa.gov.nic.bio.bw.client.core.beans.UserSession;
@@ -59,6 +60,8 @@ import java.util.logging.Logger;
 public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 {
 	private static final Logger LOGGER = Logger.getLogger(FingerprintCapturingFxController.class.getName());
+	
+	public static final String KEY_HIDE_PREVIOUS_BUTTON = "HIDE_PREVIOUS_BUTTON";
 	
 	@FXML private AutoScalingStackPane spRightHand;
 	@FXML private ProgressIndicator piProgress;
@@ -133,6 +136,8 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 	private Map<Integer, Fingerprint> capturedFingerprints = new HashMap<>();
 	private Map<Integer, FingerprintQualityThreshold> fingerprintQualityThresholdMap;
 	private Map<Integer, FingerprintUiComponents> fingerprintUiComponentsMap = new HashMap<>();
+	private boolean fingerprintScannerInitializedAtLeastOnce = false;
+	private boolean captureInProgress = false;
 	
 	@Override
 	public URL getFxmlLocation()
@@ -278,7 +283,49 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 	@Override
 	public void onWorkflowUserTaskLoad(boolean newForm, Map<String, Object> uiInputData)
 	{
-		//if(newForm) btnReinitializeDevice.fire();
+		if(newForm)
+		{
+			Boolean hidePreviousButton = (Boolean) uiInputData.get(KEY_HIDE_PREVIOUS_BUTTON);
+			if(hidePreviousButton != null) GuiUtils.showNode(btnPrevious, !hidePreviousButton);
+			
+			DevicesRunnerGadgetPaneFxController deviceManagerGadgetPaneController =
+					Context.getCoreFxController().getDeviceManagerGadgetPaneController();
+			
+			if(deviceManagerGadgetPaneController.isCameraInitialized())
+			{
+				GuiUtils.showNode(btnStartFingerprintCapturing, true);
+			}
+			else
+			{
+				lblStatus.setText(resources.getString("label.status.fingerprintScannerNotInitialized"));
+				GuiUtils.showNode(lblStatus, true);
+			}
+			
+			deviceManagerGadgetPaneController.setFingerprintScannerInitializationListener(initialized ->
+				                                                                              Platform.runLater(() ->
+			{
+			    GuiUtils.showNode(lblStatus, true);
+			    GuiUtils.showNode(btnStopFingerprintCapturing, false);
+				
+				tpFingerprintDeviceLivePreview.setActive(false);
+				ivFingerprintDeviceLivePreview.setImage(null);
+			
+			    if(initialized)
+			    {
+			        GuiUtils.showNode(btnStartFingerprintCapturing, true);
+			        lblStatus.setText(resources.getString(
+			        		                        "label.status.fingerprintScannerInitializedSuccessfully"));
+				    fingerprintScannerInitializedAtLeastOnce = true;
+			        LOGGER.info("The fingerprint scanner is initialized!");
+			    }
+			    else if(fingerprintScannerInitializedAtLeastOnce)
+			    {
+			        GuiUtils.showNode(btnStartFingerprintCapturing, false);
+			        lblStatus.setText(resources.getString("label.status.fingerprintScannerDisconnected"));
+			        LOGGER.info("The fingerprint scanner is disconnected!");
+			    }
+			}));
+		}
 	}
 	
 	@FXML
@@ -818,7 +865,7 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 		
 		// fix the position
 		popOver.setY(popOver.getY() - 7.0);
-		popOver.setX(popOver.getX() - (Context.getCoreFxController().getCurrentLanguage().getNodeOrientation() ==
+		popOver.setX(popOver.getX() - (Context.getGuiLanguage().getNodeOrientation() ==
 																		NodeOrientation.RIGHT_TO_LEFT ? 7.0 : 5.0));
 		
 		// auto-hide after 2 seconds

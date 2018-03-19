@@ -68,7 +68,7 @@
                                 </VBox>
                             </TitledPane>
                         </VBox>
-                        <AutoScalingStackPane fx:id="subScenePane" GridPane.rowIndex="0" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS"/>
+                        <AutoScalingStackPane fx:id="subScenePane" GridPane.rowIndex="0" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS" visible="false" managed="false"/>
                     </GridPane>
                 </TitledPane>
             </SplitPane>

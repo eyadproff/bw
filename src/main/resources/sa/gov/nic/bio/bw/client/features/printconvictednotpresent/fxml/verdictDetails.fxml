@@ -10,7 +10,7 @@
 <?import javafx.scene.control.ProgressIndicator?>
 <BorderPane xmlns="http://javafx.com/javafx/8.0.152" xmlns:fx="http://javafx.com/fxml/1"
             fx:id="rootPane" stylesheets="@../css/style.css"
-            fx:controller="sa.gov.nic.bio.bw.client.features.printconvictednotpresent.VerdictDetailsPaneFxController">
+            fx:controller="sa.gov.nic.bio.bw.client.features.printconvictednotpresent.JudgmentDetailsPaneFxController">
     <center>
         <VBox alignment="CENTER" spacing="5.0">
             <Label text="Test"/>

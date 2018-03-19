@@ -52,8 +52,7 @@ public class LoginPaneFxController extends BodyFxControllerBase implements Persi
 	@Override
 	protected void onAttachedToScene()
 	{
-		GuiLanguage currentLanguage = Context.getCoreFxController().getCurrentLanguage();
-		cboLanguage.getSelectionModel().select(currentLanguage);
+		cboLanguage.getSelectionModel().select(Context.getGuiLanguage());
 		cboLanguage.setOnAction(event ->
         {
 	        GuiLanguage guiLanguage = cboLanguage.getValue();
@@ -110,7 +109,7 @@ public class LoginPaneFxController extends BodyFxControllerBase implements Persi
 		uiDataMap.put("username", username);
 		uiDataMap.put("password", password);
 		
-		Context.getCoreFxController().submitForm(uiDataMap);
+		Context.getWorkflowManager().submitUserTask(uiDataMap);
 	}
 	
 	@FXML
@@ -118,10 +117,9 @@ public class LoginPaneFxController extends BodyFxControllerBase implements Persi
 	{
 		hideNotification();
 		
-		boolean rtl = Context.getCoreFxController().getCurrentLanguage().getNodeOrientation()
-																					== NodeOrientation.RIGHT_TO_LEFT;
+		boolean rtl = Context.getGuiLanguage().getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT;
 		ChangePasswordDialogFxController controller = DialogUtils.buildCustomDialogByFxml(
-								Context.getCoreFxController().getPrimaryStage(), FXML_CHANGE_PASSWORD, resources, rtl);
+				Context.getCoreFxController().getStage(), FXML_CHANGE_PASSWORD, resources, rtl);
 		
 		if(controller != null)
 		{

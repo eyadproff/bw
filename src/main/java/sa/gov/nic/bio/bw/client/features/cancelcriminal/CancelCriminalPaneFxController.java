@@ -227,21 +227,20 @@ public class CancelCriminalPaneFxController extends BodyFxControllerBase
 			uiDataMap.put("criminalId", Long.parseLong(criminalId));
 		}
 		
-		Context.getCoreFxController().submitForm(uiDataMap);
+		Context.getWorkflowManager().submitUserTask(uiDataMap);
 	}
 	
 	private String formatPersonIdType(PersonIdType personIdType)
 	{
 		StringBuilder sb = new StringBuilder();
 		
-		if(Context.getCoreFxController().getCurrentLanguage() == GuiLanguage.ARABIC)
+		if(Context.getGuiLanguage() == GuiLanguage.ARABIC)
 		{
 			sb.append(personIdType.getDescriptionAR());
 		}
 		else sb.append(personIdType.getDescriptionEN());
 		
-		return AppUtils.replaceNumbersOnly(sb.toString(),
-		                                            Context.getCoreFxController().getCurrentLanguage().getLocale());
+		return AppUtils.replaceNumbersOnly(sb.toString(), Context.getGuiLanguage().getLocale());
 	}
 	
 	private void initializeLookupTask()

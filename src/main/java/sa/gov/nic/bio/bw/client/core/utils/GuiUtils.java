@@ -104,7 +104,7 @@ public class GuiUtils
 				Context.getWorkflowManager().interruptTheWorkflow();
 				
 				Platform.exit();
-				LOGGER.info("The application is exited");
+				LOGGER.info("The application is exited!");
 				System.exit(0); // last resort
 			}
 		};
@@ -289,8 +289,8 @@ public class GuiUtils
 
 			BorderPane borderPane = new BorderPane();
 			borderPane.setCenter(iv);
-			Stage stage = DialogUtils.buildCustomDialog(coreFxController.getPrimaryStage(), dialogTitle, borderPane,
-			                                            coreFxController.getCurrentLanguage()
+			Stage stage = DialogUtils.buildCustomDialog(coreFxController.getStage(), dialogTitle, borderPane,
+			                                            Context.getGuiLanguage()
 				                                            .getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT);
 			stage.getScene().addEventHandler(KeyEvent.KEY_PRESSED, keyEvent ->
 			{

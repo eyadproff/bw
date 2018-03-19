@@ -1,6 +1,5 @@
 package sa.gov.nic.bio.bw.client.features.printconvictednotpresent.workflow;
 
-import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.interfaces.FormRenderer;
@@ -9,10 +8,10 @@ import sa.gov.nic.bio.bw.client.core.workflow.Signal;
 import sa.gov.nic.bio.bw.client.core.workflow.WorkflowBase;
 import sa.gov.nic.bio.bw.client.features.printconvictednotpresent.ConfirmInfoPaneFxController;
 import sa.gov.nic.bio.bw.client.features.printconvictednotpresent.FetchingFingerprintsPaneFxController;
+import sa.gov.nic.bio.bw.client.features.printconvictednotpresent.JudgmentDetailsPaneFxController;
 import sa.gov.nic.bio.bw.client.features.printconvictednotpresent.PersonIdPaneFxController;
 import sa.gov.nic.bio.bw.client.features.printconvictednotpresent.ReviewAndSubmitPaneFxController;
 import sa.gov.nic.bio.bw.client.features.printconvictednotpresent.ShowReportPaneFxController;
-import sa.gov.nic.bio.bw.client.features.printconvictednotpresent.VerdictDetailsPaneFxController;
 
 import java.net.URL;
 import java.util.HashMap;
@@ -49,8 +48,7 @@ public class PrintConvictedReportNotPresentWorkflow extends WorkflowBase<Void, V
 		try
 		{
 			stringsBundle = ResourceBundle.getBundle(basePackage + "/bundles/strings",
-			                                         Context.getCoreFxController().getCurrentLanguage().getLocale(),
-			                                         new UTF8Control());
+			                                         Context.getGuiLanguage().getLocale(), new UTF8Control());
 		}
 		catch(MissingResourceException e)
 		{
@@ -62,7 +60,7 @@ public class PrintConvictedReportNotPresentWorkflow extends WorkflowBase<Void, V
 				.getResource(basePackage + "/fxml/wizard.fxml");
 		FXMLLoader wizardPaneLoader = new FXMLLoader(wizardFxmlLocation, stringsBundle);
 		wizardPaneLoader.setClassLoader(Context.getFxClassLoader());
-		Platform.runLater(() -> Context.getCoreFxController().loadWizardBar(wizardPaneLoader));
+		Context.getCoreFxController().loadWizardBar(wizardPaneLoader);
 		
 		while(true)
 		{
@@ -97,7 +95,7 @@ public class PrintConvictedReportNotPresentWorkflow extends WorkflowBase<Void, V
 					}
 					case 3:
 					{
-						formRenderer.get().renderForm(VerdictDetailsPaneFxController.class, uiInputData);
+						formRenderer.get().renderForm(JudgmentDetailsPaneFxController.class, uiInputData);
 						uiOutputData = waitForUserTask();
 						uiInputData.putAll(uiOutputData);
 						break;

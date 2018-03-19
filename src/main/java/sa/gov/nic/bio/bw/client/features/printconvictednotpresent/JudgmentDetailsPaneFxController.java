@@ -1,11 +1,11 @@
-package sa.gov.nic.bio.bw.client.features.printconvictedpresent;
+package sa.gov.nic.bio.bw.client.features.printconvictednotpresent;
 
 import sa.gov.nic.bio.bw.client.core.wizard.WizardStepFxControllerBase;
 
 import java.net.URL;
 import java.util.Map;
 
-public class VerdictDetailsPaneFxController extends WizardStepFxControllerBase
+public class JudgmentDetailsPaneFxController extends WizardStepFxControllerBase
 {
 	@Override
 	public URL getFxmlLocation()

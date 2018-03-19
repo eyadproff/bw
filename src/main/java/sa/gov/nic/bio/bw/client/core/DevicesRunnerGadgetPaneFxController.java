@@ -152,7 +152,7 @@ public class DevicesRunnerGadgetPaneFxController extends RegionFxControllerBase
 	
 	private Stage buildProgressDialog(CancelCommand cancelCommand, String message, Future<?> future)
 	{
-		boolean rtl = Context.getCoreFxController().getCurrentLanguage()
+		boolean rtl = Context.getGuiLanguage()
 				.getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT;
 		
 		Button btnCancel = new Button(resources.getString("button.cancel"));
@@ -172,7 +172,7 @@ public class DevicesRunnerGadgetPaneFxController extends RegionFxControllerBase
 		outer.getChildren().addAll(inner, btnCancel);
 		outer.setPadding(new Insets(10.0));
 		
-		Stage dialogStage = DialogUtils.buildCustomDialog(Context.getCoreFxController().getPrimaryStage(),
+		Stage dialogStage = DialogUtils.buildCustomDialog(Context.getCoreFxController().getStage(),
 		                                                  null,
 		                                                  outer, rtl);
 		
@@ -240,8 +240,8 @@ public class DevicesRunnerGadgetPaneFxController extends RegionFxControllerBase
 		runTask.setOnSucceeded(e ->
 		{
 		    dialogStage.close();
-		    Context.getCoreFxController().getPrimaryStage().setIconified(false);
-			Context.getCoreFxController().getPrimaryStage().toFront();
+		    Context.getCoreFxController().getStage().setIconified(false);
+			Context.getCoreFxController().getStage().toFront();
 			
 		    if(cancelCommand.isCanceled()) return;
 		
@@ -251,8 +251,8 @@ public class DevicesRunnerGadgetPaneFxController extends RegionFxControllerBase
 		runTask.setOnFailed(e ->
 		{
 		    dialogStage.close();
-			Context.getCoreFxController().getPrimaryStage().setIconified(false);
-			Context.getCoreFxController().getPrimaryStage().toFront();
+			Context.getCoreFxController().getStage().setIconified(false);
+			Context.getCoreFxController().getStage().toFront();
 			
 		    Throwable exception = runTask.getException();
 		

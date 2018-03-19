@@ -1,6 +1,5 @@
 package sa.gov.nic.bio.bw.client.features.searchbyfaceimage.workflow;
 
-import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.interfaces.FormRenderer;
@@ -52,8 +51,7 @@ public class SearchByFaceImageWorkflow extends WorkflowBase<Void, Void>
 		try
 		{
 			stringsBundle = ResourceBundle.getBundle(basePackage + "/bundles/strings",
-			                                         Context.getCoreFxController().getCurrentLanguage().getLocale(),
-			                                         new UTF8Control());
+			                                         Context.getGuiLanguage().getLocale(), new UTF8Control());
 		}
 		catch(MissingResourceException e)
 		{
@@ -64,7 +62,7 @@ public class SearchByFaceImageWorkflow extends WorkflowBase<Void, Void>
 		URL wizardFxmlLocation = Thread.currentThread().getContextClassLoader()
 													   .getResource(basePackage + "/fxml/wizard.fxml");
 		FXMLLoader wizardPaneLoader = new FXMLLoader(wizardFxmlLocation, stringsBundle);
-		Platform.runLater(() -> Context.getCoreFxController().loadWizardBar(wizardPaneLoader));
+		Context.getCoreFxController().loadWizardBar(wizardPaneLoader);
 		
 		while(true)
 		{

@@ -65,10 +65,10 @@ public class ConfirmImageFxController extends WizardStepFxControllerBase
 				});
 			}
 		};
-		Context.getCoreFxController().getPrimaryStage().maximizedProperty().addListener(changeListener);
+		Context.getCoreFxController().getStage().maximizedProperty().addListener(changeListener);
 		imagePane.sceneProperty().addListener((observable, oldValue, newValue) ->
 		{
-		    if(newValue == null) Context.getCoreFxController().getPrimaryStage().maximizedProperty()
+		    if(newValue == null) Context.getCoreFxController().getStage().maximizedProperty()
 				                                                                .removeListener(changeListener);
 		});
 	}

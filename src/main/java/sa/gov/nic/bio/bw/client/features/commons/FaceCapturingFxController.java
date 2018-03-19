@@ -53,6 +53,7 @@ import java.util.logging.Logger;
 public class FaceCapturingFxController extends WizardStepFxControllerBase
 {
 	private static final Logger LOGGER = Logger.getLogger(FaceCapturingFxController.class.getName());
+	
 	public static final String KEY_ICAO_REQUIRED = "ICAO_REQUIRED";
 	public static final String KEY_CAPTURED_IMAGE = "CAPTURED_IMAGE";
 	public static final String KEY_CROPPED_IMAGE = "CROPPED_IMAGE";
@@ -125,33 +126,40 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 	@Override
 	protected void onAttachedToScene()
 	{
-		Group face3DGroup;
-		try
+		if(Platform.isSupported(ConditionalFeature.SCENE3D))
 		{
-			face3DGroup = FXMLLoader.load(getClass().getResource("fxml/face3DModel.fxml"), resources);
+			Context.getExecutorService().submit(() ->
+			{
+				Group face3DGroup;
+				try
+				{
+					face3DGroup = FXMLLoader.load(getClass().getResource("fxml/face3DModel.fxml"), resources);
+				}
+				catch(IOException e)
+				{
+					String errorCode = CommonsErrorCodes.C008_00001.getCode();
+					String[] errorDetails = {"failed to load the face 3D model!"};
+					Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails);
+					
+					return;
+				}
+				
+				Platform.runLater(() ->
+				{
+					face3D = (Group) face3DGroup.lookup("#face3D");
+					face3D.getTransforms().setAll(pivotBase);
+					
+					AutoScalingStackPane shapePane = new AutoScalingStackPane(face3DGroup);
+					SubScene subScene = new SubScene(shapePane, 100.0, 80.0, true,
+					                                 SceneAntialiasing.BALANCED);
+					subScene.setFill(Color.TRANSPARENT);
+					subScene.setCamera(perspectiveCamera);
+					
+					subScenePane.getChildren().setAll(subScene);
+					GuiUtils.showNode(subScenePane, true);
+				});
+			});
 		}
-		catch(IOException e)
-		{
-			String errorCode = CommonsErrorCodes.C008_00001.getCode();
-			String[] errorDetails = {"failed to load the face 3D model!"};
-			Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails);
-			
-			return;
-		}
-		
-		face3D = (Group) face3DGroup.lookup("#face3D");
-		face3D.getTransforms().setAll(pivotBase);
-		
-		AutoScalingStackPane shapePane = new AutoScalingStackPane(face3DGroup);
-		SubScene subScene = new SubScene(shapePane, 100.0, 80.0, true,
-		                                 SceneAntialiasing.BALANCED);
-		subScene.setFill(Color.TRANSPARENT);
-		subScene.setCamera(perspectiveCamera);
-		
-		subScenePane.getChildren().setAll(subScene);
-		
-		GuiUtils.showNode(subScenePane, Platform.isSupported(ConditionalFeature.SCENE3D));
-		
 	}
 	
 	@Override

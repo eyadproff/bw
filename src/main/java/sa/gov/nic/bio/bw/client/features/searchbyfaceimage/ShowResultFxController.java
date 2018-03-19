@@ -102,10 +102,10 @@ public class ShowResultFxController extends WizardStepFxControllerBase
 				});
 			}
 		};
-		Context.getCoreFxController().getPrimaryStage().maximizedProperty().addListener(changeListener);
+		Context.getCoreFxController().getStage().maximizedProperty().addListener(changeListener);
 		imagePane.sceneProperty().addListener((observable, oldValue, newValue) ->
 		{
-		    if(newValue == null) Context.getCoreFxController().getPrimaryStage().maximizedProperty()
+		    if(newValue == null) Context.getCoreFxController().getStage().maximizedProperty()
 				                                                                .removeListener(changeListener);
 		});
 	}
@@ -280,8 +280,7 @@ public class ShowResultFxController extends WizardStepFxControllerBase
 		
 		String title = resources.getString("dialog.compare.title");
 		String buttonText = resources.getString("dialog.compare.buttons.close");
-		boolean rtl = Context.getCoreFxController().getCurrentLanguage().getNodeOrientation()
-																					== NodeOrientation.RIGHT_TO_LEFT;
+		boolean rtl = Context.getGuiLanguage().getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT;
 		
 		Image mergedImage;
 		if(rtl) mergedImage = GuiUtils.mergeImage(finalImage, selectedImage);
@@ -308,7 +307,7 @@ public class ShowResultFxController extends WizardStepFxControllerBase
 		imageLayer.getChildren().add(ivMergedImage);
 		borderPane.centerProperty().set(imageLayer);
 		
-		Stage dialogStage = DialogUtils.buildCustomDialog(Context.getCoreFxController().getPrimaryStage(), title,
+		Stage dialogStage = DialogUtils.buildCustomDialog(Context.getCoreFxController().getStage(), title,
 		                                                  stackPane, rtl);
 		dialogStage.initStyle(StageStyle.UNDECORATED);
 		dialogStage.getScene().addEventHandler(KeyEvent.KEY_PRESSED, t ->

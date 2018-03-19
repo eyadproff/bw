@@ -10,41 +10,36 @@ import java.util.Map;
 
 public abstract class WizardStepFxControllerBase extends BodyFxControllerBase implements NavigableController
 {
-	public URL getWizardFxmlLocation()
-	{
-		return getClass().getResource("fxml/wizard.fxml");
-	}
-	
 	@Override
 	public void goNext()
 	{
-		Context.getCoreFxController().showBodyOverlayPane(true);
+		Context.getCoreFxController().showWizardTransitionProgressIndicator(true);
 		Map<String, Object> uiDataMap = new HashMap<>();
 		uiDataMap.put("direction", "forward");
 		onGoingNext(uiDataMap);
 		onLeaving(uiDataMap);
-		Context.getCoreFxController().submitForm(uiDataMap);
+		Context.getWorkflowManager().submitUserTask(uiDataMap);
 	}
 	
 	@Override
 	public void goPrevious()
 	{
-		Context.getCoreFxController().showBodyOverlayPane(true);
+		Context.getCoreFxController().showWizardTransitionProgressIndicator(true);
 		Map<String, Object> uiDataMap = new HashMap<>();
 		uiDataMap.put("direction", "backward");
 		onGoingPrevious(uiDataMap);
 		onLeaving(uiDataMap);
-		Context.getCoreFxController().submitForm(uiDataMap);
+		Context.getWorkflowManager().submitUserTask(uiDataMap);
 	}
 	
 	@Override
 	public void startOver()
 	{
-		Context.getCoreFxController().showBodyOverlayPane(true);
+		Context.getCoreFxController().showWizardTransitionProgressIndicator(true);
 		Map<String, Object> uiDataMap = new HashMap<>();
 		uiDataMap.put("direction", "startOver");
 		onLeaving(uiDataMap);
-		Context.getCoreFxController().submitForm(uiDataMap);
+		Context.getWorkflowManager().submitUserTask(uiDataMap);
 	}
 	
 	protected void onGoingNext(Map<String, Object> uiDataMap){}

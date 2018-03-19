@@ -190,7 +190,7 @@ public class MenuPaneFxController extends RegionFxControllerBase
 		{
 			if(newValue == null) return; // un-select action
 			
-			Context.getCoreFxController().showBodyOverlayPane(true);
+			Context.getCoreFxController().showMenuTransitionProgressIndicator(true);
 			
 			if(selectedMenu != null) selectedMenu.setSelected(false);
 			if(selectedListView != null && selectedListView != listView)

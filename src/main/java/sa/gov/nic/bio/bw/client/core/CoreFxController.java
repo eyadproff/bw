@@ -8,12 +8,13 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.NodeOrientation;
 import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ProgressIndicator;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 import org.controlsfx.control.NotificationPane;
 import sa.gov.nic.bio.biokit.exceptions.NotConnectedException;
 import sa.gov.nic.bio.bw.client.core.beans.StateBundle;
@@ -56,8 +57,8 @@ public class CoreFxController implements IdleMonitorRegisterer, PersistableEntit
 {
 	private static final Logger LOGGER = Logger.getLogger(CoreFxController.class.getName());
 	public static final String FXML_FILE = "sa/gov/nic/bio/bw/client/core/fxml/core.fxml";
+	public static final String APP_ICON_FILE = "sa/gov/nic/bio/bw/client/core/images/app_icon.png";
 	public static final String RB_LABELS_FILE = "sa/gov/nic/bio/bw/client/core/bundles/strings";
-	public static final String RB_TOP_MENUS_FILE = "sa/gov/nic/bio/bw/client/core/bundles/top_menus";
 	
 	
 	// the following are here only to avoid warnings in FXML files.
@@ -67,9 +68,9 @@ public class CoreFxController implements IdleMonitorRegisterer, PersistableEntit
 	@FXML private Pane footerPane;
 	
 	@FXML private ResourceBundle resources;
-	@FXML private Stage primaryStage;
 	@FXML private StackPane stageOverlayPane;
-	@FXML private StackPane bodyOverlayPane;
+	@FXML private StackPane menuTransitionOverlayPane;
+	@FXML private ProgressIndicator piWizardTransition;
 	@FXML private HeaderPaneFxController headerPaneController;
 	@FXML private FooterPaneFxController footerPaneController;
 	@FXML private MenuPaneFxController menuPaneController;
@@ -79,24 +80,18 @@ public class CoreFxController implements IdleMonitorRegisterer, PersistableEntit
 	@FXML private BorderPane bodyPane;
 	@FXML private WizardPane wizardPane;
 	
-	private ResourceBundle topMenusBundle;
-	private String windowTitle;
-	
+	private Stage stage;
 	private IdleMonitor idleMonitor;
-	private GuiLanguage currentLanguage;
 	private BodyFxControllerBase currentBodyController;
 	
-	public void passInitialResources(ResourceBundle topMenusBundle, String windowTitle, GuiLanguage language)
+	public void registerStage(Stage stage)
 	{
-		this.topMenusBundle = topMenusBundle;
-		this.windowTitle = windowTitle;
-		this.currentLanguage = language;
+		this.stage = stage;
 	}
 	
-	public Stage getPrimaryStage(){return primaryStage;}
+	public Stage getStage(){return stage;}
 	public NotificationPane getNotificationPane(){return notificationPane;}
 	public BorderPane getBodyPane(){return bodyPane;}
-	public GuiLanguage getCurrentLanguage(){return currentLanguage;}
 	
 	public HeaderPaneFxController getHeaderPaneController(){return headerPaneController;}
 	public FooterPaneFxController getFooterPaneController(){return footerPaneController;}
@@ -104,9 +99,7 @@ public class CoreFxController implements IdleMonitorRegisterer, PersistableEntit
 	public DevicesRunnerGadgetPaneFxController getDeviceManagerGadgetPaneController()
 	{return devicesRunnerGadgetPaneController;}
 	
-	
 	public ResourceBundle getResourceBundle(){return resources;}
-	public ResourceBundle getTopMenusBundle(){return topMenusBundle;}
 	public WizardPane getWizardPane(){return wizardPane;}
 	
 	@FXML
@@ -128,33 +121,6 @@ public class CoreFxController implements IdleMonitorRegisterer, PersistableEntit
 		{
 			Context.getWorkflowManager().startCoreWorkflow(this::renderBodyForm);
 		}
-	}
-	
-	/**
-	 * Called once for every primary stage, when it is shown. It is called in the UI-thread.
-	 * It is called after initialize() and passInitialResources().
-	 */
-	@FXML
-	private void onStageShown(WindowEvent windowEvent)
-	{
-		primaryStage.setTitle(windowTitle);
-		footerPaneController.showLogo();
-		
-		// fix the size of the header pane and the menu pane.
-		headerPaneController.getRegionRootPane().setMinSize(headerPaneController.getRegionRootPane().getWidth(),
-		                                                    headerPaneController.getRegionRootPane().getHeight());
-		menuPaneController.getRegionRootPane().setMinSize(menuPaneController.getRegionRootPane().getWidth(),
-		                                                  menuPaneController.getRegionRootPane().getHeight());
-	}
-	
-	/**
-	 * Called when the user is submitted the form. It sends the form data to the workflow manager.
-	 *
-	 * @param uiDataMap the data submitted by the user when filling the form
-	 */
-	public void submitForm(Map<String, Object> uiDataMap)
-	{
-		Context.getWorkflowManager().submitUserTask(uiDataMap);
 	}
 	
 	public void prepareToLogout()
@@ -199,33 +165,31 @@ public class CoreFxController implements IdleMonitorRegisterer, PersistableEntit
 	 */
 	private void renderBodyForm(Class<?> controllerClass, Map<String, Object> uiInputData)
 	{
-		Platform.runLater(() ->
+		if(currentBodyController != null && currentBodyController.getClass() == controllerClass) // same form
 		{
-			if(currentBodyController != null && currentBodyController.getClass() == controllerClass) // same form
+			Platform.runLater(() -> currentBodyController.onWorkflowUserTaskLoad(false, uiInputData));
+			
+		}
+		else // new form
+		{
+			try
 			{
-				currentBodyController.onWorkflowUserTaskLoad(false, uiInputData);
-			}
-			else // new form
-			{
-				try
+				ControllerResourcesLocator controllerResourcesLocator = (ControllerResourcesLocator)
+						controllerClass.getDeclaredConstructor().newInstance();
+				currentBodyController = renderNewBodyForm(controllerResourcesLocator);
+				
+				if(currentBodyController != null)
 				{
-					ControllerResourcesLocator controllerResourcesLocator = (ControllerResourcesLocator)
-																controllerClass.getDeclaredConstructor().newInstance();
-					currentBodyController = renderNewBodyForm(controllerResourcesLocator);
-					if(currentBodyController != null)
-					{
-						currentBodyController.onWorkflowUserTaskLoad(true, uiInputData);
-					}
-				}
-				catch(InstantiationException | IllegalAccessException | NoSuchMethodException |
-					  InvocationTargetException e)
-				{
-					String errorCode = CoreErrorCodes.C002_00001.getCode();
-					String[] errorDetails = {"Failed to load the class " + controllerClass.getName()};
-					showErrorDialog(errorCode, e, errorDetails);
+					Platform.runLater(() -> currentBodyController.onWorkflowUserTaskLoad(true, uiInputData));
 				}
 			}
-		});
+			catch(InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e)
+			{
+				String errorCode = CoreErrorCodes.C002_00001.getCode();
+				String[] errorDetails = {"Failed to load the class " + controllerClass.getName()};
+				showErrorDialog(errorCode, e, errorDetails);
+			}
+		}
 	}
 	
 	/**
@@ -238,8 +202,6 @@ public class CoreFxController implements IdleMonitorRegisterer, PersistableEntit
 	 */
 	private BodyFxControllerBase renderNewBodyForm(ControllerResourcesLocator controllerResourcesLocator)
 	{
-		notificationPane.hide();
-		
 		URL fxmlUrl = controllerResourcesLocator.getFxmlLocation();
 		if(fxmlUrl == null)
 		{
@@ -255,7 +217,7 @@ public class CoreFxController implements IdleMonitorRegisterer, PersistableEntit
 		ResourceBundle stringsBundle;
 		try
 		{
-			stringsBundle = ResourceBundle.getBundle(stringsResourceBundlePath, currentLanguage.getLocale(),
+			stringsBundle = ResourceBundle.getBundle(stringsResourceBundlePath, Context.getGuiLanguage().getLocale(),
 			                                         new UTF8Control());
 		}
 		catch(MissingResourceException e)
@@ -285,18 +247,30 @@ public class CoreFxController implements IdleMonitorRegisterer, PersistableEntit
 		}
 		
 		BodyFxControllerBase bodyFxController = paneLoader.getController();
-		bodyFxController.onAttachedToScene();
-		bodyPane.setCenter(loadedPane);
-		showBodyOverlayPane(false);
 		
-		if(currentBodyController != null) currentBodyController.onDetachedFromScene();
+		Platform.runLater(() ->
+		{
+			notificationPane.hide();
+			bodyFxController.onAttachedToScene();
+			bodyPane.setCenter(loadedPane);
+			showMenuTransitionProgressIndicator(false);
+			showWizardTransitionProgressIndicator(false);
+			
+			if(currentBodyController != null) currentBodyController.onDetachedFromScene();
+		});
 		
 		return bodyFxController;
 	}
 	
-	public void showBodyOverlayPane(boolean bShow)
+	public void showWizardTransitionProgressIndicator(boolean bShow)
 	{
-		bodyOverlayPane.setVisible(bShow);
+		piWizardTransition.setVisible(bShow);
+		if(bShow) bodyPane.setCenter(null);
+	}
+	
+	public void showMenuTransitionProgressIndicator(boolean bShow)
+	{
+		menuTransitionOverlayPane.setVisible(bShow);
 	}
 	
 	public void loadWizardBar(FXMLLoader wizardPaneLoader)
@@ -304,8 +278,12 @@ public class CoreFxController implements IdleMonitorRegisterer, PersistableEntit
 		try
 		{
 			wizardPane = wizardPaneLoader.load();
-			bodyPane.setTop(wizardPane);
-			moveWizardForward();
+			
+			Platform.runLater(() ->
+			{
+				bodyPane.setTop(wizardPane);
+				wizardPane.goNext();
+			});
 		}
 		catch(Exception e)
 		{
@@ -343,9 +321,9 @@ public class CoreFxController implements IdleMonitorRegisterer, PersistableEntit
 		String title = resources.getString("dialog.confirm.title");
 		String buttonConfirmText = resources.getString("dialog.confirm.buttons.confirm");
 		String buttonCancelText = resources.getString("dialog.confirm.buttons.cancel");
-		boolean rtl = currentLanguage.getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT;
+		boolean rtl = Context.getGuiLanguage().getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT;
 		
-		return DialogUtils.showConfirmationDialog(primaryStage, this, title, headerText,
+		return DialogUtils.showConfirmationDialog(stage, this, title, headerText,
 		                                          contentMessage, buttonConfirmText, buttonCancelText, rtl);
 	}
 	
@@ -358,7 +336,7 @@ public class CoreFxController implements IdleMonitorRegisterer, PersistableEntit
 			String buttonOkText = resources.getString("dialog.error.buttons.ok");
 			String buttonMoreDetailsText = resources.getString("dialog.error.buttons.showErrorDetails");
 			String buttonLessDetailsText = resources.getString("dialog.error.buttons.hideErrorDetails");
-			boolean rtl = currentLanguage.getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT;
+			boolean rtl = Context.getGuiLanguage().getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT;
 			
 			String contentMessage = String.format(resources.getString("message.errorOccurs"), errorCode);
 			
@@ -366,7 +344,7 @@ public class CoreFxController implements IdleMonitorRegisterer, PersistableEntit
 			GuiUtils.buildErrorMessage(throwable, errorDetails, sb);
 			
 			LOGGER.severe(contentMessage + (sb.length() > 0 ? "\n" : "") + sb.toString());
-			DialogUtils.showAlertDialog(AlertType.ERROR, primaryStage, this, title, headerText,
+			DialogUtils.showAlertDialog(AlertType.ERROR, stage, this, title, headerText,
 			                            contentMessage, sb.toString(), buttonOkText, buttonMoreDetailsText,
 			                            buttonLessDetailsText, rtl);
 		});
@@ -386,12 +364,14 @@ public class CoreFxController implements IdleMonitorRegisterer, PersistableEntit
 	 */
 	public void switchLanguage(GuiLanguage toLanguage, PersistableEntity persistableEntity)
 	{
-		if(currentLanguage == toLanguage)
+		if(Context.getGuiLanguage() == toLanguage)
 		{
-			LOGGER.warning("cannot switch the language to the current language: " + currentLanguage.name());
+			LOGGER.warning("cannot switch the language to the current language: " +
+					                                                                Context.getGuiLanguage().name());
 			return;
 		}
 		
+		Context.setGuiLanguage(toLanguage);
 		LOGGER.info("Switching the GUI language to " + toLanguage.name());
 		
 		List<String> errorBundleNames;
@@ -428,19 +408,6 @@ public class CoreFxController implements IdleMonitorRegisterer, PersistableEntit
 			return;
 		}
 		
-		ResourceBundle topMenusBundle;
-		try
-		{
-			topMenusBundle = ResourceBundle.getBundle(RB_TOP_MENUS_FILE, toLanguage.getLocale(), new UTF8Control());
-		}
-		catch(MissingResourceException e)
-		{
-			String errorCode = CoreErrorCodes.C002_00008.getCode();
-			String[] errorDetails = {"Core \"topMenusBundle\" resource bundle is missing!"};
-			showErrorDialog(errorCode, e, errorDetails);
-			return;
-		}
-		
 		URL fxmlUrl = Thread.currentThread().getContextClassLoader().getResource(FXML_FILE);
 		if(fxmlUrl == null)
 		{
@@ -454,17 +421,18 @@ public class CoreFxController implements IdleMonitorRegisterer, PersistableEntit
 		String title = stringsBundle.getString("window.title") + " " + version + " (" +
 				stringsBundle.getString("label.environment." +
 							                  Context.getRuntimeEnvironment().name().toLowerCase()) + ")";
-		windowTitle = AppUtils.replaceNumbersOnly(title, Locale.getDefault());
+		String windowTitle = AppUtils.replaceNumbersOnly(title, Locale.getDefault());
 		
-		FXMLLoader newStageLoader = new FXMLLoader(fxmlUrl, stringsBundle);
-		newStageLoader.setClassLoader(Context.getFxClassLoader());
+		FXMLLoader newRootPane = new FXMLLoader(fxmlUrl, stringsBundle);
+		newRootPane.setClassLoader(Context.getFxClassLoader());
 		
-		Stage oldStage = primaryStage;
+		Stage oldStage = stage;
 		
-		Stage newStage;
+		Pane rootPane;
+		
 		try
 		{
-			newStage = newStageLoader.load();
+			rootPane = newRootPane.load();
 		}
 		catch(IOException e)
 		{
@@ -474,17 +442,24 @@ public class CoreFxController implements IdleMonitorRegisterer, PersistableEntit
 			return;
 		}
 		
+		Stage newStage = new Stage();
+		
+		newStage.getIcons().setAll(oldStage.getIcons());
+		newStage.setTitle(windowTitle);
+		newStage.setWidth(AppConstants.STAGE_WIDTH);
+		newStage.setHeight(AppConstants.STAGE_HEIGHT);
+		newStage.setScene(new Scene(rootPane));
 		newStage.getScene().setNodeOrientation(toLanguage.getNodeOrientation());
 		
 		StateBundle oldState = new StateBundle();
 		persistableEntity.onSaveState(oldState);
 		this.onSaveState(oldState);
 		
-		CoreFxController newCoreFxController = newStageLoader.getController();
-		newStage.setOnCloseRequest(GuiUtils.createOnExitHandler(primaryStage, newCoreFxController));
+		CoreFxController newCoreFxController = newRootPane.getController();
+		newStage.setOnCloseRequest(GuiUtils.createOnExitHandler(stage, newCoreFxController));
 		
 		newCoreFxController.currentBodyController = currentBodyController;
-		newCoreFxController.passInitialResources( topMenusBundle, windowTitle, toLanguage);
+		newCoreFxController.registerStage(newStage);
 		
 		Context.getWorkflowManager().changeFormRenderer(newCoreFxController::renderBodyForm);
 		
@@ -543,11 +518,11 @@ public class CoreFxController implements IdleMonitorRegisterer, PersistableEntit
 	@Override
 	public void onSaveState(StateBundle stateBundle)
 	{
-		stateBundle.putData("stageWidth", primaryStage.getWidth());
-		stateBundle.putData("stageHeight", primaryStage.getHeight());
-		stateBundle.putData("stageX", primaryStage.getX());
-		stateBundle.putData("stageY", primaryStage.getY());
-		stateBundle.putData("stageMaximized", primaryStage.isMaximized());
+		stateBundle.putData("stageWidth", stage.getWidth());
+		stateBundle.putData("stageHeight", stage.getHeight());
+		stateBundle.putData("stageX", stage.getX());
+		stateBundle.putData("stageY", stage.getY());
+		stateBundle.putData("stageMaximized", stage.isMaximized());
 	}
 	
 	/**
@@ -562,13 +537,13 @@ public class CoreFxController implements IdleMonitorRegisterer, PersistableEntit
 		double y = stateBundle.getDate("stageY", Double.class);
 		boolean maximized = stateBundle.getDate("stageMaximized", Boolean.class);
 		
-		if(maximized) primaryStage.setMaximized(true);
+		if(maximized) stage.setMaximized(true);
 		else
 		{
-			primaryStage.setWidth(width);
-			primaryStage.setHeight(height);
-			primaryStage.setX(x);
-			primaryStage.setY(y);
+			stage.setWidth(width);
+			stage.setHeight(height);
+			stage.setX(x);
+			stage.setY(y);
 		}
 	}
 	
@@ -601,7 +576,7 @@ public class CoreFxController implements IdleMonitorRegisterer, PersistableEntit
 	 */
 	public void startIdleMonitor()
 	{
-		registerStageForIdleMonitoring(primaryStage);
+		registerStageForIdleMonitoring(stage);
 		idleMonitor.startMonitoring();
 	}
 	
@@ -610,7 +585,7 @@ public class CoreFxController implements IdleMonitorRegisterer, PersistableEntit
 	 */
 	private void stopIdleMonitor()
 	{
-		unregisterStageForIdleMonitoring(primaryStage);
+		unregisterStageForIdleMonitoring(stage);
 		idleMonitor.stopMonitoring();
 	}
 	
@@ -648,13 +623,13 @@ public class CoreFxController implements IdleMonitorRegisterer, PersistableEntit
 		    String title = resources.getString("dialog.idle.title");
 		    String contentText = resources.getString("dialog.idle.content");
 		    String buttonText = resources.getString("dialog.idle.buttons.goToLogin");
-		    boolean rtl = currentLanguage.getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT;
+		    boolean rtl = Context.getGuiLanguage().getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT;
 		
 		    stageOverlayPane.setVisible(true);
 			
 			// make sure the stage is not iconified, otherwise the dialog will be invisible
-			primaryStage.setIconified(false);
-		    DialogUtils.showWarningDialog(primaryStage, this, title, null,
+			stage.setIconified(false);
+		    DialogUtils.showWarningDialog(stage, this, title, null,
 		                                  contentText, buttonText, rtl);
 		    stageOverlayPane.setVisible(false);
 		    clearWizardBar();
@@ -664,7 +639,7 @@ public class CoreFxController implements IdleMonitorRegisterer, PersistableEntit
 			for(int i = 1; i <= stages.size(); i++)
 			{
 				Stage stage = stages.get(i - 1);
-				if(stage != null && stage != primaryStage)
+				if(stage != null && stage != this.stage)
 				{
 					LOGGER.fine("Closing stage #" + i + ": " + stage.getTitle());
 					stage.close();

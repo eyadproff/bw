@@ -1,5 +1,6 @@
 package sa.gov.nic.bio.bw.client.features.searchbyfaceimage;
 
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -57,7 +58,7 @@ public class SearchFxController extends WizardStepFxControllerBase
 				if(response.isSuccess())
 				{
 					candidates = response.getResult();
-					goNext();
+					Platform.runLater(this::goNext);
 				}
 				else
 				{
@@ -82,7 +83,7 @@ public class SearchFxController extends WizardStepFxControllerBase
 		
 		Map<String, Object> uiDataMap = new HashMap<>();
 		uiDataMap.put(Workflow.KEY_WEBSERVICE_RESPONSE, null);
-		Context.getCoreFxController().submitForm(uiDataMap);
+		Context.getWorkflowManager().submitUserTask(uiDataMap);
 	}
 	
 	private void showProgress(boolean bShow)
