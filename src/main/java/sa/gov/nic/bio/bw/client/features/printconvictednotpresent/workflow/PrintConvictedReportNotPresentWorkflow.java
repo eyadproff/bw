@@ -1,5 +1,6 @@
 package sa.gov.nic.bio.bw.client.features.printconvictednotpresent.workflow;
 
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.interfaces.FormRenderer;
@@ -121,17 +122,17 @@ public class PrintConvictedReportNotPresentWorkflow extends WorkflowBase<Void, V
 					Object direction = uiOutputData.get("direction");
 					if("backward".equals(direction))
 					{
-						Context.getCoreFxController().moveWizardBackward();
+						Platform.runLater(() -> Context.getCoreFxController().moveWizardBackward());
 						step--;
 					}
 					else if("forward".equals(direction))
 					{
-						Context.getCoreFxController().moveWizardForward();
+						Platform.runLater(() -> Context.getCoreFxController().moveWizardForward());
 						step++;
 					}
 					else if("startOver".equals(direction))
 					{
-						Context.getCoreFxController().moveWizardToTheBeginning();
+						Platform.runLater(() -> Context.getCoreFxController().moveWizardToTheBeginning());
 						uiInputData.clear();
 						step = 0;
 					}

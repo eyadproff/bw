@@ -61,7 +61,10 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 {
 	private static final Logger LOGGER = Logger.getLogger(FingerprintCapturingFxController.class.getName());
 	
-	public static final String KEY_HIDE_PREVIOUS_BUTTON = "HIDE_PREVIOUS_BUTTON";
+	public static final String KEY_SHOW_PREVIOUS_BUTTON = "SHOW_PREVIOUS_BUTTON";
+	public static final String KEY_ACCEPT_BAD_QUALITY_FINGERPRINT = "ACCEPT_BAD_QUALITY_FINGERPRINT";
+	public static final String KEY_ACCEPTED_BAD_QUALITY_FINGERPRINT_MIN_RETIRES =
+																		"ACCEPTED_BAD_QUALITY_FINGERPRINT_MIN_RETIRES";
 	
 	@FXML private AutoScalingStackPane spRightHand;
 	@FXML private ProgressIndicator piProgress;
@@ -285,15 +288,16 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 	{
 		if(newForm)
 		{
-			Boolean hidePreviousButton = (Boolean) uiInputData.get(KEY_HIDE_PREVIOUS_BUTTON);
-			if(hidePreviousButton != null) GuiUtils.showNode(btnPrevious, !hidePreviousButton);
+			Boolean showPreviousButton = (Boolean) uiInputData.get(KEY_SHOW_PREVIOUS_BUTTON);
+			if(showPreviousButton != null) GuiUtils.showNode(btnPrevious, showPreviousButton);
 			
 			DevicesRunnerGadgetPaneFxController deviceManagerGadgetPaneController =
 					Context.getCoreFxController().getDeviceManagerGadgetPaneController();
 			
-			if(deviceManagerGadgetPaneController.isCameraInitialized())
+			if(deviceManagerGadgetPaneController.isFingerprintScannerInitialized())
 			{
 				GuiUtils.showNode(btnStartFingerprintCapturing, true);
+				activateFingerIndicatorsForNextCapturing(currentPosition);
 			}
 			else
 			{
@@ -317,6 +321,7 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 			        		                        "label.status.fingerprintScannerInitializedSuccessfully"));
 				    fingerprintScannerInitializedAtLeastOnce = true;
 			        LOGGER.info("The fingerprint scanner is initialized!");
+				    activateFingerIndicatorsForNextCapturing(currentPosition);
 			    }
 			    else if(fingerprintScannerInitializedAtLeastOnce)
 			    {

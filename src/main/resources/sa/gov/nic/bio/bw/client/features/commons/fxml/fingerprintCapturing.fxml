@@ -61,7 +61,7 @@
                                 <Insets topRightBottomLeft="10"/>
                             </padding>
                             <ProgressIndicator fx:id="piProgress" prefHeight="25.0" prefWidth="25.0" managed="false" visible="false"/>
-                            <Label fx:id="lblStatus" wrapText="true" textAlignment="CENTER"/>
+                            <Label fx:id="lblStatus" wrapText="true" textAlignment="CENTER" managed="false" visible="false"/>
                             <VBox alignment="CENTER" spacing="5">
                                 <Button fx:id="btnCancel" text="%button.cancel" managed="false" visible="false" wrapText="true" textAlignment="CENTER"/>
                                 <Button fx:id="btnStartFingerprintCapturing" text="%button.captureRightSlapFingerprints" managed="false" visible="false" wrapText="true" textAlignment="CENTER" onAction="#onStartFingerprintCapturingButtonClicked"/>
@@ -299,7 +299,7 @@
             <padding>
                 <Insets bottom="10"/>
             </padding>
-            <Button fx:id="btnPrevious" text="%button.previous"/>
+            <Button fx:id="btnPrevious" text="%button.previous" visible="false" managed="false"/>
             <Button fx:id="btnNext" text="%button.next"/>
         </HBox>
     </bottom>
