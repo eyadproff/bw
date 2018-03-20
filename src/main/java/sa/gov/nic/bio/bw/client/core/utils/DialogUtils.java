@@ -213,6 +213,20 @@ public class DialogUtils
 		stage.setTitle(title);
 		stage.setScene(scene);
 		
+		double x = ownerStage.getX() + ownerStage.getWidth() / 2 - stage.getWidth() / 2;
+		double y = ownerStage.getY() + ownerStage.getHeight() / 2 - stage.getHeight() / 2;
+		stage.setX(x);
+		stage.setY(y);
+		
+		stage.setOnShown(ev ->
+		{
+			double centerXPosition = ownerStage.getX() + ownerStage.getWidth() / 2.0;
+			double centerYPosition = ownerStage.getY() + ownerStage.getHeight() / 2.0;
+			
+			stage.setX(centerXPosition - stage.getWidth() / 2.0);
+			stage.setY(centerYPosition - stage.getHeight() / 2.0);
+		});
+		
 		return stage;
 	}
 	

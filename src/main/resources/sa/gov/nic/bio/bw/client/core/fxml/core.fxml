@@ -22,31 +22,29 @@
             </VBox>
         </left>
         <center>
-            <StackPane>
-                <NotificationPane fx:id="idleNotifier" minHeight="0" minWidth="0">
-                    <graphic>
-                        <ImageView>
-                            <Image url="@../images/warning.png"/>
-                        </ImageView>
-                    </graphic>
-                    <content>
-                        <NotificationPane fx:id="notificationPane">
-                            <content>
-                                <StackPane>
-                                    <BorderPane fx:id="bodyPane">
-                                        <!-- default place holder -->
-                                        <ProgressIndicator maxHeight="25.0" maxWidth="25.0"/>
-                                    </BorderPane>
-                                    <ProgressIndicator fx:id="piWizardTransition" visible="false" maxHeight="25.0" maxWidth="25.0"/>
+            <NotificationPane fx:id="idleNotifier" minHeight="0" minWidth="0">
+                <graphic>
+                    <ImageView>
+                        <Image url="@../images/warning.png"/>
+                    </ImageView>
+                </graphic>
+                <content>
+                    <NotificationPane fx:id="notificationPane">
+                        <content>
+                            <StackPane>
+                                <BorderPane fx:id="bodyPane">
+                                    <!-- default place holder -->
+                                    <ProgressIndicator maxHeight="25.0" maxWidth="25.0"/>
+                                </BorderPane>
+                                <ProgressIndicator fx:id="piWizardTransition" visible="false" maxHeight="25.0" maxWidth="25.0"/>
+                                <StackPane fx:id="menuTransitionOverlayPane" styleClass="background-overlay-white" visible="false">
+                                    <ProgressIndicator maxHeight="25.0" maxWidth="25.0"/>
                                 </StackPane>
-                            </content>
-                        </NotificationPane>
-                    </content>
-                </NotificationPane>
-                <StackPane fx:id="menuTransitionOverlayPane" styleClass="background-overlay-white" visible="false">
-                    <ProgressIndicator maxHeight="25.0" maxWidth="25.0"/>
-                </StackPane>
-            </StackPane>
+                            </StackPane>
+                        </content>
+                    </NotificationPane>
+                </content>
+            </NotificationPane>
         </center>
         <bottom>
             <fx:include fx:id="footerPane" source="footer.fxml" styleClass="footer"/>

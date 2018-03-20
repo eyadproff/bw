@@ -330,6 +330,11 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 			        LOGGER.info("The fingerprint scanner is disconnected!");
 			    }
 			}));
+			
+			if(!Context.getCoreFxController().getDeviceManagerGadgetPaneController().isFingerprintScannerInitialized())
+			{
+				Context.getCoreFxController().getDeviceManagerGadgetPaneController().initializeFingerprintScanner();
+			}
 		}
 	}
 	
@@ -339,29 +344,11 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 		tpFingerprintDeviceLivePreview.setActive(false);
 		tpFingerprintDeviceLivePreview.setCaptured(false);
 		ivFingerprintDeviceLivePreview.setImage(null);
+		GuiUtils.showNode(btnStartFingerprintCapturing, false);
+		GuiUtils.showNode(piProgress, true);
 		GuiUtils.showNode(piFingerprintDeviceLivePreview, true);
 		
-		fingerprintUiComponentsMap.forEach((position, components) ->
-		{
-			boolean currentSlap = currentPosition == components.getSlapPosition().getPosition();
-			if(currentSlap)
-			{
-				components.getButton().setDisable(true);
-				components.getTitledPane().setCaptured(false);
-				components.getTitledPane().setDuplicated(false);
-				components.getCheckBox().setDisable(components.getCheckBox().isSelected());
-				components.getCheckBox().setVisible(components.getCheckBox().isSelected() &&
-						                            !components.getButton().isVisible());
-			}
-			
-			GuiUtils.showNode(components.getSvgPath(), currentSlap);
-		});
-		
 		LOGGER.info("capturing the fingerprints (position = " + currentPosition + ")...");
-		
-		GuiUtils.showNode(btnStartFingerprintCapturing, false);
-		GuiUtils.showNode(btnStopFingerprintCapturing, true);
-		
 		lblStatus.setText(resources.getString("label.status.waitingDeviceResponse"));
 		boolean[] first = {true};
 		
@@ -376,8 +363,27 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 					{
 						first[0] = false;
 						lblStatus.setText(resources.getString("label.status.capturingFingerprints"));
+						
 						GuiUtils.showNode(piFingerprintDeviceLivePreview, false);
+						GuiUtils.showNode(piProgress, false);
+						GuiUtils.showNode(btnStopFingerprintCapturing, true);
 						tpFingerprintDeviceLivePreview.setActive(true);
+						
+						fingerprintUiComponentsMap.forEach((position, components) ->
+						{
+						    boolean currentSlap = currentPosition == components.getSlapPosition().getPosition();
+						    if(currentSlap)
+						    {
+						        components.getButton().setDisable(true);
+						        components.getTitledPane().setCaptured(false);
+						        components.getTitledPane().setDuplicated(false);
+						        components.getCheckBox().setDisable(components.getCheckBox().isSelected());
+						        components.getCheckBox().setVisible(components.getCheckBox().isSelected() &&
+						                                                    !components.getButton().isVisible());
+						    }
+						
+						    GuiUtils.showNode(components.getSvgPath(), currentSlap);
+						});
 					}
 					
 					String previewImageBase64 = response.getPreviewImage();
@@ -423,7 +429,7 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 							.getFingerprintService()
 							.startPreviewAndAutoCapture(fingerprintDeviceName, currentPosition,
 							                            expectedFingersCount, missingFingers,
-							                            responseProcessor);
+							                            true, responseProcessor);
 					return future.get();
 				}
 			}

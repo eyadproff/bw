@@ -33,6 +33,7 @@ import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.client.core.utils.CoreErrorCodes;
 import sa.gov.nic.bio.bw.client.core.utils.DialogUtils;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
+import sa.gov.nic.bio.bw.client.features.commons.utils.CommonsErrorCodes;
 
 import java.util.ResourceBundle;
 import java.util.concurrent.CancellationException;
@@ -411,7 +412,7 @@ public class DevicesRunnerGadgetPaneFxController extends RegionFxControllerBase
 		dialogStage.show();
 	}
 	
-	private void initializeFingerprintScanner()
+	public void initializeFingerprintScanner()
 	{
 		GuiUtils.showNode(piFingerprintScanner, true);
 		CancelCommand cancelCommand = new CancelCommand();
@@ -449,6 +450,17 @@ public class DevicesRunnerGadgetPaneFxController extends RegionFxControllerBase
 		        else if(result.getReturnCode() == InitializeResponse.FailureCodes.DEVICE_NOT_FOUND_OR_UNPLUGGED)
 		        {
 			        changeFingerprintScannerStatus(DeviceStatus.NOT_CONNECTED);
+		        }
+		        else if(result.getReturnCode() == InitializeResponse.FailureCodes.DRIVER_NOT_INSTALLED)
+		        {
+			        cancelCommand.cancel();
+			
+			        String errorCode = CommonsErrorCodes.N008_00001.getCode();
+			        String guiErrorMessage = Context.getErrorsBundle().getString(errorCode);
+			        String logErrorMessage = Context.getErrorsBundle().getString(errorCode + ".internal");
+			        
+			        LOGGER.severe(logErrorMessage);
+			        Context.getCoreFxController().getCurrentBodyController().showErrorNotification(guiErrorMessage);
 		        }
 		        else
 		        {
@@ -498,7 +510,7 @@ public class DevicesRunnerGadgetPaneFxController extends RegionFxControllerBase
 		dialogStage.show();
 	}
 	
-	private void initializeCamera()
+	public void initializeCamera()
 	{
 		GuiUtils.showNode(piCamera, true);
 		CancelCommand cancelCommand = new CancelCommand();
@@ -616,6 +628,8 @@ public class DevicesRunnerGadgetPaneFxController extends RegionFxControllerBase
 	@FXML
 	private void onDevicesRunnerActionButtonClicked(MouseEvent actionEvent)
 	{
+		Context.getCoreFxController().getNotificationPane().hide();
+		
 		if(lblDevicesRunnerWorking.isVisible())
 		{
 			MenuItem menuReconnect = new MenuItem(resources.getString("menu.reconnect"));
@@ -651,6 +665,8 @@ public class DevicesRunnerGadgetPaneFxController extends RegionFxControllerBase
 	@FXML
 	private void onFingerprintScannerActionButtonClicked(MouseEvent actionEvent)
 	{
+		Context.getCoreFxController().getNotificationPane().hide();
+		
 		if(lblFingerprintScannerInitialized.isVisible() || lblFingerprintScannerNotConnected.isVisible())
 		{
 			MenuItem menuReinitialize = new MenuItem(resources.getString("menu.reinitialize"));
@@ -680,6 +696,8 @@ public class DevicesRunnerGadgetPaneFxController extends RegionFxControllerBase
 	@FXML
 	private void onCameraActionButtonClicked(MouseEvent actionEvent)
 	{
+		Context.getCoreFxController().getNotificationPane().hide();
+		
 		if(lblCameraInitialized.isVisible() || lblCameraNotConnected.isVisible())
 		{
 			MenuItem menuReinitialize = new MenuItem(resources.getString("menu.reinitialize"));

@@ -3,6 +3,7 @@ package sa.gov.nic.bio.bw.client.core;
 import javafx.application.Platform;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import org.controlsfx.control.NotificationPane;
 import sa.gov.nic.bio.bw.client.core.interfaces.NotificationController;
 import sa.gov.nic.bio.bw.client.core.interfaces.WorkflowUserTaskController;
 
@@ -35,8 +36,11 @@ public abstract class BodyFxControllerBase extends RegionFxControllerBase implem
 	{
 		Platform.runLater(() ->
 		{
-		    Context.getCoreFxController().getNotificationPane().setGraphic(new ImageView(icon));
-		    Context.getCoreFxController().getNotificationPane().show(message);
+			NotificationPane notificationPane = Context.getCoreFxController().getNotificationPane();
+			
+			if(notificationPane.isShowing()) notificationPane.hide();
+		    notificationPane.setGraphic(new ImageView(icon));
+		    notificationPane.show(message);
 		});
 	}
 	

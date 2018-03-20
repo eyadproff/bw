@@ -267,6 +267,11 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 					LOGGER.info("The camera is disconnected!");
 				}
 			}));
+			
+			if(!Context.getCoreFxController().getDeviceManagerGadgetPaneController().isCameraInitialized())
+			{
+				Context.getCoreFxController().getDeviceManagerGadgetPaneController().initializeCamera();
+			}
 		}
 	}
 	
