@@ -257,10 +257,8 @@ public class HomePaneFxController extends BodyFxControllerBase
 					    if(!topMenus.containsKey(topMenu))
 					    {
 						    String label = Context.getCoreFxController().getResourceBundle().getString(topMenu);
-						    String icon = Context.getCoreFxController().getResourceBundle()
-								                                       .getString(topMenu + ".icon");
-						    int order = Integer.parseInt(Context.getCoreFxController().getResourceBundle()
-                                                                .getString(topMenu + ".order"));
+						    String icon = Context.getConfigManager().getProperty(topMenu + ".icon");
+						    int order = Integer.parseInt(Context.getConfigManager().getProperty(topMenu + ".order"));
 						
 						    MenuItem topMenuItem = new MenuItem();
 						    topMenuItem.setMenuId(topMenu);

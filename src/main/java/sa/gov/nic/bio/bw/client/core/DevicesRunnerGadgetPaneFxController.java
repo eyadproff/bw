@@ -90,6 +90,11 @@ public class DevicesRunnerGadgetPaneFxController extends RegionFxControllerBase
 	public String getFingerprintScannerDeviceName(){return fingerprintScannerDeviceName;}
 	public String getCameraDeviceName(){return cameraDeviceName;}
 	
+	public boolean isDevicesRunnerRunning()
+	{
+		return lblDevicesRunnerWorking.isVisible();
+	}
+	
 	public boolean isFingerprintScannerInitialized()
 	{
 		return lblFingerprintScannerInitialized.isVisible();

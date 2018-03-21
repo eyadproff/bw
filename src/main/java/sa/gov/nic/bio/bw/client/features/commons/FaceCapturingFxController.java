@@ -268,10 +268,14 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 				}
 			}));
 			
-			if(!Context.getCoreFxController().getDeviceManagerGadgetPaneController().isCameraInitialized())
+			Platform.runLater(() ->
 			{
-				Context.getCoreFxController().getDeviceManagerGadgetPaneController().initializeCamera();
-			}
+			    if(Context.getCoreFxController().getDeviceManagerGadgetPaneController().isDevicesRunnerRunning() &&
+			      !Context.getCoreFxController().getDeviceManagerGadgetPaneController().isCameraInitialized())
+			    {
+			        Context.getCoreFxController().getDeviceManagerGadgetPaneController().initializeCamera();
+			    }
+			});
 		}
 	}
 	

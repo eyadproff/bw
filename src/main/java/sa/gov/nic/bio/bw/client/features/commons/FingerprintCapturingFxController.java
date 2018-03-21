@@ -331,10 +331,14 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 			    }
 			}));
 			
-			if(!Context.getCoreFxController().getDeviceManagerGadgetPaneController().isFingerprintScannerInitialized())
+			Platform.runLater(() ->
 			{
-				Context.getCoreFxController().getDeviceManagerGadgetPaneController().initializeFingerprintScanner();
-			}
+				if(Context.getCoreFxController().getDeviceManagerGadgetPaneController().isDevicesRunnerRunning() &&
+				!Context.getCoreFxController().getDeviceManagerGadgetPaneController().isFingerprintScannerInitialized())
+				{
+					Context.getCoreFxController().getDeviceManagerGadgetPaneController().initializeFingerprintScanner();
+				}
+			});
 		}
 	}
 	
