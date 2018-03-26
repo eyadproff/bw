@@ -66,6 +66,9 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 	public static final String KEY_ACCEPT_BAD_QUALITY_FINGERPRINT = "ACCEPT_BAD_QUALITY_FINGERPRINT";
 	public static final String KEY_ACCEPTED_BAD_QUALITY_FINGERPRINT_MIN_RETIRES =
 																		"ACCEPTED_BAD_QUALITY_FINGERPRINT_MIN_RETIRES";
+	
+	private static final String KEY_CAPTURED_FINGERPRINTS = "CAPTURED_FINGERPRINTS";
+	
 	@FXML private AutoScalingStackPane spRightHand;
 	@FXML private ProgressIndicator piProgress;
 	@FXML private ProgressIndicator piFingerprintDeviceLivePreview;
@@ -298,6 +301,29 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 			Integer i = (Integer) uiInputData.get(KEY_ACCEPTED_BAD_QUALITY_FINGERPRINT_MIN_RETIRES);
 			if(bool != null) acceptedBadQualityFingerprintMinRetires = i;
 			
+			@SuppressWarnings("unchecked")
+			Map<Integer, Fingerprint> capturedFingerprints = (Map<Integer, Fingerprint>)
+																	uiInputData.get(KEY_CAPTURED_FINGERPRINTS);
+			System.out.println("capturedFingerprints = " + capturedFingerprints);
+			if(capturedFingerprints != null)
+			{
+				this.capturedFingerprints = capturedFingerprints;
+				
+				capturedFingerprints.forEach((position, fingerprint) ->
+				{
+					FingerprintUiComponents components = fingerprintUiComponentsMap.get(position);
+					
+					showSegmentedFingerprints(fingerprint, components.getImageView(),
+					                          components.getTitledPane(), components.getHandLabel(),
+					                          components.getFingerLabel(), true,
+					                         true,
+					                         true);
+					components.getTitledPane().setActive(true);
+					components.getTitledPane().setCaptured(true);
+					components.getTitledPane().setValid(true);
+				});
+			}
+			
 			DevicesRunnerGadgetPaneFxController deviceManagerGadgetPaneController =
 												Context.getCoreFxController().getDeviceManagerGadgetPaneController();
 			
@@ -339,46 +365,43 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 			    }
 			}));
 			
-			// prepare for next fingerprint capturing if the fingerprint device is connected and initialized,
-			// otherwise try to auto-initialize it
-			Platform.runLater(() ->
+			// prepare for next fingerprint capturing if the fingerprint device is connected and initialized, otherwise
+			// auto-run and auto-initialize as configured
+			if(deviceManagerGadgetPaneController.isFingerprintScannerInitialized())
 			{
-				if(deviceManagerGadgetPaneController.isFingerprintScannerInitialized())
+				GuiUtils.showNode(btnStartFingerprintCapturing, true);
+				activateFingerIndicatorsForNextCapturing(currentPosition);
+			}
+			else if(deviceManagerGadgetPaneController.isDevicesRunnerRunning())
+			{
+				boolean autoInitialize = "true".equals(
+						System.getProperty("jnlp.bio.bw.fingerprint.autoInitialize"));
+				
+				if(autoInitialize)
 				{
-					GuiUtils.showNode(btnStartFingerprintCapturing, true);
-					activateFingerIndicatorsForNextCapturing(currentPosition);
-				}
-				else if(deviceManagerGadgetPaneController.isDevicesRunnerRunning())
-				{
-					boolean autoInitialize = "true".equals(
-														System.getProperty("jnlp.bio.bw.fingerprint.autoInitialize"));
-					
-					if(autoInitialize)
-					{
-						deviceManagerGadgetPaneController.initializeFingerprintScanner();
-					}
-					else
-					{
-						lblStatus.setText(resources.getString("label.status.fingerprintScannerNotInitialized"));
-						GuiUtils.showNode(lblStatus, true);
-					}
+					deviceManagerGadgetPaneController.initializeFingerprintScanner();
 				}
 				else
 				{
-					boolean devicesRunnerAutoRun = "true".equals(
-															System.getProperty("jnlp.bio.bw.devicesRunner.autoRun"));
-					
-					if(devicesRunnerAutoRun)
-					{
-						deviceManagerGadgetPaneController.runAndConnectDevicesRunner();
-					}
-					else
-					{
-						lblStatus.setText(resources.getString("label.status.fingerprintScannerNotInitialized"));
-						GuiUtils.showNode(lblStatus, true);
-					}
+					lblStatus.setText(resources.getString("label.status.fingerprintScannerNotInitialized"));
+					GuiUtils.showNode(lblStatus, true);
 				}
-			});
+			}
+			else
+			{
+				boolean devicesRunnerAutoRun = "true".equals(
+						System.getProperty("jnlp.bio.bw.devicesRunner.autoRun"));
+				
+				if(devicesRunnerAutoRun)
+				{
+					deviceManagerGadgetPaneController.runAndConnectDevicesRunner();
+				}
+				else
+				{
+					lblStatus.setText(resources.getString("label.status.fingerprintScannerNotInitialized"));
+					GuiUtils.showNode(lblStatus, true);
+				}
+			}
 		}
 	}
 	
@@ -388,6 +411,57 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 		Context.getCoreFxController().getDeviceManagerGadgetPaneController().setDevicesRunnerRunningListener(null);
 		Context.getCoreFxController().getDeviceManagerGadgetPaneController()
 									 .setFingerprintScannerInitializationListener(null);
+		
+		if(btnStopFingerprintCapturing.isVisible()) btnStopFingerprintCapturing.fire();
+		
+		// remove incomplete slaps
+		
+		boolean allOk = true;
+		for(int i = FingerPosition.RIGHT_INDEX.getPosition(); i <= FingerPosition.RIGHT_LITTLE.getPosition(); i++)
+		{
+			Fingerprint fingerprint = capturedFingerprints.get(i);
+			if(fingerprint == null) continue;
+			
+			allOk = fingerprint.isAcceptableQuality() && !fingerprint.isDuplicated();
+			if(!allOk) break;
+		}
+		if(!allOk)
+		{
+			for(int i = FingerPosition.RIGHT_INDEX.getPosition(); i <= FingerPosition.RIGHT_LITTLE.getPosition(); i++)
+			{
+				capturedFingerprints.remove(i);
+			}
+		}
+		
+		allOk = true;
+		for(int i = FingerPosition.LEFT_INDEX.getPosition(); i <= FingerPosition.LEFT_LITTLE.getPosition(); i++)
+		{
+			Fingerprint fingerprint = capturedFingerprints.get(i);
+			if(fingerprint == null) continue;
+			
+			allOk = fingerprint.isAcceptableQuality() && !fingerprint.isDuplicated();
+			if(!allOk) break;
+		}
+		if(!allOk)
+		{
+			for(int i = FingerPosition.LEFT_INDEX.getPosition(); i <= FingerPosition.LEFT_LITTLE.getPosition(); i++)
+			{
+				capturedFingerprints.remove(i);
+			}
+		}
+		
+		Fingerprint rightThumb = capturedFingerprints.get(FingerPosition.RIGHT_THUMB.getPosition());
+		Fingerprint leftThumb = capturedFingerprints.get(FingerPosition.LEFT_THUMB.getPosition());
+		
+		if((rightThumb != null && (!rightThumb.isAcceptableQuality() || rightThumb.isDuplicated())) ||
+		   (leftThumb != null && (!leftThumb.isAcceptableQuality() || leftThumb.isDuplicated())))
+		{
+			capturedFingerprints.remove(FingerPosition.RIGHT_THUMB.getPosition());
+			capturedFingerprints.remove(FingerPosition.LEFT_THUMB.getPosition());
+		}
+		
+		// save the complete slaps only
+		uiDataMap.put(KEY_CAPTURED_FINGERPRINTS, capturedFingerprints);
 	}
 	
 	@FXML
@@ -690,10 +764,7 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 		boolean[] noDuplicates = {true};
 		fingerData.forEach(dmFingerData ->
 		{
-		    String fingerprintImageBase64 = dmFingerData.getFinger();
-		    byte[] fingerprintImageBytes = Base64.getDecoder().decode(fingerprintImageBase64);
-		
-		    boolean acceptableFingerprintNfiq
+			boolean acceptableFingerprintNfiq
 		            = isAcceptableFingerprintNfiq(dmFingerData.getPosition(),
 		                                          dmFingerData.getNfiqQuality());
 		    boolean acceptableFingerprintMinutiaeCount
@@ -704,9 +775,9 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 		            = isAcceptableFingerprintImageIntensity(dmFingerData.getPosition(),
 		                                                    dmFingerData.getIntensity());
 		
-		    boolean[] acceptableQuality = {acceptableFingerprintNfiq &&
+		    boolean acceptableQuality = acceptableFingerprintNfiq &&
 		            acceptableFingerprintMinutiaeCount &&
-		            acceptableFingerprintImageIntensity};
+		            acceptableFingerprintImageIntensity;
 			
 			FingerprintUiComponents components = fingerprintUiComponentsMap.get(dmFingerData.getPosition());
 		 
@@ -717,32 +788,19 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 			    if(b != null && b)
 			    {
 				    duplicated = true;
-				    acceptableQuality[0] = false;
+				    acceptableQuality = false;
 				    components.getTitledPane().setDuplicated(true);
 			    }
 		    }
 		
-		    allAcceptableQuality[0] = allAcceptableQuality[0] && acceptableQuality[0];
+		    allAcceptableQuality[0] = allAcceptableQuality[0] && acceptableQuality;
 			noDuplicates[0] = noDuplicates[0] && !duplicated;
-		 
-			components.getImageView().setImage(new Image(new ByteArrayInputStream(fingerprintImageBytes)));
-			components.getTitledPane().setCaptured(true);
-			components.getTitledPane().setValid(acceptableQuality[0]);
 			
-			StackPane titleRegion = (StackPane) components.getTitledPane().lookup(".title");
-			attachFingerprintResultTooltip(titleRegion, components.getTitledPane(),
-			                               dmFingerData.getNfiqQuality(),
-			                               dmFingerData.getMinutiaeCount(),
-			                               dmFingerData.getIntensity(),
-			                               acceptableFingerprintNfiq,
-			                               acceptableFingerprintMinutiaeCount,
-			                               acceptableFingerprintImageIntensity,
-			                               duplicated);
-			
-			String dialogTitle = components.getFingerLabel() + " (" + components.getHandLabel() + ")";
-			GuiUtils.attachImageDialog(Context.getCoreFxController(), components.getImageView(), dialogTitle,
-			                           resources.getString("label.contextMenu.showImage"));
-			capturedFingerprints.put(dmFingerData.getPosition(), new Fingerprint(dmFingerData, acceptableQuality[0]));
+			Fingerprint fingerprint = new Fingerprint(dmFingerData, acceptableQuality, duplicated);
+			capturedFingerprints.put(dmFingerData.getPosition(), fingerprint);
+			showSegmentedFingerprints(fingerprint, components.getImageView(), components.getTitledPane(),
+			                          components.getHandLabel(), components.getFingerLabel(), acceptableFingerprintNfiq,
+			                          acceptableFingerprintMinutiaeCount, acceptableFingerprintImageIntensity);
 		});
 		
 		int nextPosition = currentPosition;
@@ -789,6 +847,33 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 		}
 		
 		activateFingerIndicatorsForNextCapturing(nextPosition);
+	}
+	
+	private void showSegmentedFingerprints(Fingerprint fingerprint, ImageView imageView, FourStateTitledPane titledPane,
+	                                       String handLabel, String fingerLabel, boolean acceptableFingerprintNfiq,
+	                                       boolean acceptableFingerprintMinutiaeCount,
+	                                       boolean acceptableFingerprintImageIntensity)
+	{
+		String fingerprintImageBase64 = fingerprint.getDmFingerData().getFinger();
+		byte[] fingerprintImageBytes = Base64.getDecoder().decode(fingerprintImageBase64);
+		imageView.setImage(new Image(new ByteArrayInputStream(fingerprintImageBytes)));
+		
+		titledPane.setCaptured(true);
+		titledPane.setValid(fingerprint.isAcceptableQuality());
+		
+		StackPane titleRegion = (StackPane) titledPane.lookup(".title");
+		attachFingerprintResultTooltip(titleRegion, titledPane,
+		                               fingerprint.getDmFingerData().getNfiqQuality(),
+		                               fingerprint.getDmFingerData().getMinutiaeCount(),
+		                               fingerprint.getDmFingerData().getIntensity(),
+		                               acceptableFingerprintNfiq,
+		                               acceptableFingerprintMinutiaeCount,
+		                               acceptableFingerprintImageIntensity,
+		                               fingerprint.isDuplicated());
+		
+		String dialogTitle = fingerLabel + " (" + handLabel + ")";
+		GuiUtils.attachImageDialog(Context.getCoreFxController(), imageView, dialogTitle,
+		                           resources.getString("label.contextMenu.showImage"));
 	}
 	
 	private void activateFingerIndicatorsForNextCapturing(int nextPosition)

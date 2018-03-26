@@ -254,6 +254,8 @@ public class CoreFxController implements IdleMonitorRegisterer, PersistableEntit
 			notificationPane.hide();
 			bodyFxController.onAttachedToScene();
 			bodyPane.setCenter(loadedPane);
+			bodyPane.applyCss();
+			bodyPane.layout();
 			showMenuTransitionProgressIndicator(false);
 			showWizardTransitionProgressIndicator(false);
 			
