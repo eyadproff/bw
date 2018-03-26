@@ -290,8 +290,8 @@ public class GuiUtils
 			BorderPane borderPane = new BorderPane();
 			borderPane.setCenter(iv);
 			Stage stage = DialogUtils.buildCustomDialog(coreFxController.getStage(), dialogTitle, borderPane,
-			                                            Context.getGuiLanguage()
-				                                            .getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT);
+			                                            Context.getGuiLanguage().getNodeOrientation()
+					                                            == NodeOrientation.RIGHT_TO_LEFT, false);
 			stage.getScene().addEventHandler(KeyEvent.KEY_PRESSED, keyEvent ->
 			{
 				if(keyEvent.getCode() == KeyCode.ESCAPE) stage.close();

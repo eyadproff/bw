@@ -77,6 +77,13 @@
                     <StackPane>
                         <ImageViewPane>
                             <imageView>
+                                <ImageView fx:id="ivCameraLivePreviewPlaceholder" preserveRatio="true">
+                                    <Image url="@../images/image_place_holder.png"/>
+                                </ImageView>
+                            </imageView>
+                        </ImageViewPane>
+                        <ImageViewPane>
+                            <imageView>
                                 <ImageView fx:id="ivCameraLivePreview" preserveRatio="true"/>
                             </imageView>
                         </ImageViewPane>
@@ -87,6 +94,13 @@
                     <StackPane>
                         <ImageViewPane>
                             <imageView>
+                                <ImageView fx:id="ivCapturedImagePlaceholder" preserveRatio="true">
+                                    <Image url="@../images/image_place_holder.png"/>
+                                </ImageView>
+                            </imageView>
+                        </ImageViewPane>
+                        <ImageViewPane>
+                            <imageView>
                                 <ImageView fx:id="ivCapturedImage" preserveRatio="true"/>
                             </imageView>
                         </ImageViewPane>
@@ -95,6 +109,13 @@
                 </FourStateTitledPane>
                 <FourStateTitledPane fx:id="tpCroppedImage" text="%label.croppedImage" maxHeight="Infinity" collapsible="false" HBox.hgrow="ALWAYS">
                     <StackPane>
+                        <ImageViewPane>
+                            <imageView>
+                                <ImageView fx:id="ivCroppedImagePlaceholder" preserveRatio="true">
+                                    <Image url="@../images/image_place_holder.png"/>
+                                </ImageView>
+                            </imageView>
+                        </ImageViewPane>
                         <ImageViewPane>
                             <imageView>
                                 <ImageView fx:id="ivCroppedImage" preserveRatio="true"/>

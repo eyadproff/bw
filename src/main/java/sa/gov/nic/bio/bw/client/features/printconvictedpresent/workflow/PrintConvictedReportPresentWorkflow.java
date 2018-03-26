@@ -71,6 +71,18 @@ public class PrintConvictedReportPresentWorkflow extends WorkflowBase<Void, Void
 				{
 					case 0:
 					{
+						boolean acceptBadQualityFingerprint = "true".equals(System.getProperty(
+										"jnlp.bio.bw.printConvictedReport.fingerprint.acceptBadQualityFingerprint"));
+						int acceptedBadQualityFingerprintMinRetries = Integer.parseInt(System.getProperty(
+							"jnlp.bio.bw.printConvictedReport.fingerprint.acceptedBadQualityFingerprintMinRetries"));
+						
+						uiInputData.put(FingerprintCapturingFxController.KEY_HIDE_PREVIOUS_BUTTON, Boolean.TRUE);
+						uiInputData.put(FingerprintCapturingFxController.KEY_ACCEPT_BAD_QUALITY_FINGERPRINT,
+						                acceptBadQualityFingerprint);
+						uiInputData.put(
+								FingerprintCapturingFxController.KEY_ACCEPTED_BAD_QUALITY_FINGERPRINT_MIN_RETIRES,
+								acceptedBadQualityFingerprintMinRetries);
+						
 						formRenderer.get().renderForm(FingerprintCapturingFxController.class, uiInputData);
 						uiOutputData = waitForUserTask();
 						uiInputData.putAll(uiOutputData);

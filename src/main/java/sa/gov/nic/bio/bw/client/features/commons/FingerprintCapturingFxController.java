@@ -61,11 +61,10 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 {
 	private static final Logger LOGGER = Logger.getLogger(FingerprintCapturingFxController.class.getName());
 	
-	public static final String KEY_SHOW_PREVIOUS_BUTTON = "SHOW_PREVIOUS_BUTTON";
+	public static final String KEY_HIDE_PREVIOUS_BUTTON = "HIDE_PREVIOUS_BUTTON";
 	public static final String KEY_ACCEPT_BAD_QUALITY_FINGERPRINT = "ACCEPT_BAD_QUALITY_FINGERPRINT";
 	public static final String KEY_ACCEPTED_BAD_QUALITY_FINGERPRINT_MIN_RETIRES =
 																		"ACCEPTED_BAD_QUALITY_FINGERPRINT_MIN_RETIRES";
-	
 	@FXML private AutoScalingStackPane spRightHand;
 	@FXML private ProgressIndicator piProgress;
 	@FXML private ProgressIndicator piFingerprintDeviceLivePreview;
@@ -73,6 +72,17 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 	@FXML private TitledPane tpRightHand;
 	@FXML private TitledPane tpLeftHand;
 	@FXML private SplitPane spFingerprints;
+	@FXML private ImageView ivFingerprintDeviceLivePreviewPlaceholder;
+	@FXML private ImageView ivLeftLittlePlaceholder;
+	@FXML private ImageView ivLeftRingPlaceholder;
+	@FXML private ImageView ivLeftMiddlePlaceholder;
+	@FXML private ImageView ivLeftIndexPlaceholder;
+	@FXML private ImageView ivLeftThumbPlaceholder;
+	@FXML private ImageView ivRightThumbPlaceholder;
+	@FXML private ImageView ivRightIndexPlaceholder;
+	@FXML private ImageView ivRightMiddlePlaceholder;
+	@FXML private ImageView ivRightRingPlaceholder;
+	@FXML private ImageView ivRightLittlePlaceholder;
 	@FXML private ImageView ivFingerprintDeviceLivePreview;
 	@FXML private ImageView ivRightLittle;
 	@FXML private ImageView ivRightRing;
@@ -84,8 +94,6 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 	@FXML private ImageView ivLeftMiddle;
 	@FXML private ImageView ivLeftIndex;
 	@FXML private ImageView ivLeftThumb;
-	@FXML private SVGPath svgRightHand;
-	@FXML private SVGPath svgLeftHand;
 	@FXML private SVGPath svgRightLittle;
 	@FXML private SVGPath svgRightRing;
 	@FXML private SVGPath svgRightMiddle;
@@ -139,13 +147,40 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 	private Map<Integer, Fingerprint> capturedFingerprints = new HashMap<>();
 	private Map<Integer, FingerprintQualityThreshold> fingerprintQualityThresholdMap;
 	private Map<Integer, FingerprintUiComponents> fingerprintUiComponentsMap = new HashMap<>();
-	private boolean fingerprintScannerInitializedAtLeastOnce = false;
-	private boolean captureInProgress = false;
+	private boolean fingerprintScannerInitializedAtLeastOnce;
+	private boolean captureInProgress;
+	private boolean acceptBadQualityFingerprint;
+	private int acceptedBadQualityFingerprintMinRetires;
 	
 	@Override
 	public URL getFxmlLocation()
 	{
 		return getClass().getResource("fxml/fingerprintCapturing.fxml");
+	}
+	
+	@Override
+	protected void initialize()
+	{
+		GuiUtils.makeButtonClickableByPressingEnter(btnPrevious);
+		GuiUtils.makeButtonClickableByPressingEnter(btnNext);
+		
+		btnPrevious.setOnAction(event -> goPrevious());
+		btnNext.setOnAction(event -> goNext());
+		
+		ivFingerprintDeviceLivePreviewPlaceholder.visibleProperty().bind(
+												ivFingerprintDeviceLivePreview.imageProperty().isNull().and(
+															piFingerprintDeviceLivePreview.visibleProperty().not()));
+		
+		ivLeftLittlePlaceholder.visibleProperty().bind(ivLeftLittle.imageProperty().isNull());
+		ivLeftRingPlaceholder.visibleProperty().bind(ivLeftRing.imageProperty().isNull());
+		ivLeftMiddlePlaceholder.visibleProperty().bind(ivLeftMiddle.imageProperty().isNull());
+		ivLeftIndexPlaceholder.visibleProperty().bind(ivLeftIndex.imageProperty().isNull());
+		ivLeftThumbPlaceholder.visibleProperty().bind(ivLeftThumb.imageProperty().isNull());
+		ivRightLittlePlaceholder.visibleProperty().bind(ivRightLittle.imageProperty().isNull());
+		ivRightRingPlaceholder.visibleProperty().bind(ivRightRing.imageProperty().isNull());
+		ivRightMiddlePlaceholder.visibleProperty().bind(ivRightMiddle.imageProperty().isNull());
+		ivRightIndexPlaceholder.visibleProperty().bind(ivRightIndex.imageProperty().isNull());
+		ivRightThumbPlaceholder.visibleProperty().bind(ivRightThumb.imageProperty().isNull());
 	}
 	
 	@Override
@@ -211,9 +246,6 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 		
 		fingerprintUiComponentsMap.forEach((position, components) ->
                components.getSvgPath().disableProperty().bind(components.getCheckBox().selectedProperty().not()));
-		
-		btnPrevious.setOnAction(event -> goPrevious());
-		btnNext.setOnAction(event -> goNext());
 		
 		UserSession userSession = Context.getUserSession();
 		
@@ -288,8 +320,14 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 	{
 		if(newForm)
 		{
-			Boolean showPreviousButton = (Boolean) uiInputData.get(KEY_SHOW_PREVIOUS_BUTTON);
-			if(showPreviousButton != null) GuiUtils.showNode(btnPrevious, showPreviousButton);
+			Boolean hidePreviousButton = (Boolean) uiInputData.get(KEY_HIDE_PREVIOUS_BUTTON);
+			if(hidePreviousButton != null) GuiUtils.showNode(btnPrevious, !hidePreviousButton);
+			
+			Boolean bool = (Boolean) uiInputData.get(KEY_ACCEPT_BAD_QUALITY_FINGERPRINT);
+			if(bool != null) acceptBadQualityFingerprint = bool;
+			
+			Integer i = (Integer) uiInputData.get(KEY_ACCEPTED_BAD_QUALITY_FINGERPRINT_MIN_RETIRES);
+			if(bool != null) acceptedBadQualityFingerprintMinRetires = i;
 			
 			DevicesRunnerGadgetPaneFxController deviceManagerGadgetPaneController =
 					Context.getCoreFxController().getDeviceManagerGadgetPaneController();
@@ -485,53 +523,53 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 			
 			        Task<ServiceResponse<DuplicatedFingerprintsResponse>> findDuplicatesTask =
 					        new Task<ServiceResponse<DuplicatedFingerprintsResponse>>()
+					{
+					    @Override
+					    protected ServiceResponse<DuplicatedFingerprintsResponse> call() throws Exception
+					    {
+					        Map<Integer, String> gallery = new HashMap<>();
+					        Map<Integer, String> probes = new HashMap<>();
+					
+					        if(currentPosition == FingerPosition.LEFT_SLAP.getPosition())
 					        {
-						        @Override
-						        protected ServiceResponse<DuplicatedFingerprintsResponse> call() throws Exception
+						        for(int i = FingerPosition.RIGHT_INDEX.getPosition();
+						            i <= FingerPosition.RIGHT_LITTLE.getPosition(); i++)
 						        {
-							        Map<Integer, String> gallery = new HashMap<>();
-							        Map<Integer, String> probes = new HashMap<>();
-							
-							        if(currentPosition == FingerPosition.LEFT_SLAP.getPosition())
-							        {
-								        for(int i = FingerPosition.RIGHT_INDEX.getPosition();
-								            i <= FingerPosition.RIGHT_LITTLE.getPosition(); i++)
-								        {
-									        if(capturedFingerprints.containsKey(i))
-										        gallery.put(i, capturedFingerprints.get(i).getDmFingerData()
-												        .getTemplate());
-								        }
-								
-								        fingerData.forEach(dmFingerData -> probes.put(dmFingerData.getPosition(),
-								                                                      dmFingerData.getTemplate()));
-							        }
-							        else if(currentPosition == FingerPosition.TWO_THUMBS.getPosition())
-							        {
-								        for(int i = FingerPosition.RIGHT_INDEX.getPosition();
-								            i <= FingerPosition.RIGHT_LITTLE.getPosition(); i++)
-								        {
-									        if(capturedFingerprints.containsKey(i))
-										        gallery.put(i, capturedFingerprints.get(i).getDmFingerData()
-												        .getTemplate());
-								        }
-								
-								        for(int i = FingerPosition.LEFT_INDEX.getPosition();
-								            i <= FingerPosition.LEFT_LITTLE.getPosition(); i++)
-								        {
-									        if(capturedFingerprints.containsKey(i))
-										        gallery.put(i, capturedFingerprints.get(i).getDmFingerData()
-												        .getTemplate());
-								        }
-								
-								        fingerData.forEach(dmFingerData -> probes.put(dmFingerData.getPosition(),
-								                                                      dmFingerData.getTemplate()));
-							        }
-							
-							        if(gallery.isEmpty()) return null;
-							        else return Context.getBioKitManager().getFingerprintUtilitiesService()
-									        .findDuplicatedFingerprints(gallery, probes).get();
+							        if(capturedFingerprints.containsKey(i))
+								        gallery.put(i, capturedFingerprints.get(i).getDmFingerData()
+										        .getTemplate());
 						        }
-					        };
+						
+						        fingerData.forEach(dmFingerData -> probes.put(dmFingerData.getPosition(),
+						                                                      dmFingerData.getTemplate()));
+					        }
+					        else if(currentPosition == FingerPosition.TWO_THUMBS.getPosition())
+					        {
+						        for(int i = FingerPosition.RIGHT_INDEX.getPosition();
+						            i <= FingerPosition.RIGHT_LITTLE.getPosition(); i++)
+						        {
+							        if(capturedFingerprints.containsKey(i))
+								        gallery.put(i, capturedFingerprints.get(i).getDmFingerData()
+										        .getTemplate());
+						        }
+						
+						        for(int i = FingerPosition.LEFT_INDEX.getPosition();
+						            i <= FingerPosition.LEFT_LITTLE.getPosition(); i++)
+						        {
+							        if(capturedFingerprints.containsKey(i))
+								        gallery.put(i, capturedFingerprints.get(i).getDmFingerData()
+										        .getTemplate());
+						        }
+						
+						        fingerData.forEach(dmFingerData -> probes.put(dmFingerData.getPosition(),
+						                                                      dmFingerData.getTemplate()));
+					        }
+					
+					        if(gallery.isEmpty()) return null;
+					        else return Context.getBioKitManager().getFingerprintUtilitiesService()
+							        .findDuplicatedFingerprints(gallery, probes).get();
+					    }
+					};
 			
 			        findDuplicatesTask.setOnSucceeded(e2 ->
 			        {

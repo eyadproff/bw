@@ -308,7 +308,7 @@ public class ShowResultFxController extends WizardStepFxControllerBase
 		borderPane.centerProperty().set(imageLayer);
 		
 		Stage dialogStage = DialogUtils.buildCustomDialog(Context.getCoreFxController().getStage(), title,
-		                                                  stackPane, rtl);
+		                                                  stackPane, rtl, false);
 		dialogStage.initStyle(StageStyle.UNDECORATED);
 		dialogStage.getScene().addEventHandler(KeyEvent.KEY_PRESSED, t ->
 		{

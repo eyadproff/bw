@@ -91,6 +91,18 @@ public class HomeWorkflow extends WorkflowBase<LoginBean, Void>
 						signal = subWorkflowSignal;
 						continue outerLoop;
 					}
+					catch(Throwable t)
+					{
+						String errorCode = HomeErrorCodes.C004_00006.getCode();
+						String[] errorDetails = {"The subWorkflow throws uncaught exception!",
+								"subWorkflow type = " + subWorkflow.getClass().getName()};
+						
+						uiInputData.put(KEY_ERROR_CODE, errorCode);
+						uiInputData.put(KEY_ERROR_DETAILS, errorDetails);
+						uiInputData.put(KEY_EXCEPTION, t);
+						
+						break outerLoop;
+					}
 					
 					// shouldn't reach here
 					String errorCode = HomeErrorCodes.C004_00004.getCode();

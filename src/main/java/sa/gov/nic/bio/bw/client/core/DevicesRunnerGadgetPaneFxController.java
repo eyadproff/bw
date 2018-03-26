@@ -179,8 +179,7 @@ public class DevicesRunnerGadgetPaneFxController extends RegionFxControllerBase
 		outer.setPadding(new Insets(10.0));
 		
 		Stage dialogStage = DialogUtils.buildCustomDialog(Context.getCoreFxController().getStage(),
-		                                                  null,
-		                                                  outer, rtl);
+		                                                  null, outer, rtl, true);
 		
 		dialogStage.setOnCloseRequest(event ->
 		{

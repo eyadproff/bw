@@ -201,7 +201,8 @@ public class DialogUtils
 		if(idleMonitorRegisterer != null) idleMonitorRegisterer.unregisterStageForIdleMonitoring(stage);
 	}
 	
-	public static Stage buildCustomDialog(Stage ownerStage, String title, Pane contentPane, boolean rtl)
+	public static Stage buildCustomDialog(Stage ownerStage, String title, Pane contentPane, boolean rtl,
+	                                      boolean autoCenter)
 	{
 		Stage stage = new Stage();
 		stage.initOwner(ownerStage);
@@ -213,12 +214,8 @@ public class DialogUtils
 		stage.setTitle(title);
 		stage.setScene(scene);
 		
-		double x = ownerStage.getX() + ownerStage.getWidth() / 2 - stage.getWidth() / 2;
-		double y = ownerStage.getY() + ownerStage.getHeight() / 2 - stage.getHeight() / 2;
-		stage.setX(x);
-		stage.setY(y);
 		
-		stage.setOnShown(ev ->
+		if(autoCenter) stage.setOnShown(ev ->
 		{
 			double centerXPosition = ownerStage.getX() + ownerStage.getWidth() / 2.0;
 			double centerYPosition = ownerStage.getY() + ownerStage.getHeight() / 2.0;

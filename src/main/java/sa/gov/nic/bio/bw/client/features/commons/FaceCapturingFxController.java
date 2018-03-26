@@ -78,6 +78,9 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 	@FXML private ImageView ivSuccessIcao;
 	@FXML private ImageView ivWarningIcao;
 	@FXML private ImageView ivErrorIcao;
+	@FXML private ImageView ivCameraLivePreviewPlaceholder;
+	@FXML private ImageView ivCapturedImagePlaceholder;
+	@FXML private ImageView ivCroppedImagePlaceholder;
 	@FXML private ImageView ivCameraLivePreview;
 	@FXML private ImageView ivCapturedImage;
 	@FXML private ImageView ivCroppedImage;
@@ -121,6 +124,13 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 		
 		btnPrevious.setOnAction(event -> goPrevious());
 		btnNext.setOnAction(event -> goNext());
+		
+		ivCameraLivePreviewPlaceholder.visibleProperty().bind(ivCameraLivePreview.imageProperty().isNull().and(
+																		piCameraLivePreview.visibleProperty().not()));
+		ivCapturedImagePlaceholder.visibleProperty().bind(ivCapturedImage.imageProperty().isNull().and(
+																		piCapturedImage.visibleProperty().not()));
+		ivCroppedImagePlaceholder.visibleProperty().bind(ivCroppedImage.imageProperty().isNull().and(
+																		piCroppedImage.visibleProperty().not()));
 	}
 	
 	@Override
