@@ -22,12 +22,9 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.logging.Logger;
 
 public class PrintConvictedReportPresentWorkflow extends WorkflowBase<Void, Void>
 {
-	private static final Logger LOGGER = Logger.getLogger(PrintConvictedReportPresentWorkflow.class.getName());
-	
 	public PrintConvictedReportPresentWorkflow(AtomicReference<FormRenderer> formRenderer,
 	                                           BlockingQueue<Map<String, Object>> userTasks)
 	{
@@ -130,11 +127,17 @@ public class PrintConvictedReportPresentWorkflow extends WorkflowBase<Void, Void
 						uiInputData.putAll(uiOutputData);
 						break;
 					}
+					default:
+					{
+						uiOutputData = waitForUserTask();
+						break;
+					}
 				}
 				
 				if(uiOutputData != null)
 				{
-					Object direction = uiOutputData.get("direction");
+					String direction = (String) uiOutputData.get("direction");
+					
 					if("backward".equals(direction))
 					{
 						Platform.runLater(() -> Context.getCoreFxController().moveWizardBackward());

@@ -80,6 +80,7 @@ public class DevicesRunnerGadgetPaneFxController extends RegionFxControllerBase
 	private ContextMenu contextMenu;
 	private String fingerprintScannerDeviceName;
 	private String cameraDeviceName;
+	private Consumer<Boolean> devicesRunnerRunningListener;
 	private Consumer<Boolean> fingerprintScannerInitializationListener;
 	private Consumer<Boolean> cameraInitializationListener;
 	
@@ -103,6 +104,11 @@ public class DevicesRunnerGadgetPaneFxController extends RegionFxControllerBase
 	public boolean isCameraInitialized()
 	{
 		return lblCameraInitialized.isVisible();
+	}
+	
+	public void setDevicesRunnerRunningListener(Consumer<Boolean> devicesRunnerRunningListener)
+	{
+		this.devicesRunnerRunningListener = devicesRunnerRunningListener;
 	}
 	
 	public void setFingerprintScannerInitializationListener(Consumer<Boolean> fingerprintScannerInitializationListener)
@@ -158,8 +164,7 @@ public class DevicesRunnerGadgetPaneFxController extends RegionFxControllerBase
 	
 	private Stage buildProgressDialog(CancelCommand cancelCommand, String message, Future<?> future)
 	{
-		boolean rtl = Context.getGuiLanguage()
-				.getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT;
+		boolean rtl = Context.getGuiLanguage().getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT;
 		
 		Button btnCancel = new Button(resources.getString("button.cancel"));
 		btnCancel.setFocusTraversable(false);
@@ -489,7 +494,7 @@ public class DevicesRunnerGadgetPaneFxController extends RegionFxControllerBase
 		});
 		task.setOnFailed(e ->
 		{
-		    GuiUtils.showNode(piCamera, false);
+			GuiUtils.showNode(piFingerprintScanner, false);
 		    dialogStage.close();
 		    Throwable exception = task.getException();
 		
@@ -605,6 +610,7 @@ public class DevicesRunnerGadgetPaneFxController extends RegionFxControllerBase
 		contextMenu.hide();
 		GuiUtils.showNode(lblDevicesRunnerNotWorking, !working);
 		GuiUtils.showNode(lblDevicesRunnerWorking, working);
+		if(devicesRunnerRunningListener != null) devicesRunnerRunningListener.accept(working);
 	}
 	
 	private void changeFingerprintScannerStatus(DeviceStatus deviceStatus)

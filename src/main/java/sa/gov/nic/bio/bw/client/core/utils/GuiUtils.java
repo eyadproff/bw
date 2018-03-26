@@ -128,11 +128,12 @@ public class GuiUtils
 	
 	public static void makeButtonClickableByPressingEnter(Button button)
 	{
-		button.addEventHandler(KeyEvent.KEY_PRESSED, event ->
+		button.setOnKeyPressed(event ->
 		{
 			if(event.getCode() == KeyCode.ENTER)
 			{
 				button.fire();
+				button.setDisable(true); // prevent "holding ENTER key" from firing the event again
 				event.consume();
 			}
 		});

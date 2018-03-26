@@ -15,7 +15,6 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.SVGPath?>
-<?import org.controlsfx.glyphfont.Glyph?>
 <?import sa.gov.nic.bio.bw.client.features.commons.ui.AutoScalingStackPane?>
 <?import sa.gov.nic.bio.bw.client.features.commons.ui.ImageViewPane?>
 <?import sa.gov.nic.bio.bw.client.features.commons.ui.FourStateTitledPane?>
@@ -31,7 +30,7 @@
             </padding>
             <SplitPane orientation="VERTICAL" dividerPositions="0.5" VBox.vgrow="ALWAYS">
                 <SplitPane styleClass="white-background" dividerPositions="0.6,0.8">
-                    <TitledPane text="%label.fingerprintDeviceControlPanel" maxHeight="Infinity" collapsible="false">
+                    <TitledPane text="%label.fingerprintDeviceControlPanel" maxHeight="Infinity" collapsible="false" focusTraversable="false">
                         <VBox alignment="CENTER" spacing="10" VBox.vgrow="NEVER">
                             <padding>
                                 <Insets topRightBottomLeft="10"/>
@@ -46,7 +45,7 @@
                             </VBox>
                         </VBox>
                     </TitledPane>
-                    <FourStateTitledPane fx:id="tpFingerprintDeviceLivePreview" text="%label.fingerprintDeviceLivePreview" maxHeight="Infinity" collapsible="false">
+                    <FourStateTitledPane fx:id="tpFingerprintDeviceLivePreview" text="%label.fingerprintDeviceLivePreview" maxHeight="Infinity" collapsible="false" focusTraversable="false">
                         <StackPane>
                             <ImageViewPane>
                                 <imageView>
@@ -63,7 +62,7 @@
                             <ProgressIndicator fx:id="piFingerprintDeviceLivePreview" maxHeight="25.0" maxWidth="25.0" managed="false" visible="false"/>
                         </StackPane>
                     </FourStateTitledPane>
-                    <TitledPane text="%label.currentFingerprintsIndicator" maxHeight="Infinity" collapsible="false" VBox.vgrow="ALWAYS">
+                    <TitledPane text="%label.currentFingerprintsIndicator" maxHeight="Infinity" collapsible="false" VBox.vgrow="ALWAYS" focusTraversable="false">
                         <HBox alignment="CENTER" nodeOrientation="LEFT_TO_RIGHT" maxHeight="Infinity" maxWidth="Infinity" spacing="10">
                             <padding>
                                 <Insets topRightBottomLeft="10"/>
@@ -88,7 +87,7 @@
                     </TitledPane>
                 </SplitPane>
                 <SplitPane fx:id="spFingerprints" dividerPositions="0.5" nodeOrientation="LEFT_TO_RIGHT">
-                    <TitledPane fx:id="tpLeftHand" text="%label.leftHand" collapsible="false" wrapText="true" maxHeight="Infinity" graphicTextGap="0.0" HBox.hgrow="ALWAYS">
+                    <TitledPane fx:id="tpLeftHand" text="%label.leftHand" collapsible="false" wrapText="true" maxHeight="Infinity" graphicTextGap="0.0" HBox.hgrow="ALWAYS" focusTraversable="false">
                         <GridPane vgap="5" maxHeight="Infinity">
                             <padding>
                                 <Insets topRightBottomLeft="5.0"/>
@@ -100,7 +99,7 @@
                                 <ColumnConstraints percentWidth="20"/>
                                 <ColumnConstraints percentWidth="20"/>
                             </columnConstraints>
-                            <FourStateTitledPane fx:id="tpLeftLittle" text="%label.fingers.little" collapsible="false" wrapText="true" maxHeight="Infinity" graphicTextGap="0.0" HBox.hgrow="ALWAYS" GridPane.rowIndex="0" GridPane.columnIndex="0" GridPane.vgrow="ALWAYS">
+                            <FourStateTitledPane fx:id="tpLeftLittle" text="%label.fingers.little" collapsible="false" wrapText="true" maxHeight="Infinity" graphicTextGap="0.0" HBox.hgrow="ALWAYS" GridPane.rowIndex="0" GridPane.columnIndex="0" GridPane.vgrow="ALWAYS" focusTraversable="false">
                                 <StackPane>
                                     <ImageViewPane>
                                         <imageView>
@@ -117,17 +116,9 @@
                                 </StackPane>
                             </FourStateTitledPane>
                             <HBox GridPane.rowIndex="1" GridPane.columnIndex="0" alignment="CENTER">
-                                <Button fx:id="btnLeftLittle" mnemonicParsing="false" maxHeight="5" maxWidth="5" GridPane.halignment="CENTER" alignment="CENTER" visible="false" managed="false">
-                                    <padding>
-                                        <Insets top="1" bottom="3" right="5" left="5"/>
-                                    </padding>
-                                    <graphic>
-                                        <Glyph maxHeight="0.5" maxWidth="0.5" fontFamily="FontAwesome" icon="BARS"/>
-                                    </graphic>
-                                </Button>
-                                <CheckBox fx:id="cbLeftLittle" selected="true" GridPane.halignment="CENTER" visible="false"/>
+                                <CheckBox fx:id="cbLeftLittle" selected="true" GridPane.halignment="CENTER" disable="true"/>
                             </HBox>
-                            <FourStateTitledPane fx:id="tpLeftRing" text="%label.fingers.ring" collapsible="false" wrapText="true" maxHeight="Infinity" graphicTextGap="0.0" HBox.hgrow="ALWAYS" GridPane.rowIndex="0" GridPane.columnIndex="1" GridPane.vgrow="ALWAYS">
+                            <FourStateTitledPane fx:id="tpLeftRing" text="%label.fingers.ring" collapsible="false" wrapText="true" maxHeight="Infinity" graphicTextGap="0.0" HBox.hgrow="ALWAYS" GridPane.rowIndex="0" GridPane.columnIndex="1" GridPane.vgrow="ALWAYS" focusTraversable="false">
                                 <StackPane>
                                     <ImageViewPane>
                                         <imageView>
@@ -144,17 +135,9 @@
                                 </StackPane>
                             </FourStateTitledPane>
                             <HBox GridPane.rowIndex="1" GridPane.columnIndex="1" alignment="CENTER">
-                                <Button fx:id="btnLeftRing" mnemonicParsing="false" maxHeight="5" maxWidth="5" GridPane.halignment="CENTER" alignment="CENTER" managed="false" visible="false">
-                                    <padding>
-                                        <Insets top="1" bottom="3" right="5" left="5"/>
-                                    </padding>
-                                    <graphic>
-                                        <Glyph maxHeight="0.5" maxWidth="0.5" fontFamily="FontAwesome" icon="BARS"/>
-                                    </graphic>
-                                </Button>
-                                <CheckBox fx:id="cbLeftRing" selected="true" GridPane.halignment="CENTER" visible="false"/>
+                                <CheckBox fx:id="cbLeftRing" selected="true" GridPane.halignment="CENTER" disable="true"/>
                             </HBox>
-                            <FourStateTitledPane fx:id="tpLeftMiddle" text="%label.fingers.middle" collapsible="false" wrapText="true" maxHeight="Infinity" graphicTextGap="0.0" HBox.hgrow="ALWAYS" GridPane.rowIndex="0" GridPane.columnIndex="2" GridPane.vgrow="ALWAYS">
+                            <FourStateTitledPane fx:id="tpLeftMiddle" text="%label.fingers.middle" collapsible="false" wrapText="true" maxHeight="Infinity" graphicTextGap="0.0" HBox.hgrow="ALWAYS" GridPane.rowIndex="0" GridPane.columnIndex="2" GridPane.vgrow="ALWAYS" focusTraversable="false">
                                 <StackPane>
                                     <ImageViewPane>
                                         <imageView>
@@ -171,17 +154,9 @@
                                 </StackPane>
                             </FourStateTitledPane>
                             <HBox GridPane.rowIndex="1" GridPane.columnIndex="2" alignment="CENTER">
-                                <Button fx:id="btnLeftMiddle" mnemonicParsing="false" maxHeight="5" maxWidth="5" GridPane.halignment="CENTER" alignment="CENTER" managed="false" visible="false">
-                                    <padding>
-                                        <Insets top="1" bottom="3" right="5" left="5"/>
-                                    </padding>
-                                    <graphic>
-                                        <Glyph maxHeight="0.5" maxWidth="0.5" fontFamily="FontAwesome" icon="BARS"/>
-                                    </graphic>
-                                </Button>
-                                <CheckBox fx:id="cbLeftMiddle" selected="true" GridPane.halignment="CENTER" visible="false"/>
+                                <CheckBox fx:id="cbLeftMiddle" selected="true" GridPane.halignment="CENTER" disable="true"/>
                             </HBox>
-                            <FourStateTitledPane fx:id="tpLeftIndex" text="%label.fingers.index" collapsible="false" wrapText="true" maxHeight="Infinity" graphicTextGap="0.0" HBox.hgrow="ALWAYS" GridPane.rowIndex="0" GridPane.columnIndex="3" GridPane.vgrow="ALWAYS">
+                            <FourStateTitledPane fx:id="tpLeftIndex" text="%label.fingers.index" collapsible="false" wrapText="true" maxHeight="Infinity" graphicTextGap="0.0" HBox.hgrow="ALWAYS" GridPane.rowIndex="0" GridPane.columnIndex="3" GridPane.vgrow="ALWAYS" focusTraversable="false">
                                 <StackPane>
                                     <ImageViewPane>
                                         <imageView>
@@ -198,17 +173,9 @@
                                 </StackPane>
                             </FourStateTitledPane>
                             <HBox GridPane.rowIndex="1" GridPane.columnIndex="3" alignment="CENTER">
-                                <Button fx:id="btnLeftIndex" mnemonicParsing="false" maxHeight="5" maxWidth="5" GridPane.halignment="CENTER" alignment="CENTER" managed="false" visible="false">
-                                    <padding>
-                                        <Insets top="1" bottom="3" right="5" left="5"/>
-                                    </padding>
-                                    <graphic>
-                                        <Glyph maxHeight="0.5" maxWidth="0.5" fontFamily="FontAwesome" icon="BARS"/>
-                                    </graphic>
-                                </Button>
-                                <CheckBox fx:id="cbLeftIndex" selected="true" GridPane.halignment="CENTER" visible="false"/>
+                                <CheckBox fx:id="cbLeftIndex" selected="true" GridPane.halignment="CENTER" disable="true"/>
                             </HBox>
-                            <FourStateTitledPane fx:id="tpLeftThumb" text="%label.fingers.thumb" collapsible="false" wrapText="true" maxHeight="Infinity" graphicTextGap="0.0" HBox.hgrow="ALWAYS" GridPane.rowIndex="0" GridPane.columnIndex="4" GridPane.vgrow="ALWAYS">
+                            <FourStateTitledPane fx:id="tpLeftThumb" text="%label.fingers.thumb" collapsible="false" wrapText="true" maxHeight="Infinity" graphicTextGap="0.0" HBox.hgrow="ALWAYS" GridPane.rowIndex="0" GridPane.columnIndex="4" GridPane.vgrow="ALWAYS" focusTraversable="false">
                                 <StackPane>
                                     <ImageViewPane>
                                         <imageView>
@@ -225,19 +192,11 @@
                                 </StackPane>
                             </FourStateTitledPane>
                             <HBox GridPane.rowIndex="1" GridPane.columnIndex="4" alignment="CENTER">
-                                <Button fx:id="btnLeftThumb" mnemonicParsing="false" maxHeight="5" maxWidth="5" GridPane.halignment="CENTER" alignment="CENTER" managed="false" visible="false">
-                                    <padding>
-                                        <Insets top="1" bottom="3" right="5" left="5"/>
-                                    </padding>
-                                    <graphic>
-                                        <Glyph maxHeight="0.5" maxWidth="0.5" fontFamily="FontAwesome" icon="BARS"/>
-                                    </graphic>
-                                </Button>
-                                <CheckBox fx:id="cbLeftThumb" selected="true" GridPane.halignment="CENTER" visible="false"/>
+                                <CheckBox fx:id="cbLeftThumb" selected="true" GridPane.halignment="CENTER" disable="true"/>
                             </HBox>
                         </GridPane>
                     </TitledPane>
-                    <TitledPane fx:id="tpRightHand" text="%label.rightHand" collapsible="false" wrapText="true" maxHeight="Infinity" graphicTextGap="0.0" HBox.hgrow="ALWAYS">
+                    <TitledPane fx:id="tpRightHand" text="%label.rightHand" collapsible="false" wrapText="true" maxHeight="Infinity" graphicTextGap="0.0" HBox.hgrow="ALWAYS" focusTraversable="false">
                         <GridPane vgap="5" maxHeight="Infinity">
                             <padding>
                                 <Insets topRightBottomLeft="5.0"/>
@@ -249,7 +208,7 @@
                                 <ColumnConstraints percentWidth="20"/>
                                 <ColumnConstraints percentWidth="20"/>
                             </columnConstraints>
-                            <FourStateTitledPane fx:id="tpRightThumb" text="%label.fingers.thumb" collapsible="false" wrapText="true" maxHeight="Infinity" graphicTextGap="0.0" HBox.hgrow="ALWAYS" GridPane.rowIndex="0" GridPane.columnIndex="0" GridPane.vgrow="ALWAYS">
+                            <FourStateTitledPane fx:id="tpRightThumb" text="%label.fingers.thumb" collapsible="false" wrapText="true" maxHeight="Infinity" graphicTextGap="0.0" HBox.hgrow="ALWAYS" GridPane.rowIndex="0" GridPane.columnIndex="0" GridPane.vgrow="ALWAYS" focusTraversable="false">
                                 <StackPane>
                                     <ImageViewPane>
                                         <imageView>
@@ -266,17 +225,9 @@
                                 </StackPane>
                             </FourStateTitledPane>
                             <HBox GridPane.rowIndex="1" GridPane.columnIndex="0" alignment="CENTER">
-                                <Button fx:id="btnRightThumb" mnemonicParsing="false" maxHeight="5" maxWidth="5" GridPane.halignment="CENTER" alignment="CENTER" managed="false" visible="false">
-                                    <padding>
-                                        <Insets top="1" bottom="3" right="5" left="5"/>
-                                    </padding>
-                                    <graphic>
-                                        <Glyph maxHeight="0.5" maxWidth="0.5" fontFamily="FontAwesome" icon="BARS"/>
-                                    </graphic>
-                                </Button>
-                                <CheckBox fx:id="cbRightThumb" selected="true" GridPane.halignment="CENTER" visible="false"/>
+                                <CheckBox fx:id="cbRightThumb" selected="true" GridPane.halignment="CENTER" disable="true"/>
                             </HBox>
-                            <FourStateTitledPane fx:id="tpRightIndex" text="%label.fingers.index" collapsible="false" wrapText="true" maxHeight="Infinity" graphicTextGap="0.0" HBox.hgrow="ALWAYS" GridPane.rowIndex="0" GridPane.columnIndex="1" GridPane.vgrow="ALWAYS">
+                            <FourStateTitledPane fx:id="tpRightIndex" text="%label.fingers.index" collapsible="false" wrapText="true" maxHeight="Infinity" graphicTextGap="0.0" HBox.hgrow="ALWAYS" GridPane.rowIndex="0" GridPane.columnIndex="1" GridPane.vgrow="ALWAYS" focusTraversable="false">
                                 <StackPane>
                                     <ImageViewPane>
                                         <imageView>
@@ -293,17 +244,9 @@
                                 </StackPane>
                             </FourStateTitledPane>
                             <HBox GridPane.rowIndex="1" GridPane.columnIndex="1" alignment="CENTER">
-                                <Button fx:id="btnRightIndex" mnemonicParsing="false" maxHeight="5" maxWidth="5" GridPane.halignment="CENTER" alignment="CENTER" managed="false" visible="false">
-                                    <padding>
-                                        <Insets top="1" bottom="3" right="5" left="5"/>
-                                    </padding>
-                                    <graphic>
-                                        <Glyph maxHeight="0.5" maxWidth="0.5" fontFamily="FontAwesome" icon="BARS"/>
-                                    </graphic>
-                                </Button>
-                                <CheckBox fx:id="cbRightIndex" selected="true" GridPane.halignment="CENTER" visible="false"/>
+                                <CheckBox fx:id="cbRightIndex" selected="true" GridPane.halignment="CENTER" disable="true"/>
                             </HBox>
-                            <FourStateTitledPane fx:id="tpRightMiddle" text="%label.fingers.middle" collapsible="false" wrapText="true" maxHeight="Infinity" graphicTextGap="0.0" HBox.hgrow="ALWAYS" GridPane.rowIndex="0" GridPane.columnIndex="2" GridPane.vgrow="ALWAYS">
+                            <FourStateTitledPane fx:id="tpRightMiddle" text="%label.fingers.middle" collapsible="false" wrapText="true" maxHeight="Infinity" graphicTextGap="0.0" HBox.hgrow="ALWAYS" GridPane.rowIndex="0" GridPane.columnIndex="2" GridPane.vgrow="ALWAYS" focusTraversable="false">
                                 <StackPane>
                                     <ImageViewPane>
                                         <imageView>
@@ -320,17 +263,9 @@
                                 </StackPane>
                             </FourStateTitledPane>
                             <HBox GridPane.rowIndex="1" GridPane.columnIndex="2" alignment="CENTER">
-                                <Button fx:id="btnRightMiddle" mnemonicParsing="false" maxHeight="5" maxWidth="5" GridPane.halignment="CENTER" alignment="CENTER" managed="false" visible="false">
-                                    <padding>
-                                        <Insets top="1" bottom="3" right="5" left="5"/>
-                                    </padding>
-                                    <graphic>
-                                        <Glyph maxHeight="0.5" maxWidth="0.5" fontFamily="FontAwesome" icon="BARS"/>
-                                    </graphic>
-                                </Button>
-                                <CheckBox fx:id="cbRightMiddle" selected="true" GridPane.halignment="CENTER" visible="false"/>
+                                <CheckBox fx:id="cbRightMiddle" selected="true" GridPane.halignment="CENTER" disable="true"/>
                             </HBox>
-                            <FourStateTitledPane fx:id="tpRightRing" text="%label.fingers.ring" collapsible="false" wrapText="true" maxHeight="Infinity" graphicTextGap="0.0" HBox.hgrow="ALWAYS" GridPane.rowIndex="0" GridPane.columnIndex="3" GridPane.vgrow="ALWAYS">
+                            <FourStateTitledPane fx:id="tpRightRing" text="%label.fingers.ring" collapsible="false" wrapText="true" maxHeight="Infinity" graphicTextGap="0.0" HBox.hgrow="ALWAYS" GridPane.rowIndex="0" GridPane.columnIndex="3" GridPane.vgrow="ALWAYS" focusTraversable="false">
                                 <StackPane>
                                     <ImageViewPane>
                                         <imageView>
@@ -347,17 +282,9 @@
                                 </StackPane>
                             </FourStateTitledPane>
                             <HBox GridPane.rowIndex="1" GridPane.columnIndex="3" alignment="CENTER">
-                                <Button fx:id="btnRightRing" mnemonicParsing="false" maxHeight="5" maxWidth="5" GridPane.halignment="CENTER" alignment="CENTER" managed="false" visible="false">
-                                    <padding>
-                                        <Insets top="1" bottom="3" right="5" left="5"/>
-                                    </padding>
-                                    <graphic>
-                                        <Glyph maxHeight="0.5" maxWidth="0.5" fontFamily="FontAwesome" icon="BARS"/>
-                                    </graphic>
-                                </Button>
-                                <CheckBox fx:id="cbRightRing" selected="true" GridPane.halignment="CENTER" visible="false"/>
+                                <CheckBox fx:id="cbRightRing" selected="true" GridPane.halignment="CENTER" disable="true"/>
                             </HBox>
-                            <FourStateTitledPane fx:id="tpRightLittle" text="%label.fingers.little" collapsible="false" wrapText="true" maxHeight="Infinity" graphicTextGap="0.0" HBox.hgrow="ALWAYS" GridPane.rowIndex="0" GridPane.columnIndex="4" GridPane.vgrow="ALWAYS">
+                            <FourStateTitledPane fx:id="tpRightLittle" text="%label.fingers.little" collapsible="false" wrapText="true" maxHeight="Infinity" graphicTextGap="0.0" HBox.hgrow="ALWAYS" GridPane.rowIndex="0" GridPane.columnIndex="4" GridPane.vgrow="ALWAYS" focusTraversable="false">
                                 <StackPane>
                                     <ImageViewPane>
                                         <imageView>
@@ -374,15 +301,7 @@
                                 </StackPane>
                             </FourStateTitledPane>
                             <HBox GridPane.rowIndex="1" GridPane.columnIndex="4" alignment="CENTER">
-                                <Button fx:id="btnRightLittle" mnemonicParsing="false" maxHeight="5" maxWidth="5" GridPane.halignment="CENTER" alignment="CENTER" managed="false" visible="false">
-                                    <padding>
-                                        <Insets top="1" bottom="3" right="5" left="5"/>
-                                    </padding>
-                                    <graphic>
-                                        <Glyph maxHeight="0.5" maxWidth="0.5" fontFamily="FontAwesome" icon="BARS"/>
-                                    </graphic>
-                                </Button>
-                                <CheckBox fx:id="cbRightLittle" selected="true" GridPane.halignment="CENTER" visible="false"/>
+                                <CheckBox fx:id="cbRightLittle" selected="true" GridPane.halignment="CENTER" disable="true"/>
                             </HBox>
                         </GridPane>
                     </TitledPane>
