@@ -31,6 +31,7 @@ import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.utils.IdleMonitor;
 import sa.gov.nic.bio.bw.client.core.utils.UTF8Control;
 import sa.gov.nic.bio.bw.client.core.wizard.WizardPane;
+import sa.gov.nic.bio.bw.client.core.wizard.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.client.core.workflow.SignalType;
 import sa.gov.nic.bio.bw.client.core.workflow.Workflow;
 import sa.gov.nic.bio.bw.client.home.workflow.HomeWorkflow;
@@ -175,8 +176,13 @@ public class CoreFxController implements IdleMonitorRegisterer, PersistableEntit
 		{
 			try
 			{
+				if(currentBodyController instanceof WizardStepFxControllerBase)
+				{
+					((WizardStepFxControllerBase) currentBodyController).onLeaving(null);
+				}
+				
 				ControllerResourcesLocator controllerResourcesLocator = (ControllerResourcesLocator)
-						controllerClass.getDeclaredConstructor().newInstance();
+																controllerClass.getDeclaredConstructor().newInstance();
 				currentBodyController = renderNewBodyForm(controllerResourcesLocator);
 				
 				if(currentBodyController != null)

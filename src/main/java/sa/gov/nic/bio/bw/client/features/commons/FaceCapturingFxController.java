@@ -290,9 +290,11 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 	}
 	
 	@Override
-	protected void onLeaving(Map<String, Object> uiDataMap)
+	public void onLeaving(Map<String, Object> uiDataMap)
 	{
 		if(btnStopCameraLivePreview.isVisible()) btnStopCameraLivePreview.fire();
+		
+		if(uiDataMap == null) return;
 		
 		uiDataMap.put(KEY_ICAO_SUCCESS_ICON_VISIBLE, ivSuccessIcao.isVisible());
 		uiDataMap.put(KEY_ICAO_WARNING_ICON_VISIBLE, ivWarningIcao.isVisible());
