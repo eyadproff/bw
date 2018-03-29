@@ -102,8 +102,6 @@ public class UploadImageFileFxController extends WizardStepFxControllerBase
 	@Override
 	public void onLeaving(Map<String, Object> uiDataMap)
 	{
-		if(uiDataMap == null) return;
-		
 		if(imageSelected) uiDataMap.put(SearchByFaceImageWorkflow.KEY_UPLOADED_IMAGE, ivUploadedImage.getImage());
 	}
 	

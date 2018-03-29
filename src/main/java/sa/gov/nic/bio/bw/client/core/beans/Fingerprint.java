@@ -10,14 +10,16 @@ public class Fingerprint implements Serializable
 	private DMFingerData dmFingerData;
 	private boolean acceptableQuality;
 	private boolean duplicated;
+	private boolean skipped;
 	
 	public Fingerprint(){}
 	
-	public Fingerprint(DMFingerData dmFingerData, boolean acceptableQuality, boolean duplicated)
+	public Fingerprint(DMFingerData dmFingerData, boolean acceptableQuality, boolean duplicated, boolean skipped)
 	{
 		this.dmFingerData = dmFingerData;
 		this.acceptableQuality = acceptableQuality;
 		this.duplicated = duplicated;
+		this.skipped = skipped;
 	}
 	
 	public DMFingerData getDmFingerData(){return dmFingerData;}
@@ -29,6 +31,9 @@ public class Fingerprint implements Serializable
 	public boolean isDuplicated(){return duplicated;}
 	public void setDuplicated(boolean duplicated){this.duplicated = duplicated;}
 	
+	public boolean isSkipped(){return skipped;}
+	public void setSkipped(boolean skipped){this.skipped = skipped;}
+	
 	@Override
 	public boolean equals(Object o)
 	{
@@ -36,19 +41,19 @@ public class Fingerprint implements Serializable
 		if(o == null || getClass() != o.getClass()) return false;
 		Fingerprint that = (Fingerprint) o;
 		return acceptableQuality == that.acceptableQuality && duplicated == that.duplicated &&
-			   Objects.equals(dmFingerData, that.dmFingerData);
+			   skipped == that.skipped && Objects.equals(dmFingerData, that.dmFingerData);
 	}
 	
 	@Override
 	public int hashCode()
 	{
-		return Objects.hash(dmFingerData, acceptableQuality, duplicated);
+		return Objects.hash(dmFingerData, acceptableQuality, duplicated, skipped);
 	}
 	
 	@Override
 	public String toString()
 	{
 		return "Fingerprint{" + "dmFingerData=" + dmFingerData + ", acceptableQuality=" + acceptableQuality +
-			   ", duplicated=" + duplicated + '}';
+			   ", duplicated=" + duplicated + ", skipped=" + skipped + '}';
 	}
 }

@@ -178,7 +178,7 @@ public class CoreFxController implements IdleMonitorRegisterer, PersistableEntit
 			{
 				if(currentBodyController instanceof WizardStepFxControllerBase)
 				{
-					((WizardStepFxControllerBase) currentBodyController).onLeaving(null);
+					((WizardStepFxControllerBase) currentBodyController).onLeaving(uiInputData);
 				}
 				
 				ControllerResourcesLocator controllerResourcesLocator = (ControllerResourcesLocator)

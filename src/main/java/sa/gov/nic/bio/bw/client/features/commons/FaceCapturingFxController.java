@@ -294,8 +294,6 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 	{
 		if(btnStopCameraLivePreview.isVisible()) btnStopCameraLivePreview.fire();
 		
-		if(uiDataMap == null) return;
-		
 		uiDataMap.put(KEY_ICAO_SUCCESS_ICON_VISIBLE, ivSuccessIcao.isVisible());
 		uiDataMap.put(KEY_ICAO_WARNING_ICON_VISIBLE, ivWarningIcao.isVisible());
 		uiDataMap.put(KEY_ICAO_ERROR_ICON_VISIBLE, ivErrorIcao.isVisible());

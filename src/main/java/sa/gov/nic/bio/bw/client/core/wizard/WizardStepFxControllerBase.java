@@ -17,7 +17,6 @@ public abstract class WizardStepFxControllerBase extends BodyFxControllerBase im
 		Map<String, Object> uiDataMap = new HashMap<>();
 		uiDataMap.put("direction", "forward");
 		onGoingNext(uiDataMap);
-		onLeaving(uiDataMap);
 		Context.getWorkflowManager().submitUserTask(uiDataMap);
 	}
 	
@@ -28,7 +27,6 @@ public abstract class WizardStepFxControllerBase extends BodyFxControllerBase im
 		Map<String, Object> uiDataMap = new HashMap<>();
 		uiDataMap.put("direction", "backward");
 		onGoingPrevious(uiDataMap);
-		onLeaving(uiDataMap);
 		Context.getWorkflowManager().submitUserTask(uiDataMap);
 	}
 	
@@ -38,7 +36,6 @@ public abstract class WizardStepFxControllerBase extends BodyFxControllerBase im
 		Context.getCoreFxController().showWizardTransitionProgressIndicator(true);
 		Map<String, Object> uiDataMap = new HashMap<>();
 		uiDataMap.put("direction", "startOver");
-		onLeaving(uiDataMap);
 		Context.getWorkflowManager().submitUserTask(uiDataMap);
 	}
 	
