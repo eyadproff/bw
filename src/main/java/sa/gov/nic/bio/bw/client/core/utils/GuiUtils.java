@@ -1,6 +1,7 @@
 package sa.gov.nic.bio.bw.client.core.utils;
 
 import com.sun.javafx.scene.control.skin.ComboBoxListViewSkin;
+import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.beans.Observable;
 import javafx.collections.FXCollections;
@@ -8,12 +9,15 @@ import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
 import javafx.geometry.NodeOrientation;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Control;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
@@ -22,10 +26,16 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import javafx.util.Duration;
+import org.controlsfx.control.PopOver;
+import org.controlsfx.control.PopOver.ArrowLocation;
 import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.CoreFxController;
 import sa.gov.nic.bio.bw.client.core.beans.HideableItem;
@@ -348,5 +358,46 @@ public class GuiUtils
 		g2.dispose();
 		
 		return SwingFXUtils.toFXImage(newImage, null);
+	}
+	
+	public static void showMessageTooltip(CheckBox checkBox, String message)
+	{
+		VBox vBox = new VBox();
+		vBox.setPadding(new Insets(8.0));
+		
+		Label lblMessage = new Label(message);
+		lblMessage.setTextAlignment(TextAlignment.CENTER);
+		lblMessage.setWrapText(true);
+		vBox.getChildren().add(lblMessage);
+		
+		PopOver popOver = new PopOver(vBox);
+		popOver.setArrowIndent(5.0);
+		popOver.setDetachable(false);
+		popOver.setConsumeAutoHidingEvents(false);
+		popOver.setArrowLocation(ArrowLocation.BOTTOM_CENTER);
+		popOver.setAutoHide(true);
+		popOver.show(checkBox);
+		
+		// fix the position
+		popOver.setY(popOver.getY() - 7.0);
+		popOver.setX(popOver.getX() - (Context.getGuiLanguage().getNodeOrientation() ==
+																		NodeOrientation.RIGHT_TO_LEFT ? 7.0 : 5.0));
+		
+		// auto-hide after 2 seconds
+		PauseTransition pause = new PauseTransition(Duration.seconds(2.0));
+		pause.setOnFinished(e -> popOver.hide());
+		pause.play();
+		
+		// catch the mouse click
+		checkBox.setOnAction(event -> popOver.hide());
+		popOver.setOnHidden(event -> checkBox.setOnAction(null));
+		popOver.getScene().getRoot().addEventFilter(MouseEvent.MOUSE_CLICKED, mouseEvent ->
+		{
+			if(mouseEvent.getButton() == MouseButton.PRIMARY)
+			{
+				popOver.hide();
+				checkBox.fire();
+			}
+		});
 	}
 }

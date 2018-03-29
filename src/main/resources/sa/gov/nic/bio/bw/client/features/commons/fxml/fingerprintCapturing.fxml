@@ -41,6 +41,7 @@
                                 <Button fx:id="btnCancel" text="%button.cancel" managed="false" visible="false" wrapText="true" textAlignment="CENTER"/>
                                 <Button fx:id="btnStartFingerprintCapturing" text="%button.captureRightSlapFingerprints" managed="false" visible="false" wrapText="true" textAlignment="CENTER" onAction="#onStartFingerprintCapturingButtonClicked"/>
                                 <Button fx:id="btnStopFingerprintCapturing" text="%button.stopFingerprintCapturing" managed="false" visible="false" wrapText="true" textAlignment="CENTER" onAction="#onStopFingerprintCapturingButtonClicked"/>
+                                <Button fx:id="btnAcceptCurrentSlap" text="%button.acceptCurrentSlap" managed="false" visible="false" wrapText="true" textAlignment="CENTER" onAction="#onAcceptCurrentSlapButtonClicked"/>
                                 <Button fx:id="btnAcceptCurrentFingerprints" text="%button.acceptCurrentFingerprints" managed="false" visible="false" wrapText="true" textAlignment="CENTER" onAction="#onAcceptCurrentFingerprintsButtonClicked"/>
                             </VBox>
                         </VBox>
