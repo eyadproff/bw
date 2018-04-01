@@ -47,6 +47,13 @@
                         </VBox>
                     </TitledPane>
                     <FourStateTitledPane fx:id="tpFingerprintDeviceLivePreview" text="%label.fingerprintDeviceLivePreview" maxHeight="Infinity" collapsible="false" focusTraversable="false">
+                        <graphic>
+                            <Button fx:id="btnLivePreviewLegend">
+                                <padding>
+                                    <Insets top="1.0" bottom="3.0" right="5.0" left="5.0"/>
+                                </padding>
+                            </Button>
+                        </graphic>
                         <StackPane>
                             <ImageViewPane>
                                 <imageView>
@@ -88,8 +95,15 @@
                     </TitledPane>
                 </SplitPane>
                 <SplitPane fx:id="spFingerprints" dividerPositions="0.5" nodeOrientation="LEFT_TO_RIGHT">
-                    <TitledPane fx:id="tpLeftHand" text="%label.leftHand" collapsible="false" wrapText="true" maxHeight="Infinity" graphicTextGap="0.0" HBox.hgrow="ALWAYS" focusTraversable="false">
-                        <GridPane vgap="5" maxHeight="Infinity">
+                    <TitledPane fx:id="tpLeftHand" text="%label.leftHand" collapsible="false" wrapText="true" maxHeight="Infinity" HBox.hgrow="ALWAYS" focusTraversable="false">
+                        <graphic>
+                            <Button fx:id="btnLeftHandLegend">
+                                <padding>
+                                    <Insets top="1.0" bottom="3.0" right="5.0" left="5.0"/>
+                                </padding>
+                            </Button>
+                        </graphic>
+                        <GridPane vgap="5" maxHeight="Infinity" nodeOrientation="LEFT_TO_RIGHT">
                             <padding>
                                 <Insets topRightBottomLeft="5.0"/>
                             </padding>
@@ -197,8 +211,15 @@
                             </HBox>
                         </GridPane>
                     </TitledPane>
-                    <TitledPane fx:id="tpRightHand" text="%label.rightHand" collapsible="false" wrapText="true" maxHeight="Infinity" graphicTextGap="0.0" HBox.hgrow="ALWAYS" focusTraversable="false">
-                        <GridPane vgap="5" maxHeight="Infinity">
+                    <TitledPane fx:id="tpRightHand" text="%label.rightHand" collapsible="false" wrapText="true" maxHeight="Infinity" HBox.hgrow="ALWAYS" focusTraversable="false">
+                        <graphic>
+                            <Button fx:id="btnRightHandLegend">
+                                <padding>
+                                    <Insets top="1.0" bottom="3.0" right="5.0" left="5.0"/>
+                                </padding>
+                            </Button>
+                        </graphic>
+                        <GridPane vgap="5" maxHeight="Infinity" nodeOrientation="LEFT_TO_RIGHT">
                             <padding>
                                 <Insets topRightBottomLeft="5.0"/>
                             </padding>

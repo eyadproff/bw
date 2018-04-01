@@ -6,6 +6,7 @@ import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
+import javafx.geometry.NodeOrientation;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
@@ -16,11 +17,15 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.shape.SVGPath;
 import org.controlsfx.control.PopOver;
 import org.controlsfx.control.PopOver.ArrowLocation;
+import org.controlsfx.glyphfont.FontAwesome;
+import org.controlsfx.glyphfont.Glyph;
 import sa.gov.nic.bio.biokit.ResponseProcessor;
 import sa.gov.nic.bio.biokit.beans.LivePreviewingResponse;
 import sa.gov.nic.bio.biokit.beans.ServiceResponse;
@@ -133,6 +138,9 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 	@FXML private Button btnStopFingerprintCapturing;
 	@FXML private Button btnAcceptCurrentSlap;
 	@FXML private Button btnAcceptCurrentFingerprints;
+	@FXML private Button btnLivePreviewLegend;
+	@FXML private Button btnRightHandLegend;
+	@FXML private Button btnLeftHandLegend;
 	@FXML private Button btnPrevious;
 	@FXML private Button btnNext;
 	// TODO: add start over fingerprint capturing
@@ -161,6 +169,24 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 		
 		btnPrevious.setOnAction(event -> goPrevious());
 		btnNext.setOnAction(event -> goNext());
+		
+		Glyph glyph = AppUtils.createFontAwesomeIcon(FontAwesome.Glyph.INFO_CIRCLE);
+		btnLivePreviewLegend.setGraphic(glyph);
+		glyph = AppUtils.createFontAwesomeIcon(FontAwesome.Glyph.INFO_CIRCLE);
+		btnRightHandLegend.setGraphic(glyph);
+		glyph = AppUtils.createFontAwesomeIcon(FontAwesome.Glyph.INFO_CIRCLE);
+		btnLeftHandLegend.setGraphic(glyph);
+		
+		attachSlapFingerprintsLegendTooltip(btnLivePreviewLegend);
+		attachFingerprintLegendTooltip(btnRightHandLegend);
+		attachFingerprintLegendTooltip(btnLeftHandLegend);
+		
+		// reverse the orientation so that the button will appear next to the text
+		NodeOrientation reverse = Context.getGuiLanguage().getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT ?
+														NodeOrientation.LEFT_TO_RIGHT : NodeOrientation.RIGHT_TO_LEFT;
+		tpFingerprintDeviceLivePreview.setNodeOrientation(reverse);
+		tpRightHand.setNodeOrientation(reverse);
+		tpLeftHand.setNodeOrientation(reverse);
 		
 		// show the image placeholder if and only if there is no image and the checkbox is selected
 		ivLeftLittlePlaceholder.visibleProperty().bind(ivLeftLittle.imageProperty().isNull()
@@ -547,6 +573,7 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 	@FXML
 	private void onStartFingerprintCapturingButtonClicked(ActionEvent event)
 	{
+		hideNotification();
 		tpFingerprintDeviceLivePreview.setActive(false);
 		tpFingerprintDeviceLivePreview.setCaptured(false);
 		ivFingerprintDeviceLivePreview.setImage(null);
@@ -1049,10 +1076,36 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 	@FXML
 	private void onAcceptCurrentSlapButtonClicked(ActionEvent event)
 	{
-		// TODO: check permission
+		hideNotification();
 		
-		GuiUtils.showNode(btnAcceptCurrentSlap, false);
-		processSlapFingerprints(wrongSlapCapturedFingerprints);
+		// check if the user has the permission to accept wrong slap
+		@SuppressWarnings("unchecked")
+		List<String> userRoles = (List<String>) Context.getUserSession().getAttribute("userRoles");
+		String acceptWrongHandRole = System.getProperty("jnlp.bio.bw.fingerprint.roles.acceptWrongHand");
+		boolean authorized = userRoles.contains(acceptWrongHandRole);
+		
+		if(authorized)
+		{
+			String headerText = resources.getString("fingerprint.acceptWrongSlap.confirmation.header");
+			String contentText = null;
+			if(currentSlapPosition == FingerPosition.RIGHT_SLAP.getPosition())
+				contentText = resources.getString("fingerprint.acceptWrongSlap.right.confirmation.message");
+			else if(currentSlapPosition == FingerPosition.LEFT_SLAP.getPosition())
+				contentText = resources.getString("fingerprint.acceptWrongSlap.left.confirmation.message");
+			
+			boolean confirmed = Context.getCoreFxController().showConfirmationDialogAndWait(headerText, contentText);
+			
+			if(confirmed)
+			{
+				GuiUtils.showNode(btnAcceptCurrentSlap, false);
+				processSlapFingerprints(wrongSlapCapturedFingerprints);
+			}
+		}
+		else
+		{
+			String message = resources.getString("fingerprint.acceptWrongSlap.notAuthorized");
+			showWarningNotification(message);
+		}
 	}
 	
 	@FXML
@@ -1247,7 +1300,7 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 	                                            boolean duplicated)
 	{
 		GridPane gridPane = new GridPane();
-		gridPane.setPadding(new Insets(10));
+		gridPane.setPadding(new Insets(10.0));
 		gridPane.setVgap(5.0);
 		gridPane.setHgap(5.0);
 		
@@ -1318,5 +1371,96 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 			if(popOver.isShowing()) popOver.hide();
 			else popOver.show(targetNode);
 		});
+	}
+	
+	private void attachSlapFingerprintsLegendTooltip(Node targetNode)
+	{
+		TextField txtCapturingSlap = new TextField(resources.getString("label.slap.legend.captureInProgress"));
+		TextField txtWrongSlap = new TextField(resources.getString("label.slap.legend.wrongSlap"));
+		TextField txtAcceptedSlap = new TextField(resources.getString("label.slap.legend.acceptedSlap"));
+		
+		txtCapturingSlap.setEditable(false);
+		txtWrongSlap.setEditable(false);
+		txtAcceptedSlap.setEditable(false);
+		txtCapturingSlap.setFocusTraversable(false);
+		txtWrongSlap.setFocusTraversable(false);
+		txtAcceptedSlap.setFocusTraversable(false);
+		txtCapturingSlap.getStyleClass().add("legend-blue");
+		txtWrongSlap.getStyleClass().add("legend-yellow");
+		txtAcceptedSlap.getStyleClass().add("legend-green");
+		
+		VBox vBox = new VBox(5.0, txtCapturingSlap, txtWrongSlap, txtAcceptedSlap);
+		vBox.getStylesheets().setAll("sa/gov/nic/bio/bw/client/features/commons/css/style.css");
+		vBox.setPadding(new Insets(10.0));
+		
+		// hardcoded :(
+		if(Context.getGuiLanguage().getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT)
+		{
+			vBox.setPrefWidth(153.0);
+		}
+		else vBox.setPrefWidth(266.0);
+		
+		BorderPane root = new BorderPane(vBox);
+		
+		PopOver popOver = new PopOver(root);
+		popOver.setDetachable(false);
+		popOver.setConsumeAutoHidingEvents(false);
+		popOver.setArrowLocation(ArrowLocation.BOTTOM_CENTER);
+		
+		targetNode.setOnMouseClicked(event ->
+		{
+		    if(popOver.isShowing()) popOver.hide();
+		    else popOver.show(targetNode);
+		});
+	}
+	
+	private void attachFingerprintLegendTooltip(Node targetNode)
+	{
+		TextField txtCapturingFingerprint = new TextField(
+										resources.getString("label.fingerprint.legend.captureInProgress"));
+		TextField txtDuplicatedFingerprint = new TextField(
+										resources.getString("label.fingerprint.legend.duplicatedFingerprint"));
+		TextField txtLowQualityFingerprint = new TextField(
+										resources.getString("label.fingerprint.legend.lowQualityFingerprint"));
+		TextField txtHighQualityFingerprint = new TextField(
+										resources.getString("label.fingerprint.legend.highQualityFingerprint"));
+		
+		txtCapturingFingerprint.setEditable(false);
+		txtDuplicatedFingerprint.setEditable(false);
+		txtLowQualityFingerprint.setEditable(false);
+		txtHighQualityFingerprint.setEditable(false);
+		txtCapturingFingerprint.setFocusTraversable(false);
+		txtDuplicatedFingerprint.setFocusTraversable(false);
+		txtLowQualityFingerprint.setFocusTraversable(false);
+		txtHighQualityFingerprint.setFocusTraversable(false);
+		txtCapturingFingerprint.getStyleClass().add("legend-blue");
+		txtDuplicatedFingerprint.getStyleClass().add("legend-red");
+		txtLowQualityFingerprint.getStyleClass().add("legend-yellow");
+		txtHighQualityFingerprint.getStyleClass().add("legend-green");
+		
+		VBox vBox = new VBox(5.0, txtCapturingFingerprint, txtDuplicatedFingerprint, txtLowQualityFingerprint,
+		                     txtHighQualityFingerprint);
+		vBox.getStylesheets().setAll("sa/gov/nic/bio/bw/client/features/commons/css/style.css");
+		vBox.setPadding(new Insets(10.0));
+		
+		// hardcoded :(
+		if(Context.getGuiLanguage().getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT)
+		{
+			vBox.setPrefWidth(210.0);
+		}
+		else vBox.setPrefWidth(263.0);
+		
+		BorderPane root = new BorderPane(vBox);
+		
+		PopOver popOver = new PopOver(root);
+		popOver.setDetachable(false);
+		popOver.setConsumeAutoHidingEvents(false);
+		popOver.setArrowLocation(ArrowLocation.BOTTOM_CENTER);
+		
+		targetNode.setOnMouseClicked(event ->
+        {
+	        if(popOver.isShowing()) popOver.hide();
+	        else popOver.show(targetNode);
+        });
 	}
 }
