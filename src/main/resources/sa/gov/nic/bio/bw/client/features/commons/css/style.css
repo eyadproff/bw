@@ -86,3 +86,7 @@
     -fx-font-weight: bolder;
     -fx-text-fill: #b30002;
 }
+
+.legend-gray {
+    -fx-background-color: linear-gradient(to bottom, derive(-fx-color,-15%) 95%, derive(-fx-color,-25%) 100%), -fx-inner-border, -fx-body-color;
+}

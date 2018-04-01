@@ -1424,22 +1424,28 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 										resources.getString("label.fingerprint.legend.lowQualityFingerprint"));
 		TextField txtHighQualityFingerprint = new TextField(
 										resources.getString("label.fingerprint.legend.highQualityFingerprint"));
+		TextField txtSkippedFingerprint = new TextField(
+										resources.getString("label.fingerprint.legend.skippedFingerprint"));
 		
 		txtCapturingFingerprint.setEditable(false);
 		txtDuplicatedFingerprint.setEditable(false);
 		txtLowQualityFingerprint.setEditable(false);
 		txtHighQualityFingerprint.setEditable(false);
+		txtSkippedFingerprint.setEditable(false);
 		txtCapturingFingerprint.setFocusTraversable(false);
 		txtDuplicatedFingerprint.setFocusTraversable(false);
 		txtLowQualityFingerprint.setFocusTraversable(false);
 		txtHighQualityFingerprint.setFocusTraversable(false);
+		txtSkippedFingerprint.setFocusTraversable(false);
 		txtCapturingFingerprint.getStyleClass().add("legend-blue");
 		txtDuplicatedFingerprint.getStyleClass().add("legend-red");
 		txtLowQualityFingerprint.getStyleClass().add("legend-yellow");
 		txtHighQualityFingerprint.getStyleClass().add("legend-green");
+		txtSkippedFingerprint.getStyleClass().add("legend-gray");
+		txtSkippedFingerprint.setDisable(true);
 		
 		VBox vBox = new VBox(5.0, txtCapturingFingerprint, txtDuplicatedFingerprint, txtLowQualityFingerprint,
-		                     txtHighQualityFingerprint);
+		                     txtHighQualityFingerprint, txtSkippedFingerprint);
 		vBox.getStylesheets().setAll("sa/gov/nic/bio/bw/client/features/commons/css/style.css");
 		vBox.setPadding(new Insets(10.0));
 		
