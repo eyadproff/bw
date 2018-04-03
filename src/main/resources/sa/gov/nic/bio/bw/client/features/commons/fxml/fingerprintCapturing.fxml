@@ -46,7 +46,8 @@
                                     <Button fx:id="btnStartFingerprintCapturing" maxHeight="Infinity" text="%button.captureRightSlapFingerprints" managed="false" visible="false" wrapText="true" textAlignment="CENTER" onAction="#onStartFingerprintCapturingButtonClicked"/>
                                     <Button fx:id="btnStopFingerprintCapturing" text="%button.stopFingerprintCapturing" managed="false" visible="false" wrapText="true" textAlignment="CENTER" onAction="#onStopFingerprintCapturingButtonClicked"/>
                                     <Button fx:id="btnAcceptCurrentSlap" text="%button.acceptCurrentSlap" managed="false" visible="false" wrapText="true" textAlignment="CENTER" onAction="#onAcceptCurrentSlapButtonClicked"/>
-                                    <Button fx:id="btnAcceptCurrentFingerprints" text="%button.acceptCurrentFingerprints" managed="false" visible="false" wrapText="true" textAlignment="CENTER" onAction="#onAcceptCurrentFingerprintsButtonClicked"/>
+                                    <Button fx:id="btnAcceptBestAttemptFingerprints" text="%button.acceptBestAttemptFingerprints" managed="false" visible="false" wrapText="true" textAlignment="CENTER" onAction="#onAcceptBestAttemptFingerprintsButtonClicked"/>
+                                    <Button fx:id="btnAcceptSelectedFingerprints" text="%button.acceptSelectedFingerprints" managed="false" visible="false" wrapText="true" textAlignment="CENTER" onAction="#onAcceptSelectedFingerprintsButtonClicked"/>
                                     <Button fx:id="btnStartOver" text="%button.startOver" managed="false" visible="false" wrapText="true" textAlignment="CENTER" onAction="#onStartOverButtonClicked"/>
                                 </VBox>
                             </VBox>
