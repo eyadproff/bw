@@ -5,8 +5,10 @@
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ProgressIndicator?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
@@ -16,10 +18,8 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.SVGPath?>
 <?import sa.gov.nic.bio.bw.client.features.commons.ui.AutoScalingStackPane?>
-<?import sa.gov.nic.bio.bw.client.features.commons.ui.ImageViewPane?>
 <?import sa.gov.nic.bio.bw.client.features.commons.ui.FourStateTitledPane?>
-
-<?import javafx.scene.image.Image?>
+<?import sa.gov.nic.bio.bw.client.features.commons.ui.ImageViewPane?>
 <BorderPane xmlns="http://javafx.com/javafx/8.0.152" xmlns:fx="http://javafx.com/fxml/1"
             fx:id="rootPane" fx:controller="sa.gov.nic.bio.bw.client.features.commons.FingerprintCapturingFxController"
             stylesheets="@../css/style.css">
@@ -31,24 +31,30 @@
             <SplitPane orientation="VERTICAL" dividerPositions="0.5" VBox.vgrow="ALWAYS">
                 <SplitPane styleClass="white-background" dividerPositions="0.6,0.8">
                     <TitledPane text="%label.fingerprintDeviceControlPanel" maxHeight="Infinity" collapsible="false" focusTraversable="false">
-                        <VBox alignment="CENTER" spacing="10" VBox.vgrow="NEVER">
-                            <padding>
-                                <Insets topRightBottomLeft="10"/>
-                            </padding>
-                            <ProgressIndicator fx:id="piProgress" prefHeight="25.0" prefWidth="25.0" managed="false" visible="false"/>
-                            <Label fx:id="lblStatus" wrapText="true" textAlignment="CENTER" managed="false" visible="false"/>
-                            <VBox alignment="CENTER" spacing="5">
-                                <Button fx:id="btnCancel" text="%button.cancel" managed="false" visible="false" wrapText="true" textAlignment="CENTER"/>
-                                <Button fx:id="btnStartFingerprintCapturing" text="%button.captureRightSlapFingerprints" managed="false" visible="false" wrapText="true" textAlignment="CENTER" onAction="#onStartFingerprintCapturingButtonClicked"/>
-                                <Button fx:id="btnStopFingerprintCapturing" text="%button.stopFingerprintCapturing" managed="false" visible="false" wrapText="true" textAlignment="CENTER" onAction="#onStopFingerprintCapturingButtonClicked"/>
-                                <Button fx:id="btnAcceptCurrentSlap" text="%button.acceptCurrentSlap" managed="false" visible="false" wrapText="true" textAlignment="CENTER" onAction="#onAcceptCurrentSlapButtonClicked"/>
-                                <Button fx:id="btnAcceptCurrentFingerprints" text="%button.acceptCurrentFingerprints" managed="false" visible="false" wrapText="true" textAlignment="CENTER" onAction="#onAcceptCurrentFingerprintsButtonClicked"/>
+                        <ScrollPane fx:id="paneControlsOuterContainer" fitToWidth="true" VBox.vgrow="ALWAYS" maxHeight="Infinity">
+                            <VBox fx:id="paneControlsInnerContainer" alignment="CENTER" spacing="10.0">
+                                <padding>
+                                    <Insets topRightBottomLeft="10.0"/>
+                                </padding>
+                                <ProgressIndicator fx:id="piProgress" prefHeight="25.0" prefWidth="25.0" managed="false" visible="false"/>
+                                <ImageView fx:id="ivCompleted" managed="false" visible="false">
+                                    <Image url="@../images/success.png"/>
+                                </ImageView>
+                                <Label fx:id="lblStatus" wrapText="true" textAlignment="CENTER" managed="false" visible="false"/>
+                                <VBox alignment="CENTER" spacing="5.0">
+                                    <Button fx:id="btnCancel" text="%button.cancel" managed="false" visible="false" wrapText="true" textAlignment="CENTER"/>
+                                    <Button fx:id="btnStartFingerprintCapturing" maxHeight="Infinity" text="%button.captureRightSlapFingerprints" managed="false" visible="false" wrapText="true" textAlignment="CENTER" onAction="#onStartFingerprintCapturingButtonClicked"/>
+                                    <Button fx:id="btnStopFingerprintCapturing" text="%button.stopFingerprintCapturing" managed="false" visible="false" wrapText="true" textAlignment="CENTER" onAction="#onStopFingerprintCapturingButtonClicked"/>
+                                    <Button fx:id="btnAcceptCurrentSlap" text="%button.acceptCurrentSlap" managed="false" visible="false" wrapText="true" textAlignment="CENTER" onAction="#onAcceptCurrentSlapButtonClicked"/>
+                                    <Button fx:id="btnAcceptCurrentFingerprints" text="%button.acceptCurrentFingerprints" managed="false" visible="false" wrapText="true" textAlignment="CENTER" onAction="#onAcceptCurrentFingerprintsButtonClicked"/>
+                                    <Button fx:id="btnStartOver" text="%button.startOver" managed="false" visible="false" wrapText="true" textAlignment="CENTER" onAction="#onStartOverButtonClicked"/>
+                                </VBox>
                             </VBox>
-                        </VBox>
+                        </ScrollPane>
                     </TitledPane>
                     <FourStateTitledPane fx:id="tpFingerprintDeviceLivePreview" text="%label.fingerprintDeviceLivePreview" maxHeight="Infinity" collapsible="false" focusTraversable="false">
                         <graphic>
-                            <Button fx:id="btnLivePreviewLegend">
+                            <Button fx:id="btnLivePreviewLegend" focusTraversable="false">
                                 <padding>
                                     <Insets top="1.0" bottom="3.0" right="5.0" left="5.0"/>
                                 </padding>
@@ -62,7 +68,7 @@
                                     </ImageView>
                                 </imageView>
                             </ImageViewPane>
-                            <ImageViewPane minHeight="85.0">
+                            <ImageViewPane minHeight="79.0">
                                 <imageView>
                                     <ImageView fx:id="ivFingerprintDeviceLivePreview" preserveRatio="true"/>
                                 </imageView>
@@ -97,7 +103,7 @@
                 <SplitPane fx:id="spFingerprints" dividerPositions="0.5" nodeOrientation="LEFT_TO_RIGHT">
                     <TitledPane fx:id="tpLeftHand" text="%label.leftHand" collapsible="false" wrapText="true" maxHeight="Infinity" HBox.hgrow="ALWAYS" focusTraversable="false">
                         <graphic>
-                            <Button fx:id="btnLeftHandLegend">
+                            <Button fx:id="btnLeftHandLegend" focusTraversable="false">
                                 <padding>
                                     <Insets top="1.0" bottom="3.0" right="5.0" left="5.0"/>
                                 </padding>
@@ -213,7 +219,7 @@
                     </TitledPane>
                     <TitledPane fx:id="tpRightHand" text="%label.rightHand" collapsible="false" wrapText="true" maxHeight="Infinity" HBox.hgrow="ALWAYS" focusTraversable="false">
                         <graphic>
-                            <Button fx:id="btnRightHandLegend">
+                            <Button fx:id="btnRightHandLegend" focusTraversable="false">
                                 <padding>
                                     <Insets top="1.0" bottom="3.0" right="5.0" left="5.0"/>
                                 </padding>

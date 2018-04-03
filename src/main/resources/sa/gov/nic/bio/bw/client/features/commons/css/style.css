@@ -52,6 +52,7 @@
 }
 
 .four-state-titled-pane:disabled {
+    -fx-background-color: linear-gradient(to bottom, derive(-fx-color,-15%) 95%, derive(-fx-color,-25%) 100%), -fx-inner-border, -fx-body-color;
     -fx-text-fill: fx-text-base-color;
 }
 
