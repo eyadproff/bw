@@ -129,6 +129,13 @@
                                             </ImageView>
                                         </imageView>
                                     </ImageViewPane>
+                                    <ImageViewPane>
+                                        <imageView>
+                                            <ImageView fx:id="ivLeftLittleSkip" preserveRatio="true">
+                                                <Image url="@../images/skip_icon.png"/>
+                                            </ImageView>
+                                        </imageView>
+                                    </ImageViewPane>
                                     <ImageViewPane minHeight="48.0">
                                         <imageView>
                                             <ImageView fx:id="ivLeftLittle" preserveRatio="true"/>
@@ -145,6 +152,13 @@
                                         <imageView>
                                             <ImageView fx:id="ivLeftRingPlaceholder" preserveRatio="true">
                                                 <Image url="@../images/image_place_holder.png"/>
+                                            </ImageView>
+                                        </imageView>
+                                    </ImageViewPane>
+                                    <ImageViewPane>
+                                        <imageView>
+                                            <ImageView fx:id="ivLeftRingSkip" preserveRatio="true">
+                                                <Image url="@../images/skip_icon.png"/>
                                             </ImageView>
                                         </imageView>
                                     </ImageViewPane>
@@ -167,6 +181,13 @@
                                             </ImageView>
                                         </imageView>
                                     </ImageViewPane>
+                                    <ImageViewPane>
+                                        <imageView>
+                                            <ImageView fx:id="ivLeftMiddleSkip" preserveRatio="true">
+                                                <Image url="@../images/skip_icon.png"/>
+                                            </ImageView>
+                                        </imageView>
+                                    </ImageViewPane>
                                     <ImageViewPane minHeight="48.0">
                                         <imageView>
                                             <ImageView fx:id="ivLeftMiddle" preserveRatio="true"/>
@@ -186,6 +207,13 @@
                                             </ImageView>
                                         </imageView>
                                     </ImageViewPane>
+                                    <ImageViewPane>
+                                        <imageView>
+                                            <ImageView fx:id="ivLeftIndexSkip" preserveRatio="true">
+                                                <Image url="@../images/skip_icon.png"/>
+                                            </ImageView>
+                                        </imageView>
+                                    </ImageViewPane>
                                     <ImageViewPane minHeight="48.0">
                                         <imageView>
                                             <ImageView fx:id="ivLeftIndex" preserveRatio="true"/>
@@ -202,6 +230,13 @@
                                         <imageView>
                                             <ImageView fx:id="ivLeftThumbPlaceholder" preserveRatio="true">
                                                 <Image url="@../images/image_place_holder.png"/>
+                                            </ImageView>
+                                        </imageView>
+                                    </ImageViewPane>
+                                    <ImageViewPane>
+                                        <imageView>
+                                            <ImageView fx:id="ivLeftThumbSkip" preserveRatio="true">
+                                                <Image url="@../images/skip_icon.png"/>
                                             </ImageView>
                                         </imageView>
                                     </ImageViewPane>
@@ -245,6 +280,13 @@
                                             </ImageView>
                                         </imageView>
                                     </ImageViewPane>
+                                    <ImageViewPane>
+                                        <imageView>
+                                            <ImageView fx:id="ivRightThumbSkip" preserveRatio="true">
+                                                <Image url="@../images/skip_icon.png"/>
+                                            </ImageView>
+                                        </imageView>
+                                    </ImageViewPane>
                                     <ImageViewPane minHeight="48.0">
                                         <imageView>
                                             <ImageView fx:id="ivRightThumb" preserveRatio="true"/>
@@ -261,6 +303,13 @@
                                         <imageView>
                                             <ImageView fx:id="ivRightIndexPlaceholder" preserveRatio="true">
                                                 <Image url="@../images/image_place_holder.png"/>
+                                            </ImageView>
+                                        </imageView>
+                                    </ImageViewPane>
+                                    <ImageViewPane>
+                                        <imageView>
+                                            <ImageView fx:id="ivRightIndexSkip" preserveRatio="true">
+                                                <Image url="@../images/skip_icon.png"/>
                                             </ImageView>
                                         </imageView>
                                     </ImageViewPane>
@@ -283,6 +332,13 @@
                                             </ImageView>
                                         </imageView>
                                     </ImageViewPane>
+                                    <ImageViewPane>
+                                        <imageView>
+                                            <ImageView fx:id="ivRightMiddleSkip" preserveRatio="true">
+                                                <Image url="@../images/skip_icon.png"/>
+                                            </ImageView>
+                                        </imageView>
+                                    </ImageViewPane>
                                     <ImageViewPane minHeight="48.0">
                                         <imageView>
                                             <ImageView fx:id="ivRightMiddle" preserveRatio="true"/>
@@ -302,6 +358,13 @@
                                             </ImageView>
                                         </imageView>
                                     </ImageViewPane>
+                                    <ImageViewPane>
+                                        <imageView>
+                                            <ImageView fx:id="ivRightRingSkip" preserveRatio="true">
+                                                <Image url="@../images/skip_icon.png"/>
+                                            </ImageView>
+                                        </imageView>
+                                    </ImageViewPane>
                                     <ImageViewPane minHeight="48.0">
                                         <imageView>
                                             <ImageView fx:id="ivRightRing" preserveRatio="true"/>
@@ -318,6 +381,13 @@
                                         <imageView>
                                             <ImageView fx:id="ivRightLittlePlaceholder" preserveRatio="true">
                                                 <Image url="@../images/image_place_holder.png"/>
+                                            </ImageView>
+                                        </imageView>
+                                    </ImageViewPane>
+                                    <ImageViewPane>
+                                        <imageView>
+                                            <ImageView fx:id="ivRightLittleSkip" preserveRatio="true">
+                                                <Image url="@../images/skip_icon.png"/>
                                             </ImageView>
                                         </imageView>
                                     </ImageViewPane>

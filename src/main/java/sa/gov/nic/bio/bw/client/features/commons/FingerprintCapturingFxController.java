@@ -96,6 +96,16 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 	@FXML private ImageView ivRightMiddlePlaceholder;
 	@FXML private ImageView ivRightRingPlaceholder;
 	@FXML private ImageView ivRightLittlePlaceholder;
+	@FXML private ImageView ivLeftLittleSkip;
+	@FXML private ImageView ivLeftRingSkip;
+	@FXML private ImageView ivLeftMiddleSkip;
+	@FXML private ImageView ivLeftIndexSkip;
+	@FXML private ImageView ivLeftThumbSkip;
+	@FXML private ImageView ivRightThumbSkip;
+	@FXML private ImageView ivRightIndexSkip;
+	@FXML private ImageView ivRightMiddleSkip;
+	@FXML private ImageView ivRightRingSkip;
+	@FXML private ImageView ivRightLittleSkip;
 	@FXML private ImageView ivFingerprintDeviceLivePreview;
 	@FXML private ImageView ivRightLittle;
 	@FXML private ImageView ivRightRing;
@@ -220,6 +230,18 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 				                                                                .and(cbRightIndex.selectedProperty()));
 		ivRightThumbPlaceholder.visibleProperty().bind(ivRightThumb.imageProperty().isNull()
 				                                                                .and(cbRightThumb.selectedProperty()));
+		
+		// show the skip icon if and only if the checkbox is not selected
+		ivLeftLittleSkip.visibleProperty().bind(cbLeftLittle.selectedProperty().not());
+		ivLeftRingSkip.visibleProperty().bind(cbLeftRing.selectedProperty().not());
+		ivLeftMiddleSkip.visibleProperty().bind(cbLeftMiddle.selectedProperty().not());
+		ivLeftIndexSkip.visibleProperty().bind(cbLeftIndex.selectedProperty().not());
+		ivLeftThumbSkip.visibleProperty().bind(cbLeftThumb.selectedProperty().not());
+		ivRightLittleSkip.visibleProperty().bind(cbRightLittle.selectedProperty().not());
+		ivRightRingSkip.visibleProperty().bind(cbRightRing.selectedProperty().not());
+		ivRightMiddleSkip.visibleProperty().bind(cbRightMiddle.selectedProperty().not());
+		ivRightIndexSkip.visibleProperty().bind(cbRightIndex.selectedProperty().not());
+		ivRightThumbSkip.visibleProperty().bind(cbRightThumb.selectedProperty().not());
 		
 		// show the image placeholder if and only if there is no image and the progress is not visible
 		ivFingerprintDeviceLivePreviewPlaceholder.visibleProperty().bind(ivFingerprintDeviceLivePreview.imageProperty()
@@ -380,12 +402,27 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 						return;
 					}
 					
+					FingerprintQualityThreshold qualityThreshold = fingerprintQualityThresholdMap.get(position);
+					
+					boolean acceptableFingerprintNfiq = qualityThreshold.getMaximumAcceptableNFIQ() >=
+																		fingerprint.getDmFingerData().getNfiqQuality();
+					
+					boolean acceptableFingerprintMinutiaeCount =
+							qualityThreshold.getMinimumAcceptableMinutiaeCount() <=
+																	fingerprint.getDmFingerData().getMinutiaeCount();
+					
+					boolean acceptableFingerprintImageIntensity =
+							qualityThreshold.getMinimumAcceptableImageIntensity() <=
+																	fingerprint.getDmFingerData().getIntensity() &&
+							qualityThreshold.getMaximumAcceptableImageIntensity() >=
+																	fingerprint.getDmFingerData().getIntensity();
+					
 					// show fingerprint
 					showSegmentedFingerprints(fingerprint, components.getImageView(),
 					                          components.getTitledPane(), components.getHandLabel(),
-					                          components.getFingerLabel(), true,
-					                         true,
-					                         true);
+					                          components.getFingerLabel(), acceptableFingerprintNfiq,
+					                          acceptableFingerprintMinutiaeCount,
+					                          acceptableFingerprintImageIntensity);
 					components.getTitledPane().setActive(true);
 					components.getTitledPane().setCaptured(true);
 					components.getTitledPane().setValid(true);
@@ -1220,6 +1257,7 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 			{
 				components.getImageView().setImage(null);
 				components.getCheckBox().setDisable(false);
+				components.getCheckBox().setSelected(true);
 				components.getTitledPane().setActive(false);
 				components.getTitledPane().setCaptured(false);
 				components.getTitledPane().setValid(false);
