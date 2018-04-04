@@ -513,7 +513,6 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 					return;
 				}
 				
-				boolean[] allAcceptable = {true};
 				List<Integer> positions = new ArrayList<>();
 				
 				if(components.getSlapPosition() == FingerPosition.RIGHT_SLAP)
@@ -536,11 +535,12 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 					positions.add(FingerPosition.LEFT_THUMB.getPosition());
 				}
 				
+				boolean[] allAcceptable = {true};
 				positions.forEach(position ->
 				{
 					Fingerprint fp = capturedFingerprints.get(position);
-					allAcceptable[0] = allAcceptable[0] && (fp.isAcceptableQuality() && !fp.isSkipped()) ||
-									   fp.isSkipped();
+					allAcceptable[0] = allAcceptable[0] && ((fp.isAcceptableQuality() && !fp.isSkipped()) ||
+									   fp.isSkipped());
 				});
 				
 				if(allAcceptable[0])
