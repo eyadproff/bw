@@ -6,6 +6,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.NodeOrientation;
@@ -44,6 +45,7 @@ import sa.gov.nic.bio.bw.client.core.beans.Fingerprint;
 import sa.gov.nic.bio.bw.client.core.beans.FingerprintQualityThreshold;
 import sa.gov.nic.bio.bw.client.core.beans.UserSession;
 import sa.gov.nic.bio.bw.client.core.biokit.FingerPosition;
+import sa.gov.nic.bio.bw.client.core.utils.AppConstants;
 import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.wizard.WizardStepFxControllerBase;
@@ -328,6 +330,100 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 			userSession.setAttribute("lookups.fingerprint.qualityThresholdMap", fingerprintQualityThresholdMap);
 		}
 		
+		class CustomEventHandler implements EventHandler<ActionEvent>
+		{
+			private FingerprintUiComponents components;
+			
+			private CustomEventHandler(FingerprintUiComponents components)
+			{
+				this.components = components;
+			}
+			
+			@Override
+			public void handle(ActionEvent event)
+			{
+				CheckBox checkBox = (CheckBox) event.getSource();
+				if(checkBox.isSelected()) return;
+				
+				@SuppressWarnings("unchecked")
+				List<String> userRoles = (List<String>) Context.getUserSession().getAttribute("userRoles");
+				
+				int userSkipAbility = 0;
+				
+				for(int i = 10; i >= 1; i--)
+				{
+					String skipNRole = System.getProperty(String.format(AppConstants.Locales.SAUDI_EN_LOCALE,
+	                                                    "jnlp.bio.bw.fingerprint.roles.skip%02d", i));
+					if(userRoles.contains(skipNRole))
+					{
+						userSkipAbility = i;
+						break;
+					}
+				}
+				
+				int[] totalSkipCount = {0};
+				
+				fingerprintUiComponentsMap.forEach((position, comps) ->
+				{
+				    if(!comps.getCheckBox().isSelected()) totalSkipCount[0]++;
+				});
+				
+				if(userSkipAbility >= totalSkipCount[0]) // has permission
+				{
+					String headerText = resources.getString("fingerprint.skippingFingerprint.confirmation.header");
+					String contentText = String.format(
+							resources.getString("fingerprint.skippingFingerprint.confirmation.message"),
+							components.getFingerLabel(), components.getHandLabel());
+					
+					boolean confirmed = Context.getCoreFxController().showConfirmationDialogAndWait(headerText,
+					                                                                                contentText);
+					if(!confirmed)
+					{
+						components.getCheckBox().setSelected(true);
+						event.consume();
+					}
+				}
+				else
+				{
+					String message;
+					if(totalSkipCount[0] == 1) message =
+							resources.getString("fingerprint.skippingFingerprint.notAuthorized.atAll");
+					else if(totalSkipCount[0] == 2) message =
+							resources.getString("fingerprint.skippingFingerprint.notAuthorized.noMore1");
+					else if(totalSkipCount[0] == 3) message =
+							resources.getString("fingerprint.skippingFingerprint.notAuthorized.noMore2");
+					else message = String.format(AppConstants.Locales.SAUDI_EN_LOCALE,
+                            resources.getString("fingerprint.skippingFingerprint.notAuthorized.noMoreN"),
+                            totalSkipCount[0]);
+					
+					components.getCheckBox().setSelected(true);
+					showWarningNotification(message);
+					event.consume();
+				}
+			}
+		}
+		
+		cbRightIndex.setOnAction(new CustomEventHandler(fingerprintUiComponentsMap.get(
+																		FingerPosition.RIGHT_INDEX.getPosition())));
+		cbRightMiddle.setOnAction(new CustomEventHandler(fingerprintUiComponentsMap.get(
+																		FingerPosition.RIGHT_MIDDLE.getPosition())));
+		cbRightRing.setOnAction(new CustomEventHandler(fingerprintUiComponentsMap.get(
+																		FingerPosition.RIGHT_RING.getPosition())));
+		cbRightLittle.setOnAction(new CustomEventHandler(fingerprintUiComponentsMap.get(
+																		FingerPosition.RIGHT_LITTLE.getPosition())));
+		cbLeftIndex.setOnAction(new CustomEventHandler(fingerprintUiComponentsMap.get(
+																		FingerPosition.LEFT_INDEX.getPosition())));
+		cbLeftMiddle.setOnAction(new CustomEventHandler(fingerprintUiComponentsMap.get(
+																		FingerPosition.LEFT_MIDDLE.getPosition())));
+		cbLeftRing.setOnAction(new CustomEventHandler(fingerprintUiComponentsMap.get(
+																		FingerPosition.LEFT_RING.getPosition())));
+		cbLeftLittle.setOnAction(new CustomEventHandler(fingerprintUiComponentsMap.get(
+																		FingerPosition.LEFT_LITTLE.getPosition())));
+		cbRightThumb.setOnAction(new CustomEventHandler(fingerprintUiComponentsMap.get(
+																		FingerPosition.RIGHT_THUMB.getPosition())));
+		cbLeftThumb.setOnAction(new CustomEventHandler(fingerprintUiComponentsMap.get(
+																		FingerPosition.LEFT_THUMB.getPosition())));
+		
 		class CustomChangeListener implements ChangeListener<Boolean>
 		{
 			private FingerprintUiComponents components;
@@ -471,7 +567,6 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 			}
 		}
 		
-		
 		cbRightIndex.selectedProperty().addListener(new CustomChangeListener(fingerprintUiComponentsMap.get(
 																		FingerPosition.RIGHT_INDEX.getPosition())));
 		cbRightMiddle.selectedProperty().addListener(new CustomChangeListener(fingerprintUiComponentsMap.get(
@@ -583,7 +678,6 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 			    GuiUtils.showNode(lblStatus, true);
 				GuiUtils.showNode(piProgress, false);
 			    GuiUtils.showNode(btnStopFingerprintCapturing, false);
-				
 				tpFingerprintDeviceLivePreview.setActive(false);
 				ivFingerprintDeviceLivePreview.setImage(null);
 				
@@ -896,6 +990,15 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 		        if(result.getReturnCode() == CaptureFingerprintResponse.SuccessCodes.SUCCESS)
 		        {
 			        tpFingerprintDeviceLivePreview.setCaptured(true);
+			
+			        // show the final slap image in place of the live preview image
+			        String capturedImageBase64 = result.getCapturedImage();
+			        byte[] bytes = Base64.getDecoder().decode(capturedImageBase64);
+			        ivFingerprintDeviceLivePreview.setImage(new Image(new ByteArrayInputStream(bytes)));
+			
+			        GuiUtils.attachImageDialog(Context.getCoreFxController(), ivFingerprintDeviceLivePreview,
+			                                   resources.getString("label.contextMenu.slapFingerprints"),
+			                                   resources.getString("label.contextMenu.showImage"));
 		        	
 			        if(result.isWrongSlap())
 			        {
@@ -1027,17 +1130,7 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 	{
 		tpFingerprintDeviceLivePreview.setValid(true);
 		
-		// show the final slap image in place of the live preview image
-		String capturedImageBase64 = captureFingerprintResponse.getCapturedImage();
-		byte[] bytes = Base64.getDecoder().decode(capturedImageBase64);
-		ivFingerprintDeviceLivePreview.setImage(new Image(new ByteArrayInputStream(bytes)));
-		
-		GuiUtils.attachImageDialog(Context.getCoreFxController(), ivFingerprintDeviceLivePreview,
-		                           resources.getString("label.contextMenu.slapFingerprints"),
-		                           resources.getString("label.contextMenu.showImage"));
-		
 		List<DMFingerData> fingerData = captureFingerprintResponse.getFingerData();
-		
 		Task<ServiceResponse<DuplicatedFingerprintsResponse>> findDuplicatesTask =
 															new Task<ServiceResponse<DuplicatedFingerprintsResponse>>()
 		{
@@ -1320,9 +1413,15 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 				contentText = resources.getString("fingerprint.acceptWrongSlap.left.confirmation.message");
 			
 			boolean confirmed = Context.getCoreFxController().showConfirmationDialogAndWait(headerText, contentText);
-			
 			if(confirmed)
 			{
+				// show the final slap image in place of the live preview image
+				String capturedImageBase64 = wrongSlapCapturedFingerprints.getCapturedImage();
+				byte[] bytes = Base64.getDecoder().decode(capturedImageBase64);
+				ivFingerprintDeviceLivePreview.setImage(new Image(new ByteArrayInputStream(bytes)));
+				GuiUtils.attachImageDialog(Context.getCoreFxController(), ivFingerprintDeviceLivePreview,
+				                           resources.getString("label.contextMenu.slapFingerprints"),
+				                           resources.getString("label.contextMenu.showImage"));
 				GuiUtils.showNode(btnAcceptCurrentSlap, false);
 				processSlapFingerprints(wrongSlapCapturedFingerprints);
 			}
@@ -1523,7 +1622,6 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 		String contentText = resources.getString("fingerprint.startingOver.confirmation.message");
 		
 		boolean confirmed = Context.getCoreFxController().showConfirmationDialogAndWait(headerText, contentText);
-		
 		if(confirmed)
 		{
 			hideNotification();
