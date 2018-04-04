@@ -1591,7 +1591,7 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 		{
 		    boolean currentSlap = currentSlapPosition == components.getSlapPosition().getPosition();
 			Fingerprint fingerprint = capturedFingerprints.get(position);
-			if(currentSlap && fingerprint.isSkipped())
+			if(fingerprint != null && currentSlap && fingerprint.isSkipped())
 		    {
 			    fingerprint.setDmFingerData(null);
 		    }
