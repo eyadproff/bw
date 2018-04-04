@@ -1436,10 +1436,7 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 	@FXML
 	private void onAcceptBestAttemptFingerprintsButtonClicked(ActionEvent event)
 	{
-		GuiUtils.showNode(btnStartFingerprintCapturing, false);
 		GuiUtils.showNode(btnAcceptBestAttemptFingerprints, false);
-		GuiUtils.showNode(lblStatus, true);
-		GuiUtils.showNode(ivCompleted, true);
 		
 		List<DMFingerData> bestAttemptFingerData = findBestAttemptFingerprints();
 		currentSlapAttempts.clear();
@@ -1611,6 +1608,9 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 		else if(currentSlapPosition == FingerPosition.TWO_THUMBS.getPosition())
 		{
 			lblStatus.setText(resources.getString("label.status.successfullyCapturedAllFingers"));
+			GuiUtils.showNode(btnStartFingerprintCapturing, false);
+			GuiUtils.showNode(lblStatus, true);
+			GuiUtils.showNode(ivCompleted, true);
 		}
 		
 		activateFingerIndicatorsForNextCapturing(++currentSlapPosition);

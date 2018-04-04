@@ -72,7 +72,8 @@ public class LoginPaneFxController extends BodyFxControllerBase implements Persi
 		// request focus once the scene is attached to txtUsername
 		txtUsername.sceneProperty().addListener((observable, oldValue, newValue) -> txtUsername.requestFocus());
 		
-		if(Context.getRuntimeEnvironment() == RuntimeEnvironment.LOCAL)
+		if(Context.getRuntimeEnvironment() == RuntimeEnvironment.LOCAL ||
+		   Context.getRuntimeEnvironment() == RuntimeEnvironment.DEV)
 		{
 			txtUsername.setText(Context.getConfigManager().getProperty("dev.login.username"));
 			txtPassword.setText(Context.getConfigManager().getProperty("dev.login.password"));
