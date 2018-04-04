@@ -1615,6 +1615,7 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 		
 		activateFingerIndicatorsForNextCapturing(++currentSlapPosition);
 		renameCaptureFingerprintsButton(false);
+		currentSlapAttempts.clear();
 		GuiUtils.showNode(btnStartOver, true);
 	}
 	
@@ -1651,6 +1652,7 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 			});
 			
 			capturedFingerprints.clear();
+			currentSlapAttempts.clear();
 			retryActive = false;
 			currentSlapPosition = FingerPosition.RIGHT_SLAP.getPosition();
 			activateFingerIndicatorsForNextCapturing(currentSlapPosition);
