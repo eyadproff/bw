@@ -439,9 +439,15 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue)
 			{
 				skippingCurrentSlap = false;
+				int[] activeFingerprintsCount = {0};
 				
 				if(components.getSlapPosition() == FingerPosition.RIGHT_SLAP)
 				{
+					if(cbRightIndex.isSelected()) activeFingerprintsCount[0]++;
+					if(cbRightMiddle.isSelected()) activeFingerprintsCount[0]++;
+					if(cbRightRing.isSelected()) activeFingerprintsCount[0]++;
+					if(cbRightLittle.isSelected()) activeFingerprintsCount[0]++;
+					
 					if(!cbRightIndex.isSelected() && !cbRightMiddle.isSelected() && !cbRightRing.isSelected() &&
 							!cbRightLittle.isSelected())
 					{
@@ -458,6 +464,11 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 				}
 				else if(components.getSlapPosition() == FingerPosition.LEFT_SLAP)
 				{
+					if(cbLeftIndex.isSelected()) activeFingerprintsCount[0]++;
+					if(cbLeftMiddle.isSelected()) activeFingerprintsCount[0]++;
+					if(cbLeftRing.isSelected()) activeFingerprintsCount[0]++;
+					if(cbLeftLittle.isSelected()) activeFingerprintsCount[0]++;
+					
 					if(!cbLeftIndex.isSelected() && !cbLeftMiddle.isSelected() && !cbLeftRing.isSelected() &&
 							!cbLeftLittle.isSelected())
 					{
@@ -474,6 +485,9 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 				}
 				else if(components.getSlapPosition() == FingerPosition.TWO_THUMBS)
 				{
+					if(cbRightThumb.isSelected()) activeFingerprintsCount[0]++;
+					if(cbLeftThumb.isSelected()) activeFingerprintsCount[0]++;
+					
 					if(!cbRightThumb.isSelected() && !cbLeftThumb.isSelected())
 					{
 						skippingCurrentSlap = true;
@@ -487,6 +501,13 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 								resources.getString("button.captureThumbsFingerprints"));
 					}
 				}
+				
+				long attemptCount = currentSlapAttempts.stream()
+						.filter(list -> list.size() == activeFingerprintsCount[0])
+						.count();
+				
+				GuiUtils.showNode(btnAcceptBestAttemptFingerprints, acceptBadQualityFingerprint &&
+							      attemptCount >= acceptedBadQualityFingerprintMinRetires);
 				
 				Fingerprint fingerprint = capturedFingerprints.get(components.getFingerPosition().getPosition());
 				if(fingerprint == null) return;
@@ -561,16 +582,14 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 						if(fp != null) noDuplicates[0] = noDuplicates[0] && !fp.isDuplicated();
 					});
 					
-					int lastFingerprintsCount = currentSlapAttempts.get(currentSlapAttempts.size() - 1).size();
-					long attemptCount = currentSlapAttempts.stream()
-														   .filter(list -> list.size() == lastFingerprintsCount)
-														   .count();
-					
 					GuiUtils.showNode(btnAcceptSelectedFingerprints, false);
 					GuiUtils.showNode(btnAcceptBestAttemptFingerprints, noDuplicates[0] &&
-							acceptBadQualityFingerprint &&
-							attemptCount >= acceptedBadQualityFingerprintMinRetires);
-					lblStatus.setText(resources.getString("label.status.someFingerprintsAreNotAcceptable"));
+									  acceptBadQualityFingerprint &&
+									  attemptCount >= acceptedBadQualityFingerprintMinRetires);
+					
+					if(noDuplicates[0]) lblStatus.setText(
+										resources.getString("label.status.someFingerprintsAreNotAcceptable"));
+					else lblStatus.setText(resources.getString("label.status.someFingerprintsAreDuplicated"));
 				}
 			}
 		}
