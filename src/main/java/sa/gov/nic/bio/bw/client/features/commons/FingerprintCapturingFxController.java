@@ -159,7 +159,6 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 	@FXML private Button btnStopFingerprintCapturing;
 	@FXML private Button btnAcceptCurrentSlap;
 	@FXML private Button btnAcceptBestAttemptFingerprints;
-	@FXML private Button btnAcceptSelectedFingerprints;
 	@FXML private Button btnStartOver;
 	@FXML private Button btnLivePreviewLegend;
 	@FXML private Button btnRightHandLegend;
@@ -173,8 +172,10 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 	private Map<Integer, FingerprintUiComponents> fingerprintUiComponentsMap = new HashMap<>();
 	private List<List<DMFingerData>> currentSlapAttempts = new ArrayList<>();
 	private CaptureFingerprintResponse wrongSlapCapturedFingerprints;
-	private boolean retryActive = false;
-	private boolean skippingCurrentSlap = false;
+	private boolean skipRightSlap = false;
+	private boolean skipLeftSlap = false;
+	private boolean skipThumbs = false;
+	private boolean workflowStarted = false;
 	private boolean acceptBadQualityFingerprint = false;
 	private int acceptedBadQualityFingerprintMinRetires = Integer.MAX_VALUE;
 	
@@ -193,7 +194,7 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 		btnPrevious.setOnAction(event -> goPrevious());
 		btnNext.setOnAction(event -> goNext());
 		// TODO: enable this when done
-		btnNext.disableProperty().bind(ivCompleted.visibleProperty().not());
+		//btnNext.disableProperty().bind(ivCompleted.visibleProperty().not());
 		
 		paneControlsInnerContainer.minHeightProperty().bind(Bindings.createDoubleBinding(() ->
 		{
@@ -428,192 +429,63 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 		
 		class CustomChangeListener implements ChangeListener<Boolean>
 		{
-			private FingerprintUiComponents components;
-			
-			private CustomChangeListener(FingerprintUiComponents components)
-			{
-				this.components = components;
-			}
-			
 			@Override
 			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue)
 			{
-				skippingCurrentSlap = false;
-				int[] activeFingerprintsCount = {0};
+				skipRightSlap = !cbRightIndex.isSelected() && !cbRightMiddle.isSelected() &&
+								!cbRightRing.isSelected() && !cbRightLittle.isSelected();
+				skipLeftSlap = !cbLeftIndex.isSelected() && !cbLeftMiddle.isSelected() &&
+								!cbLeftRing.isSelected() && !cbLeftLittle.isSelected();
+				skipThumbs = !cbRightThumb.isSelected() && !cbLeftThumb.isSelected();
 				
-				if(components.getSlapPosition() == FingerPosition.RIGHT_SLAP)
+				if(skipRightSlap && skipLeftSlap && skipThumbs)
 				{
-					if(cbRightIndex.isSelected()) activeFingerprintsCount[0]++;
-					if(cbRightMiddle.isSelected()) activeFingerprintsCount[0]++;
-					if(cbRightRing.isSelected()) activeFingerprintsCount[0]++;
-					if(cbRightLittle.isSelected()) activeFingerprintsCount[0]++;
-					
-					if(!cbRightIndex.isSelected() && !cbRightMiddle.isSelected() && !cbRightRing.isSelected() &&
-							!cbRightLittle.isSelected())
-					{
-						skippingCurrentSlap = true;
-						btnStartFingerprintCapturing.setText(resources.getString("button.skipRightSlap"));
-					}
-					else
-					{
-						if(retryActive) btnStartFingerprintCapturing.setText(
-								resources.getString("button.recaptureRightSlapFingerprints"));
-						else btnStartFingerprintCapturing.setText(
-								resources.getString("button.captureRightSlapFingerprints"));
-					}
+					btnStartFingerprintCapturing.setText(resources.getString("button.skipAllFingerprints"));
+					currentSlapPosition = FingerPosition.TWO_THUMBS.getPosition() + 1;
 				}
-				else if(components.getSlapPosition() == FingerPosition.LEFT_SLAP)
+				else if(skipRightSlap && skipLeftSlap)
 				{
-					if(cbLeftIndex.isSelected()) activeFingerprintsCount[0]++;
-					if(cbLeftMiddle.isSelected()) activeFingerprintsCount[0]++;
-					if(cbLeftRing.isSelected()) activeFingerprintsCount[0]++;
-					if(cbLeftLittle.isSelected()) activeFingerprintsCount[0]++;
-					
-					if(!cbLeftIndex.isSelected() && !cbLeftMiddle.isSelected() && !cbLeftRing.isSelected() &&
-							!cbLeftLittle.isSelected())
-					{
-						skippingCurrentSlap = true;
-						btnStartFingerprintCapturing.setText(resources.getString("button.skipLeftSlap"));
-					}
-					else
-					{
-						if(retryActive) btnStartFingerprintCapturing.setText(
-								resources.getString("button.recaptureLeftSlapFingerprints"));
-						else btnStartFingerprintCapturing.setText(
-								resources.getString("button.captureLeftSlapFingerprints"));
-					}
+					btnStartFingerprintCapturing.setText(resources.getString("button.captureThumbsFingerprints"));
+					currentSlapPosition = FingerPosition.TWO_THUMBS.getPosition();
 				}
-				else if(components.getSlapPosition() == FingerPosition.TWO_THUMBS)
+				else if(skipRightSlap)
 				{
-					if(cbRightThumb.isSelected()) activeFingerprintsCount[0]++;
-					if(cbLeftThumb.isSelected()) activeFingerprintsCount[0]++;
-					
-					if(!cbRightThumb.isSelected() && !cbLeftThumb.isSelected())
-					{
-						skippingCurrentSlap = true;
-						btnStartFingerprintCapturing.setText(resources.getString("button.skipThumbs"));
-					}
-					else
-					{
-						if(retryActive) btnStartFingerprintCapturing.setText(
-								resources.getString("button.recaptureThumbsFingerprints"));
-						else btnStartFingerprintCapturing.setText(
-								resources.getString("button.captureThumbsFingerprints"));
-					}
-				}
-				
-				long attemptCount = currentSlapAttempts.stream()
-						.filter(list -> list.size() == activeFingerprintsCount[0])
-						.count();
-				
-				GuiUtils.showNode(btnAcceptBestAttemptFingerprints, acceptBadQualityFingerprint &&
-							      attemptCount >= acceptedBadQualityFingerprintMinRetires);
-				
-				Fingerprint fingerprint = capturedFingerprints.get(components.getFingerPosition().getPosition());
-				if(fingerprint == null) return;
-				
-				fingerprint.setSkipped(!newValue);
-				
-				if(fingerprint.getDmFingerData() == null) return;
-				
-				if(newValue)
-				{
-					showFingerprint(fingerprint, components.getImageView(), components.getTitledPane(),
-					                components.getHandLabel(), components.getFingerLabel());
+					btnStartFingerprintCapturing.setText(
+													resources.getString("button.captureLeftSlapFingerprints"));
+					currentSlapPosition = FingerPosition.LEFT_SLAP.getPosition();
 				}
 				else
 				{
-					components.getImageView().setImage(null);
-					components.getTitledPane().setActive(false);
-					components.getTitledPane().setCaptured(false);
-					components.getTitledPane().setValid(false);
-					components.getTitledPane().setDuplicated(false);
+					btnStartFingerprintCapturing.setText(
+													resources.getString("button.captureRightSlapFingerprints"));
+					currentSlapPosition = FingerPosition.RIGHT_SLAP.getPosition();
 				}
 				
-				if(skippingCurrentSlap)
-				{
-					GuiUtils.showNode(btnAcceptSelectedFingerprints, false);
-					GuiUtils.showNode(btnAcceptBestAttemptFingerprints, false);
-					return;
-				}
 				
-				List<Integer> positions = new ArrayList<>();
-				
-				if(components.getSlapPosition() == FingerPosition.RIGHT_SLAP)
+				// activate/deactivate the fingerprint based on whether its slap is skipped or not
+				fingerprintUiComponentsMap.forEach((position, components) ->
 				{
-					positions.add(FingerPosition.RIGHT_INDEX.getPosition());
-					positions.add(FingerPosition.RIGHT_MIDDLE.getPosition());
-					positions.add(FingerPosition.RIGHT_RING.getPosition());
-					positions.add(FingerPosition.RIGHT_LITTLE.getPosition());
-				}
-				else if(components.getSlapPosition() == FingerPosition.LEFT_SLAP)
-				{
-					positions.add(FingerPosition.LEFT_INDEX.getPosition());
-					positions.add(FingerPosition.LEFT_MIDDLE.getPosition());
-					positions.add(FingerPosition.LEFT_RING.getPosition());
-					positions.add(FingerPosition.LEFT_LITTLE.getPosition());
-				}
-				else if(components.getSlapPosition() == FingerPosition.TWO_THUMBS)
-				{
-					positions.add(FingerPosition.RIGHT_THUMB.getPosition());
-					positions.add(FingerPosition.LEFT_THUMB.getPosition());
-				}
-				
-				boolean[] allAcceptable = {true};
-				positions.forEach(position ->
-				{
-					Fingerprint fp = capturedFingerprints.get(position);
-					allAcceptable[0] = allAcceptable[0] && ((fp.isAcceptableQuality() && !fp.isSkipped()) ||
-									   fp.isSkipped());
+					if(components.getSlapPosition() == FingerPosition.RIGHT_SLAP)
+									components.getTitledPane().setActive(!skipRightSlap);
+					else if(components.getSlapPosition() == FingerPosition.LEFT_SLAP)
+									components.getTitledPane().setActive(skipRightSlap && !skipLeftSlap);
+					else if(components.getSlapPosition() == FingerPosition.TWO_THUMBS)
+									components.getTitledPane().setActive(skipRightSlap && skipLeftSlap && !skipThumbs);
+					
 				});
-				
-				if(allAcceptable[0])
-				{
-					GuiUtils.showNode(btnAcceptBestAttemptFingerprints, false);
-					GuiUtils.showNode(btnAcceptSelectedFingerprints, true);
-					lblStatus.setText(resources.getString("label.status.allFingerprintsAreAcceptable"));
-				}
-				else
-				{
-					boolean[] noDuplicates = {true};
-					positions.forEach(position ->
-					{
-					    Fingerprint fp = capturedFingerprints.get(position);
-						if(fp != null) noDuplicates[0] = noDuplicates[0] && !fp.isDuplicated();
-					});
-					
-					GuiUtils.showNode(btnAcceptSelectedFingerprints, false);
-					GuiUtils.showNode(btnAcceptBestAttemptFingerprints, noDuplicates[0] &&
-									  acceptBadQualityFingerprint &&
-									  attemptCount >= acceptedBadQualityFingerprintMinRetires);
-					
-					if(noDuplicates[0]) lblStatus.setText(
-										resources.getString("label.status.someFingerprintsAreNotAcceptable"));
-					else lblStatus.setText(resources.getString("label.status.someFingerprintsAreDuplicated"));
-				}
 			}
 		}
 		
-		cbRightIndex.selectedProperty().addListener(new CustomChangeListener(fingerprintUiComponentsMap.get(
-																		FingerPosition.RIGHT_INDEX.getPosition())));
-		cbRightMiddle.selectedProperty().addListener(new CustomChangeListener(fingerprintUiComponentsMap.get(
-																		FingerPosition.RIGHT_MIDDLE.getPosition())));
-		cbRightRing.selectedProperty().addListener(new CustomChangeListener(fingerprintUiComponentsMap.get(
-																		FingerPosition.RIGHT_RING.getPosition())));
-		cbRightLittle.selectedProperty().addListener(new CustomChangeListener(fingerprintUiComponentsMap.get(
-																		FingerPosition.RIGHT_LITTLE.getPosition())));
-		cbLeftIndex.selectedProperty().addListener(new CustomChangeListener(fingerprintUiComponentsMap.get(
-																		FingerPosition.LEFT_INDEX.getPosition())));
-		cbLeftMiddle.selectedProperty().addListener(new CustomChangeListener(fingerprintUiComponentsMap.get(
-																		FingerPosition.LEFT_MIDDLE.getPosition())));
-		cbLeftRing.selectedProperty().addListener(new CustomChangeListener(fingerprintUiComponentsMap.get(
-																		FingerPosition.LEFT_RING.getPosition())));
-		cbLeftLittle.selectedProperty().addListener(new CustomChangeListener(fingerprintUiComponentsMap.get(
-																		FingerPosition.LEFT_LITTLE.getPosition())));
-		cbRightThumb.selectedProperty().addListener(new CustomChangeListener(fingerprintUiComponentsMap.get(
-																		FingerPosition.RIGHT_THUMB.getPosition())));
-		cbLeftThumb.selectedProperty().addListener(new CustomChangeListener(fingerprintUiComponentsMap.get(
-																		FingerPosition.LEFT_THUMB.getPosition())));
+		cbRightIndex.selectedProperty().addListener(new CustomChangeListener());
+		cbRightMiddle.selectedProperty().addListener(new CustomChangeListener());
+		cbRightRing.selectedProperty().addListener(new CustomChangeListener());
+		cbRightLittle.selectedProperty().addListener(new CustomChangeListener());
+		cbLeftIndex.selectedProperty().addListener(new CustomChangeListener());
+		cbLeftMiddle.selectedProperty().addListener(new CustomChangeListener());
+		cbLeftRing.selectedProperty().addListener(new CustomChangeListener());
+		cbLeftLittle.selectedProperty().addListener(new CustomChangeListener());
+		cbRightThumb.selectedProperty().addListener(new CustomChangeListener());
+		cbLeftThumb.selectedProperty().addListener(new CustomChangeListener());
 	}
 	
 	@Override
@@ -635,7 +507,11 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 																	uiInputData.get(KEY_CAPTURED_FINGERPRINTS);
 			if(capturedFingerprints != null && !capturedFingerprints.isEmpty())
 			{
+				workflowStarted = true;
 				this.capturedFingerprints = capturedFingerprints;
+				
+				// disable all the checkboxes
+				fingerprintUiComponentsMap.forEach((position, components) -> components.getCheckBox().setDisable(true));
 				
 				capturedFingerprints.forEach((position, fingerprint) ->
 				{
@@ -716,8 +592,7 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 				    lblStatus.setText(resources.getString(
 			        		                        "label.status.fingerprintScannerInitializedSuccessfully"));
 				    activateFingerIndicatorsForNextCapturing(currentSlapPosition);
-				    GuiUtils.showNode(btnStartOver,
-				                      currentSlapPosition > FingerPosition.RIGHT_SLAP.getPosition());
+				    GuiUtils.showNode(btnStartOver, workflowStarted);
 			    }
 			    else
 			    {
@@ -734,7 +609,7 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 				if(currentSlapPosition <= FingerPosition.TWO_THUMBS.getPosition()) GuiUtils.showNode(
 																			btnStartFingerprintCapturing, true);
 				activateFingerIndicatorsForNextCapturing(currentSlapPosition);
-				GuiUtils.showNode(btnStartOver, currentSlapPosition > FingerPosition.RIGHT_SLAP.getPosition());
+				GuiUtils.showNode(btnStartOver, workflowStarted);
 			}
 			else if(deviceManagerGadgetPaneController.isDevicesRunnerRunning())
 			{
@@ -775,6 +650,7 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 		Context.getCoreFxController().getDeviceManagerGadgetPaneController()
 									 .setFingerprintScannerInitializationListener(null);
 		
+		if(!workflowStarted) return;
 		if(btnStopFingerprintCapturing.isVisible()) btnStopFingerprintCapturing.fire();
 		
 		// remove incomplete slaps
@@ -862,6 +738,19 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 	@FXML
 	private void onStartFingerprintCapturingButtonClicked(ActionEvent event)
 	{
+		workflowStarted = true;
+		GuiUtils.showNode(btnStartFingerprintCapturing, false);
+		
+		// disable all the checkboxes
+		fingerprintUiComponentsMap.forEach((position, components) -> components.getCheckBox().setDisable(true));
+		
+		if(skipRightSlap && skipLeftSlap && skipThumbs)
+		{
+			GuiUtils.showNode(ivCompleted, true);
+			lblStatus.setText(resources.getString("label.status.allFingerprintsAreSkipped"));
+			return;
+		}
+		
 		hideNotification();
 		tpFingerprintDeviceLivePreview.setActive(false);
 		tpFingerprintDeviceLivePreview.setCaptured(false);
@@ -883,57 +772,8 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 			}
 		});
 		
-		if(skippingCurrentSlap)
-		{
-			skippingCurrentSlap = false;
-			
-			fingerprintUiComponentsMap.forEach((position, components) ->
-			{
-				if(currentSlapPosition == FingerPosition.RIGHT_SLAP.getPosition())
-				{
-					lblStatus.setText(resources.getString("label.status.skippedRightSlap"));
-					GuiUtils.showNode(btnStartFingerprintCapturing, true);
-				}
-				else if(currentSlapPosition == FingerPosition.LEFT_SLAP.getPosition())
-				{
-					lblStatus.setText(resources.getString("label.status.skippedLeftSlap"));
-					GuiUtils.showNode(btnStartFingerprintCapturing, true);
-				}
-				else if(currentSlapPosition == FingerPosition.TWO_THUMBS.getPosition())
-				{
-					lblStatus.setText(resources.getString("label.status.successfullyCapturedAllFingers"));
-					GuiUtils.showNode(btnStartFingerprintCapturing, false);
-					GuiUtils.showNode(ivCompleted, true);
-				}
-				
-				if(currentSlapPosition == components.getSlapPosition().getPosition())
-				{
-					components.getTitledPane().setActive(false);
-					components.getTitledPane().setCaptured(false);
-					components.getTitledPane().setValid(false);
-					components.getTitledPane().setDuplicated(false);
-					components.getImageView().setImage(null);
-					capturedFingerprints.put(components.getFingerPosition().getPosition(),
-					                         new Fingerprint(null, false,
-					                                         false,
-					                                         false,
-					                                         false, false, true));
-				}
-			});
-			
-			activateFingerIndicatorsForNextCapturing(++currentSlapPosition);
-			renameCaptureFingerprintsButton(false);
-			GuiUtils.showNode(btnStartOver, true);
-			
-			return;
-		}
-		
-		GuiUtils.showNode(btnStartFingerprintCapturing, false);
 		GuiUtils.showNode(piProgress, true);
 		GuiUtils.showNode(piFingerprintDeviceLivePreview, true);
-		
-		// disable all the checkboxes
-		fingerprintUiComponentsMap.forEach((position, components) -> components.getCheckBox().setDisable(true));
 		
 		// prepare the current titledPane
 		fingerprintUiComponentsMap.forEach((position, components) ->
@@ -1057,8 +897,7 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 				        
 				        GuiUtils.showNode(btnStartFingerprintCapturing, true);
 				        GuiUtils.showNode(btnAcceptCurrentSlap, true);
-				        GuiUtils.showNode(btnStartOver,
-				                          currentSlapPosition > FingerPosition.RIGHT_SLAP.getPosition());
+				        GuiUtils.showNode(btnStartOver, true);
 				        
 				        // save the captured fingerprints
 				        wrongSlapCapturedFingerprints = result;
@@ -1073,14 +912,11 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 		        else if(result.getReturnCode() != CaptureFingerprintResponse.FailureCodes.FAILED_TO_CAPTURE_FINAL_IMAGE)
 		        {
 			        GuiUtils.showNode(btnStartFingerprintCapturing, true);
-			        GuiUtils.showNode(btnStartOver,
-			                          currentSlapPosition > FingerPosition.RIGHT_SLAP.getPosition());
+			        GuiUtils.showNode(btnStartOver, true);
 			        
 			        fingerprintUiComponentsMap.forEach((integer, components) ->
 			        {
 				        GuiUtils.showNode(components.getSvgPath(), false);
-				        if(currentSlapPosition == components.getSlapPosition().getPosition())
-					                                                components.getCheckBox().setDisable(false);
 			        });
 		        	
 			        lblStatus.setText(String.format(firstLivePreviewingResponse[0] ?
@@ -1092,14 +928,11 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 	        else
 	        {
 		        GuiUtils.showNode(btnStartFingerprintCapturing, true);
-		        GuiUtils.showNode(btnStartOver,
-		                          currentSlapPosition > FingerPosition.RIGHT_SLAP.getPosition());
+		        GuiUtils.showNode(btnStartOver, true);
 		        
 		        fingerprintUiComponentsMap.forEach((integer, components) ->
 		        {
 			        GuiUtils.showNode(components.getSvgPath(), false);
-			        if(currentSlapPosition == components.getSlapPosition().getPosition())
-			                                                    components.getCheckBox().setDisable(false);
 		        });
 		        
 		        lblStatus.setText(String.format(firstLivePreviewingResponse[0] ?
@@ -1119,13 +952,11 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 		{
 			GuiUtils.showNode(piFingerprintDeviceLivePreview, false);
 			GuiUtils.showNode(btnStartFingerprintCapturing, true);
-			GuiUtils.showNode(btnStartOver, currentSlapPosition > FingerPosition.RIGHT_SLAP.getPosition());
+			GuiUtils.showNode(btnStartOver, true);
 			
 			fingerprintUiComponentsMap.forEach((integer, components) ->
 			{
 			    GuiUtils.showNode(components.getSvgPath(), false);
-			    if(currentSlapPosition == components.getSlapPosition().getPosition())
-			                                                components.getCheckBox().setDisable(false);
 			});
 			
 			Throwable exception = capturingFingerprintTask.getException();
@@ -1238,14 +1069,11 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 				}
 				else
 				{
-					GuiUtils.showNode(btnStartOver,
-					                  currentSlapPosition > FingerPosition.RIGHT_SLAP.getPosition());
+					GuiUtils.showNode(btnStartOver, true);
 					
 					fingerprintUiComponentsMap.forEach((integer, components) ->
 					{
 					    GuiUtils.showNode(components.getSvgPath(), false);
-					    if(currentSlapPosition == components.getSlapPosition().getPosition())
-					                                                components.getCheckBox().setDisable(false);
 					});
 					
 					lblStatus.setText(String.format(
@@ -1255,13 +1083,11 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 			}
 			else
 			{
-				GuiUtils.showNode(btnStartOver, currentSlapPosition > FingerPosition.RIGHT_SLAP.getPosition());
+				GuiUtils.showNode(btnStartOver, true);
 				
 				fingerprintUiComponentsMap.forEach((integer, components) ->
 				{
 				    GuiUtils.showNode(components.getSvgPath(), false);
-				    if(currentSlapPosition == components.getSlapPosition().getPosition())
-				                                                components.getCheckBox().setDisable(false);
 				});
 				
 				lblStatus.setText(String.format(
@@ -1282,8 +1108,6 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 			fingerprintUiComponentsMap.forEach((integer, components) ->
 			{
 			    GuiUtils.showNode(components.getSvgPath(), false);
-			    if(currentSlapPosition == components.getSlapPosition().getPosition())
-			                                                components.getCheckBox().setDisable(false);
 			});
 			
 			Throwable exception = findDuplicatesTask.getException();
@@ -1347,8 +1171,6 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 			fingerprintUiComponentsMap.forEach((integer, components) ->
 			{
 			    GuiUtils.showNode(components.getSvgPath(), false);
-			    if(currentSlapPosition == components.getSlapPosition().getPosition())
-			                                                            components.getCheckBox().setDisable(false);
 			});
 			
 		    tpFingerprintDeviceLivePreview.setActive(false);
@@ -1391,8 +1213,6 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 			fingerprintUiComponentsMap.forEach((integer, components) ->
 			{
 			    GuiUtils.showNode(components.getSvgPath(), false);
-			    if(currentSlapPosition == components.getSlapPosition().getPosition())
-		                                                    components.getCheckBox().setDisable(false);
 			});
 			
 		    tpFingerprintDeviceLivePreview.setActive(false);
@@ -1482,33 +1302,6 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 		List<Integer> nonSkippedFingerprintPositions = new ArrayList<>();
 		bestAttemptFingerData.forEach(fp -> nonSkippedFingerprintPositions.add(fp.getPosition()));
 		
-		if(currentSlapPosition == FingerPosition.RIGHT_SLAP.getPosition())
-		{
-			for(int i = FingerPosition.RIGHT_INDEX.getPosition(); i <= FingerPosition.RIGHT_LITTLE.getPosition(); i++)
-			{
-				FingerprintUiComponents components = fingerprintUiComponentsMap.get(i);
-				if(!nonSkippedFingerprintPositions.contains(i)) components.getCheckBox().setSelected(false);
-			}
-		}
-		else if(currentSlapPosition == FingerPosition.LEFT_SLAP.getPosition())
-		{
-			for(int i = FingerPosition.LEFT_INDEX.getPosition(); i <= FingerPosition.LEFT_LITTLE.getPosition(); i++)
-			{
-				FingerprintUiComponents components = fingerprintUiComponentsMap.get(i);
-				if(!nonSkippedFingerprintPositions.contains(i)) components.getCheckBox().setSelected(false);
-			}
-		}
-		else if(currentSlapPosition == FingerPosition.TWO_THUMBS.getPosition())
-		{
-			FingerprintUiComponents components =
-										fingerprintUiComponentsMap.get(FingerPosition.RIGHT_THUMB.getPosition());
-			if(!nonSkippedFingerprintPositions.contains(FingerPosition.RIGHT_THUMB.getPosition()))
-																		components.getCheckBox().setSelected(false);
-			components = fingerprintUiComponentsMap.get(FingerPosition.LEFT_THUMB.getPosition());
-			if(!nonSkippedFingerprintPositions.contains(FingerPosition.LEFT_THUMB.getPosition()))
-																		components.getCheckBox().setSelected(false);
-		}
-		
 		showFingerprints(bestAttemptFingerData, null, null, null,
 		                 true);
 		
@@ -1520,135 +1313,120 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 		int lastFingerprintsCount = currentSlapAttempts.get(currentSlapAttempts.size() - 1).size();
 		currentSlapAttempts.removeIf(fingerprints -> fingerprints.size() < lastFingerprintsCount);
 		
+		Predicate<DMFingerData> acceptanceFilter = dmFingerData ->
+		{
+			FingerprintQualityThreshold qualityThreshold = fingerprintQualityThresholdMap.get(
+					dmFingerData.getPosition());
+			boolean acceptableFingerprintNfiq =
+					qualityThreshold.getMaximumAcceptableNFIQ() >= dmFingerData.getNfiqQuality();
+			
+			boolean acceptableFingerprintMinutiaeCount =
+					qualityThreshold.getMinimumAcceptableMinutiaeCount() <= dmFingerData.getMinutiaeCount();
+			
+			boolean acceptableFingerprintImageIntensity =
+					qualityThreshold.getMinimumAcceptableImageIntensity() <= dmFingerData.getIntensity() &&
+							qualityThreshold.getMaximumAcceptableImageIntensity() >= dmFingerData.getIntensity();
+			
+			return acceptableFingerprintNfiq && acceptableFingerprintMinutiaeCount &&
+					acceptableFingerprintImageIntensity;
+		};
+		
 		currentSlapAttempts.sort((o1, o2) ->
 		{
-			int sum1 = o1.stream().mapToInt(DMFingerData::getPosition).sum();
-			int sum2 = o2.stream().mapToInt(DMFingerData::getPosition).sum();
+			int sum1 = (int) o1.stream().filter(acceptanceFilter).count();
+			int sum2 = (int) o2.stream().filter(acceptanceFilter).count();
 			
-			int compare = -Integer.compare(sum1, sum2);
+			int compare = Integer.compare(sum1, sum2);
 			if(compare != 0) return compare;
-			else // if both have same amount of non-skipped fingerprints and they are the same fingerprints
+			else // if both have same amount of acceptable fingerprints
 			{
-				Predicate<DMFingerData> acceptanceFilter = dmFingerData ->
-				{
-					FingerprintQualityThreshold qualityThreshold = fingerprintQualityThresholdMap.get(
-							dmFingerData.getPosition());
-					boolean acceptableFingerprintNfiq =
-							qualityThreshold.getMaximumAcceptableNFIQ() >= dmFingerData.getNfiqQuality();
-					
-					boolean acceptableFingerprintMinutiaeCount =
-							qualityThreshold.getMinimumAcceptableMinutiaeCount() <= dmFingerData.getMinutiaeCount();
-					
-					boolean acceptableFingerprintImageIntensity =
-							qualityThreshold.getMinimumAcceptableImageIntensity() <= dmFingerData.getIntensity() &&
-									qualityThreshold.getMaximumAcceptableImageIntensity() >= dmFingerData.getIntensity();
-					
-					return acceptableFingerprintNfiq && acceptableFingerprintMinutiaeCount &&
-							acceptableFingerprintImageIntensity;
-				};
+				sum1 = o1.stream().mapToInt(DMFingerData::getPosition).sum();
+				sum2 = o2.stream().mapToInt(DMFingerData::getPosition).sum();
 				
-				sum1 = (int) o1.stream().filter(acceptanceFilter).count();
-				sum2 = (int) o2.stream().filter(acceptanceFilter).count();
-				
-				compare = Integer.compare(sum1, sum2);
+				compare = -Integer.compare(sum1, sum2);
 				if(compare != 0) return compare;
-				else // if both have same amount of acceptable fingerprints
+				else // if both have same amount of acceptable fingerprints and they are the same fingerprints
 				{
-					sum1 = o1.stream().mapToInt(DMFingerData::getPosition).sum();
-					sum2 = o2.stream().mapToInt(DMFingerData::getPosition).sum();
+					Comparator<DMFingerData> prioritizingComparator = (fp1, fp2) ->
+							-Integer.compare(fp1.getPosition(), fp2.getPosition());
+					List<DMFingerData> list1 = o1.stream().filter(acceptanceFilter)
+							.sorted(prioritizingComparator)
+							.collect(Collectors.toList());
+					List<DMFingerData> list2 = o1.stream().filter(acceptanceFilter)
+							.sorted(prioritizingComparator)
+							.collect(Collectors.toList());
 					
-					compare = -Integer.compare(sum1, sum2);
-					if(compare != 0) return compare;
-					else // if both have same amount of acceptable fingerprints and they are the same fingerprints
+					for(int i = 0; i < list1.size(); i++)
 					{
-						Comparator<DMFingerData> prioritizingComparator = (fp1, fp2) ->
-								-Integer.compare(fp1.getPosition(), fp2.getPosition());
-						List<DMFingerData> list1 = o1.stream().filter(acceptanceFilter)
-								.sorted(prioritizingComparator)
-								.collect(Collectors.toList());
-						List<DMFingerData> list2 = o1.stream().filter(acceptanceFilter)
-								.sorted(prioritizingComparator)
-								.collect(Collectors.toList());
-						
-						for(int i = 0; i < list1.size(); i++)
+						DMFingerData fp1 = list1.get(i);
+						DMFingerData fp2 = list2.get(i);
+						compare = -Integer.compare(fp1.getNfiqQuality(), fp2.getNfiqQuality());
+						if(compare != 0) return compare;
+						else // both have the same NFIQ
 						{
-							DMFingerData fp1 = list1.get(i);
-							DMFingerData fp2 = list2.get(i);
-							compare = -Integer.compare(fp1.getNfiqQuality(), fp2.getNfiqQuality());
+							compare = Integer.compare(fp1.getMinutiaeCount(), fp2.getMinutiaeCount());
 							if(compare != 0) return compare;
-							else // both have the same NFIQ
+							else // both have the same minutiae count
 							{
-								compare = Integer.compare(fp1.getMinutiaeCount(), fp2.getMinutiaeCount());
-								if(compare != 0) return compare;
-								else // both have the same minutiae count
+								if(fp1.getIntensity() == fp2.getIntensity()) continue;
+								
+								FingerprintQualityThreshold qualityThreshold =
+										fingerprintQualityThresholdMap.get(fp1.getPosition());
+								
+								boolean fp1AcceptableFingerprintImageIntensity =
+										qualityThreshold.getMinimumAcceptableImageIntensity() <=
+												fp1.getIntensity() &&
+												qualityThreshold.getMaximumAcceptableImageIntensity() >=
+														fp1.getIntensity();
+								
+								boolean fp2AcceptableFingerprintImageIntensity =
+										qualityThreshold.getMinimumAcceptableImageIntensity() <=
+												fp2.getIntensity() &&
+												qualityThreshold.getMaximumAcceptableImageIntensity() >=
+														fp2.getIntensity();
+								
+								if(fp1AcceptableFingerprintImageIntensity &&
+										!fp2AcceptableFingerprintImageIntensity) return 1;
+								if(!fp1AcceptableFingerprintImageIntensity &&
+										fp2AcceptableFingerprintImageIntensity) return -1;
+								else // both have bad image intensity
 								{
-									if(fp1.getIntensity() == fp2.getIntensity()) continue;
-									
-									FingerprintQualityThreshold qualityThreshold =
-											fingerprintQualityThresholdMap.get(fp1.getPosition());
-									
-									boolean fp1AcceptableFingerprintImageIntensity =
-											qualityThreshold.getMinimumAcceptableImageIntensity() <=
-													fp1.getIntensity() &&
-													qualityThreshold.getMaximumAcceptableImageIntensity() >=
-															fp1.getIntensity();
-									
-									boolean fp2AcceptableFingerprintImageIntensity =
-											qualityThreshold.getMinimumAcceptableImageIntensity() <=
-													fp2.getIntensity() &&
-													qualityThreshold.getMaximumAcceptableImageIntensity() >=
-															fp2.getIntensity();
-									
-									if(fp1AcceptableFingerprintImageIntensity &&
-											!fp2AcceptableFingerprintImageIntensity) return 1;
-									if(!fp1AcceptableFingerprintImageIntensity &&
-											fp2AcceptableFingerprintImageIntensity) return -1;
-									else // both have bad image intensity
+									if(fp1.getIntensity() >
+											qualityThreshold.getMaximumAcceptableImageIntensity() &&
+											fp2.getIntensity() <
+													qualityThreshold.getMinimumAcceptableImageIntensity())
+									{
+										return 1;
+									}
+									if(fp1.getIntensity() <
+											qualityThreshold.getMinimumAcceptableImageIntensity() &&
+											fp2.getIntensity() >
+													qualityThreshold.getMaximumAcceptableImageIntensity())
+									{
+										return -1;
+									}
+									else // both on the same side
 									{
 										if(fp1.getIntensity() >
 												qualityThreshold.getMaximumAcceptableImageIntensity() &&
-												fp2.getIntensity() <
-														qualityThreshold.getMinimumAcceptableImageIntensity())
-										{
-											return 1;
-										}
-										if(fp1.getIntensity() <
-												qualityThreshold.getMinimumAcceptableImageIntensity() &&
 												fp2.getIntensity() >
 														qualityThreshold.getMaximumAcceptableImageIntensity())
 										{
-											return -1;
+											return 1;
 										}
-										else // both on the same side
-										{
-											if(fp1.getIntensity() >
-													qualityThreshold.getMaximumAcceptableImageIntensity() &&
-													fp2.getIntensity() >
-															qualityThreshold.getMaximumAcceptableImageIntensity())
-											{
-												return 1;
-											}
-											else return -1;
-										}
+										else return -1;
 									}
 								}
 							}
 						}
-						
-						return compare;
 					}
+					
+					return compare;
 				}
 			}
 		});
 		
 		return currentSlapAttempts.get(0);
-	}
-	
-	@FXML
-	private void onAcceptSelectedFingerprintsButtonClicked(ActionEvent event)
-	{
-		GuiUtils.showNode(btnAcceptSelectedFingerprints, false);
-		acceptFingerprintsAndGoNext();
 	}
 	
 	private void acceptFingerprintsAndGoNext()
@@ -1694,6 +1472,7 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 		boolean confirmed = Context.getCoreFxController().showConfirmationDialogAndWait(headerText, contentText);
 		if(confirmed)
 		{
+			workflowStarted = false;
 			hideNotification();
 			tpFingerprintDeviceLivePreview.setActive(false);
 			tpFingerprintDeviceLivePreview.setCaptured(false);
@@ -1719,7 +1498,6 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 			
 			capturedFingerprints.clear();
 			currentSlapAttempts.clear();
-			retryActive = false;
 			currentSlapPosition = FingerPosition.RIGHT_SLAP.getPosition();
 			activateFingerIndicatorsForNextCapturing(currentSlapPosition);
 			renameCaptureFingerprintsButton(false);
@@ -1728,15 +1506,13 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 	
 	private void showSegmentedFingerprints(List<DMFingerData> fingerData, Map<Integer, Boolean> duplicatedFingers)
 	{
-		retryActive = false;
 		boolean[] allAcceptableQuality = {true};
 		boolean[] noDuplicates = {true};
 		showFingerprints(fingerData, duplicatedFingers, allAcceptableQuality, noDuplicates, false);
+		GuiUtils.showNode(btnStartOver, true);
 		
 		if(allAcceptableQuality[0])
 		{
-			GuiUtils.showNode(btnStartOver, true);
-			
 			if(currentSlapPosition == FingerPosition.RIGHT_SLAP.getPosition())
 			{
 				lblStatus.setText(resources.getString("label.status.successfullyCapturedRightSlap"));
@@ -1760,8 +1536,6 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 		}
 		else
 		{
-			GuiUtils.showNode(btnStartOver, currentSlapPosition > FingerPosition.RIGHT_SLAP.getPosition());
-			
 			if(noDuplicates[0])
 				lblStatus.setText(resources.getString("label.status.someFingerprintsAreNotAcceptable"));
 			else lblStatus.setText(resources.getString("label.status.someFingerprintsAreDuplicated"));
@@ -1774,12 +1548,8 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 			{
 				currentSlapAttempts.add(fingerData);
 				
-				int lastFingerprintsCount = currentSlapAttempts.get(currentSlapAttempts.size() - 1).size();
-				long attemptCount = currentSlapAttempts.stream()
-													   .filter(list -> list.size() == lastFingerprintsCount)
-													   .count();
-				if(attemptCount >= acceptedBadQualityFingerprintMinRetires)
-										GuiUtils.showNode(btnAcceptBestAttemptFingerprints, true);
+				GuiUtils.showNode(btnAcceptBestAttemptFingerprints,
+			                     currentSlapAttempts.size() >= acceptedBadQualityFingerprintMinRetires);
 			}
 		}
 		
@@ -1866,7 +1636,6 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 		fingerprintUiComponentsMap.forEach((position, components) ->
 		{
 			boolean currentSlap = slapPosition == components.getSlapPosition().getPosition();
-			components.getCheckBox().setDisable(!currentSlap);
 			
 			if(!capturedFingerprints.containsKey(position))
 			{
@@ -1897,7 +1666,6 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 		}
 		
 		btnStartFingerprintCapturing.setText(buttonLabel);
-		retryActive = retry;
 	}
 	
 	private void attachFingerprintResultTooltip(Node sourceNode, Node targetNode, int nfiq, int minutiaeCount,

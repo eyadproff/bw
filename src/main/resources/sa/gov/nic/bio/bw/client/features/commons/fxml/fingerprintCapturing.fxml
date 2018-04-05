@@ -47,7 +47,6 @@
                                     <Button fx:id="btnStopFingerprintCapturing" text="%button.stopFingerprintCapturing" managed="false" visible="false" wrapText="true" textAlignment="CENTER" onAction="#onStopFingerprintCapturingButtonClicked"/>
                                     <Button fx:id="btnAcceptCurrentSlap" text="%button.acceptCurrentSlap" managed="false" visible="false" wrapText="true" textAlignment="CENTER" onAction="#onAcceptCurrentSlapButtonClicked"/>
                                     <Button fx:id="btnAcceptBestAttemptFingerprints" text="%button.acceptBestAttemptFingerprints" managed="false" visible="false" wrapText="true" textAlignment="CENTER" onAction="#onAcceptBestAttemptFingerprintsButtonClicked"/>
-                                    <Button fx:id="btnAcceptSelectedFingerprints" text="%button.acceptSelectedFingerprints" managed="false" visible="false" wrapText="true" textAlignment="CENTER" onAction="#onAcceptSelectedFingerprintsButtonClicked"/>
                                     <Button fx:id="btnStartOver" text="%button.startOver" managed="false" visible="false" wrapText="true" textAlignment="CENTER" onAction="#onStartOverButtonClicked"/>
                                 </VBox>
                             </VBox>
@@ -145,7 +144,7 @@
                                 </StackPane>
                             </FourStateTitledPane>
                             <HBox GridPane.rowIndex="1" GridPane.columnIndex="0" alignment="CENTER">
-                                <CheckBox fx:id="cbLeftLittle" selected="true" GridPane.halignment="CENTER" disable="true"/>
+                                <CheckBox fx:id="cbLeftLittle" selected="true" GridPane.halignment="CENTER"/>
                             </HBox>
                             <FourStateTitledPane fx:id="tpLeftRing" text="%label.fingers.ring" collapsible="false" wrapText="true" maxHeight="Infinity" graphicTextGap="0.0" HBox.hgrow="ALWAYS" GridPane.rowIndex="0" GridPane.columnIndex="1" GridPane.vgrow="ALWAYS" focusTraversable="false">
                                 <StackPane>
@@ -171,7 +170,7 @@
                                 </StackPane>
                             </FourStateTitledPane>
                             <HBox GridPane.rowIndex="1" GridPane.columnIndex="1" alignment="CENTER">
-                                <CheckBox fx:id="cbLeftRing" selected="true" GridPane.halignment="CENTER" disable="true"/>
+                                <CheckBox fx:id="cbLeftRing" selected="true" GridPane.halignment="CENTER"/>
                             </HBox>
                             <FourStateTitledPane fx:id="tpLeftMiddle" text="%label.fingers.middle" collapsible="false" wrapText="true" maxHeight="Infinity" graphicTextGap="0.0" HBox.hgrow="ALWAYS" GridPane.rowIndex="0" GridPane.columnIndex="2" GridPane.vgrow="ALWAYS" focusTraversable="false">
                                 <StackPane>
@@ -197,7 +196,7 @@
                                 </StackPane>
                             </FourStateTitledPane>
                             <HBox GridPane.rowIndex="1" GridPane.columnIndex="2" alignment="CENTER">
-                                <CheckBox fx:id="cbLeftMiddle" selected="true" GridPane.halignment="CENTER" disable="true"/>
+                                <CheckBox fx:id="cbLeftMiddle" selected="true" GridPane.halignment="CENTER"/>
                             </HBox>
                             <FourStateTitledPane fx:id="tpLeftIndex" text="%label.fingers.index" collapsible="false" wrapText="true" maxHeight="Infinity" graphicTextGap="0.0" HBox.hgrow="ALWAYS" GridPane.rowIndex="0" GridPane.columnIndex="3" GridPane.vgrow="ALWAYS" focusTraversable="false">
                                 <StackPane>
@@ -223,7 +222,7 @@
                                 </StackPane>
                             </FourStateTitledPane>
                             <HBox GridPane.rowIndex="1" GridPane.columnIndex="3" alignment="CENTER">
-                                <CheckBox fx:id="cbLeftIndex" selected="true" GridPane.halignment="CENTER" disable="true"/>
+                                <CheckBox fx:id="cbLeftIndex" selected="true" GridPane.halignment="CENTER"/>
                             </HBox>
                             <FourStateTitledPane fx:id="tpLeftThumb" text="%label.fingers.thumb" collapsible="false" wrapText="true" maxHeight="Infinity" graphicTextGap="0.0" HBox.hgrow="ALWAYS" GridPane.rowIndex="0" GridPane.columnIndex="4" GridPane.vgrow="ALWAYS" focusTraversable="false">
                                 <StackPane>
@@ -249,7 +248,7 @@
                                 </StackPane>
                             </FourStateTitledPane>
                             <HBox GridPane.rowIndex="1" GridPane.columnIndex="4" alignment="CENTER">
-                                <CheckBox fx:id="cbLeftThumb" selected="true" GridPane.halignment="CENTER" disable="true"/>
+                                <CheckBox fx:id="cbLeftThumb" selected="true" GridPane.halignment="CENTER"/>
                             </HBox>
                         </GridPane>
                     </TitledPane>
@@ -296,7 +295,7 @@
                                 </StackPane>
                             </FourStateTitledPane>
                             <HBox GridPane.rowIndex="1" GridPane.columnIndex="0" alignment="CENTER">
-                                <CheckBox fx:id="cbRightThumb" selected="true" GridPane.halignment="CENTER" disable="true"/>
+                                <CheckBox fx:id="cbRightThumb" selected="true" GridPane.halignment="CENTER"/>
                             </HBox>
                             <FourStateTitledPane fx:id="tpRightIndex" text="%label.fingers.index" collapsible="false" wrapText="true" maxHeight="Infinity" graphicTextGap="0.0" HBox.hgrow="ALWAYS" GridPane.rowIndex="0" GridPane.columnIndex="1" GridPane.vgrow="ALWAYS" focusTraversable="false">
                                 <StackPane>
@@ -322,7 +321,7 @@
                                 </StackPane>
                             </FourStateTitledPane>
                             <HBox GridPane.rowIndex="1" GridPane.columnIndex="1" alignment="CENTER">
-                                <CheckBox fx:id="cbRightIndex" selected="true" GridPane.halignment="CENTER" disable="true"/>
+                                <CheckBox fx:id="cbRightIndex" selected="true" GridPane.halignment="CENTER"/>
                             </HBox>
                             <FourStateTitledPane fx:id="tpRightMiddle" text="%label.fingers.middle" collapsible="false" wrapText="true" maxHeight="Infinity" graphicTextGap="0.0" HBox.hgrow="ALWAYS" GridPane.rowIndex="0" GridPane.columnIndex="2" GridPane.vgrow="ALWAYS" focusTraversable="false">
                                 <StackPane>
@@ -348,7 +347,7 @@
                                 </StackPane>
                             </FourStateTitledPane>
                             <HBox GridPane.rowIndex="1" GridPane.columnIndex="2" alignment="CENTER">
-                                <CheckBox fx:id="cbRightMiddle" selected="true" GridPane.halignment="CENTER" disable="true"/>
+                                <CheckBox fx:id="cbRightMiddle" selected="true" GridPane.halignment="CENTER"/>
                             </HBox>
                             <FourStateTitledPane fx:id="tpRightRing" text="%label.fingers.ring" collapsible="false" wrapText="true" maxHeight="Infinity" graphicTextGap="0.0" HBox.hgrow="ALWAYS" GridPane.rowIndex="0" GridPane.columnIndex="3" GridPane.vgrow="ALWAYS" focusTraversable="false">
                                 <StackPane>
@@ -374,7 +373,7 @@
                                 </StackPane>
                             </FourStateTitledPane>
                             <HBox GridPane.rowIndex="1" GridPane.columnIndex="3" alignment="CENTER">
-                                <CheckBox fx:id="cbRightRing" selected="true" GridPane.halignment="CENTER" disable="true"/>
+                                <CheckBox fx:id="cbRightRing" selected="true" GridPane.halignment="CENTER"/>
                             </HBox>
                             <FourStateTitledPane fx:id="tpRightLittle" text="%label.fingers.little" collapsible="false" wrapText="true" maxHeight="Infinity" graphicTextGap="0.0" HBox.hgrow="ALWAYS" GridPane.rowIndex="0" GridPane.columnIndex="4" GridPane.vgrow="ALWAYS" focusTraversable="false">
                                 <StackPane>
@@ -400,7 +399,7 @@
                                 </StackPane>
                             </FourStateTitledPane>
                             <HBox GridPane.rowIndex="1" GridPane.columnIndex="4" alignment="CENTER">
-                                <CheckBox fx:id="cbRightLittle" selected="true" GridPane.halignment="CENTER" disable="true"/>
+                                <CheckBox fx:id="cbRightLittle" selected="true" GridPane.halignment="CENTER"/>
                             </HBox>
                         </GridPane>
                     </TitledPane>
