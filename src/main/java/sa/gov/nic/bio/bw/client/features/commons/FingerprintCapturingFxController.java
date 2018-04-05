@@ -512,6 +512,7 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 				if(skippingCurrentSlap)
 				{
 					GuiUtils.showNode(btnAcceptSelectedFingerprints, false);
+					GuiUtils.showNode(btnAcceptBestAttemptFingerprints, false);
 					return;
 				}
 				
