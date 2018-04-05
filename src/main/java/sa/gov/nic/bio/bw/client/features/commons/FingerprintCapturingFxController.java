@@ -744,6 +744,7 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 	{
 		workflowStarted = true;
 		GuiUtils.showNode(btnStartFingerprintCapturing, false);
+		GuiUtils.showNode(lblStatus, true);
 		
 		// disable all the checkboxes
 		fingerprintUiComponentsMap.forEach((position, components) -> components.getCheckBox().setDisable(true));
