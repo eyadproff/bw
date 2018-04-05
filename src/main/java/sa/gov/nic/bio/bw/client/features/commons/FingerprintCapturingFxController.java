@@ -192,9 +192,11 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 		
 		btnPrevious.setOnAction(event -> goPrevious());
 		btnNext.setOnAction(event -> goNext());
+		// TODO: enable this when done
 		btnNext.disableProperty().bind(ivCompleted.visibleProperty().not());
 		
-		paneControlsInnerContainer.minHeightProperty().bind(Bindings.createDoubleBinding(() -> {
+		paneControlsInnerContainer.minHeightProperty().bind(Bindings.createDoubleBinding(() ->
+		{
 			paneControlsOuterContainer.requestLayout();
 			return paneControlsOuterContainer.getViewportBounds().getHeight();
 		}, paneControlsOuterContainer.viewportBoundsProperty()));
@@ -555,13 +557,18 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 					positions.forEach(position ->
 					{
 					    Fingerprint fp = capturedFingerprints.get(position);
-						noDuplicates[0] = noDuplicates[0] && !fp.isDuplicated();
+						if(fp != null) noDuplicates[0] = noDuplicates[0] && !fp.isDuplicated();
 					});
+					
+					int lastFingerprintsCount = currentSlapAttempts.get(currentSlapAttempts.size() - 1).size();
+					long attemptCount = currentSlapAttempts.stream()
+														   .filter(list -> list.size() == lastFingerprintsCount)
+														   .count();
 					
 					GuiUtils.showNode(btnAcceptSelectedFingerprints, false);
 					GuiUtils.showNode(btnAcceptBestAttemptFingerprints, noDuplicates[0] &&
 							acceptBadQualityFingerprint &&
-							currentSlapAttempts.size() >= acceptedBadQualityFingerprintMinRetires);
+							attemptCount >= acceptedBadQualityFingerprintMinRetires);
 					lblStatus.setText(resources.getString("label.status.someFingerprintsAreNotAcceptable"));
 				}
 			}
@@ -844,6 +851,17 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 		GuiUtils.showNode(btnAcceptCurrentSlap, false);
 		GuiUtils.showNode(btnAcceptBestAttemptFingerprints, false);
 		GuiUtils.showNode(lblStatus, true);
+		
+		fingerprintUiComponentsMap.forEach((position, components) ->
+		{
+			if(components.getSlapPosition().getPosition() == currentSlapPosition)
+			{
+				components.getTitledPane().setCaptured(false);
+				components.getTitledPane().setValid(false);
+				components.getTitledPane().setDuplicated(false);
+				components.getImageView().setImage(null);
+			}
+		});
 		
 		if(skippingCurrentSlap)
 		{
@@ -1441,6 +1459,36 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 		List<DMFingerData> bestAttemptFingerData = findBestAttemptFingerprints();
 		currentSlapAttempts.clear();
 		
+		List<Integer> nonSkippedFingerprintPositions = new ArrayList<>();
+		bestAttemptFingerData.forEach(fp -> nonSkippedFingerprintPositions.add(fp.getPosition()));
+		
+		if(currentSlapPosition == FingerPosition.RIGHT_SLAP.getPosition())
+		{
+			for(int i = FingerPosition.RIGHT_INDEX.getPosition(); i <= FingerPosition.RIGHT_LITTLE.getPosition(); i++)
+			{
+				FingerprintUiComponents components = fingerprintUiComponentsMap.get(i);
+				if(!nonSkippedFingerprintPositions.contains(i)) components.getCheckBox().setSelected(false);
+			}
+		}
+		else if(currentSlapPosition == FingerPosition.LEFT_SLAP.getPosition())
+		{
+			for(int i = FingerPosition.LEFT_INDEX.getPosition(); i <= FingerPosition.LEFT_LITTLE.getPosition(); i++)
+			{
+				FingerprintUiComponents components = fingerprintUiComponentsMap.get(i);
+				if(!nonSkippedFingerprintPositions.contains(i)) components.getCheckBox().setSelected(false);
+			}
+		}
+		else if(currentSlapPosition == FingerPosition.TWO_THUMBS.getPosition())
+		{
+			FingerprintUiComponents components =
+										fingerprintUiComponentsMap.get(FingerPosition.RIGHT_THUMB.getPosition());
+			if(!nonSkippedFingerprintPositions.contains(FingerPosition.RIGHT_THUMB.getPosition()))
+																		components.getCheckBox().setSelected(false);
+			components = fingerprintUiComponentsMap.get(FingerPosition.LEFT_THUMB.getPosition());
+			if(!nonSkippedFingerprintPositions.contains(FingerPosition.LEFT_THUMB.getPosition()))
+																		components.getCheckBox().setSelected(false);
+		}
+		
 		showFingerprints(bestAttemptFingerData, null, null, null,
 		                 true);
 		
@@ -1449,127 +1497,125 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 	
 	private List<DMFingerData> findBestAttemptFingerprints()
 	{
+		int lastFingerprintsCount = currentSlapAttempts.get(currentSlapAttempts.size() - 1).size();
+		currentSlapAttempts.removeIf(fingerprints -> fingerprints.size() < lastFingerprintsCount);
+		
 		currentSlapAttempts.sort((o1, o2) ->
 		{
-			int compare = Integer.compare(o1.size(), o2.size());
+			int sum1 = o1.stream().mapToInt(DMFingerData::getPosition).sum();
+			int sum2 = o2.stream().mapToInt(DMFingerData::getPosition).sum();
+			
+			int compare = -Integer.compare(sum1, sum2);
 			if(compare != 0) return compare;
-			else // if both have same amount of non-skipped fingerprints
+			else // if both have same amount of non-skipped fingerprints and they are the same fingerprints
 			{
-				int sum1 = o1.stream().mapToInt(DMFingerData::getPosition).sum();
-				int sum2 = o2.stream().mapToInt(DMFingerData::getPosition).sum();
-				
-				compare = -Integer.compare(sum1, sum2);
-				if(compare != 0) return compare;
-				else // if both have same amount of non-skipped fingerprints and they are the same fingerprints
+				Predicate<DMFingerData> acceptanceFilter = dmFingerData ->
 				{
-					Predicate<DMFingerData> acceptanceFilter = dmFingerData ->
-					{
-						FingerprintQualityThreshold qualityThreshold = fingerprintQualityThresholdMap.get(
-								dmFingerData.getPosition());
-						boolean acceptableFingerprintNfiq =
-								qualityThreshold.getMaximumAcceptableNFIQ() >= dmFingerData.getNfiqQuality();
-						
-						boolean acceptableFingerprintMinutiaeCount =
-								qualityThreshold.getMinimumAcceptableMinutiaeCount() <= dmFingerData.getMinutiaeCount();
-						
-						boolean acceptableFingerprintImageIntensity =
-								qualityThreshold.getMinimumAcceptableImageIntensity() <= dmFingerData.getIntensity() &&
-								qualityThreshold.getMaximumAcceptableImageIntensity() >= dmFingerData.getIntensity();
-						
-						return acceptableFingerprintNfiq && acceptableFingerprintMinutiaeCount &&
-							   acceptableFingerprintImageIntensity;
-					};
+					FingerprintQualityThreshold qualityThreshold = fingerprintQualityThresholdMap.get(
+							dmFingerData.getPosition());
+					boolean acceptableFingerprintNfiq =
+							qualityThreshold.getMaximumAcceptableNFIQ() >= dmFingerData.getNfiqQuality();
 					
-					sum1 = (int) o1.stream().filter(acceptanceFilter).count();
-					sum2 = (int) o2.stream().filter(acceptanceFilter).count();
+					boolean acceptableFingerprintMinutiaeCount =
+							qualityThreshold.getMinimumAcceptableMinutiaeCount() <= dmFingerData.getMinutiaeCount();
 					
-					compare = Integer.compare(sum1, sum2);
+					boolean acceptableFingerprintImageIntensity =
+							qualityThreshold.getMinimumAcceptableImageIntensity() <= dmFingerData.getIntensity() &&
+									qualityThreshold.getMaximumAcceptableImageIntensity() >= dmFingerData.getIntensity();
+					
+					return acceptableFingerprintNfiq && acceptableFingerprintMinutiaeCount &&
+							acceptableFingerprintImageIntensity;
+				};
+				
+				sum1 = (int) o1.stream().filter(acceptanceFilter).count();
+				sum2 = (int) o2.stream().filter(acceptanceFilter).count();
+				
+				compare = Integer.compare(sum1, sum2);
+				if(compare != 0) return compare;
+				else // if both have same amount of acceptable fingerprints
+				{
+					sum1 = o1.stream().mapToInt(DMFingerData::getPosition).sum();
+					sum2 = o2.stream().mapToInt(DMFingerData::getPosition).sum();
+					
+					compare = -Integer.compare(sum1, sum2);
 					if(compare != 0) return compare;
-					else // if both have same amount of acceptable fingerprints
+					else // if both have same amount of acceptable fingerprints and they are the same fingerprints
 					{
-						sum1 = o1.stream().mapToInt(DMFingerData::getPosition).sum();
-						sum2 = o2.stream().mapToInt(DMFingerData::getPosition).sum();
+						Comparator<DMFingerData> prioritizingComparator = (fp1, fp2) ->
+								-Integer.compare(fp1.getPosition(), fp2.getPosition());
+						List<DMFingerData> list1 = o1.stream().filter(acceptanceFilter)
+								.sorted(prioritizingComparator)
+								.collect(Collectors.toList());
+						List<DMFingerData> list2 = o1.stream().filter(acceptanceFilter)
+								.sorted(prioritizingComparator)
+								.collect(Collectors.toList());
 						
-						compare = -Integer.compare(sum1, sum2);
-						if(compare != 0) return compare;
-						else // if both have same amount of acceptable fingerprints and they are the same fingerprints
+						for(int i = 0; i < list1.size(); i++)
 						{
-							Comparator<DMFingerData> prioritizingComparator = (fp1, fp2) ->
-																-Integer.compare(fp1.getPosition(), fp2.getPosition());
-							List<DMFingerData> list1 = o1.stream().filter(acceptanceFilter)
-																  .sorted(prioritizingComparator)
-																  .collect(Collectors.toList());
-							List<DMFingerData> list2 = o1.stream().filter(acceptanceFilter)
-																  .sorted(prioritizingComparator)
-																  .collect(Collectors.toList());
-							
-							for(int i = 0; i < list1.size(); i++)
+							DMFingerData fp1 = list1.get(i);
+							DMFingerData fp2 = list2.get(i);
+							compare = -Integer.compare(fp1.getNfiqQuality(), fp2.getNfiqQuality());
+							if(compare != 0) return compare;
+							else // both have the same NFIQ
 							{
-								DMFingerData fp1 = list1.get(i);
-								DMFingerData fp2 = list2.get(i);
-								compare = -Integer.compare(fp1.getNfiqQuality(), fp2.getNfiqQuality());
+								compare = Integer.compare(fp1.getMinutiaeCount(), fp2.getMinutiaeCount());
 								if(compare != 0) return compare;
-								else // both have the same NFIQ
+								else // both have the same minutiae count
 								{
-									compare = Integer.compare(fp1.getMinutiaeCount(), fp2.getMinutiaeCount());
-									if(compare != 0) return compare;
-									else // both have the same minutiae count
-									{
-										if(fp1.getIntensity() == fp2.getIntensity()) continue;
-										
-										FingerprintQualityThreshold qualityThreshold =
-																fingerprintQualityThresholdMap.get(fp1.getPosition());
-										
-										boolean fp1AcceptableFingerprintImageIntensity =
-												qualityThreshold.getMinimumAcceptableImageIntensity() <=
+									if(fp1.getIntensity() == fp2.getIntensity()) continue;
+									
+									FingerprintQualityThreshold qualityThreshold =
+											fingerprintQualityThresholdMap.get(fp1.getPosition());
+									
+									boolean fp1AcceptableFingerprintImageIntensity =
+											qualityThreshold.getMinimumAcceptableImageIntensity() <=
 													fp1.getIntensity() &&
 													qualityThreshold.getMaximumAcceptableImageIntensity() >=
-													fp1.getIntensity();
-										
-										boolean fp2AcceptableFingerprintImageIntensity =
-												qualityThreshold.getMinimumAcceptableImageIntensity() <=
+															fp1.getIntensity();
+									
+									boolean fp2AcceptableFingerprintImageIntensity =
+											qualityThreshold.getMinimumAcceptableImageIntensity() <=
 													fp2.getIntensity() &&
 													qualityThreshold.getMaximumAcceptableImageIntensity() >=
-													fp2.getIntensity();
-										
-										if(fp1AcceptableFingerprintImageIntensity &&
+															fp2.getIntensity();
+									
+									if(fp1AcceptableFingerprintImageIntensity &&
 											!fp2AcceptableFingerprintImageIntensity) return 1;
-										if(!fp1AcceptableFingerprintImageIntensity &&
+									if(!fp1AcceptableFingerprintImageIntensity &&
 											fp2AcceptableFingerprintImageIntensity) return -1;
-										else // both have bad image intensity
-										{
-											if(fp1.getIntensity() >
+									else // both have bad image intensity
+									{
+										if(fp1.getIntensity() >
 												qualityThreshold.getMaximumAcceptableImageIntensity() &&
 												fp2.getIntensity() <
-												qualityThreshold.getMinimumAcceptableImageIntensity())
+														qualityThreshold.getMinimumAcceptableImageIntensity())
+										{
+											return 1;
+										}
+										if(fp1.getIntensity() <
+												qualityThreshold.getMinimumAcceptableImageIntensity() &&
+												fp2.getIntensity() >
+														qualityThreshold.getMaximumAcceptableImageIntensity())
+										{
+											return -1;
+										}
+										else // both on the same side
+										{
+											if(fp1.getIntensity() >
+													qualityThreshold.getMaximumAcceptableImageIntensity() &&
+													fp2.getIntensity() >
+															qualityThreshold.getMaximumAcceptableImageIntensity())
 											{
 												return 1;
 											}
-											if(fp1.getIntensity() <
-												qualityThreshold.getMinimumAcceptableImageIntensity() &&
-												fp2.getIntensity() >
-												qualityThreshold.getMaximumAcceptableImageIntensity())
-											{
-												return -1;
-											}
-											else // both on the same side
-											{
-												if(fp1.getIntensity() >
-													qualityThreshold.getMaximumAcceptableImageIntensity() &&
-													fp2.getIntensity() >
-													qualityThreshold.getMaximumAcceptableImageIntensity())
-												{
-													return 1;
-												}
-												else return -1;
-											}
+											else return -1;
 										}
 									}
 								}
 							}
-							
-							return compare;
 						}
+						
+						return compare;
 					}
 				}
 			}
@@ -1708,8 +1754,12 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 			{
 				currentSlapAttempts.add(fingerData);
 				
-				if(currentSlapAttempts.size() >= acceptedBadQualityFingerprintMinRetires)
-													GuiUtils.showNode(btnAcceptBestAttemptFingerprints, true);
+				int lastFingerprintsCount = currentSlapAttempts.get(currentSlapAttempts.size() - 1).size();
+				long attemptCount = currentSlapAttempts.stream()
+													   .filter(list -> list.size() == lastFingerprintsCount)
+													   .count();
+				if(attemptCount >= acceptedBadQualityFingerprintMinRetires)
+										GuiUtils.showNode(btnAcceptBestAttemptFingerprints, true);
 			}
 		}
 		
