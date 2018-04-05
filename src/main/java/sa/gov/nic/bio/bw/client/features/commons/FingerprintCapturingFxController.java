@@ -194,7 +194,7 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 		btnPrevious.setOnAction(event -> goPrevious());
 		btnNext.setOnAction(event -> goNext());
 		// TODO: enable this when done
-		//btnNext.disableProperty().bind(ivCompleted.visibleProperty().not());
+		btnNext.disableProperty().bind(ivCompleted.visibleProperty().not());
 		
 		paneControlsInnerContainer.minHeightProperty().bind(Bindings.createDoubleBinding(() ->
 		{
@@ -554,8 +554,8 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 				else
 				{
 					GuiUtils.showNode(btnStartFingerprintCapturing, false);
-					GuiUtils.showNode(lblStatus, true);
 					GuiUtils.showNode(ivCompleted, true);
+					GuiUtils.showNode(lblStatus, true);
 					lblStatus.setText(resources.getString("label.status.successfullyCapturedAllFingers"));
 				}
 			}
@@ -578,7 +578,6 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 			deviceManagerGadgetPaneController.setFingerprintScannerInitializationListener(
 																				initialized -> Platform.runLater(() ->
 			{
-			    GuiUtils.showNode(lblStatus, true);
 				GuiUtils.showNode(piProgress, false);
 			    GuiUtils.showNode(btnStopFingerprintCapturing, false);
 				tpFingerprintDeviceLivePreview.setActive(false);
@@ -589,6 +588,7 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 				    LOGGER.info("The fingerprint scanner is initialized!");
 				    if(currentSlapPosition <= FingerPosition.TWO_THUMBS.getPosition()) GuiUtils.showNode(
 				    		                                                btnStartFingerprintCapturing, true);
+				    GuiUtils.showNode(lblStatus, true);
 				    lblStatus.setText(resources.getString(
 			        		                        "label.status.fingerprintScannerInitializedSuccessfully"));
 				    activateFingerIndicatorsForNextCapturing(currentSlapPosition);
@@ -598,6 +598,7 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 			    {
 				    LOGGER.info("The fingerprint scanner is disconnected!");
 				    GuiUtils.showNode(btnStartFingerprintCapturing, false);
+				    GuiUtils.showNode(lblStatus, true);
 				    lblStatus.setText(resources.getString("label.status.fingerprintScannerDisconnected"));
 			    }
 			}));
@@ -622,8 +623,8 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 				}
 				else
 				{
-					lblStatus.setText(resources.getString("label.status.fingerprintScannerNotInitialized"));
 					GuiUtils.showNode(lblStatus, true);
+					lblStatus.setText(resources.getString("label.status.fingerprintScannerNotInitialized"));
 				}
 			}
 			else
@@ -636,8 +637,8 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 				}
 				else
 				{
-					lblStatus.setText(resources.getString("label.status.fingerprintScannerNotInitialized"));
 					GuiUtils.showNode(lblStatus, true);
+					lblStatus.setText(resources.getString("label.status.fingerprintScannerNotInitialized"));
 				}
 			}
 		}
@@ -651,7 +652,10 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 									 .setFingerprintScannerInitializationListener(null);
 		
 		if(!workflowStarted) return;
-		if(btnStopFingerprintCapturing.isVisible()) btnStopFingerprintCapturing.fire();
+		if(btnStopFingerprintCapturing.isVisible())
+		{
+			Platform.runLater(() -> btnStopFingerprintCapturing.fire());
+		}
 		
 		// remove incomplete slaps
 		boolean allOk = true;
@@ -759,7 +763,6 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 		GuiUtils.showNode(btnStopFingerprintCapturing, false);
 		GuiUtils.showNode(btnAcceptCurrentSlap, false);
 		GuiUtils.showNode(btnAcceptBestAttemptFingerprints, false);
-		GuiUtils.showNode(lblStatus, true);
 		
 		fingerprintUiComponentsMap.forEach((position, components) ->
 		{
@@ -1103,7 +1106,7 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 		{
 			GuiUtils.showNode(piFingerprintDeviceLivePreview, false);
 			GuiUtils.showNode(btnStartFingerprintCapturing, true);
-			GuiUtils.showNode(btnStartOver, currentSlapPosition > FingerPosition.RIGHT_SLAP.getPosition());
+			GuiUtils.showNode(btnStartOver, true);
 			
 			fingerprintUiComponentsMap.forEach((integer, components) ->
 			{
@@ -1177,7 +1180,7 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 			ivFingerprintDeviceLivePreview.setImage(null);
 			GuiUtils.showNode(piProgress, false);
 			GuiUtils.showNode(btnStartFingerprintCapturing, true);
-			GuiUtils.showNode(btnStartOver, currentSlapPosition > FingerPosition.RIGHT_SLAP.getPosition());
+			GuiUtils.showNode(btnStartOver, true);
 		
 		    ServiceResponse<FingerprintStopPreviewResponse> serviceResponse = task.getValue();
 		
@@ -1219,7 +1222,7 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 			ivFingerprintDeviceLivePreview.setImage(null);
 			GuiUtils.showNode(piProgress, false);
 			GuiUtils.showNode(btnStartFingerprintCapturing, true);
-			GuiUtils.showNode(btnStartOver, currentSlapPosition > FingerPosition.RIGHT_SLAP.getPosition());
+			GuiUtils.showNode(btnStartOver, true);
 			
 			Throwable exception = task.getException();
 		
@@ -1453,7 +1456,6 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 		{
 			lblStatus.setText(resources.getString("label.status.successfullyCapturedAllFingers"));
 			GuiUtils.showNode(btnStartFingerprintCapturing, false);
-			GuiUtils.showNode(lblStatus, true);
 			GuiUtils.showNode(ivCompleted, true);
 		}
 		
