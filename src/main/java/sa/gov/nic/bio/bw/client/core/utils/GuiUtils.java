@@ -95,14 +95,14 @@ public class GuiUtils
 				LOGGER.info("The main window is closed");
 				
 				Future<?> future = Context.getExecutorService().submit(new LogoutTask());
+				int timeout = Integer.parseInt(System.getProperty("jnlp.bio.bw.onExit.logout.timeout.seconds"));
 				try
 				{
-					int timeout = Integer.parseInt(System.getProperty("jnlp.bio.bw.onExit.logout.timeout.seconds"));
 					future.get(timeout, TimeUnit.SECONDS);
 				}
 				catch(TimeoutException e)
 				{
-					LOGGER.log(Level.WARNING, "logout service timed out!", e);
+					LOGGER.warning("logout service timed out (" + timeout + " seconds)!");
 				}
 				catch(Exception e)
 				{

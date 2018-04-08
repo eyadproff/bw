@@ -176,6 +176,7 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 	private boolean skipLeftSlap = false;
 	private boolean skipThumbs = false;
 	private boolean workflowStarted = false;
+	private boolean workflowUserTaskLoaded = false;
 	private boolean acceptBadQualityFingerprint = false;
 	private int acceptedBadQualityFingerprintMinRetires = Integer.MAX_VALUE;
 	
@@ -432,6 +433,8 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 			@Override
 			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue)
 			{
+				if(!workflowUserTaskLoaded) return;
+				
 				skipRightSlap = !cbRightIndex.isSelected() && !cbRightMiddle.isSelected() &&
 								!cbRightRing.isSelected() && !cbRightLittle.isSelected();
 				skipLeftSlap = !cbLeftIndex.isSelected() && !cbLeftMiddle.isSelected() &&
@@ -642,6 +645,8 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 				}
 			}
 		}
+		
+		workflowUserTaskLoaded = true;
 	}
 	
 	@Override
@@ -1520,11 +1525,16 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 			{
 				lblStatus.setText(resources.getString("label.status.successfullyCapturedRightSlap"));
 				GuiUtils.showNode(btnStartFingerprintCapturing, true);
+				
+				if(skipLeftSlap) currentSlapPosition++;
+				if(skipThumbs) currentSlapPosition++;
 			}
 			else if(currentSlapPosition == FingerPosition.LEFT_SLAP.getPosition())
 			{
 				lblStatus.setText(resources.getString("label.status.successfullyCapturedLeftSlap"));
 				GuiUtils.showNode(btnStartFingerprintCapturing, true);
+				
+				if(skipThumbs) currentSlapPosition++;
 			}
 			else if(currentSlapPosition == FingerPosition.TWO_THUMBS.getPosition())
 			{
@@ -1533,8 +1543,8 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 				GuiUtils.showNode(ivCompleted, true);
 			}
 			
-			currentSlapAttempts.clear();
 			currentSlapPosition++;
+			currentSlapAttempts.clear();
 			renameCaptureFingerprintsButton(false);
 		}
 		else
