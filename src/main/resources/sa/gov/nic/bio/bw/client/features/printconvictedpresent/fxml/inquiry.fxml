@@ -13,7 +13,9 @@
             fx:controller="sa.gov.nic.bio.bw.client.features.printconvictedpresent.InquiryPaneFxController">
     <center>
         <VBox alignment="CENTER" spacing="5.0">
-            <Label text="Test"/>
+            <ProgressIndicator fx:id="piProgress" maxWidth="25.0" maxHeight="25.0"/>
+            <Label fx:id="txtProgress" text="%label.fingerprintInquiryInProgress"/>
+            <Button fx:id="btnRetry" text="%button.retry" visible="false" managed="false" onAction="#onRetryButtonClicked"/>
         </VBox>
     </center>
     <bottom>

@@ -54,9 +54,12 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 {
 	private static final Logger LOGGER = Logger.getLogger(FaceCapturingFxController.class.getName());
 	
-	public static final String KEY_ICAO_REQUIRED = "ICAO_REQUIRED";
+	public static final String KEY_ACCEPT_ANY_CAPTURED_IMAGE = "ACCEPT_ANY_CAPTURED_IMAGE";
+	public static final String KEY_ACCEPT_BAD_QUALITY_FACE = "ACCEPT_BAD_QUALITY_FACE";
+	public static final String KEY_ACCEPTED_BAD_QUALITY_FACE_MIN_RETIRES = "ACCEPTED_BAD_QUALITY_FACE_MIN_RETIRES";
 	public static final String KEY_CAPTURED_IMAGE = "CAPTURED_IMAGE";
 	public static final String KEY_CROPPED_IMAGE = "CROPPED_IMAGE";
+	private static final String KEY_HIDE_FACE_PREVIOUS_BUTTON = "HIDE_FACE_PREVIOUS_BUTTON";
 	private static final String KEY_ICAO_SUCCESS_ICON_VISIBLE = "ICAO_SUCCESS_ICON_VISIBLE";
 	private static final String KEY_ICAO_WARNING_ICON_VISIBLE = "ICAO_WARNING_ICON_VISIBLE";
 	private static final String KEY_ICAO_ERROR_ICON_VISIBLE = "ICAO_ERROR_ICON_VISIBLE";
@@ -103,7 +106,10 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 	private PerspectiveCamera perspectiveCamera = new PerspectiveCamera();
 	private boolean cameraInitializedAtLeastOnce = false;
 	private boolean captureInProgress = false;
-	private boolean icaoRequired = true;
+	private boolean acceptAnyCapturedImage = false;
+	private boolean acceptBadQualityFace = false;
+	private int acceptedBadQualityFaceMinRetires = Integer.MAX_VALUE;
+	private int successfulCroppedCapturingCount = 0;
 	
 	private Translate pivotBase = new Translate(0.0, 0.0, -1.0);
 	private Rotate xRotateBase = new Rotate(0.0, Rotate.X_AXIS);
@@ -177,14 +183,39 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 	{
 		if(newForm)
 		{
-			Boolean bool = (Boolean) uiInputData.get(KEY_ICAO_REQUIRED);
-			if(bool != null) icaoRequired = bool;
+			// collect configurations from the workflow
+			Boolean hidePreviousButton = (Boolean) uiInputData.get(KEY_HIDE_FACE_PREVIOUS_BUTTON);
+			if(hidePreviousButton != null) GuiUtils.showNode(btnPrevious, !hidePreviousButton);
+			Boolean bool = (Boolean) uiInputData.get(KEY_ACCEPT_ANY_CAPTURED_IMAGE);
+			if(bool != null) acceptAnyCapturedImage = bool;
+			bool = (Boolean) uiInputData.get(KEY_ACCEPT_BAD_QUALITY_FACE);
+			if(bool != null) acceptBadQualityFace = bool;
+			Integer i = (Integer) uiInputData.get(KEY_ACCEPTED_BAD_QUALITY_FACE_MIN_RETIRES);
+			if(bool != null) acceptedBadQualityFaceMinRetires = i;
 			
-			if(icaoRequired) btnNext.disableProperty().bind(ivCapturedImage.imageProperty().isNull().or(
-											ivCroppedImage.imageProperty().isNull()).or(
-											ivSuccessIcao.visibleProperty().not()));
-			else btnNext.disableProperty().bind(ivCapturedImage.imageProperty().isNull().and(
-											ivCroppedImage.imageProperty().isNull()));
+			if(acceptAnyCapturedImage)
+			{
+				btnNext.disableProperty().bind(ivCapturedImage.imageProperty().isNull().and(
+											   ivCroppedImage.imageProperty().isNull()));
+			}
+			else if(acceptBadQualityFace)
+			{
+				Runnable disabling = () -> btnNext.setDisable(ivCroppedImage.getImage() == null ||
+                                            (ivCroppedImage.getImage() != null && !ivSuccessIcao.isVisible() &&
+		                                     successfulCroppedCapturingCount < acceptedBadQualityFaceMinRetires));
+				disabling.run();
+				ivCroppedImage.imageProperty().addListener((observable, oldValue, newValue) -> disabling.run());
+			}
+			else // accept good quality face only
+			{
+				btnNext.disableProperty().bind(ivCapturedImage.imageProperty().isNull().or(
+											   ivCroppedImage.imageProperty().isNull()).or(
+											   ivSuccessIcao.visibleProperty().not()));
+			}
+			
+			// TODO: remove this when done
+			btnNext.setDisable(false);
+			
 			
 			bool = (Boolean) uiInputData.get(KEY_ICAO_SUCCESS_ICON_VISIBLE);
 			if(bool != null) GuiUtils.showNode(ivSuccessIcao, bool);
@@ -641,6 +672,7 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 				    
 				    if(croppedImage != null)
 				    {
+					    successfulCroppedCapturingCount++;
 					    byte[] bytes = Base64.getDecoder().decode(croppedImage);
 					    ivCroppedImage.setImage(new Image(new ByteArrayInputStream(bytes)));
 					    croppedImageExists = true;

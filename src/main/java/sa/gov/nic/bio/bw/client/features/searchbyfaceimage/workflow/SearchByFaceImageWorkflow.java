@@ -88,7 +88,7 @@ public class SearchByFaceImageWorkflow extends WorkflowBase<Void, Void>
 						
 						if(VALUE_IMAGE_SOURCE_CAMERA.equals(imageInput))
 						{
-							uiInputData.put(FaceCapturingFxController.KEY_ICAO_REQUIRED, Boolean.FALSE);
+							uiInputData.put(FaceCapturingFxController.KEY_ACCEPT_ANY_CAPTURED_IMAGE, Boolean.TRUE);
 							formRenderer.get().renderForm(FaceCapturingFxController.class, uiInputData);
 						}
 						else if(VALUE_IMAGE_SOURCE_UPLOAD.equals(imageInput))
