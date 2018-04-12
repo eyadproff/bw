@@ -353,4 +353,10 @@ public final class AppUtils
 		
 		return parts;
 	}
+	
+	public static boolean isEnglishText(String text)
+	{
+		if(text == null) return false;
+		return StandardCharsets.US_ASCII.newEncoder().canEncode(text);
+	}
 }

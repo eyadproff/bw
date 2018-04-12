@@ -1,4 +1,4 @@
-package sa.gov.nic.bio.bw.client.features.cancelcriminal.webservice;
+package sa.gov.nic.bio.bw.client.features.commons.webservice;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
@@ -9,5 +9,11 @@ import java.util.List;
 public interface LookupAPI
 {
 	@GET
+	Call<List<NationalityBean>> lookupNationalities(@Url String url);
+	
+	@GET
 	Call<List<PersonIdType>> lookupPersonIdTypes(@Url String url);
+	
+	@GET
+	Call<List<CrimeType>> lookupCrimeTypes(@Url String url);
 }

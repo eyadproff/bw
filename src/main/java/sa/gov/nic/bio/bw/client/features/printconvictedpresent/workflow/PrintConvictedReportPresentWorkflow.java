@@ -9,6 +9,8 @@ import sa.gov.nic.bio.bw.client.core.workflow.Signal;
 import sa.gov.nic.bio.bw.client.core.workflow.WorkflowBase;
 import sa.gov.nic.bio.bw.client.features.commons.FaceCapturingFxController;
 import sa.gov.nic.bio.bw.client.features.commons.FingerprintCapturingFxController;
+import sa.gov.nic.bio.bw.client.features.commons.LookupFxController;
+import sa.gov.nic.bio.bw.client.features.commons.workflow.ConvictedReportLookupService;
 import sa.gov.nic.bio.bw.client.features.printconvictedpresent.InquiryPaneFxController;
 import sa.gov.nic.bio.bw.client.features.printconvictedpresent.InquiryResultPaneFxController;
 import sa.gov.nic.bio.bw.client.features.printconvictedpresent.JudgmentDetailsPaneFxController;
@@ -69,6 +71,16 @@ public class PrintConvictedReportPresentWorkflow extends WorkflowBase<Void, Void
 		
 		while(true)
 		{
+			while(true)
+			{
+				formRenderer.get().renderForm(LookupFxController.class, uiInputData);
+				waitForUserTask();
+				ServiceResponse<Void> serviceResponse = ConvictedReportLookupService.execute();
+				if(serviceResponse.isSuccess()) break;
+				else uiInputData.put(KEY_WEBSERVICE_RESPONSE, serviceResponse);
+			}
+			
+			uiInputData.clear();
 			int step = 0;
 			
 			while(true)

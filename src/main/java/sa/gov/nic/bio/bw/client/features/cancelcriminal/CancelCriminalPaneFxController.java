@@ -20,7 +20,7 @@ import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.workflow.Workflow;
 import sa.gov.nic.bio.bw.client.features.cancelcriminal.tasks.LookupTask;
 import sa.gov.nic.bio.bw.client.features.cancelcriminal.utils.CancelCriminalErrorCodes;
-import sa.gov.nic.bio.bw.client.features.cancelcriminal.webservice.PersonIdType;
+import sa.gov.nic.bio.bw.client.features.commons.webservice.PersonIdType;
 import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
 
 import java.util.HashMap;

@@ -58,9 +58,7 @@ public class InquiryPaneFxController extends WizardStepFxControllerBase
 			Boolean noHit = (Boolean) uiInputData.get(KEY_FINGERPRINT_INQUIRY_NO_HIT);
 			if(noHit != null && noHit)
 			{
-				txtProgress.setText("NO HIT!");
-				GuiUtils.showNode(btnRetry, true);
-				GuiUtils.showNode(btnStartOver, true);
+				Platform.runLater(this::goNext);
 				return;
 			}
 			
@@ -89,8 +87,6 @@ public class InquiryPaneFxController extends WizardStepFxControllerBase
 				Context.getCoreFxController().showErrorDialog(errorCode, serviceResponse.getException(),
 				                                              errorDetails);
 			}
-			
-			//Platform.runLater(this::goNext);
 		}
 	}
 	
@@ -103,11 +99,5 @@ public class InquiryPaneFxController extends WizardStepFxControllerBase
 		Map<String, Object> uiDataMap = new HashMap<>();
 		uiDataMap.put(KEY_RETRY_FINGERPRINT_INQUIRY, Boolean.TRUE);
 		Context.getWorkflowManager().submitUserTask(uiDataMap);
-	}
-	
-	@FXML
-	private void onRegisterUnknownPersonButtonClicked(ActionEvent actionEvent)
-	{
-		// TODO
 	}
 }

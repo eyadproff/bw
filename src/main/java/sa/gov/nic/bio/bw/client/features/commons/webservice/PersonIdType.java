@@ -1,4 +1,4 @@
-package sa.gov.nic.bio.bw.client.features.cancelcriminal.webservice;
+package sa.gov.nic.bio.bw.client.features.commons.webservice;
 
 import java.util.Objects;
 
