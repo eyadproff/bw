@@ -373,7 +373,7 @@ public class AppEntryPoint extends Application
 	    {
 		    String errorCode = StartupErrorCodes.C001_00017.getCode();
 		    String[] errorDetails = {"\"sBiokitWebsocketPort\" is not int!"};
-		    notifyPreloader(PreloaderNotification.failure(null, errorCode, errorDetails));
+		    notifyPreloader(PreloaderNotification.failure(e, errorCode, errorDetails));
 		    return;
 	    }
 	

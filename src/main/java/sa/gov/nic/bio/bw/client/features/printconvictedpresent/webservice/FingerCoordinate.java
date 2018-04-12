@@ -10,6 +10,8 @@ public class FingerCoordinate
 	private Point bottomLeft;
 	private Point bottomRight;
 	
+	public FingerCoordinate(){}
+	
 	public FingerCoordinate(Point topLeft, Point topRight, Point bottomLeft, Point bottomRight)
 	{
 		this.topLeft = topLeft;

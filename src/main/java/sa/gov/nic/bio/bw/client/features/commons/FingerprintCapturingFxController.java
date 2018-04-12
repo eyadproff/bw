@@ -195,7 +195,7 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 		btnPrevious.setOnAction(event -> goPrevious());
 		btnNext.setOnAction(event -> goNext());
 		// TODO: enable this when done
-		btnNext.disableProperty().bind(ivCompleted.visibleProperty().not());
+		//btnNext.disableProperty().bind(ivCompleted.visibleProperty().not());
 		
 		paneControlsInnerContainer.minHeightProperty().bind(Bindings.createDoubleBinding(() ->
 		{
@@ -860,7 +860,7 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 						.getFingerprintService().startPreviewAndAutoCapture(fingerprintDeviceName,
 						                                                    currentSlapPosition,
 						                                                    expectedFingersCount[0], missingFingers,
-						                                                    true, responseProcessor);
+						                                                    true, true, responseProcessor);
 				return future.get();
 			}
 		};
@@ -1523,6 +1523,8 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 		boolean[] noDuplicates = {true};
 		showFingerprints(fingerData, duplicatedFingers, allAcceptableQuality, noDuplicates, false);
 		GuiUtils.showNode(btnStartOver, true);
+		
+		fingerData.forEach(fd -> System.out.println(fd.getFingerWsqImage()));
 		
 		if(allAcceptableQuality[0])
 		{

@@ -1,6 +1,7 @@
 package sa.gov.nic.bio.bw.client.features.printconvictedpresent;
 
 import sa.gov.nic.bio.bw.client.core.wizard.WizardStepFxControllerBase;
+import sa.gov.nic.bio.bw.client.features.printconvictedpresent.webservice.FingerprintInquiryStatusResult;
 
 import java.net.URL;
 import java.util.Map;

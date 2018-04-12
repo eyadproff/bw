@@ -20,7 +20,6 @@ import sa.gov.nic.bio.bw.client.home.utils.HomeErrorCodes;
 import sa.gov.nic.bio.bw.client.login.webservice.UserInfo;
 
 import java.io.ByteArrayInputStream;
-import java.text.Normalizer;
 import java.time.DateTimeException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -145,11 +144,8 @@ public class HomePaneFxController extends BodyFxControllerBase
 		
 		String username = userInfo.getUserName();
 		
-		// we normalize because the backend characters are not the standard ones
-		String operatorName = Normalizer.normalize(userInfo.getOperatorName(), Normalizer.Form.NFKC) + " (" +
-				userInfo.getOperatorId() + ")";
-		String location = Normalizer.normalize(userInfo.getLocationName(), Normalizer.Form.NFKC) + " (" +
-				userInfo.getLocationId() + ")";
+		String operatorName = userInfo.getOperatorName() + " (" + userInfo.getOperatorId() + ")";
+		String location = userInfo.getLocationName() + " (" + userInfo.getLocationId() + ")";
 		
 		String encodedFaceImage = userInfo.getFaceImage();
 		byte[] faceImageByteArray = null;
