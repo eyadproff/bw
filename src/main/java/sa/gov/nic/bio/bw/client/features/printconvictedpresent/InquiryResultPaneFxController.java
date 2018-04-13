@@ -104,10 +104,15 @@ public class InquiryResultPaneFxController extends WizardStepFxControllerBase
 			
 			Name name = personInfo.getName();
 			
-			String firstName = buildNamePart(name.getFirstName(), name.getTranslatedFirstName());
-			String fatherName = buildNamePart(name.getFatherName(), name.getTranslatedFatherName());
-			String grandfatherName = buildNamePart(name.getGrandfatherName(), name.getTranslatedGrandFatherName());
-			String familyName = buildNamePart(name.getFamilyName(), name.getTranslatedFamilyName());
+			String firstName = AppUtils.buildNamePart(name.getFirstName(), name.getTranslatedFirstName(),
+			                                          true);
+			String fatherName = AppUtils.buildNamePart(name.getFatherName(), name.getTranslatedFatherName(),
+			                                           true);
+			String grandfatherName = AppUtils.buildNamePart(name.getGrandfatherName(),
+                                                            name.getTranslatedGrandFatherName(),
+			                                                true);
+			String familyName = AppUtils.buildNamePart(name.getFamilyName(), name.getTranslatedFamilyName(),
+			                                           true);
 			
 			if(firstName != null) lblFirstName.setText(firstName);
 			else
@@ -137,7 +142,7 @@ public class InquiryResultPaneFxController extends WizardStepFxControllerBase
 				lblFamilyName.setTextFill(Color.RED);
 			}
 			
-			GenderType gender = name.getGender();
+			GenderType gender = GenderType.values()[personInfo.getGender()];
 			if(gender != null)
 			{
 				switch(gender)
@@ -192,7 +197,6 @@ public class InquiryResultPaneFxController extends WizardStepFxControllerBase
 			}
 			
 			Date birthDate = personInfo.getBirthDate();
-			System.out.println("birthDate = " + birthDate);
 			
 			if(birthDate != null) lblBirthDate.setText(AppUtils.formatDate(
 												birthDate.toInstant().atZone(AppConstants.SAUDI_ZONE).toLocalDate()));
@@ -229,31 +233,6 @@ public class InquiryResultPaneFxController extends WizardStepFxControllerBase
 			lblIdExpiry.setTextFill(Color.RED);
 			
 			Platform.runLater(btnConfirmPersonInformation::requestFocus);
-		}
-	}
-	
-	private static String buildNamePart(String namePart, String namePartTranslated)
-	{
-		if((namePart == null || namePart.trim().isEmpty()) &&
-		   (namePartTranslated == null || namePartTranslated.trim().isEmpty()))
-		{
-			return null;
-		}
-		else if((namePart == null || namePart.trim().isEmpty()))
-		{
-			return namePartTranslated;
-		}
-		else if(namePartTranslated == null || namePartTranslated.trim().isEmpty())
-		{
-			return namePart;
-		}
-		else // both have value
-		{
-			if(AppUtils.isEnglishText(namePart))
-			{
-				return namePartTranslated + " - " + namePart;
-			}
-			else return namePart + " - " + namePartTranslated;
 		}
 	}
 	

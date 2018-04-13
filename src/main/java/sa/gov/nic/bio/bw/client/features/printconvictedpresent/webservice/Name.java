@@ -12,7 +12,6 @@ public class Name
 	private String translatedFamilyName;
 	private String translatedFatherName;
 	private String translatedGrandFatherName;
-	private GenderType gender;
 	
 	public String getFirstName(){return firstName;}
 	public void setFirstName(String firstName){this.firstName = firstName;}
@@ -39,9 +38,6 @@ public class Name
 	public void setTranslatedGrandFatherName(String translatedGrandFatherName)
 	{this.translatedGrandFatherName = translatedGrandFatherName;}
 	
-	public GenderType getGender(){return gender;}
-	public void setGender(GenderType gender){this.gender = gender;}
-	
 	@Override
 	public boolean equals(Object o)
 	{
@@ -53,14 +49,14 @@ public class Name
 			   Objects.equals(translatedFirstName, name.translatedFirstName) &&
 			   Objects.equals(translatedFamilyName, name.translatedFamilyName) &&
 			   Objects.equals(translatedFatherName, name.translatedFatherName) &&
-			   Objects.equals(translatedGrandFatherName, name.translatedGrandFatherName) && gender == name.gender;
+			   Objects.equals(translatedGrandFatherName, name.translatedGrandFatherName);
 	}
 	
 	@Override
 	public int hashCode()
 	{
 		return Objects.hash(firstName, familyName, fatherName, grandfatherName, translatedFirstName,
-		                    translatedFamilyName, translatedFatherName, translatedGrandFatherName, gender);
+		                    translatedFamilyName, translatedFatherName, translatedGrandFatherName);
 	}
 	
 	@Override
@@ -70,6 +66,6 @@ public class Name
 			   ", fatherName='" + fatherName + '\'' + ", grandfatherName='" + grandfatherName + '\'' +
 			   ", translatedFirstName='" + translatedFirstName + '\'' + ", translatedFamilyName='" +
 			   translatedFamilyName + '\'' + ", translatedFatherName='" + translatedFatherName + '\'' +
-			   ", translatedGrandFatherName='" + translatedGrandFatherName + '\'' + ", gender=" + gender + '}';
+			   ", translatedGrandFatherName='" + translatedGrandFatherName + '\'' + '}';
 	}
 }

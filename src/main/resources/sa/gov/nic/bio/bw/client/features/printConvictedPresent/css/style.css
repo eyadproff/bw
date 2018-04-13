@@ -7,3 +7,11 @@
 .bold-label {
     -fx-font-weight: bold;
 }
+
+.date-picker-check-box {
+    -fx-font-size: 11;
+}
+
+.date-picker-check-box > .box > .mark {
+    -fx-padding: 4;
+}

@@ -359,4 +359,29 @@ public final class AppUtils
 		if(text == null) return false;
 		return StandardCharsets.US_ASCII.newEncoder().canEncode(text);
 	}
+	
+	public static String buildNamePart(String namePart, String namePartTranslated, boolean combined)
+	{
+		if((namePart == null || namePart.trim().isEmpty()) &&
+				(namePartTranslated == null || namePartTranslated.trim().isEmpty()))
+		{
+			return null;
+		}
+		else if((namePart == null || namePart.trim().isEmpty()))
+		{
+			return namePartTranslated;
+		}
+		else if(namePartTranslated == null || namePartTranslated.trim().isEmpty())
+		{
+			return namePart;
+		}
+		else // both have value
+		{
+			if(AppUtils.isEnglishText(namePart))
+			{
+				return namePartTranslated + (combined ? " - " + namePart : "");
+			}
+			else return namePart + (combined ? " - " + namePartTranslated : "");
+		}
+	}
 }
