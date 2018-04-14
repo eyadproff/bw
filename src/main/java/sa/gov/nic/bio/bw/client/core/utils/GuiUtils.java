@@ -4,10 +4,12 @@ import com.sun.javafx.scene.control.skin.ComboBoxListViewSkin;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.beans.Observable;
+import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.embed.swing.SwingFXUtils;
+import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.NodeOrientation;
@@ -162,6 +164,14 @@ public class GuiUtils
 	
 	public static <T> void addAutoCompletionSupportToComboBox(ComboBox<HideableItem<T>> comboBox, List<T> items)
 	{
+		addAutoCompletionSupportToComboBox(comboBox, items, null,
+		                                   null);
+	}
+	
+	public static <T> void addAutoCompletionSupportToComboBox(ComboBox<HideableItem<T>> comboBox, List<T> items,
+                                                      ChangeListener<Boolean>[] showingPropertyChangeListenerReference,
+                                                      ChangeListener<String>[] textPropertyChangeListenerReference)
+	{
 		ObservableList<HideableItem<T>> hideableHideableItems = FXCollections.observableArrayList(hideableItem ->
                                                                     new Observable[]{hideableItem.hiddenProperty()});
 		
@@ -179,7 +189,7 @@ public class GuiUtils
 		@SuppressWarnings("unchecked")
 		HideableItem<T>[] selectedItem = (HideableItem<T>[]) new HideableItem[1];
 		
-		comboBox.addEventHandler(KeyEvent.KEY_PRESSED, event ->
+		EventHandler<KeyEvent> keyPressedEventHandler = event ->
 		{
 			if(comboBox.isShowing())
 			{
@@ -196,75 +206,97 @@ public class GuiUtils
 				comboBox.setEditable(true);
 				comboBox.getEditor().clear();
 			}
-		});
-		
-		comboBox.showingProperty().addListener((observable, oldValue, newValue) ->
+		};
+		EventHandler<Event> onHiddenEventHandler = event ->
+														hideableHideableItems.forEach(item -> item.setHidden(false));
+		ChangeListener<Boolean> showingPropertyChangeListener = (observable, oldValue, newValue) ->
 		{
-		    if(newValue)
-		    {
-			    @SuppressWarnings("unchecked")
-			    ListView<HideableItem> lv = ((ComboBoxListViewSkin<HideableItem>) comboBox.getSkin()).getListView();
-			    lv.scrollTo(comboBox.getValue());
+			if(newValue)
+			{
+				@SuppressWarnings("unchecked")
+				ListView<HideableItem> lv = ((ComboBoxListViewSkin<HideableItem>) comboBox.getSkin()).getListView();
+				lv.scrollTo(comboBox.getValue());
 				
-		        Platform.runLater(() ->
-		        {
-		        	if(selectedItem[0] == null)
-			        {
+				Platform.runLater(() ->
+				{
+				    if(selectedItem[0] == null)
+				    {
 				        double cellHeight = ((Control) lv.lookup(".list-cell")).getHeight();
 				        lv.setFixedCellSize(cellHeight);
 				        lv.setOnKeyPressed(event ->
 				        {
-				        	if(comboBox.isShowing() && (event.getCode() == KeyCode.ENTER ||
-					           event.getCode() == KeyCode.ESCAPE)) comboBox.hide();
+				            if(comboBox.isShowing() && (event.getCode() == KeyCode.ENTER ||
+					                  event.getCode() == KeyCode.ESCAPE)) comboBox.hide();
 				        });
-			        }
-		        });
-		    }
-		    else
-		    {
-		        HideableItem<T> value = comboBox.getValue();
-		        if(value != null) selectedItem[0] = value;
-		
-		        comboBox.setEditable(false);
-		
-		        Platform.runLater(() ->
-		        {
-		            comboBox.getSelectionModel().select(selectedItem[0]);
-		            comboBox.setValue(selectedItem[0]);
-		        });
-		    }
-		});
-		
-		comboBox.setOnHidden(event -> hideableHideableItems.forEach(item -> item.setHidden(false)));
-		
-		comboBox.getEditor().textProperty().addListener((observable, oldValue, newValue) ->
-	    {
-	        if(!comboBox.isShowing()) return;
-	
-	        Platform.runLater(() ->
+				    }
+				});
+			}
+			else
 			{
-				if(comboBox.getSelectionModel().getSelectedItem() == null)
+				HideableItem<T> value = comboBox.getValue();
+				if(value != null) selectedItem[0] = value;
+				
+				comboBox.setEditable(false);
+				
+				Platform.runLater(() ->
 				{
-					hideableHideableItems.forEach(item -> item.setHidden(!item.getText().toLowerCase()
-																			  .contains(newValue.toLowerCase())));
-				}
-				else
-				{
-					boolean validText = false;
-					
-					for(HideableItem hideableItem : hideableHideableItems)
-					{
-						if(hideableItem.getText().equals(newValue))
-						{
-							validText = true;
-							break;
-						}
-					}
-					
-					if(!validText) comboBox.getSelectionModel().select(null);
-				}
+				    comboBox.getSelectionModel().select(selectedItem[0]);
+				    comboBox.setValue(selectedItem[0]);
+				});
+			}
+		};
+		ChangeListener<String> textPropertyChangeListener = (observable, oldValue, newValue) ->
+		{
+			if(!comboBox.isShowing()) return;
+			
+			Platform.runLater(() ->
+			{
+			    if(comboBox.getSelectionModel().getSelectedItem() == null)
+			    {
+			        hideableHideableItems.forEach(item -> item.setHidden(!item.getText().toLowerCase()
+			                .contains(newValue.toLowerCase())));
+			    }
+			    else
+			    {
+			        boolean validText = false;
+			
+			        for(HideableItem hideableItem : hideableHideableItems)
+			        {
+			            if(hideableItem.getText().equals(newValue))
+			            {
+			                validText = true;
+			                break;
+			            }
+			        }
+			
+			        if(!validText) comboBox.getSelectionModel().select(null);
+			    }
 			});
-	    });
+		};
+		
+		if(showingPropertyChangeListenerReference != null)
+		{
+			if(showingPropertyChangeListenerReference[0] != null)
+			{
+				comboBox.showingProperty().removeListener(showingPropertyChangeListenerReference[0]);
+			}
+			
+			showingPropertyChangeListenerReference[0] = showingPropertyChangeListener;
+		}
+		if(textPropertyChangeListenerReference != null)
+		{
+			if(textPropertyChangeListenerReference[0] != null)
+			{
+				comboBox.getEditor().textProperty().removeListener(textPropertyChangeListenerReference[0]);
+			}
+			
+			textPropertyChangeListenerReference[0] = textPropertyChangeListener;
+		}
+		
+		comboBox.setOnKeyPressed(keyPressedEventHandler);
+		comboBox.setOnHidden(onHiddenEventHandler);
+		comboBox.showingProperty().addListener(showingPropertyChangeListener);
+		comboBox.getEditor().textProperty().addListener(textPropertyChangeListener);
 	}
 
 	public static void attachImageDialog(CoreFxController coreFxController, ImageView imageView, String dialogTitle,

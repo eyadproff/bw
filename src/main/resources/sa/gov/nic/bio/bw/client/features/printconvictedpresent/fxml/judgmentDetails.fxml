@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.geometry.Insets?>
+
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.CheckBox?>
+<BorderPane xmlns="http://javafx.com/javafx/8.0.152" xmlns:fx="http://javafx.com/fxml/1"
+            fx:id="rootPane" stylesheets="@../css/style.css"
+            fx:controller="sa.gov.nic.bio.bw.client.features.printconvictedpresent.JudgmentDetailsPaneFxController">
+    <center>
+        <VBox alignment="CENTER" spacing="5.0">
+            <padding>
+                <Insets topRightBottomLeft="10.0"/>
+            </padding>
+            <HBox spacing="5.0">
+                <padding>
+                    <Insets left="26.0"/>
+                </padding>
+                <Label text="%label.crimeClassification1"/>
+                <ComboBox fx:id="cboCrimeEvent1"/>
+                <ComboBox fx:id="cboCrimeClass1"/>
+            </HBox>
+            <HBox spacing="5.0">
+                <CheckBox/>
+                <Label text="%label.crimeClassification2"/>
+                <ComboBox fx:id="cboCrimeEvent2"/>
+                <ComboBox fx:id="cboCrimeClass2"/>
+            </HBox>
+            <HBox spacing="5.0">
+                <CheckBox/>
+                <Label text="%label.crimeClassification3"/>
+                <ComboBox fx:id="cboCrimeEvent3"/>
+                <ComboBox fx:id="cboCrimeClass3"/>
+            </HBox>
+        </VBox>
+    </center>
+    <bottom>
+        <HBox alignment="CENTER" spacing="10">
+            <padding>
+                <Insets bottom="10"/>
+            </padding>
+            <Button fx:id="btnPrevious" text="%button.previous"/>
+            <Button fx:id="btnStartOver" text="%button.startOver"/>
+            <Button fx:id="btnNext" text="%button.next"/>
+        </HBox>
+    </bottom>
+</BorderPane>

@@ -10,7 +10,7 @@ public class JudgmentDetailsPaneFxController extends WizardStepFxControllerBase
 	@Override
 	public URL getFxmlLocation()
 	{
-		return getClass().getResource("fxml/verdictDetails.fxml");
+		return getClass().getResource("fxml/judgmentDetails.fxml");
 	}
 	
 	@Override
