@@ -203,6 +203,8 @@ public class DevicesRunnerGadgetPaneFxController extends RegionFxControllerBase
 		{
 			if(event.getCode() == KeyCode.ESCAPE)
 			{
+				cancelCommand.cancel();
+				if(future != null) future.cancel(true);
 				dialogStage.close();
 				event.consume();
 			}

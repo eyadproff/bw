@@ -9,6 +9,9 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.DatePicker?>
 <BorderPane xmlns="http://javafx.com/javafx/8.0.152" xmlns:fx="http://javafx.com/fxml/1"
             fx:id="rootPane" stylesheets="@../css/style.css"
             fx:controller="sa.gov.nic.bio.bw.client.features.printconvictedpresent.JudgmentDetailsPaneFxController">
@@ -17,26 +20,89 @@
             <padding>
                 <Insets topRightBottomLeft="10.0"/>
             </padding>
-            <HBox spacing="5.0">
-                <padding>
-                    <Insets left="26.0"/>
-                </padding>
-                <Label text="%label.crimeClassification1"/>
-                <ComboBox fx:id="cboCrimeEvent1"/>
-                <ComboBox fx:id="cboCrimeClass1"/>
-            </HBox>
-            <HBox spacing="5.0">
-                <CheckBox/>
-                <Label text="%label.crimeClassification2"/>
-                <ComboBox fx:id="cboCrimeEvent2"/>
-                <ComboBox fx:id="cboCrimeClass2"/>
-            </HBox>
-            <HBox spacing="5.0">
-                <CheckBox/>
-                <Label text="%label.crimeClassification3"/>
-                <ComboBox fx:id="cboCrimeEvent3"/>
-                <ComboBox fx:id="cboCrimeClass3"/>
-            </HBox>
+            <GridPane alignment="CENTER" hgap="5.0">
+                <VBox alignment="CENTER" spacing="5.0" GridPane.rowIndex="0" GridPane.columnIndex="0" GridPane.columnSpan="4" GridPane.rowSpan="3">
+                    <padding>
+                        <Insets bottom="30.0"/>
+                    </padding>
+                    <HBox spacing="5.0">
+                        <padding>
+                            <Insets left="26.0"/>
+                        </padding>
+                        <Label fx:id="lblCrimeClassification1" text="%label.crimeClassification1"/>
+                        <ComboBox fx:id="cboCrimeEvent1"/>
+                        <ComboBox fx:id="cboCrimeClass1"/>
+                    </HBox>
+                    <HBox spacing="5.0">
+                        <CheckBox fx:id="cbCrimeClassification2"/>
+                        <Label fx:id="lblCrimeClassification2" text="%label.crimeClassification2"/>
+                        <ComboBox fx:id="cboCrimeEvent2"/>
+                        <ComboBox fx:id="cboCrimeClass2"/>
+                    </HBox>
+                    <HBox spacing="5.0">
+                        <CheckBox fx:id="cbCrimeClassification3"/>
+                        <Label fx:id="lblCrimeClassification3" text="%label.crimeClassification3"/>
+                        <ComboBox fx:id="cboCrimeEvent3"/>
+                        <ComboBox fx:id="cboCrimeClass3"/>
+                    </HBox>
+                </VBox>
+                <Label text="%label.judgmentIssuer" GridPane.rowIndex="3" GridPane.columnIndex="0">
+                    <GridPane.margin>
+                        <Insets bottom="5.0"/>
+                    </GridPane.margin>
+                </Label>
+                <TextField fx:id="txtJudgmentIssuer" GridPane.rowIndex="3" GridPane.columnIndex="1" GridPane.columnSpan="3">
+                    <GridPane.margin>
+                        <Insets bottom="5.0"/>
+                    </GridPane.margin>
+                </TextField>
+                <Label text="%label.policeFileNumber" GridPane.rowIndex="4" GridPane.columnIndex="0">
+                    <GridPane.margin>
+                        <Insets bottom="5.0"/>
+                    </GridPane.margin>
+                </Label>
+                <TextField fx:id="txtPoliceFileNumber" GridPane.rowIndex="4" GridPane.columnIndex="1">
+                    <GridPane.margin>
+                        <Insets bottom="5.0" right="20.0"/>
+                    </GridPane.margin>
+                </TextField>
+                <Label text="%label.judgmentNumber" GridPane.rowIndex="4" GridPane.columnIndex="2">
+                    <GridPane.margin>
+                        <Insets bottom="5.0"/>
+                    </GridPane.margin>
+                </Label>
+                <TextField fx:id="txtJudgmentNumber" GridPane.rowIndex="4" GridPane.columnIndex="3">
+                    <GridPane.margin>
+                        <Insets bottom="5.0"/>
+                    </GridPane.margin>
+                </TextField>
+                <Label text="%label.arrestDate" GridPane.rowIndex="5" GridPane.columnIndex="0">
+                    <GridPane.margin>
+                        <Insets bottom="5.0"/>
+                    </GridPane.margin>
+                </Label>
+                <DatePicker fx:id="dpArrestDate" promptText="dd/MM/yyyy" GridPane.rowIndex="5" GridPane.columnIndex="1">
+                    <GridPane.margin>
+                        <Insets right="20.0"/>
+                    </GridPane.margin>
+                </DatePicker>
+                <CheckBox fx:id="cbArrestDateShowHijri" focusTraversable="false" text="%checkbox.birthDateShowHijri" styleClass="date-picker-check-box" GridPane.rowIndex="6" GridPane.columnIndex="1">
+                    <GridPane.margin>
+                        <Insets bottom="5.0"/>
+                    </GridPane.margin>
+                </CheckBox>
+                <Label text="%label.judgmentDate" GridPane.rowIndex="5" GridPane.columnIndex="2">
+                    <GridPane.margin>
+                        <Insets bottom="5.0"/>
+                    </GridPane.margin>
+                </Label>
+                <DatePicker fx:id="dpJudgmentDate" promptText="dd/MM/yyyy" GridPane.rowIndex="5" GridPane.columnIndex="3"/>
+                <CheckBox fx:id="cbJudgmentDateShowHijri" focusTraversable="false" text="%checkbox.birthDateShowHijri" styleClass="date-picker-check-box" GridPane.rowIndex="6" GridPane.columnIndex="3">
+                    <GridPane.margin>
+                        <Insets bottom="5.0"/>
+                    </GridPane.margin>
+                </CheckBox>
+            </GridPane>
         </VBox>
     </center>
     <bottom>

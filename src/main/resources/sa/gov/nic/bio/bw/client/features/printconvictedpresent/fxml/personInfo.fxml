@@ -28,12 +28,12 @@
             <center>
                 <GridPane alignment="CENTER" hgap="5.0">
                     <padding>
-                        <Insets topRightBottomLeft="20.0"/>
+                        <Insets topRightBottomLeft="10.0"/>
                     </padding>
                     <columnConstraints>
-                        <ColumnConstraints prefWidth="100.0"/>
+                        <ColumnConstraints prefWidth="120.0"/>
                         <ColumnConstraints/>
-                        <ColumnConstraints prefWidth="100.0"/>
+                        <ColumnConstraints prefWidth="95.0"/>
                         <ColumnConstraints/>
                     </columnConstraints>
                     <Label text="%label.firstName" GridPane.rowIndex="0" GridPane.columnIndex="0">

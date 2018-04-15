@@ -26,7 +26,7 @@
                         </ImageView>
                         <GridPane fx:id="gridPane" alignment="CENTER" hgap="10.0" vgap="3.0" VBox.vgrow="ALWAYS">
                             <columnConstraints>
-                                <ColumnConstraints prefWidth="100.0"/>
+                                <ColumnConstraints prefWidth="120.0"/>
                             </columnConstraints>
                             <Label text="%label.publicFileNumber" GridPane.rowIndex="0" GridPane.columnIndex="0" styleClass="bold-label"/>
                             <Label fx:id="lblPublicFileNumber" GridPane.rowIndex="0" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>

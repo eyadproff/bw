@@ -19,6 +19,8 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Control;
+import javafx.scene.control.DateCell;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
@@ -35,7 +37,9 @@ import javafx.scene.text.TextAlignment;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import javafx.util.Callback;
 import javafx.util.Duration;
+import javafx.util.StringConverter;
 import org.controlsfx.control.PopOver;
 import org.controlsfx.control.PopOver.ArrowLocation;
 import sa.gov.nic.bio.bw.client.core.Context;
@@ -48,16 +52,24 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.time.LocalDate;
+import java.time.chrono.HijrahChronology;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class GuiUtils
 {
 	private static final Logger LOGGER = Logger.getLogger(GuiUtils.class.getName());
+	private static final DateTimeFormatter dateFormatterForParsing =
+							DateTimeFormatter.ofPattern("d/M/yyyy", AppConstants.Locales.SAUDI_EN_LOCALE);
+	private static final DateTimeFormatter dateFormatterForFormatting =
+							DateTimeFormatter.ofPattern("dd/MM/yyyy", AppConstants.Locales.SAUDI_EN_LOCALE);
 	
 	public static void showNode(Node node, boolean bShow)
 	{
@@ -431,5 +443,70 @@ public class GuiUtils
 				checkBox.fire();
 			}
 		});
+	}
+	
+	public static void initDatePicker(CheckBox checkBox, DatePicker datePicker, Predicate<LocalDate> dateValidator)
+	{
+		checkBox.selectedProperty().addListener(((observable, oldValue, newValue) ->
+		{
+			if(newValue) datePicker.setChronology(HijrahChronology.INSTANCE);
+			else datePicker.setChronology(null);
+		}));
+		
+		Callback<DatePicker, DateCell> dayCellFactory = dp -> new DateCell()
+		{
+			@Override
+			public void updateItem(LocalDate item, boolean empty)
+			{
+				super.updateItem(item, empty);
+				
+				if(dateValidator != null && !dateValidator.test(item))
+				{
+					Platform.runLater(() -> setDisable(true));
+				}
+			}
+		};
+		
+		StringConverter<LocalDate> converter = new StringConverter<LocalDate>()
+		{
+			@Override
+			public String toString(LocalDate date)
+			{
+				if(date != null) return dateFormatterForFormatting.format(date);
+				else return "";
+			}
+			
+			@Override
+			public LocalDate fromString(String string)
+			{
+				if(string != null && !string.isEmpty())
+				{
+					// support "/", "\" and "-" as date separators
+					string = string.replace("\\", "/");
+					string = string.replace("-", "/");
+					
+					// if the input is 8 characters long, we will add the separators
+					if(string.length() == 8 && !string.contains("/"))
+					{
+						string = string.substring(0, 2) + "/" + string.substring(2, 4) + "/" + string.substring(4, 8);
+					}
+					// if the input is 6 characters long, we will consider day and month are both single digits
+					// and then add the separators
+					else if(string.length() == 6 && !string.contains("/"))
+					{
+						string = string.substring(0, 1) + "/" + string.substring(1, 2) + "/" + string.substring(2, 6);
+					}
+					
+					LocalDate date = LocalDate.parse(string, dateFormatterForParsing);
+					
+					if(dateValidator != null && !dateValidator.test(date)) return null;
+					else return date;
+				}
+				else return null;
+			}
+		};
+		
+		datePicker.setDayCellFactory(dayCellFactory);
+		datePicker.setConverter(converter);
 	}
 }

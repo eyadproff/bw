@@ -15,6 +15,7 @@ import sa.gov.nic.bio.bw.client.features.printconvictedpresent.InquiryPaneFxCont
 import sa.gov.nic.bio.bw.client.features.printconvictedpresent.InquiryResultPaneFxController;
 import sa.gov.nic.bio.bw.client.features.printconvictedpresent.JudgmentDetailsPaneFxController;
 import sa.gov.nic.bio.bw.client.features.printconvictedpresent.PersonInfoPaneFxController;
+import sa.gov.nic.bio.bw.client.features.printconvictedpresent.PunishmentDetailsPaneFxController;
 import sa.gov.nic.bio.bw.client.features.printconvictedpresent.ReviewAndSubmitPaneFxController;
 import sa.gov.nic.bio.bw.client.features.printconvictedpresent.ShowReportPaneFxController;
 import sa.gov.nic.bio.bw.client.features.printconvictedpresent.webservice.Finger;
@@ -266,12 +267,19 @@ public class PrintConvictedReportPresentWorkflow extends WorkflowBase<Void, Void
 					}
 					case 6:
 					{
-						formRenderer.get().renderForm(ReviewAndSubmitPaneFxController.class, uiInputData);
+						formRenderer.get().renderForm(PunishmentDetailsPaneFxController.class, uiInputData);
 						uiOutputData = waitForUserTask();
 						uiInputData.putAll(uiOutputData);
 						break;
 					}
 					case 7:
+					{
+						formRenderer.get().renderForm(ReviewAndSubmitPaneFxController.class, uiInputData);
+						uiOutputData = waitForUserTask();
+						uiInputData.putAll(uiOutputData);
+						break;
+					}
+					case 8:
 					{
 						formRenderer.get().renderForm(ShowReportPaneFxController.class, uiInputData);
 						uiOutputData = waitForUserTask();

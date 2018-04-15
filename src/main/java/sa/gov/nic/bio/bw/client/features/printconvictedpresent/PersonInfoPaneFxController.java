@@ -1,16 +1,13 @@
 package sa.gov.nic.bio.bw.client.features.printconvictedpresent;
 
-import javafx.application.Platform;
 import javafx.beans.binding.BooleanBinding;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.DateCell;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
-import javafx.util.Callback;
 import javafx.util.StringConverter;
 import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.beans.HideableItem;
@@ -29,8 +26,6 @@ import sa.gov.nic.bio.bw.client.features.printconvictedpresent.webservice.Person
 import java.net.URL;
 import java.text.Normalizer;
 import java.time.LocalDate;
-import java.time.chrono.HijrahChronology;
-import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -58,10 +53,6 @@ public class PersonInfoPaneFxController extends WizardStepFxControllerBase
 	@FXML private Button btnStartOver;
 	@FXML private Button btnNext;
 	
-	private static final DateTimeFormatter dateFormatterForParsing =
-								DateTimeFormatter.ofPattern("d/M/yyyy", AppConstants.Locales.SAUDI_EN_LOCALE);
-	private static final DateTimeFormatter dateFormatterForFormatting =
-								DateTimeFormatter.ofPattern("dd/MM/yyyy", AppConstants.Locales.SAUDI_EN_LOCALE);
 	private static final Predicate<LocalDate> birthDateValidator = localDate -> !localDate.isAfter(LocalDate.now());
 	
 	@Override
@@ -110,9 +101,9 @@ public class PersonInfoPaneFxController extends WizardStepFxControllerBase
 			}
 		});
 		
-		initDatePicker(cbBirthDateShowHijri, dpBirthDate, birthDateValidator);
-		initDatePicker(cbIdIssuanceDateShowHijri, dpIdIssuanceDate, null);
-		initDatePicker(cbIdExpiryDateShowHijri, dpIdExpiryDate, null);
+		GuiUtils.initDatePicker(cbBirthDateShowHijri, dpBirthDate, birthDateValidator);
+		GuiUtils.initDatePicker(cbIdIssuanceDateShowHijri, dpIdIssuanceDate, null);
+		GuiUtils.initDatePicker(cbIdExpiryDateShowHijri, dpIdExpiryDate, null);
 		
 		BooleanBinding txtFirstNameBinding = txtFirstName.textProperty().isEmpty();
 		BooleanBinding txtFatherNameBinding = txtFatherName.textProperty().isEmpty();
@@ -230,70 +221,5 @@ public class PersonInfoPaneFxController extends WizardStepFxControllerBase
 			if(focusedNode != null) focusedNode.requestFocus();
 			else btnNext.requestFocus();
 		}
-	}
-	
-	private void initDatePicker(CheckBox checkBox, DatePicker datePicker, Predicate<LocalDate> dateValidator)
-	{
-		checkBox.selectedProperty().addListener(((observable, oldValue, newValue) ->
-		{
-			if(newValue) datePicker.setChronology(HijrahChronology.INSTANCE);
-			else datePicker.setChronology(null);
-		}));
-		
-		Callback<DatePicker, DateCell> dayCellFactory = dp -> new DateCell()
-		{
-			@Override
-			public void updateItem(LocalDate item, boolean empty)
-			{
-				super.updateItem(item, empty);
-				
-				if(dateValidator != null && !dateValidator.test(item))
-				{
-					Platform.runLater(() -> setDisable(true));
-				}
-			}
-		};
-		
-		StringConverter<LocalDate> converter = new StringConverter<LocalDate>()
-		{
-			@Override
-			public String toString(LocalDate date)
-			{
-				if(date != null) return dateFormatterForFormatting.format(date);
-				else return "";
-			}
-			
-			@Override
-			public LocalDate fromString(String string)
-			{
-				if(string != null && !string.isEmpty())
-				{
-					// support "/", "\" and "-" as date separators
-					string = string.replace("\\", "/");
-					string = string.replace("-", "/");
-					
-					// if the input is 8 characters long, we will add the separators
-					if(string.length() == 8 && !string.contains("/"))
-					{
-						string = string.substring(0, 2) + "/" + string.substring(2, 4) + "/" + string.substring(4, 8);
-					}
-					// if the input is 6 characters long, we will consider day and month are both single digits
-					// and then add the separators
-					else if(string.length() == 6 && !string.contains("/"))
-					{
-						string = string.substring(0, 1) + "/" + string.substring(1, 2) + "/" + string.substring(2, 6);
-					}
-					
-					LocalDate date = LocalDate.parse(string, dateFormatterForParsing);
-					
-					if(dateValidator != null && !dateValidator.test(date)) return null;
-					else return date;
-				}
-				else return null;
-			}
-		};
-		
-		datePicker.setDayCellFactory(dayCellFactory);
-		datePicker.setConverter(converter);
 	}
 }

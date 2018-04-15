@@ -193,28 +193,26 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 			Integer i = (Integer) uiInputData.get(KEY_ACCEPTED_BAD_QUALITY_FACE_MIN_RETIRES);
 			if(bool != null) acceptedBadQualityFaceMinRetires = i;
 			
-			if(acceptAnyCapturedImage)
-			{
-				btnNext.disableProperty().bind(ivCapturedImage.imageProperty().isNull().and(
-											   ivCroppedImage.imageProperty().isNull()));
-			}
-			else if(acceptBadQualityFace)
-			{
-				Runnable disabling = () -> btnNext.setDisable(ivCroppedImage.getImage() == null ||
-                                            (ivCroppedImage.getImage() != null && !ivSuccessIcao.isVisible() &&
-		                                     successfulCroppedCapturingCount < acceptedBadQualityFaceMinRetires));
-				disabling.run();
-				ivCroppedImage.imageProperty().addListener((observable, oldValue, newValue) -> disabling.run());
-			}
-			else // accept good quality face only
-			{
-				btnNext.disableProperty().bind(ivCapturedImage.imageProperty().isNull().or(
-											   ivCroppedImage.imageProperty().isNull()).or(
-											   ivSuccessIcao.visibleProperty().not()));
-			}
-			
-			// TODO: remove this when done
-			btnNext.setDisable(false);
+			// TODO: enable this when done
+			//if(acceptAnyCapturedImage)
+			//{
+			//	btnNext.disableProperty().bind(ivCapturedImage.imageProperty().isNull().and(
+			//								   ivCroppedImage.imageProperty().isNull()));
+			//}
+			//else if(acceptBadQualityFace)
+			//{
+			//	Runnable disabling = () -> btnNext.setDisable(ivCroppedImage.getImage() == null ||
+            //                                (ivCroppedImage.getImage() != null && !ivSuccessIcao.isVisible() &&
+		    //                                 successfulCroppedCapturingCount < acceptedBadQualityFaceMinRetires));
+			//	disabling.run();
+			//	ivCroppedImage.imageProperty().addListener((observable, oldValue, newValue) -> disabling.run());
+			//}
+			//else // accept good quality face only
+			//{
+			//	btnNext.disableProperty().bind(ivCapturedImage.imageProperty().isNull().or(
+			//								   ivCroppedImage.imageProperty().isNull()).or(
+			//								   ivSuccessIcao.visibleProperty().not()));
+			//}
 			
 			
 			bool = (Boolean) uiInputData.get(KEY_ICAO_SUCCESS_ICON_VISIBLE);
