@@ -21,10 +21,16 @@
                         <padding>
                             <Insets topRightBottomLeft="10.0"/>
                         </padding>
-                        <ImageView fx:id="ivPersonPhoto" preserveRatio="true" VBox.vgrow="ALWAYS">
+                        <VBox fx:id="paneNoHitMessage" alignment="CENTER" spacing="5.0" managed="false" visible="false">
+                            <ImageView>
+                                <Image url="@../../../core/images/error.png"/>
+                            </ImageView>
+                            <Label text="%label.fingerprintsInquiryNoHit"/>
+                        </VBox>
+                        <ImageView fx:id="ivPersonPhoto" preserveRatio="true" VBox.vgrow="ALWAYS" managed="false" visible="false">
                             <Image url="@../../../core/images/avatar_placeholder.jpg"/>
                         </ImageView>
-                        <GridPane fx:id="gridPane" alignment="CENTER" hgap="10.0" vgap="3.0" VBox.vgrow="ALWAYS">
+                        <GridPane fx:id="gridPane" alignment="CENTER" hgap="10.0" vgap="3.0" VBox.vgrow="ALWAYS" managed="false" visible="false">
                             <columnConstraints>
                                 <ColumnConstraints prefWidth="120.0"/>
                             </columnConstraints>
@@ -69,7 +75,7 @@
             </padding>
             <Button fx:id="btnStartOver" text="%button.startOver"/>
             <Button fx:id="btnRegisterUnknownPerson" text="%button.registerUnknownPerson" onAction="#onRegisterUnknownPersonButtonClicked"/>
-            <Button fx:id="btnConfirmPersonInformation" text="%button.confirm"/>
+            <Button fx:id="btnConfirmPersonInformation" text="%button.confirm" managed="false" visible="false"/>
         </HBox>
     </bottom>
 </BorderPane>
