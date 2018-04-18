@@ -7,7 +7,7 @@
     <steps>
         <WizardStep iconId="\\uf256" title="%wizard.fingerprintCapturing"/>
         <WizardStep iconId="camera" title="%wizard.facePhotoCapturing"/>
-        <WizardStep iconId="search" title="%wizard.inquiry"/>
+        <WizardStep iconId="search" title="%wizard.inquiryByFingerprints"/>
         <WizardStep iconId="database" title="%wizard.inquiryResult"/>
         <WizardStep iconId="user" title="%wizard.personInfo"/>
         <WizardStep iconId="gavel" title="%wizard.judgementDetails"/>

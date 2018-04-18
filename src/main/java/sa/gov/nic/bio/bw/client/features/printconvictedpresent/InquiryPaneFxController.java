@@ -25,11 +25,11 @@ public class InquiryPaneFxController extends WizardStepFxControllerBase
 	public static final String KEY_FINGERPRINT_INQUIRY_UNKNOWN_STATUS = "FINGERPRINT_INQUIRY_UNKNOWN_STATUS";
 	public static final String KEY_RETRY_FINGERPRINT_INQUIRY = "RETRY_FINGERPRINT_INQUIRY";
 	public static final String KEY_FINGERPRINT_INQUIRY_HIT = "FINGERPRINT_INQUIRY_HIT";
-	public static final String KEY_FINGERPRINT_INQUIRY_HIT_RESULT = "FINGERPRINT_INQUIRY_HIT_RESULT";
 	
 	@FXML private VBox paneError;
 	@FXML private ProgressIndicator piProgress;
 	@FXML private Label txtProgress;
+	@FXML private Label lblCanceling;
 	@FXML private Label lblCancelled;
 	@FXML private Button btnCancel;
 	@FXML private Button btnRetry;
@@ -56,11 +56,9 @@ public class InquiryPaneFxController extends WizardStepFxControllerBase
 		});
 		btnCancel.setOnAction(actionEvent ->
 		{
-			GuiUtils.showNode(piProgress, false);
 			GuiUtils.showNode(txtProgress, false);
 			GuiUtils.showNode(btnCancel, false);
-			GuiUtils.showNode(btnRetry, true);
-			GuiUtils.showNode(btnStartOver, true);
+			GuiUtils.showNode(lblCanceling, true);
 			fingerprintInquiryCancelled = true;
 		});
 	}
@@ -89,7 +87,7 @@ public class InquiryPaneFxController extends WizardStepFxControllerBase
 			Boolean waiting = (Boolean) uiInputData.get(InquiryPaneFxController.KEY_WAITING_FINGERPRINT_INQUIRY);
 			if(waiting != null && waiting)
 			{
-				GuiUtils.showNode(btnCancel, true);
+				btnCancel.setDisable(false);
 				Context.getExecutorService().submit(() ->
 				{
 					int seconds = Integer.parseInt(System.getProperty(
@@ -110,8 +108,14 @@ public class InquiryPaneFxController extends WizardStepFxControllerBase
 						if(fingerprintInquiryCancelled)
 						{
 							fingerprintInquiryCancelled = false;
-							uiDataMap.put(KEY_WAITING_FINGERPRINT_INQUIRY_CANCELLED, Boolean.TRUE);
+							
+							GuiUtils.showNode(piProgress, false);
+							GuiUtils.showNode(lblCanceling, false);
 							GuiUtils.showNode(lblCancelled, true);
+							GuiUtils.showNode(btnStartOver, true);
+							GuiUtils.showNode(btnRetry, true);
+							
+							uiDataMap.put(KEY_WAITING_FINGERPRINT_INQUIRY_CANCELLED, Boolean.TRUE);
 						}
 						Context.getWorkflowManager().submitUserTask(uiDataMap);
 					});
@@ -135,7 +139,7 @@ public class InquiryPaneFxController extends WizardStepFxControllerBase
 				{
 					String errorCode = PrintConvictedPresentErrorCodes.C007_00002.getCode();
 					String[] errorDetails = {"TCN is null!"};
-					Context.getCoreFxController().showErrorDialog(errorCode, null, errorDetails);
+					reportNegativeResponse(errorCode, null, errorDetails);
 				}
 			}
 			else reportNegativeResponse(serviceResponse.getErrorCode(), serviceResponse.getException(),
@@ -147,12 +151,13 @@ public class InquiryPaneFxController extends WizardStepFxControllerBase
 	private void onRetryButtonClicked(ActionEvent actionEvent)
 	{
 		hideNotification();
-		GuiUtils.showNode(btnRetry, false);
-		GuiUtils.showNode(btnStartOver, false);
 		GuiUtils.showNode(paneError, false);
 		GuiUtils.showNode(lblCancelled, false);
+		GuiUtils.showNode(btnRetry, false);
+		GuiUtils.showNode(btnStartOver, false);
 		GuiUtils.showNode(piProgress, true);
 		GuiUtils.showNode(txtProgress, true);
+		GuiUtils.showNode(btnCancel, true);
 		
 		Map<String, Object> uiDataMap = new HashMap<>();
 		uiDataMap.put(KEY_RETRY_FINGERPRINT_INQUIRY, Boolean.TRUE);

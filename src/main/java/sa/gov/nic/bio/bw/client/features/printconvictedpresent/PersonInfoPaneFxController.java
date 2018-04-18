@@ -152,8 +152,8 @@ public class PersonInfoPaneFxController extends WizardStepFxControllerBase
 		if(newForm)
 		{
 			FingerprintInquiryStatusResult result = (FingerprintInquiryStatusResult)
-					uiInputData.get(InquiryPaneFxController.KEY_FINGERPRINT_INQUIRY_HIT_RESULT);
-			PersonInfo personInfo = result.getPersonInfo().values().iterator().next();
+												uiInputData.get(InquiryResultPaneFxController.KEY_INQUIRY_HIT_RESULT);
+			PersonInfo personInfo = result.getPersonInfo();
 			
 			Name name = personInfo.getName();
 			
@@ -182,8 +182,8 @@ public class PersonInfoPaneFxController extends WizardStepFxControllerBase
 			if(familyName != null && !familyName.trim().isEmpty()) txtFamilyName.setText(familyName);
 			else if(focusedNode == null) focusedNode = txtFamilyName;
 			
-			long xCandidate = result.getXCandidate();
-			if(xCandidate > 0) txtPublicFileNumber.setText(String.valueOf(xCandidate));
+			long criminalBioId = result.getCrimnalHitBioId();
+			if(criminalBioId > 0) txtPublicFileNumber.setText(String.valueOf(criminalBioId));
 			else if(focusedNode == null) focusedNode = txtPublicFileNumber;
 			
 			String birthPlace = personInfo.getBirthPlace();

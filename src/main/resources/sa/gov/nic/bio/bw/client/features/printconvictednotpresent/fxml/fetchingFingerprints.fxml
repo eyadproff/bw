@@ -1,19 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressIndicator?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.geometry.Insets?>
-
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.control.ProgressIndicator?>
 <BorderPane xmlns="http://javafx.com/javafx/8.0.152" xmlns:fx="http://javafx.com/fxml/1"
             fx:id="rootPane" stylesheets="@../css/style.css"
             fx:controller="sa.gov.nic.bio.bw.client.features.printconvictednotpresent.FetchingFingerprintsPaneFxController">
     <center>
         <VBox alignment="CENTER" spacing="5.0">
-            <Label text="Test"/>
+            <ProgressIndicator fx:id="piProgress" maxWidth="25.0" maxHeight="25.0"/>
+            <Label fx:id="txtProgress" text="%label.fetchingFingerprintsInProgress"/>
+            <VBox fx:id="paneError" alignment="CENTER" spacing="5.0" managed="false" visible="false">
+                <ImageView>
+                    <Image url="@../../../core/images/error.png"/>
+                </ImageView>
+                <Label text="%label.fetchingFingerprintsError"/>
+            </VBox>
         </VBox>
     </center>
     <bottom>
@@ -21,6 +29,8 @@
             <padding>
                 <Insets bottom="10"/>
             </padding>
+            <Button fx:id="btnStartOver" text="%button.startOver" managed="false" visible="false"/>
+            <Button fx:id="btnRetry" text="%button.retry" managed="false" visible="false" onAction="#onRetryButtonClicked"/>
         </HBox>
     </bottom>
 </BorderPane>

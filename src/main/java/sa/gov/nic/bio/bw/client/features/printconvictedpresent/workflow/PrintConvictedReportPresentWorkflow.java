@@ -145,7 +145,7 @@ public class PrintConvictedReportPresentWorkflow extends WorkflowBase<Void, Void
 						
 						try
 						{
-							collectedFingerprints.add(new Finger(2, Base64.getEncoder().encodeToString(Files.readAllBytes(Paths.get("D:\\dev\\nic\\data\\wsq dinesh\\1.wsq"))), new FingerCoordinate()));
+							collectedFingerprints.add(new Finger(1, Base64.getEncoder().encodeToString(Files.readAllBytes(Paths.get("D:\\dev\\nic\\data\\wsq dinesh\\1.wsq"))), new FingerCoordinate()));
 							//collectedFingerprints.add(new Finger(2, Base64.getEncoder().encodeToString(Files.readAllBytes(Paths.get("D:\\dev\\nic\\data\\wsq dinesh\\2.wsq"))), new FingerCoordinate()));
 							//collectedFingerprints.add(new Finger(3, Base64.getEncoder().encodeToString(Files.readAllBytes(Paths.get("D:\\dev\\nic\\data\\wsq dinesh\\3.wsq"))), new FingerCoordinate()));
 							//collectedFingerprints.add(new Finger(4, Base64.getEncoder().encodeToString(Files.readAllBytes(Paths.get("D:\\dev\\nic\\data\\wsq dinesh\\4.wsq"))), new FingerCoordinate()));
@@ -203,7 +203,7 @@ public class PrintConvictedReportPresentWorkflow extends WorkflowBase<Void, Void
 									{
 										uiInputData.put(InquiryPaneFxController.KEY_FINGERPRINT_INQUIRY_HIT,
 										                Boolean.TRUE);
-										uiInputData.put(InquiryPaneFxController.KEY_FINGERPRINT_INQUIRY_HIT_RESULT,
+										uiInputData.put(InquiryResultPaneFxController.KEY_INQUIRY_HIT_RESULT,
 										                result);
 										formRenderer.get().renderForm(InquiryPaneFxController.class, uiInputData);
 									}

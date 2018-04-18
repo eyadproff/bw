@@ -16,7 +16,8 @@
         <VBox alignment="CENTER" spacing="5.0">
             <ProgressIndicator fx:id="piProgress" maxWidth="25.0" maxHeight="25.0"/>
             <Label fx:id="txtProgress" text="%label.fingerprintInquiryInProgress"/>
-            <Button fx:id="btnCancel" text="%button.cancel" managed="false" visible="false"/>
+            <Button fx:id="btnCancel" text="%button.cancel"/>
+            <Label fx:id="lblCanceling" text="%label.fingerprintInquiryCanceling" managed="false" visible="false"/>
             <Label fx:id="lblCancelled" text="%label.fingerprintInquiryCancelled" managed="false" visible="false"/>
             <VBox fx:id="paneError" alignment="CENTER" spacing="5.0" managed="false" visible="false">
                 <ImageView>
@@ -31,8 +32,8 @@
             <padding>
                 <Insets bottom="10"/>
             </padding>
-            <Button fx:id="btnRetry" text="%button.retry" visible="false" managed="false" onAction="#onRetryButtonClicked"/>
-            <Button fx:id="btnStartOver" text="%button.startOver" visible="false" managed="false"/>
+            <Button fx:id="btnStartOver" text="%button.startOver" managed="false" visible="false"/>
+            <Button fx:id="btnRetry" text="%button.retry" managed="false" visible="false" onAction="#onRetryButtonClicked"/>
         </HBox>
     </bottom>
 </BorderPane>

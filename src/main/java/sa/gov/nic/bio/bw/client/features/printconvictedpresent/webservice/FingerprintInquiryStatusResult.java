@@ -1,8 +1,5 @@
 package sa.gov.nic.bio.bw.client.features.printconvictedpresent.webservice;
 
-import com.google.gson.annotations.SerializedName;
-
-import java.util.Map;
 import java.util.Objects;
 
 public class FingerprintInquiryStatusResult
@@ -11,45 +8,48 @@ public class FingerprintInquiryStatusResult
 	public static final int STATUS_INQUIRY_NO_HIT = 91;
 	public static final int STATUS_INQUIRY_HIT = 93;
 	
-	private Map<Long,PersonInfo> personInfo;;
-	@SerializedName("l_candidate")
-	private int lCandidate;
-	@SerializedName("x_candidate")
-	private int xCandidate;
 	private int status;
-	
-	public Map<Long, PersonInfo> getPersonInfo(){return personInfo;}
-	public void setPersonInfo(Map<Long, PersonInfo> personInfo){this.personInfo = personInfo;}
-	
-	public int getLCandidate(){return lCandidate;}
-	public void setLCandidate(int lCandidate){this.lCandidate = lCandidate;}
-	
-	public int getXCandidate(){return xCandidate;}
-	public void setXCandidate(int xCandidate){this.xCandidate = xCandidate;}
+	private long civilHitBioId;
+	private long crimnalHitBioId;
+	private long samisId;
+	private PersonInfo personInfo;
 	
 	public int getStatus(){return status;}
 	public void setStatus(int status){this.status = status;}
+	
+	public long getCivilHitBioId(){return civilHitBioId;}
+	public void setCivilHitBioId(long civilHitBioId){this.civilHitBioId = civilHitBioId;}
+	
+	public long getCrimnalHitBioId(){return crimnalHitBioId;}
+	public void setCrimnalHitBioId(long crimnalHitBioId){this.crimnalHitBioId = crimnalHitBioId;}
+	
+	public long getSamisId(){return samisId;}
+	public void setSamisId(long samisId){this.samisId = samisId;}
+	
+	public PersonInfo getPersonInfo(){return personInfo;}
+	public void setPersonInfo(PersonInfo personInfo){this.personInfo = personInfo;}
 	
 	@Override
 	public boolean equals(Object o)
 	{
 		if(this == o) return true;
 		if(o == null || getClass() != o.getClass()) return false;
-		FingerprintInquiryStatusResult that = (FingerprintInquiryStatusResult) o;
-		return lCandidate == that.lCandidate && xCandidate == that.xCandidate && status == that.status &&
-			   Objects.equals(personInfo, that.personInfo);
+		FingerprintInquiryStatusResult result = (FingerprintInquiryStatusResult) o;
+		return status == result.status && civilHitBioId == result.civilHitBioId &&
+			   crimnalHitBioId == result.crimnalHitBioId && samisId == result.samisId &&
+			   Objects.equals(personInfo, result.personInfo);
 	}
 	
 	@Override
 	public int hashCode()
 	{
-		return Objects.hash(personInfo, lCandidate, xCandidate, status);
+		return Objects.hash(status, civilHitBioId, crimnalHitBioId, samisId, personInfo);
 	}
 	
 	@Override
 	public String toString()
 	{
-		return "FingerprintInquiryStatusResult{" + "personInfo=" + personInfo + ", lCandidate=" + lCandidate +
-			   ", xCandidate=" + xCandidate + ", status=" + status + '}';
+		return "FingerprintInquiryStatusResult{" + "status=" + status + ", civilHitBioId=" + civilHitBioId +
+			   ", crimnalHitBioId=" + crimnalHitBioId + ", samisId=" + samisId + ", personInfo=" + personInfo + '}';
 	}
 }
