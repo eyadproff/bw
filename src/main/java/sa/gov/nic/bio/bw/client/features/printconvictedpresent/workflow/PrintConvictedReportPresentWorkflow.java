@@ -2,7 +2,9 @@ package sa.gov.nic.bio.bw.client.features.printconvictedpresent.workflow;
 
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
+import sa.gov.nic.bio.biokit.websocket.beans.DMFingerData;
 import sa.gov.nic.bio.bw.client.core.Context;
+import sa.gov.nic.bio.bw.client.core.beans.Fingerprint;
 import sa.gov.nic.bio.bw.client.core.interfaces.FormRenderer;
 import sa.gov.nic.bio.bw.client.core.utils.UTF8Control;
 import sa.gov.nic.bio.bw.client.core.workflow.Signal;
@@ -19,16 +21,11 @@ import sa.gov.nic.bio.bw.client.features.printconvictedpresent.PunishmentDetails
 import sa.gov.nic.bio.bw.client.features.printconvictedpresent.ReviewAndSubmitPaneFxController;
 import sa.gov.nic.bio.bw.client.features.printconvictedpresent.ShowReportPaneFxController;
 import sa.gov.nic.bio.bw.client.features.printconvictedpresent.webservice.Finger;
-import sa.gov.nic.bio.bw.client.features.printconvictedpresent.webservice.FingerCoordinate;
 import sa.gov.nic.bio.bw.client.features.printconvictedpresent.webservice.FingerprintInquiryStatusResult;
 import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
 
-import java.io.IOException;
 import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -138,33 +135,24 @@ public class PrintConvictedReportPresentWorkflow extends WorkflowBase<Void, Void
 							formRenderer.get().renderForm(InquiryPaneFxController.class, uiInputData);
 						}
 						
-						// STEP2: submit the fingerprints inquiry
-						// TODO: temp data
-						
 						List<Finger> collectedFingerprints = new ArrayList<>();
-						
-						try
-						{
-							collectedFingerprints.add(new Finger(1, Base64.getEncoder().encodeToString(Files.readAllBytes(Paths.get("D:\\dev\\nic\\data\\wsq dinesh\\1.wsq"))), new FingerCoordinate()));
-							//collectedFingerprints.add(new Finger(2, Base64.getEncoder().encodeToString(Files.readAllBytes(Paths.get("D:\\dev\\nic\\data\\wsq dinesh\\2.wsq"))), new FingerCoordinate()));
-							//collectedFingerprints.add(new Finger(3, Base64.getEncoder().encodeToString(Files.readAllBytes(Paths.get("D:\\dev\\nic\\data\\wsq dinesh\\3.wsq"))), new FingerCoordinate()));
-							//collectedFingerprints.add(new Finger(4, Base64.getEncoder().encodeToString(Files.readAllBytes(Paths.get("D:\\dev\\nic\\data\\wsq dinesh\\4.wsq"))), new FingerCoordinate()));
-							//collectedFingerprints.add(new Finger(5, Base64.getEncoder().encodeToString(Files.readAllBytes(Paths.get("D:\\dev\\nic\\data\\wsq dinesh\\5.wsq"))), new FingerCoordinate()));
-							//collectedFingerprints.add(new Finger(6, Base64.getEncoder().encodeToString(Files.readAllBytes(Paths.get("D:\\dev\\nic\\data\\wsq dinesh\\6.wsq"))), new FingerCoordinate()));
-							//collectedFingerprints.add(new Finger(7, Base64.getEncoder().encodeToString(Files.readAllBytes(Paths.get("D:\\dev\\nic\\data\\wsq dinesh\\7.wsq"))), new FingerCoordinate()));
-							//collectedFingerprints.add(new Finger(8, Base64.getEncoder().encodeToString(Files.readAllBytes(Paths.get("D:\\dev\\nic\\data\\wsq dinesh\\8.wsq"))), new FingerCoordinate()));
-							//collectedFingerprints.add(new Finger(9, Base64.getEncoder().encodeToString(Files.readAllBytes(Paths.get("D:\\dev\\nic\\data\\wsq dinesh\\9.wsq"))), new FingerCoordinate()));
-							//collectedFingerprints.add(new Finger(10, Base64.getEncoder().encodeToString(Files.readAllBytes(Paths.get("D:\\dev\\nic\\data\\wsq dinesh\\10.wsq"))), new FingerCoordinate()));
-							
-						}
-						catch(IOException e)
-						{
-							e.printStackTrace();
-						}
-						
 						List<Integer> missingFingerprints = new ArrayList<>();
-						for(int i = 1; i <= 10; i++) missingFingerprints.add(i);
-						collectedFingerprints.forEach(finger -> missingFingerprints.remove((Integer) finger.getType()));
+						
+						@SuppressWarnings("unchecked")
+						Map<Integer, Fingerprint> capturedFingerprints = (Map<Integer, Fingerprint>)
+										uiInputData.get(FingerprintCapturingFxController.KEY_CAPTURED_FINGERPRINTS);
+						capturedFingerprints.forEach((position, fingerprint) ->
+						{
+							DMFingerData fingerData = fingerprint.getDmFingerData();
+							if(fingerData == null) // skipped fingerprint
+							{
+								missingFingerprints.add(position);
+								return;
+							}
+							
+							collectedFingerprints.add(new Finger(position, fingerData.getFingerWsqImage(),
+							                                    null));
+						});
 						
 						ServiceResponse<Integer> serviceResponse =
 								FingerprintInquiryService.execute(collectedFingerprints, missingFingerprints);

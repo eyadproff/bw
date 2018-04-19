@@ -207,7 +207,7 @@
                 <Insets bottom="10"/>
             </padding>
             <Button fx:id="btnPrevious" text="%button.previous"/>
-            <Button fx:id="btnStartOver" text="%button.startOver"/>
+            <Button fx:id="btnStartOver" text="%button.startOver" onAction="#onStartOverButtonClicked"/>
             <Button fx:id="btnNext" text="%button.next"/>
         </HBox>
     </bottom>

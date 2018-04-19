@@ -78,8 +78,8 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 	public static final String KEY_ACCEPT_BAD_QUALITY_FINGERPRINT = "ACCEPT_BAD_QUALITY_FINGERPRINT";
 	public static final String KEY_ACCEPTED_BAD_QUALITY_FINGERPRINT_MIN_RETIRES =
 																		"ACCEPTED_BAD_QUALITY_FINGERPRINT_MIN_RETIRES";
+	public static final String KEY_CAPTURED_FINGERPRINTS = "CAPTURED_FINGERPRINTS";
 	
-	private static final String KEY_CAPTURED_FINGERPRINTS = "CAPTURED_FINGERPRINTS";
 	
 	@FXML private VBox paneControlsInnerContainer;
 	@FXML private ScrollPane paneControlsOuterContainer;
@@ -194,8 +194,7 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 		
 		btnPrevious.setOnAction(event -> goPrevious());
 		btnNext.setOnAction(event -> goNext());
-		// TODO: enable this when done
-		//btnNext.disableProperty().bind(ivCompleted.visibleProperty().not());
+		btnNext.disableProperty().bind(ivCompleted.visibleProperty().not());
 		
 		paneControlsInnerContainer.minHeightProperty().bind(Bindings.createDoubleBinding(() ->
 		{
@@ -881,10 +880,12 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 	        	
 		        if(result.getReturnCode() == CaptureFingerprintResponse.SuccessCodes.SUCCESS)
 		        {
+			        String capturedImageBase64 = result.getCapturedImage();
+			        if(capturedImageBase64 == null) return; // it happens if we stop the preview
+			        
 			        tpFingerprintDeviceLivePreview.setCaptured(true);
 			
 			        // show the final slap image in place of the live preview image
-			        String capturedImageBase64 = result.getCapturedImage();
 			        byte[] bytes = Base64.getDecoder().decode(capturedImageBase64);
 			        ivFingerprintDeviceLivePreview.setImage(new Image(new ByteArrayInputStream(bytes)));
 			
@@ -929,9 +930,7 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 			        GuiUtils.showNode(btnStartOver, true);
 			        
 			        fingerprintUiComponentsMap.forEach((integer, components) ->
-			        {
-				        GuiUtils.showNode(components.getSvgPath(), false);
-			        });
+				                                           GuiUtils.showNode(components.getSvgPath(), false));
 		        	
 			        lblStatus.setText(String.format(firstLivePreviewingResponse[0] ?
 					        resources.getString("label.status.failedToStartFingerprintCapturingWithErrorCode") :
@@ -945,9 +944,7 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 		        GuiUtils.showNode(btnStartOver, true);
 		        
 		        fingerprintUiComponentsMap.forEach((integer, components) ->
-		        {
-			        GuiUtils.showNode(components.getSvgPath(), false);
-		        });
+				                                           GuiUtils.showNode(components.getSvgPath(), false));
 		        
 		        lblStatus.setText(String.format(firstLivePreviewingResponse[0] ?
 				        resources.getString("label.status.failedToStartFingerprintCapturingWithErrorCode") :
@@ -969,9 +966,7 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 			GuiUtils.showNode(btnStartOver, true);
 			
 			fingerprintUiComponentsMap.forEach((integer, components) ->
-			{
-			    GuiUtils.showNode(components.getSvgPath(), false);
-			});
+					                                   GuiUtils.showNode(components.getSvgPath(), false));
 			
 			Throwable exception = capturingFingerprintTask.getException();
 			
@@ -1086,9 +1081,7 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 					GuiUtils.showNode(btnStartOver, true);
 					
 					fingerprintUiComponentsMap.forEach((integer, components) ->
-					{
-					    GuiUtils.showNode(components.getSvgPath(), false);
-					});
+						                                   GuiUtils.showNode(components.getSvgPath(), false));
 					
 					lblStatus.setText(String.format(
 							resources.getString("label.status.failedToFindDuplicatedFingerprintsWithErrorCode"),
@@ -1100,9 +1093,7 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 				GuiUtils.showNode(btnStartOver, true);
 				
 				fingerprintUiComponentsMap.forEach((integer, components) ->
-				{
-				    GuiUtils.showNode(components.getSvgPath(), false);
-				});
+					                                        GuiUtils.showNode(components.getSvgPath(), false));
 				
 				lblStatus.setText(String.format(
 							resources.getString("label.status.failedToFindDuplicatedFingerprintsWithErrorCode"),
@@ -1120,9 +1111,7 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 			GuiUtils.showNode(btnStartOver, true);
 			
 			fingerprintUiComponentsMap.forEach((integer, components) ->
-			{
-			    GuiUtils.showNode(components.getSvgPath(), false);
-			});
+					                                   GuiUtils.showNode(components.getSvgPath(), false));
 			
 			Throwable exception = findDuplicatesTask.getException();
 			
@@ -1183,9 +1172,7 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 		task.setOnSucceeded(e ->
 		{
 			fingerprintUiComponentsMap.forEach((integer, components) ->
-			{
-			    GuiUtils.showNode(components.getSvgPath(), false);
-			});
+					                                    GuiUtils.showNode(components.getSvgPath(), false));
 			
 		    tpFingerprintDeviceLivePreview.setActive(false);
 			ivFingerprintDeviceLivePreview.setImage(null);
@@ -1225,9 +1212,7 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 		task.setOnFailed(e ->
 		{
 			fingerprintUiComponentsMap.forEach((integer, components) ->
-			{
-			    GuiUtils.showNode(components.getSvgPath(), false);
-			});
+					                                   GuiUtils.showNode(components.getSvgPath(), false));
 			
 		    tpFingerprintDeviceLivePreview.setActive(false);
 			ivFingerprintDeviceLivePreview.setImage(null);
@@ -1523,8 +1508,6 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 		boolean[] noDuplicates = {true};
 		showFingerprints(fingerData, duplicatedFingers, allAcceptableQuality, noDuplicates, false);
 		GuiUtils.showNode(btnStartOver, true);
-		
-		fingerData.forEach(fd -> System.out.println(fd.getFingerWsqImage()));
 		
 		if(allAcceptableQuality[0])
 		{

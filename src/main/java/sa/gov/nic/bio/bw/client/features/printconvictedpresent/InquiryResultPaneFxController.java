@@ -73,7 +73,6 @@ public class InquiryResultPaneFxController extends WizardStepFxControllerBase
 		GuiUtils.makeButtonClickableByPressingEnter(btnConfirmPersonInformation);
 		
 		btnConfirmPersonInformation.setOnAction(actionEvent -> goNext());
-		btnStartOver.setOnAction(actionEvent -> startOver());
 	}
 	
 	@Override
@@ -164,8 +163,53 @@ public class InquiryResultPaneFxController extends WizardStepFxControllerBase
 		}
 	}
 	
+	@FXML
+	private void onStartOverButtonClicked(ActionEvent actionEvent)
+	{
+		String headerText = resources.getString("printConvictedPresent.startingOver.confirmation.header");
+		String contentText = resources.getString("printConvictedPresent.startingOver.confirmation.message");
+		boolean confirmed = Context.getCoreFxController().showConfirmationDialogAndWait(headerText, contentText);
+		
+		if(confirmed) startOver();
+	}
+	
 	private void populatePersonInfo(PersonInfo personInfo, String notAvailable)
 	{
+		if(personInfo == null)
+		{
+			lblFirstName.setText(notAvailable);
+			lblFirstName.setTextFill(Color.RED);
+			lblFatherName.setText(notAvailable);
+			lblFatherName.setTextFill(Color.RED);
+			lblGrandfatherName.setText(notAvailable);
+			lblGrandfatherName.setTextFill(Color.RED);
+			lblFamilyName.setText(notAvailable);
+			lblFamilyName.setTextFill(Color.RED);
+			lblGender.setText(notAvailable);
+			lblGender.setTextFill(Color.RED);
+			lblNationality.setText(notAvailable);
+			lblNationality.setTextFill(Color.RED);
+			lblOccupation.setText(notAvailable);
+			lblOccupation.setTextFill(Color.RED);
+			lblBirthPlace.setText(notAvailable);
+			lblBirthPlace.setTextFill(Color.RED);
+			lblBirthDate.setText(notAvailable);
+			lblBirthDate.setTextFill(Color.RED);
+			lblIdNumber.setText(notAvailable);
+			lblIdNumber.setTextFill(Color.RED);
+			lblIdType.setText(notAvailable);
+			lblIdType.setTextFill(Color.RED);
+			lblIdIssuanceDate.setText(notAvailable);
+			lblIdIssuanceDate.setTextFill(Color.RED);
+			lblIdExpiry.setText(notAvailable);
+			lblIdExpiry.setTextFill(Color.RED);
+			
+			gridPane.autosize();
+			btnConfirmPersonInformation.requestFocus();
+			
+			return;
+		}
+		
 		String personPhotoBase64 = personInfo.getFace();
 		
 		if(personPhotoBase64 != null)

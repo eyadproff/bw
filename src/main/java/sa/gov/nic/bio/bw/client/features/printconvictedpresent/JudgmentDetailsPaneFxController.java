@@ -2,6 +2,7 @@ package sa.gov.nic.bio.bw.client.features.printconvictedpresent;
 
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.value.ChangeListener;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
@@ -90,7 +91,6 @@ public class JudgmentDetailsPaneFxController extends WizardStepFxControllerBase
 		GuiUtils.makeButtonClickableByPressingEnter(btnNext);
 		
 		btnPrevious.setOnAction(actionEvent -> goPrevious());
-		btnStartOver.setOnAction(actionEvent -> startOver());
 		btnNext.setOnAction(actionEvent -> goNext());
 		
 		@SuppressWarnings("unchecked") List<CrimeType> crimeTypes = (List<CrimeType>)
@@ -316,5 +316,15 @@ public class JudgmentDetailsPaneFxController extends WizardStepFxControllerBase
 		
 		});
 		cboCrimeEvent.getSelectionModel().selectFirst();
+	}
+	
+	@FXML
+	private void onStartOverButtonClicked(ActionEvent actionEvent)
+	{
+		String headerText = resources.getString("printConvictedPresent.startingOver.confirmation.header");
+		String contentText = resources.getString("printConvictedPresent.startingOver.confirmation.message");
+		boolean confirmed = Context.getCoreFxController().showConfirmationDialogAndWait(headerText, contentText);
+		
+		if(confirmed) startOver();
 	}
 }

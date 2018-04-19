@@ -1,6 +1,7 @@
 package sa.gov.nic.bio.bw.client.features.printconvictedpresent;
 
 import javafx.beans.binding.BooleanBinding;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
@@ -79,7 +80,6 @@ public class PersonInfoPaneFxController extends WizardStepFxControllerBase
 		GuiUtils.makeButtonClickableByPressingEnter(btnStartOver);
 		GuiUtils.makeButtonClickableByPressingEnter(btnNext);
 		
-		btnStartOver.setOnAction(actionEvent -> startOver());
 		btnNext.setOnAction(actionEvent -> goNext());
 		
 		@SuppressWarnings("unchecked") List<NationalityBean> nationalities = (List<NationalityBean>)
@@ -276,5 +276,15 @@ public class PersonInfoPaneFxController extends WizardStepFxControllerBase
 		uiDataMap.put(KEY_PERSON_INFO_ID_ISSUANCE_DATE_SHOW_HIJRI, cbIdIssuanceDateShowHijri.isSelected());
 		uiDataMap.put(KEY_PERSON_INFO_ID_EXPIRY_DATE, dpIdExpiryDate.getValue());
 		uiDataMap.put(KEY_PERSON_INFO_ID_EXPIRY_DATE_SHOW_HIJRI, cbIdExpiryDateShowHijri.isSelected());
+	}
+	
+	@FXML
+	private void onStartOverButtonClicked(ActionEvent actionEvent)
+	{
+		String headerText = resources.getString("printConvictedPresent.startingOver.confirmation.header");
+		String contentText = resources.getString("printConvictedPresent.startingOver.confirmation.message");
+		boolean confirmed = Context.getCoreFxController().showConfirmationDialogAndWait(headerText, contentText);
+		
+		if(confirmed) startOver();
 	}
 }

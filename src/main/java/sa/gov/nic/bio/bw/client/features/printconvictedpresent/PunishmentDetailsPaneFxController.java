@@ -2,12 +2,14 @@ package sa.gov.nic.bio.bw.client.features.printconvictedpresent;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Spinner;
 import javafx.util.StringConverter;
+import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.wizard.WizardStepFxControllerBase;
 
@@ -70,7 +72,6 @@ public class PunishmentDetailsPaneFxController extends WizardStepFxControllerBas
 		GuiUtils.makeButtonClickableByPressingEnter(btnNext);
 		
 		btnPrevious.setOnAction(actionEvent -> goPrevious());
-		btnStartOver.setOnAction(actionEvent -> startOver());
 		btnNext.setOnAction(actionEvent -> goNext());
 		
 		GuiUtils.applyValidatorToTextField(spnLashes.getEditor(), "\\d*", "[^\\d]",
@@ -266,5 +267,15 @@ public class PunishmentDetailsPaneFxController extends WizardStepFxControllerBas
 		uiDataMap.put(KEY_PUNISHMENT_DETAILS_FINAL_DEPORTATION, cbFinalDeportation.isSelected());
 		uiDataMap.put(KEY_PUNISHMENT_DETAILS_LIBEL, cbLibel.isSelected());
 		uiDataMap.put(KEY_PUNISHMENT_DETAILS_COVENANT, cbCovenant.isSelected());
+	}
+	
+	@FXML
+	private void onStartOverButtonClicked(ActionEvent actionEvent)
+	{
+		String headerText = resources.getString("printConvictedPresent.startingOver.confirmation.header");
+		String contentText = resources.getString("printConvictedPresent.startingOver.confirmation.message");
+		boolean confirmed = Context.getCoreFxController().showConfirmationDialogAndWait(headerText, contentText);
+		
+		if(confirmed) startOver();
 	}
 }

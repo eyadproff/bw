@@ -73,7 +73,7 @@
             <padding>
                 <Insets bottom="10"/>
             </padding>
-            <Button fx:id="btnStartOver" text="%button.startOver"/>
+            <Button fx:id="btnStartOver" text="%button.startOver" onAction="#onStartOverButtonClicked"/>
             <Button fx:id="btnRegisterUnknownPerson" text="%button.registerUnknownPerson" onAction="#onRegisterUnknownPersonButtonClicked"/>
             <Button fx:id="btnConfirmPersonInformation" text="%button.confirm" managed="false" visible="false"/>
         </HBox>
