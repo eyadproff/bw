@@ -11,12 +11,10 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import sa.gov.nic.bio.bw.client.core.Context;
-import sa.gov.nic.bio.bw.client.core.beans.UserSession;
 import sa.gov.nic.bio.bw.client.core.utils.AppConstants;
 import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.wizard.WizardStepFxControllerBase;
-import sa.gov.nic.bio.bw.client.features.commons.webservice.IdType;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.NationalityBean;
 import sa.gov.nic.bio.bw.client.features.printconvictedpresent.webservice.FingerprintInquiryStatusResult;
 import sa.gov.nic.bio.bw.client.features.printconvictedpresent.webservice.GenderType;
@@ -25,8 +23,10 @@ import sa.gov.nic.bio.bw.client.features.printconvictedpresent.webservice.Person
 
 import java.io.ByteArrayInputStream;
 import java.net.URL;
+import java.time.LocalDate;
 import java.util.Base64;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -55,6 +55,9 @@ public class InquiryResultPaneFxController extends WizardStepFxControllerBase
 	@FXML private Button btnStartOver;
 	@FXML private Button btnRegisterUnknownPerson;
 	@FXML private Button btnConfirmPersonInformation;
+	
+	private boolean registeringUnknownPerson = false;
+	private Map<String, Object> personInfoMap = new HashMap<>();
 	
 	@Override
 	public URL getFxmlLocation()
@@ -102,7 +105,11 @@ public class InquiryResultPaneFxController extends WizardStepFxControllerBase
 																			uiInputData.get(KEY_INQUIRY_HIT_RESULT);
 					
 					long criminalBioId = result.getCrimnalHitBioId();
-					if(criminalBioId > 0) lblPublicFileNumber.setText(String.valueOf(criminalBioId));
+					if(criminalBioId > 0)
+					{
+						lblPublicFileNumber.setText(String.valueOf(criminalBioId));
+						personInfoMap.put(PersonInfoPaneFxController.KEY_PERSON_INFO_PUBLIC_FILE_NUMBER, criminalBioId);
+					}
 					else
 					{
 						lblPublicFileNumber.setText(notAvailable);
@@ -137,6 +144,12 @@ public class InquiryResultPaneFxController extends WizardStepFxControllerBase
 		}
 	}
 	
+	@Override
+	protected void onGoingNext(Map<String, Object> uiDataMap)
+	{
+		if(!registeringUnknownPerson) uiDataMap.putAll(personInfoMap);
+	}
+	
 	@FXML
 	private void onRegisterUnknownPersonButtonClicked(ActionEvent actionEvent)
 	{
@@ -144,56 +157,87 @@ public class InquiryResultPaneFxController extends WizardStepFxControllerBase
 		String contentText = resources.getString("printConvictedPresent.registerUnknown.confirmation.message");
 		boolean confirmed = Context.getCoreFxController().showConfirmationDialogAndWait(headerText, contentText);
 		
-		if(confirmed) goNext();
+		if(confirmed)
+		{
+			registeringUnknownPerson = true;
+			goNext();
+		}
 	}
 	
 	private void populatePersonInfo(PersonInfo personInfo, String notAvailable)
 	{
-		String faceImageBase64 = personInfo.getFace();
+		String personPhotoBase64 = personInfo.getFace();
 		
-		if(faceImageBase64 != null)
+		if(personPhotoBase64 != null)
 		{
-			byte[] bytes = Base64.getDecoder().decode(faceImageBase64);
+			byte[] bytes = Base64.getDecoder().decode(personPhotoBase64);
 			ivPersonPhoto.setImage(new Image(new ByteArrayInputStream(bytes)));
 			GuiUtils.attachImageDialog(Context.getCoreFxController(), ivPersonPhoto,
 			                           resources.getString("label.personPhoto"),
 			                           resources.getString("label.contextMenu.showImage"));
+			personInfoMap.put(PersonInfoPaneFxController.KEY_PERSON_INFO_PHOTO, personPhotoBase64);
 		}
 		
 		Name name = personInfo.getName();
 		
 		String firstName = AppUtils.buildNamePart(name.getFirstName(), name.getTranslatedFirstName(),
-		                                          true);
+		                                         false);
 		String fatherName = AppUtils.buildNamePart(name.getFatherName(), name.getTranslatedFatherName(),
-		                                           true);
+		                                          false);
 		String grandfatherName = AppUtils.buildNamePart(name.getGrandfatherName(),
 		                                                name.getTranslatedGrandFatherName(),
-		                                                true);
+		                                               false);
 		String familyName = AppUtils.buildNamePart(name.getFamilyName(), name.getTranslatedFamilyName(),
-		                                           true);
+		                                          false);
 		
-		if(firstName != null) lblFirstName.setText(firstName);
+		String combinedFirstName = AppUtils.buildNamePart(name.getFirstName(), name.getTranslatedFirstName(),
+		                                                 true);
+		String combinedFatherName = AppUtils.buildNamePart(name.getFatherName(), name.getTranslatedFatherName(),
+		                                                  true);
+		String combinedGrandfatherName = AppUtils.buildNamePart(name.getGrandfatherName(),
+		                                                name.getTranslatedGrandFatherName(),
+		                                               true);
+		String combinedFamilyName = AppUtils.buildNamePart(name.getFamilyName(), name.getTranslatedFamilyName(),
+		                                                  true);
+		
+		if(combinedFirstName != null)
+		{
+			lblFirstName.setText(combinedFirstName);
+			personInfoMap.put(PersonInfoPaneFxController.KEY_PERSON_INFO_FIRST_NAME, firstName);
+		}
 		else
 		{
 			lblFirstName.setText(notAvailable);
 			lblFirstName.setTextFill(Color.RED);
 		}
 		
-		if(fatherName != null) lblFatherName.setText(fatherName);
+		if(combinedFatherName != null)
+		{
+			lblFatherName.setText(combinedFatherName);
+			personInfoMap.put(PersonInfoPaneFxController.KEY_PERSON_INFO_FATHER_NAME, fatherName);
+		}
 		else
 		{
 			lblFatherName.setText(notAvailable);
 			lblFatherName.setTextFill(Color.RED);
 		}
 		
-		if(grandfatherName != null) lblGrandfatherName.setText(grandfatherName);
+		if(combinedGrandfatherName != null)
+		{
+			lblGrandfatherName.setText(combinedGrandfatherName);
+			personInfoMap.put(PersonInfoPaneFxController.KEY_PERSON_INFO_GRANDFATHER_NAME, grandfatherName);
+		}
 		else
 		{
 			lblGrandfatherName.setText(notAvailable);
 			lblGrandfatherName.setTextFill(Color.RED);
 		}
 		
-		if(familyName != null) lblFamilyName.setText(familyName);
+		if(combinedFamilyName != null)
+		{
+			lblFamilyName.setText(combinedFamilyName);
+			personInfoMap.put(PersonInfoPaneFxController.KEY_PERSON_INFO_FAMILY_NAME, familyName);
+		}
 		else
 		{
 			lblFamilyName.setText(notAvailable);
@@ -208,6 +252,7 @@ public class InquiryResultPaneFxController extends WizardStepFxControllerBase
 				case MALE: lblGender.setText(resources.getString("label.male")); break;
 				case FEMALE: lblGender.setText(resources.getString("label.female")); break;
 			}
+			personInfoMap.put(PersonInfoPaneFxController.KEY_PERSON_INFO_GENDER, gender);
 		}
 		else
 		{
@@ -215,10 +260,8 @@ public class InquiryResultPaneFxController extends WizardStepFxControllerBase
 			lblGender.setTextFill(Color.RED);
 		}
 		
-		UserSession userSession = Context.getUserSession();
-		
 		@SuppressWarnings("unchecked") List<NationalityBean> nationalities = (List<NationalityBean>)
-				userSession.getAttribute("lookups.nationalities");
+												Context.getUserSession().getAttribute("lookups.nationalities");
 		
 		NationalityBean nationalityBean = null;
 		
@@ -236,6 +279,7 @@ public class InquiryResultPaneFxController extends WizardStepFxControllerBase
 			boolean rtl = Context.getGuiLanguage().getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT;
 			lblNationality.setText(rtl ? nationalityBean.getDescriptionAR() :
 					                       nationalityBean.getDescriptionEN());
+			personInfoMap.put(PersonInfoPaneFxController.KEY_PERSON_INFO_NATIONALITY, nationalityBean);
 		}
 		else
 		{
@@ -248,7 +292,11 @@ public class InquiryResultPaneFxController extends WizardStepFxControllerBase
 		lblOccupation.setTextFill(Color.RED);
 		
 		String birthPlace = personInfo.getBirthPlace();
-		if(birthPlace != null && !birthPlace.trim().isEmpty()) lblBirthPlace.setText(birthPlace);
+		if(birthPlace != null && !birthPlace.trim().isEmpty())
+		{
+			lblBirthPlace.setText(birthPlace);
+			personInfoMap.put(PersonInfoPaneFxController.KEY_PERSON_INFO_BIRTH_PLACE, birthPlace);
+		}
 		else
 		{
 			lblBirthPlace.setText(notAvailable);
@@ -257,8 +305,12 @@ public class InquiryResultPaneFxController extends WizardStepFxControllerBase
 		
 		Date birthDate = personInfo.getBirthDate();
 		
-		if(birthDate != null) lblBirthDate.setText(AppUtils.formatDate(
-				birthDate.toInstant().atZone(AppConstants.SAUDI_ZONE).toLocalDate()));
+		if(birthDate != null)
+		{
+			LocalDate localDate = birthDate.toInstant().atZone(AppConstants.SAUDI_ZONE).toLocalDate();
+			lblBirthDate.setText(AppUtils.formatDate(localDate));
+			personInfoMap.put(PersonInfoPaneFxController.KEY_PERSON_INFO_BIRTH_DATE, localDate);
+		}
 		else
 		{
 			lblBirthDate.setText(notAvailable);
@@ -267,30 +319,37 @@ public class InquiryResultPaneFxController extends WizardStepFxControllerBase
 		
 		long samisId = personInfo.getSamisId();
 		
-		if(samisId > 0) lblIdNumber.setText(AppUtils.replaceNumbersOnly(String.valueOf(samisId),
-		                                                                Locale.getDefault()));
+		if(samisId > 0)
+		{
+			lblIdNumber.setText(AppUtils.replaceNumbersOnly(String.valueOf(samisId), Locale.getDefault()));
+			personInfoMap.put(PersonInfoPaneFxController.KEY_PERSON_INFO_ID_NUMBER, samisId);
+		}
 		else
 		{
 			lblIdNumber.setText(notAvailable);
 			lblIdNumber.setTextFill(Color.RED);
 		}
 		
-		@SuppressWarnings("unchecked") List<IdType> idTypes = (List<IdType>)
-				userSession.getAttribute("lookups.idTypes");
-		
-		IdType theIdType = null;
-		
-		for(IdType idType : idTypes)
-		{
-			if(idType.getCode() == personInfo.getNationality())
-			{
-				//nationalityBean = nationality;
-				break;
-			}
-		}
+		//@SuppressWarnings("unchecked") List<IdType> idTypes = (List<IdType>)
+		//											Context.getUserSession().getAttribute("lookups.idTypes");
+		//
+		//IdType theIdType = null;
+		//
+		//for(IdType idType : idTypes)
+		//{
+		//	if(idType.getCode() == personInfo.getNationality())
+		//	{
+		//		//nationalityBean = nationality;
+		//		break;
+		//	}
+		//}
 		
 		String personType = personInfo.getPersonType();
-		if(personType != null && !personType.trim().isEmpty()) lblIdType.setText(personType);
+		if(personType != null && !personType.trim().isEmpty())
+		{
+			lblIdType.setText(personType);
+			personInfoMap.put(PersonInfoPaneFxController.KEY_PERSON_INFO_ID_TYPE, personType);
+		}
 		else
 		{
 			lblIdType.setText(notAvailable);

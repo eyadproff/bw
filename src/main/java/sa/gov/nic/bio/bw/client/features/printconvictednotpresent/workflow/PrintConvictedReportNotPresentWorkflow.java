@@ -13,6 +13,8 @@ import sa.gov.nic.bio.bw.client.features.printconvictednotpresent.FetchingFinger
 import sa.gov.nic.bio.bw.client.features.printconvictednotpresent.PersonIdPaneFxController;
 import sa.gov.nic.bio.bw.client.features.printconvictedpresent.InquiryResultPaneFxController;
 import sa.gov.nic.bio.bw.client.features.printconvictedpresent.JudgmentDetailsPaneFxController;
+import sa.gov.nic.bio.bw.client.features.printconvictedpresent.PersonInfoPaneFxController;
+import sa.gov.nic.bio.bw.client.features.printconvictedpresent.PunishmentDetailsPaneFxController;
 import sa.gov.nic.bio.bw.client.features.printconvictedpresent.ReviewAndSubmitPaneFxController;
 import sa.gov.nic.bio.bw.client.features.printconvictedpresent.ShowReportPaneFxController;
 import sa.gov.nic.bio.bw.client.features.printconvictedpresent.webservice.Finger;
@@ -142,19 +144,33 @@ public class PrintConvictedReportNotPresentWorkflow extends WorkflowBase<Void, V
 					}
 					case 3:
 					{
-						formRenderer.get().renderForm(JudgmentDetailsPaneFxController.class, uiInputData);
+						formRenderer.get().renderForm(PersonInfoPaneFxController.class, uiInputData);
 						uiOutputData = waitForUserTask();
 						uiInputData.putAll(uiOutputData);
 						break;
 					}
 					case 4:
 					{
-						formRenderer.get().renderForm(ReviewAndSubmitPaneFxController.class, uiInputData);
+						formRenderer.get().renderForm(JudgmentDetailsPaneFxController.class, uiInputData);
 						uiOutputData = waitForUserTask();
 						uiInputData.putAll(uiOutputData);
 						break;
 					}
 					case 5:
+					{
+						formRenderer.get().renderForm(PunishmentDetailsPaneFxController.class, uiInputData);
+						uiOutputData = waitForUserTask();
+						uiInputData.putAll(uiOutputData);
+						break;
+					}
+					case 6:
+					{
+						formRenderer.get().renderForm(ReviewAndSubmitPaneFxController.class, uiInputData);
+						uiOutputData = waitForUserTask();
+						uiInputData.putAll(uiOutputData);
+						break;
+					}
+					case 7:
 					{
 						formRenderer.get().renderForm(ShowReportPaneFxController.class, uiInputData);
 						uiOutputData = waitForUserTask();

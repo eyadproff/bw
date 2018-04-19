@@ -12,27 +12,39 @@ import javafx.util.StringConverter;
 import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.beans.HideableItem;
 import sa.gov.nic.bio.bw.client.core.beans.ItemWithText;
-import sa.gov.nic.bio.bw.client.core.utils.AppConstants;
-import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.client.core.utils.GuiLanguage;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.wizard.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.NationalityBean;
-import sa.gov.nic.bio.bw.client.features.printconvictedpresent.webservice.FingerprintInquiryStatusResult;
 import sa.gov.nic.bio.bw.client.features.printconvictedpresent.webservice.GenderType;
-import sa.gov.nic.bio.bw.client.features.printconvictedpresent.webservice.Name;
-import sa.gov.nic.bio.bw.client.features.printconvictedpresent.webservice.PersonInfo;
 
 import java.net.URL;
-import java.text.Normalizer;
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 
 public class PersonInfoPaneFxController extends WizardStepFxControllerBase
 {
+	public static final String KEY_PERSON_INFO_PHOTO = "PERSON_INFO_PHOTO";
+	public static final String KEY_PERSON_INFO_FIRST_NAME = "PERSON_INFO_FIRST_NAME";
+	public static final String KEY_PERSON_INFO_FATHER_NAME = "PERSON_INFO_FATHER__NAME";
+	public static final String KEY_PERSON_INFO_GRANDFATHER_NAME = "PERSON_INFO_GRANDFATHER_NAME";
+	public static final String KEY_PERSON_INFO_FAMILY_NAME = "PERSON_INFO_FAMILY_NAME";
+	public static final String KEY_PERSON_INFO_PUBLIC_FILE_NUMBER = "PERSON_INFO_PUBLIC_FILE_NUMBER";
+	public static final String KEY_PERSON_INFO_GENDER = "PERSON_INFO_GENDER";
+	public static final String KEY_PERSON_INFO_NATIONALITY = "PERSON_INFO_NATIONALITY";
+	public static final String KEY_PERSON_INFO_OCCUPATION = "PERSON_INFO_OCCUPATION";
+	public static final String KEY_PERSON_INFO_BIRTH_PLACE = "PERSON_INFO_BIRTH_PLACE";
+	public static final String KEY_PERSON_INFO_BIRTH_DATE = "PERSON_INFO_BIRTH_DATE";
+	public static final String KEY_PERSON_INFO_BIRTH_DATE_SHOW_HIJRI = "PERSON_INFO_BIRTH_DATE_SHOW_HIJRI";
+	public static final String KEY_PERSON_INFO_ID_NUMBER = "PERSON_INFO_ID_NUMBER";
+	public static final String KEY_PERSON_INFO_ID_TYPE = "PERSON_INFO_ID_TYPE";
+	public static final String KEY_PERSON_INFO_ID_ISSUANCE_DATE = "PERSON_INFO_ID_ISSUANCE_DATE";
+	public static final String KEY_PERSON_INFO_ID_ISSUANCE_DATE_SHOW_HIJRI = "PERSON_INFO_ID_ISSUANCE_DATE_SHOW_HIJRI";
+	public static final String KEY_PERSON_INFO_ID_EXPIRY_DATE = "PERSON_INFO_ID_EXPIRY_DATE";
+	public static final String KEY_PERSON_INFO_ID_EXPIRY_DATE_SHOW_HIJRI = "PERSON_INFO_ID_EXPIRY_DATE_SHOW_HIJRI";
+	
 	@FXML private TextField txtFirstName;
 	@FXML private TextField txtFatherName;
 	@FXML private TextField txtGrandfatherName;
@@ -105,6 +117,10 @@ public class PersonInfoPaneFxController extends WizardStepFxControllerBase
 		GuiUtils.initDatePicker(cbIdIssuanceDateShowHijri, dpIdIssuanceDate, null);
 		GuiUtils.initDatePicker(cbIdExpiryDateShowHijri, dpIdExpiryDate, null);
 		
+		GuiUtils.applyValidatorToTextField(txtIdNumber, "\\d*", "[^\\d]", 10);
+		GuiUtils.applyValidatorToTextField(txtPublicFileNumber, "\\d*", "[^\\d]",
+		                                  10);
+		
 		BooleanBinding txtFirstNameBinding = txtFirstName.textProperty().isEmpty();
 		BooleanBinding txtFatherNameBinding = txtFatherName.textProperty().isEmpty();
 		BooleanBinding txtGrandfatherNameBinding = txtGrandfatherName.textProperty().isEmpty();
@@ -140,9 +156,7 @@ public class PersonInfoPaneFxController extends WizardStepFxControllerBase
 		    else text = nationalityBean.getDescriptionEN();
 		
 		    String resultText = text.trim() + " (" + nationalityBean.getMofaNationalityCode() + ")";
-		    String normalizedText = Normalizer.normalize(resultText, Normalizer.Form.NFKC);
-		
-		    item.setText(normalizedText);
+		    item.setText(resultText);
 		});
 	}
 	
@@ -151,23 +165,12 @@ public class PersonInfoPaneFxController extends WizardStepFxControllerBase
 	{
 		if(newForm)
 		{
-			FingerprintInquiryStatusResult result = (FingerprintInquiryStatusResult)
-												uiInputData.get(InquiryResultPaneFxController.KEY_INQUIRY_HIT_RESULT);
-			PersonInfo personInfo = result.getPersonInfo();
-			
-			Name name = personInfo.getName();
-			
 			Node focusedNode = null;
 			
-			String firstName = AppUtils.buildNamePart(name.getFirstName(), name.getTranslatedFirstName(),
-			                                          false);
-			String fatherName = AppUtils.buildNamePart(name.getFatherName(), name.getTranslatedFatherName(),
-			                                           false);
-			String grandfatherName = AppUtils.buildNamePart(name.getGrandfatherName(),
-			                                                name.getTranslatedGrandFatherName(),
-			                                                false);
-			String familyName = AppUtils.buildNamePart(name.getFamilyName(), name.getTranslatedFamilyName(),
-			                                           false);
+			String firstName = (String) uiInputData.get(KEY_PERSON_INFO_FIRST_NAME);
+			String fatherName = (String) uiInputData.get(KEY_PERSON_INFO_FATHER_NAME);
+			String grandfatherName = (String) uiInputData.get(KEY_PERSON_INFO_GRANDFATHER_NAME);
+			String familyName = (String) uiInputData.get(KEY_PERSON_INFO_FAMILY_NAME);
 			
 			if(firstName != null && !firstName.trim().isEmpty()) txtFirstName.setText(firstName);
 			else focusedNode = txtFirstName;
@@ -182,44 +185,96 @@ public class PersonInfoPaneFxController extends WizardStepFxControllerBase
 			if(familyName != null && !familyName.trim().isEmpty()) txtFamilyName.setText(familyName);
 			else if(focusedNode == null) focusedNode = txtFamilyName;
 			
-			long criminalBioId = result.getCrimnalHitBioId();
-			if(criminalBioId > 0) txtPublicFileNumber.setText(String.valueOf(criminalBioId));
+			Long publicFileNumber = (Long) uiInputData.get(KEY_PERSON_INFO_PUBLIC_FILE_NUMBER);
+			if(publicFileNumber != null && publicFileNumber > 0L)
+													txtPublicFileNumber.setText(String.valueOf(publicFileNumber));
 			else if(focusedNode == null) focusedNode = txtPublicFileNumber;
 			
-			String birthPlace = personInfo.getBirthPlace();
+			GenderType genderType = (GenderType) uiInputData.get(KEY_PERSON_INFO_GENDER);
+			if(genderType != null) cboGender.getItems()
+					                        .stream()
+					                        .filter(item -> item.getItem() == genderType)
+					                        .findFirst()
+					                        .ifPresent(cboGender::setValue);
+			else if(focusedNode == null) focusedNode = cboGender;
+			
+			NationalityBean nationalityBean = (NationalityBean) uiInputData.get(KEY_PERSON_INFO_NATIONALITY);
+			if(nationalityBean != null) cboNationality.getItems()
+						                              .stream()
+						                              .filter(item -> item.getObject() == nationalityBean)
+						                              .findFirst()
+						                              .ifPresent(cboNationality::setValue);
+			else if(focusedNode == null) focusedNode = cboNationality;
+			
+			String occupation = (String) uiInputData.get(KEY_PERSON_INFO_OCCUPATION);
+			if(occupation != null && !occupation.trim().isEmpty()) txtOccupation.setText(occupation);
+			else if(focusedNode == null) focusedNode = txtOccupation;
+			
+			String birthPlace = (String) uiInputData.get(KEY_PERSON_INFO_BIRTH_PLACE);
 			if(birthPlace != null && !birthPlace.trim().isEmpty()) txtBirthPlace.setText(birthPlace);
 			else if(focusedNode == null) focusedNode = txtBirthPlace;
 			
-			long samisId = personInfo.getSamisId();
-			if(samisId > 0) txtIdNumber.setText(String.valueOf(samisId));
+			LocalDate birthDate = (LocalDate) uiInputData.get(KEY_PERSON_INFO_BIRTH_DATE);
+			if(birthDate != null) dpBirthDate.setValue(birthDate);
+			else if(focusedNode == null) focusedNode = dpBirthDate;
+			
+			Boolean birthDateShowHijri = (Boolean) uiInputData.get(KEY_PERSON_INFO_BIRTH_DATE_SHOW_HIJRI);
+			cbBirthDateShowHijri.setSelected(birthDateShowHijri != null && birthDateShowHijri);
+			
+			Long idNumber = (Long) uiInputData.get(KEY_PERSON_INFO_ID_NUMBER);
+			if(idNumber != null && idNumber > 0) txtIdNumber.setText(String.valueOf(idNumber));
 			else if(focusedNode == null) focusedNode = txtIdNumber;
 			
-			String personType = personInfo.getPersonType();
-			if(personType != null && !personType.trim().isEmpty()) txtIdType.setText(personType);
+			String idType = (String) uiInputData.get(KEY_PERSON_INFO_ID_TYPE);
+			if(idType != null && !idType.trim().isEmpty()) txtIdType.setText(idType);
 			else if(focusedNode == null) focusedNode = txtIdType;
 			
-			cboGender.getItems()
-					 .stream()
-					 .filter(item -> item.getItem() == GenderType.values()[personInfo.getGender()])
-					 .findFirst()
-					 .ifPresent(cboGender::setValue);
+			LocalDate idIssuanceDate = (LocalDate) uiInputData.get(KEY_PERSON_INFO_ID_ISSUANCE_DATE);
+			if(idIssuanceDate != null) dpIdIssuanceDate.setValue(idIssuanceDate);
+			else if(focusedNode == null) focusedNode = dpIdIssuanceDate;
 			
-			cboNationality.getItems()
-						  .stream()
-						  .filter(item -> item.getObject().getCode() == personInfo.getNationality())
-						  .findFirst()
-						  .ifPresent(cboNationality::setValue);
+			Boolean idIssuanceDateShowHijri = (Boolean) uiInputData.get(KEY_PERSON_INFO_ID_ISSUANCE_DATE_SHOW_HIJRI);
+			cbIdIssuanceDateShowHijri.setSelected(idIssuanceDateShowHijri != null && idIssuanceDateShowHijri);
 			
-			if(cboGender.getValue() == null && focusedNode == null) focusedNode = cboGender;
-			if(cboNationality.getValue() == null && focusedNode == null) focusedNode = cboNationality;
+			LocalDate idExpiryDate = (LocalDate) uiInputData.get(KEY_PERSON_INFO_ID_EXPIRY_DATE);
+			if(idExpiryDate != null) dpIdExpiryDate.setValue(idExpiryDate);
+			else if(focusedNode == null) focusedNode = dpIdExpiryDate;
 			
-			Date birthDate = personInfo.getBirthDate();
-			if(birthDate != null) dpBirthDate.setValue(
-												birthDate.toInstant().atZone(AppConstants.SAUDI_ZONE).toLocalDate());
-			else if(focusedNode == null) focusedNode = dpBirthDate;
+			Boolean idExpiryDateShowHijri = (Boolean) uiInputData.get(KEY_PERSON_INFO_ID_EXPIRY_DATE_SHOW_HIJRI);
+			cbIdExpiryDateShowHijri.setSelected(idExpiryDateShowHijri != null && idExpiryDateShowHijri);
 			
 			if(focusedNode != null) focusedNode.requestFocus();
 			else btnNext.requestFocus();
 		}
+	}
+	
+	@Override
+	public void onLeaving(Map<String, Object> uiDataMap)
+	{
+		String text = txtPublicFileNumber.getText();
+		if(text != null && !text.isEmpty()) uiDataMap.put(KEY_PERSON_INFO_PUBLIC_FILE_NUMBER, Long.parseLong(text));
+		
+		text = txtIdNumber.getText();
+		if(text != null && !text.isEmpty()) uiDataMap.put(KEY_PERSON_INFO_ID_NUMBER, Long.parseLong(text));
+		
+		ItemWithText<GenderType> genderItem = cboGender.getValue();
+		if(genderItem != null) uiDataMap.put(KEY_PERSON_INFO_GENDER, genderItem.getItem());
+		
+		HideableItem<NationalityBean> nationalityItem = cboNationality.getValue();
+		if(nationalityItem != null) uiDataMap.put(KEY_PERSON_INFO_NATIONALITY, nationalityItem.getObject());
+		
+		uiDataMap.put(KEY_PERSON_INFO_FIRST_NAME, txtFirstName.getText());
+		uiDataMap.put(KEY_PERSON_INFO_FATHER_NAME, txtFatherName.getText());
+		uiDataMap.put(KEY_PERSON_INFO_GRANDFATHER_NAME, txtGrandfatherName.getText());
+		uiDataMap.put(KEY_PERSON_INFO_FAMILY_NAME, txtFamilyName.getText());
+		uiDataMap.put(KEY_PERSON_INFO_OCCUPATION, txtOccupation.getText());
+		uiDataMap.put(KEY_PERSON_INFO_BIRTH_PLACE, txtBirthPlace.getText());
+		uiDataMap.put(KEY_PERSON_INFO_BIRTH_DATE, dpBirthDate.getValue());
+		uiDataMap.put(KEY_PERSON_INFO_BIRTH_DATE_SHOW_HIJRI, cbBirthDateShowHijri.isSelected());
+		uiDataMap.put(KEY_PERSON_INFO_ID_TYPE, txtIdType.getText());
+		uiDataMap.put(KEY_PERSON_INFO_ID_ISSUANCE_DATE, dpIdIssuanceDate.getValue());
+		uiDataMap.put(KEY_PERSON_INFO_ID_ISSUANCE_DATE_SHOW_HIJRI, cbIdIssuanceDateShowHijri.isSelected());
+		uiDataMap.put(KEY_PERSON_INFO_ID_EXPIRY_DATE, dpIdExpiryDate.getValue());
+		uiDataMap.put(KEY_PERSON_INFO_ID_EXPIRY_DATE_SHOW_HIJRI, cbIdExpiryDateShowHijri.isSelected());
 	}
 }
