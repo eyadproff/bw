@@ -28,7 +28,7 @@
                     <GridPane.margin>
                         <Insets bottom="5.0"/>
                     </GridPane.margin>
-                    <Spinner fx:id="spLashes" min="0" max="999999999" editable="true"/>
+                    <Spinner fx:id="spnLashes" min="0" max="999999999" editable="true" prefWidth="130.0"/>
                     <Label text="%label.lashes"/>
                 </HBox>
                 <Label text="%label.fine" GridPane.rowIndex="1" GridPane.columnIndex="0">
@@ -40,7 +40,7 @@
                     <GridPane.margin>
                         <Insets bottom="5.0"/>
                     </GridPane.margin>
-                    <Spinner fx:id="spFine" min="0" max="999999999" editable="true"/>
+                    <Spinner fx:id="spnFine" min="0" max="999999999" editable="true" prefWidth="130.0"/>
                     <Label text="%label.riyals"/>
                 </HBox>
                 <Label text="%label.jail" GridPane.rowIndex="2" GridPane.columnIndex="0">
@@ -48,7 +48,7 @@
                         <Insets bottom="5.0"/>
                     </GridPane.margin>
                 </Label>
-                <Spinner fx:id="spnJailYears" min="0" max="99" editable="true" GridPane.rowIndex="2" GridPane.columnIndex="1">
+                <Spinner fx:id="spnJailYears" min="0" max="99" editable="true" prefWidth="130.0" GridPane.rowIndex="2" GridPane.columnIndex="1">
                     <GridPane.margin>
                         <Insets bottom="5.0"/>
                     </GridPane.margin>
@@ -58,7 +58,7 @@
                         <Insets bottom="5.0"/>
                     </GridPane.margin>
                 </Label>
-                <Spinner fx:id="spnJailMonths" min="0" max="99" editable="true" GridPane.rowIndex="2" GridPane.columnIndex="3">
+                <Spinner fx:id="spnJailMonths" min="0" max="99" editable="true" prefWidth="130.0" GridPane.rowIndex="2" GridPane.columnIndex="3">
                     <GridPane.margin>
                         <Insets bottom="5.0"/>
                     </GridPane.margin>
@@ -68,7 +68,7 @@
                         <Insets bottom="5.0"/>
                     </GridPane.margin>
                 </Label>
-                <Spinner fx:id="spnJailDays" min="0" max="99" editable="true" GridPane.rowIndex="2" GridPane.columnIndex="5">
+                <Spinner fx:id="spnJailDays" min="0" max="99" editable="true" prefWidth="130.0" GridPane.rowIndex="2" GridPane.columnIndex="5">
                     <GridPane.margin>
                         <Insets bottom="5.0"/>
                     </GridPane.margin>
@@ -83,7 +83,7 @@
                         <Insets bottom="5.0"/>
                     </GridPane.margin>
                 </Label>
-                <Spinner fx:id="spnTravelBanYears" min="0" max="99" editable="true" GridPane.rowIndex="3" GridPane.columnIndex="1">
+                <Spinner fx:id="spnTravelBanYears" min="0" max="99" editable="true" prefWidth="130.0" GridPane.rowIndex="3" GridPane.columnIndex="1">
                     <GridPane.margin>
                         <Insets bottom="5.0"/>
                     </GridPane.margin>
@@ -93,7 +93,7 @@
                         <Insets bottom="5.0"/>
                     </GridPane.margin>
                 </Label>
-                <Spinner fx:id="spnTravelBanMonths" min="0" max="99" editable="true" GridPane.rowIndex="3" GridPane.columnIndex="3">
+                <Spinner fx:id="spnTravelBanMonths" min="0" max="99" editable="true" prefWidth="130.0" GridPane.rowIndex="3" GridPane.columnIndex="3">
                     <GridPane.margin>
                         <Insets bottom="5.0"/>
                     </GridPane.margin>
@@ -103,7 +103,7 @@
                         <Insets bottom="5.0"/>
                     </GridPane.margin>
                 </Label>
-                <Spinner fx:id="spnTravelBanDays" min="0" max="99" editable="true" GridPane.rowIndex="3" GridPane.columnIndex="5">
+                <Spinner fx:id="spnTravelBanDays" min="0" max="99" editable="true" prefWidth="130.0" GridPane.rowIndex="3" GridPane.columnIndex="5">
                     <GridPane.margin>
                         <Insets bottom="5.0"/>
                     </GridPane.margin>
@@ -118,7 +118,7 @@
                         <Insets bottom="5.0"/>
                     </GridPane.margin>
                 </Label>
-                <Spinner fx:id="spnExilingYears" min="0" max="99" editable="true" GridPane.rowIndex="4" GridPane.columnIndex="1">
+                <Spinner fx:id="spnExilingYears" min="0" max="99" editable="true" prefWidth="130.0" GridPane.rowIndex="4" GridPane.columnIndex="1">
                     <GridPane.margin>
                         <Insets bottom="5.0"/>
                     </GridPane.margin>
@@ -128,7 +128,7 @@
                         <Insets bottom="5.0"/>
                     </GridPane.margin>
                 </Label>
-                <Spinner fx:id="spnExilingMonths" min="0" max="99" editable="true" GridPane.rowIndex="4" GridPane.columnIndex="3">
+                <Spinner fx:id="spnExilingMonths" min="0" max="99" editable="true" prefWidth="130.0" GridPane.rowIndex="4" GridPane.columnIndex="3">
                     <GridPane.margin>
                         <Insets bottom="5.0"/>
                     </GridPane.margin>
@@ -138,7 +138,7 @@
                         <Insets bottom="5.0"/>
                     </GridPane.margin>
                 </Label>
-                <Spinner fx:id="spnExilingDays" min="0" max="99" editable="true" GridPane.rowIndex="4" GridPane.columnIndex="5">
+                <Spinner fx:id="spnExilingDays" min="0" max="99" editable="true" prefWidth="130.0" GridPane.rowIndex="4" GridPane.columnIndex="5">
                     <GridPane.margin>
                         <Insets bottom="5.0"/>
                     </GridPane.margin>
@@ -153,7 +153,7 @@
                         <Insets bottom="5.0"/>
                     </GridPane.margin>
                 </Label>
-                <Spinner fx:id="spnDeportationYears" min="0" max="99" editable="true" GridPane.rowIndex="5" GridPane.columnIndex="1">
+                <Spinner fx:id="spnDeportationYears" min="0" max="99" editable="true" prefWidth="130.0" GridPane.rowIndex="5" GridPane.columnIndex="1">
                     <GridPane.margin>
                         <Insets bottom="5.0"/>
                     </GridPane.margin>
@@ -163,7 +163,7 @@
                         <Insets bottom="5.0"/>
                     </GridPane.margin>
                 </Label>
-                <Spinner fx:id="spnDeportationMonths" min="0" max="99" editable="true" GridPane.rowIndex="5" GridPane.columnIndex="3">
+                <Spinner fx:id="spnDeportationMonths" min="0" max="99" editable="true" prefWidth="130.0" GridPane.rowIndex="5" GridPane.columnIndex="3">
                     <GridPane.margin>
                         <Insets bottom="5.0"/>
                     </GridPane.margin>
@@ -173,7 +173,7 @@
                         <Insets bottom="5.0"/>
                     </GridPane.margin>
                 </Label>
-                <Spinner fx:id="spnDeportationDays" min="0" max="99" editable="true" GridPane.rowIndex="5" GridPane.columnIndex="5">
+                <Spinner fx:id="spnDeportationDays" min="0" max="99" editable="true" prefWidth="130.0" GridPane.rowIndex="5" GridPane.columnIndex="5">
                     <GridPane.margin>
                         <Insets bottom="5.0"/>
                     </GridPane.margin>
