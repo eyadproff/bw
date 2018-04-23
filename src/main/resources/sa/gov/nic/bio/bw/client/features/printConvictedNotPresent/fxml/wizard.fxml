@@ -8,6 +8,7 @@
         <WizardStep iconId="\\uf2bb" title="%wizard.InquiryByPersonId"/>
         <WizardStep iconId="database" title="%wizard.inquiryResult"/>
         <WizardStep iconId="\\uf256" title="%wizard.fetchingFingerprints"/>
+        <WizardStep iconId="search" title="%wizard.inquiryByFingerprints"/>
         <WizardStep iconId="user" title="%wizard.personInfo"/>
         <WizardStep iconId="gavel" title="%wizard.judgementDetails"/>
         <WizardStep iconId="university" title="%wizard.punishmentDetails"/>

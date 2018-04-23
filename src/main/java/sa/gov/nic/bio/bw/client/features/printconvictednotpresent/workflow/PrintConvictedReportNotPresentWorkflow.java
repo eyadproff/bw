@@ -11,6 +11,7 @@ import sa.gov.nic.bio.bw.client.features.commons.LookupFxController;
 import sa.gov.nic.bio.bw.client.features.commons.workflow.ConvictedReportLookupService;
 import sa.gov.nic.bio.bw.client.features.printconvictednotpresent.FetchingFingerprintsPaneFxController;
 import sa.gov.nic.bio.bw.client.features.printconvictednotpresent.PersonIdPaneFxController;
+import sa.gov.nic.bio.bw.client.features.printconvictedpresent.InquiryPaneFxController;
 import sa.gov.nic.bio.bw.client.features.printconvictedpresent.InquiryResultPaneFxController;
 import sa.gov.nic.bio.bw.client.features.printconvictedpresent.JudgmentDetailsPaneFxController;
 import sa.gov.nic.bio.bw.client.features.printconvictedpresent.PersonInfoPaneFxController;
@@ -19,11 +20,15 @@ import sa.gov.nic.bio.bw.client.features.printconvictedpresent.ReviewAndSubmitPa
 import sa.gov.nic.bio.bw.client.features.printconvictedpresent.ShowReportPaneFxController;
 import sa.gov.nic.bio.bw.client.features.printconvictedpresent.webservice.ConvictedReport;
 import sa.gov.nic.bio.bw.client.features.printconvictedpresent.webservice.Finger;
+import sa.gov.nic.bio.bw.client.features.printconvictedpresent.webservice.FingerprintInquiryStatusResult;
 import sa.gov.nic.bio.bw.client.features.printconvictedpresent.webservice.PersonInfo;
+import sa.gov.nic.bio.bw.client.features.printconvictedpresent.workflow.FingerprintInquiryService;
+import sa.gov.nic.bio.bw.client.features.printconvictedpresent.workflow.FingerprintInquiryStatusCheckerService;
 import sa.gov.nic.bio.bw.client.features.printconvictedpresent.workflow.SubmittingConvictedReportService;
 import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -146,26 +151,117 @@ public class PrintConvictedReportNotPresentWorkflow extends WorkflowBase<Void, V
 					}
 					case 3:
 					{
-						formRenderer.get().renderForm(PersonInfoPaneFxController.class, uiInputData);
-						uiOutputData = waitForUserTask();
-						uiInputData.putAll(uiOutputData);
+						Boolean retry = (Boolean) uiInputData.get(
+										   InquiryPaneFxController.KEY_RETRY_FINGERPRINT_INQUIRY);
+						uiInputData.remove(InquiryPaneFxController.KEY_RETRY_FINGERPRINT_INQUIRY);
+						
+						if(retry == null || !retry)
+						{
+							// show progress only
+							formRenderer.get().renderForm(InquiryPaneFxController.class, uiInputData);
+						}
+						
+						@SuppressWarnings("unchecked")
+						List<Finger> collectedFingerprints = (List<Finger>)
+									uiInputData.get(FetchingFingerprintsPaneFxController.KEY_PERSON_FINGERPRINTS);
+						List<Integer> missingFingerprints = new ArrayList<>();
+						for(int i = 1; i <= 10; i++) missingFingerprints.add(i);
+						collectedFingerprints.forEach(finger -> missingFingerprints.remove((Integer) finger.getType()));
+						
+						ServiceResponse<Integer> serviceResponse =
+								FingerprintInquiryService.execute(collectedFingerprints, missingFingerprints);
+						Integer inquiryId = serviceResponse.getResult();
+						
+						if(serviceResponse.isSuccess() && inquiryId != null)
+						{
+							while(true)
+							{
+								ServiceResponse<FingerprintInquiryStatusResult> response =
+															FingerprintInquiryStatusCheckerService.execute(inquiryId);
+								
+								FingerprintInquiryStatusResult result = response.getResult();
+								
+								if(response.isSuccess() && result != null)
+								{
+									if(result.getStatus() == FingerprintInquiryStatusResult.STATUS_INQUIRY_PENDING)
+									{
+										uiInputData.put(InquiryPaneFxController.KEY_WAITING_FINGERPRINT_INQUIRY,
+										                Boolean.TRUE);
+										formRenderer.get().renderForm(InquiryPaneFxController.class, uiInputData);
+										uiOutputData = waitForUserTask();
+										Boolean cancelled = (Boolean) uiOutputData.get(
+												InquiryPaneFxController.KEY_WAITING_FINGERPRINT_INQUIRY_CANCELLED);
+										if(cancelled == null || !cancelled) continue;
+										else uiInputData.remove(
+												InquiryPaneFxController.KEY_WAITING_FINGERPRINT_INQUIRY_CANCELLED);
+									}
+									else if(result.getStatus() == FingerprintInquiryStatusResult.STATUS_INQUIRY_NO_HIT)
+									{
+										uiInputData.put(InquiryPaneFxController.KEY_FINGERPRINT_INQUIRY_HIT,
+										                Boolean.FALSE);
+										formRenderer.get().renderForm(InquiryPaneFxController.class, uiInputData);
+									}
+									else if(result.getStatus() == FingerprintInquiryStatusResult.STATUS_INQUIRY_HIT)
+									{
+										uiInputData.put(InquiryPaneFxController.KEY_FINGERPRINT_INQUIRY_HIT,
+										                Boolean.TRUE);
+										uiInputData.put(InquiryResultPaneFxController.KEY_INQUIRY_HIT_RESULT,
+										                result);
+										formRenderer.get().renderForm(InquiryPaneFxController.class, uiInputData);
+									}
+									else // report the error
+									{
+										uiInputData.put(InquiryPaneFxController.KEY_FINGERPRINT_INQUIRY_UNKNOWN_STATUS,
+										                result.getStatus());
+										formRenderer.get().renderForm(InquiryPaneFxController.class, uiInputData);
+									}
+									
+									uiOutputData = waitForUserTask();
+									uiInputData.putAll(uiOutputData);
+									break;
+								}
+								else // report the error
+								{
+									uiInputData.put(KEY_WEBSERVICE_RESPONSE, response);
+									formRenderer.get().renderForm(InquiryPaneFxController.class, uiInputData);
+									uiOutputData = waitForUserTask();
+									uiInputData.putAll(uiOutputData);
+									break;
+								}
+							}
+						}
+						else // report the error
+						{
+							uiInputData.put(KEY_WEBSERVICE_RESPONSE, serviceResponse);
+							formRenderer.get().renderForm(InquiryPaneFxController.class, uiInputData);
+							uiOutputData = waitForUserTask();
+							uiInputData.putAll(uiOutputData);
+						}
+						
 						break;
 					}
 					case 4:
 					{
-						formRenderer.get().renderForm(JudgmentDetailsPaneFxController.class, uiInputData);
+						formRenderer.get().renderForm(PersonInfoPaneFxController.class, uiInputData);
 						uiOutputData = waitForUserTask();
 						uiInputData.putAll(uiOutputData);
 						break;
 					}
 					case 5:
 					{
-						formRenderer.get().renderForm(PunishmentDetailsPaneFxController.class, uiInputData);
+						formRenderer.get().renderForm(JudgmentDetailsPaneFxController.class, uiInputData);
 						uiOutputData = waitForUserTask();
 						uiInputData.putAll(uiOutputData);
 						break;
 					}
 					case 6:
+					{
+						formRenderer.get().renderForm(PunishmentDetailsPaneFxController.class, uiInputData);
+						uiOutputData = waitForUserTask();
+						uiInputData.putAll(uiOutputData);
+						break;
+					}
+					case 7:
 					{
 						formRenderer.get().renderForm(ReviewAndSubmitPaneFxController.class, uiInputData);
 						uiOutputData = waitForUserTask();
@@ -191,7 +287,7 @@ public class PrintConvictedReportNotPresentWorkflow extends WorkflowBase<Void, V
 						
 						break;
 					}
-					case 7:
+					case 8:
 					{
 						formRenderer.get().renderForm(ShowReportPaneFxController.class, uiInputData);
 						uiOutputData = waitForUserTask();

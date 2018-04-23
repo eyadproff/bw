@@ -28,7 +28,6 @@ import sa.gov.nic.bio.bw.client.features.printconvictedpresent.webservice.Finger
 import sa.gov.nic.bio.bw.client.features.printconvictedpresent.webservice.GenderType;
 import sa.gov.nic.bio.bw.client.features.printconvictedpresent.webservice.JudgementInfo;
 import sa.gov.nic.bio.bw.client.features.printconvictedpresent.webservice.Name;
-import sa.gov.nic.bio.bw.client.login.webservice.UserInfo;
 import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
 
 import java.io.ByteArrayInputStream;
@@ -482,12 +481,10 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 		subjFingers.forEach(finger -> subjMissingFingers.remove((Integer) finger.getType()));
 		
 		String subjFace = (String) uiInputData.get(PersonInfoPaneFxController.KEY_PERSON_INFO_PHOTO);
-		UserInfo userInfo = (UserInfo) Context.getUserSession().getAttribute("userInfo");
-		String operatorId = userInfo.getUserID();
 		
 		return new ConvictedReport(reportNumber, reportDate, generalFileNum, subjtName, subjNationalityCode,
 		                           subjOccupation, subjGender, subjBirthDate, subjBirthPlace, subjDocId, subjDocType,
 		                           subjDocIssDate, subjDocExpDate, subjJudgementInfo, subjFingers, subjMissingFingers,
-		                           subjFace, operatorId);
+		                           subjFace, null);
 	}
 }

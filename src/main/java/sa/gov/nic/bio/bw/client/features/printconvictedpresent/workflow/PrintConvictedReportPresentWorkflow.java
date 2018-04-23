@@ -85,7 +85,7 @@ public class PrintConvictedReportPresentWorkflow extends WorkflowBase<Void, Void
 			
 			while(true)
 			{
-				Map<String, Object> uiOutputData = null;
+				Map<String, Object> uiOutputData;
 				
 				switch(step)
 				{

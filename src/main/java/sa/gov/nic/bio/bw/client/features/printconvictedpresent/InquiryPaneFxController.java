@@ -126,6 +126,7 @@ public class InquiryPaneFxController extends WizardStepFxControllerBase
 			GuiUtils.showNode(piProgress, false);
 			GuiUtils.showNode(txtProgress, false);
 			GuiUtils.showNode(btnCancel, false);
+			GuiUtils.showNode(lblCanceling, false);
 			GuiUtils.showNode(btnRetry, true);
 			GuiUtils.showNode(btnStartOver, true);
 			GuiUtils.showNode(paneError, true);
