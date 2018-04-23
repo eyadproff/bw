@@ -76,12 +76,12 @@
                             <Insets bottom="5.0"/>
                         </GridPane.margin>
                     </TextField>
-                    <Label text="%label.publicFileNumber" GridPane.rowIndex="2" GridPane.columnIndex="0">
+                    <Label text="%label.generalFileNumber" GridPane.rowIndex="2" GridPane.columnIndex="0">
                         <GridPane.margin>
                             <Insets bottom="5.0"/>
                         </GridPane.margin>
                     </Label>
-                    <TextField fx:id="txtPublicFileNumber" GridPane.rowIndex="2" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS">
+                    <TextField fx:id="txtGeneralFileNumber" GridPane.rowIndex="2" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS">
                         <GridPane.margin>
                             <Insets bottom="5.0" right="20.0"/>
                         </GridPane.margin>

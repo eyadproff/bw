@@ -15,3 +15,7 @@
 .date-picker-check-box > .box > .mark {
     -fx-padding: 4;
 }
+
+.titled-pane > .title {
+    -fx-alignment: center;
+}

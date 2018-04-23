@@ -38,7 +38,7 @@ public class InquiryResultPaneFxController extends WizardStepFxControllerBase
 	@FXML private VBox paneNoHitMessage;
 	@FXML private GridPane gridPane;
 	@FXML private ImageView ivPersonPhoto;
-	@FXML private Label lblPublicFileNumber;
+	@FXML private Label lblGeneralFileNumber;
 	@FXML private Label lblFirstName;
 	@FXML private Label lblFatherName;
 	@FXML private Label lblGrandfatherName;
@@ -106,13 +106,13 @@ public class InquiryResultPaneFxController extends WizardStepFxControllerBase
 					long criminalBioId = result.getCrimnalHitBioId();
 					if(criminalBioId > 0)
 					{
-						lblPublicFileNumber.setText(String.valueOf(criminalBioId));
-						personInfoMap.put(PersonInfoPaneFxController.KEY_PERSON_INFO_PUBLIC_FILE_NUMBER, criminalBioId);
+						lblGeneralFileNumber.setText(String.valueOf(criminalBioId));
+						personInfoMap.put(PersonInfoPaneFxController.KEY_PERSON_INFO_GENERAL_FILE_NUMBER, criminalBioId);
 					}
 					else
 					{
-						lblPublicFileNumber.setText(notAvailable);
-						lblPublicFileNumber.setTextFill(Color.RED);
+						lblGeneralFileNumber.setText(notAvailable);
+						lblGeneralFileNumber.setTextFill(Color.RED);
 					}
 					
 					PersonInfo personInfo = result.getPersonInfo();
@@ -134,8 +134,8 @@ public class InquiryResultPaneFxController extends WizardStepFxControllerBase
 				GuiUtils.showNode(gridPane, true);
 				GuiUtils.showNode(btnConfirmPersonInformation, true);
 				
-				lblPublicFileNumber.setText(notAvailable);
-				lblPublicFileNumber.setTextFill(Color.RED);
+				lblGeneralFileNumber.setText(notAvailable);
+				lblGeneralFileNumber.setTextFill(Color.RED);
 				
 				PersonInfo personInfo = (PersonInfo) uiInputData.get(KEY_INQUIRY_HIT_RESULT);
 				populatePersonInfo(personInfo, notAvailable);
@@ -288,7 +288,7 @@ public class InquiryResultPaneFxController extends WizardStepFxControllerBase
 			lblFamilyName.setTextFill(Color.RED);
 		}
 		
-		GenderType gender = GenderType.values()[personInfo.getGender()];
+		GenderType gender = GenderType.values()[personInfo.getGender() - 1];
 		if(gender != null)
 		{
 			switch(gender)

@@ -17,8 +17,10 @@ import sa.gov.nic.bio.bw.client.features.printconvictedpresent.PersonInfoPaneFxC
 import sa.gov.nic.bio.bw.client.features.printconvictedpresent.PunishmentDetailsPaneFxController;
 import sa.gov.nic.bio.bw.client.features.printconvictedpresent.ReviewAndSubmitPaneFxController;
 import sa.gov.nic.bio.bw.client.features.printconvictedpresent.ShowReportPaneFxController;
+import sa.gov.nic.bio.bw.client.features.printconvictedpresent.webservice.ConvictedReport;
 import sa.gov.nic.bio.bw.client.features.printconvictedpresent.webservice.Finger;
 import sa.gov.nic.bio.bw.client.features.printconvictedpresent.webservice.PersonInfo;
+import sa.gov.nic.bio.bw.client.features.printconvictedpresent.workflow.SubmittingConvictedReportService;
 import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
 
 import java.net.URL;
@@ -168,6 +170,23 @@ public class PrintConvictedReportNotPresentWorkflow extends WorkflowBase<Void, V
 						formRenderer.get().renderForm(ReviewAndSubmitPaneFxController.class, uiInputData);
 						uiOutputData = waitForUserTask();
 						uiInputData.putAll(uiOutputData);
+						
+						while(true)
+						{
+							ConvictedReport convictedReport = (ConvictedReport)
+										uiInputData.get(ReviewAndSubmitPaneFxController.KEY_FINAL_CONVICTED_REPORT);
+							
+							ServiceResponse<Long> serviceResponse =
+															SubmittingConvictedReportService.execute(convictedReport);
+							
+							uiInputData.put(KEY_WEBSERVICE_RESPONSE, serviceResponse);
+							formRenderer.get().renderForm(ReviewAndSubmitPaneFxController.class, uiInputData);
+							uiOutputData = waitForUserTask();
+							uiInputData.putAll(uiOutputData);
+							
+							if(serviceResponse.isSuccess() && serviceResponse.getResult() != null) break;
+						}
+						
 						break;
 					}
 					case 7:

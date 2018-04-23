@@ -32,7 +32,7 @@ public class PersonInfoPaneFxController extends WizardStepFxControllerBase
 	public static final String KEY_PERSON_INFO_FATHER_NAME = "PERSON_INFO_FATHER__NAME";
 	public static final String KEY_PERSON_INFO_GRANDFATHER_NAME = "PERSON_INFO_GRANDFATHER_NAME";
 	public static final String KEY_PERSON_INFO_FAMILY_NAME = "PERSON_INFO_FAMILY_NAME";
-	public static final String KEY_PERSON_INFO_PUBLIC_FILE_NUMBER = "PERSON_INFO_PUBLIC_FILE_NUMBER";
+	public static final String KEY_PERSON_INFO_GENERAL_FILE_NUMBER = "PERSON_INFO_GENERAL_FILE_NUMBER";
 	public static final String KEY_PERSON_INFO_GENDER = "PERSON_INFO_GENDER";
 	public static final String KEY_PERSON_INFO_NATIONALITY = "PERSON_INFO_NATIONALITY";
 	public static final String KEY_PERSON_INFO_OCCUPATION = "PERSON_INFO_OCCUPATION";
@@ -50,7 +50,7 @@ public class PersonInfoPaneFxController extends WizardStepFxControllerBase
 	@FXML private TextField txtFatherName;
 	@FXML private TextField txtGrandfatherName;
 	@FXML private TextField txtFamilyName;
-	@FXML private TextField txtPublicFileNumber;
+	@FXML private TextField txtGeneralFileNumber;
 	@FXML private TextField txtOccupation;
 	@FXML private TextField txtBirthPlace;
 	@FXML private TextField txtIdNumber;
@@ -118,14 +118,14 @@ public class PersonInfoPaneFxController extends WizardStepFxControllerBase
 		GuiUtils.initDatePicker(cbIdExpiryDateShowHijri, dpIdExpiryDate, null);
 		
 		GuiUtils.applyValidatorToTextField(txtIdNumber, "\\d*", "[^\\d]", 10);
-		GuiUtils.applyValidatorToTextField(txtPublicFileNumber, "\\d*", "[^\\d]",
-		                                  10);
+		GuiUtils.applyValidatorToTextField(txtGeneralFileNumber, "\\d*", "[^\\d]",
+		                                   10);
 		
 		BooleanBinding txtFirstNameBinding = txtFirstName.textProperty().isEmpty();
 		BooleanBinding txtFatherNameBinding = txtFatherName.textProperty().isEmpty();
 		BooleanBinding txtGrandfatherNameBinding = txtGrandfatherName.textProperty().isEmpty();
 		BooleanBinding txtFamilyNameBinding = txtFamilyName.textProperty().isEmpty();
-		BooleanBinding txtPublicFileNumberBinding = txtPublicFileNumber.textProperty().isEmpty();
+		BooleanBinding txtGeneralFileNumberBinding = txtGeneralFileNumber.textProperty().isEmpty();
 		BooleanBinding txtOccupationBinding = txtOccupation.textProperty().isEmpty();
 		BooleanBinding txtBirthPlaceBinding = txtBirthPlace.textProperty().isEmpty();
 		BooleanBinding txtIdNumberBinding = txtIdNumber.textProperty().isEmpty();
@@ -138,7 +138,7 @@ public class PersonInfoPaneFxController extends WizardStepFxControllerBase
 		
 		// TODO: enable this when done
 		/*btnNext.disableProperty().bind(txtFirstNameBinding.or(txtFatherNameBinding).or(txtGrandfatherNameBinding)
-	                               .or(txtFamilyNameBinding).or(txtPublicFileNumberBinding).or(txtOccupationBinding)
+	                               .or(txtFamilyNameBinding).or(txtGeneralFileNumberBinding).or(txtOccupationBinding)
 	                               .or(txtBirthPlaceBinding).or(txtIdNumberBinding).or(txtIdTypeBinding)
 	                               .or(cboGenderBinding).or(cboNationalityBinding).or(dpBirthDateBinding)
 	                               .or(dpIdIssuanceDateBinding).or(dpIdExpiryDateBinding));*/
@@ -185,10 +185,10 @@ public class PersonInfoPaneFxController extends WizardStepFxControllerBase
 			if(familyName != null && !familyName.trim().isEmpty()) txtFamilyName.setText(familyName);
 			else if(focusedNode == null) focusedNode = txtFamilyName;
 			
-			Long publicFileNumber = (Long) uiInputData.get(KEY_PERSON_INFO_PUBLIC_FILE_NUMBER);
-			if(publicFileNumber != null && publicFileNumber > 0L)
-													txtPublicFileNumber.setText(String.valueOf(publicFileNumber));
-			else if(focusedNode == null) focusedNode = txtPublicFileNumber;
+			Long generalFileNumber = (Long) uiInputData.get(KEY_PERSON_INFO_GENERAL_FILE_NUMBER);
+			if(generalFileNumber != null && generalFileNumber > 0L)
+													txtGeneralFileNumber.setText(String.valueOf(generalFileNumber));
+			else if(focusedNode == null) focusedNode = txtGeneralFileNumber;
 			
 			GenderType genderType = (GenderType) uiInputData.get(KEY_PERSON_INFO_GENDER);
 			if(genderType != null) cboGender.getItems()
@@ -251,8 +251,8 @@ public class PersonInfoPaneFxController extends WizardStepFxControllerBase
 	@Override
 	public void onLeaving(Map<String, Object> uiDataMap)
 	{
-		String text = txtPublicFileNumber.getText();
-		if(text != null && !text.isEmpty()) uiDataMap.put(KEY_PERSON_INFO_PUBLIC_FILE_NUMBER, Long.parseLong(text));
+		String text = txtGeneralFileNumber.getText();
+		if(text != null && !text.isEmpty()) uiDataMap.put(KEY_PERSON_INFO_GENERAL_FILE_NUMBER, Long.parseLong(text));
 		
 		text = txtIdNumber.getText();
 		if(text != null && !text.isEmpty()) uiDataMap.put(KEY_PERSON_INFO_ID_NUMBER, Long.parseLong(text));

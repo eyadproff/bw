@@ -22,7 +22,7 @@ import java.util.Map;
 public class FetchingFingerprintsPaneFxController extends WizardStepFxControllerBase
 {
 	public static final String KEY_RETRY_FINGERPRINT_FETCHING = "RETRY_FINGERPRINT_FETCHING";
-	public static final String KEY_FETCHED_FINGERPRINTS = "FETCHED_FINGERPRINTS";
+	public static final String KEY_PERSON_FINGERPRINTS = "PERSON_FINGERPRINTS";
 	
 	@FXML private ProgressIndicator piProgress;
 	@FXML private Label txtProgress;
@@ -64,7 +64,7 @@ public class FetchingFingerprintsPaneFxController extends WizardStepFxController
 				List<Finger> result = serviceResponse.getResult();
 				if(result != null)
 				{
-					uiInputData.put(KEY_FETCHED_FINGERPRINTS, result);
+					uiInputData.put(KEY_PERSON_FINGERPRINTS, result);
 					goNext();
 				}
 				else

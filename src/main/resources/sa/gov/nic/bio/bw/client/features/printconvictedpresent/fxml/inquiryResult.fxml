@@ -34,16 +34,16 @@
                             <columnConstraints>
                                 <ColumnConstraints prefWidth="120.0"/>
                             </columnConstraints>
-                            <Label text="%label.publicFileNumber" GridPane.rowIndex="0" GridPane.columnIndex="0" styleClass="bold-label"/>
-                            <Label fx:id="lblPublicFileNumber" GridPane.rowIndex="0" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
-                            <Label text="%label.firstName" GridPane.rowIndex="1" GridPane.columnIndex="0" styleClass="bold-label"/>
-                            <Label fx:id="lblFirstName" GridPane.rowIndex="1" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
-                            <Label text="%label.fatherName" GridPane.rowIndex="2" GridPane.columnIndex="0" styleClass="bold-label"/>
-                            <Label fx:id="lblFatherName" GridPane.rowIndex="2" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
-                            <Label text="%label.grandfatherName" GridPane.rowIndex="3" GridPane.columnIndex="0" styleClass="bold-label"/>
-                            <Label fx:id="lblGrandfatherName" GridPane.rowIndex="3" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
-                            <Label text="%label.familyName" GridPane.rowIndex="4" GridPane.columnIndex="0" styleClass="bold-label"/>
-                            <Label fx:id="lblFamilyName" GridPane.rowIndex="4" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
+                            <Label text="%label.firstName" GridPane.rowIndex="0" GridPane.columnIndex="0" styleClass="bold-label"/>
+                            <Label fx:id="lblFirstName" GridPane.rowIndex="0" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
+                            <Label text="%label.fatherName" GridPane.rowIndex="1" GridPane.columnIndex="0" styleClass="bold-label"/>
+                            <Label fx:id="lblFatherName" GridPane.rowIndex="1" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
+                            <Label text="%label.grandfatherName" GridPane.rowIndex="2" GridPane.columnIndex="0" styleClass="bold-label"/>
+                            <Label fx:id="lblGrandfatherName" GridPane.rowIndex="2" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
+                            <Label text="%label.familyName" GridPane.rowIndex="3" GridPane.columnIndex="0" styleClass="bold-label"/>
+                            <Label fx:id="lblFamilyName" GridPane.rowIndex="3" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
+                            <Label text="%label.generalFileNumber" GridPane.rowIndex="4" GridPane.columnIndex="0" styleClass="bold-label"/>
+                            <Label fx:id="lblGeneralFileNumber" GridPane.rowIndex="4" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
                             <Label text="%label.gender" GridPane.rowIndex="5" GridPane.columnIndex="0" styleClass="bold-label"/>
                             <Label fx:id="lblGender" GridPane.rowIndex="5" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
                             <Label text="%label.nationality" GridPane.rowIndex="6" GridPane.columnIndex="0" styleClass="bold-label"/>

@@ -13,6 +13,20 @@ public class Name
 	private String translatedFatherName;
 	private String translatedGrandFatherName;
 	
+	public Name(String firstName, String familyName, String fatherName, String grandfatherName,
+	            String translatedFirstName, String translatedFamilyName, String translatedFatherName,
+	            String translatedGrandFatherName)
+	{
+		this.firstName = firstName;
+		this.familyName = familyName;
+		this.fatherName = fatherName;
+		this.grandfatherName = grandfatherName;
+		this.translatedFirstName = translatedFirstName;
+		this.translatedFamilyName = translatedFamilyName;
+		this.translatedFatherName = translatedFatherName;
+		this.translatedGrandFatherName = translatedGrandFatherName;
+	}
+	
 	public String getFirstName(){return firstName;}
 	public void setFirstName(String firstName){this.firstName = firstName;}
 	

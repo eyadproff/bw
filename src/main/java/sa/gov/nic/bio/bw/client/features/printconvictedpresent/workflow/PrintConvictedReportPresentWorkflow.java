@@ -13,6 +13,7 @@ import sa.gov.nic.bio.bw.client.features.commons.FaceCapturingFxController;
 import sa.gov.nic.bio.bw.client.features.commons.FingerprintCapturingFxController;
 import sa.gov.nic.bio.bw.client.features.commons.LookupFxController;
 import sa.gov.nic.bio.bw.client.features.commons.workflow.ConvictedReportLookupService;
+import sa.gov.nic.bio.bw.client.features.printconvictednotpresent.FetchingFingerprintsPaneFxController;
 import sa.gov.nic.bio.bw.client.features.printconvictedpresent.InquiryPaneFxController;
 import sa.gov.nic.bio.bw.client.features.printconvictedpresent.InquiryResultPaneFxController;
 import sa.gov.nic.bio.bw.client.features.printconvictedpresent.JudgmentDetailsPaneFxController;
@@ -20,6 +21,7 @@ import sa.gov.nic.bio.bw.client.features.printconvictedpresent.PersonInfoPaneFxC
 import sa.gov.nic.bio.bw.client.features.printconvictedpresent.PunishmentDetailsPaneFxController;
 import sa.gov.nic.bio.bw.client.features.printconvictedpresent.ReviewAndSubmitPaneFxController;
 import sa.gov.nic.bio.bw.client.features.printconvictedpresent.ShowReportPaneFxController;
+import sa.gov.nic.bio.bw.client.features.printconvictedpresent.webservice.ConvictedReport;
 import sa.gov.nic.bio.bw.client.features.printconvictedpresent.webservice.Finger;
 import sa.gov.nic.bio.bw.client.features.printconvictedpresent.webservice.FingerprintInquiryStatusResult;
 import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
@@ -193,6 +195,8 @@ public class PrintConvictedReportPresentWorkflow extends WorkflowBase<Void, Void
 										                Boolean.TRUE);
 										uiInputData.put(InquiryResultPaneFxController.KEY_INQUIRY_HIT_RESULT,
 										                result);
+										uiInputData.put(FetchingFingerprintsPaneFxController.KEY_PERSON_FINGERPRINTS,
+										                collectedFingerprints);
 										formRenderer.get().renderForm(InquiryPaneFxController.class, uiInputData);
 									}
 									else // report the error
@@ -259,6 +263,23 @@ public class PrintConvictedReportPresentWorkflow extends WorkflowBase<Void, Void
 						formRenderer.get().renderForm(ReviewAndSubmitPaneFxController.class, uiInputData);
 						uiOutputData = waitForUserTask();
 						uiInputData.putAll(uiOutputData);
+						
+						while(true)
+						{
+							ConvictedReport convictedReport = (ConvictedReport)
+										uiInputData.get(ReviewAndSubmitPaneFxController.KEY_FINAL_CONVICTED_REPORT);
+							
+							ServiceResponse<Long> serviceResponse =
+															SubmittingConvictedReportService.execute(convictedReport);
+							
+							uiInputData.put(KEY_WEBSERVICE_RESPONSE, serviceResponse);
+							formRenderer.get().renderForm(ReviewAndSubmitPaneFxController.class, uiInputData);
+							uiOutputData = waitForUserTask();
+							uiInputData.putAll(uiOutputData);
+							
+							if(serviceResponse.isSuccess() && serviceResponse.getResult() != null) break;
+						}
+						
 						break;
 					}
 					case 8:

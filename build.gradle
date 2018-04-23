@@ -51,7 +51,7 @@ dependencies {
     implementation name: "tomcat-juli-9.0.2"
     implementation name: "tomcat-util-9.0.2"
     implementation name: "tomcat-websocket-9.0.2"
-    implementation name: "bcl-utils-2018.03.2"
+    implementation name: "bcl-utils-2018.04.1"
     implementation name: "biokit-library-2018.04.1"
     testImplementation name: "junit-4.12"
 }

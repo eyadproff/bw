@@ -14,6 +14,9 @@ public class PersonInfo
 	private int gender;
 	private long samisId;
 	private String face;
+	private String occupation;
+	private int idIssueDate;
+	private int idExpiryDate;
 	
 	public Name getName(){return name;}
 	public void setName(Name name){this.name = name;}
@@ -42,6 +45,15 @@ public class PersonInfo
 	public String getFace(){return face;}
 	public void setFace(String face){this.face = face;}
 	
+	public String getOccupation(){return occupation;}
+	public void setOccupation(String occupation){this.occupation = occupation;}
+	
+	public int getIdIssueDate(){return idIssueDate;}
+	public void setIdIssueDate(int idIssueDate){this.idIssueDate = idIssueDate;}
+	
+	public int getIdExpiryDate(){return idExpiryDate;}
+	public void setIdExpiryDate(int idExpiryDate){this.idExpiryDate = idExpiryDate;}
+	
 	@Override
 	public boolean equals(Object o)
 	{
@@ -49,16 +61,18 @@ public class PersonInfo
 		if(o == null || getClass() != o.getClass()) return false;
 		PersonInfo that = (PersonInfo) o;
 		return nationality == that.nationality && gender == that.gender && samisId == that.samisId &&
+			   idIssueDate == that.idIssueDate && idExpiryDate == that.idExpiryDate &&
 			   Objects.equals(name, that.name) && Objects.equals(birthDate, that.birthDate) &&
 			   Objects.equals(birthPlace, that.birthPlace) && Objects.equals(personType, that.personType) &&
-			   Objects.equals(nationalityDesc, that.nationalityDesc) && Objects.equals(face, that.face);
+			   Objects.equals(nationalityDesc, that.nationalityDesc) && Objects.equals(face, that.face) &&
+			   Objects.equals(occupation, that.occupation);
 	}
 	
 	@Override
 	public int hashCode()
 	{
 		return Objects.hash(name, birthDate, birthPlace, personType, nationality, nationalityDesc, gender, samisId,
-		                    face);
+		                    face, occupation, idIssueDate, idExpiryDate);
 	}
 	
 	@Override
@@ -66,6 +80,8 @@ public class PersonInfo
 	{
 		return "PersonInfo{" + "name=" + name + ", birthDate=" + birthDate + ", birthPlace='" + birthPlace + '\'' +
 			   ", personType='" + personType + '\'' + ", nationality=" + nationality + ", nationalityDesc='" +
-			   nationalityDesc + '\'' + ", gender=" + gender + ", samisId=" + samisId + ", face='" + face + '\'' + '}';
+			   nationalityDesc + '\'' + ", gender=" + gender + ", samisId=" + samisId + ", face='" + face + '\'' +
+			   ", occupation='" + occupation + '\'' + ", idIssueDate=" + idIssueDate + ", idExpiryDate=" +
+			   idExpiryDate + '}';
 	}
 }

@@ -236,11 +236,22 @@ public final class AppUtils
 		return Instant.ofEpochMilli(milliSeconds).atZone(AppConstants.SAUDI_ZONE);
 	}
 	
+	public static LocalDate secondsToGregorianData(long seconds)
+	{
+		return Instant.ofEpochSecond(seconds).atZone(AppConstants.SAUDI_ZONE).toLocalDate();
+	}
+	
 	public static String formatHijriGregorianDateTime(long milliSeconds) throws DateTimeException // thrown in case of "Hijrah date out of range"
 	{
 		ChronoZonedDateTime<HijrahDate> hijriDateTime = AppUtils.milliSecondsToHijriDataTime(milliSeconds);
 		ZonedDateTime gregorianDateTime = AppUtils.milliSecondsToGregorianDataTime(milliSeconds);
 		return AppUtils.formatDateTime(hijriDateTime) + " - " + AppUtils.formatDate(gregorianDateTime);
+	}
+	
+	public static String formatGregorianDate(long seconds)
+	{
+		LocalDate localDate = AppUtils.secondsToGregorianData(seconds);
+		return AppUtils.formatDate(localDate);
 	}
 	
 	public static LocalDateTime extractExpirationTimeFromJWT(String jwt)
