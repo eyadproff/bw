@@ -4,19 +4,24 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.NodeOrientation;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.ProgressIndicator;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import sa.gov.nic.bio.bw.client.core.Context;
+import sa.gov.nic.bio.bw.client.core.biokit.FingerPosition;
 import sa.gov.nic.bio.bw.client.core.utils.AppConstants;
 import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.wizard.WizardStepFxControllerBase;
+import sa.gov.nic.bio.bw.client.core.workflow.Workflow;
 import sa.gov.nic.bio.bw.client.features.commons.ui.ImageViewPane;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.CrimeType;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.NationalityBean;
 import sa.gov.nic.bio.bw.client.features.printconvictednotpresent.FetchingFingerprintsPaneFxController;
+import sa.gov.nic.bio.bw.client.features.printconvictedpresent.utils.PrintConvictedPresentErrorCodes;
 import sa.gov.nic.bio.bw.client.features.printconvictedpresent.webservice.ConvictedReport;
 import sa.gov.nic.bio.bw.client.features.printconvictedpresent.webservice.CrimeCode;
 import sa.gov.nic.bio.bw.client.features.printconvictedpresent.webservice.Finger;
@@ -24,6 +29,7 @@ import sa.gov.nic.bio.bw.client.features.printconvictedpresent.webservice.Gender
 import sa.gov.nic.bio.bw.client.features.printconvictedpresent.webservice.JudgementInfo;
 import sa.gov.nic.bio.bw.client.features.printconvictedpresent.webservice.Name;
 import sa.gov.nic.bio.bw.client.login.webservice.UserInfo;
+import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
 
 import java.io.ByteArrayInputStream;
 import java.net.URL;
@@ -63,6 +69,35 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 	@FXML private Label lblJudgmentNumber;
 	@FXML private Label lblArrestDate;
 	@FXML private Label lblJudgmentDate;
+	@FXML private Label lblLashes;
+	@FXML private Label lblFine;
+	@FXML private Label lblJailYears;
+	@FXML private Label lblJailMonths;
+	@FXML private Label lblJailDays;
+	@FXML private Label lblTravelBanYears;
+	@FXML private Label lblTravelBanMonths;
+	@FXML private Label lblTravelBanDays;
+	@FXML private Label lblExilingYears;
+	@FXML private Label lblExilingMonths;
+	@FXML private Label lblExilingDays;
+	@FXML private Label lblDeportationYears;
+	@FXML private Label lblDeportationMonths;
+	@FXML private Label lblDeportationDays;
+	@FXML private Label lblOther;
+	@FXML private CheckBox cbFinalDeportation;
+	@FXML private CheckBox cbLibel;
+	@FXML private CheckBox cbCovenant;
+	@FXML private ImageView ivRightThumb;
+	@FXML private ImageView ivRightIndex;
+	@FXML private ImageView ivRightMiddle;
+	@FXML private ImageView ivRightRing;
+	@FXML private ImageView ivRightLittle;
+	@FXML private ImageView ivLeftLittle;
+	@FXML private ImageView ivLeftRing;
+	@FXML private ImageView ivLeftMiddle;
+	@FXML private ImageView ivLeftIndex;
+	@FXML private ImageView ivLeftThumb;
+	@FXML private ProgressIndicator piProgress;
 	@FXML private Button btnStartOver;
 	@FXML private Button btnPrevious;
 	@FXML private Button btnSubmit;
@@ -193,12 +228,122 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 			lblJudgmentNumber.setText(judgementInfo.getJudgNum());
 			lblArrestDate.setText(AppUtils.formatGregorianDate(judgementInfo.getArrestDate()));
 			lblJudgmentDate.setText(AppUtils.formatGregorianDate(judgementInfo.getJudgDate()));
+			lblLashes.setText(String.valueOf(judgementInfo.getJudgLashesCount()));
+			lblFine.setText(String.valueOf(judgementInfo.getJudgFine()));
+			lblJailYears.setText(String.valueOf(judgementInfo.getJailYearCount()));
+			lblJailMonths.setText(String.valueOf(judgementInfo.getJailMonthCount()));
+			lblJailDays.setText(String.valueOf(judgementInfo.getJailDayCount()));
+			lblTravelBanYears.setText(String.valueOf(judgementInfo.getTrvlBanYearCount()));
+			lblTravelBanMonths.setText(String.valueOf(judgementInfo.getTrvlBanMonthCount()));
+			lblTravelBanDays.setText(String.valueOf(judgementInfo.getTrvlBanDayCount()));
+			lblExilingYears.setText(String.valueOf(judgementInfo.getExileYearCount()));
+			lblExilingMonths.setText(String.valueOf(judgementInfo.getExileMonthCount()));
+			lblExilingDays.setText(String.valueOf(judgementInfo.getExileDayCount()));
+			lblDeportationYears.setText(String.valueOf(judgementInfo.getDeportYearCount()));
+			lblDeportationMonths.setText(String.valueOf(judgementInfo.getDeportMonthCount()));
+			lblDeportationDays.setText(String.valueOf(judgementInfo.getDeportDayCount()));
+			cbFinalDeportation.setSelected(judgementInfo.isFinalDeport());
+			cbLibel.setSelected(judgementInfo.isLibel());
+			cbCovenant.setSelected(judgementInfo.isCovenant());
+			lblOther.setText(String.valueOf(judgementInfo.getJudgOthers()));
+			if(lblOther.getText().isEmpty()) lblOther.setText("-");
 			
-			// TODO: populate data to the GUI
+			// make the checkboxes look like they are enabled
+			cbFinalDeportation.setStyle("-fx-opacity: 1");
+			cbLibel.setStyle("-fx-opacity: 1");
+			cbCovenant.setStyle("-fx-opacity: 1");
+			
+			List<Finger> subjFingers = convictedReport.getSubjFingers();
+			Map<Integer, ImageView> imageViewMap = new HashMap<>();
+			Map<Integer, String> dialogTitleMap = new HashMap<>();
+			
+			imageViewMap.put(FingerPosition.RIGHT_THUMB.getPosition(), ivRightThumb);
+			imageViewMap.put(FingerPosition.RIGHT_INDEX.getPosition(), ivRightIndex);
+			imageViewMap.put(FingerPosition.RIGHT_MIDDLE.getPosition(), ivRightMiddle);
+			imageViewMap.put(FingerPosition.RIGHT_RING.getPosition(), ivRightRing);
+			imageViewMap.put(FingerPosition.RIGHT_LITTLE.getPosition(), ivRightLittle);
+			imageViewMap.put(FingerPosition.LEFT_THUMB.getPosition(), ivLeftThumb);
+			imageViewMap.put(FingerPosition.LEFT_INDEX.getPosition(), ivLeftIndex);
+			imageViewMap.put(FingerPosition.LEFT_MIDDLE.getPosition(), ivLeftMiddle);
+			imageViewMap.put(FingerPosition.LEFT_RING.getPosition(), ivLeftRing);
+			imageViewMap.put(FingerPosition.LEFT_LITTLE.getPosition(), ivLeftLittle);
+			dialogTitleMap.put(FingerPosition.RIGHT_THUMB.getPosition(),
+			                                        resources.getString("label.fingers.thumb") + " (" +
+													resources.getString("label.rightHand") + ")");
+			dialogTitleMap.put(FingerPosition.RIGHT_INDEX.getPosition(),
+			                                        resources.getString("label.fingers.index") + " (" +
+					                                resources.getString("label.rightHand") + ")");
+			dialogTitleMap.put(FingerPosition.RIGHT_MIDDLE.getPosition(),
+			                                        resources.getString("label.fingers.middle") + " (" +
+				                                    resources.getString("label.rightHand") + ")");
+			dialogTitleMap.put(FingerPosition.RIGHT_RING.getPosition(),
+			                                        resources.getString("label.fingers.ring") + " (" +
+				                                    resources.getString("label.rightHand") + ")");
+			dialogTitleMap.put(FingerPosition.RIGHT_LITTLE.getPosition(),
+			                                        resources.getString("label.fingers.little") + " (" +
+				                                    resources.getString("label.rightHand") + ")");
+			dialogTitleMap.put(FingerPosition.LEFT_THUMB.getPosition(),
+			                                        resources.getString("label.fingers.thumb") + " (" +
+				                                    resources.getString("label.leftHand") + ")");
+			dialogTitleMap.put(FingerPosition.LEFT_INDEX.getPosition(),
+			                                        resources.getString("label.fingers.index") + " (" +
+				                                    resources.getString("label.leftHand") + ")");
+			dialogTitleMap.put(FingerPosition.LEFT_MIDDLE.getPosition(),
+			                                        resources.getString("label.fingers.middle") + " (" +
+				                                    resources.getString("label.leftHand") + ")");
+			dialogTitleMap.put(FingerPosition.LEFT_RING.getPosition(),
+			                                        resources.getString("label.fingers.ring") + " (" +
+				                                    resources.getString("label.leftHand") + ")");
+			dialogTitleMap.put(FingerPosition.LEFT_LITTLE.getPosition(),
+			                                        resources.getString("label.fingers.little") + " (" +
+				                                    resources.getString("label.leftHand") + ")");
+			
+			subjFingers.forEach(finger ->
+			{
+				String image = finger.getImage();
+				int type = finger.getType();
+				ImageView imageView = imageViewMap.get(type);
+				String dialogTitle = dialogTitleMap.get(type);
+				
+				if(imageView == null) return; // to skip 13,14,15
+				
+				// TODO: convert wsq to png
+				
+				byte[] bytes = Base64.getDecoder().decode(image);
+				imageView.setImage(new Image(new ByteArrayInputStream(bytes)));
+				GuiUtils.attachImageDialog(Context.getCoreFxController(), imageView,
+				                           dialogTitle, resources.getString("label.contextMenu.showImage"));
+			});
 		}
 		else // submission result
 		{
-		
+			GuiUtils.showNode(piProgress, false);
+			GuiUtils.showNode(btnPrevious, true);
+			GuiUtils.showNode(btnStartOver, true);
+			GuiUtils.showNode(btnSubmit, true);
+			
+			@SuppressWarnings("unchecked") ServiceResponse<Long> serviceResponse =
+										(ServiceResponse<Long>) uiInputData.get(Workflow.KEY_WEBSERVICE_RESPONSE);
+			if(serviceResponse.isSuccess())
+			{
+				Long result = serviceResponse.getResult();
+				if(result != null)
+				{
+					uiInputData.put(ShowReportPaneFxController.KEY_CONVICTED_REPORT_NUMBER, result);
+					goNext();
+				}
+				else
+				{
+					String errorCode = PrintConvictedPresentErrorCodes.C007_00003.getCode();
+					String[] errorDetails = {"result is null!"};
+					reportNegativeResponse(errorCode, null, errorDetails);
+				}
+			}
+			else
+			{
+				reportNegativeResponse(serviceResponse.getErrorCode(), serviceResponse.getException(),
+				                       serviceResponse.getErrorDetails());
+			}
 		}
 	}
 	
@@ -223,6 +368,11 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 		
 		if(confirmed)
 		{
+			GuiUtils.showNode(btnPrevious, false);
+			GuiUtils.showNode(btnStartOver, false);
+			GuiUtils.showNode(btnSubmit, false);
+			GuiUtils.showNode(piProgress, true);
+			
 			Map<String, Object> uiDataMap = new HashMap<>();
 			uiDataMap.put(KEY_FINAL_CONVICTED_REPORT, convictedReport);
 			Context.getWorkflowManager().submitUserTask(uiDataMap);
@@ -265,7 +415,7 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 		String judgNum = (String) uiInputData.get(JudgmentDetailsPaneFxController.KEY_JUDGMENT_DETAILS_JUDGMENT_NUMBER);
 		int judgLashesCount = (int) uiInputData.get(PunishmentDetailsPaneFxController.KEY_PUNISHMENT_DETAILS_LASHES);
 		int judgFine = (int) uiInputData.get(PunishmentDetailsPaneFxController.KEY_PUNISHMENT_DETAILS_FINE);
-		String judgOthers = null;
+		String judgOthers = (String) uiInputData.get(PunishmentDetailsPaneFxController.KEY_PUNISHMENT_DETAILS_OTHER);
 		int jailYearCount = (int) uiInputData.get(PunishmentDetailsPaneFxController.KEY_PUNISHMENT_DETAILS_JAIL_YEARS);
 		int jailMonthCount = (int)
 								uiInputData.get(PunishmentDetailsPaneFxController.KEY_PUNISHMENT_DETAILS_JAIL_MONTHS);

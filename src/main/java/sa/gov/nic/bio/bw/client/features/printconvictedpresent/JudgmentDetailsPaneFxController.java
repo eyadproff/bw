@@ -155,11 +155,10 @@ public class JudgmentDetailsPaneFxController extends WizardStepFxControllerBase
 		BooleanBinding dpArrestDateBinding = dpArrestDate.valueProperty().isNull();
 		BooleanBinding dpJudgmentDateBinding = dpJudgmentDate.valueProperty().isNull();
 		
-		// TODO: enable this when done
-		/*btnNext.disableProperty().bind(cboCrimeClassification1Binding.or(cboCrimeClassification2Binding)
+		btnNext.disableProperty().bind(cboCrimeClassification1Binding.or(cboCrimeClassification2Binding)
 				                 .or(cboCrimeClassification3Binding).or(txtJudgmentIssuerBinding)
 	                             .or(txtPoliceFileNumberBinding).or(txtJudgmentNumberBinding)
-	                             .or(dpArrestDateBinding).or(dpJudgmentDateBinding));*/
+	                             .or(dpArrestDateBinding).or(dpJudgmentDateBinding));
 	}
 	
 	@Override

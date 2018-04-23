@@ -268,11 +268,13 @@ public class PrintConvictedReportPresentWorkflow extends WorkflowBase<Void, Void
 						{
 							ConvictedReport convictedReport = (ConvictedReport)
 										uiInputData.get(ReviewAndSubmitPaneFxController.KEY_FINAL_CONVICTED_REPORT);
+							if(convictedReport == null) break;
 							
 							ServiceResponse<Long> serviceResponse =
 															SubmittingConvictedReportService.execute(convictedReport);
 							
 							uiInputData.put(KEY_WEBSERVICE_RESPONSE, serviceResponse);
+							uiInputData.remove(ReviewAndSubmitPaneFxController.KEY_FINAL_CONVICTED_REPORT);
 							formRenderer.get().renderForm(ReviewAndSubmitPaneFxController.class, uiInputData);
 							uiOutputData = waitForUserTask();
 							uiInputData.putAll(uiOutputData);

@@ -7,6 +7,8 @@ import java.util.Map;
 
 public class ShowReportPaneFxController extends WizardStepFxControllerBase
 {
+	public static final String KEY_CONVICTED_REPORT_NUMBER = "CONVICTED_REPORT_NUMBER";
+	
 	@Override
 	public URL getFxmlLocation()
 	{

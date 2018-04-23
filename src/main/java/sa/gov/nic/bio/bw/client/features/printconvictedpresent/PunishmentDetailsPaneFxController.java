@@ -8,6 +8,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Spinner;
+import javafx.scene.control.TextField;
 import javafx.util.StringConverter;
 import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
@@ -35,6 +36,7 @@ public class PunishmentDetailsPaneFxController extends WizardStepFxControllerBas
 	public static final String KEY_PUNISHMENT_DETAILS_FINAL_DEPORTATION = "PUNISHMENT_DETAILS_FINAL_DEPORTATION";
 	public static final String KEY_PUNISHMENT_DETAILS_LIBEL = "PUNISHMENT_DETAILS_LIBEL";
 	public static final String KEY_PUNISHMENT_DETAILS_COVENANT = "PUNISHMENT_DETAILS_COVENANT";
+	public static final String KEY_PUNISHMENT_DETAILS_OTHER = "PUNISHMENT_DETAILS_OTHER";
 	
 	@FXML private Spinner<Integer> spnLashes;
 	@FXML private Spinner<Integer> spnFine;
@@ -53,6 +55,7 @@ public class PunishmentDetailsPaneFxController extends WizardStepFxControllerBas
 	@FXML private CheckBox cbFinalDeportation;
 	@FXML private CheckBox cbLibel;
 	@FXML private CheckBox cbCovenant;
+	@FXML private TextField txtOther;
 	@FXML private Button btnPrevious;
 	@FXML private Button btnStartOver;
 	@FXML private Button btnNext;
@@ -242,6 +245,10 @@ public class PunishmentDetailsPaneFxController extends WizardStepFxControllerBas
 			Boolean covenant = (Boolean) uiInputData.get(KEY_PUNISHMENT_DETAILS_COVENANT);
 			cbCovenant.setSelected(covenant != null && covenant);
 			
+			String other = (String) uiInputData.get(KEY_PUNISHMENT_DETAILS_OTHER);
+			if(other != null && !other.isEmpty()) txtOther.setText(other);
+			else if(focusedNode == null) focusedNode = txtOther;
+			
 			if(focusedNode != null) focusedNode.requestFocus();
 			else btnNext.requestFocus();
 		}
@@ -267,6 +274,7 @@ public class PunishmentDetailsPaneFxController extends WizardStepFxControllerBas
 		uiDataMap.put(KEY_PUNISHMENT_DETAILS_FINAL_DEPORTATION, cbFinalDeportation.isSelected());
 		uiDataMap.put(KEY_PUNISHMENT_DETAILS_LIBEL, cbLibel.isSelected());
 		uiDataMap.put(KEY_PUNISHMENT_DETAILS_COVENANT, cbCovenant.isSelected());
+		uiDataMap.put(KEY_PUNISHMENT_DETAILS_OTHER, txtOther.getText());
 	}
 	
 	@FXML

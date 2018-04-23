@@ -136,12 +136,11 @@ public class PersonInfoPaneFxController extends WizardStepFxControllerBase
 		BooleanBinding dpIdIssuanceDateBinding = dpIdIssuanceDate.valueProperty().isNull();
 		BooleanBinding dpIdExpiryDateBinding = dpIdExpiryDate.valueProperty().isNull();
 		
-		// TODO: enable this when done
-		/*btnNext.disableProperty().bind(txtFirstNameBinding.or(txtFatherNameBinding).or(txtGrandfatherNameBinding)
-	                               .or(txtFamilyNameBinding).or(txtGeneralFileNumberBinding).or(txtOccupationBinding)
-	                               .or(txtBirthPlaceBinding).or(txtIdNumberBinding).or(txtIdTypeBinding)
-	                               .or(cboGenderBinding).or(cboNationalityBinding).or(dpBirthDateBinding)
-	                               .or(dpIdIssuanceDateBinding).or(dpIdExpiryDateBinding));*/
+		btnNext.disableProperty().bind(txtFirstNameBinding.or(txtFatherNameBinding).or(txtGrandfatherNameBinding)
+	                             .or(txtFamilyNameBinding).or(txtGeneralFileNumberBinding).or(txtOccupationBinding)
+	                             .or(txtBirthPlaceBinding).or(txtIdNumberBinding).or(txtIdTypeBinding)
+	                             .or(cboGenderBinding).or(cboNationalityBinding).or(dpBirthDateBinding)
+	                             .or(dpIdIssuanceDateBinding).or(dpIdExpiryDateBinding));
 	}
 	
 	@Override
