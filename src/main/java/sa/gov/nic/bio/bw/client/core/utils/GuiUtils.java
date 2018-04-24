@@ -158,7 +158,7 @@ public class GuiUtils
 			if(event.getCode() == KeyCode.ENTER)
 			{
 				button.fire();
-				button.setDisable(true); // prevent "holding ENTER key" from firing the event again
+				//button.setDisable(true); // prevent "holding ENTER key" from firing the event again
 				event.consume();
 			}
 		});

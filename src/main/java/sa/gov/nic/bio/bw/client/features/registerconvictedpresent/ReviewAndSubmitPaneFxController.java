@@ -212,21 +212,21 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 				{
 					case 0:
 					{
-						lblCrimeClassification1.setText(crimeEventTitles.get(crimeCode.getCrimeEvent()) + " - " +
+						lblCrimeClassification1.setText(crimeEventTitles.get(crimeCode.getCrimeEvent()) + ": " +
 								                                crimeClassTitles.get(crimeCode.getCrimeClass()));
 						break;
 					}
 					case 1:
 					{
 						GuiUtils.showNode(lblCrimeClassification2, true);
-						lblCrimeClassification2.setText(crimeEventTitles.get(crimeCode.getCrimeEvent()) + " - " +
+						lblCrimeClassification2.setText(crimeEventTitles.get(crimeCode.getCrimeEvent()) + ": " +
 								                                crimeClassTitles.get(crimeCode.getCrimeClass()));
 						break;
 					}
 					case 2:
 					{
 						GuiUtils.showNode(lblCrimeClassification3, true);
-						lblCrimeClassification3.setText(crimeEventTitles.get(crimeCode.getCrimeEvent()) + " - " +
+						lblCrimeClassification3.setText(crimeEventTitles.get(crimeCode.getCrimeEvent()) + ": " +
 								                                crimeClassTitles.get(crimeCode.getCrimeClass()));
 						break;
 					}
@@ -392,8 +392,7 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 	
 	private ConvictedReport buildConvictedReport(Map<String, Object> uiInputData)
 	{
-		long reportNumber = 0;
-		long reportDate = System.currentTimeMillis();
+		long reportDate = System.currentTimeMillis() / 1000;
 		String generalFileNum = String.valueOf(uiInputData.get(
 													PersonInfoPaneFxController.KEY_PERSON_INFO_GENERAL_FILE_NUMBER));
 		
@@ -401,7 +400,7 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 		String fatherName = (String) uiInputData.get(PersonInfoPaneFxController.KEY_PERSON_INFO_FATHER_NAME);
 		String grandfatherName = (String) uiInputData.get(PersonInfoPaneFxController.KEY_PERSON_INFO_GRANDFATHER_NAME);
 		String familyName = (String) uiInputData.get(PersonInfoPaneFxController.KEY_PERSON_INFO_FAMILY_NAME);
-		Name subjtName = new Name(firstName, fatherName, grandfatherName, familyName, null,
+		Name subjtName = new Name(firstName, familyName, fatherName, grandfatherName, null,
 		                          null, null, null);
 		int subjNationalityCode = ((NationalityBean)
 								uiInputData.get(PersonInfoPaneFxController.KEY_PERSON_INFO_NATIONALITY)).getCode();
@@ -494,7 +493,7 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 		
 		String subjFace = (String) uiInputData.get(PersonInfoPaneFxController.KEY_PERSON_INFO_PHOTO);
 		
-		return new ConvictedReport(reportNumber, reportDate, generalFileNum, subjtName, subjNationalityCode,
+		return new ConvictedReport(0L, reportDate, generalFileNum, subjtName, subjNationalityCode,
 		                           subjOccupation, subjGender, subjBirthDate, subjBirthPlace, subjDocId, subjDocType,
 		                           subjDocIssDate, subjDocExpDate, subjJudgementInfo, subjFingers, subjMissingFingers,
 		                           subjFace, null);

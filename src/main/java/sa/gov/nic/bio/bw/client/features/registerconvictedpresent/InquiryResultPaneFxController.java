@@ -444,7 +444,7 @@ public class InquiryResultPaneFxController extends WizardStepFxControllerBase
 		}
 		else
 		{
-			lblIdIssuanceDate.setText(notAvailable);
+			lblIdExpiry.setText(notAvailable);
 			lblIdExpiry.setTextFill(Color.RED);
 		}
 		

@@ -274,7 +274,6 @@ public class RegisterConvictedReportPresentWorkflow extends WorkflowBase<Void, V
 															SubmittingConvictedReportService.execute(convictedReport);
 							
 							uiInputData.put(KEY_WEBSERVICE_RESPONSE, serviceResponse);
-							uiInputData.remove(ReviewAndSubmitPaneFxController.KEY_FINAL_CONVICTED_REPORT);
 							formRenderer.get().renderForm(ReviewAndSubmitPaneFxController.class, uiInputData);
 							uiOutputData = waitForUserTask();
 							uiInputData.putAll(uiOutputData);
