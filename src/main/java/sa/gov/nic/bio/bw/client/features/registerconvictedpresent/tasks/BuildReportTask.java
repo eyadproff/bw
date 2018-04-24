@@ -195,7 +195,7 @@ public class BuildReportTask extends Task<JasperPrint>
 		for(CrimeCode crimeCode : crimeCodes)
 		{
 			String criminalClass = crimeEventTitles.get(crimeCode.getCrimeEvent()) +
-								   ": " + crimeClassTitles.get(crimeCode.getCrimeClass()) + " -";
+								   ": " + crimeClassTitles.get(crimeCode.getCrimeClass());
 			
 			switch(counter++)
 			{
