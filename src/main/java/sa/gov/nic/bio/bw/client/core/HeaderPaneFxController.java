@@ -78,7 +78,7 @@ public class HeaderPaneFxController extends RegionFxControllerBase
 			ivAvatar.setImage(image);
 			GuiUtils.attachImageDialog(Context.getCoreFxController(), ivAvatar,
 			                           resources.getString("label.operatorPhoto"),
-			                           resources.getString("label.contextMenu.showImage"));
+			                           resources.getString("label.contextMenu.showImage"), false);
 		}
 	}
 	

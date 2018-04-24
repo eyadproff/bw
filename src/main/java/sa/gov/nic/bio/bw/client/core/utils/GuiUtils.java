@@ -25,6 +25,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
+import javafx.scene.effect.GaussianBlur;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
@@ -312,12 +313,15 @@ public class GuiUtils
 	}
 
 	public static void attachImageDialog(CoreFxController coreFxController, ImageView imageView, String dialogTitle,
-	                                     String showImageText)
+	                                     String showImageText, boolean blur)
 	{
 		Runnable runnable = () ->
 		{
 			ImageView iv = new ImageView(imageView.getImage());
 			iv.setPreserveRatio(true);
+			
+			int radius = Integer.parseInt(System.getProperty("jnlp.bio.bw.image.blur.radius"));
+			if(blur) iv.setEffect(new GaussianBlur(radius));
 
 			double taskBarHeight = 40.0;
 			double rightLeftWindowBorders = 6.0;

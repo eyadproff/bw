@@ -234,7 +234,7 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 			{
 				ivCapturedImage.setImage(capturedImage);
 				GuiUtils.attachImageDialog(Context.getCoreFxController(), ivCapturedImage, tpCapturedImage.getText(),
-				                           resources.getString("label.contextMenu.showImage"));
+				                           resources.getString("label.contextMenu.showImage"), false);
 			}
 			
 			Image croppedImage = (Image) uiInputData.get(KEY_CROPPED_IMAGE);
@@ -242,7 +242,7 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 			{
 				ivCroppedImage.setImage(croppedImage);
 				GuiUtils.attachImageDialog(Context.getCoreFxController(), ivCroppedImage, tpCroppedImage.getText(),
-				                           resources.getString("label.contextMenu.showImage"));
+				                           resources.getString("label.contextMenu.showImage"), false);
 			}
 			
 			bool = (Boolean) uiInputData.get(KEY_CAPTURED_IMAGE_TP_ACTIVE);
@@ -656,7 +656,7 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 					
 					    GuiUtils.attachImageDialog(Context.getCoreFxController(), ivCapturedImage,
 					                               tpCapturedImage.getText(),
-					                               resources.getString("label.contextMenu.showImage"));
+					                               resources.getString("label.contextMenu.showImage"), false);
 				    }
 				    else
 				    {
@@ -676,7 +676,7 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 					
 					    GuiUtils.attachImageDialog(Context.getCoreFxController(), ivCroppedImage,
 					                               tpCroppedImage.getText(),
-					                               resources.getString("label.contextMenu.showImage"));
+					                               resources.getString("label.contextMenu.showImage"), false);
 				    }
 				    else
 				    {

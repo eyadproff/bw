@@ -891,7 +891,7 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 			
 			        GuiUtils.attachImageDialog(Context.getCoreFxController(), ivFingerprintDeviceLivePreview,
 			                                   resources.getString("label.contextMenu.slapFingerprints"),
-			                                   resources.getString("label.contextMenu.showImage"));
+			                                   resources.getString("label.contextMenu.showImage"), false);
 		        	
 			        if(result.isWrongSlap())
 			        {
@@ -919,7 +919,7 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 				
 				        GuiUtils.attachImageDialog(Context.getCoreFxController(), ivFingerprintDeviceLivePreview,
 				                                   resources.getString("label.contextMenu.slapFingerprints"),
-				                                   resources.getString("label.contextMenu.showImage"));
+				                                   resources.getString("label.contextMenu.showImage"), false);
 			        }
 			        else processSlapFingerprints(result);
 		        }
@@ -1278,7 +1278,7 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 				ivFingerprintDeviceLivePreview.setImage(new Image(new ByteArrayInputStream(bytes)));
 				GuiUtils.attachImageDialog(Context.getCoreFxController(), ivFingerprintDeviceLivePreview,
 				                           resources.getString("label.contextMenu.slapFingerprints"),
-				                           resources.getString("label.contextMenu.showImage"));
+				                           resources.getString("label.contextMenu.showImage"), false);
 				GuiUtils.showNode(btnAcceptCurrentSlap, false);
 				processSlapFingerprints(wrongSlapCapturedFingerprints);
 			}
@@ -1635,7 +1635,7 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 		
 		String dialogTitle = fingerLabel + " (" + handLabel + ")";
 		GuiUtils.attachImageDialog(Context.getCoreFxController(), imageView, dialogTitle,
-		                           resources.getString("label.contextMenu.showImage"));
+		                           resources.getString("label.contextMenu.showImage"), false);
 	}
 	
 	private void activateFingerIndicatorsForNextCapturing(int slapPosition)

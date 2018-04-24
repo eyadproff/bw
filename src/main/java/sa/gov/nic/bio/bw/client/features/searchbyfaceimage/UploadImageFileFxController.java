@@ -146,7 +146,7 @@ public class UploadImageFileFxController extends WizardStepFxControllerBase
 				
 				GuiUtils.attachImageDialog(Context.getCoreFxController(), ivUploadedImage,
 				                           resources.getString("label.uploadedImage"),
-				                           resources.getString("label.contextMenu.showImage"));
+				                           resources.getString("label.contextMenu.showImage"), false);
 			}
 			catch(Exception e)
 			{

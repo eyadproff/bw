@@ -119,7 +119,7 @@ public class ConfirmImageFxController extends WizardStepFxControllerBase
 					ivFinalImage.setImage(finalImage[0]);
 					GuiUtils.attachImageDialog(Context.getCoreFxController(), ivFinalImage,
 					                           resources.getString("label.finalImage"),
-					                           resources.getString("label.contextMenu.showImage"));
+					                           resources.getString("label.contextMenu.showImage"), false);
 					imagePane.autosize();
 					
 					// workaround to resolve the issue of not resizing sometimes
