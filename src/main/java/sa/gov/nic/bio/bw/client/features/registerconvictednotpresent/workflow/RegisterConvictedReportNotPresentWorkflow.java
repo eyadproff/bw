@@ -161,12 +161,29 @@ public class RegisterConvictedReportNotPresentWorkflow extends WorkflowBase<Void
 							formRenderer.get().renderForm(InquiryPaneFxController.class, uiInputData);
 						}
 						
+						int[] slapFingerprints = {13, 14, 15};
+						
 						@SuppressWarnings("unchecked")
 						List<Finger> collectedFingerprints = (List<Finger>)
 									uiInputData.get(FetchingFingerprintsPaneFxController.KEY_PERSON_FINGERPRINTS);
+						
+						Long personId = (Long) uiInputData.get(
+														PersonIdPaneFxController.KEY_PERSON_INFO_INQUIRY_PERSON_ID);
+						ServiceResponse<List<Integer>> sr = GetFingerprintAvailabilityService.execute(personId);
+						List<Integer> availableFingerprints = sr.getResult();
+						
+						if(!sr.isSuccess() || availableFingerprints == null)
+						{
+							uiInputData.put(KEY_WEBSERVICE_RESPONSE, sr);
+							formRenderer.get().renderForm(InquiryPaneFxController.class, uiInputData);
+							uiOutputData = waitForUserTask();
+							uiInputData.putAll(uiOutputData);
+							break;
+						}
+						
 						List<Integer> missingFingerprints = new ArrayList<>();
 						for(int i = 1; i <= 10; i++) missingFingerprints.add(i);
-						collectedFingerprints.forEach(finger -> missingFingerprints.remove((Integer) finger.getType()));
+						availableFingerprints.forEach(missingFingerprints::remove);
 						
 						ServiceResponse<Integer> serviceResponse =
 								FingerprintInquiryService.execute(collectedFingerprints, missingFingerprints);

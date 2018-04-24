@@ -17,4 +17,7 @@ public interface PersonInfoByIdAPI
 	
 	@GET
 	Call<List<Finger>> getFingerprintsById(@Url String url, @Query("person-id") long personId);
+	
+	@GET
+	Call<List<Integer>> getFingerprintAvailability(@Url String url, @Query("person-id") long personId);
 }
