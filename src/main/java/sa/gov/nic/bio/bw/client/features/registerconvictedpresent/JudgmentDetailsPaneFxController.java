@@ -155,10 +155,29 @@ public class JudgmentDetailsPaneFxController extends WizardStepFxControllerBase
 		BooleanBinding dpArrestDateBinding = dpArrestDate.valueProperty().isNull();
 		BooleanBinding dpJudgmentDateBinding = dpJudgmentDate.valueProperty().isNull();
 		
+		// prevent duplicates
+		BooleanBinding cboCrimeDateBinding1 = cbCrimeClassification2.selectedProperty()
+									.and(cboCrimeEvent1.getSelectionModel().selectedIndexProperty()
+										     .isEqualTo(cboCrimeEvent2.getSelectionModel().selectedIndexProperty())
+									.and(cboCrimeClass1.getSelectionModel().selectedIndexProperty()
+										     .isEqualTo(cboCrimeClass2.getSelectionModel().selectedIndexProperty())));
+		BooleanBinding cboCrimeDateBinding2 = cbCrimeClassification3.selectedProperty()
+									.and(cboCrimeEvent1.getSelectionModel().selectedIndexProperty()
+										     .isEqualTo(cboCrimeEvent3.getSelectionModel().selectedIndexProperty())
+									.and(cboCrimeClass1.getSelectionModel().selectedIndexProperty()
+										     .isEqualTo(cboCrimeClass3.getSelectionModel().selectedIndexProperty())));
+		BooleanBinding cboCrimeDateBinding3 = cbCrimeClassification2.selectedProperty()
+									.and(cbCrimeClassification3.selectedProperty()
+							        .and(cboCrimeEvent2.getSelectionModel().selectedIndexProperty()
+								             .isEqualTo(cboCrimeEvent3.getSelectionModel().selectedIndexProperty())
+									.and(cboCrimeClass2.getSelectionModel().selectedIndexProperty()
+										     .isEqualTo(cboCrimeClass3.getSelectionModel().selectedIndexProperty()))));
+		
 		btnNext.disableProperty().bind(cboCrimeClassification1Binding.or(cboCrimeClassification2Binding)
 				                 .or(cboCrimeClassification3Binding).or(txtJudgmentIssuerBinding)
 	                             .or(txtPoliceFileNumberBinding).or(txtJudgmentNumberBinding)
-	                             .or(dpArrestDateBinding).or(dpJudgmentDateBinding));
+	                             .or(dpArrestDateBinding).or(dpJudgmentDateBinding).or(cboCrimeDateBinding1)
+				                 .or(cboCrimeDateBinding2).or(cboCrimeDateBinding3));
 	}
 	
 	@Override

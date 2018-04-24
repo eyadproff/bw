@@ -161,8 +161,6 @@ public class RegisterConvictedReportNotPresentWorkflow extends WorkflowBase<Void
 							formRenderer.get().renderForm(InquiryPaneFxController.class, uiInputData);
 						}
 						
-						int[] slapFingerprints = {13, 14, 15};
-						
 						@SuppressWarnings("unchecked")
 						List<Finger> collectedFingerprints = (List<Finger>)
 									uiInputData.get(FetchingFingerprintsPaneFxController.KEY_PERSON_FINGERPRINTS);
