@@ -23,6 +23,7 @@ public class FetchingFingerprintsPaneFxController extends WizardStepFxController
 {
 	public static final String KEY_RETRY_FINGERPRINT_FETCHING = "RETRY_FINGERPRINT_FETCHING";
 	public static final String KEY_PERSON_FINGERPRINTS = "PERSON_FINGERPRINTS";
+	public static final String KEY_PERSON_FINGERPRINTS_IMAGES = "PERSON_FINGERPRINTS_IMAGES";
 	
 	@FXML private ProgressIndicator piProgress;
 	@FXML private Label txtProgress;

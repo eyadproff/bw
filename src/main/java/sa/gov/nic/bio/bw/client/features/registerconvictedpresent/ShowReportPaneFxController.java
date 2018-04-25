@@ -10,6 +10,7 @@ import net.sf.jasperreports.engine.JasperPrint;
 import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.wizard.WizardStepFxControllerBase;
+import sa.gov.nic.bio.bw.client.features.registerconvictednotpresent.FetchingFingerprintsPaneFxController;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.tasks.BuildReportTask;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.tasks.PrintReportTask;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.tasks.SaveReportAsPdfTask;
@@ -36,6 +37,7 @@ public class ShowReportPaneFxController extends WizardStepFxControllerBase
 	
 	private FileChooser fileChooser = new FileChooser();
 	private ConvictedReport convictedReport;
+	private Map<Integer, String> fingerprintImages;
 	private AtomicReference<JasperPrint> jasperPrint = new AtomicReference<>();
 	
 	@Override
@@ -71,12 +73,18 @@ public class ShowReportPaneFxController extends WizardStepFxControllerBase
 			convictedReport = (ConvictedReport) uiInputData.get(
 														ReviewAndSubmitPaneFxController.KEY_FINAL_CONVICTED_REPORT);
 			convictedReport.setReportNumber(reportNumber);
+			
+			@SuppressWarnings("unchecked")
+			Map<Integer, String> fingerprintImages = (Map<Integer, String>)
+								uiInputData.get(FetchingFingerprintsPaneFxController.KEY_PERSON_FINGERPRINTS_IMAGES);
+			this.fingerprintImages = fingerprintImages;
 		}
 	}
 	
 	@FXML
 	private void onStartOverButtonClicked(ActionEvent actionEvent)
 	{
+		hideNotification();
 		String headerText = resources.getString("printConvictedPresent.startingOver.confirmation.header");
 		String contentText = resources.getString("printConvictedPresent.startingOver.confirmation.message");
 		boolean confirmed = Context.getCoreFxController().showConfirmationDialogAndWait(headerText, contentText);
@@ -87,6 +95,7 @@ public class ShowReportPaneFxController extends WizardStepFxControllerBase
 	@FXML
 	private void onPrintReportButtonClicked(ActionEvent actionEvent)
 	{
+		hideNotification();
 		GuiUtils.showNode(btnStartOver, false);
 		GuiUtils.showNode(btnPrintReport, false);
 		GuiUtils.showNode(btnSaveReportAsPDF, false);
@@ -94,7 +103,7 @@ public class ShowReportPaneFxController extends WizardStepFxControllerBase
 		
 		if(jasperPrint.get() == null)
 		{
-			BuildReportTask buildReportTask = new BuildReportTask(convictedReport);
+			BuildReportTask buildReportTask = new BuildReportTask(convictedReport, fingerprintImages);
 			buildReportTask.setOnSucceeded(event ->
 			{
 			    JasperPrint value = buildReportTask.getValue();
@@ -122,6 +131,7 @@ public class ShowReportPaneFxController extends WizardStepFxControllerBase
 	@FXML
 	private void onSaveReportAsPdfButtonClicked(ActionEvent actionEvent)
 	{
+		hideNotification();
 		File selectedFile = fileChooser.showSaveDialog(Context.getCoreFxController().getStage());
 		
 		if(selectedFile != null)
@@ -133,7 +143,7 @@ public class ShowReportPaneFxController extends WizardStepFxControllerBase
 			
 			if(jasperPrint.get() == null)
 			{
-				BuildReportTask buildReportTask = new BuildReportTask(convictedReport);
+				BuildReportTask buildReportTask = new BuildReportTask(convictedReport, fingerprintImages);
 				buildReportTask.setOnSucceeded(event ->
 				{
 				    JasperPrint value = buildReportTask.getValue();

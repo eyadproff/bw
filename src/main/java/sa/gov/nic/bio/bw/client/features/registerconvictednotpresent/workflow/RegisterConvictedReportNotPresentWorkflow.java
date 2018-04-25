@@ -220,8 +220,14 @@ public class RegisterConvictedReportNotPresentWorkflow extends WorkflowBase<Void
 									{
 										uiInputData.put(InquiryPaneFxController.KEY_FINGERPRINT_INQUIRY_HIT,
 										                Boolean.TRUE);
+										long criminalHitBioId = result.getCrimnalHitBioId();
+										PersonInfo personInfo = result.getPersonInfo();
+										
+										if(criminalHitBioId > 0) uiInputData.put(
+													PersonInfoPaneFxController.KEY_PERSON_INFO_GENERAL_FILE_NUMBER,
+													criminalHitBioId);
 										uiInputData.put(InquiryResultPaneFxController.KEY_INQUIRY_HIT_RESULT,
-										                result);
+										                personInfo);
 										formRenderer.get().renderForm(InquiryPaneFxController.class, uiInputData);
 									}
 									else // report the error

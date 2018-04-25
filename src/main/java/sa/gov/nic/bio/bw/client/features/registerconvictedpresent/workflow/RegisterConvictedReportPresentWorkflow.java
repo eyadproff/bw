@@ -2,10 +2,12 @@ package sa.gov.nic.bio.bw.client.features.registerconvictedpresent.workflow;
 
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.image.Image;
 import sa.gov.nic.bio.biokit.websocket.beans.DMFingerData;
 import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.beans.Fingerprint;
 import sa.gov.nic.bio.bw.client.core.interfaces.FormRenderer;
+import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.client.core.utils.UTF8Control;
 import sa.gov.nic.bio.bw.client.core.workflow.Signal;
 import sa.gov.nic.bio.bw.client.core.workflow.WorkflowBase;
@@ -24,8 +26,10 @@ import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.ShowReportPane
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.ConvictedReport;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.Finger;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.FingerprintInquiryStatusResult;
+import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.PersonInfo;
 import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -135,9 +139,27 @@ public class RegisterConvictedReportPresentWorkflow extends WorkflowBase<Void, V
 						{
 							// show progress only
 							formRenderer.get().renderForm(InquiryPaneFxController.class, uiInputData);
+							
+							Image capturedImage = (Image) uiInputData.get(FaceCapturingFxController.KEY_CAPTURED_IMAGE);
+							Image croppedImage = (Image) uiInputData.get(FaceCapturingFxController.KEY_CROPPED_IMAGE);
+							
+							Image finalImage;
+							if(croppedImage != null) finalImage = croppedImage;
+							else finalImage = capturedImage;
+							
+							try
+							{
+								String imageBase64 = AppUtils.imageToBase64(finalImage, "jpg");
+								uiInputData.put(PersonInfoPaneFxController.KEY_PERSON_INFO_PHOTO, imageBase64);
+							}
+							catch(IOException e)
+							{
+								e.printStackTrace();
+							}
 						}
 						
 						List<Finger> collectedFingerprints = new ArrayList<>();
+						Map<Integer, String> fingerprintImages = new HashMap<>();
 						List<Integer> missingFingerprints = new ArrayList<>();
 						
 						@SuppressWarnings("unchecked")
@@ -154,6 +176,7 @@ public class RegisterConvictedReportPresentWorkflow extends WorkflowBase<Void, V
 							
 							collectedFingerprints.add(new Finger(position, fingerData.getFingerWsqImage(),
 							                                    null));
+							fingerprintImages.put(position, fingerData.getFinger());
 						});
 						
 						ServiceResponse<Integer> serviceResponse =
@@ -193,10 +216,19 @@ public class RegisterConvictedReportPresentWorkflow extends WorkflowBase<Void, V
 									{
 										uiInputData.put(InquiryPaneFxController.KEY_FINGERPRINT_INQUIRY_HIT,
 										                Boolean.TRUE);
+										long criminalHitBioId = result.getCrimnalHitBioId();
+										PersonInfo personInfo = result.getPersonInfo();
+										
+										if(criminalHitBioId > 0) uiInputData.put(
+												PersonInfoPaneFxController.KEY_PERSON_INFO_GENERAL_FILE_NUMBER,
+												criminalHitBioId);
 										uiInputData.put(InquiryResultPaneFxController.KEY_INQUIRY_HIT_RESULT,
-										                result);
+										                personInfo);
 										uiInputData.put(FetchingFingerprintsPaneFxController.KEY_PERSON_FINGERPRINTS,
 										                collectedFingerprints);
+										uiInputData.put(
+												FetchingFingerprintsPaneFxController.KEY_PERSON_FINGERPRINTS_IMAGES,
+										        fingerprintImages);
 										formRenderer.get().renderForm(InquiryPaneFxController.class, uiInputData);
 									}
 									else // report the error

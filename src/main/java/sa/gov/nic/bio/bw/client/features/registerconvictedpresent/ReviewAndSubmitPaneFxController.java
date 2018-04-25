@@ -263,7 +263,9 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 			cbLibel.setStyle("-fx-opacity: 1");
 			cbCovenant.setStyle("-fx-opacity: 1");
 			
-			List<Finger> subjFingers = convictedReport.getSubjFingers();
+			@SuppressWarnings("unchecked")
+			Map<Integer, String> fingerprintImages = (Map<Integer, String>)
+								uiInputData.get(FetchingFingerprintsPaneFxController.KEY_PERSON_FINGERPRINTS_IMAGES);
 			Map<Integer, ImageView> imageViewMap = new HashMap<>();
 			Map<Integer, String> dialogTitleMap = new HashMap<>();
 			
@@ -308,18 +310,12 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 			                                        resources.getString("label.fingers.little") + " (" +
 				                                    resources.getString("label.leftHand") + ")");
 			
-			subjFingers.forEach(finger ->
+			fingerprintImages.forEach((position, fingerprintImage) ->
 			{
-				String image = finger.getImage();
-				int type = finger.getType();
-				ImageView imageView = imageViewMap.get(type);
-				String dialogTitle = dialogTitleMap.get(type);
+				ImageView imageView = imageViewMap.get(position);
+				String dialogTitle = dialogTitleMap.get(position);
 				
-				if(imageView == null) return; // to skip 13,14,15
-				
-				// TODO: convert wsq to png
-				
-				byte[] bytes = Base64.getDecoder().decode(image);
+				byte[] bytes = Base64.getDecoder().decode(fingerprintImage);
 				imageView.setImage(new Image(new ByteArrayInputStream(bytes)));
 				GuiUtils.attachImageDialog(Context.getCoreFxController(), imageView,
 				                           dialogTitle, resources.getString("label.contextMenu.showImage"),

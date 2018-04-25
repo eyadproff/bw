@@ -17,7 +17,6 @@ import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.wizard.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.NationalityBean;
-import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.FingerprintInquiryStatusResult;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.GenderType;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.Name;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.PersonIdInfo;
@@ -103,11 +102,11 @@ public class InquiryResultPaneFxController extends WizardStepFxControllerBase
 					GuiUtils.showNode(gridPane, true);
 					GuiUtils.showNode(btnConfirmPersonInformation, true);
 					
-					FingerprintInquiryStatusResult result = (FingerprintInquiryStatusResult)
-																			uiInputData.get(KEY_INQUIRY_HIT_RESULT);
+					Long criminalBioId = (Long) uiInputData.get(
+													PersonInfoPaneFxController.KEY_PERSON_INFO_GENERAL_FILE_NUMBER);
+					PersonInfo personInfo = (PersonInfo) uiInputData.get(KEY_INQUIRY_HIT_RESULT);
 					
-					long criminalBioId = result.getCrimnalHitBioId();
-					if(criminalBioId > 0)
+					if(criminalBioId != null)
 					{
 						lblGeneralFileNumber.setText(String.valueOf(criminalBioId));
 						personInfoMap.put(PersonInfoPaneFxController.KEY_PERSON_INFO_GENERAL_FILE_NUMBER,
@@ -119,7 +118,6 @@ public class InquiryResultPaneFxController extends WizardStepFxControllerBase
 						lblGeneralFileNumber.setTextFill(Color.RED);
 					}
 					
-					PersonInfo personInfo = result.getPersonInfo();
 					populatePersonInfo(personInfo, notAvailable);
 				}
 				else
@@ -230,7 +228,6 @@ public class InquiryResultPaneFxController extends WizardStepFxControllerBase
 			GuiUtils.attachImageDialog(Context.getCoreFxController(), ivPersonPhoto,
 			                           resources.getString("label.personPhoto"),
 			                           resources.getString("label.contextMenu.showImage"), blur);
-			personInfoMap.put(PersonInfoPaneFxController.KEY_PERSON_INFO_PHOTO, personPhotoBase64);
 			
 			int radius = Integer.parseInt(System.getProperty("jnlp.bio.bw.image.blur.radius"));
 			if(blur) ivPersonPhoto.setEffect(new GaussianBlur(radius));
@@ -346,7 +343,7 @@ public class InquiryResultPaneFxController extends WizardStepFxControllerBase
 		
 		PersonIdInfo identityInfo = personInfo.getIdentityInfo();
 		
-		String occupation = identityInfo.getOccupation();
+		String occupation = identityInfo != null ? identityInfo.getOccupation() : null;
 		if(occupation != null && !occupation.trim().isEmpty())
 		{
 			lblOccupation.setText(occupation);
@@ -422,7 +419,7 @@ public class InquiryResultPaneFxController extends WizardStepFxControllerBase
 			lblIdType.setTextFill(Color.RED);
 		}
 		
-		Date idIssueDate = identityInfo.getIdIssueDate();
+		Date idIssueDate = identityInfo != null ? identityInfo.getIdIssueDate() : null;
 		if(idIssueDate != null)
 		{
 			LocalDate localDate = idIssueDate.toInstant().atZone(AppConstants.SAUDI_ZONE).toLocalDate();
@@ -435,7 +432,7 @@ public class InquiryResultPaneFxController extends WizardStepFxControllerBase
 			lblIdIssuanceDate.setTextFill(Color.RED);
 		}
 		
-		Date idExpiryDate = identityInfo.getIdExpirDate();
+		Date idExpiryDate = identityInfo != null ? identityInfo.getIdExpirDate() : null;
 		if(idExpiryDate != null)
 		{
 			LocalDate localDate = idExpiryDate.toInstant().atZone(AppConstants.SAUDI_ZONE).toLocalDate();

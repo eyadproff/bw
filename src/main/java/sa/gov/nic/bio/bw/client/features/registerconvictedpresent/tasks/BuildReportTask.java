@@ -12,7 +12,6 @@ import sa.gov.nic.bio.bw.client.features.commons.webservice.CrimeType;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.NationalityBean;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.ConvictedReport;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.CrimeCode;
-import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.Finger;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.JudgementInfo;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.Name;
 import sa.gov.nic.bio.bw.client.login.webservice.UserInfo;
@@ -27,16 +26,6 @@ import java.util.Map;
 public class BuildReportTask extends Task<JasperPrint>
 {
 	private static final String PARAMETER_FACE_IMAGE = "FACE_IMAGE";
-	private static final String PARAMETER_FINGER_1 = "FINGER_1";
-	private static final String PARAMETER_FINGER_2 = "FINGER_2";
-	private static final String PARAMETER_FINGER_3 = "FINGER_3";
-	private static final String PARAMETER_FINGER_4 = "FINGER_4";
-	private static final String PARAMETER_FINGER_5 = "FINGER_5";
-	private static final String PARAMETER_FINGER_6 = "FINGER_6";
-	private static final String PARAMETER_FINGER_7 = "FINGER_7";
-	private static final String PARAMETER_FINGER_8 = "FINGER_8";
-	private static final String PARAMETER_FINGER_9 = "FINGER_9";
-	private static final String PARAMETER_FINGER_10 = "FINGER_10";
 	private static final String PARAMETER_REPORT_NUMBER = "REPORT_NUMBER";
 	private static final String PARAMETER_REF_NUMBER = "REF_NUMBER";
 	private static final String PARAMETER_REPORT_DATE = "REPORT_DATE";
@@ -86,12 +75,14 @@ public class BuildReportTask extends Task<JasperPrint>
 	private static final String IMAGE_PLACEHOLDER_FILE = "sa/gov/nic/bio/bw/client/core/images/avatar_placeholder.jpg";
 	
 	private ConvictedReport convictedReport;
+	private Map<Integer, String> fingerprintImages;
 	private Map<Integer, String> crimeEventTitles = new HashMap<>();
 	private Map<Integer, String> crimeClassTitles = new HashMap<>();
 	
-	public BuildReportTask(ConvictedReport convictedReport)
+	public BuildReportTask(ConvictedReport convictedReport, Map<Integer, String> fingerprintImages)
 	{
 		this.convictedReport = convictedReport;
+		this.fingerprintImages = fingerprintImages;
 	}
 	
 	@Override
@@ -116,18 +107,12 @@ public class BuildReportTask extends Task<JasperPrint>
 																   .getResourceAsStream(IMAGE_PLACEHOLDER_FILE));
 		}
 		
-		List<Finger> fingers = convictedReport.getSubjFingers();
+		fingerprintImages.forEach((position, fingerprintImage) ->
+		{
+			byte[] bytes = Base64.getDecoder().decode(fingerprintImage);
+			params.put("FINGER_" + position, new ByteArrayInputStream(bytes));
+		});
 		
-		//params.put(PARAMETER_FINGER_1, );
-		//params.put(PARAMETER_FINGER_2, );
-		//params.put(PARAMETER_FINGER_3, );
-		//params.put(PARAMETER_FINGER_4, );
-		//params.put(PARAMETER_FINGER_5, );
-		//params.put(PARAMETER_FINGER_6, );
-		//params.put(PARAMETER_FINGER_7, );
-		//params.put(PARAMETER_FINGER_8, );
-		//params.put(PARAMETER_FINGER_9, );
-		//params.put(PARAMETER_FINGER_10, );
 		params.put(PARAMETER_REPORT_NUMBER,
 	           AppUtils.replaceNumbersOnly(String.valueOf(convictedReport.getReportNumber()), Locales.SAUDI_AR_LOCALE));
 		params.put(PARAMETER_REF_NUMBER,

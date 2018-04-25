@@ -2,23 +2,20 @@ package sa.gov.nic.bio.bw.client.features.searchbyfaceimage;
 
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
-import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import sa.gov.nic.bio.bw.client.core.Context;
+import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.wizard.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.client.features.commons.FaceCapturingFxController;
 import sa.gov.nic.bio.bw.client.features.searchbyfaceimage.utils.SearchByFaceImageErrorCodes;
 import sa.gov.nic.bio.bw.client.features.searchbyfaceimage.workflow.SearchByFaceImageWorkflow;
 
-import javax.imageio.ImageIO;
-import java.io.ByteArrayOutputStream;
 import java.net.URL;
-import java.util.Base64;
 import java.util.Map;
 import java.util.ResourceBundle;
 
@@ -99,10 +96,7 @@ public class ConfirmImageFxController extends WizardStepFxControllerBase
 			{
 				try
 				{
-					ByteArrayOutputStream byteOutput = new ByteArrayOutputStream();
-					ImageIO.write(SwingFXUtils.fromFXImage(finalImage[0], null), "jpg", byteOutput);
-					byte[] bytes = byteOutput.toByteArray();
-					String imageBase64 = Base64.getEncoder().encodeToString(bytes);
+					String imageBase64 = AppUtils.imageToBase64(finalImage[0], "jpg");
 					uiInputData.put(SearchByFaceImageWorkflow.KEY_FINAL_IMAGE_BASE64, imageBase64);
 					uiInputData.put(SearchByFaceImageWorkflow.KEY_FINAL_IMAGE, finalImage[0]);
 				}

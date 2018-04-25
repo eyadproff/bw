@@ -2,13 +2,17 @@ package sa.gov.nic.bio.bw.client.core.utils;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import javafx.embed.swing.SwingFXUtils;
+import javafx.scene.image.Image;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import org.controlsfx.glyphfont.FontAwesome;
 import org.controlsfx.glyphfont.Glyph;
 import sa.gov.nic.bio.bw.client.core.webservice.NicHijriCalendarData;
 
+import javax.imageio.ImageIO;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
@@ -394,5 +398,13 @@ public final class AppUtils
 			}
 			else return namePart + (combined ? " - " + namePartTranslated : "");
 		}
+	}
+	
+	public static String imageToBase64(Image image, String imageExtension) throws IOException
+	{
+		ByteArrayOutputStream byteOutput = new ByteArrayOutputStream();
+		ImageIO.write(SwingFXUtils.fromFXImage(image, null), imageExtension, byteOutput);
+		byte[] bytes = byteOutput.toByteArray();
+		return Base64.getEncoder().encodeToString(bytes);
 	}
 }

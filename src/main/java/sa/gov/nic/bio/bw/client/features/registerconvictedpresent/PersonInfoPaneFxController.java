@@ -17,7 +17,6 @@ import sa.gov.nic.bio.bw.client.core.utils.GuiLanguage;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.wizard.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.NationalityBean;
-import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.FingerprintInquiryStatusResult;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.GenderType;
 
 import java.net.URL;
@@ -185,18 +184,9 @@ public class PersonInfoPaneFxController extends WizardStepFxControllerBase
 			if(familyName != null && !familyName.trim().isEmpty()) txtFamilyName.setText(familyName);
 			else if(focusedNode == null) focusedNode = txtFamilyName;
 			
-			FingerprintInquiryStatusResult result = (FingerprintInquiryStatusResult)
-												uiInputData.get(InquiryResultPaneFxController.KEY_INQUIRY_HIT_RESULT);
-			
-			long criminalBioId = result.getCrimnalHitBioId();
 			Long generalFileNumber = (Long) uiInputData.get(KEY_PERSON_INFO_GENERAL_FILE_NUMBER);
-			if(generalFileNumber != null && generalFileNumber > 0L)
-													txtGeneralFileNumber.setText(String.valueOf(generalFileNumber));
-			else if(criminalBioId > 0)
-			{
-				txtGeneralFileNumber.setText(String.valueOf(criminalBioId));
-				uiInputData.put(KEY_PERSON_INFO_GENERAL_FILE_NUMBER, criminalBioId);
-			}
+			
+			if(generalFileNumber != null) txtGeneralFileNumber.setText(String.valueOf(generalFileNumber));
 			else if(focusedNode == null) focusedNode = txtGeneralFileNumber;
 			
 			GenderType genderType = (GenderType) uiInputData.get(KEY_PERSON_INFO_GENDER);
