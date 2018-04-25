@@ -150,7 +150,6 @@ public class JudgmentDetailsPaneFxController extends WizardStepFxControllerBase
 																	.and(cboCrimeEvent3.valueProperty().isNull()
 															        .or(cboCrimeClass3.valueProperty().isNull()));
 		BooleanBinding txtJudgmentIssuerBinding = txtJudgmentIssuer.textProperty().isEmpty();
-		BooleanBinding txtPoliceFileNumberBinding = txtPoliceFileNumber.textProperty().isEmpty();
 		BooleanBinding txtJudgmentNumberBinding = txtJudgmentNumber.textProperty().isEmpty();
 		BooleanBinding dpArrestDateBinding = dpArrestDate.valueProperty().isNull();
 		BooleanBinding dpJudgmentDateBinding = dpJudgmentDate.valueProperty().isNull();
@@ -175,9 +174,8 @@ public class JudgmentDetailsPaneFxController extends WizardStepFxControllerBase
 		
 		btnNext.disableProperty().bind(cboCrimeClassification1Binding.or(cboCrimeClassification2Binding)
 				                 .or(cboCrimeClassification3Binding).or(txtJudgmentIssuerBinding)
-	                             .or(txtPoliceFileNumberBinding).or(txtJudgmentNumberBinding)
-	                             .or(dpArrestDateBinding).or(dpJudgmentDateBinding).or(cboCrimeDateBinding1)
-				                 .or(cboCrimeDateBinding2).or(cboCrimeDateBinding3));
+	                             .or(txtJudgmentNumberBinding).or(dpArrestDateBinding).or(dpJudgmentDateBinding)
+				                 .or(cboCrimeDateBinding1).or(cboCrimeDateBinding2).or(cboCrimeDateBinding3));
 	}
 	
 	@Override

@@ -1,6 +1,8 @@
 package sa.gov.nic.bio.bw.client.features.registerconvictedpresent;
 
 import javafx.beans.binding.BooleanBinding;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -126,21 +128,12 @@ public class PersonInfoPaneFxController extends WizardStepFxControllerBase
 		BooleanBinding txtGrandfatherNameBinding = txtGrandfatherName.textProperty().isEmpty();
 		BooleanBinding txtFamilyNameBinding = txtFamilyName.textProperty().isEmpty();
 		BooleanBinding txtGeneralFileNumberBinding = txtGeneralFileNumber.textProperty().isEmpty();
-		BooleanBinding txtOccupationBinding = txtOccupation.textProperty().isEmpty();
-		BooleanBinding txtBirthPlaceBinding = txtBirthPlace.textProperty().isEmpty();
-		BooleanBinding txtIdNumberBinding = txtIdNumber.textProperty().isEmpty();
-		BooleanBinding txtIdTypeBinding = txtIdType.textProperty().isEmpty();
 		BooleanBinding cboGenderBinding = cboGender.valueProperty().isNull();
 		BooleanBinding cboNationalityBinding = cboNationality.valueProperty().isNull();
-		BooleanBinding dpBirthDateBinding = dpBirthDate.valueProperty().isNull();
-		BooleanBinding dpIdIssuanceDateBinding = dpIdIssuanceDate.valueProperty().isNull();
-		BooleanBinding dpIdExpiryDateBinding = dpIdExpiryDate.valueProperty().isNull();
 		
 		btnNext.disableProperty().bind(txtFirstNameBinding.or(txtFatherNameBinding).or(txtGrandfatherNameBinding)
-	                             .or(txtFamilyNameBinding).or(txtGeneralFileNumberBinding).or(txtOccupationBinding)
-	                             .or(txtBirthPlaceBinding).or(txtIdNumberBinding).or(txtIdTypeBinding)
-	                             .or(cboGenderBinding).or(cboNationalityBinding).or(dpBirthDateBinding)
-	                             .or(dpIdIssuanceDateBinding).or(dpIdExpiryDateBinding));
+	                             .or(txtFamilyNameBinding).or(txtGeneralFileNumberBinding).or(cboGenderBinding)
+                                 .or(cboNationalityBinding));
 	}
 	
 	@Override
@@ -203,7 +196,21 @@ public class PersonInfoPaneFxController extends WizardStepFxControllerBase
 						                              .filter(item -> item.getObject() == nationalityBean)
 						                              .findFirst()
 						                              .ifPresent(cboNationality::setValue);
-			else if(focusedNode == null) focusedNode = cboNationality;
+			else
+			{
+				String text = resources.getString("combobox.unknownNationality");
+				NationalityBean unknownNationality = new NationalityBean(0, null,
+				                                                         text, text);
+				
+				HideableItem<NationalityBean> hideableItem = new HideableItem<>(unknownNationality);
+				hideableItem.setText(text);
+				
+				ObservableList<HideableItem<NationalityBean>> items = FXCollections.observableArrayList();
+				items.add(hideableItem);
+				items.addAll(cboNationality.getItems());
+				cboNationality.setItems(items);
+				cboNationality.setValue(hideableItem);
+			}
 			
 			String occupation = (String) uiInputData.get(KEY_PERSON_INFO_OCCUPATION);
 			if(occupation != null && !occupation.trim().isEmpty()) txtOccupation.setText(occupation);

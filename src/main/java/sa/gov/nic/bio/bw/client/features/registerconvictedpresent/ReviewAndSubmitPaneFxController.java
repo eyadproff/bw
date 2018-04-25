@@ -2,7 +2,6 @@ package sa.gov.nic.bio.bw.client.features.registerconvictedpresent;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.geometry.NodeOrientation;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
@@ -15,6 +14,7 @@ import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.biokit.FingerPosition;
 import sa.gov.nic.bio.bw.client.core.utils.AppConstants;
 import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
+import sa.gov.nic.bio.bw.client.core.utils.GuiLanguage;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.wizard.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.client.core.workflow.Workflow;
@@ -189,10 +189,11 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 			
 			if(nationalityBean != null)
 			{
-				boolean rtl = Context.getGuiLanguage().getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT;
-				lblNationality.setText(rtl ? nationalityBean.getDescriptionAR() :
-						                     nationalityBean.getDescriptionEN());
+				boolean arabic = Context.getGuiLanguage() == GuiLanguage.ARABIC;
+				lblNationality.setText(arabic ? nationalityBean.getDescriptionAR() :
+						                        nationalityBean.getDescriptionEN());
 			}
+			else lblNationality.setText(resources.getString("combobox.unknownNationality"));
 			
 			lblOccupation.setText(convictedReport.getSubjOccupation());
 			lblBirthPlace.setText(convictedReport.getSubjBirthPlace());

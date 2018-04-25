@@ -2,7 +2,6 @@ package sa.gov.nic.bio.bw.client.features.registerconvictedpresent;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.geometry.NodeOrientation;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.effect.GaussianBlur;
@@ -14,6 +13,7 @@ import javafx.scene.paint.Color;
 import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.utils.AppConstants;
 import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
+import sa.gov.nic.bio.bw.client.core.utils.GuiLanguage;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.wizard.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.NationalityBean;
@@ -330,8 +330,8 @@ public class InquiryResultPaneFxController extends WizardStepFxControllerBase
 		
 		if(nationalityBean != null)
 		{
-			boolean rtl = Context.getGuiLanguage().getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT;
-			lblNationality.setText(rtl ? nationalityBean.getDescriptionAR() :
+			boolean arabic = Context.getGuiLanguage() == GuiLanguage.ARABIC;
+			lblNationality.setText(arabic ? nationalityBean.getDescriptionAR() :
 					                       nationalityBean.getDescriptionEN());
 			personInfoMap.put(PersonInfoPaneFxController.KEY_PERSON_INFO_NATIONALITY, nationalityBean);
 		}
@@ -380,12 +380,11 @@ public class InquiryResultPaneFxController extends WizardStepFxControllerBase
 			lblBirthDate.setTextFill(Color.RED);
 		}
 		
-		long samisId = personInfo.getSamisId();
-		
-		if(samisId > 0)
+		String idNumber = identityInfo != null ? identityInfo.getIdNumber() : null;
+		if(idNumber != null && !idNumber.trim().isEmpty())
 		{
-			lblIdNumber.setText(AppUtils.replaceNumbersOnly(String.valueOf(samisId), Locale.getDefault()));
-			personInfoMap.put(PersonInfoPaneFxController.KEY_PERSON_INFO_ID_NUMBER, samisId);
+			lblIdNumber.setText(AppUtils.replaceNumbersOnly(idNumber, Locale.getDefault()));
+			personInfoMap.put(PersonInfoPaneFxController.KEY_PERSON_INFO_ID_NUMBER, idNumber);
 		}
 		else
 		{
@@ -407,11 +406,11 @@ public class InquiryResultPaneFxController extends WizardStepFxControllerBase
 		//	}
 		//}
 		
-		String personType = personInfo.getPersonType();
-		if(personType != null && !personType.trim().isEmpty())
+		String idType = identityInfo != null ? identityInfo.getIdType() : null;
+		if(idType != null && !idType.trim().isEmpty())
 		{
-			lblIdType.setText(personType);
-			personInfoMap.put(PersonInfoPaneFxController.KEY_PERSON_INFO_ID_TYPE, personType);
+			lblIdType.setText(idType);
+			personInfoMap.put(PersonInfoPaneFxController.KEY_PERSON_INFO_ID_TYPE, idType);
 		}
 		else
 		{

@@ -1,5 +1,6 @@
 package sa.gov.nic.bio.bw.client.features.registerconvictedpresent;
 
+import javafx.beans.binding.BooleanBinding;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -171,6 +172,33 @@ public class PunishmentDetailsPaneFxController extends WizardStepFxControllerBas
 		spnDeportationYears.focusedProperty().addListener(new FocusChangeListener(spnDeportationYears));
 		spnDeportationMonths.focusedProperty().addListener(new FocusChangeListener(spnDeportationMonths));
 		spnDeportationDays.focusedProperty().addListener(new FocusChangeListener(spnDeportationDays));
+		
+		BooleanBinding spnLashesBinding = spnLashes.valueProperty().isEqualTo(0);
+		BooleanBinding spnFineBinding = spnFine.valueProperty().isEqualTo(0);
+		BooleanBinding spnJailYearsBinding = spnJailYears.valueProperty().isEqualTo(0);
+		BooleanBinding spnJailMonthsBinding = spnJailMonths.valueProperty().isEqualTo(0);
+		BooleanBinding spnJailDaysBinding = spnJailDays.valueProperty().isEqualTo(0);
+		BooleanBinding spnTravelBanYearsBinding = spnTravelBanYears.valueProperty().isEqualTo(0);
+		BooleanBinding spnTravelBanMonthsBinding = spnTravelBanMonths.valueProperty().isEqualTo(0);
+		BooleanBinding spnTravelBanDaysBinding = spnTravelBanDays.valueProperty().isEqualTo(0);
+		BooleanBinding spnExilingYearsBinding = spnExilingYears.valueProperty().isEqualTo(0);
+		BooleanBinding spnExilingMonthsBinding = spnExilingMonths.valueProperty().isEqualTo(0);
+		BooleanBinding spnExilingDaysBinding = spnExilingDays.valueProperty().isEqualTo(0);
+		BooleanBinding spnDeportationYearsBinding = spnDeportationYears.valueProperty().isEqualTo(0);
+		BooleanBinding spnDeportationMonthsBinding = spnDeportationMonths.valueProperty().isEqualTo(0);
+		BooleanBinding spnDeportationDaysBinding = spnDeportationDays.valueProperty().isEqualTo(0);
+		BooleanBinding cbFinalDeportationBinding = cbFinalDeportation.selectedProperty().not();
+		BooleanBinding cbLibelBinding = cbLibel.selectedProperty().not();
+		BooleanBinding cbCovenantBinding = cbCovenant.selectedProperty().not();
+		BooleanBinding txtOtherBinding = txtOther.textProperty().isEmpty();
+		
+		btnNext.disableProperty().bind(spnLashesBinding.and(spnFineBinding)
+                           .and(spnJailYearsBinding).and(spnJailMonthsBinding).and(spnJailDaysBinding)
+                           .and(spnTravelBanYearsBinding).and(spnTravelBanMonthsBinding).and(spnTravelBanDaysBinding)
+                           .and(spnExilingYearsBinding).and(spnExilingMonthsBinding).and(spnExilingDaysBinding)
+                           .and(spnDeportationYearsBinding).and(spnDeportationMonthsBinding)
+                           .and(spnDeportationDaysBinding).and(cbFinalDeportationBinding).and(cbLibelBinding)
+                           .and(cbCovenantBinding).and(txtOtherBinding));
 	}
 	
 	@Override
