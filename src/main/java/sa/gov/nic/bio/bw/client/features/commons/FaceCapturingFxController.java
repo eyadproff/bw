@@ -200,11 +200,8 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 			}
 			else if(acceptBadQualityFace)
 			{
-				Runnable disabling = () -> btnNext.setDisable(ivCroppedImage.getImage() == null ||
-                                            (ivCroppedImage.getImage() != null && !ivSuccessIcao.isVisible() &&
-		                                     successfulCroppedCapturingCount < acceptedBadQualityFaceMinRetires));
-				disabling.run();
-				ivCroppedImage.imageProperty().addListener((observable, oldValue, newValue) -> disabling.run());
+				btnNext.setDisable(!ivSuccessIcao.isVisible() &&
+				                   successfulCroppedCapturingCount < acceptedBadQualityFaceMinRetires);
 			}
 			else // accept good quality face only
 			{
@@ -570,6 +567,7 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 	private void onCaptureFaceButtonClicked(ActionEvent actionEvent)
 	{
 		LOGGER.info("capturing the face...");
+		btnNext.setDisable(true);
 		
 		GuiUtils.showNode(btnCaptureFace, false);
 		GuiUtils.showNode(btnStopCameraLivePreview, false);
@@ -687,8 +685,9 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 				
 				    String icaoCode = result.getIcaoErrorMessage();
 				    GuiUtils.showNode(lblIcaoMessage, true);
+				    boolean icaoSuccess = CaptureFaceResponse.IcaoCodes.SUCCESS.equals(icaoCode);
 				    
-				    if(CaptureFaceResponse.IcaoCodes.SUCCESS.equals(icaoCode))
+				    if(icaoSuccess)
 				    {
 				    	GuiUtils.showNode(ivSuccessIcao, true);
 				    	lblIcaoMessage.setText(resources.getString("label.icao.success"));
@@ -775,6 +774,12 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 							    break;
 						    }
 					    }
+				    }
+				
+				    if(acceptBadQualityFace)
+				    {
+					    btnNext.setDisable(ivErrorIcao.isVisible() || (!icaoSuccess &&
+					                       successfulCroppedCapturingCount < acceptedBadQualityFaceMinRetires));
 				    }
 			    }
 			    else

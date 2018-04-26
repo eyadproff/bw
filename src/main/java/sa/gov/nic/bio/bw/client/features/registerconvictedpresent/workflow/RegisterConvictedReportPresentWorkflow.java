@@ -162,6 +162,7 @@ public class RegisterConvictedReportPresentWorkflow extends WorkflowBase<Void, V
 						}
 						
 						List<Finger> collectedFingerprints = new ArrayList<>();
+						List<Finger> collectedSlapFingerprints = new ArrayList<>();
 						Map<Integer, Finger> collectedFingerprintsMap = new HashMap<>();
 						Map<Integer, String> fingerprintImages = new HashMap<>();
 						List<Integer> missingFingerprints = new ArrayList<>();
@@ -213,8 +214,10 @@ public class RegisterConvictedReportPresentWorkflow extends WorkflowBase<Void, V
 							                                                         bottomRight);
 							
 							fingerprintImages.put(position, fingerData.getFinger());
-							int slapPosition = slapPositions.get(position);
+							collectedFingerprints.add(new Finger(position, fingerData.getFingerWsqImage(),
+							                                    null));
 							
+							int slapPosition = slapPositions.get(position);
 							if(collectedFingerprintsMap.containsKey(slapPosition))
 							{
 								Finger finger = collectedFingerprintsMap.get(slapPosition);
@@ -226,7 +229,7 @@ public class RegisterConvictedReportPresentWorkflow extends WorkflowBase<Void, V
 								fingerCoordinates.add(fingerCoordinate);
 								
 								Finger finger = new Finger(slapPosition, fingerprint.getSlapWsq(), fingerCoordinates);
-								collectedFingerprints.add(finger);
+								collectedSlapFingerprints.add(finger);
 								collectedFingerprintsMap.put(slapPosition, finger);
 							}
 						});
@@ -277,7 +280,10 @@ public class RegisterConvictedReportPresentWorkflow extends WorkflowBase<Void, V
 										uiInputData.put(InquiryResultPaneFxController.KEY_INQUIRY_HIT_RESULT,
 										                personInfo);
 										uiInputData.put(FetchingFingerprintsPaneFxController.KEY_PERSON_FINGERPRINTS,
-										                collectedFingerprints);
+										                collectedSlapFingerprints);
+										uiInputData.put(
+												FetchingFingerprintsPaneFxController.KEY_PERSON_MISSING_FINGERPRINTS,
+										        missingFingerprints);
 										uiInputData.put(
 												FetchingFingerprintsPaneFxController.KEY_PERSON_FINGERPRINTS_IMAGES,
 										        fingerprintImages);

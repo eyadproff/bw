@@ -483,10 +483,10 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 		
 		@SuppressWarnings("unchecked")
 		List<Finger> subjFingers = (List<Finger>)
-										uiInputData.get(FetchingFingerprintsPaneFxController.KEY_PERSON_FINGERPRINTS);
-		List<Integer> subjMissingFingers = new ArrayList<>();
-		for(int i = 1; i <= 10; i++) subjMissingFingers.add(i);
-		subjFingers.forEach(finger -> subjMissingFingers.remove((Integer) finger.getType()));
+								uiInputData.get(FetchingFingerprintsPaneFxController.KEY_PERSON_FINGERPRINTS);
+		@SuppressWarnings("unchecked")
+		List<Integer> subjMissingFingers = (List<Integer>)
+								uiInputData.get(FetchingFingerprintsPaneFxController.KEY_PERSON_MISSING_FINGERPRINTS);
 		
 		String subjFace = (String) uiInputData.get(PersonInfoPaneFxController.KEY_PERSON_INFO_PHOTO);
 		
