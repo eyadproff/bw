@@ -1,5 +1,6 @@
 package sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice;
 
+import java.util.List;
 import java.util.Objects;
 
 public class Finger
@@ -7,13 +8,13 @@ public class Finger
 	private int type;
 	private String image;
 	private int presence;
-	private FingerCoordinate fingerCoordinate;
+	private List<FingerCoordinate> fingerCoordinates;
 	
-	public Finger(int type, String image, FingerCoordinate fingerCoordinate)
+	public Finger(int type, String image, List<FingerCoordinate> fingerCoordinates)
 	{
 		this.type = type;
 		this.image = image;
-		this.fingerCoordinate = fingerCoordinate;
+		this.fingerCoordinates = fingerCoordinates;
 	}
 	
 	public int getType(){return type;}
@@ -25,8 +26,9 @@ public class Finger
 	public int getPresence(){return presence;}
 	public void setPresence(int presence){this.presence = presence;}
 	
-	public FingerCoordinate getFingerCoordinate(){return fingerCoordinate;}
-	public void setFingerCoordinate(FingerCoordinate fingerCoordinate){this.fingerCoordinate = fingerCoordinate;}
+	public List<FingerCoordinate> getFingerCoordinates(){return fingerCoordinates;}
+	public void setFingerCoordinates(List<FingerCoordinate> fingerCoordinates)
+	{this.fingerCoordinates = fingerCoordinates;}
 	
 	@Override
 	public boolean equals(Object o)
@@ -34,19 +36,20 @@ public class Finger
 		if(this == o) return true;
 		if(o == null || getClass() != o.getClass()) return false;
 		Finger finger = (Finger) o;
-		return type == finger.type && Objects.equals(image, finger.image) &&
-			   Objects.equals(fingerCoordinate, finger.fingerCoordinate);
+		return type == finger.type && presence == finger.presence && Objects.equals(image, finger.image) &&
+			   Objects.equals(fingerCoordinates, finger.fingerCoordinates);
 	}
 	
 	@Override
 	public int hashCode()
 	{
-		return Objects.hash(type, image, fingerCoordinate);
+		return Objects.hash(type, image, presence, fingerCoordinates);
 	}
 	
 	@Override
 	public String toString()
 	{
-		return "Finger{" + "type=" + type + ", image='" + image + '\'' + ", fingerCoordinate=" + fingerCoordinate + '}';
+		return "Finger{" + "type=" + type + ", image='" + image + '\'' + ", presence=" + presence +
+			   ", fingerCoordinates=" + fingerCoordinates + '}';
 	}
 }

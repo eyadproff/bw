@@ -170,7 +170,7 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 	private Map<Integer, Fingerprint> capturedFingerprints = new HashMap<>();
 	private Map<Integer, FingerprintQualityThreshold> fingerprintQualityThresholdMap;
 	private Map<Integer, FingerprintUiComponents> fingerprintUiComponentsMap = new HashMap<>();
-	private List<List<DMFingerData>> currentSlapAttempts = new ArrayList<>();
+	private List<List<Fingerprint>> currentSlapAttempts = new ArrayList<>();
 	private CaptureFingerprintResponse wrongSlapCapturedFingerprints;
 	private boolean skipRightSlap = false;
 	private boolean skipLeftSlap = false;
@@ -674,8 +674,8 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 			if(fingerprint == null)
 			{
 				if(currentSlapPosition > FingerPosition.RIGHT_SLAP.getPosition())
-								capturedFingerprints.put(i, new Fingerprint(null,
-								                                            false,
+								capturedFingerprints.put(i, new Fingerprint(null, null,
+								                                            null, false,
 								                                            false,
 								                                            false,
 								                                            false, false,
@@ -701,8 +701,8 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 			if(fingerprint == null)
 			{
 				if(currentSlapPosition > FingerPosition.LEFT_SLAP.getPosition())
-								capturedFingerprints.put(i, new Fingerprint(null,
-								                                            false,
+								capturedFingerprints.put(i, new Fingerprint(null, null,
+								                                            null, false,
 								                                            false,
 								                                            false,
 								                                            false, false,
@@ -728,7 +728,8 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 			if(fingerprint == null)
 			{
 				if(currentSlapPosition > FingerPosition.TWO_THUMBS.getPosition())
-					capturedFingerprints.put(i, new Fingerprint(null, false,
+					capturedFingerprints.put(i, new Fingerprint(null, null, null,
+					                                            false,
 					                                            false,
 					                                            false,
 					                                            false, false, true));
@@ -921,7 +922,7 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 				                                   resources.getString("label.contextMenu.slapFingerprints"),
 				                                   resources.getString("label.contextMenu.showImage"), false);
 			        }
-			        else processSlapFingerprints(result);
+			        else processCaptureFingerprintResponse(result);
 		        }
 		        // we skip FAILED_TO_CAPTURE_FINAL_IMAGE because it happens only when we send "stop" command
 		        else if(result.getReturnCode() != CaptureFingerprintResponse.FailureCodes.FAILED_TO_CAPTURE_FINAL_IMAGE)
@@ -1004,9 +1005,12 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 		Context.getExecutorService().submit(capturingFingerprintTask);
 	}
 	
-	private void processSlapFingerprints(CaptureFingerprintResponse captureFingerprintResponse)
+	private void processCaptureFingerprintResponse(CaptureFingerprintResponse captureFingerprintResponse)
 	{
 		tpFingerprintDeviceLivePreview.setValid(true);
+		
+		String slapWsq = captureFingerprintResponse.getCapturedWsq();
+		String slapImage = captureFingerprintResponse.getCapturedImage();
 		
 		List<DMFingerData> fingerData = captureFingerprintResponse.getFingerData();
 		Task<ServiceResponse<DuplicatedFingerprintsResponse>> findDuplicatesTask =
@@ -1062,9 +1066,13 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 			
 			ServiceResponse<DuplicatedFingerprintsResponse> serviceResponse = findDuplicatesTask.getValue();
 			
+			List<Fingerprint> fingerprints = fingerData.stream()
+											   .map(dmFingerData -> new Fingerprint(dmFingerData, slapWsq, slapImage))
+											   .collect(Collectors.toList());
+			
 			if(serviceResponse == null) // no duplicates
 			{
-				showSegmentedFingerprints(fingerData, null);
+				processSlapFingerprints(fingerprints, null);
 			}
 			else if(serviceResponse.isSuccess())
 			{
@@ -1074,7 +1082,7 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 				{
 					// it could be empty
 				    Map<Integer, Boolean> duplicatedFingers = result.getDuplicatedFingers();
-				    showSegmentedFingerprints(fingerData, duplicatedFingers);
+				    processSlapFingerprints(fingerprints, duplicatedFingers);
 				}
 				else
 				{
@@ -1280,7 +1288,7 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 				                           resources.getString("label.contextMenu.slapFingerprints"),
 				                           resources.getString("label.contextMenu.showImage"), false);
 				GuiUtils.showNode(btnAcceptCurrentSlap, false);
-				processSlapFingerprints(wrongSlapCapturedFingerprints);
+				processCaptureFingerprintResponse(wrongSlapCapturedFingerprints);
 			}
 		}
 		else
@@ -1295,25 +1303,27 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 	{
 		GuiUtils.showNode(btnAcceptBestAttemptFingerprints, false);
 		
-		List<DMFingerData> bestAttemptFingerData = findBestAttemptFingerprints();
+		List<Fingerprint> bestAttemptFingerprints = findBestAttemptFingerprints();
 		currentSlapAttempts.clear();
 		
 		List<Integer> nonSkippedFingerprintPositions = new ArrayList<>();
-		bestAttemptFingerData.forEach(fp -> nonSkippedFingerprintPositions.add(fp.getPosition()));
+		bestAttemptFingerprints.forEach(fp -> nonSkippedFingerprintPositions.add(fp.getDmFingerData().getPosition()));
 		
-		showFingerprints(bestAttemptFingerData, null, null, null,
-		                 true);
+		showSlapFingerprints(bestAttemptFingerprints, null, null, null,
+		                    true);
 		
 		acceptFingerprintsAndGoNext();
 	}
 	
-	private List<DMFingerData> findBestAttemptFingerprints()
+	private List<Fingerprint> findBestAttemptFingerprints()
 	{
 		int lastFingerprintsCount = currentSlapAttempts.get(currentSlapAttempts.size() - 1).size();
 		currentSlapAttempts.removeIf(fingerprints -> fingerprints.size() < lastFingerprintsCount);
 		
-		Predicate<DMFingerData> acceptanceFilter = dmFingerData ->
+		Predicate<Fingerprint> acceptanceFilter = fingerprint ->
 		{
+			DMFingerData dmFingerData = fingerprint.getDmFingerData();
+			
 			FingerprintQualityThreshold qualityThreshold = fingerprintQualityThresholdMap.get(
 					dmFingerData.getPosition());
 			boolean acceptableFingerprintNfiq =
@@ -1339,26 +1349,26 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 			if(compare != 0) return compare;
 			else // if both have same amount of acceptable fingerprints
 			{
-				sum1 = o1.stream().mapToInt(DMFingerData::getPosition).sum();
-				sum2 = o2.stream().mapToInt(DMFingerData::getPosition).sum();
+				sum1 = o1.stream().mapToInt(fp -> fp.getDmFingerData().getPosition()).sum();
+				sum2 = o2.stream().mapToInt(fp -> fp.getDmFingerData().getPosition()).sum();
 				
 				compare = -Integer.compare(sum1, sum2);
 				if(compare != 0) return compare;
 				else // if both have same amount of acceptable fingerprints and they are the same fingerprints
 				{
-					Comparator<DMFingerData> prioritizingComparator = (fp1, fp2) ->
-							-Integer.compare(fp1.getPosition(), fp2.getPosition());
-					List<DMFingerData> list1 = o1.stream().filter(acceptanceFilter)
+					Comparator<Fingerprint> prioritizingComparator = (fp1, fp2) ->
+							- Integer.compare(fp1.getDmFingerData().getPosition(), fp2.getDmFingerData().getPosition());
+					List<Fingerprint> list1 = o1.stream().filter(acceptanceFilter)
 							.sorted(prioritizingComparator)
 							.collect(Collectors.toList());
-					List<DMFingerData> list2 = o1.stream().filter(acceptanceFilter)
+					List<Fingerprint> list2 = o1.stream().filter(acceptanceFilter)
 							.sorted(prioritizingComparator)
 							.collect(Collectors.toList());
 					
 					for(int i = 0; i < list1.size(); i++)
 					{
-						DMFingerData fp1 = list1.get(i);
-						DMFingerData fp2 = list2.get(i);
+						DMFingerData fp1 = list1.get(i).getDmFingerData();
+						DMFingerData fp2 = list2.get(i).getDmFingerData();
 						compare = -Integer.compare(fp1.getNfiqQuality(), fp2.getNfiqQuality());
 						if(compare != 0) return compare;
 						else // both have the same NFIQ
@@ -1502,11 +1512,12 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 		}
 	}
 	
-	private void showSegmentedFingerprints(List<DMFingerData> fingerData, Map<Integer, Boolean> duplicatedFingers)
+	private void processSlapFingerprints(List<Fingerprint> fingerprints, Map<Integer, Boolean> duplicatedFingers)
 	{
 		boolean[] allAcceptableQuality = {true};
 		boolean[] noDuplicates = {true};
-		showFingerprints(fingerData, duplicatedFingers, allAcceptableQuality, noDuplicates, false);
+		showSlapFingerprints(fingerprints, duplicatedFingers, allAcceptableQuality, noDuplicates,
+		                    false);
 		GuiUtils.showNode(btnStartOver, true);
 		
 		if(allAcceptableQuality[0])
@@ -1553,7 +1564,7 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 			// in case we have no duplicates and we can accept bad quality fingerprints, we will save this attempt
 			if(noDuplicates[0] && acceptBadQualityFingerprint)
 			{
-				currentSlapAttempts.add(fingerData);
+				currentSlapAttempts.add(fingerprints);
 				
 				GuiUtils.showNode(btnAcceptBestAttemptFingerprints,
 			                     currentSlapAttempts.size() >= acceptedBadQualityFingerprintMinRetires);
@@ -1563,11 +1574,14 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 		activateFingerIndicatorsForNextCapturing(currentSlapPosition);
 	}
 	
-	private void showFingerprints(List<DMFingerData> fingerData, Map<Integer, Boolean> duplicatedFingers,
-	                              boolean[] allAcceptableQuality, boolean[] noDuplicates, boolean forceAcceptedQuality)
+	private void showSlapFingerprints(List<Fingerprint> fingerprints, Map<Integer, Boolean> duplicatedFingers,
+	                                  boolean[] allAcceptableQuality, boolean[] noDuplicates,
+	                                  boolean forceAcceptedQuality)
 	{
-		fingerData.forEach(dmFingerData ->
+		fingerprints.forEach(fingerprint ->
 		{
+			DMFingerData dmFingerData = fingerprint.getDmFingerData();
+			
 			FingerprintQualityThreshold qualityThreshold = fingerprintQualityThresholdMap.get(
 																						dmFingerData.getPosition());
 			boolean acceptableFingerprintNfiq = qualityThreshold.getMaximumAcceptableNFIQ() >=
@@ -1602,9 +1616,13 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 			if(noDuplicates != null) noDuplicates[0] = noDuplicates[0] && !duplicated;
 			if(forceAcceptedQuality) acceptableQuality = true;
 			
-			Fingerprint fingerprint = new Fingerprint(dmFingerData, acceptableFingerprintNfiq,
-											acceptableFingerprintMinutiaeCount, acceptableFingerprintImageIntensity,
-								            acceptableQuality, duplicated, false);
+			fingerprint.setAcceptableFingerprintNfiq(acceptableFingerprintNfiq);
+			fingerprint.setAcceptableFingerprintMinutiaeCount(acceptableFingerprintMinutiaeCount);
+			fingerprint.setAcceptableFingerprintImageIntensity(acceptableFingerprintImageIntensity);
+			fingerprint.setAcceptableQuality(acceptableQuality);
+			fingerprint.setDuplicated(duplicated);
+			fingerprint.setSkipped(false);
+			
 			capturedFingerprints.put(dmFingerData.getPosition(), fingerprint);
 			showFingerprint(fingerprint, components.getImageView(), components.getTitledPane(),
 	                        components.getHandLabel(), components.getFingerLabel());

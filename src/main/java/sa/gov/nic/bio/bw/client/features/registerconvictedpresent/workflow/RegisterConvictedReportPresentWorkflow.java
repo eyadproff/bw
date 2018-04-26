@@ -25,13 +25,16 @@ import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.ReviewAndSubmi
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.ShowReportPaneFxController;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.ConvictedReport;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.Finger;
+import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.FingerCoordinate;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.FingerprintInquiryStatusResult;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.PersonInfo;
 import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
 
+import java.awt.Point;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -159,6 +162,7 @@ public class RegisterConvictedReportPresentWorkflow extends WorkflowBase<Void, V
 						}
 						
 						List<Finger> collectedFingerprints = new ArrayList<>();
+						Map<Integer, Finger> collectedFingerprintsMap = new HashMap<>();
 						Map<Integer, String> fingerprintImages = new HashMap<>();
 						List<Integer> missingFingerprints = new ArrayList<>();
 						
@@ -174,9 +178,34 @@ public class RegisterConvictedReportPresentWorkflow extends WorkflowBase<Void, V
 								return;
 							}
 							
-							collectedFingerprints.add(new Finger(position, fingerData.getFingerWsqImage(),
-							                                    null));
+							String roundingBox = fingerData.getRoundingBox();
+							roundingBox = roundingBox.substring("Rect{".length() + 1,
+							                                    roundingBox.length() - 2);
+							String[] parts = roundingBox.split("[(,\\]\\[\\s]+");
+							System.out.println("parts = " + Arrays.toString(parts));
+							
+							Point topLeft = new Point(Integer.parseInt(parts[0]), Integer.parseInt(parts[1]));
+							Point topRight = new Point(Integer.parseInt(parts[2]), Integer.parseInt(parts[3]));
+							Point bottomLeft = new Point(Integer.parseInt(parts[4]), Integer.parseInt(parts[5]));
+							Point bottomRight = new Point(Integer.parseInt(parts[6]), Integer.parseInt(parts[3]));
+							FingerCoordinate fingerCoordinate = new FingerCoordinate(topLeft, topRight, bottomLeft,
+							                                                         bottomRight);
+							
 							fingerprintImages.put(position, fingerData.getFinger());
+							if(collectedFingerprintsMap.containsKey(position))
+							{
+								Finger finger = collectedFingerprintsMap.get(position);
+								finger.getFingerCoordinates().add(fingerCoordinate);
+							}
+							else
+							{
+								List<FingerCoordinate> fingerCoordinates = new ArrayList<>();
+								fingerCoordinates.add(fingerCoordinate);
+								
+								Finger finger = new Finger(position, fingerprint.getSlapWsq(), fingerCoordinates);
+								collectedFingerprints.add(finger);
+								collectedFingerprintsMap.put(position, finger);
+							}
 						});
 						
 						ServiceResponse<Integer> serviceResponse =

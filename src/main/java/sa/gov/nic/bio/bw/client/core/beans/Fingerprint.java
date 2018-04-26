@@ -8,6 +8,8 @@ import java.util.Objects;
 public class Fingerprint implements Serializable
 {
 	private DMFingerData dmFingerData;
+	private String slapWsq;
+	private String slapImage;
 	private boolean acceptableFingerprintNfiq;
 	private boolean acceptableFingerprintMinutiaeCount;
 	private boolean acceptableFingerprintImageIntensity;
@@ -17,11 +19,20 @@ public class Fingerprint implements Serializable
 	
 	public Fingerprint(){}
 	
-	public Fingerprint(DMFingerData dmFingerData, boolean acceptableFingerprintNfiq,
+	public Fingerprint(DMFingerData dmFingerData, String slapWsq, String slapImage)
+	{
+		this.dmFingerData = dmFingerData;
+		this.slapWsq = slapWsq;
+		this.slapImage = slapImage;
+	}
+	
+	public Fingerprint(DMFingerData dmFingerData, String slapWsq, String slapImage, boolean acceptableFingerprintNfiq,
 	                   boolean acceptableFingerprintMinutiaeCount, boolean acceptableFingerprintImageIntensity,
 	                   boolean acceptableQuality, boolean duplicated, boolean skipped)
 	{
 		this.dmFingerData = dmFingerData;
+		this.slapWsq = slapWsq;
+		this.slapImage = slapImage;
 		this.acceptableFingerprintNfiq = acceptableFingerprintNfiq;
 		this.acceptableFingerprintMinutiaeCount = acceptableFingerprintMinutiaeCount;
 		this.acceptableFingerprintImageIntensity = acceptableFingerprintImageIntensity;
@@ -32,6 +43,12 @@ public class Fingerprint implements Serializable
 	
 	public DMFingerData getDmFingerData(){return dmFingerData;}
 	public void setDmFingerData(DMFingerData dmFingerData){this.dmFingerData = dmFingerData;}
+	
+	public String getSlapWsq(){return slapWsq;}
+	public void setSlapWsq(String slapWsq){this.slapWsq = slapWsq;}
+	
+	public String getSlapImage(){return slapImage;}
+	public void setSlapImage(String slapImage){this.slapImage = slapImage;}
 	
 	public boolean isAcceptableFingerprintNfiq(){return acceptableFingerprintNfiq;}
 	public void setAcceptableFingerprintNfiq(boolean acceptableFingerprintNfiq)
@@ -64,23 +81,25 @@ public class Fingerprint implements Serializable
 			   acceptableFingerprintMinutiaeCount == that.acceptableFingerprintMinutiaeCount &&
 			   acceptableFingerprintImageIntensity == that.acceptableFingerprintImageIntensity &&
 			   acceptableQuality == that.acceptableQuality && duplicated == that.duplicated &&
-			   skipped == that.skipped && Objects.equals(dmFingerData, that.dmFingerData);
+			   skipped == that.skipped && Objects.equals(dmFingerData, that.dmFingerData) &&
+			   Objects.equals(slapWsq, that.slapWsq) && Objects.equals(slapImage, that.slapImage);
 	}
 	
 	@Override
 	public int hashCode()
 	{
-		return Objects.hash(dmFingerData, acceptableFingerprintNfiq, acceptableFingerprintMinutiaeCount,
-		                    acceptableFingerprintImageIntensity, acceptableQuality, duplicated, skipped);
+		return Objects.hash(dmFingerData, slapWsq, slapImage, acceptableFingerprintNfiq,
+		                    acceptableFingerprintMinutiaeCount, acceptableFingerprintImageIntensity, acceptableQuality,
+		                    duplicated, skipped);
 	}
 	
 	@Override
 	public String toString()
 	{
-		return "Fingerprint{" + "dmFingerData=" + dmFingerData + ", acceptableFingerprintNfiq=" +
-			   acceptableFingerprintNfiq + ", acceptableFingerprintMinutiaeCount=" +
-			   acceptableFingerprintMinutiaeCount + ", acceptableFingerprintImageIntensity=" +
-			   acceptableFingerprintImageIntensity + ", acceptableQuality=" + acceptableQuality + ", duplicated=" +
-			   duplicated + ", skipped=" + skipped + '}';
+		return "Fingerprint{" + "dmFingerData=" + dmFingerData + ", slapWsq='" + slapWsq + '\'' + ", slapImage='" +
+			   slapImage + '\'' + ", acceptableFingerprintNfiq=" + acceptableFingerprintNfiq +
+			   ", acceptableFingerprintMinutiaeCount=" + acceptableFingerprintMinutiaeCount +
+			   ", acceptableFingerprintImageIntensity=" + acceptableFingerprintImageIntensity +
+			   ", acceptableQuality=" + acceptableQuality + ", duplicated=" + duplicated + ", skipped=" + skipped + '}';
 	}
 }
