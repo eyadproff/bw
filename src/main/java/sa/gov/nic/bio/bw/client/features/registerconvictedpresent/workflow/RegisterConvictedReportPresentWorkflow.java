@@ -6,6 +6,7 @@ import javafx.scene.image.Image;
 import sa.gov.nic.bio.biokit.websocket.beans.DMFingerData;
 import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.beans.Fingerprint;
+import sa.gov.nic.bio.bw.client.core.biokit.FingerPosition;
 import sa.gov.nic.bio.bw.client.core.interfaces.FormRenderer;
 import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.client.core.utils.UTF8Control;
@@ -34,7 +35,6 @@ import java.awt.Point;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -165,6 +165,28 @@ public class RegisterConvictedReportPresentWorkflow extends WorkflowBase<Void, V
 						Map<Integer, Finger> collectedFingerprintsMap = new HashMap<>();
 						Map<Integer, String> fingerprintImages = new HashMap<>();
 						List<Integer> missingFingerprints = new ArrayList<>();
+						Map<Integer, Integer> slapPositions = new HashMap<>();
+						
+						slapPositions.put(FingerPosition.RIGHT_THUMB.getPosition(),
+						                  FingerPosition.TWO_THUMBS.getPosition());
+						slapPositions.put(FingerPosition.RIGHT_INDEX.getPosition(),
+						                  FingerPosition.RIGHT_SLAP.getPosition());
+						slapPositions.put(FingerPosition.RIGHT_MIDDLE.getPosition(),
+						                  FingerPosition.RIGHT_SLAP.getPosition());
+						slapPositions.put(FingerPosition.RIGHT_RING.getPosition(),
+						                  FingerPosition.RIGHT_SLAP.getPosition());
+						slapPositions.put(FingerPosition.RIGHT_LITTLE.getPosition(),
+						                  FingerPosition.RIGHT_SLAP.getPosition());
+						slapPositions.put(FingerPosition.LEFT_THUMB.getPosition(),
+						                  FingerPosition.TWO_THUMBS.getPosition());
+						slapPositions.put(FingerPosition.LEFT_INDEX.getPosition(),
+						                  FingerPosition.LEFT_SLAP.getPosition());
+						slapPositions.put(FingerPosition.LEFT_MIDDLE.getPosition(),
+						                  FingerPosition.LEFT_SLAP.getPosition());
+						slapPositions.put(FingerPosition.LEFT_RING.getPosition(),
+						                  FingerPosition.LEFT_SLAP.getPosition());
+						slapPositions.put(FingerPosition.LEFT_LITTLE.getPosition(),
+						                  FingerPosition.LEFT_SLAP.getPosition());
 						
 						@SuppressWarnings("unchecked")
 						Map<Integer, Fingerprint> capturedFingerprints = (Map<Integer, Fingerprint>)
@@ -182,7 +204,6 @@ public class RegisterConvictedReportPresentWorkflow extends WorkflowBase<Void, V
 							roundingBox = roundingBox.substring("Rect{".length() + 1,
 							                                    roundingBox.length() - 2);
 							String[] parts = roundingBox.split("[(,\\]\\[\\s]+");
-							System.out.println("parts = " + Arrays.toString(parts));
 							
 							Point topLeft = new Point(Integer.parseInt(parts[0]), Integer.parseInt(parts[1]));
 							Point topRight = new Point(Integer.parseInt(parts[2]), Integer.parseInt(parts[3]));
@@ -192,9 +213,11 @@ public class RegisterConvictedReportPresentWorkflow extends WorkflowBase<Void, V
 							                                                         bottomRight);
 							
 							fingerprintImages.put(position, fingerData.getFinger());
-							if(collectedFingerprintsMap.containsKey(position))
+							int slapPosition = slapPositions.get(position);
+							
+							if(collectedFingerprintsMap.containsKey(slapPosition))
 							{
-								Finger finger = collectedFingerprintsMap.get(position);
+								Finger finger = collectedFingerprintsMap.get(slapPosition);
 								finger.getFingerCoordinates().add(fingerCoordinate);
 							}
 							else
@@ -202,9 +225,9 @@ public class RegisterConvictedReportPresentWorkflow extends WorkflowBase<Void, V
 								List<FingerCoordinate> fingerCoordinates = new ArrayList<>();
 								fingerCoordinates.add(fingerCoordinate);
 								
-								Finger finger = new Finger(position, fingerprint.getSlapWsq(), fingerCoordinates);
+								Finger finger = new Finger(slapPosition, fingerprint.getSlapWsq(), fingerCoordinates);
 								collectedFingerprints.add(finger);
-								collectedFingerprintsMap.put(position, finger);
+								collectedFingerprintsMap.put(slapPosition, finger);
 							}
 						});
 						
