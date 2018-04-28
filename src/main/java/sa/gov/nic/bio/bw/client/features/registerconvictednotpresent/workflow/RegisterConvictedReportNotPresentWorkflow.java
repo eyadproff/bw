@@ -2,7 +2,11 @@ package sa.gov.nic.bio.bw.client.features.registerconvictednotpresent.workflow;
 
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
+import sa.gov.nic.bio.biokit.fingerprint.beans.ConvertedFingerprintsResponse;
+import sa.gov.nic.bio.biokit.fingerprint.beans.SegmentFingerprintsResponse;
+import sa.gov.nic.bio.biokit.websocket.beans.DMFingerData;
 import sa.gov.nic.bio.bw.client.core.Context;
+import sa.gov.nic.bio.bw.client.core.biokit.FingerPosition;
 import sa.gov.nic.bio.bw.client.core.interfaces.FormRenderer;
 import sa.gov.nic.bio.bw.client.core.utils.UTF8Control;
 import sa.gov.nic.bio.bw.client.core.workflow.Signal;
@@ -35,6 +39,8 @@ import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class RegisterConvictedReportNotPresentWorkflow extends WorkflowBase<Void, Void>
@@ -133,7 +139,8 @@ public class RegisterConvictedReportNotPresentWorkflow extends WorkflowBase<Void
 							Long personId = (Long) uiInputData.get(
 									PersonIdPaneFxController.KEY_PERSON_INFO_INQUIRY_PERSON_ID);
 							
-							ServiceResponse<List<Finger>> serviceResponse = FetchingFingerprintsService.execute(personId);
+							ServiceResponse<List<Finger>> serviceResponse =
+																		FetchingFingerprintsService.execute(personId);
 							
 							uiInputData.remove(FetchingFingerprintsPaneFxController.KEY_RETRY_FINGERPRINT_FETCHING);
 							uiInputData.put(KEY_WEBSERVICE_RESPONSE, serviceResponse);
@@ -183,6 +190,117 @@ public class RegisterConvictedReportNotPresentWorkflow extends WorkflowBase<Void
 						for(int i = 1; i <= 10; i++) missingFingerprints.add(i);
 						availableFingerprints.forEach(missingFingerprints::remove);
 						
+						Map<Integer, String> fingerprintWsqMap = new HashMap<>();
+						Map<Integer, String> fingerprintImages = new HashMap<>();
+						
+						collectedFingerprints.forEach(finger ->
+						{
+							int position = finger.getType();
+							
+							if(position == FingerPosition.RIGHT_SLAP.getPosition() ||
+							   position == FingerPosition.LEFT_SLAP.getPosition() ||
+							   position == FingerPosition.TWO_THUMBS.getPosition())
+							{
+								String slapImageBase64 = finger.getImage();
+								String slapImageFormat = "WSQ";
+								int expectedFingersCount = 0;
+								List<Integer> slapMissingFingers = new ArrayList<>();
+								
+								if(position == FingerPosition.RIGHT_SLAP.getPosition())
+								{
+									for(int i = FingerPosition.RIGHT_INDEX.getPosition();
+									    i <= FingerPosition.RIGHT_LITTLE.getPosition(); i++)
+									{
+										if(availableFingerprints.contains(i)) expectedFingersCount++;
+										else slapMissingFingers.add(i);
+									}
+								}
+								else if(position == FingerPosition.LEFT_SLAP.getPosition())
+								{
+									for(int i = FingerPosition.LEFT_INDEX.getPosition();
+									    i <= FingerPosition.LEFT_LITTLE.getPosition(); i++)
+									{
+										if(availableFingerprints.contains(i)) expectedFingersCount++;
+										else slapMissingFingers.add(i);
+									}
+								}
+								else if(position == FingerPosition.TWO_THUMBS.getPosition())
+								{
+									if(availableFingerprints.contains(FingerPosition.RIGHT_THUMB.getPosition()))
+										expectedFingersCount++;
+									else slapMissingFingers.add(FingerPosition.RIGHT_THUMB.getPosition());
+									
+									if(availableFingerprints.contains(FingerPosition.LEFT_THUMB.getPosition()))
+										expectedFingersCount++;
+									else slapMissingFingers.add(FingerPosition.LEFT_THUMB.getPosition());
+								}
+								
+								Future<sa.gov.nic.bio.biokit.beans.ServiceResponse<SegmentFingerprintsResponse>>
+										serviceResponseFuture = Context.getBioKitManager()
+										.getFingerprintUtilitiesService()
+										.segmentSlap(slapImageBase64, slapImageFormat, position,
+										             expectedFingersCount, slapMissingFingers);
+								
+								sa.gov.nic.bio.biokit.beans.ServiceResponse<SegmentFingerprintsResponse> response
+																												= null;
+								try
+								{
+									response = serviceResponseFuture.get();
+								}
+								catch(ExecutionException e)
+								{
+									e.printStackTrace();
+								}
+								catch(InterruptedException e)
+								{
+									e.printStackTrace();
+								}
+								
+								SegmentFingerprintsResponse result = response.getResult();
+								System.out.println("position = " + position);
+								System.out.println("availableFingerprints = " + availableFingerprints);
+								System.out.println("slapMissingFingers = " + slapMissingFingers);
+								System.out.println("expectedFingersCount = " + expectedFingersCount);
+								System.out.println("result = " + result);
+								List<DMFingerData> fingerData = result.getFingerData();
+								System.out.println("fingerData = " + fingerData);
+								fingerData.forEach(dmFingerData -> fingerprintImages.put(dmFingerData.getPosition(),
+					                                                                     dmFingerData.getFinger()));
+							}
+							else
+							{
+								if(position == 11) position = 1;
+								else if(position == 12) position = 6;
+								fingerprintWsqMap.put(position, finger.getImage());
+							}
+						});
+						
+						if(!fingerprintWsqMap.isEmpty())
+						{
+							Future<sa.gov.nic.bio.biokit.beans.ServiceResponse<ConvertedFingerprintsResponse>>
+									serviceResponseFuture = Context.getBioKitManager()
+									.getFingerprintUtilitiesService()
+									.convertWsqToImages(fingerprintWsqMap);
+							
+							sa.gov.nic.bio.biokit.beans.ServiceResponse<ConvertedFingerprintsResponse> response
+									= null;
+							try
+							{
+								response = serviceResponseFuture.get();
+							}
+							catch(ExecutionException e)
+							{
+								e.printStackTrace();
+							}
+							
+							ConvertedFingerprintsResponse responseResult = response.getResult();
+							Map<Integer, String> result = responseResult.getFingerprintImagesMap();
+							fingerprintImages.putAll(result);
+						}
+						
+						uiInputData.put(FetchingFingerprintsPaneFxController.KEY_PERSON_FINGERPRINTS_IMAGES,
+						                fingerprintImages);
+						
 						ServiceResponse<Integer> serviceResponse =
 								FingerprintInquiryService.execute(collectedFingerprints, missingFingerprints);
 						Integer inquiryId = serviceResponse.getResult();
@@ -191,12 +309,12 @@ public class RegisterConvictedReportNotPresentWorkflow extends WorkflowBase<Void
 						{
 							while(true)
 							{
-								ServiceResponse<FingerprintInquiryStatusResult> response =
+								ServiceResponse<FingerprintInquiryStatusResult> response2 =
 															FingerprintInquiryStatusCheckerService.execute(inquiryId);
 								
-								FingerprintInquiryStatusResult result = response.getResult();
+								FingerprintInquiryStatusResult result = response2.getResult();
 								
-								if(response.isSuccess() && result != null)
+								if(response2.isSuccess() && result != null)
 								{
 									if(result.getStatus() == FingerprintInquiryStatusResult.STATUS_INQUIRY_PENDING)
 									{
@@ -243,7 +361,7 @@ public class RegisterConvictedReportNotPresentWorkflow extends WorkflowBase<Void
 								}
 								else // report the error
 								{
-									uiInputData.put(KEY_WEBSERVICE_RESPONSE, response);
+									uiInputData.put(KEY_WEBSERVICE_RESPONSE, response2);
 									formRenderer.get().renderForm(InquiryPaneFxController.class, uiInputData);
 									uiOutputData = waitForUserTask();
 									uiInputData.putAll(uiOutputData);
