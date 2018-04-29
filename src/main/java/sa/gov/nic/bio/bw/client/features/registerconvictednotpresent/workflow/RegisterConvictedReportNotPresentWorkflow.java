@@ -117,7 +117,12 @@ public class RegisterConvictedReportNotPresentWorkflow extends WorkflowBase<Void
 							uiOutputData = waitForUserTask();
 							uiInputData.putAll(uiOutputData);
 							
-							if(serviceResponse.isSuccess() && serviceResponse.getResult() != null) break;
+							PersonInfo personInfo = serviceResponse.getResult();
+							if(serviceResponse.isSuccess() && personInfo != null)
+							{
+								uiInputData.put(PersonInfoPaneFxController.KEY_PERSON_INFO_PHOTO, personInfo.getFace());
+								break;
+							}
 						}
 						
 						break;
