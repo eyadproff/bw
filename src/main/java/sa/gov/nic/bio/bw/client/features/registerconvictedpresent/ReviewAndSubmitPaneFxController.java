@@ -347,11 +347,8 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 					reportNegativeResponse(errorCode, null, errorDetails);
 				}
 			}
-			else
-			{
-				reportNegativeResponse(serviceResponse.getErrorCode(), serviceResponse.getException(),
-				                       serviceResponse.getErrorDetails());
-			}
+			else reportNegativeResponse(serviceResponse.getErrorCode(), serviceResponse.getException(),
+				                        serviceResponse.getErrorDetails());
 		}
 	}
 	

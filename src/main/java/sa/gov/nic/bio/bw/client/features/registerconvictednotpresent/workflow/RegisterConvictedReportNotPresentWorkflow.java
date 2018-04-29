@@ -194,6 +194,8 @@ public class RegisterConvictedReportNotPresentWorkflow extends WorkflowBase<Void
 						List<Integer> missingFingerprints = new ArrayList<>();
 						for(int i = 1; i <= 10; i++) missingFingerprints.add(i);
 						availableFingerprints.forEach(missingFingerprints::remove);
+						uiInputData.put(FetchingFingerprintsPaneFxController.KEY_PERSON_MISSING_FINGERPRINTS,
+										missingFingerprints);
 						
 						Map<Integer, String> fingerprintWsqMap = new HashMap<>();
 						Map<Integer, String> fingerprintImages = new HashMap<>();

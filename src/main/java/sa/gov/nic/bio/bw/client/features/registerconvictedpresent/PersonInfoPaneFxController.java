@@ -227,8 +227,8 @@ public class PersonInfoPaneFxController extends WizardStepFxControllerBase
 			Boolean birthDateShowHijri = (Boolean) uiInputData.get(KEY_PERSON_INFO_BIRTH_DATE_SHOW_HIJRI);
 			cbBirthDateShowHijri.setSelected(birthDateShowHijri != null && birthDateShowHijri);
 			
-			Long idNumber = (Long) uiInputData.get(KEY_PERSON_INFO_ID_NUMBER);
-			if(idNumber != null && idNumber > 0) txtIdNumber.setText(String.valueOf(idNumber));
+			String idNumber = (String) uiInputData.get(KEY_PERSON_INFO_ID_NUMBER);
+			if(idNumber != null && !idNumber.trim().isEmpty()) txtIdNumber.setText(idNumber);
 			else if(focusedNode == null) focusedNode = txtIdNumber;
 			
 			String idType = (String) uiInputData.get(KEY_PERSON_INFO_ID_TYPE);
