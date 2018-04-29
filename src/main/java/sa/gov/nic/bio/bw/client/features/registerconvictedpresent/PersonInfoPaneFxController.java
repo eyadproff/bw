@@ -119,9 +119,9 @@ public class PersonInfoPaneFxController extends WizardStepFxControllerBase
 		GuiUtils.initDatePicker(cbIdIssuanceDateShowHijri, dpIdIssuanceDate, null);
 		GuiUtils.initDatePicker(cbIdExpiryDateShowHijri, dpIdExpiryDate, null);
 		
-		GuiUtils.applyValidatorToTextField(txtIdNumber, "\\d*", "[^\\d]", 10);
+		GuiUtils.applyValidatorToTextField(txtIdNumber, "\\d*", "[^\\d]", 100);
 		GuiUtils.applyValidatorToTextField(txtGeneralFileNumber, "\\d*", "[^\\d]",
-		                                   10);
+		                                   100);
 		
 		BooleanBinding txtFirstNameBinding = txtFirstName.textProperty().isEmpty();
 		BooleanBinding txtFatherNameBinding = txtFatherName.textProperty().isEmpty();
@@ -261,7 +261,7 @@ public class PersonInfoPaneFxController extends WizardStepFxControllerBase
 		if(text != null && !text.isEmpty()) uiDataMap.put(KEY_PERSON_INFO_GENERAL_FILE_NUMBER, Long.parseLong(text));
 		
 		text = txtIdNumber.getText();
-		if(text != null && !text.isEmpty()) uiDataMap.put(KEY_PERSON_INFO_ID_NUMBER, Long.parseLong(text));
+		if(text != null && !text.isEmpty()) uiDataMap.put(KEY_PERSON_INFO_ID_NUMBER, text);
 		
 		ItemWithText<GenderType> genderItem = cboGender.getValue();
 		if(genderItem != null) uiDataMap.put(KEY_PERSON_INFO_GENDER, genderItem.getItem());

@@ -16,7 +16,6 @@ public class SubmittingConvictedReportService
 		String url = System.getProperty("jnlp.bio.bw.service.submitConvictedReport");
 		
 		String convictedReportJson = new Gson().toJson(convictedReport, TypeToken.get(ConvictedReport.class).getType());
-		System.out.println("convictedReportJson = " + convictedReportJson);
 		
 		Call<Long> apiCall = convictedReportAPI.submitConvictedReport(url, convictedReportJson);
 		return Context.getWebserviceManager().executeApi(apiCall);
