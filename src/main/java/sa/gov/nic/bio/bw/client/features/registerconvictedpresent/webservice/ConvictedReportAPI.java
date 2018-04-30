@@ -8,6 +8,9 @@ import retrofit2.http.Url;
 
 public interface ConvictedReportAPI
 {
+	@POST
+	Call<Long> generateGeneralFileNumber(@Url String url);
+	
 	@FormUrlEncoded
 	@POST
 	Call<Long> submitConvictedReport(@Url String url, @Field("convicted-report") String convictedReport);

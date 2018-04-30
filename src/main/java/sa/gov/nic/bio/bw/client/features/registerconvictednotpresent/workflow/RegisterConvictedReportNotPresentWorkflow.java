@@ -28,6 +28,7 @@ import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.Fin
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.PersonInfo;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.workflow.FingerprintInquiryService;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.workflow.FingerprintInquiryStatusCheckerService;
+import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.workflow.GeneratingGeneralFileNumberService;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.workflow.SubmittingConvictedReportService;
 import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
 
@@ -264,13 +265,7 @@ public class RegisterConvictedReportNotPresentWorkflow extends WorkflowBase<Void
 								}
 								
 								SegmentFingerprintsResponse result = response.getResult();
-								System.out.println("position = " + position);
-								System.out.println("availableFingerprints = " + availableFingerprints);
-								System.out.println("slapMissingFingers = " + slapMissingFingers);
-								System.out.println("expectedFingersCount = " + expectedFingersCount);
-								System.out.println("result = " + result);
 								List<DMFingerData> fingerData = result.getFingerData();
-								System.out.println("fingerData = " + fingerData);
 								fingerData.forEach(dmFingerData -> fingerprintImages.put(dmFingerData.getPosition(),
 					                                                                     dmFingerData.getFinger()));
 							}
@@ -388,6 +383,16 @@ public class RegisterConvictedReportNotPresentWorkflow extends WorkflowBase<Void
 					}
 					case 4:
 					{
+						Long generalFileNumber = (Long)
+								uiInputData.get(PersonInfoPaneFxController.KEY_PERSON_INFO_GENERAL_FILE_NUMBER);
+						
+						if(generalFileNumber == null)
+						{
+							ServiceResponse<Long> serviceResponse = GeneratingGeneralFileNumberService.execute();
+							Long result = serviceResponse.getResult();
+							uiInputData.put(PersonInfoPaneFxController.KEY_PERSON_INFO_GENERAL_FILE_NUMBER, result);
+						}
+						
 						formRenderer.get().renderForm(PersonInfoPaneFxController.class, uiInputData);
 						uiOutputData = waitForUserTask();
 						uiInputData.putAll(uiOutputData);

@@ -329,6 +329,16 @@ public class RegisterConvictedReportPresentWorkflow extends WorkflowBase<Void, V
 					}
 					case 4:
 					{
+						Long generalFileNumber = (Long)
+								uiInputData.get(PersonInfoPaneFxController.KEY_PERSON_INFO_GENERAL_FILE_NUMBER);
+						
+						if(generalFileNumber == null)
+						{
+							ServiceResponse<Long> serviceResponse = GeneratingGeneralFileNumberService.execute();
+							Long result = serviceResponse.getResult();
+							uiInputData.put(PersonInfoPaneFxController.KEY_PERSON_INFO_GENERAL_FILE_NUMBER, result);
+						}
+						
 						formRenderer.get().renderForm(PersonInfoPaneFxController.class, uiInputData);
 						uiOutputData = waitForUserTask();
 						uiInputData.putAll(uiOutputData);
