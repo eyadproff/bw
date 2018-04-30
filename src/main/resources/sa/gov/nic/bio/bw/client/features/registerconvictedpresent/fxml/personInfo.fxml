@@ -41,7 +41,7 @@
                             <Insets bottom="5.0"/>
                         </GridPane.margin>
                     </Label>
-                    <TextField fx:id="txtFirstName" GridPane.rowIndex="0" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS">
+                    <TextField fx:id="txtFirstName" styleClass="required" GridPane.rowIndex="0" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS">
                         <GridPane.margin>
                             <Insets bottom="5.0" right="20.0"/>
                         </GridPane.margin>
@@ -51,7 +51,7 @@
                             <Insets bottom="5.0"/>
                         </GridPane.margin>
                     </Label>
-                    <TextField fx:id="txtFatherName" GridPane.rowIndex="0" GridPane.columnIndex="3" GridPane.hgrow="ALWAYS">
+                    <TextField fx:id="txtFatherName" styleClass="required" GridPane.rowIndex="0" GridPane.columnIndex="3" GridPane.hgrow="ALWAYS">
                         <GridPane.margin>
                             <Insets bottom="5.0"/>
                         </GridPane.margin>
@@ -61,7 +61,7 @@
                             <Insets bottom="5.0"/>
                         </GridPane.margin>
                     </Label>
-                    <TextField fx:id="txtGrandfatherName" GridPane.rowIndex="1" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS">
+                    <TextField fx:id="txtGrandfatherName" styleClass="required" GridPane.rowIndex="1" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS">
                         <GridPane.margin>
                             <Insets bottom="5.0" right="20.0"/>
                         </GridPane.margin>
@@ -71,7 +71,7 @@
                             <Insets bottom="5.0"/>
                         </GridPane.margin>
                     </Label>
-                    <TextField fx:id="txtFamilyName" GridPane.rowIndex="1" GridPane.columnIndex="3" GridPane.hgrow="ALWAYS">
+                    <TextField fx:id="txtFamilyName" styleClass="required" GridPane.rowIndex="1" GridPane.columnIndex="3" GridPane.hgrow="ALWAYS">
                         <GridPane.margin>
                             <Insets bottom="5.0"/>
                         </GridPane.margin>
@@ -91,7 +91,7 @@
                             <Insets bottom="5.0"/>
                         </GridPane.margin>
                     </Label>
-                    <ComboBox fx:id="cboGender" GridPane.rowIndex="2" GridPane.columnIndex="3" GridPane.hgrow="ALWAYS">
+                    <ComboBox fx:id="cboGender" styleClass="required" GridPane.rowIndex="2" GridPane.columnIndex="3" GridPane.hgrow="ALWAYS">
                         <GridPane.margin>
                             <Insets bottom="5.0"/>
                         </GridPane.margin>
@@ -107,7 +107,7 @@
                             <Insets bottom="5.0"/>
                         </GridPane.margin>
                     </Label>
-                    <ComboBox fx:id="cboNationality" GridPane.rowIndex="3" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS">
+                    <ComboBox fx:id="cboNationality" styleClass="required" GridPane.rowIndex="3" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS">
                         <GridPane.margin>
                             <Insets bottom="5.0" right="20.0"/>
                         </GridPane.margin>

@@ -30,20 +30,20 @@
                             <Insets left="26.0"/>
                         </padding>
                         <Label fx:id="lblCrimeClassification1" text="%label.crimeClassification1"/>
-                        <ComboBox fx:id="cboCrimeEvent1"/>
-                        <ComboBox fx:id="cboCrimeClass1"/>
+                        <ComboBox fx:id="cboCrimeEvent1" styleClass="required"/>
+                        <ComboBox fx:id="cboCrimeClass1" styleClass="required"/>
                     </HBox>
                     <HBox spacing="5.0">
                         <CheckBox fx:id="cbCrimeClassification2"/>
                         <Label fx:id="lblCrimeClassification2" text="%label.crimeClassification2"/>
-                        <ComboBox fx:id="cboCrimeEvent2"/>
-                        <ComboBox fx:id="cboCrimeClass2"/>
+                        <ComboBox fx:id="cboCrimeEvent2" styleClass="required"/>
+                        <ComboBox fx:id="cboCrimeClass2" styleClass="required"/>
                     </HBox>
                     <HBox spacing="5.0">
                         <CheckBox fx:id="cbCrimeClassification3"/>
                         <Label fx:id="lblCrimeClassification3" text="%label.crimeClassification3"/>
-                        <ComboBox fx:id="cboCrimeEvent3"/>
-                        <ComboBox fx:id="cboCrimeClass3"/>
+                        <ComboBox fx:id="cboCrimeEvent3" styleClass="required"/>
+                        <ComboBox fx:id="cboCrimeClass3" styleClass="required"/>
                     </HBox>
                 </VBox>
                 <Label text="%label.judgmentIssuer" GridPane.rowIndex="3" GridPane.columnIndex="0">
@@ -51,7 +51,7 @@
                         <Insets bottom="5.0"/>
                     </GridPane.margin>
                 </Label>
-                <TextField fx:id="txtJudgmentIssuer" GridPane.rowIndex="3" GridPane.columnIndex="1" GridPane.columnSpan="3">
+                <TextField fx:id="txtJudgmentIssuer" styleClass="required" GridPane.rowIndex="3" GridPane.columnIndex="1" GridPane.columnSpan="3">
                     <GridPane.margin>
                         <Insets bottom="5.0"/>
                     </GridPane.margin>
@@ -71,7 +71,7 @@
                         <Insets bottom="5.0"/>
                     </GridPane.margin>
                 </Label>
-                <TextField fx:id="txtJudgmentNumber" GridPane.rowIndex="4" GridPane.columnIndex="3">
+                <TextField fx:id="txtJudgmentNumber" styleClass="required" GridPane.rowIndex="4" GridPane.columnIndex="3">
                     <GridPane.margin>
                         <Insets bottom="5.0"/>
                     </GridPane.margin>
@@ -81,7 +81,7 @@
                         <Insets bottom="5.0"/>
                     </GridPane.margin>
                 </Label>
-                <DatePicker fx:id="dpArrestDate" promptText="dd/MM/yyyy" GridPane.rowIndex="5" GridPane.columnIndex="1">
+                <DatePicker fx:id="dpArrestDate" styleClass="required" promptText="dd/MM/yyyy" GridPane.rowIndex="5" GridPane.columnIndex="1">
                     <GridPane.margin>
                         <Insets right="20.0"/>
                     </GridPane.margin>
@@ -96,7 +96,7 @@
                         <Insets bottom="5.0"/>
                     </GridPane.margin>
                 </Label>
-                <DatePicker fx:id="dpJudgmentDate" promptText="dd/MM/yyyy" GridPane.rowIndex="5" GridPane.columnIndex="3"/>
+                <DatePicker fx:id="dpJudgmentDate" styleClass="required" promptText="dd/MM/yyyy" GridPane.rowIndex="5" GridPane.columnIndex="3"/>
                 <CheckBox fx:id="cbJudgmentDateShowHijri" focusTraversable="false" text="%checkbox.birthDateShowHijri" styleClass="date-picker-check-box" GridPane.rowIndex="6" GridPane.columnIndex="3">
                     <GridPane.margin>
                         <Insets bottom="5.0"/>
