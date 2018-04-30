@@ -179,6 +179,8 @@ public class PunishmentDetailsPaneFxController extends WizardStepFxControllerBas
 		spnDeportationMonths.focusedProperty().addListener(new FocusChangeListener(spnDeportationMonths));
 		spnDeportationDays.focusedProperty().addListener(new FocusChangeListener(spnDeportationDays));
 		
+		GuiUtils.applyValidatorToTextField(txtOther, null, null, 4000);
+		
 		BooleanBinding spnTazeerLashesBinding = spnTazeerLashes.valueProperty().isEqualTo(0);
 		BooleanBinding spnHadLashesBinding = spnHadLashes.valueProperty().isEqualTo(0);
 		BooleanBinding spnFineBinding = spnFine.valueProperty().isEqualTo(0);
