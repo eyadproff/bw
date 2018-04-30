@@ -20,6 +20,7 @@ import sa.gov.nic.bio.bw.client.core.wizard.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.client.core.workflow.Workflow;
 import sa.gov.nic.bio.bw.client.features.commons.ui.ImageViewPane;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.CrimeType;
+import sa.gov.nic.bio.bw.client.features.commons.webservice.IdType;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.NationalityBean;
 import sa.gov.nic.bio.bw.client.features.registerconvictednotpresent.FetchingFingerprintsPaneFxController;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.utils.RegisterConvictedPresentErrorCodes;
@@ -197,11 +198,37 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 			
 			lblOccupation.setText(convictedReport.getSubjOccupation());
 			lblBirthPlace.setText(convictedReport.getSubjBirthPlace());
-			lblBirthDate.setText(AppUtils.formatGregorianDate(convictedReport.getSubjBirthDate()));
+			
+			Long subjBirthDate = convictedReport.getSubjBirthDate();
+			if(subjBirthDate != null) lblBirthDate.setText(AppUtils.formatGregorianDate(subjBirthDate));
+			
 			lblIdNumber.setText(convictedReport.getSubjDocId());
-			lblIdType.setText(convictedReport.getSubjDocType());
-			lblIdIssuanceDate.setText(AppUtils.formatGregorianDate(convictedReport.getSubjDocIssDate()));
-			lblIdExpiry.setText(AppUtils.formatGregorianDate(convictedReport.getSubjDocExpDate()));
+			
+			@SuppressWarnings("unchecked") List<IdType> idTypes = (List<IdType>)
+														Context.getUserSession().getAttribute("lookups.idTypes");
+			
+			Integer subjDocType = convictedReport.getSubjDocType();
+			if(subjDocType != null)
+			{
+				IdType idType = null;
+				
+				for(IdType type : idTypes)
+				{
+					if(type.getCode() == subjDocType)
+					{
+						idType = type;
+						break;
+					}
+				}
+				
+				if(idType != null) lblIdType.setText(idType.getDesc());
+			}
+			
+			Long subjDocIssDate = convictedReport.getSubjDocIssDate();
+			if(subjDocIssDate != null) lblIdIssuanceDate.setText(AppUtils.formatGregorianDate(subjDocIssDate));
+			
+			Long subjDocExpDate = convictedReport.getSubjDocExpDate();
+			if(subjDocExpDate != null) lblIdExpiry.setText(AppUtils.formatGregorianDate(subjDocExpDate));
 			
 			JudgementInfo judgementInfo = convictedReport.getSubjJudgementInfo();
 			
@@ -401,15 +428,26 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 		String subjOccupation = (String) uiInputData.get(PersonInfoPaneFxController.KEY_PERSON_INFO_OCCUPATION);
 		String subjGender = ((GenderType) uiInputData.get(PersonInfoPaneFxController.KEY_PERSON_INFO_GENDER)).name()
 													 .substring(0, 1); // 'M' or 'F'
-		long subjBirthDate = ((LocalDate) uiInputData.get(PersonInfoPaneFxController.KEY_PERSON_INFO_BIRTH_DATE))
-													 .atStartOfDay(AppConstants.SAUDI_ZONE).toEpochSecond();
+		LocalDate birthDate = (LocalDate) uiInputData.get(PersonInfoPaneFxController.KEY_PERSON_INFO_BIRTH_DATE);
+		
+		Long subjBirthDate = null;
+		if(birthDate != null) subjBirthDate = birthDate.atStartOfDay(AppConstants.SAUDI_ZONE).toEpochSecond();
+		
 		String subjBirthPlace = (String) uiInputData.get(PersonInfoPaneFxController.KEY_PERSON_INFO_BIRTH_PLACE);
 		String subjDocId = String.valueOf(uiInputData.get(PersonInfoPaneFxController.KEY_PERSON_INFO_ID_NUMBER));
-		String subjDocType = (String) uiInputData.get(PersonInfoPaneFxController.KEY_PERSON_INFO_ID_TYPE);
-		long subjDocIssDate = ((LocalDate) uiInputData.get(PersonInfoPaneFxController.KEY_PERSON_INFO_ID_ISSUANCE_DATE))
-													  .atStartOfDay(AppConstants.SAUDI_ZONE).toEpochSecond();
-		long subjDocExpDate = ((LocalDate) uiInputData.get(PersonInfoPaneFxController.KEY_PERSON_INFO_ID_EXPIRY_DATE))
-													  .atStartOfDay(AppConstants.SAUDI_ZONE).toEpochSecond();
+		IdType docType = (IdType) uiInputData.get(PersonInfoPaneFxController.KEY_PERSON_INFO_ID_TYPE);
+		
+		Integer subjDocType = null;
+		if(docType != null) subjDocType = docType.getCode();
+		
+		LocalDate docIssDate = (LocalDate) uiInputData.get(PersonInfoPaneFxController.KEY_PERSON_INFO_ID_ISSUANCE_DATE);
+		
+		Long subjDocIssDate = null;
+		if(docIssDate != null) subjDocIssDate = docIssDate.atStartOfDay(AppConstants.SAUDI_ZONE).toEpochSecond();
+		
+		LocalDate docExpDate = (LocalDate) uiInputData.get(PersonInfoPaneFxController.KEY_PERSON_INFO_ID_EXPIRY_DATE);
+		Long subjDocExpDate = null;
+		if(docExpDate != null) subjDocExpDate = docExpDate.atStartOfDay(AppConstants.SAUDI_ZONE).toEpochSecond();
 		
 		String judgIssuer = (String)
 								uiInputData.get(JudgmentDetailsPaneFxController.KEY_JUDGMENT_DETAILS_JUDGMENT_ISSUER);

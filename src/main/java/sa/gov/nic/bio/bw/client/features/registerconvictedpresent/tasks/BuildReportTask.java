@@ -9,6 +9,7 @@ import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.utils.AppConstants.Locales;
 import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.CrimeType;
+import sa.gov.nic.bio.bw.client.features.commons.webservice.IdType;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.NationalityBean;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.ConvictedReport;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.CrimeCode;
@@ -148,7 +149,26 @@ public class BuildReportTask extends Task<JasperPrint>
 		params.put(PARAMETER_SEX, "F".equals(convictedReport.getSubjGender()) ? "أنثى" : "ذكر");
 		params.put(PARAMETER_ID,
 		           AppUtils.replaceNumbersOnly(convictedReport.getSubjDocId(), Locales.SAUDI_AR_LOCALE));
-		params.put(PARAMETER_ID_TYPE, convictedReport.getSubjDocType());
+		
+		@SuppressWarnings("unchecked") List<IdType> idTypes = (List<IdType>)
+														Context.getUserSession().getAttribute("lookups.idTypes");
+		
+		Integer subjDocType = convictedReport.getSubjDocType();
+		if(subjDocType != null)
+		{
+			IdType it = null;
+			for(IdType type : idTypes)
+			{
+				if(type.getCode() == subjDocType)
+				{
+					it = type;
+					break;
+				}
+			}
+			
+			if(it != null) params.put(PARAMETER_ID_TYPE, it.getDesc());
+		}
+		
 		params.put(PARAMETER_ID_ISSUANCE, AppUtils.formatGregorianDate(convictedReport.getSubjDocIssDate()));
 		params.put(PARAMETER_BIRTH_OF_DATE, AppUtils.formatGregorianDate(convictedReport.getSubjBirthDate()));
 		params.put(PARAMETER_BIRTH_PLACE,
@@ -162,7 +182,7 @@ public class BuildReportTask extends Task<JasperPrint>
 		params.put(PARAMETER_DETENTION_DATE, AppUtils.formatGregorianDate(judgementInfo.getArrestDate()));
 		
 		@SuppressWarnings("unchecked") List<CrimeType> crimeTypes = (List<CrimeType>)
-				Context.getUserSession().getAttribute("lookups.crimeTypes");
+													Context.getUserSession().getAttribute("lookups.crimeTypes");
 		
 		crimeTypes.forEach(crimeType ->
 		{

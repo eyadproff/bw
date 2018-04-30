@@ -16,6 +16,7 @@ import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.client.core.utils.GuiLanguage;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.wizard.WizardStepFxControllerBase;
+import sa.gov.nic.bio.bw.client.features.commons.webservice.IdType;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.NationalityBean;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.GenderType;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.Name;
@@ -392,25 +393,24 @@ public class InquiryResultPaneFxController extends WizardStepFxControllerBase
 			lblIdNumber.setTextFill(Color.RED);
 		}
 		
-		//@SuppressWarnings("unchecked") List<IdType> idTypes = (List<IdType>)
-		//											Context.getUserSession().getAttribute("lookups.idTypes");
-		//
-		//IdType theIdType = null;
-		//
-		//for(IdType idType : idTypes)
-		//{
-		//	if(idType.getCode() == personInfo.getNationality())
-		//	{
-		//		//nationalityBean = nationality;
-		//		break;
-		//	}
-		//}
+		@SuppressWarnings("unchecked") List<IdType> idTypes = (List<IdType>)
+													Context.getUserSession().getAttribute("lookups.idTypes");
 		
-		String idType = identityInfo != null ? identityInfo.getIdType() : null;
-		if(idType != null && !idType.trim().isEmpty())
+		Integer idType = identityInfo != null ? identityInfo.getIdType() : null;
+		if(idType != null)
 		{
-			lblIdType.setText(idType);
-			personInfoMap.put(PersonInfoPaneFxController.KEY_PERSON_INFO_ID_TYPE, idType);
+			IdType it = null;
+			for(IdType type : idTypes)
+			{
+				if(type.getCode() == idType)
+				{
+					it = type;
+					break;
+				}
+			}
+			
+			if(it != null) lblIdType.setText(it.getDesc());
+			personInfoMap.put(PersonInfoPaneFxController.KEY_PERSON_INFO_ID_TYPE, it);
 		}
 		else
 		{

@@ -158,11 +158,11 @@
                             <Insets bottom="5.0"/>
                         </GridPane.margin>
                     </Label>
-                    <TextField fx:id="txtIdType" GridPane.rowIndex="6" GridPane.columnIndex="3" GridPane.hgrow="ALWAYS">
+                    <ComboBox fx:id="cboIdType" GridPane.rowIndex="6" GridPane.columnIndex="3" GridPane.hgrow="ALWAYS">
                         <GridPane.margin>
                             <Insets bottom="5.0"/>
                         </GridPane.margin>
-                    </TextField>
+                    </ComboBox>
                     <Label text="%label.idIssuanceDate" GridPane.rowIndex="7" GridPane.columnIndex="0">
                         <GridPane.margin>
                             <Insets bottom="5.0"/>

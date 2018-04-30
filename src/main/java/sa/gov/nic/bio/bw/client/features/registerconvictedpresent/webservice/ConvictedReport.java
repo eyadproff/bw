@@ -12,12 +12,12 @@ public class ConvictedReport
 	private int subjNationalityCode;
 	private String subjOccupation;
 	private String subjGender; //'M' or 'F'
-	private long subjBirthDate;
+	private Long subjBirthDate;
 	private String subjBirthPlace;
 	private String subjDocId;
-	private String subjDocType;
-	private long subjDocIssDate;
-	private long subjDocExpDate;
+	private Integer subjDocType;
+	private Long subjDocIssDate;
+	private Long subjDocExpDate;
 	private JudgementInfo subjJudgementInfo;
 	private List<Finger> subjFingers;
 	private List<Integer> subjMissingFingers;
@@ -25,9 +25,9 @@ public class ConvictedReport
 	private String operatorId;
 	
 	public ConvictedReport(long reportNumber, long reportDate, String generalFileNum, Name subjtName,
-	                       int subjNationalityCode, String subjOccupation, String subjGender, long subjBirthDate,
-	                       String subjBirthPlace, String subjDocId, String subjDocType, long subjDocIssDate,
-	                       long subjDocExpDate, JudgementInfo subjJudgementInfo, List<Finger> subjFingers,
+	                       int subjNationalityCode, String subjOccupation, String subjGender, Long subjBirthDate,
+	                       String subjBirthPlace, String subjDocId, Integer subjDocType, Long subjDocIssDate,
+	                       Long subjDocExpDate, JudgementInfo subjJudgementInfo, List<Finger> subjFingers,
 	                       List<Integer> subjMissingFingers, String subjFace, String operatorId)
 	{
 		this.reportNumber = reportNumber;
@@ -71,8 +71,8 @@ public class ConvictedReport
 	public String getSubjGender(){return subjGender;}
 	public void setSubjGender(String subjGender){this.subjGender = subjGender;}
 	
-	public long getSubjBirthDate(){return subjBirthDate;}
-	public void setSubjBirthDate(long subjBirthDate){this.subjBirthDate = subjBirthDate;}
+	public Long getSubjBirthDate(){return subjBirthDate;}
+	public void setSubjBirthDate(Long subjBirthDate){this.subjBirthDate = subjBirthDate;}
 	
 	public String getSubjBirthPlace(){return subjBirthPlace;}
 	public void setSubjBirthPlace(String subjBirthPlace){this.subjBirthPlace = subjBirthPlace;}
@@ -80,14 +80,14 @@ public class ConvictedReport
 	public String getSubjDocId(){return subjDocId;}
 	public void setSubjDocId(String subjDocId){this.subjDocId = subjDocId;}
 	
-	public String getSubjDocType(){return subjDocType;}
-	public void setSubjDocType(String subjDocType){this.subjDocType = subjDocType;}
+	public Integer getSubjDocType(){return subjDocType;}
+	public void setSubjDocType(Integer subjDocType){this.subjDocType = subjDocType;}
 	
-	public long getSubjDocIssDate(){return subjDocIssDate;}
-	public void setSubjDocIssDate(long subjDocIssDate){this.subjDocIssDate = subjDocIssDate;}
+	public Long getSubjDocIssDate(){return subjDocIssDate;}
+	public void setSubjDocIssDate(Long subjDocIssDate){this.subjDocIssDate = subjDocIssDate;}
 	
-	public long getSubjDocExpDate(){return subjDocExpDate;}
-	public void setSubjDocExpDate(long subjDocExpDate){this.subjDocExpDate = subjDocExpDate;}
+	public Long getSubjDocExpDate(){return subjDocExpDate;}
+	public void setSubjDocExpDate(Long subjDocExpDate){this.subjDocExpDate = subjDocExpDate;}
 	
 	public JudgementInfo getSubjJudgementInfo(){return subjJudgementInfo;}
 	public void setSubjJudgementInfo(JudgementInfo subjJudgementInfo){this.subjJudgementInfo = subjJudgementInfo;}
@@ -111,12 +111,13 @@ public class ConvictedReport
 		if(o == null || getClass() != o.getClass()) return false;
 		ConvictedReport that = (ConvictedReport) o;
 		return reportNumber == that.reportNumber && reportDate == that.reportDate &&
-			   subjNationalityCode == that.subjNationalityCode && subjBirthDate == that.subjBirthDate &&
-			   subjDocIssDate == that.subjDocIssDate && subjDocExpDate == that.subjDocExpDate &&
+			   subjNationalityCode == that.subjNationalityCode &&
 			   Objects.equals(generalFileNum, that.generalFileNum) && Objects.equals(subjtName, that.subjtName) &&
 			   Objects.equals(subjOccupation, that.subjOccupation) && Objects.equals(subjGender, that.subjGender) &&
+			   Objects.equals(subjBirthDate, that.subjBirthDate) &&
 			   Objects.equals(subjBirthPlace, that.subjBirthPlace) && Objects.equals(subjDocId, that.subjDocId) &&
-			   Objects.equals(subjDocType, that.subjDocType) &&
+			   Objects.equals(subjDocType, that.subjDocType) && Objects.equals(subjDocIssDate, that.subjDocIssDate) &&
+			   Objects.equals(subjDocExpDate, that.subjDocExpDate) &&
 			   Objects.equals(subjJudgementInfo, that.subjJudgementInfo) &&
 			   Objects.equals(subjFingers, that.subjFingers) &&
 			   Objects.equals(subjMissingFingers, that.subjMissingFingers) &&

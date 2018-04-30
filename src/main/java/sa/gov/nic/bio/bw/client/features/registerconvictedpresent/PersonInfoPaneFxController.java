@@ -18,6 +18,7 @@ import sa.gov.nic.bio.bw.client.core.beans.ItemWithText;
 import sa.gov.nic.bio.bw.client.core.utils.GuiLanguage;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.wizard.WizardStepFxControllerBase;
+import sa.gov.nic.bio.bw.client.features.commons.webservice.IdType;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.NationalityBean;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.GenderType;
 
@@ -56,9 +57,9 @@ public class PersonInfoPaneFxController extends WizardStepFxControllerBase
 	@FXML private TextField txtOccupation;
 	@FXML private TextField txtBirthPlace;
 	@FXML private TextField txtIdNumber;
-	@FXML private TextField txtIdType;
 	@FXML private ComboBox<ItemWithText<GenderType>> cboGender;
 	@FXML private ComboBox<HideableItem<NationalityBean>> cboNationality;
+	@FXML private ComboBox<ItemWithText<IdType>> cboIdType;
 	@FXML private CheckBox cbBirthDateShowHijri;
 	@FXML private CheckBox cbIdIssuanceDateShowHijri;
 	@FXML private CheckBox cbIdExpiryDateShowHijri;
@@ -87,10 +88,14 @@ public class PersonInfoPaneFxController extends WizardStepFxControllerBase
 		@SuppressWarnings("unchecked") List<NationalityBean> nationalities = (List<NationalityBean>)
 												Context.getUserSession().getAttribute("lookups.nationalities");
 		
+		@SuppressWarnings("unchecked") List<IdType> idTypes = (List<IdType>)
+														Context.getUserSession().getAttribute("lookups.idTypes");
+		
 		GuiUtils.addAutoCompletionSupportToComboBox(cboNationality, nationalities);
 		
 		GuiUtils.makeComboBoxOpenableByPressingSpaceBar(cboGender);
 		GuiUtils.makeComboBoxOpenableByPressingSpaceBar(cboNationality);
+		GuiUtils.makeComboBoxOpenableByPressingSpaceBar(cboIdType);
 		
 		cboNationality.setConverter(new StringConverter<HideableItem<NationalityBean>>()
 		{
@@ -114,6 +119,13 @@ public class PersonInfoPaneFxController extends WizardStepFxControllerBase
 				return null;
 			}
 		});
+		
+		ObservableList<ItemWithText<IdType>> items = FXCollections.observableArrayList();
+		idTypes.forEach(idType ->
+		{
+			items.add(new ItemWithText<>(idType, idType.getDesc()));
+		});
+		cboIdType.setItems(items);
 		
 		GuiUtils.initDatePicker(cbBirthDateShowHijri, dpBirthDate, birthDateValidator);
 		GuiUtils.initDatePicker(cbIdIssuanceDateShowHijri, dpIdIssuanceDate, null);
@@ -231,9 +243,13 @@ public class PersonInfoPaneFxController extends WizardStepFxControllerBase
 			if(idNumber != null && !idNumber.trim().isEmpty()) txtIdNumber.setText(idNumber);
 			else if(focusedNode == null) focusedNode = txtIdNumber;
 			
-			String idType = (String) uiInputData.get(KEY_PERSON_INFO_ID_TYPE);
-			if(idType != null && !idType.trim().isEmpty()) txtIdType.setText(idType);
-			else if(focusedNode == null) focusedNode = txtIdType;
+			IdType idType = (IdType) uiInputData.get(KEY_PERSON_INFO_ID_TYPE);
+			if(idType != null) cboIdType.getItems()
+										.stream()
+										.filter(item -> item.getItem() == idType)
+										.findFirst()
+										.ifPresent(cboIdType::setValue);
+			else if(focusedNode == null) focusedNode = cboIdType;
 			
 			LocalDate idIssuanceDate = (LocalDate) uiInputData.get(KEY_PERSON_INFO_ID_ISSUANCE_DATE);
 			if(idIssuanceDate != null) dpIdIssuanceDate.setValue(idIssuanceDate);
@@ -277,7 +293,7 @@ public class PersonInfoPaneFxController extends WizardStepFxControllerBase
 		uiDataMap.put(KEY_PERSON_INFO_BIRTH_PLACE, txtBirthPlace.getText());
 		uiDataMap.put(KEY_PERSON_INFO_BIRTH_DATE, dpBirthDate.getValue());
 		uiDataMap.put(KEY_PERSON_INFO_BIRTH_DATE_SHOW_HIJRI, cbBirthDateShowHijri.isSelected());
-		uiDataMap.put(KEY_PERSON_INFO_ID_TYPE, txtIdType.getText());
+		uiDataMap.put(KEY_PERSON_INFO_ID_TYPE, cboIdType.getValue().getItem());
 		uiDataMap.put(KEY_PERSON_INFO_ID_ISSUANCE_DATE, dpIdIssuanceDate.getValue());
 		uiDataMap.put(KEY_PERSON_INFO_ID_ISSUANCE_DATE_SHOW_HIJRI, cbIdIssuanceDateShowHijri.isSelected());
 		uiDataMap.put(KEY_PERSON_INFO_ID_EXPIRY_DATE, dpIdExpiryDate.getValue());

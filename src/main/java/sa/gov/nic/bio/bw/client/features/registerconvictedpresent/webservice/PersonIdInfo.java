@@ -6,7 +6,7 @@ import java.util.Objects;
 public class PersonIdInfo
 {
 	private String idNumber;
-	private String idType;
+	private Integer idType;
 	private Date idIssueDate;
 	private Date idExpirDate;
 	private String occupation;
@@ -15,8 +15,8 @@ public class PersonIdInfo
 	public String getIdNumber(){return idNumber;}
 	public void setIdNumber(String idNumber){this.idNumber = idNumber;}
 	
-	public String getIdType(){return idType;}
-	public void setIdType(String idType){this.idType = idType;}
+	public Integer getIdType(){return idType;}
+	public void setIdType(Integer idType){this.idType = idType;}
 	
 	public Date getIdIssueDate(){return idIssueDate;}
 	public void setIdIssueDate(Date idIssueDate){this.idIssueDate = idIssueDate;}
