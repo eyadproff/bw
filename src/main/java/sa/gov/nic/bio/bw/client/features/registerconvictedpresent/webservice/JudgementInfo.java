@@ -8,7 +8,8 @@ public class JudgementInfo
 	private String judgIssuer;
 	private long judgDate;
 	private String judgNum;
-	private int judgLashesCount;
+	private int judgTazeerLashesCount;
+	private int judgHadLashesCount;
 	private int judgFine;
 	private String judgOthers;
 	private int jailYearCount;
@@ -30,17 +31,18 @@ public class JudgementInfo
 	private String policeFileNum;
 	private long arrestDate;
 	
-	public JudgementInfo(String judgIssuer, long judgDate, String judgNum, int judgLashesCount, int judgFine,
-	                     String judgOthers, int jailYearCount, int jailMonthCount, int jailDayCount,
-	                     int trvlBanDayCount, int trvlBanMonthCount, int trvlBanYearCount, int deportDayCount,
-	                     int deportMonthCount, int deportYearCount, int exileDayCount, int exileMonthCount,
-	                     int exileYearCount, boolean finalDeport, boolean covenant, boolean libel,
+	public JudgementInfo(String judgIssuer, long judgDate, String judgNum, int judgTazeerLashesCount,
+	                     int judgHadLashesCount, int judgFine, String judgOthers, int jailYearCount, int jailMonthCount,
+	                     int jailDayCount, int trvlBanDayCount, int trvlBanMonthCount, int trvlBanYearCount,
+	                     int deportDayCount, int deportMonthCount, int deportYearCount, int exileDayCount,
+	                     int exileMonthCount, int exileYearCount, boolean finalDeport, boolean covenant, boolean libel,
 	                     List<CrimeCode> crimeCodes, String policeFileNum, long arrestDate)
 	{
 		this.judgIssuer = judgIssuer;
 		this.judgDate = judgDate;
 		this.judgNum = judgNum;
-		this.judgLashesCount = judgLashesCount;
+		this.judgTazeerLashesCount = judgTazeerLashesCount;
+		this.judgHadLashesCount = judgHadLashesCount;
 		this.judgFine = judgFine;
 		this.judgOthers = judgOthers;
 		this.jailYearCount = jailYearCount;
@@ -72,8 +74,11 @@ public class JudgementInfo
 	public String getJudgNum(){return judgNum;}
 	public void setJudgNum(String judgNum){this.judgNum = judgNum;}
 	
-	public int getJudgLashesCount(){return judgLashesCount;}
-	public void setJudgLashesCount(int judgLashesCount){this.judgLashesCount = judgLashesCount;}
+	public int getJudgTazeerLashesCount(){return judgTazeerLashesCount;}
+	public void setJudgTazeerLashesCount(int judgTazeerLashesCount){this.judgTazeerLashesCount = judgTazeerLashesCount;}
+	
+	public int getJudgHadLashesCount(){return judgHadLashesCount;}
+	public void setJudgHadLashesCount(int judgHadLashesCount){this.judgHadLashesCount = judgHadLashesCount;}
 	
 	public int getJudgFine(){return judgFine;}
 	public void setJudgFine(int judgFine){this.judgFine = judgFine;}
@@ -141,7 +146,8 @@ public class JudgementInfo
 		if(this == o) return true;
 		if(o == null || getClass() != o.getClass()) return false;
 		JudgementInfo that = (JudgementInfo) o;
-		return judgDate == that.judgDate && judgLashesCount == that.judgLashesCount && judgFine == that.judgFine &&
+		return judgDate == that.judgDate && judgTazeerLashesCount == that.judgTazeerLashesCount &&
+			   judgHadLashesCount == that.judgHadLashesCount && judgFine == that.judgFine &&
 			   jailYearCount == that.jailYearCount && jailMonthCount == that.jailMonthCount &&
 			   jailDayCount == that.jailDayCount && trvlBanDayCount == that.trvlBanDayCount &&
 			   trvlBanMonthCount == that.trvlBanMonthCount && trvlBanYearCount == that.trvlBanYearCount &&
@@ -157,23 +163,26 @@ public class JudgementInfo
 	@Override
 	public int hashCode()
 	{
-		return Objects.hash(judgIssuer, judgDate, judgNum, judgLashesCount, judgFine, judgOthers, jailYearCount,
-		                    jailMonthCount, jailDayCount, trvlBanDayCount, trvlBanMonthCount, trvlBanYearCount,
-		                    deportDayCount, deportMonthCount, deportYearCount, exileDayCount, exileMonthCount,
-		                    exileYearCount, finalDeport, covenant, libel, crimeCodes, policeFileNum, arrestDate);
+		return Objects.hash(judgIssuer, judgDate, judgNum, judgTazeerLashesCount, judgHadLashesCount, judgFine,
+		                    judgOthers, jailYearCount, jailMonthCount, jailDayCount, trvlBanDayCount,
+		                    trvlBanMonthCount, trvlBanYearCount, deportDayCount, deportMonthCount,
+		                    deportYearCount, exileDayCount, exileMonthCount, exileYearCount, finalDeport, covenant,
+		                    libel, crimeCodes, policeFileNum, arrestDate);
 	}
 	
 	@Override
 	public String toString()
 	{
 		return "JudgementInfo{" + "judgIssuer='" + judgIssuer + '\'' + ", judgDate=" + judgDate + ", judgNum='" +
-			   judgNum + '\'' + ", judgLashesCount=" + judgLashesCount + ", judgFine=" + judgFine + ", judgOthers='" +
-			   judgOthers + '\'' + ", jailYearCount=" + jailYearCount + ", jailMonthCount=" + jailMonthCount +
-			   ", jailDayCount=" + jailDayCount + ", trvlBanDayCount=" + trvlBanDayCount + ", trvlBanMonthCount=" +
-			   trvlBanMonthCount + ", trvlBanYearCount=" + trvlBanYearCount + ", deportDayCount=" + deportDayCount +
-			   ", deportMonthCount=" + deportMonthCount + ", deportYearCount=" + deportYearCount + ", exileDayCount=" +
-			   exileDayCount + ", exileMonthCount=" + exileMonthCount + ", exileYearCount=" + exileYearCount +
-			   ", finalDeport=" + finalDeport + ", covenant=" + covenant + ", libel=" + libel + ", crimeCodes=" +
-			   crimeCodes + ", policeFileNum='" + policeFileNum + '\'' + ", arrestDate=" + arrestDate + '}';
+			   judgNum + '\'' + ", judgTazeerLashesCount=" + judgTazeerLashesCount + ", judgHadLashesCount=" +
+			   judgHadLashesCount + ", judgFine=" + judgFine + ", judgOthers='" + judgOthers + '\'' +
+			   ", jailYearCount=" + jailYearCount + ", jailMonthCount=" + jailMonthCount + ", jailDayCount=" +
+			   jailDayCount + ", trvlBanDayCount=" + trvlBanDayCount + ", trvlBanMonthCount=" + trvlBanMonthCount +
+			   ", trvlBanYearCount=" + trvlBanYearCount + ", deportDayCount=" + deportDayCount +
+			   ", deportMonthCount=" + deportMonthCount + ", deportYearCount=" + deportYearCount +
+			   ", exileDayCount=" + exileDayCount + ", exileMonthCount=" + exileMonthCount + ", exileYearCount=" +
+			   exileYearCount + ", finalDeport=" + finalDeport + ", covenant=" + covenant + ", libel=" + libel +
+			   ", crimeCodes=" + crimeCodes + ", policeFileNum='" + policeFileNum + '\'' + ", arrestDate=" +
+			   arrestDate + '}';
 	}
 }

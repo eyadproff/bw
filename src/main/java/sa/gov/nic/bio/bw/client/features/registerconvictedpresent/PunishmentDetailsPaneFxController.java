@@ -20,7 +20,8 @@ import java.util.Map;
 
 public class PunishmentDetailsPaneFxController extends WizardStepFxControllerBase
 {
-	public static final String KEY_PUNISHMENT_DETAILS_LASHES = "PUNISHMENT_DETAILS_LASHES";
+	public static final String KEY_PUNISHMENT_DETAILS_TAZEER_LASHES = "PUNISHMENT_DETAILS_TAZEER_LASHES";
+	public static final String KEY_PUNISHMENT_DETAILS_HAD_LASHES = "PUNISHMENT_DETAILS_HAD_LASHES";
 	public static final String KEY_PUNISHMENT_DETAILS_FINE = "PUNISHMENT_DETAILS_FINE";
 	public static final String KEY_PUNISHMENT_DETAILS_JAIL_YEARS = "PUNISHMENT_DETAILS_JAIL_YEARS";
 	public static final String KEY_PUNISHMENT_DETAILS_JAIL_MONTHS = "PUNISHMENT_DETAILS_JAIL_MONTHS";
@@ -39,7 +40,8 @@ public class PunishmentDetailsPaneFxController extends WizardStepFxControllerBas
 	public static final String KEY_PUNISHMENT_DETAILS_COVENANT = "PUNISHMENT_DETAILS_COVENANT";
 	public static final String KEY_PUNISHMENT_DETAILS_OTHER = "PUNISHMENT_DETAILS_OTHER";
 	
-	@FXML private Spinner<Integer> spnLashes;
+	@FXML private Spinner<Integer> spnTazeerLashes;
+	@FXML private Spinner<Integer> spnHadLashes;
 	@FXML private Spinner<Integer> spnFine;
 	@FXML private Spinner<Integer> spnJailYears;
 	@FXML private Spinner<Integer> spnJailMonths;
@@ -78,7 +80,9 @@ public class PunishmentDetailsPaneFxController extends WizardStepFxControllerBas
 		btnPrevious.setOnAction(actionEvent -> goPrevious());
 		btnNext.setOnAction(actionEvent -> goNext());
 		
-		GuiUtils.applyValidatorToTextField(spnLashes.getEditor(), "\\d*", "[^\\d]",
+		GuiUtils.applyValidatorToTextField(spnTazeerLashes.getEditor(), "\\d*", "[^\\d]",
+		                                   10);
+		GuiUtils.applyValidatorToTextField(spnHadLashes.getEditor(), "\\d*", "[^\\d]",
 		                                   10);
 		GuiUtils.applyValidatorToTextField(spnFine.getEditor(), "\\d*", "[^\\d]",
 		                                   10);
@@ -125,7 +129,8 @@ public class PunishmentDetailsPaneFxController extends WizardStepFxControllerBas
 			}
 			
 		};
-		spnLashes.getValueFactory().setConverter(integerStringConverter);
+		spnTazeerLashes.getValueFactory().setConverter(integerStringConverter);
+		spnHadLashes.getValueFactory().setConverter(integerStringConverter);
 		spnFine.getValueFactory().setConverter(integerStringConverter);
 		spnJailYears.getValueFactory().setConverter(integerStringConverter);
 		spnJailMonths.getValueFactory().setConverter(integerStringConverter);
@@ -158,7 +163,8 @@ public class PunishmentDetailsPaneFxController extends WizardStepFxControllerBas
 				}
 			}
 		}
-		spnLashes.focusedProperty().addListener(new FocusChangeListener(spnLashes));
+		spnTazeerLashes.focusedProperty().addListener(new FocusChangeListener(spnTazeerLashes));
+		spnHadLashes.focusedProperty().addListener(new FocusChangeListener(spnHadLashes));
 		spnFine.focusedProperty().addListener(new FocusChangeListener(spnFine));
 		spnJailYears.focusedProperty().addListener(new FocusChangeListener(spnJailYears));
 		spnJailMonths.focusedProperty().addListener(new FocusChangeListener(spnJailMonths));
@@ -173,7 +179,8 @@ public class PunishmentDetailsPaneFxController extends WizardStepFxControllerBas
 		spnDeportationMonths.focusedProperty().addListener(new FocusChangeListener(spnDeportationMonths));
 		spnDeportationDays.focusedProperty().addListener(new FocusChangeListener(spnDeportationDays));
 		
-		BooleanBinding spnLashesBinding = spnLashes.valueProperty().isEqualTo(0);
+		BooleanBinding spnTazeerLashesBinding = spnTazeerLashes.valueProperty().isEqualTo(0);
+		BooleanBinding spnHadLashesBinding = spnHadLashes.valueProperty().isEqualTo(0);
 		BooleanBinding spnFineBinding = spnFine.valueProperty().isEqualTo(0);
 		BooleanBinding spnJailYearsBinding = spnJailYears.valueProperty().isEqualTo(0);
 		BooleanBinding spnJailMonthsBinding = spnJailMonths.valueProperty().isEqualTo(0);
@@ -192,7 +199,7 @@ public class PunishmentDetailsPaneFxController extends WizardStepFxControllerBas
 		BooleanBinding cbCovenantBinding = cbCovenant.selectedProperty().not();
 		BooleanBinding txtOtherBinding = txtOther.textProperty().isEmpty();
 		
-		btnNext.disableProperty().bind(spnLashesBinding.and(spnFineBinding)
+		btnNext.disableProperty().bind(spnTazeerLashesBinding.and(spnHadLashesBinding).and(spnFineBinding)
                            .and(spnJailYearsBinding).and(spnJailMonthsBinding).and(spnJailDaysBinding)
                            .and(spnTravelBanYearsBinding).and(spnTravelBanMonthsBinding).and(spnTravelBanDaysBinding)
                            .and(spnExilingYearsBinding).and(spnExilingMonthsBinding).and(spnExilingDaysBinding)
@@ -208,9 +215,13 @@ public class PunishmentDetailsPaneFxController extends WizardStepFxControllerBas
 		{
 			Node focusedNode = null;
 			
-			Integer lashes = (Integer) uiInputData.get(KEY_PUNISHMENT_DETAILS_LASHES);
-			if(lashes != null) spnLashes.getValueFactory().setValue(lashes);
-			else focusedNode = spnLashes;
+			Integer tazeerLashes = (Integer) uiInputData.get(KEY_PUNISHMENT_DETAILS_TAZEER_LASHES);
+			if(tazeerLashes != null) spnTazeerLashes.getValueFactory().setValue(tazeerLashes);
+			else focusedNode = spnTazeerLashes;
+			
+			Integer hadLashes = (Integer) uiInputData.get(KEY_PUNISHMENT_DETAILS_HAD_LASHES);
+			if(hadLashes != null) spnHadLashes.getValueFactory().setValue(hadLashes);
+			else if(focusedNode == null) focusedNode = spnHadLashes;
 			
 			Integer fine = (Integer) uiInputData.get(KEY_PUNISHMENT_DETAILS_FINE);
 			if(fine != null) spnFine.getValueFactory().setValue(fine);
@@ -285,7 +296,8 @@ public class PunishmentDetailsPaneFxController extends WizardStepFxControllerBas
 	@Override
 	public void onLeaving(Map<String, Object> uiDataMap)
 	{
-		uiDataMap.put(KEY_PUNISHMENT_DETAILS_LASHES, spnLashes.getValue());
+		uiDataMap.put(KEY_PUNISHMENT_DETAILS_TAZEER_LASHES, spnTazeerLashes.getValue());
+		uiDataMap.put(KEY_PUNISHMENT_DETAILS_HAD_LASHES, spnHadLashes.getValue());
 		uiDataMap.put(KEY_PUNISHMENT_DETAILS_FINE, spnFine.getValue());
 		uiDataMap.put(KEY_PUNISHMENT_DETAILS_JAIL_YEARS, spnJailYears.getValue());
 		uiDataMap.put(KEY_PUNISHMENT_DETAILS_JAIL_MONTHS, spnJailMonths.getValue());

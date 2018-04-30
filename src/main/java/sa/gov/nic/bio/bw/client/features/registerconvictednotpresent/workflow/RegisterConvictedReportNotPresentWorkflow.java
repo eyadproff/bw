@@ -383,16 +383,6 @@ public class RegisterConvictedReportNotPresentWorkflow extends WorkflowBase<Void
 					}
 					case 4:
 					{
-						Long generalFileNumber = (Long)
-								uiInputData.get(PersonInfoPaneFxController.KEY_PERSON_INFO_GENERAL_FILE_NUMBER);
-						
-						if(generalFileNumber == null)
-						{
-							ServiceResponse<Long> serviceResponse = GeneratingGeneralFileNumberService.execute();
-							Long result = serviceResponse.getResult();
-							uiInputData.put(PersonInfoPaneFxController.KEY_PERSON_INFO_GENERAL_FILE_NUMBER, result);
-						}
-						
 						formRenderer.get().renderForm(PersonInfoPaneFxController.class, uiInputData);
 						uiOutputData = waitForUserTask();
 						uiInputData.putAll(uiOutputData);
@@ -420,9 +410,22 @@ public class RegisterConvictedReportNotPresentWorkflow extends WorkflowBase<Void
 						
 						while(true)
 						{
+							Long generalFileNumber = (Long)
+									uiInputData.get(PersonInfoPaneFxController.KEY_PERSON_INFO_GENERAL_FILE_NUMBER);
+							
+							if(generalFileNumber == null)
+							{
+								ServiceResponse<Long> serviceResponse = GeneratingGeneralFileNumberService.execute();
+								generalFileNumber = serviceResponse.getResult();
+								uiInputData.put(PersonInfoPaneFxController.KEY_PERSON_INFO_GENERAL_FILE_NUMBER,
+								                generalFileNumber);
+							}
+							
 							ConvictedReport convictedReport = (ConvictedReport)
 									uiInputData.get(ReviewAndSubmitPaneFxController.KEY_FINAL_CONVICTED_REPORT);
 							if(convictedReport == null) break;
+							
+							convictedReport.setGeneralFileNum(generalFileNumber);
 							
 							ServiceResponse<Long> serviceResponse =
 									SubmittingConvictedReportService.execute(convictedReport);

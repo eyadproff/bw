@@ -7,7 +7,7 @@ public class ConvictedReport
 {
 	private long reportNumber;
 	private long reportDate;
-	private String generalFileNum;
+	private Long generalFileNum;
 	private Name subjtName;
 	private int subjNationalityCode;
 	private String subjOccupation;
@@ -24,7 +24,7 @@ public class ConvictedReport
 	private String subjFace;
 	private String operatorId;
 	
-	public ConvictedReport(long reportNumber, long reportDate, String generalFileNum, Name subjtName,
+	public ConvictedReport(long reportNumber, long reportDate, Long generalFileNum, Name subjtName,
 	                       int subjNationalityCode, String subjOccupation, String subjGender, Long subjBirthDate,
 	                       String subjBirthPlace, String subjDocId, Integer subjDocType, Long subjDocIssDate,
 	                       Long subjDocExpDate, JudgementInfo subjJudgementInfo, List<Finger> subjFingers,
@@ -56,8 +56,8 @@ public class ConvictedReport
 	public long getReportDate(){return reportDate;}
 	public void setReportDate(long reportDate){this.reportDate = reportDate;}
 	
-	public String getGeneralFileNum(){return generalFileNum;}
-	public void setGeneralFileNum(String generalFileNum){this.generalFileNum = generalFileNum;}
+	public Long getGeneralFileNum(){return generalFileNum;}
+	public void setGeneralFileNum(Long generalFileNum){this.generalFileNum = generalFileNum;}
 	
 	public Name getSubjtName(){return subjtName;}
 	public void setSubjtName(Name subjtName){this.subjtName = subjtName;}

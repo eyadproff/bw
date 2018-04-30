@@ -10,6 +10,7 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.GridPane?>
 <BorderPane xmlns="http://javafx.com/javafx/8.0.152" xmlns:fx="http://javafx.com/fxml/1"
             fx:id="rootPane" stylesheets="@../css/style.css"
             fx:controller="sa.gov.nic.bio.bw.client.features.registerconvictedpresent.ShowReportPaneFxController">
@@ -21,10 +22,12 @@
                 </ImageView>
                 <Label text="%label.successConvictedReportRegistration"/>
             </VBox>
-            <HBox alignment="CENTER" spacing="5.0">
-                <Label text="%label.reportNumber"/>
-                <TextField fx:id="txtReportNumber" editable="false" prefColumnCount="10" focusTraversable="false"/>
-            </HBox>
+            <GridPane alignment="CENTER" vgap="5.0" hgap="5.0">
+                <Label text="%label.reportNumber" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                <TextField fx:id="txtReportNumber" editable="false" prefColumnCount="10" focusTraversable="false" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+                <Label text="%label.generalFileNumber" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                <TextField fx:id="txtGeneralFileNumber" editable="false" prefColumnCount="10" focusTraversable="false" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+            </GridPane>
         </VBox>
     </center>
     <bottom>

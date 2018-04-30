@@ -199,7 +199,6 @@ public class JudgmentDetailsPaneFxController extends WizardStepFxControllerBase
 												  .filter(item -> item.getObject().equals(crimeEvent1))
 												  .findFirst()
 												  .ifPresent(cboCrimeEvent1::setValue);
-			else focusedNode = cboCrimeEvent1;
 			
 			Integer crimeClass1 = (Integer) uiInputData.get(KEY_JUDGMENT_DETAILS_CRIME_CLASS_1);
 			if(crimeClass1 != null) cboCrimeClass1.getItems()
@@ -207,7 +206,6 @@ public class JudgmentDetailsPaneFxController extends WizardStepFxControllerBase
 												  .filter(item -> item.getObject().equals(crimeClass1))
 												  .findFirst()
 												  .ifPresent(cboCrimeClass1::setValue);
-			else if(focusedNode == null) focusedNode = cboCrimeClass1;
 			
 			Boolean crime2Enabled = (Boolean) uiInputData.get(KEY_JUDGMENT_DETAILS_CRIME_2_ENABLED);
 			cbCrimeClassification2.setSelected(crime2Enabled != null && crime2Enabled);
@@ -218,7 +216,6 @@ public class JudgmentDetailsPaneFxController extends WizardStepFxControllerBase
 												  .filter(item -> item.getObject().equals(crimeEvent2))
 												  .findFirst()
 												  .ifPresent(cboCrimeEvent2::setValue);
-			else if(focusedNode == null && cbCrimeClassification2.isSelected()) focusedNode = cboCrimeEvent2;
 			
 			Integer crimeClass2 = (Integer) uiInputData.get(KEY_JUDGMENT_DETAILS_CRIME_CLASS_2);
 			if(crimeClass2 != null) cboCrimeClass2.getItems()
@@ -226,7 +223,6 @@ public class JudgmentDetailsPaneFxController extends WizardStepFxControllerBase
 												  .filter(item -> item.getObject().equals(crimeClass2))
 												  .findFirst()
 												  .ifPresent(cboCrimeClass2::setValue);
-			else if(focusedNode == null && cbCrimeClassification2.isSelected()) focusedNode = cboCrimeClass2;
 			
 			Boolean crime3Enabled = (Boolean) uiInputData.get(KEY_JUDGMENT_DETAILS_CRIME_3_ENABLED);
 			cbCrimeClassification3.setSelected(crime3Enabled != null && crime3Enabled);
@@ -237,7 +233,6 @@ public class JudgmentDetailsPaneFxController extends WizardStepFxControllerBase
 					.filter(item -> item.getObject().equals(crimeEvent3))
 					.findFirst()
 					.ifPresent(cboCrimeEvent3::setValue);
-			else if(focusedNode == null && cbCrimeClassification3.isSelected()) focusedNode = cboCrimeEvent3;
 			
 			Integer crimeClass3 = (Integer) uiInputData.get(KEY_JUDGMENT_DETAILS_CRIME_CLASS_3);
 			if(crimeClass3 != null) cboCrimeClass3.getItems()
@@ -245,7 +240,6 @@ public class JudgmentDetailsPaneFxController extends WizardStepFxControllerBase
 					.filter(item -> item.getObject().equals(crimeClass3))
 					.findFirst()
 					.ifPresent(cboCrimeClass3::setValue);
-			else if(focusedNode == null && cbCrimeClassification3.isSelected()) focusedNode = cboCrimeClass3;
 			
 			String judgmentIssuer = (String) uiInputData.get(KEY_JUDGMENT_DETAILS_JUDGMENT_ISSUER);
 			if(judgmentIssuer != null && !judgmentIssuer.trim().isEmpty()) txtJudgmentIssuer.setText(judgmentIssuer);
@@ -254,7 +248,6 @@ public class JudgmentDetailsPaneFxController extends WizardStepFxControllerBase
 			String policeFileNumber = (String) uiInputData.get(KEY_JUDGMENT_DETAILS_POLICE_FILE_NUMBER);
 			if(policeFileNumber != null && !policeFileNumber.trim().isEmpty())
 																		txtPoliceFileNumber.setText(policeFileNumber);
-			else if(focusedNode == null) focusedNode = txtPoliceFileNumber;
 			
 			String judgmentNumber = (String) uiInputData.get(KEY_JUDGMENT_DETAILS_JUDGMENT_NUMBER);
 			if(judgmentNumber != null && !judgmentNumber.trim().isEmpty()) txtJudgmentNumber.setText(judgmentNumber);

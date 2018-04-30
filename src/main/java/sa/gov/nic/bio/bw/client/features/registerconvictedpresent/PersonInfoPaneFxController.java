@@ -139,13 +139,11 @@ public class PersonInfoPaneFxController extends WizardStepFxControllerBase
 		BooleanBinding txtFatherNameBinding = txtFatherName.textProperty().isEmpty();
 		BooleanBinding txtGrandfatherNameBinding = txtGrandfatherName.textProperty().isEmpty();
 		BooleanBinding txtFamilyNameBinding = txtFamilyName.textProperty().isEmpty();
-		BooleanBinding txtGeneralFileNumberBinding = txtGeneralFileNumber.textProperty().isEmpty();
 		BooleanBinding cboGenderBinding = cboGender.valueProperty().isNull();
 		BooleanBinding cboNationalityBinding = cboNationality.valueProperty().isNull();
 		
 		btnNext.disableProperty().bind(txtFirstNameBinding.or(txtFatherNameBinding).or(txtGrandfatherNameBinding)
-	                             .or(txtFamilyNameBinding).or(txtGeneralFileNumberBinding).or(cboGenderBinding)
-                                 .or(cboNationalityBinding));
+	                             .or(txtFamilyNameBinding).or(cboGenderBinding).or(cboNationalityBinding));
 	}
 	
 	@Override
@@ -192,7 +190,6 @@ public class PersonInfoPaneFxController extends WizardStepFxControllerBase
 			Long generalFileNumber = (Long) uiInputData.get(KEY_PERSON_INFO_GENERAL_FILE_NUMBER);
 			
 			if(generalFileNumber != null) txtGeneralFileNumber.setText(String.valueOf(generalFileNumber));
-			else if(focusedNode == null) focusedNode = txtGeneralFileNumber;
 			
 			GenderType genderType = (GenderType) uiInputData.get(KEY_PERSON_INFO_GENDER);
 			if(genderType != null) cboGender.getItems()
@@ -226,22 +223,18 @@ public class PersonInfoPaneFxController extends WizardStepFxControllerBase
 			
 			String occupation = (String) uiInputData.get(KEY_PERSON_INFO_OCCUPATION);
 			if(occupation != null && !occupation.trim().isEmpty()) txtOccupation.setText(occupation);
-			else if(focusedNode == null) focusedNode = txtOccupation;
 			
 			String birthPlace = (String) uiInputData.get(KEY_PERSON_INFO_BIRTH_PLACE);
 			if(birthPlace != null && !birthPlace.trim().isEmpty()) txtBirthPlace.setText(birthPlace);
-			else if(focusedNode == null) focusedNode = txtBirthPlace;
 			
 			LocalDate birthDate = (LocalDate) uiInputData.get(KEY_PERSON_INFO_BIRTH_DATE);
 			if(birthDate != null) dpBirthDate.setValue(birthDate);
-			else if(focusedNode == null) focusedNode = dpBirthDate;
 			
 			Boolean birthDateShowHijri = (Boolean) uiInputData.get(KEY_PERSON_INFO_BIRTH_DATE_SHOW_HIJRI);
 			cbBirthDateShowHijri.setSelected(birthDateShowHijri != null && birthDateShowHijri);
 			
 			String idNumber = (String) uiInputData.get(KEY_PERSON_INFO_ID_NUMBER);
 			if(idNumber != null && !idNumber.trim().isEmpty()) txtIdNumber.setText(idNumber);
-			else if(focusedNode == null) focusedNode = txtIdNumber;
 			
 			IdType idType = (IdType) uiInputData.get(KEY_PERSON_INFO_ID_TYPE);
 			if(idType != null) cboIdType.getItems()
@@ -249,18 +242,15 @@ public class PersonInfoPaneFxController extends WizardStepFxControllerBase
 										.filter(item -> item.getItem() == idType)
 										.findFirst()
 										.ifPresent(cboIdType::setValue);
-			else if(focusedNode == null) focusedNode = cboIdType;
 			
 			LocalDate idIssuanceDate = (LocalDate) uiInputData.get(KEY_PERSON_INFO_ID_ISSUANCE_DATE);
 			if(idIssuanceDate != null) dpIdIssuanceDate.setValue(idIssuanceDate);
-			else if(focusedNode == null) focusedNode = dpIdIssuanceDate;
 			
 			Boolean idIssuanceDateShowHijri = (Boolean) uiInputData.get(KEY_PERSON_INFO_ID_ISSUANCE_DATE_SHOW_HIJRI);
 			cbIdIssuanceDateShowHijri.setSelected(idIssuanceDateShowHijri != null && idIssuanceDateShowHijri);
 			
 			LocalDate idExpiryDate = (LocalDate) uiInputData.get(KEY_PERSON_INFO_ID_EXPIRY_DATE);
 			if(idExpiryDate != null) dpIdExpiryDate.setValue(idExpiryDate);
-			else if(focusedNode == null) focusedNode = dpIdExpiryDate;
 			
 			Boolean idExpiryDateShowHijri = (Boolean) uiInputData.get(KEY_PERSON_INFO_ID_EXPIRY_DATE_SHOW_HIJRI);
 			cbIdExpiryDateShowHijri.setSelected(idExpiryDateShowHijri != null && idExpiryDateShowHijri);
@@ -275,15 +265,19 @@ public class PersonInfoPaneFxController extends WizardStepFxControllerBase
 	{
 		String text = txtGeneralFileNumber.getText();
 		if(text != null && !text.isEmpty()) uiDataMap.put(KEY_PERSON_INFO_GENERAL_FILE_NUMBER, Long.parseLong(text));
+		else uiDataMap.remove(KEY_PERSON_INFO_GENERAL_FILE_NUMBER);
 		
 		text = txtIdNumber.getText();
 		if(text != null && !text.isEmpty()) uiDataMap.put(KEY_PERSON_INFO_ID_NUMBER, text);
+		else uiDataMap.remove(KEY_PERSON_INFO_ID_NUMBER);
 		
 		ItemWithText<GenderType> genderItem = cboGender.getValue();
 		if(genderItem != null) uiDataMap.put(KEY_PERSON_INFO_GENDER, genderItem.getItem());
+		else uiDataMap.remove(KEY_PERSON_INFO_GENDER);
 		
 		HideableItem<NationalityBean> nationalityItem = cboNationality.getValue();
 		if(nationalityItem != null) uiDataMap.put(KEY_PERSON_INFO_NATIONALITY, nationalityItem.getObject());
+		else uiDataMap.remove(KEY_PERSON_INFO_NATIONALITY);
 		
 		uiDataMap.put(KEY_PERSON_INFO_FIRST_NAME, txtFirstName.getText());
 		uiDataMap.put(KEY_PERSON_INFO_FATHER_NAME, txtFatherName.getText());
@@ -293,7 +287,11 @@ public class PersonInfoPaneFxController extends WizardStepFxControllerBase
 		uiDataMap.put(KEY_PERSON_INFO_BIRTH_PLACE, txtBirthPlace.getText());
 		uiDataMap.put(KEY_PERSON_INFO_BIRTH_DATE, dpBirthDate.getValue());
 		uiDataMap.put(KEY_PERSON_INFO_BIRTH_DATE_SHOW_HIJRI, cbBirthDateShowHijri.isSelected());
-		uiDataMap.put(KEY_PERSON_INFO_ID_TYPE, cboIdType.getValue().getItem());
+		
+		ItemWithText<IdType> value = cboIdType.getValue();
+		if(value != null) uiDataMap.put(KEY_PERSON_INFO_ID_TYPE, value.getItem());
+		else uiDataMap.remove(KEY_PERSON_INFO_ID_TYPE);
+		
 		uiDataMap.put(KEY_PERSON_INFO_ID_ISSUANCE_DATE, dpIdIssuanceDate.getValue());
 		uiDataMap.put(KEY_PERSON_INFO_ID_ISSUANCE_DATE_SHOW_HIJRI, cbIdIssuanceDateShowHijri.isSelected());
 		uiDataMap.put(KEY_PERSON_INFO_ID_EXPIRY_DATE, dpIdExpiryDate.getValue());

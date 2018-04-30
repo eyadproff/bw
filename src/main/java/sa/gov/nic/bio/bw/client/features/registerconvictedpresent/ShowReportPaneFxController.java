@@ -30,6 +30,7 @@ public class ShowReportPaneFxController extends WizardStepFxControllerBase
 	public static final String KEY_CONVICTED_REPORT_NUMBER = "CONVICTED_REPORT_NUMBER";
 	
 	@FXML private TextField txtReportNumber;
+	@FXML private TextField txtGeneralFileNumber;
 	@FXML private ProgressIndicator piProgress;
 	@FXML private Button btnStartOver;
 	@FXML private Button btnPrintReport;
@@ -70,6 +71,11 @@ public class ShowReportPaneFxController extends WizardStepFxControllerBase
 		{
 			Long reportNumber = (Long) uiInputData.get(KEY_CONVICTED_REPORT_NUMBER);
 			txtReportNumber.setText(String.valueOf(reportNumber));
+			
+			Long GeneralFileNumber = (Long)
+									uiInputData.get(PersonInfoPaneFxController.KEY_PERSON_INFO_GENERAL_FILE_NUMBER);
+			txtGeneralFileNumber.setText(String.valueOf(GeneralFileNumber));
+			
 			convictedReport = (ConvictedReport) uiInputData.get(
 														ReviewAndSubmitPaneFxController.KEY_FINAL_CONVICTED_REPORT);
 			convictedReport.setReportNumber(reportNumber);

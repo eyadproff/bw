@@ -71,7 +71,8 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 	@FXML private Label lblJudgmentNumber;
 	@FXML private Label lblArrestDate;
 	@FXML private Label lblJudgmentDate;
-	@FXML private Label lblLashes;
+	@FXML private Label lblTazeerLashes;
+	@FXML private Label lblHadLashes;
 	@FXML private Label lblFine;
 	@FXML private Label lblJailYears;
 	@FXML private Label lblJailMonths;
@@ -170,7 +171,10 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 			lblFatherName.setText(convictedReport.getSubjtName().getFatherName());
 			lblGrandfatherName.setText(convictedReport.getSubjtName().getGrandfatherName());
 			lblFamilyName.setText(convictedReport.getSubjtName().getFamilyName());
-			lblGeneralFileNumber.setText(convictedReport.getGeneralFileNum());
+			
+			Long generalFileNumber = convictedReport.getGeneralFileNum();
+			if(generalFileNumber != null) lblGeneralFileNumber.setText(String.valueOf(generalFileNumber));
+			
 			lblGender.setText("F".equals(convictedReport.getSubjGender()) ? resources.getString("label.female") :
 					                                                        resources.getString("label.male"));
 			
@@ -266,7 +270,8 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 			lblJudgmentNumber.setText(judgementInfo.getJudgNum());
 			lblArrestDate.setText(AppUtils.formatGregorianDate(judgementInfo.getArrestDate()));
 			lblJudgmentDate.setText(AppUtils.formatGregorianDate(judgementInfo.getJudgDate()));
-			lblLashes.setText(String.valueOf(judgementInfo.getJudgLashesCount()));
+			lblTazeerLashes.setText(String.valueOf(judgementInfo.getJudgTazeerLashesCount()));
+			lblHadLashes.setText(String.valueOf(judgementInfo.getJudgHadLashesCount()));
 			lblFine.setText(String.valueOf(judgementInfo.getJudgFine()));
 			lblJailYears.setText(String.valueOf(judgementInfo.getJailYearCount()));
 			lblJailMonths.setText(String.valueOf(judgementInfo.getJailMonthCount()));
@@ -414,8 +419,7 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 	private ConvictedReport buildConvictedReport(Map<String, Object> uiInputData)
 	{
 		long reportDate = System.currentTimeMillis() / 1000;
-		String generalFileNum = String.valueOf(uiInputData.get(
-													PersonInfoPaneFxController.KEY_PERSON_INFO_GENERAL_FILE_NUMBER));
+		Long generalFileNum = (Long) uiInputData.get(PersonInfoPaneFxController.KEY_PERSON_INFO_GENERAL_FILE_NUMBER);
 		
 		String firstName = (String) uiInputData.get(PersonInfoPaneFxController.KEY_PERSON_INFO_FIRST_NAME);
 		String fatherName = (String) uiInputData.get(PersonInfoPaneFxController.KEY_PERSON_INFO_FATHER_NAME);
@@ -434,7 +438,7 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 		if(birthDate != null) subjBirthDate = birthDate.atStartOfDay(AppConstants.SAUDI_ZONE).toEpochSecond();
 		
 		String subjBirthPlace = (String) uiInputData.get(PersonInfoPaneFxController.KEY_PERSON_INFO_BIRTH_PLACE);
-		String subjDocId = String.valueOf(uiInputData.get(PersonInfoPaneFxController.KEY_PERSON_INFO_ID_NUMBER));
+		String subjDocId = (String) uiInputData.get(PersonInfoPaneFxController.KEY_PERSON_INFO_ID_NUMBER);
 		IdType docType = (IdType) uiInputData.get(PersonInfoPaneFxController.KEY_PERSON_INFO_ID_TYPE);
 		
 		Integer subjDocType = null;
@@ -455,7 +459,10 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 					((LocalDate) uiInputData.get(JudgmentDetailsPaneFxController.KEY_JUDGMENT_DETAILS_JUDGMENT_DATE))
 											.atStartOfDay(AppConstants.SAUDI_ZONE).toEpochSecond();
 		String judgNum = (String) uiInputData.get(JudgmentDetailsPaneFxController.KEY_JUDGMENT_DETAILS_JUDGMENT_NUMBER);
-		int judgLashesCount = (int) uiInputData.get(PunishmentDetailsPaneFxController.KEY_PUNISHMENT_DETAILS_LASHES);
+		int judgTazeerLashesCount = (int)
+								uiInputData.get(PunishmentDetailsPaneFxController.KEY_PUNISHMENT_DETAILS_TAZEER_LASHES);
+		int judgHadLashesCount = (int)
+								uiInputData.get(PunishmentDetailsPaneFxController.KEY_PUNISHMENT_DETAILS_HAD_LASHES);
 		int judgFine = (int) uiInputData.get(PunishmentDetailsPaneFxController.KEY_PUNISHMENT_DETAILS_FINE);
 		String judgOthers = (String) uiInputData.get(PunishmentDetailsPaneFxController.KEY_PUNISHMENT_DETAILS_OTHER);
 		int jailYearCount = (int) uiInputData.get(PunishmentDetailsPaneFxController.KEY_PUNISHMENT_DETAILS_JAIL_YEARS);
@@ -508,13 +515,13 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 					((LocalDate) uiInputData.get(JudgmentDetailsPaneFxController.KEY_JUDGMENT_DETAILS_ARREST_DATE))
 											.atStartOfDay(AppConstants.SAUDI_ZONE).toEpochSecond();
 		
-		JudgementInfo subjJudgementInfo = new JudgementInfo(judgIssuer, judgDate, judgNum, judgLashesCount, judgFine,
-															judgOthers, jailYearCount, jailMonthCount, jailDayCount,
-															trvlBanDayCount, trvlBanMonthCount, trvlBanYearCount,
-															deportDayCount, deportMonthCount, deportYearCount,
-															exileDayCount, exileMonthCount, exileYearCount,
-															finalDeport, covenant, libel, crimeCodes, policeFileNum,
-															arrestDate);
+		JudgementInfo subjJudgementInfo = new JudgementInfo(judgIssuer, judgDate, judgNum, judgTazeerLashesCount,
+		                                                    judgHadLashesCount, judgFine, judgOthers, jailYearCount,
+		                                                    jailMonthCount, jailDayCount, trvlBanDayCount,
+		                                                    trvlBanMonthCount, trvlBanYearCount, deportDayCount,
+		                                                    deportMonthCount, deportYearCount, exileDayCount,
+		                                                    exileMonthCount, exileYearCount, finalDeport, covenant,
+		                                                    libel, crimeCodes, policeFileNum, arrestDate);
 		
 		@SuppressWarnings("unchecked")
 		List<Finger> subjFingers = (List<Finger>)
