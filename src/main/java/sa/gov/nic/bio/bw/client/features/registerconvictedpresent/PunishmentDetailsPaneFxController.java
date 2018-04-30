@@ -314,7 +314,10 @@ public class PunishmentDetailsPaneFxController extends WizardStepFxControllerBas
 		uiDataMap.put(KEY_PUNISHMENT_DETAILS_FINAL_DEPORTATION, cbFinalDeportation.isSelected());
 		uiDataMap.put(KEY_PUNISHMENT_DETAILS_LIBEL, cbLibel.isSelected());
 		uiDataMap.put(KEY_PUNISHMENT_DETAILS_COVENANT, cbCovenant.isSelected());
-		uiDataMap.put(KEY_PUNISHMENT_DETAILS_OTHER, txtOther.getText());
+		
+		String other = txtOther.getText();
+		if(other != null && !other.isEmpty()) uiDataMap.put(KEY_PUNISHMENT_DETAILS_OTHER, other);
+		else uiDataMap.remove(KEY_PUNISHMENT_DETAILS_OTHER);
 	}
 	
 	@FXML

@@ -296,7 +296,12 @@ public class JudgmentDetailsPaneFxController extends WizardStepFxControllerBase
 		uiDataMap.put(KEY_JUDGMENT_DETAILS_CRIME_2_ENABLED, cbCrimeClassification2.isSelected());
 		uiDataMap.put(KEY_JUDGMENT_DETAILS_CRIME_3_ENABLED, cbCrimeClassification3.isSelected());
 		uiDataMap.put(KEY_JUDGMENT_DETAILS_JUDGMENT_ISSUER, txtJudgmentIssuer.getText());
-		uiDataMap.put(KEY_JUDGMENT_DETAILS_POLICE_FILE_NUMBER, txtPoliceFileNumber.getText());
+		
+		String policeFileNumber = txtPoliceFileNumber.getText();
+		if(policeFileNumber != null && !policeFileNumber.trim().isEmpty())
+											uiDataMap.put(KEY_JUDGMENT_DETAILS_POLICE_FILE_NUMBER, policeFileNumber);
+		else uiDataMap.remove(KEY_JUDGMENT_DETAILS_POLICE_FILE_NUMBER);
+		
 		uiDataMap.put(KEY_JUDGMENT_DETAILS_JUDGMENT_NUMBER, txtJudgmentNumber.getText());
 		uiDataMap.put(KEY_JUDGMENT_DETAILS_ARREST_DATE, dpArrestDate.getValue());
 		uiDataMap.put(KEY_JUDGMENT_DETAILS_ARREST_DATE_SHOW_HIJRI, cbArrestDateShowHijri.isSelected());

@@ -283,8 +283,15 @@ public class PersonInfoPaneFxController extends WizardStepFxControllerBase
 		uiDataMap.put(KEY_PERSON_INFO_FATHER_NAME, txtFatherName.getText());
 		uiDataMap.put(KEY_PERSON_INFO_GRANDFATHER_NAME, txtGrandfatherName.getText());
 		uiDataMap.put(KEY_PERSON_INFO_FAMILY_NAME, txtFamilyName.getText());
-		uiDataMap.put(KEY_PERSON_INFO_OCCUPATION, txtOccupation.getText());
-		uiDataMap.put(KEY_PERSON_INFO_BIRTH_PLACE, txtBirthPlace.getText());
+		
+		String occupation = txtOccupation.getText();
+		if(occupation != null && !occupation.trim().isEmpty()) uiDataMap.put(KEY_PERSON_INFO_OCCUPATION, occupation);
+		else uiDataMap.remove(KEY_PERSON_INFO_OCCUPATION);
+		
+		String birthPlace = txtBirthPlace.getText();
+		if(birthPlace != null && !birthPlace.trim().isEmpty()) uiDataMap.put(KEY_PERSON_INFO_BIRTH_PLACE, birthPlace);
+		else uiDataMap.remove(KEY_PERSON_INFO_BIRTH_PLACE);
+		
 		uiDataMap.put(KEY_PERSON_INFO_BIRTH_DATE, dpBirthDate.getValue());
 		uiDataMap.put(KEY_PERSON_INFO_BIRTH_DATE_SHOW_HIJRI, cbBirthDateShowHijri.isSelected());
 		
