@@ -326,7 +326,11 @@ public class GuiUtils
 			iv.setPreserveRatio(true);
 			
 			int radius = Integer.parseInt(System.getProperty("jnlp.bio.bw.image.blur.radius"));
-			if(blur) iv.setEffect(new GaussianBlur(radius));
+			@SuppressWarnings("unchecked")
+			List<String> userRoles = (List<String>) Context.getUserSession().getAttribute("userRoles");
+			String maleSeeFemaleRole = System.getProperty("jnlp.bio.bw.face.roles.maleSeeFemale");
+			boolean authorized = userRoles.contains(maleSeeFemaleRole);
+			if(!authorized && blur) iv.setEffect(new GaussianBlur(radius));
 
 			double taskBarHeight = 40.0;
 			double rightLeftWindowBorders = 6.0;

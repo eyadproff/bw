@@ -663,7 +663,7 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 		if(!workflowStarted) return;
 		if(btnStopFingerprintCapturing.isVisible())
 		{
-			Platform.runLater(() -> btnStopFingerprintCapturing.fire());
+			Platform.runLater(btnStopFingerprintCapturing::fire);
 		}
 		
 		// remove incomplete slaps

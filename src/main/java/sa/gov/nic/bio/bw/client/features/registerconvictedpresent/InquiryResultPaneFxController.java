@@ -231,7 +231,11 @@ public class InquiryResultPaneFxController extends WizardStepFxControllerBase
 			                           resources.getString("label.contextMenu.showImage"), blur);
 			
 			int radius = Integer.parseInt(System.getProperty("jnlp.bio.bw.image.blur.radius"));
-			if(blur) ivPersonPhoto.setEffect(new GaussianBlur(radius));
+			@SuppressWarnings("unchecked")
+			List<String> userRoles = (List<String>) Context.getUserSession().getAttribute("userRoles");
+			String maleSeeFemaleRole = System.getProperty("jnlp.bio.bw.face.roles.maleSeeFemale");
+			boolean authorized = userRoles.contains(maleSeeFemaleRole);
+			if(!authorized && blur) ivPersonPhoto.setEffect(new GaussianBlur(radius));
 		}
 		
 		Name name = personInfo.getName();

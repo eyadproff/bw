@@ -317,7 +317,7 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 	@Override
 	public void onLeaving(Map<String, Object> uiDataMap)
 	{
-		if(btnStopCameraLivePreview.isVisible()) btnStopCameraLivePreview.fire();
+		if(btnStopCameraLivePreview.isVisible()) Platform.runLater(btnStopCameraLivePreview::fire);
 		
 		uiDataMap.put(KEY_ICAO_SUCCESS_ICON_VISIBLE, ivSuccessIcao.isVisible());
 		uiDataMap.put(KEY_ICAO_WARNING_ICON_VISIBLE, ivWarningIcao.isVisible());
@@ -696,7 +696,7 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 					    tpCroppedImage.setCaptured(true);
 					    tpCroppedImage.setValid(true);
 					    
-					    if(btnStopCameraLivePreview.isVisible()) btnStopCameraLivePreview.fire();
+					    if(btnStopCameraLivePreview.isVisible()) Platform.runLater(btnStopCameraLivePreview::fire);
 				    }
 				    else
 				    {
