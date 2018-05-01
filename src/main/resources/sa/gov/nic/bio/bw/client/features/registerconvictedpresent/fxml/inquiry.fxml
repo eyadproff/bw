@@ -15,7 +15,7 @@
     <center>
         <VBox alignment="CENTER" spacing="5.0">
             <ProgressIndicator fx:id="piProgress" maxWidth="25.0" maxHeight="25.0"/>
-            <Label fx:id="txtProgress" text="%label.fingerprintInquiryInProgress"/>
+            <Label fx:id="lblProgress" text="%label.fingerprintInquiryInProgress"/>
             <Button fx:id="btnCancel" text="%button.cancel"/>
             <Label fx:id="lblCanceling" text="%label.fingerprintInquiryCanceling" managed="false" visible="false"/>
             <Label fx:id="lblCancelled" text="%label.fingerprintInquiryCancelled" managed="false" visible="false"/>
@@ -24,6 +24,12 @@
                     <Image url="@../../../core/images/error.png"/>
                 </ImageView>
                 <Label text="%label.fingerprintsInquiryError"/>
+            </VBox>
+            <VBox fx:id="paneDevicesRunnerNotRunning" alignment="CENTER" spacing="5.0" managed="false" visible="false">
+                <ImageView>
+                    <Image url="@../../../core/images/warning.png"/>
+                </ImageView>
+                <Label text="%label.devicesRunnerNotRunning"/>
             </VBox>
         </VBox>
     </center>

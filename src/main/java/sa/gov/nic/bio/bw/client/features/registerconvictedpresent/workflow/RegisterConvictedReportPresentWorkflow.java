@@ -24,6 +24,7 @@ import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.PersonInfoPane
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.PunishmentDetailsPaneFxController;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.ReviewAndSubmitPaneFxController;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.ShowReportPaneFxController;
+import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.utils.RegisterConvictedPresentErrorCodes;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.ConvictedReport;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.Finger;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.FingerCoordinate;
@@ -142,6 +143,12 @@ public class RegisterConvictedReportPresentWorkflow extends WorkflowBase<Void, V
 						{
 							// show progress only
 							formRenderer.get().renderForm(InquiryPaneFxController.class, uiInputData);
+							uiOutputData = waitForUserTask();
+							uiInputData.putAll(uiOutputData);
+							
+							Boolean running = (Boolean)
+									uiOutputData.get(InquiryPaneFxController.KEY_DEVICES_RUNNER_IS_RUNNING);
+							if(!running) break;
 							
 							Image capturedImage = (Image) uiInputData.get(FaceCapturingFxController.KEY_CAPTURED_IMAGE);
 							Image croppedImage = (Image) uiInputData.get(FaceCapturingFxController.KEY_CROPPED_IMAGE);
@@ -157,7 +164,18 @@ public class RegisterConvictedReportPresentWorkflow extends WorkflowBase<Void, V
 							}
 							catch(IOException e)
 							{
-								e.printStackTrace();
+								String errorCode = RegisterConvictedPresentErrorCodes.C007_00010.getCode();
+								String[] errorDetails = {"Failed to convert the person image to base64!"};
+								uiInputData.put(InquiryPaneFxController.KEY_INQUIRY_ERROR_CODE, errorCode);
+								uiInputData.put(InquiryPaneFxController.KEY_INQUIRY_ERROR_EXCEPTION, e);
+								uiInputData.put(InquiryPaneFxController.KEY_INQUIRY_ERROR_DETAILS, errorDetails);
+								formRenderer.get().renderForm(InquiryPaneFxController.class, uiInputData);
+								uiInputData.remove(InquiryPaneFxController.KEY_INQUIRY_ERROR_CODE);
+								uiInputData.remove(InquiryPaneFxController.KEY_INQUIRY_ERROR_EXCEPTION);
+								uiInputData.remove(InquiryPaneFxController.KEY_INQUIRY_ERROR_DETAILS);
+								uiOutputData = waitForUserTask();
+								uiInputData.putAll(uiOutputData);
+								break;
 							}
 						}
 						

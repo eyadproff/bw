@@ -91,7 +91,7 @@ public abstract class BodyFxControllerBase extends RegionFxControllerBase implem
 	protected void onDetachedFromScene(){}
 	
 	
-	protected void reportNegativeResponse(String errorCode, Exception exception, String[] errorDetails)
+	protected void reportNegativeResponse(String errorCode, Throwable exception, String[] errorDetails)
 	{
 		if(errorCode.startsWith("B") || errorCode.startsWith("N")) // business error
 		{

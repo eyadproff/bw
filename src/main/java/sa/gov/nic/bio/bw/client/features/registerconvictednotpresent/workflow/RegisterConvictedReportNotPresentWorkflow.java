@@ -15,6 +15,7 @@ import sa.gov.nic.bio.bw.client.features.commons.LookupFxController;
 import sa.gov.nic.bio.bw.client.features.commons.workflow.ConvictedReportLookupService;
 import sa.gov.nic.bio.bw.client.features.registerconvictednotpresent.FetchingFingerprintsPaneFxController;
 import sa.gov.nic.bio.bw.client.features.registerconvictednotpresent.PersonIdPaneFxController;
+import sa.gov.nic.bio.bw.client.features.registerconvictednotpresent.utils.RegisterConvictedNotPresentErrorCodes;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.InquiryPaneFxController;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.InquiryResultPaneFxController;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.JudgmentDetailsPaneFxController;
@@ -40,7 +41,6 @@ import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -91,7 +91,7 @@ public class RegisterConvictedReportNotPresentWorkflow extends WorkflowBase<Void
 			uiInputData.clear();
 			int step = 0;
 			
-			while(true)
+			outer: while(true)
 			{
 				Map<String, Object> uiOutputData = null;
 				
@@ -172,6 +172,12 @@ public class RegisterConvictedReportNotPresentWorkflow extends WorkflowBase<Void
 						{
 							// show progress only
 							formRenderer.get().renderForm(InquiryPaneFxController.class, uiInputData);
+							uiOutputData = waitForUserTask();
+							uiInputData.putAll(uiOutputData);
+							
+							Boolean running = (Boolean)
+											uiOutputData.get(InquiryPaneFxController.KEY_DEVICES_RUNNER_IS_RUNNING);
+							if(!running) break;
 						}
 						
 						@SuppressWarnings("unchecked")
@@ -201,7 +207,7 @@ public class RegisterConvictedReportNotPresentWorkflow extends WorkflowBase<Void
 						Map<Integer, String> fingerprintWsqMap = new HashMap<>();
 						Map<Integer, String> fingerprintImages = new HashMap<>();
 						
-						collectedFingerprints.forEach(finger ->
+						for(Finger finger : collectedFingerprints)
 						{
 							int position = finger.getType();
 							
@@ -249,25 +255,52 @@ public class RegisterConvictedReportNotPresentWorkflow extends WorkflowBase<Void
 										.segmentSlap(slapImageBase64, slapImageFormat, position,
 										             expectedFingersCount, slapMissingFingers);
 								
-								sa.gov.nic.bio.biokit.beans.ServiceResponse<SegmentFingerprintsResponse> response
-																												= null;
+								sa.gov.nic.bio.biokit.beans.ServiceResponse<SegmentFingerprintsResponse> response;
 								try
 								{
 									response = serviceResponseFuture.get();
 								}
-								catch(ExecutionException e)
+								catch(Exception e)
 								{
-									e.printStackTrace();
-								}
-								catch(InterruptedException e)
-								{
-									e.printStackTrace();
+									String errorCode = RegisterConvictedNotPresentErrorCodes.C009_00003.getCode();
+									String[] errorDetails =
+														{"Failed to call the service for segmenting the fingerprints!"};
+									uiInputData.put(InquiryPaneFxController.KEY_INQUIRY_ERROR_CODE, errorCode);
+									uiInputData.put(InquiryPaneFxController.KEY_INQUIRY_ERROR_EXCEPTION, e);
+									uiInputData.put(InquiryPaneFxController.KEY_INQUIRY_ERROR_DETAILS, errorDetails);
+									formRenderer.get().renderForm(InquiryPaneFxController.class, uiInputData);
+									uiInputData.remove(InquiryPaneFxController.KEY_INQUIRY_ERROR_CODE);
+									uiInputData.remove(InquiryPaneFxController.KEY_INQUIRY_ERROR_EXCEPTION);
+									uiInputData.remove(InquiryPaneFxController.KEY_INQUIRY_ERROR_DETAILS);
+									uiOutputData = waitForUserTask();
+									uiInputData.putAll(uiOutputData);
+									break outer;
 								}
 								
-								SegmentFingerprintsResponse result = response.getResult();
-								List<DMFingerData> fingerData = result.getFingerData();
-								fingerData.forEach(dmFingerData -> fingerprintImages.put(dmFingerData.getPosition(),
-					                                                                     dmFingerData.getFinger()));
+								if(response.isSuccess())
+								{
+									SegmentFingerprintsResponse result = response.getResult();
+									List<DMFingerData> fingerData = result.getFingerData();
+									fingerData.forEach(dmFingerData -> fingerprintImages.put(dmFingerData.getPosition(),
+									                                                         dmFingerData.getFinger()));
+								}
+								else
+								{
+									String[] errorDetails = {"Failed to segment the fingerprints!"};
+									uiInputData.put(InquiryPaneFxController.KEY_INQUIRY_ERROR_CODE,
+									                response.getErrorCode());
+									uiInputData.put(InquiryPaneFxController.KEY_INQUIRY_ERROR_EXCEPTION,
+									                response.getException());
+									uiInputData.put(InquiryPaneFxController.KEY_INQUIRY_ERROR_DETAILS, errorDetails);
+									formRenderer.get().renderForm(InquiryPaneFxController.class, uiInputData);
+									uiInputData.remove(InquiryPaneFxController.KEY_INQUIRY_ERROR_CODE);
+									uiInputData.remove(InquiryPaneFxController.KEY_INQUIRY_ERROR_EXCEPTION);
+									uiInputData.remove(InquiryPaneFxController.KEY_INQUIRY_ERROR_DETAILS);
+									uiOutputData = waitForUserTask();
+									uiInputData.putAll(uiOutputData);
+									break outer;
+								}
+								
 							}
 							else
 							{
@@ -275,7 +308,7 @@ public class RegisterConvictedReportNotPresentWorkflow extends WorkflowBase<Void
 								else if(position == 12) position = 6;
 								fingerprintWsqMap.put(position, finger.getImage());
 							}
-						});
+						}
 						
 						if(!fingerprintWsqMap.isEmpty())
 						{
@@ -284,20 +317,50 @@ public class RegisterConvictedReportNotPresentWorkflow extends WorkflowBase<Void
 									.getFingerprintUtilitiesService()
 									.convertWsqToImages(fingerprintWsqMap);
 							
-							sa.gov.nic.bio.biokit.beans.ServiceResponse<ConvertedFingerprintsResponse> response
-									= null;
+							sa.gov.nic.bio.biokit.beans.ServiceResponse<ConvertedFingerprintsResponse> response;
 							try
 							{
 								response = serviceResponseFuture.get();
 							}
-							catch(ExecutionException e)
+							catch(Exception e)
 							{
-								e.printStackTrace();
+								String errorCode = RegisterConvictedNotPresentErrorCodes.C009_00004.getCode();
+								String[] errorDetails = {"Failed to call the service for converting the WSQ!"};
+								uiInputData.put(InquiryPaneFxController.KEY_INQUIRY_ERROR_CODE, errorCode);
+								uiInputData.put(InquiryPaneFxController.KEY_INQUIRY_ERROR_EXCEPTION, e);
+								uiInputData.put(InquiryPaneFxController.KEY_INQUIRY_ERROR_DETAILS, errorDetails);
+								formRenderer.get().renderForm(InquiryPaneFxController.class, uiInputData);
+								uiInputData.remove(InquiryPaneFxController.KEY_INQUIRY_ERROR_CODE);
+								uiInputData.remove(InquiryPaneFxController.KEY_INQUIRY_ERROR_EXCEPTION);
+								uiInputData.remove(InquiryPaneFxController.KEY_INQUIRY_ERROR_DETAILS);
+								uiOutputData = waitForUserTask();
+								uiInputData.putAll(uiOutputData);
+								break outer;
 							}
 							
-							ConvertedFingerprintsResponse responseResult = response.getResult();
-							Map<Integer, String> result = responseResult.getFingerprintImagesMap();
-							fingerprintImages.putAll(result);
+							if(response.isSuccess())
+							{
+								ConvertedFingerprintsResponse responseResult = response.getResult();
+								Map<Integer, String> result = responseResult.getFingerprintImagesMap();
+								fingerprintImages.putAll(result);
+							}
+							else
+							{
+								String[] errorDetails = {"Failed to convert the WSQ!"};
+								uiInputData.put(InquiryPaneFxController.KEY_INQUIRY_ERROR_CODE,
+								                response.getErrorCode());
+								uiInputData.put(InquiryPaneFxController.KEY_INQUIRY_ERROR_EXCEPTION,
+								                response.getException());
+								uiInputData.put(InquiryPaneFxController.KEY_INQUIRY_ERROR_DETAILS, errorDetails);
+								formRenderer.get().renderForm(InquiryPaneFxController.class, uiInputData);
+								uiInputData.remove(InquiryPaneFxController.KEY_INQUIRY_ERROR_CODE);
+								uiInputData.remove(InquiryPaneFxController.KEY_INQUIRY_ERROR_EXCEPTION);
+								uiInputData.remove(InquiryPaneFxController.KEY_INQUIRY_ERROR_DETAILS);
+								uiOutputData = waitForUserTask();
+								uiInputData.putAll(uiOutputData);
+								break outer;
+							}
+							
 						}
 						
 						uiInputData.put(FetchingFingerprintsPaneFxController.KEY_PERSON_FINGERPRINTS_IMAGES,

@@ -8,6 +8,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.layout.VBox;
 import sa.gov.nic.bio.bw.client.core.Context;
+import sa.gov.nic.bio.bw.client.core.DevicesRunnerGadgetPaneFxController;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.wizard.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.client.core.workflow.Workflow;
@@ -25,10 +26,15 @@ public class InquiryPaneFxController extends WizardStepFxControllerBase
 	public static final String KEY_FINGERPRINT_INQUIRY_UNKNOWN_STATUS = "FINGERPRINT_INQUIRY_UNKNOWN_STATUS";
 	public static final String KEY_RETRY_FINGERPRINT_INQUIRY = "RETRY_FINGERPRINT_INQUIRY";
 	public static final String KEY_FINGERPRINT_INQUIRY_HIT = "FINGERPRINT_INQUIRY_HIT";
+	public static final String KEY_DEVICES_RUNNER_IS_RUNNING = "DEVICES_RUNNER_IS_RUNNING";
+	public static final String KEY_INQUIRY_ERROR_CODE = "INQUIRY_ERROR_CODE";
+	public static final String KEY_INQUIRY_ERROR_EXCEPTION = "INQUIRY_ERROR_EXCEPTION";
+	public static final String KEY_INQUIRY_ERROR_DETAILS = "INQUIRY_ERROR_DETAILS";
 	
 	@FXML private VBox paneError;
+	@FXML private VBox paneDevicesRunnerNotRunning;
 	@FXML private ProgressIndicator piProgress;
-	@FXML private Label txtProgress;
+	@FXML private Label lblProgress;
 	@FXML private Label lblCanceling;
 	@FXML private Label lblCancelled;
 	@FXML private Button btnCancel;
@@ -56,7 +62,7 @@ public class InquiryPaneFxController extends WizardStepFxControllerBase
 		});
 		btnCancel.setOnAction(actionEvent ->
 		{
-			GuiUtils.showNode(txtProgress, false);
+			GuiUtils.showNode(lblProgress, false);
 			GuiUtils.showNode(btnCancel, false);
 			GuiUtils.showNode(lblCanceling, true);
 			fingerprintInquiryCancelled = true;
@@ -66,8 +72,64 @@ public class InquiryPaneFxController extends WizardStepFxControllerBase
 	@Override
 	public void onWorkflowUserTaskLoad(boolean newForm, Map<String, Object> uiInputData)
 	{
-		if(!newForm)
+		if(newForm)
 		{
+			DevicesRunnerGadgetPaneFxController deviceManagerGadgetPaneController =
+												Context.getCoreFxController().getDeviceManagerGadgetPaneController();
+			deviceManagerGadgetPaneController.setDevicesRunnerRunningListener(running ->
+			{
+				GuiUtils.showNode(piProgress, running);
+				GuiUtils.showNode(lblProgress, running);
+				GuiUtils.showNode(btnCancel, running);
+				GuiUtils.showNode(paneDevicesRunnerNotRunning, !running);
+				GuiUtils.showNode(btnStartOver, !running);
+				
+				if(running)
+				{
+					Map<String, Object> uiDataMap = new HashMap<>();
+					uiDataMap.put(KEY_DEVICES_RUNNER_IS_RUNNING, Boolean.TRUE);
+					Context.getWorkflowManager().submitUserTask(uiDataMap);
+				}
+			});
+			
+			if(!deviceManagerGadgetPaneController.isDevicesRunnerRunning())
+			{
+				GuiUtils.showNode(piProgress, false);
+				GuiUtils.showNode(lblProgress, false);
+				GuiUtils.showNode(btnCancel, false);
+				GuiUtils.showNode(lblCanceling, false);
+				GuiUtils.showNode(paneError, false);
+				GuiUtils.showNode(paneDevicesRunnerNotRunning, true);
+				GuiUtils.showNode(btnStartOver, true);
+				deviceManagerGadgetPaneController.runAndConnectDevicesRunner();
+			}
+			else
+			{
+				Map<String, Object> uiDataMap = new HashMap<>();
+				uiDataMap.put(KEY_DEVICES_RUNNER_IS_RUNNING, Boolean.TRUE);
+				Context.getWorkflowManager().submitUserTask(uiDataMap);
+			}
+		}
+		else
+		{
+			String errorCode = (String) uiInputData.get(KEY_INQUIRY_ERROR_CODE);
+			if(errorCode != null)
+			{
+				GuiUtils.showNode(piProgress, false);
+				GuiUtils.showNode(lblProgress, false);
+				GuiUtils.showNode(btnCancel, false);
+				GuiUtils.showNode(lblCanceling, false);
+				GuiUtils.showNode(btnRetry, true);
+				GuiUtils.showNode(btnStartOver, true);
+				GuiUtils.showNode(paneError, true);
+				
+				Throwable exception = (Throwable) uiInputData.get(KEY_INQUIRY_ERROR_EXCEPTION);
+				String[] errorDetails = (String[]) uiInputData.get(KEY_INQUIRY_ERROR_DETAILS);
+				
+				reportNegativeResponse(errorCode, exception, errorDetails);
+				return;
+			}
+			
 			Boolean hit = (Boolean) uiInputData.get(KEY_FINGERPRINT_INQUIRY_HIT);
 			if(hit != null)
 			{
@@ -78,7 +140,7 @@ public class InquiryPaneFxController extends WizardStepFxControllerBase
 			Integer unknownStatus = (Integer) uiInputData.get(KEY_FINGERPRINT_INQUIRY_UNKNOWN_STATUS);
 			if(unknownStatus != null)
 			{
-				String errorCode = RegisterConvictedPresentErrorCodes.C007_00001.getCode();
+				errorCode = RegisterConvictedPresentErrorCodes.C007_00001.getCode();
 				String[] errorDetails = {"Unknown fingerprint inquiry status (" + unknownStatus + ")!"};
 				Context.getCoreFxController().showErrorDialog(errorCode, null, errorDetails);
 				return;
@@ -124,7 +186,7 @@ public class InquiryPaneFxController extends WizardStepFxControllerBase
 			}
 			
 			GuiUtils.showNode(piProgress, false);
-			GuiUtils.showNode(txtProgress, false);
+			GuiUtils.showNode(lblProgress, false);
 			GuiUtils.showNode(btnCancel, false);
 			GuiUtils.showNode(lblCanceling, false);
 			GuiUtils.showNode(btnRetry, true);
@@ -138,7 +200,7 @@ public class InquiryPaneFxController extends WizardStepFxControllerBase
 			{
 				if(serviceResponse.getResult() == null)
 				{
-					String errorCode = RegisterConvictedPresentErrorCodes.C007_00002.getCode();
+					errorCode = RegisterConvictedPresentErrorCodes.C007_00002.getCode();
 					String[] errorDetails = {"TCN is null!"};
 					reportNegativeResponse(errorCode, null, errorDetails);
 				}
@@ -146,6 +208,14 @@ public class InquiryPaneFxController extends WizardStepFxControllerBase
 			else reportNegativeResponse(serviceResponse.getErrorCode(), serviceResponse.getException(),
 				                        serviceResponse.getErrorDetails());
 		}
+	}
+	
+	@Override
+	public void onLeaving(Map<String, Object> uiDataMap)
+	{
+		DevicesRunnerGadgetPaneFxController deviceManagerGadgetPaneController =
+												Context.getCoreFxController().getDeviceManagerGadgetPaneController();
+		deviceManagerGadgetPaneController.setDevicesRunnerRunningListener(null);
 	}
 	
 	@FXML
@@ -157,7 +227,7 @@ public class InquiryPaneFxController extends WizardStepFxControllerBase
 		GuiUtils.showNode(btnRetry, false);
 		GuiUtils.showNode(btnStartOver, false);
 		GuiUtils.showNode(piProgress, true);
-		GuiUtils.showNode(txtProgress, true);
+		GuiUtils.showNode(lblProgress, true);
 		GuiUtils.showNode(btnCancel, true);
 		
 		Map<String, Object> uiDataMap = new HashMap<>();
