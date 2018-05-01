@@ -406,9 +406,32 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 			    if(result.getReturnCode() != FaceStartPreviewResponse.SuccessCodes.SUCCESS)
 			    {
 				    GuiUtils.showNode(btnStartCameraLivePreview, true);
-				    lblStatus.setText(String.format(
-						    resources.getString("label.status.failedToCaptureTheFaceWithErrorCode"),
-						    result.getReturnCode()));
+				    
+			    	if(result.getReturnCode() ==
+						                    FaceStartPreviewResponse.FailureCodes.EXCEPTION_WHILE_GETTING_PREVIEW_IMAGE)
+				    {
+					    lblStatus.setText(resources.getString("label.status.exceptionWhileGettingPreviewImage"));
+				    }
+				    else if(result.getReturnCode() ==
+					                                FaceStartPreviewResponse.FailureCodes.DEVICE_NOT_FOUND_OR_UNPLUGGED)
+				    {
+					    lblStatus.setText(resources.getString("label.status.cameraNotFoundOrUnplugged"));
+					
+					    GuiUtils.showNode(btnStartCameraLivePreview,false);
+					    DevicesRunnerGadgetPaneFxController deviceManagerGadgetPaneController =
+						                        Context.getCoreFxController().getDeviceManagerGadgetPaneController();
+					    deviceManagerGadgetPaneController.initializeCamera();
+				    }
+				    else if(result.getReturnCode() == FaceStartPreviewResponse.FailureCodes.DEVICE_BUSY)
+				    {
+					    lblStatus.setText(resources.getString("label.status.cameraBusy"));
+				    }
+				    else
+				    {
+					    lblStatus.setText(String.format(
+							    resources.getString("label.status.failedToStartCameraLivePreviewingWithErrorCode"),
+							    result.getReturnCode()));
+				    }
 			    }
 		    }
 		    else

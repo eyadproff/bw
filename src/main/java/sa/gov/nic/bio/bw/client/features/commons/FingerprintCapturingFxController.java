@@ -66,6 +66,7 @@ import java.util.Map;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Predicate;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -172,6 +173,7 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 	private Map<Integer, FingerprintUiComponents> fingerprintUiComponentsMap = new HashMap<>();
 	private List<List<Fingerprint>> currentSlapAttempts = new ArrayList<>();
 	private CaptureFingerprintResponse wrongSlapCapturedFingerprints;
+	private boolean fingerprintDeviceInitializedAtLeastOnce = false;
 	private boolean skipRightSlap = false;
 	private boolean skipLeftSlap = false;
 	private boolean skipThumbs = false;
@@ -179,6 +181,7 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 	private boolean workflowUserTaskLoaded = false;
 	private boolean acceptBadQualityFingerprint = false;
 	private int acceptedBadQualityFingerprintMinRetires = Integer.MAX_VALUE;
+	private AtomicBoolean stopCapturingIsInProgress = new AtomicBoolean();
 	
 	@Override
 	public URL getFxmlLocation()
@@ -592,7 +595,6 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 				
 				if(initialized)
 			    {
-				    LOGGER.info("The fingerprint scanner is initialized!");
 				    if(currentSlapPosition <= FingerPosition.TWO_THUMBS.getPosition()) GuiUtils.showNode(
 				    		                                                btnStartFingerprintCapturing, true);
 				    GuiUtils.showNode(lblStatus, true);
@@ -600,20 +602,28 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 			        		                        "label.status.fingerprintScannerInitializedSuccessfully"));
 				    activateFingerIndicatorsForNextCapturing(currentSlapPosition);
 				    GuiUtils.showNode(btnStartOver, workflowStarted);
+				    fingerprintDeviceInitializedAtLeastOnce = true;
+				    LOGGER.info("The fingerprint scanner is initialized!");
 			    }
-			    else
+			    else if(fingerprintDeviceInitializedAtLeastOnce)
 			    {
-				    LOGGER.info("The fingerprint scanner is disconnected!");
 				    GuiUtils.showNode(btnStartFingerprintCapturing, false);
 				    GuiUtils.showNode(lblStatus, true);
 				    lblStatus.setText(resources.getString("label.status.fingerprintScannerDisconnected"));
+				    LOGGER.info("The fingerprint scanner is disconnected!");
 			    }
+			    else
+				{
+					GuiUtils.showNode(lblStatus, true);
+					lblStatus.setText(resources.getString("label.status.fingerprintScannerNotInitialized"));
+				}
 			}));
 			
 			// prepare for next fingerprint capturing if the fingerprint device is connected and initialized, otherwise
 			// auto-run and auto-initialize as configured
 			if(deviceManagerGadgetPaneController.isFingerprintScannerInitialized())
 			{
+				System.out.println("1");
 				if(currentSlapPosition <= FingerPosition.TWO_THUMBS.getPosition()) GuiUtils.showNode(
 																			btnStartFingerprintCapturing, true);
 				activateFingerIndicatorsForNextCapturing(currentSlapPosition);
@@ -637,15 +647,12 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 			else
 			{
 				boolean devicesRunnerAutoRun = "true".equals(System.getProperty("jnlp.bio.bw.devicesRunner.autoRun"));
+				GuiUtils.showNode(lblStatus, true);
+				lblStatus.setText(resources.getString("label.status.fingerprintScannerNotInitialized"));
 				
 				if(devicesRunnerAutoRun)
 				{
 					deviceManagerGadgetPaneController.runAndConnectDevicesRunner();
-				}
-				else
-				{
-					GuiUtils.showNode(lblStatus, true);
-					lblStatus.setText(resources.getString("label.status.fingerprintScannerNotInitialized"));
 				}
 			}
 		}
@@ -925,22 +932,93 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 			        else processCaptureFingerprintResponse(result);
 		        }
 		        // we skip FAILED_TO_CAPTURE_FINAL_IMAGE because it happens only when we send "stop" command
-		        else if(result.getReturnCode() != CaptureFingerprintResponse.FailureCodes.FAILED_TO_CAPTURE_FINAL_IMAGE)
+		        else
 		        {
+			        GuiUtils.showNode(piProgress, false);
+			        GuiUtils.showNode(piFingerprintDeviceLivePreview, false);
 			        GuiUtils.showNode(btnStartFingerprintCapturing, true);
 			        GuiUtils.showNode(btnStartOver, true);
 			        
 			        fingerprintUiComponentsMap.forEach((integer, components) ->
 				                                           GuiUtils.showNode(components.getSvgPath(), false));
+			        
+			        if(result.getReturnCode() == CaptureFingerprintResponse.FailureCodes.EXCEPTION_WHILE_CAPTURING)
+			        {
+				        lblStatus.setText(resources.getString("label.status.exceptionWhileCapturing"));
+			        }
+			        else if(result.getReturnCode() ==
+					                            CaptureFingerprintResponse.FailureCodes.DEVICE_NOT_FOUND_OR_UNPLUGGED)
+			        {
+				        lblStatus.setText(resources.getString("label.status.fingerprintDeviceNotFoundOrUnplugged"));
+				
+				        GuiUtils.showNode(btnStartFingerprintCapturing,false);
+				        GuiUtils.showNode(btnStartOver, false);
+				        DevicesRunnerGadgetPaneFxController deviceManagerGadgetPaneController =
+						                        Context.getCoreFxController().getDeviceManagerGadgetPaneController();
+				        deviceManagerGadgetPaneController.initializeFingerprintScanner();
+			        }
+			        else if(result.getReturnCode() == CaptureFingerprintResponse.FailureCodes.DEVICE_BUSY)
+			        {
+				        lblStatus.setText(resources.getString("label.status.fingerprintDeviceBusy"));
+			        }
+			        else if(result.getReturnCode() ==
+					                        CaptureFingerprintResponse.FailureCodes.WRONG_NUMBER_OF_EXPECTED_FINGERS)
+			        {
+				        lblStatus.setText(resources.getString("label.status.wrongNumberOfExpectedFingers"));
+			        }
+			        else if(result.getReturnCode() == CaptureFingerprintResponse.FailureCodes.SEGMENTATION_FAILED)
+			        {
+				        lblStatus.setText(resources.getString("label.status.segmentationFailed"));
+			        }
+			        else if(result.getReturnCode() == CaptureFingerprintResponse.FailureCodes.WSQ_CONVERSION_FAILED)
+			        {
+				        lblStatus.setText(resources.getString("label.status.wsqConversionFailed"));
+			        }
+			        else if(result.getReturnCode() ==
+				                                CaptureFingerprintResponse.FailureCodes.FAILED_TO_CAPTURE_FINAL_IMAGE)
+			        {
+				        if(!stopCapturingIsInProgress.get())
+				        {
+					        lblStatus.setText(resources.getString("label.status.failedToCaptureFinalImage"));
+					
+					        GuiUtils.showNode(btnStartFingerprintCapturing,false);
+					        GuiUtils.showNode(btnStartOver, false);
+					        DevicesRunnerGadgetPaneFxController deviceManagerGadgetPaneController =
+							        Context.getCoreFxController().getDeviceManagerGadgetPaneController();
+					        deviceManagerGadgetPaneController.initializeFingerprintScanner();
+				        }
+			        }
+			        else if(result.getReturnCode() ==
+					                        CaptureFingerprintResponse.FailureCodes.EXCEPTION_IN_FINGER_HANDLER_CAPTURE)
+			        {
+				        lblStatus.setText(resources.getString("label.status.exceptionInFingerHandlerCapture"));
+			        }
+			        else if(result.getReturnCode() == CaptureFingerprintResponse.FailureCodes.POOR_IMAGE_QUALITY)
+			        {
+				        lblStatus.setText(resources.getString("label.status.poorImageQuality"));
+			        }
+			        else if(result.getReturnCode() == CaptureFingerprintResponse.FailureCodes.SENSOR_IS_DIRTY)
+			        {
+				        lblStatus.setText(resources.getString("label.status.sensorIsDirty"));
+			        }
+			        else if(result.getReturnCode() == CaptureFingerprintResponse.FailureCodes.CAPTURE_TIMEOUT)
+			        {
+				        lblStatus.setText(resources.getString("label.status.captureTimeout"));
+			        }
+			        else
+			        {
+				        lblStatus.setText(String.format(firstLivePreviewingResponse[0] ?
+                            resources.getString("label.status.failedToStartFingerprintCapturingWithErrorCode") :
+                            resources.getString("label.status.failedToCaptureFingerprintsWithErrorCode"),
+                            result.getReturnCode()));
+			        }
 		        	
-			        lblStatus.setText(String.format(firstLivePreviewingResponse[0] ?
-					        resources.getString("label.status.failedToStartFingerprintCapturingWithErrorCode") :
-					        resources.getString("label.status.failedToCaptureFingerprintsWithErrorCode"),
-					        result.getReturnCode()));
 		        }
 	        }
 	        else
 	        {
+		        GuiUtils.showNode(piProgress, false);
+		        GuiUtils.showNode(piFingerprintDeviceLivePreview, false);
 		        GuiUtils.showNode(btnStartFingerprintCapturing, true);
 		        GuiUtils.showNode(btnStartOver, true);
 		        
@@ -959,9 +1037,13 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 				        "failed while capturing the fingerprints!"};
 		        Context.getCoreFxController().showErrorDialog(errorCode, serviceResponse.getException(), errorDetails);
 	        }
+	
+	        stopCapturingIsInProgress.set(false);
         });
 		capturingFingerprintTask.setOnFailed(e ->
 		{
+			stopCapturingIsInProgress.set(false);
+			GuiUtils.showNode(piProgress, false);
 			GuiUtils.showNode(piFingerprintDeviceLivePreview, false);
 			GuiUtils.showNode(btnStartFingerprintCapturing, true);
 			GuiUtils.showNode(btnStartOver, true);
@@ -1254,6 +1336,7 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 		    }
 		});
 		
+		stopCapturingIsInProgress.set(true);
 		Context.getExecutorService().submit(task);
 	}
 	
