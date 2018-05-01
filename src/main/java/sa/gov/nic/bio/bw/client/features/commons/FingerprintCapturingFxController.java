@@ -1345,35 +1345,35 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 			int sum1 = (int) o1.stream().filter(acceptanceFilter).count();
 			int sum2 = (int) o2.stream().filter(acceptanceFilter).count();
 			
-			int compare = Integer.compare(sum1, sum2);
+			int compare = -Integer.compare(sum1, sum2);
 			if(compare != 0) return compare;
 			else // if both have same amount of acceptable fingerprints
 			{
-				sum1 = o1.stream().mapToInt(fp -> fp.getDmFingerData().getPosition()).sum();
-				sum2 = o2.stream().mapToInt(fp -> fp.getDmFingerData().getPosition()).sum();
+				sum1 = o1.stream().filter(acceptanceFilter).mapToInt(fp -> fp.getDmFingerData().getPosition()).sum();
+				sum2 = o2.stream().filter(acceptanceFilter).mapToInt(fp -> fp.getDmFingerData().getPosition()).sum();
 				
-				compare = -Integer.compare(sum1, sum2);
+				compare = Integer.compare(sum1, sum2);
 				if(compare != 0) return compare;
 				else // if both have same amount of acceptable fingerprints and they are the same fingerprints
 				{
-					Comparator<Fingerprint> prioritizingComparator = (fp1, fp2) ->
-							- Integer.compare(fp1.getDmFingerData().getPosition(), fp2.getDmFingerData().getPosition());
-					List<Fingerprint> list1 = o1.stream().filter(acceptanceFilter)
-							.sorted(prioritizingComparator)
-							.collect(Collectors.toList());
-					List<Fingerprint> list2 = o1.stream().filter(acceptanceFilter)
-							.sorted(prioritizingComparator)
-							.collect(Collectors.toList());
+					Comparator<Fingerprint> prioritizingComparator = Comparator.comparingInt(
+																			fp -> fp.getDmFingerData().getPosition());
+					
+					// get list of fingerprints sorted by lowest positions first
+					List<Fingerprint> list1 = o1.stream().sorted(prioritizingComparator).collect(Collectors.toList());
+					List<Fingerprint> list2 = o1.stream().sorted(prioritizingComparator).collect(Collectors.toList());
 					
 					for(int i = 0; i < list1.size(); i++)
 					{
 						DMFingerData fp1 = list1.get(i).getDmFingerData();
 						DMFingerData fp2 = list2.get(i).getDmFingerData();
-						compare = -Integer.compare(fp1.getNfiqQuality(), fp2.getNfiqQuality());
+						compare = Integer.compare(fp1.getNfiqQuality(), fp2.getNfiqQuality());
+						
 						if(compare != 0) return compare;
 						else // both have the same NFIQ
 						{
-							compare = Integer.compare(fp1.getMinutiaeCount(), fp2.getMinutiaeCount());
+							compare = -Integer.compare(fp1.getMinutiaeCount(), fp2.getMinutiaeCount());
+							
 							if(compare != 0) return compare;
 							else // both have the same minutiae count
 							{
@@ -1395,9 +1395,9 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 														fp2.getIntensity();
 								
 								if(fp1AcceptableFingerprintImageIntensity &&
-										!fp2AcceptableFingerprintImageIntensity) return 1;
+										!fp2AcceptableFingerprintImageIntensity) return -1;
 								if(!fp1AcceptableFingerprintImageIntensity &&
-										fp2AcceptableFingerprintImageIntensity) return -1;
+										fp2AcceptableFingerprintImageIntensity) return 1;
 								else // both have bad image intensity
 								{
 									if(fp1.getIntensity() >
@@ -1405,25 +1405,29 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 											fp2.getIntensity() <
 													qualityThreshold.getMinimumAcceptableImageIntensity())
 									{
-										return 1;
+										return -1;
 									}
 									if(fp1.getIntensity() <
 											qualityThreshold.getMinimumAcceptableImageIntensity() &&
 											fp2.getIntensity() >
 													qualityThreshold.getMaximumAcceptableImageIntensity())
 									{
-										return -1;
+										return 1;
 									}
 									else // both on the same side
 									{
+										if(fp1.getIntensity() == fp2.getIntensity()) return 0;
+										
 										if(fp1.getIntensity() >
 												qualityThreshold.getMaximumAcceptableImageIntensity() &&
 												fp2.getIntensity() >
 														qualityThreshold.getMaximumAcceptableImageIntensity())
 										{
-											return 1;
+											// take the lowest
+											return Integer.compare(fp1.getIntensity(), fp2.getIntensity());
 										}
-										else return -1;
+										// take the highest
+										else return -Integer.compare(fp1.getIntensity(), fp2.getIntensity());
 									}
 								}
 							}
@@ -1453,10 +1457,18 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 		if(currentSlapPosition == FingerPosition.RIGHT_SLAP.getPosition())
 		{
 			lblStatus.setText(resources.getString("label.status.acceptedRightSlapFingerprints"));
+			
+			if(skipLeftSlap)
+			{
+				currentSlapPosition++;
+				if(skipThumbs) currentSlapPosition++;
+			}
 		}
 		else if(currentSlapPosition == FingerPosition.LEFT_SLAP.getPosition())
 		{
 			lblStatus.setText(resources.getString("label.status.acceptedLeftSlapFingerprints"));
+			
+			if(skipThumbs) currentSlapPosition++;
 		}
 		else if(currentSlapPosition == FingerPosition.TWO_THUMBS.getPosition())
 		{
