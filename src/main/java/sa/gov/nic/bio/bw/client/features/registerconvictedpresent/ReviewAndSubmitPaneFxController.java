@@ -41,6 +41,7 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
@@ -203,10 +204,12 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 			else lblNationality.setText(resources.getString("combobox.unknownNationality"));
 			
 			String subjOccupation = convictedReport.getSubjOccupation();
-			if(subjOccupation != null && !subjOccupation.trim().isEmpty()) lblOccupation.setText(subjOccupation);
+			if(subjOccupation != null && !subjOccupation.trim().isEmpty())
+				lblOccupation.setText(AppUtils.replaceNumbersOnly(subjOccupation, Locale.getDefault()));
 			
 			String subjBirthPlace = convictedReport.getSubjBirthPlace();
-			if(subjBirthPlace != null && !subjBirthPlace.trim().isEmpty()) lblBirthPlace.setText(subjBirthPlace);
+			if(subjBirthPlace != null && !subjBirthPlace.trim().isEmpty())
+				lblBirthPlace.setText(AppUtils.replaceNumbersOnly(subjBirthPlace, Locale.getDefault()));
 			
 			Long subjBirthDate = convictedReport.getSubjBirthDate();
 			if(subjBirthDate != null) lblBirthDate.setText(AppUtils.formatGregorianDate(subjBirthDate));
@@ -231,7 +234,8 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 					}
 				}
 				
-				if(idType != null) lblIdType.setText(idType.getDesc());
+				if(idType != null)
+								lblIdType.setText(AppUtils.replaceNumbersOnly(idType.getDesc(), Locale.getDefault()));
 			}
 			
 			Long subjDocIssDate = convictedReport.getSubjDocIssDate();
@@ -271,34 +275,51 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 				}
 			}
 			
-			lblJudgmentIssuer.setText(judgementInfo.getJudgIssuer());
+			lblJudgmentIssuer.setText(AppUtils.replaceNumbersOnly(judgementInfo.getJudgIssuer(), Locale.getDefault()));
 			
 			String policeFileNum = judgementInfo.getPoliceFileNum();
-			if(policeFileNum != null) lblPoliceFileNumber.setText(policeFileNum);
-			lblJudgmentNumber.setText(judgementInfo.getJudgNum());
+			if(policeFileNum != null)
+						lblPoliceFileNumber.setText(AppUtils.replaceNumbersOnly(policeFileNum, Locale.getDefault()));
+			lblJudgmentNumber.setText(AppUtils.replaceNumbersOnly(judgementInfo.getJudgNum(), Locale.getDefault()));
 			lblArrestDate.setText(AppUtils.formatGregorianDate(judgementInfo.getArrestDate()));
 			lblJudgmentDate.setText(AppUtils.formatGregorianDate(judgementInfo.getJudgDate()));
-			lblTazeerLashes.setText(String.valueOf(judgementInfo.getJudgTazeerLashesCount()));
-			lblHadLashes.setText(String.valueOf(judgementInfo.getJudgHadLashesCount()));
-			lblFine.setText(String.valueOf(judgementInfo.getJudgFine()));
-			lblJailYears.setText(String.valueOf(judgementInfo.getJailYearCount()));
-			lblJailMonths.setText(String.valueOf(judgementInfo.getJailMonthCount()));
-			lblJailDays.setText(String.valueOf(judgementInfo.getJailDayCount()));
-			lblTravelBanYears.setText(String.valueOf(judgementInfo.getTrvlBanYearCount()));
-			lblTravelBanMonths.setText(String.valueOf(judgementInfo.getTrvlBanMonthCount()));
-			lblTravelBanDays.setText(String.valueOf(judgementInfo.getTrvlBanDayCount()));
-			lblExilingYears.setText(String.valueOf(judgementInfo.getExileYearCount()));
-			lblExilingMonths.setText(String.valueOf(judgementInfo.getExileMonthCount()));
-			lblExilingDays.setText(String.valueOf(judgementInfo.getExileDayCount()));
-			lblDeportationYears.setText(String.valueOf(judgementInfo.getDeportYearCount()));
-			lblDeportationMonths.setText(String.valueOf(judgementInfo.getDeportMonthCount()));
-			lblDeportationDays.setText(String.valueOf(judgementInfo.getDeportDayCount()));
+			lblTazeerLashes.setText(AppUtils.replaceNumbersOnly(
+					String.valueOf(judgementInfo.getJudgTazeerLashesCount()), Locale.getDefault()));
+			lblHadLashes.setText(AppUtils.replaceNumbersOnly(
+					String.valueOf(judgementInfo.getJudgHadLashesCount()), Locale.getDefault()));
+			lblFine.setText(AppUtils.replaceNumbersOnly(
+					String.valueOf(judgementInfo.getJudgFine()), Locale.getDefault()));
+			lblJailYears.setText(AppUtils.replaceNumbersOnly(
+					String.valueOf(judgementInfo.getJailYearCount()), Locale.getDefault()));
+			lblJailMonths.setText(AppUtils.replaceNumbersOnly(
+					String.valueOf(judgementInfo.getJailMonthCount()), Locale.getDefault()));
+			lblJailDays.setText(AppUtils.replaceNumbersOnly(
+					String.valueOf(judgementInfo.getJailDayCount()), Locale.getDefault()));
+			lblTravelBanYears.setText(AppUtils.replaceNumbersOnly(
+					String.valueOf(judgementInfo.getTrvlBanYearCount()), Locale.getDefault()));
+			lblTravelBanMonths.setText(AppUtils.replaceNumbersOnly(
+					String.valueOf(judgementInfo.getTrvlBanMonthCount()), Locale.getDefault()));
+			lblTravelBanDays.setText(AppUtils.replaceNumbersOnly(
+					String.valueOf(judgementInfo.getTrvlBanDayCount()), Locale.getDefault()));
+			lblExilingYears.setText(AppUtils.replaceNumbersOnly(
+					String.valueOf(judgementInfo.getExileYearCount()), Locale.getDefault()));
+			lblExilingMonths.setText(AppUtils.replaceNumbersOnly(
+					String.valueOf(judgementInfo.getExileMonthCount()), Locale.getDefault()));
+			lblExilingDays.setText(AppUtils.replaceNumbersOnly(
+					String.valueOf(judgementInfo.getExileDayCount()), Locale.getDefault()));
+			lblDeportationYears.setText(AppUtils.replaceNumbersOnly(
+					String.valueOf(judgementInfo.getDeportYearCount()), Locale.getDefault()));
+			lblDeportationMonths.setText(AppUtils.replaceNumbersOnly(
+					String.valueOf(judgementInfo.getDeportMonthCount()), Locale.getDefault()));
+			lblDeportationDays.setText(AppUtils.replaceNumbersOnly(
+					String.valueOf(judgementInfo.getDeportDayCount()), Locale.getDefault()));
 			cbFinalDeportation.setSelected(judgementInfo.isFinalDeport());
 			cbLibel.setSelected(judgementInfo.isLibel());
 			cbCovenant.setSelected(judgementInfo.isCovenant());
 			
 			String judgOthers = judgementInfo.getJudgOthers();
-			if(judgOthers != null && !judgOthers.trim().isEmpty()) lblOther.setText(judgOthers);
+			if(judgOthers != null && !judgOthers.trim().isEmpty())
+									lblOther.setText(AppUtils.replaceNumbersOnly(judgOthers, Locale.getDefault()));
 			
 			// make the checkboxes look like they are enabled
 			cbFinalDeportation.setStyle("-fx-opacity: 1");
