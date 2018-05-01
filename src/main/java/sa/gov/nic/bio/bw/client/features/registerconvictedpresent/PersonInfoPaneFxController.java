@@ -131,14 +131,14 @@ public class PersonInfoPaneFxController extends WizardStepFxControllerBase
 		GuiUtils.initDatePicker(cbIdIssuanceDateShowHijri, dpIdIssuanceDate, null);
 		GuiUtils.initDatePicker(cbIdExpiryDateShowHijri, dpIdExpiryDate, null);
 		
-		GuiUtils.applyValidatorToTextField(txtFirstName, null, null, 20);
-		GuiUtils.applyValidatorToTextField(txtFatherName, null, null, 20);
-		GuiUtils.applyValidatorToTextField(txtGrandfatherName, null, null, 20);
-		GuiUtils.applyValidatorToTextField(txtFamilyName, null, null, 20);
+		GuiUtils.applyValidatorToTextField(txtFirstName, null, null, 15);
+		GuiUtils.applyValidatorToTextField(txtFatherName, null, null, 15);
+		GuiUtils.applyValidatorToTextField(txtGrandfatherName, null, null, 15);
+		GuiUtils.applyValidatorToTextField(txtFamilyName, null, null, 15);
 		GuiUtils.applyValidatorToTextField(txtGeneralFileNumber, "\\d*", "[^\\d]",
 		                                   10);
-		GuiUtils.applyValidatorToTextField(txtOccupation, null, null, 50);
-		GuiUtils.applyValidatorToTextField(txtBirthPlace, null, null, 30);
+		GuiUtils.applyValidatorToTextField(txtOccupation, null, null, 20);
+		GuiUtils.applyValidatorToTextField(txtBirthPlace, null, null, 20);
 		GuiUtils.applyValidatorToTextField(txtIdNumber, null, null, 10);
 		
 		BooleanBinding txtFirstNameBinding = txtFirstName.textProperty().isEmpty();

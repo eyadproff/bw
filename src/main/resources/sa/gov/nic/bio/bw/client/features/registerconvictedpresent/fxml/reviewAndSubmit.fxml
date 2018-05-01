@@ -66,7 +66,7 @@
                                         <Label text="%label.nationality" GridPane.rowIndex="3" GridPane.columnIndex="0" styleClass="bold-label"/>
                                         <Label fx:id="lblNationality" GridPane.rowIndex="3" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
                                         <Label text="%label.occupation" GridPane.rowIndex="3" GridPane.columnIndex="2" styleClass="bold-label"/>
-                                        <Label fx:id="lblOccupation" GridPane.rowIndex="3" GridPane.columnIndex="3" GridPane.hgrow="ALWAYS"/>
+                                        <Label fx:id="lblOccupation" wrapText="true" GridPane.rowIndex="3" GridPane.columnIndex="3" GridPane.hgrow="ALWAYS"/>
                                         <Label text="%label.birthPlace" GridPane.rowIndex="4" GridPane.columnIndex="0" styleClass="bold-label"/>
                                         <Label fx:id="lblBirthPlace" GridPane.rowIndex="4" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
                                         <Label text="%label.birthDate" GridPane.rowIndex="4" GridPane.columnIndex="2" styleClass="bold-label"/>

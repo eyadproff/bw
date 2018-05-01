@@ -81,11 +81,11 @@ public class PunishmentDetailsPaneFxController extends WizardStepFxControllerBas
 		btnNext.setOnAction(actionEvent -> goNext());
 		
 		GuiUtils.applyValidatorToTextField(spnTazeerLashes.getEditor(), "\\d*", "[^\\d]",
-		                                   10);
+		                                   9);
 		GuiUtils.applyValidatorToTextField(spnHadLashes.getEditor(), "\\d*", "[^\\d]",
-		                                   10);
+		                                   9);
 		GuiUtils.applyValidatorToTextField(spnFine.getEditor(), "\\d*", "[^\\d]",
-		                                   10);
+		                                   9);
 		GuiUtils.applyValidatorToTextField(spnJailYears.getEditor(), "\\d*", "[^\\d]",
 		                                   2);
 		GuiUtils.applyValidatorToTextField(spnJailMonths.getEditor(), "\\d*", "[^\\d]",
@@ -110,6 +110,7 @@ public class PunishmentDetailsPaneFxController extends WizardStepFxControllerBas
 		                                   2);
 		GuiUtils.applyValidatorToTextField(spnDeportationDays.getEditor(), "\\d*", "[^\\d]",
 		                                   2);
+		GuiUtils.applyValidatorToTextField(txtOther, null, null, 60);
 		
 		// set a custom converter to avoid NPE in case of empty string
 		StringConverter<Integer> integerStringConverter = new StringConverter<Integer>()

@@ -1035,7 +1035,7 @@
 				</graphicElement>
 			</rectangle>
 			<staticText>
-				<reportElement key="" x="508" y="314" width="32" height="15" uuid="2d0384be-3266-49a8-9279-55b767cd5499">
+				<reportElement key="" x="515" y="315" width="28" height="15" uuid="2d0384be-3266-49a8-9279-55b767cd5499">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Right">
@@ -1442,7 +1442,7 @@
 				<imageExpression><![CDATA[$P{FINGER_10}]]></imageExpression>
 			</image>
 			<textField evaluationTime="Report" isBlankWhenNull="true">
-				<reportElement key="" x="20" y="9" width="518" height="15" uuid="3510e8cf-ef76-41db-9934-79b18217c4b2"/>
+				<reportElement key="" x="20" y="14" width="518" height="15" uuid="3510e8cf-ef76-41db-9934-79b18217c4b2"/>
 				<textElement textAlignment="Center">
 					<font fontName="ArialCustom" isBold="false"/>
 				</textElement>
@@ -1652,7 +1652,7 @@
 				<textFieldExpression><![CDATA[$P{EXILING_DAYS}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="46" y="231" width="11" height="19" uuid="2769287f-d196-43c1-a168-77858ca49b99">
+				<reportElement x="45" y="231" width="11" height="19" uuid="2769287f-d196-43c1-a168-77858ca49b99">
 					<printWhenExpression><![CDATA[$P{IS_CRIMINAL_LIBEL}]]></printWhenExpression>
 				</reportElement>
 				<textElement markup="none">
@@ -1661,7 +1661,7 @@
 				<text><![CDATA[✓]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="46" y="277" width="11" height="17" uuid="e6d47de3-6443-4696-83a2-363af94881f1">
+				<reportElement x="45" y="277" width="11" height="17" uuid="e6d47de3-6443-4696-83a2-363af94881f1">
 					<printWhenExpression><![CDATA[$P{IS_COVENANT}]]></printWhenExpression>
 				</reportElement>
 				<textElement>
@@ -1679,7 +1679,7 @@
 				<text><![CDATA[✓]]></text>
 			</staticText>
 			<textField evaluationTime="Report" isBlankWhenNull="true">
-				<reportElement key="" x="14" y="316" width="488" height="15" uuid="5b33ae44-b7c6-4632-a79a-dca85dbe60d4"/>
+				<reportElement key="" x="14" y="316" width="501" height="15" uuid="5b33ae44-b7c6-4632-a79a-dca85dbe60d4"/>
 				<textElement textAlignment="Right">
 					<font fontName="ArialCustom" isBold="false"/>
 				</textElement>

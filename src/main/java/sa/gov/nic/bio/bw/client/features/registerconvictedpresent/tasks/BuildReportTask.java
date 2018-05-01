@@ -229,7 +229,8 @@ public class BuildReportTask extends Task<JasperPrint>
 			}
 		}
 		
-		params.put(PARAMETER_JUDGMENT_ISSUER, judgementInfo.getJudgIssuer());
+		params.put(PARAMETER_JUDGMENT_ISSUER,
+	               AppUtils.replaceNumbersOnly(judgementInfo.getJudgIssuer(), Locales.SAUDI_AR_LOCALE));
 		params.put(PARAMETER_JUDGMENT_DATE, AppUtils.formatGregorianDate(judgementInfo.getJudgDate()));
 		params.put(PARAMETER_JUDGMENT_NUMBER,
 		           AppUtils.replaceNumbersOnly(judgementInfo.getJudgNum(), Locales.SAUDI_AR_LOCALE));
