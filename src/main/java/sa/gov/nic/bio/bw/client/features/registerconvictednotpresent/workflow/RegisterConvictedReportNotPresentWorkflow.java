@@ -27,6 +27,7 @@ import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.Con
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.Finger;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.FingerprintInquiryStatusResult;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.PersonInfo;
+import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.workflow.ConvictedReportResponse;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.workflow.FingerprintInquiryService;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.workflow.FingerprintInquiryStatusCheckerService;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.workflow.GeneratingGeneralFileNumberService;
@@ -490,7 +491,7 @@ public class RegisterConvictedReportNotPresentWorkflow extends WorkflowBase<Void
 							
 							convictedReport.setGeneralFileNum(generalFileNumber);
 							
-							ServiceResponse<Long> serviceResponse =
+							ServiceResponse<ConvictedReportResponse> serviceResponse =
 									SubmittingConvictedReportService.execute(convictedReport);
 							
 							uiInputData.put(KEY_WEBSERVICE_RESPONSE, serviceResponse);

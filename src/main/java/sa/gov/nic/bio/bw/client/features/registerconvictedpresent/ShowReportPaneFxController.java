@@ -28,6 +28,7 @@ import java.util.concurrent.atomic.AtomicReference;
 public class ShowReportPaneFxController extends WizardStepFxControllerBase
 {
 	public static final String KEY_CONVICTED_REPORT_NUMBER = "CONVICTED_REPORT_NUMBER";
+	public static final String KEY_CONVICTED_REPORT_DATE = "CONVICTED_REPORT_DATE";
 	
 	@FXML private TextField txtReportNumber;
 	@FXML private TextField txtGeneralFileNumber;
@@ -70,6 +71,7 @@ public class ShowReportPaneFxController extends WizardStepFxControllerBase
 		if(newForm)
 		{
 			Long reportNumber = (Long) uiInputData.get(KEY_CONVICTED_REPORT_NUMBER);
+			Long reportDate = (Long) uiInputData.get(KEY_CONVICTED_REPORT_DATE);
 			txtReportNumber.setText(String.valueOf(reportNumber));
 			
 			Long GeneralFileNumber = (Long)
@@ -79,6 +81,7 @@ public class ShowReportPaneFxController extends WizardStepFxControllerBase
 			convictedReport = (ConvictedReport) uiInputData.get(
 														ReviewAndSubmitPaneFxController.KEY_FINAL_CONVICTED_REPORT);
 			convictedReport.setReportNumber(reportNumber);
+			convictedReport.setReportDate(reportDate);
 			
 			@SuppressWarnings("unchecked")
 			Map<Integer, String> fingerprintImages = (Map<Integer, String>)

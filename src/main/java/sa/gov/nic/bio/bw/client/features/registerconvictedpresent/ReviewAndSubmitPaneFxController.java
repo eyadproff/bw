@@ -31,6 +31,7 @@ import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.Fin
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.GenderType;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.JudgementInfo;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.Name;
+import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.workflow.ConvictedReportResponse;
 import sa.gov.nic.bio.bw.client.login.webservice.UserInfo;
 import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
 
@@ -392,14 +393,15 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 			GuiUtils.showNode(btnStartOver, true);
 			GuiUtils.showNode(btnSubmit, true);
 			
-			@SuppressWarnings("unchecked") ServiceResponse<Long> serviceResponse =
-										(ServiceResponse<Long>) uiInputData.get(Workflow.KEY_WEBSERVICE_RESPONSE);
+			@SuppressWarnings("unchecked") ServiceResponse<ConvictedReportResponse> serviceResponse =
+						(ServiceResponse<ConvictedReportResponse>) uiInputData.get(Workflow.KEY_WEBSERVICE_RESPONSE);
 			if(serviceResponse.isSuccess())
 			{
-				Long result = serviceResponse.getResult();
+				ConvictedReportResponse result = serviceResponse.getResult();
 				if(result != null)
 				{
-					uiInputData.put(ShowReportPaneFxController.KEY_CONVICTED_REPORT_NUMBER, result);
+					uiInputData.put(ShowReportPaneFxController.KEY_CONVICTED_REPORT_NUMBER, result.getReportNumber());
+					uiInputData.put(ShowReportPaneFxController.KEY_CONVICTED_REPORT_DATE, result.getReportDate());
 					goNext();
 				}
 				else
@@ -448,7 +450,6 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 	
 	private ConvictedReport buildConvictedReport(Map<String, Object> uiInputData)
 	{
-		long reportDate = System.currentTimeMillis() / 1000;
 		Long generalFileNum = (Long) uiInputData.get(PersonInfoPaneFxController.KEY_PERSON_INFO_GENERAL_FILE_NUMBER);
 		
 		String firstName = (String) uiInputData.get(PersonInfoPaneFxController.KEY_PERSON_INFO_FIRST_NAME);
@@ -562,7 +563,7 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 		
 		String subjFace = (String) uiInputData.get(PersonInfoPaneFxController.KEY_PERSON_INFO_PHOTO);
 		
-		return new ConvictedReport(0L, reportDate, generalFileNum, subjtName, subjNationalityCode,
+		return new ConvictedReport(0L, 0L, generalFileNum, subjtName, subjNationalityCode,
 		                           subjOccupation, subjGender, subjBirthDate, subjBirthPlace, subjDocId, subjDocType,
 		                           subjDocIssDate, subjDocExpDate, subjJudgementInfo, subjFingers, subjMissingFingers,
 		                           subjFace, null);

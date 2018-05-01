@@ -391,7 +391,7 @@ public class RegisterConvictedReportPresentWorkflow extends WorkflowBase<Void, V
 							
 							convictedReport.setGeneralFileNum(generalFileNumber);
 							
-							ServiceResponse<Long> serviceResponse =
+							ServiceResponse<ConvictedReportResponse> serviceResponse =
 															SubmittingConvictedReportService.execute(convictedReport);
 							
 							uiInputData.put(KEY_WEBSERVICE_RESPONSE, serviceResponse);
