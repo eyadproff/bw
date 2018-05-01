@@ -122,12 +122,12 @@ public class JudgmentDetailsPaneFxController extends WizardStepFxControllerBase
 		GuiUtils.addAutoCompletionSupportToComboBox(cboCrimeEvent2, crimeEventCodes);
 		GuiUtils.addAutoCompletionSupportToComboBox(cboCrimeEvent3, crimeEventCodes);
 		
-		GuiUtils.makeComboBoxOpenableByPressingSpaceBar(cboCrimeEvent1);
-		GuiUtils.makeComboBoxOpenableByPressingSpaceBar(cboCrimeClass1);
-		GuiUtils.makeComboBoxOpenableByPressingSpaceBar(cboCrimeEvent2);
-		GuiUtils.makeComboBoxOpenableByPressingSpaceBar(cboCrimeClass2);
-		GuiUtils.makeComboBoxOpenableByPressingSpaceBar(cboCrimeEvent3);
-		GuiUtils.makeComboBoxOpenableByPressingSpaceBar(cboCrimeClass3);
+		GuiUtils.makeComboBoxOpenableByPressingEnter(cboCrimeEvent1);
+		GuiUtils.makeComboBoxOpenableByPressingEnter(cboCrimeClass1);
+		GuiUtils.makeComboBoxOpenableByPressingEnter(cboCrimeEvent2);
+		GuiUtils.makeComboBoxOpenableByPressingEnter(cboCrimeClass2);
+		GuiUtils.makeComboBoxOpenableByPressingEnter(cboCrimeEvent3);
+		GuiUtils.makeComboBoxOpenableByPressingEnter(cboCrimeClass3);
 		
 		lblCrimeClassification2.disableProperty().bind(cbCrimeClassification2.selectedProperty().not());
 		cboCrimeEvent2.disableProperty().bind(cbCrimeClassification2.selectedProperty().not());
@@ -321,7 +321,9 @@ public class JudgmentDetailsPaneFxController extends WizardStepFxControllerBase
 		{
 		    if(newValue == null)
 		    {
-			    cboCrimeClass.getItems().clear();
+			    GuiUtils.addAutoCompletionSupportToComboBox(cboCrimeClass, new ArrayList<>(),
+			                                                showingPropertyChangeListenerReference,
+			                                                textPropertyChangeListenerReference);
 		        return;
 		    }
 		

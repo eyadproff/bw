@@ -145,8 +145,7 @@ public class BuildReportTask extends Task<JasperPrint>
 		
 		if(nationalityBean != null) params.put(PARAMETER_NATIONALITY, nationalityBean.getDescriptionAR());
 		
-		params.put(PARAMETER_JOB,
-		           AppUtils.replaceNumbersOnly(convictedReport.getSubjOccupation(), Locales.SAUDI_AR_LOCALE));
+		params.put(PARAMETER_JOB, convictedReport.getSubjOccupation());
 		params.put(PARAMETER_SEX, "F".equals(convictedReport.getSubjGender()) ? "أنثى" : "ذكر");
 		
 		String subjDocId = convictedReport.getSubjDocId();
@@ -177,8 +176,7 @@ public class BuildReportTask extends Task<JasperPrint>
 		
 		Long subjBirthDate = convictedReport.getSubjBirthDate();
 		if(subjBirthDate != null) params.put(PARAMETER_BIRTH_OF_DATE, AppUtils.formatGregorianDate(subjBirthDate));
-		params.put(PARAMETER_BIRTH_PLACE,
-		           AppUtils.replaceNumbersOnly(convictedReport.getSubjBirthPlace(), Locales.SAUDI_AR_LOCALE));
+		params.put(PARAMETER_BIRTH_PLACE, convictedReport.getSubjBirthPlace());
 		
 		Long subjDocExpDate = convictedReport.getSubjDocExpDate();
 		if(subjDocExpDate != null) params.put(PARAMETER_ID_EXPIRY, AppUtils.formatGregorianDate(subjDocExpDate));
@@ -231,8 +229,7 @@ public class BuildReportTask extends Task<JasperPrint>
 			}
 		}
 		
-		params.put(PARAMETER_JUDGMENT_ISSUER,
-		           AppUtils.replaceNumbersOnly(judgementInfo.getJudgIssuer(), Locales.SAUDI_AR_LOCALE));
+		params.put(PARAMETER_JUDGMENT_ISSUER, judgementInfo.getJudgIssuer());
 		params.put(PARAMETER_JUDGMENT_DATE, AppUtils.formatGregorianDate(judgementInfo.getJudgDate()));
 		params.put(PARAMETER_JUDGMENT_NUMBER,
 		           AppUtils.replaceNumbersOnly(judgementInfo.getJudgNum(), Locales.SAUDI_AR_LOCALE));
@@ -272,8 +269,7 @@ public class BuildReportTask extends Task<JasperPrint>
            AppUtils.replaceNumbersOnly(String.valueOf(judgementInfo.getExileMonthCount()), Locales.SAUDI_AR_LOCALE));
 		params.put(PARAMETER_EXILING_DAYS,
            AppUtils.replaceNumbersOnly(String.valueOf(judgementInfo.getExileDayCount()), Locales.SAUDI_AR_LOCALE));
-		params.put(PARAMETER_OTHER,
-           AppUtils.replaceNumbersOnly(judgementInfo.getJudgOthers(), Locales.SAUDI_AR_LOCALE));
+		params.put(PARAMETER_OTHER, judgementInfo.getJudgOthers());
 		params.put(PARAMETER_IS_CRIMINAL_LIBEL, judgementInfo.isLibel());
 		params.put(PARAMETER_IS_COVENANT, judgementInfo.isCovenant());
 		params.put(PARAMETER_IS_DEPORTATION_FINAL, judgementInfo.isFinalDeport());

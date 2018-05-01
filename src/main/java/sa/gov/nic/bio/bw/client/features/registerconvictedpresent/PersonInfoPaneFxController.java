@@ -93,9 +93,9 @@ public class PersonInfoPaneFxController extends WizardStepFxControllerBase
 		
 		GuiUtils.addAutoCompletionSupportToComboBox(cboNationality, nationalities);
 		
-		GuiUtils.makeComboBoxOpenableByPressingSpaceBar(cboGender);
-		GuiUtils.makeComboBoxOpenableByPressingSpaceBar(cboNationality);
-		GuiUtils.makeComboBoxOpenableByPressingSpaceBar(cboIdType);
+		GuiUtils.makeComboBoxOpenableByPressingEnter(cboGender);
+		GuiUtils.makeComboBoxOpenableByPressingEnter(cboNationality);
+		GuiUtils.makeComboBoxOpenableByPressingEnter(cboIdType);
 		
 		cboNationality.setConverter(new StringConverter<HideableItem<NationalityBean>>()
 		{
@@ -135,7 +135,7 @@ public class PersonInfoPaneFxController extends WizardStepFxControllerBase
 		GuiUtils.applyValidatorToTextField(txtFatherName, null, null, 20);
 		GuiUtils.applyValidatorToTextField(txtGrandfatherName, null, null, 20);
 		GuiUtils.applyValidatorToTextField(txtFamilyName, null, null, 20);
-		GuiUtils.applyValidatorToTextField(txtGeneralFileNumber, null, null,
+		GuiUtils.applyValidatorToTextField(txtGeneralFileNumber, "\\d*", "[^\\d]",
 		                                   10);
 		GuiUtils.applyValidatorToTextField(txtOccupation, null, null, 50);
 		GuiUtils.applyValidatorToTextField(txtBirthPlace, null, null, 30);

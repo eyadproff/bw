@@ -164,11 +164,11 @@ public class GuiUtils
 		});
 	}
 	
-	public static void makeComboBoxOpenableByPressingSpaceBar(ComboBox<?> comboBox)
+	public static void makeComboBoxOpenableByPressingEnter(ComboBox<?> comboBox)
 	{
 		comboBox.addEventHandler(KeyEvent.KEY_PRESSED, event ->
 		{
-			if(event.getCode() == KeyCode.SPACE)
+			if(event.getCode() == KeyCode.ENTER)
 			{
 				if(!comboBox.isShowing()) comboBox.show();
 			}
@@ -206,8 +206,11 @@ public class GuiUtils
 		{
 			if(comboBox.isShowing())
 			{
-				comboBox.setEditable(true);
-				comboBox.getEditor().clear();
+				if(!event.isShiftDown() && !event.isControlDown() && !event.isAltDown())
+				{
+					comboBox.setEditable(true);
+					comboBox.getEditor().clear();
+				}
 			}
 			else if(event.getCode() != KeyCode.ESCAPE && event.getCode() != KeyCode.UP &&
 					event.getCode() != KeyCode.DOWN && event.getCode() != KeyCode.TAB &&
@@ -226,6 +229,8 @@ public class GuiUtils
 		{
 			if(newValue)
 			{
+				selectedItem[0] = comboBox.getValue();
+				
 				@SuppressWarnings("unchecked")
 				ListView<HideableItem> lv = ((ComboBoxListViewSkin<HideableItem>) comboBox.getSkin()).getListView();
 				lv.scrollTo(comboBox.getValue());

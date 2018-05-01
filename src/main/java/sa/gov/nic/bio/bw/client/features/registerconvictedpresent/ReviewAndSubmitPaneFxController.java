@@ -10,6 +10,7 @@ import javafx.scene.effect.GaussianBlur;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.biokit.FingerPosition;
 import sa.gov.nic.bio.bw.client.core.utils.AppConstants;
@@ -174,6 +175,7 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 			
 			Long generalFileNumber = convictedReport.getGeneralFileNum();
 			if(generalFileNumber != null) lblGeneralFileNumber.setText(String.valueOf(generalFileNumber));
+			else lblGeneralFileNumber.setTextFill(Color.RED);
 			
 			lblGender.setText("F".equals(convictedReport.getSubjGender()) ? resources.getString("label.female") :
 					                                                        resources.getString("label.male"));
@@ -200,13 +202,17 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 			}
 			else lblNationality.setText(resources.getString("combobox.unknownNationality"));
 			
-			lblOccupation.setText(convictedReport.getSubjOccupation());
-			lblBirthPlace.setText(convictedReport.getSubjBirthPlace());
+			String subjOccupation = convictedReport.getSubjOccupation();
+			if(subjOccupation != null && !subjOccupation.trim().isEmpty()) lblOccupation.setText(subjOccupation);
+			
+			String subjBirthPlace = convictedReport.getSubjBirthPlace();
+			if(subjBirthPlace != null && !subjBirthPlace.trim().isEmpty()) lblBirthPlace.setText(subjBirthPlace);
 			
 			Long subjBirthDate = convictedReport.getSubjBirthDate();
 			if(subjBirthDate != null) lblBirthDate.setText(AppUtils.formatGregorianDate(subjBirthDate));
 			
-			lblIdNumber.setText(convictedReport.getSubjDocId());
+			String subjDocId = convictedReport.getSubjDocId();
+			if(subjDocId != null && !subjDocId.trim().isEmpty()) lblIdNumber.setText(subjDocId);
 			
 			@SuppressWarnings("unchecked") List<IdType> idTypes = (List<IdType>)
 														Context.getUserSession().getAttribute("lookups.idTypes");
@@ -266,7 +272,9 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 			}
 			
 			lblJudgmentIssuer.setText(judgementInfo.getJudgIssuer());
-			lblPoliceFileNumber.setText(judgementInfo.getPoliceFileNum());
+			
+			String policeFileNum = judgementInfo.getPoliceFileNum();
+			if(policeFileNum != null) lblPoliceFileNumber.setText(policeFileNum);
 			lblJudgmentNumber.setText(judgementInfo.getJudgNum());
 			lblArrestDate.setText(AppUtils.formatGregorianDate(judgementInfo.getArrestDate()));
 			lblJudgmentDate.setText(AppUtils.formatGregorianDate(judgementInfo.getJudgDate()));
@@ -288,8 +296,9 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 			cbFinalDeportation.setSelected(judgementInfo.isFinalDeport());
 			cbLibel.setSelected(judgementInfo.isLibel());
 			cbCovenant.setSelected(judgementInfo.isCovenant());
-			lblOther.setText(String.valueOf(judgementInfo.getJudgOthers()));
-			if(lblOther.getText().isEmpty()) lblOther.setText("-");
+			
+			String judgOthers = judgementInfo.getJudgOthers();
+			if(judgOthers != null && !judgOthers.trim().isEmpty()) lblOther.setText(judgOthers);
 			
 			// make the checkboxes look like they are enabled
 			cbFinalDeportation.setStyle("-fx-opacity: 1");

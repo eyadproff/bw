@@ -251,14 +251,14 @@
 				<text><![CDATA[الجنسية:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="343" y="28" width="28" height="15" uuid="f079cb68-0066-4d8c-b1fa-451e797ecce7"/>
+				<reportElement x="344" y="28" width="28" height="15" uuid="f079cb68-0066-4d8c-b1fa-451e797ecce7"/>
 				<textElement textAlignment="Right">
 					<font fontName="ArialCustom" size="11" isBold="true"/>
 				</textElement>
 				<text><![CDATA[المهنة:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="156" y="28" width="32" height="15" uuid="86a2d0ec-2acc-4dee-b138-16a91c701f49"/>
+				<reportElement x="157" y="28" width="32" height="15" uuid="86a2d0ec-2acc-4dee-b138-16a91c701f49"/>
 				<textElement textAlignment="Right">
 					<font fontName="ArialCustom" size="11" isBold="true"/>
 				</textElement>
@@ -394,7 +394,7 @@
 				<text><![CDATA[تاريخ إصدار الهوية:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="493" y="82" width="49" height="15" uuid="50874b6a-31cc-4985-9672-e61e83f66c73"/>
+				<reportElement x="494" y="82" width="49" height="15" uuid="50874b6a-31cc-4985-9672-e61e83f66c73"/>
 				<textElement textAlignment="Right">
 					<font fontName="ArialCustom" size="11" isBold="true"/>
 				</textElement>
@@ -408,7 +408,7 @@
 				<text><![CDATA[مكان الميلاد:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="111" y="82" width="77" height="15" uuid="0ade4dc1-aef1-4334-8df4-ab1fddbb1d33"/>
+				<reportElement x="112" y="82" width="77" height="15" uuid="0ade4dc1-aef1-4334-8df4-ab1fddbb1d33"/>
 				<textElement textAlignment="Right">
 					<font fontName="ArialCustom" size="11" isBold="true"/>
 				</textElement>
@@ -422,14 +422,14 @@
 				<text><![CDATA[رقم ملف الشرطة:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="318" y="109" width="53" height="15" uuid="fb9d3aa0-bebe-4ef9-80bf-dded34be7c9c"/>
+				<reportElement x="319" y="109" width="53" height="15" uuid="fb9d3aa0-bebe-4ef9-80bf-dded34be7c9c"/>
 				<textElement textAlignment="Right">
 					<font fontName="ArialCustom" size="11" isBold="true"/>
 				</textElement>
 				<text><![CDATA[تاريخ الإيقاف:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="482" y="163" width="62" height="15" uuid="e32d4620-c368-468e-9aa7-2b8c4e89f0a9"/>
+				<reportElement x="481" y="163" width="62" height="15" uuid="e32d4620-c368-468e-9aa7-2b8c4e89f0a9"/>
 				<textElement textAlignment="Right">
 					<font fontName="ArialCustom" size="11" isBold="true"/>
 				</textElement>
@@ -452,7 +452,7 @@
 				<text><![CDATA[تاريخ الحكم:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="148" y="136" width="42" height="15" uuid="f8b9a946-ebf3-4c79-a17c-a7e5e120669e"/>
+				<reportElement x="147" y="136" width="42" height="15" uuid="f8b9a946-ebf3-4c79-a17c-a7e5e120669e"/>
 				<textElement textAlignment="Right">
 					<font fontName="ArialCustom" size="11" isBold="true"/>
 				</textElement>
@@ -567,16 +567,16 @@
 				<text><![CDATA[السجن]]></text>
 			</staticText>
 			<staticText>
-				<reportElement key="" x="340" y="222" width="27" height="30" uuid="b2e96e3f-4c87-41fc-9dbd-ba30db7aca08">
+				<reportElement key="" x="340" y="226" width="32" height="15" uuid="b2e96e3f-4c87-41fc-9dbd-ba30db7aca08">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
-				<textElement textAlignment="Center">
+				<textElement textAlignment="Right">
 					<font fontName="ArialCustom" size="11" isBold="true"/>
 				</textElement>
-				<text><![CDATA[الجلد حداً]]></text>
+				<text><![CDATA[جلد الحد]]></text>
 			</staticText>
 			<staticText>
-				<reportElement key="" x="276" y="227" width="32" height="15" uuid="03823dfe-792a-4623-888b-54a083f20345">
+				<reportElement key="" x="276" y="226" width="32" height="15" uuid="03823dfe-792a-4623-888b-54a083f20345">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Right">
@@ -585,7 +585,7 @@
 				<text><![CDATA[الغرامة]]></text>
 			</staticText>
 			<staticText>
-				<reportElement key="" x="198" y="227" width="45" height="15" uuid="572d54c6-9247-46fe-a33e-137f99f34431">
+				<reportElement key="" x="198" y="226" width="45" height="15" uuid="572d54c6-9247-46fe-a33e-137f99f34431">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Right">
@@ -594,7 +594,7 @@
 				<text><![CDATA[منع السفر]]></text>
 			</staticText>
 			<staticText>
-				<reportElement key="" x="138" y="227" width="34" height="15" uuid="1849c54c-f452-469b-9adf-f39ec54607b5">
+				<reportElement key="" x="138" y="226" width="34" height="15" uuid="1849c54c-f452-469b-9adf-f39ec54607b5">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Right">
@@ -603,7 +603,7 @@
 				<text><![CDATA[الإبعاد]]></text>
 			</staticText>
 			<staticText>
-				<reportElement key="" x="74" y="227" width="34" height="15" uuid="7f18684d-bfc5-422d-abce-e61d821dd7b6">
+				<reportElement key="" x="74" y="226" width="34" height="15" uuid="7f18684d-bfc5-422d-abce-e61d821dd7b6">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Right">
@@ -657,7 +657,7 @@
 				</graphicElement>
 			</rectangle>
 			<staticText>
-				<reportElement key="" x="447" y="252" width="20" height="15" uuid="fa82a4f0-b0d9-4bbf-8104-bfbf39b665c5">
+				<reportElement key="" x="446" y="252" width="20" height="15" uuid="fa82a4f0-b0d9-4bbf-8104-bfbf39b665c5">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Right">
@@ -666,7 +666,7 @@
 				<text><![CDATA[سنة]]></text>
 			</staticText>
 			<staticText>
-				<reportElement key="" x="447" y="273" width="20" height="15" uuid="81d85eca-92de-4d7c-ac8e-c922cd5ea41c">
+				<reportElement key="" x="446" y="273" width="20" height="15" uuid="81d85eca-92de-4d7c-ac8e-c922cd5ea41c">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Right">
@@ -675,7 +675,7 @@
 				<text><![CDATA[شهر]]></text>
 			</staticText>
 			<staticText>
-				<reportElement key="" x="445" y="294" width="20" height="15" uuid="63e57651-464d-4ad0-850c-626627a56ff2">
+				<reportElement key="" x="446" y="294" width="20" height="15" uuid="63e57651-464d-4ad0-850c-626627a56ff2">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Right">
@@ -711,7 +711,7 @@
 				</graphicElement>
 			</rectangle>
 			<staticText>
-				<reportElement key="" x="286" y="287" width="16" height="15" uuid="7a264858-7d8c-47cd-9411-d7c02fceb00a">
+				<reportElement key="" x="286" y="288" width="16" height="15" uuid="7a264858-7d8c-47cd-9411-d7c02fceb00a">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Right">
@@ -774,7 +774,7 @@
 				</graphicElement>
 			</rectangle>
 			<staticText>
-				<reportElement key="" x="194" y="253" width="20" height="15" uuid="0cb15f0a-bc6c-4e38-97f6-d97d162f2c15">
+				<reportElement key="" x="195" y="253" width="20" height="15" uuid="0cb15f0a-bc6c-4e38-97f6-d97d162f2c15">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Right">
@@ -783,7 +783,7 @@
 				<text><![CDATA[سنة]]></text>
 			</staticText>
 			<staticText>
-				<reportElement key="" x="194" y="274" width="20" height="15" uuid="95247fc4-589b-4ff7-9231-c98ec754a9f4">
+				<reportElement key="" x="195" y="274" width="20" height="15" uuid="95247fc4-589b-4ff7-9231-c98ec754a9f4">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Right">
@@ -792,7 +792,7 @@
 				<text><![CDATA[شهر]]></text>
 			</staticText>
 			<staticText>
-				<reportElement key="" x="194" y="295" width="20" height="15" uuid="f1bb0390-4371-4982-8a5d-e421987b77d3">
+				<reportElement key="" x="195" y="295" width="20" height="15" uuid="f1bb0390-4371-4982-8a5d-e421987b77d3">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Right">
@@ -981,7 +981,7 @@
 				<text><![CDATA[سنة]]></text>
 			</staticText>
 			<staticText>
-				<reportElement key="" x="63" y="295" width="20" height="15" uuid="a593e143-521d-4661-9afe-0ce999aa21b6">
+				<reportElement key="" x="64" y="295" width="20" height="15" uuid="a593e143-521d-4661-9afe-0ce999aa21b6">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Right">
@@ -1449,35 +1449,35 @@
 				<textFieldExpression><![CDATA[$P{NAME}]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report" isBlankWhenNull="true">
-				<reportElement key="" x="380" y="40" width="158" height="15" uuid="8b0c5b84-122b-4864-9fc6-3d381320c3cb"/>
+				<reportElement key="" x="380" y="41" width="158" height="15" uuid="8b0c5b84-122b-4864-9fc6-3d381320c3cb"/>
 				<textElement textAlignment="Center">
 					<font fontName="ArialCustom" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{NATIONALITY}]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report" isBlankWhenNull="true">
-				<reportElement key="" x="198" y="40" width="169" height="15" uuid="38ca7f9f-72d0-449e-980f-1b8d5864e4a6"/>
+				<reportElement key="" x="198" y="41" width="169" height="15" uuid="38ca7f9f-72d0-449e-980f-1b8d5864e4a6"/>
 				<textElement textAlignment="Center">
 					<font fontName="ArialCustom" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{JOB}]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report" isBlankWhenNull="true">
-				<reportElement key="" x="20" y="40" width="167" height="15" uuid="b4558f7e-d587-415b-8368-20666dcfc66f"/>
+				<reportElement key="" x="20" y="41" width="167" height="15" uuid="b4558f7e-d587-415b-8368-20666dcfc66f"/>
 				<textElement textAlignment="Center">
 					<font fontName="ArialCustom" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{SEX}]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report" isBlankWhenNull="true">
-				<reportElement key="" x="384" y="67" width="154" height="15" uuid="a41c2ebc-03a5-468b-81e8-3c709417941d"/>
+				<reportElement key="" x="384" y="68" width="154" height="15" uuid="a41c2ebc-03a5-468b-81e8-3c709417941d"/>
 				<textElement textAlignment="Center">
 					<font fontName="ArialCustom" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{ID}]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report" isBlankWhenNull="true">
-				<reportElement key="" x="199" y="67" width="168" height="15" uuid="653d437a-e336-4ded-adbf-467e63e84df9"/>
+				<reportElement key="" x="199" y="68" width="168" height="15" uuid="653d437a-e336-4ded-adbf-467e63e84df9"/>
 				<textElement textAlignment="Center">
 					<font fontName="ArialCustom" isBold="false"/>
 				</textElement>
@@ -1491,14 +1491,14 @@
 				<textFieldExpression><![CDATA[$P{ID_ISSUANCE}]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report" isBlankWhenNull="true">
-				<reportElement key="" x="384" y="94" width="154" height="15" uuid="2a48f368-6ead-4803-af0a-1cd1c5215351"/>
+				<reportElement key="" x="384" y="95" width="154" height="15" uuid="2a48f368-6ead-4803-af0a-1cd1c5215351"/>
 				<textElement textAlignment="Center">
 					<font fontName="ArialCustom" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{BIRTH_OF_DATE}]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report" isBlankWhenNull="true">
-				<reportElement key="" x="199" y="94" width="168" height="15" uuid="9006d767-ac03-4f21-b4e3-6dfa794c0852"/>
+				<reportElement key="" x="199" y="95" width="168" height="15" uuid="9006d767-ac03-4f21-b4e3-6dfa794c0852"/>
 				<textElement textAlignment="Center">
 					<font fontName="ArialCustom" isBold="false"/>
 				</textElement>
@@ -1512,14 +1512,14 @@
 				<textFieldExpression><![CDATA[$P{ID_EXPIRY}]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report" isBlankWhenNull="true">
-				<reportElement key="" x="380" y="120" width="158" height="15" uuid="2ff962da-7944-4c47-9fed-fb3361e40a3e"/>
+				<reportElement key="" x="380" y="122" width="158" height="15" uuid="2ff962da-7944-4c47-9fed-fb3361e40a3e"/>
 				<textElement textAlignment="Center">
 					<font fontName="ArialCustom" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{POLICE_FILE_NUMBER}]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report" isBlankWhenNull="true">
-				<reportElement key="" x="199" y="121" width="169" height="15" uuid="953bbe8a-e968-47e9-886a-78b35120e068"/>
+				<reportElement key="" x="199" y="122" width="169" height="15" uuid="953bbe8a-e968-47e9-886a-78b35120e068"/>
 				<textElement textAlignment="Center">
 					<font fontName="ArialCustom" isBold="false"/>
 				</textElement>
@@ -1533,21 +1533,21 @@
 				<textFieldExpression><![CDATA[$P{CRIMINAL_CLASS1}]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report" isBlankWhenNull="true">
-				<reportElement key="" x="199" y="147" width="339" height="15" uuid="257f4522-e747-4b86-bdf5-f6cad7abfd65"/>
+				<reportElement key="" x="199" y="149" width="339" height="15" uuid="257f4522-e747-4b86-bdf5-f6cad7abfd65"/>
 				<textElement textAlignment="Center">
 					<font fontName="ArialCustom" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{JUDGMENT_ISSUER}]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report" isBlankWhenNull="true">
-				<reportElement key="" x="20" y="121" width="163" height="15" uuid="3182cf41-8ed2-43e3-ae04-bea3e5c69829"/>
+				<reportElement key="" x="20" y="122" width="163" height="15" uuid="3182cf41-8ed2-43e3-ae04-bea3e5c69829"/>
 				<textElement textAlignment="Center">
 					<font fontName="ArialCustom" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{JUDGMENT_DATE}]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report" isBlankWhenNull="true">
-				<reportElement key="" x="20" y="146" width="167" height="15" uuid="bd9fa222-c154-4e73-b4cf-f1a6c27ec4fa"/>
+				<reportElement key="" x="20" y="149" width="167" height="15" uuid="bd9fa222-c154-4e73-b4cf-f1a6c27ec4fa"/>
 				<textElement textAlignment="Center">
 					<font fontName="ArialCustom" isBold="false"/>
 				</textElement>
@@ -1561,21 +1561,21 @@
 				<textFieldExpression><![CDATA[$P{OPERATOR_ID}]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report" isBlankWhenNull="true">
-				<reportElement key="" x="476" y="252" width="29" height="15" uuid="2309f379-d97b-460d-9149-a58c05007e09"/>
+				<reportElement key="" x="475" y="252" width="29" height="15" uuid="2309f379-d97b-460d-9149-a58c05007e09"/>
 				<textElement textAlignment="Center">
 					<font fontName="ArialCustom" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{JAIL_YEARS}]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report" isBlankWhenNull="true">
-				<reportElement key="" x="476" y="273" width="29" height="15" uuid="f931726b-10d5-4c1a-8de2-312cc60f4a19"/>
+				<reportElement key="" x="475" y="273" width="29" height="15" uuid="f931726b-10d5-4c1a-8de2-312cc60f4a19"/>
 				<textElement textAlignment="Center">
 					<font fontName="ArialCustom" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{JAIL_MONTHS}]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report" isBlankWhenNull="true">
-				<reportElement key="" x="474" y="294" width="29" height="15" uuid="890e1d55-6465-4190-b420-88254650fe1e"/>
+				<reportElement key="" x="475" y="294" width="29" height="15" uuid="890e1d55-6465-4190-b420-88254650fe1e"/>
 				<textElement textAlignment="Center">
 					<font fontName="ArialCustom" isBold="false"/>
 				</textElement>
@@ -1589,21 +1589,21 @@
 				<textFieldExpression><![CDATA[$P{FINE}]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report" isBlankWhenNull="true">
-				<reportElement key="" x="226" y="252" width="29" height="15" uuid="52a33c8e-9c17-45b9-a4a1-620e1cc7fca1"/>
+				<reportElement key="" x="225" y="252" width="29" height="15" uuid="52a33c8e-9c17-45b9-a4a1-620e1cc7fca1"/>
 				<textElement textAlignment="Center">
 					<font fontName="ArialCustom" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{TRAVEL_BAN_YEARS}]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report" isBlankWhenNull="true">
-				<reportElement key="" x="226" y="273" width="29" height="15" uuid="fbf42a77-873b-4215-b098-9801e2319705"/>
+				<reportElement key="" x="225" y="273" width="29" height="15" uuid="fbf42a77-873b-4215-b098-9801e2319705"/>
 				<textElement textAlignment="Center">
 					<font fontName="ArialCustom" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{TRAVEL_BAN_MONTHS}]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report" isBlankWhenNull="true">
-				<reportElement key="" x="226" y="294" width="29" height="15" uuid="2547d85a-e879-4a8a-baea-17c433581335"/>
+				<reportElement key="" x="225" y="294" width="29" height="15" uuid="2547d85a-e879-4a8a-baea-17c433581335"/>
 				<textElement textAlignment="Center">
 					<font fontName="ArialCustom" isBold="false"/>
 				</textElement>
@@ -1670,7 +1670,7 @@
 				<text><![CDATA[✓]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="173" y="293" width="11" height="19" uuid="aa34c100-7aa2-4ffa-bac9-5c69e35406c8">
+				<reportElement x="172" y="293" width="11" height="19" uuid="aa34c100-7aa2-4ffa-bac9-5c69e35406c8">
 					<printWhenExpression><![CDATA[$P{IS_DEPORTATION_FINAL}]]></printWhenExpression>
 				</reportElement>
 				<textElement>
@@ -1736,13 +1736,13 @@
 				</graphicElement>
 			</rectangle>
 			<staticText>
-				<reportElement key="" x="399" y="221" width="32" height="30" uuid="d6d1e95e-a64b-4ac4-9029-e9fa18a21ba9">
+				<reportElement key="" x="389" y="226" width="44" height="18" uuid="d6d1e95e-a64b-4ac4-9029-e9fa18a21ba9">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
-				<textElement textAlignment="Center">
+				<textElement textAlignment="Right">
 					<font fontName="ArialCustom" size="11" isBold="true"/>
 				</textElement>
-				<text><![CDATA[الجلد تعزيراً]]></text>
+				<text><![CDATA[جلد التعزير]]></text>
 			</staticText>
 			<rectangle>
 				<reportElement x="329" y="280" width="55" height="31" uuid="1bdea0c5-4272-40e2-b044-5284187fcf52">
@@ -1763,7 +1763,7 @@
 				</graphicElement>
 			</rectangle>
 			<staticText>
-				<reportElement key="" x="341" y="290" width="24" height="15" uuid="9dd0b226-9f7d-42c0-a143-0f306a7bf493">
+				<reportElement key="" x="341" y="288" width="24" height="15" uuid="9dd0b226-9f7d-42c0-a143-0f306a7bf493">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Right">
@@ -1786,7 +1786,7 @@
 				<textFieldExpression><![CDATA[$P{HAD_LASHES_COUNT}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement key="" x="400" y="290" width="24" height="15" uuid="3247d9f6-1e2c-4c41-a5a6-be6d010859b4">
+				<reportElement key="" x="400" y="288" width="24" height="15" uuid="3247d9f6-1e2c-4c41-a5a6-be6d010859b4">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Right">

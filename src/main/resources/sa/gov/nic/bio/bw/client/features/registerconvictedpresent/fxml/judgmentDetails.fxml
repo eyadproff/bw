@@ -30,20 +30,20 @@
                             <Insets left="26.0"/>
                         </padding>
                         <Label fx:id="lblCrimeClassification1" text="%label.crimeClassification1"/>
-                        <ComboBox fx:id="cboCrimeEvent1" styleClass="required"/>
-                        <ComboBox fx:id="cboCrimeClass1" styleClass="required"/>
+                        <ComboBox fx:id="cboCrimeEvent1" styleClass="required" minWidth="173" maxWidth="173"/>
+                        <ComboBox fx:id="cboCrimeClass1" styleClass="required" minWidth="223" maxWidth="223"/>
                     </HBox>
                     <HBox spacing="5.0">
                         <CheckBox fx:id="cbCrimeClassification2"/>
                         <Label fx:id="lblCrimeClassification2" text="%label.crimeClassification2"/>
-                        <ComboBox fx:id="cboCrimeEvent2" styleClass="required"/>
-                        <ComboBox fx:id="cboCrimeClass2" styleClass="required"/>
+                        <ComboBox fx:id="cboCrimeEvent2" styleClass="required" minWidth="173" maxWidth="173"/>
+                        <ComboBox fx:id="cboCrimeClass2" styleClass="required" minWidth="223" maxWidth="223"/>
                     </HBox>
                     <HBox spacing="5.0">
                         <CheckBox fx:id="cbCrimeClassification3"/>
                         <Label fx:id="lblCrimeClassification3" text="%label.crimeClassification3"/>
-                        <ComboBox fx:id="cboCrimeEvent3" styleClass="required"/>
-                        <ComboBox fx:id="cboCrimeClass3" styleClass="required"/>
+                        <ComboBox fx:id="cboCrimeEvent3" styleClass="required" minWidth="173" maxWidth="173"/>
+                        <ComboBox fx:id="cboCrimeClass3" styleClass="required" minWidth="223" maxWidth="223"/>
                     </HBox>
                 </VBox>
                 <Label text="%label.judgmentIssuer" GridPane.rowIndex="3" GridPane.columnIndex="0">
