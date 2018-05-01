@@ -1317,126 +1317,126 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 	
 	private List<Fingerprint> findBestAttemptFingerprints()
 	{
-		int lastFingerprintsCount = currentSlapAttempts.get(currentSlapAttempts.size() - 1).size();
-		currentSlapAttempts.removeIf(fingerprints -> fingerprints.size() < lastFingerprintsCount);
-		
 		Predicate<Fingerprint> acceptanceFilter = fingerprint ->
 		{
 			DMFingerData dmFingerData = fingerprint.getDmFingerData();
 			
 			FingerprintQualityThreshold qualityThreshold = fingerprintQualityThresholdMap.get(
-					dmFingerData.getPosition());
+																						dmFingerData.getPosition());
 			boolean acceptableFingerprintNfiq =
-					qualityThreshold.getMaximumAcceptableNFIQ() >= dmFingerData.getNfiqQuality();
+								qualityThreshold.getMaximumAcceptableNFIQ() >= dmFingerData.getNfiqQuality();
 			
 			boolean acceptableFingerprintMinutiaeCount =
-					qualityThreshold.getMinimumAcceptableMinutiaeCount() <= dmFingerData.getMinutiaeCount();
+								qualityThreshold.getMinimumAcceptableMinutiaeCount() <= dmFingerData.getMinutiaeCount();
 			
 			boolean acceptableFingerprintImageIntensity =
-					qualityThreshold.getMinimumAcceptableImageIntensity() <= dmFingerData.getIntensity() &&
-							qualityThreshold.getMaximumAcceptableImageIntensity() >= dmFingerData.getIntensity();
+								qualityThreshold.getMinimumAcceptableImageIntensity() <= dmFingerData.getIntensity() &&
+								qualityThreshold.getMaximumAcceptableImageIntensity() >= dmFingerData.getIntensity();
 			
 			return acceptableFingerprintNfiq && acceptableFingerprintMinutiaeCount &&
-					acceptableFingerprintImageIntensity;
+				   acceptableFingerprintImageIntensity;
 		};
 		
 		currentSlapAttempts.sort((o1, o2) ->
 		{
-			int sum1 = (int) o1.stream().filter(acceptanceFilter).count();
-			int sum2 = (int) o2.stream().filter(acceptanceFilter).count();
-			
-			int compare = -Integer.compare(sum1, sum2);
-			if(compare != 0) return compare;
-			else // if both have same amount of acceptable fingerprints
-			{
-				sum1 = o1.stream().filter(acceptanceFilter).mapToInt(fp -> fp.getDmFingerData().getPosition()).sum();
-				sum2 = o2.stream().filter(acceptanceFilter).mapToInt(fp -> fp.getDmFingerData().getPosition()).sum();
-				
-				compare = Integer.compare(sum1, sum2);
-				if(compare != 0) return compare;
-				else // if both have same amount of acceptable fingerprints and they are the same fingerprints
-				{
-					Comparator<Fingerprint> prioritizingComparator = Comparator.comparingInt(
-																			fp -> fp.getDmFingerData().getPosition());
-					
-					// get list of fingerprints sorted by lowest positions first
-					List<Fingerprint> list1 = o1.stream().sorted(prioritizingComparator).collect(Collectors.toList());
-					List<Fingerprint> list2 = o1.stream().sorted(prioritizingComparator).collect(Collectors.toList());
-					
-					for(int i = 0; i < list1.size(); i++)
-					{
-						DMFingerData fp1 = list1.get(i).getDmFingerData();
-						DMFingerData fp2 = list2.get(i).getDmFingerData();
-						compare = Integer.compare(fp1.getNfiqQuality(), fp2.getNfiqQuality());
-						
-						if(compare != 0) return compare;
-						else // both have the same NFIQ
-						{
-							compare = -Integer.compare(fp1.getMinutiaeCount(), fp2.getMinutiaeCount());
-							
-							if(compare != 0) return compare;
-							else // both have the same minutiae count
-							{
-								if(fp1.getIntensity() == fp2.getIntensity()) continue;
-								
-								FingerprintQualityThreshold qualityThreshold =
-										fingerprintQualityThresholdMap.get(fp1.getPosition());
-								
-								boolean fp1AcceptableFingerprintImageIntensity =
-										qualityThreshold.getMinimumAcceptableImageIntensity() <=
-												fp1.getIntensity() &&
-												qualityThreshold.getMaximumAcceptableImageIntensity() >=
-														fp1.getIntensity();
-								
-								boolean fp2AcceptableFingerprintImageIntensity =
-										qualityThreshold.getMinimumAcceptableImageIntensity() <=
-												fp2.getIntensity() &&
-												qualityThreshold.getMaximumAcceptableImageIntensity() >=
-														fp2.getIntensity();
-								
-								if(fp1AcceptableFingerprintImageIntensity &&
-										!fp2AcceptableFingerprintImageIntensity) return -1;
-								if(!fp1AcceptableFingerprintImageIntensity &&
-										fp2AcceptableFingerprintImageIntensity) return 1;
-								else // both have bad image intensity
-								{
-									if(fp1.getIntensity() >
-											qualityThreshold.getMaximumAcceptableImageIntensity() &&
-											fp2.getIntensity() <
-													qualityThreshold.getMinimumAcceptableImageIntensity())
-									{
-										return -1;
-									}
-									if(fp1.getIntensity() <
-											qualityThreshold.getMinimumAcceptableImageIntensity() &&
-											fp2.getIntensity() >
-													qualityThreshold.getMaximumAcceptableImageIntensity())
-									{
-										return 1;
-									}
-									else // both on the same side
-									{
-										if(fp1.getIntensity() == fp2.getIntensity()) return 0;
-										
-										if(fp1.getIntensity() >
-												qualityThreshold.getMaximumAcceptableImageIntensity() &&
-												fp2.getIntensity() >
-														qualityThreshold.getMaximumAcceptableImageIntensity())
-										{
-											// take the lowest
-											return Integer.compare(fp1.getIntensity(), fp2.getIntensity());
-										}
-										// take the highest
-										else return -Integer.compare(fp1.getIntensity(), fp2.getIntensity());
-									}
-								}
-							}
-						}
-					}
-					
-					return compare;
-				}
-			}
+		    int sum1 = (int) o1.stream().filter(acceptanceFilter).count();
+		    int sum2 = (int) o2.stream().filter(acceptanceFilter).count();
+		
+		    int compare = -Integer.compare(sum1, sum2);
+		    if(compare != 0) return compare;
+		    else // if both have same amount of acceptable fingerprints
+		    {
+		        sum1 = o1.stream().filter(acceptanceFilter).mapToInt(fp -> fp.getDmFingerData().getPosition()).sum();
+		        sum2 = o2.stream().filter(acceptanceFilter).mapToInt(fp -> fp.getDmFingerData().getPosition()).sum();
+		
+		        compare = Integer.compare(sum1, sum2);
+		        if(compare != 0) return compare;
+		        else // if both have same amount of acceptable fingerprints and they are the same fingerprints
+		        {
+		            Comparator<Fingerprint> prioritizingComparator = Comparator.comparingInt(
+		                                                                    fp -> fp.getDmFingerData().getPosition());
+		
+		            // get list of fingerprints sorted by lowest positions first
+		            List<Fingerprint> list1 = o1.stream().sorted(prioritizingComparator).collect(Collectors.toList());
+		            List<Fingerprint> list2 = o2.stream().sorted(prioritizingComparator).collect(Collectors.toList());
+		
+		            for(int i = 0; i < list1.size(); i++)
+		            {
+		                DMFingerData fp1 = list1.get(i).getDmFingerData();
+		                DMFingerData fp2 = list2.get(i).getDmFingerData();
+		                compare = Integer.compare(fp1.getNfiqQuality(), fp2.getNfiqQuality());
+		
+		                if(compare != 0) return compare;
+		                else // both have the same NFIQ
+		                {
+		                    compare = -Integer.compare(fp1.getMinutiaeCount(), fp2.getMinutiaeCount());
+		
+		                    if(compare != 0) return compare;
+		                    else // both have the same minutiae count
+		                    {
+		                        if(fp1.getIntensity() == fp2.getIntensity()) continue;
+		
+		                        FingerprintQualityThreshold qualityThreshold =
+				                                                fingerprintQualityThresholdMap.get(fp1.getPosition());
+		
+		                        boolean fp1AcceptableFingerprintImageIntensity =
+				                         qualityThreshold.getMinimumAcceptableImageIntensity() <=
+						                         fp1.getIntensity() &&
+						                         qualityThreshold.getMaximumAcceptableImageIntensity() >=
+								                         fp1.getIntensity();
+		
+		                        boolean fp2AcceptableFingerprintImageIntensity =
+				                         qualityThreshold.getMinimumAcceptableImageIntensity() <=
+						                         fp2.getIntensity() &&
+						                         qualityThreshold.getMaximumAcceptableImageIntensity() >=
+								                         fp2.getIntensity();
+		
+		                        if(fp1AcceptableFingerprintImageIntensity &&
+		                           fp2AcceptableFingerprintImageIntensity)
+			                                        return -Integer.compare(fp1.getIntensity(), fp2.getIntensity());
+		                        if(fp1AcceptableFingerprintImageIntensity) return -1;
+		                        if(fp2AcceptableFingerprintImageIntensity) return 1;
+		
+		                        // here, both have bad image intensity
+		
+		                        if(fp1.getIntensity() >
+				                         qualityThreshold.getMaximumAcceptableImageIntensity() &&
+				                         fp2.getIntensity() <
+						                         qualityThreshold.getMinimumAcceptableImageIntensity())
+		                        {
+			                         return -1;
+		                        }
+		                        if(fp1.getIntensity() <
+				                         qualityThreshold.getMinimumAcceptableImageIntensity() &&
+				                         fp2.getIntensity() >
+						                         qualityThreshold.getMaximumAcceptableImageIntensity())
+		                        {
+			                         return 1;
+		                        }
+		                        else // both on the same side
+		                        {
+			                         // both above MaximumAcceptableImageIntensity
+			                         if(fp1.getIntensity() >
+					                         qualityThreshold.getMaximumAcceptableImageIntensity() &&
+					                         fp2.getIntensity() >
+							                         qualityThreshold.getMaximumAcceptableImageIntensity())
+			                         {
+				                         // take the lowest
+				                         return Integer.compare(fp1.getIntensity(), fp2.getIntensity());
+			                         }
+			                         else // both under MinimumAcceptableImageIntensity
+			                         {
+				                         // take the highest
+				                         return -Integer.compare(fp1.getIntensity(), fp2.getIntensity());
+			                         }
+		                        }
+		                    }
+		                }
+		            }
+		
+		            return 0; // both identical
+		        }
+		    }
 		});
 		
 		return currentSlapAttempts.get(0);
