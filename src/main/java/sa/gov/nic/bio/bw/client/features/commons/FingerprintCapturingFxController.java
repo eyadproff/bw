@@ -1398,8 +1398,38 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 		acceptFingerprintsAndGoNext();
 	}
 	
+	private void logCurrentSlapAttempts(String prefix)
+	{
+		StringBuilder sb = new StringBuilder();
+		sb.append(prefix);
+		sb.append("\n\n");
+		currentSlapAttempts.forEach(fingerprints ->
+		{
+		    fingerprints.forEach(fingerprint ->
+		    {
+		        DMFingerData dmFingerData = fingerprint.getDmFingerData();
+		        sb.append("[");
+			    sb.append(dmFingerData.getPosition());
+			    sb.append(" ");
+		        sb.append(fingerprint.isAcceptableQuality() ? 1 : 0);
+		        sb.append(" ");
+		        sb.append(dmFingerData.getNfiqQuality());
+		        sb.append(" ");
+		        sb.append(dmFingerData.getMinutiaeCount());
+		        sb.append(" ");
+		        sb.append(dmFingerData.getIntensity());
+		        sb.append("]");
+		        sb.append("\n");
+		    });
+		    sb.append("\n");
+		});
+		LOGGER.info(sb.toString());
+	}
+	
 	private List<Fingerprint> findBestAttemptFingerprints()
 	{
+		logCurrentSlapAttempts("Before sorting: CurrentSlapAttempts = ");
+		
 		Predicate<Fingerprint> acceptanceFilter = fingerprint ->
 		{
 			DMFingerData dmFingerData = fingerprint.getDmFingerData();
@@ -1521,6 +1551,8 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 		        }
 		    }
 		});
+		
+		logCurrentSlapAttempts("After sorting: CurrentSlapAttempts = ");
 		
 		return currentSlapAttempts.get(0);
 	}
