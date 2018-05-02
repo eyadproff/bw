@@ -189,8 +189,13 @@ public class ShowReportPaneFxController extends WizardStepFxControllerBase
 				{
 					saveConvictedReportAsPDF(jasperPrint.get(), new FileOutputStream(selectedFile));
 				}
-				catch(FileNotFoundException e)
+				catch(Exception e)
 				{
+					GuiUtils.showNode(piProgress, false);
+					GuiUtils.showNode(btnStartOver, true);
+					GuiUtils.showNode(btnPrintReport, true);
+					GuiUtils.showNode(btnSaveReportAsPDF, true);
+					
 					String errorCode = RegisterConvictedPresentErrorCodes.C007_00007.getCode();
 					String[] errorDetails = {"failed while saving the convicted report as PDF!"};
 					Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails);
