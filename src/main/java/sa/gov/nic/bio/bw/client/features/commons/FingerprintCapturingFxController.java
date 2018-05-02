@@ -1553,16 +1553,19 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 			
 			if(skipThumbs) currentSlapPosition++;
 		}
-		else if(currentSlapPosition == FingerPosition.TWO_THUMBS.getPosition())
+		
+		currentSlapPosition++;
+		currentSlapAttempts.clear();
+		
+		if(currentSlapPosition > FingerPosition.TWO_THUMBS.getPosition())
 		{
 			lblStatus.setText(resources.getString("label.status.successfullyCapturedAllFingers"));
 			GuiUtils.showNode(btnStartFingerprintCapturing, false);
 			GuiUtils.showNode(ivCompleted, true);
 		}
+		else renameCaptureFingerprintsButton(false);
 		
-		activateFingerIndicatorsForNextCapturing(++currentSlapPosition);
-		renameCaptureFingerprintsButton(false);
-		currentSlapAttempts.clear();
+		activateFingerIndicatorsForNextCapturing(currentSlapPosition);
 		GuiUtils.showNode(btnStartOver, true);
 	}
 	
