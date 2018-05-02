@@ -494,11 +494,13 @@ public class RegisterConvictedReportNotPresentWorkflow extends WorkflowBase<Void
 							
 							uiInputData.put(KEY_WEBSERVICE_RESPONSE, serviceResponse);
 							formRenderer.get().renderForm(ReviewAndSubmitPaneFxController.class, uiInputData);
-							uiInputData.remove(ReviewAndSubmitPaneFxController.KEY_FINAL_CONVICTED_REPORT);
-							uiOutputData = waitForUserTask();
-							uiInputData.putAll(uiOutputData);
 							
 							if(serviceResponse.isSuccess() && serviceResponse.getResult() != null) break;
+							else uiInputData.remove(ReviewAndSubmitPaneFxController.KEY_FINAL_CONVICTED_REPORT);
+							
+							// show error in GUI
+							uiOutputData = waitForUserTask();
+							uiInputData.putAll(uiOutputData);
 						}
 						
 						break;
