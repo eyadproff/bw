@@ -472,6 +472,10 @@ public class RegisterConvictedReportNotPresentWorkflow extends WorkflowBase<Void
 						
 						while(true)
 						{
+							ConvictedReport convictedReport = (ConvictedReport)
+									uiInputData.get(ReviewAndSubmitPaneFxController.KEY_FINAL_CONVICTED_REPORT);
+							if(convictedReport == null) break;
+							
 							Long generalFileNumber = (Long)
 									uiInputData.get(PersonInfoPaneFxController.KEY_PERSON_INFO_GENERAL_FILE_NUMBER);
 							
@@ -483,25 +487,27 @@ public class RegisterConvictedReportNotPresentWorkflow extends WorkflowBase<Void
 								                generalFileNumber);
 							}
 							
-							ConvictedReport convictedReport = (ConvictedReport)
-									uiInputData.get(ReviewAndSubmitPaneFxController.KEY_FINAL_CONVICTED_REPORT);
-							if(convictedReport == null) break;
-							
 							convictedReport.setGeneralFileNum(generalFileNumber);
 							
 							ServiceResponse<ConvictedReportResponse> serviceResponse =
 															SubmittingConvictedReportService.execute(convictedReport);
+							boolean success = serviceResponse.isSuccess() && serviceResponse.getResult() != null;
 							
 							uiInputData.put(KEY_WEBSERVICE_RESPONSE, serviceResponse);
 							formRenderer.get().renderForm(ReviewAndSubmitPaneFxController.class, uiInputData);
 							
-							if(!serviceResponse.isSuccess() || serviceResponse.getResult() == null)
-									uiInputData.remove(ReviewAndSubmitPaneFxController.KEY_FINAL_CONVICTED_REPORT);
-							
-							uiOutputData = waitForUserTask();
-							uiInputData.putAll(uiOutputData);
-							
-							if(serviceResponse.isSuccess() && serviceResponse.getResult() != null) break;
+							if(success)
+							{
+								uiOutputData = waitForUserTask();
+								uiInputData.putAll(uiOutputData);
+								break;
+							}
+							else
+							{
+								uiInputData.remove(ReviewAndSubmitPaneFxController.KEY_FINAL_CONVICTED_REPORT);
+								uiOutputData = waitForUserTask();
+								uiInputData.putAll(uiOutputData);
+							}
 						}
 						
 						break;
