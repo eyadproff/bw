@@ -490,17 +490,18 @@ public class RegisterConvictedReportNotPresentWorkflow extends WorkflowBase<Void
 							convictedReport.setGeneralFileNum(generalFileNumber);
 							
 							ServiceResponse<ConvictedReportResponse> serviceResponse =
-									SubmittingConvictedReportService.execute(convictedReport);
+															SubmittingConvictedReportService.execute(convictedReport);
 							
 							uiInputData.put(KEY_WEBSERVICE_RESPONSE, serviceResponse);
 							formRenderer.get().renderForm(ReviewAndSubmitPaneFxController.class, uiInputData);
 							
-							if(serviceResponse.isSuccess() && serviceResponse.getResult() != null) break;
-							else uiInputData.remove(ReviewAndSubmitPaneFxController.KEY_FINAL_CONVICTED_REPORT);
+							if(!serviceResponse.isSuccess() || serviceResponse.getResult() == null)
+									uiInputData.remove(ReviewAndSubmitPaneFxController.KEY_FINAL_CONVICTED_REPORT);
 							
-							// show error in GUI
 							uiOutputData = waitForUserTask();
 							uiInputData.putAll(uiOutputData);
+							
+							if(serviceResponse.isSuccess() && serviceResponse.getResult() != null) break;
 						}
 						
 						break;
