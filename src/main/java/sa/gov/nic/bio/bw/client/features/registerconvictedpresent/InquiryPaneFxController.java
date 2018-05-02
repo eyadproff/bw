@@ -152,8 +152,7 @@ public class InquiryPaneFxController extends WizardStepFxControllerBase
 				btnCancel.setDisable(false);
 				Context.getExecutorService().submit(() ->
 				{
-					int seconds = Integer.parseInt(System.getProperty(
-										"jnlp.bio.bw.printConvictedReport.fingerprint.inquiry.checkEvertSeconds"));
+					int seconds = Integer.parseInt(System.getProperty("jnlp.bio.bw.printConvictedReport.fingerprint.inquiry.checkEverySeconds"));
 					
 					try
 					{
