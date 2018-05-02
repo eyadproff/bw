@@ -108,11 +108,9 @@ public class RegisterConvictedReportNotPresentWorkflow extends WorkflowBase<Void
 						{
 							Long personId = (Long) uiOutputData.get(
 									PersonIdPaneFxController.KEY_PERSON_INFO_INQUIRY_PERSON_ID);
-							Integer personType = (Integer) uiOutputData.get(
-									PersonIdPaneFxController.KEY_PERSON_INFO_INQUIRY_PERSON_TYPE);
 							
 							ServiceResponse<PersonInfo> serviceResponse = GetPersonInfoByIdService.execute(personId,
-							                                                                               personType);
+						                                                                                  0);
 							
 							uiInputData.put(KEY_WEBSERVICE_RESPONSE, serviceResponse);
 							formRenderer.get().renderForm(PersonIdPaneFxController.class, uiInputData);
