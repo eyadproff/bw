@@ -81,11 +81,11 @@
                             <Insets bottom="5.0"/>
                         </GridPane.margin>
                     </Label>
-                    <TextField fx:id="txtGeneralFileNumber" promptText="%textField.prompt.generalFileNumber" GridPane.rowIndex="2" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS">
+                    <Label fx:id="lblGeneralFileNumber" text="%label.willBeGenerated" GridPane.rowIndex="2" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS">
                         <GridPane.margin>
                             <Insets bottom="5.0" right="20.0"/>
                         </GridPane.margin>
-                    </TextField>
+                    </Label>
                     <Label text="%label.gender" GridPane.rowIndex="2" GridPane.columnIndex="2">
                         <GridPane.margin>
                             <Insets bottom="5.0"/>

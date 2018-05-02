@@ -10,7 +10,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.paint.Color;
 import javafx.util.StringConverter;
 import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.beans.HideableItem;
@@ -49,11 +51,11 @@ public class PersonInfoPaneFxController extends WizardStepFxControllerBase
 	public static final String KEY_PERSON_INFO_ID_EXPIRY_DATE = "PERSON_INFO_ID_EXPIRY_DATE";
 	public static final String KEY_PERSON_INFO_ID_EXPIRY_DATE_SHOW_HIJRI = "PERSON_INFO_ID_EXPIRY_DATE_SHOW_HIJRI";
 	
+	@FXML private Label lblGeneralFileNumber;
 	@FXML private TextField txtFirstName;
 	@FXML private TextField txtFatherName;
 	@FXML private TextField txtGrandfatherName;
 	@FXML private TextField txtFamilyName;
-	@FXML private TextField txtGeneralFileNumber;
 	@FXML private TextField txtOccupation;
 	@FXML private TextField txtBirthPlace;
 	@FXML private TextField txtIdNumber;
@@ -135,8 +137,6 @@ public class PersonInfoPaneFxController extends WizardStepFxControllerBase
 		GuiUtils.applyValidatorToTextField(txtFatherName, null, null, 15);
 		GuiUtils.applyValidatorToTextField(txtGrandfatherName, null, null, 15);
 		GuiUtils.applyValidatorToTextField(txtFamilyName, null, null, 15);
-		GuiUtils.applyValidatorToTextField(txtGeneralFileNumber, "\\d*", "[^\\d]",
-		                                   10);
 		GuiUtils.applyValidatorToTextField(txtOccupation, null, null, 20);
 		GuiUtils.applyValidatorToTextField(txtBirthPlace, null, null, 20);
 		GuiUtils.applyValidatorToTextField(txtIdNumber, null, null, 10);
@@ -195,7 +195,8 @@ public class PersonInfoPaneFxController extends WizardStepFxControllerBase
 			
 			Long generalFileNumber = (Long) uiInputData.get(KEY_PERSON_INFO_GENERAL_FILE_NUMBER);
 			
-			if(generalFileNumber != null) txtGeneralFileNumber.setText(String.valueOf(generalFileNumber));
+			if(generalFileNumber != null) lblGeneralFileNumber.setText(String.valueOf(generalFileNumber));
+			else lblGeneralFileNumber.setTextFill(Color.RED);
 			
 			GenderType genderType = (GenderType) uiInputData.get(KEY_PERSON_INFO_GENDER);
 			if(genderType != null) cboGender.getItems()
@@ -269,11 +270,7 @@ public class PersonInfoPaneFxController extends WizardStepFxControllerBase
 	@Override
 	public void onLeaving(Map<String, Object> uiDataMap)
 	{
-		String text = txtGeneralFileNumber.getText();
-		if(text != null && !text.isEmpty()) uiDataMap.put(KEY_PERSON_INFO_GENERAL_FILE_NUMBER, Long.parseLong(text));
-		else uiDataMap.remove(KEY_PERSON_INFO_GENERAL_FILE_NUMBER);
-		
-		text = txtIdNumber.getText();
+		String text = txtIdNumber.getText();
 		if(text != null && !text.isEmpty()) uiDataMap.put(KEY_PERSON_INFO_ID_NUMBER, text);
 		else uiDataMap.remove(KEY_PERSON_INFO_ID_NUMBER);
 		
