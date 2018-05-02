@@ -48,6 +48,7 @@ import java.util.Map;
 public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 {
 	public static final String KEY_FINAL_CONVICTED_REPORT = "FINAL_CONVICTED_REPORT";
+	public static final String KEY_SUBMIT_CONVICTED_REPORT = "SUBMIT_CONVICTED_REPORT";
 	
 	@FXML private VBox paneImage;
 	@FXML private ImageViewPane paneImageView;
@@ -448,6 +449,7 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 			
 			Map<String, Object> uiDataMap = new HashMap<>();
 			uiDataMap.put(KEY_FINAL_CONVICTED_REPORT, convictedReport);
+			uiDataMap.put(KEY_SUBMIT_CONVICTED_REPORT, Boolean.TRUE);
 			Context.getWorkflowManager().submitUserTask(uiDataMap);
 		}
 	}

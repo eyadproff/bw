@@ -252,6 +252,10 @@ public class RegisterConvictedReportPresentWorkflow extends WorkflowBase<Void, V
 							}
 						});
 						
+						uiInputData.put(
+								FetchingFingerprintsPaneFxController.KEY_PERSON_FINGERPRINTS_IMAGES,
+								fingerprintImages);
+						
 						ServiceResponse<Integer> serviceResponse =
 								FingerprintInquiryService.execute(collectedFingerprints, missingFingerprints);
 						Integer inquiryId = serviceResponse.getResult();
@@ -283,9 +287,6 @@ public class RegisterConvictedReportPresentWorkflow extends WorkflowBase<Void, V
 									{
 										uiInputData.put(InquiryPaneFxController.KEY_FINGERPRINT_INQUIRY_HIT,
 										                Boolean.FALSE);
-										uiInputData.put(
-												FetchingFingerprintsPaneFxController.KEY_PERSON_FINGERPRINTS_IMAGES,
-												fingerprintImages);
 										formRenderer.get().renderForm(InquiryPaneFxController.class, uiInputData);
 									}
 									else if(result.getStatus() == FingerprintInquiryStatusResult.STATUS_INQUIRY_HIT)
@@ -305,9 +306,6 @@ public class RegisterConvictedReportPresentWorkflow extends WorkflowBase<Void, V
 										uiInputData.put(
 												FetchingFingerprintsPaneFxController.KEY_PERSON_MISSING_FINGERPRINTS,
 										        missingFingerprints);
-										uiInputData.put(
-												FetchingFingerprintsPaneFxController.KEY_PERSON_FINGERPRINTS_IMAGES,
-										        fingerprintImages);
 										formRenderer.get().renderForm(InquiryPaneFxController.class, uiInputData);
 									}
 									else // report the error
@@ -399,6 +397,7 @@ public class RegisterConvictedReportPresentWorkflow extends WorkflowBase<Void, V
 							
 							uiInputData.put(KEY_WEBSERVICE_RESPONSE, serviceResponse);
 							formRenderer.get().renderForm(ReviewAndSubmitPaneFxController.class, uiInputData);
+							uiInputData.remove(ReviewAndSubmitPaneFxController.KEY_FINAL_CONVICTED_REPORT);
 							uiOutputData = waitForUserTask();
 							uiInputData.putAll(uiOutputData);
 							
