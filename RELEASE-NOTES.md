@@ -1,5 +1,10 @@
 # Release Notes:
 
+## v2018.05.1
+
+- Add "Convicted-Report" feature.
+- Update bcl-utils and biokit-library.
+
 ## v2018.03.2
 
 - Update bcl-utils-2018.03.1 to bcl-utils-2018.03.2, to avoid using JRE8's javaws.
