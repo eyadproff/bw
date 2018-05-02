@@ -283,6 +283,9 @@ public class RegisterConvictedReportPresentWorkflow extends WorkflowBase<Void, V
 									{
 										uiInputData.put(InquiryPaneFxController.KEY_FINGERPRINT_INQUIRY_HIT,
 										                Boolean.FALSE);
+										uiInputData.put(
+												FetchingFingerprintsPaneFxController.KEY_PERSON_FINGERPRINTS_IMAGES,
+												fingerprintImages);
 										formRenderer.get().renderForm(InquiryPaneFxController.class, uiInputData);
 									}
 									else if(result.getStatus() == FingerprintInquiryStatusResult.STATUS_INQUIRY_HIT)
