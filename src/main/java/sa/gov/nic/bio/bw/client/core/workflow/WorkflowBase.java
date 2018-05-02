@@ -16,7 +16,6 @@ import java.util.logging.Logger;
  * @param <O> type of the workflow's output. Use <code>Void</code> in case of no output
  *
  * @author Fouad Almalki
- * @since 1.0.0
  */
 public abstract class WorkflowBase<I, O> implements Workflow<I, O>
 {

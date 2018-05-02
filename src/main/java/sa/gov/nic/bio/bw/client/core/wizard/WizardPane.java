@@ -16,6 +16,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.TextAlignment;
+import sa.gov.nic.bio.bw.client.core.Context;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -38,7 +39,8 @@ public class WizardPane extends BorderPane
 	public WizardPane(@NamedArg("steps") WizardStep[] steps)
 	{
 		loadFxml();
-		this.steps = new SimpleListProperty<>(this.steps, "steps", FXCollections.observableArrayList(WizardStep.extractor()));
+		this.steps = new SimpleListProperty<>(this.steps, "steps",
+	                                                    FXCollections.observableArrayList(WizardStep.extractor()));
 		setSteps(FXCollections.observableArrayList(steps));
 	}
 	
@@ -57,6 +59,7 @@ public class WizardPane extends BorderPane
 	private void loadFxml()
 	{
 		FXMLLoader fxmlLoader = new FXMLLoader(Thread.currentThread().getContextClassLoader().getResource(FXML_WIZARD));
+		fxmlLoader.setClassLoader(Context.getFxClassLoader());
 		fxmlLoader.setRoot(this);
 		fxmlLoader.setController(this);
 		
@@ -97,8 +100,18 @@ public class WizardPane extends BorderPane
 		for(int i = 0; i < wizardSteps.size(); i++)
 		{
 			WizardStep wizardStep = wizardSteps.get(i);
+			WizardStepIndicator indicator;
 			
-			WizardStepIndicator indicator = new WizardStepIndicator(wizardStep.getIconId());
+			try
+			{
+				indicator = new WizardStepIndicator(wizardStep.getIconId());
+			}
+			catch(Exception e)
+			{
+				e.printStackTrace();
+				continue;
+			}
+			
 			indicators.add(indicator);
 			indicator.getStyleClass().add("wizard-indicator");
 			gridPane.add(indicator, i, 0);

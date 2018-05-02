@@ -1,5 +1,7 @@
 package sa.gov.nic.bio.bw.client.core.webservice;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import okhttp3.Interceptor;
@@ -14,6 +16,8 @@ import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.beans.UserSession;
 import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.client.core.utils.CoreErrorCodes;
+import sa.gov.nic.bio.bw.client.core.utils.NormalizationStringTypeAdapter;
+import sa.gov.nic.bio.bw.client.core.utils.UnixEpochDateTypeAdapter;
 import sa.gov.nic.bio.bw.client.login.webservice.IdentityAPI;
 import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
 
@@ -22,6 +26,7 @@ import java.net.SocketTimeoutException;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ScheduledFuture;
@@ -65,9 +70,13 @@ public class WebserviceManager
 													.addInterceptor(tokenInterceptor)
 													.build();
 		
+		Gson gson = new GsonBuilder().registerTypeAdapter(Date.class, new UnixEpochDateTypeAdapter())
+									 .registerTypeAdapter(String.class, new NormalizationStringTypeAdapter())
+									 .create();
+		
 		retrofit = new Retrofit.Builder()
 							   .baseUrl(PROTOCOL + "://" + baseUrl)
-							   .addConverterFactory(GsonConverterFactory.create())
+							   .addConverterFactory(GsonConverterFactory.create(gson))
 							   .client(okHttpClient)
 							   .build();
 	}

@@ -20,7 +20,7 @@ import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.workflow.Workflow;
 import sa.gov.nic.bio.bw.client.features.cancelcriminal.tasks.LookupTask;
 import sa.gov.nic.bio.bw.client.features.cancelcriminal.utils.CancelCriminalErrorCodes;
-import sa.gov.nic.bio.bw.client.features.cancelcriminal.webservice.PersonIdType;
+import sa.gov.nic.bio.bw.client.features.commons.webservice.PersonIdType;
 import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
 
 import java.util.HashMap;
@@ -103,7 +103,7 @@ public class CancelCriminalPaneFxController extends BodyFxControllerBase
 	}
 	
 	@Override
-	public void onControllerReady()
+	protected void onAttachedToScene()
 	{
 		txtPersonId.requestFocus();
 	}
@@ -132,14 +132,14 @@ public class CancelCriminalPaneFxController extends BodyFxControllerBase
 					if(tabByPersonId.isSelected())
 					{
 						String message = String.format(
-								stringsBundle.getString("cancelCriminal.byPersonId.success"), criminalId,
+								resources.getString("cancelCriminal.byPersonId.success"), criminalId,
 								personId, formatPersonIdType(personIdType));
 						showSuccessNotification(message);
 					}
 					else
 					{
 						String message = String.format(
-								stringsBundle.getString("cancelCriminal.byInquiryId.success"), criminalId2,
+								resources.getString("cancelCriminal.byInquiryId.success"), criminalId2,
 								inquiryId);
 						showSuccessNotification(message);
 					}
@@ -149,14 +149,14 @@ public class CancelCriminalPaneFxController extends BodyFxControllerBase
 					if(tabByPersonId.isSelected())
 					{
 						String message = String.format(
-								stringsBundle.getString("cancelCriminal.byPersonId.failure"), criminalId,
+								resources.getString("cancelCriminal.byPersonId.failure"), criminalId,
 								personId, formatPersonIdType(personIdType));
 						showWarningNotification(message);
 					}
 					else
 					{
 						String message = String.format(
-								stringsBundle.getString("cancelCriminal.byInquiryId.failure"), criminalId2,
+								resources.getString("cancelCriminal.byInquiryId.failure"), criminalId2,
 								inquiryId);
 						showWarningNotification(message);
 					}
@@ -185,7 +185,7 @@ public class CancelCriminalPaneFxController extends BodyFxControllerBase
 	@FXML
 	private void onCancelCriminalButtonClicked(ActionEvent actionEvent)
 	{
-		String headerText = stringsBundle.getString("cancelCriminal.confirmation.header");
+		String headerText = resources.getString("cancelCriminal.confirmation.header");
 		Map<String, Object> uiDataMap = new HashMap<>();
 		
 		if(tabByPersonId.isSelected())
@@ -195,9 +195,9 @@ public class CancelCriminalPaneFxController extends BodyFxControllerBase
 			String criminalId = txtCriminalId.getText().trim();
 			
 			String contentText = String.format(
-										stringsBundle.getString("cancelCriminal.byPersonId.confirmation.message"),
+										resources.getString("cancelCriminal.byPersonId.confirmation.message"),
 			                            criminalId, personId, formatPersonIdType(personIdType));
-			boolean confirmed = coreFxController.showConfirmationDialogAndWait(headerText, contentText);
+			boolean confirmed = Context.getCoreFxController().showConfirmationDialogAndWait(headerText, contentText);
 			
 			if(!confirmed) return;
 			
@@ -214,9 +214,9 @@ public class CancelCriminalPaneFxController extends BodyFxControllerBase
 			String criminalId = txtCriminalId2.getText().trim();
 			
 			String contentText = String.format(
-					stringsBundle.getString("cancelCriminal.byInquiryId.confirmation.message"),
+					resources.getString("cancelCriminal.byInquiryId.confirmation.message"),
 					criminalId, inquiryId);
-			boolean confirmed = coreFxController.showConfirmationDialogAndWait(headerText, contentText);
+			boolean confirmed = Context.getCoreFxController().showConfirmationDialogAndWait(headerText, contentText);
 			
 			if(!confirmed) return;
 			
@@ -227,20 +227,20 @@ public class CancelCriminalPaneFxController extends BodyFxControllerBase
 			uiDataMap.put("criminalId", Long.parseLong(criminalId));
 		}
 		
-		coreFxController.submitForm(uiDataMap);
+		Context.getWorkflowManager().submitUserTask(uiDataMap);
 	}
 	
 	private String formatPersonIdType(PersonIdType personIdType)
 	{
 		StringBuilder sb = new StringBuilder();
 		
-		if(coreFxController.getCurrentLanguage() == GuiLanguage.ARABIC)
+		if(Context.getGuiLanguage() == GuiLanguage.ARABIC)
 		{
 			sb.append(personIdType.getDescriptionAR());
 		}
 		else sb.append(personIdType.getDescriptionEN());
 		
-		return AppUtils.replaceNumbersOnly(sb.toString(), coreFxController.getCurrentLanguage().getLocale());
+		return AppUtils.replaceNumbersOnly(sb.toString(), Context.getGuiLanguage().getLocale());
 	}
 	
 	private void initializeLookupTask()
@@ -269,7 +269,7 @@ public class CancelCriminalPaneFxController extends BodyFxControllerBase
 		    String errorCode = CancelCriminalErrorCodes.C006_00001.getCode();
 		    Exception exception = (Exception) lookupTask.getException();
 		    String[] errorDetails = {"Failed to load PersonIdTypes!"};
-		    coreFxController.showErrorDialog(errorCode, exception, errorDetails);
+		    Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails);
 		});
 	}
 	
@@ -291,8 +291,6 @@ public class CancelCriminalPaneFxController extends BodyFxControllerBase
 	
 	private void disableUiControls(boolean bool)
 	{
-		coreFxController.getMenuPaneController().showOverlayPane(bool);
-		
 		tabPane.setDisable(bool);
 		txtPersonId.setDisable(bool);
 		txtCriminalId.setDisable(bool);

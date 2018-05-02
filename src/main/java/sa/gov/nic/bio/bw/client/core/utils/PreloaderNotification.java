@@ -9,7 +9,6 @@ import java.util.Objects;
  * The notification that is passed from the preloader to the main application.
  *
  * @author Fouad Almalki
- * @since 1.0.0
  */
 public class PreloaderNotification implements Preloader.PreloaderNotification
 {

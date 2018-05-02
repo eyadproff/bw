@@ -15,7 +15,6 @@ import java.util.concurrent.atomic.AtomicReference;
  * The login workflow.
  *
  * @author Fouad Almalki
- * @since 1.0.0
  */
 public class LoginWorkflow extends WorkflowBase<Void, LoginBean>
 {

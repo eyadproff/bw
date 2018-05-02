@@ -2,22 +2,20 @@ package sa.gov.nic.bio.bw.client.features.searchbyfaceimage;
 
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
-import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import sa.gov.nic.bio.bw.client.core.Context;
+import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.wizard.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.client.features.commons.FaceCapturingFxController;
 import sa.gov.nic.bio.bw.client.features.searchbyfaceimage.utils.SearchByFaceImageErrorCodes;
 import sa.gov.nic.bio.bw.client.features.searchbyfaceimage.workflow.SearchByFaceImageWorkflow;
 
-import javax.imageio.ImageIO;
-import java.io.ByteArrayOutputStream;
 import java.net.URL;
-import java.util.Base64;
 import java.util.Map;
 import java.util.ResourceBundle;
 
@@ -46,10 +44,10 @@ public class ConfirmImageFxController extends WizardStepFxControllerBase
 	}
 	
 	@Override
-	public void onControllerReady()
+	protected void onAttachedToScene()
 	{
-		imagePane.maxWidthProperty().bind(coreFxController.getBodyPane().widthProperty());
-		imagePane.maxHeightProperty().bind(coreFxController.getBodyPane().heightProperty());
+		imagePane.maxWidthProperty().bind(Context.getCoreFxController().getBodyPane().widthProperty());
+		imagePane.maxHeightProperty().bind(Context.getCoreFxController().getBodyPane().heightProperty());
 		ivFinalImage.fitWidthProperty().bind(imagePane.widthProperty().divide(1.8));
 		ivFinalImage.fitHeightProperty().bind(imagePane.heightProperty().divide(1.8));
 		
@@ -60,14 +58,15 @@ public class ConfirmImageFxController extends WizardStepFxControllerBase
 				Platform.runLater(() ->
 				{
 				    imagePane.autosize();
-				    coreFxController.getBodyPane().autosize();
+				    Context.getCoreFxController().getBodyPane().autosize();
 				});
 			}
 		};
-		coreFxController.getPrimaryStage().maximizedProperty().addListener(changeListener);
+		Context.getCoreFxController().getStage().maximizedProperty().addListener(changeListener);
 		imagePane.sceneProperty().addListener((observable, oldValue, newValue) ->
 		{
-		    if(newValue == null) coreFxController.getPrimaryStage().maximizedProperty().removeListener(changeListener);
+		    if(newValue == null) Context.getCoreFxController().getStage().maximizedProperty()
+				                                                                .removeListener(changeListener);
 		});
 	}
 	
@@ -97,10 +96,7 @@ public class ConfirmImageFxController extends WizardStepFxControllerBase
 			{
 				try
 				{
-					ByteArrayOutputStream byteOutput = new ByteArrayOutputStream();
-					ImageIO.write(SwingFXUtils.fromFXImage(finalImage[0], null), "jpg", byteOutput);
-					byte[] bytes = byteOutput.toByteArray();
-					String imageBase64 = Base64.getEncoder().encodeToString(bytes);
+					String imageBase64 = AppUtils.imageToBase64(finalImage[0], "jpg");
 					uiInputData.put(SearchByFaceImageWorkflow.KEY_FINAL_IMAGE_BASE64, imageBase64);
 					uiInputData.put(SearchByFaceImageWorkflow.KEY_FINAL_IMAGE, finalImage[0]);
 				}
@@ -108,16 +104,16 @@ public class ConfirmImageFxController extends WizardStepFxControllerBase
 				{
 					String errorCode = SearchByFaceImageErrorCodes.C005_00001.getCode();
 					String[] errorDetails = {"Failed to convert image to Base64-encoded representation!"};
-					coreFxController.showErrorDialog(errorCode, e, errorDetails);
+					Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails);
 					btnSearch.setDisable(true);
 				}
 				
 				Platform.runLater(() ->
 				{
 					ivFinalImage.setImage(finalImage[0]);
-					GuiUtils.attachImageDialog(coreFxController, ivFinalImage,
+					GuiUtils.attachImageDialog(Context.getCoreFxController(), ivFinalImage,
 					                           resources.getString("label.finalImage"),
-					                           resources.getString("label.contextMenu.showImage"));
+					                           resources.getString("label.contextMenu.showImage"), false);
 					imagePane.autosize();
 					
 					// workaround to resolve the issue of not resizing sometimes

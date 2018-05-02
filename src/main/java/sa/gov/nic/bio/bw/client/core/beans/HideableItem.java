@@ -1,6 +1,12 @@
 package sa.gov.nic.bio.bw.client.core.beans;
 
-import javafx.beans.property.*;
+
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 
 public class HideableItem<T>
 {

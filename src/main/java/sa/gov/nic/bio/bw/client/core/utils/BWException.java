@@ -1,8 +1,5 @@
 package sa.gov.nic.bio.bw.client.core.utils;
 
-/**
- * Created by Fouad on 12-Jul-17.
- */
 public class BWException extends Exception
 {
 	private String errorCode;

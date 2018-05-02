@@ -3,6 +3,7 @@ package sa.gov.nic.bio.bw.client.features.commons;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
+import javafx.application.ConditionalFeature;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
@@ -52,9 +53,13 @@ import java.util.logging.Logger;
 public class FaceCapturingFxController extends WizardStepFxControllerBase
 {
 	private static final Logger LOGGER = Logger.getLogger(FaceCapturingFxController.class.getName());
-	public static final String KEY_ICAO_REQUIRED = "ICAO_REQUIRED";
+	
+	public static final String KEY_ACCEPT_ANY_CAPTURED_IMAGE = "ACCEPT_ANY_CAPTURED_IMAGE";
+	public static final String KEY_ACCEPT_BAD_QUALITY_FACE = "ACCEPT_BAD_QUALITY_FACE";
+	public static final String KEY_ACCEPTED_BAD_QUALITY_FACE_MIN_RETIRES = "ACCEPTED_BAD_QUALITY_FACE_MIN_RETIRES";
 	public static final String KEY_CAPTURED_IMAGE = "CAPTURED_IMAGE";
 	public static final String KEY_CROPPED_IMAGE = "CROPPED_IMAGE";
+	private static final String KEY_HIDE_FACE_PREVIOUS_BUTTON = "HIDE_FACE_PREVIOUS_BUTTON";
 	private static final String KEY_ICAO_SUCCESS_ICON_VISIBLE = "ICAO_SUCCESS_ICON_VISIBLE";
 	private static final String KEY_ICAO_WARNING_ICON_VISIBLE = "ICAO_WARNING_ICON_VISIBLE";
 	private static final String KEY_ICAO_ERROR_ICON_VISIBLE = "ICAO_ERROR_ICON_VISIBLE";
@@ -76,6 +81,9 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 	@FXML private ImageView ivSuccessIcao;
 	@FXML private ImageView ivWarningIcao;
 	@FXML private ImageView ivErrorIcao;
+	@FXML private ImageView ivCameraLivePreviewPlaceholder;
+	@FXML private ImageView ivCapturedImagePlaceholder;
+	@FXML private ImageView ivCroppedImagePlaceholder;
 	@FXML private ImageView ivCameraLivePreview;
 	@FXML private ImageView ivCapturedImage;
 	@FXML private ImageView ivCroppedImage;
@@ -98,7 +106,10 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 	private PerspectiveCamera perspectiveCamera = new PerspectiveCamera();
 	private boolean cameraInitializedAtLeastOnce = false;
 	private boolean captureInProgress = false;
-	private boolean icaoRequired = true;
+	private boolean acceptAnyCapturedImage = false;
+	private boolean acceptBadQualityFace = false;
+	private int acceptedBadQualityFaceMinRetires = Integer.MAX_VALUE;
+	private int successfulCroppedCapturingCount = 0;
 	
 	private Translate pivotBase = new Translate(0.0, 0.0, -1.0);
 	private Rotate xRotateBase = new Rotate(0.0, Rotate.X_AXIS);
@@ -119,35 +130,52 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 		
 		btnPrevious.setOnAction(event -> goPrevious());
 		btnNext.setOnAction(event -> goNext());
+		
+		ivCameraLivePreviewPlaceholder.visibleProperty().bind(ivCameraLivePreview.imageProperty().isNull().and(
+																		piCameraLivePreview.visibleProperty().not()));
+		ivCapturedImagePlaceholder.visibleProperty().bind(ivCapturedImage.imageProperty().isNull().and(
+																		piCapturedImage.visibleProperty().not()));
+		ivCroppedImagePlaceholder.visibleProperty().bind(ivCroppedImage.imageProperty().isNull().and(
+																		piCroppedImage.visibleProperty().not()));
 	}
 	
 	@Override
-	public void onControllerReady()
+	protected void onAttachedToScene()
 	{
-		Group face3DGroup;
-		try
+		if(Platform.isSupported(ConditionalFeature.SCENE3D))
 		{
-			face3DGroup = FXMLLoader.load(getClass().getResource("fxml/face3DModel.fxml"), stringsBundle);
+			Context.getExecutorService().submit(() ->
+			{
+				Group face3DGroup;
+				try
+				{
+					face3DGroup = FXMLLoader.load(getClass().getResource("fxml/face3DModel.fxml"), resources);
+				}
+				catch(IOException e)
+				{
+					String errorCode = CommonsErrorCodes.C008_00001.getCode();
+					String[] errorDetails = {"failed to load the face 3D model!"};
+					Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails);
+					
+					return;
+				}
+				
+				Platform.runLater(() ->
+				{
+					face3D = (Group) face3DGroup.lookup("#face3D");
+					face3D.getTransforms().setAll(pivotBase);
+					
+					AutoScalingStackPane shapePane = new AutoScalingStackPane(face3DGroup);
+					SubScene subScene = new SubScene(shapePane, 100.0, 80.0, true,
+					                                 SceneAntialiasing.BALANCED);
+					subScene.setFill(Color.TRANSPARENT);
+					subScene.setCamera(perspectiveCamera);
+					
+					subScenePane.getChildren().setAll(subScene);
+					GuiUtils.showNode(subScenePane, true);
+				});
+			});
 		}
-		catch(IOException e)
-		{
-			String errorCode = CommonsErrorCodes.C008_00001.getCode();
-			String[] errorDetails = {"failed to load the face 3D model!"};
-			coreFxController.showErrorDialog(errorCode, e, errorDetails);
-			
-			return;
-		}
-		
-		face3D = (Group) face3DGroup.lookup("#face3D");
-		face3D.getTransforms().setAll(pivotBase);
-		
-		AutoScalingStackPane shapePane = new AutoScalingStackPane(face3DGroup);
-		SubScene subScene = new SubScene(shapePane, 100.0, 80.0, true,
-		                                 SceneAntialiasing.BALANCED);
-		subScene.setFill(Color.TRANSPARENT);
-		subScene.setCamera(perspectiveCamera);
-		
-		subScenePane.getChildren().setAll(subScene);
 	}
 	
 	@Override
@@ -155,14 +183,33 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 	{
 		if(newForm)
 		{
-			Boolean bool = (Boolean) uiInputData.get(KEY_ICAO_REQUIRED);
-			if(bool != null) icaoRequired = bool;
+			// collect configurations from the workflow
+			Boolean hidePreviousButton = (Boolean) uiInputData.get(KEY_HIDE_FACE_PREVIOUS_BUTTON);
+			if(hidePreviousButton != null) GuiUtils.showNode(btnPrevious, !hidePreviousButton);
+			Boolean bool = (Boolean) uiInputData.get(KEY_ACCEPT_ANY_CAPTURED_IMAGE);
+			if(bool != null) acceptAnyCapturedImage = bool;
+			bool = (Boolean) uiInputData.get(KEY_ACCEPT_BAD_QUALITY_FACE);
+			if(bool != null) acceptBadQualityFace = bool;
+			Integer i = (Integer) uiInputData.get(KEY_ACCEPTED_BAD_QUALITY_FACE_MIN_RETIRES);
+			if(bool != null) acceptedBadQualityFaceMinRetires = i;
 			
-			if(icaoRequired) btnNext.disableProperty().bind(ivCapturedImage.imageProperty().isNull().or(
-											ivCroppedImage.imageProperty().isNull()).or(
-											ivSuccessIcao.visibleProperty().not()));
-			else btnNext.disableProperty().bind(ivCapturedImage.imageProperty().isNull().and(
-											ivCroppedImage.imageProperty().isNull()));
+			if(acceptAnyCapturedImage)
+			{
+				btnNext.disableProperty().bind(ivCapturedImage.imageProperty().isNull().and(
+											   ivCroppedImage.imageProperty().isNull()));
+			}
+			else if(acceptBadQualityFace)
+			{
+				btnNext.setDisable(!ivSuccessIcao.isVisible() &&
+				                   successfulCroppedCapturingCount < acceptedBadQualityFaceMinRetires);
+			}
+			else // accept good quality face only
+			{
+				btnNext.disableProperty().bind(ivCapturedImage.imageProperty().isNull().or(
+											   ivCroppedImage.imageProperty().isNull()).or(
+											   ivSuccessIcao.visibleProperty().not()));
+			}
+			
 			
 			bool = (Boolean) uiInputData.get(KEY_ICAO_SUCCESS_ICON_VISIBLE);
 			if(bool != null) GuiUtils.showNode(ivSuccessIcao, bool);
@@ -183,16 +230,16 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 			if(capturedImage != null)
 			{
 				ivCapturedImage.setImage(capturedImage);
-				GuiUtils.attachImageDialog(coreFxController, ivCapturedImage, tpCapturedImage.getText(),
-				                           resources.getString("label.contextMenu.showImage"));
+				GuiUtils.attachImageDialog(Context.getCoreFxController(), ivCapturedImage, tpCapturedImage.getText(),
+				                           resources.getString("label.contextMenu.showImage"), false);
 			}
 			
 			Image croppedImage = (Image) uiInputData.get(KEY_CROPPED_IMAGE);
 			if(croppedImage != null)
 			{
 				ivCroppedImage.setImage(croppedImage);
-				GuiUtils.attachImageDialog(coreFxController, ivCroppedImage, tpCroppedImage.getText(),
-				                           resources.getString("label.contextMenu.showImage"));
+				GuiUtils.attachImageDialog(Context.getCoreFxController(), ivCroppedImage, tpCroppedImage.getText(),
+				                           resources.getString("label.contextMenu.showImage"), false);
 			}
 			
 			bool = (Boolean) uiInputData.get(KEY_CAPTURED_IMAGE_TP_ACTIVE);
@@ -220,7 +267,7 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 			if(bool != null) tpCroppedImage.setValid(bool);
 			
 			DevicesRunnerGadgetPaneFxController deviceManagerGadgetPaneController =
-															coreFxController.getDeviceManagerGadgetPaneController();
+												Context.getCoreFxController().getDeviceManagerGadgetPaneController();
 			
 			if(deviceManagerGadgetPaneController.isCameraInitialized())
 			{
@@ -255,13 +302,22 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 					LOGGER.info("The camera is disconnected!");
 				}
 			}));
+			
+			Platform.runLater(() ->
+			{
+			    if(Context.getCoreFxController().getDeviceManagerGadgetPaneController().isDevicesRunnerRunning() &&
+			      !Context.getCoreFxController().getDeviceManagerGadgetPaneController().isCameraInitialized())
+			    {
+			        Context.getCoreFxController().getDeviceManagerGadgetPaneController().initializeCamera();
+			    }
+			});
 		}
 	}
 	
 	@Override
-	protected void onLeaving(Map<String, Object> uiDataMap)
+	public void onLeaving(Map<String, Object> uiDataMap)
 	{
-		if(btnStopCameraLivePreview.isVisible()) btnStopCameraLivePreview.fire();
+		if(btnStopCameraLivePreview.isVisible()) Platform.runLater(btnStopCameraLivePreview::fire);
 		
 		uiDataMap.put(KEY_ICAO_SUCCESS_ICON_VISIBLE, ivSuccessIcao.isVisible());
 		uiDataMap.put(KEY_ICAO_WARNING_ICON_VISIBLE, ivWarningIcao.isVisible());
@@ -297,7 +353,7 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 		GuiUtils.showNode(piProgress, true);
 		GuiUtils.showNode(piCameraLivePreview, true);
 		
-		lblStatus.setText(stringsBundle.getString("label.status.waitingDeviceResponse"));
+		lblStatus.setText(resources.getString("label.status.waitingDeviceResponse"));
 		boolean[] first = {true};
 		
 		Task<ServiceResponse<FaceStartPreviewResponse>> task = new Task<ServiceResponse<FaceStartPreviewResponse>>()
@@ -310,7 +366,7 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 				    if(first[0])
 				    {
 				        first[0] = false;
-				        lblStatus.setText(stringsBundle.getString("label.status.cameraLivePreviewing"));
+				        lblStatus.setText(resources.getString("label.status.cameraLivePreviewing"));
 					    GuiUtils.showNode(piProgress, false);
 					    GuiUtils.showNode(piCameraLivePreview, false);
 					    GuiUtils.showNode(btnStopCameraLivePreview, true);
@@ -327,7 +383,8 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 					}
 				});
 				
-				String cameraDeviceName = coreFxController.getDeviceManagerGadgetPaneController().getCameraDeviceName();
+				String cameraDeviceName = Context.getCoreFxController().getDeviceManagerGadgetPaneController()
+																	   .getCameraDeviceName();
 				Future<ServiceResponse<FaceStartPreviewResponse>> future = Context.getBioKitManager().getFaceService()
 															  .startPreview(cameraDeviceName, responseProcessor);
 				return future.get();
@@ -349,21 +406,44 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 			    if(result.getReturnCode() != FaceStartPreviewResponse.SuccessCodes.SUCCESS)
 			    {
 				    GuiUtils.showNode(btnStartCameraLivePreview, true);
-				    lblStatus.setText(String.format(
-						    stringsBundle.getString("label.status.failedToCaptureTheFaceWithErrorCode"),
-						    result.getReturnCode()));
+				    
+			    	if(result.getReturnCode() ==
+						                    FaceStartPreviewResponse.FailureCodes.EXCEPTION_WHILE_GETTING_PREVIEW_IMAGE)
+				    {
+					    lblStatus.setText(resources.getString("label.status.exceptionWhileGettingPreviewImage"));
+				    }
+				    else if(result.getReturnCode() ==
+					                                FaceStartPreviewResponse.FailureCodes.DEVICE_NOT_FOUND_OR_UNPLUGGED)
+				    {
+					    lblStatus.setText(resources.getString("label.status.cameraNotFoundOrUnplugged"));
+					
+					    GuiUtils.showNode(btnStartCameraLivePreview,false);
+					    DevicesRunnerGadgetPaneFxController deviceManagerGadgetPaneController =
+						                        Context.getCoreFxController().getDeviceManagerGadgetPaneController();
+					    deviceManagerGadgetPaneController.initializeCamera();
+				    }
+				    else if(result.getReturnCode() == FaceStartPreviewResponse.FailureCodes.DEVICE_BUSY)
+				    {
+					    lblStatus.setText(resources.getString("label.status.cameraBusy"));
+				    }
+				    else
+				    {
+					    lblStatus.setText(String.format(
+							    resources.getString("label.status.failedToStartCameraLivePreviewingWithErrorCode"),
+							    result.getReturnCode()));
+				    }
 			    }
 		    }
 		    else
 		    {
 			    GuiUtils.showNode(btnStartCameraLivePreview, true);
 			    lblStatus.setText(String.format(
-					    stringsBundle.getString("label.status.failedToStartCameraLivePreviewingWithErrorCode"),
+					    resources.getString("label.status.failedToStartCameraLivePreviewingWithErrorCode"),
 					    serviceResponse.getErrorCode()));
 			
 			    String errorCode = CommonsErrorCodes.C008_00002.getCode();
 			    String[] errorDetails = {"failed while starting the camera live preview!"};
-			    coreFxController.showErrorDialog(errorCode, serviceResponse.getException(), errorDetails);
+			    Context.getCoreFxController().showErrorDialog(errorCode, serviceResponse.getException(), errorDetails);
 		    }
 		});
 		task.setOnFailed(e ->
@@ -380,25 +460,25 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 			if(exception instanceof TimeoutException)
 			{
 				GuiUtils.showNode(btnStartCameraLivePreview, true);
-				lblStatus.setText(stringsBundle.getString("label.status.devicesRunnerReadTimeout"));
+				lblStatus.setText(resources.getString("label.status.devicesRunnerReadTimeout"));
 			}
 			else if(exception instanceof NotConnectedException)
 			{
-				lblStatus.setText(stringsBundle.getString("label.status.disconnectedFromDevicesRunner"));
+				lblStatus.setText(resources.getString("label.status.disconnectedFromDevicesRunner"));
 			}
 			else if(exception instanceof CancellationException)
 			{
 				GuiUtils.showNode(btnStartCameraLivePreview, true);
-				lblStatus.setText(stringsBundle.getString("label.status.startingCameraLivePreviewingCancelled"));
+				lblStatus.setText(resources.getString("label.status.startingCameraLivePreviewingCancelled"));
 			}
 			else
 			{
 				GuiUtils.showNode(btnStartCameraLivePreview, true);
-				lblStatus.setText(stringsBundle.getString("label.status.failedToStartCameraLivePreviewing"));
+				lblStatus.setText(resources.getString("label.status.failedToStartCameraLivePreviewing"));
 				
 				String errorCode = CommonsErrorCodes.C008_00003.getCode();
 				String[] errorDetails = {"failed while starting the camera live preview!"};
-				coreFxController.showErrorDialog(errorCode, exception, errorDetails);
+				Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails);
 			}
 		});
 		
@@ -416,9 +496,10 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 		
 		ivCameraLivePreview.setImage(null);
 		
-		lblStatus.setText(stringsBundle.getString("label.status.stoppingCameraLivePreviewing"));
+		lblStatus.setText(resources.getString("label.status.stoppingCameraLivePreviewing"));
 		
-		String cameraDeviceName = coreFxController.getDeviceManagerGadgetPaneController().getCameraDeviceName();
+		String cameraDeviceName = Context.getCoreFxController().getDeviceManagerGadgetPaneController()
+															   .getCameraDeviceName();
 		Future<ServiceResponse<FaceStopPreviewResponse>> future = Context.getBioKitManager().getFaceService()
 																		 .stopPreview(cameraDeviceName);
 		
@@ -448,24 +529,24 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 		        if(result.getReturnCode() == FaceStopPreviewResponse.SuccessCodes.SUCCESS)
 		        {
 		            lblStatus.setText(
-		                    stringsBundle.getString("label.status.successfullyStoppedCameraLivePreviewing"));
+		                    resources.getString("label.status.successfullyStoppedCameraLivePreviewing"));
 		        }
 		        else
 		        {
 		            lblStatus.setText(String.format(
-		                    stringsBundle.getString("label.status.failedToStopCameraLivePreviewingWithErrorCode"),
+		                    resources.getString("label.status.failedToStopCameraLivePreviewingWithErrorCode"),
 		                    result.getReturnCode()));
 		        }
 		    }
 		    else
 		    {
 		        lblStatus.setText(String.format(
-		                stringsBundle.getString("label.status.failedToStopCameraLivePreviewingWithErrorCode"),
+		                resources.getString("label.status.failedToStopCameraLivePreviewingWithErrorCode"),
 		                serviceResponse.getErrorCode()));
 		
 		        String errorCode = CommonsErrorCodes.C008_00004.getCode();
 		        String[] errorDetails = {"failed while stopping the camera live preview!"};
-		        coreFxController.showErrorDialog(errorCode, serviceResponse.getException(), errorDetails);
+		        Context.getCoreFxController().showErrorDialog(errorCode, serviceResponse.getException(), errorDetails);
 		    }
 		});
 		task.setOnFailed(e ->
@@ -481,24 +562,24 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 		    if(exception instanceof TimeoutException)
 		    {
 		        GuiUtils.showNode(btnStartCameraLivePreview, true);
-		        lblStatus.setText(stringsBundle.getString("label.status.devicesRunnerReadTimeout"));
+		        lblStatus.setText(resources.getString("label.status.devicesRunnerReadTimeout"));
 		    }
 		    else if(exception instanceof NotConnectedException)
 		    {
-		        lblStatus.setText(stringsBundle.getString("label.status.disconnectedFromDevicesRunner"));
+		        lblStatus.setText(resources.getString("label.status.disconnectedFromDevicesRunner"));
 		    }
 		    else if(exception instanceof CancellationException)
 		    {
-		        lblStatus.setText(stringsBundle.getString("label.status.stoppingCameraLivePreviewingCancelled"));
+		        lblStatus.setText(resources.getString("label.status.stoppingCameraLivePreviewingCancelled"));
 		    }
 		    else
 		    {
 		        GuiUtils.showNode(btnStartCameraLivePreview, true);
-		        lblStatus.setText(stringsBundle.getString("label.status.failedToStopCameraLivePreviewing"));
+		        lblStatus.setText(resources.getString("label.status.failedToStopCameraLivePreviewing"));
 		
 		        String errorCode = CommonsErrorCodes.C008_00005.getCode();
 		        String[] errorDetails = {"failed while stopping the camera live preview!"};
-		        coreFxController.showErrorDialog(errorCode, exception, errorDetails);
+		        Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails);
 		    }
 		});
 		
@@ -509,6 +590,7 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 	private void onCaptureFaceButtonClicked(ActionEvent actionEvent)
 	{
 		LOGGER.info("capturing the face...");
+		btnNext.setDisable(true);
 		
 		GuiUtils.showNode(btnCaptureFace, false);
 		GuiUtils.showNode(btnStopCameraLivePreview, false);
@@ -543,9 +625,10 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 		tpCroppedImage.setDuplicated(false);
 		tpCroppedImage.setValid(false);
 		
-		lblStatus.setText(stringsBundle.getString("label.status.capturingFace"));
+		lblStatus.setText(resources.getString("label.status.capturingFace"));
 		
-		String cameraDeviceName = coreFxController.getDeviceManagerGadgetPaneController().getCameraDeviceName();
+		String cameraDeviceName = Context.getCoreFxController().getDeviceManagerGadgetPaneController()
+															   .getCameraDeviceName();
 		Future<ServiceResponse<CaptureFaceResponse>> future = Context.getBioKitManager().getFaceService()
 																	 .captureFace(cameraDeviceName, true);
 		
@@ -578,7 +661,7 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 			    
 			    if(result.getReturnCode() == CaptureFaceResponse.SuccessCodes.SUCCESS)
 			    {
-				    lblStatus.setText(stringsBundle.getString("label.status.cameraLivePreviewing"));
+				    lblStatus.setText(resources.getString("label.status.cameraLivePreviewing"));
 				    
 				    String capturedImage = result.getCapturedImage();
 				    String croppedImage = result.getCroppedImage();
@@ -592,8 +675,9 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 					    tpCapturedImage.setCaptured(true);
 					    tpCapturedImage.setValid(true);
 					
-					    GuiUtils.attachImageDialog(coreFxController, ivCapturedImage, tpCapturedImage.getText(),
-					                               resources.getString("label.contextMenu.showImage"));
+					    GuiUtils.attachImageDialog(Context.getCoreFxController(), ivCapturedImage,
+					                               tpCapturedImage.getText(),
+					                               resources.getString("label.contextMenu.showImage"), false);
 				    }
 				    else
 				    {
@@ -606,12 +690,14 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 				    
 				    if(croppedImage != null)
 				    {
+					    successfulCroppedCapturingCount++;
 					    byte[] bytes = Base64.getDecoder().decode(croppedImage);
 					    ivCroppedImage.setImage(new Image(new ByteArrayInputStream(bytes)));
 					    croppedImageExists = true;
 					
-					    GuiUtils.attachImageDialog(coreFxController, ivCroppedImage, tpCroppedImage.getText(),
-					                               resources.getString("label.contextMenu.showImage"));
+					    GuiUtils.attachImageDialog(Context.getCoreFxController(), ivCroppedImage,
+					                               tpCroppedImage.getText(),
+					                               resources.getString("label.contextMenu.showImage"), false);
 				    }
 				    else
 				    {
@@ -622,8 +708,9 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 				
 				    String icaoCode = result.getIcaoErrorMessage();
 				    GuiUtils.showNode(lblIcaoMessage, true);
+				    boolean icaoSuccess = CaptureFaceResponse.IcaoCodes.SUCCESS.equals(icaoCode);
 				    
-				    if(CaptureFaceResponse.IcaoCodes.SUCCESS.equals(icaoCode))
+				    if(icaoSuccess)
 				    {
 				    	GuiUtils.showNode(ivSuccessIcao, true);
 				    	lblIcaoMessage.setText(resources.getString("label.icao.success"));
@@ -632,7 +719,7 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 					    tpCroppedImage.setCaptured(true);
 					    tpCroppedImage.setValid(true);
 					    
-					    if(btnStopCameraLivePreview.isVisible()) btnStopCameraLivePreview.fire();
+					    if(btnStopCameraLivePreview.isVisible()) Platform.runLater(btnStopCameraLivePreview::fire);
 				    }
 				    else
 				    {
@@ -711,11 +798,17 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 						    }
 					    }
 				    }
+				
+				    if(acceptBadQualityFace)
+				    {
+					    btnNext.setDisable(ivErrorIcao.isVisible() || (!icaoSuccess &&
+					                       successfulCroppedCapturingCount < acceptedBadQualityFaceMinRetires));
+				    }
 			    }
 			    else
 			    {
 				    lblStatus.setText(String.format(
-						    stringsBundle.getString("label.status.failedToCaptureTheFaceWithErrorCode"),
+						    resources.getString("label.status.failedToCaptureTheFaceWithErrorCode"),
 						    result.getReturnCode()));
 			    }
 		    }
@@ -725,12 +818,12 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 			    GuiUtils.showNode(btnCaptureFace, true);
 			    
 			    lblStatus.setText(String.format(
-					    stringsBundle.getString("label.status.failedToCaptureTheFaceWithErrorCode"),
+					    resources.getString("label.status.failedToCaptureTheFaceWithErrorCode"),
 					    serviceResponse.getErrorCode()));
 			
 			    String errorCode = CommonsErrorCodes.C008_00006.getCode();
 			    String[] errorDetails = {"failed while capturing the face!"};
-			    coreFxController.showErrorDialog(errorCode, serviceResponse.getException(), errorDetails);
+			    Context.getCoreFxController().showErrorDialog(errorCode, serviceResponse.getException(), errorDetails);
 		    }
 		});
 		task.setOnFailed(e ->
@@ -752,23 +845,23 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 			if(exception instanceof TimeoutException)
 			{
 				GuiUtils.showNode(btnStartCameraLivePreview, true);
-				lblStatus.setText(stringsBundle.getString("label.status.devicesRunnerReadTimeout"));
+				lblStatus.setText(resources.getString("label.status.devicesRunnerReadTimeout"));
 			}
 			else if(exception instanceof NotConnectedException)
 			{
-				lblStatus.setText(stringsBundle.getString("label.status.disconnectedFromDevicesRunner"));
+				lblStatus.setText(resources.getString("label.status.disconnectedFromDevicesRunner"));
 			}
 			else if(exception instanceof CancellationException)
 			{
-				lblStatus.setText(stringsBundle.getString("label.status.capturingFaceCancelled"));
+				lblStatus.setText(resources.getString("label.status.capturingFaceCancelled"));
 			}
 			else
 			{
-				lblStatus.setText(stringsBundle.getString("label.status.failedToCaptureTheFace"));
+				lblStatus.setText(resources.getString("label.status.failedToCaptureTheFace"));
 				
 				String errorCode = CommonsErrorCodes.C008_00007.getCode();
 				String[] errorDetails = {"failed while capturing the face!"};
-				coreFxController.showErrorDialog(errorCode, exception, errorDetails);
+				Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails);
 			}
 		});
 		

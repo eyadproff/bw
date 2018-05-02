@@ -13,7 +13,6 @@ import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 
 import java.util.ResourceBundle;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -21,7 +20,6 @@ import java.util.logging.Logger;
  * user and also a button to logout from the current session.
  *
  * @author Fouad Almalki
- * @since 1.0.0
  */
 public class HeaderPaneFxController extends RegionFxControllerBase
 {
@@ -78,34 +76,22 @@ public class HeaderPaneFxController extends RegionFxControllerBase
 		if(image != null)
 		{
 			ivAvatar.setImage(image);
-			GuiUtils.attachImageDialog(coreFxController, ivAvatar,
+			GuiUtils.attachImageDialog(Context.getCoreFxController(), ivAvatar,
 			                           resources.getString("label.operatorPhoto"),
-			                           resources.getString("label.contextMenu.showImage"));
+			                           resources.getString("label.contextMenu.showImage"), false);
 		}
 	}
 	
 	@FXML
 	private void onLogoutButtonClicked(ActionEvent actionEvent)
 	{
-		String message = coreFxController.getStringsBundle().getString("logout.confirm");
-		boolean confirmed = coreFxController.showConfirmationDialogAndWait(null, message);
+		String message = Context.getCoreFxController().getResourceBundle().getString("logout.confirm");
+		boolean confirmed = Context.getCoreFxController().showConfirmationDialogAndWait(null, message);
 		
 		if(confirmed)
 		{
-			coreFxController.getNotificationPane().hide();
-			coreFxController.stopIdleMonitor();
-			Context.getWebserviceManager().cancelRefreshTokenScheduler();
-			
-			try
-			{
-				Context.getBioKitManager().disconnect();
-			}
-			catch(Exception e)
-			{
-				LOGGER.log(Level.WARNING, "failed to disconnect with Biokit on logout!", e);
-			}
-			
-			coreFxController.logout();
+			Context.getCoreFxController().prepareToLogout();
+			Context.getCoreFxController().logout();
 		}
 	}
 }

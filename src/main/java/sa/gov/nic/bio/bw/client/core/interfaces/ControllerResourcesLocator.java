@@ -7,7 +7,6 @@ import java.net.URL;
  * and bundle resources.
  *
  * @author Fouad Almalki
- * @since 1.2.1
  */
 public interface ControllerResourcesLocator
 {
@@ -17,7 +16,7 @@ public interface ControllerResourcesLocator
 	URL getFxmlLocation();
 	
 	/**
-	 * @return a collection of paths to the resource bundles that are associated with this controller
+	 * @return path to the resource bundle that are associated with this controller
 	 */
-	ResourceBundleCollection getResourceBundleCollection();
+	String getStringsResourceBundle();
 }

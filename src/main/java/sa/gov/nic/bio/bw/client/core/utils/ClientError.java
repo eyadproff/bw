@@ -8,7 +8,6 @@ import java.util.Objects;
  * YYYYY is the sequence number of error inside the module.
  *
  * @author Fouad Almalki
- * @since 1.2.1
  */
 public class ClientError
 {

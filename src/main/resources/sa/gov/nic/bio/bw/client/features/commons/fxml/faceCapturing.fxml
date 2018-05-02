@@ -26,7 +26,7 @@
                 <Insets top="10.0" bottom="10.0"/>
             </padding>
             <SplitPane dividerPositions="0.5">
-                <TitledPane text="%label.cameraControlPanel" maxHeight="Infinity" collapsible="false" HBox.hgrow="ALWAYS">
+                <TitledPane text="%label.cameraControlPanel" maxHeight="Infinity" collapsible="false" HBox.hgrow="ALWAYS" focusTraversable="false">
                     <VBox alignment="CENTER" spacing="10" VBox.vgrow="NEVER">
                         <padding>
                             <Insets topRightBottomLeft="10"/>
@@ -40,13 +40,13 @@
                         </VBox>
                     </VBox>
                 </TitledPane>
-                <TitledPane text="%label.icaoStandardChecklist" maxHeight="Infinity" collapsible="false" HBox.hgrow="ALWAYS">
+                <TitledPane text="%label.icaoStandardChecklist" maxHeight="Infinity" collapsible="false" HBox.hgrow="ALWAYS" focusTraversable="false">
                     <GridPane>
                         <VBox GridPane.rowIndex="0" GridPane.columnIndex="0" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS">
                             <padding>
                                 <Insets topRightBottomLeft="10"/>
                             </padding>
-                            <TitledPane text="%label.checklistResult" maxHeight="Infinity" minWidth="170.0" collapsible="false" VBox.vgrow="ALWAYS">
+                            <TitledPane text="%label.checklistResult" maxHeight="Infinity" minWidth="170.0" minHeight="90.0" collapsible="false" VBox.vgrow="ALWAYS" focusTraversable="false">
                                 <padding>
                                     <Insets topRightBottomLeft="0.0"/>
                                 </padding>
@@ -68,13 +68,20 @@
                                 </VBox>
                             </TitledPane>
                         </VBox>
-                        <AutoScalingStackPane fx:id="subScenePane" GridPane.rowIndex="0" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS"/>
+                        <AutoScalingStackPane fx:id="subScenePane" GridPane.rowIndex="0" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS" visible="false" managed="false"/>
                     </GridPane>
                 </TitledPane>
             </SplitPane>
             <SplitPane dividerPositions="0.35,0.7">
-                <FourStateTitledPane fx:id="tpCameraLivePreview" text="%label.cameraLivePreview" HBox.hgrow="ALWAYS" maxHeight="Infinity" collapsible="false">
+                <FourStateTitledPane fx:id="tpCameraLivePreview" text="%label.cameraLivePreview" HBox.hgrow="ALWAYS" maxHeight="Infinity" collapsible="false" focusTraversable="false">
                     <StackPane>
+                        <ImageViewPane>
+                            <imageView>
+                                <ImageView fx:id="ivCameraLivePreviewPlaceholder" preserveRatio="true">
+                                    <Image url="@../images/image_place_holder.png"/>
+                                </ImageView>
+                            </imageView>
+                        </ImageViewPane>
                         <ImageViewPane>
                             <imageView>
                                 <ImageView fx:id="ivCameraLivePreview" preserveRatio="true"/>
@@ -83,8 +90,15 @@
                         <ProgressIndicator fx:id="piCameraLivePreview" maxHeight="25.0" maxWidth="25.0" managed="false" visible="false"/>
                     </StackPane>
                 </FourStateTitledPane>
-                <FourStateTitledPane fx:id="tpCapturedImage" text="%label.capturedImage" maxHeight="Infinity" collapsible="false" HBox.hgrow="ALWAYS">
+                <FourStateTitledPane fx:id="tpCapturedImage" text="%label.capturedImage" maxHeight="Infinity" collapsible="false" HBox.hgrow="ALWAYS" focusTraversable="false">
                     <StackPane>
+                        <ImageViewPane>
+                            <imageView>
+                                <ImageView fx:id="ivCapturedImagePlaceholder" preserveRatio="true">
+                                    <Image url="@../images/image_place_holder.png"/>
+                                </ImageView>
+                            </imageView>
+                        </ImageViewPane>
                         <ImageViewPane>
                             <imageView>
                                 <ImageView fx:id="ivCapturedImage" preserveRatio="true"/>
@@ -93,8 +107,15 @@
                         <ProgressIndicator fx:id="piCapturedImage" maxHeight="25.0" maxWidth="25.0" managed="false" visible="false"/>
                     </StackPane>
                 </FourStateTitledPane>
-                <FourStateTitledPane fx:id="tpCroppedImage" text="%label.croppedImage" maxHeight="Infinity" collapsible="false" HBox.hgrow="ALWAYS">
+                <FourStateTitledPane fx:id="tpCroppedImage" text="%label.croppedImage" maxHeight="Infinity" collapsible="false" HBox.hgrow="ALWAYS" focusTraversable="false">
                     <StackPane>
+                        <ImageViewPane>
+                            <imageView>
+                                <ImageView fx:id="ivCroppedImagePlaceholder" preserveRatio="true">
+                                    <Image url="@../images/image_place_holder.png"/>
+                                </ImageView>
+                            </imageView>
+                        </ImageViewPane>
                         <ImageViewPane>
                             <imageView>
                                 <ImageView fx:id="ivCroppedImage" preserveRatio="true"/>

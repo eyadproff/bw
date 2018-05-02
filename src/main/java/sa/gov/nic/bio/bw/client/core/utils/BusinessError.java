@@ -10,7 +10,6 @@ import java.util.Objects;
  * number of module that the error is belong to, and YYYYY is the sequence number of error inside the module.
  *
  * @author Fouad Almalki
- * @since 1.2.1
  */
 public class BusinessError
 {

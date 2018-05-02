@@ -14,7 +14,6 @@ import java.util.Map;
  * @param <O> type of the workflow's output. Use <code>Void</code> in case of no output
  *
  * @author Fouad Almalki
- * @since 1.0.0
  */
 public interface Workflow<I, O>
 {

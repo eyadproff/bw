@@ -93,7 +93,7 @@ public class ChangePasswordDialogFxController extends RegionFxControllerBase
 						{
 							String errorCode = LoginErrorCodes.C003_00001.getCode();
 							String[] errorDetails = {"Failed to get a response when changing the password!"};
-							coreFxController.showErrorDialog(errorCode, e, errorDetails);
+							Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails);
 							return;
 						}
 						
@@ -124,7 +124,7 @@ public class ChangePasswordDialogFxController extends RegionFxControllerBase
 							}
 							else // client error, server error, or unknown error
 							{
-								coreFxController.showErrorDialog(errorCode, exception, errorDetails);
+								Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails);
 							}
 							
 							showProgress(false);
@@ -136,14 +136,14 @@ public class ChangePasswordDialogFxController extends RegionFxControllerBase
 						showProgress(false);
 						String errorCode = LoginErrorCodes.C003_00002.getCode();
 						String[] errorDetails = {"Failure when executing ChangePasswordTask!"};
-						coreFxController.showErrorDialog(errorCode, null, errorDetails);
+						Context.getCoreFxController().showErrorDialog(errorCode, null, errorDetails);
 					});
 					
 					Context.getExecutorService().submit(task);
 				}
 				else
 				{
-					String message = stringsBundle.getString("changePassword.newPasswordConfirm.notMatch");
+					String message = resources.getString("changePassword.newPasswordConfirm.notMatch");
 					showWarningMessage(message);
 					txtNewPassword.requestFocus();
 				}
