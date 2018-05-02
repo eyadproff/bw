@@ -18,7 +18,6 @@ import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.utils.Register
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.ConvictedReport;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.net.URL;
@@ -161,8 +160,13 @@ public class ShowReportPaneFxController extends WizardStepFxControllerBase
 					{
 						saveConvictedReportAsPDF(value, new FileOutputStream(selectedFile));
 					}
-					catch(FileNotFoundException e)
+					catch(Exception e)
 					{
+						GuiUtils.showNode(piProgress, false);
+						GuiUtils.showNode(btnStartOver, true);
+						GuiUtils.showNode(btnPrintReport, true);
+						GuiUtils.showNode(btnSaveReportAsPDF, true);
+						
 						String errorCode = RegisterConvictedPresentErrorCodes.C007_00005.getCode();
 						String[] errorDetails = {"failed while saving the convicted report as PDF!"};
 						Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails);
