@@ -68,7 +68,7 @@ public class ForeignEnrollmentWorkflow extends WorkflowBase<Void, Void>
 			}
 			
 			uiInputData.clear();
-			int step = 1;
+			int step = 0;
 			
 			while(true)
 			{
@@ -76,14 +76,14 @@ public class ForeignEnrollmentWorkflow extends WorkflowBase<Void, Void>
 				
 				switch(step)
 				{
-					case 1:
+					case 0:
 					{
 						formRenderer.get().renderForm(ApplicantInfoFxController.class, uiInputData);
 						uiOutputData = waitForUserTask();
 						uiInputData.putAll(uiOutputData);
 						break;
 					}
-					case 2:
+					case 1:
 					{
 						uiInputData.put(FingerprintCapturingFxController.KEY_HIDE_FINGERPRINT_PREVIOUS_BUTTON,
 						                Boolean.FALSE);
@@ -92,21 +92,21 @@ public class ForeignEnrollmentWorkflow extends WorkflowBase<Void, Void>
 						uiInputData.putAll(uiOutputData);
 						break;
 					}
-					case 3:
+					case 2:
 					{
 						formRenderer.get().renderForm(FaceCapturingFxController.class, uiInputData);
 						uiOutputData = waitForUserTask();
 						uiInputData.putAll(uiOutputData);
 						break;
 					}
-					case 4:
+					case 3:
 					{
 						formRenderer.get().renderForm(SummaryFxController.class, uiInputData);
 						uiOutputData = waitForUserTask();
 						uiInputData.putAll(uiOutputData);
 						break;
 					}
-					case 5:
+					case 4:
 					{
 						formRenderer.get().renderForm(DoneFxController.class, uiInputData);
 						uiOutputData = waitForUserTask();
