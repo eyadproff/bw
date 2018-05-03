@@ -7,7 +7,7 @@ public class UserInfo implements Serializable
 {
 	private String distinguishedName;
 	private String userName;
-	private String gender;
+	private int gender;
 	private String userID;
 	private String locationId;
 	private String[] originalStringRoles;
@@ -31,8 +31,8 @@ public class UserInfo implements Serializable
 	public String getUserName(){return userName;}
 	public void setUserName(String userName){this.userName = userName;}
 	
-	public String getGender(){return gender;}
-	public void setGender(String gender){this.gender = gender;}
+	public int getGender(){return gender;}
+	public void setGender(int gender){this.gender = gender;}
 	
 	public String getUserID(){return userID;}
 	public void setUserID(String userID){this.userID = userID;}

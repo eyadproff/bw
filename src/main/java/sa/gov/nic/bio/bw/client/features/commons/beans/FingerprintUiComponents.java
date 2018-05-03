@@ -1,6 +1,5 @@
 package sa.gov.nic.bio.bw.client.features.commons.beans;
 
-import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.image.ImageView;
 import javafx.scene.shape.SVGPath;
@@ -17,13 +16,12 @@ public class FingerprintUiComponents
 	private SVGPath svgPath;
 	private FourStateTitledPane titledPane;
 	private CheckBox checkBox;
-	private Button button;
 	private String fingerLabel;
 	private String handLabel;
 	
 	public FingerprintUiComponents(FingerPosition fingerPosition, FingerPosition slapPosition, ImageView imageView,
 	                               SVGPath svgPath, FourStateTitledPane titledPane, CheckBox checkBox,
-	                               Button button, String fingerLabel, String handLabel)
+	                               String fingerLabel, String handLabel)
 	{
 		this.fingerPosition = fingerPosition;
 		this.slapPosition = slapPosition;
@@ -31,7 +29,6 @@ public class FingerprintUiComponents
 		this.svgPath = svgPath;
 		this.titledPane = titledPane;
 		this.checkBox = checkBox;
-		this.button = button;
 		this.fingerLabel = fingerLabel;
 		this.handLabel = handLabel;
 	}
@@ -54,9 +51,6 @@ public class FingerprintUiComponents
 	public CheckBox getCheckBox(){return checkBox;}
 	public void setCheckBox(CheckBox checkBox){this.checkBox = checkBox;}
 	
-	public Button getButton(){return button;}
-	public void setButton(Button button){this.button = button;}
-	
 	public String getFingerLabel(){return fingerLabel;}
 	public void setFingerLabel(String fingerLabel){this.fingerLabel = fingerLabel;}
 	
@@ -72,15 +66,14 @@ public class FingerprintUiComponents
 		return fingerPosition == that.fingerPosition && slapPosition == that.slapPosition &&
 			   Objects.equals(imageView, that.imageView) && Objects.equals(svgPath, that.svgPath) &&
 			   Objects.equals(titledPane, that.titledPane) && Objects.equals(checkBox, that.checkBox) &&
-			   Objects.equals(button, that.button) && Objects.equals(fingerLabel, that.fingerLabel) &&
-			   Objects.equals(handLabel, that.handLabel);
+			   Objects.equals(fingerLabel, that.fingerLabel) && Objects.equals(handLabel, that.handLabel);
 	}
 	
 	@Override
 	public int hashCode()
 	{
-		return Objects.hash(fingerPosition, slapPosition, imageView, svgPath, titledPane, checkBox, button,
-		                    fingerLabel, handLabel);
+		return Objects.hash(fingerPosition, slapPosition, imageView, svgPath, titledPane, checkBox, fingerLabel,
+		                    handLabel);
 	}
 	
 	@Override
@@ -88,7 +81,6 @@ public class FingerprintUiComponents
 	{
 		return "FingerprintUiComponents{" + "fingerPosition=" + fingerPosition + ", slapPosition=" + slapPosition +
 			   ", imageView=" + imageView + ", svgPath=" + svgPath + ", titledPane=" + titledPane + ", checkBox=" +
-			   checkBox + ", button=" + button + ", fingerLabel='" + fingerLabel + '\'' + ", handLabel='" +
-			   handLabel + '\'' + '}';
+			   checkBox + ", fingerLabel='" + fingerLabel + '\'' + ", handLabel='" + handLabel + '\'' + '}';
 	}
 }

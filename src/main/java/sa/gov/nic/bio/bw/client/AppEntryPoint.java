@@ -5,6 +5,9 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.NodeOrientation;
+import javafx.scene.Scene;
+import javafx.scene.image.Image;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import retrofit2.Call;
 import sa.gov.nic.bio.biokit.exceptions.JsonMappingException;
@@ -15,6 +18,7 @@ import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.CoreFxController;
 import sa.gov.nic.bio.bw.client.core.beans.UserSession;
 import sa.gov.nic.bio.bw.client.core.biokit.BioKitManager;
+import sa.gov.nic.bio.bw.client.core.utils.AppConstants;
 import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.client.core.utils.CombinedResourceBundle;
 import sa.gov.nic.bio.bw.client.core.utils.ConfigManager;
@@ -69,8 +73,6 @@ import java.util.logging.Logger;
  */
 public class AppEntryPoint extends Application
 {
-	public static GuiLanguage guiLanguage = GuiLanguage.ARABIC; // default value (changed in AppPreloader class)
-	
 	private static final Logger LOGGER = Logger.getLogger(AppEntryPoint.class.getName());
 	
 	private static final ThreadFactory DAEMON_THREAD_FACTORY = runnable ->
@@ -89,11 +91,10 @@ public class AppEntryPoint extends Application
 																								DAEMON_THREAD_FACTORY);
 	
 	private ResourceBundle stringsBundle;
-	private ResourceBundle topMenusBundle;
-	
-	private URL fxmlUrl;
 	private String windowTitle;
-	
+	private Pane rootPane;
+	private Image appIcon;
+	private CoreFxController coreFxController;
 	private boolean successfulInit = false;
 	
     @Override
@@ -201,6 +202,7 @@ public class AppEntryPoint extends Application
 		    return;
 	    }
 	
+	    GuiLanguage guiLanguage = Context.getGuiLanguage();
 	    ResourceBundle errorsBundle = new CombinedResourceBundle(errorBundleNames, guiLanguage.getLocale(),
 	                                                             new UTF8Control());
 	    ((CombinedResourceBundle) errorsBundle).load();
@@ -220,18 +222,18 @@ public class AppEntryPoint extends Application
 	
 	    try
 	    {
-		    topMenusBundle = ResourceBundle.getBundle(CoreFxController.RB_TOP_MENUS_FILE, guiLanguage.getLocale(),
-		                                              new UTF8Control());
+		    appIcon = new Image(Thread.currentThread().getContextClassLoader().getResourceAsStream(
+		    		CoreFxController.APP_ICON_FILE));
 	    }
-	    catch(MissingResourceException e)
+	    catch(Exception e)
 	    {
 		    String errorCode = StartupErrorCodes.C001_00007.getCode();
-		    String[] errorDetails = {"Core \"topMenusBundle\" resource bundle is missing!"};
+		    String[] errorDetails = {"Failed to load the app icon!"};
 		    notifyPreloader(PreloaderNotification.failure(e, errorCode, errorDetails));
 		    return;
 	    }
 	
-	    fxmlUrl = Thread.currentThread().getContextClassLoader().getResource(CoreFxController.FXML_FILE);
+	    URL fxmlUrl = Thread.currentThread().getContextClassLoader().getResource(CoreFxController.FXML_FILE);
 	    if(fxmlUrl == null)
 	    {
 		    String errorCode = StartupErrorCodes.C001_00008.getCode();
@@ -371,7 +373,7 @@ public class AppEntryPoint extends Application
 	    {
 		    String errorCode = StartupErrorCodes.C001_00017.getCode();
 		    String[] errorDetails = {"\"sBiokitWebsocketPort\" is not int!"};
-		    notifyPreloader(PreloaderNotification.failure(null, errorCode, errorDetails));
+		    notifyPreloader(PreloaderNotification.failure(e, errorCode, errorDetails));
 		    return;
 	    }
 	
@@ -501,24 +503,13 @@ public class AppEntryPoint extends Application
 	    }
 	
 	    windowTitle = AppUtils.replaceNumbersOnly(title, Locale.getDefault());
-	    
-	    successfulInit = true;
-	    LOGGER.exiting(AppEntryPoint.class.getName(), "init()");
-    }
-    
-    @Override
-    public void start(Stage ignoredStage)
-    {
-	    LOGGER.entering(AppEntryPoint.class.getName(), "start(Stage ignoredStage)");
-	    
-	    if(!successfulInit) return;
 	
-	    FXMLLoader coreStageLoader = new FXMLLoader(fxmlUrl, stringsBundle);
+	    FXMLLoader rootPaneLoader = new FXMLLoader(fxmlUrl, stringsBundle);
+	    rootPaneLoader.setClassLoader(Context.getFxClassLoader());
 	
-	    Stage primaryStage;
 	    try
 	    {
-		    primaryStage = coreStageLoader.load();
+		    rootPane = rootPaneLoader.load();
 	    }
 	    catch(IOException e)
 	    {
@@ -527,14 +518,30 @@ public class AppEntryPoint extends Application
 		    notifyPreloader(PreloaderNotification.failure(e, errorCode, errorDetails));
 		    return;
 	    }
+	
+	    coreFxController = rootPaneLoader.getController();
 	    
-	    CoreFxController coreFxController = coreStageLoader.getController();
-	    coreFxController.passInitialResources(stringsBundle, topMenusBundle, windowTitle, guiLanguage);
+	    successfulInit = true;
+	    LOGGER.exiting(AppEntryPoint.class.getName(), "init()");
+    }
+    
+    @Override
+    public void start(Stage primaryStage)
+    {
+	    LOGGER.entering(AppEntryPoint.class.getName(), "start(Stage primaryStage)");
 	    
-	    primaryStage.getScene().setNodeOrientation(guiLanguage.getNodeOrientation());
+	    if(!successfulInit) return;
+	
+	    primaryStage.getIcons().setAll(appIcon);
+	    primaryStage.setTitle(windowTitle);
+	    primaryStage.setWidth(AppConstants.STAGE_WIDTH);
+	    primaryStage.setHeight(AppConstants.STAGE_HEIGHT);
+	    primaryStage.setScene(new Scene(rootPane));
+	    primaryStage.getScene().setNodeOrientation(Context.getGuiLanguage().getNodeOrientation());
 	    primaryStage.centerOnScreen();
 	    primaryStage.setOnCloseRequest(GuiUtils.createOnExitHandler(primaryStage, coreFxController));
 	
+	    coreFxController.registerStage(primaryStage);
 	    notifyPreloader(PreloaderNotification.success());
 	    primaryStage.show();
 	    LOGGER.info("The main window is shown");

@@ -8,6 +8,6 @@
            fx:id="rootPane" fx:controller="sa.gov.nic.bio.bw.client.core.MenuPaneFxController">
     <StackPane>
         <Accordion fx:id="accordion"/>
-        <StackPane fx:id="overlayPane" styleClass="background-overlay-light" visible="false"/>
+        <StackPane fx:id="menuOverlayPane" styleClass="background-overlay-light" visible="false"/>
     </StackPane>
 </VBox>

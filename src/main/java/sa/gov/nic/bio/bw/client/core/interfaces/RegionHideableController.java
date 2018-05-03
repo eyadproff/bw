@@ -7,7 +7,6 @@ import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
  * A controller that is capable of hiding its region in the primary stage.
  *
  * @author Fouad Almalki
- * @since 1.0.0
  */
 public interface RegionHideableController
 {

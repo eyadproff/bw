@@ -7,11 +7,12 @@ import javafx.geometry.NodeOrientation;
 import javafx.scene.control.Alert.AlertType;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import sa.gov.nic.bio.bw.client.AppEntryPoint;
+import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.utils.AppConstants;
 import sa.gov.nic.bio.bw.client.core.utils.AppInstanceManager;
 import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.client.core.utils.DialogUtils;
+import sa.gov.nic.bio.bw.client.core.utils.FxClassLoader;
 import sa.gov.nic.bio.bw.client.core.utils.GuiLanguage;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.utils.LogFormatter;
@@ -157,10 +158,10 @@ public class AppPreloader extends Preloader
 			userLanguage = System.getProperty("user.language","en"); // Use the OS default language
 		}
 		
-		if("ar".equalsIgnoreCase(userLanguage)) AppEntryPoint.guiLanguage = GuiLanguage.ARABIC;
-		else AppEntryPoint.guiLanguage = GuiLanguage.ENGLISH;
+		if("ar".equalsIgnoreCase(userLanguage)) Context.setGuiLanguage(GuiLanguage.ARABIC);
+		else Context.setGuiLanguage(GuiLanguage.ENGLISH);
 		
-		Locale.setDefault(AppEntryPoint.guiLanguage.getLocale());
+		Locale.setDefault(Context.getGuiLanguage().getLocale());
 	}
 	
 	private static final String FXML_FILE = "sa/gov/nic/bio/bw/client/preloader/fxml/gui.fxml";
@@ -247,6 +248,10 @@ public class AppPreloader extends Preloader
 		
 		FXMLLoader fxmlLoader = new FXMLLoader(fxmlUrl, stringsBundle);
 		
+		FxClassLoader fxClassLoader = new FxClassLoader(Thread.currentThread().getContextClassLoader());
+		fxmlLoader.setClassLoader(fxClassLoader);
+		Context.setFxClassLoader(fxClassLoader);
+		
 		try
 		{
 			splashScreenStage = fxmlLoader.load();
@@ -328,7 +333,7 @@ public class AppPreloader extends Preloader
 		DialogUtils.showAlertDialog(AlertType.WARNING, null, null, title,
 		                            message, null, null, buttonExitText,
 		                           null, null,
-		                           AppEntryPoint.guiLanguage.getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT);
+		                            Context.getGuiLanguage().getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT);
 		
 		LOGGER.severe("Exiting the application due to an error during the startup!");
 		Platform.exit();
@@ -377,7 +382,7 @@ public class AppPreloader extends Preloader
 		LOGGER.log(Level.SEVERE, contentText + (sb.length() > 0 ? "\n" : "") + sb.toString(), throwable);
 		DialogUtils.showAlertDialog(AlertType.ERROR, null, null, title, headerText,
 		                            contentText, sb.toString(), buttonExitText, moreDetailsText, lessDetailsText,
-		                           AppEntryPoint.guiLanguage.getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT);
+		                            Context.getGuiLanguage().getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT);
 		
 		LOGGER.severe("Exiting the application due to an error during the startup!");
 		Platform.exit();

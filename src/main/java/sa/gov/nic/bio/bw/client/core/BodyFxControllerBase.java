@@ -3,6 +3,7 @@ package sa.gov.nic.bio.bw.client.core;
 import javafx.application.Platform;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import org.controlsfx.control.NotificationPane;
 import sa.gov.nic.bio.bw.client.core.interfaces.NotificationController;
 import sa.gov.nic.bio.bw.client.core.interfaces.WorkflowUserTaskController;
 
@@ -12,7 +13,6 @@ import java.util.logging.Logger;
  * A base class for any JavaFX controller that will be associated with the body region.
  *
  * @author Fouad Almalki
- * @since 1.0.0
  */
 public abstract class BodyFxControllerBase extends RegionFxControllerBase implements WorkflowUserTaskController,
 																					 NotificationController
@@ -36,8 +36,11 @@ public abstract class BodyFxControllerBase extends RegionFxControllerBase implem
 	{
 		Platform.runLater(() ->
 		{
-		    coreFxController.getNotificationPane().setGraphic(new ImageView(icon));
-		    coreFxController.getNotificationPane().show(message);
+			NotificationPane notificationPane = Context.getCoreFxController().getNotificationPane();
+			
+			if(notificationPane.isShowing()) notificationPane.hide();
+		    notificationPane.setGraphic(new ImageView(icon));
+		    notificationPane.show(message);
 		});
 	}
 	
@@ -47,7 +50,7 @@ public abstract class BodyFxControllerBase extends RegionFxControllerBase implem
 	@Override
 	public final void hideNotification()
 	{
-		coreFxController.getNotificationPane().hide();
+		Context.getCoreFxController().getNotificationPane().hide();
 	}
 	
 	/**
@@ -78,13 +81,17 @@ public abstract class BodyFxControllerBase extends RegionFxControllerBase implem
 	}
 	
 	/**
-	 * A callback that is invoked after the controller is completely initialized. The core controller and the resource
-	 * bundles are attached to this controller before calling <code>onControllerReady()</code>.
+	 * A callback that is invoked after the root pane of this controller is attached to the scene.
 	 */
-	public void onControllerReady(){}
+	protected void onAttachedToScene(){}
+	
+	/**
+	 * A callback that is invoked after the root pane of this controller is detached from the scene.
+	 */
+	protected void onDetachedFromScene(){}
 	
 	
-	protected void reportNegativeResponse(String errorCode, Exception exception, String[] errorDetails)
+	protected void reportNegativeResponse(String errorCode, Throwable exception, String[] errorDetails)
 	{
 		if(errorCode.startsWith("B") || errorCode.startsWith("N")) // business error
 		{
@@ -100,7 +107,7 @@ public abstract class BodyFxControllerBase extends RegionFxControllerBase implem
 		}
 		else // client error, server error, or unknown error
 		{
-			coreFxController.showErrorDialog(errorCode, exception, errorDetails);
+			Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails);
 		}
 	}
 }

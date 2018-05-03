@@ -3,9 +3,6 @@ package sa.gov.nic.bio.bw.client.core.beans;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Created by Fouad on 17-Jul-17.
- */
 public class StateBundle
 {
 	private Map<String, Object> sMap = new HashMap<>();

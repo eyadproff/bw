@@ -6,7 +6,6 @@ import java.util.Map;
  * Used as a UI proxy to delegate the UI rendering tasks from the workflow manager to the UI manager.
  *
  * @author Fouad Almalki
- * @since 1.0.0
  */
 public interface FormRenderer
 {

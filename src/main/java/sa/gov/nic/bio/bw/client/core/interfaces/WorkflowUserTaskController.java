@@ -6,7 +6,6 @@ import java.util.Map;
  * Every JavaFX controller that implements this interface will act as a controller for a user task in the workflow.
  *
  * @author Fouad Almalki
- * @since 1.0.0
  */
 public interface WorkflowUserTaskController
 {

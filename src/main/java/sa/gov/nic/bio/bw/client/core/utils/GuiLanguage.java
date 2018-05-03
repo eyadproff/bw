@@ -4,9 +4,6 @@ import javafx.geometry.NodeOrientation;
 
 import java.util.Locale;
 
-/**
- * Created by Fouad on 11-Mar-16.
- */
 public enum GuiLanguage
 {
 	ARABIC(AppConstants.Locales.SAUDI_AR_LOCALE, NodeOrientation.RIGHT_TO_LEFT, "عربي", "sa/gov/nic/bio/bw/client/core/images/sa.png"),

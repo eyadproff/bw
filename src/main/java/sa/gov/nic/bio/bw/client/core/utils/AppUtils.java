@@ -2,13 +2,17 @@ package sa.gov.nic.bio.bw.client.core.utils;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import javafx.embed.swing.SwingFXUtils;
+import javafx.scene.image.Image;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import org.controlsfx.glyphfont.FontAwesome;
 import org.controlsfx.glyphfont.Glyph;
 import sa.gov.nic.bio.bw.client.core.webservice.NicHijriCalendarData;
 
+import javax.imageio.ImageIO;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
@@ -236,11 +240,22 @@ public final class AppUtils
 		return Instant.ofEpochMilli(milliSeconds).atZone(AppConstants.SAUDI_ZONE);
 	}
 	
+	public static LocalDate secondsToGregorianData(long seconds)
+	{
+		return Instant.ofEpochSecond(seconds).atZone(AppConstants.SAUDI_ZONE).toLocalDate();
+	}
+	
 	public static String formatHijriGregorianDateTime(long milliSeconds) throws DateTimeException // thrown in case of "Hijrah date out of range"
 	{
 		ChronoZonedDateTime<HijrahDate> hijriDateTime = AppUtils.milliSecondsToHijriDataTime(milliSeconds);
 		ZonedDateTime gregorianDateTime = AppUtils.milliSecondsToGregorianDataTime(milliSeconds);
 		return AppUtils.formatDateTime(hijriDateTime) + " - " + AppUtils.formatDate(gregorianDateTime);
+	}
+	
+	public static String formatGregorianDate(long seconds)
+	{
+		LocalDate localDate = AppUtils.secondsToGregorianData(seconds);
+		return AppUtils.formatDate(localDate);
 	}
 	
 	public static LocalDateTime extractExpirationTimeFromJWT(String jwt)
@@ -352,5 +367,44 @@ public final class AppUtils
 		parts[2] = "signature = " + parts[2];
 		
 		return parts;
+	}
+	
+	public static boolean isEnglishText(String text)
+	{
+		if(text == null) return false;
+		return StandardCharsets.US_ASCII.newEncoder().canEncode(text);
+	}
+	
+	public static String buildNamePart(String namePart, String namePartTranslated, boolean combined)
+	{
+		if((namePart == null || namePart.trim().isEmpty()) &&
+				(namePartTranslated == null || namePartTranslated.trim().isEmpty()))
+		{
+			return null;
+		}
+		else if((namePart == null || namePart.trim().isEmpty()))
+		{
+			return namePartTranslated;
+		}
+		else if(namePartTranslated == null || namePartTranslated.trim().isEmpty())
+		{
+			return namePart;
+		}
+		else // both have value
+		{
+			if(AppUtils.isEnglishText(namePart))
+			{
+				return namePartTranslated + (combined ? " - " + namePart : "");
+			}
+			else return namePart + (combined ? " - " + namePartTranslated : "");
+		}
+	}
+	
+	public static String imageToBase64(Image image, String imageExtension) throws IOException
+	{
+		ByteArrayOutputStream byteOutput = new ByteArrayOutputStream();
+		ImageIO.write(SwingFXUtils.fromFXImage(image, null), imageExtension, byteOutput);
+		byte[] bytes = byteOutput.toByteArray();
+		return Base64.getEncoder().encodeToString(bytes);
 	}
 }

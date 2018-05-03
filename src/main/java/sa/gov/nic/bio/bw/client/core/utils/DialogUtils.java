@@ -20,6 +20,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.Window;
+import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.interfaces.IdleMonitorRegisterer;
 
 import java.io.IOException;
@@ -28,9 +29,6 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.concurrent.atomic.AtomicInteger;
 
-/**
- * Created by Fouad on 12-Jul-17.
- */
 public class DialogUtils
 {
 	public static void showAlertDialog(AlertType alertType, Window ownerWindow,
@@ -203,7 +201,8 @@ public class DialogUtils
 		if(idleMonitorRegisterer != null) idleMonitorRegisterer.unregisterStageForIdleMonitoring(stage);
 	}
 	
-	public static Stage buildCustomDialog(Stage ownerStage, String title, Pane contentPane, boolean rtl)
+	public static Stage buildCustomDialog(Stage ownerStage, String title, Pane contentPane, boolean rtl,
+	                                      boolean autoCenter)
 	{
 		Stage stage = new Stage();
 		stage.initOwner(ownerStage);
@@ -214,6 +213,16 @@ public class DialogUtils
 		scene.setNodeOrientation(rtl ? NodeOrientation.RIGHT_TO_LEFT : NodeOrientation.LEFT_TO_RIGHT);
 		stage.setTitle(title);
 		stage.setScene(scene);
+		
+		
+		if(autoCenter) stage.setOnShown(ev ->
+		{
+			double centerXPosition = ownerStage.getX() + ownerStage.getWidth() / 2.0;
+			double centerYPosition = ownerStage.getY() + ownerStage.getHeight() / 2.0;
+			
+			stage.setX(centerXPosition - stage.getWidth() / 2.0);
+			stage.setY(centerYPosition - stage.getHeight() / 2.0);
+		});
 		
 		return stage;
 	}
@@ -230,6 +239,7 @@ public class DialogUtils
 		}
 		
 		FXMLLoader loader = new FXMLLoader(fxmlResource, resourceBundle);
+		loader.setClassLoader(Context.getFxClassLoader());
 		Dialog<ButtonType> dialog;
 		try
 		{

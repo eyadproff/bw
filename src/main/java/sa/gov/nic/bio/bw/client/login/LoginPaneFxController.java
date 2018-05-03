@@ -24,12 +24,10 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-/**
- * Created by Fouad on 16-Jul-17.
- */
 public class LoginPaneFxController extends BodyFxControllerBase implements PersistableEntity
 {
-	private static final String FXML_CHANGE_PASSWORD = "sa/gov/nic/bio/bw/client/login/fxml/change_password_dialog.fxml";
+	private static final String FXML_CHANGE_PASSWORD =
+													"sa/gov/nic/bio/bw/client/login/fxml/change_password_dialog.fxml";
 	
 	@FXML private TextField txtUsername;
 	@FXML private PasswordField txtPassword;
@@ -52,30 +50,30 @@ public class LoginPaneFxController extends BodyFxControllerBase implements Persi
 	}
 	
 	@Override
-	public void onControllerReady()
+	protected void onAttachedToScene()
 	{
-		GuiLanguage currentLanguage = coreFxController.getCurrentLanguage();
-		cboLanguage.getSelectionModel().select(currentLanguage);
+		cboLanguage.getSelectionModel().select(Context.getGuiLanguage());
 		cboLanguage.setOnAction(event ->
         {
 	        GuiLanguage guiLanguage = cboLanguage.getValue();
 	        Locale.setDefault(guiLanguage.getLocale());
-	        coreFxController.switchLanguage(guiLanguage, this);
+	        Context.getCoreFxController().switchLanguage(guiLanguage, this);
         });
 
-		coreFxController.getHeaderPaneController().hideRegion();
-		coreFxController.getMenuPaneController().hideRegion();
-		coreFxController.getDeviceManagerGadgetPaneController().hideRegion();
-		coreFxController.getFooterPaneController().showRegion();
+		Context.getCoreFxController().getHeaderPaneController().hideRegion();
+		Context.getCoreFxController().getMenuPaneController().hideRegion();
+		Context.getCoreFxController().getDeviceManagerGadgetPaneController().hideRegion();
+		Context.getCoreFxController().getFooterPaneController().showRegion();
 		
 		GuiUtils.makeButtonClickableByPressingEnter(btnLogin);
 		GuiUtils.makeButtonClickableByPressingEnter(btnChangePassword);
-		GuiUtils.makeComboBoxOpenableByPressingSpaceBar(cboLanguage);
+		GuiUtils.makeComboBoxOpenableByPressingEnter(cboLanguage);
 		
 		// request focus once the scene is attached to txtUsername
 		txtUsername.sceneProperty().addListener((observable, oldValue, newValue) -> txtUsername.requestFocus());
 		
-		if(Context.getRuntimeEnvironment() == RuntimeEnvironment.LOCAL)
+		if(Context.getRuntimeEnvironment() == RuntimeEnvironment.LOCAL ||
+		   Context.getRuntimeEnvironment() == RuntimeEnvironment.DEV)
 		{
 			txtUsername.setText(Context.getConfigManager().getProperty("dev.login.username"));
 			txtPassword.setText(Context.getConfigManager().getProperty("dev.login.password"));
@@ -112,7 +110,7 @@ public class LoginPaneFxController extends BodyFxControllerBase implements Persi
 		uiDataMap.put("username", username);
 		uiDataMap.put("password", password);
 		
-		coreFxController.submitForm(uiDataMap);
+		Context.getWorkflowManager().submitUserTask(uiDataMap);
 	}
 	
 	@FXML
@@ -120,13 +118,12 @@ public class LoginPaneFxController extends BodyFxControllerBase implements Persi
 	{
 		hideNotification();
 		
-		boolean rtl = coreFxController.getCurrentLanguage().getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT;
-		ChangePasswordDialogFxController controller = DialogUtils.buildCustomDialogByFxml(coreFxController.getPrimaryStage(), FXML_CHANGE_PASSWORD, stringsBundle, rtl);
+		boolean rtl = Context.getGuiLanguage().getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT;
+		ChangePasswordDialogFxController controller = DialogUtils.buildCustomDialogByFxml(
+				Context.getCoreFxController().getStage(), FXML_CHANGE_PASSWORD, resources, rtl);
 		
 		if(controller != null)
 		{
-			controller.attachCoreFxController(coreFxController);
-			controller.attachResourceBundles(stringsBundle);
 			controller.setUsernameAndPassword(txtUsername.getText(), txtPassword.getText());
 			controller.requestFocus();
 			controller.showDialogAndWait();
@@ -135,7 +132,7 @@ public class LoginPaneFxController extends BodyFxControllerBase implements Persi
 			if(passwordChanged)
 			{
 				txtPassword.setText("");
-				showSuccessNotification(stringsBundle.getString("changePassword.success"));
+				showSuccessNotification(resources.getString("changePassword.success"));
 			}
 			
 			if(txtUsername.getText().isEmpty()) txtUsername.requestFocus();

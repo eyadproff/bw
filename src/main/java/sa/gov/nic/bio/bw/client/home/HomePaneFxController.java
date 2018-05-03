@@ -20,7 +20,6 @@ import sa.gov.nic.bio.bw.client.home.utils.HomeErrorCodes;
 import sa.gov.nic.bio.bw.client.login.webservice.UserInfo;
 
 import java.io.ByteArrayInputStream;
-import java.text.Normalizer;
 import java.time.DateTimeException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -35,9 +34,6 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- * Created by Fouad on 16-Jul-17.
- */
 public class HomePaneFxController extends BodyFxControllerBase
 {
 	private static final Logger LOGGER = Logger.getLogger(HomePaneFxController.class.getName());
@@ -57,14 +53,15 @@ public class HomePaneFxController extends BodyFxControllerBase
 	@FXML private Label lblPasswordExpirationTime;
 	
 	@Override
-	public void onControllerReady()
+	protected void onAttachedToScene()
 	{
-		coreFxController.getHeaderPaneController().showRegion();
-		coreFxController.getFooterPaneController().hideRegion();
-		coreFxController.getMenuPaneController().showRegion();
-		coreFxController.getDeviceManagerGadgetPaneController().showRegion();
+		Context.getCoreFxController().getHeaderPaneController().showRegion();
+		Context.getCoreFxController().getFooterPaneController().hideRegion();
+		Context.getCoreFxController().getMenuPaneController().showRegion();
+		Context.getCoreFxController().getDeviceManagerGadgetPaneController().showRegion();
 
-		ClosureListener closureListener = coreFxController.getDeviceManagerGadgetPaneController().getClosureListener();
+		ClosureListener closureListener = Context.getCoreFxController().getDeviceManagerGadgetPaneController()
+																	   .getClosureListener();
 		Context.getBioKitManager().setClosureListener(closureListener);
 
 		// connect if running
@@ -82,7 +79,7 @@ public class HomePaneFxController extends BodyFxControllerBase
 
 		    if(listening != null && listening)
 		    {
-		        coreFxController.getDeviceManagerGadgetPaneController().runAndConnectDevicesRunner();
+		        Context.getCoreFxController().getDeviceManagerGadgetPaneController().runAndConnectDevicesRunner();
 		    }
 		});
 		Context.getExecutorService().submit(task);
@@ -129,7 +126,7 @@ public class HomePaneFxController extends BodyFxControllerBase
 			String[] errorDetails = (String[]) uiInputData.get(Workflow.KEY_ERROR_DETAILS);
 			Exception exception = (Exception) uiInputData.get(Workflow.KEY_EXCEPTION);
 			
-			coreFxController.showErrorDialog(errorCode, exception, errorDetails);
+			Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails);
 		}
 		else
 		{
@@ -147,11 +144,8 @@ public class HomePaneFxController extends BodyFxControllerBase
 		
 		String username = userInfo.getUserName();
 		
-		// we normalize because the backend characters are not the standard ones
-		String operatorName = Normalizer.normalize(userInfo.getOperatorName(), Normalizer.Form.NFKC) + " (" +
-				userInfo.getOperatorId() + ")";
-		String location = Normalizer.normalize(userInfo.getLocationName(), Normalizer.Form.NFKC) + " (" +
-				userInfo.getLocationId() + ")";
+		String operatorName = userInfo.getOperatorName() + " (" + userInfo.getOperatorId() + ")";
+		String location = userInfo.getLocationName() + " (" + userInfo.getLocationId() + ")";
 		
 		String encodedFaceImage = userInfo.getFaceImage();
 		byte[] faceImageByteArray = null;
@@ -180,7 +174,7 @@ public class HomePaneFxController extends BodyFxControllerBase
 					LOGGER.log(Level.WARNING, "Failed to load the avatar image!", e);
 				}
 				
-				if(image != null) coreFxController.getHeaderPaneController().setAvatarImage(image);
+				if(image != null) Context.getCoreFxController().getHeaderPaneController().setAvatarImage(image);
 			}
 		}
 		
@@ -193,9 +187,9 @@ public class HomePaneFxController extends BodyFxControllerBase
 		operatorName = AppUtils.replaceNumbersOnly(operatorName, Locale.getDefault());
 		location = AppUtils.replaceNumbersOnly(location, Locale.getDefault());
 		
-		coreFxController.getHeaderPaneController().setUsername(username);
-		coreFxController.getHeaderPaneController().setOperatorName(operatorName);
-		coreFxController.getHeaderPaneController().setLocation(location);
+		Context.getCoreFxController().getHeaderPaneController().setUsername(username);
+		Context.getCoreFxController().getHeaderPaneController().setOperatorName(operatorName);
+		Context.getCoreFxController().getHeaderPaneController().setLocation(location);
 		
 		long loginTime = System.currentTimeMillis();
 		long lastLogonTime = userInfo.getLastLogonTime();
@@ -226,7 +220,7 @@ public class HomePaneFxController extends BodyFxControllerBase
 		{
 			String errorCode = HomeErrorCodes.C004_00001.getCode();
 			String[] errorDetails = {"Failed to load menu.properties files!"};
-			coreFxController.showErrorDialog(errorCode, e, errorDetails);
+			Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails);
 			return;
 		}
 		
@@ -258,9 +252,9 @@ public class HomePaneFxController extends BodyFxControllerBase
 					
 					    if(!topMenus.containsKey(topMenu))
 					    {
-						    String label = coreFxController.getTopMenusBundle().getString(topMenu);
-						    String icon = coreFxController.getTopMenusBundle().getString(topMenu + ".icon");
-						    int order = Integer.parseInt(coreFxController.getTopMenusBundle().getString(topMenu + ".order"));
+						    String label = Context.getCoreFxController().getResourceBundle().getString(topMenu);
+						    String icon = Context.getConfigManager().getProperty(topMenu + ".icon");
+						    int order = Integer.parseInt(Context.getConfigManager().getProperty(topMenu + ".order"));
 						
 						    MenuItem topMenuItem = new MenuItem();
 						    topMenuItem.setMenuId(topMenu);
@@ -275,6 +269,12 @@ public class HomePaneFxController extends BodyFxControllerBase
 				    case "menu.label":
 				    {
 					    menuItem.setLabel(value);
+					    break;
+				    }
+				    case "menu.lines":
+				    {
+					    int lines = Integer.parseInt(value);
+					    menuItem.setLines(lines);
 					    break;
 				    }
 				    case "menu.order":
@@ -294,7 +294,7 @@ public class HomePaneFxController extends BodyFxControllerBase
 					    {
 						    String errorCode = HomeErrorCodes.C004_00002.getCode();
 						    String[] errorDetails = {"The menu workflow class (" + value + ") is not found!"};
-						    coreFxController.showErrorDialog(errorCode, e, errorDetails);
+						    Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails);
 					    }
 					    break;
 				    }
@@ -317,7 +317,7 @@ public class HomePaneFxController extends BodyFxControllerBase
 			}
 		}
 		
-		coreFxController.getMenuPaneController().setMenus(menus, topMenus);
+		Context.getCoreFxController().getMenuPaneController().setMenus(menus, topMenus);
 		
 		if(menus.size() == 0)
 		{
@@ -330,6 +330,6 @@ public class HomePaneFxController extends BodyFxControllerBase
 			showWarningNotification(guiErrorMessage);
 		}
 		
-		coreFxController.startIdleMonitor();
+		Context.getCoreFxController().startIdleMonitor();
 	}
 }
