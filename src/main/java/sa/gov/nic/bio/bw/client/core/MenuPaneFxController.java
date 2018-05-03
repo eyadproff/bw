@@ -170,13 +170,13 @@ public class MenuPaneFxController extends RegionFxControllerBase
 	                f = Font.font(f.getFamily(), newValue ? FontWeight.EXTRA_BOLD : FontWeight.NORMAL, f.getSize());
                     labeledText.fontProperty().set(f);
                 });
+				
+				updateListViewHeight(listView, item.getIndex(), item);
 			}
 			
 			arrow.translateXProperty().bind(pane.widthProperty().subtract(arrow.widthProperty().multiply(3)));
 			labeledText.translateXProperty().bind(arrow.widthProperty().multiply(2).negate());
 			glyphFont.translateXProperty().bind(arrow.widthProperty().multiply(2).negate());
-			
-			lv.setPrefHeight(lv.getItems().size() * cellHeight + 30);
 		}
 	}
 	

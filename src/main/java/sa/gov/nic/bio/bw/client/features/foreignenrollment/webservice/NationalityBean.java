@@ -1,4 +1,4 @@
-package sa.gov.nic.bio.bw.client.features.mofaenrollment.webservice;
+package sa.gov.nic.bio.bw.client.features.foreignenrollment.webservice;
 
 import java.io.Serializable;
 import java.util.Objects;

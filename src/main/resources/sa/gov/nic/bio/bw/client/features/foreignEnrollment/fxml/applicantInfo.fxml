@@ -12,10 +12,10 @@
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.collections.FXCollections?>
 <?import sa.gov.nic.bio.bw.client.core.beans.ItemWithText?>
-<?import sa.gov.nic.bio.bw.client.features.mofaenrollment.enums.Gender?>
+<?import sa.gov.nic.bio.bw.client.features.foreignenrollment.enums.Gender?>
 
 <BorderPane xmlns="http://javafx.com/javafx/8.0.152" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="sa.gov.nic.bio.bw.client.features.mofaenrollment.ApplicantInfoFxController"
+            fx:controller="sa.gov.nic.bio.bw.client.features.foreignenrollment.ApplicantInfoFxController"
             fx:id="rootPane" stylesheets="@../css/style.css">
 
     <fx:define>

@@ -7,16 +7,17 @@
 <?import javafx.geometry.Insets?>
 
 <BorderPane xmlns="http://javafx.com/javafx/8.0.152" xmlns:fx="http://javafx.com/fxml/1"
-            fx:id="rootPane" fx:controller="sa.gov.nic.bio.bw.client.features.mofaenrollment.DoneFxController">
+            fx:id="rootPane" fx:controller="sa.gov.nic.bio.bw.client.features.foreignenrollment.SummaryFxController">
     <center>
-        <Label text="Done"/>
+        <Label text="Summary"/>
     </center>
     <bottom>
         <HBox alignment="CENTER" spacing="10">
             <padding>
                 <Insets bottom="10"/>
             </padding>
-            <Button fx:id="btnStartOver" text="%button.startOver"/>
+            <Button fx:id="btnPrevious" text="%button.previous"/>
+            <Button fx:id="btnSubmit" text="%button.submit"/>
         </HBox>
     </bottom>
 </BorderPane>

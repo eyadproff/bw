@@ -1,9 +1,10 @@
-package sa.gov.nic.bio.bw.client.features.mofaenrollment;
+package sa.gov.nic.bio.bw.client.features.foreignenrollment;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ProgressIndicator;
+import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.wizard.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.client.core.workflow.Workflow;
@@ -28,7 +29,7 @@ public class LookupFxController extends WizardStepFxControllerBase
 	protected void initialize(){}
 	
 	@Override
-	public void onControllerReady()
+	protected void onAttachedToScene()
 	{
 		submitTask();
 	}
@@ -60,6 +61,6 @@ public class LookupFxController extends WizardStepFxControllerBase
 	
 	private void submitTask()
 	{
-		coreFxController.submitForm(new HashMap<>());
+		Context.getWorkflowManager().submitUserTask(new HashMap<>());
 	}
 }

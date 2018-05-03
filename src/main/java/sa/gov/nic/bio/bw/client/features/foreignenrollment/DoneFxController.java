@@ -1,4 +1,4 @@
-package sa.gov.nic.bio.bw.client.features.mofaenrollment;
+package sa.gov.nic.bio.bw.client.features.foreignenrollment;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -24,7 +24,7 @@ public class DoneFxController extends WizardStepFxControllerBase
 	}
 	
 	@Override
-	public void onControllerReady()
+	protected void onAttachedToScene()
 	{
 	
 	}

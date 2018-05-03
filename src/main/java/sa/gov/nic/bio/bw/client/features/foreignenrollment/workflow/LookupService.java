@@ -1,11 +1,11 @@
-package sa.gov.nic.bio.bw.client.features.mofaenrollment.workflow;
+package sa.gov.nic.bio.bw.client.features.foreignenrollment.workflow;
 
 import retrofit2.Call;
 import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.beans.UserSession;
-import sa.gov.nic.bio.bw.client.features.mofaenrollment.webservice.LookupAPI;
-import sa.gov.nic.bio.bw.client.features.mofaenrollment.webservice.NationalityBean;
-import sa.gov.nic.bio.bw.client.features.mofaenrollment.webservice.VisaTypeBean;
+import sa.gov.nic.bio.bw.client.features.foreignenrollment.webservice.LookupAPI;
+import sa.gov.nic.bio.bw.client.features.foreignenrollment.webservice.NationalityBean;
+import sa.gov.nic.bio.bw.client.features.foreignenrollment.webservice.VisaTypeBean;
 import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
 
 import java.util.List;

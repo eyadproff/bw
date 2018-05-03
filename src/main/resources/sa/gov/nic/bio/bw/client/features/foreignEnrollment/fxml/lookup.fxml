@@ -9,7 +9,7 @@
 <?import javafx.scene.control.Button?>
 
 <BorderPane xmlns="http://javafx.com/javafx/8.0.152" xmlns:fx="http://javafx.com/fxml/1"
-            fx:id="rootPane" fx:controller="sa.gov.nic.bio.bw.client.features.mofaenrollment.LookupFxController">
+            fx:id="rootPane" fx:controller="sa.gov.nic.bio.bw.client.features.foreignenrollment.LookupFxController">
     <center>
         <HBox alignment="CENTER">
             <VBox alignment="CENTER">

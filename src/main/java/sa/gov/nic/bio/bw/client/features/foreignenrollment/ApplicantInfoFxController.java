@@ -1,4 +1,4 @@
-package sa.gov.nic.bio.bw.client.features.mofaenrollment;
+package sa.gov.nic.bio.bw.client.features.foreignenrollment;
 
 import javafx.application.Platform;
 import javafx.beans.binding.BooleanBinding;
@@ -15,9 +15,9 @@ import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.client.core.utils.GuiLanguage;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.wizard.WizardStepFxControllerBase;
-import sa.gov.nic.bio.bw.client.features.mofaenrollment.enums.Gender;
-import sa.gov.nic.bio.bw.client.features.mofaenrollment.webservice.NationalityBean;
-import sa.gov.nic.bio.bw.client.features.mofaenrollment.webservice.VisaTypeBean;
+import sa.gov.nic.bio.bw.client.features.foreignenrollment.enums.Gender;
+import sa.gov.nic.bio.bw.client.features.foreignenrollment.webservice.NationalityBean;
+import sa.gov.nic.bio.bw.client.features.foreignenrollment.webservice.VisaTypeBean;
 
 import java.net.URL;
 import java.text.Normalizer;
@@ -77,9 +77,9 @@ public class ApplicantInfoFxController extends WizardStepFxControllerBase
 		GuiUtils.addAutoCompletionSupportToComboBox(cboNationality, nationalities);
 		GuiUtils.addAutoCompletionSupportToComboBox(cboVisaType, visaTypes);
 		
-		GuiUtils.makeComboBoxOpenableByPressingSpaceBar(cboGender);
-		GuiUtils.makeComboBoxOpenableByPressingSpaceBar(cboNationality);
-		GuiUtils.makeComboBoxOpenableByPressingSpaceBar(cboVisaType);
+		GuiUtils.makeComboBoxOpenableByPressingEnter(cboGender);
+		GuiUtils.makeComboBoxOpenableByPressingEnter(cboNationality);
+		GuiUtils.makeComboBoxOpenableByPressingEnter(cboVisaType);
 		
 		cbBirthDateShowHijri.selectedProperty().addListener(((observable, oldValue, newValue) ->
 		{
@@ -153,14 +153,14 @@ public class ApplicantInfoFxController extends WizardStepFxControllerBase
 	}
 	
 	@Override
-	public void onControllerReady()
+	protected void onAttachedToScene()
 	{
 		cboNationality.getItems().forEach(item ->
 		{
 		    NationalityBean nationalityBean = item.getObject();
 		
 		    String text;
-		    if(coreFxController.getCurrentLanguage() == GuiLanguage.ARABIC) text = nationalityBean.getDescriptionAR();
+		    if(Context.getGuiLanguage() == GuiLanguage.ARABIC) text = nationalityBean.getDescriptionAR();
 		    else text = nationalityBean.getDescriptionEN();
 		
 		    String resultText = text.trim() + " (" + nationalityBean.getMofaNationalityCode() + ")";
@@ -174,7 +174,7 @@ public class ApplicantInfoFxController extends WizardStepFxControllerBase
 		    VisaTypeBean visaTypeBean = item.getObject();
 		
 		    String text;
-		    if(coreFxController.getCurrentLanguage() == GuiLanguage.ARABIC) text = visaTypeBean.getDescriptionAR();
+		    if(Context.getGuiLanguage() == GuiLanguage.ARABIC) text = visaTypeBean.getDescriptionAR();
 		    else text = visaTypeBean.getDescriptionEN();
 		
 		    String resultText = text.trim();
