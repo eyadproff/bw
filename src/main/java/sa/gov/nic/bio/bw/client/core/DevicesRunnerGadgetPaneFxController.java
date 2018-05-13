@@ -61,10 +61,13 @@ public class DevicesRunnerGadgetPaneFxController extends RegionFxControllerBase
 	@FXML private TitledPane tpDevicesRunner;
 	@FXML private TitledPane tpFingerprintScanner;
 	@FXML private TitledPane tpCamera;
+	@FXML private TitledPane tpPassportScanner;
 	@FXML private Pane paneFingerprintScanner;
 	@FXML private Pane paneCamera;
+	@FXML private Pane panePassportScanner;
 	@FXML private ProgressIndicator piFingerprintScanner;
 	@FXML private ProgressIndicator piCamera;
+	@FXML private ProgressIndicator piPassportScanner;
 	@FXML private Label lblDevicesRunnerNotWorking;
 	@FXML private Label lblDevicesRunnerWorking;
 	@FXML private Label lblFingerprintScannerNotInitialized;
@@ -73,16 +76,22 @@ public class DevicesRunnerGadgetPaneFxController extends RegionFxControllerBase
 	@FXML private Label lblCameraNotInitialized;
 	@FXML private Label lblCameraNotConnected;
 	@FXML private Label lblCameraInitialized;
+	@FXML private Label lblPassportScannerNotInitialized;
+	@FXML private Label lblPassportScannerNotConnected;
+	@FXML private Label lblPassportScannerInitialized;
 	@FXML private Button btnDevicesRunnerAction;
 	@FXML private Button btnFingerprintScannerAction;
 	@FXML private Button btnCameraAction;
+	@FXML private Button btnPassportScannerAction;
 	
 	private ContextMenu contextMenu;
 	private String fingerprintScannerDeviceName;
 	private String cameraDeviceName;
+	private String passportScannerDeviceName;
 	private Consumer<Boolean> devicesRunnerRunningListener;
 	private Consumer<Boolean> fingerprintScannerInitializationListener;
 	private Consumer<Boolean> cameraInitializationListener;
+	private Consumer<Boolean> passportScannerInitializationListener;
 	
 	private ClosureListener closureListener = closeReason -> Platform.runLater(() ->
                                                                             changeDevicesRunnerStatus(false));
@@ -90,6 +99,7 @@ public class DevicesRunnerGadgetPaneFxController extends RegionFxControllerBase
 	public ClosureListener getClosureListener(){return closureListener;}
 	public String getFingerprintScannerDeviceName(){return fingerprintScannerDeviceName;}
 	public String getCameraDeviceName(){return cameraDeviceName;}
+	public String getPassportScannerDeviceName(){return passportScannerDeviceName;}
 	
 	public boolean isDevicesRunnerRunning()
 	{
@@ -104,6 +114,11 @@ public class DevicesRunnerGadgetPaneFxController extends RegionFxControllerBase
 	public boolean isCameraInitialized()
 	{
 		return lblCameraInitialized.isVisible();
+	}
+	
+	public boolean isPassportScannerInitialized()
+	{
+		return lblPassportScannerInitialized.isVisible();
 	}
 	
 	public void setDevicesRunnerRunningListener(Consumer<Boolean> devicesRunnerRunningListener)
@@ -121,6 +136,11 @@ public class DevicesRunnerGadgetPaneFxController extends RegionFxControllerBase
 		this.cameraInitializationListener = cameraInitializationListener;
 	}
 	
+	public void setPassportScannerInitializationListener(Consumer<Boolean> passportScannerInitializationListener)
+	{
+		this.passportScannerInitializationListener = passportScannerInitializationListener;
+	}
+	
 	@Override
 	protected void initialize()
 	{
@@ -135,6 +155,9 @@ public class DevicesRunnerGadgetPaneFxController extends RegionFxControllerBase
 		Glyph cameraIcon = AppUtils.createFontAwesomeIcon(FontAwesome.Glyph.CAMERA);
 		tpCamera.setGraphic(cameraIcon);
 		
+		Glyph passportScannerIcon = AppUtils.createFontAwesomeIcon('\uf2c2');
+		tpPassportScanner.setGraphic(passportScannerIcon);
+		
 		Glyph gearIcon = AppUtils.createFontAwesomeIcon(FontAwesome.Glyph.GEAR);
 		btnDevicesRunnerAction.setGraphic(gearIcon);
 		
@@ -144,10 +167,15 @@ public class DevicesRunnerGadgetPaneFxController extends RegionFxControllerBase
 		gearIcon = AppUtils.createFontAwesomeIcon(FontAwesome.Glyph.GEAR);
 		btnCameraAction.setGraphic(gearIcon);
 		
+		gearIcon = AppUtils.createFontAwesomeIcon(FontAwesome.Glyph.GEAR);
+		btnPassportScannerAction.setGraphic(gearIcon);
+		
 		paneFingerprintScanner.visibleProperty().bind(piFingerprintScanner.visibleProperty().not());
 		paneFingerprintScanner.managedProperty().bind(piFingerprintScanner.managedProperty().not());
 		paneCamera.visibleProperty().bind(piCamera.visibleProperty().not());
 		paneCamera.managedProperty().bind(piCamera.managedProperty().not());
+		panePassportScanner.visibleProperty().bind(piPassportScanner.visibleProperty().not());
+		panePassportScanner.managedProperty().bind(piPassportScanner.managedProperty().not());
 		
 		lblDevicesRunnerNotWorking.visibleProperty().addListener((observable, oldValue, newValue) ->
 		{
@@ -155,10 +183,12 @@ public class DevicesRunnerGadgetPaneFxController extends RegionFxControllerBase
 			{
 				changeFingerprintScannerStatus(DeviceStatus.NOT_INITIALIZED);
 				changeCameraStatus(DeviceStatus.NOT_INITIALIZED);
+				changePassportScannerStatus(DeviceStatus.NOT_INITIALIZED);
 			}
 			
 			btnFingerprintScannerAction.setDisable(newValue);
 			btnCameraAction.setDisable(newValue);
+			btnPassportScannerAction.setDisable(newValue);
 		});
 	}
 	
@@ -607,6 +637,11 @@ public class DevicesRunnerGadgetPaneFxController extends RegionFxControllerBase
 		dialogStage.show();
 	}
 	
+	public void initializePassportScanner()
+	{
+		// TODO
+	}
+	
 	private void changeDevicesRunnerStatus(boolean working)
 	{
 		contextMenu.hide();
@@ -635,6 +670,17 @@ public class DevicesRunnerGadgetPaneFxController extends RegionFxControllerBase
 		
 		if(cameraInitializationListener != null)
 						cameraInitializationListener.accept(deviceStatus == DeviceStatus.INITIALIZED);
+	}
+	
+	private void changePassportScannerStatus(DeviceStatus deviceStatus)
+	{
+		contextMenu.hide();
+		GuiUtils.showNode(lblPassportScannerNotInitialized, deviceStatus == DeviceStatus.NOT_INITIALIZED);
+		GuiUtils.showNode(lblPassportScannerInitialized, deviceStatus == DeviceStatus.INITIALIZED);
+		GuiUtils.showNode(lblPassportScannerNotConnected, deviceStatus == DeviceStatus.NOT_CONNECTED);
+		
+		if(passportScannerInitializationListener != null)
+			passportScannerInitializationListener.accept(deviceStatus == DeviceStatus.INITIALIZED);
 	}
 	
 	@FXML
@@ -734,5 +780,11 @@ public class DevicesRunnerGadgetPaneFxController extends RegionFxControllerBase
 		if(contextMenu.isShowing()) contextMenu.hide();
 		
 		contextMenu.show(btnFingerprintScannerAction, actionEvent.getScreenX(), actionEvent.getScreenY());
+	}
+	
+	@FXML
+	private void onPassportScannerActionButtonClicked(MouseEvent mouseEvent)
+	{
+		// TODO
 	}
 }

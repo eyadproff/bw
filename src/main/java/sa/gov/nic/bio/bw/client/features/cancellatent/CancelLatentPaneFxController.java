@@ -49,7 +49,9 @@ public class CancelLatentPaneFxController extends BodyFxControllerBase
 	{
 		if(!newForm)
 		{
-			ServiceResponse<?> serviceResponse = (ServiceResponse<?>) uiInputData.get(Workflow.KEY_WEBSERVICE_RESPONSE);
+			@SuppressWarnings("unchecked")
+			ServiceResponse<Boolean> serviceResponse = (ServiceResponse<Boolean>)
+																	uiInputData.get(Workflow.KEY_WEBSERVICE_RESPONSE);
 			
 			disableUiControls(false);
 			
@@ -58,7 +60,7 @@ public class CancelLatentPaneFxController extends BodyFxControllerBase
 				String personId = txtPersonId.getText();
 				String latentId = txtLatentId.getText();
 				
-				Boolean resultBean = (Boolean) serviceResponse.getResult();
+				Boolean resultBean = serviceResponse.getResult();
 				if(resultBean != null && resultBean)
 				{
 					String message = String.format(resources.getString("cancelLatent.success"),

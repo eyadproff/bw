@@ -5,11 +5,8 @@ import retrofit2.http.*;
 
 import java.util.List;
 
-public interface LookupAPI
+public interface VisaTypesLookupAPI
 {
-	@GET
-	Call<List<NationalityBean>> lookupNationalities(@Url String url);
-	
 	@GET
 	Call<List<VisaTypeBean>> lookupVisaTypes(@Url String url);
 }

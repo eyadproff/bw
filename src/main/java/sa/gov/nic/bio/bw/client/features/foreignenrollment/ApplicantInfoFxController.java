@@ -1,29 +1,39 @@
 package sa.gov.nic.bio.bw.client.features.foreignenrollment;
 
-import javafx.application.Platform;
 import javafx.beans.binding.BooleanBinding;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
-import javafx.util.Callback;
+import javafx.geometry.Insets;
+import javafx.geometry.NodeOrientation;
+import javafx.geometry.Pos;
+import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.DatePicker;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import javafx.util.StringConverter;
 import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.beans.HideableItem;
 import sa.gov.nic.bio.bw.client.core.beans.ItemWithText;
 import sa.gov.nic.bio.bw.client.core.beans.UserSession;
-import sa.gov.nic.bio.bw.client.core.utils.AppConstants;
 import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
+import sa.gov.nic.bio.bw.client.core.utils.DialogUtils;
 import sa.gov.nic.bio.bw.client.core.utils.GuiLanguage;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.wizard.WizardStepFxControllerBase;
+import sa.gov.nic.bio.bw.client.features.commons.webservice.NationalityBean;
 import sa.gov.nic.bio.bw.client.features.foreignenrollment.enums.Gender;
-import sa.gov.nic.bio.bw.client.features.foreignenrollment.webservice.NationalityBean;
 import sa.gov.nic.bio.bw.client.features.foreignenrollment.webservice.VisaTypeBean;
 
 import java.net.URL;
 import java.text.Normalizer;
 import java.time.LocalDate;
 import java.time.chrono.HijrahChronology;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
@@ -41,6 +51,9 @@ public class ApplicantInfoFxController extends WizardStepFxControllerBase
 	public static final String KEY_PASSPORT_NUMBER = "ApplicantInfo.passportNumber";
 	public static final String KEY_VISA_TYPE = "ApplicantInfo.visaType";
 	
+	private static final String PASSPORT_ICON_FILE =
+										"sa/gov/nic/bio/bw/client/features/foreignenrollment/images/passport-icon.png";
+	
 	@FXML private TextField txtFirstName;
 	@FXML private TextField txtSecondName;
 	@FXML private TextField txtOtherName;
@@ -51,6 +64,7 @@ public class ApplicantInfoFxController extends WizardStepFxControllerBase
 	@FXML private CheckBox cbBirthDateShowHijri;
 	@FXML private TextField txtPassportNumber;
 	@FXML private ComboBox<HideableItem<VisaTypeBean>> cboVisaType;
+	@FXML private Button btnPassportScanner;
 	@FXML private Button btnNext;
 	
 	private Predicate<LocalDate> birthDateValidator = localDate -> !localDate.isAfter(LocalDate.now());
@@ -69,10 +83,11 @@ public class ApplicantInfoFxController extends WizardStepFxControllerBase
 		UserSession userSession = Context.getUserSession();
 		
 		@SuppressWarnings("unchecked")
-		List<NationalityBean> nationalities = (List<NationalityBean>) userSession.getAttribute("lookups.mofa.nationalities");
+		List<NationalityBean> nationalities = (List<NationalityBean>)
+															userSession.getAttribute("lookups.nationalities");
 		
 		@SuppressWarnings("unchecked")
-		List<VisaTypeBean> visaTypes = (List<VisaTypeBean>) userSession.getAttribute("lookups.mofa.visaTypes");
+		List<VisaTypeBean> visaTypes = (List<VisaTypeBean>) userSession.getAttribute("lookups.visaTypes");
 		
 		GuiUtils.addAutoCompletionSupportToComboBox(cboNationality, nationalities);
 		GuiUtils.addAutoCompletionSupportToComboBox(cboVisaType, visaTypes);
@@ -133,7 +148,7 @@ public class ApplicantInfoFxController extends WizardStepFxControllerBase
 			}
 		});
 		
-		initDatePicker();
+		GuiUtils.initDatePicker(cbBirthDateShowHijri, dpBirthDate, birthDateValidator);
 		
 		BooleanBinding txtFirstNameBinding = txtFirstName.textProperty().isEmpty();
 		BooleanBinding txtSecondNameBinding = txtSecondName.textProperty().isEmpty();
@@ -273,67 +288,26 @@ public class ApplicantInfoFxController extends WizardStepFxControllerBase
 		if(birthDateShowHijri != null) cbBirthDateShowHijri.setSelected(Boolean.parseBoolean(birthDateShowHijri));
 	}
 	
-	private void initDatePicker()
+	@FXML
+	private void onOpenPassportScannerButtonClicked(ActionEvent actionEvent)
 	{
-		Callback<DatePicker, DateCell> dayCellFactory = dp -> new DateCell()
-		{
-			@Override
-			public void updateItem(LocalDate item, boolean empty)
-			{
-				super.updateItem(item, empty);
-				
-				if(!birthDateValidator.test(item))
-				{
-					Platform.runLater(() -> setDisable(true));
-				}
-			}
-		};
+		Image passportIcon = new Image(
+							Thread.currentThread().getContextClassLoader().getResourceAsStream(PASSPORT_ICON_FILE));
+		ImageView imageView = new ImageView(passportIcon);
 		
-		StringConverter<LocalDate> converter = new StringConverter<LocalDate>()
-		{
-			DateTimeFormatter dateFormatterForParsing =
-					DateTimeFormatter.ofPattern("d/M/yyyy", AppConstants.Locales.SAUDI_EN_LOCALE);
-			DateTimeFormatter dateFormatterForFormatting =
-					DateTimeFormatter.ofPattern("dd/MM/yyyy", AppConstants.Locales.SAUDI_EN_LOCALE);
-			
-			@Override
-			public String toString(LocalDate date)
-			{
-				if(date != null) return dateFormatterForFormatting.format(date);
-				else return "";
-			}
-			
-			@Override
-			public LocalDate fromString(String string)
-			{
-				if(string != null && !string.isEmpty())
-				{
-					// support "/", "\" and "-" as date separators
-					string = string.replace("\\", "/");
-					string = string.replace("-", "/");
-					
-					// if the input is 8 characters long, we will add the separators
-					if(string.length() == 8 && !string.contains("/"))
-					{
-						string = string.substring(0, 2) + "/" + string.substring(2, 4) + "/" + string.substring(4, 8);
-					}
-					// if the input is 6 characters long, we will consider day and month are both single digits
-					// and then add the separators
-					else if(string.length() == 6 && !string.contains("/"))
-					{
-						string = string.substring(0, 1) + "/" + string.substring(1, 2) + "/" + string.substring(2, 6);
-					}
-					
-					LocalDate date = LocalDate.parse(string, dateFormatterForParsing);
-					
-					if(!birthDateValidator.test(date)) return null;
-					else return date;
-				}
-				else return null;
-			}
-		};
+		Label lblMessage = new Label(resources.getString("foreignEnrollment.passportScanning.window.message"));
+		Button btnStart = new Button(resources.getString("button.start"));
 		
-		dpBirthDate.setDayCellFactory(dayCellFactory);
-		dpBirthDate.setConverter(converter);
+		VBox vBox = new VBox(10.0);
+		vBox.setPadding(new Insets(10.0));
+		vBox.setAlignment(Pos.CENTER);
+		
+		vBox.getChildren().addAll(imageView, lblMessage, btnStart);
+		
+		String title = resources.getString("foreignEnrollment.passportScanning.window.title");
+		boolean rtl = Context.getGuiLanguage().getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT;
+		Stage dialogStage = DialogUtils.buildCustomDialog(Context.getCoreFxController().getStage(),
+		                                                  title, vBox, rtl, true);
+		dialogStage.showAndWait();
 	}
 }

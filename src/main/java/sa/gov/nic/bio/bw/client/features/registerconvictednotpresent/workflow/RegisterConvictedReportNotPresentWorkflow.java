@@ -478,6 +478,11 @@ public class RegisterConvictedReportNotPresentWorkflow extends WizardWorkflowBas
 				uiInputData.putAll(uiOutputData);
 				break;
 			}
+			default:
+			{
+				uiOutputData = waitForUserTask();
+				break;
+			}
 		}
 		
 		return uiOutputData;

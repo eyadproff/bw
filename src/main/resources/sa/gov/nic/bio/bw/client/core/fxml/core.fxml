@@ -17,8 +17,8 @@
         </top>
         <left>
             <VBox>
-                <fx:include fx:id="menuPane" source="menu.fxml" styleClass="nav" visible="false" managed="false" VBox.vgrow="ALWAYS"/>
-                <fx:include fx:id="devicesRunnerGadgetPane" source="devicesRunnerGadget.fxml" visible="false" managed="false"/>
+                <fx:include fx:id="menuPane" source="menu.fxml" styleClass="nav" visible="false" managed="false" VBox.vgrow="ALWAYS" minHeight="150.0"/>
+                <fx:include fx:id="devicesRunnerGadgetPane" source="devicesRunnerGadget.fxml" visible="false" managed="false" VBox.vgrow="NEVER"/>
             </VBox>
         </left>
         <center>
