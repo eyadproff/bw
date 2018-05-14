@@ -15,7 +15,7 @@
     <TitledPane fx:id="tpDevicesRunner" text="%label.devicesRunner" alignment="BOTTOM_CENTER" styleClass="devices-runner-gadget" focusTraversable="false">
         <VBox alignment="BOTTOM_CENTER" spacing="5.0">
             <padding>
-                <Insets topRightBottomLeft="5.0"/>
+                <Insets topRightBottomLeft="3.0"/>
             </padding>
             <HBox alignment="CENTER" spacing="10.0">
                 <Label fx:id="lblDevicesRunnerNotWorking" text="%label.notWorking">
@@ -34,9 +34,9 @@
                 </Label>
                 <Button fx:id="btnDevicesRunnerAction" focusTraversable="false" onMouseClicked="#onDevicesRunnerActionButtonClicked"/>
             </HBox>
-            <ScrollPane hbarPolicy="NEVER" vbarPolicy="ALWAYS">
-                <VBox alignment="CENTER" spacing="5.0">
-                    <TitledPane fx:id="tpFingerprintScanner" text="%label.fingerprintScanner" alignment="CENTER" collapsible="false" focusTraversable="false">
+            <ScrollPane hbarPolicy="NEVER" vbarPolicy="ALWAYS" fitToWidth="true">
+                <VBox alignment="CENTER" spacing="5.0" HBox.hgrow="ALWAYS">
+                    <TitledPane fx:id="tpFingerprintScanner" text="%label.fingerprintScanner" alignment="CENTER" collapsible="false" focusTraversable="false" HBox.hgrow="ALWAYS">
                         <HBox alignment="CENTER" spacing="10.0">
                             <HBox fx:id="paneFingerprintScanner" alignment="CENTER" spacing="10.0">
                                 <Label fx:id="lblFingerprintScannerNotInitialized" text="%label.notInitialized">

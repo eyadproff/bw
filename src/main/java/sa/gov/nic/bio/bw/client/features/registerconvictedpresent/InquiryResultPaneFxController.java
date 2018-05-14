@@ -18,7 +18,7 @@ import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.wizard.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.IdType;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.NationalityBean;
-import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.GenderType;
+import sa.gov.nic.bio.bw.client.features.commons.beans.GenderType;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.Name;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.PersonIdInfo;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.PersonInfo;

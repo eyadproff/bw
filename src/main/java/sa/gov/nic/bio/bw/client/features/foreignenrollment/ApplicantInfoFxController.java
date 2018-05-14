@@ -1,6 +1,7 @@
 package sa.gov.nic.bio.bw.client.features.foreignenrollment;
 
 import javafx.beans.binding.BooleanBinding;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
@@ -11,9 +12,12 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
+import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
@@ -26,20 +30,22 @@ import sa.gov.nic.bio.bw.client.core.utils.DialogUtils;
 import sa.gov.nic.bio.bw.client.core.utils.GuiLanguage;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.wizard.WizardStepFxControllerBase;
+import sa.gov.nic.bio.bw.client.features.commons.beans.GenderType;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.NationalityBean;
-import sa.gov.nic.bio.bw.client.features.foreignenrollment.enums.Gender;
 import sa.gov.nic.bio.bw.client.features.foreignenrollment.webservice.VisaTypeBean;
 
 import java.net.URL;
 import java.text.Normalizer;
 import java.time.LocalDate;
-import java.time.chrono.HijrahChronology;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
+import java.util.logging.Logger;
 
 public class ApplicantInfoFxController extends WizardStepFxControllerBase
 {
+	private static final Logger LOGGER = Logger.getLogger(ApplicantInfoFxController.class.getName());
+	
 	public static final String KEY_FIRST_NAME = "ApplicantInfo.firstName";
 	public static final String KEY_SECOND_NAME = "ApplicantInfo.secondName";
 	public static final String KEY_OTHER_NAME = "ApplicantInfo.otherName";
@@ -58,12 +64,20 @@ public class ApplicantInfoFxController extends WizardStepFxControllerBase
 	@FXML private TextField txtSecondName;
 	@FXML private TextField txtOtherName;
 	@FXML private TextField txtFamilyName;
-	@FXML private ComboBox<ItemWithText<Gender>> cboGender;
+	@FXML private TextField txtMobileNumber;
+	@FXML private ComboBox<ItemWithText<GenderType>> cboGender;
+	@FXML private ComboBox<HideableItem<NationalityBean>> cboBirthPlace;
 	@FXML private ComboBox<HideableItem<NationalityBean>> cboNationality;
-	@FXML private DatePicker dpBirthDate;
-	@FXML private CheckBox cbBirthDateShowHijri;
-	@FXML private TextField txtPassportNumber;
+	@FXML private ComboBox<HideableItem<NationalityBean>> cboIssuanceCountry;
+	@FXML private ComboBox<HideableItem<?>> cboPassportType; // TODO: change generic type
 	@FXML private ComboBox<HideableItem<VisaTypeBean>> cboVisaType;
+	@FXML private DatePicker dpBirthDate;
+	@FXML private DatePicker dpIssueDate;
+	@FXML private DatePicker dpExpirationDate;
+	@FXML private CheckBox cbBirthDateShowHijri;
+	@FXML private CheckBox cbIssueDateShowHijri;
+	@FXML private CheckBox cbExpirationDateShowHijri;
+	@FXML private TextField txtPassportNumber;
 	@FXML private Button btnPassportScanner;
 	@FXML private Button btnNext;
 	
@@ -78,6 +92,9 @@ public class ApplicantInfoFxController extends WizardStepFxControllerBase
 	@Override
 	protected void initialize()
 	{
+		GuiUtils.makeButtonClickableByPressingEnter(btnPassportScanner);
+		GuiUtils.makeButtonClickableByPressingEnter(btnNext);
+		
 		btnNext.setOnAction(event -> goNext());
 		
 		UserSession userSession = Context.getUserSession();
@@ -90,40 +107,16 @@ public class ApplicantInfoFxController extends WizardStepFxControllerBase
 		List<VisaTypeBean> visaTypes = (List<VisaTypeBean>) userSession.getAttribute("lookups.visaTypes");
 		
 		GuiUtils.addAutoCompletionSupportToComboBox(cboNationality, nationalities);
+		GuiUtils.addAutoCompletionSupportToComboBox(cboBirthPlace, nationalities);
+		GuiUtils.addAutoCompletionSupportToComboBox(cboIssuanceCountry, nationalities);
 		GuiUtils.addAutoCompletionSupportToComboBox(cboVisaType, visaTypes);
 		
 		GuiUtils.makeComboBoxOpenableByPressingEnter(cboGender);
 		GuiUtils.makeComboBoxOpenableByPressingEnter(cboNationality);
+		GuiUtils.makeComboBoxOpenableByPressingEnter(cboBirthPlace);
+		GuiUtils.makeComboBoxOpenableByPressingEnter(cboIssuanceCountry);
+		GuiUtils.makeComboBoxOpenableByPressingEnter(cboPassportType);
 		GuiUtils.makeComboBoxOpenableByPressingEnter(cboVisaType);
-		
-		cbBirthDateShowHijri.selectedProperty().addListener(((observable, oldValue, newValue) ->
-		{
-			if(newValue) dpBirthDate.setChronology(HijrahChronology.INSTANCE);
-			else dpBirthDate.setChronology(null);
-		}));
-		
-		cboNationality.setConverter(new StringConverter<HideableItem<NationalityBean>>()
-		{
-			@Override
-			public String toString(HideableItem<NationalityBean> object)
-			{
-				if(object == null) return "";
-				else return object.getText();
-			}
-			
-			@Override
-			public HideableItem<NationalityBean> fromString(String string)
-			{
-				if(string == null || string.trim().isEmpty()) return null;
-				
-				for(HideableItem<NationalityBean> nationalityBean : cboNationality.getItems())
-				{
-					if(string.equals(nationalityBean.getText())) return nationalityBean;
-				}
-				
-				return null;
-			}
-		});
 		
 		cboVisaType.setConverter(new StringConverter<HideableItem<VisaTypeBean>>()
 		{
@@ -149,6 +142,8 @@ public class ApplicantInfoFxController extends WizardStepFxControllerBase
 		});
 		
 		GuiUtils.initDatePicker(cbBirthDateShowHijri, dpBirthDate, birthDateValidator);
+		GuiUtils.initDatePicker(cbIssueDateShowHijri, dpIssueDate, null);
+		GuiUtils.initDatePicker(cbExpirationDateShowHijri, dpExpirationDate, null);
 		
 		BooleanBinding txtFirstNameBinding = txtFirstName.textProperty().isEmpty();
 		BooleanBinding txtSecondNameBinding = txtSecondName.textProperty().isEmpty();
@@ -170,19 +165,9 @@ public class ApplicantInfoFxController extends WizardStepFxControllerBase
 	@Override
 	protected void onAttachedToScene()
 	{
-		cboNationality.getItems().forEach(item ->
-		{
-		    NationalityBean nationalityBean = item.getObject();
-		
-		    String text;
-		    if(Context.getGuiLanguage() == GuiLanguage.ARABIC) text = nationalityBean.getDescriptionAR();
-		    else text = nationalityBean.getDescriptionEN();
-		
-		    String resultText = text.trim() + " (" + nationalityBean.getMofaNationalityCode() + ")";
-		    String normalizedText = Normalizer.normalize(resultText, Normalizer.Form.NFKC);
-		
-		    item.setText(normalizedText);
-		});
+		setupNationalityComboBox(cboNationality);
+		setupNationalityComboBox(cboBirthPlace);
+		setupNationalityComboBox(cboIssuanceCountry);
 		
 		cboVisaType.getItems().forEach(item ->
 		{
@@ -198,11 +183,7 @@ public class ApplicantInfoFxController extends WizardStepFxControllerBase
 		    item.setText(normalizedText);
 		});
 		
-		cboVisaType.setPrefWidth(cboVisaType.getWidth());
-		cboVisaType.setMinWidth(cboVisaType.getWidth());
-		
-		txtFirstName.requestFocus();
-		txtFirstName.positionCaret(txtFirstName.getLength());
+		btnPassportScanner.requestFocus();
 	}
 	
 	@Override
@@ -223,7 +204,7 @@ public class ApplicantInfoFxController extends WizardStepFxControllerBase
 		uiDataMap.put(KEY_FAMILY_NAME, txtFamilyName.getText());
 		uiDataMap.put(KEY_PASSPORT_NUMBER, txtPassportNumber.getText());
 		
-		ItemWithText<Gender> genderItem = cboGender.getValue();
+		ItemWithText<GenderType> genderItem = cboGender.getValue();
 		String gender = null;
 		if(genderItem != null) gender = genderItem.getItem().name();
 		uiDataMap.put(KEY_GENDER, gender);
@@ -267,22 +248,22 @@ public class ApplicantInfoFxController extends WizardStepFxControllerBase
 		if(passportNumber != null) txtPassportNumber.setText(passportNumber);
 		
 		if(gender != null) cboGender.getItems()
-				.stream()
-				.filter(item -> item.getItem().name().equals(gender))
-				.findFirst()
-				.ifPresent(cboGender::setValue);
+									.stream()
+									.filter(item -> item.getItem().name().equals(gender))
+									.findFirst()
+									.ifPresent(cboGender::setValue);
 		
 		if(nationality != null) cboNationality.getItems()
-				.stream()
-				.filter(item -> String.valueOf(item.getObject().getCode()).equals(nationality))
-				.findFirst()
-				.ifPresent(cboNationality::setValue);
+										.stream()
+										.filter(item -> String.valueOf(item.getObject().getCode()).equals(nationality))
+										.findFirst()
+										.ifPresent(cboNationality::setValue);
 		
 		if(visaType != null) cboVisaType.getItems()
-				.stream()
-				.filter(item -> String.valueOf(item.getObject().getCode()).equals(visaType))
-				.findFirst()
-				.ifPresent(cboVisaType::setValue);
+										.stream()
+										.filter(item -> String.valueOf(item.getObject().getCode()).equals(visaType))
+										.findFirst()
+										.ifPresent(cboVisaType::setValue);
 		
 		if(birthDate != null) dpBirthDate.setValue(AppUtils.parseFormalDate(birthDate));
 		if(birthDateShowHijri != null) cbBirthDateShowHijri.setSelected(Boolean.parseBoolean(birthDateShowHijri));
@@ -297,17 +278,112 @@ public class ApplicantInfoFxController extends WizardStepFxControllerBase
 		
 		Label lblMessage = new Label(resources.getString("foreignEnrollment.passportScanning.window.message"));
 		Button btnStart = new Button(resources.getString("button.start"));
+		GuiUtils.makeButtonClickableByPressingEnter(btnStart);
+		ProgressIndicator progressIndicator = new ProgressIndicator();
+		progressIndicator.setMaxHeight(18.0);
+		progressIndicator.setMaxWidth(18.0);
+		Label lblProgress = new Label(resources.getString("label.passportScanningInProgress"));
+		
+		HBox hBox = new HBox(10.0);
+		hBox.setAlignment(Pos.CENTER);
+		hBox.setVisible(false);
+		hBox.getChildren().addAll(lblProgress, progressIndicator);
+		
+		StackPane paneBottom = new StackPane();
+		paneBottom.setPadding(new Insets(10.0, 0, 0, 0));
+		paneBottom.getChildren().addAll(hBox, btnStart);
 		
 		VBox vBox = new VBox(10.0);
 		vBox.setPadding(new Insets(10.0));
 		vBox.setAlignment(Pos.CENTER);
+		vBox.getStylesheets().setAll("sa/gov/nic/bio/bw/client/core/css/style.css");
 		
-		vBox.getChildren().addAll(imageView, lblMessage, btnStart);
+		vBox.getChildren().addAll(imageView, lblMessage, paneBottom);
 		
 		String title = resources.getString("foreignEnrollment.passportScanning.window.title");
 		boolean rtl = Context.getGuiLanguage().getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT;
 		Stage dialogStage = DialogUtils.buildCustomDialog(Context.getCoreFxController().getStage(),
 		                                                  title, vBox, rtl, true);
+		
+		Task<Map<String, Object>> passportScanningTask = new Task<Map<String, Object>>()
+		{
+			@Override
+			protected Map<String, Object> call() throws Exception
+			{
+				Thread.sleep(1000);
+				return null;
+			}
+		};
+		passportScanningTask.setOnSucceeded(event ->
+		{
+			if(dialogStage.isShowing())
+			{
+				dialogStage.close();
+				
+				Map<String, Object> passportData = passportScanningTask.getValue();
+				
+				LOGGER.fine("passportData = " + passportData);
+				
+				// TODO: populate the passport data
+			}
+		});
+		passportScanningTask.setOnFailed(event ->
+		{
+			if(dialogStage.isShowing())
+			{
+				dialogStage.close();
+				
+				// TODO: report the error
+			}
+		});
+		
+		btnStart.setOnAction(event ->
+		{
+			btnStart.setVisible(false);
+			hBox.setVisible(true);
+			Context.getExecutorService().submit(passportScanningTask);
+		});
+		
 		dialogStage.showAndWait();
+	}
+	
+	private static void setupNationalityComboBox(ComboBox<HideableItem<NationalityBean>> comboBox)
+	{
+		comboBox.setConverter(new StringConverter<HideableItem<NationalityBean>>()
+		{
+			@Override
+			public String toString(HideableItem<NationalityBean> object)
+			{
+				if(object == null) return "";
+				else return object.getText();
+			}
+			
+			@Override
+			public HideableItem<NationalityBean> fromString(String string)
+			{
+				if(string == null || string.trim().isEmpty()) return null;
+				
+				for(HideableItem<NationalityBean> nationalityBean : comboBox.getItems())
+				{
+					if(string.equals(nationalityBean.getText())) return nationalityBean;
+				}
+				
+				return null;
+			}
+		});
+		
+		comboBox.getItems().forEach(item ->
+		{
+		    NationalityBean nationalityBean = item.getObject();
+		
+		    String text;
+		    if(Context.getGuiLanguage() == GuiLanguage.ARABIC) text = nationalityBean.getDescriptionAR();
+		    else text = nationalityBean.getDescriptionEN();
+		
+		    String resultText = text.trim() + " (" + nationalityBean.getMofaNationalityCode() + ")";
+		    String normalizedText = Normalizer.normalize(resultText, Normalizer.Form.NFKC);
+		
+		    item.setText(normalizedText);
+		});
 	}
 }

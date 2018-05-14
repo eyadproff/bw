@@ -32,7 +32,7 @@ import java.util.Map;
 @SuppressWarnings("unused")
 public class MenuPaneFxController extends RegionFxControllerBase
 {
-	private static final double MAX_MENU_WIDTH = 166.0;
+	private static final double MAX_MENU_WIDTH = 182.0;
 	private static final double MENU_SINGLE_LINE_CELL_HEIGHT = 24.0;
 	private static final double MENU_MULTI_LINES_CELL_HEIGHT = 18.0;
 	
