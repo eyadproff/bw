@@ -5,3 +5,7 @@
 .date-picker-check-box > .box > .mark {
     -fx-padding: 4;
 }
+
+.required {
+    -fx-control-inner-background: #ffffc6;
+}

@@ -32,9 +32,9 @@
                     <Insets bottom="5.0"/>
                 </GridPane.margin>
             </Label>
-            <TextField fx:id="txtFirstName" GridPane.rowIndex="0" GridPane.columnIndex="1">
+            <TextField fx:id="txtFirstName" styleClass="required" GridPane.rowIndex="0" GridPane.columnIndex="1">
                 <GridPane.margin>
-                    <Insets right="10.0" bottom="5.0"/>
+                    <Insets right="4.0" bottom="5.0"/>
                 </GridPane.margin>
             </TextField>
             <Label text="%label.secondName" GridPane.rowIndex="0" GridPane.columnIndex="2">
@@ -54,7 +54,7 @@
             </Label>
             <TextField fx:id="txtOtherName" GridPane.rowIndex="1" GridPane.columnIndex="1">
                 <GridPane.margin>
-                    <Insets right="10.0" bottom="5.0"/>
+                    <Insets right="4.0" bottom="5.0"/>
                 </GridPane.margin>
             </TextField>
             <Label text="%label.familyName" GridPane.rowIndex="1" GridPane.columnIndex="2">
@@ -62,7 +62,7 @@
                     <Insets bottom="5.0"/>
                 </GridPane.margin>
             </Label>
-            <TextField fx:id="txtFamilyName" GridPane.rowIndex="1" GridPane.columnIndex="3">
+            <TextField fx:id="txtFamilyName" styleClass="required" GridPane.rowIndex="1" GridPane.columnIndex="3">
                 <GridPane.margin>
                     <Insets bottom="5.0"/>
                 </GridPane.margin>
@@ -72,9 +72,9 @@
                     <Insets bottom="5.0"/>
                 </GridPane.margin>
             </Label>
-            <ComboBox fx:id="cboNationality" GridPane.rowIndex="2" GridPane.columnIndex="1" maxWidth="Infinity">
+            <ComboBox fx:id="cboNationality" styleClass="required" GridPane.rowIndex="2" GridPane.columnIndex="1" maxWidth="Infinity">
                 <GridPane.margin>
-                    <Insets right="10.0" bottom="5.0"/>
+                    <Insets right="4.0" bottom="5.0"/>
                 </GridPane.margin>
             </ComboBox>
             <Label text="%label.gender" GridPane.rowIndex="2" GridPane.columnIndex="2">
@@ -82,9 +82,9 @@
                     <Insets bottom="5.0"/>
                 </GridPane.margin>
             </Label>
-            <ComboBox fx:id="cboGender" GridPane.rowIndex="2" GridPane.columnIndex="3" maxWidth="Infinity">
+            <ComboBox fx:id="cboGender" styleClass="required" GridPane.rowIndex="2" GridPane.columnIndex="3" maxWidth="Infinity">
                 <GridPane.margin>
-                    <Insets right="10.0" bottom="5.0"/>
+                    <Insets bottom="5.0"/>
                 </GridPane.margin>
                 <items>
                     <FXCollections fx:factory="observableArrayList">
@@ -96,40 +96,40 @@
             <Label text="%label.birthPlace" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
             <ComboBox fx:id="cboBirthPlace" GridPane.rowIndex="3" GridPane.columnIndex="1" maxWidth="Infinity">
                 <GridPane.margin>
-                    <Insets right="10.0"/>
+                    <Insets right="4.0"/>
                 </GridPane.margin>
             </ComboBox>
             <Label text="%label.birthDate" GridPane.rowIndex="3" GridPane.columnIndex="2"/>
-            <DatePicker fx:id="dpBirthDate" promptText="dd/MM/yyyy" prefWidth="150" GridPane.rowIndex="3" GridPane.columnIndex="3"/>
+            <DatePicker fx:id="dpBirthDate" styleClass="required" promptText="dd/MM/yyyy" prefWidth="150" GridPane.rowIndex="3" GridPane.columnIndex="3"/>
             <CheckBox fx:id="cbBirthDateShowHijri" focusTraversable="false" text="%checkbox.showHijri" styleClass="date-picker-check-box" GridPane.rowIndex="4" GridPane.columnIndex="3">
                 <GridPane.margin>
                     <Insets bottom="5.0"/>
                 </GridPane.margin>
             </CheckBox>
-            <Label text="%label.mobileNumber" GridPane.rowIndex="5" GridPane.columnIndex="0">
+            <Label text="%label.visaType" GridPane.rowIndex="5" GridPane.columnIndex="0">
                 <GridPane.margin>
                     <Insets bottom="5.0"/>
                 </GridPane.margin>
             </Label>
-            <TextField fx:id="txtMobileNumber" GridPane.rowIndex="5" GridPane.columnIndex="1">
+            <ComboBox fx:id="cboVisaType" styleClass="required" GridPane.rowIndex="5" GridPane.columnIndex="1" maxWidth="Infinity">
                 <GridPane.margin>
-                    <Insets right="10.0" bottom="5.0"/>
+                    <Insets right="4.0" bottom="5.0"/>
                 </GridPane.margin>
-            </TextField>
+            </ComboBox>
             <Label text="%label.passportNumber" GridPane.rowIndex="5" GridPane.columnIndex="2">
                 <GridPane.margin>
                     <Insets bottom="5.0"/>
                 </GridPane.margin>
             </Label>
-            <TextField fx:id="txtPassportNumber" GridPane.rowIndex="5" GridPane.columnIndex="3">
+            <TextField fx:id="txtPassportNumber" styleClass="required" GridPane.rowIndex="5" GridPane.columnIndex="3">
                 <GridPane.margin>
                     <Insets bottom="5.0"/>
                 </GridPane.margin>
             </TextField>
             <Label text="%label.issueDate" GridPane.rowIndex="6" GridPane.columnIndex="0"/>
-            <DatePicker fx:id="dpIssueDate" promptText="dd/MM/yyyy" maxWidth="Infinity" GridPane.rowIndex="6" GridPane.columnIndex="1">
+            <DatePicker fx:id="dpIssueDate" styleClass="required" promptText="dd/MM/yyyy" maxWidth="Infinity" GridPane.rowIndex="6" GridPane.columnIndex="1">
                 <GridPane.margin>
-                    <Insets right="10.0"/>
+                    <Insets right="4.0"/>
                 </GridPane.margin>
             </DatePicker>
             <CheckBox fx:id="cbIssueDateShowHijri" focusTraversable="false" text="%checkbox.showHijri" styleClass="date-picker-check-box" GridPane.rowIndex="7" GridPane.columnIndex="1">
@@ -138,7 +138,7 @@
                 </GridPane.margin>
             </CheckBox>
             <Label text="%label.expirationDate" GridPane.rowIndex="6" GridPane.columnIndex="2"/>
-            <DatePicker fx:id="dpExpirationDate" promptText="dd/MM/yyyy" prefWidth="150" GridPane.rowIndex="6" GridPane.columnIndex="3"/>
+            <DatePicker fx:id="dpExpirationDate" styleClass="required" promptText="dd/MM/yyyy" prefWidth="150" GridPane.rowIndex="6" GridPane.columnIndex="3"/>
             <CheckBox fx:id="cbExpirationDateShowHijri" focusTraversable="false" text="%checkbox.showHijri" styleClass="date-picker-check-box" GridPane.rowIndex="7" GridPane.columnIndex="3">
                 <GridPane.margin>
                     <Insets bottom="5.0"/>
@@ -149,9 +149,9 @@
                     <Insets bottom="5.0"/>
                 </GridPane.margin>
             </Label>
-            <ComboBox fx:id="cboIssuanceCountry" GridPane.rowIndex="8" GridPane.columnIndex="1" maxWidth="Infinity">
+            <ComboBox fx:id="cboIssuanceCountry" styleClass="required" GridPane.rowIndex="8" GridPane.columnIndex="1" maxWidth="Infinity">
                 <GridPane.margin>
-                    <Insets right="10.0" bottom="5.0"/>
+                    <Insets right="4.0" bottom="5.0"/>
                 </GridPane.margin>
             </ComboBox>
             <Label text="%label.passportType" GridPane.rowIndex="8" GridPane.columnIndex="2">
@@ -159,17 +159,16 @@
                     <Insets bottom="5.0"/>
                 </GridPane.margin>
             </Label>
-            <ComboBox fx:id="cboPassportType" GridPane.rowIndex="8" GridPane.columnIndex="3" maxWidth="Infinity">
+            <ComboBox fx:id="cboPassportType" styleClass="required" GridPane.rowIndex="8" GridPane.columnIndex="3" maxWidth="Infinity">
                 <GridPane.margin>
-                    <Insets right="10.0" bottom="5.0"/>
+                    <Insets bottom="5.0"/>
                 </GridPane.margin>
             </ComboBox>
-            <Label text="%label.visaType" GridPane.rowIndex="9" GridPane.columnIndex="0"/>
-            <ComboBox fx:id="cboVisaType" GridPane.rowIndex="9" GridPane.columnIndex="1" maxWidth="Infinity">
-                <GridPane.margin>
-                    <Insets right="10.0"/>
-                </GridPane.margin>
-            </ComboBox>
+            <Label text="%label.mobileNumber" GridPane.rowIndex="9" GridPane.columnIndex="0"/>
+            <HBox GridPane.rowIndex="9" GridPane.columnIndex="1" GridPane.columnSpan="3" spacing="5.0">
+                <ComboBox fx:id="cboDialingCode"/>
+                <TextField fx:id="txtMobileNumber" prefColumnCount="10"/>
+            </HBox>
         </GridPane>
     </center>
     <bottom>
