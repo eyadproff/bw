@@ -9,5 +9,6 @@
         <WizardStep iconId="\\uf256" title="%wizard.fingerprintCapturing"/>
         <WizardStep iconId="camera" title="%wizard.facePhotoCapturing"/>
         <WizardStep iconId="th_list" title="%wizard.reviewAndSubmit"/>
+        <WizardStep iconId="file_pdf_alt" title="%wizard.showReceipt"/>
     </steps>
 </WizardPane>
