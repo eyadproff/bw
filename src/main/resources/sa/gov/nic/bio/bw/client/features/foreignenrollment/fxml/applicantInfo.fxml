@@ -166,8 +166,8 @@
             </ComboBox>
             <Label text="%label.mobileNumber" GridPane.rowIndex="9" GridPane.columnIndex="0"/>
             <HBox GridPane.rowIndex="9" GridPane.columnIndex="1" GridPane.columnSpan="3" spacing="5.0">
-                <ComboBox fx:id="cboDialingCode"/>
-                <TextField fx:id="txtMobileNumber" prefColumnCount="10"/>
+                <ComboBox fx:id="cboDialingCode" styleClass="required"/>
+                <TextField fx:id="txtMobileNumber" styleClass="required" prefColumnCount="10"/>
             </HBox>
         </GridPane>
     </center>

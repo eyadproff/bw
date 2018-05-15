@@ -248,7 +248,7 @@ public class ApplicantInfoFxController extends WizardStepFxControllerBase
 				                 .or(cboGenderBinding).or(dpBirthDateBinding).or(cboVisaTypeBinding)
 				                 .or(txtPassportNumberBinding).or(dpIssueDateBinding).or(dpExpirationDateBinding)
 								 .or(cboIssuanceCountryBinding).or(cboPassportTypeBinding)
-				                 .or(cboDialingCodeBinding.and(txtMobileNumberBinding.not())));
+				                 .or(cboDialingCodeBinding).or(txtMobileNumberBinding));
 	}
 	
 	@Override
