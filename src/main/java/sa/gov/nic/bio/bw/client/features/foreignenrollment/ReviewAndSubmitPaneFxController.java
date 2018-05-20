@@ -287,12 +287,16 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 			GuiUtils.showNode(btnPrevious, true);
 			GuiUtils.showNode(btnSubmit, true);
 			
-			@SuppressWarnings("unchecked") ServiceResponse<Boolean> serviceResponse =
-										(ServiceResponse<Boolean>) uiInputData.get(Workflow.KEY_WEBSERVICE_RESPONSE);
+			@SuppressWarnings("unchecked") ServiceResponse<Long> serviceResponse =
+										(ServiceResponse<Long>) uiInputData.get(Workflow.KEY_WEBSERVICE_RESPONSE);
 			if(serviceResponse.isSuccess())
 			{
-				Boolean result = serviceResponse.getResult();
-				if(result != null) goNext();
+				Long result = serviceResponse.getResult();
+				if(result != null)
+				{
+					foreignInfo.setCandidateId(result);
+					goNext();
+				}
 				else
 				{
 					String errorCode = ForeignEnrollmentErrorCodes.C010_00001.getCode();
@@ -308,6 +312,7 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 	@FXML
 	private void onSubmitButtonClicked(ActionEvent actionEvent)
 	{
+		hideNotification();
 		String headerText =
 					resources.getString("foreignEnrollment.registeringForeign.confirmation.header");
 		String contentText =

@@ -7,14 +7,14 @@ import sa.gov.nic.bio.bw.client.core.wizard.WizardStepFxControllerBase;
 import java.net.URL;
 import java.util.Map;
 
-public class DoneFxController extends WizardStepFxControllerBase
+public class ShowReceiptFxController extends WizardStepFxControllerBase
 {
 	@FXML private Button btnStartOver;
 	
 	@Override
 	public URL getFxmlLocation()
 	{
-		return getClass().getResource("fxml/done.fxml");
+		return getClass().getResource("fxml/showReceipt.fxml");
 	}
 	
 	@Override

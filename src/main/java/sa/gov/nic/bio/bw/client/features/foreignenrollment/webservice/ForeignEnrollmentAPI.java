@@ -10,5 +10,5 @@ public interface ForeignEnrollmentAPI
 {
 	@FormUrlEncoded
 	@POST
-	Call<Boolean> enrollForeign(@Url String url, @Field("foreign-info") ForeignInfo foreignInfo);
+	Call<Long> enrollForeign(@Url String url, @Field("foreign-info") String foreignInfo);
 }

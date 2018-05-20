@@ -13,7 +13,6 @@ import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 
 import java.util.ResourceBundle;
-import java.util.logging.Logger;
 
 /**
  * JavaFX controller for the header. Shown only after login. It contains information about the logged in
@@ -23,7 +22,7 @@ import java.util.logging.Logger;
  */
 public class HeaderPaneFxController extends RegionFxControllerBase
 {
-	private static final Logger LOGGER = Logger.getLogger(HeaderPaneFxController.class.getName());
+	private static final String AVATAR_PLACEHOLDER_FILE = "sa/gov/nic/bio/bw/client/core/images/avatar_placeholder.jpg";
 	
 	@FXML private ResourceBundle resources;
 	@FXML private Pane rootPane;
@@ -79,6 +78,13 @@ public class HeaderPaneFxController extends RegionFxControllerBase
 			GuiUtils.attachImageDialog(Context.getCoreFxController(), ivAvatar,
 			                           resources.getString("label.operatorPhoto"),
 			                           resources.getString("label.contextMenu.showImage"), false);
+		}
+		else
+		{
+			ivAvatar.setImage(new Image(Thread.currentThread().getContextClassLoader()
+					                            .getResourceAsStream(AVATAR_PLACEHOLDER_FILE)));
+			ivAvatar.setOnMouseClicked(null);
+			ivAvatar.setOnContextMenuRequested(null);
 		}
 	}
 	

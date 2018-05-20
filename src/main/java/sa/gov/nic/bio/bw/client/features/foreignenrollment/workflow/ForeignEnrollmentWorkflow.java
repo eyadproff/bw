@@ -6,9 +6,10 @@ import sa.gov.nic.bio.bw.client.core.workflow.WizardWorkflowBase;
 import sa.gov.nic.bio.bw.client.features.commons.FaceCapturingFxController;
 import sa.gov.nic.bio.bw.client.features.commons.FingerprintCapturingFxController;
 import sa.gov.nic.bio.bw.client.features.foreignenrollment.ApplicantInfoFxController;
-import sa.gov.nic.bio.bw.client.features.foreignenrollment.DoneFxController;
+import sa.gov.nic.bio.bw.client.features.foreignenrollment.ShowReceiptFxController;
 import sa.gov.nic.bio.bw.client.features.foreignenrollment.LookupFxController;
 import sa.gov.nic.bio.bw.client.features.foreignenrollment.ReviewAndSubmitPaneFxController;
+import sa.gov.nic.bio.bw.client.features.foreignenrollment.webservice.ForeignInfo;
 import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
 
 import java.util.Map;
@@ -52,8 +53,17 @@ public class ForeignEnrollmentWorkflow extends WizardWorkflowBase<Void, Void>
 			}
 			case 1:
 			{
-				uiInputData.put(FingerprintCapturingFxController.KEY_HIDE_FINGERPRINT_PREVIOUS_BUTTON,
-				                Boolean.FALSE);
+				boolean acceptBadQualityFingerprint = "true".equals(System.getProperty(
+						"jnlp.bio.bw.foreignEnrollment.fingerprint.acceptBadQualityFingerprint"));
+				int acceptedBadQualityFingerprintMinRetries = Integer.parseInt(System.getProperty(
+						"jnlp.bio.bw.foreignEnrollment.fingerprint.acceptedBadQualityFingerprintMinRetries"));
+				
+				uiInputData.put(FingerprintCapturingFxController.KEY_HIDE_FINGERPRINT_PREVIOUS_BUTTON, Boolean.FALSE);
+				uiInputData.put(FingerprintCapturingFxController.KEY_ACCEPT_BAD_QUALITY_FINGERPRINT,
+				                acceptBadQualityFingerprint);
+				uiInputData.put(FingerprintCapturingFxController.KEY_ACCEPTED_BAD_QUALITY_FINGERPRINT_MIN_RETIRES,
+				                acceptedBadQualityFingerprintMinRetries);
+				
 				formRenderer.get().renderForm(FingerprintCapturingFxController.class, uiInputData);
 				uiOutputData = waitForUserTask();
 				uiInputData.putAll(uiOutputData);
@@ -61,6 +71,15 @@ public class ForeignEnrollmentWorkflow extends WizardWorkflowBase<Void, Void>
 			}
 			case 2:
 			{
+				boolean acceptBadQualityFace = "true".equals(System.getProperty(
+						"jnlp.bio.bw.foreignEnrollment.face.acceptBadQualityFace"));
+				int acceptedBadQualityFaceMinRetries = Integer.parseInt(System.getProperty(
+						"jnlp.bio.bw.foreignEnrollment.face.acceptedBadQualityFaceMinRetries"));
+				
+				uiInputData.put(FaceCapturingFxController.KEY_ACCEPT_BAD_QUALITY_FACE, acceptBadQualityFace);
+				uiInputData.put(FaceCapturingFxController.KEY_ACCEPTED_BAD_QUALITY_FACE_MIN_RETIRES,
+				                acceptedBadQualityFaceMinRetries);
+				
 				formRenderer.get().renderForm(FaceCapturingFxController.class, uiInputData);
 				uiOutputData = waitForUserTask();
 				uiInputData.putAll(uiOutputData);
@@ -71,11 +90,38 @@ public class ForeignEnrollmentWorkflow extends WizardWorkflowBase<Void, Void>
 				formRenderer.get().renderForm(ReviewAndSubmitPaneFxController.class, uiInputData);
 				uiOutputData = waitForUserTask();
 				uiInputData.putAll(uiOutputData);
+				
+				while(true)
+				{
+					ForeignInfo foreignInfo = (ForeignInfo)
+													uiInputData.get(ReviewAndSubmitPaneFxController.KEY_FOREIGN_INFO);
+					if(foreignInfo == null) break;
+					
+					ServiceResponse<Long> serviceResponse = ForeignEnrollmentService.execute(foreignInfo);
+					boolean success = serviceResponse.isSuccess() && serviceResponse.getResult() != null;
+					
+					uiInputData.put(KEY_WEBSERVICE_RESPONSE, serviceResponse);
+					formRenderer.get().renderForm(ReviewAndSubmitPaneFxController.class, uiInputData);
+					
+					if(success)
+					{
+						uiOutputData = waitForUserTask();
+						uiInputData.putAll(uiOutputData);
+						break;
+					}
+					else
+					{
+						uiInputData.remove(ReviewAndSubmitPaneFxController.KEY_FOREIGN_INFO);
+						uiOutputData = waitForUserTask();
+						uiInputData.putAll(uiOutputData);
+					}
+				}
+				
 				break;
 			}
 			case 4:
 			{
-				formRenderer.get().renderForm(DoneFxController.class, uiInputData);
+				formRenderer.get().renderForm(ShowReceiptFxController.class, uiInputData);
 				uiOutputData = waitForUserTask();
 				uiInputData.putAll(uiOutputData);
 				break;

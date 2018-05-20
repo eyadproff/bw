@@ -151,6 +151,8 @@ public class HomePaneFxController extends BodyFxControllerBase
 		byte[] faceImageByteArray = null;
 		Image image = null;
 		
+		Context.getCoreFxController().getHeaderPaneController().setAvatarImage(null);
+		
 		if(encodedFaceImage != null && !encodedFaceImage.isEmpty())
 		{
 			try

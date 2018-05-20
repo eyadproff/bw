@@ -7,7 +7,7 @@
 <?import javafx.geometry.Insets?>
 
 <BorderPane xmlns="http://javafx.com/javafx/8.0.152" xmlns:fx="http://javafx.com/fxml/1"
-            fx:id="rootPane" fx:controller="sa.gov.nic.bio.bw.client.features.foreignenrollment.DoneFxController">
+            fx:id="rootPane" fx:controller="sa.gov.nic.bio.bw.client.features.foreignenrollment.ShowReceiptFxController">
     <center>
         <Label text="Done"/>
     </center>
