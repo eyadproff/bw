@@ -2,14 +2,14 @@ package sa.gov.nic.bio.bw.client.features.commons.webservice;
 
 import java.util.Objects;
 
-public class NationalityBean
+public class CountryBean
 {
 	private int code;
 	private String mofaNationalityCode;
 	private String descriptionAR;
 	private String descriptionEN;
 	
-	public NationalityBean(int code, String mofaNationalityCode, String descriptionAR, String descriptionEN)
+	public CountryBean(int code, String mofaNationalityCode, String descriptionAR, String descriptionEN)
 	{
 		this.code = code;
 		this.mofaNationalityCode = mofaNationalityCode;
@@ -34,7 +34,7 @@ public class NationalityBean
 	{
 		if(this == o) return true;
 		if(o == null || getClass() != o.getClass()) return false;
-		NationalityBean that = (NationalityBean) o;
+		CountryBean that = (CountryBean) o;
 		return code == that.code && Objects.equals(mofaNationalityCode, that.mofaNationalityCode) &&
 			   Objects.equals(descriptionAR, that.descriptionAR) && Objects.equals(descriptionEN, that.descriptionEN);
 	}
@@ -48,7 +48,7 @@ public class NationalityBean
 	@Override
 	public String toString()
 	{
-		return "NationalityBean{" + "code=" + code + ", mofaNationalityCode='" + mofaNationalityCode + '\'' +
+		return "CountryBean{" + "code=" + code + ", mofaNationalityCode='" + mofaNationalityCode + '\'' +
 			   ", descriptionAR='" + descriptionAR + '\'' + ", descriptionEN='" + descriptionEN + '\'' + '}';
 	}
 }

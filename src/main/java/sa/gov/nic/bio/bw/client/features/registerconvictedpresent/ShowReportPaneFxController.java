@@ -10,7 +10,7 @@ import net.sf.jasperreports.engine.JasperPrint;
 import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.wizard.WizardStepFxControllerBase;
-import sa.gov.nic.bio.bw.client.features.registerconvictednotpresent.FetchingFingerprintsPaneFxController;
+import sa.gov.nic.bio.bw.client.features.commons.FingerprintCapturingFxController;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.tasks.BuildReportTask;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.tasks.PrintReportTask;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.tasks.SaveReportAsPdfTask;
@@ -84,7 +84,7 @@ public class ShowReportPaneFxController extends WizardStepFxControllerBase
 			
 			@SuppressWarnings("unchecked")
 			Map<Integer, String> fingerprintImages = (Map<Integer, String>)
-								uiInputData.get(FetchingFingerprintsPaneFxController.KEY_PERSON_FINGERPRINTS_IMAGES);
+								uiInputData.get(FingerprintCapturingFxController.KEY_FINGERPRINTS_IMAGES);
 			this.fingerprintImages = fingerprintImages;
 		}
 	}

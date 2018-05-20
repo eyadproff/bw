@@ -9,7 +9,7 @@ import java.util.List;
 public interface LookupAPI
 {
 	@GET
-	Call<List<NationalityBean>> lookupNationalities(@Url String url);
+	Call<List<CountryBean>> lookupNationalities(@Url String url);
 	
 	@GET
 	Call<List<PersonIdType>> lookupPersonIdTypes(@Url String url);

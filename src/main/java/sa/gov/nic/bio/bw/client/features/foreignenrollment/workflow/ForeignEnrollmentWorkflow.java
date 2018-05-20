@@ -8,7 +8,7 @@ import sa.gov.nic.bio.bw.client.features.commons.FingerprintCapturingFxControlle
 import sa.gov.nic.bio.bw.client.features.foreignenrollment.ApplicantInfoFxController;
 import sa.gov.nic.bio.bw.client.features.foreignenrollment.DoneFxController;
 import sa.gov.nic.bio.bw.client.features.foreignenrollment.LookupFxController;
-import sa.gov.nic.bio.bw.client.features.foreignenrollment.SummaryFxController;
+import sa.gov.nic.bio.bw.client.features.foreignenrollment.ReviewAndSubmitPaneFxController;
 import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
 
 import java.util.Map;
@@ -68,7 +68,7 @@ public class ForeignEnrollmentWorkflow extends WizardWorkflowBase<Void, Void>
 			}
 			case 3:
 			{
-				formRenderer.get().renderForm(SummaryFxController.class, uiInputData);
+				formRenderer.get().renderForm(ReviewAndSubmitPaneFxController.class, uiInputData);
 				uiOutputData = waitForUserTask();
 				uiInputData.putAll(uiOutputData);
 				break;

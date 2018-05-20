@@ -33,6 +33,7 @@ import sa.gov.nic.bio.biokit.face.beans.CaptureFaceResponse;
 import sa.gov.nic.bio.biokit.face.beans.FaceStartPreviewResponse;
 import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.DevicesRunnerGadgetPaneFxController;
+import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.wizard.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.client.features.commons.ui.AutoScalingStackPane;
@@ -73,6 +74,8 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 	private static final String KEY_CROPPED_IMAGE_TP_CAPTURED = "CROPPED_IMAGE_TP_CAPTURED";
 	private static final String KEY_CROPPED_IMAGE_TP_DUPLICATED = "CROPPED_IMAGE_TP_DUPLICATED";
 	private static final String KEY_CROPPED_IMAGE_TP_VALID = "CROPPED_IMAGE_TP_VALID";
+	
+	public static final String KEY_FINAL_FACE_IMAGE = "FINAL_FACE_IMAGE";
 	
 	@FXML private ResourceBundle resources;
 	@FXML private FourStateTitledPane tpCameraLivePreview;
@@ -342,6 +345,30 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 			uiDataMap.put(KEY_CROPPED_IMAGE_TP_DUPLICATED, tpCroppedImage.isDuplicated());
 			uiDataMap.put(KEY_CROPPED_IMAGE_TP_VALID, tpCroppedImage.isValid());
 		}
+		
+		prepareFaceForBackend(uiDataMap);
+	}
+	
+	private void prepareFaceForBackend(Map<String, Object> uiDataMap)
+	{
+		Image capturedImage = ivCapturedImage.getImage();
+		Image croppedImage = ivCroppedImage.getImage();
+		
+		Image finalImage;
+		if(croppedImage != null) finalImage = croppedImage;
+		else finalImage = capturedImage;
+		
+		try
+		{
+			String imageBase64 = AppUtils.imageToBase64(finalImage, "jpg");
+			uiDataMap.put(KEY_FINAL_FACE_IMAGE, imageBase64);
+		}
+		catch(Exception e)
+		{
+			String errorCode = CommonsErrorCodes.C008_00016.getCode();
+			String[] errorDetails = {"Failed to convert the person image to base64!"};
+			reportNegativeResponse(errorCode, e, errorDetails);
+		}
 	}
 	
 	@FXML
@@ -590,7 +617,7 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 	private void onCaptureFaceButtonClicked(ActionEvent actionEvent)
 	{
 		LOGGER.info("capturing the face...");
-		btnNext.setDisable(true);
+		if(acceptBadQualityFace) btnNext.setDisable(true);
 		
 		GuiUtils.showNode(btnCaptureFace, false);
 		GuiUtils.showNode(btnStopCameraLivePreview, false);

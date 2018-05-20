@@ -8,6 +8,8 @@ import sa.gov.nic.bio.bw.client.core.biokit.FingerPosition;
 import sa.gov.nic.bio.bw.client.core.interfaces.FormRenderer;
 import sa.gov.nic.bio.bw.client.core.workflow.Signal;
 import sa.gov.nic.bio.bw.client.core.workflow.WizardWorkflowBase;
+import sa.gov.nic.bio.bw.client.features.commons.FaceCapturingFxController;
+import sa.gov.nic.bio.bw.client.features.commons.FingerprintCapturingFxController;
 import sa.gov.nic.bio.bw.client.features.commons.LookupFxController;
 import sa.gov.nic.bio.bw.client.features.commons.workflow.ConvictedReportLookupService;
 import sa.gov.nic.bio.bw.client.features.registerconvictednotpresent.FetchingFingerprintsPaneFxController;
@@ -88,7 +90,7 @@ public class RegisterConvictedReportNotPresentWorkflow extends WizardWorkflowBas
 					PersonInfo personInfo = serviceResponse.getResult();
 					if(serviceResponse.isSuccess() && personInfo != null)
 					{
-						uiInputData.put(PersonInfoPaneFxController.KEY_PERSON_INFO_PHOTO, personInfo.getFace());
+						uiInputData.put(FaceCapturingFxController.KEY_FINAL_FACE_IMAGE, personInfo.getFace());
 						break;
 					}
 				}
@@ -146,7 +148,7 @@ public class RegisterConvictedReportNotPresentWorkflow extends WizardWorkflowBas
 				
 				@SuppressWarnings("unchecked")
 				List<Finger> collectedFingerprints = (List<Finger>)
-										uiInputData.get(FetchingFingerprintsPaneFxController.KEY_PERSON_FINGERPRINTS);
+										uiInputData.get(FingerprintCapturingFxController.KEY_COLLECTED_SLAP_FINGERPRINTS);
 				
 				Long personId = (Long) uiInputData.get(PersonIdPaneFxController.KEY_PERSON_INFO_INQUIRY_PERSON_ID);
 				ServiceResponse<List<Integer>> sr = GetFingerprintAvailabilityService.execute(personId);
@@ -164,7 +166,7 @@ public class RegisterConvictedReportNotPresentWorkflow extends WizardWorkflowBas
 				List<Integer> missingFingerprints = new ArrayList<>();
 				for(int i = 1; i <= 10; i++) missingFingerprints.add(i);
 				availableFingerprints.forEach(missingFingerprints::remove);
-				uiInputData.put(FetchingFingerprintsPaneFxController.KEY_PERSON_MISSING_FINGERPRINTS,
+				uiInputData.put(FingerprintCapturingFxController.KEY_MISSING_FINGERPRINTS,
 				                missingFingerprints);
 				
 				Map<Integer, String> fingerprintWsqMap = new HashMap<>();
@@ -322,7 +324,7 @@ public class RegisterConvictedReportNotPresentWorkflow extends WizardWorkflowBas
 					}
 				}
 				
-				uiInputData.put(FetchingFingerprintsPaneFxController.KEY_PERSON_FINGERPRINTS_IMAGES,
+				uiInputData.put(FingerprintCapturingFxController.KEY_FINGERPRINTS_IMAGES,
 				                fingerprintImages);
 				
 				ServiceResponse<Integer> serviceResponse =

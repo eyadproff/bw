@@ -3,8 +3,8 @@ package sa.gov.nic.bio.bw.client.features.foreignenrollment.workflow;
 import retrofit2.Call;
 import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.beans.UserSession;
+import sa.gov.nic.bio.bw.client.features.commons.webservice.CountryBean;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.LookupAPI;
-import sa.gov.nic.bio.bw.client.features.commons.webservice.NationalityBean;
 import sa.gov.nic.bio.bw.client.features.foreignenrollment.webservice.CountryDialingCode;
 import sa.gov.nic.bio.bw.client.features.foreignenrollment.webservice.VisaTypeBean;
 import sa.gov.nic.bio.bw.client.features.foreignenrollment.webservice.VisaTypesLookupAPI;
@@ -29,8 +29,7 @@ public class LookupService
 		UserSession userSession = Context.getUserSession();
 		
 		@SuppressWarnings("unchecked")
-		List<NationalityBean> nationalities = (List<NationalityBean>)
-															userSession.getAttribute("lookups.nationalities");
+		List<CountryBean> countries = (List<CountryBean>) userSession.getAttribute("lookups.countries");
 		
 		@SuppressWarnings("unchecked")
 		List<VisaTypeBean> visaTypes = (List<VisaTypeBean>) userSession.getAttribute("lookups.visaTypes");
@@ -39,24 +38,24 @@ public class LookupService
 		List<CountryDialingCode> dialingCodes = (List<CountryDialingCode>)
 															userSession.getAttribute("lookups.dialingCodes");
 		
-		if(nationalities == null)
+		if(countries == null)
 		{
 			String url = System.getProperty("jnlp.bio.bw.service.lookupNationalities");
 			LookupAPI lookupAPI = Context.getWebserviceManager().getApi(LookupAPI.class);
-			Call<List<NationalityBean>> nationalitiesCall = lookupAPI.lookupNationalities(url);
-			ServiceResponse<List<NationalityBean>> nationalitiesResponse = Context.getWebserviceManager()
+			Call<List<CountryBean>> nationalitiesCall = lookupAPI.lookupNationalities(url);
+			ServiceResponse<List<CountryBean>> nationalitiesResponse = Context.getWebserviceManager()
 																				  .executeApi(nationalitiesCall);
 			
 			if(nationalitiesResponse.isSuccess())
 			{
-				nationalities = nationalitiesResponse.getResult();
-				nationalities.removeIf(nationalityBean -> nationalityBean.getMofaNationalityCode().trim().isEmpty());
+				countries = nationalitiesResponse.getResult();
+				countries.removeIf(countryBean -> countryBean.getMofaNationalityCode().trim().isEmpty());
 			}
 			else return ServiceResponse.failure(nationalitiesResponse.getErrorCode(),
 			                                    nationalitiesResponse.getException(),
 			                                    nationalitiesResponse.getErrorDetails());
 			
-			userSession.setAttribute("lookups.nationalities", nationalities);
+			userSession.setAttribute("lookups.countries", countries);
 		}
 		
 		if(visaTypes == null)
@@ -107,7 +106,7 @@ public class LookupService
 			userSession.setAttribute("lookups.dialingCodes", dialingCodes);
 		}
 		
-		LOGGER.info("nationalities = " + nationalities);
+		LOGGER.info("countries = " + countries);
 		LOGGER.info("visaTypes = " + visaTypes);
 		LOGGER.info("dialingCodes = " + dialingCodes);
 		

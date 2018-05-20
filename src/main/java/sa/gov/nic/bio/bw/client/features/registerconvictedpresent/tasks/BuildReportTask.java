@@ -8,9 +8,9 @@ import net.sf.jasperreports.engine.JasperReport;
 import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.utils.AppConstants.Locales;
 import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
+import sa.gov.nic.bio.bw.client.features.commons.webservice.CountryBean;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.CrimeType;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.IdType;
-import sa.gov.nic.bio.bw.client.features.commons.webservice.NationalityBean;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.ConvictedReport;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.CrimeCode;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.JudgementInfo;
@@ -129,21 +129,21 @@ public class BuildReportTask extends Task<JasperPrint>
 		
 		params.put(PARAMETER_NAME, fullName);
 		
-		@SuppressWarnings("unchecked") List<NationalityBean> nationalities = (List<NationalityBean>)
-				Context.getUserSession().getAttribute("lookups.nationalities");
+		@SuppressWarnings("unchecked") List<CountryBean> countries = (List<CountryBean>)
+													Context.getUserSession().getAttribute("lookups.countries");
 		
-		NationalityBean nationalityBean = null;
+		CountryBean countryBean = null;
 		
-		for(NationalityBean nationality : nationalities)
+		for(CountryBean country : countries)
 		{
-			if(nationality.getCode() == convictedReport.getSubjNationalityCode())
+			if(country.getCode() == convictedReport.getSubjNationalityCode())
 			{
-				nationalityBean = nationality;
+				countryBean = country;
 				break;
 			}
 		}
 		
-		if(nationalityBean != null) params.put(PARAMETER_NATIONALITY, nationalityBean.getDescriptionAR());
+		if(countryBean != null) params.put(PARAMETER_NATIONALITY, countryBean.getDescriptionAR());
 		
 		params.put(PARAMETER_JOB, convictedReport.getSubjOccupation());
 		params.put(PARAMETER_SEX, "F".equals(convictedReport.getSubjGender()) ? "أنثى" : "ذكر");

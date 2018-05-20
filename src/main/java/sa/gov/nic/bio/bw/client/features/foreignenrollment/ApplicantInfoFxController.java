@@ -30,7 +30,7 @@ import sa.gov.nic.bio.bw.client.core.utils.GuiLanguage;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.wizard.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.client.features.commons.beans.GenderType;
-import sa.gov.nic.bio.bw.client.features.commons.webservice.NationalityBean;
+import sa.gov.nic.bio.bw.client.features.commons.webservice.CountryBean;
 import sa.gov.nic.bio.bw.client.features.foreignenrollment.webservice.CountryDialingCode;
 import sa.gov.nic.bio.bw.client.features.foreignenrollment.webservice.PassportTypeBean;
 import sa.gov.nic.bio.bw.client.features.foreignenrollment.webservice.VisaTypeBean;
@@ -77,9 +77,9 @@ public class ApplicantInfoFxController extends WizardStepFxControllerBase
 	@FXML private TextField txtFamilyName;
 	@FXML private TextField txtMobileNumber;
 	@FXML private ComboBox<ItemWithText<GenderType>> cboGender;
-	@FXML private ComboBox<HideableItem<NationalityBean>> cboBirthPlace;
-	@FXML private ComboBox<HideableItem<NationalityBean>> cboNationality;
-	@FXML private ComboBox<HideableItem<NationalityBean>> cboIssuanceCountry;
+	@FXML private ComboBox<HideableItem<CountryBean>> cboBirthPlace;
+	@FXML private ComboBox<HideableItem<CountryBean>> cboNationality;
+	@FXML private ComboBox<HideableItem<CountryBean>> cboIssuanceCountry;
 	@FXML private ComboBox<HideableItem<PassportTypeBean>> cboPassportType;
 	@FXML private ComboBox<HideableItem<VisaTypeBean>> cboVisaType;
 	@FXML private ComboBox<HideableItem<CountryDialingCode>> cboDialingCode;
@@ -112,8 +112,8 @@ public class ApplicantInfoFxController extends WizardStepFxControllerBase
 		UserSession userSession = Context.getUserSession();
 		
 		@SuppressWarnings("unchecked")
-		List<NationalityBean> nationalities = (List<NationalityBean>)
-															userSession.getAttribute("lookups.nationalities");
+		List<CountryBean> countries = (List<CountryBean>)
+															userSession.getAttribute("lookups.countries");
 		
 		@SuppressWarnings("unchecked")
 		List<VisaTypeBean> visaTypes = (List<VisaTypeBean>) userSession.getAttribute("lookups.visaTypes");
@@ -133,9 +133,9 @@ public class ApplicantInfoFxController extends WizardStepFxControllerBase
 			passportTypes.add(temp);
 		}
 		
-		GuiUtils.addAutoCompletionSupportToComboBox(cboNationality, nationalities);
-		GuiUtils.addAutoCompletionSupportToComboBox(cboBirthPlace, nationalities);
-		GuiUtils.addAutoCompletionSupportToComboBox(cboIssuanceCountry, nationalities);
+		GuiUtils.addAutoCompletionSupportToComboBox(cboNationality, countries);
+		GuiUtils.addAutoCompletionSupportToComboBox(cboBirthPlace, countries);
+		GuiUtils.addAutoCompletionSupportToComboBox(cboIssuanceCountry, countries);
 		GuiUtils.addAutoCompletionSupportToComboBox(cboVisaType, visaTypes);
 		GuiUtils.addAutoCompletionSupportToComboBox(cboPassportType, passportTypes);
 		GuiUtils.addAutoCompletionSupportToComboBox(cboDialingCode, dialingCodes);
@@ -244,11 +244,11 @@ public class ApplicantInfoFxController extends WizardStepFxControllerBase
 		BooleanBinding cboDialingCodeBinding = cboDialingCode.valueProperty().isNull();
 		BooleanBinding txtMobileNumberBinding = txtMobileNumber.textProperty().isEmpty();
 		
-		btnNext.disableProperty().bind(txtFirstNameBinding.or(txtFamilyNameBinding).or(cboNationalityBinding)
+		/*btnNext.disableProperty().bind(txtFirstNameBinding.or(txtFamilyNameBinding).or(cboNationalityBinding)
 				                 .or(cboGenderBinding).or(dpBirthDateBinding).or(cboVisaTypeBinding)
 				                 .or(txtPassportNumberBinding).or(dpIssueDateBinding).or(dpExpirationDateBinding)
 								 .or(cboIssuanceCountryBinding).or(cboPassportTypeBinding)
-				                 .or(cboDialingCodeBinding).or(txtMobileNumberBinding));
+				                 .or(cboDialingCodeBinding).or(txtMobileNumberBinding));*/
 	}
 	
 	@Override
@@ -328,19 +328,19 @@ public class ApplicantInfoFxController extends WizardStepFxControllerBase
 		uiDataMap.put(KEY_PASSPORT_NUMBER, txtPassportNumber.getText());
 		uiDataMap.put(KEY_MOBILE_NUMBER, txtMobileNumber.getText());
 		
-		HideableItem<NationalityBean> nationalityItem = cboNationality.getValue();
+		HideableItem<CountryBean> nationalityItem = cboNationality.getValue();
 		uiDataMap.put(KEY_NATIONALITY, nationalityItem != null ? nationalityItem.getObject() : null);
 		
 		ItemWithText<GenderType> genderItem = cboGender.getValue();
 		uiDataMap.put(KEY_GENDER, genderItem != null ? genderItem.getItem() : null);
 		
-		HideableItem<NationalityBean> birthPlaceItem = cboBirthPlace.getValue();
+		HideableItem<CountryBean> birthPlaceItem = cboBirthPlace.getValue();
 		uiDataMap.put(KEY_BIRTH_PLACE, birthPlaceItem != null ? birthPlaceItem.getObject() : null);
 		
 		HideableItem<VisaTypeBean> visaTypeItem = cboVisaType.getValue();
 		uiDataMap.put(KEY_VISA_TYPE, visaTypeItem != null ? visaTypeItem.getObject() : null);
 		
-		HideableItem<NationalityBean> issueCountryItem = cboIssuanceCountry.getValue();
+		HideableItem<CountryBean> issueCountryItem = cboIssuanceCountry.getValue();
 		uiDataMap.put(KEY_ISSUANCE_COUNTRY, issueCountryItem != null ? issueCountryItem.getObject() : null);
 		
 		HideableItem<PassportTypeBean> passportTypeItem = cboPassportType.getValue();
@@ -364,9 +364,9 @@ public class ApplicantInfoFxController extends WizardStepFxControllerBase
 		String secondName = (String) dataMap.get(KEY_SECOND_NAME);
 		String otherName = (String) dataMap.get(KEY_OTHER_NAME);
 		String familyName = (String) dataMap.get(KEY_FAMILY_NAME);
-		NationalityBean nationality = (NationalityBean) dataMap.get(KEY_NATIONALITY);
+		CountryBean nationality = (CountryBean) dataMap.get(KEY_NATIONALITY);
 		GenderType gender = (GenderType) dataMap.get(KEY_GENDER);
-		NationalityBean birthPlace = (NationalityBean) dataMap.get(KEY_BIRTH_PLACE);
+		CountryBean birthPlace = (CountryBean) dataMap.get(KEY_BIRTH_PLACE);
 		LocalDate birthDate = (LocalDate) dataMap.get(KEY_BIRTH_DATE);
 		Boolean birthDateShowHijri = (Boolean) dataMap.get(KEY_BIRTH_DATE_SHOW_HIJRI);
 		VisaTypeBean visaType = (VisaTypeBean) dataMap.get(KEY_VISA_TYPE);
@@ -375,7 +375,7 @@ public class ApplicantInfoFxController extends WizardStepFxControllerBase
 		Boolean issueDateShowHijri = (Boolean) dataMap.get(KEY_ISSUE_DATE_SHOW_HIJRI);
 		LocalDate expirationDate = (LocalDate) dataMap.get(KEY_EXPIRATION_DATE);
 		Boolean expirationDateShowHijri = (Boolean) dataMap.get(KEY_EXPIRATION_DATE_SHOW_HIJRI);
-		NationalityBean issuanceCountry = (NationalityBean) dataMap.get(KEY_ISSUANCE_COUNTRY);
+		CountryBean issuanceCountry = (CountryBean) dataMap.get(KEY_ISSUANCE_COUNTRY);
 		PassportTypeBean passportType = (PassportTypeBean) dataMap.get(KEY_PASSPORT_TYPE);
 		CountryDialingCode dialingCode = (CountryDialingCode) dataMap.get(KEY_DIALING_CODE);
 		String mobileNumber = (String) dataMap.get(KEY_MOBILE_NUMBER);
@@ -516,23 +516,23 @@ public class ApplicantInfoFxController extends WizardStepFxControllerBase
 		dialogStage.showAndWait();
 	}
 	
-	private static void setupNationalityComboBox(ComboBox<HideableItem<NationalityBean>> comboBox)
+	private static void setupNationalityComboBox(ComboBox<HideableItem<CountryBean>> comboBox)
 	{
-		comboBox.setConverter(new StringConverter<HideableItem<NationalityBean>>()
+		comboBox.setConverter(new StringConverter<HideableItem<CountryBean>>()
 		{
 			@Override
-			public String toString(HideableItem<NationalityBean> object)
+			public String toString(HideableItem<CountryBean> object)
 			{
 				if(object == null) return "";
 				else return object.getText();
 			}
 			
 			@Override
-			public HideableItem<NationalityBean> fromString(String string)
+			public HideableItem<CountryBean> fromString(String string)
 			{
 				if(string == null || string.trim().isEmpty()) return null;
 				
-				for(HideableItem<NationalityBean> nationalityBean : comboBox.getItems())
+				for(HideableItem<CountryBean> nationalityBean : comboBox.getItems())
 				{
 					if(string.equals(nationalityBean.getText())) return nationalityBean;
 				}
@@ -543,13 +543,13 @@ public class ApplicantInfoFxController extends WizardStepFxControllerBase
 		
 		comboBox.getItems().forEach(item ->
 		{
-		    NationalityBean nationalityBean = item.getObject();
+		    CountryBean countryBean = item.getObject();
 		
 		    String text;
-		    if(Context.getGuiLanguage() == GuiLanguage.ARABIC) text = nationalityBean.getDescriptionAR();
-		    else text = nationalityBean.getDescriptionEN();
+		    if(Context.getGuiLanguage() == GuiLanguage.ARABIC) text = countryBean.getDescriptionAR();
+		    else text = countryBean.getDescriptionEN();
 		
-		    String resultText = text.trim() + " (" + nationalityBean.getMofaNationalityCode() + ")";
+		    String resultText = text.trim() + " (" + countryBean.getMofaNationalityCode() + ")";
 		    String normalizedText = Normalizer.normalize(resultText, Normalizer.Form.NFKC);
 		
 		    item.setText(normalizedText);

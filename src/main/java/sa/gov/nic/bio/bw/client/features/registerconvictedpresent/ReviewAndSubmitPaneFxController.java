@@ -19,16 +19,17 @@ import sa.gov.nic.bio.bw.client.core.utils.GuiLanguage;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.wizard.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.client.core.workflow.Workflow;
+import sa.gov.nic.bio.bw.client.features.commons.FaceCapturingFxController;
+import sa.gov.nic.bio.bw.client.features.commons.FingerprintCapturingFxController;
+import sa.gov.nic.bio.bw.client.features.commons.beans.GenderType;
 import sa.gov.nic.bio.bw.client.features.commons.ui.ImageViewPane;
+import sa.gov.nic.bio.bw.client.features.commons.webservice.CountryBean;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.CrimeType;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.IdType;
-import sa.gov.nic.bio.bw.client.features.commons.webservice.NationalityBean;
-import sa.gov.nic.bio.bw.client.features.registerconvictednotpresent.FetchingFingerprintsPaneFxController;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.utils.RegisterConvictedPresentErrorCodes;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.ConvictedReport;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.CrimeCode;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.Finger;
-import sa.gov.nic.bio.bw.client.features.commons.beans.GenderType;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.JudgementInfo;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.Name;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.workflow.ConvictedReportResponse;
@@ -186,25 +187,25 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 			lblGender.setText("F".equals(convictedReport.getSubjGender()) ? resources.getString("label.female") :
 					                                                        resources.getString("label.male"));
 			
-			@SuppressWarnings("unchecked") List<NationalityBean> nationalities = (List<NationalityBean>)
-												Context.getUserSession().getAttribute("lookups.nationalities");
+			@SuppressWarnings("unchecked") List<CountryBean> countries = (List<CountryBean>)
+												Context.getUserSession().getAttribute("lookups.countries");
 			
-			NationalityBean nationalityBean = null;
+			CountryBean countryBean = null;
 			
-			for(NationalityBean nationality : nationalities)
+			for(CountryBean country : countries)
 			{
-				if(nationality.getCode() == convictedReport.getSubjNationalityCode())
+				if(country.getCode() == convictedReport.getSubjNationalityCode())
 				{
-					nationalityBean = nationality;
+					countryBean = country;
 					break;
 				}
 			}
 			
-			if(nationalityBean != null)
+			if(countryBean != null)
 			{
 				boolean arabic = Context.getGuiLanguage() == GuiLanguage.ARABIC;
-				lblNationality.setText(arabic ? nationalityBean.getDescriptionAR() :
-						                        nationalityBean.getDescriptionEN());
+				lblNationality.setText(arabic ? countryBean.getDescriptionAR() :
+						                        countryBean.getDescriptionEN());
 			}
 			else lblNationality.setText(resources.getString("combobox.unknownNationality"));
 			
@@ -333,7 +334,7 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 			
 			@SuppressWarnings("unchecked")
 			Map<Integer, String> fingerprintImages = (Map<Integer, String>)
-								uiInputData.get(FetchingFingerprintsPaneFxController.KEY_PERSON_FINGERPRINTS_IMAGES);
+								uiInputData.get(FingerprintCapturingFxController.KEY_FINGERPRINTS_IMAGES);
 			Map<Integer, ImageView> imageViewMap = new HashMap<>();
 			Map<Integer, String> dialogTitleMap = new HashMap<>();
 			
@@ -462,7 +463,7 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 		String familyName = (String) uiInputData.get(PersonInfoPaneFxController.KEY_PERSON_INFO_FAMILY_NAME);
 		Name subjtName = new Name(firstName, familyName, fatherName, grandfatherName, null,
 		                          null, null, null);
-		int subjNationalityCode = ((NationalityBean)
+		int subjNationalityCode = ((CountryBean)
 								uiInputData.get(PersonInfoPaneFxController.KEY_PERSON_INFO_NATIONALITY)).getCode();
 		String subjOccupation = (String) uiInputData.get(PersonInfoPaneFxController.KEY_PERSON_INFO_OCCUPATION);
 		String subjGender = ((GenderType) uiInputData.get(PersonInfoPaneFxController.KEY_PERSON_INFO_GENDER)).name()
@@ -560,12 +561,12 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 		
 		@SuppressWarnings("unchecked")
 		List<Finger> subjFingers = (List<Finger>)
-								uiInputData.get(FetchingFingerprintsPaneFxController.KEY_PERSON_FINGERPRINTS);
+								uiInputData.get(FingerprintCapturingFxController.KEY_COLLECTED_SLAP_FINGERPRINTS);
 		@SuppressWarnings("unchecked")
 		List<Integer> subjMissingFingers = (List<Integer>)
-								uiInputData.get(FetchingFingerprintsPaneFxController.KEY_PERSON_MISSING_FINGERPRINTS);
+								uiInputData.get(FingerprintCapturingFxController.KEY_MISSING_FINGERPRINTS);
 		
-		String subjFace = (String) uiInputData.get(PersonInfoPaneFxController.KEY_PERSON_INFO_PHOTO);
+		String subjFace = (String) uiInputData.get(FaceCapturingFxController.KEY_FINAL_FACE_IMAGE);
 		
 		return new ConvictedReport(0L, 0L, generalFileNum, subjtName, subjNationalityCode,
 		                           subjOccupation, subjGender, subjBirthDate, subjBirthPlace, subjDocId, subjDocType,

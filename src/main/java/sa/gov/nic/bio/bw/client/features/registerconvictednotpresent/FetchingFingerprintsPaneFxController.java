@@ -10,6 +10,7 @@ import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.wizard.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.client.core.workflow.Workflow;
+import sa.gov.nic.bio.bw.client.features.commons.FingerprintCapturingFxController;
 import sa.gov.nic.bio.bw.client.features.registerconvictednotpresent.utils.RegisterConvictedNotPresentErrorCodes;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.Finger;
 import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
@@ -22,9 +23,6 @@ import java.util.Map;
 public class FetchingFingerprintsPaneFxController extends WizardStepFxControllerBase
 {
 	public static final String KEY_RETRY_FINGERPRINT_FETCHING = "RETRY_FINGERPRINT_FETCHING";
-	public static final String KEY_PERSON_FINGERPRINTS = "PERSON_FINGERPRINTS";
-	public static final String KEY_PERSON_MISSING_FINGERPRINTS = "PERSON_MISSING_FINGERPRINTS";
-	public static final String KEY_PERSON_FINGERPRINTS_IMAGES = "PERSON_FINGERPRINTS_IMAGES";
 	
 	@FXML private ProgressIndicator piProgress;
 	@FXML private Label txtProgress;
@@ -66,7 +64,7 @@ public class FetchingFingerprintsPaneFxController extends WizardStepFxController
 				List<Finger> result = serviceResponse.getResult();
 				if(result != null)
 				{
-					uiInputData.put(KEY_PERSON_FINGERPRINTS, result);
+					uiInputData.put(FingerprintCapturingFxController.KEY_COLLECTED_SLAP_FINGERPRINTS, result);
 					goNext();
 				}
 				else
