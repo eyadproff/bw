@@ -28,6 +28,7 @@ public class LogoutTask extends Task<Void>
 		String userToken = (String) userSession.getAttribute("userToken");
 		
 		Context.setUserSession(null);
+		Context.getCoreFxController().getHeaderPaneController().setAvatarImage(null);
 		
 		IdentityAPI identityAPI = Context.getWebserviceManager().getApi(IdentityAPI.class);
 		String url = System.getProperty("jnlp.bio.bw.service.logout");
