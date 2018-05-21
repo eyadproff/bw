@@ -38,7 +38,6 @@ import sa.gov.nic.bio.bw.client.features.foreignenrollment.webservice.VisaTypeBe
 import java.net.URL;
 import java.text.Normalizer;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
@@ -112,8 +111,7 @@ public class ApplicantInfoFxController extends WizardStepFxControllerBase
 		UserSession userSession = Context.getUserSession();
 		
 		@SuppressWarnings("unchecked")
-		List<CountryBean> countries = (List<CountryBean>)
-															userSession.getAttribute("lookups.countries");
+		List<CountryBean> countries = (List<CountryBean>) userSession.getAttribute("lookups.countries");
 		
 		@SuppressWarnings("unchecked")
 		List<VisaTypeBean> visaTypes = (List<VisaTypeBean>) userSession.getAttribute("lookups.visaTypes");
@@ -125,13 +123,6 @@ public class ApplicantInfoFxController extends WizardStepFxControllerBase
 		@SuppressWarnings("unchecked")
 		List<CountryDialingCode> dialingCodes = (List<CountryDialingCode>)
 															userSession.getAttribute("lookups.dialingCodes");
-		
-		if(passportTypes == null) // TODO: temp, te be removed later
-		{
-			PassportTypeBean temp = new PassportTypeBean(1, "عادي", "Normal");
-			passportTypes = new ArrayList<>();
-			passportTypes.add(temp);
-		}
 		
 		GuiUtils.addAutoCompletionSupportToComboBox(cboNationality, countries);
 		GuiUtils.addAutoCompletionSupportToComboBox(cboBirthPlace, countries);
