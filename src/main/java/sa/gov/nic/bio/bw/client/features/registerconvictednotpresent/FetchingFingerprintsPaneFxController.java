@@ -64,7 +64,7 @@ public class FetchingFingerprintsPaneFxController extends WizardStepFxController
 				List<Finger> result = serviceResponse.getResult();
 				if(result != null)
 				{
-					uiInputData.put(FingerprintCapturingFxController.KEY_COLLECTED_SLAP_FINGERPRINTS, result);
+					uiInputData.put(FingerprintCapturingFxController.KEY_SLAP_FINGERPRINTS, result);
 					goNext();
 				}
 				else

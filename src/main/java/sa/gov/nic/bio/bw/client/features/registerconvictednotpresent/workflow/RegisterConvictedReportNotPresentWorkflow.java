@@ -148,7 +148,7 @@ public class RegisterConvictedReportNotPresentWorkflow extends WizardWorkflowBas
 				
 				@SuppressWarnings("unchecked")
 				List<Finger> collectedFingerprints = (List<Finger>)
-										uiInputData.get(FingerprintCapturingFxController.KEY_COLLECTED_SLAP_FINGERPRINTS);
+										uiInputData.get(FingerprintCapturingFxController.KEY_SLAP_FINGERPRINTS);
 				
 				Long personId = (Long) uiInputData.get(PersonIdPaneFxController.KEY_PERSON_INFO_INQUIRY_PERSON_ID);
 				ServiceResponse<List<Integer>> sr = GetFingerprintAvailabilityService.execute(personId);

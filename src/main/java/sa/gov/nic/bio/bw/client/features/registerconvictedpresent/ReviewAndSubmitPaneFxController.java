@@ -561,7 +561,7 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 		
 		@SuppressWarnings("unchecked")
 		List<Finger> subjFingers = (List<Finger>)
-								uiInputData.get(FingerprintCapturingFxController.KEY_COLLECTED_SLAP_FINGERPRINTS);
+								uiInputData.get(FingerprintCapturingFxController.KEY_SLAP_FINGERPRINTS);
 		@SuppressWarnings("unchecked")
 		List<Integer> subjMissingFingers = (List<Integer>)
 								uiInputData.get(FingerprintCapturingFxController.KEY_MISSING_FINGERPRINTS);

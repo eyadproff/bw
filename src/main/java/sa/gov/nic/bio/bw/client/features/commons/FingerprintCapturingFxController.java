@@ -84,8 +84,8 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 																		"ACCEPTED_BAD_QUALITY_FINGERPRINT_MIN_RETIRES";
 	public static final String KEY_CAPTURED_FINGERPRINTS = "CAPTURED_FINGERPRINTS";
 	
-	public static final String KEY_COLLECTED_FINGERPRINTS = "COLLECTED_FINGERPRINTS";
-	public static final String KEY_COLLECTED_SLAP_FINGERPRINTS = "COLLECTED_SLAP_FINGERPRINTS";
+	public static final String KEY_SEGMENTED_FINGERPRINTS = "COLLECTED_FINGERPRINTS";
+	public static final String KEY_SLAP_FINGERPRINTS = "COLLECTED_SLAP_FINGERPRINTS";
 	public static final String KEY_MISSING_FINGERPRINTS = "MISSING_FINGERPRINTS";
 	public static final String KEY_FINGERPRINTS_IMAGES = "FINGERPRINTS_IMAGES";
 	
@@ -767,15 +767,15 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 	
 	private void prepareFingerprintsForBackend(Map<String, Object> uiDataMap)
 	{
-		List<Finger> collectedFingerprints = new ArrayList<>();
-		List<Finger> collectedSlapFingerprints = new ArrayList<>();
+		List<Finger> segmentedFingerprints = new ArrayList<>();
+		List<Finger> slapFingerprints = new ArrayList<>();
 		Map<Integer, Finger> collectedFingerprintsMap = new HashMap<>();
 		Map<Integer, String> fingerprintImages = new HashMap<>();
 		List<Integer> missingFingerprints = new ArrayList<>();
 		Map<Integer, Integer> slapPositions = new HashMap<>();
 		
 		slapPositions.put(FingerPosition.RIGHT_THUMB.getPosition(),
-		                  FingerPosition.TWO_THUMBS.getPosition());
+		                  FingerPosition.RIGHT_THUMB_SLAP.getPosition());
 		slapPositions.put(FingerPosition.RIGHT_INDEX.getPosition(),
 		                  FingerPosition.RIGHT_SLAP.getPosition());
 		slapPositions.put(FingerPosition.RIGHT_MIDDLE.getPosition(),
@@ -785,7 +785,7 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 		slapPositions.put(FingerPosition.RIGHT_LITTLE.getPosition(),
 		                  FingerPosition.RIGHT_SLAP.getPosition());
 		slapPositions.put(FingerPosition.LEFT_THUMB.getPosition(),
-		                  FingerPosition.TWO_THUMBS.getPosition());
+		                  FingerPosition.LEFT_THUMB_SLAP.getPosition());
 		slapPositions.put(FingerPosition.LEFT_INDEX.getPosition(),
 		                  FingerPosition.LEFT_SLAP.getPosition());
 		slapPositions.put(FingerPosition.LEFT_MIDDLE.getPosition(),
@@ -816,8 +816,7 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 		                                                             bottomRight);
 		
 		    fingerprintImages.put(position, fingerData.getFinger());
-		    collectedFingerprints.add(new Finger(position, fingerData.getFingerWsqImage(),
-		                                         null));
+		    segmentedFingerprints.add(new Finger(position, fingerData.getFingerWsqImage(), null));
 		
 		    int slapPosition = slapPositions.get(position);
 		    if(collectedFingerprintsMap.containsKey(slapPosition))
@@ -827,18 +826,29 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 		    }
 		    else
 		    {
-		        List<FingerCoordinate> fingerCoordinates = new ArrayList<>();
-		        fingerCoordinates.add(fingerCoordinate);
-		
-		        Finger finger = new Finger(slapPosition, fingerprint.getSlapWsq(), fingerCoordinates);
-		        collectedSlapFingerprints.add(finger);
+		        Finger finger;
+		        
+		        if(slapPosition == FingerPosition.RIGHT_THUMB_SLAP.getPosition() ||
+				   slapPosition == FingerPosition.LEFT_THUMB_SLAP.getPosition())
+		        {
+			        finger = new Finger(slapPosition, fingerprint.getSlapWsq(), null);
+		        }
+		        else
+		        {
+			        List<FingerCoordinate> fingerCoordinates = new ArrayList<>();
+			        fingerCoordinates.add(fingerCoordinate);
+			        
+		        	finger = new Finger(slapPosition, fingerprint.getSlapWsq(), fingerCoordinates);
+		        }
+		        
+		        slapFingerprints.add(finger);
 		        collectedFingerprintsMap.put(slapPosition, finger);
 		    }
 		});
 		
 		uiDataMap.put(FingerprintCapturingFxController.KEY_FINGERPRINTS_IMAGES, fingerprintImages);
-		uiDataMap.put(FingerprintCapturingFxController.KEY_COLLECTED_SLAP_FINGERPRINTS, collectedSlapFingerprints);
-		uiDataMap.put(FingerprintCapturingFxController.KEY_COLLECTED_FINGERPRINTS, collectedFingerprints);
+		uiDataMap.put(FingerprintCapturingFxController.KEY_SLAP_FINGERPRINTS, slapFingerprints);
+		uiDataMap.put(FingerprintCapturingFxController.KEY_SEGMENTED_FINGERPRINTS, segmentedFingerprints);
 		uiDataMap.put(FingerprintCapturingFxController.KEY_MISSING_FINGERPRINTS, missingFingerprints);
 	}
 	

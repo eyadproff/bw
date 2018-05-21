@@ -108,7 +108,7 @@ public class RegisterConvictedReportPresentWorkflow extends WizardWorkflowBase<V
 				
 				@SuppressWarnings("unchecked")
 				List<Finger> collectedFingerprints = (List<Finger>)
-									uiInputData.get(FingerprintCapturingFxController.KEY_COLLECTED_FINGERPRINTS);
+									uiInputData.get(FingerprintCapturingFxController.KEY_SEGMENTED_FINGERPRINTS);
 				
 				@SuppressWarnings("unchecked")
 				List<Integer> missingFingerprints = (List<Integer>)
