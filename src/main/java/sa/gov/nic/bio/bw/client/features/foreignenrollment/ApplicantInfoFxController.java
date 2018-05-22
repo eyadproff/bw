@@ -17,11 +17,17 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
+import sa.gov.nic.bio.biokit.beans.ServiceResponse;
+import sa.gov.nic.bio.biokit.exceptions.NotConnectedException;
+import sa.gov.nic.bio.biokit.exceptions.TimeoutException;
+import sa.gov.nic.bio.biokit.passport.beans.CapturePassportResponse;
+import sa.gov.nic.bio.biokit.websocket.beans.MRZData;
 import sa.gov.nic.bio.bw.client.core.Context;
+import sa.gov.nic.bio.bw.client.core.DevicesRunnerGadgetPaneFxController;
 import sa.gov.nic.bio.bw.client.core.beans.HideableItem;
 import sa.gov.nic.bio.bw.client.core.beans.ItemWithText;
 import sa.gov.nic.bio.bw.client.core.beans.UserSession;
@@ -31,6 +37,7 @@ import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.wizard.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.client.features.commons.beans.GenderType;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.CountryBean;
+import sa.gov.nic.bio.bw.client.features.foreignenrollment.utils.ForeignEnrollmentErrorCodes;
 import sa.gov.nic.bio.bw.client.features.foreignenrollment.webservice.CountryDialingCode;
 import sa.gov.nic.bio.bw.client.features.foreignenrollment.webservice.PassportTypeBean;
 import sa.gov.nic.bio.bw.client.features.foreignenrollment.webservice.VisaTypeBean;
@@ -40,6 +47,9 @@ import java.text.Normalizer;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CancellationException;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import java.util.function.Predicate;
 import java.util.logging.Logger;
 
@@ -245,9 +255,9 @@ public class ApplicantInfoFxController extends WizardStepFxControllerBase
 	@Override
 	protected void onAttachedToScene()
 	{
-		setupNationalityComboBox(cboNationality);
-		setupNationalityComboBox(cboBirthPlace);
-		setupNationalityComboBox(cboIssuanceCountry);
+		GuiUtils.setupNationalityComboBox(cboNationality);
+		GuiUtils.setupNationalityComboBox(cboBirthPlace);
+		GuiUtils.setupNationalityComboBox(cboIssuanceCountry);
 		
 		cboVisaType.getItems().forEach(item ->
 		{
@@ -306,12 +316,42 @@ public class ApplicantInfoFxController extends WizardStepFxControllerBase
 		if(newForm)
 		{
 			loadOldDateIfExist(uiInputData);
+			
+			DevicesRunnerGadgetPaneFxController deviceManagerGadgetPaneController =
+												Context.getCoreFxController().getDeviceManagerGadgetPaneController();
+			
+			// register a listener to the event of the devices-runner being running or not
+			deviceManagerGadgetPaneController.setDevicesRunnerRunningListener(running ->
+			{
+			    if(running && !deviceManagerGadgetPaneController.isPassportScannerInitialized())
+			    {
+			        deviceManagerGadgetPaneController.initializePassportScanner();
+			    }
+			});
+			
+			if(deviceManagerGadgetPaneController.isDevicesRunnerRunning())
+			{
+				if(!deviceManagerGadgetPaneController.isPassportScannerInitialized())
+				{
+					deviceManagerGadgetPaneController.initializePassportScanner();
+				}
+			}
+			else
+			{
+				boolean devicesRunnerAutoRun = "true".equals(System.getProperty("jnlp.bio.bw.devicesRunner.autoRun"));
+				
+				if(devicesRunnerAutoRun) deviceManagerGadgetPaneController.runAndConnectDevicesRunner();
+			}
 		}
 	}
 	
 	@Override
 	public void onLeaving(Map<String, Object> uiDataMap)
 	{
+		Context.getCoreFxController().getDeviceManagerGadgetPaneController().setDevicesRunnerRunningListener(null);
+		Context.getCoreFxController().getDeviceManagerGadgetPaneController()
+									 .setPassportScannerInitializationListener(null);
+		
 		uiDataMap.put(KEY_FIRST_NAME, txtFirstName.getText());
 		uiDataMap.put(KEY_SECOND_NAME, txtSecondName.getText());
 		uiDataMap.put(KEY_OTHER_NAME, txtOtherName.getText());
@@ -432,118 +472,185 @@ public class ApplicantInfoFxController extends WizardStepFxControllerBase
 	@FXML
 	private void onOpenPassportScannerButtonClicked(ActionEvent actionEvent)
 	{
-		Image passportIcon = new Image(
-							Thread.currentThread().getContextClassLoader().getResourceAsStream(PASSPORT_ICON_FILE));
-		ImageView imageView = new ImageView(passportIcon);
+		hideNotification();
+		DevicesRunnerGadgetPaneFxController deviceManagerGadgetPaneController =
+												Context.getCoreFxController().getDeviceManagerGadgetPaneController();
 		
-		Label lblMessage = new Label(resources.getString("foreignEnrollment.passportScanning.window.message"));
-		Button btnStart = new Button(resources.getString("button.start"));
-		GuiUtils.makeButtonClickableByPressingEnter(btnStart);
-		ProgressIndicator progressIndicator = new ProgressIndicator();
-		progressIndicator.setMaxHeight(18.0);
-		progressIndicator.setMaxWidth(18.0);
-		Label lblProgress = new Label(resources.getString("label.passportScanningInProgress"));
-		
-		HBox hBox = new HBox(10.0);
-		hBox.setAlignment(Pos.CENTER);
-		hBox.setVisible(false);
-		hBox.getChildren().addAll(lblProgress, progressIndicator);
-		
-		StackPane paneBottom = new StackPane();
-		paneBottom.setPadding(new Insets(10.0, 0, 0, 0));
-		paneBottom.getChildren().addAll(hBox, btnStart);
-		
-		VBox vBox = new VBox(10.0);
-		vBox.setPadding(new Insets(10.0));
-		vBox.setAlignment(Pos.CENTER);
-		vBox.getStylesheets().setAll("sa/gov/nic/bio/bw/client/core/css/style.css");
-		
-		vBox.getChildren().addAll(imageView, lblMessage, paneBottom);
-		
-		String title = resources.getString("foreignEnrollment.passportScanning.window.title");
-		boolean rtl = Context.getGuiLanguage().getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT;
-		Stage dialogStage = DialogUtils.buildCustomDialog(Context.getCoreFxController().getStage(),
-		                                                  title, vBox, rtl, true);
-		
-		Task<Map<String, Object>> passportScanningTask = new Task<Map<String, Object>>()
+		// check if the device is initialized
+		if(deviceManagerGadgetPaneController.isPassportScannerInitialized())
 		{
-			@Override
-			protected Map<String, Object> call() throws Exception
-			{
-				Thread.sleep(1000);
-				return null;
-			}
-		};
-		passportScanningTask.setOnSucceeded(event ->
-		{
-			if(dialogStage.isShowing())
-			{
-				dialogStage.close();
-				
-				Map<String, Object> passportData = passportScanningTask.getValue();
-				
-				LOGGER.fine("passportData = " + passportData);
-				
-				// TODO: populate the passport data
-			}
-		});
-		passportScanningTask.setOnFailed(event ->
-		{
-			if(dialogStage.isShowing())
-			{
-				dialogStage.close();
-				
-				// TODO: report the error
-			}
-		});
-		
-		btnStart.setOnAction(event ->
-		{
-			btnStart.setVisible(false);
-			hBox.setVisible(true);
-			Context.getExecutorService().submit(passportScanningTask);
-		});
-		
-		dialogStage.showAndWait();
-	}
-	
-	private static void setupNationalityComboBox(ComboBox<HideableItem<CountryBean>> comboBox)
-	{
-		comboBox.setConverter(new StringConverter<HideableItem<CountryBean>>()
-		{
-			@Override
-			public String toString(HideableItem<CountryBean> object)
-			{
-				if(object == null) return "";
-				else return object.getText();
-			}
+			Image passportIcon = new Image(
+								Thread.currentThread().getContextClassLoader().getResourceAsStream(PASSPORT_ICON_FILE));
+			ImageView imageView = new ImageView(passportIcon);
 			
-			@Override
-			public HideableItem<CountryBean> fromString(String string)
+			Label lblMessage = new Label(resources.getString("foreignEnrollment.passportScanning.window.message"));
+			Button btnStart = new Button(resources.getString("button.start"));
+			GuiUtils.makeButtonClickableByPressingEnter(btnStart);
+			ProgressIndicator progressIndicator = new ProgressIndicator();
+			progressIndicator.setMaxHeight(18.0);
+			progressIndicator.setMaxWidth(18.0);
+			Label lblProgress = new Label(resources.getString("label.passportScanningInProgress"));
+			Label lblStatus = new Label();
+			lblStatus.setTextFill(Color.RED);
+			
+			GuiUtils.showNode(progressIndicator, false);
+			GuiUtils.showNode(lblProgress, false);
+			GuiUtils.showNode(lblStatus, false);
+			
+			HBox hBox = new HBox(10.0);
+			hBox.setMinHeight(17.0);
+			hBox.setAlignment(Pos.CENTER);
+			hBox.getChildren().addAll(lblStatus, lblProgress, progressIndicator);
+			
+			VBox paneBottom = new VBox(5.0);
+			paneBottom.setAlignment(Pos.CENTER);
+			paneBottom.setPadding(new Insets(10.0, 0, 0, 0));
+			paneBottom.getChildren().addAll(hBox, btnStart);
+			
+			VBox vBox = new VBox(10.0);
+			vBox.setPadding(new Insets(10.0));
+			vBox.setAlignment(Pos.CENTER);
+			vBox.getStylesheets().setAll("sa/gov/nic/bio/bw/client/core/css/style.css");
+			
+			vBox.getChildren().addAll(imageView, lblMessage, paneBottom);
+			
+			String title = resources.getString("foreignEnrollment.passportScanning.window.title");
+			boolean rtl = Context.getGuiLanguage().getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT;
+			Stage dialogStage = DialogUtils.buildCustomDialog(Context.getCoreFxController().getStage(),
+			                                                  title, vBox, rtl, true);
+			
+			btnStart.setOnAction(event ->
 			{
-				if(string == null || string.trim().isEmpty()) return null;
-				
-				for(HideableItem<CountryBean> nationalityBean : comboBox.getItems())
+				Task<ServiceResponse<CapturePassportResponse>> passportScanningTask =
+						new Task<ServiceResponse<CapturePassportResponse>>()
 				{
-					if(string.equals(nationalityBean.getText())) return nationalityBean;
-				}
+					@Override
+					protected ServiceResponse<CapturePassportResponse> call() throws Exception
+					{
+						String passportScannerDeviceName =
+													deviceManagerGadgetPaneController.getPassportScannerDeviceName();
+						Future<ServiceResponse<CapturePassportResponse>> future = Context.getBioKitManager()
+								.getPassportScannerService().capture(passportScannerDeviceName);
+						
+						return future.get();
+					}
+				};
+				passportScanningTask.setOnSucceeded(e ->
+				{
+				    if(dialogStage.isShowing())
+				    {
+				        ServiceResponse<CapturePassportResponse> serviceResponse = passportScanningTask.getValue();
 				
-				return null;
-			}
-		});
-		
-		comboBox.getItems().forEach(item ->
+				        if(serviceResponse.isSuccess())
+				        {
+				            CapturePassportResponse result = serviceResponse.getResult();
+				
+				            int returnCode = result.getReturnCode();
+				
+				            if(returnCode == CapturePassportResponse.SuccessCodes.SUCCESS)
+				            {
+				                dialogStage.close();
+				                MRZData mrzData = result.getMrzData();
+				                System.out.println("mrzData = " + mrzData);
+				                // TODO: populate the passport data
+				            }
+				            else
+				            {
+				                btnStart.setDisable(false);
+				                GuiUtils.showNode(progressIndicator, false);
+				                GuiUtils.showNode(lblProgress, false);
+					            GuiUtils.showNode(lblStatus, true);
+				
+				                if(result.getReturnCode() ==
+				                   CapturePassportResponse.FailureCodes.EXCEPTION_WHILE_CAPTURING)
+				                {
+				                    lblStatus.setText(
+				                            resources.getString("label.status.exceptionWhileScanningPassport"));
+				                }
+				                else if(result.getReturnCode() ==
+				                        CapturePassportResponse.FailureCodes.DEVICE_NOT_FOUND_OR_UNPLUGGED)
+				                {
+				                    lblStatus.setText(
+				                            resources.getString("label.status.passportDeviceNotFoundOrUnplugged"));
+				                }
+				                else if(result.getReturnCode() ==
+				                        CapturePassportResponse.FailureCodes.NO_DOCUMENT_FOUND_OR_FAILED_TO_READ)
+				                {
+				                    lblStatus.setText(
+				                            resources.getString("label.status.noPassportInsertedIntoScanner"));
+				                }
+				                else
+				                {
+				                    lblStatus.setText(String.format(
+				                            resources.getString("label.status.failedToScanPassportWithErrorCode"),
+				                            result.getReturnCode()));
+				                }
+				            }
+				        }
+				        else
+				        {
+				            dialogStage.close();
+				            String errorCode = ForeignEnrollmentErrorCodes.C010_00003.getCode();
+				            String[] errorDetails = {"failed to scan the passport!",
+				                    "serviceResponse errorCode = " + serviceResponse.getErrorCode()};
+				            Context.getCoreFxController().showErrorDialog(errorCode, serviceResponse.getException(),
+				                                                          errorDetails);
+				        }
+				    }
+				});
+				passportScanningTask.setOnFailed(e ->
+				{
+				    if(dialogStage.isShowing())
+				    {
+				        btnStart.setDisable(false);
+				        GuiUtils.showNode(progressIndicator, false);
+				        GuiUtils.showNode(lblProgress, false);
+					    GuiUtils.showNode(lblStatus, true);
+				
+				        Throwable exception = passportScanningTask.getException();
+				
+				        if(exception instanceof ExecutionException) exception = exception.getCause();
+				
+				        if(exception instanceof TimeoutException)
+				        {
+				            lblStatus.setText(resources.getString("label.status.devicesRunnerReadTimeout"));
+				        }
+				        else if(exception instanceof NotConnectedException)
+				        {
+				            lblStatus.setText(resources.getString("label.status.disconnectedFromDevicesRunner"));
+				        }
+				        else if(exception instanceof CancellationException)
+				        {
+				            lblStatus.setText(resources.getString("label.status.scanningPassportCancelled"));
+				        }
+				        else
+				        {
+				            dialogStage.close();
+				            String errorCode = ForeignEnrollmentErrorCodes.C010_00004.getCode();
+				            String[] errorDetails = {"failed to scan the passport!"};
+				            Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails);
+				        }
+				    }
+				});
+				
+				btnStart.setDisable(true);
+				GuiUtils.showNode(lblStatus, false);
+				GuiUtils.showNode(progressIndicator, true);
+				GuiUtils.showNode(lblProgress, true);
+			    Context.getExecutorService().submit(passportScanningTask);
+			});
+			
+			dialogStage.showAndWait();
+		}
+		else
 		{
-		    CountryBean countryBean = item.getObject();
-		
-		    String text;
-		    if(Context.getGuiLanguage() == GuiLanguage.ARABIC) text = countryBean.getDescriptionAR();
-		    else text = countryBean.getDescriptionEN();
-		
-		    String resultText = text.trim() + " (" + countryBean.getMofaNationalityCode() + ")";
-		    String normalizedText = Normalizer.normalize(resultText, Normalizer.Form.NFKC);
-		
-		    item.setText(normalizedText);
-		});
+			String errorCode = ForeignEnrollmentErrorCodes.N010_00001.getCode();
+			
+			String guiErrorMessage = Context.getErrorsBundle().getString(errorCode);
+			String logErrorMessage = Context.getErrorsBundle().getString(errorCode + ".internal");
+			
+			LOGGER.info(logErrorMessage);
+			showWarningNotification(guiErrorMessage);
+		}
 	}
 }

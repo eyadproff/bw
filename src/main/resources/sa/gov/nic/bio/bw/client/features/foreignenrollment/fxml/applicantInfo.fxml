@@ -88,8 +88,8 @@
                 </GridPane.margin>
                 <items>
                     <FXCollections fx:factory="observableArrayList">
-                        <ItemWithText item="$maleGender" text="%combo.gender.male"/>
-                        <ItemWithText item="$femaleGender" text="%combo.gender.female"/>
+                        <ItemWithText item="$maleGender" text="%label.male"/>
+                        <ItemWithText item="$femaleGender" text="%label.female"/>
                     </FXCollections>
                 </items>
             </ComboBox>
