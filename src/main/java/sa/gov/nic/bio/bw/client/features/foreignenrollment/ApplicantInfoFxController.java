@@ -551,8 +551,47 @@ public class ApplicantInfoFxController extends WizardStepFxControllerBase
 				            {
 				                dialogStage.close();
 				                MRZData mrzData = result.getMrzData();
-				                System.out.println("mrzData = " + mrzData);
-				                // TODO: populate the passport data
+					
+					            txtFirstName.setText(mrzData.getFirstname());
+					            txtFamilyName.setText(mrzData.getLastname());
+					            txtPassportNumber.setText(mrzData.getDocNo());
+					            
+					            String gender = mrzData.getGender();
+					            
+					            if("M".equalsIgnoreCase(gender)) cboGender.getItems()
+					                                                .stream()
+					                                                .filter(item -> item.getItem() == GenderType.MALE)
+					                                                .findFirst()
+					                                                .ifPresent(cboGender::setValue);
+					            else if("F".equalsIgnoreCase(gender)) cboGender.getItems()
+						                                            .stream()
+						                                            .filter(item -> item.getItem() == GenderType.FEMALE)
+						                                            .findFirst()
+						                                            .ifPresent(cboGender::setValue);
+					
+					            String nationality = mrzData.getNationality();
+					
+					            cboNationality.getItems()
+							            .stream()
+							            .filter(item -> item.getObject().getMofaNationalityCode().equals(nationality))
+							            .findFirst()
+							            .ifPresent(cboNationality::setValue);
+					
+					            String issuer = mrzData.getIssuer();
+					
+					            cboIssuanceCountry.getItems()
+							            .stream()
+							            .filter(item -> item.getObject().getMofaNationalityCode().equals(issuer))
+							            .findFirst()
+							            .ifPresent(cboIssuanceCountry::setValue);
+					
+					            int currentYear = LocalDate.now().getYear();
+					            
+					            String dob = mrzData.getDOB();
+					            dpBirthDate.setValue(calculate6DigitsDate(dob, currentYear));
+					
+					            String doe = mrzData.getDOE();
+					            dpExpirationDate.setValue(calculate6DigitsDate(doe, currentYear));
 				            }
 				            else
 				            {
@@ -652,5 +691,32 @@ public class ApplicantInfoFxController extends WizardStepFxControllerBase
 			LOGGER.info(logErrorMessage);
 			showWarningNotification(guiErrorMessage);
 		}
+	}
+	
+	private static LocalDate calculate6DigitsDate(String input, int currentYear)
+	{
+		if(input != null && input.length() == 6)
+		{
+			String sYear = input.substring(0, 2);
+			String sMonth = input.substring(2, 4);
+			String sDay = input.substring(4, 6);
+			
+			int year = Integer.parseInt("20" + sYear);
+			int month = Integer.parseInt(sMonth);
+			int day = Integer.parseInt(sDay);
+			
+			if(year <= currentYear) // assuming 2000s
+			{
+				year = Integer.parseInt("20" + sYear);
+			}
+			else // assuming 1900s
+			{
+				year = Integer.parseInt("19" + sYear);
+			}
+			
+			return LocalDate.of(year, month, day);
+		}
+		
+		return null;
 	}
 }
