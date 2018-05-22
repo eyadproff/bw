@@ -850,6 +850,11 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 		uiDataMap.put(FingerprintCapturingFxController.KEY_SLAP_FINGERPRINTS, slapFingerprints);
 		uiDataMap.put(FingerprintCapturingFxController.KEY_SEGMENTED_FINGERPRINTS, segmentedFingerprints);
 		uiDataMap.put(FingerprintCapturingFxController.KEY_MISSING_FINGERPRINTS, missingFingerprints);
+		
+		//System.out.println(new Gson().toJson(slapFingerprints,
+		//                                     TypeToken.getParameterized(List.class, Finger.class).getType()));
+		//System.out.println(new Gson().toJson(missingFingerprints,
+		//                                     TypeToken.getParameterized(List.class, Integer.class).getType()));
 	}
 	
 	@FXML

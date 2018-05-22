@@ -358,6 +358,8 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 		if(croppedImage != null) finalImage = croppedImage;
 		else finalImage = capturedImage;
 		
+		if(finalImage == null) return;
+		
 		try
 		{
 			String imageBase64 = AppUtils.imageToBase64(finalImage, "jpg");
