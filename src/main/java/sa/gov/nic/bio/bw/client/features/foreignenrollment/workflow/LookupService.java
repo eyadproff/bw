@@ -7,18 +7,19 @@ import sa.gov.nic.bio.bw.client.features.commons.webservice.CountryBean;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.LookupAPI;
 import sa.gov.nic.bio.bw.client.features.foreignenrollment.utils.ForeignEnrollmentErrorCodes;
 import sa.gov.nic.bio.bw.client.features.foreignenrollment.webservice.CountryDialingCode;
+import sa.gov.nic.bio.bw.client.features.foreignenrollment.webservice.MofaLookupAPI;
 import sa.gov.nic.bio.bw.client.features.foreignenrollment.webservice.PassportTypeBean;
 import sa.gov.nic.bio.bw.client.features.foreignenrollment.webservice.VisaTypeBean;
-import sa.gov.nic.bio.bw.client.features.foreignenrollment.webservice.MofaLookupAPI;
 import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
 
-import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 public class LookupService
 {
@@ -102,22 +103,25 @@ public class LookupService
 			
 			try
 			{
-				URL resource = Thread.currentThread().getContextClassLoader().getResource(DIALING_CODES_FILE);
-				List<String> lines = Files.readAllLines(Paths.get(Objects.requireNonNull(resource).toURI()));
-				
-				for(String line : lines)
+				try(InputStream is = Thread.currentThread().getContextClassLoader()
+										   .getResourceAsStream(DIALING_CODES_FILE))
 				{
-					String[] parts = line.split(",");
-					String isoAlpha3Code = parts[0];
-					int dialingCode = Integer.parseInt(parts[1]);
-					String countryArabicName = parts[2];
-					String countryEnglishName = parts[3];
+					List<String> lines = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8))
+																				.lines().collect(Collectors.toList());
 					
-					CountryDialingCode cdc = new CountryDialingCode(isoAlpha3Code, dialingCode, countryArabicName,
-					                                                countryEnglishName);
-					dialingCodes.add(cdc);
+					for(String line : lines)
+					{
+						String[] parts = line.split(",");
+						String isoAlpha3Code = parts[0];
+						int dialingCode = Integer.parseInt(parts[1]);
+						String countryArabicName = parts[2];
+						String countryEnglishName = parts[3];
+						
+						CountryDialingCode cdc = new CountryDialingCode(isoAlpha3Code, dialingCode, countryArabicName,
+						                                                countryEnglishName);
+						dialingCodes.add(cdc);
+					}
 				}
-				
 			}
 			catch(Exception e)
 			{
