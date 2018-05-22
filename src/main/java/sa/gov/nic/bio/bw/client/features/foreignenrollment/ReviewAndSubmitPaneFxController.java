@@ -220,7 +220,7 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 			}
 			
 			String mobileNumber = foreignInfo.getMobileNumber();
-			if(mobileNumber != null) lblMobileNumber.setText(mobileNumber);
+			if(mobileNumber != null) lblMobileNumber.setText("+" + mobileNumber);
 			
 			@SuppressWarnings("unchecked")
 			Map<Integer, String> fingerprintImages = (Map<Integer, String>)
@@ -384,7 +384,7 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 		
 		if(dialingCode != null && mobileNumber != null && !mobileNumber.trim().isEmpty())
 		{
-			mobileNumber = dialingCode.getDialingCode() + mobileNumber;
+			mobileNumber = dialingCode.getDialingCode() + "-" + mobileNumber;
 		}
 		else mobileNumber = null;
 		
