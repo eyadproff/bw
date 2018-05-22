@@ -6,9 +6,9 @@ import sa.gov.nic.bio.bw.client.core.workflow.WizardWorkflowBase;
 import sa.gov.nic.bio.bw.client.features.commons.FaceCapturingFxController;
 import sa.gov.nic.bio.bw.client.features.commons.FingerprintCapturingFxController;
 import sa.gov.nic.bio.bw.client.features.foreignenrollment.ApplicantInfoFxController;
-import sa.gov.nic.bio.bw.client.features.foreignenrollment.ShowReceiptFxController;
 import sa.gov.nic.bio.bw.client.features.foreignenrollment.LookupFxController;
 import sa.gov.nic.bio.bw.client.features.foreignenrollment.ReviewAndSubmitPaneFxController;
+import sa.gov.nic.bio.bw.client.features.foreignenrollment.ShowReceiptFxController;
 import sa.gov.nic.bio.bw.client.features.foreignenrollment.webservice.ForeignInfo;
 import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
 

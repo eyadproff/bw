@@ -245,11 +245,11 @@ public class ApplicantInfoFxController extends WizardStepFxControllerBase
 		BooleanBinding cboDialingCodeBinding = cboDialingCode.valueProperty().isNull();
 		BooleanBinding txtMobileNumberBinding = txtMobileNumber.textProperty().isEmpty();
 		
-		/*btnNext.disableProperty().bind(txtFirstNameBinding.or(txtFamilyNameBinding).or(cboNationalityBinding)
+		btnNext.disableProperty().bind(txtFirstNameBinding.or(txtFamilyNameBinding).or(cboNationalityBinding)
 				                 .or(cboGenderBinding).or(dpBirthDateBinding).or(cboVisaTypeBinding)
 				                 .or(txtPassportNumberBinding).or(dpIssueDateBinding).or(dpExpirationDateBinding)
 								 .or(cboIssuanceCountryBinding).or(cboPassportTypeBinding)
-				                 .or(cboDialingCodeBinding).or(txtMobileNumberBinding));*/
+				                 .or(cboDialingCodeBinding).or(txtMobileNumberBinding));
 	}
 	
 	@Override
