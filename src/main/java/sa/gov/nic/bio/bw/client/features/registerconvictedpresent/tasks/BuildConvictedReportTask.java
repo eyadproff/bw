@@ -24,7 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class BuildReportTask extends Task<JasperPrint>
+public class BuildConvictedReportTask extends Task<JasperPrint>
 {
 	private static final String PARAMETER_FACE_IMAGE = "FACE_IMAGE";
 	private static final String PARAMETER_REPORT_NUMBER = "REPORT_NUMBER";
@@ -81,7 +81,7 @@ public class BuildReportTask extends Task<JasperPrint>
 	private Map<Integer, String> crimeEventTitles = new HashMap<>();
 	private Map<Integer, String> crimeClassTitles = new HashMap<>();
 	
-	public BuildReportTask(ConvictedReport convictedReport, Map<Integer, String> fingerprintImages)
+	public BuildConvictedReportTask(ConvictedReport convictedReport, Map<Integer, String> fingerprintImages)
 	{
 		this.convictedReport = convictedReport;
 		this.fingerprintImages = fingerprintImages;

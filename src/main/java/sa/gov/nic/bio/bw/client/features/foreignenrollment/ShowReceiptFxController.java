@@ -1,22 +1,34 @@
 package sa.gov.nic.bio.bw.client.features.foreignenrollment;
 
-import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.embed.swing.SwingNode;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
+import javafx.stage.FileChooser;
+import net.sf.jasperreports.engine.JasperPrint;
 import net.sourceforge.barbecue.Barcode;
 import net.sourceforge.barbecue.BarcodeFactory;
+import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.wizard.WizardStepFxControllerBase;
+import sa.gov.nic.bio.bw.client.features.commons.FingerprintCapturingFxController;
+import sa.gov.nic.bio.bw.client.features.commons.tasks.PrintReportTask;
+import sa.gov.nic.bio.bw.client.features.commons.tasks.SaveReportAsPdfTask;
+import sa.gov.nic.bio.bw.client.features.foreignenrollment.tasks.BuildForeignEnrollmentReceiptTask;
 import sa.gov.nic.bio.bw.client.features.foreignenrollment.utils.ForeignEnrollmentErrorCodes;
 import sa.gov.nic.bio.bw.client.features.foreignenrollment.webservice.ForeignInfo;
 
 import javax.swing.SwingUtilities;
-import javax.swing.SwingWorker;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.net.URL;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class ShowReceiptFxController extends WizardStepFxControllerBase
 {
@@ -24,7 +36,15 @@ public class ShowReceiptFxController extends WizardStepFxControllerBase
 	@FXML private Pane paneProgress;
 	@FXML private Pane paneError;
 	@FXML private SwingNode nodeBarcode;
+	@FXML private ProgressIndicator piProgress;
 	@FXML private Button btnStartOver;
+	@FXML private Button btnPrintReceipt;
+	@FXML private Button btnSaveReceiptAsPDF;
+	
+	private FileChooser fileChooser = new FileChooser();
+	private ForeignInfo foreignInfo;
+	private Map<Integer, String> fingerprintImages;
+	private AtomicReference<JasperPrint> jasperPrint = new AtomicReference<>();
 	
 	@Override
 	public URL getFxmlLocation()
@@ -35,7 +55,18 @@ public class ShowReceiptFxController extends WizardStepFxControllerBase
 	@Override
 	protected void initialize()
 	{
-		btnStartOver.setOnAction(event -> startOver());
+		GuiUtils.makeButtonClickableByPressingEnter(btnStartOver);
+		GuiUtils.makeButtonClickableByPressingEnter(btnPrintReceipt);
+		GuiUtils.makeButtonClickableByPressingEnter(btnSaveReceiptAsPDF);
+	}
+	
+	@Override
+	protected void onAttachedToScene()
+	{
+		fileChooser.setTitle(resources.getString("fileChooser.saveReceiptAsPDF.title"));
+		FileChooser.ExtensionFilter extFilterPDF = new FileChooser.ExtensionFilter(
+								resources.getString("fileChooser.saveReceiptAsPDF.types"), "*.pdf");
+		fileChooser.getExtensionFilters().addAll(extFilterPDF);
 	}
 	
 	@Override
@@ -43,48 +74,223 @@ public class ShowReceiptFxController extends WizardStepFxControllerBase
 	{
 		if(newForm)
 		{
-			ForeignInfo foreignInfo = (ForeignInfo) uiInputData.get(ReviewAndSubmitPaneFxController.KEY_FOREIGN_INFO);
+			foreignInfo = (ForeignInfo) uiInputData.get(ReviewAndSubmitPaneFxController.KEY_FOREIGN_INFO);
 			Long registrationId = foreignInfo.getCandidateId();
 			String sRegistrationId = String.valueOf(registrationId);
 			txtRegistrationNumber.setText(sRegistrationId);
 			
-			new SwingWorker<Barcode, Void>()
+			@SuppressWarnings("unchecked")
+			Map<Integer, String> fingerprintImages = (Map<Integer, String>)
+											uiInputData.get(FingerprintCapturingFxController.KEY_FINGERPRINTS_IMAGES);
+			this.fingerprintImages = fingerprintImages;
+			
+			Task<Barcode> generatingBarcodeTask = new Task<Barcode>()
 			{
 				@Override
-				protected Barcode doInBackground() throws Exception
+				protected Barcode call() throws Exception
 				{
 					Barcode barcode = BarcodeFactory.createCode128(sRegistrationId);
 					barcode.setDrawingQuietSection(false);
 					
 					return barcode;
 				}
+			};
+			generatingBarcodeTask.setOnSucceeded(event ->
+			{
+				GuiUtils.showNode(paneProgress, false);
+				GuiUtils.showNode(nodeBarcode, true);
 				
-				@Override
-				protected void done()
-				{
-					Platform.runLater(() ->
-					{
-						GuiUtils.showNode(paneProgress, false);
-						
-						try
-						{
-							Barcode barcode = get();
-							GuiUtils.showNode(nodeBarcode, true);
-							SwingUtilities.invokeLater(() -> nodeBarcode.setContent(barcode));
-						}
-						catch(Exception e)
-						{
-							GuiUtils.showNode(nodeBarcode, false);
-							GuiUtils.showNode(paneError, true);
-							
-							String errorCode = ForeignEnrollmentErrorCodes.C010_00005.getCode();
-							String[] errorDetails = {"failed to generate the barcode for the number " +
-													 sRegistrationId};
-							reportNegativeResponse(errorCode, e, errorDetails);
-						}
-					});
-				}
-			}.execute();
+				Barcode barcode = generatingBarcodeTask.getValue();
+				SwingUtilities.invokeLater(() -> nodeBarcode.setContent(barcode));
+			});
+			generatingBarcodeTask.setOnFailed(event ->
+			{
+				GuiUtils.showNode(paneProgress, false);
+				GuiUtils.showNode(nodeBarcode, false);
+				GuiUtils.showNode(paneError, true);
+				
+				Throwable exception = generatingBarcodeTask.getException();
+				
+				String errorCode = ForeignEnrollmentErrorCodes.C010_00005.getCode();
+				String[] errorDetails = {"failed to generate the barcode for the number " + sRegistrationId};
+				reportNegativeResponse(errorCode, exception, errorDetails);
+			});
+			Context.getExecutorService().submit(generatingBarcodeTask);
 		}
+	}
+	
+	@FXML
+	private void onStartOverButtonClicked(ActionEvent actionEvent)
+	{
+		hideNotification();
+		String headerText = resources.getString("foreignEnrollment.startingOver.confirmation.header");
+		String contentText = resources.getString("foreignEnrollment.startingOver.confirmation.message");
+		boolean confirmed = Context.getCoreFxController().showConfirmationDialogAndWait(headerText, contentText);
+		
+		if(confirmed) startOver();
+	}
+	
+	@FXML
+	private void onPrintReceiptButtonClicked(ActionEvent actionEvent)
+	{
+		hideNotification();
+		GuiUtils.showNode(btnStartOver, false);
+		GuiUtils.showNode(btnPrintReceipt, false);
+		GuiUtils.showNode(btnSaveReceiptAsPDF, false);
+		GuiUtils.showNode(piProgress, true);
+		
+		if(jasperPrint.get() == null)
+		{
+			BuildForeignEnrollmentReceiptTask buildForeignEnrollmentReceiptTask =
+												new BuildForeignEnrollmentReceiptTask(foreignInfo, fingerprintImages);
+			buildForeignEnrollmentReceiptTask.setOnSucceeded(event ->
+			{
+			    JasperPrint value = buildForeignEnrollmentReceiptTask.getValue();
+			    jasperPrint.set(value);
+			    printReceipt(value);
+			});
+			buildForeignEnrollmentReceiptTask.setOnFailed(event ->
+			{
+			    GuiUtils.showNode(piProgress, false);
+			    GuiUtils.showNode(btnStartOver, true);
+			    GuiUtils.showNode(btnPrintReceipt, true);
+			    GuiUtils.showNode(btnSaveReceiptAsPDF, true);
+			
+			    Throwable exception = buildForeignEnrollmentReceiptTask.getException();
+			
+			    String errorCode = ForeignEnrollmentErrorCodes.C010_00006.getCode();
+			    String[] errorDetails = {"failed while building the receipt!"};
+			    Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails);
+			});
+			Context.getExecutorService().submit(buildForeignEnrollmentReceiptTask);
+		}
+		else printReceipt(jasperPrint.get());
+	}
+	
+	@FXML
+	private void onSaveReceiptAsPdfButtonClicked(ActionEvent actionEvent)
+	{
+		hideNotification();
+		File selectedFile = fileChooser.showSaveDialog(Context.getCoreFxController().getStage());
+		
+		if(selectedFile != null)
+		{
+			GuiUtils.showNode(btnStartOver, false);
+			GuiUtils.showNode(btnPrintReceipt, false);
+			GuiUtils.showNode(btnSaveReceiptAsPDF, false);
+			GuiUtils.showNode(piProgress, true);
+			
+			if(jasperPrint.get() == null)
+			{
+				BuildForeignEnrollmentReceiptTask buildForeignEnrollmentReceiptTask =
+												new BuildForeignEnrollmentReceiptTask(foreignInfo, fingerprintImages);
+				buildForeignEnrollmentReceiptTask.setOnSucceeded(event ->
+				{
+				    JasperPrint value = buildForeignEnrollmentReceiptTask.getValue();
+				    jasperPrint.set(value);
+				    try
+				    {
+				        saveReceiptAsPDF(value, new FileOutputStream(selectedFile));
+				    }
+				    catch(Exception e)
+				    {
+				        GuiUtils.showNode(piProgress, false);
+				        GuiUtils.showNode(btnStartOver, true);
+				        GuiUtils.showNode(btnPrintReceipt, true);
+				        GuiUtils.showNode(btnSaveReceiptAsPDF, true);
+				
+				        String errorCode = ForeignEnrollmentErrorCodes.C010_00007.getCode();
+				        String[] errorDetails = {"failed while saving the receipt as PDF!"};
+				        Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails);
+				    }
+				});
+				buildForeignEnrollmentReceiptTask.setOnFailed(event ->
+				{
+				    GuiUtils.showNode(piProgress, false);
+				    GuiUtils.showNode(btnStartOver, true);
+				    GuiUtils.showNode(btnPrintReceipt, true);
+				    GuiUtils.showNode(btnSaveReceiptAsPDF, true);
+				
+				    Throwable exception = buildForeignEnrollmentReceiptTask.getException();
+				
+				    String errorCode = ForeignEnrollmentErrorCodes.C010_00008.getCode();
+				    String[] errorDetails = {"failed while building the receipt!"};
+				    Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails);
+				});
+				Context.getExecutorService().submit(buildForeignEnrollmentReceiptTask);
+			}
+			else
+			{
+				try
+				{
+					saveReceiptAsPDF(jasperPrint.get(), new FileOutputStream(selectedFile));
+				}
+				catch(Exception e)
+				{
+					GuiUtils.showNode(piProgress, false);
+					GuiUtils.showNode(btnStartOver, true);
+					GuiUtils.showNode(btnPrintReceipt, true);
+					GuiUtils.showNode(btnSaveReceiptAsPDF, true);
+					
+					String errorCode = ForeignEnrollmentErrorCodes.C010_00009.getCode();
+					String[] errorDetails = {"failed while saving the receipt as PDF!"};
+					Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails);
+				}
+			}
+		}
+	}
+	
+	private void printReceipt(JasperPrint jasperPrint)
+	{
+		PrintReportTask printReportTask = new PrintReportTask(jasperPrint);
+		printReportTask.setOnSucceeded(event ->
+		{
+			GuiUtils.showNode(piProgress, false);
+			GuiUtils.showNode(btnStartOver, true);
+			GuiUtils.showNode(btnPrintReceipt, true);
+			GuiUtils.showNode(btnSaveReceiptAsPDF, true);
+		});
+		printReportTask.setOnFailed(event ->
+		{
+		    GuiUtils.showNode(piProgress, false);
+		    GuiUtils.showNode(btnStartOver, true);
+		    GuiUtils.showNode(btnPrintReceipt, true);
+		    GuiUtils.showNode(btnSaveReceiptAsPDF, true);
+		
+		    Throwable exception = printReportTask.getException();
+		
+		    String errorCode = ForeignEnrollmentErrorCodes.C010_00010.getCode();
+		    String[] errorDetails = {"failed while printing the receipt!"};
+		    Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails);
+		});
+		Context.getExecutorService().submit(printReportTask);
+	}
+	
+	private void saveReceiptAsPDF(JasperPrint jasperPrint, OutputStream pdfOutputStream)
+	{
+		SaveReportAsPdfTask printReportTaskAsPdfTask = new SaveReportAsPdfTask(jasperPrint, pdfOutputStream);
+		printReportTaskAsPdfTask.setOnSucceeded(event ->
+		{
+		    GuiUtils.showNode(piProgress, false);
+		    GuiUtils.showNode(btnStartOver, true);
+		    GuiUtils.showNode(btnPrintReceipt, true);
+		    GuiUtils.showNode(btnSaveReceiptAsPDF, true);
+		
+		    showSuccessNotification(resources.getString("foreignEnrollment.savingAsPDF.success.message"));
+		});
+		printReportTaskAsPdfTask.setOnFailed(event ->
+		{
+		    GuiUtils.showNode(piProgress, false);
+		    GuiUtils.showNode(btnStartOver, true);
+		    GuiUtils.showNode(btnPrintReceipt, true);
+		    GuiUtils.showNode(btnSaveReceiptAsPDF, true);
+		
+		    Throwable exception = printReportTaskAsPdfTask.getException();
+		
+		    String errorCode = ForeignEnrollmentErrorCodes.C010_00011.getCode();
+		    String[] errorDetails = {"failed while saving the receipt as PDF!"};
+		    Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails);
+		});
+		Context.getExecutorService().submit(printReportTaskAsPdfTask);
 	}
 }
