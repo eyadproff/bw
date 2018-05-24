@@ -810,10 +810,10 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 		    roundingBox = roundingBox.substring("Rect{".length() + 1, roundingBox.length() - 2);
 		    String[] parts = roundingBox.split("[(,\\]\\[\\s]+");
 		
-		    Point bottomLeft = new Point(Integer.parseInt(parts[0]), Integer.parseInt(parts[1]));
-		    Point bottomRight = new Point(Integer.parseInt(parts[2]), Integer.parseInt(parts[3]));
-		    Point topRight = new Point(Integer.parseInt(parts[4]), Integer.parseInt(parts[5]));
-		    Point topLeft = new Point(Integer.parseInt(parts[6]), Integer.parseInt(parts[7]));
+		    Point topLeft = new Point(Integer.parseInt(parts[0]), Integer.parseInt(parts[1]));
+		    Point topRight = new Point(Integer.parseInt(parts[2]), Integer.parseInt(parts[3]));
+		    Point bottomLeft = new Point(Integer.parseInt(parts[4]), Integer.parseInt(parts[5]));
+		    Point bottomRight = new Point(Integer.parseInt(parts[6]), Integer.parseInt(parts[7]));
 		    FingerCoordinate fingerCoordinate = new FingerCoordinate(topLeft, topRight, bottomLeft,
 		                                                             bottomRight);
 		
