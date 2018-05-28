@@ -7,7 +7,8 @@ import java.util.Objects;
 
 public class VisaApplicantInfo
 {
-	private Long candidateId;
+	private Long applicantId;
+	private Long enrollmentDate;
 	private String firstName;
 	private String secondName;
 	private String otherName;
@@ -27,13 +28,15 @@ public class VisaApplicantInfo
 	private List<Finger> fingers;
 	private List<Integer> missingFingers;
 	
-	public VisaApplicantInfo(Long candidateId, String firstName, String secondName, String otherName, String familyName,
-	                         Integer nationalityCode, Long birthDate, String passportNumber, Integer genderCode,
-	                         Integer visaTypeCode, Long issueDate, Integer issuanceCountry, Long expirationDate,
-	                         Integer birthPlaceCode, Integer passportType, String mobileNumber, String face,
-	                         List<Finger> fingers, List<Integer> missingFingers)
+	public VisaApplicantInfo(Long applicantId, Long enrollmentDate, String firstName, String secondName,
+	                         String otherName, String familyName, Integer nationalityCode, Long birthDate,
+	                         String passportNumber, Integer genderCode, Integer visaTypeCode, Long issueDate,
+	                         Integer issuanceCountry, Long expirationDate, Integer birthPlaceCode,
+	                         Integer passportType, String mobileNumber, String face, List<Finger> fingers,
+	                         List<Integer> missingFingers)
 	{
-		this.candidateId = candidateId;
+		this.applicantId = applicantId;
+		this.enrollmentDate = enrollmentDate;
 		this.firstName = firstName;
 		this.secondName = secondName;
 		this.otherName = otherName;
@@ -54,8 +57,11 @@ public class VisaApplicantInfo
 		this.missingFingers = missingFingers;
 	}
 	
-	public Long getCandidateId(){return candidateId;}
-	public void setCandidateId(Long candidateId){this.candidateId = candidateId;}
+	public Long getApplicantId(){return applicantId;}
+	public void setApplicantId(Long applicantId){this.applicantId = applicantId;}
+	
+	public Long getEnrollmentDate(){return enrollmentDate;}
+	public void setEnrollmentDate(Long enrollmentDate){this.enrollmentDate = enrollmentDate;}
 	
 	public String getFirstName(){return firstName;}
 	public void setFirstName(String firstName){this.firstName = firstName;}
@@ -117,36 +123,38 @@ public class VisaApplicantInfo
 		if(this == o) return true;
 		if(o == null || getClass() != o.getClass()) return false;
 		VisaApplicantInfo that = (VisaApplicantInfo) o;
-		return Objects.equals(candidateId, that.candidateId) && Objects.equals(firstName, that.firstName) &&
-			   Objects.equals(secondName, that.secondName) && Objects.equals(otherName, that.otherName) &&
-			   Objects.equals(familyName, that.familyName) && Objects.equals(nationalityCode, that.nationalityCode) &&
-			   Objects.equals(birthDate, that.birthDate) && Objects.equals(passportNumber, that.passportNumber) &&
-			   Objects.equals(genderCode, that.genderCode) && Objects.equals(visaTypeCode, that.visaTypeCode) &&
-			   Objects.equals(issueDate, that.issueDate) && Objects.equals(issuanceCountry, that.issuanceCountry) &&
+		return Objects.equals(applicantId, that.applicantId) && Objects.equals(enrollmentDate, that.enrollmentDate) &&
+			   Objects.equals(firstName, that.firstName) && Objects.equals(secondName, that.secondName) &&
+			   Objects.equals(otherName, that.otherName) && Objects.equals(familyName, that.familyName) &&
+			   Objects.equals(nationalityCode, that.nationalityCode) && Objects.equals(birthDate, that.birthDate) &&
+			   Objects.equals(passportNumber, that.passportNumber) && Objects.equals(genderCode, that.genderCode) &&
+			   Objects.equals(visaTypeCode, that.visaTypeCode) && Objects.equals(issueDate, that.issueDate) &&
+			   Objects.equals(issuanceCountry, that.issuanceCountry) &&
 			   Objects.equals(expirationDate, that.expirationDate) &&
-			   Objects.equals(birthPlaceCode, that.birthPlaceCode) && Objects.equals(passportType, that.passportType) &&
-			   Objects.equals(mobileNumber, that.mobileNumber) && Objects.equals(face, that.face) &&
-			   Objects.equals(fingers, that.fingers) && Objects.equals(missingFingers, that.missingFingers);
+			   Objects.equals(birthPlaceCode, that.birthPlaceCode) &&
+			   Objects.equals(passportType, that.passportType) && Objects.equals(mobileNumber, that.mobileNumber) &&
+			   Objects.equals(face, that.face) && Objects.equals(fingers, that.fingers) &&
+			   Objects.equals(missingFingers, that.missingFingers);
 	}
 	
 	@Override
 	public int hashCode()
 	{
-		return Objects.hash(candidateId, firstName, secondName, otherName, familyName, nationalityCode, birthDate,
-		                    passportNumber, genderCode, visaTypeCode, issueDate, issuanceCountry, expirationDate,
-		                    birthPlaceCode, passportType, mobileNumber, face, fingers, missingFingers);
+		return Objects.hash(applicantId, enrollmentDate, firstName, secondName, otherName, familyName, nationalityCode,
+		                    birthDate, passportNumber, genderCode, visaTypeCode, issueDate, issuanceCountry,
+		                    expirationDate, birthPlaceCode, passportType, mobileNumber, face, fingers, missingFingers);
 	}
 	
 	@Override
 	public String toString()
 	{
-		return "VisaApplicantInfo{" + "candidateId=" + candidateId + ", firstName='" + firstName + '\'' + ", secondName='" +
-			   secondName + '\'' + ", otherName='" + otherName + '\'' + ", familyName='" + familyName + '\'' +
-			   ", nationalityCode=" + nationalityCode + ", birthDate=" + birthDate + ", passportNumber='" +
-			   passportNumber + '\'' + ", genderCode=" + genderCode + ", visaTypeCode=" + visaTypeCode +
-			   ", issueDate=" + issueDate + ", issuanceCountry=" + issuanceCountry + ", expirationDate=" +
-			   expirationDate + ", birthPlaceCode=" + birthPlaceCode + ", passportType=" + passportType +
-			   ", mobileNumber='" + mobileNumber + '\'' + ", face='" + face + '\'' + ", fingers=" + fingers +
-			   ", missingFingers=" + missingFingers + '}';
+		return "VisaApplicantInfo{" + "applicantId=" + applicantId + ", enrollmentDate=" + enrollmentDate +
+			   ", firstName='" + firstName + '\'' + ", secondName='" + secondName + '\'' + ", otherName='" +
+			   otherName + '\'' + ", familyName='" + familyName + '\'' + ", nationalityCode=" + nationalityCode +
+			   ", birthDate=" + birthDate + ", passportNumber='" + passportNumber + '\'' + ", genderCode=" +
+			   genderCode + ", visaTypeCode=" + visaTypeCode + ", issueDate=" + issueDate + ", issuanceCountry=" +
+			   issuanceCountry + ", expirationDate=" + expirationDate + ", birthPlaceCode=" + birthPlaceCode +
+			   ", passportType=" + passportType + ", mobileNumber='" + mobileNumber + '\'' + ", face='" + face +
+			   '\'' + ", fingers=" + fingers + ", missingFingers=" + missingFingers + '}';
 	}
 }

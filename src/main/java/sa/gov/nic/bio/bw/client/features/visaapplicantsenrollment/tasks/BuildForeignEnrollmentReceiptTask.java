@@ -42,17 +42,18 @@ public class BuildForeignEnrollmentReceiptTask extends Task<JasperPrint>
 	private static final String PARAMETER_PASSPORT_TYPE = "PASSPORT_TYPE";
 	private static final String PARAMETER_MOBILE_NUMBER = "MOBILE_NUMBER";
 	
-	private static final String REPORT_EN_TEMPLATE_FILE = "sa/gov/nic/bio/bw/client/features/visaapplicantsenrollment/" +
-														  "reports/visa_applicants_enrollment_receipt_en.jrxml";
-	private static final String REPORT_AR_TEMPLATE_FILE = "sa/gov/nic/bio/bw/client/features/visaapplicantsenrollment/" +
-														  "reports/visa_applicants_enrollment_receipt_ar.jrxml";
+	private static final String REPORT_EN_TEMPLATE_FILE = "sa/gov/nic/bio/bw/client/features/" +
+										"visaapplicantsenrollment/reports/visa_applicants_enrollment_receipt_en.jrxml";
+	private static final String REPORT_AR_TEMPLATE_FILE = "sa/gov/nic/bio/bw/client/features/" +
+										"visaapplicantsenrollment/reports/visa_applicants_enrollment_receipt_ar.jrxml";
 	private static final String LOGO_FILE = "sa/gov/nic/bio/bw/client/core/images/nic_logo.png";
 	private static final String IMAGE_PLACEHOLDER_FILE = "sa/gov/nic/bio/bw/client/core/images/avatar_placeholder.jpg";
 	
 	private VisaApplicantInfo visaApplicantInfo;
 	private Map<Integer, String> fingerprintImages;
 	
-	public BuildForeignEnrollmentReceiptTask(VisaApplicantInfo visaApplicantInfo, Map<Integer, String> fingerprintImages)
+	public BuildForeignEnrollmentReceiptTask(VisaApplicantInfo visaApplicantInfo,
+	                                         Map<Integer, String> fingerprintImages)
 	{
 		this.visaApplicantInfo = visaApplicantInfo;
 		this.fingerprintImages = fingerprintImages;
@@ -88,8 +89,9 @@ public class BuildForeignEnrollmentReceiptTask extends Task<JasperPrint>
 		});
 		
 		params.put(PARAMETER_MOFA_LOGO, Thread.currentThread().getContextClassLoader().getResourceAsStream(LOGO_FILE));
-		params.put(PARAMETER_REGISTRATION_NUMBER, String.valueOf(visaApplicantInfo.getCandidateId()));
-		params.put(PARAMETER_RECEIPT_DATE, AppUtils.formatHijriGregorianDateTime(System.currentTimeMillis())); // TODO: TEMP
+		params.put(PARAMETER_REGISTRATION_NUMBER, String.valueOf(visaApplicantInfo.getApplicantId()));
+		params.put(PARAMETER_RECEIPT_DATE,
+                    AppUtils.formatHijriGregorianDateTime(visaApplicantInfo.getEnrollmentDate() * 1000));
 		params.put(PARAMETER_FIRST_NAME, visaApplicantInfo.getFirstName());
 		params.put(PARAMETER_SECOND_NAME, visaApplicantInfo.getSecondName());
 		params.put(PARAMETER_OTHER_NAME, visaApplicantInfo.getOtherName());
@@ -114,7 +116,7 @@ public class BuildForeignEnrollmentReceiptTask extends Task<JasperPrint>
 		
 		
 		params.put(PARAMETER_GENDER, visaApplicantInfo.getGenderCode() == 0 ? (arabic ? "ذكر" : "Male") :
-																		(arabic ? "أنثى" : "Female"));
+																		(arabic ? "أنثى" : "Female")); // TODO: TEMP
 		
 		countryBean = null;
 		

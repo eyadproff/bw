@@ -120,7 +120,7 @@
 				</graphicElement>
 			</rectangle>
 			<rectangle>
-				<reportElement x="244" y="139" width="302" height="23" uuid="c3dd6df4-8fae-4b42-8469-45aa2b6886cf"/>
+				<reportElement x="180" y="139" width="366" height="23" uuid="c3dd6df4-8fae-4b42-8469-45aa2b6886cf"/>
 				<graphicElement>
 					<pen lineWidth="0.5"/>
 				</graphicElement>
@@ -133,7 +133,7 @@
 				<text><![CDATA[رقم الملف العام:]]></text>
 			</staticText>
 			<rectangle>
-				<reportElement x="244" y="159" width="302" height="20" uuid="9e8726d0-dba0-4aea-9828-a5800322ed06"/>
+				<reportElement x="180" y="159" width="366" height="20" uuid="9e8726d0-dba0-4aea-9828-a5800322ed06"/>
 				<graphicElement>
 					<pen lineWidth="0.5"/>
 				</graphicElement>
@@ -150,21 +150,21 @@
 				<imageExpression><![CDATA[$P{FACE_IMAGE}]]></imageExpression>
 			</image>
 			<textField evaluationTime="Report" isBlankWhenNull="true">
-				<reportElement key="" x="244" y="144" width="235" height="15" uuid="94645d11-1691-4e37-b166-a17f26e9b52b"/>
+				<reportElement key="" x="180" y="144" width="299" height="15" uuid="94645d11-1691-4e37-b166-a17f26e9b52b"/>
 				<textElement textAlignment="Right">
 					<font fontName="ArialCustom" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{REF_NUMBER}]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report" isBlankWhenNull="true">
-				<reportElement key="" x="244" y="164" width="262" height="15" uuid="a6f9cc1a-76a4-401f-a7c2-a4c5b9222c17"/>
+				<reportElement key="" x="180" y="164" width="326" height="15" uuid="a6f9cc1a-76a4-401f-a7c2-a4c5b9222c17"/>
 				<textElement textAlignment="Right">
 					<font fontName="ArialCustom" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{REPORT_DATE}]]></textFieldExpression>
 			</textField>
 			<rectangle>
-				<reportElement x="244" y="116" width="302" height="23" uuid="3c9d92fc-8dd4-4a31-9d9f-8f3f8ef0648b"/>
+				<reportElement x="180" y="116" width="366" height="23" uuid="3c9d92fc-8dd4-4a31-9d9f-8f3f8ef0648b"/>
 				<graphicElement>
 					<pen lineWidth="0.5"/>
 				</graphicElement>
@@ -177,7 +177,7 @@
 				<text><![CDATA[رقم الصحيفة:]]></text>
 			</staticText>
 			<textField evaluationTime="Report" isBlankWhenNull="true">
-				<reportElement key="" x="244" y="121" width="235" height="15" uuid="a53c8402-506b-4205-bd4f-92a9e6d264f8"/>
+				<reportElement key="" x="180" y="121" width="299" height="15" uuid="a53c8402-506b-4205-bd4f-92a9e6d264f8"/>
 				<textElement textAlignment="Right">
 					<font fontName="ArialCustom" isBold="false"/>
 				</textElement>

@@ -10,15 +10,17 @@ import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
 
 public class VisaApplicantsEnrollmentService
 {
-	public static ServiceResponse<Long> execute(VisaApplicantInfo visaApplicantInfo)
+	public static ServiceResponse<VisaApplicantEnrollmentResponse> execute(VisaApplicantInfo visaApplicantInfo)
 	{
 		VisaApplicantsEnrollmentAPI visaApplicantsEnrollmentAPI =
 											Context.getWebserviceManager().getApi(VisaApplicantsEnrollmentAPI.class);
 		String url = System.getProperty("jnlp.bio.bw.service.visaApplicantsEnrollment");
 		
-		String visaApplicantInfoJson = new Gson().toJson(visaApplicantInfo, TypeToken.get(VisaApplicantInfo.class).getType());
+		String visaApplicantInfoJson = new Gson().toJson(visaApplicantInfo,
+		                                                 TypeToken.get(VisaApplicantInfo.class).getType());
 		
-		Call<Long> apiCall = visaApplicantsEnrollmentAPI.enrollVisaApplicant(url, visaApplicantInfoJson);
+		Call<VisaApplicantEnrollmentResponse> apiCall =
+											visaApplicantsEnrollmentAPI.enrollVisaApplicant(url, visaApplicantInfoJson);
 		return Context.getWebserviceManager().executeApi(apiCall);
 	}
 }

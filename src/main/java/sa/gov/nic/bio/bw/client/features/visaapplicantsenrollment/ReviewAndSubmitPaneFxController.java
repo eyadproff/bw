@@ -21,12 +21,13 @@ import sa.gov.nic.bio.bw.client.features.commons.FingerprintCapturingFxControlle
 import sa.gov.nic.bio.bw.client.features.commons.beans.GenderType;
 import sa.gov.nic.bio.bw.client.features.commons.ui.ImageViewPane;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.CountryBean;
+import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.Finger;
 import sa.gov.nic.bio.bw.client.features.visaapplicantsenrollment.utils.VisaApplicantsEnrollmentErrorCodes;
 import sa.gov.nic.bio.bw.client.features.visaapplicantsenrollment.webservice.CountryDialingCode;
-import sa.gov.nic.bio.bw.client.features.visaapplicantsenrollment.webservice.VisaApplicantInfo;
 import sa.gov.nic.bio.bw.client.features.visaapplicantsenrollment.webservice.PassportTypeBean;
+import sa.gov.nic.bio.bw.client.features.visaapplicantsenrollment.webservice.VisaApplicantInfo;
 import sa.gov.nic.bio.bw.client.features.visaapplicantsenrollment.webservice.VisaTypeBean;
-import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.Finger;
+import sa.gov.nic.bio.bw.client.features.visaapplicantsenrollment.workflow.VisaApplicantEnrollmentResponse;
 import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
 
 import java.io.ByteArrayInputStream;
@@ -287,14 +288,15 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 			GuiUtils.showNode(btnPrevious, true);
 			GuiUtils.showNode(btnSubmit, true);
 			
-			@SuppressWarnings("unchecked") ServiceResponse<Long> serviceResponse =
-										(ServiceResponse<Long>) uiInputData.get(Workflow.KEY_WEBSERVICE_RESPONSE);
+			@SuppressWarnings("unchecked") ServiceResponse<VisaApplicantEnrollmentResponse> serviceResponse =
+				(ServiceResponse<VisaApplicantEnrollmentResponse>) uiInputData.get(Workflow.KEY_WEBSERVICE_RESPONSE);
 			if(serviceResponse.isSuccess())
 			{
-				Long result = serviceResponse.getResult();
+				VisaApplicantEnrollmentResponse result = serviceResponse.getResult();
 				if(result != null)
 				{
-					visaApplicantInfo.setCandidateId(result);
+					visaApplicantInfo.setApplicantId(result.getApplicantId());
+					visaApplicantInfo.setEnrollmentDate(result.getEnrollmentDate());
 					goNext();
 				}
 				else
@@ -398,9 +400,9 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 		List<Integer> missingFingers = (List<Integer>)
 								uiInputData.get(FingerprintCapturingFxController.KEY_MISSING_FINGERPRINTS);
 		
-		return new VisaApplicantInfo(null, firstName, secondName, otherName, familyName, nationalityCode,
-		                             birthDate, passportNumber, genderCode, visaTypeCode, issueDate, issuanceCountry,
-		                             expirationDate, birthPlaceCode, passportType, mobileNumber, face, fingers,
-		                             missingFingers);
+		return new VisaApplicantInfo(null, null, firstName, secondName, otherName, familyName,
+		                             nationalityCode, birthDate, passportNumber, genderCode, visaTypeCode, issueDate,
+		                             issuanceCountry, expirationDate, birthPlaceCode, passportType, mobileNumber, face,
+		                             fingers, missingFingers);
 	}
 }

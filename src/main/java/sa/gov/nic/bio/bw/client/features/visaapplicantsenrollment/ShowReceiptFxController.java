@@ -74,8 +74,9 @@ public class ShowReceiptFxController extends WizardStepFxControllerBase
 	{
 		if(newForm)
 		{
-			visaApplicantInfo = (VisaApplicantInfo) uiInputData.get(ReviewAndSubmitPaneFxController.KEY_VISA_APPLICANT_INFO);
-			Long registrationId = visaApplicantInfo.getCandidateId();
+			visaApplicantInfo = (VisaApplicantInfo)
+											uiInputData.get(ReviewAndSubmitPaneFxController.KEY_VISA_APPLICANT_INFO);
+			Long registrationId = visaApplicantInfo.getApplicantId();
 			String sRegistrationId = String.valueOf(registrationId);
 			txtRegistrationNumber.setText(sRegistrationId);
 			

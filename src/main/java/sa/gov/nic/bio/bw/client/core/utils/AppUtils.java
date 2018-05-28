@@ -54,12 +54,15 @@ import java.util.zip.ZipInputStream;
 public final class AppUtils
 {
 	private static final Logger LOGGER = Logger.getLogger(AppUtils.class.getName());
-	private static final String FONT_AWESOME_FILE = "sa/gov/nic/bio/bw/client/core/fonts/fontawesome-webfont-4.7.0.2016.ttf";
-	private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("hh:mm:ss a - EEEE dd MMMM yyyy G");
+	private static final String FONT_AWESOME_FILE = "sa/gov/nic/bio/bw/client/core/fonts/" +
+													"fontawesome-webfont-4.7.0.2016.ttf";
+	private static final DateTimeFormatter DATE_TIME_FORMATTER =
+													DateTimeFormatter.ofPattern("hh:mm:ss a O - EEEE dd MMMM yyyy G");
 	private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd MMMM yyyy G");
 	private static final DateTimeFormatter FORMAL_DATE_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 	private static final HijrahChronology nicChronology = HijrahChronology.INSTANCE;
-	private static final FontAwesome FONTAWESOME_INSTANCE = new FontAwesome(Objects.requireNonNull(Thread.currentThread().getContextClassLoader().getResource(FONT_AWESOME_FILE)).toExternalForm());
+	private static final FontAwesome FONTAWESOME_INSTANCE = new FontAwesome(Objects.requireNonNull(
+					Thread.currentThread().getContextClassLoader().getResource(FONT_AWESOME_FILE)).toExternalForm());
 	
 	public static Glyph createFontAwesomeIcon(FontAwesome.Glyph icon)
 	{

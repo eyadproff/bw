@@ -98,7 +98,8 @@ public class VisaApplicantsEnrollmentWorkflow extends WizardWorkflowBase<Void, V
 											uiInputData.get(ReviewAndSubmitPaneFxController.KEY_VISA_APPLICANT_INFO);
 					if(visaApplicantInfo == null) break;
 					
-					ServiceResponse<Long> serviceResponse = VisaApplicantsEnrollmentService.execute(visaApplicantInfo);
+					ServiceResponse<VisaApplicantEnrollmentResponse> serviceResponse =
+															VisaApplicantsEnrollmentService.execute(visaApplicantInfo);
 					boolean success = serviceResponse.isSuccess() && serviceResponse.getResult() != null;
 					
 					uiInputData.put(KEY_WEBSERVICE_RESPONSE, serviceResponse);
