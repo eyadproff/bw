@@ -1,5 +1,15 @@
 # Release Notes:
 
+## v2018.05.3
+
+- Add "Visa Applicants Enrollment".
+- Update biokit-library to the new version that supports passport scanning.
+- Replace MOI logo with NIC and Semat logos.
+
+## v2018.05.2
+
+- Fix a bug where we were sending wrong fingerprint segmentation coordinates.
+
 ## v2018.05.1
 
 - Add "Convicted-Report" feature.

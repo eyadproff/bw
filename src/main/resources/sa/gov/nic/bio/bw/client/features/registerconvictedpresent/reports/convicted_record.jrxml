@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.4.3.final using JasperReports Library version 6.4.3  -->
+<!-- Created with Jaspersoft Studio version 6.5.1.final using JasperReports Library version 6.5.1  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="convicted_record" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="328389c7-9369-4674-94b8-851d0e7b67ed">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
@@ -1401,43 +1401,43 @@
 				</textElement>
 				<text><![CDATA[رقم هوية المدخل:]]></text>
 			</staticText>
-			<image scaleImage="FillFrame" evaluationTime="Report">
+			<image scaleImage="RetainShape" hAlign="Center" vAlign="Middle" evaluationTime="Report">
 				<reportElement x="458" y="359" width="70" height="87" uuid="0c54f5ea-f946-4a7d-81ad-ab0671ede484"/>
 				<imageExpression><![CDATA[$P{FINGER_5}]]></imageExpression>
 			</image>
-			<image scaleImage="FillFrame" evaluationTime="Report">
+			<image scaleImage="RetainShape" hAlign="Center" vAlign="Middle" evaluationTime="Report">
 				<reportElement x="351" y="359" width="70" height="87" uuid="06619c35-04b4-4d7f-8647-a257a678498f"/>
 				<imageExpression><![CDATA[$P{FINGER_4}]]></imageExpression>
 			</image>
-			<image scaleImage="FillFrame" evaluationTime="Report">
+			<image scaleImage="RetainShape" hAlign="Center" vAlign="Middle" evaluationTime="Report">
 				<reportElement x="244" y="359" width="70" height="87" uuid="959f6bb8-5be1-45e3-9ff2-f4f8ffff8fd8"/>
 				<imageExpression><![CDATA[$P{FINGER_3}]]></imageExpression>
 			</image>
-			<image scaleImage="FillFrame" evaluationTime="Report">
+			<image scaleImage="RetainShape" hAlign="Center" vAlign="Middle" evaluationTime="Report">
 				<reportElement x="137" y="359" width="70" height="87" uuid="eece2aa0-ec3d-4d3d-a84a-4810f935fd35"/>
 				<imageExpression><![CDATA[$P{FINGER_2}]]></imageExpression>
 			</image>
-			<image scaleImage="FillFrame" evaluationTime="Report">
+			<image scaleImage="RetainShape" hAlign="Center" vAlign="Middle" evaluationTime="Report">
 				<reportElement x="20" y="358" width="90" height="90" uuid="ec4cff76-5b52-4e84-855b-b576b1a6f2d9"/>
 				<imageExpression><![CDATA[$P{FINGER_1}]]></imageExpression>
 			</image>
-			<image scaleImage="FillFrame" evaluationTime="Report">
+			<image scaleImage="RetainShape" hAlign="Center" vAlign="Middle" evaluationTime="Report">
 				<reportElement x="20" y="478" width="90" height="90" uuid="2aa4d957-cdf4-43f7-9ab8-c07a94a509e0"/>
 				<imageExpression><![CDATA[$P{FINGER_6}]]></imageExpression>
 			</image>
-			<image scaleImage="FillFrame" evaluationTime="Report">
+			<image scaleImage="RetainShape" hAlign="Center" vAlign="Middle" evaluationTime="Report">
 				<reportElement x="137" y="479" width="70" height="87" uuid="1facd06a-a517-4f9d-b7c0-49208fa683cf"/>
 				<imageExpression><![CDATA[$P{FINGER_7}]]></imageExpression>
 			</image>
-			<image scaleImage="FillFrame" evaluationTime="Report">
+			<image scaleImage="RetainShape" hAlign="Center" vAlign="Middle" evaluationTime="Report">
 				<reportElement x="244" y="479" width="70" height="87" uuid="8e455767-bcff-496c-8269-b3402cf2b996"/>
 				<imageExpression><![CDATA[$P{FINGER_8}]]></imageExpression>
 			</image>
-			<image scaleImage="FillFrame" evaluationTime="Report">
+			<image scaleImage="RetainShape" hAlign="Center" vAlign="Middle" evaluationTime="Report">
 				<reportElement x="351" y="479" width="70" height="87" uuid="c521d761-7dd1-4718-b513-120d03389c19"/>
 				<imageExpression><![CDATA[$P{FINGER_9}]]></imageExpression>
 			</image>
-			<image scaleImage="FillFrame" evaluationTime="Report">
+			<image scaleImage="RetainShape" hAlign="Center" vAlign="Middle" evaluationTime="Report">
 				<reportElement x="458" y="479" width="70" height="87" uuid="87649940-b0f8-45c7-9e23-ad436451c826"/>
 				<imageExpression><![CDATA[$P{FINGER_10}]]></imageExpression>
 			</image>

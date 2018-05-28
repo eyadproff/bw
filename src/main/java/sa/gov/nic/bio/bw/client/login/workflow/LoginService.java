@@ -27,11 +27,8 @@ public class LoginService
 	{
 		if(Context.getRuntimeEnvironment() != RuntimeEnvironment.LOCAL) // if not local, check for updates
 		{
-			String serverUrl = Context.getWebserviceManager().getServerUrl();
-			
-			if(Context.getRuntimeEnvironment() == RuntimeEnvironment.DEV) serverUrl = "10.0.73.80:8080";
-			
-			boolean newUpdates = BclUtils.checkForAppUpdates(serverUrl, "bw", false, json ->
+			boolean newUpdates = BclUtils.checkForAppUpdates(Context.getServerUrl(), "bw", false,
+			                                                 json ->
 			{
 				try
 				{
@@ -60,7 +57,8 @@ public class LoginService
 		String url = System.getProperty("jnlp.bio.bw.service.lookupMenusRoles");
 		LookupAPI lookupAPI = Context.getWebserviceManager().getApi(LookupAPI.class);
 		Call<Map<String, Set<String>>> menusRolesCall = lookupAPI.lookupMenuRoles(url, "BW");
-		ServiceResponse<Map<String, Set<String>>> menusRolesResponse = Context.getWebserviceManager().executeApi(menusRolesCall);
+		ServiceResponse<Map<String, Set<String>>> menusRolesResponse = Context.getWebserviceManager()
+																			  .executeApi(menusRolesCall);
 		
 		Map<String, Set<String>> menusRoles;
 		if(menusRolesResponse.isSuccess()) menusRoles = menusRolesResponse.getResult();
@@ -72,7 +70,9 @@ public class LoginService
 		
 		IdentityAPI identityAPI = Context.getWebserviceManager().getApi(IdentityAPI.class);
 		url = System.getProperty("jnlp.bio.bw.service.login");
-		Call<LoginBean> apiCall = identityAPI.login(url, username, password, "BW", "U"); // U = User?
+		
+		// U = User?
+		Call<LoginBean> apiCall = identityAPI.login(url, username, password, "BW", "U");
 		ServiceResponse<LoginBean> response = Context.getWebserviceManager().executeApi(apiCall);
 		
 		if(response.isSuccess())
@@ -91,7 +91,9 @@ public class LoginService
 			
 			LOGGER.info("the user (" + userInfo.getUserName() + ") is logged in");
 			LOGGER.fine("userToken = " + userToken);
-			Arrays.stream(AppUtils.decodeJWT(userToken)).forEach(part -> LOGGER.fine(part)); // LOGGER::fine doesn't work, I don't know WHY!!!
+			
+			// LOGGER::fine doesn't work, I don't know WHY!!!
+			Arrays.stream(AppUtils.decodeJWT(userToken)).forEach(part -> LOGGER.fine(part));
 			
 			return ServiceResponse.success(response.getResult());
 		}

@@ -64,6 +64,7 @@ public class MenuPaneFxController extends RegionFxControllerBase
 		accordion.getPanes().clear();
 		
 		if(menus.isEmpty()) return;
+		menus.sort(Comparator.comparing(MenuItem::getMenuId));
 		
 		List<Pair<TitledPane, Integer>> titledPanes = new ArrayList<>();
 		
