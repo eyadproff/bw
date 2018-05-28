@@ -5,6 +5,7 @@ import retrofit2.Call;
 import sa.gov.nic.bio.bcl.utils.BclUtils;
 import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.beans.UserSession;
+import sa.gov.nic.bio.bw.client.core.utils.AppConstants;
 import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.client.core.utils.RuntimeEnvironment;
 import sa.gov.nic.bio.bw.client.core.webservice.LookupAPI;
@@ -27,7 +28,11 @@ public class LoginService
 	{
 		if(Context.getRuntimeEnvironment() != RuntimeEnvironment.LOCAL) // if not local, check for updates
 		{
-			boolean newUpdates = BclUtils.checkForAppUpdates(Context.getServerUrl(), "bw", false,
+			// TODO: improve it
+			String serverUrl = Context.getServerUrl();
+			if(Context.getRuntimeEnvironment() == RuntimeEnvironment.DEV) serverUrl = AppConstants.DEV_SERVER_URL;
+			
+			boolean newUpdates = BclUtils.checkForAppUpdates(serverUrl, "bw", false,
 			                                                 json ->
 			{
 				try

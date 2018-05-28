@@ -125,7 +125,7 @@ public class AppEntryPoint extends Application
 	    
 	    if(runtimeEnvironment == RuntimeEnvironment.LOCAL)
 	    {
-		    serverUrl = AppConstants.LOCAL_SERVER_URL;
+		    serverUrl = AppConstants.DEV_SERVER_URL;
 	    	
 		    // populate the JNLP properties to the system properties
 		    InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream(

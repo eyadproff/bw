@@ -29,10 +29,12 @@ import sa.gov.nic.bio.biokit.exceptions.AlreadyConnectedException;
 import sa.gov.nic.bio.biokit.websocket.ClosureListener;
 import sa.gov.nic.bio.bw.client.core.biokit.BioKitManager;
 import sa.gov.nic.bio.bw.client.core.biokit.FingerPosition;
+import sa.gov.nic.bio.bw.client.core.utils.AppConstants;
 import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.client.core.utils.CoreErrorCodes;
 import sa.gov.nic.bio.bw.client.core.utils.DialogUtils;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
+import sa.gov.nic.bio.bw.client.core.utils.RuntimeEnvironment;
 import sa.gov.nic.bio.bw.client.features.commons.utils.CommonsErrorCodes;
 
 import java.util.ResourceBundle;
@@ -270,7 +272,14 @@ public class DevicesRunnerGadgetPaneFxController extends RegionFxControllerBase
 				{
 					LOGGER.info("Bio-Kit is not running! Launching via BCL...");
 					int checkEveryMilliSeconds = 1000; // TODO: make it configurable
-					BclUtils.launchAppByBCL(Context.getServerUrl(), bioKitManager.getBclId(),
+					
+					// TODO: improve it
+					String serverUrl = Context.getServerUrl();
+					if(Context.getRuntimeEnvironment() == RuntimeEnvironment.LOCAL ||
+					   Context.getRuntimeEnvironment() == RuntimeEnvironment.DEV)
+								serverUrl = AppConstants.DEV_SERVER_URL;
+					
+					BclUtils.launchAppByBCL(serverUrl, bioKitManager.getBclId(),
 					                        bioKitManager.getWebsocketPort(), checkEveryMilliSeconds, cancelCommand);
 				}
 				
