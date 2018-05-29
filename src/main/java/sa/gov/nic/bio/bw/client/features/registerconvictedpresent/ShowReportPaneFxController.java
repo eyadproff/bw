@@ -10,10 +10,10 @@ import net.sf.jasperreports.engine.JasperPrint;
 import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.wizard.WizardStepFxControllerBase;
-import sa.gov.nic.bio.bw.client.features.registerconvictednotpresent.FetchingFingerprintsPaneFxController;
-import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.tasks.BuildReportTask;
-import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.tasks.PrintReportTask;
-import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.tasks.SaveReportAsPdfTask;
+import sa.gov.nic.bio.bw.client.features.commons.FingerprintCapturingFxController;
+import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.tasks.BuildConvictedReportTask;
+import sa.gov.nic.bio.bw.client.features.commons.tasks.PrintReportTask;
+import sa.gov.nic.bio.bw.client.features.commons.tasks.SaveReportAsPdfTask;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.utils.RegisterConvictedPresentErrorCodes;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.ConvictedReport;
 
@@ -84,7 +84,7 @@ public class ShowReportPaneFxController extends WizardStepFxControllerBase
 			
 			@SuppressWarnings("unchecked")
 			Map<Integer, String> fingerprintImages = (Map<Integer, String>)
-								uiInputData.get(FetchingFingerprintsPaneFxController.KEY_PERSON_FINGERPRINTS_IMAGES);
+								uiInputData.get(FingerprintCapturingFxController.KEY_FINGERPRINTS_IMAGES);
 			this.fingerprintImages = fingerprintImages;
 		}
 	}
@@ -111,27 +111,28 @@ public class ShowReportPaneFxController extends WizardStepFxControllerBase
 		
 		if(jasperPrint.get() == null)
 		{
-			BuildReportTask buildReportTask = new BuildReportTask(convictedReport, fingerprintImages);
-			buildReportTask.setOnSucceeded(event ->
+			BuildConvictedReportTask buildConvictedReportTask = new BuildConvictedReportTask(convictedReport,
+			                                                                                 fingerprintImages);
+			buildConvictedReportTask.setOnSucceeded(event ->
 			{
-			    JasperPrint value = buildReportTask.getValue();
+			    JasperPrint value = buildConvictedReportTask.getValue();
 			    jasperPrint.set(value);
 			    printConvictedReport(value);
 			});
-			buildReportTask.setOnFailed(event ->
+			buildConvictedReportTask.setOnFailed(event ->
 			{
 			    GuiUtils.showNode(piProgress, false);
 			    GuiUtils.showNode(btnStartOver, true);
 			    GuiUtils.showNode(btnPrintReport, true);
 			    GuiUtils.showNode(btnSaveReportAsPDF, true);
 			
-			    Throwable exception = buildReportTask.getException();
+			    Throwable exception = buildConvictedReportTask.getException();
 			
 			    String errorCode = RegisterConvictedPresentErrorCodes.C007_00004.getCode();
 			    String[] errorDetails = {"failed while building the convicted report!"};
 			    Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails);
 			});
-			Context.getExecutorService().submit(buildReportTask);
+			Context.getExecutorService().submit(buildConvictedReportTask);
 		}
 		else printConvictedReport(jasperPrint.get());
 	}
@@ -151,10 +152,11 @@ public class ShowReportPaneFxController extends WizardStepFxControllerBase
 			
 			if(jasperPrint.get() == null)
 			{
-				BuildReportTask buildReportTask = new BuildReportTask(convictedReport, fingerprintImages);
-				buildReportTask.setOnSucceeded(event ->
+				BuildConvictedReportTask buildConvictedReportTask = new BuildConvictedReportTask(convictedReport,
+				                                                                                 fingerprintImages);
+				buildConvictedReportTask.setOnSucceeded(event ->
 				{
-				    JasperPrint value = buildReportTask.getValue();
+				    JasperPrint value = buildConvictedReportTask.getValue();
 				    jasperPrint.set(value);
 					try
 					{
@@ -172,20 +174,20 @@ public class ShowReportPaneFxController extends WizardStepFxControllerBase
 						Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails);
 					}
 				});
-				buildReportTask.setOnFailed(event ->
+				buildConvictedReportTask.setOnFailed(event ->
 				{
 				    GuiUtils.showNode(piProgress, false);
 				    GuiUtils.showNode(btnStartOver, true);
 				    GuiUtils.showNode(btnPrintReport, true);
 				    GuiUtils.showNode(btnSaveReportAsPDF, true);
 				    
-				    Throwable exception = buildReportTask.getException();
+				    Throwable exception = buildConvictedReportTask.getException();
 				    
 				    String errorCode = RegisterConvictedPresentErrorCodes.C007_00006.getCode();
 				    String[] errorDetails = {"failed while building the convicted report!"};
 				    Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails);
 				});
-				Context.getExecutorService().submit(buildReportTask);
+				Context.getExecutorService().submit(buildConvictedReportTask);
 			}
 			else
 			{
@@ -211,14 +213,14 @@ public class ShowReportPaneFxController extends WizardStepFxControllerBase
 	private void printConvictedReport(JasperPrint jasperPrint)
 	{
 		PrintReportTask printReportTask = new PrintReportTask(jasperPrint);
-		printReportTask.setOnSucceeded(event1 ->
+		printReportTask.setOnSucceeded(event ->
 		{
 		   GuiUtils.showNode(piProgress, false);
 		   GuiUtils.showNode(btnStartOver, true);
 		   GuiUtils.showNode(btnPrintReport, true);
 		   GuiUtils.showNode(btnSaveReportAsPDF, true);
 		});
-		printReportTask.setOnFailed(event1 ->
+		printReportTask.setOnFailed(event ->
 		{
 		    GuiUtils.showNode(piProgress, false);
 		    GuiUtils.showNode(btnStartOver, true);
@@ -237,7 +239,7 @@ public class ShowReportPaneFxController extends WizardStepFxControllerBase
 	private void saveConvictedReportAsPDF(JasperPrint jasperPrint, OutputStream pdfOutputStream)
 	{
 		SaveReportAsPdfTask printReportTaskAsPdfTask = new SaveReportAsPdfTask(jasperPrint, pdfOutputStream);
-		printReportTaskAsPdfTask.setOnSucceeded(event1 ->
+		printReportTaskAsPdfTask.setOnSucceeded(event ->
 		{
 		    GuiUtils.showNode(piProgress, false);
 		    GuiUtils.showNode(btnStartOver, true);
@@ -246,7 +248,7 @@ public class ShowReportPaneFxController extends WizardStepFxControllerBase
 		    
 		    showSuccessNotification(resources.getString("printConvictedPresent.savingAsPDF.success.message"));
 		});
-		printReportTaskAsPdfTask.setOnFailed(event1 ->
+		printReportTaskAsPdfTask.setOnFailed(event ->
 		{
 		    GuiUtils.showNode(piProgress, false);
 		    GuiUtils.showNode(btnStartOver, true);

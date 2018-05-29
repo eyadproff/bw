@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 
-<StackPane xmlns="http://javafx.com/javafx/8.0.152" xmlns:fx="http://javafx.com/fxml/1"
-           fx:id="rootPane" fx:controller="sa.gov.nic.bio.bw.client.core.FooterPaneFxController">
-    <ImageView fx:id="ivLogoRTL">
-        <Image url="@../images/moi_logo_footer_ar.png"/>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.Label?>
+<HBox xmlns="http://javafx.com/javafx/8.0.152" xmlns:fx="http://javafx.com/fxml/1"
+      fx:id="rootPane" fx:controller="sa.gov.nic.bio.bw.client.core.FooterPaneFxController"
+      alignment="CENTER" spacing="7.0">
+    <ImageView>
+        <Image url="@../images/semat_logo_small.png"/>
     </ImageView>
-    <ImageView fx:id="ivLogoLTR" visible="false" managed="false">
-        <Image url="@../images/moi_logo_footer_en.png"/>
-    </ImageView>
-</StackPane>
+    <Label text="%label.developedBy" styleClass="credit-text"/>
+</HBox>

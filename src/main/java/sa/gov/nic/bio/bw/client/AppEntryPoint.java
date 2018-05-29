@@ -96,7 +96,7 @@ public class AppEntryPoint extends Application
 	private Image appIcon;
 	private CoreFxController coreFxController;
 	private boolean successfulInit = false;
-
+	
     @Override
     public void init()
     {
@@ -125,6 +125,8 @@ public class AppEntryPoint extends Application
 	    
 	    if(runtimeEnvironment == RuntimeEnvironment.LOCAL)
 	    {
+		    serverUrl = AppConstants.DEV_SERVER_URL;
+	    	
 		    // populate the JNLP properties to the system properties
 		    InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream(
 				    "sa/gov/nic/bio/bw/client/core/config/jnlp.properties");
@@ -151,11 +153,11 @@ public class AppEntryPoint extends Application
 	    
 	    String sReadTimeoutSeconds = System.getProperty("jnlp.bio.bw.webservice.readTimeoutSeconds");
 	    String sConnectTimeoutSeconds = System.getProperty("jnlp.bio.bw.webservice.connectTimeoutSeconds");
-
+	    
 	    // default values
 	    int readTimeoutSeconds = 60; // 1 minute
 	    int connectTimeoutSeconds = 60; // 1 minute
-
+	
 	    if(sReadTimeoutSeconds == null)
 	    {
 		    LOGGER.warning("sReadTimeoutSeconds is null! Default value is " + readTimeoutSeconds);
@@ -282,16 +284,16 @@ public class AppEntryPoint extends Application
 	    }
 	
 	    LOGGER.info("serverUrl = " + serverUrl);
-
+	
 	    webserviceManager.init(serverUrl, readTimeoutSeconds, connectTimeoutSeconds);
 	
 	    String sResponseTimeoutSeconds = System.getProperty("jnlp.bio.bw.biokit.responseTimeoutSeconds");
 	
 	    String sMaxTextMessageBufferSizeInBytes =
-			    System.getProperty("jnlp.bio.bw.biokit.maxTextMessageBufferSizeInBytes");
+			                                System.getProperty("jnlp.bio.bw.biokit.maxTextMessageBufferSizeInBytes");
 	    String sMaxBinaryMessageBufferSizeInBytes =
-			    System.getProperty("jnlp.bio.bw.biokit.maxBinaryMessageBufferSizeInBytes");
-	
+			                                System.getProperty("jnlp.bio.bw.biokit.maxBinaryMessageBufferSizeInBytes");
+	    
 	    // default values
 	    int maxTextMessageBufferSizeInBytes = 60; // 10 MB
 	    int maxBinaryMessageBufferSizeInBytes = 60; // 10 MB
@@ -301,7 +303,7 @@ public class AppEntryPoint extends Application
 	    if(sMaxTextMessageBufferSizeInBytes == null)
 	    {
 		    LOGGER.warning("sMaxTextMessageBufferSizeInBytes is null! Default value is "
-				                   + maxTextMessageBufferSizeInBytes);
+				                                                                    + maxTextMessageBufferSizeInBytes);
 	    }
 	    else try
 	    {
@@ -317,7 +319,7 @@ public class AppEntryPoint extends Application
 	    if(sMaxBinaryMessageBufferSizeInBytes == null)
 	    {
 		    LOGGER.warning("sMaxBinaryMessageBufferSizeInBytes is null! Default value is "
-				                   + maxBinaryMessageBufferSizeInBytes);
+				                                                                + maxBinaryMessageBufferSizeInBytes);
 	    }
 	    else try
 	    {
@@ -342,7 +344,7 @@ public class AppEntryPoint extends Application
 	    catch(NumberFormatException e)
 	    {
 		    LOGGER.warning("Failed to parse sResponseTimeoutSeconds as int! sResponseTimeoutSeconds = "
-				                   + sResponseTimeoutSeconds);
+				                                                                            + sResponseTimeoutSeconds);
 	    }
 	
 	    String biokitWebsocketUrl = System.getProperty("jnlp.bio.bw.biokit.serverUrl");
@@ -423,25 +425,25 @@ public class AppEntryPoint extends Application
 		    @Override
 		    public void logConnectionOpening()
 		    {
-		
+			
 		    }
 		
 		    @Override
 		    public void logConnectionClosure(CloseReason closeReason)
 		    {
-		
+			
 		    }
 		
 		    @Override
 		    public void logError(Throwable throwable)
 		    {
-		
+			
 		    }
 		
 		    @Override
 		    public void logNewMessage(Message message)
 		    {
-		        LOGGER.fine(message.toShortString());
+		    	LOGGER.fine(message.toShortString());
 		    }
 	    }, null);
 	

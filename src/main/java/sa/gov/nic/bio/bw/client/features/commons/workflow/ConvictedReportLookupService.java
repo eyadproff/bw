@@ -3,10 +3,10 @@ package sa.gov.nic.bio.bw.client.features.commons.workflow;
 import retrofit2.Call;
 import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.beans.UserSession;
+import sa.gov.nic.bio.bw.client.features.commons.webservice.CountryBean;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.CrimeType;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.IdType;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.LookupAPI;
-import sa.gov.nic.bio.bw.client.features.commons.webservice.NationalityBean;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.PersonIdType;
 import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
 
@@ -21,8 +21,8 @@ public class ConvictedReportLookupService
 	{
 		UserSession userSession = Context.getUserSession();
 		
-		@SuppressWarnings("unchecked") List<NationalityBean> nationalities = (List<NationalityBean>)
-														userSession.getAttribute("lookups.nationalities");
+		@SuppressWarnings("unchecked") List<CountryBean> countries = (List<CountryBean>)
+														userSession.getAttribute("lookups.countries");
 		@SuppressWarnings("unchecked") List<PersonIdType> personIdTypes = (List<PersonIdType>)
 														userSession.getAttribute("lookups.personIdTypes");
 		@SuppressWarnings("unchecked") List<CrimeType> crimeTypes = (List<CrimeType>)
@@ -30,25 +30,25 @@ public class ConvictedReportLookupService
 		@SuppressWarnings("unchecked") List<IdType> idTypes = (List<IdType>)
 														userSession.getAttribute("lookups.idTypes");
 		
-		if(nationalities == null)
+		if(countries == null)
 		{
 			String url = System.getProperty("jnlp.bio.bw.service.lookupNationalities");
 			LookupAPI lookupAPI = Context.getWebserviceManager().getApi(LookupAPI.class);
-			Call<List<NationalityBean>> nationalitiesCall = lookupAPI.lookupNationalities(url);
-			ServiceResponse<List<NationalityBean>> nationalitiesResponse = Context.getWebserviceManager()
+			Call<List<CountryBean>> nationalitiesCall = lookupAPI.lookupNationalities(url);
+			ServiceResponse<List<CountryBean>> nationalitiesResponse = Context.getWebserviceManager()
 																				  .executeApi(nationalitiesCall);
 			
 			if(nationalitiesResponse.isSuccess())
 			{
-				nationalities = nationalitiesResponse.getResult();
-				nationalities.removeIf(nationalityBean -> nationalityBean.getMofaNationalityCode().trim().isEmpty());
+				countries = nationalitiesResponse.getResult();
+				countries.removeIf(nationalityBean -> nationalityBean.getMofaNationalityCode().trim().isEmpty());
 			}
 			else return ServiceResponse.failure(nationalitiesResponse.getErrorCode(),
 			                                    nationalitiesResponse.getException(),
 			                                    nationalitiesResponse.getErrorDetails());
 			
-			userSession.setAttribute("lookups.nationalities", nationalities);
-			LOGGER.info("nationalities = " + nationalities);
+			userSession.setAttribute("lookups.countries", countries);
+			LOGGER.info("countries = " + countries);
 		}
 		
 		if(personIdTypes == null)

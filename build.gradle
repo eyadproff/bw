@@ -13,7 +13,7 @@ buildscript {
     }
 }
 
-project.version = '2018.05.2'
+project.version = '2018.05.3'
 group = 'sa.gov.nic.bio'
 
 apply plugin: 'java'
@@ -52,7 +52,7 @@ dependencies {
     implementation name: "tomcat-util-9.0.2"
     implementation name: "tomcat-websocket-9.0.2"
     implementation name: "bcl-utils-2018.04.1"
-    implementation name: "biokit-library-2018.04.1"
+    implementation name: "biokit-library-2018.05.1"
     implementation name: "jasperreports-6.5.1"
     implementation name: "jasperreports-fonts-6.5.1"
     implementation name: "jasper-compiler-jdt-5.5.23"
@@ -62,6 +62,7 @@ dependencies {
     implementation name: "commons-beanutils-1.9.3"
     implementation name: "custom-report-font-1.0.0"
     implementation name: "itext-4.2.1"
+    implementation name: "barbecue-1.5-beta1"
     testImplementation name: "junit-4.12"
 }
 

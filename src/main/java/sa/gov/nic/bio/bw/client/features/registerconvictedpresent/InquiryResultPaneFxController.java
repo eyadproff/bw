@@ -17,8 +17,8 @@ import sa.gov.nic.bio.bw.client.core.utils.GuiLanguage;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.wizard.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.IdType;
-import sa.gov.nic.bio.bw.client.features.commons.webservice.NationalityBean;
-import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.GenderType;
+import sa.gov.nic.bio.bw.client.features.commons.webservice.CountryBean;
+import sa.gov.nic.bio.bw.client.features.commons.beans.GenderType;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.Name;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.PersonIdInfo;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.PersonInfo;
@@ -319,26 +319,26 @@ public class InquiryResultPaneFxController extends WizardStepFxControllerBase
 			lblGender.setTextFill(Color.RED);
 		}
 		
-		@SuppressWarnings("unchecked") List<NationalityBean> nationalities = (List<NationalityBean>)
-												Context.getUserSession().getAttribute("lookups.nationalities");
+		@SuppressWarnings("unchecked") List<CountryBean> countries = (List<CountryBean>)
+												Context.getUserSession().getAttribute("lookups.countries");
 		
-		NationalityBean nationalityBean = null;
+		CountryBean countryBean = null;
 		
-		for(NationalityBean nationality : nationalities)
+		for(CountryBean country : countries)
 		{
-			if(nationality.getCode() == personInfo.getNationality())
+			if(country.getCode() == personInfo.getNationality())
 			{
-				nationalityBean = nationality;
+				countryBean = country;
 				break;
 			}
 		}
 		
-		if(nationalityBean != null)
+		if(countryBean != null)
 		{
 			boolean arabic = Context.getGuiLanguage() == GuiLanguage.ARABIC;
-			lblNationality.setText(arabic ? nationalityBean.getDescriptionAR() :
-					                       nationalityBean.getDescriptionEN());
-			personInfoMap.put(PersonInfoPaneFxController.KEY_PERSON_INFO_NATIONALITY, nationalityBean);
+			lblNationality.setText(arabic ? countryBean.getDescriptionAR() :
+					                       countryBean.getDescriptionEN());
+			personInfoMap.put(PersonInfoPaneFxController.KEY_PERSON_INFO_NATIONALITY, countryBean);
 		}
 		else
 		{

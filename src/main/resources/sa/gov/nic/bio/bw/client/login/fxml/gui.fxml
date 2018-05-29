@@ -16,11 +16,14 @@
 
 <VBox xmlns="http://javafx.com/javafx/8.0.152" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="sa.gov.nic.bio.bw.client.login.LoginPaneFxController"
-      fx:id="rootPane" stylesheets="@../css/style.css" alignment="CENTER" spacing="70">
+      fx:id="rootPane" stylesheets="@../css/style.css" alignment="CENTER" spacing="40.0">
+    <padding>
+        <Insets topRightBottomLeft="10.0"/>
+    </padding>
     <ImageView>
-        <Image url="@../images/login_logo.png"/>
+        <Image url="@../../core/images/nic_logo_150.png"/>
     </ImageView>
-    <VBox alignment="CENTER" spacing="20">
+    <VBox alignment="CENTER" spacing="15.0">
         <HBox alignment="CENTER">
             <GridPane alignment="CENTER" vgap="5" hgap="20" styleClass="formBox">
                 <padding>

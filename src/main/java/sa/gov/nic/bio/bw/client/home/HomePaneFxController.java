@@ -143,9 +143,20 @@ public class HomePaneFxController extends BodyFxControllerBase
 		Context.getWebserviceManager().scheduleRefreshToken(userToken);
 		
 		String username = userInfo.getUserName();
+		String operatorName = userInfo.getOperatorName();
+		long operatorId = userInfo.getOperatorId();
+		String locationName = userInfo.getLocationName();
+		String locationId = userInfo.getLocationId();
 		
-		String operatorName = userInfo.getOperatorName() + " (" + userInfo.getOperatorId() + ")";
-		String location = userInfo.getLocationName() + " (" + userInfo.getLocationId() + ")";
+		String operator;
+		String location;
+		
+		if(operatorName == null) operatorName = "-";
+		if(locationName == null) locationName = "-";
+		
+		operator = operatorName + (operatorId > 0 ? " (" + userInfo.getOperatorId() + ")" : "");
+		location = locationName + (locationId != null && !locationId.isEmpty() &&
+												!locationId.equals("0") ? " (" + userInfo.getLocationId() + ")" : "");
 		
 		String encodedFaceImage = userInfo.getFaceImage();
 		byte[] faceImageByteArray = null;
@@ -180,15 +191,15 @@ public class HomePaneFxController extends BodyFxControllerBase
 		
 		// remove extra spaces in between and on edges
 		username = username.trim().replaceAll("\\s+", " ");
-		operatorName = operatorName.trim().replaceAll("\\s+", " ");
+		operator = operator.trim().replaceAll("\\s+", " ");
 		location = location.trim().replaceAll("\\s+", " ");
 		
 		// localize numbers
-		operatorName = AppUtils.replaceNumbersOnly(operatorName, Locale.getDefault());
+		operator = AppUtils.replaceNumbersOnly(operator, Locale.getDefault());
 		location = AppUtils.replaceNumbersOnly(location, Locale.getDefault());
 		
 		Context.getCoreFxController().getHeaderPaneController().setUsername(username);
-		Context.getCoreFxController().getHeaderPaneController().setOperatorName(operatorName);
+		Context.getCoreFxController().getHeaderPaneController().setOperatorName(operator);
 		Context.getCoreFxController().getHeaderPaneController().setLocation(location);
 		
 		long loginTime = System.currentTimeMillis();

@@ -46,6 +46,7 @@ import org.controlsfx.control.PopOver.ArrowLocation;
 import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.CoreFxController;
 import sa.gov.nic.bio.bw.client.core.beans.HideableItem;
+import sa.gov.nic.bio.bw.client.features.commons.webservice.CountryBean;
 import sa.gov.nic.bio.bw.client.login.tasks.LogoutTask;
 
 import java.awt.Color;
@@ -521,5 +522,43 @@ public class GuiUtils
 		
 		datePicker.setDayCellFactory(dayCellFactory);
 		datePicker.setConverter(converter);
+	}
+	
+	public static void setupNationalityComboBox(ComboBox<HideableItem<CountryBean>> comboBox)
+	{
+		comboBox.setConverter(new StringConverter<HideableItem<CountryBean>>()
+		{
+			@Override
+			public String toString(HideableItem<CountryBean> object)
+			{
+				if(object == null) return "";
+				else return object.getText();
+			}
+			
+			@Override
+			public HideableItem<CountryBean> fromString(String string)
+			{
+				if(string == null || string.trim().isEmpty()) return null;
+				
+				for(HideableItem<CountryBean> nationalityBean : comboBox.getItems())
+				{
+					if(string.equals(nationalityBean.getText())) return nationalityBean;
+				}
+				
+				return null;
+			}
+		});
+		
+		comboBox.getItems().forEach(item ->
+		{
+		    CountryBean countryBean = item.getObject();
+		
+		    String text;
+		    if(Context.getGuiLanguage() == GuiLanguage.ARABIC) text = countryBean.getDescriptionAR();
+		    else text = countryBean.getDescriptionEN();
+		
+		    String resultText = text.trim() + " (" + countryBean.getMofaNationalityCode() + ")";
+		    item.setText(resultText);
+		});
 	}
 }

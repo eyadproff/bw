@@ -29,10 +29,12 @@ import sa.gov.nic.bio.biokit.exceptions.AlreadyConnectedException;
 import sa.gov.nic.bio.biokit.websocket.ClosureListener;
 import sa.gov.nic.bio.bw.client.core.biokit.BioKitManager;
 import sa.gov.nic.bio.bw.client.core.biokit.FingerPosition;
+import sa.gov.nic.bio.bw.client.core.utils.AppConstants;
 import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.client.core.utils.CoreErrorCodes;
 import sa.gov.nic.bio.bw.client.core.utils.DialogUtils;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
+import sa.gov.nic.bio.bw.client.core.utils.RuntimeEnvironment;
 import sa.gov.nic.bio.bw.client.features.commons.utils.CommonsErrorCodes;
 
 import java.util.ResourceBundle;
@@ -61,10 +63,13 @@ public class DevicesRunnerGadgetPaneFxController extends RegionFxControllerBase
 	@FXML private TitledPane tpDevicesRunner;
 	@FXML private TitledPane tpFingerprintScanner;
 	@FXML private TitledPane tpCamera;
+	@FXML private TitledPane tpPassportScanner;
 	@FXML private Pane paneFingerprintScanner;
 	@FXML private Pane paneCamera;
+	@FXML private Pane panePassportScanner;
 	@FXML private ProgressIndicator piFingerprintScanner;
 	@FXML private ProgressIndicator piCamera;
+	@FXML private ProgressIndicator piPassportScanner;
 	@FXML private Label lblDevicesRunnerNotWorking;
 	@FXML private Label lblDevicesRunnerWorking;
 	@FXML private Label lblFingerprintScannerNotInitialized;
@@ -73,16 +78,22 @@ public class DevicesRunnerGadgetPaneFxController extends RegionFxControllerBase
 	@FXML private Label lblCameraNotInitialized;
 	@FXML private Label lblCameraNotConnected;
 	@FXML private Label lblCameraInitialized;
+	@FXML private Label lblPassportScannerNotInitialized;
+	@FXML private Label lblPassportScannerNotConnected;
+	@FXML private Label lblPassportScannerInitialized;
 	@FXML private Button btnDevicesRunnerAction;
 	@FXML private Button btnFingerprintScannerAction;
 	@FXML private Button btnCameraAction;
+	@FXML private Button btnPassportScannerAction;
 	
 	private ContextMenu contextMenu;
 	private String fingerprintScannerDeviceName;
 	private String cameraDeviceName;
+	private String passportScannerDeviceName;
 	private Consumer<Boolean> devicesRunnerRunningListener;
 	private Consumer<Boolean> fingerprintScannerInitializationListener;
 	private Consumer<Boolean> cameraInitializationListener;
+	private Consumer<Boolean> passportScannerInitializationListener;
 	
 	private ClosureListener closureListener = closeReason -> Platform.runLater(() ->
                                                                             changeDevicesRunnerStatus(false));
@@ -90,6 +101,7 @@ public class DevicesRunnerGadgetPaneFxController extends RegionFxControllerBase
 	public ClosureListener getClosureListener(){return closureListener;}
 	public String getFingerprintScannerDeviceName(){return fingerprintScannerDeviceName;}
 	public String getCameraDeviceName(){return cameraDeviceName;}
+	public String getPassportScannerDeviceName(){return passportScannerDeviceName;}
 	
 	public boolean isDevicesRunnerRunning()
 	{
@@ -104,6 +116,11 @@ public class DevicesRunnerGadgetPaneFxController extends RegionFxControllerBase
 	public boolean isCameraInitialized()
 	{
 		return lblCameraInitialized.isVisible();
+	}
+	
+	public boolean isPassportScannerInitialized()
+	{
+		return lblPassportScannerInitialized.isVisible();
 	}
 	
 	public void setDevicesRunnerRunningListener(Consumer<Boolean> devicesRunnerRunningListener)
@@ -121,6 +138,11 @@ public class DevicesRunnerGadgetPaneFxController extends RegionFxControllerBase
 		this.cameraInitializationListener = cameraInitializationListener;
 	}
 	
+	public void setPassportScannerInitializationListener(Consumer<Boolean> passportScannerInitializationListener)
+	{
+		this.passportScannerInitializationListener = passportScannerInitializationListener;
+	}
+	
 	@Override
 	protected void initialize()
 	{
@@ -135,6 +157,9 @@ public class DevicesRunnerGadgetPaneFxController extends RegionFxControllerBase
 		Glyph cameraIcon = AppUtils.createFontAwesomeIcon(FontAwesome.Glyph.CAMERA);
 		tpCamera.setGraphic(cameraIcon);
 		
+		Glyph passportScannerIcon = AppUtils.createFontAwesomeIcon('\uf2c2');
+		tpPassportScanner.setGraphic(passportScannerIcon);
+		
 		Glyph gearIcon = AppUtils.createFontAwesomeIcon(FontAwesome.Glyph.GEAR);
 		btnDevicesRunnerAction.setGraphic(gearIcon);
 		
@@ -144,10 +169,15 @@ public class DevicesRunnerGadgetPaneFxController extends RegionFxControllerBase
 		gearIcon = AppUtils.createFontAwesomeIcon(FontAwesome.Glyph.GEAR);
 		btnCameraAction.setGraphic(gearIcon);
 		
+		gearIcon = AppUtils.createFontAwesomeIcon(FontAwesome.Glyph.GEAR);
+		btnPassportScannerAction.setGraphic(gearIcon);
+		
 		paneFingerprintScanner.visibleProperty().bind(piFingerprintScanner.visibleProperty().not());
 		paneFingerprintScanner.managedProperty().bind(piFingerprintScanner.managedProperty().not());
 		paneCamera.visibleProperty().bind(piCamera.visibleProperty().not());
 		paneCamera.managedProperty().bind(piCamera.managedProperty().not());
+		panePassportScanner.visibleProperty().bind(piPassportScanner.visibleProperty().not());
+		panePassportScanner.managedProperty().bind(piPassportScanner.managedProperty().not());
 		
 		lblDevicesRunnerNotWorking.visibleProperty().addListener((observable, oldValue, newValue) ->
 		{
@@ -155,10 +185,12 @@ public class DevicesRunnerGadgetPaneFxController extends RegionFxControllerBase
 			{
 				changeFingerprintScannerStatus(DeviceStatus.NOT_INITIALIZED);
 				changeCameraStatus(DeviceStatus.NOT_INITIALIZED);
+				changePassportScannerStatus(DeviceStatus.NOT_INITIALIZED);
 			}
 			
 			btnFingerprintScannerAction.setDisable(newValue);
 			btnCameraAction.setDisable(newValue);
+			btnPassportScannerAction.setDisable(newValue);
 		});
 	}
 	
@@ -240,7 +272,14 @@ public class DevicesRunnerGadgetPaneFxController extends RegionFxControllerBase
 				{
 					LOGGER.info("Bio-Kit is not running! Launching via BCL...");
 					int checkEveryMilliSeconds = 1000; // TODO: make it configurable
-					BclUtils.launchAppByBCL(Context.getServerUrl(), bioKitManager.getBclId(),
+					
+					// TODO: improve it
+					String serverUrl = Context.getServerUrl();
+					if(Context.getRuntimeEnvironment() == RuntimeEnvironment.LOCAL ||
+					   Context.getRuntimeEnvironment() == RuntimeEnvironment.DEV)
+								serverUrl = AppConstants.DEV_SERVER_URL;
+					
+					BclUtils.launchAppByBCL(serverUrl, bioKitManager.getBclId(),
 					                        bioKitManager.getWebsocketPort(), checkEveryMilliSeconds, cancelCommand);
 				}
 				
@@ -607,6 +646,93 @@ public class DevicesRunnerGadgetPaneFxController extends RegionFxControllerBase
 		dialogStage.show();
 	}
 	
+	public void initializePassportScanner()
+	{
+		GuiUtils.showNode(piPassportScanner, true);
+		CancelCommand cancelCommand = new CancelCommand();
+		String message = resources.getString("label.initializingPassportScanner");
+		
+		Future<ServiceResponse<InitializeResponse>> future = Context.getBioKitManager().getPassportScannerService()
+																					   .initialize();
+		Stage dialogStage = buildProgressDialog(cancelCommand, message, future);
+		
+		Task<ServiceResponse<InitializeResponse>> task = new Task<ServiceResponse<InitializeResponse>>()
+		{
+			@Override
+			protected ServiceResponse<InitializeResponse> call() throws Exception
+			{
+				return future.get();
+			}
+		};
+		task.setOnSucceeded(e ->
+		{
+		    GuiUtils.showNode(piPassportScanner, false);
+		    dialogStage.close();
+		    if(cancelCommand.isCanceled()) return;
+		
+		    ServiceResponse<InitializeResponse> serviceResponse = task.getValue();
+		
+		    if(serviceResponse.isSuccess())
+		    {
+		        InitializeResponse result = serviceResponse.getResult();
+		
+		        if(result.getReturnCode() == InitializeResponse.SuccessCodes.SUCCESS)
+		        {
+		            passportScannerDeviceName = result.getCurrentDeviceName();
+		            changePassportScannerStatus(DeviceStatus.INITIALIZED);
+		        }
+		        else if(result.getReturnCode() == InitializeResponse.FailureCodes.DEVICE_NOT_FOUND_OR_UNPLUGGED)
+		        {
+			        changePassportScannerStatus(DeviceStatus.NOT_CONNECTED);
+		        }
+		        else
+		        {
+		            cancelCommand.cancel();
+		            LOGGER.severe("failed to initialize the passport scanner!");
+		
+		            String[] errorDetails = {"failed to initialize the passport scanner!",
+		                    "returnMessage = " + result.getReturnMessage()};
+		            Context.getCoreFxController().showErrorDialog(String.valueOf(result.getReturnCode()),null,
+		                                                          errorDetails);
+		        }
+		    }
+		    else
+		    {
+		        cancelCommand.cancel();
+		        LOGGER.severe("failed to receive a response for initializing the passport scanner!");
+		
+		        String[] errorDetails = {"failed to receive a response for initializing the passport scanner!"};
+		        Context.getCoreFxController().showErrorDialog(serviceResponse.getErrorCode(),
+		                                                      serviceResponse.getException(), errorDetails);
+		    }
+		});
+		task.setOnFailed(e ->
+		{
+		    GuiUtils.showNode(piPassportScanner, false);
+		    dialogStage.close();
+		    Throwable exception = task.getException();
+		
+		    if(exception instanceof CancellationException)
+		    {
+		        LOGGER.info("Initializing the passport scanner is cancelled!");
+		    }
+		    else
+		    {
+		        LOGGER.severe("failed to initialize the passport scanner!");
+		
+		        String errorCode = CoreErrorCodes.C002_00022.getCode();
+		        String[] errorDetails = {"failed to initialize the passport scanner!"};
+		        Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails);
+		    }
+		});
+		
+		Context.getExecutorService().submit(task);
+		
+		dialogStage.setOnHidden(event -> Context.getCoreFxController().unregisterStageForIdleMonitoring(dialogStage));
+		Context.getCoreFxController().registerStageForIdleMonitoring(dialogStage);
+		dialogStage.show();
+	}
+	
 	private void changeDevicesRunnerStatus(boolean working)
 	{
 		contextMenu.hide();
@@ -635,6 +761,17 @@ public class DevicesRunnerGadgetPaneFxController extends RegionFxControllerBase
 		
 		if(cameraInitializationListener != null)
 						cameraInitializationListener.accept(deviceStatus == DeviceStatus.INITIALIZED);
+	}
+	
+	private void changePassportScannerStatus(DeviceStatus deviceStatus)
+	{
+		contextMenu.hide();
+		GuiUtils.showNode(lblPassportScannerNotInitialized, deviceStatus == DeviceStatus.NOT_INITIALIZED);
+		GuiUtils.showNode(lblPassportScannerInitialized, deviceStatus == DeviceStatus.INITIALIZED);
+		GuiUtils.showNode(lblPassportScannerNotConnected, deviceStatus == DeviceStatus.NOT_CONNECTED);
+		
+		if(passportScannerInitializationListener != null)
+			passportScannerInitializationListener.accept(deviceStatus == DeviceStatus.INITIALIZED);
 	}
 	
 	@FXML
@@ -724,6 +861,37 @@ public class DevicesRunnerGadgetPaneFxController extends RegionFxControllerBase
 		{
 			MenuItem menuInitialize = new MenuItem(resources.getString("menu.initialize"));
 			menuInitialize.setOnAction(e -> initializeCamera());
+			
+			Glyph initializeIcon = AppUtils.createFontAwesomeIcon(FontAwesome.Glyph.WRENCH);
+			menuInitialize.setGraphic(initializeIcon);
+			
+			contextMenu.getItems().setAll(menuInitialize);
+		}
+		
+		if(contextMenu.isShowing()) contextMenu.hide();
+		
+		contextMenu.show(btnFingerprintScannerAction, actionEvent.getScreenX(), actionEvent.getScreenY());
+	}
+	
+	@FXML
+	private void onPassportScannerActionButtonClicked(MouseEvent actionEvent)
+	{
+		Context.getCoreFxController().getNotificationPane().hide();
+		
+		if(lblPassportScannerInitialized.isVisible() || lblPassportScannerNotConnected.isVisible())
+		{
+			MenuItem menuReinitialize = new MenuItem(resources.getString("menu.reinitialize"));
+			menuReinitialize.setOnAction(e -> initializePassportScanner());
+			
+			Glyph initializeIcon = AppUtils.createFontAwesomeIcon(FontAwesome.Glyph.WRENCH);
+			menuReinitialize.setGraphic(initializeIcon);
+			
+			contextMenu.getItems().setAll(menuReinitialize);
+		}
+		else
+		{
+			MenuItem menuInitialize = new MenuItem(resources.getString("menu.initialize"));
+			menuInitialize.setOnAction(e -> initializePassportScanner());
 			
 			Glyph initializeIcon = AppUtils.createFontAwesomeIcon(FontAwesome.Glyph.WRENCH);
 			menuInitialize.setGraphic(initializeIcon);

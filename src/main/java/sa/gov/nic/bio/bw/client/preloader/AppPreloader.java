@@ -76,7 +76,7 @@ public class AppPreloader extends Preloader
 		
 		// change the default logging formatter for tomcat-related libraries
 		System.setProperty("org.apache.juli.formatter", "sa.gov.nic.bio.bw.client.core.utils.LogFormatter");
-
+		
 		// check if LOGS_FOLDER_PATH exists. If not, create it.
 		Path logFolderPath = Paths.get(AppConstants.LOGS_FOLDER_PATH);
 		if(!Files.exists(logFolderPath))

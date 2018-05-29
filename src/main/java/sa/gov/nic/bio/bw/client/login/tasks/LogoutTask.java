@@ -1,5 +1,6 @@
 package sa.gov.nic.bio.bw.client.login.tasks;
 
+import javafx.application.Platform;
 import javafx.concurrent.Task;
 import retrofit2.Call;
 import sa.gov.nic.bio.bw.client.core.Context;
@@ -28,6 +29,7 @@ public class LogoutTask extends Task<Void>
 		String userToken = (String) userSession.getAttribute("userToken");
 		
 		Context.setUserSession(null);
+		Platform.runLater(() -> Context.getCoreFxController().getHeaderPaneController().setAvatarImage(null));
 		
 		IdentityAPI identityAPI = Context.getWebserviceManager().getApi(IdentityAPI.class);
 		String url = System.getProperty("jnlp.bio.bw.service.logout");

@@ -23,4 +23,5 @@ public interface AppConstants
 	ZoneId SAUDI_ZONE = ZoneId.of("GMT+3");
 	String LOGS_FOLDER_PATH = "C:/bio/user-apps/" + System.getProperty("user.name") + "/bw/logs";
 	String TEMP_FOLDER_PATH = "C:/bio/user-apps/" + System.getProperty("user.name") + "/bw/temp";
+	String DEV_SERVER_URL = "10.0.73.80:8080"; // TODO: TEMP
 }

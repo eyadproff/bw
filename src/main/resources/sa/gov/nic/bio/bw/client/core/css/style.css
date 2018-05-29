@@ -192,3 +192,8 @@
 .button:default {
     -fx-base: #ececec;
 }
+
+.credit-text {
+    -fx-font-size: 14;
+    -fx-text-fill: #398755;
+}

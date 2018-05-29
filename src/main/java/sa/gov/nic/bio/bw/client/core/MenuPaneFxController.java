@@ -32,7 +32,7 @@ import java.util.Map;
 @SuppressWarnings("unused")
 public class MenuPaneFxController extends RegionFxControllerBase
 {
-	private static final double MAX_MENU_WIDTH = 166.0;
+	private static final double MAX_MENU_WIDTH = 182.0;
 	private static final double MENU_SINGLE_LINE_CELL_HEIGHT = 24.0;
 	private static final double MENU_MULTI_LINES_CELL_HEIGHT = 18.0;
 	
@@ -64,6 +64,7 @@ public class MenuPaneFxController extends RegionFxControllerBase
 		accordion.getPanes().clear();
 		
 		if(menus.isEmpty()) return;
+		menus.sort(Comparator.comparing(MenuItem::getMenuId));
 		
 		List<Pair<TitledPane, Integer>> titledPanes = new ArrayList<>();
 		
@@ -170,13 +171,13 @@ public class MenuPaneFxController extends RegionFxControllerBase
 	                f = Font.font(f.getFamily(), newValue ? FontWeight.EXTRA_BOLD : FontWeight.NORMAL, f.getSize());
                     labeledText.fontProperty().set(f);
                 });
+				
+				updateListViewHeight(listView, item.getIndex(), item);
 			}
 			
 			arrow.translateXProperty().bind(pane.widthProperty().subtract(arrow.widthProperty().multiply(3)));
 			labeledText.translateXProperty().bind(arrow.widthProperty().multiply(2).negate());
 			glyphFont.translateXProperty().bind(arrow.widthProperty().multiply(2).negate());
-			
-			lv.setPrefHeight(lv.getItems().size() * cellHeight + 30);
 		}
 	}
 	

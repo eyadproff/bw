@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.4.3.final using JasperReports Library version 6.4.3  -->
+<!-- Created with Jaspersoft Studio version 6.5.1.final using JasperReports Library version 6.5.1  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="convicted_record" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="328389c7-9369-4674-94b8-851d0e7b67ed">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
@@ -120,7 +120,7 @@
 				</graphicElement>
 			</rectangle>
 			<rectangle>
-				<reportElement x="244" y="139" width="302" height="23" uuid="c3dd6df4-8fae-4b42-8469-45aa2b6886cf"/>
+				<reportElement x="180" y="139" width="366" height="23" uuid="c3dd6df4-8fae-4b42-8469-45aa2b6886cf"/>
 				<graphicElement>
 					<pen lineWidth="0.5"/>
 				</graphicElement>
@@ -133,7 +133,7 @@
 				<text><![CDATA[رقم الملف العام:]]></text>
 			</staticText>
 			<rectangle>
-				<reportElement x="244" y="159" width="302" height="20" uuid="9e8726d0-dba0-4aea-9828-a5800322ed06"/>
+				<reportElement x="180" y="159" width="366" height="20" uuid="9e8726d0-dba0-4aea-9828-a5800322ed06"/>
 				<graphicElement>
 					<pen lineWidth="0.5"/>
 				</graphicElement>
@@ -150,21 +150,21 @@
 				<imageExpression><![CDATA[$P{FACE_IMAGE}]]></imageExpression>
 			</image>
 			<textField evaluationTime="Report" isBlankWhenNull="true">
-				<reportElement key="" x="244" y="144" width="235" height="15" uuid="94645d11-1691-4e37-b166-a17f26e9b52b"/>
+				<reportElement key="" x="180" y="144" width="299" height="15" uuid="94645d11-1691-4e37-b166-a17f26e9b52b"/>
 				<textElement textAlignment="Right">
 					<font fontName="ArialCustom" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{REF_NUMBER}]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report" isBlankWhenNull="true">
-				<reportElement key="" x="244" y="164" width="262" height="15" uuid="a6f9cc1a-76a4-401f-a7c2-a4c5b9222c17"/>
+				<reportElement key="" x="180" y="164" width="326" height="15" uuid="a6f9cc1a-76a4-401f-a7c2-a4c5b9222c17"/>
 				<textElement textAlignment="Right">
 					<font fontName="ArialCustom" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{REPORT_DATE}]]></textFieldExpression>
 			</textField>
 			<rectangle>
-				<reportElement x="244" y="116" width="302" height="23" uuid="3c9d92fc-8dd4-4a31-9d9f-8f3f8ef0648b"/>
+				<reportElement x="180" y="116" width="366" height="23" uuid="3c9d92fc-8dd4-4a31-9d9f-8f3f8ef0648b"/>
 				<graphicElement>
 					<pen lineWidth="0.5"/>
 				</graphicElement>
@@ -177,7 +177,7 @@
 				<text><![CDATA[رقم الصحيفة:]]></text>
 			</staticText>
 			<textField evaluationTime="Report" isBlankWhenNull="true">
-				<reportElement key="" x="244" y="121" width="235" height="15" uuid="a53c8402-506b-4205-bd4f-92a9e6d264f8"/>
+				<reportElement key="" x="180" y="121" width="299" height="15" uuid="a53c8402-506b-4205-bd4f-92a9e6d264f8"/>
 				<textElement textAlignment="Right">
 					<font fontName="ArialCustom" isBold="false"/>
 				</textElement>
@@ -1401,43 +1401,43 @@
 				</textElement>
 				<text><![CDATA[رقم هوية المدخل:]]></text>
 			</staticText>
-			<image scaleImage="FillFrame" evaluationTime="Report">
+			<image scaleImage="RetainShape" hAlign="Center" vAlign="Middle" evaluationTime="Report">
 				<reportElement x="458" y="359" width="70" height="87" uuid="0c54f5ea-f946-4a7d-81ad-ab0671ede484"/>
 				<imageExpression><![CDATA[$P{FINGER_5}]]></imageExpression>
 			</image>
-			<image scaleImage="FillFrame" evaluationTime="Report">
+			<image scaleImage="RetainShape" hAlign="Center" vAlign="Middle" evaluationTime="Report">
 				<reportElement x="351" y="359" width="70" height="87" uuid="06619c35-04b4-4d7f-8647-a257a678498f"/>
 				<imageExpression><![CDATA[$P{FINGER_4}]]></imageExpression>
 			</image>
-			<image scaleImage="FillFrame" evaluationTime="Report">
+			<image scaleImage="RetainShape" hAlign="Center" vAlign="Middle" evaluationTime="Report">
 				<reportElement x="244" y="359" width="70" height="87" uuid="959f6bb8-5be1-45e3-9ff2-f4f8ffff8fd8"/>
 				<imageExpression><![CDATA[$P{FINGER_3}]]></imageExpression>
 			</image>
-			<image scaleImage="FillFrame" evaluationTime="Report">
+			<image scaleImage="RetainShape" hAlign="Center" vAlign="Middle" evaluationTime="Report">
 				<reportElement x="137" y="359" width="70" height="87" uuid="eece2aa0-ec3d-4d3d-a84a-4810f935fd35"/>
 				<imageExpression><![CDATA[$P{FINGER_2}]]></imageExpression>
 			</image>
-			<image scaleImage="FillFrame" evaluationTime="Report">
+			<image scaleImage="RetainShape" hAlign="Center" vAlign="Middle" evaluationTime="Report">
 				<reportElement x="20" y="358" width="90" height="90" uuid="ec4cff76-5b52-4e84-855b-b576b1a6f2d9"/>
 				<imageExpression><![CDATA[$P{FINGER_1}]]></imageExpression>
 			</image>
-			<image scaleImage="FillFrame" evaluationTime="Report">
+			<image scaleImage="RetainShape" hAlign="Center" vAlign="Middle" evaluationTime="Report">
 				<reportElement x="20" y="478" width="90" height="90" uuid="2aa4d957-cdf4-43f7-9ab8-c07a94a509e0"/>
 				<imageExpression><![CDATA[$P{FINGER_6}]]></imageExpression>
 			</image>
-			<image scaleImage="FillFrame" evaluationTime="Report">
+			<image scaleImage="RetainShape" hAlign="Center" vAlign="Middle" evaluationTime="Report">
 				<reportElement x="137" y="479" width="70" height="87" uuid="1facd06a-a517-4f9d-b7c0-49208fa683cf"/>
 				<imageExpression><![CDATA[$P{FINGER_7}]]></imageExpression>
 			</image>
-			<image scaleImage="FillFrame" evaluationTime="Report">
+			<image scaleImage="RetainShape" hAlign="Center" vAlign="Middle" evaluationTime="Report">
 				<reportElement x="244" y="479" width="70" height="87" uuid="8e455767-bcff-496c-8269-b3402cf2b996"/>
 				<imageExpression><![CDATA[$P{FINGER_8}]]></imageExpression>
 			</image>
-			<image scaleImage="FillFrame" evaluationTime="Report">
+			<image scaleImage="RetainShape" hAlign="Center" vAlign="Middle" evaluationTime="Report">
 				<reportElement x="351" y="479" width="70" height="87" uuid="c521d761-7dd1-4718-b513-120d03389c19"/>
 				<imageExpression><![CDATA[$P{FINGER_9}]]></imageExpression>
 			</image>
-			<image scaleImage="FillFrame" evaluationTime="Report">
+			<image scaleImage="RetainShape" hAlign="Center" vAlign="Middle" evaluationTime="Report">
 				<reportElement x="458" y="479" width="70" height="87" uuid="87649940-b0f8-45c7-9e23-ad436451c826"/>
 				<imageExpression><![CDATA[$P{FINGER_10}]]></imageExpression>
 			</image>

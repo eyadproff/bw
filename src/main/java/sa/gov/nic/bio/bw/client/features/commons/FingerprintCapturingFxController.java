@@ -1,5 +1,7 @@
 package sa.gov.nic.bio.bw.client.features.commons;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.value.ChangeListener;
@@ -53,7 +55,10 @@ import sa.gov.nic.bio.bw.client.features.commons.beans.FingerprintUiComponents;
 import sa.gov.nic.bio.bw.client.features.commons.ui.AutoScalingStackPane;
 import sa.gov.nic.bio.bw.client.features.commons.ui.FourStateTitledPane;
 import sa.gov.nic.bio.bw.client.features.commons.utils.CommonsErrorCodes;
+import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.Finger;
+import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.FingerCoordinate;
 
+import java.awt.Point;
 import java.io.ByteArrayInputStream;
 import java.net.URL;
 import java.util.ArrayList;
@@ -80,6 +85,11 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 	public static final String KEY_ACCEPTED_BAD_QUALITY_FINGERPRINT_MIN_RETIRES =
 																		"ACCEPTED_BAD_QUALITY_FINGERPRINT_MIN_RETIRES";
 	public static final String KEY_CAPTURED_FINGERPRINTS = "CAPTURED_FINGERPRINTS";
+	
+	public static final String KEY_SEGMENTED_FINGERPRINTS = "COLLECTED_FINGERPRINTS";
+	public static final String KEY_SLAP_FINGERPRINTS = "COLLECTED_SLAP_FINGERPRINTS";
+	public static final String KEY_MISSING_FINGERPRINTS = "MISSING_FINGERPRINTS";
+	public static final String KEY_FINGERPRINTS_IMAGES = "FINGERPRINTS_IMAGES";
 	
 	
 	@FXML private VBox paneControlsInnerContainer;
@@ -623,7 +633,6 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 			// auto-run and auto-initialize as configured
 			if(deviceManagerGadgetPaneController.isFingerprintScannerInitialized())
 			{
-				System.out.println("1");
 				if(currentSlapPosition <= FingerPosition.TWO_THUMBS.getPosition()) GuiUtils.showNode(
 																			btnStartFingerprintCapturing, true);
 				activateFingerIndicatorsForNextCapturing(currentSlapPosition);
@@ -668,7 +677,7 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 									 .setFingerprintScannerInitializationListener(null);
 		
 		if(!workflowStarted) return;
-		if(btnStopFingerprintCapturing.isVisible())
+		if(btnStopFingerprintCapturing.isVisible() || piProgress.isVisible())
 		{
 			Platform.runLater(btnStopFingerprintCapturing::fire);
 		}
@@ -754,6 +763,100 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 		
 		// save the complete slaps only
 		uiDataMap.put(KEY_CAPTURED_FINGERPRINTS, capturedFingerprints);
+		
+		prepareFingerprintsForBackend(uiDataMap);
+	}
+	
+	private void prepareFingerprintsForBackend(Map<String, Object> uiDataMap)
+	{
+		List<Finger> segmentedFingerprints = new ArrayList<>();
+		List<Finger> slapFingerprints = new ArrayList<>();
+		Map<Integer, Finger> collectedFingerprintsMap = new HashMap<>();
+		Map<Integer, String> fingerprintImages = new HashMap<>();
+		List<Integer> missingFingerprints = new ArrayList<>();
+		Map<Integer, Integer> slapPositions = new HashMap<>();
+		
+		slapPositions.put(FingerPosition.RIGHT_THUMB.getPosition(),
+		                  FingerPosition.RIGHT_THUMB_SLAP.getPosition());
+		slapPositions.put(FingerPosition.RIGHT_INDEX.getPosition(),
+		                  FingerPosition.RIGHT_SLAP.getPosition());
+		slapPositions.put(FingerPosition.RIGHT_MIDDLE.getPosition(),
+		                  FingerPosition.RIGHT_SLAP.getPosition());
+		slapPositions.put(FingerPosition.RIGHT_RING.getPosition(),
+		                  FingerPosition.RIGHT_SLAP.getPosition());
+		slapPositions.put(FingerPosition.RIGHT_LITTLE.getPosition(),
+		                  FingerPosition.RIGHT_SLAP.getPosition());
+		slapPositions.put(FingerPosition.LEFT_THUMB.getPosition(),
+		                  FingerPosition.LEFT_THUMB_SLAP.getPosition());
+		slapPositions.put(FingerPosition.LEFT_INDEX.getPosition(),
+		                  FingerPosition.LEFT_SLAP.getPosition());
+		slapPositions.put(FingerPosition.LEFT_MIDDLE.getPosition(),
+		                  FingerPosition.LEFT_SLAP.getPosition());
+		slapPositions.put(FingerPosition.LEFT_RING.getPosition(),
+		                  FingerPosition.LEFT_SLAP.getPosition());
+		slapPositions.put(FingerPosition.LEFT_LITTLE.getPosition(),
+		                  FingerPosition.LEFT_SLAP.getPosition());
+		
+		capturedFingerprints.forEach((position, fingerprint) ->
+		{
+		    DMFingerData fingerData = fingerprint.getDmFingerData();
+		    if(fingerData == null) // skipped fingerprint
+		    {
+		        missingFingerprints.add(position);
+		        return;
+		    }
+		
+		    String roundingBox = fingerData.getRoundingBox();
+		    roundingBox = roundingBox.substring("Rect{".length() + 1, roundingBox.length() - 2);
+		    String[] parts = roundingBox.split("[(,\\]\\[\\s]+");
+		
+		    Point topLeft = new Point(Integer.parseInt(parts[0]), Integer.parseInt(parts[1]));
+		    Point topRight = new Point(Integer.parseInt(parts[2]), Integer.parseInt(parts[3]));
+		    Point bottomLeft = new Point(Integer.parseInt(parts[4]), Integer.parseInt(parts[5]));
+		    Point bottomRight = new Point(Integer.parseInt(parts[6]), Integer.parseInt(parts[7]));
+		    FingerCoordinate fingerCoordinate = new FingerCoordinate(topLeft, topRight, bottomLeft,
+		                                                             bottomRight);
+		
+		    fingerprintImages.put(position, fingerData.getFinger());
+		    segmentedFingerprints.add(new Finger(position, fingerData.getFingerWsqImage(), null));
+		
+		    int slapPosition = slapPositions.get(position);
+		    if(collectedFingerprintsMap.containsKey(slapPosition))
+		    {
+		        Finger finger = collectedFingerprintsMap.get(slapPosition);
+		        finger.getFingerCoordinates().add(fingerCoordinate);
+		    }
+		    else
+		    {
+		        Finger finger;
+		        
+		        if(slapPosition == FingerPosition.RIGHT_THUMB_SLAP.getPosition() ||
+				   slapPosition == FingerPosition.LEFT_THUMB_SLAP.getPosition())
+		        {
+			        finger = new Finger(slapPosition, fingerprint.getSlapWsq(), null);
+		        }
+		        else
+		        {
+			        List<FingerCoordinate> fingerCoordinates = new ArrayList<>();
+			        fingerCoordinates.add(fingerCoordinate);
+			        
+		        	finger = new Finger(slapPosition, fingerprint.getSlapWsq(), fingerCoordinates);
+		        }
+		        
+		        slapFingerprints.add(finger);
+		        collectedFingerprintsMap.put(slapPosition, finger);
+		    }
+		});
+		
+		uiDataMap.put(FingerprintCapturingFxController.KEY_FINGERPRINTS_IMAGES, fingerprintImages);
+		uiDataMap.put(FingerprintCapturingFxController.KEY_SLAP_FINGERPRINTS, slapFingerprints);
+		uiDataMap.put(FingerprintCapturingFxController.KEY_SEGMENTED_FINGERPRINTS, segmentedFingerprints);
+		uiDataMap.put(FingerprintCapturingFxController.KEY_MISSING_FINGERPRINTS, missingFingerprints);
+		
+		LOGGER.fine(new Gson().toJson(slapFingerprints,
+		                                     TypeToken.getParameterized(List.class, Finger.class).getType()));
+		LOGGER.fine(new Gson().toJson(missingFingerprints,
+		                                     TypeToken.getParameterized(List.class, Integer.class).getType()));
 	}
 	
 	@FXML

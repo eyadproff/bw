@@ -13,16 +13,14 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.paint.Color;
-import javafx.util.StringConverter;
 import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.beans.HideableItem;
 import sa.gov.nic.bio.bw.client.core.beans.ItemWithText;
-import sa.gov.nic.bio.bw.client.core.utils.GuiLanguage;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.wizard.WizardStepFxControllerBase;
+import sa.gov.nic.bio.bw.client.features.commons.beans.GenderType;
+import sa.gov.nic.bio.bw.client.features.commons.webservice.CountryBean;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.IdType;
-import sa.gov.nic.bio.bw.client.features.commons.webservice.NationalityBean;
-import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.GenderType;
 
 import java.net.URL;
 import java.time.LocalDate;
@@ -32,7 +30,6 @@ import java.util.function.Predicate;
 
 public class PersonInfoPaneFxController extends WizardStepFxControllerBase
 {
-	public static final String KEY_PERSON_INFO_PHOTO = "PERSON_INFO_PHOTO";
 	public static final String KEY_PERSON_INFO_FIRST_NAME = "PERSON_INFO_FIRST_NAME";
 	public static final String KEY_PERSON_INFO_FATHER_NAME = "PERSON_INFO_FATHER__NAME";
 	public static final String KEY_PERSON_INFO_GRANDFATHER_NAME = "PERSON_INFO_GRANDFATHER_NAME";
@@ -60,7 +57,7 @@ public class PersonInfoPaneFxController extends WizardStepFxControllerBase
 	@FXML private TextField txtBirthPlace;
 	@FXML private TextField txtIdNumber;
 	@FXML private ComboBox<ItemWithText<GenderType>> cboGender;
-	@FXML private ComboBox<HideableItem<NationalityBean>> cboNationality;
+	@FXML private ComboBox<HideableItem<CountryBean>> cboNationality;
 	@FXML private ComboBox<ItemWithText<IdType>> cboIdType;
 	@FXML private CheckBox cbBirthDateShowHijri;
 	@FXML private CheckBox cbIdIssuanceDateShowHijri;
@@ -87,40 +84,17 @@ public class PersonInfoPaneFxController extends WizardStepFxControllerBase
 		
 		btnNext.setOnAction(actionEvent -> goNext());
 		
-		@SuppressWarnings("unchecked") List<NationalityBean> nationalities = (List<NationalityBean>)
-												Context.getUserSession().getAttribute("lookups.nationalities");
+		@SuppressWarnings("unchecked") List<CountryBean> countries = (List<CountryBean>)
+												Context.getUserSession().getAttribute("lookups.countries");
 		
 		@SuppressWarnings("unchecked") List<IdType> idTypes = (List<IdType>)
 														Context.getUserSession().getAttribute("lookups.idTypes");
 		
-		GuiUtils.addAutoCompletionSupportToComboBox(cboNationality, nationalities);
+		GuiUtils.addAutoCompletionSupportToComboBox(cboNationality, countries);
 		
 		GuiUtils.makeComboBoxOpenableByPressingEnter(cboGender);
 		GuiUtils.makeComboBoxOpenableByPressingEnter(cboNationality);
 		GuiUtils.makeComboBoxOpenableByPressingEnter(cboIdType);
-		
-		cboNationality.setConverter(new StringConverter<HideableItem<NationalityBean>>()
-		{
-			@Override
-			public String toString(HideableItem<NationalityBean> object)
-			{
-				if(object == null) return "";
-				else return object.getText();
-			}
-			
-			@Override
-			public HideableItem<NationalityBean> fromString(String string)
-			{
-				if(string == null || string.trim().isEmpty()) return null;
-				
-				for(HideableItem<NationalityBean> nationalityBean : cboNationality.getItems())
-				{
-					if(string.equals(nationalityBean.getText())) return nationalityBean;
-				}
-				
-				return null;
-			}
-		});
 		
 		ObservableList<ItemWithText<IdType>> items = FXCollections.observableArrayList();
 		idTypes.forEach(idType ->
@@ -155,17 +129,7 @@ public class PersonInfoPaneFxController extends WizardStepFxControllerBase
 	@Override
 	protected void onAttachedToScene()
 	{
-		cboNationality.getItems().forEach(item ->
-		{
-		    NationalityBean nationalityBean = item.getObject();
-		
-		    String text;
-		    if(Context.getGuiLanguage() == GuiLanguage.ARABIC) text = nationalityBean.getDescriptionAR();
-		    else text = nationalityBean.getDescriptionEN();
-		
-		    String resultText = text.trim() + " (" + nationalityBean.getMofaNationalityCode() + ")";
-		    item.setText(resultText);
-		});
+		GuiUtils.setupNationalityComboBox(cboNationality);
 	}
 	
 	@Override
@@ -206,22 +170,22 @@ public class PersonInfoPaneFxController extends WizardStepFxControllerBase
 					                        .ifPresent(cboGender::setValue);
 			else if(focusedNode == null) focusedNode = cboGender;
 			
-			NationalityBean nationalityBean = (NationalityBean) uiInputData.get(KEY_PERSON_INFO_NATIONALITY);
-			if(nationalityBean != null) cboNationality.getItems()
+			CountryBean countryBean = (CountryBean) uiInputData.get(KEY_PERSON_INFO_NATIONALITY);
+			if(countryBean != null) cboNationality.getItems()
 						                              .stream()
-						                              .filter(item -> item.getObject() == nationalityBean)
+						                              .filter(item -> item.getObject() == countryBean)
 						                              .findFirst()
 						                              .ifPresent(cboNationality::setValue);
 			else
 			{
 				String text = resources.getString("combobox.unknownNationality");
-				NationalityBean unknownNationality = new NationalityBean(0, null,
-				                                                         text, text);
+				CountryBean unknownNationality = new CountryBean(0, null,
+				                                                 text, text);
 				
-				HideableItem<NationalityBean> hideableItem = new HideableItem<>(unknownNationality);
+				HideableItem<CountryBean> hideableItem = new HideableItem<>(unknownNationality);
 				hideableItem.setText(text);
 				
-				ObservableList<HideableItem<NationalityBean>> items = FXCollections.observableArrayList();
+				ObservableList<HideableItem<CountryBean>> items = FXCollections.observableArrayList();
 				items.add(hideableItem);
 				items.addAll(cboNationality.getItems());
 				cboNationality.setItems(items);
@@ -278,7 +242,7 @@ public class PersonInfoPaneFxController extends WizardStepFxControllerBase
 		if(genderItem != null) uiDataMap.put(KEY_PERSON_INFO_GENDER, genderItem.getItem());
 		else uiDataMap.remove(KEY_PERSON_INFO_GENDER);
 		
-		HideableItem<NationalityBean> nationalityItem = cboNationality.getValue();
+		HideableItem<CountryBean> nationalityItem = cboNationality.getValue();
 		if(nationalityItem != null) uiDataMap.put(KEY_PERSON_INFO_NATIONALITY, nationalityItem.getObject());
 		else uiDataMap.remove(KEY_PERSON_INFO_NATIONALITY);
 		
