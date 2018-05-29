@@ -1,5 +1,13 @@
 # Release Notes:
 
+## v2018.05.5
+
+- Update biokit-library from v2018.05.1 to v2018.05.2.
+
+## v2018.05.4
+
+- Fix the datetime format by modifying the timezone information.
+
 ## v2018.05.3
 
 - Add "Visa Applicants Enrollment".
