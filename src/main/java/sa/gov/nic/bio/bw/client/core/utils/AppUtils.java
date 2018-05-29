@@ -57,7 +57,7 @@ public final class AppUtils
 	private static final String FONT_AWESOME_FILE = "sa/gov/nic/bio/bw/client/core/fonts/" +
 													"fontawesome-webfont-4.7.0.2016.ttf";
 	private static final DateTimeFormatter DATE_TIME_FORMATTER =
-													DateTimeFormatter.ofPattern("hh:mm:ss a O - EEEE dd MMMM yyyy G");
+													DateTimeFormatter.ofPattern("hh:mm:ss a (Z) - EEEE dd MMMM yyyy G");
 	private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd MMMM yyyy G");
 	private static final DateTimeFormatter FORMAL_DATE_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 	private static final HijrahChronology nicChronology = HijrahChronology.INSTANCE;
