@@ -141,8 +141,8 @@ public class JudgmentDetailsPaneFxController extends WizardStepFxControllerBase
 			lblCrimeClassification1.setPadding(new Insets(0, 3.0, 0, 0));
 		}
 		
-		GuiUtils.applyValidatorToTextField(txtPoliceFileNumber, null, null, 10);
-		GuiUtils.applyValidatorToTextField(txtJudgmentNumber, null, null, 10);
+		GuiUtils.applyValidatorToTextField(txtPoliceFileNumber, null, null, 20);
+		GuiUtils.applyValidatorToTextField(txtJudgmentNumber, null, null, 20);
 		GuiUtils.applyValidatorToTextField(txtJudgmentIssuer, null, null, 30);
 		
 		BooleanBinding cboCrimeClassification1Binding = cboCrimeEvent1.valueProperty().isNull()

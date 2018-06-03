@@ -1026,7 +1026,7 @@
 				<text><![CDATA[تعهد]]></text>
 			</staticText>
 			<rectangle>
-				<reportElement x="11" y="311" width="535" height="22" uuid="b0af98a0-b9d3-46ac-8220-6d28981e3067">
+				<reportElement x="11" y="311" width="535" height="31" uuid="b0af98a0-b9d3-46ac-8220-6d28981e3067">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
@@ -1035,7 +1035,7 @@
 				</graphicElement>
 			</rectangle>
 			<staticText>
-				<reportElement key="" x="515" y="315" width="28" height="15" uuid="2d0384be-3266-49a8-9279-55b767cd5499">
+				<reportElement key="" x="515" y="319" width="28" height="15" uuid="2d0384be-3266-49a8-9279-55b767cd5499">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Right">
@@ -1044,7 +1044,7 @@
 				<text><![CDATA[أخرى:]]></text>
 			</staticText>
 			<rectangle>
-				<reportElement x="439" y="333" width="107" height="17" uuid="131fca26-f0d7-404f-9f4f-9ca786d1cf53">
+				<reportElement x="439" y="340" width="107" height="17" uuid="131fca26-f0d7-404f-9f4f-9ca786d1cf53">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
@@ -1053,7 +1053,7 @@
 				</graphicElement>
 			</rectangle>
 			<rectangle>
-				<reportElement x="332" y="333" width="107" height="17" uuid="aaf8b3fc-36c5-4423-9e68-1ad2b6350d3a">
+				<reportElement x="332" y="340" width="107" height="17" uuid="aaf8b3fc-36c5-4423-9e68-1ad2b6350d3a">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
@@ -1062,7 +1062,7 @@
 				</graphicElement>
 			</rectangle>
 			<rectangle>
-				<reportElement x="225" y="333" width="107" height="17" uuid="7ed3d18d-189c-4a8b-a76c-03f1e08a6a4c">
+				<reportElement x="225" y="340" width="107" height="17" uuid="7ed3d18d-189c-4a8b-a76c-03f1e08a6a4c">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
@@ -1071,7 +1071,7 @@
 				</graphicElement>
 			</rectangle>
 			<rectangle>
-				<reportElement x="118" y="333" width="107" height="17" uuid="750fa28f-84bf-4119-8fc3-56a0e88688be">
+				<reportElement x="118" y="340" width="107" height="17" uuid="750fa28f-84bf-4119-8fc3-56a0e88688be">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
@@ -1080,7 +1080,7 @@
 				</graphicElement>
 			</rectangle>
 			<rectangle>
-				<reportElement x="11" y="333" width="107" height="17" uuid="ef3d40da-2a76-42b5-bc24-5f69649c8a29">
+				<reportElement x="11" y="340" width="107" height="17" uuid="ef3d40da-2a76-42b5-bc24-5f69649c8a29">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
@@ -1089,7 +1089,7 @@
 				</graphicElement>
 			</rectangle>
 			<staticText>
-				<reportElement key="" x="491" y="335" width="52" height="15" uuid="f295c341-197c-4376-8d61-c9523b3e46bd">
+				<reportElement key="" x="491" y="342" width="52" height="15" uuid="f295c341-197c-4376-8d61-c9523b3e46bd">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Right">
@@ -1098,7 +1098,7 @@
 				<text><![CDATA[الخنصر الأيمن]]></text>
 			</staticText>
 			<staticText>
-				<reportElement key="" x="384" y="335" width="52" height="15" uuid="47bddaf2-76bb-4085-a22f-3ca27bb924f9">
+				<reportElement key="" x="384" y="342" width="52" height="15" uuid="47bddaf2-76bb-4085-a22f-3ca27bb924f9">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Right">
@@ -1107,7 +1107,7 @@
 				<text><![CDATA[البنصر الأيمن]]></text>
 			</staticText>
 			<staticText>
-				<reportElement key="" x="271" y="335" width="58" height="15" uuid="b593cb72-c158-433b-ae01-397b03326157">
+				<reportElement key="" x="271" y="342" width="58" height="15" uuid="b593cb72-c158-433b-ae01-397b03326157">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Right">
@@ -1116,7 +1116,7 @@
 				<text><![CDATA[الأوسط الأيمن]]></text>
 			</staticText>
 			<staticText>
-				<reportElement key="" x="171" y="335" width="51" height="15" uuid="8d742f2e-55ce-4bc7-a751-d163c52a7a59">
+				<reportElement key="" x="171" y="342" width="51" height="15" uuid="8d742f2e-55ce-4bc7-a751-d163c52a7a59">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Right">
@@ -1125,7 +1125,7 @@
 				<text><![CDATA[السبابة اليمنى]]></text>
 			</staticText>
 			<staticText>
-				<reportElement key="" x="67" y="335" width="48" height="15" uuid="65508db6-ef0a-4797-b0a2-fc12d667137e">
+				<reportElement key="" x="67" y="342" width="48" height="15" uuid="65508db6-ef0a-4797-b0a2-fc12d667137e">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Right">
@@ -1134,42 +1134,42 @@
 				<text><![CDATA[الإبهام الأيمن]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="442" y="335" width="54" height="15" uuid="07db94af-0ca6-4ccb-8017-04a8c18b36a7"/>
+				<reportElement x="442" y="342" width="54" height="15" uuid="07db94af-0ca6-4ccb-8017-04a8c18b36a7"/>
 				<textElement markup="none">
 					<font fontName="ArialCustom" size="9" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Right Little]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="335" y="335" width="54" height="15" uuid="d956b70b-7740-4230-983e-0fbff047b7d5"/>
+				<reportElement x="335" y="342" width="54" height="15" uuid="d956b70b-7740-4230-983e-0fbff047b7d5"/>
 				<textElement markup="none">
 					<font fontName="ArialCustom" size="9" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Right Ring]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="228" y="335" width="60" height="15" uuid="fa26f859-83b8-4278-82af-6e9e95354412"/>
+				<reportElement x="228" y="342" width="60" height="15" uuid="fa26f859-83b8-4278-82af-6e9e95354412"/>
 				<textElement markup="none">
 					<font fontName="ArialCustom" size="9" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Right Middle]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="120" y="335" width="60" height="15" uuid="52e1af32-3ed2-49ec-a115-fbac3e16e3c5"/>
+				<reportElement x="120" y="342" width="60" height="15" uuid="52e1af32-3ed2-49ec-a115-fbac3e16e3c5"/>
 				<textElement markup="none">
 					<font fontName="ArialCustom" size="9" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Right Index]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="14" y="335" width="64" height="15" uuid="65dd5373-4575-4f9c-b820-73fd68b5adea"/>
+				<reportElement x="14" y="342" width="64" height="15" uuid="65dd5373-4575-4f9c-b820-73fd68b5adea"/>
 				<textElement markup="none">
 					<font fontName="ArialCustom" size="9" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Right Thumb]]></text>
 			</staticText>
 			<rectangle>
-				<reportElement x="439" y="350" width="107" height="105" uuid="76b21c42-4a23-4b4a-940f-79d61c93e84b">
+				<reportElement x="439" y="357" width="107" height="105" uuid="76b21c42-4a23-4b4a-940f-79d61c93e84b">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
@@ -1178,7 +1178,7 @@
 				</graphicElement>
 			</rectangle>
 			<rectangle>
-				<reportElement x="332" y="350" width="107" height="105" uuid="dd5540c6-4b79-482b-acf7-f400134536e2">
+				<reportElement x="332" y="357" width="107" height="105" uuid="dd5540c6-4b79-482b-acf7-f400134536e2">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
@@ -1187,7 +1187,7 @@
 				</graphicElement>
 			</rectangle>
 			<rectangle>
-				<reportElement x="225" y="350" width="107" height="105" uuid="c0e38ca3-6c87-4979-8791-0d716f0a1c0a">
+				<reportElement x="225" y="357" width="107" height="105" uuid="c0e38ca3-6c87-4979-8791-0d716f0a1c0a">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
@@ -1196,7 +1196,7 @@
 				</graphicElement>
 			</rectangle>
 			<rectangle>
-				<reportElement x="118" y="350" width="107" height="105" uuid="dfe924e0-28d1-452b-aa42-c37d23d8f062">
+				<reportElement x="118" y="357" width="107" height="105" uuid="dfe924e0-28d1-452b-aa42-c37d23d8f062">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
@@ -1205,7 +1205,7 @@
 				</graphicElement>
 			</rectangle>
 			<rectangle>
-				<reportElement x="11" y="350" width="107" height="105" uuid="ed849ca5-b86c-4d1d-af17-5de4775a2075">
+				<reportElement x="11" y="357" width="107" height="105" uuid="ed849ca5-b86c-4d1d-af17-5de4775a2075">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
@@ -1214,7 +1214,7 @@
 				</graphicElement>
 			</rectangle>
 			<rectangle>
-				<reportElement x="439" y="455" width="107" height="15" uuid="0ff2734a-21c5-43fb-9ef5-61588b71a7ed">
+				<reportElement x="439" y="462" width="107" height="15" uuid="0ff2734a-21c5-43fb-9ef5-61588b71a7ed">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
@@ -1223,7 +1223,7 @@
 				</graphicElement>
 			</rectangle>
 			<staticText>
-				<reportElement key="" x="488" y="457" width="55" height="15" uuid="74d31917-9db7-43b2-ae55-370c0447421b">
+				<reportElement key="" x="488" y="464" width="55" height="15" uuid="74d31917-9db7-43b2-ae55-370c0447421b">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Right">
@@ -1232,14 +1232,14 @@
 				<text><![CDATA[الخنصر الأيسر]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="442" y="457" width="46" height="15" uuid="0bf2f107-2671-4028-a906-c821654babd4"/>
+				<reportElement x="442" y="464" width="46" height="15" uuid="0bf2f107-2671-4028-a906-c821654babd4"/>
 				<textElement markup="none">
 					<font fontName="ArialCustom" size="9" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Left Little]]></text>
 			</staticText>
 			<rectangle>
-				<reportElement x="439" y="470" width="107" height="105" uuid="654e1e0d-ccff-489b-b7fc-d963635119d8">
+				<reportElement x="439" y="477" width="107" height="105" uuid="654e1e0d-ccff-489b-b7fc-d963635119d8">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
@@ -1248,7 +1248,7 @@
 				</graphicElement>
 			</rectangle>
 			<rectangle>
-				<reportElement x="332" y="470" width="107" height="105" uuid="da12326a-962a-4739-b3f3-617a308d0dcb">
+				<reportElement x="332" y="477" width="107" height="105" uuid="da12326a-962a-4739-b3f3-617a308d0dcb">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
@@ -1257,7 +1257,7 @@
 				</graphicElement>
 			</rectangle>
 			<rectangle>
-				<reportElement x="332" y="455" width="107" height="15" uuid="fafe4e14-1c91-4a23-bc09-b5cf18c1f945">
+				<reportElement x="332" y="462" width="107" height="15" uuid="fafe4e14-1c91-4a23-bc09-b5cf18c1f945">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
@@ -1266,14 +1266,14 @@
 				</graphicElement>
 			</rectangle>
 			<staticText>
-				<reportElement x="335" y="457" width="45" height="15" uuid="ac71e9ff-4795-4c84-8045-c79acf52579d"/>
+				<reportElement x="335" y="464" width="45" height="15" uuid="ac71e9ff-4795-4c84-8045-c79acf52579d"/>
 				<textElement markup="none">
 					<font fontName="ArialCustom" size="9" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Left Ring]]></text>
 			</staticText>
 			<staticText>
-				<reportElement key="" x="382" y="457" width="54" height="15" uuid="a86c40cc-6534-4ea4-931e-855386f26e6d">
+				<reportElement key="" x="382" y="464" width="54" height="15" uuid="a86c40cc-6534-4ea4-931e-855386f26e6d">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Right">
@@ -1282,7 +1282,7 @@
 				<text><![CDATA[البنصر الأيسر]]></text>
 			</staticText>
 			<rectangle>
-				<reportElement x="225" y="455" width="107" height="15" uuid="7028a80f-98cb-4126-ae4b-2c553d9e2d25">
+				<reportElement x="225" y="462" width="107" height="15" uuid="7028a80f-98cb-4126-ae4b-2c553d9e2d25">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
@@ -1291,7 +1291,7 @@
 				</graphicElement>
 			</rectangle>
 			<rectangle>
-				<reportElement x="225" y="470" width="107" height="105" uuid="32d06153-7d34-4753-90e1-a7abdec448b1">
+				<reportElement x="225" y="477" width="107" height="105" uuid="32d06153-7d34-4753-90e1-a7abdec448b1">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
@@ -1300,14 +1300,14 @@
 				</graphicElement>
 			</rectangle>
 			<staticText>
-				<reportElement x="228" y="457" width="55" height="15" uuid="f658b1db-6fd5-47a9-a079-b8da82a942c8"/>
+				<reportElement x="228" y="464" width="55" height="15" uuid="f658b1db-6fd5-47a9-a079-b8da82a942c8"/>
 				<textElement markup="none">
 					<font fontName="ArialCustom" size="9" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Left Middle]]></text>
 			</staticText>
 			<staticText>
-				<reportElement key="" x="276" y="457" width="54" height="15" uuid="0a1eed5d-6678-4f6e-9367-8e80b1595858">
+				<reportElement key="" x="276" y="464" width="54" height="15" uuid="0a1eed5d-6678-4f6e-9367-8e80b1595858">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Right">
@@ -1316,7 +1316,7 @@
 				<text><![CDATA[الأوسط الأيسر]]></text>
 			</staticText>
 			<rectangle>
-				<reportElement x="118" y="455" width="107" height="15" uuid="623527cc-156c-4d8d-912f-11819ff57a10">
+				<reportElement x="118" y="462" width="107" height="15" uuid="623527cc-156c-4d8d-912f-11819ff57a10">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
@@ -1325,7 +1325,7 @@
 				</graphicElement>
 			</rectangle>
 			<rectangle>
-				<reportElement x="118" y="470" width="107" height="105" uuid="5d32e4d4-95c2-459f-9136-b140470b3ffd">
+				<reportElement x="118" y="477" width="107" height="105" uuid="5d32e4d4-95c2-459f-9136-b140470b3ffd">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
@@ -1334,14 +1334,14 @@
 				</graphicElement>
 			</rectangle>
 			<staticText>
-				<reportElement x="120" y="457" width="49" height="15" uuid="46c16b45-a8bc-43ae-aeab-b0314a2a1d1b"/>
+				<reportElement x="120" y="464" width="49" height="15" uuid="46c16b45-a8bc-43ae-aeab-b0314a2a1d1b"/>
 				<textElement markup="none">
 					<font fontName="ArialCustom" size="9" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Left Index]]></text>
 			</staticText>
 			<staticText>
-				<reportElement key="" x="164" y="457" width="58" height="15" uuid="c129fdbf-892b-4be7-a366-17df9b0b4c6c">
+				<reportElement key="" x="164" y="464" width="58" height="15" uuid="c129fdbf-892b-4be7-a366-17df9b0b4c6c">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Right">
@@ -1350,7 +1350,7 @@
 				<text><![CDATA[السبابة اليسرى]]></text>
 			</staticText>
 			<rectangle>
-				<reportElement x="11" y="455" width="107" height="15" uuid="91d7186b-e17d-4622-b6ae-cbdcd980ffd7">
+				<reportElement x="11" y="462" width="107" height="15" uuid="91d7186b-e17d-4622-b6ae-cbdcd980ffd7">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
@@ -1359,7 +1359,7 @@
 				</graphicElement>
 			</rectangle>
 			<rectangle>
-				<reportElement x="11" y="470" width="107" height="105" uuid="29da8ab0-990e-4f97-bd5b-eec9bb4a1e8a">
+				<reportElement x="11" y="477" width="107" height="105" uuid="29da8ab0-990e-4f97-bd5b-eec9bb4a1e8a">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
@@ -1368,14 +1368,14 @@
 				</graphicElement>
 			</rectangle>
 			<staticText>
-				<reportElement x="14" y="457" width="59" height="15" uuid="4888784e-60c8-4b5a-b555-258ba6991825"/>
+				<reportElement x="14" y="464" width="59" height="15" uuid="4888784e-60c8-4b5a-b555-258ba6991825"/>
 				<textElement markup="none">
 					<font fontName="ArialCustom" size="9" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Left Thumb]]></text>
 			</staticText>
 			<staticText>
-				<reportElement key="" x="66" y="457" width="48" height="15" uuid="9b5ada82-2924-481d-bf2a-e6f1c6837301">
+				<reportElement key="" x="66" y="464" width="48" height="15" uuid="9b5ada82-2924-481d-bf2a-e6f1c6837301">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Right">
@@ -1384,7 +1384,7 @@
 				<text><![CDATA[الإبهام الأيسر]]></text>
 			</staticText>
 			<rectangle>
-				<reportElement x="11" y="575" width="535" height="18" uuid="547c233c-719b-474b-98b2-7404e6c1eaed">
+				<reportElement x="11" y="582" width="535" height="18" uuid="547c233c-719b-474b-98b2-7404e6c1eaed">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
@@ -1393,7 +1393,7 @@
 				</graphicElement>
 			</rectangle>
 			<staticText>
-				<reportElement key="" x="477" y="577" width="65" height="15" uuid="3c7c144c-b7e6-4796-a6cf-4f3a05e063ab">
+				<reportElement key="" x="477" y="584" width="65" height="15" uuid="3c7c144c-b7e6-4796-a6cf-4f3a05e063ab">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Right">
@@ -1402,43 +1402,43 @@
 				<text><![CDATA[رقم هوية المدخل:]]></text>
 			</staticText>
 			<image scaleImage="RetainShape" hAlign="Center" vAlign="Middle" evaluationTime="Report">
-				<reportElement x="458" y="359" width="70" height="87" uuid="0c54f5ea-f946-4a7d-81ad-ab0671ede484"/>
+				<reportElement x="458" y="366" width="70" height="87" uuid="0c54f5ea-f946-4a7d-81ad-ab0671ede484"/>
 				<imageExpression><![CDATA[$P{FINGER_5}]]></imageExpression>
 			</image>
 			<image scaleImage="RetainShape" hAlign="Center" vAlign="Middle" evaluationTime="Report">
-				<reportElement x="351" y="359" width="70" height="87" uuid="06619c35-04b4-4d7f-8647-a257a678498f"/>
+				<reportElement x="351" y="366" width="70" height="87" uuid="06619c35-04b4-4d7f-8647-a257a678498f"/>
 				<imageExpression><![CDATA[$P{FINGER_4}]]></imageExpression>
 			</image>
 			<image scaleImage="RetainShape" hAlign="Center" vAlign="Middle" evaluationTime="Report">
-				<reportElement x="244" y="359" width="70" height="87" uuid="959f6bb8-5be1-45e3-9ff2-f4f8ffff8fd8"/>
+				<reportElement x="244" y="366" width="70" height="87" uuid="959f6bb8-5be1-45e3-9ff2-f4f8ffff8fd8"/>
 				<imageExpression><![CDATA[$P{FINGER_3}]]></imageExpression>
 			</image>
 			<image scaleImage="RetainShape" hAlign="Center" vAlign="Middle" evaluationTime="Report">
-				<reportElement x="137" y="359" width="70" height="87" uuid="eece2aa0-ec3d-4d3d-a84a-4810f935fd35"/>
+				<reportElement x="137" y="366" width="70" height="87" uuid="eece2aa0-ec3d-4d3d-a84a-4810f935fd35"/>
 				<imageExpression><![CDATA[$P{FINGER_2}]]></imageExpression>
 			</image>
 			<image scaleImage="RetainShape" hAlign="Center" vAlign="Middle" evaluationTime="Report">
-				<reportElement x="20" y="358" width="90" height="90" uuid="ec4cff76-5b52-4e84-855b-b576b1a6f2d9"/>
+				<reportElement x="20" y="365" width="90" height="90" uuid="ec4cff76-5b52-4e84-855b-b576b1a6f2d9"/>
 				<imageExpression><![CDATA[$P{FINGER_1}]]></imageExpression>
 			</image>
 			<image scaleImage="RetainShape" hAlign="Center" vAlign="Middle" evaluationTime="Report">
-				<reportElement x="20" y="478" width="90" height="90" uuid="2aa4d957-cdf4-43f7-9ab8-c07a94a509e0"/>
+				<reportElement x="20" y="485" width="90" height="90" uuid="2aa4d957-cdf4-43f7-9ab8-c07a94a509e0"/>
 				<imageExpression><![CDATA[$P{FINGER_6}]]></imageExpression>
 			</image>
 			<image scaleImage="RetainShape" hAlign="Center" vAlign="Middle" evaluationTime="Report">
-				<reportElement x="137" y="479" width="70" height="87" uuid="1facd06a-a517-4f9d-b7c0-49208fa683cf"/>
+				<reportElement x="137" y="486" width="70" height="87" uuid="1facd06a-a517-4f9d-b7c0-49208fa683cf"/>
 				<imageExpression><![CDATA[$P{FINGER_7}]]></imageExpression>
 			</image>
 			<image scaleImage="RetainShape" hAlign="Center" vAlign="Middle" evaluationTime="Report">
-				<reportElement x="244" y="479" width="70" height="87" uuid="8e455767-bcff-496c-8269-b3402cf2b996"/>
+				<reportElement x="244" y="486" width="70" height="87" uuid="8e455767-bcff-496c-8269-b3402cf2b996"/>
 				<imageExpression><![CDATA[$P{FINGER_8}]]></imageExpression>
 			</image>
 			<image scaleImage="RetainShape" hAlign="Center" vAlign="Middle" evaluationTime="Report">
-				<reportElement x="351" y="479" width="70" height="87" uuid="c521d761-7dd1-4718-b513-120d03389c19"/>
+				<reportElement x="351" y="486" width="70" height="87" uuid="c521d761-7dd1-4718-b513-120d03389c19"/>
 				<imageExpression><![CDATA[$P{FINGER_9}]]></imageExpression>
 			</image>
 			<image scaleImage="RetainShape" hAlign="Center" vAlign="Middle" evaluationTime="Report">
-				<reportElement x="458" y="479" width="70" height="87" uuid="87649940-b0f8-45c7-9e23-ad436451c826"/>
+				<reportElement x="458" y="486" width="70" height="87" uuid="87649940-b0f8-45c7-9e23-ad436451c826"/>
 				<imageExpression><![CDATA[$P{FINGER_10}]]></imageExpression>
 			</image>
 			<textField evaluationTime="Report" isBlankWhenNull="true">
@@ -1484,16 +1484,16 @@
 				<textFieldExpression><![CDATA[$P{ID_TYPE}]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report" isBlankWhenNull="true">
-				<reportElement key="" x="20" y="68" width="163" height="15" uuid="012c3b57-259d-4bb7-b523-29334f7411ac"/>
-				<textElement textAlignment="Center">
-					<font fontName="ArialCustom" isBold="false"/>
+				<reportElement key="" x="11" y="68" width="181" height="15" uuid="012c3b57-259d-4bb7-b523-29334f7411ac"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="ArialCustom" size="8" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{ID_ISSUANCE}]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report" isBlankWhenNull="true">
-				<reportElement key="" x="384" y="95" width="154" height="15" uuid="2a48f368-6ead-4803-af0a-1cd1c5215351"/>
-				<textElement textAlignment="Center">
-					<font fontName="ArialCustom" isBold="false"/>
+				<reportElement key="" x="375" y="95" width="171" height="15" uuid="2a48f368-6ead-4803-af0a-1cd1c5215351"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="ArialCustom" size="8" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{BIRTH_OF_DATE}]]></textFieldExpression>
 			</textField>
@@ -1505,9 +1505,9 @@
 				<textFieldExpression><![CDATA[$P{BIRTH_PLACE}]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report" isBlankWhenNull="true">
-				<reportElement key="" x="20" y="95" width="163" height="15" uuid="d3dc4c00-02b6-4685-9683-0c966053ccff"/>
-				<textElement textAlignment="Center">
-					<font fontName="ArialCustom" isBold="false"/>
+				<reportElement key="" x="11" y="95" width="181" height="15" uuid="d3dc4c00-02b6-4685-9683-0c966053ccff"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="ArialCustom" size="8" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{ID_EXPIRY}]]></textFieldExpression>
 			</textField>
@@ -1519,9 +1519,9 @@
 				<textFieldExpression><![CDATA[$P{POLICE_FILE_NUMBER}]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report" isBlankWhenNull="true">
-				<reportElement key="" x="199" y="122" width="169" height="15" uuid="953bbe8a-e968-47e9-886a-78b35120e068"/>
-				<textElement textAlignment="Center">
-					<font fontName="ArialCustom" isBold="false"/>
+				<reportElement key="" x="192" y="122" width="183" height="15" uuid="953bbe8a-e968-47e9-886a-78b35120e068"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="ArialCustom" size="8" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{ARREST_DATE}]]></textFieldExpression>
 			</textField>
@@ -1540,9 +1540,9 @@
 				<textFieldExpression><![CDATA[$P{JUDGMENT_ISSUER}]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report" isBlankWhenNull="true">
-				<reportElement key="" x="20" y="122" width="163" height="15" uuid="3182cf41-8ed2-43e3-ae04-bea3e5c69829"/>
-				<textElement textAlignment="Center">
-					<font fontName="ArialCustom" isBold="false"/>
+				<reportElement key="" x="12" y="122" width="180" height="15" uuid="3182cf41-8ed2-43e3-ae04-bea3e5c69829"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="ArialCustom" size="8" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{JUDGMENT_DATE}]]></textFieldExpression>
 			</textField>
@@ -1554,7 +1554,7 @@
 				<textFieldExpression><![CDATA[$P{JUDGMENT_NUMBER}]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report" isBlankWhenNull="true">
-				<reportElement key="" x="233" y="578" width="240" height="15" uuid="5adb409e-5c7e-4ff6-b823-142db329a0ce"/>
+				<reportElement key="" x="233" y="585" width="240" height="15" uuid="5adb409e-5c7e-4ff6-b823-142db329a0ce"/>
 				<textElement textAlignment="Right">
 					<font fontName="ArialCustom" isBold="false"/>
 				</textElement>
@@ -1679,9 +1679,9 @@
 				<text><![CDATA[✓]]></text>
 			</staticText>
 			<textField evaluationTime="Report" isBlankWhenNull="true">
-				<reportElement key="" x="14" y="316" width="501" height="15" uuid="5b33ae44-b7c6-4632-a79a-dca85dbe60d4"/>
-				<textElement textAlignment="Right">
-					<font fontName="ArialCustom" isBold="false"/>
+				<reportElement key="" x="14" y="312" width="501" height="28" uuid="5b33ae44-b7c6-4632-a79a-dca85dbe60d4"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="ArialCustom" size="8" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{OTHER}]]></textFieldExpression>
 			</textField>

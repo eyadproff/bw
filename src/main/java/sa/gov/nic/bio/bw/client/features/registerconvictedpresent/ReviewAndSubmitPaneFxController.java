@@ -218,7 +218,8 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 				lblBirthPlace.setText(AppUtils.replaceNumbersOnly(subjBirthPlace, Locale.getDefault()));
 			
 			Long subjBirthDate = convictedReport.getSubjBirthDate();
-			if(subjBirthDate != null) lblBirthDate.setText(AppUtils.formatGregorianDate(subjBirthDate));
+			if(subjBirthDate != null)
+				lblBirthDate.setText(AppUtils.formatHijriGregorianDate(subjBirthDate * 1000));
 			
 			String subjDocId = convictedReport.getSubjDocId();
 			if(subjDocId != null && !subjDocId.trim().isEmpty()) lblIdNumber.setText(subjDocId);
@@ -245,10 +246,12 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 			}
 			
 			Long subjDocIssDate = convictedReport.getSubjDocIssDate();
-			if(subjDocIssDate != null) lblIdIssuanceDate.setText(AppUtils.formatGregorianDate(subjDocIssDate));
+			if(subjDocIssDate != null) lblIdIssuanceDate.setText(
+					AppUtils.formatHijriGregorianDate(subjDocIssDate * 1000));
 			
 			Long subjDocExpDate = convictedReport.getSubjDocExpDate();
-			if(subjDocExpDate != null) lblIdExpiry.setText(AppUtils.formatGregorianDate(subjDocExpDate));
+			if(subjDocExpDate != null) lblIdExpiry.setText(
+					AppUtils.formatHijriGregorianDate(subjDocExpDate * 1000));
 			
 			JudgementInfo judgementInfo = convictedReport.getSubjJudgementInfo();
 			
@@ -287,8 +290,8 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 			if(policeFileNum != null)
 						lblPoliceFileNumber.setText(AppUtils.replaceNumbersOnly(policeFileNum, Locale.getDefault()));
 			lblJudgmentNumber.setText(AppUtils.replaceNumbersOnly(judgementInfo.getJudgNum(), Locale.getDefault()));
-			lblArrestDate.setText(AppUtils.formatGregorianDate(judgementInfo.getArrestDate()));
-			lblJudgmentDate.setText(AppUtils.formatGregorianDate(judgementInfo.getJudgDate()));
+			lblArrestDate.setText(AppUtils.formatHijriGregorianDate(judgementInfo.getArrestDate() * 1000));
+			lblJudgmentDate.setText(AppUtils.formatHijriGregorianDate(judgementInfo.getJudgDate() * 1000));
 			lblTazeerLashes.setText(AppUtils.replaceNumbersOnly(
 					String.valueOf(judgementInfo.getJudgTazeerLashesCount()), Locale.getDefault()));
 			lblHadLashes.setText(AppUtils.replaceNumbersOnly(

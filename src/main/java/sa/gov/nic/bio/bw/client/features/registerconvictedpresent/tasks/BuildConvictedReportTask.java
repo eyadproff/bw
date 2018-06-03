@@ -172,21 +172,25 @@ public class BuildConvictedReportTask extends Task<JasperPrint>
 		}
 		
 		Long subjDocIssDate = convictedReport.getSubjDocIssDate();
-		if(subjDocIssDate != null) params.put(PARAMETER_ID_ISSUANCE, AppUtils.formatGregorianDate(subjDocIssDate));
+		if(subjDocIssDate != null) params.put(PARAMETER_ID_ISSUANCE,
+		                                      AppUtils.formatHijriGregorianDate(subjDocIssDate * 1000));
 		
 		Long subjBirthDate = convictedReport.getSubjBirthDate();
-		if(subjBirthDate != null) params.put(PARAMETER_BIRTH_OF_DATE, AppUtils.formatGregorianDate(subjBirthDate));
+		if(subjBirthDate != null) params.put(PARAMETER_BIRTH_OF_DATE,
+		                                     AppUtils.formatHijriGregorianDate(subjBirthDate * 1000));
 		params.put(PARAMETER_BIRTH_PLACE, convictedReport.getSubjBirthPlace());
 		
 		Long subjDocExpDate = convictedReport.getSubjDocExpDate();
-		if(subjDocExpDate != null) params.put(PARAMETER_ID_EXPIRY, AppUtils.formatGregorianDate(subjDocExpDate));
+		if(subjDocExpDate != null) params.put(PARAMETER_ID_EXPIRY,
+		                                      AppUtils.formatHijriGregorianDate(subjDocExpDate * 1000));
 		
 		JudgementInfo judgementInfo = convictedReport.getSubjJudgementInfo();
 		
 		String policeFileNum = judgementInfo.getPoliceFileNum();
 		if(policeFileNum != null) params.put(PARAMETER_POLICE_FILE_NUMBER,
 	                                         AppUtils.replaceNumbersOnly(policeFileNum, Locales.SAUDI_AR_LOCALE));
-		params.put(PARAMETER_ARREST_DATE, AppUtils.formatGregorianDate(judgementInfo.getArrestDate()));
+		params.put(PARAMETER_ARREST_DATE,
+		           AppUtils.formatHijriGregorianDate(judgementInfo.getArrestDate() * 1000));
 		
 		@SuppressWarnings("unchecked") List<CrimeType> crimeTypes = (List<CrimeType>)
 													Context.getUserSession().getAttribute("lookups.crimeTypes");
@@ -231,7 +235,8 @@ public class BuildConvictedReportTask extends Task<JasperPrint>
 		
 		params.put(PARAMETER_JUDGMENT_ISSUER,
 	               AppUtils.replaceNumbersOnly(judgementInfo.getJudgIssuer(), Locales.SAUDI_AR_LOCALE));
-		params.put(PARAMETER_JUDGMENT_DATE, AppUtils.formatGregorianDate(judgementInfo.getJudgDate()));
+		params.put(PARAMETER_JUDGMENT_DATE,
+		           AppUtils.formatHijriGregorianDate(judgementInfo.getJudgDate() * 1000));
 		params.put(PARAMETER_JUDGMENT_NUMBER,
 		           AppUtils.replaceNumbersOnly(judgementInfo.getJudgNum(), Locales.SAUDI_AR_LOCALE));
 		

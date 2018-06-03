@@ -110,7 +110,7 @@ public class PunishmentDetailsPaneFxController extends WizardStepFxControllerBas
 		                                   2);
 		GuiUtils.applyValidatorToTextField(spnDeportationDays.getEditor(), "\\d*", "[^\\d]",
 		                                   2);
-		GuiUtils.applyValidatorToTextField(txtOther, null, null, 60);
+		GuiUtils.applyValidatorToTextField(txtOther, null, null, 150);
 		
 		// set a custom converter to avoid NPE in case of empty string
 		StringConverter<Integer> integerStringConverter = new StringConverter<Integer>()

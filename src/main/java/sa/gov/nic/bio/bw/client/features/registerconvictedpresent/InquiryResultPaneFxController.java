@@ -376,7 +376,7 @@ public class InquiryResultPaneFxController extends WizardStepFxControllerBase
 		if(birthDate != null)
 		{
 			LocalDate localDate = birthDate.toInstant().atZone(AppConstants.SAUDI_ZONE).toLocalDate();
-			lblBirthDate.setText(AppUtils.formatDate(localDate));
+			lblBirthDate.setText(AppUtils.formatHijriGregorianDate(AppUtils.gregorianDateToMilliSeconds(localDate)));
 			personInfoMap.put(PersonInfoPaneFxController.KEY_PERSON_INFO_BIRTH_DATE, localDate);
 		}
 		else
@@ -426,7 +426,8 @@ public class InquiryResultPaneFxController extends WizardStepFxControllerBase
 		if(idIssueDate != null)
 		{
 			LocalDate localDate = idIssueDate.toInstant().atZone(AppConstants.SAUDI_ZONE).toLocalDate();
-			lblIdIssuanceDate.setText(AppUtils.formatDate(localDate));
+			lblIdIssuanceDate.setText(AppUtils.formatHijriGregorianDate(
+																	AppUtils.gregorianDateToMilliSeconds(localDate)));
 			personInfoMap.put(PersonInfoPaneFxController.KEY_PERSON_INFO_ID_ISSUANCE_DATE, localDate);
 		}
 		else
@@ -439,7 +440,7 @@ public class InquiryResultPaneFxController extends WizardStepFxControllerBase
 		if(idExpiryDate != null)
 		{
 			LocalDate localDate = idExpiryDate.toInstant().atZone(AppConstants.SAUDI_ZONE).toLocalDate();
-			lblIdExpiry.setText(AppUtils.formatDate(localDate));
+			lblIdExpiry.setText(AppUtils.formatHijriGregorianDate(AppUtils.gregorianDateToMilliSeconds(localDate)));
 			personInfoMap.put(PersonInfoPaneFxController.KEY_PERSON_INFO_ID_EXPIRY_DATE, localDate);
 		}
 		else
