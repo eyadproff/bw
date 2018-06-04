@@ -373,7 +373,7 @@ public class InquiryResultPaneFxController extends WizardStepFxControllerBase
 		}
 		
 		Date birthDate = personInfo.getBirthDate();
-		if(birthDate != null)
+		if(birthDate != null && birthDate.getTime() > AppConstants.SAMIS_DB_DATE_NOT_SET_VALUE)
 		{
 			LocalDate localDate = birthDate.toInstant().atZone(AppConstants.SAUDI_ZONE).toLocalDate();
 			lblBirthDate.setText(AppUtils.formatHijriGregorianDate(AppUtils.gregorianDateToMilliSeconds(localDate)));
@@ -423,7 +423,7 @@ public class InquiryResultPaneFxController extends WizardStepFxControllerBase
 		}
 		
 		Date idIssueDate = identityInfo != null ? identityInfo.getIdIssueDate() : null;
-		if(idIssueDate != null)
+		if(idIssueDate != null && idIssueDate.getTime() > AppConstants.SAMIS_DB_DATE_NOT_SET_VALUE)
 		{
 			LocalDate localDate = idIssueDate.toInstant().atZone(AppConstants.SAUDI_ZONE).toLocalDate();
 			lblIdIssuanceDate.setText(AppUtils.formatHijriGregorianDate(
@@ -437,7 +437,7 @@ public class InquiryResultPaneFxController extends WizardStepFxControllerBase
 		}
 		
 		Date idExpiryDate = identityInfo != null ? identityInfo.getIdExpirDate() : null;
-		if(idExpiryDate != null)
+		if(idExpiryDate != null && idExpiryDate.getTime() > AppConstants.SAMIS_DB_DATE_NOT_SET_VALUE)
 		{
 			LocalDate localDate = idExpiryDate.toInstant().atZone(AppConstants.SAUDI_ZONE).toLocalDate();
 			lblIdExpiry.setText(AppUtils.formatHijriGregorianDate(AppUtils.gregorianDateToMilliSeconds(localDate)));

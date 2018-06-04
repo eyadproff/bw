@@ -24,4 +24,6 @@ public interface AppConstants
 	String LOGS_FOLDER_PATH = "C:/bio/user-apps/" + System.getProperty("user.name") + "/bw/logs";
 	String TEMP_FOLDER_PATH = "C:/bio/user-apps/" + System.getProperty("user.name") + "/bw/temp";
 	String DEV_SERVER_URL = "10.0.73.80:8080"; // TODO: TEMP
+	
+	long SAMIS_DB_DATE_NOT_SET_VALUE = -62135780400000L;
 }
