@@ -132,7 +132,7 @@ public class BuildForeignEnrollmentReceiptTask extends Task<JasperPrint>
 		if(countryBean != null) params.put(PARAMETER_BIRTH_PLACE, arabic ? countryBean.getDescriptionAR() :
 																		   countryBean.getDescriptionEN());
 		
-		params.put(PARAMETER_BIRTH_DATE, AppUtils.formatGregorianDate(visaApplicantInfo.getBirthDate()));
+		params.put(PARAMETER_BIRTH_DATE, AppUtils.formatHijriGregorianDate(visaApplicantInfo.getBirthDate() * 1000));
 		
 		@SuppressWarnings("unchecked") List<VisaTypeBean> visaTypes = (List<VisaTypeBean>)
 													Context.getUserSession().getAttribute("lookups.visaTypes");
@@ -152,8 +152,10 @@ public class BuildForeignEnrollmentReceiptTask extends Task<JasperPrint>
 																			visaTypeBean.getDescriptionEN());
 		
 		params.put(PARAMETER_PASSPORT_NUMBER, visaApplicantInfo.getPassportNumber());
-		params.put(PARAMETER_ISSUE_DATE, AppUtils.formatGregorianDate(visaApplicantInfo.getIssueDate()));
-		params.put(PARAMETER_EXPIRATION_DATE, AppUtils.formatGregorianDate(visaApplicantInfo.getExpirationDate()));
+		params.put(PARAMETER_ISSUE_DATE,
+		           AppUtils.formatHijriGregorianDate(visaApplicantInfo.getIssueDate() * 1000));
+		params.put(PARAMETER_EXPIRATION_DATE,
+		           AppUtils.formatHijriGregorianDate(visaApplicantInfo.getExpirationDate() * 1000));
 		
 		countryBean = null;
 		

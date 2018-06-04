@@ -48,7 +48,7 @@
                                         <columnConstraints>
                                             <ColumnConstraints prefWidth="120.0"/>
                                             <ColumnConstraints/>
-                                            <ColumnConstraints prefWidth="120.0"/>
+                                            <ColumnConstraints prefWidth="100.0"/>
                                             <ColumnConstraints/>
                                         </columnConstraints>
                                         <Label text="%label.firstName" GridPane.rowIndex="0" GridPane.columnIndex="0" styleClass="bold-label"/>
@@ -293,7 +293,7 @@
                                             </GridPane.margin>
                                         </Label>
                                         <Label text="%label.other" GridPane.rowIndex="7" GridPane.columnIndex="0" styleClass="bold-label"/>
-                                        <Label fx:id="lblOther" GridPane.rowIndex="7" GridPane.columnIndex="1" GridPane.columnSpan="6" GridPane.hgrow="ALWAYS"/>
+                                        <Label fx:id="lblOther" GridPane.rowIndex="7" GridPane.columnIndex="1" GridPane.columnSpan="6" GridPane.hgrow="ALWAYS" wrapText="true"/>
                                         <CheckBox fx:id="cbFinalDeportation" text="%label.finalDeportation" disable="true" GridPane.rowIndex="8" GridPane.columnIndex="0" GridPane.columnSpan="4" GridPane.hgrow="ALWAYS" styleClass="bold-label">
                                             <GridPane.margin>
                                                 <Insets bottom="5.0" top="10.0"/>

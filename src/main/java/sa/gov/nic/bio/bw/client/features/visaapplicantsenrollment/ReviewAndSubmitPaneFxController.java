@@ -160,7 +160,7 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 					                                             resources.getString("label.male"));
 			
 			Long birthDate = visaApplicantInfo.getBirthDate();
-			if(birthDate != null) lblBirthDate.setText(AppUtils.formatGregorianDate(birthDate));
+			if(birthDate != null) lblBirthDate.setText(AppUtils.formatHijriGregorianDate(birthDate * 1000));
 			
 			@SuppressWarnings("unchecked") List<VisaTypeBean> visaTypes = (List<VisaTypeBean>)
 												Context.getUserSession().getAttribute("lookups.visaTypes");
@@ -191,8 +191,9 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 			Long issueDate = visaApplicantInfo.getIssueDate();
 			Long expirationDate = visaApplicantInfo.getExpirationDate();
 			
-			if(issueDate != null) lblIssueDate.setText(AppUtils.formatGregorianDate(issueDate));
-			if(expirationDate != null) lblExpirationDate.setText(AppUtils.formatGregorianDate(expirationDate));
+			if(issueDate != null) lblIssueDate.setText(AppUtils.formatHijriGregorianDate(issueDate * 1000));
+			if(expirationDate != null) lblExpirationDate.setText(
+												AppUtils.formatHijriGregorianDate(expirationDate * 1000));
 			
 			@SuppressWarnings("unchecked") List<PassportTypeBean> passportTypes = (List<PassportTypeBean>)
 												Context.getUserSession().getAttribute("lookups.passportTypes");

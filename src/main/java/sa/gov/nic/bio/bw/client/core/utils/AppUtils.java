@@ -4,17 +4,13 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
-import javafx.scene.text.Font;
-import javafx.scene.text.Text;
 import org.controlsfx.glyphfont.FontAwesome;
 import org.controlsfx.glyphfont.Glyph;
 import sa.gov.nic.bio.bw.client.core.webservice.NicHijriCalendarData;
 
 import javax.imageio.ImageIO;
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -59,6 +55,8 @@ public final class AppUtils
 	private static final DateTimeFormatter DATE_TIME_FORMATTER =
 													DateTimeFormatter.ofPattern("hh:mm:ss a (Z) - EEEE dd MMMM yyyy G");
 	private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd MMMM yyyy G");
+	private static final DateTimeFormatter DATE_WTH_WEEK_DAY_FORMATTER =
+																	DateTimeFormatter.ofPattern("EEEE dd MMMM yyyy G");
 	private static final DateTimeFormatter FORMAL_DATE_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 	private static final HijrahChronology nicChronology = HijrahChronology.INSTANCE;
 	private static final FontAwesome FONTAWESOME_INSTANCE = new FontAwesome(Objects.requireNonNull(
@@ -73,22 +71,6 @@ public final class AppUtils
 	{
 		return FONTAWESOME_INSTANCE.create(character);
 	}
-	
-	/*public static String getMachineIpAddress() throws SocketException
-	{
-		for(NetworkInterface nic : Collections.list(NetworkInterface.getNetworkInterfaces()))
-		{
-			for(InetAddress address : Collections.list(nic.getInetAddresses()))
-			{
-				if(!address.isLoopbackAddress() && address instanceof Inet4Address)
-				{
-					return address.getHostAddress();
-				}
-			}
-		}
-		
-		return null;
-	}*/
 	
 	public static List<String> listResourceFiles(ProtectionDomain protectionDomain, String matcher,
 	                                             boolean removeFileExtensions, RuntimeEnvironment runtimeEnvironment)
@@ -130,16 +112,10 @@ public final class AppUtils
 		return resources;
 	}
 	
-	public static double computeTextWidth(String s, Font font)
-	{
-		Text text = new Text(s);
-		text.setFont(font);
-		return text.getLayoutBounds().getWidth();
-	}
-	
 	public static String formatDateTime(TemporalAccessor temporal)
 	{
-		return replaceNumbersOnly(DATE_TIME_FORMATTER.withLocale(Locale.getDefault()).format(temporal), Locale.getDefault());
+		return replaceNumbersOnly(DATE_TIME_FORMATTER.withLocale(Locale.getDefault()).format(temporal),
+		                          Locale.getDefault());
 	}
 	
 	public static String formatDate(TemporalAccessor temporal)
@@ -147,16 +123,16 @@ public final class AppUtils
 		return replaceNumbersOnly(DATE_FORMATTER.withLocale(Locale.getDefault()).format(temporal), Locale.getDefault());
 	}
 	
+	public static String formatFullDate(TemporalAccessor temporal)
+	{
+		return replaceNumbersOnly(DATE_WTH_WEEK_DAY_FORMATTER.withLocale(Locale.getDefault()).format(temporal),
+		                          Locale.getDefault());
+	}
+	
 	public static LocalDate parseFormalDate(String sDate)
 	{
 		return LocalDate.parse(sDate, FORMAL_DATE_FORMATTER);
 	}
-	
-	/*public static String replaceNumbersWithCommas(long number, Locale locale)
-	{
-		NumberFormat numberFormat = NumberFormat.getNumberInstance(locale);
-		return numberFormat.format(number);
-	}*/
 	
 	public static String replaceNumbersOnly(String text, Locale locale)
 	{
@@ -175,7 +151,8 @@ public final class AppUtils
 		return sb.toString();
 	}
 	
-	public static void injectNicHijriCalendarData(NicHijriCalendarData nicHijriCalendarData) throws NoSuchFieldException, IllegalAccessException, NoSuchMethodException, InvocationTargetException
+	public static void injectNicHijriCalendarData(NicHijriCalendarData nicHijriCalendarData)
+			throws NoSuchFieldException, IllegalAccessException, NoSuchMethodException, InvocationTargetException
 	{
 		Map<Integer, int[]> years =  nicHijriCalendarData.getHijriYears();
 		
@@ -188,7 +165,8 @@ public final class AppUtils
 			minYear = Math.min(minYear, year);
 		}
 		
-		int isoStart = (int) LocalDateTime.ofInstant(Instant.ofEpochMilli(nicHijriCalendarData.getIsoStartDate()), AppConstants.SAUDI_ZONE).toLocalDate().toEpochDay();
+		int isoStart = (int) LocalDateTime.ofInstant(Instant.ofEpochMilli(nicHijriCalendarData.getIsoStartDate()),
+		                                             AppConstants.SAUDI_ZONE).toLocalDate().toEpochDay();
 		
 		Field initCompleteField = HijrahChronology.class.getDeclaredField("initComplete");
 		initCompleteField.setAccessible(true);
@@ -202,11 +180,14 @@ public final class AppUtils
 		minEpochDayField.setAccessible(true);
 		minEpochDayField.set(nicChronology, isoStart);
 		
-		Method createEpochMonthsMethod = HijrahChronology.class.getDeclaredMethod("createEpochMonths", int.class, int.class, int.class, Map.class);
+		Method createEpochMonthsMethod = HijrahChronology.class.getDeclaredMethod("createEpochMonths", int.class,
+		                                                                          int.class, int.class, Map.class);
 		createEpochMonthsMethod.setAccessible(true);
-		int[] hijrahEpochMonthStartDays = (int[]) createEpochMonthsMethod.invoke(nicChronology, isoStart, minYear, maxYear, years);
+		int[] hijrahEpochMonthStartDays = (int[]) createEpochMonthsMethod.invoke(nicChronology, isoStart, minYear,
+		                                                                         maxYear, years);
 		
-		Field hijrahEpochMonthStartDaysField = HijrahChronology.class.getDeclaredField("hijrahEpochMonthStartDays");
+		Field hijrahEpochMonthStartDaysField =
+											HijrahChronology.class.getDeclaredField("hijrahEpochMonthStartDays");
 		hijrahEpochMonthStartDaysField.setAccessible(true);
 		hijrahEpochMonthStartDaysField.set(nicChronology, hijrahEpochMonthStartDays);
 		
@@ -233,32 +214,81 @@ public final class AppUtils
 		}
 	}
 	
-	public static ChronoZonedDateTime<HijrahDate> milliSecondsToHijriDataTime(long milliSeconds) throws DateTimeException // thrown in case of "Hijrah date out of range"
+	public static ChronoZonedDateTime<HijrahDate> milliSecondsToHijriDateTime(long milliSeconds)
+											throws DateTimeException // thrown in case of "Hijrah date out of range"
 	{
 		return nicChronology.zonedDateTime(Instant.ofEpochMilli(milliSeconds).atZone(AppConstants.SAUDI_ZONE));
 	}
 	
-	public static ZonedDateTime milliSecondsToGregorianDataTime(long milliSeconds)
+	public static HijrahDate milliSecondsToHijriDate(long milliSeconds)
+	{
+		return nicChronology.zonedDateTime(Instant.ofEpochMilli(milliSeconds).atZone(AppConstants.SAUDI_ZONE))
+																			 .toLocalDate();
+	}
+	
+	public static ZonedDateTime milliSecondsToGregorianDateTime(long milliSeconds)
 	{
 		return Instant.ofEpochMilli(milliSeconds).atZone(AppConstants.SAUDI_ZONE);
 	}
 	
-	public static LocalDate secondsToGregorianData(long seconds)
+	public static LocalDate milliSecondsToGregorianDate(long milliSeconds)
 	{
-		return Instant.ofEpochSecond(seconds).atZone(AppConstants.SAUDI_ZONE).toLocalDate();
+		return Instant.ofEpochMilli(milliSeconds).atZone(AppConstants.SAUDI_ZONE).toLocalDate();
 	}
 	
-	public static String formatHijriGregorianDateTime(long milliSeconds) throws DateTimeException // thrown in case of "Hijrah date out of range"
+	public static String formatHijriGregorianDateTime(long milliSeconds)
 	{
-		ChronoZonedDateTime<HijrahDate> hijriDateTime = AppUtils.milliSecondsToHijriDataTime(milliSeconds);
-		ZonedDateTime gregorianDateTime = AppUtils.milliSecondsToGregorianDataTime(milliSeconds);
-		return AppUtils.formatDateTime(hijriDateTime) + " - " + AppUtils.formatDate(gregorianDateTime);
+		ChronoZonedDateTime<HijrahDate> hijriDateTime = null;
+		
+		try
+		{
+			hijriDateTime = AppUtils.milliSecondsToHijriDateTime(milliSeconds);
+		}
+		catch(DateTimeException e)
+		{
+			// thrown in case of "Hijrah date out of range"
+		}
+		
+		ZonedDateTime gregorianDateTime = AppUtils.milliSecondsToGregorianDateTime(milliSeconds);
+		
+		if(hijriDateTime != null)
+		{
+			return AppUtils.formatDateTime(hijriDateTime) + " - " + AppUtils.formatDate(gregorianDateTime);
+		}
+		else return AppUtils.formatDateTime(gregorianDateTime);
 	}
 	
-	public static String formatGregorianDate(long seconds)
+	public static String formatHijriGregorianDate(long milliSeconds)
 	{
-		LocalDate localDate = AppUtils.secondsToGregorianData(seconds);
-		return AppUtils.formatDate(localDate);
+		HijrahDate hijriDate = null;
+		
+		try
+		{
+			hijriDate = AppUtils.milliSecondsToHijriDate(milliSeconds);
+		}
+		catch(DateTimeException e)
+		{
+			// thrown in case of "Hijrah date out of range"
+		}
+		
+		LocalDate gregorianDate = AppUtils.milliSecondsToGregorianDate(milliSeconds);
+		
+		if(hijriDate != null)
+		{
+			return AppUtils.formatFullDate(hijriDate) + " - " + AppUtils.formatDate(gregorianDate);
+		}
+		else return AppUtils.formatFullDate(gregorianDate);
+	}
+	
+	public static String formatGregorianDate(long milliSeconds)
+	{
+		LocalDate localDate = AppUtils.milliSecondsToGregorianDate(milliSeconds);
+		return AppUtils.formatFullDate(localDate);
+	}
+	
+	public static long gregorianDateToMilliSeconds(LocalDate gregorianDate)
+	{
+		return gregorianDate.atStartOfDay(AppConstants.SAUDI_ZONE).toEpochSecond() * 1000;
 	}
 	
 	public static LocalDateTime extractExpirationTimeFromJWT(String jwt)
@@ -296,7 +326,8 @@ public final class AppUtils
 					if(exp == null) LOGGER.warning("The payload has no \"exp\"!");
 					else
 					{
-						LocalDateTime expirationDateTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(Long.parseLong(exp) * 1000L), AppConstants.SAUDI_ZONE);
+						LocalDateTime expirationDateTime = LocalDateTime.ofInstant(
+											Instant.ofEpochMilli(Long.parseLong(exp) * 1000L), AppConstants.SAUDI_ZONE);
 						LOGGER.fine("The expiration time for the new JWT is " + expirationDateTime);
 						return expirationDateTime;
 					}
@@ -310,17 +341,6 @@ public final class AppUtils
 		
 		return null;
 	}
-	
-	/*public static void saveImageToFile(Image image, String folderPath, String fileName) throws IOException
-	{
-		if(folderPath == null) throw new IllegalArgumentException("folderPath is null!");
-		if(fileName == null) throw new IllegalArgumentException("fileName is null!");
-		if(!fileName.matches(".+\\..+")) throw new IllegalArgumentException("fileName has no extension!");
-		
-		File outputFile = new File(folderPath + "/" + fileName);
-		BufferedImage bImage = SwingFXUtils.fromFXImage(image, null);
-		ImageIO.write(bImage, fileName.substring(fileName.lastIndexOf('.') + 1), outputFile);
-	}*/
 	
 	public static void cleanDirectory(Path directoryPath) throws IOException
 	{
@@ -340,25 +360,6 @@ public final class AppUtils
 				return FileVisitResult.CONTINUE;
 			}
 		});
-	}
-	
-	public static String saveBase64PhotoToTemp(String photoBase64, String fileExtension)
-	{
-		byte[] photoByteArray = Base64.getDecoder().decode(photoBase64);
-		InputStream is = new ByteArrayInputStream(photoByteArray);
-		String fileName = System.nanoTime() + fileExtension;
-		String filePath = AppConstants.TEMP_FOLDER_PATH + "/" + fileName;
-		
-		try
-		{
-			Files.copy(is, Paths.get(filePath));
-		}
-		catch(IOException e)
-		{
-			e.printStackTrace();
-		}
-		
-		return filePath;
 	}
 	
 	public static String[] decodeJWT(String jwt)

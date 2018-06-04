@@ -15,7 +15,7 @@ public class LogFormatter extends Formatter
 	@Override
 	public synchronized String format(LogRecord record)
 	{
-		ZonedDateTime zonedDateTime = AppUtils.milliSecondsToGregorianDataTime(record.getMillis());
+		ZonedDateTime zonedDateTime = AppUtils.milliSecondsToGregorianDateTime(record.getMillis());
 		String timestamp = DATE_TIME_FORMATTER.format(zonedDateTime);
 		
 		String logMessage = timestamp + " - " + "[" + record.getLevel() + "][" +

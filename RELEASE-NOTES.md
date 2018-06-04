@@ -1,5 +1,11 @@
 # Release Notes:
 
+## v2018.06.1
+
+- Add hijri date and the week day to any gregorian date.
+- Convicted Report: Make "Judgment Number" and "Police File Number" 20 characters long instead of 10.
+- Convicted Report: Make "Other" 150 characters long instead of 60.
+
 ## v2018.05.5
 
 - Update biokit-library from v2018.05.1 to v2018.05.2.
