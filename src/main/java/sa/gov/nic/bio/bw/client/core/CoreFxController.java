@@ -84,6 +84,7 @@ public class CoreFxController implements IdleMonitorRegisterer, PersistableEntit
 	private Stage stage;
 	private IdleMonitor idleMonitor;
 	private BodyFxControllerBase currentBodyController;
+	private boolean newMenuSelected;
 	
 	public void registerStage(Stage stage)
 	{
@@ -152,6 +153,7 @@ public class CoreFxController implements IdleMonitorRegisterer, PersistableEntit
 	
 	public void goToMenu(Class<?> menuWorkflowClass)
 	{
+		newMenuSelected = true;
 		Map<String, Object> dataMap = new HashMap<>();
 		dataMap.put(Workflow.KEY_SIGNAL_TYPE, SignalType.MENU_NAVIGATION);
 		dataMap.put(HomeWorkflow.KEY_MENU_WORKFLOW_CLASS, menuWorkflowClass);
@@ -167,13 +169,16 @@ public class CoreFxController implements IdleMonitorRegisterer, PersistableEntit
 	 */
 	private void renderBodyForm(Class<?> controllerClass, Map<String, Object> uiInputData)
 	{
-		if(currentBodyController != null && currentBodyController.getClass() == controllerClass) // same form
+		if(!newMenuSelected && currentBodyController != null && currentBodyController.getClass() == controllerClass)
 		{
+			// same form
 			Platform.runLater(() -> currentBodyController.onWorkflowUserTaskLoad(false, uiInputData));
 			
 		}
 		else // new form
 		{
+			newMenuSelected = false;
+			
 			try
 			{
 				if(currentBodyController instanceof WizardStepFxControllerBase)

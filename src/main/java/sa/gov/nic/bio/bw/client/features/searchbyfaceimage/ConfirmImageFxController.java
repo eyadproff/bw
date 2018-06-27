@@ -75,11 +75,11 @@ public class ConfirmImageFxController extends WizardStepFxControllerBase
 	{
 		if(newForm)
 		{
-			String imageSource = (String) uiInputData.get(SearchByFaceImageWorkflow.KEY_IMAGE_SOURCE);
+			String imageSource = (String) uiInputData.get(ImageSourceFxController.KEY_IMAGE_SOURCE);
 			
 			Image[] finalImage = new Image[1];
 			
-			if(SearchByFaceImageWorkflow.VALUE_IMAGE_SOURCE_UPLOAD.equals(imageSource))
+			if(ImageSourceFxController.VALUE_IMAGE_SOURCE_UPLOAD.equals(imageSource))
 			{
 				finalImage[0] = (Image) uiInputData.get(SearchByFaceImageWorkflow.KEY_UPLOADED_IMAGE);
 			}

@@ -9,7 +9,6 @@ import javafx.scene.input.KeyEvent;
 import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.wizard.WizardStepFxControllerBase;
-import sa.gov.nic.bio.bw.client.features.searchbyfaceimage.workflow.SearchByFaceImageWorkflow;
 
 import java.net.URL;
 import java.util.Map;
@@ -17,9 +16,15 @@ import java.util.ResourceBundle;
 
 public class ImageSourceFxController extends WizardStepFxControllerBase
 {
+	public static final String KEY_HIDE_IMAGE_SOURCE_PREVIOUS_BUTTON = "HIDE_IMAGE_SOURCE_PREVIOUS_BUTTON";
+	public static final String KEY_IMAGE_SOURCE = "IMAGE_SOURCE";
+	public static final String VALUE_IMAGE_SOURCE_UPLOAD = "IMAGE_SOURCE_UPLOAD";
+	public static final String VALUE_IMAGE_SOURCE_CAMERA = "IMAGE_SOURCE_CAMERA";
+	
 	@FXML private ResourceBundle resources;
 	@FXML private RadioButton rbByUploadingImage;
 	@FXML private RadioButton rbByCamera;
+	@FXML private Button btnPrevious;
 	@FXML private Button btnNext;
 	
 	@Override
@@ -31,7 +36,10 @@ public class ImageSourceFxController extends WizardStepFxControllerBase
 	@Override
 	protected void initialize()
 	{
+		GuiUtils.makeButtonClickableByPressingEnter(btnPrevious);
 		GuiUtils.makeButtonClickableByPressingEnter(btnNext);
+		
+		btnPrevious.setOnAction(event -> goPrevious());
 		btnNext.setOnAction(event -> goNext());
 		
 		// go next on pressing ENTER on the radio buttons
@@ -50,16 +58,22 @@ public class ImageSourceFxController extends WizardStepFxControllerBase
 	@Override
 	protected void onAttachedToScene()
 	{
+		String uploadImageTitle = resources.getString("wizard.uploadImage");
+		String capturePhotoByCameraTitle = resources.getString("wizard.capturePhotoByCamera");
+		
 		// change the wizard-step-indicator upon changing the image source
-		int INSERTING_IMAGE_STEP_INDEX = 1;
+		int stepIndex = Context.getCoreFxController().getWizardPane().getStepIndexByTitle(uploadImageTitle);
+		if(stepIndex < 0) stepIndex = Context.getCoreFxController().getWizardPane()
+																   .getStepIndexByTitle(capturePhotoByCameraTitle);
+		
+		final int finalStepIndex = stepIndex;
+		
 		rbByUploadingImage.selectedProperty().addListener((observable, oldValue, newValue) ->
 		{
-			if(newValue) Context.getCoreFxController().getWizardPane().updateStep(INSERTING_IMAGE_STEP_INDEX,
-                                                                      resources.getString("wizard.uploadImage"),
-                                                                      "upload");
-			else Context.getCoreFxController().getWizardPane().updateStep(INSERTING_IMAGE_STEP_INDEX,
-			                                                 resources.getString("wizard.capturePhotoByCamera"),
-			                                                 "camera");
+			if(newValue) Context.getCoreFxController().getWizardPane().updateStep(finalStepIndex, uploadImageTitle,
+			                                                                      "upload");
+			else Context.getCoreFxController().getWizardPane().updateStep(finalStepIndex, capturePhotoByCameraTitle,
+			                                                              "camera");
 		});
 	}
 	
@@ -68,9 +82,13 @@ public class ImageSourceFxController extends WizardStepFxControllerBase
 	{
 		if(newForm)
 		{
+			// collect configurations from the workflow
+			Boolean hidePreviousButton = (Boolean) uiInputData.get(KEY_HIDE_IMAGE_SOURCE_PREVIOUS_BUTTON);
+			if(hidePreviousButton != null) GuiUtils.showNode(btnPrevious, !hidePreviousButton);
+			
 			// load the old state, if exists
-			String imageSource = (String) uiInputData.get(SearchByFaceImageWorkflow.KEY_IMAGE_SOURCE);
-			if(SearchByFaceImageWorkflow.VALUE_IMAGE_SOURCE_CAMERA.equals(imageSource))
+			String imageSource = (String) uiInputData.get(KEY_IMAGE_SOURCE);
+			if(VALUE_IMAGE_SOURCE_CAMERA.equals(imageSource))
 			{
 				rbByCamera.setSelected(true);
 				rbByCamera.requestFocus();
@@ -84,12 +102,10 @@ public class ImageSourceFxController extends WizardStepFxControllerBase
 	}
 	
 	@Override
-	protected void onGoingNext(Map<String, Object> uiDataMap)
+	public void onLeaving(Map<String, Object> uiDataMap)
 	{
 		// save the selected source of image into the map
-		if(rbByCamera.isSelected()) uiDataMap.put(SearchByFaceImageWorkflow.KEY_IMAGE_SOURCE,
-		                                          SearchByFaceImageWorkflow.VALUE_IMAGE_SOURCE_CAMERA);
-		else uiDataMap.put(SearchByFaceImageWorkflow.KEY_IMAGE_SOURCE,
-		                   SearchByFaceImageWorkflow.VALUE_IMAGE_SOURCE_UPLOAD);
+		if(rbByCamera.isSelected()) uiDataMap.put(KEY_IMAGE_SOURCE, VALUE_IMAGE_SOURCE_CAMERA);
+		else uiDataMap.put(KEY_IMAGE_SOURCE, VALUE_IMAGE_SOURCE_UPLOAD);
 	}
 }
