@@ -20,11 +20,9 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.text.DecimalFormat;
 import java.util.Map;
-import java.util.ResourceBundle;
 
 public class UploadImageFileFxController extends WizardStepFxControllerBase
 {
-	@FXML private ResourceBundle resources;
 	@FXML private HBox imagePane;
 	@FXML private ImageView ivUploadedImage;
 	@FXML private Button btnSelectImage;
@@ -100,7 +98,13 @@ public class UploadImageFileFxController extends WizardStepFxControllerBase
 	}
 	
 	@Override
-	public void onLeaving(Map<String, Object> uiDataMap)
+	protected void onGoingPrevious(Map<String, Object> uiDataMap)
+	{
+		onGoingNext(uiDataMap);
+	}
+	
+	@Override
+	public void onGoingNext(Map<String, Object> uiDataMap)
 	{
 		if(imageSelected) uiDataMap.put(SearchByFaceImageWorkflow.KEY_UPLOADED_IMAGE, ivUploadedImage.getImage());
 	}

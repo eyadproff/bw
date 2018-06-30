@@ -34,7 +34,7 @@ public class SearchByFaceImageWorkflow extends WizardWorkflowBase<Void, Void>
 	@Override
 	public Map<String, Object> onStep(int step) throws InterruptedException, Signal
 	{
-		Map<String, Object> uiOutputData = null;
+		Map<String, Object> uiOutputData;
 		
 		switch(step)
 		{

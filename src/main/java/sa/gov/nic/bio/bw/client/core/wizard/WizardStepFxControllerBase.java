@@ -41,6 +41,5 @@ public abstract class WizardStepFxControllerBase extends BodyFxControllerBase im
 	
 	protected void onGoingNext(Map<String, Object> uiDataMap){}
 	protected void onGoingPrevious(Map<String, Object> uiDataMap){}
-	public void onLeaving(Map<String, Object> uiDataMap){}
 	public abstract URL getFxmlLocation();
 }

@@ -1,9 +1,10 @@
-package sa.gov.nic.bio.bw.client.features.searchbyfaceimage;
+package sa.gov.nic.bio.bw.client.features.faceverification;
 
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
@@ -12,23 +13,25 @@ import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.wizard.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.client.features.commons.FaceCapturingFxController;
+import sa.gov.nic.bio.bw.client.features.searchbyfaceimage.ImageSourceFxController;
 import sa.gov.nic.bio.bw.client.features.searchbyfaceimage.utils.SearchByFaceImageErrorCodes;
 import sa.gov.nic.bio.bw.client.features.searchbyfaceimage.workflow.SearchByFaceImageWorkflow;
 
 import java.net.URL;
 import java.util.Map;
 
-public class ConfirmImageFxController extends WizardStepFxControllerBase
+public class ConfirmInputFxController extends WizardStepFxControllerBase
 {
 	@FXML private HBox imagePane;
 	@FXML private ImageView ivFinalImage;
+	@FXML private Label lblPersonId;
 	@FXML private Button btnPrevious;
 	@FXML private Button btnSearch;
 	
 	@Override
 	public URL getFxmlLocation()
 	{
-		return getClass().getResource("fxml/confirmImage.fxml");
+		return getClass().getResource("fxml/confirmInput.fxml");
 	}
 	
 	@Override
@@ -74,6 +77,7 @@ public class ConfirmImageFxController extends WizardStepFxControllerBase
 		if(newForm)
 		{
 			String imageSource = (String) uiInputData.get(ImageSourceFxController.KEY_IMAGE_SOURCE);
+			Long personId = (Long) uiInputData.get(PersonIdPaneFxController.KEY_PERSON_ID);
 			
 			Image[] finalImage = new Image[1];
 			
@@ -126,6 +130,8 @@ public class ConfirmImageFxController extends WizardStepFxControllerBase
 					}).start();
 				});
 			}
+			
+			lblPersonId.setText(String.valueOf(personId));
 		}
 	}
 }

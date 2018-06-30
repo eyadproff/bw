@@ -210,7 +210,7 @@ public class InquiryPaneFxController extends WizardStepFxControllerBase
 	}
 	
 	@Override
-	public void onLeaving(Map<String, Object> uiDataMap)
+	protected void onDetachedFromScene()
 	{
 		DevicesRunnerGadgetPaneFxController deviceManagerGadgetPaneController =
 												Context.getCoreFxController().getDeviceManagerGadgetPaneController();

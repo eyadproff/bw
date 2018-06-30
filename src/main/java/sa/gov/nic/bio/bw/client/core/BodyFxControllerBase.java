@@ -4,9 +4,11 @@ import javafx.application.Platform;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import org.controlsfx.control.NotificationPane;
+import sa.gov.nic.bio.bw.client.core.interfaces.ControllerResourcesLocator;
 import sa.gov.nic.bio.bw.client.core.interfaces.NotificationController;
 import sa.gov.nic.bio.bw.client.core.interfaces.WorkflowUserTaskController;
 
+import java.net.URL;
 import java.util.logging.Logger;
 
 /**
@@ -15,7 +17,8 @@ import java.util.logging.Logger;
  * @author Fouad Almalki
  */
 public abstract class BodyFxControllerBase extends RegionFxControllerBase implements WorkflowUserTaskController,
-																					 NotificationController
+																					 NotificationController,
+																					 ControllerResourcesLocator
 {
 	private static final Logger LOGGER = Logger.getLogger(BodyFxControllerBase.class.getName());
 	
@@ -109,5 +112,23 @@ public abstract class BodyFxControllerBase extends RegionFxControllerBase implem
 		{
 			Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails);
 		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public URL getFxmlLocation()
+	{
+		return getClass().getResource("fxml/gui.fxml");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public final String getStringsResourceBundle()
+	{
+		return getClass().getPackage().getName().replace(".", "/") + "/bundles/strings";
 	}
 }

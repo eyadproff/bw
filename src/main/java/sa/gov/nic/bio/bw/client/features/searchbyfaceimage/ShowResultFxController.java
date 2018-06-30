@@ -43,11 +43,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.ResourceBundle;
 
 public class ShowResultFxController extends WizardStepFxControllerBase
 {
-	@FXML private ResourceBundle resources;
 	@FXML private SplitPane splitPane;
 	@FXML private HBox imagePane;
 	@FXML private ImageView ivCenterImage;

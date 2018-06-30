@@ -12,7 +12,6 @@ import sa.gov.nic.bio.bw.client.core.wizard.WizardStepFxControllerBase;
 
 import java.net.URL;
 import java.util.Map;
-import java.util.ResourceBundle;
 
 public class ImageSourceFxController extends WizardStepFxControllerBase
 {
@@ -21,7 +20,6 @@ public class ImageSourceFxController extends WizardStepFxControllerBase
 	public static final String VALUE_IMAGE_SOURCE_UPLOAD = "IMAGE_SOURCE_UPLOAD";
 	public static final String VALUE_IMAGE_SOURCE_CAMERA = "IMAGE_SOURCE_CAMERA";
 	
-	@FXML private ResourceBundle resources;
 	@FXML private RadioButton rbByUploadingImage;
 	@FXML private RadioButton rbByCamera;
 	@FXML private Button btnPrevious;
@@ -102,7 +100,13 @@ public class ImageSourceFxController extends WizardStepFxControllerBase
 	}
 	
 	@Override
-	public void onLeaving(Map<String, Object> uiDataMap)
+	protected void onGoingPrevious(Map<String, Object> uiDataMap)
+	{
+		onGoingNext(uiDataMap);
+	}
+	
+	@Override
+	public void onGoingNext(Map<String, Object> uiDataMap)
 	{
 		// save the selected source of image into the map
 		if(rbByCamera.isSelected()) uiDataMap.put(KEY_IMAGE_SOURCE, VALUE_IMAGE_SOURCE_CAMERA);

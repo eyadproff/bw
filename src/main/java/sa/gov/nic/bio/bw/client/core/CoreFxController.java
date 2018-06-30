@@ -31,7 +31,6 @@ import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.utils.IdleMonitor;
 import sa.gov.nic.bio.bw.client.core.utils.UTF8Control;
 import sa.gov.nic.bio.bw.client.core.wizard.WizardPane;
-import sa.gov.nic.bio.bw.client.core.wizard.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.client.core.workflow.SignalType;
 import sa.gov.nic.bio.bw.client.core.workflow.Workflow;
 import sa.gov.nic.bio.bw.client.home.workflow.HomeWorkflow;
@@ -54,21 +53,19 @@ import java.util.prefs.Preferences;
  *
  * @author Fouad Almalki
  */
-public class CoreFxController implements IdleMonitorRegisterer, PersistableEntity
+public class CoreFxController extends FxControllerBase implements IdleMonitorRegisterer, PersistableEntity
 {
 	private static final Logger LOGGER = Logger.getLogger(CoreFxController.class.getName());
 	public static final String FXML_FILE = "sa/gov/nic/bio/bw/client/core/fxml/core.fxml";
 	public static final String APP_ICON_FILE = "sa/gov/nic/bio/bw/client/core/images/app_icon.png";
 	public static final String RB_LABELS_FILE = "sa/gov/nic/bio/bw/client/core/bundles/strings";
 	
-	
-	// the following are here only to avoid warnings in FXML files.
+	// the following 4 fields are here only to avoid warnings in FXML files.
 	@FXML private Pane headerPane;
 	@FXML private Pane menuPane;
 	@FXML private Pane devicesRunnerGadgetPane;
 	@FXML private Pane footerPane;
 	
-	@FXML private ResourceBundle resources;
 	@FXML private StackPane stageOverlayPane;
 	@FXML private StackPane menuTransitionOverlayPane;
 	@FXML private ProgressIndicator piWizardTransition;
@@ -105,8 +102,8 @@ public class CoreFxController implements IdleMonitorRegisterer, PersistableEntit
 	public WizardPane getWizardPane(){return wizardPane;}
 	public BodyFxControllerBase getCurrentBodyController(){return currentBodyController;}
 	
-	@FXML
-	private void initialize()
+	@Override
+	protected void initialize()
 	{
 		Context.setCoreFxController(this);
 		
@@ -181,11 +178,6 @@ public class CoreFxController implements IdleMonitorRegisterer, PersistableEntit
 			
 			try
 			{
-				if(currentBodyController instanceof WizardStepFxControllerBase)
-				{
-					((WizardStepFxControllerBase) currentBodyController).onLeaving(uiInputData);
-				}
-				
 				ControllerResourcesLocator controllerResourcesLocator = (ControllerResourcesLocator)
 																controllerClass.getDeclaredConstructor().newInstance();
 				currentBodyController = renderNewBodyForm(controllerResourcesLocator);

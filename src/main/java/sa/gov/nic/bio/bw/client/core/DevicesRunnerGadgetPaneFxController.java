@@ -37,7 +37,6 @@ import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.utils.RuntimeEnvironment;
 import sa.gov.nic.bio.bw.client.features.commons.utils.CommonsErrorCodes;
 
-import java.util.ResourceBundle;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.Future;
 import java.util.function.Consumer;
@@ -59,7 +58,6 @@ public class DevicesRunnerGadgetPaneFxController extends RegionFxControllerBase
 		NOT_CONNECTED
 	}
 	
-	@FXML private ResourceBundle resources;
 	@FXML private TitledPane tpDevicesRunner;
 	@FXML private TitledPane tpFingerprintScanner;
 	@FXML private TitledPane tpCamera;

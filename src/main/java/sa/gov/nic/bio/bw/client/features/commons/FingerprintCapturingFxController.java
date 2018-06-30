@@ -670,13 +670,24 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 	}
 	
 	@Override
-	public void onLeaving(Map<String, Object> uiDataMap)
+	protected void onDetachedFromScene()
 	{
 		Context.getCoreFxController().getDeviceManagerGadgetPaneController().setDevicesRunnerRunningListener(null);
 		Context.getCoreFxController().getDeviceManagerGadgetPaneController()
 									 .setFingerprintScannerInitializationListener(null);
-		
+	}
+	
+	@Override
+	protected void onGoingPrevious(Map<String, Object> uiDataMap)
+	{
+		onGoingNext(uiDataMap);
+	}
+	
+	@Override
+	public void onGoingNext(Map<String, Object> uiDataMap)
+	{
 		if(!workflowStarted) return;
+		
 		if(btnStopFingerprintCapturing.isVisible() || piProgress.isVisible())
 		{
 			Platform.runLater(btnStopFingerprintCapturing::fire);

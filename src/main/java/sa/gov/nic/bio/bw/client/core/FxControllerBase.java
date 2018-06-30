@@ -1,7 +1,6 @@
 package sa.gov.nic.bio.bw.client.core;
 
 import javafx.fxml.FXML;
-import sa.gov.nic.bio.bw.client.core.interfaces.ControllerResourcesLocator;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -11,8 +10,21 @@ import java.util.ResourceBundle;
  *
  * @author Fouad Almalki
  */
-public abstract class FxControllerBase implements ControllerResourcesLocator
+public abstract class FxControllerBase
 {
+	/*
+	 *	location and resources are injected automatically by JavaFX.
+	 */
+	
+	/**
+	 * Location of the FXML file.
+	 */
+	@FXML
+	protected URL location;
+	
+	/**
+	 * The resource bundle passed to FXMLLoader at initialization.
+	 */
 	@FXML
 	protected ResourceBundle resources;
 	
@@ -22,22 +34,4 @@ public abstract class FxControllerBase implements ControllerResourcesLocator
 	 */
 	@FXML
 	protected void initialize(){}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public URL getFxmlLocation()
-	{
-		return getClass().getResource("fxml/gui.fxml");
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public final String getStringsResourceBundle()
-	{
-		return getClass().getPackage().getName().replace(".", "/") + "/bundles/strings";
-	}
 }
