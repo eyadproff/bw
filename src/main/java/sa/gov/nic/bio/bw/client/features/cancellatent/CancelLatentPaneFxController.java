@@ -35,7 +35,6 @@ public class CancelLatentPaneFxController extends BodyFxControllerBase
 		
 		btnCancelLatent.disableProperty().bind(idNumberEmptyBinding.or(latentNumberEmptyBinding)
 				                                                   .or(progressVisibility));
-		GuiUtils.makeButtonClickableByPressingEnter(btnCancelLatent);
 	}
 	
 	@Override

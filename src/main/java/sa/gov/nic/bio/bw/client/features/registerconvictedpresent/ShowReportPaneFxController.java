@@ -48,14 +48,6 @@ public class ShowReportPaneFxController extends WizardStepFxControllerBase
 	}
 	
 	@Override
-	protected void initialize()
-	{
-		GuiUtils.makeButtonClickableByPressingEnter(btnStartOver);
-		GuiUtils.makeButtonClickableByPressingEnter(btnPrintReport);
-		GuiUtils.makeButtonClickableByPressingEnter(btnSaveReportAsPDF);
-	}
-	
-	@Override
 	protected void onAttachedToScene()
 	{
 		fileChooser.setTitle(resources.getString("fileChooser.saveReportAsPDF.title"));

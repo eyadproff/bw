@@ -240,6 +240,8 @@ public class CoreFxController extends FxControllerBase implements IdleMonitorReg
 		try
 		{
 			loadedPane = paneLoader.load();
+			FxControllerBase fxController = paneLoader.getController();
+			fxController.postInitialization(paneLoader.getRoot());
 		}
 		catch(IOException e)
 		{

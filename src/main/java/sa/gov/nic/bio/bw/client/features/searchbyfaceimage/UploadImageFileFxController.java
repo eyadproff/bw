@@ -41,10 +41,6 @@ public class UploadImageFileFxController extends WizardStepFxControllerBase
 	@Override
 	protected void initialize()
 	{
-		GuiUtils.makeButtonClickableByPressingEnter(btnSelectImage);
-		GuiUtils.makeButtonClickableByPressingEnter(btnPrevious);
-		GuiUtils.makeButtonClickableByPressingEnter(btnNext);
-		
 		btnPrevious.setOnAction(event -> goPrevious());
 		btnNext.setOnAction(event -> goNext());
 	}

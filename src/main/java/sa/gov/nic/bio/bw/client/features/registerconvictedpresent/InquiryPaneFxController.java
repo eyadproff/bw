@@ -52,9 +52,6 @@ public class InquiryPaneFxController extends WizardStepFxControllerBase
 	@Override
 	protected void initialize()
 	{
-		GuiUtils.makeButtonClickableByPressingEnter(btnRetry);
-		GuiUtils.makeButtonClickableByPressingEnter(btnStartOver);
-		
 		btnStartOver.setOnAction(actionEvent ->
 		{
 			hideNotification();

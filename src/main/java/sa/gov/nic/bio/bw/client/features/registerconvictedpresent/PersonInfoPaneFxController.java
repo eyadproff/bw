@@ -79,9 +79,6 @@ public class PersonInfoPaneFxController extends WizardStepFxControllerBase
 	@Override
 	protected void initialize()
 	{
-		GuiUtils.makeButtonClickableByPressingEnter(btnStartOver);
-		GuiUtils.makeButtonClickableByPressingEnter(btnNext);
-		
 		btnNext.setOnAction(actionEvent -> goNext());
 		
 		@SuppressWarnings("unchecked") List<CountryBean> countries = (List<CountryBean>)

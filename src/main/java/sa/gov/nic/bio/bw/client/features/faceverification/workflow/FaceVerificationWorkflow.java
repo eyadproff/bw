@@ -8,7 +8,7 @@ import sa.gov.nic.bio.bw.client.features.faceverification.ConfirmInputFxControll
 import sa.gov.nic.bio.bw.client.features.faceverification.PersonIdPaneFxController;
 import sa.gov.nic.bio.bw.client.features.searchbyfaceimage.ImageSourceFxController;
 import sa.gov.nic.bio.bw.client.features.searchbyfaceimage.SearchFxController;
-import sa.gov.nic.bio.bw.client.features.searchbyfaceimage.ShowResultFxController;
+import sa.gov.nic.bio.bw.client.features.searchbyfaceimage.ShowResultsFxController;
 import sa.gov.nic.bio.bw.client.features.searchbyfaceimage.UploadImageFileFxController;
 import sa.gov.nic.bio.bw.client.features.searchbyfaceimage.webservice.Candidate;
 import sa.gov.nic.bio.bw.client.features.searchbyfaceimage.workflow.SearchByFaceImageService;
@@ -94,7 +94,7 @@ public class FaceVerificationWorkflow extends WizardWorkflowBase<Void, Void>
 			}
 			case 5:
 			{
-				formRenderer.get().renderForm(ShowResultFxController.class, uiInputData);
+				formRenderer.get().renderForm(ShowResultsFxController.class, uiInputData);
 				uiOutputData = waitForUserTask();
 				uiInputData.putAll(uiOutputData);
 				break;

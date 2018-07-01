@@ -1,4 +1,4 @@
-package sa.gov.nic.bio.bw.client.features.searchbyfaceimage;
+package sa.gov.nic.bio.bw.client.features.faceverification;
 
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -19,7 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class SearchFxController extends WizardStepFxControllerBase
+public class MatchingFxController extends WizardStepFxControllerBase
 {
 	@FXML private ProgressIndicator piProgress;
 	@FXML private Label txtProgress;
@@ -31,7 +31,7 @@ public class SearchFxController extends WizardStepFxControllerBase
 	@Override
 	public URL getFxmlLocation()
 	{
-		return getClass().getResource("fxml/search.fxml");
+		return getClass().getResource("fxml/matching.fxml");
 	}
 	
 	@Override

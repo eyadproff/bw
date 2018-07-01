@@ -7,7 +7,7 @@ import sa.gov.nic.bio.bw.client.features.commons.FaceCapturingFxController;
 import sa.gov.nic.bio.bw.client.features.searchbyfaceimage.ConfirmImageFxController;
 import sa.gov.nic.bio.bw.client.features.searchbyfaceimage.ImageSourceFxController;
 import sa.gov.nic.bio.bw.client.features.searchbyfaceimage.SearchFxController;
-import sa.gov.nic.bio.bw.client.features.searchbyfaceimage.ShowResultFxController;
+import sa.gov.nic.bio.bw.client.features.searchbyfaceimage.ShowResultsFxController;
 import sa.gov.nic.bio.bw.client.features.searchbyfaceimage.UploadImageFileFxController;
 import sa.gov.nic.bio.bw.client.features.searchbyfaceimage.webservice.Candidate;
 import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
@@ -88,7 +88,7 @@ public class SearchByFaceImageWorkflow extends WizardWorkflowBase<Void, Void>
 			}
 			case 4:
 			{
-				formRenderer.get().renderForm(ShowResultFxController.class, uiInputData);
+				formRenderer.get().renderForm(ShowResultsFxController.class, uiInputData);
 				uiOutputData = waitForUserTask();
 				uiInputData.putAll(uiOutputData);
 				break;

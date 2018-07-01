@@ -44,7 +44,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-public class ShowResultFxController extends WizardStepFxControllerBase
+public class ShowResultsFxController extends WizardStepFxControllerBase
 {
 	@FXML private SplitPane splitPane;
 	@FXML private HBox imagePane;
@@ -74,9 +74,6 @@ public class ShowResultFxController extends WizardStepFxControllerBase
 	@Override
 	protected void initialize()
 	{
-		GuiUtils.makeButtonClickableByPressingEnter(btnStartOver);
-		GuiUtils.makeButtonClickableByPressingEnter(btnCompareWithUploadedImage);
-		
 		btnStartOver.setOnAction(event -> startOver());
 	}
 	

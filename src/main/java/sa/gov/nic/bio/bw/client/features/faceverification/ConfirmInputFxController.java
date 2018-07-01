@@ -7,7 +7,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
@@ -22,11 +22,11 @@ import java.util.Map;
 
 public class ConfirmInputFxController extends WizardStepFxControllerBase
 {
-	@FXML private HBox imagePane;
+	@FXML private Pane imagePane;
 	@FXML private ImageView ivFinalImage;
 	@FXML private Label lblPersonId;
 	@FXML private Button btnPrevious;
-	@FXML private Button btnSearch;
+	@FXML private Button btnMatch;
 	
 	@Override
 	public URL getFxmlLocation()
@@ -37,11 +37,8 @@ public class ConfirmInputFxController extends WizardStepFxControllerBase
 	@Override
 	protected void initialize()
 	{
-		GuiUtils.makeButtonClickableByPressingEnter(btnPrevious);
-		GuiUtils.makeButtonClickableByPressingEnter(btnSearch);
-		
 		btnPrevious.setOnAction(event -> goPrevious());
-		btnSearch.setOnAction(event -> goNext());
+		btnMatch.setOnAction(event -> goNext());
 	}
 	
 	@Override
@@ -107,7 +104,7 @@ public class ConfirmInputFxController extends WizardStepFxControllerBase
 					String errorCode = SearchByFaceImageErrorCodes.C005_00001.getCode();
 					String[] errorDetails = {"Failed to convert image to Base64-encoded representation!"};
 					Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails);
-					btnSearch.setDisable(true);
+					btnMatch.setDisable(true);
 				}
 				
 				Platform.runLater(() ->

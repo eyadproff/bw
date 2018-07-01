@@ -39,9 +39,6 @@ public class FetchingFingerprintsPaneFxController extends WizardStepFxController
 	@Override
 	protected void initialize()
 	{
-		GuiUtils.makeButtonClickableByPressingEnter(btnRetry);
-		GuiUtils.makeButtonClickableByPressingEnter(btnStartOver);
-		
 		btnStartOver.setOnAction(actionEvent ->
 		{
 		    hideNotification();

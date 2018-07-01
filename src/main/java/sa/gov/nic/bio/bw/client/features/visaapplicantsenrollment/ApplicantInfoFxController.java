@@ -113,9 +113,6 @@ public class ApplicantInfoFxController extends WizardStepFxControllerBase
 	@Override
 	protected void initialize()
 	{
-		GuiUtils.makeButtonClickableByPressingEnter(btnPassportScanner);
-		GuiUtils.makeButtonClickableByPressingEnter(btnNext);
-		
 		btnNext.setOnAction(event -> goNext());
 		
 		UserSession userSession = Context.getUserSession();
@@ -496,7 +493,6 @@ public class ApplicantInfoFxController extends WizardStepFxControllerBase
 			Label lblMessage = new Label(
 								resources.getString("visaApplicantsEnrollment.passportScanning.window.message"));
 			Button btnStart = new Button(resources.getString("button.start"));
-			GuiUtils.makeButtonClickableByPressingEnter(btnStart);
 			ProgressIndicator progressIndicator = new ProgressIndicator();
 			progressIndicator.setMaxHeight(18.0);
 			progressIndicator.setMaxWidth(18.0);

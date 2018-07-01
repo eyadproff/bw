@@ -122,10 +122,6 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 	@Override
 	protected void initialize()
 	{
-		GuiUtils.makeButtonClickableByPressingEnter(btnPrevious);
-		GuiUtils.makeButtonClickableByPressingEnter(btnStartOver);
-		GuiUtils.makeButtonClickableByPressingEnter(btnSubmit);
-		
 		btnPrevious.setOnAction(actionEvent -> goPrevious());
 		
 		paneImageView.maxWidthProperty().bind(paneImage.widthProperty());
