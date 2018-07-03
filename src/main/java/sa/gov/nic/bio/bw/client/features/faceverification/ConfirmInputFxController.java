@@ -14,14 +14,17 @@ import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.wizard.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.client.features.commons.FaceCapturingFxController;
 import sa.gov.nic.bio.bw.client.features.searchbyfaceimage.ImageSourceFxController;
+import sa.gov.nic.bio.bw.client.features.searchbyfaceimage.UploadImageFileFxController;
 import sa.gov.nic.bio.bw.client.features.searchbyfaceimage.utils.SearchByFaceImageErrorCodes;
-import sa.gov.nic.bio.bw.client.features.searchbyfaceimage.workflow.SearchByFaceImageWorkflow;
 
 import java.net.URL;
 import java.util.Map;
 
 public class ConfirmInputFxController extends WizardStepFxControllerBase
 {
+	public static final String KEY_FINAL_IMAGE = "FINAL_IMAGE";
+	public static final String KEY_FINAL_IMAGE_BASE64 = "FINAL_IMAGE_BASE64";
+	
 	@FXML private Pane imagePane;
 	@FXML private ImageView ivFinalImage;
 	@FXML private Label lblPersonId;
@@ -80,7 +83,7 @@ public class ConfirmInputFxController extends WizardStepFxControllerBase
 			
 			if(ImageSourceFxController.VALUE_IMAGE_SOURCE_UPLOAD.equals(imageSource))
 			{
-				finalImage[0] = (Image) uiInputData.get(SearchByFaceImageWorkflow.KEY_UPLOADED_IMAGE);
+				finalImage[0] = (Image) uiInputData.get(UploadImageFileFxController.KEY_UPLOADED_IMAGE);
 			}
 			else
 			{
@@ -96,8 +99,8 @@ public class ConfirmInputFxController extends WizardStepFxControllerBase
 				try
 				{
 					String imageBase64 = AppUtils.imageToBase64(finalImage[0], "jpg");
-					uiInputData.put(SearchByFaceImageWorkflow.KEY_FINAL_IMAGE_BASE64, imageBase64);
-					uiInputData.put(SearchByFaceImageWorkflow.KEY_FINAL_IMAGE, finalImage[0]);
+					uiInputData.put(KEY_FINAL_IMAGE_BASE64, imageBase64);
+					uiInputData.put(KEY_FINAL_IMAGE, finalImage[0]);
 				}
 				catch(Exception e)
 				{

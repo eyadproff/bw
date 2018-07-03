@@ -19,12 +19,6 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class SearchByFaceImageWorkflow extends WizardWorkflowBase<Void, Void>
 {
-	public static final String KEY_UPLOADED_IMAGE = "UPLOADED_IMAGE";
-	public static final String KEY_FINAL_IMAGE_BASE64 = "FINAL_IMAGE_BASE64";
-	public static final String KEY_FINAL_IMAGE = "FINAL_IMAGE";
-	public static final String KEY_CANDIDATES = "CANDIDATES";
-	
-	
 	public SearchByFaceImageWorkflow(AtomicReference<FormRenderer> formRenderer,
 	                                 BlockingQueue<Map<String, Object>> userTasks)
 	{
@@ -76,7 +70,7 @@ public class SearchByFaceImageWorkflow extends WizardWorkflowBase<Void, Void>
 				// show progress indicator here
 				formRenderer.get().renderForm(SearchFxController.class, uiInputData);
 				
-				String imageBase64 = (String) uiInputData.get(SearchByFaceImageWorkflow.KEY_FINAL_IMAGE_BASE64);
+				String imageBase64 = (String) uiInputData.get(ConfirmImageFxController.KEY_FINAL_IMAGE_BASE64);
 				ServiceResponse<List<Candidate>> response = SearchByFaceImageService.execute(imageBase64);
 				uiInputData.put(KEY_WEBSERVICE_RESPONSE, response);
 				

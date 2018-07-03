@@ -11,7 +11,6 @@ import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.wizard.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.client.core.workflow.Workflow;
 import sa.gov.nic.bio.bw.client.features.searchbyfaceimage.webservice.Candidate;
-import sa.gov.nic.bio.bw.client.features.searchbyfaceimage.workflow.SearchByFaceImageWorkflow;
 import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
 
 import java.net.URL;
@@ -70,7 +69,7 @@ public class MatchingFxController extends WizardStepFxControllerBase
 	@Override
 	protected void onGoingNext(Map<String, Object> uiDataMap)
 	{
-		uiDataMap.put(SearchByFaceImageWorkflow.KEY_CANDIDATES, candidates);
+		// TODO: uiDataMap.put(SearchByFaceImageWorkflow.KEY_CANDIDATES, candidates);
 	}
 	
 	@FXML

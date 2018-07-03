@@ -5,26 +5,20 @@ import sa.gov.nic.bio.bw.client.core.workflow.Signal;
 import sa.gov.nic.bio.bw.client.core.workflow.WizardWorkflowBase;
 import sa.gov.nic.bio.bw.client.features.commons.FaceCapturingFxController;
 import sa.gov.nic.bio.bw.client.features.faceverification.ConfirmInputFxController;
+import sa.gov.nic.bio.bw.client.features.faceverification.MatchingFxController;
 import sa.gov.nic.bio.bw.client.features.faceverification.PersonIdPaneFxController;
+import sa.gov.nic.bio.bw.client.features.faceverification.ShowResultFxController;
+import sa.gov.nic.bio.bw.client.features.faceverification.webservice.FaceMatchingResponse;
 import sa.gov.nic.bio.bw.client.features.searchbyfaceimage.ImageSourceFxController;
-import sa.gov.nic.bio.bw.client.features.searchbyfaceimage.SearchFxController;
-import sa.gov.nic.bio.bw.client.features.searchbyfaceimage.ShowResultsFxController;
 import sa.gov.nic.bio.bw.client.features.searchbyfaceimage.UploadImageFileFxController;
-import sa.gov.nic.bio.bw.client.features.searchbyfaceimage.webservice.Candidate;
-import sa.gov.nic.bio.bw.client.features.searchbyfaceimage.workflow.SearchByFaceImageService;
 import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
 
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class FaceVerificationWorkflow extends WizardWorkflowBase<Void, Void>
 {
-	public static final String KEY_UPLOADED_IMAGE = "UPLOADED_IMAGE";
-	public static final String KEY_FINAL_IMAGE_BASE64 = "FINAL_IMAGE_BASE64";
-	public static final String KEY_FINAL_IMAGE = "FINAL_IMAGE";
-	
 	public FaceVerificationWorkflow(AtomicReference<FormRenderer> formRenderer,
 	                                BlockingQueue<Map<String, Object>> userTasks)
 	{
@@ -80,21 +74,23 @@ public class FaceVerificationWorkflow extends WizardWorkflowBase<Void, Void>
 			case 4:
 			{
 				// show progress indicator here
-				formRenderer.get().renderForm(SearchFxController.class, uiInputData);
+				formRenderer.get().renderForm(MatchingFxController.class, uiInputData);
 				
-				String imageBase64 = (String) uiInputData.get(FaceVerificationWorkflow.KEY_FINAL_IMAGE_BASE64);
-				ServiceResponse<List<Candidate>> response = SearchByFaceImageService.execute(imageBase64);
+				String imageBase64 = (String) uiInputData.get(ConfirmInputFxController.KEY_FINAL_IMAGE_BASE64);
+				long personId = (long) uiInputData.get(PersonIdPaneFxController.KEY_PERSON_ID);
+				
+				ServiceResponse<FaceMatchingResponse> response = FaceVerificationService.execute(personId, imageBase64);
 				uiInputData.put(KEY_WEBSERVICE_RESPONSE, response);
 				
 				// if success, ask for goNext() automatically. Otherwise, show failure message and retry button
-				formRenderer.get().renderForm(SearchFxController.class, uiInputData);
+				formRenderer.get().renderForm(MatchingFxController.class, uiInputData);
 				uiOutputData = waitForUserTask();
 				uiInputData.putAll(uiOutputData);
 				break;
 			}
 			case 5:
 			{
-				formRenderer.get().renderForm(ShowResultsFxController.class, uiInputData);
+				formRenderer.get().renderForm(ShowResultFxController.class, uiInputData);
 				uiOutputData = waitForUserTask();
 				uiInputData.putAll(uiOutputData);
 				break;

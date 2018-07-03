@@ -20,6 +20,9 @@ import java.util.Map;
 
 public class ConfirmImageFxController extends WizardStepFxControllerBase
 {
+	public static final String KEY_FINAL_IMAGE = "FINAL_IMAGE";
+	public static final String KEY_FINAL_IMAGE_BASE64 = "FINAL_IMAGE_BASE64";
+	
 	@FXML private HBox imagePane;
 	@FXML private ImageView ivFinalImage;
 	@FXML private Button btnPrevious;
@@ -76,7 +79,7 @@ public class ConfirmImageFxController extends WizardStepFxControllerBase
 			
 			if(ImageSourceFxController.VALUE_IMAGE_SOURCE_UPLOAD.equals(imageSource))
 			{
-				finalImage[0] = (Image) uiInputData.get(SearchByFaceImageWorkflow.KEY_UPLOADED_IMAGE);
+				finalImage[0] = (Image) uiInputData.get(UploadImageFileFxController.KEY_UPLOADED_IMAGE);
 			}
 			else
 			{
@@ -92,8 +95,8 @@ public class ConfirmImageFxController extends WizardStepFxControllerBase
 				try
 				{
 					String imageBase64 = AppUtils.imageToBase64(finalImage[0], "jpg");
-					uiInputData.put(SearchByFaceImageWorkflow.KEY_FINAL_IMAGE_BASE64, imageBase64);
-					uiInputData.put(SearchByFaceImageWorkflow.KEY_FINAL_IMAGE, finalImage[0]);
+					uiInputData.put(KEY_FINAL_IMAGE_BASE64, imageBase64);
+					uiInputData.put(KEY_FINAL_IMAGE, finalImage[0]);
 				}
 				catch(Exception e)
 				{

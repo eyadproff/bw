@@ -13,7 +13,6 @@ import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.wizard.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.client.features.searchbyfaceimage.utils.SearchByFaceImageErrorCodes;
-import sa.gov.nic.bio.bw.client.features.searchbyfaceimage.workflow.SearchByFaceImageWorkflow;
 
 import java.io.File;
 import java.net.URL;
@@ -23,6 +22,8 @@ import java.util.Map;
 
 public class UploadImageFileFxController extends WizardStepFxControllerBase
 {
+	public static final String KEY_UPLOADED_IMAGE = "UPLOADED_IMAGE";
+	
 	@FXML private HBox imagePane;
 	@FXML private ImageView ivUploadedImage;
 	@FXML private Button btnSelectImage;
@@ -83,7 +84,7 @@ public class UploadImageFileFxController extends WizardStepFxControllerBase
 	{
 		if(newForm)
 		{
-			Image uploadedImage = (Image) uiInputData.get(SearchByFaceImageWorkflow.KEY_UPLOADED_IMAGE);
+			Image uploadedImage = (Image) uiInputData.get(KEY_UPLOADED_IMAGE);
 			if(uploadedImage != null)
 			{
 				ivUploadedImage.setImage(uploadedImage);
@@ -102,7 +103,7 @@ public class UploadImageFileFxController extends WizardStepFxControllerBase
 	@Override
 	public void onGoingNext(Map<String, Object> uiDataMap)
 	{
-		if(imageSelected) uiDataMap.put(SearchByFaceImageWorkflow.KEY_UPLOADED_IMAGE, ivUploadedImage.getImage());
+		if(imageSelected) uiDataMap.put(KEY_UPLOADED_IMAGE, ivUploadedImage.getImage());
 	}
 	
 	@FXML
@@ -117,7 +118,7 @@ public class UploadImageFileFxController extends WizardStepFxControllerBase
 			{
 				long fileSizeBytes = Files.size(selectedFile.toPath());
 				double fileSizeKB = fileSizeBytes / 1024.0;
-				String maxFileSizeKbProperty = System.getProperty("jnlp.bio.bw.config.searchByFaceImage.fileMaxSizeKB");
+				String maxFileSizeKbProperty = System.getProperty("jnlp.bio.bw.config.uploadFaceImage.fileMaxSizeKB");
 				
 				double maxFileSizeKb = Double.parseDouble(maxFileSizeKbProperty);
 				if(fileSizeKB > maxFileSizeKb)
