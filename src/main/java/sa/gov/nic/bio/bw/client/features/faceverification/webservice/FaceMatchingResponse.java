@@ -13,6 +13,17 @@ public class FaceMatchingResponse
 		private String fatherName;
 		private String familyName;
 		
+		public PersonInfo(long samisId, long bioId, String image, String firstName, String fatherName,
+		                  String familyName)
+		{
+			this.samisId = samisId;
+			this.bioId = bioId;
+			this.image = image;
+			this.firstName = firstName;
+			this.fatherName = fatherName;
+			this.familyName = familyName;
+		}
+		
 		public long getSamisId(){return samisId;}
 		public void setSamisId(long samisId){this.samisId = samisId;}
 		
@@ -57,8 +68,19 @@ public class FaceMatchingResponse
 		}
 	}
 	
+	private boolean noFace;
 	private boolean matched;
 	private PersonInfo personInfo;
+	
+	public FaceMatchingResponse(boolean noFace, boolean matched, PersonInfo personInfo)
+	{
+		this.noFace = noFace;
+		this.matched = matched;
+		this.personInfo = personInfo;
+	}
+	
+	public boolean isNoFace(){return noFace;}
+	public void setNoFace(boolean noFace){this.noFace = noFace;}
 	
 	public boolean isMatched(){return matched;}
 	public void setMatched(boolean matched){this.matched = matched;}
@@ -72,18 +94,19 @@ public class FaceMatchingResponse
 		if(this == o) return true;
 		if(o == null || getClass() != o.getClass()) return false;
 		FaceMatchingResponse that = (FaceMatchingResponse) o;
-		return matched == that.matched && Objects.equals(personInfo, that.personInfo);
+		return noFace == that.noFace && matched == that.matched && Objects.equals(personInfo, that.personInfo);
 	}
 	
 	@Override
 	public int hashCode()
 	{
-		return Objects.hash(matched, personInfo);
+		return Objects.hash(noFace, matched, personInfo);
 	}
 	
 	@Override
 	public String toString()
 	{
-		return "FaceMatchingResponse{" + "matched=" + matched + ", personInfo=" + personInfo + '}';
+		return "FaceMatchingResponse{" + "noFace=" + noFace + ", matched=" + matched + ", personInfo=" +
+			   personInfo + '}';
 	}
 }

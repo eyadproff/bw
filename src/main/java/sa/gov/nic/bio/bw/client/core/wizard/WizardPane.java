@@ -91,7 +91,7 @@ public class WizardPane extends BorderPane
 		
 		drawStepsIndicators();
 		
-		for(int i = 0; i <= indicators.size(); i++)
+		for(int i = 0; i < indicators.size(); i++)
 		{
 			WizardStepIndicator indicator = indicators.get(i);
 			
@@ -211,12 +211,11 @@ public class WizardPane extends BorderPane
 	{
 		currentStep = 0;
 		
-		for(WizardStepIndicator indicator : indicators)
+		for(int i = 0; i < indicators.size(); i++)
 		{
+			WizardStepIndicator indicator = indicators.get(i);
 			indicator.setVisited(false);
-			indicator.setSelected(false);
+			indicator.setSelected(i == 0); // select the first only
 		}
-		
-		goNext();
 	}
 }

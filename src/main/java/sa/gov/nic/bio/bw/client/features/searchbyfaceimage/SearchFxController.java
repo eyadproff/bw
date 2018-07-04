@@ -1,6 +1,5 @@
 package sa.gov.nic.bio.bw.client.features.searchbyfaceimage;
 
-import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -54,7 +53,7 @@ public class SearchFxController extends WizardStepFxControllerBase
 				if(response.isSuccess())
 				{
 					candidates = response.getResult();
-					Platform.runLater(this::goNext);
+					goNext();
 				}
 				else
 				{

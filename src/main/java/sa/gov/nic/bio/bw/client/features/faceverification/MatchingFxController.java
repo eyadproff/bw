@@ -1,6 +1,5 @@
 package sa.gov.nic.bio.bw.client.features.faceverification;
 
-import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -10,12 +9,11 @@ import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.wizard.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.client.core.workflow.Workflow;
-import sa.gov.nic.bio.bw.client.features.searchbyfaceimage.webservice.Candidate;
+import sa.gov.nic.bio.bw.client.features.faceverification.webservice.FaceMatchingResponse;
 import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
 
 import java.net.URL;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class MatchingFxController extends WizardStepFxControllerBase
@@ -25,7 +23,7 @@ public class MatchingFxController extends WizardStepFxControllerBase
 	@FXML private Button btnRetry;
 	@FXML private Button btnStartOver;
 	
-	private List<Candidate> candidates;
+	private FaceMatchingResponse faceMatchingResponse;
 	
 	@Override
 	public URL getFxmlLocation()
@@ -46,15 +44,15 @@ public class MatchingFxController extends WizardStepFxControllerBase
 		if(newForm) showProgress(true);
 		else
 		{
-			ServiceResponse<List<Candidate>> response = (ServiceResponse<List<Candidate>>)
+			ServiceResponse<FaceMatchingResponse> response = (ServiceResponse<FaceMatchingResponse>)
 																	uiInputData.get(Workflow.KEY_WEBSERVICE_RESPONSE);
 			
 			if(response != null) // there is a result
 			{
 				if(response.isSuccess())
 				{
-					candidates = response.getResult();
-					Platform.runLater(this::goNext);
+					faceMatchingResponse = response.getResult();
+					goNext();
 				}
 				else
 				{
@@ -69,7 +67,7 @@ public class MatchingFxController extends WizardStepFxControllerBase
 	@Override
 	protected void onGoingNext(Map<String, Object> uiDataMap)
 	{
-		// TODO: uiDataMap.put(SearchByFaceImageWorkflow.KEY_CANDIDATES, candidates);
+		uiDataMap.put(ShowResultFxController.KEY_FACE_MATCHING_RESPONSE, faceMatchingResponse);
 	}
 	
 	@FXML
