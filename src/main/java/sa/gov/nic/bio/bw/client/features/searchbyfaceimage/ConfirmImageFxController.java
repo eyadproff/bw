@@ -17,11 +17,12 @@ import sa.gov.nic.bio.bw.client.features.searchbyfaceimage.workflow.SearchByFace
 
 import java.net.URL;
 import java.util.Map;
-import java.util.ResourceBundle;
 
 public class ConfirmImageFxController extends WizardStepFxControllerBase
 {
-	@FXML private ResourceBundle resources;
+	public static final String KEY_FINAL_IMAGE = "FINAL_IMAGE";
+	public static final String KEY_FINAL_IMAGE_BASE64 = "FINAL_IMAGE_BASE64";
+	
 	@FXML private HBox imagePane;
 	@FXML private ImageView ivFinalImage;
 	@FXML private Button btnPrevious;
@@ -36,9 +37,6 @@ public class ConfirmImageFxController extends WizardStepFxControllerBase
 	@Override
 	protected void initialize()
 	{
-		GuiUtils.makeButtonClickableByPressingEnter(btnPrevious);
-		GuiUtils.makeButtonClickableByPressingEnter(btnSearch);
-		
 		btnPrevious.setOnAction(event -> goPrevious());
 		btnSearch.setOnAction(event -> goNext());
 	}
@@ -75,13 +73,13 @@ public class ConfirmImageFxController extends WizardStepFxControllerBase
 	{
 		if(newForm)
 		{
-			String imageSource = (String) uiInputData.get(SearchByFaceImageWorkflow.KEY_IMAGE_SOURCE);
+			String imageSource = (String) uiInputData.get(ImageSourceFxController.KEY_IMAGE_SOURCE);
 			
 			Image[] finalImage = new Image[1];
 			
-			if(SearchByFaceImageWorkflow.VALUE_IMAGE_SOURCE_UPLOAD.equals(imageSource))
+			if(ImageSourceFxController.VALUE_IMAGE_SOURCE_UPLOAD.equals(imageSource))
 			{
-				finalImage[0] = (Image) uiInputData.get(SearchByFaceImageWorkflow.KEY_UPLOADED_IMAGE);
+				finalImage[0] = (Image) uiInputData.get(UploadImageFileFxController.KEY_UPLOADED_IMAGE);
 			}
 			else
 			{
@@ -97,8 +95,8 @@ public class ConfirmImageFxController extends WizardStepFxControllerBase
 				try
 				{
 					String imageBase64 = AppUtils.imageToBase64(finalImage[0], "jpg");
-					uiInputData.put(SearchByFaceImageWorkflow.KEY_FINAL_IMAGE_BASE64, imageBase64);
-					uiInputData.put(SearchByFaceImageWorkflow.KEY_FINAL_IMAGE, finalImage[0]);
+					uiInputData.put(KEY_FINAL_IMAGE_BASE64, imageBase64);
+					uiInputData.put(KEY_FINAL_IMAGE, finalImage[0]);
 				}
 				catch(Exception e)
 				{

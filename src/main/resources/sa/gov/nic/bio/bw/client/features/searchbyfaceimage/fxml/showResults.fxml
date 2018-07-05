@@ -14,7 +14,7 @@
 <?import sa.gov.nic.bio.bw.client.features.searchbyfaceimage.ui.ToggleTitledPane?>
 <BorderPane xmlns="http://javafx.com/javafx/8.0.152" xmlns:fx="http://javafx.com/fxml/1"
             fx:id="rootPane" stylesheets="@../css/style.css"
-            fx:controller="sa.gov.nic.bio.bw.client.features.searchbyfaceimage.ShowResultFxController">
+            fx:controller="sa.gov.nic.bio.bw.client.features.searchbyfaceimage.ShowResultsFxController">
     <center>
         <SplitPane fx:id="splitPane" orientation="VERTICAL" styleClass="white-background,hidden-divider">
             <padding>

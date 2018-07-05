@@ -73,6 +73,16 @@ public class WizardPane extends BorderPane
 		}
 	}
 	
+	public int getStepIndexByTitle(String title)
+	{
+		for(int i = 0; i < steps.size(); i++)
+		{
+			if(steps.get(i).getTitle().equals(title)) return i;
+		}
+		
+		return -1;
+	}
+	
 	public void updateStep(int stepIndex, String title, String iconId)
 	{
 		WizardStep wizardStep = steps.get(stepIndex);
@@ -81,8 +91,17 @@ public class WizardPane extends BorderPane
 		
 		drawStepsIndicators();
 		
-		if(currentStep >= 0) currentStep--;
-		goNext();
+		for(int i = 0; i < indicators.size(); i++)
+		{
+			WizardStepIndicator indicator = indicators.get(i);
+			
+			if(i <= currentStep) indicator.setVisited(true);
+			if(i == currentStep)
+			{
+				indicator.setSelected(true);
+				break;
+			}
+		}
 	}
 	
 	private void drawStepsIndicators()
@@ -192,12 +211,11 @@ public class WizardPane extends BorderPane
 	{
 		currentStep = 0;
 		
-		for(WizardStepIndicator indicator : indicators)
+		for(int i = 0; i < indicators.size(); i++)
 		{
+			WizardStepIndicator indicator = indicators.get(i);
 			indicator.setVisited(false);
-			indicator.setSelected(false);
+			indicator.setSelected(i == 0); // select the first only
 		}
-		
-		goNext();
 	}
 }

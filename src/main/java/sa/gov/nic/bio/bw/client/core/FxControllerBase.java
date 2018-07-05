@@ -1,18 +1,34 @@
 package sa.gov.nic.bio.bw.client.core;
 
 import javafx.fxml.FXML;
-import sa.gov.nic.bio.bw.client.core.interfaces.ControllerResourcesLocator;
+import javafx.scene.Node;
+import javafx.scene.control.Button;
+import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.Set;
 
 /**
  * A base class for all JavaFX controllers.
  *
  * @author Fouad Almalki
  */
-public abstract class FxControllerBase implements ControllerResourcesLocator
+public abstract class FxControllerBase
 {
+	/*
+	 *	location and resources are injected automatically by JavaFX.
+	 */
+	
+	/**
+	 * Location of the FXML file.
+	 */
+	@FXML
+	protected URL location;
+	
+	/**
+	 * The resource bundle passed to FXMLLoader at initialization.
+	 */
 	@FXML
 	protected ResourceBundle resources;
 	
@@ -24,20 +40,20 @@ public abstract class FxControllerBase implements ControllerResourcesLocator
 	protected void initialize(){}
 	
 	/**
-	 * {@inheritDoc}
+	 * Called after <code>initialize()</code>. It is used to apply global customization for all nodes in the GUI.
+	 *
+	 * @param rootNode the root node that is associated with this controller
 	 */
-	@Override
-	public URL getFxmlLocation()
+	final void postInitialization(Node rootNode)
 	{
-		return getClass().getResource("fxml/gui.fxml");
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public final String getStringsResourceBundle()
-	{
-		return getClass().getPackage().getName().replace(".", "/") + "/bundles/strings";
+		Set<Node> buttons = rootNode.lookupAll(".button");
+		buttons.forEach(node ->
+		{
+			if(node instanceof Button)
+			{
+				Button button = (Button) node;
+				GuiUtils.makeButtonClickableByPressingEnter(button);
+			}
+		});
 	}
 }

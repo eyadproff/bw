@@ -73,10 +73,6 @@ public class PunishmentDetailsPaneFxController extends WizardStepFxControllerBas
 	@Override
 	protected void initialize()
 	{
-		GuiUtils.makeButtonClickableByPressingEnter(btnPrevious);
-		GuiUtils.makeButtonClickableByPressingEnter(btnStartOver);
-		GuiUtils.makeButtonClickableByPressingEnter(btnNext);
-		
 		btnPrevious.setOnAction(actionEvent -> goPrevious());
 		btnNext.setOnAction(actionEvent -> goNext());
 		
@@ -297,7 +293,13 @@ public class PunishmentDetailsPaneFxController extends WizardStepFxControllerBas
 	}
 	
 	@Override
-	public void onLeaving(Map<String, Object> uiDataMap)
+	protected void onGoingPrevious(Map<String, Object> uiDataMap)
+	{
+		onGoingNext(uiDataMap);
+	}
+	
+	@Override
+	public void onGoingNext(Map<String, Object> uiDataMap)
 	{
 		uiDataMap.put(KEY_PUNISHMENT_DETAILS_TAZEER_LASHES, spnTazeerLashes.getValue());
 		uiDataMap.put(KEY_PUNISHMENT_DETAILS_HAD_LASHES, spnHadLashes.getValue());

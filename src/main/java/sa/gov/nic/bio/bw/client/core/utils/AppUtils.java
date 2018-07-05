@@ -9,6 +9,7 @@ import org.controlsfx.glyphfont.Glyph;
 import sa.gov.nic.bio.bw.client.core.webservice.NicHijriCalendarData;
 
 import javax.imageio.ImageIO;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -410,5 +411,11 @@ public final class AppUtils
 		ImageIO.write(SwingFXUtils.fromFXImage(image, null), imageExtension, byteOutput);
 		byte[] bytes = byteOutput.toByteArray();
 		return Base64.getEncoder().encodeToString(bytes);
+	}
+	
+	public static Image imageFromBase64(String base64Image)
+	{
+		byte[] imageByteArray = Base64.getDecoder().decode(base64Image);
+		return new Image(new ByteArrayInputStream(imageByteArray));
 	}
 }

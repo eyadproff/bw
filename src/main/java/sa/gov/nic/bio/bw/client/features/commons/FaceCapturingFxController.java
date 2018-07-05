@@ -45,7 +45,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Base64;
 import java.util.Map;
-import java.util.ResourceBundle;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -77,7 +76,6 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 	
 	public static final String KEY_FINAL_FACE_IMAGE = "FINAL_FACE_IMAGE";
 	
-	@FXML private ResourceBundle resources;
 	@FXML private FourStateTitledPane tpCameraLivePreview;
 	@FXML private FourStateTitledPane tpCapturedImage;
 	@FXML private FourStateTitledPane tpCroppedImage;
@@ -128,9 +126,6 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 	@Override
 	protected void initialize()
 	{
-		GuiUtils.makeButtonClickableByPressingEnter(btnPrevious);
-		GuiUtils.makeButtonClickableByPressingEnter(btnNext);
-		
 		btnPrevious.setOnAction(event -> goPrevious());
 		btnNext.setOnAction(event -> goNext());
 		
@@ -318,10 +313,20 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 	}
 	
 	@Override
-	public void onLeaving(Map<String, Object> uiDataMap)
+	protected void onDetachedFromScene()
 	{
 		if(btnStopCameraLivePreview.isVisible()) Platform.runLater(btnStopCameraLivePreview::fire);
-		
+	}
+	
+	@Override
+	protected void onGoingPrevious(Map<String, Object> uiDataMap)
+	{
+		onGoingNext(uiDataMap);
+	}
+	
+	@Override
+	public void onGoingNext(Map<String, Object> uiDataMap)
+	{
 		uiDataMap.put(KEY_ICAO_SUCCESS_ICON_VISIBLE, ivSuccessIcao.isVisible());
 		uiDataMap.put(KEY_ICAO_WARNING_ICON_VISIBLE, ivWarningIcao.isVisible());
 		uiDataMap.put(KEY_ICAO_ERROR_ICON_VISIBLE, ivErrorIcao.isVisible());

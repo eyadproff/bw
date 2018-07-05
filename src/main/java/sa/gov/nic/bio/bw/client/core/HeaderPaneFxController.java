@@ -12,8 +12,6 @@ import org.controlsfx.glyphfont.Glyph;
 import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 
-import java.util.ResourceBundle;
-
 /**
  * JavaFX controller for the header. Shown only after login. It contains information about the logged in
  * user and also a button to logout from the current session.
@@ -24,7 +22,6 @@ public class HeaderPaneFxController extends RegionFxControllerBase
 {
 	private static final String AVATAR_PLACEHOLDER_FILE = "sa/gov/nic/bio/bw/client/core/images/avatar_placeholder.jpg";
 	
-	@FXML private ResourceBundle resources;
 	@FXML private Pane rootPane;
 	@FXML private ImageView ivAvatar;
 	@FXML private Label lblUsername;

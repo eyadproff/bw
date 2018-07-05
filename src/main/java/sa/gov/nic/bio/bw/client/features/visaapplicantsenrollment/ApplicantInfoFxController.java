@@ -113,9 +113,6 @@ public class ApplicantInfoFxController extends WizardStepFxControllerBase
 	@Override
 	protected void initialize()
 	{
-		GuiUtils.makeButtonClickableByPressingEnter(btnPassportScanner);
-		GuiUtils.makeButtonClickableByPressingEnter(btnNext);
-		
 		btnNext.setOnAction(event -> goNext());
 		
 		UserSession userSession = Context.getUserSession();
@@ -346,12 +343,22 @@ public class ApplicantInfoFxController extends WizardStepFxControllerBase
 	}
 	
 	@Override
-	public void onLeaving(Map<String, Object> uiDataMap)
+	protected void onDetachedFromScene()
 	{
 		Context.getCoreFxController().getDeviceManagerGadgetPaneController().setDevicesRunnerRunningListener(null);
 		Context.getCoreFxController().getDeviceManagerGadgetPaneController()
 									 .setPassportScannerInitializationListener(null);
-		
+	}
+	
+	@Override
+	protected void onGoingPrevious(Map<String, Object> uiDataMap)
+	{
+		onGoingNext(uiDataMap);
+	}
+	
+	@Override
+	public void onGoingNext(Map<String, Object> uiDataMap)
+	{
 		uiDataMap.put(KEY_FIRST_NAME, txtFirstName.getText());
 		uiDataMap.put(KEY_SECOND_NAME, txtSecondName.getText());
 		uiDataMap.put(KEY_OTHER_NAME, txtOtherName.getText());
@@ -486,7 +493,6 @@ public class ApplicantInfoFxController extends WizardStepFxControllerBase
 			Label lblMessage = new Label(
 								resources.getString("visaApplicantsEnrollment.passportScanning.window.message"));
 			Button btnStart = new Button(resources.getString("button.start"));
-			GuiUtils.makeButtonClickableByPressingEnter(btnStart);
 			ProgressIndicator progressIndicator = new ProgressIndicator();
 			progressIndicator.setMaxHeight(18.0);
 			progressIndicator.setMaxWidth(18.0);

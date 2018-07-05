@@ -43,11 +43,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.ResourceBundle;
 
-public class ShowResultFxController extends WizardStepFxControllerBase
+public class ShowResultsFxController extends WizardStepFxControllerBase
 {
-	@FXML private ResourceBundle resources;
+	public static final String KEY_CANDIDATES = "CANDIDATES";
+	
 	@FXML private SplitPane splitPane;
 	@FXML private HBox imagePane;
 	@FXML private ImageView ivCenterImage;
@@ -76,9 +76,6 @@ public class ShowResultFxController extends WizardStepFxControllerBase
 	@Override
 	protected void initialize()
 	{
-		GuiUtils.makeButtonClickableByPressingEnter(btnStartOver);
-		GuiUtils.makeButtonClickableByPressingEnter(btnCompareWithUploadedImage);
-		
 		btnStartOver.setOnAction(event -> startOver());
 	}
 	
@@ -114,7 +111,7 @@ public class ShowResultFxController extends WizardStepFxControllerBase
 	@SuppressWarnings("unchecked")
 	public void onWorkflowUserTaskLoad(boolean newForm, Map<String, Object> uiInputData)
 	{
-		List<Candidate> candidates = (List<Candidate>) uiInputData.get(SearchByFaceImageWorkflow.KEY_CANDIDATES);
+		List<Candidate> candidates = (List<Candidate>) uiInputData.get(KEY_CANDIDATES);
 		Collections.sort(candidates);
 		
 		spCandidates.maxHeightProperty().bind(new SimpleDoubleProperty(Double.MAX_VALUE));
@@ -138,7 +135,7 @@ public class ShowResultFxController extends WizardStepFxControllerBase
 		splitPane.getStyleClass().remove("hidden-divider"); // show the divider
 		
 		ImageView imageView = new ImageView();
-		finalImage = (Image) uiInputData.get(SearchByFaceImageWorkflow.KEY_FINAL_IMAGE);
+		finalImage = (Image) uiInputData.get(ConfirmImageFxController.KEY_FINAL_IMAGE);
 		imageView.setImage(finalImage);
 		imageView.setPreserveRatio(true);
 		

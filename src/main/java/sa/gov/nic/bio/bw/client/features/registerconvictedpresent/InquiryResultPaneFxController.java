@@ -71,10 +71,6 @@ public class InquiryResultPaneFxController extends WizardStepFxControllerBase
 	@Override
 	protected void initialize()
 	{
-		GuiUtils.makeButtonClickableByPressingEnter(btnStartOver);
-		GuiUtils.makeButtonClickableByPressingEnter(btnRegisterUnknownPerson);
-		GuiUtils.makeButtonClickableByPressingEnter(btnConfirmPersonInformation);
-		
 		btnConfirmPersonInformation.setOnAction(actionEvent -> goNext());
 	}
 	

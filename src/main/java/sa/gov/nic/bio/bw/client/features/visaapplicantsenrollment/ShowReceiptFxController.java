@@ -53,14 +53,6 @@ public class ShowReceiptFxController extends WizardStepFxControllerBase
 	}
 	
 	@Override
-	protected void initialize()
-	{
-		GuiUtils.makeButtonClickableByPressingEnter(btnStartOver);
-		GuiUtils.makeButtonClickableByPressingEnter(btnPrintReceipt);
-		GuiUtils.makeButtonClickableByPressingEnter(btnSaveReceiptAsPDF);
-	}
-	
-	@Override
 	protected void onAttachedToScene()
 	{
 		fileChooser.setTitle(resources.getString("fileChooser.saveReceiptAsPDF.title"));

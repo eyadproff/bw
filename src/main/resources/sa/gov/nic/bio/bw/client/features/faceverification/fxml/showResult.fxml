@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<BorderPane xmlns="http://javafx.com/javafx/8.0.152" xmlns:fx="http://javafx.com/fxml/1"
+            fx:id="rootPane" stylesheets="@../css/style.css"
+            fx:controller="sa.gov.nic.bio.bw.client.features.faceverification.ShowResultFxController">
+    <center>
+        <VBox alignment="CENTER" spacing="15.0">
+            <padding>
+                <Insets topRightBottomLeft="10.0"/>
+            </padding>
+            <VBox fx:id="matchedPane" alignment="CENTER" spacing="5.0" managed="false" visible="false">
+                <ImageView>
+                    <Image url="@../../../core/images/success.png"/>
+                </ImageView>
+                <Label text="%label.faceImageIsMatched"/>
+            </VBox>
+            <VBox fx:id="notMatchedPane" alignment="CENTER" spacing="5.0" managed="false" visible="false">
+                <ImageView>
+                    <Image url="@../../../core/images/error.png"/>
+                </ImageView>
+                <Label fx:id="lblNotMatched"/>
+            </VBox>
+            <VBox fx:id="noFacePane" alignment="CENTER" spacing="5.0" managed="false" visible="false">
+                <ImageView>
+                    <Image url="@../../../core/images/error.png"/>
+                </ImageView>
+                <Label fx:id="lblNoFace"/>
+            </VBox>
+            <HBox fx:id="imagePane" VBox.vgrow="ALWAYS" alignment="TOP_CENTER" spacing="5.0" maxHeight="Infinity" maxWidth="Infinity" managed="false" visible="false">
+                <VBox alignment="TOP_CENTER" maxHeight="Infinity" maxWidth="Infinity">
+                    <HBox alignment="TOP_CENTER" spacing="10">
+                        <StackPane styleClass="image-border-confirm">
+                            <ImageView fx:id="ivUploadedImage" preserveRatio="true"/>
+                        </StackPane>
+                    </HBox>
+                </VBox>
+                <VBox alignment="TOP_CENTER" maxHeight="Infinity" maxWidth="Infinity">
+                    <HBox alignment="TOP_CENTER" spacing="10">
+                        <StackPane styleClass="image-border-confirm">
+                            <ImageView fx:id="ivDBImage" preserveRatio="true"/>
+                        </StackPane>
+                    </HBox>
+                </VBox>
+                <VBox spacing="5">
+                    <HBox spacing="5">
+                        <Label text="%label.bioId" styleClass="bold-text"/>
+                        <Label fx:id="lblBioId" text="%label.notAvailable"/>
+                    </HBox>
+                    <HBox spacing="5">
+                        <Label text="%label.samisId" styleClass="bold-text"/>
+                        <Label fx:id="lblSamisId" text="%label.notAvailable"/>
+                    </HBox>
+                    <HBox spacing="5">
+                        <Label text="%label.firstName" styleClass="bold-text"/>
+                        <Label fx:id="lblFirstName" text="%label.notAvailable"/>
+                    </HBox>
+                    <HBox spacing="5">
+                        <Label text="%label.fatherName" styleClass="bold-text"/>
+                        <Label fx:id="lblFatherName" text="%label.notAvailable"/>
+                    </HBox>
+                    <HBox spacing="5">
+                        <Label text="%label.familyName" styleClass="bold-text"/>
+                        <Label fx:id="lblFamilyName" text="%label.notAvailable"/>
+                    </HBox>
+                </VBox>
+            </HBox>
+        </VBox>
+    </center>
+    <bottom>
+        <HBox alignment="CENTER" spacing="10">
+            <padding>
+                <Insets bottom="10"/>
+            </padding>
+            <Button fx:id="btnCompareWithUploadedImage" text="%button.compareWithUploadedImage" onAction="#onCompareWithUploadedImageButtonClicked" visible="false" managed="false"/>
+            <Button fx:id="btnStartOver" text="%button.startOver"/>
+        </HBox>
+    </bottom>
+</BorderPane>

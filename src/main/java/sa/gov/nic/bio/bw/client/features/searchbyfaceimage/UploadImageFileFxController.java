@@ -13,18 +13,17 @@ import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.wizard.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.client.features.searchbyfaceimage.utils.SearchByFaceImageErrorCodes;
-import sa.gov.nic.bio.bw.client.features.searchbyfaceimage.workflow.SearchByFaceImageWorkflow;
 
 import java.io.File;
 import java.net.URL;
 import java.nio.file.Files;
 import java.text.DecimalFormat;
 import java.util.Map;
-import java.util.ResourceBundle;
 
 public class UploadImageFileFxController extends WizardStepFxControllerBase
 {
-	@FXML private ResourceBundle resources;
+	public static final String KEY_UPLOADED_IMAGE = "UPLOADED_IMAGE";
+	
 	@FXML private HBox imagePane;
 	@FXML private ImageView ivUploadedImage;
 	@FXML private Button btnSelectImage;
@@ -43,10 +42,6 @@ public class UploadImageFileFxController extends WizardStepFxControllerBase
 	@Override
 	protected void initialize()
 	{
-		GuiUtils.makeButtonClickableByPressingEnter(btnSelectImage);
-		GuiUtils.makeButtonClickableByPressingEnter(btnPrevious);
-		GuiUtils.makeButtonClickableByPressingEnter(btnNext);
-		
 		btnPrevious.setOnAction(event -> goPrevious());
 		btnNext.setOnAction(event -> goNext());
 	}
@@ -89,7 +84,7 @@ public class UploadImageFileFxController extends WizardStepFxControllerBase
 	{
 		if(newForm)
 		{
-			Image uploadedImage = (Image) uiInputData.get(SearchByFaceImageWorkflow.KEY_UPLOADED_IMAGE);
+			Image uploadedImage = (Image) uiInputData.get(KEY_UPLOADED_IMAGE);
 			if(uploadedImage != null)
 			{
 				ivUploadedImage.setImage(uploadedImage);
@@ -100,9 +95,15 @@ public class UploadImageFileFxController extends WizardStepFxControllerBase
 	}
 	
 	@Override
-	public void onLeaving(Map<String, Object> uiDataMap)
+	protected void onGoingPrevious(Map<String, Object> uiDataMap)
 	{
-		if(imageSelected) uiDataMap.put(SearchByFaceImageWorkflow.KEY_UPLOADED_IMAGE, ivUploadedImage.getImage());
+		onGoingNext(uiDataMap);
+	}
+	
+	@Override
+	public void onGoingNext(Map<String, Object> uiDataMap)
+	{
+		if(imageSelected) uiDataMap.put(KEY_UPLOADED_IMAGE, ivUploadedImage.getImage());
 	}
 	
 	@FXML
@@ -117,7 +118,7 @@ public class UploadImageFileFxController extends WizardStepFxControllerBase
 			{
 				long fileSizeBytes = Files.size(selectedFile.toPath());
 				double fileSizeKB = fileSizeBytes / 1024.0;
-				String maxFileSizeKbProperty = System.getProperty("jnlp.bio.bw.config.searchByFaceImage.fileMaxSizeKB");
+				String maxFileSizeKbProperty = System.getProperty("jnlp.bio.bw.config.uploadFaceImage.fileMaxSizeKB");
 				
 				double maxFileSizeKb = Double.parseDouble(maxFileSizeKbProperty);
 				if(fileSizeKB > maxFileSizeKb)

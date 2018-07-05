@@ -31,7 +31,6 @@ import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.utils.IdleMonitor;
 import sa.gov.nic.bio.bw.client.core.utils.UTF8Control;
 import sa.gov.nic.bio.bw.client.core.wizard.WizardPane;
-import sa.gov.nic.bio.bw.client.core.wizard.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.client.core.workflow.SignalType;
 import sa.gov.nic.bio.bw.client.core.workflow.Workflow;
 import sa.gov.nic.bio.bw.client.home.workflow.HomeWorkflow;
@@ -54,21 +53,19 @@ import java.util.prefs.Preferences;
  *
  * @author Fouad Almalki
  */
-public class CoreFxController implements IdleMonitorRegisterer, PersistableEntity
+public class CoreFxController extends FxControllerBase implements IdleMonitorRegisterer, PersistableEntity
 {
 	private static final Logger LOGGER = Logger.getLogger(CoreFxController.class.getName());
 	public static final String FXML_FILE = "sa/gov/nic/bio/bw/client/core/fxml/core.fxml";
 	public static final String APP_ICON_FILE = "sa/gov/nic/bio/bw/client/core/images/app_icon.png";
 	public static final String RB_LABELS_FILE = "sa/gov/nic/bio/bw/client/core/bundles/strings";
 	
-	
-	// the following are here only to avoid warnings in FXML files.
+	// the following 4 fields are here only to avoid warnings in FXML files.
 	@FXML private Pane headerPane;
 	@FXML private Pane menuPane;
 	@FXML private Pane devicesRunnerGadgetPane;
 	@FXML private Pane footerPane;
 	
-	@FXML private ResourceBundle resources;
 	@FXML private StackPane stageOverlayPane;
 	@FXML private StackPane menuTransitionOverlayPane;
 	@FXML private ProgressIndicator piWizardTransition;
@@ -84,6 +81,7 @@ public class CoreFxController implements IdleMonitorRegisterer, PersistableEntit
 	private Stage stage;
 	private IdleMonitor idleMonitor;
 	private BodyFxControllerBase currentBodyController;
+	private boolean newMenuSelected;
 	
 	public void registerStage(Stage stage)
 	{
@@ -104,8 +102,8 @@ public class CoreFxController implements IdleMonitorRegisterer, PersistableEntit
 	public WizardPane getWizardPane(){return wizardPane;}
 	public BodyFxControllerBase getCurrentBodyController(){return currentBodyController;}
 	
-	@FXML
-	private void initialize()
+	@Override
+	protected void initialize()
 	{
 		Context.setCoreFxController(this);
 		
@@ -152,6 +150,7 @@ public class CoreFxController implements IdleMonitorRegisterer, PersistableEntit
 	
 	public void goToMenu(Class<?> menuWorkflowClass)
 	{
+		newMenuSelected = true;
 		Map<String, Object> dataMap = new HashMap<>();
 		dataMap.put(Workflow.KEY_SIGNAL_TYPE, SignalType.MENU_NAVIGATION);
 		dataMap.put(HomeWorkflow.KEY_MENU_WORKFLOW_CLASS, menuWorkflowClass);
@@ -167,20 +166,18 @@ public class CoreFxController implements IdleMonitorRegisterer, PersistableEntit
 	 */
 	private void renderBodyForm(Class<?> controllerClass, Map<String, Object> uiInputData)
 	{
-		if(currentBodyController != null && currentBodyController.getClass() == controllerClass) // same form
+		if(!newMenuSelected && currentBodyController != null && currentBodyController.getClass() == controllerClass)
 		{
+			// same form
 			Platform.runLater(() -> currentBodyController.onWorkflowUserTaskLoad(false, uiInputData));
 			
 		}
 		else // new form
 		{
+			newMenuSelected = false;
+			
 			try
 			{
-				if(currentBodyController instanceof WizardStepFxControllerBase)
-				{
-					((WizardStepFxControllerBase) currentBodyController).onLeaving(uiInputData);
-				}
-				
 				ControllerResourcesLocator controllerResourcesLocator = (ControllerResourcesLocator)
 																controllerClass.getDeclaredConstructor().newInstance();
 				currentBodyController = renderNewBodyForm(controllerResourcesLocator);
@@ -243,6 +240,8 @@ public class CoreFxController implements IdleMonitorRegisterer, PersistableEntit
 		try
 		{
 			loadedPane = paneLoader.load();
+			FxControllerBase fxController = paneLoader.getController();
+			fxController.postInitialization(paneLoader.getRoot());
 		}
 		catch(IOException e)
 		{

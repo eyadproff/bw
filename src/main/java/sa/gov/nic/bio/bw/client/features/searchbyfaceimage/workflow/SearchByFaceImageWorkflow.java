@@ -7,7 +7,7 @@ import sa.gov.nic.bio.bw.client.features.commons.FaceCapturingFxController;
 import sa.gov.nic.bio.bw.client.features.searchbyfaceimage.ConfirmImageFxController;
 import sa.gov.nic.bio.bw.client.features.searchbyfaceimage.ImageSourceFxController;
 import sa.gov.nic.bio.bw.client.features.searchbyfaceimage.SearchFxController;
-import sa.gov.nic.bio.bw.client.features.searchbyfaceimage.ShowResultFxController;
+import sa.gov.nic.bio.bw.client.features.searchbyfaceimage.ShowResultsFxController;
 import sa.gov.nic.bio.bw.client.features.searchbyfaceimage.UploadImageFileFxController;
 import sa.gov.nic.bio.bw.client.features.searchbyfaceimage.webservice.Candidate;
 import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
@@ -19,14 +19,6 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class SearchByFaceImageWorkflow extends WizardWorkflowBase<Void, Void>
 {
-	public static final String KEY_IMAGE_SOURCE = "IMAGE_SOURCE";
-	public static final String KEY_UPLOADED_IMAGE = "UPLOADED_IMAGE";
-	public static final String KEY_FINAL_IMAGE_BASE64 = "FINAL_IMAGE_BASE64";
-	public static final String KEY_FINAL_IMAGE = "FINAL_IMAGE";
-	public static final String KEY_CANDIDATES = "CANDIDATES";
-	public static final String VALUE_IMAGE_SOURCE_UPLOAD = "IMAGE_SOURCE_UPLOAD";
-	public static final String VALUE_IMAGE_SOURCE_CAMERA = "IMAGE_SOURCE_CAMERA";
-	
 	public SearchByFaceImageWorkflow(AtomicReference<FormRenderer> formRenderer,
 	                                 BlockingQueue<Map<String, Object>> userTasks)
 	{
@@ -36,12 +28,13 @@ public class SearchByFaceImageWorkflow extends WizardWorkflowBase<Void, Void>
 	@Override
 	public Map<String, Object> onStep(int step) throws InterruptedException, Signal
 	{
-		Map<String, Object> uiOutputData = null;
+		Map<String, Object> uiOutputData;
 		
 		switch(step)
 		{
 			case 0:
 			{
+				uiInputData.put(ImageSourceFxController.KEY_HIDE_IMAGE_SOURCE_PREVIOUS_BUTTON, Boolean.TRUE);
 				formRenderer.get().renderForm(ImageSourceFxController.class, uiInputData);
 				uiOutputData = waitForUserTask();
 				uiInputData.putAll(uiOutputData);
@@ -49,14 +42,14 @@ public class SearchByFaceImageWorkflow extends WizardWorkflowBase<Void, Void>
 			}
 			case 1:
 			{
-				String imageInput = (String) uiInputData.get(KEY_IMAGE_SOURCE);
+				String imageInput = (String) uiInputData.get(ImageSourceFxController.KEY_IMAGE_SOURCE);
 				
-				if(VALUE_IMAGE_SOURCE_CAMERA.equals(imageInput))
+				if(ImageSourceFxController.VALUE_IMAGE_SOURCE_CAMERA.equals(imageInput))
 				{
 					uiInputData.put(FaceCapturingFxController.KEY_ACCEPT_ANY_CAPTURED_IMAGE, Boolean.TRUE);
 					formRenderer.get().renderForm(FaceCapturingFxController.class, uiInputData);
 				}
-				else if(VALUE_IMAGE_SOURCE_UPLOAD.equals(imageInput))
+				else if(ImageSourceFxController.VALUE_IMAGE_SOURCE_UPLOAD.equals(imageInput))
 				{
 					formRenderer.get().renderForm(UploadImageFileFxController.class, uiInputData);
 				}
@@ -77,7 +70,7 @@ public class SearchByFaceImageWorkflow extends WizardWorkflowBase<Void, Void>
 				// show progress indicator here
 				formRenderer.get().renderForm(SearchFxController.class, uiInputData);
 				
-				String imageBase64 = (String) uiInputData.get(SearchByFaceImageWorkflow.KEY_FINAL_IMAGE_BASE64);
+				String imageBase64 = (String) uiInputData.get(ConfirmImageFxController.KEY_FINAL_IMAGE_BASE64);
 				ServiceResponse<List<Candidate>> response = SearchByFaceImageService.execute(imageBase64);
 				uiInputData.put(KEY_WEBSERVICE_RESPONSE, response);
 				
@@ -89,7 +82,7 @@ public class SearchByFaceImageWorkflow extends WizardWorkflowBase<Void, Void>
 			}
 			case 4:
 			{
-				formRenderer.get().renderForm(ShowResultFxController.class, uiInputData);
+				formRenderer.get().renderForm(ShowResultsFxController.class, uiInputData);
 				uiOutputData = waitForUserTask();
 				uiInputData.putAll(uiOutputData);
 				break;

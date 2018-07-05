@@ -1,6 +1,5 @@
 package sa.gov.nic.bio.bw.client.features.searchbyfaceimage;
 
-import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -11,7 +10,6 @@ import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.wizard.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.client.core.workflow.Workflow;
 import sa.gov.nic.bio.bw.client.features.searchbyfaceimage.webservice.Candidate;
-import sa.gov.nic.bio.bw.client.features.searchbyfaceimage.workflow.SearchByFaceImageWorkflow;
 import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
 
 import java.net.URL;
@@ -37,9 +35,6 @@ public class SearchFxController extends WizardStepFxControllerBase
 	@Override
 	protected void initialize()
 	{
-		GuiUtils.makeButtonClickableByPressingEnter(btnRetry);
-		GuiUtils.makeButtonClickableByPressingEnter(btnStartOver);
-		
 		btnStartOver.setOnAction(event -> startOver());
 	}
 	
@@ -58,7 +53,7 @@ public class SearchFxController extends WizardStepFxControllerBase
 				if(response.isSuccess())
 				{
 					candidates = response.getResult();
-					Platform.runLater(this::goNext);
+					goNext();
 				}
 				else
 				{
@@ -73,7 +68,7 @@ public class SearchFxController extends WizardStepFxControllerBase
 	@Override
 	protected void onGoingNext(Map<String, Object> uiDataMap)
 	{
-		uiDataMap.put(SearchByFaceImageWorkflow.KEY_CANDIDATES, candidates);
+		uiDataMap.put(ShowResultsFxController.KEY_CANDIDATES, candidates);
 	}
 	
 	@FXML
