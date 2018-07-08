@@ -23,7 +23,7 @@
     </fx:define>
 
     <dialogPane>
-        <DialogPane prefWidth="400.0" prefHeight="300.0" headerText="%changeFingerprint.message" stylesheets="@../../core/css/style.css,@../css/style.css">
+        <DialogPane prefWidth="500.0" prefHeight="420.0" headerText="%changeFingerprint.message" stylesheets="@../../core/css/style.css,@../css/style.css">
             <graphic>
                 <ImageView>
                     <Image url="@../images/change_fingerprint_logo.png"/>

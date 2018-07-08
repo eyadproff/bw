@@ -1,7 +1,7 @@
 package sa.gov.nic.bio.bw.client.login;
 
 import javafx.application.Platform;
-import javafx.beans.binding.BooleanBinding;
+import javafx.beans.binding.BooleanExpression;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.NodeOrientation;
@@ -22,6 +22,7 @@ import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.beans.StateBundle;
 import sa.gov.nic.bio.bw.client.core.biokit.FingerPosition;
 import sa.gov.nic.bio.bw.client.core.interfaces.PersistableEntity;
+import sa.gov.nic.bio.bw.client.core.utils.AppConstants;
 import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.client.core.utils.DialogUtils;
 import sa.gov.nic.bio.bw.client.core.utils.GuiLanguage;
@@ -34,13 +35,16 @@ import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.prefs.Preferences;
 
 public class LoginPaneFxController extends BodyFxControllerBase implements PersistableEntity
 {
+	private static final String FXML_FINGERPRINT_SCANNER_GADGET =
+										"sa/gov/nic/bio/bw/client/login/fxml/fingerprint_scanner_gadget_dialog.fxml";
 	private static final String FXML_CHANGE_FINGERPRINT =
-												"sa/gov/nic/bio/bw/client/login/fxml/change_fingerprint_dialog.fxml";
+										"sa/gov/nic/bio/bw/client/login/fxml/change_fingerprint_dialog.fxml";
 	private static final String FXML_CHANGE_PASSWORD =
-												"sa/gov/nic/bio/bw/client/login/fxml/change_password_dialog.fxml";
+										"sa/gov/nic/bio/bw/client/login/fxml/change_password_dialog.fxml";
 	
 	@FXML private Label lblFingerprintScannerNotInitialized;
 	@FXML private Label lblFingerprintScannerNotConnected;
@@ -103,12 +107,18 @@ public class LoginPaneFxController extends BodyFxControllerBase implements Persi
 		GuiUtils.applyValidatorToTextField(txtUsernameLoginByPassword, 256);
 		GuiUtils.applyValidatorToTextField(txtPassword, 256);
 		
-		BooleanBinding usernameEmptyBinding = txtUsernameLoginByPassword.textProperty().isEmpty();
-		BooleanBinding passwordEmptyBinding = txtPassword.textProperty().isEmpty();
+		BooleanExpression loginByPasswordTabBinding = tabLoginByPassword.selectedProperty();
+		BooleanExpression usernameLoginByPasswordEmptyBinding = txtUsernameLoginByPassword.textProperty().isEmpty();
+		BooleanExpression passwordEmptyBinding = txtPassword.textProperty().isEmpty();
 		
-		btnLogin.disableProperty().bind(usernameEmptyBinding.or(passwordEmptyBinding));
+		BooleanExpression loginByFingerprintTabBinding = tabLoginByFingerprint.selectedProperty();
+		BooleanExpression usernameLoginByFingerprintEmptyBinding = txtUsernameLoginByPassword.textProperty().isEmpty();
+		BooleanExpression fingerprintScannerInitializationBinding = lblFingerprintScannerInitialized.visibleProperty();
 		
-		currentFingerPosition = FingerPosition.RIGHT_INDEX;
+		btnLogin.disableProperty().bind(loginByPasswordTabBinding.and(usernameLoginByPasswordEmptyBinding
+				                                                                            .or(passwordEmptyBinding))
+	                                .or(loginByFingerprintTabBinding.and(usernameLoginByFingerprintEmptyBinding
+                                                                 .or(fingerprintScannerInitializationBinding.not()))));
 	}
 	
 	@Override
@@ -128,7 +138,8 @@ public class LoginPaneFxController extends BodyFxControllerBase implements Persi
 		Context.getCoreFxController().getFooterPaneController().showRegion();
 		
 		// request focus once the scene is attached to txtUsernameLoginByPassword
-		txtUsernameLoginByPassword.sceneProperty().addListener((observable, oldValue, newValue) -> txtUsernameLoginByPassword.requestFocus());
+		txtUsernameLoginByPassword.sceneProperty().addListener((observable, oldValue, newValue) ->
+				                                                       txtUsernameLoginByPassword.requestFocus());
 		
 		if(Context.getRuntimeEnvironment() == RuntimeEnvironment.LOCAL ||
 		   Context.getRuntimeEnvironment() == RuntimeEnvironment.DEV)
@@ -141,7 +152,33 @@ public class LoginPaneFxController extends BodyFxControllerBase implements Persi
 	@Override
 	public void onWorkflowUserTaskLoad(boolean newForm, Map<String, Object> uiInputData)
 	{
-		if(!newForm)
+		if(newForm)
+		{
+			Preferences prefs = Preferences.userNodeForPackage(AppConstants.PREF_NODE_CLASS);
+			String fingerprintPosition = prefs.get(AppConstants.LOGIN_FINGERPRINT_POSITION_PREF_NAME, null);
+			
+			if(fingerprintPosition != null && !fingerprintPosition.trim().isEmpty())
+			{
+				switch(fingerprintPosition)
+				{
+					case "1": currentFingerPosition = FingerPosition.RIGHT_THUMB; break;
+					case "2": currentFingerPosition = FingerPosition.RIGHT_INDEX; break;
+					case "3": currentFingerPosition = FingerPosition.RIGHT_MIDDLE; break;
+					case "4": currentFingerPosition = FingerPosition.RIGHT_RING; break;
+					case "5": currentFingerPosition = FingerPosition.RIGHT_LITTLE; break;
+					case "6": currentFingerPosition = FingerPosition.LEFT_THUMB; break;
+					case "7": currentFingerPosition = FingerPosition.LEFT_INDEX; break;
+					case "8": currentFingerPosition = FingerPosition.LEFT_MIDDLE; break;
+					case "9": currentFingerPosition = FingerPosition.LEFT_RING; break;
+					case "10": currentFingerPosition = FingerPosition.LEFT_LITTLE; break;
+					default: currentFingerPosition = FingerPosition.RIGHT_INDEX; break;
+				}
+			}
+			else currentFingerPosition = FingerPosition.RIGHT_INDEX;
+			
+			activateFingerprint(currentFingerPosition);
+		}
+		else
 		{
 			txtPassword.clear();
 			disableUiControls(false);
@@ -151,6 +188,9 @@ public class LoginPaneFxController extends BodyFxControllerBase implements Persi
 			{
 				reportNegativeResponse(serviceResponse.getErrorCode(), serviceResponse.getException(),
 				                       serviceResponse.getErrorDetails());
+				
+				if(tabLoginByPassword.isSelected()) txtUsernameLoginByPassword.requestFocus();
+				else if(tabLoginByFingerprint.isSelected()) txtUsernameLoginByFingerprint.requestFocus();
 			}
 		}
 	}
@@ -200,9 +240,15 @@ public class LoginPaneFxController extends BodyFxControllerBase implements Persi
 	
 	private void disableUiControls(boolean bool)
 	{
+		tabLoginByPassword.setDisable(bool);
 		txtUsernameLoginByPassword.setDisable(bool);
 		txtPassword.setDisable(bool);
 		cboLanguage.setDisable(bool);
+		
+		tabLoginByFingerprint.setDisable(bool);
+		txtUsernameLoginByFingerprint.setDisable(bool);
+		btnFingerprintScannerAction.setDisable(bool);
+		btnChangeFingerprint.setDisable(bool);
 		
 		GuiUtils.showNode(piLogin, bool);
 		GuiUtils.showNode(btnLogin, !bool);
@@ -239,7 +285,11 @@ public class LoginPaneFxController extends BodyFxControllerBase implements Persi
 	@FXML
 	private void onFingerprintScannerActionButtonClicked(MouseEvent mouseEvent)
 	{
-	
+		boolean rtl = Context.getGuiLanguage().getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT;
+		FingerprintScannerGadgetDialogFxController controller = DialogUtils.buildCustomDialogByFxml(
+				Context.getCoreFxController().getStage(), FXML_FINGERPRINT_SCANNER_GADGET, resources, rtl);
+		
+		if(controller != null) controller.showDialogAndWait();
 	}
 	
 	@FXML
@@ -251,6 +301,8 @@ public class LoginPaneFxController extends BodyFxControllerBase implements Persi
 		
 		if(controller != null)
 		{
+			if(currentFingerPosition == null) currentFingerPosition = FingerPosition.RIGHT_INDEX;
+			
 			controller.setCurrentFingerPosition(currentFingerPosition);
 			boolean confirmed = controller.showDialogAndWait();
 			
@@ -276,5 +328,9 @@ public class LoginPaneFxController extends BodyFxControllerBase implements Persi
 		GuiUtils.showNode(svgRightMiddle, fingerPosition == FingerPosition.RIGHT_MIDDLE);
 		GuiUtils.showNode(svgRightIndex, fingerPosition == FingerPosition.RIGHT_INDEX);
 		GuiUtils.showNode(svgRightThumb, fingerPosition == FingerPosition.RIGHT_THUMB);
+		
+		// save for later usage
+		Preferences prefs = Preferences.userNodeForPackage(AppConstants.PREF_NODE_CLASS);
+		prefs.put(AppConstants.LOGIN_FINGERPRINT_POSITION_PREF_NAME, String.valueOf(fingerPosition.getPosition()));
 	}
 }

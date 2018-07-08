@@ -20,6 +20,7 @@ public interface AppConstants
 	
 	Class<?> PREF_NODE_CLASS = AppEntryPoint.class;
 	String UI_LANGUAGE_PREF_NAME = "sa.gov.nic.bio.bw.ui.language";
+	String LOGIN_FINGERPRINT_POSITION_PREF_NAME = "sa.gov.nic.bio.bw.login.fingerprint";
 	ZoneId SAUDI_ZONE = ZoneId.of("GMT+3");
 	String LOGS_FOLDER_PATH = "C:/bio/user-apps/" + System.getProperty("user.name") + "/bw/logs";
 	String TEMP_FOLDER_PATH = "C:/bio/user-apps/" + System.getProperty("user.name") + "/bw/temp";
