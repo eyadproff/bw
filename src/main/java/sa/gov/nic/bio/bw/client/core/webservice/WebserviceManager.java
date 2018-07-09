@@ -179,10 +179,12 @@ public class WebserviceManager
 		if(userToken == null) LOGGER.warning("userToken = null");
 		else
 		{
-			LocalDateTime expiration = AppUtils.extractExpirationTimeFromJWT(userToken);
-			if(expiration != null)
+			LocalDateTime issueDateTime = AppUtils.extractIssueTimeFromJWT(userToken);
+			LocalDateTime expirationDateTime = AppUtils.extractExpirationTimeFromJWT(userToken);
+			
+			if(issueDateTime != null && expirationDateTime != null)
 			{
-				long seconds = Math.abs(expiration.until(LocalDateTime.now(), ChronoUnit.SECONDS));
+				long seconds = Math.abs(expirationDateTime.until(issueDateTime, ChronoUnit.SECONDS));
 				long delay = seconds - seconds / 10L; // the last tenth of the token lifetime
 				
 				scheduledRefreshTokenFuture = Context.getScheduledExecutorService().schedule(() ->
