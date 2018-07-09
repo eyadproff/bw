@@ -119,6 +119,9 @@ public class LoginPaneFxController extends BodyFxControllerBase implements Persi
 				                                                                            .or(passwordEmptyBinding))
 	                                .or(loginByFingerprintTabBinding.and(usernameLoginByFingerprintEmptyBinding
                                                                  .or(fingerprintScannerInitializationBinding.not()))));
+		
+		spLeftHand.setOnMouseClicked(event -> btnChangeFingerprint.fire());
+		spRightHand.setOnMouseClicked(event -> btnChangeFingerprint.fire());
 	}
 	
 	@Override
