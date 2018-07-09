@@ -17,18 +17,23 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.client.core.utils.DialogUtils;
+import sa.gov.nic.bio.bw.client.core.utils.GuiLanguage;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.wizard.WizardStepFxControllerBase;
+import sa.gov.nic.bio.bw.client.features.commons.beans.GenderType;
+import sa.gov.nic.bio.bw.client.features.commons.webservice.CountryBean;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.Name;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.PersonInfo;
 import sa.gov.nic.bio.bw.client.features.faceverification.webservice.FaceMatchingResponse;
 
 import java.net.URL;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -42,12 +47,14 @@ public class ShowResultFxController extends WizardStepFxControllerBase
 	@FXML private ImageView ivUploadedImage;
 	@FXML private ImageView ivDBImage;
 	@FXML private Label lblNotMatched;
-	@FXML private Label lblNoFace;
-	@FXML private Label lblBioId;
 	@FXML private Label lblSamisId;
 	@FXML private Label lblFirstName;
 	@FXML private Label lblFatherName;
+	@FXML private Label lblGrandfatherName;
 	@FXML private Label lblFamilyName;
+	@FXML private Label lblGender;
+	@FXML private Label lblNationality;
+	@FXML private Label lblOutOfKingdom;
 	@FXML private Button btnCompareWithUploadedImage;
 	@FXML private Button btnStartOver;
 	
@@ -97,36 +104,89 @@ public class ShowResultFxController extends WizardStepFxControllerBase
 				GuiUtils.showNode(btnCompareWithUploadedImage, true);
 				
 				PersonInfo personInfo = faceMatchingResponse.getPersonInfo();
-				long bioId = 0;
 				long samisId = personInfo.getSamisId();
 				Name name = personInfo.getName();
 				String firstName = name.getFirstName();
 				String fatherName = name.getFatherName();
+				String grandfatherName = name.getGrandfatherName();
 				String familyName = name.getFamilyName();
-				
-				// default values
-				lblBioId.setText(resources.getString("label.notAvailable"));
-				lblSamisId.setText(resources.getString("label.notAvailable"));
-				lblFirstName.setText(resources.getString("label.notAvailable"));
-				lblFatherName.setText(resources.getString("label.notAvailable"));
-				lblFamilyName.setText(resources.getString("label.notAvailable"));
 				
 				if(firstName != null && firstName.trim().isEmpty()) firstName = null;
 				if(fatherName != null && fatherName.trim().isEmpty()) fatherName = null;
+				if(grandfatherName != null && grandfatherName.trim().isEmpty()) fatherName = null;
 				if(familyName != null && familyName.trim().isEmpty()) familyName = null;
-				
-				String sBioId = AppUtils.replaceNumbersOnly(String.valueOf(bioId), Locale.getDefault());
-				lblBioId.setText(sBioId);
 				
 				if(samisId > 0)
 				{
 					String sSamisId = AppUtils.replaceNumbersOnly(String.valueOf(samisId), Locale.getDefault());
 					lblSamisId.setText(sSamisId);
 				}
+				else
+				{
+					lblSamisId.setText(resources.getString("label.notAvailable"));
+					lblSamisId.setTextFill(Color.RED);
+				}
 				
 				if(firstName != null) lblFirstName.setText(firstName);
+				else
+				{
+					lblFirstName.setText(resources.getString("label.notAvailable"));
+					lblFirstName.setTextFill(Color.RED);
+				}
+				
 				if(fatherName != null) lblFatherName.setText(fatherName);
+				else
+				{
+					lblFatherName.setText(resources.getString("label.notAvailable"));
+					lblFatherName.setTextFill(Color.RED);
+				}
+				
+				if(grandfatherName != null) lblGrandfatherName.setText(grandfatherName);
+				else
+				{
+					lblGrandfatherName.setText(resources.getString("label.notAvailable"));
+					lblGrandfatherName.setTextFill(Color.RED);
+				}
+				
 				if(familyName != null) lblFamilyName.setText(familyName);
+				else
+				{
+					lblFamilyName.setText(resources.getString("label.notAvailable"));
+					lblFamilyName.setTextFill(Color.RED);
+				}
+				
+				GenderType gender = GenderType.values()[personInfo.getGender() - 1];
+				lblGender.setText(gender == GenderType.MALE ? resources.getString("label.male") :
+						                                      resources.getString("label.female"));
+				
+				@SuppressWarnings("unchecked") List<CountryBean> countries = (List<CountryBean>)
+													Context.getUserSession().getAttribute("lookups.countries");
+				
+				CountryBean countryBean = null;
+				
+				for(CountryBean country : countries)
+				{
+					if(country.getCode() == personInfo.getNationality())
+					{
+						countryBean = country;
+						break;
+					}
+				}
+				
+				if(countryBean != null)
+				{
+					boolean arabic = Context.getGuiLanguage() == GuiLanguage.ARABIC;
+					lblNationality.setText(arabic ? countryBean.getDescriptionAR() : countryBean.getDescriptionEN());
+				}
+				else
+				{
+					lblNationality.setText(resources.getString("label.notAvailable"));
+					lblNationality.setTextFill(Color.RED);
+				}
+				
+				boolean outOfKingdom = personInfo.isOutKingdom();
+				lblOutOfKingdom.setText(outOfKingdom ? resources.getString("label.yes") :
+						                               resources.getString("label.no"));
 				
 				Image uploadedImage = (Image) uiInputData.get(ConfirmInputFxController.KEY_FINAL_IMAGE);
 				Image dbImage = AppUtils.imageFromBase64(personInfo.getFace());

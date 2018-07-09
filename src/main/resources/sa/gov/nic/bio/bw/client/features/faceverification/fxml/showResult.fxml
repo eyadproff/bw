@@ -46,10 +46,6 @@
                 </VBox>
                 <VBox spacing="5">
                     <HBox spacing="5">
-                        <Label text="%label.bioId" styleClass="bold-text"/>
-                        <Label fx:id="lblBioId" text="%label.notAvailable"/>
-                    </HBox>
-                    <HBox spacing="5">
                         <Label text="%label.samisId" styleClass="bold-text"/>
                         <Label fx:id="lblSamisId" text="%label.notAvailable"/>
                     </HBox>
@@ -62,8 +58,24 @@
                         <Label fx:id="lblFatherName" text="%label.notAvailable"/>
                     </HBox>
                     <HBox spacing="5">
+                        <Label text="%label.grandfatherName" styleClass="bold-text"/>
+                        <Label fx:id="lblGrandfatherName" text="%label.notAvailable"/>
+                    </HBox>
+                    <HBox spacing="5">
                         <Label text="%label.familyName" styleClass="bold-text"/>
                         <Label fx:id="lblFamilyName" text="%label.notAvailable"/>
+                    </HBox>
+                    <HBox spacing="5">
+                        <Label text="%label.gender" styleClass="bold-text"/>
+                        <Label fx:id="lblGender" text="%label.notAvailable"/>
+                    </HBox>
+                    <HBox spacing="5">
+                        <Label text="%label.nationality" styleClass="bold-text"/>
+                        <Label fx:id="lblNationality" text="%label.notAvailable"/>
+                    </HBox>
+                    <HBox spacing="5">
+                        <Label text="%label.outOfKingdom" styleClass="bold-text"/>
+                        <Label fx:id="lblOutOfKingdom" text="%label.notAvailable"/>
                     </HBox>
                 </VBox>
             </HBox>

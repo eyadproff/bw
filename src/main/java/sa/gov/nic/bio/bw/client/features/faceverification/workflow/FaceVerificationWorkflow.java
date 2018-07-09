@@ -4,6 +4,7 @@ import sa.gov.nic.bio.bw.client.core.interfaces.FormRenderer;
 import sa.gov.nic.bio.bw.client.core.workflow.Signal;
 import sa.gov.nic.bio.bw.client.core.workflow.WizardWorkflowBase;
 import sa.gov.nic.bio.bw.client.features.commons.FaceCapturingFxController;
+import sa.gov.nic.bio.bw.client.features.commons.LookupFxController;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.PersonInfo;
 import sa.gov.nic.bio.bw.client.features.faceverification.ConfirmInputFxController;
 import sa.gov.nic.bio.bw.client.features.faceverification.MatchingFxController;
@@ -23,6 +24,19 @@ public class FaceVerificationWorkflow extends WizardWorkflowBase<Void, Void>
 	                                BlockingQueue<Map<String, Object>> userTasks)
 	{
 		super(formRenderer, userTasks);
+	}
+	
+	@Override
+	public void init() throws InterruptedException, Signal
+	{
+		while(true)
+		{
+			formRenderer.get().renderForm(LookupFxController.class, uiInputData);
+			waitForUserTask();
+			ServiceResponse<Void> serviceResponse = LookupService.execute();
+			if(serviceResponse.isSuccess()) break;
+			else uiInputData.put(KEY_WEBSERVICE_RESPONSE, serviceResponse);
+		}
 	}
 	
 	@Override
