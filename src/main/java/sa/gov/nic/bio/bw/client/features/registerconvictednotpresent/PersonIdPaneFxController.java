@@ -11,7 +11,7 @@ import sa.gov.nic.bio.bw.client.core.wizard.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.client.core.workflow.Workflow;
 import sa.gov.nic.bio.bw.client.features.registerconvictednotpresent.utils.RegisterConvictedNotPresentErrorCodes;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.InquiryResultPaneFxController;
-import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.PersonInfo;
+import sa.gov.nic.bio.bw.client.features.commons.webservice.PersonInfo;
 import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
 
 import java.net.URL;

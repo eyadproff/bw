@@ -1,5 +1,7 @@
 package sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice;
 
+import sa.gov.nic.bio.bw.client.features.commons.webservice.PersonInfo;
+
 import java.util.Objects;
 
 public class FingerprintInquiryStatusResult

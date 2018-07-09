@@ -1,4 +1,6 @@
-package sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice;
+package sa.gov.nic.bio.bw.client.features.commons.webservice;
+
+import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.PersonIdInfo;
 
 import java.util.Date;
 import java.util.Objects;
@@ -16,6 +18,7 @@ public class PersonInfo
 	private int gender;
 	private PersonIdInfo identityInfo;
 	private String face;
+	private boolean isOutKingdom;
 	
 	public long getSamisId(){return samisId;}
 	public void setSamisId(long samisId){this.samisId = samisId;}
@@ -50,6 +53,9 @@ public class PersonInfo
 	public String getFace(){return face;}
 	public void setFace(String face){this.face = face;}
 	
+	public boolean isOutKingdom(){return isOutKingdom;}
+	public void setOutKingdom(boolean outKingdom){ isOutKingdom = outKingdom;}
+	
 	@Override
 	public boolean equals(Object o)
 	{
@@ -57,9 +63,10 @@ public class PersonInfo
 		if(o == null || getClass() != o.getClass()) return false;
 		PersonInfo that = (PersonInfo) o;
 		return samisId == that.samisId && nationality == that.nationality && gender == that.gender &&
-			   Objects.equals(name, that.name) && Objects.equals(birthDate, that.birthDate) &&
-			   Objects.equals(birthPlace, that.birthPlace) && Objects.equals(birthHijGregInd, that.birthHijGregInd) &&
-			   Objects.equals(personType, that.personType) && Objects.equals(nationalityDesc, that.nationalityDesc) &&
+			   isOutKingdom == that.isOutKingdom && Objects.equals(name, that.name) &&
+			   Objects.equals(birthDate, that.birthDate) && Objects.equals(birthPlace, that.birthPlace) &&
+			   Objects.equals(birthHijGregInd, that.birthHijGregInd) && Objects.equals(personType, that.personType) &&
+			   Objects.equals(nationalityDesc, that.nationalityDesc) &&
 			   Objects.equals(identityInfo, that.identityInfo) && Objects.equals(face, that.face);
 	}
 	
@@ -67,7 +74,7 @@ public class PersonInfo
 	public int hashCode()
 	{
 		return Objects.hash(samisId, name, birthDate, birthPlace, birthHijGregInd, personType, nationality,
-		                    nationalityDesc, gender, identityInfo, face);
+		                    nationalityDesc, gender, identityInfo, face, isOutKingdom);
 	}
 	
 	@Override
@@ -77,6 +84,6 @@ public class PersonInfo
 			   ", birthPlace='" + birthPlace + '\'' + ", birthHijGregInd='" + birthHijGregInd + '\'' +
 			   ", personType='" + personType + '\'' + ", nationality=" + nationality + ", nationalityDesc='" +
 			   nationalityDesc + '\'' + ", gender=" + gender + ", identityInfo=" + identityInfo + ", face='" + face +
-			   '\'' + '}';
+			   '\'' + ", isOutKingdom=" + isOutKingdom + '}';
 	}
 }

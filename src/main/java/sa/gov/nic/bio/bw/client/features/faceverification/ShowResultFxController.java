@@ -24,8 +24,9 @@ import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.client.core.utils.DialogUtils;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.wizard.WizardStepFxControllerBase;
+import sa.gov.nic.bio.bw.client.features.commons.webservice.Name;
+import sa.gov.nic.bio.bw.client.features.commons.webservice.PersonInfo;
 import sa.gov.nic.bio.bw.client.features.faceverification.webservice.FaceMatchingResponse;
-import sa.gov.nic.bio.bw.client.features.faceverification.webservice.FaceMatchingResponse.PersonInfo;
 
 import java.net.URL;
 import java.util.Locale;
@@ -37,7 +38,6 @@ public class ShowResultFxController extends WizardStepFxControllerBase
 	
 	@FXML private Pane matchedPane;
 	@FXML private Pane notMatchedPane;
-	@FXML private Pane noFacePane;
 	@FXML private Pane imagePane;
 	@FXML private ImageView ivUploadedImage;
 	@FXML private ImageView ivDBImage;
@@ -84,13 +84,7 @@ public class ShowResultFxController extends WizardStepFxControllerBase
 			FaceMatchingResponse faceMatchingResponse = (FaceMatchingResponse)
 																		uiInputData.get(KEY_FACE_MATCHING_RESPONSE);
 			
-			if(faceMatchingResponse.isNoFace())
-			{
-				GuiUtils.showNode(noFacePane, true);
-				lblNoFace.setText(String.format(resources.getString("label.noFaceForPersonId"),
-				                                String.valueOf(personId)));
-			}
-			else if(!faceMatchingResponse.isMatched())
+			if(!faceMatchingResponse.isMatched())
 			{
 				GuiUtils.showNode(notMatchedPane, true);
 				lblNotMatched.setText(String.format(resources.getString("label.faceImageIsNotMatched"),
@@ -103,11 +97,12 @@ public class ShowResultFxController extends WizardStepFxControllerBase
 				GuiUtils.showNode(btnCompareWithUploadedImage, true);
 				
 				PersonInfo personInfo = faceMatchingResponse.getPersonInfo();
-				long bioId = personInfo.getBioId();
+				long bioId = 0;
 				long samisId = personInfo.getSamisId();
-				String firstName = personInfo.getFirstName();
-				String fatherName = personInfo.getFatherName();
-				String familyName = personInfo.getFamilyName();
+				Name name = personInfo.getName();
+				String firstName = name.getFirstName();
+				String fatherName = name.getFatherName();
+				String familyName = name.getFamilyName();
 				
 				// default values
 				lblBioId.setText(resources.getString("label.notAvailable"));
@@ -134,7 +129,7 @@ public class ShowResultFxController extends WizardStepFxControllerBase
 				if(familyName != null) lblFamilyName.setText(familyName);
 				
 				Image uploadedImage = (Image) uiInputData.get(ConfirmInputFxController.KEY_FINAL_IMAGE);
-				Image dbImage = AppUtils.imageFromBase64(personInfo.getImage());
+				Image dbImage = AppUtils.imageFromBase64(personInfo.getFace());
 				
 				ivUploadedImage.setImage(uploadedImage);
 				ivDBImage.setImage(dbImage);

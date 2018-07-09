@@ -5,7 +5,7 @@ import retrofit2.http.GET;
 import retrofit2.http.Query;
 import retrofit2.http.Url;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.Finger;
-import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.PersonInfo;
+import sa.gov.nic.bio.bw.client.features.commons.webservice.PersonInfo;
 
 import java.util.List;
 

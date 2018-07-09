@@ -31,7 +31,7 @@ import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.Con
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.CrimeCode;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.Finger;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.JudgementInfo;
-import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.Name;
+import sa.gov.nic.bio.bw.client.features.commons.webservice.Name;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.workflow.ConvictedReportResponse;
 import sa.gov.nic.bio.bw.client.login.webservice.UserInfo;
 import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;

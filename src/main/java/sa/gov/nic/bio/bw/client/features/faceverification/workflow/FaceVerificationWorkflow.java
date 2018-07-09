@@ -4,11 +4,11 @@ import sa.gov.nic.bio.bw.client.core.interfaces.FormRenderer;
 import sa.gov.nic.bio.bw.client.core.workflow.Signal;
 import sa.gov.nic.bio.bw.client.core.workflow.WizardWorkflowBase;
 import sa.gov.nic.bio.bw.client.features.commons.FaceCapturingFxController;
+import sa.gov.nic.bio.bw.client.features.commons.webservice.PersonInfo;
 import sa.gov.nic.bio.bw.client.features.faceverification.ConfirmInputFxController;
 import sa.gov.nic.bio.bw.client.features.faceverification.MatchingFxController;
 import sa.gov.nic.bio.bw.client.features.faceverification.PersonIdPaneFxController;
 import sa.gov.nic.bio.bw.client.features.faceverification.ShowResultFxController;
-import sa.gov.nic.bio.bw.client.features.faceverification.webservice.FaceMatchingResponse;
 import sa.gov.nic.bio.bw.client.features.searchbyfaceimage.ImageSourceFxController;
 import sa.gov.nic.bio.bw.client.features.searchbyfaceimage.UploadImageFileFxController;
 import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
@@ -79,7 +79,7 @@ public class FaceVerificationWorkflow extends WizardWorkflowBase<Void, Void>
 				String imageBase64 = (String) uiInputData.get(ConfirmInputFxController.KEY_FINAL_IMAGE_BASE64);
 				long personId = (long) uiInputData.get(PersonIdPaneFxController.KEY_PERSON_ID);
 				
-				ServiceResponse<FaceMatchingResponse> response = FaceVerificationService.execute(personId, imageBase64);
+				ServiceResponse<PersonInfo> response = FaceVerificationService.execute(personId, imageBase64);
 				uiInputData.put(KEY_WEBSERVICE_RESPONSE, response);
 				
 				// if success, ask for goNext() automatically. Otherwise, show failure message and retry button
