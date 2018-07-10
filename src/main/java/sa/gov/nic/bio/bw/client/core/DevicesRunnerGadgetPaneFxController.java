@@ -141,6 +141,17 @@ public class DevicesRunnerGadgetPaneFxController extends RegionFxControllerBase
 		this.passportScannerInitializationListener = passportScannerInitializationListener;
 	}
 	
+	public Label getFingerprintScannerNotInitializedLabel(){return lblFingerprintScannerNotInitialized;}
+	public Label getFingerprintScannerNotConnectedLabel(){return lblFingerprintScannerNotConnected;}
+	public Label getFingerprintScannerInitializedLabel(){return lblFingerprintScannerInitialized;}
+	
+	public void disableCollapsing(boolean bDisable)
+	{
+		tpDevicesRunner.setAnimated(!bDisable);
+		tpDevicesRunner.setExpanded(true);
+		tpDevicesRunner.setCollapsible(!bDisable);
+	}
+	
 	@Override
 	protected void initialize()
 	{

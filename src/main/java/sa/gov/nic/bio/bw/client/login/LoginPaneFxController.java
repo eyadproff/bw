@@ -14,11 +14,16 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.scene.shape.SVGPath;
+import javafx.stage.Stage;
 import org.controlsfx.glyphfont.FontAwesome;
 import org.controlsfx.glyphfont.FontAwesome.Glyph;
+import sa.gov.nic.bio.biokit.websocket.ClosureListener;
 import sa.gov.nic.bio.bw.client.core.BodyFxControllerBase;
 import sa.gov.nic.bio.bw.client.core.Context;
+import sa.gov.nic.bio.bw.client.core.DevicesRunnerGadgetPaneFxController;
 import sa.gov.nic.bio.bw.client.core.beans.StateBundle;
 import sa.gov.nic.bio.bw.client.core.biokit.FingerPosition;
 import sa.gov.nic.bio.bw.client.core.interfaces.PersistableEntity;
@@ -122,6 +127,24 @@ public class LoginPaneFxController extends BodyFxControllerBase implements Persi
 		
 		spLeftHand.setOnMouseClicked(event -> btnChangeFingerprint.fire());
 		spRightHand.setOnMouseClicked(event -> btnChangeFingerprint.fire());
+		
+		DevicesRunnerGadgetPaneFxController deviceManagerGadgetPaneController =
+											Context.getCoreFxController().getDeviceManagerGadgetPaneController();
+		
+		lblFingerprintScannerNotConnected.visibleProperty().bind(
+						deviceManagerGadgetPaneController.getFingerprintScannerNotConnectedLabel().visibleProperty());
+		lblFingerprintScannerNotConnected.managedProperty().bind(
+						deviceManagerGadgetPaneController.getFingerprintScannerNotConnectedLabel().managedProperty());
+		
+		lblFingerprintScannerNotInitialized.visibleProperty().bind(
+						deviceManagerGadgetPaneController.getFingerprintScannerNotInitializedLabel().visibleProperty());
+		lblFingerprintScannerNotInitialized.managedProperty().bind(
+						deviceManagerGadgetPaneController.getFingerprintScannerNotInitializedLabel().managedProperty());
+		
+		lblFingerprintScannerInitialized.visibleProperty().bind(
+						deviceManagerGadgetPaneController.getFingerprintScannerInitializedLabel().visibleProperty());
+		lblFingerprintScannerInitialized.managedProperty().bind(
+						deviceManagerGadgetPaneController.getFingerprintScannerInitializedLabel().managedProperty());
 	}
 	
 	@Override
@@ -150,6 +173,10 @@ public class LoginPaneFxController extends BodyFxControllerBase implements Persi
 			txtUsernameLoginByPassword.setText(Context.getConfigManager().getProperty("dev.login.username"));
 			txtPassword.setText(Context.getConfigManager().getProperty("dev.login.password"));
 		}
+		
+		ClosureListener closureListener = Context.getCoreFxController().getDeviceManagerGadgetPaneController()
+																	   .getClosureListener();
+		Context.getBioKitManager().setClosureListener(closureListener);
 	}
 	
 	@Override
@@ -255,7 +282,7 @@ public class LoginPaneFxController extends BodyFxControllerBase implements Persi
 		
 		GuiUtils.showNode(piLogin, bool);
 		GuiUtils.showNode(btnLogin, !bool);
-		//GuiUtils.showNode(btnChangePassword, !bool);
+		GuiUtils.showNode(btnChangePassword, !bool);
 	}
 	
 	@FXML
@@ -289,10 +316,56 @@ public class LoginPaneFxController extends BodyFxControllerBase implements Persi
 	private void onFingerprintScannerActionButtonClicked(MouseEvent mouseEvent)
 	{
 		boolean rtl = Context.getGuiLanguage().getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT;
-		FingerprintScannerGadgetDialogFxController controller = DialogUtils.buildCustomDialogByFxml(
-				Context.getCoreFxController().getStage(), FXML_FINGERPRINT_SCANNER_GADGET, resources, rtl);
 		
-		if(controller != null) controller.showDialogAndWait();
+		DevicesRunnerGadgetPaneFxController deviceManagerGadgetPaneController =
+												Context.getCoreFxController().getDeviceManagerGadgetPaneController();
+		deviceManagerGadgetPaneController.disableCollapsing(true);
+		Pane devicesRunnerGadgetPane = deviceManagerGadgetPaneController.getRegionRootPane();
+		GuiUtils.showNode(devicesRunnerGadgetPane, true);
+		VBox vBox = new VBox(devicesRunnerGadgetPane);
+		Stage dialogStage = DialogUtils.buildCustomDialog(Context.getCoreFxController().getStage(), "", vBox,
+		                                                  rtl, true);
+		
+		deviceManagerGadgetPaneController.setDevicesRunnerRunningListener(running ->
+		{
+		    boolean autoInitialize = "true".equals(System.getProperty("jnlp.bio.bw.fingerprint.autoInitialize"));
+		
+		    if(running && autoInitialize && !deviceManagerGadgetPaneController.isFingerprintScannerInitialized())
+		    {
+		        deviceManagerGadgetPaneController.initializeFingerprintScanner();
+		    }
+		});
+		deviceManagerGadgetPaneController.setFingerprintScannerInitializationListener(initialized ->
+		{
+			if(initialized) dialogStage.close();
+		});
+		
+		dialogStage.setOnShown(event ->
+		{
+			if(deviceManagerGadgetPaneController.isDevicesRunnerRunning())
+			{
+				if(!deviceManagerGadgetPaneController.isFingerprintScannerInitialized())
+				{
+					boolean autoInitialize =
+										"true".equals(System.getProperty("jnlp.bio.bw.fingerprint.autoInitialize"));
+					if(autoInitialize) deviceManagerGadgetPaneController.initializeFingerprintScanner();
+				}
+			}
+			else
+			{
+				boolean devicesRunnerAutoRun = "true".equals(System.getProperty("jnlp.bio.bw.devicesRunner.autoRun"));
+				if(devicesRunnerAutoRun) deviceManagerGadgetPaneController.runAndConnectDevicesRunner();
+			}
+		});
+		dialogStage.setOnHidden(event ->
+		{
+			deviceManagerGadgetPaneController.disableCollapsing(false);
+			GuiUtils.showNode(devicesRunnerGadgetPane, false);
+			Context.getCoreFxController().reattachDeviceRunnerGadgetPane();
+			deviceManagerGadgetPaneController.setDevicesRunnerRunningListener(null);
+			deviceManagerGadgetPaneController.setFingerprintScannerInitializationListener(null);
+		});
+		dialogStage.showAndWait();
 	}
 	
 	@FXML

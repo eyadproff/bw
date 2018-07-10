@@ -7,7 +7,6 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.layout.VBox;
 import sa.gov.nic.bio.bcl.utils.BclUtils;
-import sa.gov.nic.bio.biokit.websocket.ClosureListener;
 import sa.gov.nic.bio.bw.client.core.BodyFxControllerBase;
 import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.beans.MenuItem;
@@ -59,10 +58,6 @@ public class HomePaneFxController extends BodyFxControllerBase
 		Context.getCoreFxController().getFooterPaneController().hideRegion();
 		Context.getCoreFxController().getMenuPaneController().showRegion();
 		Context.getCoreFxController().getDeviceManagerGadgetPaneController().showRegion();
-
-		ClosureListener closureListener = Context.getCoreFxController().getDeviceManagerGadgetPaneController()
-																	   .getClosureListener();
-		Context.getBioKitManager().setClosureListener(closureListener);
 
 		// connect if running
 		Task<Boolean> task = new Task<Boolean>()

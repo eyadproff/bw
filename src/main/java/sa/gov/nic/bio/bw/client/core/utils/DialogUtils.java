@@ -214,7 +214,6 @@ public class DialogUtils
 		stage.setTitle(title);
 		stage.setScene(scene);
 		
-		
 		if(autoCenter) stage.setOnShown(ev ->
 		{
 			double centerXPosition = ownerStage.getX() + ownerStage.getWidth() / 2.0;

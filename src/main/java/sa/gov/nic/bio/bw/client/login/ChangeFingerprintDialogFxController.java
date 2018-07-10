@@ -5,13 +5,13 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.RadioButton;
 import javafx.scene.shape.SVGPath;
-import sa.gov.nic.bio.bw.client.core.RegionFxControllerBase;
+import sa.gov.nic.bio.bw.client.core.FxControllerBase;
 import sa.gov.nic.bio.bw.client.core.biokit.FingerPosition;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 
 import java.util.Optional;
 
-public class ChangeFingerprintDialogFxController extends RegionFxControllerBase
+public class ChangeFingerprintDialogFxController extends FxControllerBase
 {
 	@FXML private Dialog<ButtonType> dialog;
 	@FXML private SVGPath svgLeftLittle;
