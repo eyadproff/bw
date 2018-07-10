@@ -25,7 +25,7 @@ import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.ShowReportPane
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.ConvictedReport;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.Finger;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.FingerprintInquiryStatusResult;
-import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.PersonInfo;
+import sa.gov.nic.bio.bw.client.features.commons.webservice.PersonInfo;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.workflow.ConvictedReportResponse;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.workflow.FingerprintInquiryService;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.workflow.FingerprintInquiryStatusCheckerService;

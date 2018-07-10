@@ -31,6 +31,9 @@ public class ConfirmInputFxController extends WizardStepFxControllerBase
 	@FXML private Button btnPrevious;
 	@FXML private Button btnMatch;
 	
+	private Image finalImage;
+	private String finalImageBase64;
+	
 	@Override
 	public URL getFxmlLocation()
 	{
@@ -79,28 +82,24 @@ public class ConfirmInputFxController extends WizardStepFxControllerBase
 			String imageSource = (String) uiInputData.get(ImageSourceFxController.KEY_IMAGE_SOURCE);
 			Long personId = (Long) uiInputData.get(PersonIdPaneFxController.KEY_PERSON_ID);
 			
-			Image[] finalImage = new Image[1];
-			
 			if(ImageSourceFxController.VALUE_IMAGE_SOURCE_UPLOAD.equals(imageSource))
 			{
-				finalImage[0] = (Image) uiInputData.get(UploadImageFileFxController.KEY_UPLOADED_IMAGE);
+				finalImage = (Image) uiInputData.get(UploadImageFileFxController.KEY_UPLOADED_IMAGE);
 			}
 			else
 			{
 				Image capturedImage = (Image) uiInputData.get(FaceCapturingFxController.KEY_CAPTURED_IMAGE);
 				Image croppedImage = (Image) uiInputData.get(FaceCapturingFxController.KEY_CROPPED_IMAGE);
 				
-				if(croppedImage != null) finalImage[0] = croppedImage;
-				else finalImage[0] = capturedImage;
+				if(croppedImage != null) finalImage = croppedImage;
+				else finalImage = capturedImage;
 			}
 			
-			if(finalImage[0] != null)
+			if(finalImage != null)
 			{
 				try
 				{
-					String imageBase64 = AppUtils.imageToBase64(finalImage[0], "jpg");
-					uiInputData.put(KEY_FINAL_IMAGE_BASE64, imageBase64);
-					uiInputData.put(KEY_FINAL_IMAGE, finalImage[0]);
+					finalImageBase64 = AppUtils.imageToBase64(finalImage, "jpg");
 				}
 				catch(Exception e)
 				{
@@ -112,7 +111,7 @@ public class ConfirmInputFxController extends WizardStepFxControllerBase
 				
 				Platform.runLater(() ->
 				{
-					ivFinalImage.setImage(finalImage[0]);
+					ivFinalImage.setImage(finalImage);
 					GuiUtils.attachImageDialog(Context.getCoreFxController(), ivFinalImage,
 					                           resources.getString("label.finalImage"),
 					                           resources.getString("label.contextMenu.showImage"), false);
@@ -133,5 +132,12 @@ public class ConfirmInputFxController extends WizardStepFxControllerBase
 			
 			lblPersonId.setText(String.valueOf(personId));
 		}
+	}
+	
+	@Override
+	protected void onGoingNext(Map<String, Object> uiDataMap)
+	{
+		uiDataMap.put(KEY_FINAL_IMAGE, finalImage);
+		uiDataMap.put(KEY_FINAL_IMAGE_BASE64, finalImageBase64);
 	}
 }

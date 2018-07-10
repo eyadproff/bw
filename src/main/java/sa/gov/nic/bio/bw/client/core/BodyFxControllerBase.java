@@ -91,7 +91,7 @@ public abstract class BodyFxControllerBase extends RegionFxControllerBase implem
 	/**
 	 * A callback that is invoked after the root pane of this controller is detached from the scene.
 	 */
-	protected void onDetachedFromScene(){}
+	protected void onDetachingFromScene(){}
 	
 	
 	protected void reportNegativeResponse(String errorCode, Throwable exception, String[] errorDetails)
