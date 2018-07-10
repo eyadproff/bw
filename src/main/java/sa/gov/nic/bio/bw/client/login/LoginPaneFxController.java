@@ -44,8 +44,6 @@ import java.util.prefs.Preferences;
 
 public class LoginPaneFxController extends BodyFxControllerBase implements PersistableEntity
 {
-	private static final String FXML_FINGERPRINT_SCANNER_GADGET =
-										"sa/gov/nic/bio/bw/client/login/fxml/fingerprint_scanner_gadget_dialog.fxml";
 	private static final String FXML_CHANGE_FINGERPRINT =
 										"sa/gov/nic/bio/bw/client/login/fxml/change_fingerprint_dialog.fxml";
 	private static final String FXML_CHANGE_PASSWORD =

@@ -18,7 +18,7 @@ public class PersonInfo
 	private int gender;
 	private PersonIdInfo identityInfo;
 	private String face;
-	private boolean isOutKingdom;
+	private Boolean isOutKingdom;
 	
 	public long getSamisId(){return samisId;}
 	public void setSamisId(long samisId){this.samisId = samisId;}
@@ -53,8 +53,8 @@ public class PersonInfo
 	public String getFace(){return face;}
 	public void setFace(String face){this.face = face;}
 	
-	public boolean isOutKingdom(){return isOutKingdom;}
-	public void setOutKingdom(boolean outKingdom){ isOutKingdom = outKingdom;}
+	public Boolean isOutKingdom(){return isOutKingdom;}
+	public void setOutKingdom(Boolean outKingdom){this.isOutKingdom = outKingdom;}
 	
 	@Override
 	public boolean equals(Object o)
@@ -63,11 +63,11 @@ public class PersonInfo
 		if(o == null || getClass() != o.getClass()) return false;
 		PersonInfo that = (PersonInfo) o;
 		return samisId == that.samisId && nationality == that.nationality && gender == that.gender &&
-			   isOutKingdom == that.isOutKingdom && Objects.equals(name, that.name) &&
-			   Objects.equals(birthDate, that.birthDate) && Objects.equals(birthPlace, that.birthPlace) &&
-			   Objects.equals(birthHijGregInd, that.birthHijGregInd) && Objects.equals(personType, that.personType) &&
-			   Objects.equals(nationalityDesc, that.nationalityDesc) &&
-			   Objects.equals(identityInfo, that.identityInfo) && Objects.equals(face, that.face);
+			   Objects.equals(name, that.name) && Objects.equals(birthDate, that.birthDate) &&
+			   Objects.equals(birthPlace, that.birthPlace) && Objects.equals(birthHijGregInd, that.birthHijGregInd) &&
+			   Objects.equals(personType, that.personType) && Objects.equals(nationalityDesc, that.nationalityDesc) &&
+			   Objects.equals(identityInfo, that.identityInfo) && Objects.equals(face, that.face) &&
+			   Objects.equals(isOutKingdom, that.isOutKingdom);
 	}
 	
 	@Override
@@ -83,7 +83,7 @@ public class PersonInfo
 		return "PersonInfo{" + "samisId=" + samisId + ", name=" + name + ", birthDate=" + birthDate +
 			   ", birthPlace='" + birthPlace + '\'' + ", birthHijGregInd='" + birthHijGregInd + '\'' +
 			   ", personType='" + personType + '\'' + ", nationality=" + nationality + ", nationalityDesc='" +
-			   nationalityDesc + '\'' + ", gender=" + gender + ", identityInfo=" + identityInfo + ", face='" + face +
-			   '\'' + ", isOutKingdom=" + isOutKingdom + '}';
+			   nationalityDesc + '\'' + ", gender=" + gender + ", identityInfo=" + identityInfo + ", face='" +
+			   face + '\'' + ", isOutKingdom=" + isOutKingdom + '}';
 	}
 }
