@@ -74,6 +74,7 @@ public class SearchFxController extends WizardStepFxControllerBase
 	@FXML
 	private void onRetryButtonClicked(ActionEvent actionEvent)
 	{
+		hideNotification();
 		showProgress(true);
 		
 		Map<String, Object> uiDataMap = new HashMap<>();

@@ -313,9 +313,9 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 	}
 	
 	@Override
-	protected void onDetachedFromScene()
+	protected void onDetachingFromScene()
 	{
-		if(btnStopCameraLivePreview.isVisible()) Platform.runLater(btnStopCameraLivePreview::fire);
+		Platform.runLater(btnStopCameraLivePreview::fire);
 	}
 	
 	@Override

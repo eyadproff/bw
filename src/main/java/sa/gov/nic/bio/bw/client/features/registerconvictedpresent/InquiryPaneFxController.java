@@ -207,7 +207,7 @@ public class InquiryPaneFxController extends WizardStepFxControllerBase
 	}
 	
 	@Override
-	protected void onDetachedFromScene()
+	protected void onDetachingFromScene()
 	{
 		DevicesRunnerGadgetPaneFxController deviceManagerGadgetPaneController =
 												Context.getCoreFxController().getDeviceManagerGadgetPaneController();

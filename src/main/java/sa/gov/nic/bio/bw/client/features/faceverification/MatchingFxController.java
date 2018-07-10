@@ -9,6 +9,7 @@ import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.wizard.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.client.core.workflow.Workflow;
+import sa.gov.nic.bio.bw.client.features.commons.webservice.PersonInfo;
 import sa.gov.nic.bio.bw.client.features.faceverification.webservice.FaceMatchingResponse;
 import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
 
@@ -44,21 +45,28 @@ public class MatchingFxController extends WizardStepFxControllerBase
 		if(newForm) showProgress(true);
 		else
 		{
-			ServiceResponse<FaceMatchingResponse> response = (ServiceResponse<FaceMatchingResponse>)
-																	uiInputData.get(Workflow.KEY_WEBSERVICE_RESPONSE);
+			ServiceResponse<PersonInfo> response = (ServiceResponse<PersonInfo>)
+															uiInputData.get(Workflow.KEY_WEBSERVICE_RESPONSE);
 			
 			if(response != null) // there is a result
 			{
 				if(response.isSuccess())
 				{
-					faceMatchingResponse = response.getResult();
+					PersonInfo personInfo = response.getResult();
+					faceMatchingResponse = new FaceMatchingResponse(true, personInfo);
 					goNext();
 				}
 				else
 				{
 					showProgress(false);
-					reportNegativeResponse(response.getErrorCode(), response.getException(),
-					                       response.getErrorDetails());
+					
+					if("B003-0021".equals(response.getErrorCode())) // not matched
+					{
+						faceMatchingResponse = new FaceMatchingResponse(false, null);
+						goNext();
+					}
+					else reportNegativeResponse(response.getErrorCode(), response.getException(),
+					                            response.getErrorDetails());
 				}
 			}
 		}
@@ -73,6 +81,7 @@ public class MatchingFxController extends WizardStepFxControllerBase
 	@FXML
 	private void onRetryButtonClicked(ActionEvent actionEvent)
 	{
+		hideNotification();
 		showProgress(true);
 		
 		Map<String, Object> uiDataMap = new HashMap<>();

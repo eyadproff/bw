@@ -292,13 +292,43 @@ public final class AppUtils
 		return gregorianDate.atStartOfDay(AppConstants.SAUDI_ZONE).toEpochSecond() * 1000;
 	}
 	
+	public static LocalDateTime extractIssueTimeFromJWT(String jwt)
+	{
+		String iat = extractFieldFromJWT(jwt, "iat");
+		
+		if(iat != null && !iat.isEmpty())
+		{
+			LocalDateTime issueDateTime = LocalDateTime.ofInstant(
+										Instant.ofEpochMilli(Long.parseLong(iat) * 1000L), AppConstants.SAUDI_ZONE);
+			LOGGER.fine("The issue time for the JWT is " + issueDateTime);
+			return issueDateTime;
+		}
+		
+		return null;
+	}
+	
 	public static LocalDateTime extractExpirationTimeFromJWT(String jwt)
+	{
+		String exp = extractFieldFromJWT(jwt, "exp");
+		
+		if(exp != null && !exp.isEmpty())
+		{
+			LocalDateTime expirationDateTime = LocalDateTime.ofInstant(
+										Instant.ofEpochMilli(Long.parseLong(exp) * 1000L), AppConstants.SAUDI_ZONE);
+			LOGGER.fine("The expiration time for the JWT is " + expirationDateTime);
+			return expirationDateTime;
+		}
+		
+		return null;
+	}
+	
+	private static String extractFieldFromJWT(String jwt, String field)
 	{
 		String[] tokenParts = jwt.split("\\.");
 		
 		if(tokenParts.length != 3)
 		{
-			LOGGER.warning("userToken is not JWT! Failed to extract the expiration time!");
+			LOGGER.warning("userToken is not JWT! Failed to extract \"" + field + "\"!");
 		}
 		else
 		{
@@ -322,20 +352,14 @@ public final class AppUtils
 				try
 				{
 					JsonObject jsonObject = new JsonParser().parse(payload).getAsJsonObject();
-					String exp = jsonObject.get("exp").getAsString();
+					String exp = jsonObject.get(field).getAsString();
 					
-					if(exp == null) LOGGER.warning("The payload has no \"exp\"!");
-					else
-					{
-						LocalDateTime expirationDateTime = LocalDateTime.ofInstant(
-											Instant.ofEpochMilli(Long.parseLong(exp) * 1000L), AppConstants.SAUDI_ZONE);
-						LOGGER.fine("The expiration time for the new JWT is " + expirationDateTime);
-						return expirationDateTime;
-					}
+					if(exp == null) LOGGER.warning("The payload has no \"" + field + "\"!");
+					else return exp;
 				}
 				catch(Exception e)
 				{
-					LOGGER.log(Level.SEVERE,"Failed to extract \"exp\" from payload!", e);
+					LOGGER.log(Level.SEVERE,"Failed to extract \"" + field + "\" from payload!", e);
 				}
 			}
 		}

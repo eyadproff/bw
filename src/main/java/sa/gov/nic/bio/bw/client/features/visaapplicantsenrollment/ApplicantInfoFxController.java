@@ -343,7 +343,7 @@ public class ApplicantInfoFxController extends WizardStepFxControllerBase
 	}
 	
 	@Override
-	protected void onDetachedFromScene()
+	protected void onDetachingFromScene()
 	{
 		Context.getCoreFxController().getDeviceManagerGadgetPaneController().setDevicesRunnerRunningListener(null);
 		Context.getCoreFxController().getDeviceManagerGadgetPaneController()
