@@ -667,8 +667,9 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 	}
 	
 	@Override
-	protected void onDetachedFromScene()
+	protected void onDetachingFromScene()
 	{
+		Platform.runLater(btnStopFingerprintCapturing::fire);
 		Context.getCoreFxController().getDeviceManagerGadgetPaneController().setDevicesRunnerRunningListener(null);
 		Context.getCoreFxController().getDeviceManagerGadgetPaneController()
 									 .setFingerprintScannerInitializationListener(null);

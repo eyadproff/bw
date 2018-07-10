@@ -180,6 +180,7 @@ public class CoreFxController extends FxControllerBase implements IdleMonitorReg
 			{
 				ControllerResourcesLocator controllerResourcesLocator = (ControllerResourcesLocator)
 																controllerClass.getDeclaredConstructor().newInstance();
+				if(currentBodyController != null) Platform.runLater(currentBodyController::onDetachingFromScene);
 				currentBodyController = renderNewBodyForm(controllerResourcesLocator);
 				
 				if(currentBodyController != null)
@@ -263,8 +264,6 @@ public class CoreFxController extends FxControllerBase implements IdleMonitorReg
 			bodyPane.layout();
 			showMenuTransitionProgressIndicator(false);
 			showWizardTransitionProgressIndicator(false);
-			
-			if(currentBodyController != null) currentBodyController.onDetachedFromScene();
 		});
 		
 		return bodyFxController;
