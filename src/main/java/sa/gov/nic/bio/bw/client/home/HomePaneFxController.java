@@ -7,9 +7,9 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.layout.VBox;
 import sa.gov.nic.bio.bcl.utils.BclUtils;
-import sa.gov.nic.bio.biokit.websocket.ClosureListener;
 import sa.gov.nic.bio.bw.client.core.BodyFxControllerBase;
 import sa.gov.nic.bio.bw.client.core.Context;
+import sa.gov.nic.bio.bw.client.core.DevicesRunnerGadgetPaneFxController;
 import sa.gov.nic.bio.bw.client.core.beans.MenuItem;
 import sa.gov.nic.bio.bw.client.core.beans.UserSession;
 import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
@@ -58,31 +58,32 @@ public class HomePaneFxController extends BodyFxControllerBase
 		Context.getCoreFxController().getHeaderPaneController().showRegion();
 		Context.getCoreFxController().getFooterPaneController().hideRegion();
 		Context.getCoreFxController().getMenuPaneController().showRegion();
-		Context.getCoreFxController().getDeviceManagerGadgetPaneController().showRegion();
-
-		ClosureListener closureListener = Context.getCoreFxController().getDeviceManagerGadgetPaneController()
-																	   .getClosureListener();
-		Context.getBioKitManager().setClosureListener(closureListener);
-
-		// connect if running
-		Task<Boolean> task = new Task<Boolean>()
+		
+		DevicesRunnerGadgetPaneFxController deviceManagerGadgetPaneController =
+												Context.getCoreFxController().getDeviceManagerGadgetPaneController();
+		deviceManagerGadgetPaneController.showRegion();
+		
+		if(!deviceManagerGadgetPaneController.isDevicesRunnerRunning())
 		{
-			@Override
-			protected Boolean call()
+			Task<Boolean> task = new Task<Boolean>()
 			{
-				return BclUtils.isLocalhostPortListening(Context.getBioKitManager().getWebsocketPort());
-			}
-		};
-		task.setOnSucceeded(event ->
-		{
-		    Boolean listening = task.getValue();
-
-		    if(listening != null && listening)
-		    {
-		        Context.getCoreFxController().getDeviceManagerGadgetPaneController().runAndConnectDevicesRunner();
-		    }
-		});
-		Context.getExecutorService().submit(task);
+				@Override
+				protected Boolean call()
+				{
+					return BclUtils.isLocalhostPortListening(Context.getBioKitManager().getWebsocketPort());
+				}
+			};
+			task.setOnSucceeded(event ->
+			{
+			    Boolean listening = task.getValue();
+			
+			    if(listening != null && listening)
+			    {
+			        deviceManagerGadgetPaneController.runAndConnectDevicesRunner();
+			    }
+			});
+			Context.getExecutorService().submit(task);
+		}
 	}
 	
 	private void setLabelsText(long value, boolean isDate, Label textLabel, Label valueLabel)

@@ -16,7 +16,6 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import org.controlsfx.control.NotificationPane;
-import sa.gov.nic.bio.biokit.exceptions.NotConnectedException;
 import sa.gov.nic.bio.bw.client.core.beans.StateBundle;
 import sa.gov.nic.bio.bw.client.core.interfaces.ControllerResourcesLocator;
 import sa.gov.nic.bio.bw.client.core.interfaces.IdleMonitorRegisterer;
@@ -44,7 +43,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 
@@ -60,11 +58,11 @@ public class CoreFxController extends FxControllerBase implements IdleMonitorReg
 	public static final String APP_ICON_FILE = "sa/gov/nic/bio/bw/client/core/images/app_icon.png";
 	public static final String RB_LABELS_FILE = "sa/gov/nic/bio/bw/client/core/bundles/strings";
 	
-	// the following 4 fields are here only to avoid warnings in FXML files.
 	@FXML private Pane headerPane;
 	@FXML private Pane menuPane;
 	@FXML private Pane devicesRunnerGadgetPane;
 	@FXML private Pane footerPane;
+	@FXML private Pane sidePane;
 	
 	@FXML private StackPane stageOverlayPane;
 	@FXML private StackPane menuTransitionOverlayPane;
@@ -91,6 +89,7 @@ public class CoreFxController extends FxControllerBase implements IdleMonitorReg
 	public Stage getStage(){return stage;}
 	public NotificationPane getNotificationPane(){return notificationPane;}
 	public BorderPane getBodyPane(){return bodyPane;}
+	public Pane getDevicesRunnerGadgetPane(){return devicesRunnerGadgetPane;}
 	
 	public HeaderPaneFxController getHeaderPaneController(){return headerPaneController;}
 	public FooterPaneFxController getFooterPaneController(){return footerPaneController;}
@@ -101,6 +100,8 @@ public class CoreFxController extends FxControllerBase implements IdleMonitorReg
 	public ResourceBundle getResourceBundle(){return resources;}
 	public WizardPane getWizardPane(){return wizardPane;}
 	public BodyFxControllerBase getCurrentBodyController(){return currentBodyController;}
+	
+	public void reattachDeviceRunnerGadgetPane(){sidePane.getChildren().add(devicesRunnerGadgetPane);}
 	
 	@Override
 	protected void initialize()
@@ -128,16 +129,6 @@ public class CoreFxController extends FxControllerBase implements IdleMonitorReg
 		Context.getCoreFxController().getNotificationPane().hide();
 		Context.getCoreFxController().stopIdleMonitor();
 		Context.getWebserviceManager().cancelRefreshTokenScheduler();
-		
-		try
-		{
-			Context.getBioKitManager().disconnect();
-		}
-		catch(Exception e)
-		{
-			if(!(e instanceof NotConnectedException)) LOGGER.log(Level.WARNING,
-		                                                     "failed to disconnect with Biokit on logout!", e);
-		}
 	}
 	
 	public void logout()

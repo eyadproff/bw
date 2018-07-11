@@ -26,6 +26,17 @@ public class LoginService
 	
 	public static ServiceResponse<LoginBean> execute(String username, String password)
 	{
+		return execute(username, password, -1, null);
+	}
+	
+	public static ServiceResponse<LoginBean> execute(String username, int fingerPosition, String fingerprint)
+	{
+		return execute(username, null, fingerPosition, fingerprint);
+	}
+	
+	public static ServiceResponse<LoginBean> execute(String username, String password, int fingerPosition,
+	                                                 String fingerprint)
+	{
 		if(Context.getRuntimeEnvironment() != RuntimeEnvironment.LOCAL) // if not local, check for updates
 		{
 			// TODO: improve it
@@ -74,10 +85,20 @@ public class LoginService
 		}
 		
 		IdentityAPI identityAPI = Context.getWebserviceManager().getApi(IdentityAPI.class);
-		url = System.getProperty("jnlp.bio.bw.service.login");
 		
-		// U = User?
-		Call<LoginBean> apiCall = identityAPI.login(url, username, password, "BW", "U");
+		Call<LoginBean> apiCall;
+		
+		if(password != null)
+		{
+			url = System.getProperty("jnlp.bio.bw.service.login");
+			apiCall = identityAPI.login(url, username, password, "BW", "U"); // U = User?
+		}
+		else
+		{
+			url = System.getProperty("jnlp.bio.bw.service.loginByFingerprint");
+			apiCall = identityAPI.loginByFingerprint(url, username, fingerPosition, fingerprint, "BW");
+		}
+		
 		ServiceResponse<LoginBean> response = Context.getWebserviceManager().executeApi(apiCall);
 		
 		if(response.isSuccess())

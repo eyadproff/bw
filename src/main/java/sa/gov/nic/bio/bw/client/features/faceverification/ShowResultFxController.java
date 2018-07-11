@@ -184,9 +184,14 @@ public class ShowResultFxController extends WizardStepFxControllerBase
 					lblNationality.setTextFill(Color.RED);
 				}
 				
-				boolean outOfKingdom = personInfo.isOutKingdom();
-				lblOutOfKingdom.setText(outOfKingdom ? resources.getString("label.yes") :
-						                               resources.getString("label.no"));
+				Boolean outOfKingdom = personInfo.isOutKingdom();
+				if(outOfKingdom != null) lblOutOfKingdom.setText(outOfKingdom ? resources.getString("label.yes") :
+						                                                        resources.getString("label.no"));
+				else
+				{
+					lblOutOfKingdom.setText(resources.getString("label.notAvailable"));
+					lblOutOfKingdom.setTextFill(Color.RED);
+				}
 				
 				Image uploadedImage = (Image) uiInputData.get(ConfirmInputFxController.KEY_FINAL_IMAGE);
 				Image dbImage = AppUtils.imageFromBase64(personInfo.getFace());

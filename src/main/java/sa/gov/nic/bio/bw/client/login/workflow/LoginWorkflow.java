@@ -36,7 +36,15 @@ public class LoginWorkflow extends WorkflowBase<Void, LoginBean>
 			String username = (String) userTaskDataMap.get("username");
 			String password = (String) userTaskDataMap.get("password");
 			
-			ServiceResponse<LoginBean> response = LoginService.execute(username, password);
+			ServiceResponse<LoginBean> response;
+			
+			if(password != null) response = LoginService.execute(username, password);
+			else
+			{
+				int fingerPosition = (int) userTaskDataMap.get("fingerPosition");
+				String fingerprint = (String) userTaskDataMap.get("fingerprint");
+				response = LoginService.execute(username, fingerPosition, fingerprint);
+			}
 			
 			if(response.isSuccess()) return response.getResult();
 			else uiInputData.put(KEY_WEBSERVICE_RESPONSE, response);

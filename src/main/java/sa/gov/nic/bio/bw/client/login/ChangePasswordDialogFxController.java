@@ -15,7 +15,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import sa.gov.nic.bio.bw.client.core.Context;
-import sa.gov.nic.bio.bw.client.core.RegionFxControllerBase;
+import sa.gov.nic.bio.bw.client.core.FxControllerBase;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.login.tasks.ChangePasswordTask;
 import sa.gov.nic.bio.bw.client.login.utils.LoginErrorCodes;
@@ -23,7 +23,7 @@ import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
 
 import java.util.logging.Logger;
 
-public class ChangePasswordDialogFxController extends RegionFxControllerBase
+public class ChangePasswordDialogFxController extends FxControllerBase
 {
 	private static final Logger LOGGER = Logger.getLogger(ChangePasswordDialogFxController.class.getName());
 	
