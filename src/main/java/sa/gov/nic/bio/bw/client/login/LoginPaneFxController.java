@@ -134,7 +134,8 @@ public class LoginPaneFxController extends BodyFxControllerBase implements Persi
 		BooleanExpression passwordEmptyBinding = txtPassword.textProperty().isEmpty();
 		
 		BooleanExpression loginByFingerprintTabBinding = tabLoginByFingerprint.selectedProperty();
-		BooleanExpression usernameLoginByFingerprintEmptyBinding = txtUsernameLoginByPassword.textProperty().isEmpty();
+		BooleanExpression usernameLoginByFingerprintEmptyBinding =
+																txtUsernameLoginByFingerprint.textProperty().isEmpty();
 		BooleanExpression fingerprintScannerInitializationBinding = lblFingerprintScannerInitialized.visibleProperty();
 		
 		btnLogin.disableProperty().bind(loginByPasswordTabBinding.and(usernameLoginByPasswordEmptyBinding
@@ -339,7 +340,7 @@ public class LoginPaneFxController extends BodyFxControllerBase implements Persi
 		
 		GuiUtils.showNode(piLogin, bool);
 		GuiUtils.showNode(btnLogin, !bool);
-		GuiUtils.showNode(btnChangePassword, !bool);
+		//GuiUtils.showNode(btnChangePassword, !bool);
 	}
 	
 	@FXML
