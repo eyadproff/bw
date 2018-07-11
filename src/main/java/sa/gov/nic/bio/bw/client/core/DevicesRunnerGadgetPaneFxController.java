@@ -152,6 +152,12 @@ public class DevicesRunnerGadgetPaneFxController extends RegionFxControllerBase
 		tpDevicesRunner.setCollapsible(!bDisable);
 	}
 	
+	public void showOnlyFingerprintScannerControl(boolean bool)
+	{
+		GuiUtils.showNode(tpCamera, !bool);
+		GuiUtils.showNode(tpPassportScanner, !bool);
+	}
+	
 	@Override
 	protected void initialize()
 	{
