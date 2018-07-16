@@ -21,8 +21,20 @@ import sa.gov.nic.bio.bw.client.core.utils.UnixEpochDateTypeAdapter;
 import sa.gov.nic.bio.bw.client.login.webservice.IdentityAPI;
 import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
 
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.TrustManagerFactory;
+import javax.net.ssl.X509TrustManager;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.SocketTimeoutException;
+import java.security.KeyManagementException;
+import java.security.KeyStore;
+import java.security.SecureRandom;
+import java.security.cert.Certificate;
+import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
+import java.security.cert.X509Certificate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
@@ -37,15 +49,15 @@ import java.util.logging.Logger;
 public class WebserviceManager
 {
 	private static final Logger LOGGER = Logger.getLogger(WebserviceManager.class.getName());
-	private static final String PROTOCOL = "http";
-	private String baseUrl;
+	private static final String SSL_CERTIFICATE_FILE_PATH =
+												"sa/gov/nic/bio/bw/client/core/config/bio-middleware-certificate.pem";
+	private static final String PROTOCOL = "https";
 	private Retrofit retrofit;
 	private ScheduledFuture<?> scheduledRefreshTokenFuture;
 	private Map<Class<?>, Object> apiCache = new HashMap<>();
 	
-	public void init(String baseUrl, int readTimeoutSeconds, int connectTimeoutSeconds)
+	public void init(String baseUrl, int readTimeoutSeconds, int connectTimeoutSeconds) throws Exception
 	{
-		this.baseUrl = baseUrl;
 		Interceptor tokenInterceptor = chain ->
 		{
 			Request.Builder requestBuilder = chain.request().newBuilder();
@@ -64,10 +76,62 @@ public class WebserviceManager
 			return chain.proceed(requestBuilder.build());
 		};
 		
+		CertificateFactory cf = CertificateFactory.getInstance("X.509");
+		InputStream cert = Thread.currentThread().getContextClassLoader()
+				.getResourceAsStream(SSL_CERTIFICATE_FILE_PATH);
+		
+		Certificate certificate = cf.generateCertificate(cert);
+		cert.close();
+		
+		KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
+		keyStore.load(null, null);
+		keyStore.setCertificateEntry("bio-middleware-certificate", certificate);
+		
+		TrustManagerFactory tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+		tmf.init(keyStore);
+		
+		X509TrustManager x509Tm = null;
+		for(TrustManager tm : tmf.getTrustManagers())
+		{
+			if(tm instanceof X509TrustManager)
+			{
+				x509Tm = (X509TrustManager) tm;
+				break;
+			}
+		}
+		
+		if(x509Tm == null) throw new KeyManagementException("The system has no X509TrustManager!");
+		
+		final X509TrustManager finalTm = x509Tm;
+		X509TrustManager customTm = new X509TrustManager()
+		{
+			@Override
+			public X509Certificate[] getAcceptedIssuers()
+			{
+				return finalTm.getAcceptedIssuers();
+			}
+			
+			@Override
+			public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException
+			{
+				finalTm.checkServerTrusted(chain, authType);
+			}
+			
+			@Override
+			public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException
+			{
+				finalTm.checkClientTrusted(chain, authType);
+			}
+		};
+		
+		SSLContext sslContext = SSLContext.getInstance("TLS");
+		sslContext.init(null, tmf.getTrustManagers(), new SecureRandom());
+		
 		OkHttpClient okHttpClient = new OkHttpClient.Builder()
 													.readTimeout(readTimeoutSeconds, TimeUnit.SECONDS)
 													.connectTimeout(connectTimeoutSeconds, TimeUnit.SECONDS)
 													.addInterceptor(tokenInterceptor)
+													.sslSocketFactory(sslContext.getSocketFactory(), customTm)
 													.build();
 		
 		Gson gson = new GsonBuilder().registerTypeAdapter(Date.class, new UnixEpochDateTypeAdapter())
@@ -79,11 +143,6 @@ public class WebserviceManager
 							   .addConverterFactory(GsonConverterFactory.create(gson))
 							   .client(okHttpClient)
 							   .build();
-	}
-	
-	public String getServerUrl()
-	{
-		return baseUrl;
 	}
 	
 	@SuppressWarnings("unchecked")

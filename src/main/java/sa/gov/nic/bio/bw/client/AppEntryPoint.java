@@ -285,7 +285,17 @@ public class AppEntryPoint extends Application
 	
 	    LOGGER.info("serverUrl = " + serverUrl);
 	
-	    webserviceManager.init(serverUrl, readTimeoutSeconds, connectTimeoutSeconds);
+	    try
+	    {
+		    webserviceManager.init(serverUrl, readTimeoutSeconds, connectTimeoutSeconds);
+	    }
+	    catch(Exception e)
+	    {
+		    String errorCode = StartupErrorCodes.C001_00019.getCode();
+		    String[] errorDetails = {"Failed to initialize the webservice manager!"};
+		    notifyPreloader(PreloaderNotification.failure(e, errorCode, errorDetails));
+		    return;
+	    }
 	
 	    String sResponseTimeoutSeconds = System.getProperty("jnlp.bio.bw.biokit.responseTimeoutSeconds");
 	
