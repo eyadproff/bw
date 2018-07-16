@@ -842,7 +842,7 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 		        if(slapPosition == FingerPosition.RIGHT_THUMB_SLAP.getPosition() ||
 				   slapPosition == FingerPosition.LEFT_THUMB_SLAP.getPosition())
 		        {
-			        finger = new Finger(slapPosition, fingerprint.getSlapWsq(), null);
+			        finger = new Finger(slapPosition, fingerData.getFingerWsqImage(), null);
 		        }
 		        else
 		        {
