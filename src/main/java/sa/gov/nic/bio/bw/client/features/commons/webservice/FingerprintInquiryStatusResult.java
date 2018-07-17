@@ -1,6 +1,4 @@
-package sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice;
-
-import sa.gov.nic.bio.bw.client.features.commons.webservice.PersonInfo;
+package sa.gov.nic.bio.bw.client.features.commons.webservice;
 
 import java.util.Objects;
 

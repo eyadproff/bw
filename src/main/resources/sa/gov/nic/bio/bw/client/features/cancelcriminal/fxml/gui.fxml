@@ -19,7 +19,7 @@
         <Button fx:id="btnRetryLookupPersonIdTypes" text="%button.retryLookupPersonIdTypes" visible="false" managed="false" onAction="#onRetryLookupPersonIdTypesButtonClicked"/>
         <TabPane fx:id="tabPane" styleClass="floating" visible="false" managed="false">
             <Tab fx:id="tabByPersonId" text="%tab.byPersonId" closable="false">
-                <GridPane alignment="CENTER" vgap="5" hgap="20" styleClass="formBox">
+                <GridPane alignment="CENTER" vgap="5" hgap="20" styleClass="formBox-with-tabs">
                     <padding>
                         <Insets top="20" right="20" bottom="20" left="20"/>
                     </padding>

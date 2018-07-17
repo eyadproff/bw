@@ -7,6 +7,16 @@
     -fx-faint-focus-color: #23A96722;
 }
 
+.formBox {
+    -fx-background-color: #E6E6E6;
+    -fx-border-color: #23A967;
+    -fx-border-width: 1px;
+}
+
+.formBox-with-tabs {
+    -fx-background-color: #E6E6E6;
+}
+
 .tab-pane .tab-header-area .tab-header-background {
     -fx-background-color: transparent;
 }

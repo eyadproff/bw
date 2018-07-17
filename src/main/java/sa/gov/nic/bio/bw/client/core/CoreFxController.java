@@ -47,7 +47,7 @@ import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 
 /**
- * The JavaFX controller of the primary stage, i.e. controller of the whole application.
+ * The JavaFX controller of the primary stage, i.e. controller of the whole application GUI.
  *
  * @author Fouad Almalki
  */
@@ -613,6 +613,8 @@ public class CoreFxController extends FxControllerBase implements IdleMonitorReg
 	 */
 	private void onIdle()
 	{
+		LOGGER.info("The user is idle!");
+		
 		idleNotifier.hide();
 		prepareToLogout();
 		
