@@ -276,12 +276,7 @@ public class CoreFxController extends FxControllerBase implements IdleMonitorReg
 		try
 		{
 			wizardPane = wizardPaneLoader.load();
-			
-			Platform.runLater(() ->
-			{
-				bodyPane.setTop(wizardPane);
-				wizardPane.goNext();
-			});
+			Platform.runLater(() -> bodyPane.setTop(wizardPane));
 		}
 		catch(Exception e)
 		{
