@@ -1,17 +1,30 @@
 package sa.gov.nic.bio.bw.client.features.printdeadpersonrecord.workflow;
 
+import sa.gov.nic.bio.biokit.fingerprint.beans.ConvertedFingerprintsResponse;
+import sa.gov.nic.bio.biokit.fingerprint.beans.SegmentFingerprintsResponse;
+import sa.gov.nic.bio.biokit.websocket.beans.DMFingerData;
+import sa.gov.nic.bio.bw.client.core.Context;
+import sa.gov.nic.bio.bw.client.core.biokit.FingerPosition;
 import sa.gov.nic.bio.bw.client.core.interfaces.FormRenderer;
 import sa.gov.nic.bio.bw.client.core.workflow.Signal;
 import sa.gov.nic.bio.bw.client.core.workflow.WizardWorkflowBase;
-import sa.gov.nic.bio.bw.client.features.commons.webservice.PersonInfo;
+import sa.gov.nic.bio.bw.client.features.commons.webservice.Finger;
+import sa.gov.nic.bio.bw.client.features.commons.workflow.FetchingFingerprintsService;
+import sa.gov.nic.bio.bw.client.features.commons.workflow.GetFingerprintAvailabilityService;
 import sa.gov.nic.bio.bw.client.features.commons.workflow.GetPersonInfoByIdService;
+import sa.gov.nic.bio.bw.client.features.printdeadpersonrecord.FetchingPersonInfoPaneFxController;
 import sa.gov.nic.bio.bw.client.features.printdeadpersonrecord.RecordIdPaneFxController;
 import sa.gov.nic.bio.bw.client.features.printdeadpersonrecord.ShowRecordPaneFxController;
+import sa.gov.nic.bio.bw.client.features.printdeadpersonrecord.utils.PrintDeadPersonRecordPresentErrorCodes;
 import sa.gov.nic.bio.bw.client.features.printdeadpersonrecord.webservice.DeadPersonRecord;
 import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class PrintDeadPersonRecordWorkflow extends WizardWorkflowBase<Void, Void>
@@ -40,49 +53,214 @@ public class PrintDeadPersonRecordWorkflow extends WizardWorkflowBase<Void, Void
 					Long recordId = (Long) uiOutputData.get(RecordIdPaneFxController.KEY_RECORD_ID);
 					
 					ServiceResponse<DeadPersonRecord> serviceResponse = DeadPersonRecordByIdService.execute(recordId);
-					
-					if(serviceResponse.isSuccess())
-					{
-						DeadPersonRecord result = serviceResponse.getResult();
-						uiInputData.put(ShowRecordPaneFxController.KEY_DEAD_PERSON_RECORD, result);
-						
-						Long samisId = result.getSamisId();
-						
-						if(samisId != null)
-						{
-							ServiceResponse<PersonInfo> response = GetPersonInfoByIdService.execute(samisId,
-							                                                                        0);
-							if(response.isSuccess()) // success with person info
-							{
-								uiInputData.put(ShowRecordPaneFxController.KEY_PERSON_INFO, response.getResult());
-								uiInputData.put(KEY_WEBSERVICE_RESPONSE, response);
-								formRenderer.get().renderForm(RecordIdPaneFxController.class, uiInputData);
-								uiOutputData = waitForUserTask();
-								uiInputData.putAll(uiOutputData);
-								break;
-							}
-						}
-						else // success without person info
-						{
-							uiInputData.put(KEY_WEBSERVICE_RESPONSE, serviceResponse);
-							formRenderer.get().renderForm(RecordIdPaneFxController.class, uiInputData);
-							uiOutputData = waitForUserTask();
-							uiInputData.putAll(uiOutputData);
-							break;
-						}
-					}
-					
-					// failure
-					
 					uiInputData.put(KEY_WEBSERVICE_RESPONSE, serviceResponse);
 					formRenderer.get().renderForm(RecordIdPaneFxController.class, uiInputData);
 					uiOutputData = waitForUserTask();
 					uiInputData.putAll(uiOutputData);
+					
+					if(serviceResponse.isSuccess())
+					{
+						uiInputData.put(ShowRecordPaneFxController.KEY_DEAD_PERSON_RECORD, serviceResponse.getResult());
+						break;
+					}
 				}
 				
 				break;
 			}
 			case 1:
+			{
+				formRenderer.get().renderForm(FetchingPersonInfoPaneFxController.class, uiInputData);
+				uiOutputData = waitForUserTask();
+				uiInputData.putAll(uiOutputData);
+				
+				if(uiOutputData.get(FetchingPersonInfoPaneFxController.KEY_SKIP_FETCHING_PERSON_INFO) == Boolean.TRUE
+				|| uiOutputData.get(FetchingPersonInfoPaneFxController.KEY_DEVICES_RUNNER_IS_RUNNING) != Boolean.TRUE)
+				{
+					break;
+				}
+				
+				DeadPersonRecord deadPersonRecord =
+								(DeadPersonRecord) uiInputData.get(ShowRecordPaneFxController.KEY_DEAD_PERSON_RECORD);
+				long samisId = deadPersonRecord.getSamisId();
+				
+				loop: while(true)
+				{
+					ServiceResponse<?> serviceResponse;
+					
+					block:
+					{
+						serviceResponse = GetPersonInfoByIdService.execute(samisId, 0);
+						
+						if(serviceResponse.isSuccess())
+						{
+							uiInputData.put(ShowRecordPaneFxController.KEY_PERSON_INFO, serviceResponse.getResult());
+						}
+						else break block;
+						
+						serviceResponse = FetchingFingerprintsService.execute(samisId);
+						if(!serviceResponse.isSuccess()) break block;
+						
+						@SuppressWarnings("unchecked")
+						List<Finger> fingerprints = (List<Finger>) serviceResponse.getResult();
+						
+						serviceResponse = GetFingerprintAvailabilityService.execute(samisId);
+						if(!serviceResponse.isSuccess()) break block;
+						
+						@SuppressWarnings("unchecked")
+						List<Integer> availableFingerprints = (List<Integer>) serviceResponse.getResult();
+						
+						Map<Integer, String> fingerprintWsqMap = new HashMap<>();
+						Map<Integer, String> fingerprintImages = new HashMap<>();
+						
+						for(Finger finger : fingerprints)
+						{
+							int position = finger.getType();
+							
+							if(position == FingerPosition.RIGHT_SLAP.getPosition() ||
+							   position == FingerPosition.LEFT_SLAP.getPosition() ||
+							   position == FingerPosition.TWO_THUMBS.getPosition())
+							{
+								String slapImageBase64 = finger.getImage();
+								String slapImageFormat = "WSQ";
+								int expectedFingersCount = 0;
+								List<Integer> slapMissingFingers = new ArrayList<>();
+								
+								if(position == FingerPosition.RIGHT_SLAP.getPosition())
+								{
+									for(int i = FingerPosition.RIGHT_INDEX.getPosition();
+									    i <= FingerPosition.RIGHT_LITTLE.getPosition(); i++)
+									{
+										if(availableFingerprints.contains(i)) expectedFingersCount++;
+										else slapMissingFingers.add(i);
+									}
+								}
+								else if(position == FingerPosition.LEFT_SLAP.getPosition())
+								{
+									for(int i = FingerPosition.LEFT_INDEX.getPosition();
+									    i <= FingerPosition.LEFT_LITTLE.getPosition(); i++)
+									{
+										if(availableFingerprints.contains(i)) expectedFingersCount++;
+										else slapMissingFingers.add(i);
+									}
+								}
+								else if(position == FingerPosition.TWO_THUMBS.getPosition())
+								{
+									if(availableFingerprints.contains(FingerPosition.RIGHT_THUMB.getPosition()))
+										expectedFingersCount++;
+									else slapMissingFingers.add(FingerPosition.RIGHT_THUMB.getPosition());
+									
+									if(availableFingerprints.contains(FingerPosition.LEFT_THUMB.getPosition()))
+										expectedFingersCount++;
+									else slapMissingFingers.add(FingerPosition.LEFT_THUMB.getPosition());
+								}
+								
+								Future<sa.gov.nic.bio.biokit.beans.ServiceResponse<SegmentFingerprintsResponse>>
+										serviceResponseFuture = Context.getBioKitManager()
+																	   .getFingerprintUtilitiesService()
+																	   .segmentSlap(slapImageBase64, slapImageFormat,
+																	                position, expectedFingersCount,
+																	                slapMissingFingers);
+								
+								sa.gov.nic.bio.biokit.beans.ServiceResponse<SegmentFingerprintsResponse> response;
+								try
+								{
+									response = serviceResponseFuture.get();
+								}
+								catch(Exception e)
+								{
+									String errorCode = PrintDeadPersonRecordPresentErrorCodes.C012_00001.getCode();
+									String[] errorDetails =
+														{"Failed to call the service for segmenting the fingerprints!"};
+									serviceResponse = ServiceResponse.failure(errorCode, e, errorDetails);
+									break block;
+								}
+								
+								if(response.isSuccess())
+								{
+									SegmentFingerprintsResponse result = response.getResult();
+									List<DMFingerData> fingerData = result.getFingerData();
+									fingerData.forEach(dmFingerData -> fingerprintImages.put(dmFingerData.getPosition(),
+									                                                         dmFingerData.getFinger()));
+								}
+								else
+								{
+									String[] errorDetails = {"Failed to segment the fingerprints!"};
+									serviceResponse = ServiceResponse.failure(response.getErrorCode(),
+									                                          response.getException(), errorDetails);
+									break block;
+								}
+							}
+							else
+							{
+								if(position == FingerPosition.RIGHT_THUMB_SLAP.getPosition())
+																position = FingerPosition.RIGHT_THUMB.getPosition();
+								else if(position == FingerPosition.LEFT_THUMB_SLAP.getPosition())
+									position = FingerPosition.LEFT_THUMB.getPosition();
+								fingerprintWsqMap.put(position, finger.getImage());
+							}
+						}
+						
+						if(!fingerprintWsqMap.isEmpty())
+						{
+							Future<sa.gov.nic.bio.biokit.beans.ServiceResponse<ConvertedFingerprintsResponse>>
+											serviceResponseFuture = Context.getBioKitManager()
+																		   .getFingerprintUtilitiesService()
+																		   .convertWsqToImages(fingerprintWsqMap);
+							
+							sa.gov.nic.bio.biokit.beans.ServiceResponse<ConvertedFingerprintsResponse> response;
+							try
+							{
+								response = serviceResponseFuture.get();
+							}
+							catch(Exception e)
+							{
+								String errorCode = PrintDeadPersonRecordPresentErrorCodes.C012_00002.getCode();
+								String[] errorDetails = {"Failed to call the service for converting the WSQ!"};
+								serviceResponse = ServiceResponse.failure(errorCode, e, errorDetails);
+								break block;
+							}
+							
+							if(response.isSuccess())
+							{
+								ConvertedFingerprintsResponse responseResult = response.getResult();
+								Map<Integer, String> result = responseResult.getFingerprintImagesMap();
+								fingerprintImages.putAll(result);
+							}
+							else
+							{
+								String[] errorDetails = {"Failed to convert the WSQ!"};
+								serviceResponse = ServiceResponse.failure(response.getErrorCode(),
+								                                          response.getException(), errorDetails);
+								break block;
+							}
+						}
+						
+						uiInputData.put(ShowRecordPaneFxController.KEY_PERSON_FINGERPRINTS, fingerprintImages);
+						serviceResponse = ServiceResponse.success(null);
+					}
+					
+					uiInputData.put(KEY_WEBSERVICE_RESPONSE, serviceResponse);
+					
+					while(true)
+					{
+						formRenderer.get().renderForm(FetchingPersonInfoPaneFxController.class, uiInputData);
+						uiOutputData = waitForUserTask();
+						uiInputData.putAll(uiOutputData);
+						
+						Boolean retry = (Boolean) uiInputData.get(
+								FetchingPersonInfoPaneFxController.KEY_RETRY_PERSON_INFO_FETCHING);
+						uiInputData.remove(FetchingPersonInfoPaneFxController.KEY_RETRY_PERSON_INFO_FETCHING);
+						if(retry == null || !retry) break loop;
+						
+						Boolean running = (Boolean)
+									uiOutputData.get(FetchingPersonInfoPaneFxController.KEY_DEVICES_RUNNER_IS_RUNNING);
+						if(running != null && running) break;
+					}
+				}
+				
+				break;
+			}
+			case 2:
 			{
 				formRenderer.get().renderForm(ShowRecordPaneFxController.class, uiInputData);
 				uiOutputData = waitForUserTask();

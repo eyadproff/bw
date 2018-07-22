@@ -39,10 +39,7 @@
                         <Label text="%label.password" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
                         <PasswordField fx:id="txtPassword" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
                         <Label text="%label.language" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
-                        <VBox GridPane.rowIndex="2" GridPane.columnIndex="1">
-                            <ComboBox visible="false" managed="false"/> <!-- workaround to remove the additional arrow -->
-                            <ComboBox fx:id="cboLanguage"/>
-                        </VBox>
+                        <ComboBox fx:id="cboLanguage" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
                     </GridPane>
                 </Tab>
                 <Tab fx:id="tabLoginByFingerprint" text="%tab.loginByFingerprint" closable="false">

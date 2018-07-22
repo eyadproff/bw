@@ -9,6 +9,7 @@ import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.wizard.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.client.core.workflow.Workflow;
+import sa.gov.nic.bio.bw.client.features.printdeadpersonrecord.webservice.DeadPersonRecord;
 import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
 
 import java.net.URL;
@@ -38,8 +39,8 @@ public class RecordIdPaneFxController extends WizardStepFxControllerBase
 		btnNext.setOnAction(actionEvent ->
 		{
 		    hideNotification();
-		    piProgress.setVisible(true);
 			txtRecordId.setDisable(true);
+			piProgress.setVisible(true);
 		
 		    Map<String, Object> uiDataMap = new HashMap<>();
 		    uiDataMap.put(KEY_RECORD_ID, Long.parseLong(txtRecordId.getText()));
@@ -62,7 +63,10 @@ public class RecordIdPaneFxController extends WizardStepFxControllerBase
 		{
 			piProgress.setVisible(false);
 			txtRecordId.setDisable(false);
-			ServiceResponse<?> serviceResponse = (ServiceResponse<?>) uiInputData.get(Workflow.KEY_WEBSERVICE_RESPONSE);
+			
+			@SuppressWarnings("unchecked")
+			ServiceResponse<DeadPersonRecord> serviceResponse =
+								(ServiceResponse<DeadPersonRecord>) uiInputData.get(Workflow.KEY_WEBSERVICE_RESPONSE);
 			
 			if(serviceResponse.isSuccess()) goNext();
 			else reportNegativeResponse(serviceResponse.getErrorCode(), serviceResponse.getException(),

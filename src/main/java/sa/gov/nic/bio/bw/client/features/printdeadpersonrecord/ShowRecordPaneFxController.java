@@ -17,6 +17,7 @@ public class ShowRecordPaneFxController extends WizardStepFxControllerBase
 {
 	public static final String KEY_DEAD_PERSON_RECORD = "DEAD_PERSON_RECORD";
 	public static final String KEY_PERSON_INFO = "PERSON_INFO";
+	public static final String KEY_PERSON_FINGERPRINTS = "PERSON_FINGERPRINTS";
 	
 	@FXML private VBox paneImage;
 	@FXML private ImageViewPane paneImageView;

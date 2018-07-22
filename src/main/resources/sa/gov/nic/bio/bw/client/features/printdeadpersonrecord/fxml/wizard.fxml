@@ -6,6 +6,7 @@
 <WizardPane xmlns="http://javafx.com/javafx/8.0.152">
     <steps>
         <WizardStep iconId="\\uf2c1" title="%wizard.enteringRecordId"/>
+        <WizardStep iconId="user" title="%wizard.fetchingPersonInformation"/>
         <WizardStep iconId="file_pdf_alt" title="%wizard.showRecord"/>
     </steps>
 </WizardPane>

@@ -249,3 +249,7 @@
     -fx-font-size: 14;
     -fx-text-fill: #398755;
 }
+
+.bold-label {
+    -fx-font-weight: bold;
+}
