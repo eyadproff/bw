@@ -269,8 +269,10 @@ public class RegisterConvictedReportNotPresentWorkflow extends WizardWorkflowBas
 					}
 					else
 					{
-						if(position == 11) position = 1;
-						else if(position == 12) position = 6;
+						if(position == FingerPosition.RIGHT_THUMB_SLAP.getPosition())
+																	position = FingerPosition.RIGHT_THUMB.getPosition();
+						else if(position == FingerPosition.LEFT_THUMB_SLAP.getPosition())
+																	position = FingerPosition.LEFT_THUMB.getPosition();
 						fingerprintWsqMap.put(position, finger.getImage());
 					}
 				}

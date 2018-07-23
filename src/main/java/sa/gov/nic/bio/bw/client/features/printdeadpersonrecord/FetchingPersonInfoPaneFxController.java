@@ -12,7 +12,6 @@ import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.wizard.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.client.core.workflow.Workflow;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.Finger;
-import sa.gov.nic.bio.bw.client.features.printdeadpersonrecord.webservice.DeadPersonRecord;
 import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
 
 import java.net.URL;
@@ -23,7 +22,6 @@ import java.util.Map;
 public class FetchingPersonInfoPaneFxController extends WizardStepFxControllerBase
 {
 	public static final String KEY_DEVICES_RUNNER_IS_RUNNING = "DEVICES_RUNNER_IS_RUNNING";
-	public static final String KEY_SKIP_FETCHING_PERSON_INFO = "SKIP_FETCHING_PERSON_INFO";
 	public static final String KEY_RETRY_PERSON_INFO_FETCHING = "RETRY_PERSON_INFO_FETCHING";
 	
 	@FXML private VBox paneError;
@@ -54,42 +52,34 @@ public class FetchingPersonInfoPaneFxController extends WizardStepFxControllerBa
 	{
 		if(newForm)
 		{
-			DeadPersonRecord deadPersonRecord =
-								(DeadPersonRecord) uiInputData.get(ShowRecordPaneFxController.KEY_DEAD_PERSON_RECORD);
-			Long samisId = deadPersonRecord.getSamisId();
+			DevicesRunnerGadgetPaneFxController deviceManagerGadgetPaneController =
+												Context.getCoreFxController().getDeviceManagerGadgetPaneController();
+			deviceManagerGadgetPaneController.setDevicesRunnerRunningListener(running ->
+			{
+			    GuiUtils.showNode(piProgress, running);
+			    GuiUtils.showNode(lblProgress, running);
+			    GuiUtils.showNode(paneDevicesRunnerNotRunning, !running);
+			    GuiUtils.showNode(btnStartOver, !running);
 			
-			if(samisId == null) goNext();
+			    Map<String, Object> uiDataMap = new HashMap<>();
+			    uiDataMap.put(KEY_DEVICES_RUNNER_IS_RUNNING, running);
+			    Context.getWorkflowManager().submitUserTask(uiDataMap);
+			});
+			
+			if(!deviceManagerGadgetPaneController.isDevicesRunnerRunning())
+			{
+				GuiUtils.showNode(piProgress, false);
+				GuiUtils.showNode(lblProgress, false);
+				GuiUtils.showNode(paneError, false);
+				GuiUtils.showNode(paneDevicesRunnerNotRunning, true);
+				GuiUtils.showNode(btnStartOver, true);
+				deviceManagerGadgetPaneController.runAndConnectDevicesRunner();
+			}
 			else
 			{
-				DevicesRunnerGadgetPaneFxController deviceManagerGadgetPaneController =
-						Context.getCoreFxController().getDeviceManagerGadgetPaneController();
-				deviceManagerGadgetPaneController.setDevicesRunnerRunningListener(running ->
-				{
-				    GuiUtils.showNode(piProgress, running);
-				    GuiUtils.showNode(lblProgress, running);
-				    GuiUtils.showNode(paneDevicesRunnerNotRunning, !running);
-				    GuiUtils.showNode(btnStartOver, !running);
-					
-					Map<String, Object> uiDataMap = new HashMap<>();
-					uiDataMap.put(KEY_DEVICES_RUNNER_IS_RUNNING, running);
-					Context.getWorkflowManager().submitUserTask(uiDataMap);
-				});
-				
-				if(!deviceManagerGadgetPaneController.isDevicesRunnerRunning())
-				{
-					GuiUtils.showNode(piProgress, false);
-					GuiUtils.showNode(lblProgress, false);
-					GuiUtils.showNode(paneError, false);
-					GuiUtils.showNode(paneDevicesRunnerNotRunning, true);
-					GuiUtils.showNode(btnStartOver, true);
-					deviceManagerGadgetPaneController.runAndConnectDevicesRunner();
-				}
-				else
-				{
-					Map<String, Object> uiDataMap = new HashMap<>();
-					uiDataMap.put(KEY_DEVICES_RUNNER_IS_RUNNING, Boolean.TRUE);
-					Context.getWorkflowManager().submitUserTask(uiDataMap);
-				}
+				Map<String, Object> uiDataMap = new HashMap<>();
+				uiDataMap.put(KEY_DEVICES_RUNNER_IS_RUNNING, Boolean.TRUE);
+				Context.getWorkflowManager().submitUserTask(uiDataMap);
 			}
 		}
 		else
@@ -127,11 +117,5 @@ public class FetchingPersonInfoPaneFxController extends WizardStepFxControllerBa
 		Map<String, Object> uiDataMap = new HashMap<>();
 		uiDataMap.put(KEY_RETRY_PERSON_INFO_FETCHING, Boolean.TRUE);
 		Context.getWorkflowManager().submitUserTask(uiDataMap);
-	}
-	
-	@Override
-	protected void onGoingNext(Map<String, Object> uiDataMap)
-	{
-		uiDataMap.put(KEY_SKIP_FETCHING_PERSON_INFO, Boolean.TRUE);
 	}
 }

@@ -89,7 +89,6 @@ public class CoreFxController extends FxControllerBase implements IdleMonitorReg
 	public Stage getStage(){return stage;}
 	public NotificationPane getNotificationPane(){return notificationPane;}
 	public BorderPane getBodyPane(){return bodyPane;}
-	public Pane getDevicesRunnerGadgetPane(){return devicesRunnerGadgetPane;}
 	
 	public HeaderPaneFxController getHeaderPaneController(){return headerPaneController;}
 	public FooterPaneFxController getFooterPaneController(){return footerPaneController;}

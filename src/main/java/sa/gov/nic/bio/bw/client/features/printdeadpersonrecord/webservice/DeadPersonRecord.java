@@ -8,41 +8,46 @@ import java.util.Objects;
 public class DeadPersonRecord
 {
 	private Long samisId;
-	private List<Finger> fingerprints;
-	private List<Integer> missingFingerprints;
-	private String faceBase64;
-	private long enrollerId;
-	private long enrollmentTimestamp;
+	private Long enrollmentDate;
+	private Long barcodeNumber;
+	private List<Finger> subjFingers;
+	private List<Integer> subjMissingFingers;
+	private String subjFace;
+	private String operatorId;
 	
-	public DeadPersonRecord(Long samisId, List<Finger> fingerprints, List<Integer> missingFingerprints,
-	                        String faceBase64, long enrollerId, long enrollmentTimestamp)
+	public DeadPersonRecord(Long samisId, Long enrollmentDate, Long barcodeNumber, List<Finger> subjFingers,
+	                        List<Integer> subjMissingFingers, String subjFace, String operatorId)
 	{
 		this.samisId = samisId;
-		this.fingerprints = fingerprints;
-		this.missingFingerprints = missingFingerprints;
-		this.faceBase64 = faceBase64;
-		this.enrollerId = enrollerId;
-		this.enrollmentTimestamp = enrollmentTimestamp;
+		this.enrollmentDate = enrollmentDate;
+		this.barcodeNumber = barcodeNumber;
+		this.subjFingers = subjFingers;
+		this.subjMissingFingers = subjMissingFingers;
+		this.subjFace = subjFace;
+		this.operatorId = operatorId;
 	}
 	
 	public Long getSamisId(){return samisId;}
 	public void setSamisId(Long samisId){this.samisId = samisId;}
 	
-	public List<Finger> getFingerprints(){return fingerprints;}
-	public void setFingerprints(List<Finger> fingerprints){this.fingerprints = fingerprints;}
+	public Long getEnrollmentDate(){return enrollmentDate;}
+	public void setEnrollmentDate(Long enrollmentDate){this.enrollmentDate = enrollmentDate;}
 	
-	public List<Integer> getMissingFingerprints(){return missingFingerprints;}
-	public void setMissingFingerprints(List<Integer> missingFingerprints)
-																	{this.missingFingerprints = missingFingerprints;}
+	public Long getBarcodeNumber(){return barcodeNumber;}
+	public void setBarcodeNumber(Long barcodeNumber){this.barcodeNumber = barcodeNumber;}
 	
-	public String getFaceBase64(){return faceBase64;}
-	public void setFaceBase64(String faceBase64){this.faceBase64 = faceBase64;}
+	public List<Finger> getSubjFingers(){return subjFingers;}
+	public void setSubjFingers(List<Finger> subjFingers){this.subjFingers = subjFingers;}
 	
-	public long getEnrollerId(){return enrollerId;}
-	public void setEnrollerId(long enrollerId){this.enrollerId = enrollerId;}
+	public List<Integer> getSubjMissingFingers(){return subjMissingFingers;}
+	public void setSubjMissingFingers(List<Integer> subjMissingFingers){this.subjMissingFingers = subjMissingFingers;}
 	
-	public long getEnrollmentTimestamp(){return enrollmentTimestamp;}
-	public void setEnrollmentTimestamp(long enrollmentTimestamp){this.enrollmentTimestamp = enrollmentTimestamp;}
+	public String getSubjFace(){return subjFace;}
+	public void setSubjFace(String subjFace){this.subjFace = subjFace;}
+	
+	public String getOperatorId(){return operatorId;}
+	public void setOperatorId(String operatorId){this.operatorId = operatorId;}
+	
 	
 	@Override
 	public boolean equals(Object o)
@@ -50,23 +55,24 @@ public class DeadPersonRecord
 		if(this == o) return true;
 		if(o == null || getClass() != o.getClass()) return false;
 		DeadPersonRecord that = (DeadPersonRecord) o;
-		return enrollerId == that.enrollerId && enrollmentTimestamp == that.enrollmentTimestamp &&
-			   Objects.equals(samisId, that.samisId) && Objects.equals(fingerprints, that.fingerprints) &&
-			   Objects.equals(missingFingerprints, that.missingFingerprints) &&
-			   Objects.equals(faceBase64, that.faceBase64);
+		return Objects.equals(samisId, that.samisId) && Objects.equals(enrollmentDate, that.enrollmentDate) &&
+			   Objects.equals(barcodeNumber, that.barcodeNumber) && Objects.equals(subjFingers, that.subjFingers) &&
+			   Objects.equals(subjMissingFingers, that.subjMissingFingers) &&
+			   Objects.equals(subjFace, that.subjFace) && Objects.equals(operatorId, that.operatorId);
 	}
 	
 	@Override
 	public int hashCode()
 	{
-		return Objects.hash(samisId, fingerprints, missingFingerprints, faceBase64, enrollerId, enrollmentTimestamp);
+		return Objects.hash(samisId, enrollmentDate, barcodeNumber, subjFingers, subjMissingFingers, subjFace,
+		                    operatorId);
 	}
 	
 	@Override
 	public String toString()
 	{
-		return "DeadPersonRecord{" + "samisId=" + samisId + ", fingerprints=" + fingerprints +
-			   ", missingFingerprints=" + missingFingerprints + ", faceBase64='" + faceBase64 + '\'' +
-			   ", enrollerId=" + enrollerId + ", enrollmentTimestamp=" + enrollmentTimestamp + '}';
+		return "DeadPersonRecord{" + "samisId=" + samisId + ", enrollmentDate=" + enrollmentDate + ", barcodeNumber=" +
+			   barcodeNumber + ", subjFingers=" + subjFingers + ", subjMissingFingers=" + subjMissingFingers +
+			   ", subjFace='" + subjFace + '\'' + ", operatorId='" + operatorId + '\'' + '}';
 	}
 }

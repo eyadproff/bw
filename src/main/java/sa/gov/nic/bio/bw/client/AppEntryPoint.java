@@ -119,8 +119,7 @@ public class AppEntryPoint extends Application
 	
 	    String serverUrl = System.getProperty("bio.serverUrl");
 	    String sRuntimeEnvironment = System.getProperty("jnlp.bio.runtime.environment", "LOCAL");
-	    LOGGER.info("sRuntimeEnvironment = " + sRuntimeEnvironment);
-	
+	    
 	    RuntimeEnvironment runtimeEnvironment = RuntimeEnvironment.byName(sRuntimeEnvironment);
 	    
 	    if(runtimeEnvironment == RuntimeEnvironment.LOCAL)
@@ -488,6 +487,9 @@ public class AppEntryPoint extends Application
 		    notifyPreloader(PreloaderNotification.failure(null, errorCode, errorDetails));
 		    return;
 	    }
+	    
+	    LOGGER.info("version = " + version);
+	    LOGGER.info("runtime-environment = " + Context.getRuntimeEnvironment());
 	
 	    String title;
 	    try

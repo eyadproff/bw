@@ -5,19 +5,42 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
+import sa.gov.nic.bio.bw.client.core.Context;
+import sa.gov.nic.bio.bw.client.core.biokit.FingerPosition;
+import sa.gov.nic.bio.bw.client.core.utils.AppConstants;
+import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
+import sa.gov.nic.bio.bw.client.core.utils.GuiLanguage;
+import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.wizard.WizardStepFxControllerBase;
+import sa.gov.nic.bio.bw.client.features.commons.beans.GenderType;
 import sa.gov.nic.bio.bw.client.features.commons.ui.ImageViewPane;
+import sa.gov.nic.bio.bw.client.features.commons.webservice.CountryBean;
+import sa.gov.nic.bio.bw.client.features.commons.webservice.IdType;
+import sa.gov.nic.bio.bw.client.features.commons.webservice.Name;
+import sa.gov.nic.bio.bw.client.features.commons.webservice.PersonInfo;
+import sa.gov.nic.bio.bw.client.features.printdeadpersonrecord.beans.DeadPersonRecordReport;
+import sa.gov.nic.bio.bw.client.features.printdeadpersonrecord.webservice.DeadPersonRecord;
+import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.PersonIdInfo;
+import sa.gov.nic.bio.bw.client.login.webservice.UserInfo;
 
+import java.io.ByteArrayInputStream;
 import java.net.URL;
+import java.time.LocalDate;
+import java.util.Base64;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class ShowRecordPaneFxController extends WizardStepFxControllerBase
 {
 	public static final String KEY_DEAD_PERSON_RECORD = "DEAD_PERSON_RECORD";
 	public static final String KEY_PERSON_INFO = "PERSON_INFO";
-	public static final String KEY_PERSON_FINGERPRINTS = "PERSON_FINGERPRINTS";
+	public static final String KEY_PERSON_FINGERPRINTS_IMAGES = "PERSON_FINGERPRINTS_IMAGES";
 	
 	@FXML private VBox paneImage;
 	@FXML private ImageViewPane paneImageView;
@@ -26,7 +49,6 @@ public class ShowRecordPaneFxController extends WizardStepFxControllerBase
 	@FXML private Label lblFatherName;
 	@FXML private Label lblGrandfatherName;
 	@FXML private Label lblFamilyName;
-	@FXML private Label lblGeneralFileNumber;
 	@FXML private Label lblGender;
 	@FXML private Label lblNationality;
 	@FXML private Label lblOccupation;
@@ -36,6 +58,9 @@ public class ShowRecordPaneFxController extends WizardStepFxControllerBase
 	@FXML private Label lblIdType;
 	@FXML private Label lblIdIssuanceDate;
 	@FXML private Label lblIdExpiry;
+	@FXML private Label lblEnrollerId;
+	@FXML private Label lblEnrollmentTime;
+	@FXML private Label lblRecordId;
 	@FXML private ImageView ivRightThumb;
 	@FXML private ImageView ivRightIndex;
 	@FXML private ImageView ivRightMiddle;
@@ -51,6 +76,8 @@ public class ShowRecordPaneFxController extends WizardStepFxControllerBase
 	@FXML private Button btnPrintRecord;
 	@FXML private Button btnSaveRecordAsPdf;
 	
+	private DeadPersonRecordReport deadPersonRecordReport;
+	
 	@Override
 	public URL getFxmlLocation()
 	{
@@ -58,24 +85,31 @@ public class ShowRecordPaneFxController extends WizardStepFxControllerBase
 	}
 	
 	@Override
-	protected void initialize()
-	{
-	
-	}
+	protected void initialize(){}
 	
 	@Override
 	public void onWorkflowUserTaskLoad(boolean newForm, Map<String, Object> uiInputData)
 	{
 		if(newForm)
 		{
-		
+			DeadPersonRecord deadPersonRecord = (DeadPersonRecord) uiInputData.get(KEY_DEAD_PERSON_RECORD);
+			PersonInfo personInfo = (PersonInfo) uiInputData.get(KEY_PERSON_INFO);
+			
+			@SuppressWarnings("unchecked")
+			Map<Integer, String> fingerprintImages =
+											(Map<Integer, String>) uiInputData.get(KEY_PERSON_FINGERPRINTS_IMAGES);
+			
+			Long recordIdLong = (Long) uiInputData.get(RecordIdPaneFxController.KEY_RECORD_ID);
+			
+			populateData(recordIdLong, deadPersonRecord, personInfo, fingerprintImages);
 		}
 	}
 	
 	@FXML
 	private void onStartOverButtonClicked(ActionEvent actionEvent)
 	{
-	
+		hideNotification();
+		startOver();
 	}
 	
 	@FXML
@@ -88,5 +122,270 @@ public class ShowRecordPaneFxController extends WizardStepFxControllerBase
 	private void onSaveRecordAsPdfButtonClicked(ActionEvent actionEvent)
 	{
 	
+	}
+	
+	private void populateData(Long recordIdLong, DeadPersonRecord deadPersonRecord, PersonInfo personInfo,
+	                          Map<Integer, String> fingerprintsImages)
+	{
+		String recordId = null;
+		String enrollerId = null;
+		String enrollmentTime = null;
+		String faceBase64 = null;
+		String firstName = null;
+		String fatherName = null;
+		String grandfatherName = null;
+		String familyName = null;
+		String gender = null;
+		String nationality = null;
+		String occupation = null;
+		String birthPlace = null;
+		String birthDate = null;
+		String idNumber = null;
+		String idType = null;
+		String idIssuanceDate = null;
+		String idExpirationDate = null;
+		
+		if(recordIdLong != null)
+		{
+			recordId = AppUtils.replaceNumbersOnly(String.valueOf(recordIdLong), Locale.getDefault());
+			lblRecordId.setText(recordId);
+		}
+		
+		UserInfo userInfo = (UserInfo) Context.getUserSession().getAttribute("userInfo");
+		String inquirerId = String.valueOf(userInfo.getOperatorId());
+		
+		if(deadPersonRecord != null)
+		{
+			String sEnrollerId = deadPersonRecord.getOperatorId();
+			if(sEnrollerId != null && !sEnrollerId.trim().isEmpty())
+			{
+				enrollerId = AppUtils.replaceNumbersOnly(sEnrollerId, Locale.getDefault());
+				lblEnrollerId.setText(enrollerId);
+			}
+			
+			
+			Long enrollmentTimeLong = deadPersonRecord.getEnrollmentDate();
+			if(enrollmentTimeLong != null)
+			{
+				enrollmentTime = AppUtils.formatHijriGregorianDateTime(enrollmentTimeLong * 1000);
+				lblEnrollmentTime.setText(enrollmentTime);
+			}
+			
+			String face = deadPersonRecord.getSubjFace();
+			if(face != null)
+			{
+				faceBase64 = face;
+				byte[] bytes = Base64.getDecoder().decode(faceBase64);
+				ivPersonPhoto.setImage(new Image(new ByteArrayInputStream(bytes)));
+				GuiUtils.attachImageDialog(Context.getCoreFxController(), ivPersonPhoto,
+				                           resources.getString("label.deadPersonPhoto"),
+				                           resources.getString("label.contextMenu.showImage"), false);
+			}
+		}
+		
+		if(personInfo != null)
+		{
+			Name name = personInfo.getName();
+			if(name != null)
+			{
+				String sFirstName = name.getFirstName();
+				if(sFirstName != null && !sFirstName.trim().isEmpty())
+				{
+					firstName = sFirstName;
+					lblFirstName.setText(firstName);
+				}
+				
+				String sFatherName = name.getFatherName();
+				if(sFatherName != null && !sFatherName.trim().isEmpty())
+				{
+					fatherName = sFatherName;
+					lblFatherName.setText(fatherName);
+				}
+				
+				String sGrandfatherName = name.getGrandfatherName();
+				if(sGrandfatherName != null && !sGrandfatherName.trim().isEmpty())
+				{
+					grandfatherName = sGrandfatherName;
+					lblGrandfatherName.setText(grandfatherName);
+				}
+				
+				String sFamilyName = name.getFamilyName();
+				if(sFamilyName != null && !sFamilyName.trim().isEmpty())
+				{
+					familyName = sFamilyName;
+					lblFamilyName.setText(familyName);
+				}
+			}
+			
+			GenderType genderType = GenderType.values()[personInfo.getGender() - 1];
+			switch(genderType)
+			{
+				case MALE: gender = resources.getString("label.male"); break;
+				case FEMALE: gender = resources.getString("label.female"); break;
+			}
+			lblGender.setText(gender);
+			
+			@SuppressWarnings("unchecked") List<CountryBean> countries = (List<CountryBean>)
+													Context.getUserSession().getAttribute("lookups.countries");
+			
+			CountryBean countryBean = null;
+			
+			for(CountryBean country : countries)
+			{
+				if(country.getCode() == personInfo.getNationality())
+				{
+					countryBean = country;
+					break;
+				}
+			}
+			
+			if(countryBean != null)
+			{
+				boolean arabic = Context.getGuiLanguage() == GuiLanguage.ARABIC;
+				nationality = arabic ? countryBean.getDescriptionAR() : countryBean.getDescriptionEN();
+				lblNationality.setText(nationality);
+			}
+			
+			PersonIdInfo identityInfo = personInfo.getIdentityInfo();
+			if(identityInfo != null)
+			{
+				String sOccupation = identityInfo.getOccupation();
+				if(sOccupation != null && !sOccupation.trim().isEmpty())
+				{
+					occupation = sOccupation;
+					lblOccupation.setText(occupation);
+				}
+				
+				String sIdNumber = identityInfo.getIdNumber();
+				if(sIdNumber != null && !sIdNumber.trim().isEmpty())
+				{
+					idNumber = AppUtils.replaceNumbersOnly(sIdNumber, Locale.getDefault());
+					lblIdNumber.setText(idNumber);
+				}
+				
+				@SuppressWarnings("unchecked") List<IdType> idTypes = (List<IdType>)
+													Context.getUserSession().getAttribute("lookups.idTypes");
+				
+				Integer idTypeInteger = identityInfo.getIdType();
+				if(idTypeInteger != null)
+				{
+					IdType theIdType = null;
+					
+					for(IdType type : idTypes)
+					{
+						if(type.getCode() == idTypeInteger)
+						{
+							theIdType = type;
+							break;
+						}
+					}
+					
+					if(theIdType != null)
+					{
+						idType = AppUtils.replaceNumbersOnly(theIdType.getDesc(), Locale.getDefault());
+						lblIdType.setText(idType);
+					}
+				}
+				
+				Date theIssueDate = identityInfo.getIdIssueDate();
+				if(theIssueDate != null && theIssueDate.getTime() > AppConstants.SAMIS_DB_DATE_NOT_SET_VALUE)
+				{
+					LocalDate localDate = theIssueDate.toInstant().atZone(AppConstants.SAUDI_ZONE).toLocalDate();
+					idIssuanceDate = AppUtils.formatHijriGregorianDate(AppUtils.gregorianDateToMilliSeconds(localDate));
+					lblIdIssuanceDate.setText(idIssuanceDate);
+				}
+				
+				Date theExpirationDate = identityInfo.getIdExpirDate();
+				if(theExpirationDate != null &&
+												theExpirationDate.getTime() > AppConstants.SAMIS_DB_DATE_NOT_SET_VALUE)
+				{
+					LocalDate localDate = theExpirationDate.toInstant().atZone(AppConstants.SAUDI_ZONE).toLocalDate();
+					idExpirationDate = AppUtils.formatHijriGregorianDate(
+																	AppUtils.gregorianDateToMilliSeconds(localDate));
+					lblIdExpiry.setText(idExpirationDate);
+				}
+			}
+			
+			String sBirthPlace = personInfo.getBirthPlace();
+			if(sBirthPlace != null && !sBirthPlace.trim().isEmpty())
+			{
+				birthPlace = sBirthPlace;
+				lblBirthPlace.setText(birthPlace);
+			}
+			
+			Date theBirthDate = personInfo.getBirthDate();
+			if(theBirthDate != null && theBirthDate.getTime() > AppConstants.SAMIS_DB_DATE_NOT_SET_VALUE)
+			{
+				LocalDate localDate = theBirthDate.toInstant().atZone(AppConstants.SAUDI_ZONE).toLocalDate();
+				birthDate = AppUtils.formatHijriGregorianDate(AppUtils.gregorianDateToMilliSeconds(localDate));
+				lblBirthDate.setText(birthDate);
+			}
+		}
+		
+		if(fingerprintsImages != null)
+		{
+			Map<Integer, ImageView> imageViewMap = new HashMap<>();
+			Map<Integer, String> dialogTitleMap = new HashMap<>();
+			
+			imageViewMap.put(FingerPosition.RIGHT_THUMB.getPosition(), ivRightThumb);
+			imageViewMap.put(FingerPosition.RIGHT_INDEX.getPosition(), ivRightIndex);
+			imageViewMap.put(FingerPosition.RIGHT_MIDDLE.getPosition(), ivRightMiddle);
+			imageViewMap.put(FingerPosition.RIGHT_RING.getPosition(), ivRightRing);
+			imageViewMap.put(FingerPosition.RIGHT_LITTLE.getPosition(), ivRightLittle);
+			imageViewMap.put(FingerPosition.LEFT_THUMB.getPosition(), ivLeftThumb);
+			imageViewMap.put(FingerPosition.LEFT_INDEX.getPosition(), ivLeftIndex);
+			imageViewMap.put(FingerPosition.LEFT_MIDDLE.getPosition(), ivLeftMiddle);
+			imageViewMap.put(FingerPosition.LEFT_RING.getPosition(), ivLeftRing);
+			imageViewMap.put(FingerPosition.LEFT_LITTLE.getPosition(), ivLeftLittle);
+			
+			dialogTitleMap.put(FingerPosition.RIGHT_THUMB.getPosition(),
+			                                                resources.getString("label.fingers.thumb") + " (" +
+					                                        resources.getString("label.rightHand") + ")");
+			dialogTitleMap.put(FingerPosition.RIGHT_INDEX.getPosition(),
+			                                                resources.getString("label.fingers.index") + " (" +
+					                                        resources.getString("label.rightHand") + ")");
+			dialogTitleMap.put(FingerPosition.RIGHT_MIDDLE.getPosition(),
+			                                                resources.getString("label.fingers.middle") + " (" +
+					                                        resources.getString("label.rightHand") + ")");
+			dialogTitleMap.put(FingerPosition.RIGHT_RING.getPosition(),
+			                                                resources.getString("label.fingers.ring") + " (" +
+					                                        resources.getString("label.rightHand") + ")");
+			dialogTitleMap.put(FingerPosition.RIGHT_LITTLE.getPosition(),
+			                                                resources.getString("label.fingers.little") + " (" +
+					                                        resources.getString("label.rightHand") + ")");
+			dialogTitleMap.put(FingerPosition.LEFT_THUMB.getPosition(),
+			                                                resources.getString("label.fingers.thumb") + " (" +
+					                                        resources.getString("label.leftHand") + ")");
+			dialogTitleMap.put(FingerPosition.LEFT_INDEX.getPosition(),
+			                                                resources.getString("label.fingers.index") + " (" +
+					                                        resources.getString("label.leftHand") + ")");
+			dialogTitleMap.put(FingerPosition.LEFT_MIDDLE.getPosition(),
+			                                                resources.getString("label.fingers.middle") + " (" +
+					                                        resources.getString("label.leftHand") + ")");
+			dialogTitleMap.put(FingerPosition.LEFT_RING.getPosition(),
+			                                                resources.getString("label.fingers.ring") + " (" +
+					                                        resources.getString("label.leftHand") + ")");
+			dialogTitleMap.put(FingerPosition.LEFT_LITTLE.getPosition(),
+			                                                resources.getString("label.fingers.little") + " (" +
+					                                        resources.getString("label.leftHand") + ")");
+			
+			fingerprintsImages.forEach((position, fingerprintImage) ->
+			{
+			    ImageView imageView = imageViewMap.get(position);
+			    String dialogTitle = dialogTitleMap.get(position);
+			
+			    byte[] bytes = Base64.getDecoder().decode(fingerprintImage);
+			    imageView.setImage(new Image(new ByteArrayInputStream(bytes)));
+			    GuiUtils.attachImageDialog(Context.getCoreFxController(), imageView,
+			                               dialogTitle, resources.getString("label.contextMenu.showImage"),
+			                               false);
+			});
+		}
+		
+		deadPersonRecordReport = new DeadPersonRecordReport(recordId, enrollerId, inquirerId, enrollmentTime,
+		                                                    faceBase64, firstName, fatherName, grandfatherName,
+		                                                    familyName, gender, nationality, occupation, birthPlace,
+		                                                    birthDate, idNumber, idType, idIssuanceDate,
+		                                                    idExpirationDate, fingerprintsImages);
 	}
 }

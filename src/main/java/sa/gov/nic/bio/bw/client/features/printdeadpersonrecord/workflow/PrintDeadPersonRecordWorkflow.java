@@ -8,6 +8,7 @@ import sa.gov.nic.bio.bw.client.core.biokit.FingerPosition;
 import sa.gov.nic.bio.bw.client.core.interfaces.FormRenderer;
 import sa.gov.nic.bio.bw.client.core.workflow.Signal;
 import sa.gov.nic.bio.bw.client.core.workflow.WizardWorkflowBase;
+import sa.gov.nic.bio.bw.client.features.commons.LookupFxController;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.Finger;
 import sa.gov.nic.bio.bw.client.features.commons.workflow.FetchingFingerprintsService;
 import sa.gov.nic.bio.bw.client.features.commons.workflow.GetFingerprintAvailabilityService;
@@ -26,6 +27,8 @@ import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class PrintDeadPersonRecordWorkflow extends WizardWorkflowBase<Void, Void>
 {
@@ -35,6 +38,20 @@ public class PrintDeadPersonRecordWorkflow extends WizardWorkflowBase<Void, Void
 		super(formRenderer, userTasks);
 	}
 	
+	@Override
+	public void init() throws InterruptedException, Signal
+	{
+		while(true)
+		{
+			formRenderer.get().renderForm(LookupFxController.class, uiInputData);
+			waitForUserTask();
+			ServiceResponse<Void> serviceResponse = LookupService.execute();
+			if(serviceResponse.isSuccess()) break;
+			else uiInputData.put(KEY_WEBSERVICE_RESPONSE, serviceResponse);
+		}
+	}
+	
+	@SuppressWarnings("unchecked")
 	@Override
 	public Map<String, Object> onStep(int step) throws InterruptedException, Signal
 	{
@@ -73,41 +90,49 @@ public class PrintDeadPersonRecordWorkflow extends WizardWorkflowBase<Void, Void
 				uiOutputData = waitForUserTask();
 				uiInputData.putAll(uiOutputData);
 				
-				if(uiOutputData.get(FetchingPersonInfoPaneFxController.KEY_SKIP_FETCHING_PERSON_INFO) == Boolean.TRUE
-				|| uiOutputData.get(FetchingPersonInfoPaneFxController.KEY_DEVICES_RUNNER_IS_RUNNING) != Boolean.TRUE)
+				if(uiOutputData.get(FetchingPersonInfoPaneFxController.KEY_DEVICES_RUNNER_IS_RUNNING) != Boolean.TRUE)
 				{
 					break;
 				}
 				
 				DeadPersonRecord deadPersonRecord =
 								(DeadPersonRecord) uiInputData.get(ShowRecordPaneFxController.KEY_DEAD_PERSON_RECORD);
-				long samisId = deadPersonRecord.getSamisId();
+				Long samisId = deadPersonRecord.getSamisId();
 				
 				loop: while(true)
 				{
 					ServiceResponse<?> serviceResponse;
+					List<Finger> fingerprints;
+					List<Integer> availableFingerprints;
 					
 					block:
 					{
-						serviceResponse = GetPersonInfoByIdService.execute(samisId, 0);
-						
-						if(serviceResponse.isSuccess())
+						if(samisId != null)
 						{
-							uiInputData.put(ShowRecordPaneFxController.KEY_PERSON_INFO, serviceResponse.getResult());
+							serviceResponse = GetPersonInfoByIdService.execute(samisId, 0);
+							
+							if(serviceResponse.isSuccess()) uiInputData.put(ShowRecordPaneFxController.KEY_PERSON_INFO,
+									                                        serviceResponse.getResult());
+							else break block;
+							
+							serviceResponse = FetchingFingerprintsService.execute(samisId);
+							if(!serviceResponse.isSuccess()) break block;
+							
+							fingerprints = (List<Finger>) serviceResponse.getResult();
+							
+							serviceResponse = GetFingerprintAvailabilityService.execute(samisId);
+							if(!serviceResponse.isSuccess()) break block;
+							
+							availableFingerprints = (List<Integer>) serviceResponse.getResult();
 						}
-						else break block;
-						
-						serviceResponse = FetchingFingerprintsService.execute(samisId);
-						if(!serviceResponse.isSuccess()) break block;
-						
-						@SuppressWarnings("unchecked")
-						List<Finger> fingerprints = (List<Finger>) serviceResponse.getResult();
-						
-						serviceResponse = GetFingerprintAvailabilityService.execute(samisId);
-						if(!serviceResponse.isSuccess()) break block;
-						
-						@SuppressWarnings("unchecked")
-						List<Integer> availableFingerprints = (List<Integer>) serviceResponse.getResult();
+						else
+						{
+							fingerprints = deadPersonRecord.getSubjFingers();
+							
+							List<Integer> missingFingerprints = deadPersonRecord.getSubjMissingFingers();
+							availableFingerprints = IntStream.rangeClosed(1, 10).boxed().collect(Collectors.toList());
+							availableFingerprints.removeAll(missingFingerprints);
+						}
 						
 						Map<Integer, String> fingerprintWsqMap = new HashMap<>();
 						Map<Integer, String> fingerprintImages = new HashMap<>();
@@ -235,7 +260,7 @@ public class PrintDeadPersonRecordWorkflow extends WizardWorkflowBase<Void, Void
 							}
 						}
 						
-						uiInputData.put(ShowRecordPaneFxController.KEY_PERSON_FINGERPRINTS, fingerprintImages);
+						uiInputData.put(ShowRecordPaneFxController.KEY_PERSON_FINGERPRINTS_IMAGES, fingerprintImages);
 						serviceResponse = ServiceResponse.success(null);
 					}
 					
