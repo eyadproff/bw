@@ -8,5 +8,5 @@ import retrofit2.http.Url;
 public interface DeadPersonRecordById
 {
 	@GET
-	Call<DeadPersonRecord> getDeadPersonRecordById(@Url String url, @Query("record-id") long recordId);
+	Call<DeadPersonRecord> getDeadPersonRecordById(@Url String url, @Query("barcode") long recordId);
 }

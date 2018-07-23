@@ -33,7 +33,7 @@ public class RecordIdPaneFxController extends WizardStepFxControllerBase
 	@Override
 	protected void initialize()
 	{
-		GuiUtils.applyValidatorToTextField(txtRecordId, "\\d*", "[^\\d]", 10);
+		GuiUtils.applyValidatorToTextField(txtRecordId, "\\d*", "[^\\d]", 20);
 		
 		btnNext.disableProperty().bind(txtRecordId.textProperty().isEmpty().or(txtRecordId.disabledProperty()));
 		btnNext.setOnAction(actionEvent ->
