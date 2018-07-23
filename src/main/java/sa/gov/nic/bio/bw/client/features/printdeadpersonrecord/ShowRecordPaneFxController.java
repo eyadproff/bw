@@ -8,6 +8,8 @@ import javafx.scene.control.ProgressIndicator;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
+import net.sf.jasperreports.engine.JasperPrint;
 import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.biokit.FingerPosition;
 import sa.gov.nic.bio.bw.client.core.utils.AppConstants;
@@ -16,17 +18,24 @@ import sa.gov.nic.bio.bw.client.core.utils.GuiLanguage;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.wizard.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.client.features.commons.beans.GenderType;
+import sa.gov.nic.bio.bw.client.features.commons.tasks.PrintReportTask;
+import sa.gov.nic.bio.bw.client.features.commons.tasks.SaveReportAsPdfTask;
 import sa.gov.nic.bio.bw.client.features.commons.ui.ImageViewPane;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.CountryBean;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.IdType;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.Name;
+import sa.gov.nic.bio.bw.client.features.commons.webservice.PersonIdInfo;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.PersonInfo;
 import sa.gov.nic.bio.bw.client.features.printdeadpersonrecord.beans.DeadPersonRecordReport;
+import sa.gov.nic.bio.bw.client.features.printdeadpersonrecord.tasks.BuildDeadPersonRecordReportTask;
+import sa.gov.nic.bio.bw.client.features.printdeadpersonrecord.utils.PrintDeadPersonRecordPresentErrorCodes;
 import sa.gov.nic.bio.bw.client.features.printdeadpersonrecord.webservice.DeadPersonRecord;
-import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.PersonIdInfo;
 import sa.gov.nic.bio.bw.client.login.webservice.UserInfo;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.Base64;
@@ -35,6 +44,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class ShowRecordPaneFxController extends WizardStepFxControllerBase
 {
@@ -74,9 +84,11 @@ public class ShowRecordPaneFxController extends WizardStepFxControllerBase
 	@FXML private ProgressIndicator piProgress;
 	@FXML private Button btnStartOver;
 	@FXML private Button btnPrintRecord;
-	@FXML private Button btnSaveRecordAsPdf;
+	@FXML private Button btnSaveRecordAsPDF;
 	
 	private DeadPersonRecordReport deadPersonRecordReport;
+	private AtomicReference<JasperPrint> jasperPrint = new AtomicReference<>();
+	private FileChooser fileChooser = new FileChooser();
 	
 	@Override
 	public URL getFxmlLocation()
@@ -85,7 +97,13 @@ public class ShowRecordPaneFxController extends WizardStepFxControllerBase
 	}
 	
 	@Override
-	protected void initialize(){}
+	protected void onAttachedToScene()
+	{
+		fileChooser.setTitle(resources.getString("fileChooser.saveRecordAsPDF.title"));
+		FileChooser.ExtensionFilter extFilterPDF = new FileChooser.ExtensionFilter(
+								resources.getString("fileChooser.saveRecordAsPDF.types"), "*.pdf");
+		fileChooser.getExtensionFilters().addAll(extFilterPDF);
+	}
 	
 	@Override
 	public void onWorkflowUserTaskLoad(boolean newForm, Map<String, Object> uiInputData)
@@ -115,13 +133,112 @@ public class ShowRecordPaneFxController extends WizardStepFxControllerBase
 	@FXML
 	private void onPrintRecordButtonClicked(ActionEvent actionEvent)
 	{
-	
+		hideNotification();
+		GuiUtils.showNode(btnStartOver, false);
+		GuiUtils.showNode(btnPrintRecord, false);
+		GuiUtils.showNode(btnSaveRecordAsPDF, false);
+		GuiUtils.showNode(piProgress, true);
+		
+		if(jasperPrint.get() == null)
+		{
+			BuildDeadPersonRecordReportTask buildDeadPersonRecordReportTask =
+														new BuildDeadPersonRecordReportTask(deadPersonRecordReport);
+			
+			buildDeadPersonRecordReportTask.setOnSucceeded(event ->
+			{
+			    JasperPrint value = buildDeadPersonRecordReportTask.getValue();
+			    jasperPrint.set(value);
+			    printDeadPersonRecordReport(value);
+			});
+			buildDeadPersonRecordReportTask.setOnFailed(event ->
+			{
+			    GuiUtils.showNode(piProgress, false);
+			    GuiUtils.showNode(btnStartOver, true);
+			    GuiUtils.showNode(btnPrintRecord, true);
+			    GuiUtils.showNode(btnSaveRecordAsPDF, true);
+			
+			    Throwable exception = buildDeadPersonRecordReportTask.getException();
+			
+			    String errorCode = PrintDeadPersonRecordPresentErrorCodes.C012_00003.getCode();
+			    String[] errorDetails = {"failed while building the dead person record report!"};
+			    Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails);
+			});
+			Context.getExecutorService().submit(buildDeadPersonRecordReportTask);
+		}
+		else printDeadPersonRecordReport(jasperPrint.get());
 	}
 	
 	@FXML
 	private void onSaveRecordAsPdfButtonClicked(ActionEvent actionEvent)
 	{
-	
+		hideNotification();
+		File selectedFile = fileChooser.showSaveDialog(Context.getCoreFxController().getStage());
+		
+		if(selectedFile != null)
+		{
+			GuiUtils.showNode(btnStartOver, false);
+			GuiUtils.showNode(btnPrintRecord, false);
+			GuiUtils.showNode(btnSaveRecordAsPDF, false);
+			GuiUtils.showNode(piProgress, true);
+			
+			if(jasperPrint.get() == null)
+			{
+				BuildDeadPersonRecordReportTask buildDeadPersonRecordReportTask =
+														new BuildDeadPersonRecordReportTask(deadPersonRecordReport);
+				buildDeadPersonRecordReportTask.setOnSucceeded(event ->
+				{
+				    JasperPrint value = buildDeadPersonRecordReportTask.getValue();
+				    jasperPrint.set(value);
+				    try
+				    {
+				        saveDeadPersonRecordReportAsPDF(value, new FileOutputStream(selectedFile));
+				    }
+				    catch(Exception e)
+				    {
+				        GuiUtils.showNode(piProgress, false);
+				        GuiUtils.showNode(btnStartOver, true);
+				        GuiUtils.showNode(btnPrintRecord, true);
+				        GuiUtils.showNode(btnSaveRecordAsPDF, true);
+				
+				        String errorCode = PrintDeadPersonRecordPresentErrorCodes.C012_00004.getCode();
+				        String[] errorDetails = {"failed while saving the dead person record report as PDF!"};
+				        Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails);
+				    }
+				});
+				buildDeadPersonRecordReportTask.setOnFailed(event ->
+				{
+				    GuiUtils.showNode(piProgress, false);
+				    GuiUtils.showNode(btnStartOver, true);
+				    GuiUtils.showNode(btnPrintRecord, true);
+				    GuiUtils.showNode(btnSaveRecordAsPDF, true);
+				
+				    Throwable exception = buildDeadPersonRecordReportTask.getException();
+				
+				    String errorCode = PrintDeadPersonRecordPresentErrorCodes.C012_00005.getCode();
+				    String[] errorDetails = {"failed while building the dead person record report!"};
+				    Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails);
+				});
+				Context.getExecutorService().submit(buildDeadPersonRecordReportTask);
+			}
+			else
+			{
+				try
+				{
+					saveDeadPersonRecordReportAsPDF(jasperPrint.get(), new FileOutputStream(selectedFile));
+				}
+				catch(Exception e)
+				{
+					GuiUtils.showNode(piProgress, false);
+					GuiUtils.showNode(btnStartOver, true);
+					GuiUtils.showNode(btnPrintRecord, true);
+					GuiUtils.showNode(btnSaveRecordAsPDF, true);
+					
+					String errorCode = PrintDeadPersonRecordPresentErrorCodes.C012_00006.getCode();
+					String[] errorDetails = {"failed while saving the dead person record report as PDF!"};
+					Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails);
+				}
+			}
+		}
 	}
 	
 	private void populateData(Long recordIdLong, DeadPersonRecord deadPersonRecord, PersonInfo personInfo,
@@ -152,7 +269,7 @@ public class ShowRecordPaneFxController extends WizardStepFxControllerBase
 		}
 		
 		UserInfo userInfo = (UserInfo) Context.getUserSession().getAttribute("userInfo");
-		String inquirerId = String.valueOf(userInfo.getOperatorId());
+		String inquirerId = AppUtils.replaceNumbersOnly(String.valueOf(userInfo.getOperatorId()), Locale.getDefault());
 		
 		if(deadPersonRecord != null)
 		{
@@ -387,5 +504,59 @@ public class ShowRecordPaneFxController extends WizardStepFxControllerBase
 		                                                    familyName, gender, nationality, occupation, birthPlace,
 		                                                    birthDate, idNumber, idType, idIssuanceDate,
 		                                                    idExpirationDate, fingerprintsImages);
+	}
+	
+	private void printDeadPersonRecordReport(JasperPrint jasperPrint)
+	{
+		PrintReportTask printReportTask = new PrintReportTask(jasperPrint);
+		printReportTask.setOnSucceeded(event ->
+		{
+		    GuiUtils.showNode(piProgress, false);
+		    GuiUtils.showNode(btnStartOver, true);
+		    GuiUtils.showNode(btnPrintRecord, true);
+		    GuiUtils.showNode(btnSaveRecordAsPDF, true);
+		});
+		printReportTask.setOnFailed(event ->
+		{
+		    GuiUtils.showNode(piProgress, false);
+		    GuiUtils.showNode(btnStartOver, true);
+		    GuiUtils.showNode(btnPrintRecord, true);
+		    GuiUtils.showNode(btnSaveRecordAsPDF, true);
+		
+		    Throwable exception = printReportTask.getException();
+		
+		    String errorCode = PrintDeadPersonRecordPresentErrorCodes.C012_00007.getCode();
+		    String[] errorDetails = {"failed while printing the dead person record report!"};
+		    Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails);
+		});
+		Context.getExecutorService().submit(printReportTask);
+	}
+	
+	private void saveDeadPersonRecordReportAsPDF(JasperPrint jasperPrint, OutputStream pdfOutputStream)
+	{
+		SaveReportAsPdfTask printReportTaskAsPdfTask = new SaveReportAsPdfTask(jasperPrint, pdfOutputStream);
+		printReportTaskAsPdfTask.setOnSucceeded(event ->
+		{
+		    GuiUtils.showNode(piProgress, false);
+		    GuiUtils.showNode(btnStartOver, true);
+		    GuiUtils.showNode(btnPrintRecord, true);
+		    GuiUtils.showNode(btnSaveRecordAsPDF, true);
+		
+		    showSuccessNotification(resources.getString("printDeadPersonRecord.savingAsPDF.success.message"));
+		});
+		printReportTaskAsPdfTask.setOnFailed(event ->
+		{
+		    GuiUtils.showNode(piProgress, false);
+		    GuiUtils.showNode(btnStartOver, true);
+		    GuiUtils.showNode(btnPrintRecord, true);
+		    GuiUtils.showNode(btnSaveRecordAsPDF, true);
+		
+		    Throwable exception = printReportTaskAsPdfTask.getException();
+		
+		    String errorCode = PrintDeadPersonRecordPresentErrorCodes.C012_00008.getCode();
+		    String[] errorDetails = {"failed while saving the dead person record report as PDF!"};
+		    Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails);
+		});
+		Context.getExecutorService().submit(printReportTaskAsPdfTask);
 	}
 }

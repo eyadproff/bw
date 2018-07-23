@@ -1,7 +1,5 @@
 package sa.gov.nic.bio.bw.client.features.commons.webservice;
 
-import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.PersonIdInfo;
-
 import java.util.Date;
 import java.util.Objects;
 

@@ -247,7 +247,7 @@
             <ProgressIndicator fx:id="piProgress" prefHeight="25.0" prefWidth="25.0" managed="false" visible="false"/>
             <Button fx:id="btnStartOver" text="%button.startOver" onAction="#onStartOverButtonClicked"/>
             <Button fx:id="btnPrintRecord" text="%button.printRecord" onAction="#onPrintRecordButtonClicked"/>
-            <Button fx:id="btnSaveRecordAsPdf" text="%button.saveRecordAsPDF" onAction="#onSaveRecordAsPdfButtonClicked"/>
+            <Button fx:id="btnSaveRecordAsPDF" text="%button.saveRecordAsPDF" onAction="#onSaveRecordAsPdfButtonClicked"/>
         </HBox>
     </bottom>
 </BorderPane>
