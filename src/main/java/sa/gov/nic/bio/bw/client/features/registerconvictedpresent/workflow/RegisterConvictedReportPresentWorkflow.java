@@ -6,7 +6,6 @@ import sa.gov.nic.bio.bw.client.core.workflow.WizardWorkflowBase;
 import sa.gov.nic.bio.bw.client.features.commons.FaceCapturingFxController;
 import sa.gov.nic.bio.bw.client.features.commons.FingerprintCapturingFxController;
 import sa.gov.nic.bio.bw.client.features.commons.LookupFxController;
-import sa.gov.nic.bio.bw.client.features.commons.workflow.ConvictedReportLookupService;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.InquiryPaneFxController;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.InquiryResultPaneFxController;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.JudgmentDetailsPaneFxController;
@@ -15,8 +14,8 @@ import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.PunishmentDeta
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.ReviewAndSubmitPaneFxController;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.ShowReportPaneFxController;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.ConvictedReport;
-import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.Finger;
-import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.FingerprintInquiryStatusResult;
+import sa.gov.nic.bio.bw.client.features.commons.webservice.Finger;
+import sa.gov.nic.bio.bw.client.features.commons.webservice.FingerprintInquiryStatusResult;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.PersonInfo;
 import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
 

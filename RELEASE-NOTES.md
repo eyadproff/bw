@@ -1,5 +1,21 @@
 # Release Notes:
 
+## v2018.07.4
+
+- Add "Print Dead Person Record" feature.
+
+## v2018.07.3
+
+- Fix a bug where two-thumbs slap were saved in both 11 and 12.
+
+## v2018.07.2
+
+- Add "Login By Fingerprint" feature.
+
+## v2018.07.1
+
+- Add "Face Verification" feature.
+
 ## v2018.06.1
 
 - Add hijri date and the week day to any gregorian date.

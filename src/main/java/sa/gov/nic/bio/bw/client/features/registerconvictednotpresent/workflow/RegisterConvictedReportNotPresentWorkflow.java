@@ -11,7 +11,10 @@ import sa.gov.nic.bio.bw.client.core.workflow.WizardWorkflowBase;
 import sa.gov.nic.bio.bw.client.features.commons.FaceCapturingFxController;
 import sa.gov.nic.bio.bw.client.features.commons.FingerprintCapturingFxController;
 import sa.gov.nic.bio.bw.client.features.commons.LookupFxController;
-import sa.gov.nic.bio.bw.client.features.commons.workflow.ConvictedReportLookupService;
+import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.workflow.ConvictedReportLookupService;
+import sa.gov.nic.bio.bw.client.features.commons.workflow.FetchingFingerprintsService;
+import sa.gov.nic.bio.bw.client.features.commons.workflow.GetFingerprintAvailabilityService;
+import sa.gov.nic.bio.bw.client.features.commons.workflow.GetPersonInfoByIdService;
 import sa.gov.nic.bio.bw.client.features.registerconvictednotpresent.FetchingFingerprintsPaneFxController;
 import sa.gov.nic.bio.bw.client.features.registerconvictednotpresent.PersonIdPaneFxController;
 import sa.gov.nic.bio.bw.client.features.registerconvictednotpresent.utils.RegisterConvictedNotPresentErrorCodes;
@@ -23,8 +26,8 @@ import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.PunishmentDeta
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.ReviewAndSubmitPaneFxController;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.ShowReportPaneFxController;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.ConvictedReport;
-import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.Finger;
-import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.FingerprintInquiryStatusResult;
+import sa.gov.nic.bio.bw.client.features.commons.webservice.Finger;
+import sa.gov.nic.bio.bw.client.features.commons.webservice.FingerprintInquiryStatusResult;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.PersonInfo;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.workflow.ConvictedReportResponse;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.workflow.FingerprintInquiryService;
@@ -266,8 +269,10 @@ public class RegisterConvictedReportNotPresentWorkflow extends WizardWorkflowBas
 					}
 					else
 					{
-						if(position == 11) position = 1;
-						else if(position == 12) position = 6;
+						if(position == FingerPosition.RIGHT_THUMB_SLAP.getPosition())
+																	position = FingerPosition.RIGHT_THUMB.getPosition();
+						else if(position == FingerPosition.LEFT_THUMB_SLAP.getPosition())
+																	position = FingerPosition.LEFT_THUMB.getPosition();
 						fingerprintWsqMap.put(position, finger.getImage());
 					}
 				}

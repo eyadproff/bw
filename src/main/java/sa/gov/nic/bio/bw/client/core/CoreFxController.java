@@ -47,7 +47,7 @@ import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 
 /**
- * The JavaFX controller of the primary stage, i.e. controller of the whole application.
+ * The JavaFX controller of the primary stage, i.e. controller of the whole application GUI.
  *
  * @author Fouad Almalki
  */
@@ -89,7 +89,6 @@ public class CoreFxController extends FxControllerBase implements IdleMonitorReg
 	public Stage getStage(){return stage;}
 	public NotificationPane getNotificationPane(){return notificationPane;}
 	public BorderPane getBodyPane(){return bodyPane;}
-	public Pane getDevicesRunnerGadgetPane(){return devicesRunnerGadgetPane;}
 	
 	public HeaderPaneFxController getHeaderPaneController(){return headerPaneController;}
 	public FooterPaneFxController getFooterPaneController(){return footerPaneController;}
@@ -276,12 +275,7 @@ public class CoreFxController extends FxControllerBase implements IdleMonitorReg
 		try
 		{
 			wizardPane = wizardPaneLoader.load();
-			
-			Platform.runLater(() ->
-			{
-				bodyPane.setTop(wizardPane);
-				wizardPane.goNext();
-			});
+			Platform.runLater(() -> bodyPane.setTop(wizardPane));
 		}
 		catch(Exception e)
 		{
@@ -613,6 +607,8 @@ public class CoreFxController extends FxControllerBase implements IdleMonitorReg
 	 */
 	private void onIdle()
 	{
+		LOGGER.info("The user is idle!");
+		
 		idleNotifier.hide();
 		prepareToLogout();
 		

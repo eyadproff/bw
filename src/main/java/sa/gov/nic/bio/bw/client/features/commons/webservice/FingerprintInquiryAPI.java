@@ -1,4 +1,4 @@
-package sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice;
+package sa.gov.nic.bio.bw.client.features.commons.webservice;
 
 import retrofit2.Call;
 import retrofit2.http.Field;

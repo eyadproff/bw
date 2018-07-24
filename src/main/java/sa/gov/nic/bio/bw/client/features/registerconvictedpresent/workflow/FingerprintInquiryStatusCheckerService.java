@@ -2,8 +2,8 @@ package sa.gov.nic.bio.bw.client.features.registerconvictedpresent.workflow;
 
 import retrofit2.Call;
 import sa.gov.nic.bio.bw.client.core.Context;
-import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.FingerprintInquiryAPI;
-import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.FingerprintInquiryStatusResult;
+import sa.gov.nic.bio.bw.client.features.commons.webservice.FingerprintInquiryAPI;
+import sa.gov.nic.bio.bw.client.features.commons.webservice.FingerprintInquiryStatusResult;
 import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
 
 public class FingerprintInquiryStatusCheckerService

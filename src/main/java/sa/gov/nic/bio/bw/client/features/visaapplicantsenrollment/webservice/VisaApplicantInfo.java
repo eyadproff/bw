@@ -1,6 +1,6 @@
 package sa.gov.nic.bio.bw.client.features.visaapplicantsenrollment.webservice;
 
-import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.Finger;
+import sa.gov.nic.bio.bw.client.features.commons.webservice.Finger;
 
 import java.util.List;
 import java.util.Objects;

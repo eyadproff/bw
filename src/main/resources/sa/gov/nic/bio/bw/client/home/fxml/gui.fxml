@@ -10,9 +10,12 @@
       fx:controller="sa.gov.nic.bio.bw.client.home.HomePaneFxController"
       stylesheets="@../css/style.css" alignment="CENTER" fx:id="loginTimestampBox">
     <HBox alignment="CENTER">
-        <GridPane alignment="CENTER" hgap="20" styleClass="formBox">
+        <padding>
+            <Insets topRightBottomLeft="10.0"/>
+        </padding>
+        <GridPane alignment="CENTER" hgap="20.0" styleClass="formBox">
             <padding>
-                <Insets top="20" right="20" bottom="20" left="20"/>
+                <Insets topRightBottomLeft="20.0"/>
             </padding>
             <Label fx:id="lblLoginTimeText" text="%label.loginTime" style="-fx-font-weight: bold;" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
             <Label fx:id="lblLoginTime" GridPane.columnIndex="1" GridPane.rowIndex="0"/>

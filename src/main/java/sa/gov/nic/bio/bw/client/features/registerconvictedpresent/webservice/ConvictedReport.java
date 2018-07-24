@@ -1,5 +1,6 @@
 package sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice;
 
+import sa.gov.nic.bio.bw.client.features.commons.webservice.Finger;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.Name;
 
 import java.util.List;
