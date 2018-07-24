@@ -72,8 +72,7 @@ public class BuildConvictedReportTask extends Task<JasperPrint>
 	
 	private static final String REPORT_TEMPLATE_FILE = "sa/gov/nic/bio/bw/client/features/registerconvictedpresent" +
 													   "/reports/convicted_record.jrxml";
-	private static final String LOGO_FILE = "sa/gov/nic/bio/bw/client/features/registerconvictedpresent" +
-											"/images/saudi_security_logo.jpg";
+	private static final String LOGO_FILE = "sa/gov/nic/bio/bw/client/features/commons/images/saudi_security_logo.jpg";
 	private static final String IMAGE_PLACEHOLDER_FILE = "sa/gov/nic/bio/bw/client/core/images/avatar_placeholder.jpg";
 	
 	private ConvictedReport convictedReport;

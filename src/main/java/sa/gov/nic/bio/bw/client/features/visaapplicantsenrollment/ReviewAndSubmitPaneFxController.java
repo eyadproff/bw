@@ -21,7 +21,7 @@ import sa.gov.nic.bio.bw.client.features.commons.FingerprintCapturingFxControlle
 import sa.gov.nic.bio.bw.client.features.commons.beans.GenderType;
 import sa.gov.nic.bio.bw.client.features.commons.ui.ImageViewPane;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.CountryBean;
-import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.Finger;
+import sa.gov.nic.bio.bw.client.features.commons.webservice.Finger;
 import sa.gov.nic.bio.bw.client.features.visaapplicantsenrollment.utils.VisaApplicantsEnrollmentErrorCodes;
 import sa.gov.nic.bio.bw.client.features.visaapplicantsenrollment.webservice.CountryDialingCode;
 import sa.gov.nic.bio.bw.client.features.visaapplicantsenrollment.webservice.PassportTypeBean;

@@ -55,8 +55,8 @@ import sa.gov.nic.bio.bw.client.features.commons.beans.FingerprintUiComponents;
 import sa.gov.nic.bio.bw.client.features.commons.ui.AutoScalingStackPane;
 import sa.gov.nic.bio.bw.client.features.commons.ui.FourStateTitledPane;
 import sa.gov.nic.bio.bw.client.features.commons.utils.CommonsErrorCodes;
-import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.Finger;
-import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.FingerCoordinate;
+import sa.gov.nic.bio.bw.client.features.commons.webservice.Finger;
+import sa.gov.nic.bio.bw.client.features.commons.webservice.FingerCoordinate;
 
 import java.awt.Point;
 import java.io.ByteArrayInputStream;
@@ -842,7 +842,7 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 		        if(slapPosition == FingerPosition.RIGHT_THUMB_SLAP.getPosition() ||
 				   slapPosition == FingerPosition.LEFT_THUMB_SLAP.getPosition())
 		        {
-			        finger = new Finger(slapPosition, fingerprint.getSlapWsq(), null);
+			        finger = new Finger(slapPosition, fingerData.getFingerWsqImage(), null);
 		        }
 		        else
 		        {

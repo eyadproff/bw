@@ -29,7 +29,7 @@ public class WizardPane extends BorderPane
 	
 	private ListProperty<WizardStep> steps;
 	private List<WizardStepIndicator> indicators = new ArrayList<>();
-	private int currentStep = -1;
+	private int currentStep = 0;
 	
 	public WizardPane()
 	{
@@ -45,7 +45,10 @@ public class WizardPane extends BorderPane
 	}
 	
 	public ListProperty<WizardStep> stepsProperty(){return this.steps;}
-	public void setSteps(ObservableList<WizardStep> value){this.steps.get().setAll(value); drawStepsIndicators();}
+	public void setSteps(ObservableList<WizardStep> value)
+	{
+		this.steps.get().setAll(value); drawStepsIndicators(true);
+	}
 	public ObservableList<WizardStep> getSteps(){return this.steps.get();}
 	
 	public int getCurrentStep(){return currentStep;}
@@ -89,7 +92,7 @@ public class WizardPane extends BorderPane
 		wizardStep.setTitle(title);
 		wizardStep.setIconId(iconId);
 		
-		drawStepsIndicators();
+		drawStepsIndicators(false);
 		
 		for(int i = 0; i < indicators.size(); i++)
 		{
@@ -104,7 +107,7 @@ public class WizardPane extends BorderPane
 		}
 	}
 	
-	private void drawStepsIndicators()
+	private void drawStepsIndicators(boolean firstBuild)
 	{
 		final double TITLE_PREF_WIDTH = 65.0;
 		
@@ -131,6 +134,8 @@ public class WizardPane extends BorderPane
 				continue;
 			}
 			
+			indicator.setSelected(firstBuild && i == 0);
+			indicator.setVisited(firstBuild && i == 0);
 			indicators.add(indicator);
 			indicator.getStyleClass().add("wizard-indicator");
 			gridPane.add(indicator, i, 0);
@@ -214,8 +219,8 @@ public class WizardPane extends BorderPane
 		for(int i = 0; i < indicators.size(); i++)
 		{
 			WizardStepIndicator indicator = indicators.get(i);
-			indicator.setVisited(false);
-			indicator.setSelected(i == 0); // select the first only
+			indicator.setVisited(i == 0);
+			indicator.setSelected(i == 0);
 		}
 	}
 }

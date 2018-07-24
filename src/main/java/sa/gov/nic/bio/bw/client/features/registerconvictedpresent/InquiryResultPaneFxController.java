@@ -20,7 +20,7 @@ import sa.gov.nic.bio.bw.client.features.commons.webservice.IdType;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.CountryBean;
 import sa.gov.nic.bio.bw.client.features.commons.beans.GenderType;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.Name;
-import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.PersonIdInfo;
+import sa.gov.nic.bio.bw.client.features.commons.webservice.PersonIdInfo;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.PersonInfo;
 import sa.gov.nic.bio.bw.client.login.webservice.UserInfo;
 
