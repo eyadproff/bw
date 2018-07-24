@@ -10,8 +10,6 @@ import sa.gov.nic.bio.bw.client.core.workflow.Signal;
 import sa.gov.nic.bio.bw.client.core.workflow.WizardWorkflowBase;
 import sa.gov.nic.bio.bw.client.features.commons.LookupFxController;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.Finger;
-import sa.gov.nic.bio.bw.client.features.commons.workflow.FetchingFingerprintsService;
-import sa.gov.nic.bio.bw.client.features.commons.workflow.GetFingerprintAvailabilityService;
 import sa.gov.nic.bio.bw.client.features.commons.workflow.GetPersonInfoByIdService;
 import sa.gov.nic.bio.bw.client.features.printdeadpersonrecord.FetchingPersonInfoPaneFxController;
 import sa.gov.nic.bio.bw.client.features.printdeadpersonrecord.RecordIdPaneFxController;
@@ -102,8 +100,6 @@ public class PrintDeadPersonRecordWorkflow extends WizardWorkflowBase<Void, Void
 				loop: while(true)
 				{
 					ServiceResponse<?> serviceResponse;
-					List<Finger> fingerprints;
-					List<Integer> availableFingerprints;
 					
 					block:
 					{
@@ -114,25 +110,15 @@ public class PrintDeadPersonRecordWorkflow extends WizardWorkflowBase<Void, Void
 							if(serviceResponse.isSuccess()) uiInputData.put(ShowRecordPaneFxController.KEY_PERSON_INFO,
 									                                        serviceResponse.getResult());
 							else break block;
-							
-							serviceResponse = FetchingFingerprintsService.execute(samisId);
-							if(!serviceResponse.isSuccess()) break block;
-							
-							fingerprints = (List<Finger>) serviceResponse.getResult();
-							
-							serviceResponse = GetFingerprintAvailabilityService.execute(samisId);
-							if(!serviceResponse.isSuccess()) break block;
-							
-							availableFingerprints = (List<Integer>) serviceResponse.getResult();
 						}
-						else
-						{
-							fingerprints = deadPersonRecord.getSubjFingers();
-							
-							List<Integer> missingFingerprints = deadPersonRecord.getSubjMissingFingers();
-							availableFingerprints = IntStream.rangeClosed(1, 10).boxed().collect(Collectors.toList());
-							availableFingerprints.removeAll(missingFingerprints);
-						}
+						
+						List<Finger> fingerprints = deadPersonRecord.getSubjFingers();
+						
+						List<Integer> missingFingerprints = deadPersonRecord.getSubjMissingFingers();
+						List<Integer> availableFingerprints = IntStream.rangeClosed(1, 10)
+																	   .boxed()
+																	   .collect(Collectors.toList());
+						availableFingerprints.removeAll(missingFingerprints);
 						
 						Map<Integer, String> fingerprintWsqMap = new HashMap<>();
 						Map<Integer, String> fingerprintImages = new HashMap<>();
