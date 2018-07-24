@@ -73,4 +73,12 @@ public class MenuItem implements Comparable<MenuItem>
 	{
 		return other == null ? -1 : -Integer.compare(this.order, other.order);
 	}
+	
+	@Override
+	public String toString()
+	{
+		return "MenuItem{" + "index=" + index + ", menuId='" + menuId + '\'' + ", label='" + label + '\'' +
+			   ", lines=" + lines + ", order=" + order + ", workflowClass=" + workflowClass + ", iconId='" +
+			   iconId + '\'' + ", selected=" + selected + '}';
+	}
 }
