@@ -4,6 +4,7 @@
 
 - Add "Print Dead Person Record" feature.
 - Apply https.
+- Convicted Report: disable editing any person information retrieved from the backend.
 
 ## v2018.07.3
 

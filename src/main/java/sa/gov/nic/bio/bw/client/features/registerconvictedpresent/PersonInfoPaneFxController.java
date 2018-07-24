@@ -48,6 +48,20 @@ public class PersonInfoPaneFxController extends WizardStepFxControllerBase
 	public static final String KEY_PERSON_INFO_ID_EXPIRY_DATE = "PERSON_INFO_ID_EXPIRY_DATE";
 	public static final String KEY_PERSON_INFO_ID_EXPIRY_DATE_SHOW_HIJRI = "PERSON_INFO_ID_EXPIRY_DATE_SHOW_HIJRI";
 	
+	private static final String KEY_PERSON_INFO_FIRST_NAME_DISABLED = "PERSON_INFO_FIRST_NAME_DISABLED";
+	private static final String KEY_PERSON_INFO_FATHER_NAME_DISABLED = "PERSON_INFO_FATHER__NAME_DISABLED";
+	private static final String KEY_PERSON_INFO_GRANDFATHER_NAME_DISABLED = "PERSON_INFO_GRANDFATHER_NAME_DISABLED";
+	private static final String KEY_PERSON_INFO_FAMILY_NAME_DISABLED = "PERSON_INFO_FAMILY_NAME_DISABLED";
+	private static final String KEY_PERSON_INFO_GENDER_DISABLED = "PERSON_INFO_GENDER_DISABLED";
+	private static final String KEY_PERSON_INFO_NATIONALITY_DISABLED = "PERSON_INFO_NATIONALITY_DISABLED";
+	private static final String KEY_PERSON_INFO_OCCUPATION_DISABLED = "PERSON_INFO_OCCUPATION_DISABLED";
+	private static final String KEY_PERSON_INFO_BIRTH_PLACE_DISABLED = "PERSON_INFO_BIRTH_PLACE_DISABLED";
+	private static final String KEY_PERSON_INFO_BIRTH_DATE_DISABLED = "PERSON_INFO_BIRTH_DATE_DISABLED";
+	private static final String KEY_PERSON_INFO_ID_NUMBER_DISABLED = "PERSON_INFO_ID_NUMBER_DISABLED";
+	private static final String KEY_PERSON_INFO_ID_TYPE_DISABLED = "PERSON_INFO_ID_TYPE_DISABLED";
+	private static final String KEY_PERSON_INFO_ID_ISSUANCE_DATE_DISABLED = "PERSON_INFO_ID_ISSUANCE_DATE_DISABLED";
+	private static final String KEY_PERSON_INFO_ID_EXPIRY_DATE_DISABLED = "PERSON_INFO_ID_EXPIRY_DATE_DISABLED";
+	
 	@FXML private Label lblGeneralFileNumber;
 	@FXML private TextField txtFirstName;
 	@FXML private TextField txtFatherName;
@@ -94,10 +108,7 @@ public class PersonInfoPaneFxController extends WizardStepFxControllerBase
 		GuiUtils.makeComboBoxOpenableByPressingEnter(cboIdType);
 		
 		ObservableList<ItemWithText<IdType>> items = FXCollections.observableArrayList();
-		idTypes.forEach(idType ->
-		{
-			items.add(new ItemWithText<>(idType, idType.getDesc()));
-		});
+		idTypes.forEach(idType -> items.add(new ItemWithText<>(idType, idType.getDesc())));
 		cboIdType.setItems(items);
 		
 		GuiUtils.initDatePicker(cbBirthDateShowHijri, dpBirthDate, birthDateValidator);
@@ -134,6 +145,20 @@ public class PersonInfoPaneFxController extends WizardStepFxControllerBase
 	{
 		if(newForm)
 		{
+			Boolean firstNameDisabled = (Boolean) uiInputData.get(KEY_PERSON_INFO_FIRST_NAME_DISABLED);
+			Boolean fatherNameDisabled = (Boolean) uiInputData.get(KEY_PERSON_INFO_FATHER_NAME_DISABLED);
+			Boolean grandfatherNameDisabled = (Boolean) uiInputData.get(KEY_PERSON_INFO_GRANDFATHER_NAME_DISABLED);
+			Boolean familyNameDisabled = (Boolean) uiInputData.get(KEY_PERSON_INFO_FAMILY_NAME_DISABLED);
+			Boolean genderDisabled = (Boolean) uiInputData.get(KEY_PERSON_INFO_GENDER_DISABLED);
+			Boolean nationalityDisabled = (Boolean) uiInputData.get(KEY_PERSON_INFO_NATIONALITY_DISABLED);
+			Boolean occupationDisabled = (Boolean) uiInputData.get(KEY_PERSON_INFO_OCCUPATION_DISABLED);
+			Boolean birthPlaceDisabled = (Boolean) uiInputData.get(KEY_PERSON_INFO_BIRTH_PLACE_DISABLED);
+			Boolean birthDateDisabled = (Boolean) uiInputData.get(KEY_PERSON_INFO_BIRTH_DATE_DISABLED);
+			Boolean idNumberDisabled = (Boolean) uiInputData.get(KEY_PERSON_INFO_ID_NUMBER_DISABLED);
+			Boolean idTypeDisabled = (Boolean) uiInputData.get(KEY_PERSON_INFO_ID_TYPE_DISABLED);
+			Boolean idIssuanceDateDisabled = (Boolean) uiInputData.get(KEY_PERSON_INFO_ID_ISSUANCE_DATE_DISABLED);
+			Boolean idExpiryDateDisabled = (Boolean) uiInputData.get(KEY_PERSON_INFO_ID_EXPIRY_DATE_DISABLED);
+			
 			Node focusedNode = null;
 			
 			String firstName = (String) uiInputData.get(KEY_PERSON_INFO_FIRST_NAME);
@@ -141,17 +166,32 @@ public class PersonInfoPaneFxController extends WizardStepFxControllerBase
 			String grandfatherName = (String) uiInputData.get(KEY_PERSON_INFO_GRANDFATHER_NAME);
 			String familyName = (String) uiInputData.get(KEY_PERSON_INFO_FAMILY_NAME);
 			
-			if(firstName != null && !firstName.trim().isEmpty()) txtFirstName.setText(firstName);
+			if(firstName != null && !firstName.trim().isEmpty())
+			{
+				txtFirstName.setText(firstName);
+				if(firstNameDisabled == null || firstNameDisabled) txtFirstName.setDisable(true);
+			}
 			else focusedNode = txtFirstName;
 			
-			if(fatherName != null && !fatherName.trim().isEmpty()) txtFatherName.setText(fatherName);
+			if(fatherName != null && !fatherName.trim().isEmpty())
+			{
+				txtFatherName.setText(fatherName);
+				if(fatherNameDisabled == null || fatherNameDisabled) txtFatherName.setDisable(true);
+			}
 			else if(focusedNode == null) focusedNode = txtFatherName;
 			
 			if(grandfatherName != null && !grandfatherName.trim().isEmpty())
-																		txtGrandfatherName.setText(grandfatherName);
+			{
+				txtGrandfatherName.setText(grandfatherName);
+				if(grandfatherNameDisabled == null || grandfatherNameDisabled) txtGrandfatherName.setDisable(true);
+			}
 			else if(focusedNode == null) focusedNode = txtGrandfatherName;
 			
-			if(familyName != null && !familyName.trim().isEmpty()) txtFamilyName.setText(familyName);
+			if(familyName != null && !familyName.trim().isEmpty())
+			{
+				txtFamilyName.setText(familyName);
+				if(familyNameDisabled == null || familyNameDisabled) txtFamilyName.setDisable(true);
+			}
 			else if(focusedNode == null) focusedNode = txtFamilyName;
 			
 			Long generalFileNumber = (Long) uiInputData.get(KEY_PERSON_INFO_GENERAL_FILE_NUMBER);
@@ -164,7 +204,11 @@ public class PersonInfoPaneFxController extends WizardStepFxControllerBase
 					                        .stream()
 					                        .filter(item -> item.getItem() == genderType)
 					                        .findFirst()
-					                        .ifPresent(cboGender::setValue);
+					                        .ifPresent(value ->
+					                        {
+					                        	cboGender.setValue(value);
+						                        if(genderDisabled == null || genderDisabled) cboGender.setDisable(true);
+					                        });
 			else if(focusedNode == null) focusedNode = cboGender;
 			
 			CountryBean countryBean = (CountryBean) uiInputData.get(KEY_PERSON_INFO_NATIONALITY);
@@ -172,7 +216,12 @@ public class PersonInfoPaneFxController extends WizardStepFxControllerBase
 						                              .stream()
 						                              .filter(item -> item.getObject() == countryBean)
 						                              .findFirst()
-						                              .ifPresent(cboNationality::setValue);
+						                              .ifPresent(value ->
+						                              {
+						                                  cboNationality.setValue(value);
+							                              if(nationalityDisabled == null || nationalityDisabled)
+							                              	                            cboNationality.setDisable(true);
+						                              });
 			else
 			{
 				String text = resources.getString("combobox.unknownNationality");
@@ -190,35 +239,78 @@ public class PersonInfoPaneFxController extends WizardStepFxControllerBase
 			}
 			
 			String occupation = (String) uiInputData.get(KEY_PERSON_INFO_OCCUPATION);
-			if(occupation != null && !occupation.trim().isEmpty()) txtOccupation.setText(occupation);
+			if(occupation != null && !occupation.trim().isEmpty())
+			{
+				txtOccupation.setText(occupation);
+				if(occupationDisabled == null || occupationDisabled) txtOccupation.setDisable(true);
+			}
 			
 			String birthPlace = (String) uiInputData.get(KEY_PERSON_INFO_BIRTH_PLACE);
-			if(birthPlace != null && !birthPlace.trim().isEmpty()) txtBirthPlace.setText(birthPlace);
+			if(birthPlace != null && !birthPlace.trim().isEmpty())
+			{
+				txtBirthPlace.setText(birthPlace);
+				if(birthPlaceDisabled == null || birthPlaceDisabled) txtBirthPlace.setDisable(true);
+			}
 			
 			LocalDate birthDate = (LocalDate) uiInputData.get(KEY_PERSON_INFO_BIRTH_DATE);
-			if(birthDate != null) dpBirthDate.setValue(birthDate);
+			if(birthDate != null)
+			{
+				dpBirthDate.setValue(birthDate);
+				
+				if(birthDateDisabled == null || birthDateDisabled)
+				{
+					dpBirthDate.setDisable(true);
+					cbBirthDateShowHijri.setDisable(true);
+				}
+			}
 			
 			Boolean birthDateShowHijri = (Boolean) uiInputData.get(KEY_PERSON_INFO_BIRTH_DATE_SHOW_HIJRI);
 			cbBirthDateShowHijri.setSelected(birthDateShowHijri != null && birthDateShowHijri);
 			
 			String idNumber = (String) uiInputData.get(KEY_PERSON_INFO_ID_NUMBER);
-			if(idNumber != null && !idNumber.trim().isEmpty()) txtIdNumber.setText(idNumber);
+			if(idNumber != null && !idNumber.trim().isEmpty())
+			{
+				txtIdNumber.setText(idNumber);
+				if(idNumberDisabled == null || idNumberDisabled) txtIdNumber.setDisable(true);
+			}
 			
 			IdType idType = (IdType) uiInputData.get(KEY_PERSON_INFO_ID_TYPE);
 			if(idType != null) cboIdType.getItems()
 										.stream()
 										.filter(item -> item.getItem() == idType)
 										.findFirst()
-										.ifPresent(cboIdType::setValue);
+										.ifPresent(value ->
+										{
+											cboIdType.setValue(value);
+											if(idTypeDisabled == null || idTypeDisabled) cboIdType.setDisable(true);
+										});
 			
 			LocalDate idIssuanceDate = (LocalDate) uiInputData.get(KEY_PERSON_INFO_ID_ISSUANCE_DATE);
-			if(idIssuanceDate != null) dpIdIssuanceDate.setValue(idIssuanceDate);
+			if(idIssuanceDate != null)
+			{
+				dpIdIssuanceDate.setValue(idIssuanceDate);
+				
+				if(idIssuanceDateDisabled == null || idIssuanceDateDisabled)
+				{
+					dpIdIssuanceDate.setDisable(true);
+					cbIdIssuanceDateShowHijri.setDisable(true);
+				}
+			}
 			
 			Boolean idIssuanceDateShowHijri = (Boolean) uiInputData.get(KEY_PERSON_INFO_ID_ISSUANCE_DATE_SHOW_HIJRI);
 			cbIdIssuanceDateShowHijri.setSelected(idIssuanceDateShowHijri != null && idIssuanceDateShowHijri);
 			
 			LocalDate idExpiryDate = (LocalDate) uiInputData.get(KEY_PERSON_INFO_ID_EXPIRY_DATE);
-			if(idExpiryDate != null) dpIdExpiryDate.setValue(idExpiryDate);
+			if(idExpiryDate != null)
+			{
+				dpIdExpiryDate.setValue(idExpiryDate);
+				
+				if(idExpiryDateDisabled == null || idExpiryDateDisabled)
+				{
+					dpIdExpiryDate.setDisable(true);
+					cbIdExpiryDateShowHijri.setDisable(true);
+				}
+			}
 			
 			Boolean idExpiryDateShowHijri = (Boolean) uiInputData.get(KEY_PERSON_INFO_ID_EXPIRY_DATE_SHOW_HIJRI);
 			cbIdExpiryDateShowHijri.setSelected(idExpiryDateShowHijri != null && idExpiryDateShowHijri);
@@ -273,6 +365,20 @@ public class PersonInfoPaneFxController extends WizardStepFxControllerBase
 		uiDataMap.put(KEY_PERSON_INFO_ID_ISSUANCE_DATE_SHOW_HIJRI, cbIdIssuanceDateShowHijri.isSelected());
 		uiDataMap.put(KEY_PERSON_INFO_ID_EXPIRY_DATE, dpIdExpiryDate.getValue());
 		uiDataMap.put(KEY_PERSON_INFO_ID_EXPIRY_DATE_SHOW_HIJRI, cbIdExpiryDateShowHijri.isSelected());
+		
+		uiDataMap.put(KEY_PERSON_INFO_FIRST_NAME_DISABLED, txtFirstName.isDisabled());
+		uiDataMap.put(KEY_PERSON_INFO_FATHER_NAME_DISABLED, txtFatherName.isDisabled());
+		uiDataMap.put(KEY_PERSON_INFO_GRANDFATHER_NAME_DISABLED, txtGrandfatherName.isDisabled());
+		uiDataMap.put(KEY_PERSON_INFO_FAMILY_NAME_DISABLED, txtFamilyName.isDisabled());
+		uiDataMap.put(KEY_PERSON_INFO_GENDER_DISABLED, cboGender.isDisabled());
+		uiDataMap.put(KEY_PERSON_INFO_NATIONALITY_DISABLED, cboNationality.isDisabled());
+		uiDataMap.put(KEY_PERSON_INFO_OCCUPATION_DISABLED, txtOccupation.isDisabled());
+		uiDataMap.put(KEY_PERSON_INFO_BIRTH_PLACE_DISABLED, txtBirthPlace.isDisabled());
+		uiDataMap.put(KEY_PERSON_INFO_BIRTH_DATE_DISABLED, dpBirthDate.isDisabled());
+		uiDataMap.put(KEY_PERSON_INFO_ID_NUMBER_DISABLED, txtIdNumber.isDisabled());
+		uiDataMap.put(KEY_PERSON_INFO_ID_TYPE_DISABLED, cboIdType.isDisabled());
+		uiDataMap.put(KEY_PERSON_INFO_ID_ISSUANCE_DATE_DISABLED, dpIdIssuanceDate.isDisabled());
+		uiDataMap.put(KEY_PERSON_INFO_ID_EXPIRY_DATE_DISABLED, dpIdExpiryDate.isDisabled());
 	}
 	
 	@FXML
