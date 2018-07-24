@@ -3,6 +3,7 @@
 ## v2018.07.4
 
 - Add "Print Dead Person Record" feature.
+- Apply https.
 
 ## v2018.07.3
 
