@@ -1,5 +1,11 @@
 # Release Notes:
 
+## v2018.08.1
+
+- Add "Citizen Enrollment" feature.
+- Print Dead Person Record: change the record's length from 20 to 15 digits.
+- Support single fingerprint devices.
+
 ## v2018.07.4
 
 - Add "Print Dead Person Record" feature.

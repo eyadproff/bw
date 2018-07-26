@@ -49,6 +49,7 @@ import sa.gov.nic.bio.bw.client.core.beans.UserSession;
 import sa.gov.nic.bio.bw.client.core.biokit.FingerPosition;
 import sa.gov.nic.bio.bw.client.core.utils.AppConstants;
 import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
+import sa.gov.nic.bio.bw.client.core.utils.FingerprintDeviceType;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.wizard.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.client.features.commons.beans.FingerprintUiComponents;
@@ -202,6 +203,10 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 	@Override
 	protected void initialize()
 	{
+		DevicesRunnerGadgetPaneFxController deviceManagerGadgetPaneController =
+												Context.getCoreFxController().getDeviceManagerGadgetPaneController();
+		deviceManagerGadgetPaneController.setNextFingerprintDeviceType(FingerprintDeviceType.SLAP);
+		
 		btnPrevious.setOnAction(event -> goPrevious());
 		btnNext.setOnAction(event -> goNext());
 		btnNext.disableProperty().bind(ivCompleted.visibleProperty().not());
@@ -585,9 +590,10 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 			{
 				boolean autoInitialize = "true".equals(System.getProperty("jnlp.bio.bw.fingerprint.autoInitialize"));
 				
-				if(running && autoInitialize && !deviceManagerGadgetPaneController.isFingerprintScannerInitialized())
+				if(running && autoInitialize &&
+						!deviceManagerGadgetPaneController.isFingerprintScannerInitialized(FingerprintDeviceType.SLAP))
 				{
-					deviceManagerGadgetPaneController.initializeFingerprintScanner();
+					deviceManagerGadgetPaneController.initializeFingerprintScanner(FingerprintDeviceType.SLAP);
 				}
 			});
 			
@@ -628,7 +634,7 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 			
 			// prepare for next fingerprint capturing if the fingerprint device is connected and initialized, otherwise
 			// auto-run and auto-initialize as configured
-			if(deviceManagerGadgetPaneController.isFingerprintScannerInitialized())
+			if(deviceManagerGadgetPaneController.isFingerprintScannerInitialized(FingerprintDeviceType.SLAP))
 			{
 				if(currentSlapPosition <= FingerPosition.TWO_THUMBS.getPosition()) GuiUtils.showNode(
 																			btnStartFingerprintCapturing, true);
@@ -642,7 +648,7 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 				
 				if(autoInitialize)
 				{
-					deviceManagerGadgetPaneController.initializeFingerprintScanner();
+					deviceManagerGadgetPaneController.initializeFingerprintScanner(FingerprintDeviceType.SLAP);
 				}
 				else
 				{
@@ -1067,7 +1073,7 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 				        GuiUtils.showNode(btnStartOver, false);
 				        DevicesRunnerGadgetPaneFxController deviceManagerGadgetPaneController =
 						                        Context.getCoreFxController().getDeviceManagerGadgetPaneController();
-				        deviceManagerGadgetPaneController.initializeFingerprintScanner();
+				        deviceManagerGadgetPaneController.initializeFingerprintScanner(FingerprintDeviceType.SLAP);
 			        }
 			        else if(result.getReturnCode() == CaptureFingerprintResponse.FailureCodes.DEVICE_BUSY)
 			        {
@@ -1097,7 +1103,7 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 					        GuiUtils.showNode(btnStartOver, false);
 					        DevicesRunnerGadgetPaneFxController deviceManagerGadgetPaneController =
 							        Context.getCoreFxController().getDeviceManagerGadgetPaneController();
-					        deviceManagerGadgetPaneController.initializeFingerprintScanner();
+					        deviceManagerGadgetPaneController.initializeFingerprintScanner(FingerprintDeviceType.SLAP);
 				        }
 			        }
 			        else if(result.getReturnCode() ==

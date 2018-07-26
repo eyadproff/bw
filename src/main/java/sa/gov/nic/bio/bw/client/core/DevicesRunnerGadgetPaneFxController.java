@@ -28,11 +28,11 @@ import sa.gov.nic.bio.biokit.beans.ShutdownResponse;
 import sa.gov.nic.bio.biokit.exceptions.AlreadyConnectedException;
 import sa.gov.nic.bio.biokit.websocket.ClosureListener;
 import sa.gov.nic.bio.bw.client.core.biokit.BioKitManager;
-import sa.gov.nic.bio.bw.client.core.biokit.FingerPosition;
 import sa.gov.nic.bio.bw.client.core.utils.AppConstants;
 import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.client.core.utils.CoreErrorCodes;
 import sa.gov.nic.bio.bw.client.core.utils.DialogUtils;
+import sa.gov.nic.bio.bw.client.core.utils.FingerprintDeviceType;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.utils.RuntimeEnvironment;
 import sa.gov.nic.bio.bw.client.features.commons.utils.CommonsErrorCodes;
@@ -43,7 +43,7 @@ import java.util.function.Consumer;
 import java.util.logging.Logger;
 
 /**
- * JavaFX controller for the devices runner gadget. It is shown after login.
+ * JavaFX controller for the devices runner gadget.
  *
  * @author Fouad Almalki
  */
@@ -85,6 +85,8 @@ public class DevicesRunnerGadgetPaneFxController extends RegionFxControllerBase
 	@FXML private Button btnPassportScannerAction;
 	
 	private ContextMenu contextMenu;
+	private FingerprintDeviceType nextFingerprintDeviceType = FingerprintDeviceType.SINGLE;
+	private FingerprintDeviceType currentFingerprintDeviceType;
 	private String fingerprintScannerDeviceName;
 	private String cameraDeviceName;
 	private String passportScannerDeviceName;
@@ -97,6 +99,13 @@ public class DevicesRunnerGadgetPaneFxController extends RegionFxControllerBase
                                                                             changeDevicesRunnerStatus(false));
 	
 	public ClosureListener getClosureListener(){return closureListener;}
+	
+	public FingerprintDeviceType getCurrentFingerprintDeviceType(){return currentFingerprintDeviceType;}
+	public void setNextFingerprintDeviceType(FingerprintDeviceType nextFingerprintDeviceType)
+	{
+		this.nextFingerprintDeviceType = nextFingerprintDeviceType;
+	}
+	
 	public String getFingerprintScannerDeviceName(){return fingerprintScannerDeviceName;}
 	public String getCameraDeviceName(){return cameraDeviceName;}
 	public String getPassportScannerDeviceName(){return passportScannerDeviceName;}
@@ -106,9 +115,9 @@ public class DevicesRunnerGadgetPaneFxController extends RegionFxControllerBase
 		return lblDevicesRunnerWorking.isVisible();
 	}
 	
-	public boolean isFingerprintScannerInitialized()
+	public boolean isFingerprintScannerInitialized(FingerprintDeviceType fingerprintDeviceType)
 	{
-		return lblFingerprintScannerInitialized.isVisible();
+		return lblFingerprintScannerInitialized.isVisible() && currentFingerprintDeviceType == fingerprintDeviceType;
 	}
 	
 	public boolean isCameraInitialized()
@@ -477,14 +486,14 @@ public class DevicesRunnerGadgetPaneFxController extends RegionFxControllerBase
 		dialogStage.show();
 	}
 	
-	public void initializeFingerprintScanner()
+	public void initializeFingerprintScanner(FingerprintDeviceType fingerprintDeviceType)
 	{
 		GuiUtils.showNode(piFingerprintScanner, true);
 		CancelCommand cancelCommand = new CancelCommand();
 		String message = resources.getString("label.initializingFingerprintScanner");
 		
 		Future<ServiceResponse<InitializeResponse>> future = Context.getBioKitManager().getFingerprintService()
-																.initialize(FingerPosition.RIGHT_THUMB.getPosition());
+																	.initialize(fingerprintDeviceType.getPosition());
 		Stage dialogStage = buildProgressDialog(cancelCommand, message, future);
 		
 		Task<ServiceResponse<InitializeResponse>> task = new Task<ServiceResponse<InitializeResponse>>()
@@ -509,6 +518,7 @@ public class DevicesRunnerGadgetPaneFxController extends RegionFxControllerBase
 		
 		        if(result.getReturnCode() == InitializeResponse.SuccessCodes.SUCCESS)
 		        {
+		        	this.currentFingerprintDeviceType = fingerprintDeviceType;
 			        fingerprintScannerDeviceName = result.getCurrentDeviceName();
 		            changeFingerprintScannerStatus(DeviceStatus.INITIALIZED);
 		        }
@@ -834,7 +844,7 @@ public class DevicesRunnerGadgetPaneFxController extends RegionFxControllerBase
 		if(lblFingerprintScannerInitialized.isVisible() || lblFingerprintScannerNotConnected.isVisible())
 		{
 			MenuItem menuReinitialize = new MenuItem(resources.getString("menu.reinitialize"));
-			menuReinitialize.setOnAction(e -> initializeFingerprintScanner());
+			menuReinitialize.setOnAction(e -> initializeFingerprintScanner(nextFingerprintDeviceType));
 			
 			Glyph initializeIcon = AppUtils.createFontAwesomeIcon(FontAwesome.Glyph.WRENCH);
 			menuReinitialize.setGraphic(initializeIcon);
@@ -844,7 +854,7 @@ public class DevicesRunnerGadgetPaneFxController extends RegionFxControllerBase
 		else
 		{
 			MenuItem menuInitialize = new MenuItem(resources.getString("menu.initialize"));
-			menuInitialize.setOnAction(e -> initializeFingerprintScanner());
+			menuInitialize.setOnAction(e -> initializeFingerprintScanner(nextFingerprintDeviceType));
 			
 			Glyph initializeIcon = AppUtils.createFontAwesomeIcon(FontAwesome.Glyph.WRENCH);
 			menuInitialize.setGraphic(initializeIcon);

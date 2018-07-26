@@ -311,7 +311,8 @@ public class CaptureFingerprintDialogFxController extends FxControllerBase
 		    {
 		        FingerprintStopPreviewResponse result = serviceResponse.getResult();
 		
-		        if(result.getReturnCode() != FingerprintStopPreviewResponse.SuccessCodes.SUCCESS)
+		        if(result.getReturnCode() != FingerprintStopPreviewResponse.SuccessCodes.SUCCESS &&
+		           result.getReturnCode() != FingerprintStopPreviewResponse.FailureCodes.NOT_CAPTURING_NOW)
 		        {
 			        String[] errorDetails = {"failed while stopping the fingerprint capturing!"};
 			        Context.getCoreFxController().showErrorDialog(String.valueOf(result.getReturnCode()),

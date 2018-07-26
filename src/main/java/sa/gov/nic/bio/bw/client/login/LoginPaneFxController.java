@@ -30,6 +30,7 @@ import sa.gov.nic.bio.bw.client.core.interfaces.PersistableEntity;
 import sa.gov.nic.bio.bw.client.core.utils.AppConstants;
 import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.client.core.utils.DialogUtils;
+import sa.gov.nic.bio.bw.client.core.utils.FingerprintDeviceType;
 import sa.gov.nic.bio.bw.client.core.utils.GuiLanguage;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.utils.RuntimeEnvironment;
@@ -86,14 +87,16 @@ public class LoginPaneFxController extends BodyFxControllerBase implements Persi
 	{
 		DevicesRunnerGadgetPaneFxController deviceManagerGadgetPaneController =
 												Context.getCoreFxController().getDeviceManagerGadgetPaneController();
+		deviceManagerGadgetPaneController.setNextFingerprintDeviceType(FingerprintDeviceType.SINGLE);
 		
 		deviceManagerGadgetPaneController.setDevicesRunnerRunningListener(running ->
 		{
 		    boolean autoInitialize = "true".equals(System.getProperty("jnlp.bio.bw.fingerprint.autoInitialize"));
 		
-		    if(running && autoInitialize && !deviceManagerGadgetPaneController.isFingerprintScannerInitialized())
+		    if(running && autoInitialize &&
+				    !deviceManagerGadgetPaneController.isFingerprintScannerInitialized(FingerprintDeviceType.SINGLE))
 		    {
-		        deviceManagerGadgetPaneController.initializeFingerprintScanner();
+		        deviceManagerGadgetPaneController.initializeFingerprintScanner(FingerprintDeviceType.SINGLE);
 		    }
 		});
 		
@@ -411,11 +414,12 @@ public class LoginPaneFxController extends BodyFxControllerBase implements Persi
 		
 		if(deviceManagerGadgetPaneController.isDevicesRunnerRunning())
 		{
-			if(!deviceManagerGadgetPaneController.isFingerprintScannerInitialized())
+			if(!deviceManagerGadgetPaneController.isFingerprintScannerInitialized(FingerprintDeviceType.SINGLE))
 			{
 				boolean autoInitialize =
 						"true".equals(System.getProperty("jnlp.bio.bw.fingerprint.autoInitialize"));
-				if(autoInitialize) deviceManagerGadgetPaneController.initializeFingerprintScanner();
+				if(autoInitialize)
+						deviceManagerGadgetPaneController.initializeFingerprintScanner(FingerprintDeviceType.SINGLE);
 			}
 		}
 		else
