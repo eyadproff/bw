@@ -484,7 +484,7 @@ public class DevicesRunnerGadgetPaneFxController extends RegionFxControllerBase
 		String message = resources.getString("label.initializingFingerprintScanner");
 		
 		Future<ServiceResponse<InitializeResponse>> future = Context.getBioKitManager().getFingerprintService()
-																.initialize(FingerPosition.RIGHT_SLAP.getPosition());
+																.initialize(FingerPosition.RIGHT_THUMB.getPosition());
 		Stage dialogStage = buildProgressDialog(cancelCommand, message, future);
 		
 		Task<ServiceResponse<InitializeResponse>> task = new Task<ServiceResponse<InitializeResponse>>()
