@@ -4,8 +4,10 @@ import javafx.beans.Observable;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.util.Callback;
+import sa.gov.nic.bio.bw.client.core.utils.Device;
 
 import java.util.Objects;
+import java.util.Set;
 
 public class MenuItem implements Comparable<MenuItem>
 {
@@ -16,6 +18,7 @@ public class MenuItem implements Comparable<MenuItem>
 	private int order; // lowest order == top menu
 	private Class<?> workflowClass;
 	private String iconId;
+	private Set<Device> devices;
 	private BooleanProperty selected = new SimpleBooleanProperty();
 	
 	public static Callback<MenuItem, Observable[]> extractor()
@@ -46,6 +49,9 @@ public class MenuItem implements Comparable<MenuItem>
 	public String getIconId(){return iconId;}
 	public void setIconId(String iconId){this.iconId = iconId;}
 	
+	public Set<Device> getDevices(){return devices;}
+	public void setDevices(Set<Device> devices){this.devices = devices;}
+	
 	public boolean isSelected(){ return selected.get();}
 	public void setSelected(boolean selected){ this.selected.set(selected);}
 	public BooleanProperty selectedProperty(){return selected;}
@@ -59,19 +65,13 @@ public class MenuItem implements Comparable<MenuItem>
 		return index == menuItem.index && lines == menuItem.lines && order == menuItem.order &&
 			   Objects.equals(menuId, menuItem.menuId) && Objects.equals(label, menuItem.label) &&
 			   Objects.equals(workflowClass, menuItem.workflowClass) && Objects.equals(iconId, menuItem.iconId) &&
-			   Objects.equals(selected, menuItem.selected);
+			   Objects.equals(devices, menuItem.devices) && Objects.equals(selected, menuItem.selected);
 	}
 	
 	@Override
 	public int hashCode()
 	{
-		return Objects.hash(index, menuId, label, lines, order, workflowClass, iconId, selected);
-	}
-	
-	@Override
-	public int compareTo(MenuItem other)
-	{
-		return other == null ? -1 : -Integer.compare(this.order, other.order);
+		return Objects.hash(index, menuId, label, lines, order, workflowClass, iconId, devices, selected);
 	}
 	
 	@Override
@@ -79,6 +79,12 @@ public class MenuItem implements Comparable<MenuItem>
 	{
 		return "MenuItem{" + "index=" + index + ", menuId='" + menuId + '\'' + ", label='" + label + '\'' +
 			   ", lines=" + lines + ", order=" + order + ", workflowClass=" + workflowClass + ", iconId='" +
-			   iconId + '\'' + ", selected=" + selected + '}';
+			   iconId + '\'' + ", devices=" + devices + ", selected=" + selected + '}';
+	}
+	
+	@Override
+	public int compareTo(MenuItem other)
+	{
+		return other == null ? -1 : -Integer.compare(this.order, other.order);
 	}
 }

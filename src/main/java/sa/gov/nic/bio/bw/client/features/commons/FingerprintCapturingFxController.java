@@ -1393,11 +1393,11 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 		    if(serviceResponse.isSuccess())
 		    {
 			    FingerprintStopPreviewResponse result = serviceResponse.getResult();
-		
-		        if(result.getReturnCode() == FingerprintStopPreviewResponse.SuccessCodes.SUCCESS)
+			
+			    if(result.getReturnCode() == FingerprintStopPreviewResponse.SuccessCodes.SUCCESS ||
+				   result.getReturnCode() == FingerprintStopPreviewResponse.FailureCodes.NOT_CAPTURING_NOW)
 		        {
-		            lblStatus.setText(
-		                    resources.getString("label.status.successfullyStoppedFingerprintCapturing"));
+		            lblStatus.setText(resources.getString("label.status.successfullyStoppedFingerprintCapturing"));
 		        }
 		        else
 		        {

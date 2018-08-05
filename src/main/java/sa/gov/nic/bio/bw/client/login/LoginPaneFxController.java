@@ -29,6 +29,7 @@ import sa.gov.nic.bio.bw.client.core.biokit.FingerPosition;
 import sa.gov.nic.bio.bw.client.core.interfaces.PersistableEntity;
 import sa.gov.nic.bio.bw.client.core.utils.AppConstants;
 import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
+import sa.gov.nic.bio.bw.client.core.utils.Device;
 import sa.gov.nic.bio.bw.client.core.utils.DialogUtils;
 import sa.gov.nic.bio.bw.client.core.utils.FingerprintDeviceType;
 import sa.gov.nic.bio.bw.client.core.utils.GuiLanguage;
@@ -39,8 +40,10 @@ import sa.gov.nic.bio.bw.client.features.commons.ui.AutoScalingStackPane;
 import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.prefs.Preferences;
 
 public class LoginPaneFxController extends BodyFxControllerBase implements PersistableEntity
@@ -383,7 +386,9 @@ public class LoginPaneFxController extends BodyFxControllerBase implements Persi
 		DevicesRunnerGadgetPaneFxController deviceManagerGadgetPaneController =
 												Context.getCoreFxController().getDeviceManagerGadgetPaneController();
 		deviceManagerGadgetPaneController.disableCollapsing(true);
-		deviceManagerGadgetPaneController.showOnlyFingerprintScannerControl(true);
+		Set<Device> devices = new HashSet<>();
+		devices.add(Device.FINGERPRINT_SCANNER);
+		deviceManagerGadgetPaneController.showDeviceControls(devices);
 		Pane devicesRunnerGadgetPane = deviceManagerGadgetPaneController.getRegionRootPane();
 		GuiUtils.showNode(devicesRunnerGadgetPane, true);
 		VBox vBox = new VBox(devicesRunnerGadgetPane);
@@ -401,7 +406,6 @@ public class LoginPaneFxController extends BodyFxControllerBase implements Persi
 			GuiUtils.showNode(devicesRunnerGadgetPane, false);
 			Context.getCoreFxController().reattachDeviceRunnerGadgetPane();
 			deviceManagerGadgetPaneController.setFingerprintScannerInitializationListener(null);
-			deviceManagerGadgetPaneController.showOnlyFingerprintScannerControl(false);
 			deviceManagerGadgetPaneController.disableCollapsing(false);
 		});
 		dialogStage.showAndWait();

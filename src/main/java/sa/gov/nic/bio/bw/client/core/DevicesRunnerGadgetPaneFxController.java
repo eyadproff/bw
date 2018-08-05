@@ -11,6 +11,7 @@ import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ProgressIndicator;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TitledPane;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -31,12 +32,14 @@ import sa.gov.nic.bio.bw.client.core.biokit.BioKitManager;
 import sa.gov.nic.bio.bw.client.core.utils.AppConstants;
 import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.client.core.utils.CoreErrorCodes;
+import sa.gov.nic.bio.bw.client.core.utils.Device;
 import sa.gov.nic.bio.bw.client.core.utils.DialogUtils;
 import sa.gov.nic.bio.bw.client.core.utils.FingerprintDeviceType;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.utils.RuntimeEnvironment;
 import sa.gov.nic.bio.bw.client.features.commons.utils.CommonsErrorCodes;
 
+import java.util.Set;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.Future;
 import java.util.function.Consumer;
@@ -50,6 +53,7 @@ import java.util.logging.Logger;
 public class DevicesRunnerGadgetPaneFxController extends RegionFxControllerBase
 {
 	private static final Logger LOGGER = Logger.getLogger(DevicesRunnerGadgetPaneFxController.class.getName());
+
 	
 	enum DeviceStatus
 	{
@@ -58,6 +62,7 @@ public class DevicesRunnerGadgetPaneFxController extends RegionFxControllerBase
 		NOT_CONNECTED
 	}
 	
+	@FXML private ScrollPane spDevices;
 	@FXML private TitledPane tpDevicesRunner;
 	@FXML private TitledPane tpFingerprintScanner;
 	@FXML private TitledPane tpCamera;
@@ -100,7 +105,6 @@ public class DevicesRunnerGadgetPaneFxController extends RegionFxControllerBase
 	
 	public ClosureListener getClosureListener(){return closureListener;}
 	
-	public FingerprintDeviceType getCurrentFingerprintDeviceType(){return currentFingerprintDeviceType;}
 	public void setNextFingerprintDeviceType(FingerprintDeviceType nextFingerprintDeviceType)
 	{
 		this.nextFingerprintDeviceType = nextFingerprintDeviceType;
@@ -161,10 +165,19 @@ public class DevicesRunnerGadgetPaneFxController extends RegionFxControllerBase
 		tpDevicesRunner.setCollapsible(!bDisable);
 	}
 	
-	public void showOnlyFingerprintScannerControl(boolean bool)
+	public void showDeviceControls(Set<Device> devices)
 	{
-		GuiUtils.showNode(tpCamera, !bool);
-		GuiUtils.showNode(tpPassportScanner, !bool);
+		GuiUtils.showNode(tpDevicesRunner, !devices.isEmpty());
+		
+		boolean fingerprintScannerVisible = devices.contains(Device.FINGERPRINT_SCANNER);
+		boolean cameraVisible = devices.contains(Device.CAMERA);
+		boolean passportScannerVisible = devices.contains(Device.PASSPORT_SCANNER);
+		
+		GuiUtils.showNode(tpFingerprintScanner, fingerprintScannerVisible);
+		GuiUtils.showNode(tpCamera, cameraVisible);
+		GuiUtils.showNode(tpPassportScanner, passportScannerVisible);
+		
+		GuiUtils.showNode(spDevices, fingerprintScannerVisible || cameraVisible || passportScannerVisible);
 	}
 	
 	@Override

@@ -13,6 +13,7 @@ import sa.gov.nic.bio.bw.client.core.DevicesRunnerGadgetPaneFxController;
 import sa.gov.nic.bio.bw.client.core.beans.MenuItem;
 import sa.gov.nic.bio.bw.client.core.beans.UserSession;
 import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
+import sa.gov.nic.bio.bw.client.core.utils.Device;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.utils.UTF8Control;
 import sa.gov.nic.bio.bw.client.core.workflow.Workflow;
@@ -26,6 +27,7 @@ import java.util.Arrays;
 import java.util.Base64;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -310,6 +312,21 @@ public class HomePaneFxController extends BodyFxControllerBase
 					    }
 					    break;
 				    }
+				    case "menu.devices":
+				    {
+				    	String[] arrDevices = value.split(",");
+					    Set<Device> devices = new HashSet<>();
+				    	
+					    for(String sDevice : arrDevices)
+					    {
+						    Device device = Device.byName(sDevice.trim());
+						    if(device != null) devices.add(device);
+					    }
+					    
+					    menuItem.setDevices(devices);
+					    
+					    break;
+				    }
 			    }
 		    });
 		});
@@ -330,6 +347,15 @@ public class HomePaneFxController extends BodyFxControllerBase
 		}
 		
 		Context.getCoreFxController().getMenuPaneController().setMenus(menus, topMenus);
+		
+		Set<Device> devices = new HashSet<>();
+		for(MenuItem menuItem : menus)
+		{
+			Set<Device> menuDevices = menuItem.getDevices();
+			if(menuDevices != null) devices.addAll(menuDevices);
+		}
+		
+		Context.getCoreFxController().getDeviceManagerGadgetPaneController().showDeviceControls(devices);
 		
 		if(menus.size() == 0)
 		{
