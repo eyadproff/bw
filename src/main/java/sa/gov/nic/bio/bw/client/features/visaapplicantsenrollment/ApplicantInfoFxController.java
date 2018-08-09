@@ -8,11 +8,11 @@ import javafx.geometry.Insets;
 import javafx.geometry.NodeOrientation;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
+import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -65,13 +65,13 @@ public class ApplicantInfoFxController extends WizardStepFxControllerBase
 	public static final String KEY_GENDER = "GENDER";
 	public static final String KEY_BIRTH_PLACE = "BIRTH_PLACE";
 	public static final String KEY_BIRTH_DATE = "BIRTH_DATE";
-	public static final String KEY_BIRTH_DATE_SHOW_HIJRI = "BIRTH_DATE_SHOW_HIJRI";
+	public static final String KEY_BIRTH_DATE_USE_HIJRI = "BIRTH_DATE_USE_HIJRI";
 	public static final String KEY_VISA_TYPE = "VISA_TYPE";
 	public static final String KEY_PASSPORT_NUMBER = "PASSPORT_NUMBER";
 	public static final String KEY_ISSUE_DATE = "ISSUE_DATE";
-	public static final String KEY_ISSUE_DATE_SHOW_HIJRI = "ISSUE_DATE_SHOW_HIJRI";
+	public static final String KEY_ISSUE_DATE_USE_HIJRI = "ISSUE_DATE_USE_HIJRI";
 	public static final String KEY_EXPIRATION_DATE = "EXPIRATION_DATE";
-	public static final String KEY_EXPIRATION_DATE_SHOW_HIJRI = "EXPIRATION_DATE_SHOW_HIJRI";
+	public static final String KEY_EXPIRATION_DATE_USE_HIJRI = "EXPIRATION_DATE_USE_HIJRI";
 	public static final String KEY_ISSUANCE_COUNTRY = "ISSUANCE_COUNTRY";
 	public static final String KEY_PASSPORT_TYPE = "PASSPORT_TYPE";
 	public static final String KEY_DIALING_CODE = "DIALING_CODE";
@@ -95,9 +95,12 @@ public class ApplicantInfoFxController extends WizardStepFxControllerBase
 	@FXML private DatePicker dpBirthDate;
 	@FXML private DatePicker dpIssueDate;
 	@FXML private DatePicker dpExpirationDate;
-	@FXML private CheckBox cbBirthDateShowHijri;
-	@FXML private CheckBox cbIssueDateShowHijri;
-	@FXML private CheckBox cbExpirationDateShowHijri;
+	@FXML private RadioButton rdoBirthDateUseHijri;
+	@FXML private RadioButton rdoBirthDateUseGregorian;
+	@FXML private RadioButton rdoIssueDateUseHijri;
+	@FXML private RadioButton rdoIssueDateUseGregorian;
+	@FXML private RadioButton rdoExpirationDateUseHijri;
+	@FXML private RadioButton rdoExpirationDateUseGregorian;
 	@FXML private TextField txtPassportNumber;
 	@FXML private Button btnPassportScanner;
 	@FXML private Button btnNext;
@@ -216,9 +219,9 @@ public class ApplicantInfoFxController extends WizardStepFxControllerBase
 			}
 		});
 		
-		GuiUtils.initDatePicker(cbBirthDateShowHijri, dpBirthDate, birthDateValidator);
-		GuiUtils.initDatePicker(cbIssueDateShowHijri, dpIssueDate, null);
-		GuiUtils.initDatePicker(cbExpirationDateShowHijri, dpExpirationDate, null);
+		GuiUtils.initDatePicker(rdoBirthDateUseHijri, dpBirthDate, birthDateValidator);
+		GuiUtils.initDatePicker(rdoIssueDateUseHijri, dpIssueDate, null);
+		GuiUtils.initDatePicker(rdoExpirationDateUseHijri, dpExpirationDate, null);
 		
 		GuiUtils.applyValidatorToTextField(txtFirstName, null, null, 30);
 		GuiUtils.applyValidatorToTextField(txtSecondName, null, null, 30);
@@ -391,9 +394,9 @@ public class ApplicantInfoFxController extends WizardStepFxControllerBase
 		uiDataMap.put(KEY_ISSUE_DATE, dpIssueDate.getValue());
 		uiDataMap.put(KEY_EXPIRATION_DATE, dpExpirationDate.getValue());
 		
-		uiDataMap.put(KEY_BIRTH_DATE_SHOW_HIJRI, cbBirthDateShowHijri.isSelected());
-		uiDataMap.put(KEY_ISSUE_DATE_SHOW_HIJRI, cbIssueDateShowHijri.isSelected());
-		uiDataMap.put(KEY_EXPIRATION_DATE_SHOW_HIJRI, cbExpirationDateShowHijri.isSelected());
+		uiDataMap.put(KEY_BIRTH_DATE_USE_HIJRI, rdoBirthDateUseHijri.isSelected());
+		uiDataMap.put(KEY_ISSUE_DATE_USE_HIJRI, rdoIssueDateUseHijri.isSelected());
+		uiDataMap.put(KEY_EXPIRATION_DATE_USE_HIJRI, rdoExpirationDateUseHijri.isSelected());
 	}
 	
 	private void loadOldDateIfExist(Map<String, Object> dataMap)
@@ -406,13 +409,13 @@ public class ApplicantInfoFxController extends WizardStepFxControllerBase
 		GenderType gender = (GenderType) dataMap.get(KEY_GENDER);
 		CountryBean birthPlace = (CountryBean) dataMap.get(KEY_BIRTH_PLACE);
 		LocalDate birthDate = (LocalDate) dataMap.get(KEY_BIRTH_DATE);
-		Boolean birthDateShowHijri = (Boolean) dataMap.get(KEY_BIRTH_DATE_SHOW_HIJRI);
+		Boolean birthDateUseHijri = (Boolean) dataMap.get(KEY_BIRTH_DATE_USE_HIJRI);
 		VisaTypeBean visaType = (VisaTypeBean) dataMap.get(KEY_VISA_TYPE);
 		String passportNumber = (String) dataMap.get(KEY_PASSPORT_NUMBER);
 		LocalDate issueDate = (LocalDate) dataMap.get(KEY_ISSUE_DATE);
-		Boolean issueDateShowHijri = (Boolean) dataMap.get(KEY_ISSUE_DATE_SHOW_HIJRI);
+		Boolean issueDateUseHijri = (Boolean) dataMap.get(KEY_ISSUE_DATE_USE_HIJRI);
 		LocalDate expirationDate = (LocalDate) dataMap.get(KEY_EXPIRATION_DATE);
-		Boolean expirationDateShowHijri = (Boolean) dataMap.get(KEY_EXPIRATION_DATE_SHOW_HIJRI);
+		Boolean expirationDateUseHijri = (Boolean) dataMap.get(KEY_EXPIRATION_DATE_USE_HIJRI);
 		CountryBean issuanceCountry = (CountryBean) dataMap.get(KEY_ISSUANCE_COUNTRY);
 		PassportTypeBean passportType = (PassportTypeBean) dataMap.get(KEY_PASSPORT_TYPE);
 		CountryDialingCode dialingCode = (CountryDialingCode) dataMap.get(KEY_DIALING_CODE);
@@ -471,9 +474,14 @@ public class ApplicantInfoFxController extends WizardStepFxControllerBase
 		if(issueDate != null) dpIssueDate.setValue(issueDate);
 		if(expirationDate != null) dpExpirationDate.setValue(expirationDate);
 		
-		if(birthDateShowHijri != null) cbBirthDateShowHijri.setSelected(birthDateShowHijri);
-		if(issueDateShowHijri != null) cbIssueDateShowHijri.setSelected(issueDateShowHijri);
-		if(expirationDateShowHijri != null) cbExpirationDateShowHijri.setSelected(expirationDateShowHijri);
+		if(birthDateUseHijri != null) rdoBirthDateUseHijri.setSelected(birthDateUseHijri);
+		else rdoBirthDateUseHijri.setSelected(true);
+		
+		if(issueDateUseHijri != null) rdoIssueDateUseHijri.setSelected(issueDateUseHijri);
+		rdoIssueDateUseHijri.setSelected(true);
+		
+		if(expirationDateUseHijri != null) rdoExpirationDateUseHijri.setSelected(expirationDateUseHijri);
+		else rdoExpirationDateUseHijri.setSelected(true);
 	}
 	
 	@FXML

@@ -7,10 +7,10 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
+import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.scene.paint.Color;
 import sa.gov.nic.bio.bw.client.core.Context;
@@ -40,13 +40,13 @@ public class PersonInfoPaneFxController extends WizardStepFxControllerBase
 	public static final String KEY_PERSON_INFO_OCCUPATION = "PERSON_INFO_OCCUPATION";
 	public static final String KEY_PERSON_INFO_BIRTH_PLACE = "PERSON_INFO_BIRTH_PLACE";
 	public static final String KEY_PERSON_INFO_BIRTH_DATE = "PERSON_INFO_BIRTH_DATE";
-	public static final String KEY_PERSON_INFO_BIRTH_DATE_SHOW_HIJRI = "PERSON_INFO_BIRTH_DATE_SHOW_HIJRI";
+	public static final String KEY_PERSON_INFO_BIRTH_DATE_USE_HIJRI = "PERSON_INFO_BIRTH_DATE_USE_HIJRI";
 	public static final String KEY_PERSON_INFO_ID_NUMBER = "PERSON_INFO_ID_NUMBER";
 	public static final String KEY_PERSON_INFO_ID_TYPE = "PERSON_INFO_ID_TYPE";
 	public static final String KEY_PERSON_INFO_ID_ISSUANCE_DATE = "PERSON_INFO_ID_ISSUANCE_DATE";
-	public static final String KEY_PERSON_INFO_ID_ISSUANCE_DATE_SHOW_HIJRI = "PERSON_INFO_ID_ISSUANCE_DATE_SHOW_HIJRI";
+	public static final String KEY_PERSON_INFO_ID_ISSUANCE_DATE_USE_HIJRI = "PERSON_INFO_ID_ISSUANCE_DATE_USE_HIJRI";
 	public static final String KEY_PERSON_INFO_ID_EXPIRY_DATE = "PERSON_INFO_ID_EXPIRY_DATE";
-	public static final String KEY_PERSON_INFO_ID_EXPIRY_DATE_SHOW_HIJRI = "PERSON_INFO_ID_EXPIRY_DATE_SHOW_HIJRI";
+	public static final String KEY_PERSON_INFO_ID_EXPIRY_DATE_USE_HIJRI = "PERSON_INFO_ID_EXPIRY_DATE_USE_HIJRI";
 	
 	private static final String KEY_PERSON_INFO_FIRST_NAME_DISABLED = "PERSON_INFO_FIRST_NAME_DISABLED";
 	private static final String KEY_PERSON_INFO_FATHER_NAME_DISABLED = "PERSON_INFO_FATHER__NAME_DISABLED";
@@ -73,9 +73,12 @@ public class PersonInfoPaneFxController extends WizardStepFxControllerBase
 	@FXML private ComboBox<ItemWithText<GenderType>> cboGender;
 	@FXML private ComboBox<HideableItem<CountryBean>> cboNationality;
 	@FXML private ComboBox<ItemWithText<IdType>> cboIdType;
-	@FXML private CheckBox cbBirthDateShowHijri;
-	@FXML private CheckBox cbIdIssuanceDateShowHijri;
-	@FXML private CheckBox cbIdExpiryDateShowHijri;
+	@FXML private RadioButton rdoBirthDateUseHijri;
+	@FXML private RadioButton rdoBirthDateUseGregorian;
+	@FXML private RadioButton rdoIdIssuanceDateUseHijri;
+	@FXML private RadioButton rdoIdIssuanceDateUseGregorian;
+	@FXML private RadioButton rdoIdExpiryDateUseHijri;
+	@FXML private RadioButton rdoIdExpiryDateUseGregorian;
 	@FXML private DatePicker dpBirthDate;
 	@FXML private DatePicker dpIdIssuanceDate;
 	@FXML private DatePicker dpIdExpiryDate;
@@ -111,9 +114,9 @@ public class PersonInfoPaneFxController extends WizardStepFxControllerBase
 		idTypes.forEach(idType -> items.add(new ItemWithText<>(idType, idType.getDesc())));
 		cboIdType.setItems(items);
 		
-		GuiUtils.initDatePicker(cbBirthDateShowHijri, dpBirthDate, birthDateValidator);
-		GuiUtils.initDatePicker(cbIdIssuanceDateShowHijri, dpIdIssuanceDate, null);
-		GuiUtils.initDatePicker(cbIdExpiryDateShowHijri, dpIdExpiryDate, null);
+		GuiUtils.initDatePicker(rdoBirthDateUseHijri, dpBirthDate, birthDateValidator);
+		GuiUtils.initDatePicker(rdoIdIssuanceDateUseHijri, dpIdIssuanceDate, null);
+		GuiUtils.initDatePicker(rdoIdExpiryDateUseHijri, dpIdExpiryDate, null);
 		
 		GuiUtils.applyValidatorToTextField(txtFirstName, null, null, 15);
 		GuiUtils.applyValidatorToTextField(txtFatherName, null, null, 15);
@@ -257,15 +260,12 @@ public class PersonInfoPaneFxController extends WizardStepFxControllerBase
 			{
 				dpBirthDate.setValue(birthDate);
 				
-				if(birthDateDisabled == null || birthDateDisabled)
-				{
-					dpBirthDate.setDisable(true);
-					cbBirthDateShowHijri.setDisable(true);
-				}
+				if(birthDateDisabled == null || birthDateDisabled) dpBirthDate.setDisable(true);
 			}
 			
-			Boolean birthDateShowHijri = (Boolean) uiInputData.get(KEY_PERSON_INFO_BIRTH_DATE_SHOW_HIJRI);
-			cbBirthDateShowHijri.setSelected(birthDateShowHijri != null && birthDateShowHijri);
+			Boolean birthDateUseHijri = (Boolean) uiInputData.get(KEY_PERSON_INFO_BIRTH_DATE_USE_HIJRI);
+			if(birthDateUseHijri != null) rdoBirthDateUseHijri.setSelected(birthDateUseHijri);
+			else rdoBirthDateUseHijri.setSelected(true);
 			
 			String idNumber = (String) uiInputData.get(KEY_PERSON_INFO_ID_NUMBER);
 			if(idNumber != null && !idNumber.trim().isEmpty())
@@ -290,30 +290,24 @@ public class PersonInfoPaneFxController extends WizardStepFxControllerBase
 			{
 				dpIdIssuanceDate.setValue(idIssuanceDate);
 				
-				if(idIssuanceDateDisabled == null || idIssuanceDateDisabled)
-				{
-					dpIdIssuanceDate.setDisable(true);
-					cbIdIssuanceDateShowHijri.setDisable(true);
-				}
+				if(idIssuanceDateDisabled == null || idIssuanceDateDisabled) dpIdIssuanceDate.setDisable(true);
 			}
 			
-			Boolean idIssuanceDateShowHijri = (Boolean) uiInputData.get(KEY_PERSON_INFO_ID_ISSUANCE_DATE_SHOW_HIJRI);
-			cbIdIssuanceDateShowHijri.setSelected(idIssuanceDateShowHijri != null && idIssuanceDateShowHijri);
+			Boolean idIssuanceDateUseHijri = (Boolean) uiInputData.get(KEY_PERSON_INFO_ID_ISSUANCE_DATE_USE_HIJRI);
+			if(idIssuanceDateUseHijri != null) rdoIdIssuanceDateUseHijri.setSelected(idIssuanceDateUseHijri);
+			else rdoIdIssuanceDateUseHijri.setSelected(true);
 			
 			LocalDate idExpiryDate = (LocalDate) uiInputData.get(KEY_PERSON_INFO_ID_EXPIRY_DATE);
 			if(idExpiryDate != null)
 			{
 				dpIdExpiryDate.setValue(idExpiryDate);
 				
-				if(idExpiryDateDisabled == null || idExpiryDateDisabled)
-				{
-					dpIdExpiryDate.setDisable(true);
-					cbIdExpiryDateShowHijri.setDisable(true);
-				}
+				if(idExpiryDateDisabled == null || idExpiryDateDisabled) dpIdExpiryDate.setDisable(true);
 			}
 			
-			Boolean idExpiryDateShowHijri = (Boolean) uiInputData.get(KEY_PERSON_INFO_ID_EXPIRY_DATE_SHOW_HIJRI);
-			cbIdExpiryDateShowHijri.setSelected(idExpiryDateShowHijri != null && idExpiryDateShowHijri);
+			Boolean idExpiryDateUseHijri = (Boolean) uiInputData.get(KEY_PERSON_INFO_ID_EXPIRY_DATE_USE_HIJRI);
+			if(idExpiryDateUseHijri != null) rdoIdExpiryDateUseHijri.setSelected(idExpiryDateUseHijri);
+			else rdoIdExpiryDateUseHijri.setSelected(true);
 			
 			if(focusedNode != null) focusedNode.requestFocus();
 			else btnNext.requestFocus();
@@ -355,16 +349,16 @@ public class PersonInfoPaneFxController extends WizardStepFxControllerBase
 		else uiDataMap.remove(KEY_PERSON_INFO_BIRTH_PLACE);
 		
 		uiDataMap.put(KEY_PERSON_INFO_BIRTH_DATE, dpBirthDate.getValue());
-		uiDataMap.put(KEY_PERSON_INFO_BIRTH_DATE_SHOW_HIJRI, cbBirthDateShowHijri.isSelected());
+		uiDataMap.put(KEY_PERSON_INFO_BIRTH_DATE_USE_HIJRI, rdoBirthDateUseHijri.isSelected());
 		
 		ItemWithText<IdType> value = cboIdType.getValue();
 		if(value != null) uiDataMap.put(KEY_PERSON_INFO_ID_TYPE, value.getItem());
 		else uiDataMap.remove(KEY_PERSON_INFO_ID_TYPE);
 		
 		uiDataMap.put(KEY_PERSON_INFO_ID_ISSUANCE_DATE, dpIdIssuanceDate.getValue());
-		uiDataMap.put(KEY_PERSON_INFO_ID_ISSUANCE_DATE_SHOW_HIJRI, cbIdIssuanceDateShowHijri.isSelected());
+		uiDataMap.put(KEY_PERSON_INFO_ID_ISSUANCE_DATE_USE_HIJRI, rdoIdIssuanceDateUseHijri.isSelected());
 		uiDataMap.put(KEY_PERSON_INFO_ID_EXPIRY_DATE, dpIdExpiryDate.getValue());
-		uiDataMap.put(KEY_PERSON_INFO_ID_EXPIRY_DATE_SHOW_HIJRI, cbIdExpiryDateShowHijri.isSelected());
+		uiDataMap.put(KEY_PERSON_INFO_ID_EXPIRY_DATE_USE_HIJRI, rdoIdExpiryDateUseHijri.isSelected());
 		
 		uiDataMap.put(KEY_PERSON_INFO_FIRST_NAME_DISABLED, txtFirstName.isDisabled());
 		uiDataMap.put(KEY_PERSON_INFO_FATHER_NAME_DISABLED, txtFatherName.isDisabled());

@@ -8,9 +8,9 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 import org.controlsfx.glyphfont.FontAwesome;
@@ -38,10 +38,10 @@ public class JudgmentDetailsPaneFxController extends WizardStepFxControllerBase
 	public static final String KEY_JUDGMENT_DETAILS_POLICE_FILE_NUMBER = "JUDGMENT_DETAILS_POLICE_FILE_NUMBER";
 	public static final String KEY_JUDGMENT_DETAILS_JUDGMENT_NUMBER = "JUDGMENT_DETAILS_JUDGMENT_NUMBER";
 	public static final String KEY_JUDGMENT_DETAILS_ARREST_DATE = "JUDGMENT_DETAILS_ARREST_DATE";
-	public static final String KEY_JUDGMENT_DETAILS_ARREST_DATE_SHOW_HIJRI = "JUDGMENT_DETAILS_ARREST_DATE_SHOW_HIJRI";
+	public static final String KEY_JUDGMENT_DETAILS_ARREST_DATE_USE_HIJRI = "JUDGMENT_DETAILS_ARREST_DATE_USE_HIJRI";
 	public static final String KEY_JUDGMENT_DETAILS_JUDGMENT_DATE = "JUDGMENT_DETAILS_JUDGMENT_DATE";
-	public static final String KEY_JUDGMENT_DETAILS_JUDGMENT_DATE_SHOW_HIJRI =
-																		"JUDGMENT_DETAILS_JUDGMENT_DATE_SHOW_HIJRI";
+	public static final String KEY_JUDGMENT_DETAILS_JUDGMENT_DATE_USE_HIJRI =
+																			"JUDGMENT_DETAILS_JUDGMENT_DATE_USE_HIJRI";
 	
 	@FXML private Pane paneCrimeContainer;
 	@FXML private Pane paneCrime2;
@@ -58,13 +58,15 @@ public class JudgmentDetailsPaneFxController extends WizardStepFxControllerBase
 	@FXML private ComboBox<HideableItem<Integer>> cboCrimeClass4;
 	@FXML private ComboBox<HideableItem<Integer>> cboCrimeEvent5;
 	@FXML private ComboBox<HideableItem<Integer>> cboCrimeClass5;
-	@FXML private CheckBox cbArrestDateShowHijri;
-	@FXML private CheckBox cbJudgmentDateShowHijri;
 	@FXML private TextField txtCaseFileNumber;
 	@FXML private TextField txtJudgmentNumber;
 	@FXML private TextField txtJudgmentIssuer;
 	@FXML private DatePicker dpArrestDate;
 	@FXML private DatePicker dpJudgmentDate;
+	@FXML private RadioButton rdoArrestDateUseHijri;
+	@FXML private RadioButton rdoArrestDateUseGregorian;
+	@FXML private RadioButton rdoJudgmentDateUseHijri;
+	@FXML private RadioButton rdoJudgmentDateUseGregorian;
 	@FXML private Button btnHidePaneCrime2;
 	@FXML private Button btnHidePaneCrime3;
 	@FXML private Button btnHidePaneCrime4;
@@ -176,8 +178,8 @@ public class JudgmentDetailsPaneFxController extends WizardStepFxControllerBase
 												  .boxed()
 												  .collect(Collectors.toList());
 		
-		GuiUtils.initDatePicker(cbArrestDateShowHijri, dpArrestDate, null);
-		GuiUtils.initDatePicker(cbJudgmentDateShowHijri, dpJudgmentDate, null);
+		GuiUtils.initDatePicker(rdoArrestDateUseHijri, dpArrestDate, null);
+		GuiUtils.initDatePicker(rdoJudgmentDateUseHijri, dpJudgmentDate, null);
 		
 		GuiUtils.addAutoCompletionSupportToComboBox(cboCrimeEvent1, crimeEventCodes);
 		GuiUtils.addAutoCompletionSupportToComboBox(cboCrimeEvent2, crimeEventCodes);
@@ -342,15 +344,17 @@ public class JudgmentDetailsPaneFxController extends WizardStepFxControllerBase
 			if(arrestDate != null) dpArrestDate.setValue(arrestDate);
 			else if(focusedNode == null) focusedNode = dpArrestDate;
 			
-			Boolean arrestDateShowHijri = (Boolean) uiInputData.get(KEY_JUDGMENT_DETAILS_ARREST_DATE_SHOW_HIJRI);
-			cbArrestDateShowHijri.setSelected(arrestDateShowHijri != null && arrestDateShowHijri);
+			Boolean arrestDateUseHijri = (Boolean) uiInputData.get(KEY_JUDGMENT_DETAILS_ARREST_DATE_USE_HIJRI);
+			if(arrestDateUseHijri != null) rdoArrestDateUseHijri.setSelected(arrestDateUseHijri);
+			else rdoArrestDateUseHijri.setSelected(true);
 			
 			LocalDate judgmentDate = (LocalDate) uiInputData.get(KEY_JUDGMENT_DETAILS_JUDGMENT_DATE);
 			if(judgmentDate != null) dpJudgmentDate.setValue(judgmentDate);
 			else if(focusedNode == null) focusedNode = dpJudgmentDate;
 			
-			Boolean judgmentDateShowHijri = (Boolean) uiInputData.get(KEY_JUDGMENT_DETAILS_JUDGMENT_DATE_SHOW_HIJRI);
-			cbJudgmentDateShowHijri.setSelected(judgmentDateShowHijri != null && judgmentDateShowHijri);
+			Boolean judgmentDatUseHijri = (Boolean) uiInputData.get(KEY_JUDGMENT_DETAILS_JUDGMENT_DATE_USE_HIJRI);
+			if(judgmentDatUseHijri != null) rdoJudgmentDateUseHijri.setSelected(judgmentDatUseHijri);
+			else rdoJudgmentDateUseHijri.setSelected(true);
 			
 			if(focusedNode != null) focusedNode.requestFocus();
 			else btnNext.requestFocus();
@@ -389,9 +393,9 @@ public class JudgmentDetailsPaneFxController extends WizardStepFxControllerBase
 		
 		uiDataMap.put(KEY_JUDGMENT_DETAILS_JUDGMENT_NUMBER, txtJudgmentNumber.getText());
 		uiDataMap.put(KEY_JUDGMENT_DETAILS_ARREST_DATE, dpArrestDate.getValue());
-		uiDataMap.put(KEY_JUDGMENT_DETAILS_ARREST_DATE_SHOW_HIJRI, cbArrestDateShowHijri.isSelected());
+		uiDataMap.put(KEY_JUDGMENT_DETAILS_ARREST_DATE_USE_HIJRI, rdoArrestDateUseHijri.isSelected());
 		uiDataMap.put(KEY_JUDGMENT_DETAILS_JUDGMENT_DATE, dpJudgmentDate.getValue());
-		uiDataMap.put(KEY_JUDGMENT_DETAILS_JUDGMENT_DATE_SHOW_HIJRI, cbJudgmentDateShowHijri.isSelected());
+		uiDataMap.put(KEY_JUDGMENT_DETAILS_JUDGMENT_DATE_USE_HIJRI, rdoJudgmentDateUseHijri.isSelected());
 	}
 	
 	private void initCrimeEventComboBox(ComboBox<HideableItem<Integer>> cboCrimeEvent,

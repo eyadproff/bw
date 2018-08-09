@@ -6,6 +6,7 @@
 - Support single fingerprint devices.
 - Show device controls if needed only, based on user roles.
 - Convicted Report: add 2 more crime types and change the gui for choosing to be dynamic.
+- Make all date-pickers show Hijri calendar by default and the calendar input is selectable.
 
 ## v2018.07.4
 
