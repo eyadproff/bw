@@ -255,36 +255,36 @@ public class BuildConvictedReportTask extends Task<JasperPrint>
 		params.put(PARAMETER_OPERATOR_ID,
 		           AppUtils.replaceNumbersOnly(String.valueOf(userInfo.getOperatorId()), Locales.SAUDI_AR_LOCALE));
 		
-		params.put(PARAMETER_JAIL_YEARS,
+		if(judgementInfo.getJailYearCount() > 0) params.put(PARAMETER_JAIL_YEARS,
            AppUtils.replaceNumbersOnly(String.valueOf(judgementInfo.getJailYearCount()), Locales.SAUDI_AR_LOCALE));
-		params.put(PARAMETER_JAIL_MONTHS,
+		if(judgementInfo.getJailMonthCount() > 0) params.put(PARAMETER_JAIL_MONTHS,
            AppUtils.replaceNumbersOnly(String.valueOf(judgementInfo.getJailMonthCount()), Locales.SAUDI_AR_LOCALE));
-		params.put(PARAMETER_JAIL_DAYS,
+		if(judgementInfo.getJailDayCount() > 0) params.put(PARAMETER_JAIL_DAYS,
            AppUtils.replaceNumbersOnly(String.valueOf(judgementInfo.getJailDayCount()), Locales.SAUDI_AR_LOCALE));
-		params.put(PARAMETER_TAZEER_LASHES_COUNT,
+		if(judgementInfo.getJudgTazeerLashesCount() > 0) params.put(PARAMETER_TAZEER_LASHES_COUNT,
            AppUtils.replaceNumbersOnly(String.valueOf(judgementInfo.getJudgTazeerLashesCount()),
                                        Locales.SAUDI_AR_LOCALE));
-		params.put(PARAMETER_HAD_LASHES_COUNT,
+		if(judgementInfo.getJudgHadLashesCount() > 0) params.put(PARAMETER_HAD_LASHES_COUNT,
            AppUtils.replaceNumbersOnly(String.valueOf(judgementInfo.getJudgHadLashesCount()), Locales.SAUDI_AR_LOCALE));
-		params.put(PARAMETER_FINE,
+		if(judgementInfo.getJudgFine() > 0) params.put(PARAMETER_FINE,
            AppUtils.replaceNumbersOnly(String.valueOf(judgementInfo.getJudgFine()), Locales.SAUDI_AR_LOCALE));
-		params.put(PARAMETER_TRAVEL_BAN_YEARS,
+		if(judgementInfo.getTrvlBanYearCount() > 0) params.put(PARAMETER_TRAVEL_BAN_YEARS,
            AppUtils.replaceNumbersOnly(String.valueOf(judgementInfo.getTrvlBanYearCount()), Locales.SAUDI_AR_LOCALE));
-		params.put(PARAMETER_TRAVEL_BAN_MONTHS,
+		if(judgementInfo.getTrvlBanMonthCount() > 0) params.put(PARAMETER_TRAVEL_BAN_MONTHS,
            AppUtils.replaceNumbersOnly(String.valueOf(judgementInfo.getTrvlBanMonthCount()), Locales.SAUDI_AR_LOCALE));
-		params.put(PARAMETER_TRAVEL_BAN_DAYS,
+		if(judgementInfo.getTrvlBanDayCount() > 0) params.put(PARAMETER_TRAVEL_BAN_DAYS,
            AppUtils.replaceNumbersOnly(String.valueOf(judgementInfo.getTrvlBanDayCount()), Locales.SAUDI_AR_LOCALE));
-		params.put(PARAMETER_DEPORTATION_YEARS,
+		if(judgementInfo.getDeportYearCount() > 0) params.put(PARAMETER_DEPORTATION_YEARS,
            AppUtils.replaceNumbersOnly(String.valueOf(judgementInfo.getDeportYearCount()), Locales.SAUDI_AR_LOCALE));
-		params.put(PARAMETER_DEPORTATION_MONTHS,
+		if(judgementInfo.getDeportMonthCount() > 0) params.put(PARAMETER_DEPORTATION_MONTHS,
            AppUtils.replaceNumbersOnly(String.valueOf(judgementInfo.getDeportMonthCount()), Locales.SAUDI_AR_LOCALE));
-		params.put(PARAMETER_DEPORTATION_DAYS,
+		if(judgementInfo.getDeportDayCount() > 0) params.put(PARAMETER_DEPORTATION_DAYS,
            AppUtils.replaceNumbersOnly(String.valueOf(judgementInfo.getDeportDayCount()), Locales.SAUDI_AR_LOCALE));
-		params.put(PARAMETER_EXILING_YEARS,
+		if(judgementInfo.getExileYearCount() > 0) params.put(PARAMETER_EXILING_YEARS,
            AppUtils.replaceNumbersOnly(String.valueOf(judgementInfo.getExileYearCount()), Locales.SAUDI_AR_LOCALE));
-		params.put(PARAMETER_EXILING_MONTHS,
+		if(judgementInfo.getExileMonthCount() > 0) params.put(PARAMETER_EXILING_MONTHS,
            AppUtils.replaceNumbersOnly(String.valueOf(judgementInfo.getExileMonthCount()), Locales.SAUDI_AR_LOCALE));
-		params.put(PARAMETER_EXILING_DAYS,
+		if(judgementInfo.getExileDayCount() > 0) params.put(PARAMETER_EXILING_DAYS,
            AppUtils.replaceNumbersOnly(String.valueOf(judgementInfo.getExileDayCount()), Locales.SAUDI_AR_LOCALE));
 		params.put(PARAMETER_OTHER, judgementInfo.getJudgOthers());
 		params.put(PARAMETER_IS_CRIMINAL_LIBEL, judgementInfo.isLibel());
