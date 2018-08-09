@@ -31,11 +31,12 @@
         </HBox>
     </left>
     <right>
-        <VBox alignment="CENTER">
+        <HBox alignment="CENTER" spacing="5.0">
             <padding>
                 <Insets right="10"/>
             </padding>
+            <Button fx:id="btnMyTransactions" focusTraversable="false" text="%button.myTransactions" onAction="#onMyTransactionsButtonClicked" visible="false" managed="false"/>
             <Button fx:id="btnLogout" focusTraversable="false" text="%button.logout" onAction="#onLogoutButtonClicked"/>
-        </VBox>
+        </HBox>
     </right>
 </BorderPane>

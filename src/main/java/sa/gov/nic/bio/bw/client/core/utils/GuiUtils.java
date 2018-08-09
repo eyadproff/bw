@@ -24,6 +24,7 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.scene.effect.GaussianBlur;
 import javafx.scene.image.Image;
@@ -54,9 +55,13 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.time.DateTimeException;
 import java.time.LocalDate;
+import java.time.chrono.Chronology;
 import java.time.chrono.HijrahChronology;
+import java.time.chrono.IsoChronology;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAccessor;
 import java.util.List;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -459,13 +464,10 @@ public class GuiUtils
 		});
 	}
 	
-	public static void initDatePicker(CheckBox checkBox, DatePicker datePicker, Predicate<LocalDate> dateValidator)
+	public static void initDatePicker(RadioButton rdoUseHijri, DatePicker datePicker,
+	                                  Predicate<LocalDate> dateValidator)
 	{
-		checkBox.selectedProperty().addListener(((observable, oldValue, newValue) ->
-		{
-			if(newValue) datePicker.setChronology(HijrahChronology.INSTANCE);
-			else datePicker.setChronology(null);
-		}));
+		datePicker.setChronology(HijrahChronology.INSTANCE);
 		
 		Callback<DatePicker, DateCell> dayCellFactory = dp -> new DateCell()
 		{
@@ -486,7 +488,9 @@ public class GuiUtils
 			@Override
 			public String toString(LocalDate date)
 			{
-				if(date != null) return dateFormatterForFormatting.format(date);
+				Chronology chronology = rdoUseHijri.isSelected() ? HijrahChronology.INSTANCE : IsoChronology.INSTANCE;
+				
+				if(date != null) return dateFormatterForFormatting.withChronology(chronology).format(date);
 				else return "";
 			}
 			
@@ -511,10 +515,26 @@ public class GuiUtils
 						string = string.substring(0, 1) + "/" + string.substring(1, 2) + "/" + string.substring(2, 6);
 					}
 					
-					LocalDate date = LocalDate.parse(string, dateFormatterForParsing);
+					Chronology chronology = rdoUseHijri.isSelected() ?
+															HijrahChronology.INSTANCE : IsoChronology.INSTANCE;
 					
-					if(dateValidator != null && !dateValidator.test(date)) return null;
-					else return date;
+					try
+					{
+						TemporalAccessor temporalAccessor = dateFormatterForParsing.withChronology(chronology)
+																				   .parse(string);
+						
+						LocalDate date = IsoChronology.INSTANCE.date(temporalAccessor);
+						
+						if(dateValidator != null && !dateValidator.test(date)) return null;
+						else return date;
+					}
+					catch(DateTimeException e)
+					{
+						LOGGER.log(Level.FINE, "failed to convert the date (" + string + ") to "
+																							+ chronology.getId(), e);
+					}
+					
+					return null;
 				}
 				else return null;
 			}
@@ -522,6 +542,14 @@ public class GuiUtils
 		
 		datePicker.setDayCellFactory(dayCellFactory);
 		datePicker.setConverter(converter);
+		
+		rdoUseHijri.selectedProperty().addListener((observable, oldValue, newValue) ->
+		{
+			// refresh
+			LocalDate date = datePicker.getValue();
+			datePicker.setValue(null);
+			datePicker.setValue(date);
+		});
 	}
 	
 	public static void setupNationalityComboBox(ComboBox<HideableItem<CountryBean>> comboBox)

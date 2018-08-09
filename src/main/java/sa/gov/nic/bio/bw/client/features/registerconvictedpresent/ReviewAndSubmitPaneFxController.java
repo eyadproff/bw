@@ -25,13 +25,13 @@ import sa.gov.nic.bio.bw.client.features.commons.beans.GenderType;
 import sa.gov.nic.bio.bw.client.features.commons.ui.ImageViewPane;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.CountryBean;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.CrimeType;
+import sa.gov.nic.bio.bw.client.features.commons.webservice.Finger;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.IdType;
+import sa.gov.nic.bio.bw.client.features.commons.webservice.Name;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.utils.RegisterConvictedPresentErrorCodes;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.ConvictedReport;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.CrimeCode;
-import sa.gov.nic.bio.bw.client.features.commons.webservice.Finger;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.JudgementInfo;
-import sa.gov.nic.bio.bw.client.features.commons.webservice.Name;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.workflow.ConvictedReportResponse;
 import sa.gov.nic.bio.bw.client.login.webservice.UserInfo;
 import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
@@ -39,7 +39,6 @@ import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
 import java.io.ByteArrayInputStream;
 import java.net.URL;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
@@ -70,6 +69,8 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 	@FXML private Label lblCrimeClassification1;
 	@FXML private Label lblCrimeClassification2;
 	@FXML private Label lblCrimeClassification3;
+	@FXML private Label lblCrimeClassification4;
+	@FXML private Label lblCrimeClassification5;
 	@FXML private Label lblJudgmentIssuer;
 	@FXML private Label lblPoliceFileNumber;
 	@FXML private Label lblJudgmentNumber;
@@ -277,6 +278,20 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 								                                crimeClassTitles.get(crimeCode.getCrimeClass()));
 						break;
 					}
+					case 3:
+					{
+						GuiUtils.showNode(lblCrimeClassification4, true);
+						lblCrimeClassification4.setText(crimeEventTitles.get(crimeCode.getCrimeEvent()) + ": " +
+								                                crimeClassTitles.get(crimeCode.getCrimeClass()));
+						break;
+					}
+					case 4:
+					{
+						GuiUtils.showNode(lblCrimeClassification5, true);
+						lblCrimeClassification5.setText(crimeEventTitles.get(crimeCode.getCrimeEvent()) + ": " +
+								                                crimeClassTitles.get(crimeCode.getCrimeClass()));
+						break;
+					}
 				}
 			}
 			
@@ -333,7 +348,7 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 			
 			@SuppressWarnings("unchecked")
 			Map<Integer, String> fingerprintImages = (Map<Integer, String>)
-								uiInputData.get(FingerprintCapturingFxController.KEY_FINGERPRINTS_IMAGES);
+											uiInputData.get(FingerprintCapturingFxController.KEY_FINGERPRINTS_IMAGES);
 			Map<Integer, ImageView> imageViewMap = new HashMap<>();
 			Map<Integer, String> dialogTitleMap = new HashMap<>();
 			
@@ -527,22 +542,9 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 		boolean covenant = (boolean) uiInputData.get(PunishmentDetailsPaneFxController.KEY_PUNISHMENT_DETAILS_COVENANT);
 		boolean libel = (boolean) uiInputData.get(PunishmentDetailsPaneFxController.KEY_PUNISHMENT_DETAILS_LIBEL);
 		
-		List<CrimeCode> crimeCodes = new ArrayList<>();
-		
-		int crimeEvent1 = (int) uiInputData.get(JudgmentDetailsPaneFxController.KEY_JUDGMENT_DETAILS_CRIME_EVENT_1);
-		int crimeEvent2 = (int) uiInputData.get(JudgmentDetailsPaneFxController.KEY_JUDGMENT_DETAILS_CRIME_EVENT_2);
-		int crimeEvent3 = (int) uiInputData.get(JudgmentDetailsPaneFxController.KEY_JUDGMENT_DETAILS_CRIME_EVENT_3);
-		int crimeClass1 = (int) uiInputData.get(JudgmentDetailsPaneFxController.KEY_JUDGMENT_DETAILS_CRIME_CLASS_1);
-		int crimeClass2 = (int) uiInputData.get(JudgmentDetailsPaneFxController.KEY_JUDGMENT_DETAILS_CRIME_CLASS_2);
-		int crimeClass3 = (int) uiInputData.get(JudgmentDetailsPaneFxController.KEY_JUDGMENT_DETAILS_CRIME_CLASS_3);
-		boolean crime2Enabled = (boolean)
-							uiInputData.get(JudgmentDetailsPaneFxController.KEY_JUDGMENT_DETAILS_CRIME_2_ENABLED);
-		boolean crime3Enabled = (boolean)
-							uiInputData.get(JudgmentDetailsPaneFxController.KEY_JUDGMENT_DETAILS_CRIME_3_ENABLED);
-		
-		crimeCodes.add(new CrimeCode(crimeEvent1, crimeClass1));
-		if(crime2Enabled) crimeCodes.add(new CrimeCode(crimeEvent2, crimeClass2));
-		if(crime3Enabled) crimeCodes.add(new CrimeCode(crimeEvent3, crimeClass3));
+		@SuppressWarnings("unchecked")
+		List<CrimeCode> crimeCodes = (List<CrimeCode>)
+										uiInputData.get(JudgmentDetailsPaneFxController.KEY_JUDGMENT_DETAILS_CRIMES);
 		
 		String policeFileNum = (String)
 							uiInputData.get(JudgmentDetailsPaneFxController.KEY_JUDGMENT_DETAILS_POLICE_FILE_NUMBER);

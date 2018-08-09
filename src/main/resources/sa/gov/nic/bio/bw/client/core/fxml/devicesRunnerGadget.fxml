@@ -34,7 +34,7 @@
                 </Label>
                 <Button fx:id="btnDevicesRunnerAction" focusTraversable="false" onMouseClicked="#onDevicesRunnerActionButtonClicked"/>
             </HBox>
-            <ScrollPane hbarPolicy="NEVER" vbarPolicy="ALWAYS" fitToWidth="true">
+            <ScrollPane fx:id="spDevices" hbarPolicy="NEVER" vbarPolicy="ALWAYS" fitToWidth="true">
                 <VBox alignment="CENTER" spacing="5.0" HBox.hgrow="ALWAYS">
                     <TitledPane fx:id="tpFingerprintScanner" text="%label.fingerprintScanner" alignment="CENTER" collapsible="false" focusTraversable="false" HBox.hgrow="ALWAYS">
                         <HBox alignment="CENTER" spacing="10.0">

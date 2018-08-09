@@ -30,6 +30,7 @@ public class HeaderPaneFxController extends RegionFxControllerBase
 	@FXML private Label txtOperatorName;
 	@FXML private Label lblLocation;
 	@FXML private Label txtLocation;
+	@FXML private Button btnMyTransactions;
 	@FXML private Button btnLogout;
 
 	@Override
@@ -38,11 +39,13 @@ public class HeaderPaneFxController extends RegionFxControllerBase
 		Glyph atIcon = AppUtils.createFontAwesomeIcon(FontAwesome.Glyph.AT);
 		Glyph userIcon = AppUtils.createFontAwesomeIcon(FontAwesome.Glyph.USER);
 		Glyph locationIcon = AppUtils.createFontAwesomeIcon(FontAwesome.Glyph.LOCATION_ARROW);
+		Glyph myTransactionsIcon = AppUtils.createFontAwesomeIcon(FontAwesome.Glyph.BELL_O);
 		Glyph logoutIcon = AppUtils.createFontAwesomeIcon(FontAwesome.Glyph.POWER_OFF);
 		
 		lblUsername.setGraphic(atIcon);
 		lblOperatorName.setGraphic(userIcon);
 		lblLocation.setGraphic(locationIcon);
+		btnMyTransactions.setGraphic(myTransactionsIcon);
 		btnLogout.setGraphic(logoutIcon);
 	}
 	
@@ -83,6 +86,12 @@ public class HeaderPaneFxController extends RegionFxControllerBase
 			ivAvatar.setOnMouseClicked(null);
 			ivAvatar.setOnContextMenuRequested(null);
 		}
+	}
+	
+	@FXML
+	private void onMyTransactionsButtonClicked(ActionEvent actionEvent)
+	{
+	
 	}
 	
 	@FXML

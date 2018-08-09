@@ -184,7 +184,7 @@ public class ShowResultFxController extends WizardStepFxControllerBase
 					lblNationality.setTextFill(Color.RED);
 				}
 				
-				Boolean outOfKingdom = personInfo.isOutKingdom();
+				Boolean outOfKingdom = personInfo.isOut();
 				if(outOfKingdom != null) lblOutOfKingdom.setText(outOfKingdom ? resources.getString("label.yes") :
 						                                                        resources.getString("label.no"));
 				else

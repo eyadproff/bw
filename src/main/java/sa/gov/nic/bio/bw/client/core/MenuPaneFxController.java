@@ -172,7 +172,7 @@ public class MenuPaneFxController extends RegionFxControllerBase
                     labeledText.fontProperty().set(f);
                 });
 				
-				updateListViewHeight(listView, item.getIndex(), item);
+				updateListViewHeight(listView, (Integer) listView.getUserData(), item);
 			}
 			
 			arrow.translateXProperty().bind(pane.widthProperty().subtract(arrow.widthProperty().multiply(3)));
@@ -262,6 +262,7 @@ public class MenuPaneFxController extends RegionFxControllerBase
                 }
             }
         });
+		listView.setUserData(index);
 		
 		return listView;
 	}

@@ -253,3 +253,15 @@
 .bold-label {
     -fx-font-weight: bold;
 }
+
+.small-font {
+    -fx-font-size: 11;
+}
+
+.small-radio-button > .radio {
+    -fx-padding: 3.5;
+}
+
+.small-radio-button > .radio > .dot {
+    -fx-padding: 2.5;
+}

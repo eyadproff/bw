@@ -16,7 +16,7 @@ public class PersonInfo
 	private int gender;
 	private PersonIdInfo identityInfo;
 	private String face;
-	private Boolean isOutKingdom;
+	private Boolean isOut;
 	
 	public long getSamisId(){return samisId;}
 	public void setSamisId(long samisId){this.samisId = samisId;}
@@ -51,8 +51,8 @@ public class PersonInfo
 	public String getFace(){return face;}
 	public void setFace(String face){this.face = face;}
 	
-	public Boolean isOutKingdom(){return isOutKingdom;}
-	public void setOutKingdom(Boolean outKingdom){this.isOutKingdom = outKingdom;}
+	public Boolean isOut(){return isOut;}
+	public void setIsOut(Boolean isOut){this.isOut = isOut;}
 	
 	@Override
 	public boolean equals(Object o)
@@ -65,14 +65,14 @@ public class PersonInfo
 			   Objects.equals(birthPlace, that.birthPlace) && Objects.equals(birthHijGregInd, that.birthHijGregInd) &&
 			   Objects.equals(personType, that.personType) && Objects.equals(nationalityDesc, that.nationalityDesc) &&
 			   Objects.equals(identityInfo, that.identityInfo) && Objects.equals(face, that.face) &&
-			   Objects.equals(isOutKingdom, that.isOutKingdom);
+			   Objects.equals(isOut, that.isOut);
 	}
 	
 	@Override
 	public int hashCode()
 	{
 		return Objects.hash(samisId, name, birthDate, birthPlace, birthHijGregInd, personType, nationality,
-		                    nationalityDesc, gender, identityInfo, face, isOutKingdom);
+		                    nationalityDesc, gender, identityInfo, face, isOut);
 	}
 	
 	@Override
@@ -82,6 +82,6 @@ public class PersonInfo
 			   ", birthPlace='" + birthPlace + '\'' + ", birthHijGregInd='" + birthHijGregInd + '\'' +
 			   ", personType='" + personType + '\'' + ", nationality=" + nationality + ", nationalityDesc='" +
 			   nationalityDesc + '\'' + ", gender=" + gender + ", identityInfo=" + identityInfo + ", face='" +
-			   face + '\'' + ", isOutKingdom=" + isOutKingdom + '}';
+			   face + '\'' + ", isOut=" + isOut + '}';
 	}
 }

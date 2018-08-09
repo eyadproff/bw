@@ -18,7 +18,6 @@ import sa.gov.nic.bio.biokit.exceptions.NotConnectedException;
 import sa.gov.nic.bio.biokit.exceptions.TimeoutException;
 import sa.gov.nic.bio.biokit.fingerprint.beans.CaptureFingerprintResponse;
 import sa.gov.nic.bio.biokit.fingerprint.beans.FingerprintStopPreviewResponse;
-import sa.gov.nic.bio.biokit.websocket.beans.DMFingerData;
 import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.FxControllerBase;
 import sa.gov.nic.bio.bw.client.core.biokit.FingerPosition;
@@ -27,9 +26,7 @@ import sa.gov.nic.bio.bw.client.features.commons.ui.ImageViewPane;
 import sa.gov.nic.bio.bw.client.login.utils.LoginErrorCodes;
 
 import java.io.ByteArrayInputStream;
-import java.util.ArrayList;
 import java.util.Base64;
-import java.util.List;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -125,59 +122,13 @@ public class CaptureFingerprintDialogFxController extends FxControllerBase
 				    ivFingerprintDeviceLivePreview.setImage(new Image(new ByteArrayInputStream(bytes)));
 				});
 				
-				List<Integer> missingFingers = new ArrayList<>();
-				FingerPosition slapPosition;
-				
-				if(fingerPosition == FingerPosition.RIGHT_INDEX ||
-				   fingerPosition == FingerPosition.RIGHT_MIDDLE ||
-				   fingerPosition == FingerPosition.RIGHT_RING ||
-				   fingerPosition == FingerPosition.RIGHT_LITTLE)
-				{
-					slapPosition = FingerPosition.RIGHT_SLAP;
-					
-					if(fingerPosition != FingerPosition.RIGHT_INDEX)
-														missingFingers.add(FingerPosition.RIGHT_INDEX.getPosition());
-					if(fingerPosition != FingerPosition.RIGHT_MIDDLE)
-														missingFingers.add(FingerPosition.RIGHT_MIDDLE.getPosition());
-					if(fingerPosition != FingerPosition.RIGHT_RING)
-														missingFingers.add(FingerPosition.RIGHT_RING.getPosition());
-					if(fingerPosition != FingerPosition.RIGHT_LITTLE)
-														missingFingers.add(FingerPosition.RIGHT_LITTLE.getPosition());
-				}
-				else if(fingerPosition == FingerPosition.LEFT_INDEX ||
-						fingerPosition == FingerPosition.LEFT_MIDDLE ||
-						fingerPosition == FingerPosition.LEFT_RING ||
-						fingerPosition == FingerPosition.LEFT_LITTLE)
-				{
-					slapPosition = FingerPosition.LEFT_SLAP;
-					
-					if(fingerPosition != FingerPosition.LEFT_INDEX)
-														missingFingers.add(FingerPosition.LEFT_INDEX.getPosition());
-					if(fingerPosition != FingerPosition.LEFT_MIDDLE)
-														missingFingers.add(FingerPosition.LEFT_MIDDLE.getPosition());
-					if(fingerPosition != FingerPosition.LEFT_RING)
-														missingFingers.add(FingerPosition.LEFT_RING.getPosition());
-					if(fingerPosition != FingerPosition.LEFT_LITTLE)
-														missingFingers.add(FingerPosition.LEFT_LITTLE.getPosition());
-				}
-				else
-				{
-					slapPosition = FingerPosition.TWO_THUMBS;
-					
-					if(fingerPosition != FingerPosition.RIGHT_THUMB)
-														missingFingers.add(FingerPosition.RIGHT_THUMB.getPosition());
-					if(fingerPosition != FingerPosition.LEFT_THUMB)
-														missingFingers.add(FingerPosition.LEFT_THUMB.getPosition());
-				}
-				
-				
 				// start the real capturing
 				String fingerprintDeviceName = Context.getCoreFxController().getDeviceManagerGadgetPaneController()
 																			.getFingerprintScannerDeviceName();
 				Future<ServiceResponse<CaptureFingerprintResponse>> future = Context.getBioKitManager()
 						.getFingerprintService().startPreviewAndAutoCapture(fingerprintDeviceName,
-						                                                    slapPosition.getPosition(),
-						                                                    1, missingFingers,
+						                                                    fingerPosition.getPosition(),
+						                                                    1, null,
 						                                                    true, true,
 						                                                    responseProcessor);
 				return future.get();
@@ -202,9 +153,8 @@ public class CaptureFingerprintDialogFxController extends FxControllerBase
 		            // show the final slap image in place of the live preview image
 		            byte[] bytes = Base64.getDecoder().decode(capturedImageBase64);
 		            ivFingerprintDeviceLivePreview.setImage(new Image(new ByteArrayInputStream(bytes)));
-			
-			        List<DMFingerData> fingerData = result.getFingerData();
-			        this.result = fingerData.get(0).getFinger();
+		            
+			        this.result = result.getCapturedWsq();
 			        dialog.close();
 		        }
 		        else
@@ -361,7 +311,8 @@ public class CaptureFingerprintDialogFxController extends FxControllerBase
 		    {
 		        FingerprintStopPreviewResponse result = serviceResponse.getResult();
 		
-		        if(result.getReturnCode() != FingerprintStopPreviewResponse.SuccessCodes.SUCCESS)
+		        if(result.getReturnCode() != FingerprintStopPreviewResponse.SuccessCodes.SUCCESS &&
+		           result.getReturnCode() != FingerprintStopPreviewResponse.FailureCodes.NOT_CAPTURING_NOW)
 		        {
 			        String[] errorDetails = {"failed while stopping the fingerprint capturing!"};
 			        Context.getCoreFxController().showErrorDialog(String.valueOf(result.getReturnCode()),

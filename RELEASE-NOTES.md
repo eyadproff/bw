@@ -1,5 +1,15 @@
 # Release Notes:
 
+## v2018.08.1
+
+- Print Dead Person Record: change the record's length from 20 to 15 digits.
+- Support single fingerprint devices.
+- Show device controls if needed only, based on user roles.
+- Make all date-pickers show Hijri calendar by default and the calendar input is selectable.
+- Convicted Report: add 2 more crime types and change the gui for choosing to be dynamic.
+- Convicted Report: replace 0's with blank spaces in final report.
+- Convicted Report: fix a bug in inquiry result if the person is unknown.
+
 ## v2018.07.4
 
 - Add "Print Dead Person Record" feature.

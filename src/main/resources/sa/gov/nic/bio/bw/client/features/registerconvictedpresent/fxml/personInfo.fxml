@@ -7,7 +7,9 @@
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
@@ -20,6 +22,9 @@
     <fx:define>
         <GenderType fx:id="maleGender" fx:value="MALE"/>
         <GenderType fx:id="femaleGender" fx:value="FEMALE"/>
+        <ToggleGroup fx:id="toggleGroup1"/>
+        <ToggleGroup fx:id="toggleGroup2"/>
+        <ToggleGroup fx:id="toggleGroup3"/>
     </fx:define>
     <center>
         <BorderPane>
@@ -136,11 +141,14 @@
                         </GridPane.margin>
                     </Label>
                     <DatePicker fx:id="dpBirthDate" promptText="dd/MM/yyyy" GridPane.rowIndex="4" GridPane.columnIndex="3" GridPane.hgrow="ALWAYS"/>
-                    <CheckBox fx:id="cbBirthDateShowHijri" focusTraversable="false" text="%checkbox.birthDateShowHijri" styleClass="date-picker-check-box" GridPane.rowIndex="5" GridPane.columnIndex="3">
+                    <HBox GridPane.rowIndex="5" GridPane.columnIndex="3" spacing="5.0">
                         <GridPane.margin>
                             <Insets bottom="5.0"/>
                         </GridPane.margin>
-                    </CheckBox>
+                        <Label text="%label.input" styleClass="small-font"/>
+                        <RadioButton fx:id="rdoBirthDateUseHijri" toggleGroup="$toggleGroup1" text="%radio.hijri" styleClass="small-font, small-radio-button" focusTraversable="false"/>
+                        <RadioButton fx:id="rdoBirthDateUseGregorian" toggleGroup="$toggleGroup1" text="%radio.gregorian" styleClass="small-font, small-radio-button" focusTraversable="false"/>
+                    </HBox>
                     <Label text="%label.idNumber" GridPane.rowIndex="6" GridPane.columnIndex="0">
                         <GridPane.margin>
                             <Insets bottom="5.0"/>
@@ -171,18 +179,25 @@
                             <Insets right="20.0"/>
                         </GridPane.margin>
                     </DatePicker>
-                    <CheckBox fx:id="cbIdIssuanceDateShowHijri" focusTraversable="false" text="%checkbox.birthDateShowHijri" styleClass="date-picker-check-box" GridPane.rowIndex="8" GridPane.columnIndex="1">
+                    <HBox GridPane.rowIndex="8" GridPane.columnIndex="1" spacing="5.0">
                         <GridPane.margin>
                             <Insets bottom="5.0" right="20.0"/>
                         </GridPane.margin>
-                    </CheckBox>
+                        <Label text="%label.input" styleClass="small-font"/>
+                        <RadioButton fx:id="rdoIdIssuanceDateUseHijri" toggleGroup="$toggleGroup2" text="%radio.hijri" styleClass="small-font, small-radio-button" focusTraversable="false"/>
+                        <RadioButton fx:id="rdoIdIssuanceDateUseGregorian" toggleGroup="$toggleGroup2" text="%radio.gregorian" styleClass="small-font, small-radio-button" focusTraversable="false"/>
+                    </HBox>
                     <Label text="%label.idExpiry" GridPane.rowIndex="7" GridPane.columnIndex="2">
                         <GridPane.margin>
                             <Insets bottom="5.0"/>
                         </GridPane.margin>
                     </Label>
                     <DatePicker fx:id="dpIdExpiryDate" promptText="dd/MM/yyyy" GridPane.rowIndex="7" GridPane.columnIndex="3" GridPane.hgrow="ALWAYS"/>
-                    <CheckBox fx:id="cbIdExpiryDateShowHijri" focusTraversable="false" text="%checkbox.birthDateShowHijri" styleClass="date-picker-check-box" GridPane.rowIndex="8" GridPane.columnIndex="3"/>
+                    <HBox GridPane.rowIndex="8" GridPane.columnIndex="3" spacing="5.0">
+                        <Label text="%label.input" styleClass="small-font"/>
+                        <RadioButton fx:id="rdoIdExpiryDateUseHijri" toggleGroup="$toggleGroup3" text="%radio.hijri" styleClass="small-font, small-radio-button" focusTraversable="false"/>
+                        <RadioButton fx:id="rdoIdExpiryDateUseGregorian" toggleGroup="$toggleGroup3" text="%radio.gregorian" styleClass="small-font, small-radio-button" focusTraversable="false"/>
+                    </HBox>
                 </GridPane>
             </center>
         </BorderPane>

@@ -92,21 +92,23 @@
                                         <Label text="%label.crimeClassification" GridPane.rowIndex="0" GridPane.columnIndex="0" styleClass="bold-label" GridPane.columnSpan="2"/>
                                         <Label fx:id="lblCrimeClassification1" GridPane.rowIndex="1" GridPane.columnIndex="0" GridPane.hgrow="ALWAYS" GridPane.columnSpan="2"/>
                                         <Label fx:id="lblCrimeClassification2" GridPane.rowIndex="2" GridPane.columnIndex="0" GridPane.hgrow="ALWAYS" GridPane.columnSpan="2" managed="false" visible="false"/>
-                                        <Label fx:id="lblCrimeClassification3" GridPane.rowIndex="3" GridPane.columnIndex="0" GridPane.hgrow="ALWAYS" GridPane.columnSpan="2" managed="false" visible="false">
+                                        <Label fx:id="lblCrimeClassification3" GridPane.rowIndex="3" GridPane.columnIndex="0" GridPane.hgrow="ALWAYS" GridPane.columnSpan="2" managed="false" visible="false"/>
+                                        <Label fx:id="lblCrimeClassification4" GridPane.rowIndex="4" GridPane.columnIndex="0" GridPane.hgrow="ALWAYS" GridPane.columnSpan="2" managed="false" visible="false"/>
+                                        <Label fx:id="lblCrimeClassification5" GridPane.rowIndex="5" GridPane.columnIndex="0" GridPane.hgrow="ALWAYS" GridPane.columnSpan="2" managed="false" visible="false">
                                             <GridPane.margin>
                                                 <Insets bottom="20.0"/>
                                             </GridPane.margin>
                                         </Label>
-                                        <Label text="%label.judgmentIssuer" GridPane.rowIndex="4" GridPane.columnIndex="0" styleClass="bold-label"/>
-                                        <Label fx:id="lblJudgmentIssuer" GridPane.rowIndex="4" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
-                                        <Label text="%label.policeFileNumber" GridPane.rowIndex="5" GridPane.columnIndex="0" styleClass="bold-label"/>
-                                        <Label fx:id="lblPoliceFileNumber" GridPane.rowIndex="5" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
-                                        <Label text="%label.judgmentNumber" GridPane.rowIndex="6" GridPane.columnIndex="0" styleClass="bold-label"/>
-                                        <Label fx:id="lblJudgmentNumber" GridPane.rowIndex="6" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
-                                        <Label text="%label.arrestDate" GridPane.rowIndex="7" GridPane.columnIndex="0" styleClass="bold-label"/>
-                                        <Label fx:id="lblArrestDate" GridPane.rowIndex="7" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
-                                        <Label text="%label.judgmentDate" GridPane.rowIndex="8" GridPane.columnIndex="0" styleClass="bold-label"/>
-                                        <Label fx:id="lblJudgmentDate" GridPane.rowIndex="8" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
+                                        <Label text="%label.judgmentIssuer" GridPane.rowIndex="6" GridPane.columnIndex="0" styleClass="bold-label"/>
+                                        <Label fx:id="lblJudgmentIssuer" GridPane.rowIndex="6" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
+                                        <Label text="%label.caseFileNumber" GridPane.rowIndex="7" GridPane.columnIndex="0" styleClass="bold-label"/>
+                                        <Label fx:id="lblPoliceFileNumber" GridPane.rowIndex="7" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
+                                        <Label text="%label.judgmentNumber" GridPane.rowIndex="8" GridPane.columnIndex="0" styleClass="bold-label"/>
+                                        <Label fx:id="lblJudgmentNumber" GridPane.rowIndex="8" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
+                                        <Label text="%label.arrestDate" GridPane.rowIndex="9" GridPane.columnIndex="0" styleClass="bold-label"/>
+                                        <Label fx:id="lblArrestDate" GridPane.rowIndex="9" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
+                                        <Label text="%label.judgmentDate" GridPane.rowIndex="10" GridPane.columnIndex="0" styleClass="bold-label"/>
+                                        <Label fx:id="lblJudgmentDate" GridPane.rowIndex="10" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
                                     </GridPane>
                                 </VBox>
                             </TitledPane>
