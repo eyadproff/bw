@@ -135,6 +135,11 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 																		piCapturedImage.visibleProperty().not()));
 		ivCroppedImagePlaceholder.visibleProperty().bind(ivCroppedImage.imageProperty().isNull().and(
 																		piCroppedImage.visibleProperty().not()));
+		
+		btnNext.disabledProperty().addListener((observable, oldValue, newValue) ->
+		{
+			if(!newValue) btnNext.requestFocus();
+		});
 	}
 	
 	@Override

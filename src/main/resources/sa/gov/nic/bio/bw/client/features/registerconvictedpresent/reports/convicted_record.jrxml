@@ -40,6 +40,8 @@
 	<parameter name="CRIMINAL_CLASS1" class="java.lang.String"/>
 	<parameter name="CRIMINAL_CLASS2" class="java.lang.String"/>
 	<parameter name="CRIMINAL_CLASS3" class="java.lang.String"/>
+	<parameter name="CRIMINAL_CLASS4" class="java.lang.String"/>
+	<parameter name="CRIMINAL_CLASS5" class="java.lang.String"/>
 	<parameter name="JUDGMENT_ISSUER" class="java.lang.String"/>
 	<parameter name="JUDGMENT_DATE" class="java.lang.String"/>
 	<parameter name="JUDGMENT_NUMBER" class="java.lang.String"/>
@@ -1526,9 +1528,9 @@
 				<textFieldExpression><![CDATA[$P{ARREST_DATE}]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report" isBlankWhenNull="true">
-				<reportElement key="" x="20" y="173" width="447" height="15" uuid="6a4bf30a-d47d-4d83-a143-5f736fbb92b3"/>
+				<reportElement key="" x="20" y="164" width="447" height="10" uuid="6a4bf30a-d47d-4d83-a143-5f736fbb92b3"/>
 				<textElement textAlignment="Right" markup="styled">
-					<font fontName="ArialCustom" isBold="false"/>
+					<font fontName="ArialCustom" size="8" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{CRIMINAL_CLASS1}]]></textFieldExpression>
 			</textField>
@@ -1686,43 +1688,43 @@
 				<textFieldExpression><![CDATA[$P{OTHER}]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report" isBlankWhenNull="true">
-				<reportElement key="" x="20" y="188" width="447" height="15" uuid="012dbeb6-8ed1-4e80-bdf9-bfb20f361e23"/>
+				<reportElement key="" x="20" y="175" width="447" height="10" uuid="012dbeb6-8ed1-4e80-bdf9-bfb20f361e23"/>
 				<textElement textAlignment="Right" markup="styled">
-					<font fontName="ArialCustom" isBold="false"/>
+					<font fontName="ArialCustom" size="8" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{CRIMINAL_CLASS2}]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report" isBlankWhenNull="true">
-				<reportElement key="" x="20" y="203" width="447" height="15" uuid="b8fdb598-0928-44a4-93b3-5bb893224823"/>
+				<reportElement key="" x="20" y="186" width="447" height="10" uuid="b8fdb598-0928-44a4-93b3-5bb893224823"/>
 				<textElement textAlignment="Right" markup="styled">
-					<font fontName="ArialCustom" isBold="false"/>
+					<font fontName="ArialCustom" size="8" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{CRIMINAL_CLASS3}]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report" isBlankWhenNull="true">
-				<reportElement key="" x="462" y="174" width="14" height="15" uuid="5f2f46ae-a2d4-4d83-9922-80fb3ca8122e">
+				<reportElement key="" x="462" y="164" width="14" height="15" uuid="5f2f46ae-a2d4-4d83-9922-80fb3ca8122e">
 					<printWhenExpression><![CDATA[!$P{CRIMINAL_CLASS1}.trim().isEmpty()]]></printWhenExpression>
 				</reportElement>
 				<textElement textAlignment="Right" markup="styled">
-					<font fontName="ArialCustom" isBold="false"/>
+					<font fontName="ArialCustom" size="8" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA["<li></li>"]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report" isBlankWhenNull="true">
-				<reportElement key="" x="462" y="189" width="14" height="15" uuid="47699a8b-3c47-47de-855c-f8f96e9297aa">
+				<reportElement key="" x="462" y="175" width="14" height="15" uuid="47699a8b-3c47-47de-855c-f8f96e9297aa">
 					<printWhenExpression><![CDATA[!$P{CRIMINAL_CLASS2}.trim().isEmpty()]]></printWhenExpression>
 				</reportElement>
 				<textElement textAlignment="Right" markup="styled">
-					<font fontName="ArialCustom" isBold="false"/>
+					<font fontName="ArialCustom" size="8" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA["<li></li>"]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report" isBlankWhenNull="true">
-				<reportElement key="" x="462" y="204" width="14" height="15" uuid="6ce522f5-1451-4b35-9e09-909b8eded47c">
+				<reportElement key="" x="462" y="186" width="14" height="15" uuid="6ce522f5-1451-4b35-9e09-909b8eded47c">
 					<printWhenExpression><![CDATA[!$P{CRIMINAL_CLASS3}.trim().isEmpty()]]></printWhenExpression>
 				</reportElement>
 				<textElement textAlignment="Right" markup="styled">
-					<font fontName="ArialCustom" isBold="false"/>
+					<font fontName="ArialCustom" size="8" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA["<li></li>"]]></textFieldExpression>
 			</textField>
@@ -1794,6 +1796,38 @@
 				</textElement>
 				<text><![CDATA[جلدة]]></text>
 			</staticText>
+			<textField evaluationTime="Report" isBlankWhenNull="true">
+				<reportElement key="" x="462" y="197" width="14" height="15" uuid="26800d2b-2c92-4a73-890f-106ae7e3a93c">
+					<printWhenExpression><![CDATA[!$P{CRIMINAL_CLASS3}.trim().isEmpty()]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Right" markup="styled">
+					<font fontName="ArialCustom" size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["<li></li>"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report" isBlankWhenNull="true">
+				<reportElement key="" x="20" y="197" width="447" height="10" uuid="2fad7769-0ac9-47b3-9fc3-08e5b283f9b9"/>
+				<textElement textAlignment="Right" markup="styled">
+					<font fontName="ArialCustom" size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{CRIMINAL_CLASS4}]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report" isBlankWhenNull="true">
+				<reportElement key="" x="20" y="208" width="447" height="10" uuid="4cf168ec-6025-469d-945a-f2de27c5a76f"/>
+				<textElement textAlignment="Right" markup="styled">
+					<font fontName="ArialCustom" size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{CRIMINAL_CLASS5}]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report" isBlankWhenNull="true">
+				<reportElement key="" x="462" y="208" width="14" height="15" uuid="c22574ef-f97d-4f85-adca-ac838fc6ea09">
+					<printWhenExpression><![CDATA[!$P{CRIMINAL_CLASS3}.trim().isEmpty()]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Right" markup="styled">
+					<font fontName="ArialCustom" size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["<li></li>"]]></textFieldExpression>
+			</textField>
 		</band>
 	</pageHeader>
 </jasperReport>

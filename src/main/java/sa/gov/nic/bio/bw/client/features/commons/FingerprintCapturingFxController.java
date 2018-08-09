@@ -503,6 +503,11 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 		cbLeftLittle.selectedProperty().addListener(new CustomChangeListener());
 		cbRightThumb.selectedProperty().addListener(new CustomChangeListener());
 		cbLeftThumb.selectedProperty().addListener(new CustomChangeListener());
+		
+		btnNext.disabledProperty().addListener((observable, oldValue, newValue) ->
+		{
+		    if(!newValue) btnNext.requestFocus();
+		});
 	}
 	
 	@Override

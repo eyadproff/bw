@@ -1,23 +1,27 @@
 package sa.gov.nic.bio.bw.client.features.registerconvictedpresent;
 
 import javafx.beans.binding.BooleanBinding;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
-import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.Pane;
+import org.controlsfx.glyphfont.FontAwesome;
+import org.controlsfx.glyphfont.Glyph;
 import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.beans.HideableItem;
-import sa.gov.nic.bio.bw.client.core.utils.GuiLanguage;
+import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.wizard.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.CrimeType;
+import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.CrimeCode;
 
 import java.net.URL;
 import java.time.LocalDate;
@@ -29,14 +33,7 @@ import java.util.stream.Collectors;
 
 public class JudgmentDetailsPaneFxController extends WizardStepFxControllerBase
 {
-	public static final String KEY_JUDGMENT_DETAILS_CRIME_EVENT_1 = "JUDGMENT_DETAILS_CRIME_EVENT_1";
-	public static final String KEY_JUDGMENT_DETAILS_CRIME_CLASS_1 = "JUDGMENT_DETAILS_CRIME_CLASS_1";
-	public static final String KEY_JUDGMENT_DETAILS_CRIME_2_ENABLED = "JUDGMENT_DETAILS_CRIME_2_ENABLED";
-	public static final String KEY_JUDGMENT_DETAILS_CRIME_EVENT_2 = "JUDGMENT_DETAILS_CRIME_EVENT_2";
-	public static final String KEY_JUDGMENT_DETAILS_CRIME_CLASS_2 = "JUDGMENT_DETAILS_CRIME_CLASS_2";
-	public static final String KEY_JUDGMENT_DETAILS_CRIME_3_ENABLED = "JUDGMENT_DETAILS_CRIME_3_ENABLED";
-	public static final String KEY_JUDGMENT_DETAILS_CRIME_EVENT_3 = "JUDGMENT_DETAILS_CRIME_EVENT_3";
-	public static final String KEY_JUDGMENT_DETAILS_CRIME_CLASS_3 = "JUDGMENT_DETAILS_CRIME_CLASS_3";
+	public static final String KEY_JUDGMENT_DETAILS_CRIMES = "JUDGMENT_DETAILS_CRIMES";
 	public static final String KEY_JUDGMENT_DETAILS_JUDGMENT_ISSUER = "JUDGMENT_DETAILS_JUDGMENT_ISSUER";
 	public static final String KEY_JUDGMENT_DETAILS_POLICE_FILE_NUMBER = "JUDGMENT_DETAILS_POLICE_FILE_NUMBER";
 	public static final String KEY_JUDGMENT_DETAILS_JUDGMENT_NUMBER = "JUDGMENT_DETAILS_JUDGMENT_NUMBER";
@@ -46,24 +43,33 @@ public class JudgmentDetailsPaneFxController extends WizardStepFxControllerBase
 	public static final String KEY_JUDGMENT_DETAILS_JUDGMENT_DATE_SHOW_HIJRI =
 																		"JUDGMENT_DETAILS_JUDGMENT_DATE_SHOW_HIJRI";
 	
+	@FXML private Pane paneCrimeContainer;
+	@FXML private Pane paneCrime2;
+	@FXML private Pane paneCrime3;
+	@FXML private Pane paneCrime4;
+	@FXML private Pane paneCrime5;
 	@FXML private ComboBox<HideableItem<Integer>> cboCrimeEvent1;
 	@FXML private ComboBox<HideableItem<Integer>> cboCrimeClass1;
 	@FXML private ComboBox<HideableItem<Integer>> cboCrimeEvent2;
 	@FXML private ComboBox<HideableItem<Integer>> cboCrimeClass2;
 	@FXML private ComboBox<HideableItem<Integer>> cboCrimeEvent3;
 	@FXML private ComboBox<HideableItem<Integer>> cboCrimeClass3;
-	@FXML private CheckBox cbCrimeClassification2;
-	@FXML private CheckBox cbCrimeClassification3;
+	@FXML private ComboBox<HideableItem<Integer>> cboCrimeEvent4;
+	@FXML private ComboBox<HideableItem<Integer>> cboCrimeClass4;
+	@FXML private ComboBox<HideableItem<Integer>> cboCrimeEvent5;
+	@FXML private ComboBox<HideableItem<Integer>> cboCrimeClass5;
 	@FXML private CheckBox cbArrestDateShowHijri;
 	@FXML private CheckBox cbJudgmentDateShowHijri;
-	@FXML private Label lblCrimeClassification1;
-	@FXML private Label lblCrimeClassification2;
-	@FXML private Label lblCrimeClassification3;
-	@FXML private TextField txtPoliceFileNumber;
+	@FXML private TextField txtCaseFileNumber;
 	@FXML private TextField txtJudgmentNumber;
 	@FXML private TextField txtJudgmentIssuer;
 	@FXML private DatePicker dpArrestDate;
 	@FXML private DatePicker dpJudgmentDate;
+	@FXML private Button btnHidePaneCrime2;
+	@FXML private Button btnHidePaneCrime3;
+	@FXML private Button btnHidePaneCrime4;
+	@FXML private Button btnHidePaneCrime5;
+	@FXML private Button btnAddMore;
 	@FXML private Button btnPrevious;
 	@FXML private Button btnStartOver;
 	@FXML private Button btnNext;
@@ -71,6 +77,38 @@ public class JudgmentDetailsPaneFxController extends WizardStepFxControllerBase
 	private Map<Integer, String> crimeEventTitles = new HashMap<>();
 	private Map<Integer, String> crimeClassTitles = new HashMap<>();
 	private Map<Integer, List<Integer>> crimeClasses = new HashMap<>();
+	private Map<Integer, Pane> cboCrimePaneMap = new HashMap<>();
+	private Map<Integer, ComboBox<HideableItem<Integer>>> cboCrimeEventMap = new HashMap<>();
+	private Map<Integer, ComboBox<HideableItem<Integer>>> cboCrimeClassMap = new HashMap<>();
+	private Map<Integer, Button> btnHidePaneCrimeMap = new HashMap<>();
+	private BooleanProperty crimeTypeDuplicated = new SimpleBooleanProperty();
+	private int visibleCrimeTypesCount = 1;
+	
+	private Runnable checkForCrimeDuplicates = () ->
+	{
+		List<CrimeCode> crimeCodes = new ArrayList<>();
+		
+		crimeCodes.add(new CrimeCode(cboCrimeEvent1.getSelectionModel().getSelectedIndex(),
+		                             cboCrimeClass1.getSelectionModel().getSelectedIndex()));
+		
+		for(int i = 1; i <= 4; i++)
+		{
+			if(cboCrimePaneMap.get(i).isVisible())
+			{
+				CrimeCode crimeCode = new CrimeCode(cboCrimeEventMap.get(i).getSelectionModel().getSelectedIndex(),
+				                                    cboCrimeClassMap.get(i).getSelectionModel().getSelectedIndex());
+				
+				if(crimeCodes.contains(crimeCode))
+				{
+					crimeTypeDuplicated.set(true);
+					return;
+				}
+				else crimeCodes.add(crimeCode);
+			}
+		}
+		
+		crimeTypeDuplicated.set(false);
+	};
 	
 	@SuppressWarnings("unchecked")
 	private ChangeListener<Boolean>[] showingPropertyChangeListenerReference = new ChangeListener[]{null};
@@ -88,6 +126,33 @@ public class JudgmentDetailsPaneFxController extends WizardStepFxControllerBase
 	{
 		btnPrevious.setOnAction(actionEvent -> goPrevious());
 		btnNext.setOnAction(actionEvent -> goNext());
+		
+		Glyph plusIcon = AppUtils.createFontAwesomeIcon(FontAwesome.Glyph.PLUS);
+		btnAddMore.setGraphic(plusIcon);
+		
+		Glyph minusIcon = AppUtils.createFontAwesomeIcon(FontAwesome.Glyph.MINUS);
+		btnHidePaneCrime2.setGraphic(minusIcon);
+		minusIcon = AppUtils.createFontAwesomeIcon(FontAwesome.Glyph.MINUS);
+		btnHidePaneCrime3.setGraphic(minusIcon);
+		minusIcon = AppUtils.createFontAwesomeIcon(FontAwesome.Glyph.MINUS);
+		btnHidePaneCrime4.setGraphic(minusIcon);
+		minusIcon = AppUtils.createFontAwesomeIcon(FontAwesome.Glyph.MINUS);
+		btnHidePaneCrime5.setGraphic(minusIcon);
+		
+		btnHidePaneCrime2.visibleProperty().bind(paneCrime2.visibleProperty());
+		btnHidePaneCrime3.visibleProperty().bind(paneCrime3.visibleProperty());
+		btnHidePaneCrime4.visibleProperty().bind(paneCrime4.visibleProperty());
+		btnHidePaneCrime5.visibleProperty().bind(paneCrime5.visibleProperty());
+		
+		btnHidePaneCrime2.managedProperty().bind(paneCrime2.managedProperty());
+		btnHidePaneCrime3.managedProperty().bind(paneCrime3.managedProperty());
+		btnHidePaneCrime4.managedProperty().bind(paneCrime4.managedProperty());
+		btnHidePaneCrime5.managedProperty().bind(paneCrime5.managedProperty());
+		
+		btnAddMore.visibleProperty().bind(paneCrime2.visibleProperty().not().or(paneCrime3.visibleProperty().not())
+	                                  .or(paneCrime4.visibleProperty().not()).or(paneCrime5.visibleProperty().not()));
+		btnAddMore.managedProperty().bind(paneCrime2.managedProperty().not().or(paneCrime3.managedProperty().not())
+	                                  .or(paneCrime4.managedProperty().not()).or(paneCrime5.managedProperty().not()));
 		
 		@SuppressWarnings("unchecked") List<CrimeType> crimeTypes = (List<CrimeType>)
 												Context.getUserSession().getAttribute("lookups.crimeTypes");
@@ -117,6 +182,8 @@ public class JudgmentDetailsPaneFxController extends WizardStepFxControllerBase
 		GuiUtils.addAutoCompletionSupportToComboBox(cboCrimeEvent1, crimeEventCodes);
 		GuiUtils.addAutoCompletionSupportToComboBox(cboCrimeEvent2, crimeEventCodes);
 		GuiUtils.addAutoCompletionSupportToComboBox(cboCrimeEvent3, crimeEventCodes);
+		GuiUtils.addAutoCompletionSupportToComboBox(cboCrimeEvent4, crimeEventCodes);
+		GuiUtils.addAutoCompletionSupportToComboBox(cboCrimeEvent5, crimeEventCodes);
 		
 		GuiUtils.makeComboBoxOpenableByPressingEnter(cboCrimeEvent1);
 		GuiUtils.makeComboBoxOpenableByPressingEnter(cboCrimeClass1);
@@ -124,58 +191,93 @@ public class JudgmentDetailsPaneFxController extends WizardStepFxControllerBase
 		GuiUtils.makeComboBoxOpenableByPressingEnter(cboCrimeClass2);
 		GuiUtils.makeComboBoxOpenableByPressingEnter(cboCrimeEvent3);
 		GuiUtils.makeComboBoxOpenableByPressingEnter(cboCrimeClass3);
+		GuiUtils.makeComboBoxOpenableByPressingEnter(cboCrimeEvent4);
+		GuiUtils.makeComboBoxOpenableByPressingEnter(cboCrimeClass4);
+		GuiUtils.makeComboBoxOpenableByPressingEnter(cboCrimeEvent5);
+		GuiUtils.makeComboBoxOpenableByPressingEnter(cboCrimeClass5);
 		
-		lblCrimeClassification2.disableProperty().bind(cbCrimeClassification2.selectedProperty().not());
-		cboCrimeEvent2.disableProperty().bind(cbCrimeClassification2.selectedProperty().not());
-		cboCrimeClass2.disableProperty().bind(cbCrimeClassification2.selectedProperty().not());
-		lblCrimeClassification3.disableProperty().bind(cbCrimeClassification3.selectedProperty().not());
-		cboCrimeEvent3.disableProperty().bind(cbCrimeClassification3.selectedProperty().not());
-		cboCrimeClass3.disableProperty().bind(cbCrimeClassification3.selectedProperty().not());
-		
-		if(Context.getGuiLanguage() == GuiLanguage.ARABIC)
-		{
-			lblCrimeClassification1.setPadding(new Insets(0, 3.0, 0, 0));
-		}
-		
-		GuiUtils.applyValidatorToTextField(txtPoliceFileNumber, null, null, 20);
+		GuiUtils.applyValidatorToTextField(txtCaseFileNumber, null, null, 20);
 		GuiUtils.applyValidatorToTextField(txtJudgmentNumber, null, null, 20);
 		GuiUtils.applyValidatorToTextField(txtJudgmentIssuer, null, null, 30);
 		
-		BooleanBinding cboCrimeClassification1Binding = cboCrimeEvent1.valueProperty().isNull()
-																	  .or(cboCrimeClass1.valueProperty().isNull());
-		BooleanBinding cboCrimeClassification2Binding = cbCrimeClassification2.selectedProperty()
-																	.and(cboCrimeEvent2.valueProperty().isNull()
-															        .or(cboCrimeClass2.valueProperty().isNull()));
-		BooleanBinding cboCrimeClassification3Binding = cbCrimeClassification3.selectedProperty()
-																	.and(cboCrimeEvent3.valueProperty().isNull()
-															        .or(cboCrimeClass3.valueProperty().isNull()));
-		BooleanBinding txtJudgmentIssuerBinding = txtJudgmentIssuer.textProperty().isEmpty();
-		BooleanBinding txtJudgmentNumberBinding = txtJudgmentNumber.textProperty().isEmpty();
-		BooleanBinding dpArrestDateBinding = dpArrestDate.valueProperty().isNull();
-		BooleanBinding dpJudgmentDateBinding = dpJudgmentDate.valueProperty().isNull();
+		cboCrimePaneMap.put(1, paneCrime2);
+		cboCrimePaneMap.put(2, paneCrime3);
+		cboCrimePaneMap.put(3, paneCrime4);
+		cboCrimePaneMap.put(4, paneCrime5);
+		
+		cboCrimeEventMap.put(0, cboCrimeEvent1);
+		cboCrimeEventMap.put(1, cboCrimeEvent2);
+		cboCrimeEventMap.put(2, cboCrimeEvent3);
+		cboCrimeEventMap.put(3, cboCrimeEvent4);
+		cboCrimeEventMap.put(4, cboCrimeEvent5);
+		
+		cboCrimeClassMap.put(0, cboCrimeClass1);
+		cboCrimeClassMap.put(1, cboCrimeClass2);
+		cboCrimeClassMap.put(2, cboCrimeClass3);
+		cboCrimeClassMap.put(3, cboCrimeClass4);
+		cboCrimeClassMap.put(4, cboCrimeClass5);
+		
+		btnHidePaneCrimeMap.put(1, btnHidePaneCrime2);
+		btnHidePaneCrimeMap.put(2, btnHidePaneCrime3);
+		btnHidePaneCrimeMap.put(3, btnHidePaneCrime4);
+		btnHidePaneCrimeMap.put(4, btnHidePaneCrime5);
+		
+		BooleanBinding txtJudgmentIssuerEmptyBinding = txtJudgmentIssuer.textProperty().isEmpty();
+		BooleanBinding txtJudgmentNumberEmptyBinding = txtJudgmentNumber.textProperty().isEmpty();
+		BooleanBinding dpArrestDateEmptyBinding = dpArrestDate.valueProperty().isNull();
+		BooleanBinding dpJudgmentDateEmptyBinding = dpJudgmentDate.valueProperty().isNull();
 		
 		// prevent duplicates
-		BooleanBinding cboCrimeDateBinding1 = cbCrimeClassification2.selectedProperty()
-									.and(cboCrimeEvent1.getSelectionModel().selectedIndexProperty()
-										     .isEqualTo(cboCrimeEvent2.getSelectionModel().selectedIndexProperty())
-									.and(cboCrimeClass1.getSelectionModel().selectedIndexProperty()
-										     .isEqualTo(cboCrimeClass2.getSelectionModel().selectedIndexProperty())));
-		BooleanBinding cboCrimeDateBinding2 = cbCrimeClassification3.selectedProperty()
-									.and(cboCrimeEvent1.getSelectionModel().selectedIndexProperty()
-										     .isEqualTo(cboCrimeEvent3.getSelectionModel().selectedIndexProperty())
-									.and(cboCrimeClass1.getSelectionModel().selectedIndexProperty()
-										     .isEqualTo(cboCrimeClass3.getSelectionModel().selectedIndexProperty())));
-		BooleanBinding cboCrimeDateBinding3 = cbCrimeClassification2.selectedProperty()
-									.and(cbCrimeClassification3.selectedProperty()
-							        .and(cboCrimeEvent2.getSelectionModel().selectedIndexProperty()
-								             .isEqualTo(cboCrimeEvent3.getSelectionModel().selectedIndexProperty())
-									.and(cboCrimeClass2.getSelectionModel().selectedIndexProperty()
-										     .isEqualTo(cboCrimeClass3.getSelectionModel().selectedIndexProperty()))));
 		
-		btnNext.disableProperty().bind(cboCrimeClassification1Binding.or(cboCrimeClassification2Binding)
-				                 .or(cboCrimeClassification3Binding).or(txtJudgmentIssuerBinding)
-	                             .or(txtJudgmentNumberBinding).or(dpArrestDateBinding).or(dpJudgmentDateBinding)
-				                 .or(cboCrimeDateBinding1).or(cboCrimeDateBinding2).or(cboCrimeDateBinding3));
+		ChangeListener<Number> changeListener = (observable, oldValue, newValue) -> checkForCrimeDuplicates.run();
+		
+		cboCrimeEvent1.getSelectionModel().selectedIndexProperty().addListener(changeListener);
+		cboCrimeClass1.getSelectionModel().selectedIndexProperty().addListener(changeListener);
+		cboCrimeEvent2.getSelectionModel().selectedIndexProperty().addListener(changeListener);
+		cboCrimeClass2.getSelectionModel().selectedIndexProperty().addListener(changeListener);
+		cboCrimeEvent3.getSelectionModel().selectedIndexProperty().addListener(changeListener);
+		cboCrimeClass3.getSelectionModel().selectedIndexProperty().addListener(changeListener);
+		cboCrimeEvent4.getSelectionModel().selectedIndexProperty().addListener(changeListener);
+		cboCrimeClass4.getSelectionModel().selectedIndexProperty().addListener(changeListener);
+		cboCrimeEvent5.getSelectionModel().selectedIndexProperty().addListener(changeListener);
+		cboCrimeClass5.getSelectionModel().selectedIndexProperty().addListener(changeListener);
+		cboCrimeClass5.getSelectionModel().selectedIndexProperty().addListener(changeListener);
+		cboCrimeClass5.getSelectionModel().selectedIndexProperty().addListener(changeListener);
+		
+		btnAddMore.setOnAction(actionEvent ->
+		{
+		    List<Node> children = paneCrimeContainer.getChildren();
+		
+		    for(int i = 1; i < children.size(); i++)
+		    {
+		        Node child = children.get(i);
+		
+		        if(!child.isVisible())
+		        {
+		            GuiUtils.showNode(child, true);
+		            visibleCrimeTypesCount++;
+			        checkForCrimeDuplicates.run();
+		            break;
+		        }
+		    }
+		});
+		
+		for(int i = 1; i <= 4; i++)
+		{
+			final int finalI = i;
+			btnHidePaneCrimeMap.get(i).setOnAction(actionEvent ->
+			{
+			    GuiUtils.showNode(cboCrimePaneMap.get(finalI), false);
+			    paneCrimeContainer.getChildren().remove(cboCrimePaneMap.get(finalI));
+			    paneCrimeContainer.getChildren().add(visibleCrimeTypesCount-- - 1, cboCrimePaneMap.get(finalI));
+			    checkForCrimeDuplicates.run();
+			});
+		}
+		
+		btnNext.disableProperty().bind(crimeTypeDuplicated.or(txtJudgmentIssuerEmptyBinding)
+				                                          .or(txtJudgmentNumberEmptyBinding)
+			                                              .or(dpArrestDateEmptyBinding)
+				                                          .or(dpJudgmentDateEmptyBinding));
 	}
 	
 	@Override
@@ -184,6 +286,8 @@ public class JudgmentDetailsPaneFxController extends WizardStepFxControllerBase
 		initCrimeEventComboBox(cboCrimeEvent1, cboCrimeClass1);
 		initCrimeEventComboBox(cboCrimeEvent2, cboCrimeClass2);
 		initCrimeEventComboBox(cboCrimeEvent3, cboCrimeClass3);
+		initCrimeEventComboBox(cboCrimeEvent4, cboCrimeClass4);
+		initCrimeEventComboBox(cboCrimeEvent5, cboCrimeClass5);
 	}
 	
 	@Override
@@ -193,61 +297,42 @@ public class JudgmentDetailsPaneFxController extends WizardStepFxControllerBase
 		{
 			Node focusedNode = null;
 			
-			Integer crimeEvent1 = (Integer) uiInputData.get(KEY_JUDGMENT_DETAILS_CRIME_EVENT_1);
-			if(crimeEvent1 != null) cboCrimeEvent1.getItems()
-												  .stream()
-												  .filter(item -> item.getObject().equals(crimeEvent1))
-												  .findFirst()
-												  .ifPresent(cboCrimeEvent1::setValue);
+			@SuppressWarnings("unchecked")
+			List<CrimeCode> crimes = (List<CrimeCode>) uiInputData.get(KEY_JUDGMENT_DETAILS_CRIMES);
 			
-			Integer crimeClass1 = (Integer) uiInputData.get(KEY_JUDGMENT_DETAILS_CRIME_CLASS_1);
-			if(crimeClass1 != null) cboCrimeClass1.getItems()
-												  .stream()
-												  .filter(item -> item.getObject().equals(crimeClass1))
-												  .findFirst()
-												  .ifPresent(cboCrimeClass1::setValue);
+			if(crimes != null && !crimes.isEmpty())
+			{
+				for(int i = 0; i < crimes.size(); i++)
+				{
+					CrimeCode cc = crimes.get(i);
+					
+					if(cc != null)
+					{
+						if(i > 0) GuiUtils.showNode(cboCrimePaneMap.get(i), true);
+						
+						cboCrimeEventMap.get(i).getItems()
+								.stream()
+								.filter(item -> item.getObject().equals(cc.getCrimeEvent()))
+								.findFirst()
+								.ifPresent(cboCrimeEventMap.get(i)::setValue);
+						cboCrimeClassMap.get(i).getItems()
+								.stream()
+								.filter(item -> item.getObject().equals(cc.getCrimeClass()))
+								.findFirst()
+								.ifPresent(cboCrimeClassMap.get(i)::setValue);
+					}
+				}
+			}
 			
-			Boolean crime2Enabled = (Boolean) uiInputData.get(KEY_JUDGMENT_DETAILS_CRIME_2_ENABLED);
-			cbCrimeClassification2.setSelected(crime2Enabled != null && crime2Enabled);
-			
-			Integer crimeEvent2 = (Integer) uiInputData.get(KEY_JUDGMENT_DETAILS_CRIME_EVENT_2);
-			if(crimeEvent2 != null) cboCrimeEvent2.getItems()
-												  .stream()
-												  .filter(item -> item.getObject().equals(crimeEvent2))
-												  .findFirst()
-												  .ifPresent(cboCrimeEvent2::setValue);
-			
-			Integer crimeClass2 = (Integer) uiInputData.get(KEY_JUDGMENT_DETAILS_CRIME_CLASS_2);
-			if(crimeClass2 != null) cboCrimeClass2.getItems()
-												  .stream()
-												  .filter(item -> item.getObject().equals(crimeClass2))
-												  .findFirst()
-												  .ifPresent(cboCrimeClass2::setValue);
-			
-			Boolean crime3Enabled = (Boolean) uiInputData.get(KEY_JUDGMENT_DETAILS_CRIME_3_ENABLED);
-			cbCrimeClassification3.setSelected(crime3Enabled != null && crime3Enabled);
-			
-			Integer crimeEvent3 = (Integer) uiInputData.get(KEY_JUDGMENT_DETAILS_CRIME_EVENT_3);
-			if(crimeEvent3 != null) cboCrimeEvent3.getItems()
-					.stream()
-					.filter(item -> item.getObject().equals(crimeEvent3))
-					.findFirst()
-					.ifPresent(cboCrimeEvent3::setValue);
-			
-			Integer crimeClass3 = (Integer) uiInputData.get(KEY_JUDGMENT_DETAILS_CRIME_CLASS_3);
-			if(crimeClass3 != null) cboCrimeClass3.getItems()
-					.stream()
-					.filter(item -> item.getObject().equals(crimeClass3))
-					.findFirst()
-					.ifPresent(cboCrimeClass3::setValue);
+			checkForCrimeDuplicates.run();
 			
 			String judgmentIssuer = (String) uiInputData.get(KEY_JUDGMENT_DETAILS_JUDGMENT_ISSUER);
 			if(judgmentIssuer != null && !judgmentIssuer.trim().isEmpty()) txtJudgmentIssuer.setText(judgmentIssuer);
-			else if(focusedNode == null) focusedNode = txtJudgmentIssuer;
+			else focusedNode = txtJudgmentIssuer;
 			
 			String policeFileNumber = (String) uiInputData.get(KEY_JUDGMENT_DETAILS_POLICE_FILE_NUMBER);
 			if(policeFileNumber != null && !policeFileNumber.trim().isEmpty())
-																		txtPoliceFileNumber.setText(policeFileNumber);
+																		txtCaseFileNumber.setText(policeFileNumber);
 			
 			String judgmentNumber = (String) uiInputData.get(KEY_JUDGMENT_DETAILS_JUDGMENT_NUMBER);
 			if(judgmentNumber != null && !judgmentNumber.trim().isEmpty()) txtJudgmentNumber.setText(judgmentNumber);
@@ -281,29 +366,23 @@ public class JudgmentDetailsPaneFxController extends WizardStepFxControllerBase
 	@Override
 	public void onGoingNext(Map<String, Object> uiDataMap)
 	{
-		HideableItem<Integer> crimeEventItem1 = cboCrimeEvent1.getValue();
-		if(crimeEventItem1 != null) uiDataMap.put(KEY_JUDGMENT_DETAILS_CRIME_EVENT_1, crimeEventItem1.getObject());
+		List<CrimeCode> crimes = new ArrayList<>();
 		
-		HideableItem<Integer> crimeClassItem1 = cboCrimeClass1.getValue();
-		if(crimeClassItem1 != null) uiDataMap.put(KEY_JUDGMENT_DETAILS_CRIME_CLASS_1, crimeClassItem1.getObject());
+		crimes.add(new CrimeCode(cboCrimeEvent1.getValue().getObject(), cboCrimeClass1.getValue().getObject()));
 		
-		HideableItem<Integer> crimeEventItem2 = cboCrimeEvent2.getValue();
-		if(crimeEventItem2 != null) uiDataMap.put(KEY_JUDGMENT_DETAILS_CRIME_EVENT_2, crimeEventItem2.getObject());
+		for(int i = 1; i <= 4; i++)
+		{
+			if(cboCrimePaneMap.get(i).isVisible())
+			{
+				crimes.add(new CrimeCode(cboCrimeEventMap.get(i).getValue().getObject(),
+				                         cboCrimeClassMap.get(i).getValue().getObject()));
+			}
+		}
 		
-		HideableItem<Integer> crimeClassItem2 = cboCrimeClass2.getValue();
-		if(crimeClassItem2 != null) uiDataMap.put(KEY_JUDGMENT_DETAILS_CRIME_CLASS_2, crimeClassItem2.getObject());
-		
-		HideableItem<Integer> crimeEventItem3 = cboCrimeEvent3.getValue();
-		if(crimeEventItem3 != null) uiDataMap.put(KEY_JUDGMENT_DETAILS_CRIME_EVENT_3, crimeEventItem3.getObject());
-		
-		HideableItem<Integer> crimeClassItem3 = cboCrimeClass3.getValue();
-		if(crimeClassItem3 != null) uiDataMap.put(KEY_JUDGMENT_DETAILS_CRIME_CLASS_3, crimeClassItem3.getObject());
-		
-		uiDataMap.put(KEY_JUDGMENT_DETAILS_CRIME_2_ENABLED, cbCrimeClassification2.isSelected());
-		uiDataMap.put(KEY_JUDGMENT_DETAILS_CRIME_3_ENABLED, cbCrimeClassification3.isSelected());
+		uiDataMap.put(KEY_JUDGMENT_DETAILS_CRIMES, crimes);
 		uiDataMap.put(KEY_JUDGMENT_DETAILS_JUDGMENT_ISSUER, txtJudgmentIssuer.getText());
 		
-		String policeFileNumber = txtPoliceFileNumber.getText();
+		String policeFileNumber = txtCaseFileNumber.getText();
 		if(policeFileNumber != null && !policeFileNumber.trim().isEmpty())
 											uiDataMap.put(KEY_JUDGMENT_DETAILS_POLICE_FILE_NUMBER, policeFileNumber);
 		else uiDataMap.remove(KEY_JUDGMENT_DETAILS_POLICE_FILE_NUMBER);

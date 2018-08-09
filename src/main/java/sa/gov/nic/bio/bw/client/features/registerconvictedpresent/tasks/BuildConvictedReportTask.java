@@ -45,6 +45,8 @@ public class BuildConvictedReportTask extends Task<JasperPrint>
 	private static final String PARAMETER_CRIMINAL_CLASS1 = "CRIMINAL_CLASS1";
 	private static final String PARAMETER_CRIMINAL_CLASS2 = "CRIMINAL_CLASS2";
 	private static final String PARAMETER_CRIMINAL_CLASS3 = "CRIMINAL_CLASS3";
+	private static final String PARAMETER_CRIMINAL_CLASS4 = "CRIMINAL_CLASS4";
+	private static final String PARAMETER_CRIMINAL_CLASS5 = "CRIMINAL_CLASS5";
 	private static final String PARAMETER_JUDGMENT_ISSUER = "JUDGMENT_ISSUER";
 	private static final String PARAMETER_JUDGMENT_DATE = "JUDGMENT_DATE";
 	private static final String PARAMETER_JUDGMENT_NUMBER = "JUDGMENT_NUMBER";
@@ -227,6 +229,16 @@ public class BuildConvictedReportTask extends Task<JasperPrint>
 				case 2:
 				{
 					params.put(PARAMETER_CRIMINAL_CLASS3, criminalClass);
+					break;
+				}
+				case 3:
+				{
+					params.put(PARAMETER_CRIMINAL_CLASS4, criminalClass);
+					break;
+				}
+				case 4:
+				{
+					params.put(PARAMETER_CRIMINAL_CLASS5, criminalClass);
 					break;
 				}
 			}
