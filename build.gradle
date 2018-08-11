@@ -13,7 +13,7 @@ buildscript {
     }
 }
 
-project.version = '2018.08.1'
+project.version = '2018.08.2'
 group = 'sa.gov.nic.bio'
 
 apply plugin: 'java'
