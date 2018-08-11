@@ -1,18 +1,19 @@
 package sa.gov.nic.bio.bw.client.features.fingerprintcardidentification.workflow;
 
-import javafx.application.Platform;
-import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.interfaces.FormRenderer;
 import sa.gov.nic.bio.bw.client.core.workflow.Signal;
-import sa.gov.nic.bio.bw.client.core.workflow.WorkflowBase;
-import sa.gov.nic.bio.bw.client.features.fingerprintcardidentification.FingerprintCardIdentificationPaneFxController;
+import sa.gov.nic.bio.bw.client.core.workflow.WizardWorkflowBase;
+import sa.gov.nic.bio.bw.client.features.fingerprintcardidentification.FingerprintsAfterCroppingPaneFxController;
+import sa.gov.nic.bio.bw.client.features.fingerprintcardidentification.InquiryByFingerprintsPaneFxController;
+import sa.gov.nic.bio.bw.client.features.fingerprintcardidentification.InquiryResultPaneFxController;
+import sa.gov.nic.bio.bw.client.features.fingerprintcardidentification.ScanFingerprintCardPaneFxController;
+import sa.gov.nic.bio.bw.client.features.fingerprintcardidentification.SpecifyFingerprintCoordinatesPaneFxController;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class FingerprintCardIdentificationWorkflow extends WorkflowBase<Void, Void>
+public class FingerprintCardIdentificationWorkflow extends WizardWorkflowBase<Void, Void>
 {
 	public FingerprintCardIdentificationWorkflow(AtomicReference<FormRenderer> formRenderer,
 	                                             BlockingQueue<Map<String, Object>> userTasks)
@@ -21,15 +22,49 @@ public class FingerprintCardIdentificationWorkflow extends WorkflowBase<Void, Vo
 	}
 	
 	@Override
-	public Void onProcess(Void input) throws InterruptedException, Signal
+	public Map<String, Object> onStep(int step) throws InterruptedException, Signal
 	{
-		Map<String, Object> uiInputData = new HashMap<>();
-		Platform.runLater(() -> Context.getCoreFxController().clearWizardBar());
+		Map<String, Object> uiOutputData;
 		
-		while(true)
+		switch(step)
 		{
-			formRenderer.get().renderForm(FingerprintCardIdentificationPaneFxController.class, uiInputData);
-			waitForUserTask();
+			case 0:
+			{
+				formRenderer.get().renderForm(ScanFingerprintCardPaneFxController.class, uiInputData);
+				uiOutputData = waitForUserTask();
+				break;
+			}
+			case 1:
+			{
+				formRenderer.get().renderForm(SpecifyFingerprintCoordinatesPaneFxController.class, uiInputData);
+				uiOutputData = waitForUserTask();
+				break;
+			}
+			case 2:
+			{
+				formRenderer.get().renderForm(FingerprintsAfterCroppingPaneFxController.class, uiInputData);
+				uiOutputData = waitForUserTask();
+				break;
+			}
+			case 3:
+			{
+				formRenderer.get().renderForm(InquiryByFingerprintsPaneFxController.class, uiInputData);
+				uiOutputData = waitForUserTask();
+				break;
+			}
+			case 4:
+			{
+				formRenderer.get().renderForm(InquiryResultPaneFxController.class, uiInputData);
+				uiOutputData = waitForUserTask();
+				break;
+			}
+			default:
+			{
+				uiOutputData = waitForUserTask();
+				break;
+			}
 		}
+		
+		return uiOutputData;
 	}
 }
