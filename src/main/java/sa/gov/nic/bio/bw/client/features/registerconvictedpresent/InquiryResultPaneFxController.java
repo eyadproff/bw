@@ -90,7 +90,44 @@ public class InquiryResultPaneFxController extends WizardStepFxControllerBase
 			Boolean fingerprintHit = (Boolean) uiInputData.get(InquiryPaneFxController.KEY_FINGERPRINT_INQUIRY_HIT);
 			String notAvailable = resources.getString("label.notAvailable");
 			
-			if(fingerprintHit != null && fingerprintHit)
+			if(fingerprintHit != null) // workflow: convicted report for present person
+			{
+				if(fingerprintHit)
+				{
+					GuiUtils.showNode(btnRegisterUnknownPerson, false);
+					GuiUtils.showNode(paneNoHitMessage, false);
+					GuiUtils.showNode(ivPersonPhoto, true);
+					GuiUtils.showNode(gridPane, true);
+					GuiUtils.showNode(btnConfirmPersonInformation, true);
+					
+					Long criminalBioId = (Long) uiInputData.get(
+													PersonInfoPaneFxController.KEY_PERSON_INFO_GENERAL_FILE_NUMBER);
+					
+					if(criminalBioId != null)
+					{
+						lblGeneralFileNumber.setText(String.valueOf(criminalBioId));
+						personInfoMap.put(PersonInfoPaneFxController.KEY_PERSON_INFO_GENERAL_FILE_NUMBER,
+						                  criminalBioId);
+					}
+					else
+					{
+						lblGeneralFileNumber.setText(notAvailable);
+						lblGeneralFileNumber.setTextFill(Color.RED);
+					}
+					
+					PersonInfo personInfo = (PersonInfo) uiInputData.get(KEY_INQUIRY_HIT_RESULT);
+					populatePersonInfo(personInfo, notAvailable);
+				}
+				else
+				{
+					GuiUtils.showNode(ivPersonPhoto, false);
+					GuiUtils.showNode(gridPane, false);
+					GuiUtils.showNode(btnConfirmPersonInformation, false);
+					GuiUtils.showNode(paneNoHitMessage, true);
+					GuiUtils.showNode(btnRegisterUnknownPerson, true);
+				}
+			}
+			else // workflow: convicted report for not present person
 			{
 				GuiUtils.showNode(btnRegisterUnknownPerson, false);
 				GuiUtils.showNode(paneNoHitMessage, false);
@@ -98,31 +135,11 @@ public class InquiryResultPaneFxController extends WizardStepFxControllerBase
 				GuiUtils.showNode(gridPane, true);
 				GuiUtils.showNode(btnConfirmPersonInformation, true);
 				
-				Long criminalBioId = (Long) uiInputData.get(
-						PersonInfoPaneFxController.KEY_PERSON_INFO_GENERAL_FILE_NUMBER);
+				lblGeneralFileNumber.setText(notAvailable);
+				lblGeneralFileNumber.setTextFill(Color.RED);
+				
 				PersonInfo personInfo = (PersonInfo) uiInputData.get(KEY_INQUIRY_HIT_RESULT);
-				
-				if(criminalBioId != null)
-				{
-					lblGeneralFileNumber.setText(String.valueOf(criminalBioId));
-					personInfoMap.put(PersonInfoPaneFxController.KEY_PERSON_INFO_GENERAL_FILE_NUMBER,
-					                  criminalBioId);
-				}
-				else
-				{
-					lblGeneralFileNumber.setText(notAvailable);
-					lblGeneralFileNumber.setTextFill(Color.RED);
-				}
-				
 				populatePersonInfo(personInfo, notAvailable);
-			}
-			else
-			{
-				GuiUtils.showNode(ivPersonPhoto, false);
-				GuiUtils.showNode(gridPane, false);
-				GuiUtils.showNode(btnConfirmPersonInformation, false);
-				GuiUtils.showNode(paneNoHitMessage, true);
-				GuiUtils.showNode(btnRegisterUnknownPerson, true);
 			}
 		}
 	}

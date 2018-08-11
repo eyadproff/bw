@@ -1,5 +1,9 @@
 # Release Notes:
 
+## v2018.08.2
+
+- Convicted Report: fix a bug in inquiry result.
+
 ## v2018.08.1
 
 - Print Dead Person Record: change the record's length from 20 to 15 digits.
