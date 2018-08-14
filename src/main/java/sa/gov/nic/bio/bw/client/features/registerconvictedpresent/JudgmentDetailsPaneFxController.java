@@ -345,16 +345,16 @@ public class JudgmentDetailsPaneFxController extends WizardStepFxControllerBase
 			else if(focusedNode == null) focusedNode = dpArrestDate;
 			
 			Boolean arrestDateUseHijri = (Boolean) uiInputData.get(KEY_JUDGMENT_DETAILS_ARREST_DATE_USE_HIJRI);
-			if(arrestDateUseHijri != null) rdoArrestDateUseHijri.setSelected(arrestDateUseHijri);
-			else rdoArrestDateUseHijri.setSelected(true);
+			if(arrestDateUseHijri == null || arrestDateUseHijri) rdoArrestDateUseHijri.setSelected(true);
+			else rdoArrestDateUseGregorian.setSelected(true);
 			
 			LocalDate judgmentDate = (LocalDate) uiInputData.get(KEY_JUDGMENT_DETAILS_JUDGMENT_DATE);
 			if(judgmentDate != null) dpJudgmentDate.setValue(judgmentDate);
 			else if(focusedNode == null) focusedNode = dpJudgmentDate;
 			
 			Boolean judgmentDatUseHijri = (Boolean) uiInputData.get(KEY_JUDGMENT_DETAILS_JUDGMENT_DATE_USE_HIJRI);
-			if(judgmentDatUseHijri != null) rdoJudgmentDateUseHijri.setSelected(judgmentDatUseHijri);
-			else rdoJudgmentDateUseHijri.setSelected(true);
+			if(judgmentDatUseHijri == null || judgmentDatUseHijri) rdoJudgmentDateUseHijri.setSelected(true);
+			else rdoJudgmentDateUseGregorian.setSelected(true);
 			
 			if(focusedNode != null) focusedNode.requestFocus();
 			else btnNext.requestFocus();

@@ -474,14 +474,14 @@ public class ApplicantInfoFxController extends WizardStepFxControllerBase
 		if(issueDate != null) dpIssueDate.setValue(issueDate);
 		if(expirationDate != null) dpExpirationDate.setValue(expirationDate);
 		
-		if(birthDateUseHijri != null) rdoBirthDateUseHijri.setSelected(birthDateUseHijri);
-		else rdoBirthDateUseHijri.setSelected(true);
+		if(birthDateUseHijri == null || birthDateUseHijri) rdoBirthDateUseHijri.setSelected(true);
+		else rdoBirthDateUseGregorian.setSelected(true);
 		
-		if(issueDateUseHijri != null) rdoIssueDateUseHijri.setSelected(issueDateUseHijri);
-		rdoIssueDateUseHijri.setSelected(true);
+		if(issueDateUseHijri == null || issueDateUseHijri) rdoIssueDateUseHijri.setSelected(true);
+		rdoIssueDateUseGregorian.setSelected(true);
 		
-		if(expirationDateUseHijri != null) rdoExpirationDateUseHijri.setSelected(expirationDateUseHijri);
-		else rdoExpirationDateUseHijri.setSelected(true);
+		if(expirationDateUseHijri == null || expirationDateUseHijri) rdoExpirationDateUseHijri.setSelected(true);
+		else rdoExpirationDateUseGregorian.setSelected(true);
 	}
 	
 	@FXML

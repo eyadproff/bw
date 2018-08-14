@@ -215,7 +215,8 @@ public class PersonInfoPaneFxController extends WizardStepFxControllerBase
 			else if(focusedNode == null) focusedNode = cboGender;
 			
 			CountryBean countryBean = (CountryBean) uiInputData.get(KEY_PERSON_INFO_NATIONALITY);
-			if(countryBean != null) cboNationality.getItems()
+			if(countryBean != null && countryBean.getCode() != 0)
+										cboNationality.getItems()
 						                              .stream()
 						                              .filter(item -> item.getObject() == countryBean)
 						                              .findFirst()
@@ -264,8 +265,8 @@ public class PersonInfoPaneFxController extends WizardStepFxControllerBase
 			}
 			
 			Boolean birthDateUseHijri = (Boolean) uiInputData.get(KEY_PERSON_INFO_BIRTH_DATE_USE_HIJRI);
-			if(birthDateUseHijri != null) rdoBirthDateUseHijri.setSelected(birthDateUseHijri);
-			else rdoBirthDateUseHijri.setSelected(true);
+			if(birthDateUseHijri == null || birthDateUseHijri) rdoBirthDateUseHijri.setSelected(true);
+			else rdoBirthDateUseGregorian.setSelected(true);
 			
 			String idNumber = (String) uiInputData.get(KEY_PERSON_INFO_ID_NUMBER);
 			if(idNumber != null && !idNumber.trim().isEmpty())
@@ -294,8 +295,8 @@ public class PersonInfoPaneFxController extends WizardStepFxControllerBase
 			}
 			
 			Boolean idIssuanceDateUseHijri = (Boolean) uiInputData.get(KEY_PERSON_INFO_ID_ISSUANCE_DATE_USE_HIJRI);
-			if(idIssuanceDateUseHijri != null) rdoIdIssuanceDateUseHijri.setSelected(idIssuanceDateUseHijri);
-			else rdoIdIssuanceDateUseHijri.setSelected(true);
+			if(idIssuanceDateUseHijri == null || idIssuanceDateUseHijri) rdoIdIssuanceDateUseHijri.setSelected(true);
+			else rdoIdIssuanceDateUseGregorian.setSelected(true);
 			
 			LocalDate idExpiryDate = (LocalDate) uiInputData.get(KEY_PERSON_INFO_ID_EXPIRY_DATE);
 			if(idExpiryDate != null)
@@ -306,8 +307,8 @@ public class PersonInfoPaneFxController extends WizardStepFxControllerBase
 			}
 			
 			Boolean idExpiryDateUseHijri = (Boolean) uiInputData.get(KEY_PERSON_INFO_ID_EXPIRY_DATE_USE_HIJRI);
-			if(idExpiryDateUseHijri != null) rdoIdExpiryDateUseHijri.setSelected(idExpiryDateUseHijri);
-			else rdoIdExpiryDateUseHijri.setSelected(true);
+			if(idExpiryDateUseHijri == null || idExpiryDateUseHijri) rdoIdExpiryDateUseHijri.setSelected(true);
+			else rdoIdExpiryDateUseGregorian.setSelected(true);
 			
 			if(focusedNode != null) focusedNode.requestFocus();
 			else btnNext.requestFocus();

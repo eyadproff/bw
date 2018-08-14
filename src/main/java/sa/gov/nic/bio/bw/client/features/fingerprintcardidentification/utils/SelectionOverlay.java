@@ -2,11 +2,15 @@ package sa.gov.nic.bio.bw.client.features.fingerprintcardidentification.utils;
 
 import javafx.geometry.Bounds;
 import javafx.scene.Cursor;
+import javafx.scene.Node;
 import javafx.scene.layout.Region;
 import javafx.scene.shape.Rectangle;
 
+import java.util.function.BiFunction;
+
 public class SelectionOverlay extends Region
 {
+	private static final double TITLED_PANE_TITLE_HEIGHT = 25.0;
 	private static final double DRAG_HANDLE_DIAMETER = 5.0;
 	private static final double DRAG_HANDLE_RADIUS = DRAG_HANDLE_DIAMETER / 2.0;
 	private static final double MIN_WIDTH = 20.0;
@@ -57,6 +61,7 @@ public class SelectionOverlay extends Region
 			{
 			    getScene().setCursor(Cursor.DEFAULT);
 			    mouseEvent.consume();
+				previewUpdater.apply(rectangle, rtl);
 			});
 			
 			setOnMouseDragged(mouseEvent ->
@@ -65,9 +70,22 @@ public class SelectionOverlay extends Region
 			    double newY = mouseEvent.getY() + dragDelta.y;
 			
 			    boolean exceedMinDimension = false;
+			    boolean beyondNorth = boundaryNode.getLayoutY() + TITLED_PANE_TITLE_HEIGHT >= newY + DRAG_HANDLE_RADIUS;
+			    boolean beyondEast = boundaryNode.getLayoutX() + boundaryNode.getBoundsInParent().getWidth() <=
+				                                                                            newX + DRAG_HANDLE_RADIUS;
+			    boolean beyondSouth = boundaryNode.getLayoutY() + TITLED_PANE_TITLE_HEIGHT +
+					                        boundaryNode.getBoundsInParent().getHeight() <= newY + DRAG_HANDLE_RADIUS;
+			    boolean beyondWest = boundaryNode.getLayoutX() >= newX + DRAG_HANDLE_RADIUS;
 			
 			    if(this == dragHandleN)
 			    {
+			    	if(beyondNorth)
+			    	{
+					    rectangle.setLayoutY(boundaryNode.getLayoutY() + TITLED_PANE_TITLE_HEIGHT);
+					    rectangle.setHeight(dragDelta.maxY - rectangle.getLayoutY());
+			    		return;
+				    }
+			    	
 			        double newHeight = dragDelta.maxY - newY - DRAG_HANDLE_RADIUS;
 			
 			        if(newHeight < MIN_HEIGHT) exceedMinDimension = true;
@@ -81,6 +99,21 @@ public class SelectionOverlay extends Region
 			    }
 			    else if(this == dragHandleNE)
 			    {
+				    if(beyondNorth || beyondEast)
+				    {
+					    if(beyondNorth)
+					    {
+					    	rectangle.setLayoutY(boundaryNode.getLayoutY() + TITLED_PANE_TITLE_HEIGHT);
+						    rectangle.setHeight(dragDelta.maxY - rectangle.getLayoutY());
+					    }
+					    if(beyondEast)
+					    {
+					    	rectangle.setLayoutX(boundaryNode.getLayoutX() +
+						                         boundaryNode.getBoundsInParent().getWidth() - rectangle.getWidth());
+						    rectangle.setWidth(rectangle.getLayoutX() + rectangle.getWidth() - dragDelta.minX);
+					    }
+				    }
+			    	
 			        double newWidth = newX - dragDelta.minX + DRAG_HANDLE_RADIUS;
 			        double newHeight = dragDelta.maxY - newY - DRAG_HANDLE_RADIUS;
 			        double heightDelta = 0.0;
@@ -96,19 +129,28 @@ public class SelectionOverlay extends Region
 			            heightDelta = newHeight - MIN_HEIGHT;
 			            newHeight = MIN_HEIGHT;
 			        }
-			
-			        rectangle.setWidth(newWidth);
-			        rectangle.setHeight(newHeight);
-			        rectangle.relocate(dragDelta.minX, newY + DRAG_HANDLE_RADIUS + heightDelta);
+				
+				    if(!beyondEast) rectangle.setWidth(newWidth);
+				    if(!beyondNorth) rectangle.setHeight(newHeight);
+				    if(!beyondEast) rectangle.setLayoutX(dragDelta.minX);
+				    if(!beyondNorth) rectangle.setLayoutY(newY + DRAG_HANDLE_RADIUS + heightDelta);
 			
 			        if(!exceedMinDimension)
 			        {
-			            setX(newX);
-			            setY(newY);
+				        if(!beyondEast) setX(newX);
+				        if(!beyondNorth) setY(newY);
 			        }
 			    }
 			    else if(this == dragHandleE)
 			    {
+				    if(beyondEast)
+				    {
+					    rectangle.setLayoutX(boundaryNode.getLayoutX() + boundaryNode.getBoundsInParent().getWidth() -
+						                                                                        rectangle.getWidth());
+					    rectangle.setWidth(rectangle.getLayoutX() + rectangle.getWidth() - dragDelta.minX);
+				    	return;
+				    }
+			    	
 			        double newWidth = newX - dragDelta.minX + DRAG_HANDLE_RADIUS;
 			        if(newWidth < MIN_WIDTH) exceedMinDimension = true;
 			
@@ -120,6 +162,22 @@ public class SelectionOverlay extends Region
 			    }
 			    else if(this == dragHandleSE)
 			    {
+				    if(beyondSouth || beyondEast)
+				    {
+					    if(beyondSouth)
+					    {
+					    	rectangle.setLayoutY(boundaryNode.getLayoutY() + TITLED_PANE_TITLE_HEIGHT +
+						                         boundaryNode.getBoundsInParent().getHeight() - rectangle.getHeight());
+						    rectangle.setHeight(rectangle.getLayoutY() + rectangle.getHeight() - dragDelta.minY);
+					    }
+					    if(beyondEast)
+					    {
+					    	rectangle.setLayoutX(boundaryNode.getLayoutX() +
+						                         boundaryNode.getBoundsInParent().getWidth() - rectangle.getWidth());
+						    rectangle.setWidth(rectangle.getLayoutX() + rectangle.getWidth() - dragDelta.minX);
+					    }
+				    }
+			    	
 			        double newWidth = newX - dragDelta.minX + DRAG_HANDLE_RADIUS;
 			        double newHeight = newY - dragDelta.minY + DRAG_HANDLE_RADIUS;
 			
@@ -133,18 +191,26 @@ public class SelectionOverlay extends Region
 			            exceedMinDimension = true;
 			            newHeight = MIN_HEIGHT;
 			        }
-			
-			        rectangle.setWidth(newWidth);
-			        rectangle.setHeight(newHeight);
+				
+				    if(!beyondEast) rectangle.setWidth(newWidth);
+			        if(!beyondSouth) rectangle.setHeight(newHeight);
 			
 			        if(!exceedMinDimension)
 			        {
-			            setX(newX);
-			            setY(newY);
+				        if(!beyondEast) setX(newX);
+				        if(!beyondSouth) setY(newY);
 			        }
 			    }
 			    else if(this == dragHandleS)
 			    {
+				    if(beyondSouth)
+				    {
+					    rectangle.setLayoutY(boundaryNode.getLayoutY() + TITLED_PANE_TITLE_HEIGHT +
+						                         boundaryNode.getBoundsInParent().getHeight() - rectangle.getHeight());
+					    rectangle.setHeight(rectangle.getLayoutY() + rectangle.getHeight() - dragDelta.minY);
+					    return;
+				    }
+			    	
 			        double newHeight = newY - dragDelta.minY + DRAG_HANDLE_RADIUS;
 			        if(newHeight < MIN_HEIGHT) exceedMinDimension = true;
 			
@@ -156,6 +222,21 @@ public class SelectionOverlay extends Region
 			    }
 			    else if(this == dragHandleSW)
 			    {
+				    if(beyondSouth || beyondWest)
+				    {
+					    if(beyondSouth)
+					    {
+					    	rectangle.setLayoutY(boundaryNode.getLayoutY() + TITLED_PANE_TITLE_HEIGHT +
+						                         boundaryNode.getBoundsInParent().getHeight() - rectangle.getHeight());
+						    rectangle.setHeight(rectangle.getLayoutY() + rectangle.getHeight() - dragDelta.minY);
+					    }
+					    if(beyondWest)
+					    {
+					    	rectangle.setLayoutX(boundaryNode.getLayoutX());
+						    rectangle.setWidth(dragDelta.maxX - rectangle.getLayoutX());
+					    }
+				    }
+			    	
 			        double newWidth = dragDelta.maxX - newX - DRAG_HANDLE_RADIUS;
 			        double newHeight = newY - dragDelta.minY + DRAG_HANDLE_RADIUS;
 			        double widthDelta = 0.0;
@@ -171,19 +252,27 @@ public class SelectionOverlay extends Region
 			            exceedMinDimension = true;
 			            newHeight = MIN_HEIGHT;
 			        }
-			
-			        rectangle.setWidth(newWidth);
-			        rectangle.setHeight(newHeight);
-			        rectangle.relocate(newX + DRAG_HANDLE_RADIUS + widthDelta, dragDelta.minY);
+				
+				    if(!beyondWest) rectangle.setWidth(newWidth);
+				    if(!beyondSouth) rectangle.setHeight(newHeight);
+				    if(!beyondWest) rectangle.setLayoutX(newX + DRAG_HANDLE_RADIUS + widthDelta);
+				    if(!beyondSouth) rectangle.setLayoutY(dragDelta.minY);
 			
 			        if(!exceedMinDimension)
 			        {
-			            setX(newX);
-			            setY(newY);
+				        if(!beyondWest) setX(newX);
+				        if(!beyondSouth) setY(newY);
 			        }
 			    }
 			    else if(this == dragHandleW)
 			    {
+				    if(beyondWest)
+				    {
+					    rectangle.setLayoutX(boundaryNode.getLayoutX());
+					    rectangle.setWidth(dragDelta.maxX - rectangle.getLayoutX());
+					    return;
+				    }
+			    	
 			        double newWidth = dragDelta.maxX - newX - DRAG_HANDLE_RADIUS;
 			        if(newWidth < MIN_WIDTH) exceedMinDimension = true;
 			
@@ -196,6 +285,20 @@ public class SelectionOverlay extends Region
 			    }
 			    else if(this == dragHandleNW)
 			    {
+				    if(beyondNorth || beyondWest)
+				    {
+					    if(beyondNorth)
+					    {
+					    	rectangle.setLayoutY(boundaryNode.getLayoutY() + TITLED_PANE_TITLE_HEIGHT);
+						    rectangle.setHeight(dragDelta.maxY - rectangle.getLayoutY());
+					    }
+					    if(beyondWest)
+					    {
+					    	rectangle.setLayoutX(boundaryNode.getLayoutX());
+						    rectangle.setWidth(dragDelta.maxX - rectangle.getLayoutX());
+					    }
+				    }
+			    	
 			        double newWidth = dragDelta.maxX - newX - DRAG_HANDLE_RADIUS;
 			        double newHeight = dragDelta.maxY - newY - DRAG_HANDLE_RADIUS;
 			        double widthDelta = 0.0;
@@ -213,28 +316,33 @@ public class SelectionOverlay extends Region
 			            heightDelta = newHeight - MIN_HEIGHT;
 			            newHeight = MIN_HEIGHT;
 			        }
-			
-			        rectangle.setWidth(newWidth);
-			        rectangle.setHeight(newHeight);
-			        rectangle.relocate(newX + DRAG_HANDLE_RADIUS + widthDelta,
-			                           newY + DRAG_HANDLE_RADIUS + heightDelta);
+				
+				    if(!beyondWest) rectangle.setWidth(newWidth);
+				    if(!beyondNorth) rectangle.setHeight(newHeight);
+				    if(!beyondWest) rectangle.setLayoutX(newX + DRAG_HANDLE_RADIUS + widthDelta);
+				    if(!beyondNorth) rectangle.setLayoutY(newY + DRAG_HANDLE_RADIUS + heightDelta);
 			
 			        if(!exceedMinDimension)
 			        {
-			            setX(newX);
-			            setY(newY);
+				        if(!beyondWest) setX(newX);
+				        if(!beyondNorth) setY(newY);
 			        }
 			    }
 			
 			    mouseEvent.consume();
 			});
 			
-			setOnMouseEntered(mouseEvent -> getScene().setCursor(dragCursor));
-			setOnMouseExited(mouseEvent -> getScene().setCursor(Cursor.DEFAULT));
+			// the following is not working, I don't know why!
+			setOnMouseEntered(event ->  getScene().setCursor(dragCursor));
+			setOnMouseExited(event ->  getScene().setCursor(Cursor.DEFAULT));
 		}
 	}
 	
+	private Node boundaryNode;
 	private Rectangle rectangle;
+	private BiFunction<Rectangle, Boolean, Void> previewUpdater;
+	private boolean rtl;
+	
 	private Rectangle selectionRectangle = new Rectangle();
 	
 	// drag handles
@@ -247,9 +355,13 @@ public class SelectionOverlay extends Region
 	private DragHandle dragHandleE;
 	private DragHandle dragHandleW;
 	
-	public SelectionOverlay(Rectangle rectangle, boolean rtl)
+	public SelectionOverlay(Node boundaryNode, Rectangle rectangle, BiFunction<Rectangle, Boolean, Void> previewUpdater,
+	                        boolean rtl)
 	{
+		this.boundaryNode = boundaryNode;
 		this.rectangle = rectangle;
+		this.previewUpdater = previewUpdater;
+		this.rtl = rtl;
 		
 		// mouse events only on our drag objects, but not on this node itself
 		// note that the selection rectangle is only for visuals and is set to being mouse transparent

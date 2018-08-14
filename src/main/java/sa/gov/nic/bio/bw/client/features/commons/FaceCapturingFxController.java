@@ -642,7 +642,7 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 		GuiUtils.showNode(piCapturedImage, true);
 		GuiUtils.showNode(piCroppedImage, true);
 		
-		if(faceAnimationTimeline != null)
+		if(Platform.isSupported(ConditionalFeature.SCENE3D) && faceAnimationTimeline != null)
 		{
 			face3D.getTransforms().setAll(pivotBase, xRotateBase, yRotateBase, zRotateBase);
 			faceAnimationTimeline.stop();
@@ -909,32 +909,35 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 	
 	private void animateHeadRotation(Point3D axis, double degree)
 	{
-		Rotate rotate = new Rotate(0.0, 0.0, 0.0, 0.0, axis);
-		
-		face3D.getTransforms().setAll(pivotBase, rotate);
-		faceAnimationTimeline = new Timeline(
-			new KeyFrame(
-					Duration.seconds(0.0),
-					new KeyValue(rotate.angleProperty(), 0.0)
-			),
-			new KeyFrame(
-					Duration.seconds(0.5),
-					new KeyValue(rotate.angleProperty(), degree)
-			),
-			new KeyFrame(
-					Duration.seconds(1.0),
-					new KeyValue(rotate.angleProperty(), 0.0)
-			),
-			new KeyFrame(
-					Duration.seconds(1.5),
-					new KeyValue(rotate.angleProperty(), -degree)
-			),
-			new KeyFrame(
-					Duration.seconds(2.0),
-					new KeyValue(rotate.angleProperty(), 0.0)
-			)
-		);
-		faceAnimationTimeline.setCycleCount(5);
-		faceAnimationTimeline.play();
+		if(Platform.isSupported(ConditionalFeature.SCENE3D))
+		{
+			Rotate rotate = new Rotate(0.0, 0.0, 0.0, 0.0, axis);
+			
+			face3D.getTransforms().setAll(pivotBase, rotate);
+			faceAnimationTimeline = new Timeline(
+					new KeyFrame(
+							Duration.seconds(0.0),
+							new KeyValue(rotate.angleProperty(), 0.0)
+					),
+					new KeyFrame(
+							Duration.seconds(0.5),
+							new KeyValue(rotate.angleProperty(), degree)
+					),
+					new KeyFrame(
+							Duration.seconds(1.0),
+							new KeyValue(rotate.angleProperty(), 0.0)
+					),
+					new KeyFrame(
+							Duration.seconds(1.5),
+							new KeyValue(rotate.angleProperty(), -degree)
+					),
+					new KeyFrame(
+							Duration.seconds(2.0),
+							new KeyValue(rotate.angleProperty(), 0.0)
+					)
+			);
+			faceAnimationTimeline.setCycleCount(5);
+			faceAnimationTimeline.play();
+		}
 	}
 }

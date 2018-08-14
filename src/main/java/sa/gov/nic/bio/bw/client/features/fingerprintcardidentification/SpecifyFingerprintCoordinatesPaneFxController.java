@@ -5,7 +5,6 @@ import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.geometry.NodeOrientation;
 import javafx.scene.Group;
-import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
@@ -67,7 +66,7 @@ public class SpecifyFingerprintCoordinatesPaneFxController extends WizardStepFxC
 		rect.relocate(100,100);
 		
 		objectLayer.getChildren().addAll(rect);
-		spFingerprintCardImage.setOnMouseClicked(mouseEvent -> selectionLayer.getChildren().clear());
+		spFingerprintCardImage.setOnMousePressed(mouseEvent -> selectionLayer.getChildren().clear());
 		
 		ivFingerprintCardImage.boundsInParentProperty().addListener((observable, oldValue, newValue) ->
 		{
@@ -102,14 +101,17 @@ public class SpecifyFingerprintCoordinatesPaneFxController extends WizardStepFxC
 	@FXML
 	private void onNextButtonClicked(ActionEvent actionEvent)
 	{
-		//goNext();
-		
+		goNext();
+	}
+	
+	private Void updatePreviewImage(Rectangle rectangle, boolean rtl)
+	{
 		double imageScaledWidth = ivFingerprintCardImage.getBoundsInParent().getWidth();
-		double rectWidth = rect.getWidth();
-		double rectHeight = rect.getHeight();
+		double rectWidth = rectangle.getWidth();
+		double rectHeight = rectangle.getHeight();
 		double imageOriginalWidth = ivFingerprintCardImage.getImage().getWidth();
-		double rectX = rect.getLayoutX();
-		double rectY = rect.getLayoutY();
+		double rectX = rectangle.getLayoutX();
+		double rectY = rectangle.getLayoutY();
 		double imageX = ivFingerprintCardImage.getLayoutX();
 		double imageY = TITLED_PANE_TITLE_HEIGHT + ivFingerprintCardImage.getLayoutY();
 		
@@ -119,14 +121,17 @@ public class SpecifyFingerprintCoordinatesPaneFxController extends WizardStepFxC
 		double scaledRectX = scale * (rectX - imageX);
 		double scaledRectY = scale * (rectY - imageY);
 		
+		if(rtl) scaledRectX = imageOriginalWidth - scaledRectX - scaledRectWidth;
+		
 		WritableImage newImage = new WritableImage(ivFingerprintCardImage.getImage().getPixelReader(),
 		                                           (int) scaledRectX, (int) scaledRectY,
 		                                           (int) scaledRectWidth, (int) scaledRectHeight);
 		
 		ivFingerprintImageAfterCropping.setImage(newImage);
+		return null;
 	}
 	
-	private static void makeNodeDraggable(Node boundaryNode, Group selectionLayer, Rectangle rectangle, boolean rtl)
+	private void makeNodeDraggable(ImageView ivCard, Group selectionLayer, Rectangle rectangle, boolean rtl)
 	{
 		DragContext dragDelta = new DragContext();
 		
@@ -136,8 +141,9 @@ public class SpecifyFingerprintCoordinatesPaneFxController extends WizardStepFxC
 		rectangle.setOnMousePressed(mouseEvent ->
 		{
 			rectangle.requestFocus();
+			//rectangle.boundsInParentProperty().addListener(changeListener);
 			
-			SelectionOverlay selectionOverlay = new SelectionOverlay(rectangle, rtl);
+			SelectionOverlay selectionOverlay = new SelectionOverlay(ivCard, rectangle, this::updatePreviewImage, rtl);
 			
 			// prevent bubbling up the mouse-click event to the parent (spFingerprintCardImage)
 			selectionOverlay.addEventFilter(MouseEvent.MOUSE_CLICKED, Event::consume);
@@ -146,6 +152,8 @@ public class SpecifyFingerprintCoordinatesPaneFxController extends WizardStepFxC
 		
 		    dragDelta.x = rectangle.getTranslateX() - mouseEvent.getSceneX();
 		    dragDelta.y = rectangle.getTranslateY() - mouseEvent.getSceneY();
+			
+			mouseEvent.consume();
 		});
 		
 		rectangle.setOnMouseDragged(mouseEvent ->
@@ -153,16 +161,16 @@ public class SpecifyFingerprintCoordinatesPaneFxController extends WizardStepFxC
 			double newX = (mouseEvent.getSceneX() + dragDelta.x) * (rtl ? -1 : 1);
 			double newY = mouseEvent.getSceneY() + dragDelta.y;
 			
-			boolean tooRight = boundaryNode.getLayoutX() + boundaryNode.getLayoutBounds().getWidth() <=
+			boolean tooRight = ivCard.getLayoutX() + ivCard.getLayoutBounds().getWidth() <=
 																newX + rectangle.getLayoutX() + rectangle.getWidth();
-			boolean tooLeft = boundaryNode.getLayoutX() >= newX + rectangle.getLayoutX();
-			boolean tooDown = boundaryNode.getLayoutY() + TITLED_PANE_TITLE_HEIGHT +
-					boundaryNode.getLayoutBounds().getHeight() <= newY + rectangle.getLayoutY() + rectangle.getHeight();
-			boolean tooUp = boundaryNode.getLayoutY() + TITLED_PANE_TITLE_HEIGHT >= newY + rectangle.getLayoutY();
+			boolean tooLeft = ivCard.getLayoutX() >= newX + rectangle.getLayoutX();
+			boolean tooDown = ivCard.getLayoutY() + TITLED_PANE_TITLE_HEIGHT +
+					ivCard.getLayoutBounds().getHeight() <= newY + rectangle.getLayoutY() + rectangle.getHeight();
+			boolean tooUp = ivCard.getLayoutY() + TITLED_PANE_TITLE_HEIGHT >= newY + rectangle.getLayoutY();
 			
 			if(tooRight)
 			{
-				rectangle.setTranslateX(boundaryNode.getLayoutX() + boundaryNode.getLayoutBounds().getWidth()
+				rectangle.setTranslateX(ivCard.getLayoutX() + ivCard.getLayoutBounds().getWidth()
 						                                            - rectangle.getWidth() - rectangle.getLayoutX());
 				if(!tooUp && !tooDown) rectangle.setTranslateY(newY);
 				return;
@@ -170,7 +178,7 @@ public class SpecifyFingerprintCoordinatesPaneFxController extends WizardStepFxC
 			
 			if(tooLeft)
 			{
-				rectangle.setTranslateX(boundaryNode.getLayoutX() - rectangle.getLayoutX());
+				rectangle.setTranslateX(ivCard.getLayoutX() - rectangle.getLayoutX());
 				if(!tooUp && !tooDown) rectangle.setTranslateY(newY);
 				return;
 			}
@@ -178,15 +186,15 @@ public class SpecifyFingerprintCoordinatesPaneFxController extends WizardStepFxC
 			if(tooDown)
 			{
 				rectangle.setTranslateX(newX);
-				rectangle.setTranslateY(boundaryNode.getLayoutY() + TITLED_PANE_TITLE_HEIGHT +
-                        boundaryNode.getLayoutBounds().getHeight() - rectangle.getHeight() - rectangle.getLayoutY());
+				rectangle.setTranslateY(ivCard.getLayoutY() + TITLED_PANE_TITLE_HEIGHT +
+	                            ivCard.getLayoutBounds().getHeight() - rectangle.getHeight() - rectangle.getLayoutY());
 				return;
 			}
 			
 			if(tooUp)
 			{
 				rectangle.setTranslateX(newX);
-				rectangle.setTranslateY(boundaryNode.getLayoutY() + TITLED_PANE_TITLE_HEIGHT - rectangle.getLayoutY());
+				rectangle.setTranslateY(ivCard.getLayoutY() + TITLED_PANE_TITLE_HEIGHT - rectangle.getLayoutY());
 				return;
 			}
 			
@@ -203,6 +211,8 @@ public class SpecifyFingerprintCoordinatesPaneFxController extends WizardStepFxC
 			
 			rectangle.setTranslateX(0);
 			rectangle.setTranslateY(0);
+			
+			updatePreviewImage(rectangle, rtl);
 		});
 		
 		rectangle.setOnKeyPressed(keyEvent ->
@@ -213,34 +223,51 @@ public class SpecifyFingerprintCoordinatesPaneFxController extends WizardStepFxC
 			{
 				case UP:
 				{
-					if(rectangle.getLayoutY() <= boundaryNode.getLayoutY() + TITLED_PANE_TITLE_HEIGHT) break;
+					if(rectangle.getLayoutY() <= ivCard.getLayoutY() + TITLED_PANE_TITLE_HEIGHT) break;
 					rectangle.relocate(rectangle.getLayoutX(), rectangle.getLayoutY() - 1);
 					break;
 				}
 				case RIGHT:
 				{
-					if(rectangle.getLayoutX() + rectangle.getWidth() >=
-									boundaryNode.getLayoutX() + boundaryNode.getBoundsInParent().getWidth()) break;
-					rectangle.relocate(rectangle.getLayoutX() + 1, rectangle.getLayoutY());
+					if(rtl)
+					{
+						if(rectangle.getLayoutX() <= ivCard.getLayoutX()) break;
+					}
+					else
+					{
+						if(rectangle.getLayoutX() + rectangle.getWidth() >= ivCard.getLayoutX() +
+																		ivCard.getBoundsInParent().getWidth()) break;
+					}
+					
+					rectangle.relocate(rectangle.getLayoutX() + (rtl ? -1 : 1), rectangle.getLayoutY());
 					break;
 				}
 				case DOWN:
 				{
-					if(rectangle.getLayoutY() + rectangle.getHeight() >=
-							boundaryNode.getLayoutY() + TITLED_PANE_TITLE_HEIGHT +
-									boundaryNode.getBoundsInParent().getHeight()) break;
+					if(rectangle.getLayoutY() + rectangle.getHeight() >= ivCard.getLayoutY() +
+											TITLED_PANE_TITLE_HEIGHT + ivCard.getBoundsInParent().getHeight()) break;
 					rectangle.relocate(rectangle.getLayoutX(), rectangle.getLayoutY() + 1);
 					break;
 				}
 				case LEFT:
 				{
-					if(rectangle.getLayoutX() <= boundaryNode.getLayoutX()) break;
-					rectangle.relocate(rectangle.getLayoutX() - 1, rectangle.getLayoutY());
+					if(rtl)
+					{
+						if(rectangle.getLayoutX() + rectangle.getWidth() >= ivCard.getLayoutX() +
+																		ivCard.getBoundsInParent().getWidth()) break;
+					}
+					else
+					{
+						if(rectangle.getLayoutX() <= ivCard.getLayoutX()) break;
+					}
+					
+					rectangle.relocate(rectangle.getLayoutX() + (rtl ? 1 : -1), rectangle.getLayoutY());
 					break;
 				}
 			}
 			
 			keyEvent.consume(); // prevent navigating to other GUI controls on the screen
+			updatePreviewImage(rectangle, rtl);
 		});
 	}
 }

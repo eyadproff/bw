@@ -1,5 +1,11 @@
 # Release Notes:
 
+## v2018.08.3
+
+- Check if the system supports 3D graphics before using it.
+- Fix a bug in date-picker's radio button for selecting Gregorian calendar, when loading old values.
+- Convicted Report: Fix a bug for setting unknown nationality when loading old values.
+
 ## v2018.08.2
 
 - Convicted Report: fix a bug in inquiry result.
