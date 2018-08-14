@@ -33,13 +33,20 @@
                 </StackPane>
                 <VBox>
                     <TitledPane text="%label.fingerprintImageAfterCropping" maxHeight="Infinity" collapsible="false" VBox.vgrow="ALWAYS" focusTraversable="false">
-                        <ImageViewPane>
-                            <imageView>
-                                <ImageView fx:id="ivFingerprintImageAfterCropping" preserveRatio="true">
-                                    <Image url="@../../commons/images/image_place_holder_square.png"/>
-                                </ImageView>
-                            </imageView>
-                        </ImageViewPane>
+                        <StackPane>
+                            <ImageViewPane>
+                                <imageView>
+                                    <ImageView fx:id="ivFingerprintImageAfterCroppingPlaceHolder" preserveRatio="true">
+                                        <Image url="@../../commons/images/image_place_holder_square.png"/>
+                                    </ImageView>
+                                </imageView>
+                            </ImageViewPane>
+                            <ImageViewPane>
+                                <imageView>
+                                    <ImageView fx:id="ivFingerprintImageAfterCropping" preserveRatio="true" visible="false" managed="false"/>
+                                </imageView>
+                            </ImageViewPane>
+                        </StackPane>
                     </TitledPane>
                 </VBox>
             </SplitPane>

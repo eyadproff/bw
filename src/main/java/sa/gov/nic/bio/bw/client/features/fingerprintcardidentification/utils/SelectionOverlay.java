@@ -66,6 +66,7 @@ public class SelectionOverlay extends Region
 			
 			setOnMouseDragged(mouseEvent ->
 			{
+				double strokeWidth = rectangle.getStrokeWidth();
 			    double newX = mouseEvent.getX() + dragDelta.x;
 			    double newY = mouseEvent.getY() + dragDelta.y;
 			
@@ -82,11 +83,11 @@ public class SelectionOverlay extends Region
 			    	if(beyondNorth)
 			    	{
 					    rectangle.setLayoutY(boundaryNode.getLayoutY() + TITLED_PANE_TITLE_HEIGHT);
-					    rectangle.setHeight(dragDelta.maxY - rectangle.getLayoutY());
+					    rectangle.setHeight(dragDelta.maxY - rectangle.getLayoutY() - strokeWidth / 2.0);
 			    		return;
 				    }
 			    	
-			        double newHeight = dragDelta.maxY - newY - DRAG_HANDLE_RADIUS;
+			        double newHeight = dragDelta.maxY - newY - DRAG_HANDLE_RADIUS - strokeWidth / 2.0;
 			
 			        if(newHeight < MIN_HEIGHT) exceedMinDimension = true;
 			
@@ -94,7 +95,7 @@ public class SelectionOverlay extends Region
 			        {
 			            setY(newY);
 			            rectangle.setHeight(newHeight);
-			            rectangle.relocate(dragDelta.minX, newY + DRAG_HANDLE_RADIUS);
+			            rectangle.relocate(dragDelta.minX, newY + DRAG_HANDLE_RADIUS - strokeWidth / 2.0);
 			        }
 			    }
 			    else if(this == dragHandleNE)
@@ -104,18 +105,18 @@ public class SelectionOverlay extends Region
 					    if(beyondNorth)
 					    {
 					    	rectangle.setLayoutY(boundaryNode.getLayoutY() + TITLED_PANE_TITLE_HEIGHT);
-						    rectangle.setHeight(dragDelta.maxY - rectangle.getLayoutY());
+						    rectangle.setHeight(dragDelta.maxY - rectangle.getLayoutY() - strokeWidth / 2.0);
 					    }
 					    if(beyondEast)
 					    {
 					    	rectangle.setLayoutX(boundaryNode.getLayoutX() +
-						                         boundaryNode.getBoundsInParent().getWidth() - rectangle.getWidth());
-						    rectangle.setWidth(rectangle.getLayoutX() + rectangle.getWidth() - dragDelta.minX);
+						                         boundaryNode.getBoundsInParent().getWidth() - rectangle.getWidth() - strokeWidth / 2.0);
+						    rectangle.setWidth(rectangle.getLayoutX() + rectangle.getWidth() - dragDelta.minX - strokeWidth / 2.0);
 					    }
 				    }
 			    	
 			        double newWidth = newX - dragDelta.minX + DRAG_HANDLE_RADIUS;
-			        double newHeight = dragDelta.maxY - newY - DRAG_HANDLE_RADIUS;
+			        double newHeight = dragDelta.maxY - newY - DRAG_HANDLE_RADIUS - strokeWidth / 2.0;
 			        double heightDelta = 0.0;
 			
 			        if(newWidth < MIN_WIDTH)
@@ -132,7 +133,7 @@ public class SelectionOverlay extends Region
 				
 				    if(!beyondEast) rectangle.setWidth(newWidth);
 				    if(!beyondNorth) rectangle.setHeight(newHeight);
-				    if(!beyondEast) rectangle.setLayoutX(dragDelta.minX);
+				    if(!beyondEast) rectangle.setLayoutX(dragDelta.minX + strokeWidth / 2.0);
 				    if(!beyondNorth) rectangle.setLayoutY(newY + DRAG_HANDLE_RADIUS + heightDelta);
 			
 			        if(!exceedMinDimension)
@@ -146,8 +147,8 @@ public class SelectionOverlay extends Region
 				    if(beyondEast)
 				    {
 					    rectangle.setLayoutX(boundaryNode.getLayoutX() + boundaryNode.getBoundsInParent().getWidth() -
-						                                                                        rectangle.getWidth());
-					    rectangle.setWidth(rectangle.getLayoutX() + rectangle.getWidth() - dragDelta.minX);
+						                                                                        rectangle.getWidth() - strokeWidth / 2.0);
+					    rectangle.setWidth(rectangle.getLayoutX() + rectangle.getWidth() - dragDelta.minX - strokeWidth / 2.0);
 				    	return;
 				    }
 			    	
@@ -167,14 +168,14 @@ public class SelectionOverlay extends Region
 					    if(beyondSouth)
 					    {
 					    	rectangle.setLayoutY(boundaryNode.getLayoutY() + TITLED_PANE_TITLE_HEIGHT +
-						                         boundaryNode.getBoundsInParent().getHeight() - rectangle.getHeight());
-						    rectangle.setHeight(rectangle.getLayoutY() + rectangle.getHeight() - dragDelta.minY);
+						                         boundaryNode.getBoundsInParent().getHeight() - rectangle.getHeight() - strokeWidth / 2.0);
+						    rectangle.setHeight(rectangle.getLayoutY() + rectangle.getHeight() - dragDelta.minY - strokeWidth / 2.0);
 					    }
 					    if(beyondEast)
 					    {
 					    	rectangle.setLayoutX(boundaryNode.getLayoutX() +
-						                         boundaryNode.getBoundsInParent().getWidth() - rectangle.getWidth());
-						    rectangle.setWidth(rectangle.getLayoutX() + rectangle.getWidth() - dragDelta.minX);
+						                         boundaryNode.getBoundsInParent().getWidth() - rectangle.getWidth() - strokeWidth / 2.0);
+						    rectangle.setWidth(rectangle.getLayoutX() + rectangle.getWidth() - dragDelta.minX - strokeWidth / 2.0);
 					    }
 				    }
 			    	
@@ -206,8 +207,8 @@ public class SelectionOverlay extends Region
 				    if(beyondSouth)
 				    {
 					    rectangle.setLayoutY(boundaryNode.getLayoutY() + TITLED_PANE_TITLE_HEIGHT +
-						                         boundaryNode.getBoundsInParent().getHeight() - rectangle.getHeight());
-					    rectangle.setHeight(rectangle.getLayoutY() + rectangle.getHeight() - dragDelta.minY);
+						                         boundaryNode.getBoundsInParent().getHeight() - rectangle.getHeight() - strokeWidth / 2.0);
+					    rectangle.setHeight(rectangle.getLayoutY() + rectangle.getHeight() - dragDelta.minY - strokeWidth / 2.0);
 					    return;
 				    }
 			    	
@@ -227,18 +228,18 @@ public class SelectionOverlay extends Region
 					    if(beyondSouth)
 					    {
 					    	rectangle.setLayoutY(boundaryNode.getLayoutY() + TITLED_PANE_TITLE_HEIGHT +
-						                         boundaryNode.getBoundsInParent().getHeight() - rectangle.getHeight());
-						    rectangle.setHeight(rectangle.getLayoutY() + rectangle.getHeight() - dragDelta.minY);
+						                         boundaryNode.getBoundsInParent().getHeight() - rectangle.getHeight() - strokeWidth / 2.0);
+						    rectangle.setHeight(rectangle.getLayoutY() + rectangle.getHeight() - dragDelta.minY - strokeWidth / 2.0);
 					    }
 					    if(beyondWest)
 					    {
-					    	rectangle.setLayoutX(boundaryNode.getLayoutX());
-						    rectangle.setWidth(dragDelta.maxX - rectangle.getLayoutX());
+					    	rectangle.setLayoutX(boundaryNode.getLayoutX() - strokeWidth / 2.0);
+						    rectangle.setWidth(dragDelta.maxX - rectangle.getLayoutX() - strokeWidth / 2.0);
 					    }
 				    }
 			    	
-			        double newWidth = dragDelta.maxX - newX - DRAG_HANDLE_RADIUS;
-			        double newHeight = newY - dragDelta.minY + DRAG_HANDLE_RADIUS;
+			        double newWidth = dragDelta.maxX - newX - DRAG_HANDLE_RADIUS - strokeWidth / 2.0;
+			        double newHeight = newY - dragDelta.minY + DRAG_HANDLE_RADIUS + strokeWidth / 2.0;
 			        double widthDelta = 0.0;
 			
 			        if(newWidth < MIN_WIDTH)
@@ -256,7 +257,7 @@ public class SelectionOverlay extends Region
 				    if(!beyondWest) rectangle.setWidth(newWidth);
 				    if(!beyondSouth) rectangle.setHeight(newHeight);
 				    if(!beyondWest) rectangle.setLayoutX(newX + DRAG_HANDLE_RADIUS + widthDelta);
-				    if(!beyondSouth) rectangle.setLayoutY(dragDelta.minY);
+				    if(!beyondSouth) rectangle.setLayoutY(dragDelta.minY + strokeWidth / 2.0);
 			
 			        if(!exceedMinDimension)
 			        {
@@ -268,19 +269,19 @@ public class SelectionOverlay extends Region
 			    {
 				    if(beyondWest)
 				    {
-					    rectangle.setLayoutX(boundaryNode.getLayoutX());
-					    rectangle.setWidth(dragDelta.maxX - rectangle.getLayoutX());
+					    rectangle.setLayoutX(boundaryNode.getLayoutX() - strokeWidth / 2.0);
+					    rectangle.setWidth(dragDelta.maxX - rectangle.getLayoutX() - strokeWidth / 2.0);
 					    return;
 				    }
 			    	
-			        double newWidth = dragDelta.maxX - newX - DRAG_HANDLE_RADIUS;
+			        double newWidth = dragDelta.maxX - newX - DRAG_HANDLE_RADIUS - strokeWidth / 2.0;
 			        if(newWidth < MIN_WIDTH) exceedMinDimension = true;
 			
 			        if(!exceedMinDimension)
 			        {
 			            setX(newX);
 			            rectangle.setWidth(newWidth);
-			            rectangle.relocate(newX + DRAG_HANDLE_RADIUS, dragDelta.minY);
+			            rectangle.relocate(newX + DRAG_HANDLE_RADIUS - strokeWidth / 2.0, dragDelta.minY);
 			        }
 			    }
 			    else if(this == dragHandleNW)
@@ -290,17 +291,17 @@ public class SelectionOverlay extends Region
 					    if(beyondNorth)
 					    {
 					    	rectangle.setLayoutY(boundaryNode.getLayoutY() + TITLED_PANE_TITLE_HEIGHT);
-						    rectangle.setHeight(dragDelta.maxY - rectangle.getLayoutY());
+						    rectangle.setHeight(dragDelta.maxY - rectangle.getLayoutY() - strokeWidth / 2.0);
 					    }
 					    if(beyondWest)
 					    {
-					    	rectangle.setLayoutX(boundaryNode.getLayoutX());
-						    rectangle.setWidth(dragDelta.maxX - rectangle.getLayoutX());
+					    	rectangle.setLayoutX(boundaryNode.getLayoutX() - strokeWidth / 2.0);
+						    rectangle.setWidth(dragDelta.maxX - rectangle.getLayoutX() - strokeWidth / 2.0);
 					    }
 				    }
 			    	
-			        double newWidth = dragDelta.maxX - newX - DRAG_HANDLE_RADIUS;
-			        double newHeight = dragDelta.maxY - newY - DRAG_HANDLE_RADIUS;
+			        double newWidth = dragDelta.maxX - newX - DRAG_HANDLE_RADIUS - strokeWidth / 2.0;
+			        double newHeight = dragDelta.maxY - newY - DRAG_HANDLE_RADIUS - strokeWidth / 2.0;
 			        double widthDelta = 0.0;
 			        double heightDelta = 0.0;
 			

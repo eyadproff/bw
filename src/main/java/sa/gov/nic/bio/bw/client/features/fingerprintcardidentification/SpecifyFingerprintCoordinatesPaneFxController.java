@@ -12,9 +12,9 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
-import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import sa.gov.nic.bio.bw.client.core.Context;
+import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.wizard.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.client.features.fingerprintcardidentification.utils.SelectionOverlay;
 
@@ -24,9 +24,9 @@ import java.util.Map;
 public class SpecifyFingerprintCoordinatesPaneFxController extends WizardStepFxControllerBase
 {
 	private static final double TITLED_PANE_TITLE_HEIGHT = 25.0;
-	
 	private static class DragContext
 	{
+		
 		private double x;
 		private double y;
 	}
@@ -34,10 +34,12 @@ public class SpecifyFingerprintCoordinatesPaneFxController extends WizardStepFxC
 	@FXML private StackPane spFingerprintCardImage;
 	@FXML private ImageView ivFingerprintCardImage;
 	@FXML private ImageView ivFingerprintImageAfterCropping;
+	@FXML private ImageView ivFingerprintImageAfterCroppingPlaceHolder;
 	@FXML private Button btnPrevious;
 	@FXML private Button btnNext;
 	
-	private Rectangle rect;
+	private Rectangle[] rectangles = new Rectangle[10];
+	private Rectangle selectedRectangle;
 	
 	@Override
 	public URL getFxmlLocation()
@@ -60,27 +62,37 @@ public class SpecifyFingerprintCoordinatesPaneFxController extends WizardStepFxC
 		Group selectionLayer = new Group();
 		root.getChildren().add(selectionLayer);
 		
-		rect = new Rectangle(400, 500);
-		rect.setFocusTraversable(true);
-		rect.setFill(Color.RED.deriveColor(1, 1, 1, 0.2));
-		rect.relocate(100,100);
-		
-		objectLayer.getChildren().addAll(rect);
-		spFingerprintCardImage.setOnMousePressed(mouseEvent -> selectionLayer.getChildren().clear());
-		
-		ivFingerprintCardImage.boundsInParentProperty().addListener((observable, oldValue, newValue) ->
+		for(int i = 0; i < rectangles.length; i++)
 		{
+			rectangles[i] = new Rectangle(400, 500);
+			rectangles[i].setFocusTraversable(true);
+			rectangles[i].getStyleClass().add("fingerprint-rectangle");
+			rectangles[i].relocate(100,100);
+			objectLayer.getChildren().add(rectangles[i]);
+			makeNodeDraggable(ivFingerprintCardImage, selectionLayer, rectangles[i], rtl);
 			
-			
-			double scale = newValue.getWidth() / oldValue.getWidth();
-			rect.setWidth(rect.getWidth() * scale);
-			rect.setHeight(rect.getHeight() * scale);
-			
-			rect.relocate(newValue.getMinX() + scale * (rect.getLayoutX() - oldValue.getMinX()),
-			              TITLED_PANE_TITLE_HEIGHT + newValue.getMinY() + scale * (rect.getLayoutY() - (TITLED_PANE_TITLE_HEIGHT + oldValue.getMinY())));
-		});
+			int finalI = i;
+			ivFingerprintCardImage.boundsInParentProperty().addListener((observable, oldValue, newValue) ->
+			{
+				double strokeWidth = rectangles[finalI].getStrokeWidth();
+			    double scale = newValue.getWidth() / oldValue.getWidth();
+			    rectangles[finalI].setWidth(rectangles[finalI].getWidth() * scale);
+			    rectangles[finalI].setHeight(rectangles[finalI].getHeight() * scale);
+			    rectangles[finalI].relocate(newValue.getMinX() +
+	                                scale * (rectangles[finalI].getLayoutX() - strokeWidth / 2.0 - oldValue.getMinX()),
+			                               TITLED_PANE_TITLE_HEIGHT + newValue.getMinY() +
+	                                scale * (rectangles[finalI].getLayoutY() - strokeWidth / 2.0 -
+			                                                        (TITLED_PANE_TITLE_HEIGHT + oldValue.getMinY())));
+			});
+		}
 		
-		makeNodeDraggable(ivFingerprintCardImage, selectionLayer, rect, rtl);
+		spFingerprintCardImage.setOnMousePressed(mouseEvent ->
+		{
+			ivFingerprintImageAfterCropping.setImage(null);
+			GuiUtils.showNode(ivFingerprintImageAfterCropping, false);
+			GuiUtils.showNode(ivFingerprintImageAfterCroppingPlaceHolder, true);
+			selectionLayer.getChildren().clear();
+		});
 	}
 	
 	@Override
@@ -106,9 +118,13 @@ public class SpecifyFingerprintCoordinatesPaneFxController extends WizardStepFxC
 	
 	private Void updatePreviewImage(Rectangle rectangle, boolean rtl)
 	{
+		GuiUtils.showNode(ivFingerprintImageAfterCroppingPlaceHolder, false);
+		GuiUtils.showNode(ivFingerprintImageAfterCropping, true);
+		
+		double strokeWidth = rectangle.getStrokeWidth();
 		double imageScaledWidth = ivFingerprintCardImage.getBoundsInParent().getWidth();
-		double rectWidth = rectangle.getWidth();
-		double rectHeight = rectangle.getHeight();
+		double rectWidth = rectangle.getWidth() - strokeWidth;
+		double rectHeight = rectangle.getHeight() - strokeWidth;
 		double imageOriginalWidth = ivFingerprintCardImage.getImage().getWidth();
 		double rectX = rectangle.getLayoutX();
 		double rectY = rectangle.getLayoutY();
@@ -141,17 +157,17 @@ public class SpecifyFingerprintCoordinatesPaneFxController extends WizardStepFxC
 		rectangle.setOnMousePressed(mouseEvent ->
 		{
 			rectangle.requestFocus();
-			//rectangle.boundsInParentProperty().addListener(changeListener);
 			
 			SelectionOverlay selectionOverlay = new SelectionOverlay(ivCard, rectangle, this::updatePreviewImage, rtl);
+			selectedRectangle = rectangle;
 			
 			// prevent bubbling up the mouse-click event to the parent (spFingerprintCardImage)
 			selectionOverlay.addEventFilter(MouseEvent.MOUSE_CLICKED, Event::consume);
 			
 			selectionLayer.getChildren().setAll(selectionOverlay);
 		
-		    dragDelta.x = rectangle.getTranslateX() - mouseEvent.getSceneX();
-		    dragDelta.y = rectangle.getTranslateY() - mouseEvent.getSceneY();
+		    dragDelta.x = rectangle.getTranslateX() - 1 - mouseEvent.getSceneX();
+		    dragDelta.y = rectangle.getTranslateY() - 1 - mouseEvent.getSceneY();
 			
 			mouseEvent.consume();
 		});
@@ -204,10 +220,12 @@ public class SpecifyFingerprintCoordinatesPaneFxController extends WizardStepFxC
 		
 		rectangle.setOnMouseReleased(mouseEvent ->
 		{
+			double strokeWidth = rectangle.getStrokeWidth();
 		    double x = rectangle.getTranslateX();
 		    double y = rectangle.getTranslateY();
 			
-			rectangle.relocate(rectangle.getLayoutX() + x, rectangle.getLayoutY() + y);
+			rectangle.relocate(rectangle.getLayoutX() - strokeWidth / 2.0 + x,
+			                   rectangle.getLayoutY() - strokeWidth / 2.0 + y);
 			
 			rectangle.setTranslateX(0);
 			rectangle.setTranslateY(0);
@@ -217,51 +235,56 @@ public class SpecifyFingerprintCoordinatesPaneFxController extends WizardStepFxC
 		
 		rectangle.setOnKeyPressed(keyEvent ->
 		{
+			double strokeWidth = rectangle.getStrokeWidth();
 			KeyCode keyCode = keyEvent.getCode();
 			
 			switch(keyCode)
 			{
 				case UP:
 				{
-					if(rectangle.getLayoutY() <= ivCard.getLayoutY() + TITLED_PANE_TITLE_HEIGHT) break;
-					rectangle.relocate(rectangle.getLayoutX(), rectangle.getLayoutY() - 1);
+					if(rectangle.getLayoutY() - strokeWidth / 2.0 <= ivCard.getLayoutY() + TITLED_PANE_TITLE_HEIGHT) break;
+					rectangle.relocate(rectangle.getLayoutX() - strokeWidth / 2.0,
+					                   rectangle.getLayoutY() - strokeWidth / 2.0 - 1);
 					break;
 				}
 				case RIGHT:
 				{
 					if(rtl)
 					{
-						if(rectangle.getLayoutX() <= ivCard.getLayoutX()) break;
+						if(rectangle.getLayoutX() - strokeWidth / 2.0 <= ivCard.getLayoutX()) break;
 					}
 					else
 					{
-						if(rectangle.getLayoutX() + rectangle.getWidth() >= ivCard.getLayoutX() +
+						if(rectangle.getLayoutX() + strokeWidth / 2.0 + rectangle.getWidth() >= ivCard.getLayoutX() +
 																		ivCard.getBoundsInParent().getWidth()) break;
 					}
 					
-					rectangle.relocate(rectangle.getLayoutX() + (rtl ? -1 : 1), rectangle.getLayoutY());
+					rectangle.relocate(rectangle.getLayoutX() - strokeWidth / 2.0 + (rtl ? -1 : 1),
+					                   rectangle.getLayoutY() - strokeWidth / 2.0);
 					break;
 				}
 				case DOWN:
 				{
-					if(rectangle.getLayoutY() + rectangle.getHeight() >= ivCard.getLayoutY() +
+					if(rectangle.getLayoutY() + strokeWidth / 2.0 + rectangle.getHeight() >= ivCard.getLayoutY() +
 											TITLED_PANE_TITLE_HEIGHT + ivCard.getBoundsInParent().getHeight()) break;
-					rectangle.relocate(rectangle.getLayoutX(), rectangle.getLayoutY() + 1);
+					rectangle.relocate(rectangle.getLayoutX() - strokeWidth / 2.0,
+					                   rectangle.getLayoutY() - strokeWidth / 2.0 + 1);
 					break;
 				}
 				case LEFT:
 				{
 					if(rtl)
 					{
-						if(rectangle.getLayoutX() + rectangle.getWidth() >= ivCard.getLayoutX() +
+						if(rectangle.getLayoutX() + strokeWidth / 2.0 + rectangle.getWidth() >= ivCard.getLayoutX() +
 																		ivCard.getBoundsInParent().getWidth()) break;
 					}
 					else
 					{
-						if(rectangle.getLayoutX() <= ivCard.getLayoutX()) break;
+						if(rectangle.getLayoutX() - strokeWidth / 2.0 <= ivCard.getLayoutX()) break;
 					}
 					
-					rectangle.relocate(rectangle.getLayoutX() + (rtl ? 1 : -1), rectangle.getLayoutY());
+					rectangle.relocate(rectangle.getLayoutX() - strokeWidth / 2.0 + (rtl ? 1 : -1),
+					                   rectangle.getLayoutY() - strokeWidth / 2.0);
 					break;
 				}
 			}
