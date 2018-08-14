@@ -22,10 +22,10 @@
             <SplitPane dividerPositions="0.7" VBox.vgrow="ALWAYS">
                 <StackPane fx:id="spFingerprintCardImage">
                     <TitledPane text="%label.fingerprintCardImage" maxHeight="Infinity" collapsible="false" focusTraversable="false">
-                        <ImageViewPane>
+                        <ImageViewPane nodeOrientation="LEFT_TO_RIGHT">
                             <imageView>
                                 <ImageView fx:id="ivFingerprintCardImage" preserveRatio="true">
-                                    <Image url="@../images/sample.jpg"/>
+                                    <Image url="@../images/sample_2.png"/>
                                 </ImageView>
                             </imageView>
                         </ImageViewPane>

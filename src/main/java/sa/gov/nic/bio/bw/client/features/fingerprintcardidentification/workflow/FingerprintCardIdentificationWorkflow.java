@@ -32,35 +32,41 @@ public class FingerprintCardIdentificationWorkflow extends WizardWorkflowBase<Vo
 			{
 				formRenderer.get().renderForm(ScanFingerprintCardPaneFxController.class, uiInputData);
 				uiOutputData = waitForUserTask();
+				uiInputData.putAll(uiOutputData);
 				break;
 			}
 			case 1:
 			{
 				formRenderer.get().renderForm(SpecifyFingerprintCoordinatesPaneFxController.class, uiInputData);
 				uiOutputData = waitForUserTask();
+				uiInputData.putAll(uiOutputData);
 				break;
 			}
 			case 2:
 			{
 				formRenderer.get().renderForm(FingerprintsAfterCroppingPaneFxController.class, uiInputData);
 				uiOutputData = waitForUserTask();
+				uiInputData.putAll(uiOutputData);
 				break;
 			}
 			case 3:
 			{
 				formRenderer.get().renderForm(InquiryByFingerprintsPaneFxController.class, uiInputData);
 				uiOutputData = waitForUserTask();
+				uiInputData.putAll(uiOutputData);
 				break;
 			}
 			case 4:
 			{
 				formRenderer.get().renderForm(InquiryResultPaneFxController.class, uiInputData);
 				uiOutputData = waitForUserTask();
+				uiInputData.putAll(uiOutputData);
 				break;
 			}
 			default:
 			{
 				uiOutputData = waitForUserTask();
+				uiInputData.putAll(uiOutputData);
 				break;
 			}
 		}

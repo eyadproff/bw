@@ -1,5 +1,8 @@
 package sa.gov.nic.bio.bw.client.features.fingerprintcardidentification;
 
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import sa.gov.nic.bio.bw.client.core.wizard.WizardStepFxControllerBase;
 
 import java.net.URL;
@@ -7,6 +10,9 @@ import java.util.Map;
 
 public class FingerprintsAfterCroppingPaneFxController extends WizardStepFxControllerBase
 {
+	@FXML private Button btnPrevious;
+	@FXML private Button btnNext;
+	
 	@Override
 	public URL getFxmlLocation()
 	{
@@ -26,5 +32,17 @@ public class FingerprintsAfterCroppingPaneFxController extends WizardStepFxContr
 		{
 		
 		}
+	}
+	
+	@FXML
+	private void onPreviousButtonClicked(ActionEvent actionEvent)
+	{
+		goPrevious();
+	}
+	
+	@FXML
+	private void onNextButtonClicked(ActionEvent actionEvent)
+	{
+		goNext();
 	}
 }
