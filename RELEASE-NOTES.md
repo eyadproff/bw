@@ -5,6 +5,7 @@
 - Check if the system supports 3D graphics before using it.
 - Fix a bug in date-picker's radio button for selecting Gregorian calendar, when loading old values.
 - Convicted Report: Fix a bug for setting unknown nationality when loading old values.
+- Add "Fingerprint Card Identification" feature.
 
 ## v2018.08.2
 
