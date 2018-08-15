@@ -3,9 +3,6 @@ package sa.gov.nic.bio.bw.client.core;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
-import javafx.geometry.Insets;
-import javafx.geometry.NodeOrientation;
-import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
@@ -13,11 +10,8 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TitledPane;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.controlsfx.glyphfont.FontAwesome;
 import org.controlsfx.glyphfont.Glyph;
@@ -231,62 +225,12 @@ public class DevicesRunnerGadgetPaneFxController extends RegionFxControllerBase
 		});
 	}
 	
-	private Stage buildProgressDialog(CancelCommand cancelCommand, String message, Future<?> future)
-	{
-		boolean rtl = Context.getGuiLanguage().getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT;
-		
-		Button btnCancel = new Button(resources.getString("button.cancel"));
-		btnCancel.setFocusTraversable(false);
-		Label lblProgress = new Label(message);
-		ProgressIndicator progressIndicator = new ProgressIndicator();
-		progressIndicator.setMaxHeight(18.0);
-		progressIndicator.setMaxWidth(18.0);
-		
-		VBox inner = new VBox(5.0);
-		inner.setAlignment(Pos.CENTER);
-		inner.getChildren().addAll(progressIndicator, lblProgress);
-		
-		VBox outer = new VBox(15.0);
-		outer.getStylesheets().setAll("sa/gov/nic/bio/bw/client/core/css/style.css");
-		outer.setAlignment(Pos.CENTER);
-		outer.getChildren().addAll(inner, btnCancel);
-		outer.setPadding(new Insets(10.0));
-		
-		Stage dialogStage = DialogUtils.buildCustomDialog(Context.getCoreFxController().getStage(),
-		                                                  null, outer, rtl, true);
-		
-		dialogStage.setOnCloseRequest(event ->
-		{
-			cancelCommand.cancel();
-			if(future != null) future.cancel(true);
-		});
-		
-		btnCancel.setOnAction(e ->
-		{
-			cancelCommand.cancel();
-			if(future != null) future.cancel(true);
-			dialogStage.close();
-		});
-		
-		dialogStage.addEventHandler(KeyEvent.KEY_PRESSED, event ->
-		{
-			if(event.getCode() == KeyCode.ESCAPE)
-			{
-				cancelCommand.cancel();
-				if(future != null) future.cancel(true);
-				dialogStage.close();
-				event.consume();
-			}
-		});
-		
-		return dialogStage;
-	}
-	
 	public void runAndConnectDevicesRunner()
 	{
 		CancelCommand cancelCommand = new CancelCommand();
 		String message = resources.getString("label.runningAndConnectingDevicesRunner");
-		Stage dialogStage = buildProgressDialog(cancelCommand, message, null);
+		Stage dialogStage = DialogUtils.buildProgressDialog(cancelCommand, message, null,
+		                                                    resources.getString("button.cancel"));
 		runAndConnectDevicesRunner(cancelCommand, dialogStage);
 		
 		dialogStage.setOnHidden(event -> Context.getCoreFxController().unregisterStageForIdleMonitoring(dialogStage));
@@ -366,7 +310,8 @@ public class DevicesRunnerGadgetPaneFxController extends RegionFxControllerBase
 	{
 		CancelCommand cancelCommand = new CancelCommand();
 		String message = resources.getString("label.reconnectingToDevicesRunner");
-		Stage dialogStage = buildProgressDialog(cancelCommand, message, null);
+		Stage dialogStage = DialogUtils.buildProgressDialog(cancelCommand, message, null,
+		                                                    resources.getString("button.cancel"));
 		
 		Task<Void> runTask = new Task<Void>()
 		{
@@ -420,7 +365,8 @@ public class DevicesRunnerGadgetPaneFxController extends RegionFxControllerBase
 		String message = resources.getString("label.restartingDevicesRunner");
 		
 		Future<ServiceResponse<ShutdownResponse>> future = Context.getBioKitManager().getBiokitCommander().shutdown();
-		Stage dialogStage = buildProgressDialog(cancelCommand, message, future);
+		Stage dialogStage = DialogUtils.buildProgressDialog(cancelCommand, message, future,
+		                                                    resources.getString("button.cancel"));
 		
 		Task<Void> task = new Task<Void>()
 		{
@@ -507,7 +453,8 @@ public class DevicesRunnerGadgetPaneFxController extends RegionFxControllerBase
 		
 		Future<ServiceResponse<InitializeResponse>> future = Context.getBioKitManager().getFingerprintService()
 																	.initialize(fingerprintDeviceType.getPosition());
-		Stage dialogStage = buildProgressDialog(cancelCommand, message, future);
+		Stage dialogStage = DialogUtils.buildProgressDialog(cancelCommand, message, future,
+		                                                    resources.getString("button.cancel"));
 		
 		Task<ServiceResponse<InitializeResponse>> task = new Task<ServiceResponse<InitializeResponse>>()
 		{
@@ -605,7 +552,8 @@ public class DevicesRunnerGadgetPaneFxController extends RegionFxControllerBase
 		String message = resources.getString("label.initializingCamera");
 		
 		Future<ServiceResponse<InitializeResponse>> future = Context.getBioKitManager().getFaceService().initialize();
-		Stage dialogStage = buildProgressDialog(cancelCommand, message, future);
+		Stage dialogStage = DialogUtils.buildProgressDialog(cancelCommand, message, future,
+		                                                    resources.getString("button.cancel"));
 		
 		Task<ServiceResponse<InitializeResponse>> task = new Task<ServiceResponse<InitializeResponse>>()
 		{
@@ -692,7 +640,8 @@ public class DevicesRunnerGadgetPaneFxController extends RegionFxControllerBase
 		
 		Future<ServiceResponse<InitializeResponse>> future = Context.getBioKitManager().getPassportScannerService()
 																					   .initialize();
-		Stage dialogStage = buildProgressDialog(cancelCommand, message, future);
+		Stage dialogStage = DialogUtils.buildProgressDialog(cancelCommand, message, future,
+		                                                    resources.getString("button.cancel"));
 		
 		Task<ServiceResponse<InitializeResponse>> task = new Task<ServiceResponse<InitializeResponse>>()
 		{
