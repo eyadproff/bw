@@ -36,12 +36,6 @@ public class FingerprintsAfterCroppingPaneFxController extends WizardStepFxContr
 	}
 	
 	@Override
-	protected void initialize()
-	{
-	
-	}
-	
-	@Override
 	public void onWorkflowUserTaskLoad(boolean newForm, Map<String, Object> uiInputData)
 	{
 		if(newForm)

@@ -16,6 +16,7 @@ import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.client.core.utils.GuiLanguage;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.wizard.WizardStepFxControllerBase;
+import sa.gov.nic.bio.bw.client.features.commons.InquiryByFingerprintsPaneFxController;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.IdType;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.CountryBean;
 import sa.gov.nic.bio.bw.client.features.commons.beans.GenderType;
@@ -87,10 +88,11 @@ public class InquiryResultPaneFxController extends WizardStepFxControllerBase
 	{
 		if(newForm)
 		{
-			Boolean fingerprintHit = (Boolean) uiInputData.get(InquiryPaneFxController.KEY_FINGERPRINT_INQUIRY_HIT);
+			Boolean fingerprintHit = (Boolean)
+									uiInputData.get(InquiryByFingerprintsPaneFxController.KEY_FINGERPRINT_INQUIRY_HIT);
 			String notAvailable = resources.getString("label.notAvailable");
 			
-			if(fingerprintHit != null) // workflow: convicted report for present person
+			if(fingerprintHit != null) // workflow: inquiry by fingerprints
 			{
 				if(fingerprintHit)
 				{
@@ -127,7 +129,7 @@ public class InquiryResultPaneFxController extends WizardStepFxControllerBase
 					GuiUtils.showNode(btnRegisterUnknownPerson, true);
 				}
 			}
-			else // workflow: convicted report for not present person
+			else // workflow: inquiry by samis id
 			{
 				GuiUtils.showNode(btnRegisterUnknownPerson, false);
 				GuiUtils.showNode(paneNoHitMessage, false);

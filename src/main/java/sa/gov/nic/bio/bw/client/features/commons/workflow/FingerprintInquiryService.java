@@ -1,4 +1,4 @@
-package sa.gov.nic.bio.bw.client.features.registerconvictedpresent.workflow;
+package sa.gov.nic.bio.bw.client.features.commons.workflow;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;

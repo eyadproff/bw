@@ -1,4 +1,4 @@
-package sa.gov.nic.bio.bw.client.features.registerconvictedpresent;
+package sa.gov.nic.bio.bw.client.features.commons;
 
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -12,14 +12,14 @@ import sa.gov.nic.bio.bw.client.core.DevicesRunnerGadgetPaneFxController;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.wizard.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.client.core.workflow.Workflow;
-import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.utils.RegisterConvictedPresentErrorCodes;
+import sa.gov.nic.bio.bw.client.features.commons.utils.CommonsErrorCodes;
 import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
 
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
-public class InquiryPaneFxController extends WizardStepFxControllerBase
+public class InquiryByFingerprintsPaneFxController extends WizardStepFxControllerBase
 {
 	public static final String KEY_WAITING_FINGERPRINT_INQUIRY = "WAITING_FINGERPRINT_INQUIRY";
 	public static final String KEY_WAITING_FINGERPRINT_INQUIRY_CANCELLED = "WAITING_FINGERPRINT_INQUIRY_CANCELLED";
@@ -46,7 +46,7 @@ public class InquiryPaneFxController extends WizardStepFxControllerBase
 	@Override
 	public URL getFxmlLocation()
 	{
-		return getClass().getResource("fxml/inquiry.fxml");
+		return getClass().getResource("fxml/inquiryByFingerprints.fxml");
 	}
 	
 	@Override
@@ -137,19 +137,21 @@ public class InquiryPaneFxController extends WizardStepFxControllerBase
 			Integer unknownStatus = (Integer) uiInputData.get(KEY_FINGERPRINT_INQUIRY_UNKNOWN_STATUS);
 			if(unknownStatus != null)
 			{
-				errorCode = RegisterConvictedPresentErrorCodes.C007_00001.getCode();
+				errorCode = CommonsErrorCodes.C008_00017.getCode();
 				String[] errorDetails = {"Unknown fingerprint inquiry status (" + unknownStatus + ")!"};
 				Context.getCoreFxController().showErrorDialog(errorCode, null, errorDetails);
 				return;
 			}
 			
-			Boolean waiting = (Boolean) uiInputData.get(InquiryPaneFxController.KEY_WAITING_FINGERPRINT_INQUIRY);
+			Boolean waiting = (Boolean) uiInputData.get(
+												InquiryByFingerprintsPaneFxController.KEY_WAITING_FINGERPRINT_INQUIRY);
 			if(waiting != null && waiting)
 			{
 				btnCancel.setDisable(false);
 				Context.getExecutorService().submit(() ->
 				{
-					int seconds = Integer.parseInt(System.getProperty("jnlp.bio.bw.printConvictedReport.fingerprint.inquiry.checkEverySeconds"));
+					int seconds = Integer.parseInt(
+						System.getProperty("jnlp.bio.bw.fingerprint.inquiry.checkEverySeconds"));
 					
 					try
 					{
@@ -196,7 +198,7 @@ public class InquiryPaneFxController extends WizardStepFxControllerBase
 			{
 				if(serviceResponse.getResult() == null)
 				{
-					errorCode = RegisterConvictedPresentErrorCodes.C007_00002.getCode();
+					errorCode = CommonsErrorCodes.C008_00018.getCode();
 					String[] errorDetails = {"TCN is null!"};
 					reportNegativeResponse(errorCode, null, errorDetails);
 				}

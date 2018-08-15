@@ -1,6 +1,6 @@
 package sa.gov.nic.bio.bw.client.features.printdeadpersonrecord.workflow;
 
-import sa.gov.nic.bio.biokit.fingerprint.beans.ConvertedFingerprintsResponse;
+import sa.gov.nic.bio.biokit.fingerprint.beans.ConvertedFingerprintImagesResponse;
 import sa.gov.nic.bio.biokit.fingerprint.beans.SegmentFingerprintsResponse;
 import sa.gov.nic.bio.biokit.websocket.beans.DMFingerData;
 import sa.gov.nic.bio.bw.client.core.Context;
@@ -11,6 +11,7 @@ import sa.gov.nic.bio.bw.client.core.workflow.WizardWorkflowBase;
 import sa.gov.nic.bio.bw.client.features.commons.LookupFxController;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.Finger;
 import sa.gov.nic.bio.bw.client.features.commons.workflow.GetPersonInfoByIdService;
+import sa.gov.nic.bio.bw.client.features.commons.workflow.PersonInfoLookupService;
 import sa.gov.nic.bio.bw.client.features.printdeadpersonrecord.FetchingPersonInfoPaneFxController;
 import sa.gov.nic.bio.bw.client.features.printdeadpersonrecord.RecordIdPaneFxController;
 import sa.gov.nic.bio.bw.client.features.printdeadpersonrecord.ShowRecordPaneFxController;
@@ -43,7 +44,7 @@ public class PrintDeadPersonRecordWorkflow extends WizardWorkflowBase<Void, Void
 		{
 			formRenderer.get().renderForm(LookupFxController.class, uiInputData);
 			waitForUserTask();
-			ServiceResponse<Void> serviceResponse = LookupService.execute();
+			ServiceResponse<Void> serviceResponse = PersonInfoLookupService.execute();
 			if(serviceResponse.isSuccess()) break;
 			else uiInputData.put(KEY_WEBSERVICE_RESPONSE, serviceResponse);
 		}
@@ -213,12 +214,12 @@ public class PrintDeadPersonRecordWorkflow extends WizardWorkflowBase<Void, Void
 						
 						if(!fingerprintWsqMap.isEmpty())
 						{
-							Future<sa.gov.nic.bio.biokit.beans.ServiceResponse<ConvertedFingerprintsResponse>>
+							Future<sa.gov.nic.bio.biokit.beans.ServiceResponse<ConvertedFingerprintImagesResponse>>
 											serviceResponseFuture = Context.getBioKitManager()
 																		   .getFingerprintUtilitiesService()
 																		   .convertWsqToImages(fingerprintWsqMap);
 							
-							sa.gov.nic.bio.biokit.beans.ServiceResponse<ConvertedFingerprintsResponse> response;
+							sa.gov.nic.bio.biokit.beans.ServiceResponse<ConvertedFingerprintImagesResponse> response;
 							try
 							{
 								response = serviceResponseFuture.get();
@@ -233,7 +234,7 @@ public class PrintDeadPersonRecordWorkflow extends WizardWorkflowBase<Void, Void
 							
 							if(response.isSuccess())
 							{
-								ConvertedFingerprintsResponse responseResult = response.getResult();
+								ConvertedFingerprintImagesResponse responseResult = response.getResult();
 								Map<Integer, String> result = responseResult.getFingerprintImagesMap();
 								fingerprintImages.putAll(result);
 							}
