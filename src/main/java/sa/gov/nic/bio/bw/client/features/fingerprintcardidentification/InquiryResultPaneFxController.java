@@ -28,7 +28,8 @@ import sa.gov.nic.bio.bw.client.features.commons.webservice.Name;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.PersonIdInfo;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.PersonInfo;
 import sa.gov.nic.bio.bw.client.features.fingerprintcardidentification.beans.FingerprintCardIdentificationRecordReport;
-import sa.gov.nic.bio.bw.client.features.fingerprintcardidentification.tasks.BuildFingerprintCardIdentificationRecordReportTask;
+import sa.gov.nic.bio.bw.client.features.fingerprintcardidentification.tasks.
+																	BuildFingerprintCardIdentificationRecordReportTask;
 import sa.gov.nic.bio.bw.client.features.fingerprintcardidentification.utils.FingerprintCardIdentificationErrorCodes;
 
 import java.io.ByteArrayInputStream;

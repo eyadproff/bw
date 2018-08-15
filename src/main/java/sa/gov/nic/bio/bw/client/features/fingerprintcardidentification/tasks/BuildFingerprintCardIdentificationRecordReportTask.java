@@ -6,12 +6,14 @@ import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import sa.gov.nic.bio.bw.client.core.Context;
+import sa.gov.nic.bio.bw.client.core.utils.AppConstants;
 import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.client.features.fingerprintcardidentification.beans.FingerprintCardIdentificationRecordReport;
 import sa.gov.nic.bio.bw.client.login.webservice.UserInfo;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.time.LocalDateTime;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.Locale;
@@ -31,10 +33,11 @@ public class BuildFingerprintCardIdentificationRecordReportTask extends Task<Jas
 	private static final String PARAMETER_BIRTH_PLACE = "BIRTH_PLACE";
 	private static final String PARAMETER_ID_EXPIRY = "ID_EXPIRY";
 	private static final String PARAMETER_INQUIRER_ID = "INQUIRER_ID";
+	private static final String PARAMETER_INQUIRY_TIME = "INQUIRY_TIME";
 	private static final String PARAMETER_LOGO = "LOGO";
 	
-	private static final String REPORT_TEMPLATE_FILE = "sa/gov/nic/bio/bw/client/features/printdeadpersonrecord" +
-													   "/reports/dead_person_record.jrxml";
+	private static final String REPORT_TEMPLATE_FILE = "sa/gov/nic/bio/bw/client/features" +
+								"/fingerprintcardidentification/reports/fingerprint_card_identification_report.jrxml";
 	private static final String LOGO_FILE = "sa/gov/nic/bio/bw/client/features/commons/images/saudi_security_logo.jpg";
 	private static final String IMAGE_PLACEHOLDER_FILE = "sa/gov/nic/bio/bw/client/core/images/avatar_placeholder.jpg";
 	
@@ -104,6 +107,9 @@ public class BuildFingerprintCardIdentificationRecordReportTask extends Task<Jas
 		UserInfo userInfo = (UserInfo) Context.getUserSession().getAttribute("userInfo");
 		String inquirerId = AppUtils.replaceNumbersOnly(String.valueOf(userInfo.getOperatorId()), Locale.getDefault());
 		params.put(PARAMETER_INQUIRER_ID, inquirerId);
+		
+		params.put(PARAMETER_INQUIRY_TIME, AppUtils.formatHijriGregorianDateTime(
+							LocalDateTime.now().atZone(AppConstants.SAUDI_ZONE).toEpochSecond() * 1000));
 		
 		return JasperFillManager.fillReport(jasperReport, params);
 	}

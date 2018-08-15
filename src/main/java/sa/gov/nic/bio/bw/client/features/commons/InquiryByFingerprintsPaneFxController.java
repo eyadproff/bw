@@ -130,7 +130,7 @@ public class InquiryByFingerprintsPaneFxController extends WizardStepFxControlle
 			Boolean hit = (Boolean) uiInputData.get(KEY_FINGERPRINT_INQUIRY_HIT);
 			if(hit != null)
 			{
-				Platform.runLater(this::goNext);
+				goNext();
 				return;
 			}
 			

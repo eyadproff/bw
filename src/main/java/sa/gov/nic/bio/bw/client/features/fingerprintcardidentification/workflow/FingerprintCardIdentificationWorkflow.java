@@ -295,6 +295,8 @@ public class FingerprintCardIdentificationWorkflow extends WizardWorkflowBase<Vo
 					uiOutputData = waitForUserTask();
 					uiInputData.putAll(uiOutputData);
 				}
+				
+				break;
 			}
 			case 4:
 			{
