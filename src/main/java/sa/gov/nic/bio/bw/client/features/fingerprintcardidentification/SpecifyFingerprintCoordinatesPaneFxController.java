@@ -41,16 +41,16 @@ public class SpecifyFingerprintCoordinatesPaneFxController extends WizardStepFxC
 	private static final String KEY_IMAGE_VIEW_Y = "IMAGE_VIEW_Y";
 	
 	
-	private static final double[][] DEFAULT_BOUNDS = {{0.935, 0.265, 0.160, 0.117}, // x, y, width, height
-													  {0.755, 0.265, 0.160, 0.117},
-													  {0.570, 0.265, 0.160, 0.117},
-													  {0.380, 0.265, 0.160, 0.117},
-													  {0.200, 0.265, 0.160, 0.117},
-													  {0.935, 0.420, 0.160, 0.117},
-													  {0.755, 0.420, 0.160, 0.117},
-													  {0.570, 0.420, 0.160, 0.117},
-													  {0.380, 0.420, 0.160, 0.117},
-													  {0.200, 0.420, 0.160, 0.117}};
+	private static final double[][] DEFAULT_BOUNDS = {{0.935, 0.350, 0.160, 0.117}, // x, y, width, height
+													  {0.755, 0.350, 0.160, 0.117},
+													  {0.570, 0.350, 0.160, 0.117},
+													  {0.380, 0.350, 0.160, 0.117},
+													  {0.200, 0.350, 0.160, 0.117},
+													  {0.935, 0.500, 0.160, 0.117},
+													  {0.755, 0.500, 0.160, 0.117},
+													  {0.570, 0.500, 0.160, 0.117},
+													  {0.380, 0.500, 0.160, 0.117},
+													  {0.200, 0.500, 0.160, 0.117}};
 	
 	private static final double TITLED_PANE_TITLE_HEIGHT = 25.0;
 	private static class DragContext
@@ -92,11 +92,6 @@ public class SpecifyFingerprintCoordinatesPaneFxController extends WizardStepFxC
 		Group selectionLayer = new Group();
 		root.getChildren().add(selectionLayer);
 		
-		double imageViewX = ivFingerprintCardImage.getLayoutX();
-		double imageViewY = ivFingerprintCardImage.getLayoutY();
-		double imageViewWidth = ivFingerprintCardImage.getBoundsInParent().getWidth();
-		double imageViewHeight = ivFingerprintCardImage.getBoundsInParent().getHeight();
-		
 		for(int i = 0; i < rectangles.length; i++)
 		{
 			final int finalI;
@@ -108,20 +103,15 @@ public class SpecifyFingerprintCoordinatesPaneFxController extends WizardStepFxC
 			}
 			else finalI = i;
 			
-			double rectX = imageViewWidth * DEFAULT_BOUNDS[i][0];
-			double rectY = imageViewHeight * DEFAULT_BOUNDS[i][1];
-			double rectWidth = imageViewWidth * DEFAULT_BOUNDS[i][2];
-			double rectHeight = imageViewHeight * DEFAULT_BOUNDS[i][3];
-			
 			labels[finalI] = new Label(AppUtils.replaceNumbersOnly(String.valueOf(finalI + 1), Locale.getDefault()));
 			labels[finalI].setMouseTransparent(true);
 			labels[finalI].setTextAlignment(TextAlignment.CENTER);
 			labels[finalI].setAlignment(Pos.CENTER);
 			
-			rectangles[finalI] = new Rectangle(rectWidth, rectHeight);
+			rectangles[finalI] = new Rectangle(25.0, 25.0);
+			rectangles[finalI].setUserData(Boolean.FALSE); // not skipped
 			rectangles[finalI].setFocusTraversable(true);
 			rectangles[finalI].getStyleClass().add("fingerprint-rectangle");
-			rectangles[finalI].relocate(imageViewWidth - (rectX - imageViewX), rectY - imageViewY);
 			
 			objectLayer.getChildren().add(rectangles[finalI]);
 			objectLayer.getChildren().add(labels[finalI]);
@@ -171,6 +161,9 @@ public class SpecifyFingerprintCoordinatesPaneFxController extends WizardStepFxC
 	{
 		if(newForm)
 		{
+			Image image = (Image) uiInputData.get(ScanFingerprintCardPaneFxController.KEY_CARD_IMAGE);
+			ivFingerprintCardImage.setImage(image);
+			
 			Double imageViewX = (Double) uiInputData.get(KEY_IMAGE_VIEW_X);
 			Double imageViewY = (Double) uiInputData.get(KEY_IMAGE_VIEW_Y);
 			
@@ -193,6 +186,40 @@ public class SpecifyFingerprintCoordinatesPaneFxController extends WizardStepFxC
 							                       rectangles[i].getStrokeWidth());
 					rectangles[i].setHeight(height * ivFingerprintCardImage.getBoundsInParent().getHeight() -
 							                        rectangles[i].getStrokeWidth());
+					
+					boolean disabled = uiInputData.get(KEY_PREFIX_FINGERPRINT_IMAGE + (i + 1)) == null;
+					if(disabled)
+					{
+						rectangles[i].getStyleClass().remove("fingerprint-rectangle");
+						rectangles[i].getStyleClass().add("fingerprint-rectangle-disabled");
+						rectangles[i].setUserData(Boolean.TRUE); // skipped
+					}
+				}
+				else
+				{
+					boolean rtl = Context.getGuiLanguage().getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT;
+					imageViewX = ivFingerprintCardImage.getLayoutX();
+					imageViewY = ivFingerprintCardImage.getLayoutY();
+					double imageViewWidth = ivFingerprintCardImage.getBoundsInParent().getWidth();
+					double imageViewHeight = ivFingerprintCardImage.getBoundsInParent().getHeight();
+					
+					final int finalI;
+					
+					if(rtl)
+					{
+						if(i < rectangles.length / 2) finalI = (rectangles.length / 2) - i - 1;
+						else finalI = rectangles.length - i - 1 + rectangles.length / 2;
+					}
+					else finalI = i;
+					
+					double rectX = imageViewWidth * DEFAULT_BOUNDS[i][0];
+					double rectY = imageViewHeight * DEFAULT_BOUNDS[i][1];
+					double rectWidth = imageViewWidth * DEFAULT_BOUNDS[i][2];
+					double rectHeight = imageViewHeight * DEFAULT_BOUNDS[i][3];
+					
+					rectangles[finalI].setWidth(rectWidth);
+					rectangles[finalI].setHeight(rectHeight);
+					rectangles[finalI].relocate(imageViewWidth - (rectX - imageViewX), rectY - imageViewY);
 				}
 			}
 		}
@@ -278,8 +305,6 @@ public class SpecifyFingerprintCoordinatesPaneFxController extends WizardStepFxC
 		MenuItem menuSkipFingerprint = new MenuItem(resources.getString("menu.skipFingerprint"));
 		MenuItem menuEnableFingerprint = new MenuItem(resources.getString("menu.enableFingerprint"));
 		
-		menuEnableFingerprint.setVisible(false);
-		
 		menuSkipFingerprint.setOnAction(e ->
 		{
 			rectangle.getStyleClass().remove("fingerprint-rectangle");
@@ -306,6 +331,12 @@ public class SpecifyFingerprintCoordinatesPaneFxController extends WizardStepFxC
 		menuEnableFingerprint.setGraphic(enableIcon);
 		
 		contextMenu.getItems().setAll(menuSkipFingerprint, menuEnableFingerprint);
+		
+		contextMenu.setOnShowing(event ->
+		{
+			menuEnableFingerprint.setVisible(Boolean.TRUE.equals(rectangle.getUserData()));
+			menuSkipFingerprint.setVisible(!menuEnableFingerprint.isVisible());
+		});
 		
 		rectangle.setOnMousePressed(mouseEvent ->
 		{

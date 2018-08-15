@@ -17,7 +17,7 @@
         <VBox alignment="CENTER">
             <HBox alignment="CENTER" VBox.vgrow="ALWAYS">
                 <padding>
-                    <Insets topRightBottomLeft="10.0"/>
+                    <Insets top="5.0" bottom="5.0"/>
                 </padding>
                 <TitledPane text="%label.fingerprintCardImage" maxHeight="Infinity" collapsible="false" focusTraversable="false" HBox.hgrow="ALWAYS">
                     <StackPane>

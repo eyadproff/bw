@@ -14,6 +14,7 @@ import sa.gov.nic.bio.biokit.scanner.beans.ScanResponse;
 import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.DevicesRunnerGadgetPaneFxController;
 import sa.gov.nic.bio.bw.client.core.utils.DialogUtils;
+import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.wizard.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.client.features.fingerprintcardidentification.utils.FingerprintCardIdentificationErrorCodes;
 
@@ -47,7 +48,7 @@ public class ScanFingerprintCardPaneFxController extends WizardStepFxControllerB
 	{
 		ivFingerprintImagePlaceHolder.visibleProperty().bind(ivFingerprintImage.imageProperty().isNull());
 		ivFingerprintImagePlaceHolder.managedProperty().bind(ivFingerprintImage.imageProperty().isNull());
-		//btnNext.disableProperty().bind(ivFingerprintImage.imageProperty().isNull());
+		btnNext.disableProperty().bind(ivFingerprintImage.imageProperty().isNull());
 	}
 	
 	@Override
@@ -55,6 +56,15 @@ public class ScanFingerprintCardPaneFxController extends WizardStepFxControllerB
 	{
 		if(newForm)
 		{
+			Image image = (Image) uiInputData.get(KEY_CARD_IMAGE);
+			if(image != null)
+			{
+				ivFingerprintImage.setImage(image);
+				GuiUtils.attachImageDialog(Context.getCoreFxController(), ivFingerprintImage,
+				                           resources.getString("label.fingerprintCardImage"),
+				                           resources.getString("label.contextMenu.showImage"), false);
+			}
+			
 			DevicesRunnerGadgetPaneFxController deviceManagerGadgetPaneController =
 												Context.getCoreFxController().getDeviceManagerGadgetPaneController();
 			
@@ -109,6 +119,9 @@ public class ScanFingerprintCardPaneFxController extends WizardStepFxControllerB
 		            String finalImage = result.getFinalImage();
 			        byte[] finalImageBytes = Base64.getDecoder().decode(finalImage);
 			        ivFingerprintImage.setImage(new Image(new ByteArrayInputStream(finalImageBytes)));
+			        GuiUtils.attachImageDialog(Context.getCoreFxController(), ivFingerprintImage,
+			                                   resources.getString("label.fingerprintCardImage"),
+			                                   resources.getString("label.contextMenu.showImage"), false);
 			        
 			        String successMessage = resources.getString("message.successScan");
 			        showSuccessNotification(successMessage);

@@ -24,9 +24,7 @@
                     <TitledPane text="%label.fingerprintCardImage" maxHeight="Infinity" collapsible="false" focusTraversable="false">
                         <ImageViewPane nodeOrientation="LEFT_TO_RIGHT">
                             <imageView>
-                                <ImageView fx:id="ivFingerprintCardImage" preserveRatio="true">
-                                    <Image url="@../images/sample_2.png"/>
-                                </ImageView>
+                                <ImageView fx:id="ivFingerprintCardImage" preserveRatio="true"/>
                             </imageView>
                         </ImageViewPane>
                     </TitledPane>
