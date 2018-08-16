@@ -12,7 +12,6 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
@@ -45,7 +44,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
-import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
@@ -452,7 +450,6 @@ public final class AppUtils
 		int[] rgb = bufferedImage.getRGB(0, 0, w, h, null, 0, w);
 		newImage.setRGB(0, 0, w, h, rgb, 0, w);
 		
-		ImageIO.write(newImage, "png", new File("C:/bio/" + UUID.randomUUID() + ".png"));
 		ImageIO.write(newImage, "png", byteOutput);
 		byte[] bytes = byteOutput.toByteArray();
 		return Base64.getEncoder().encodeToString(bytes);

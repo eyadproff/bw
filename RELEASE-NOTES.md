@@ -1,5 +1,10 @@
 # Release Notes:
 
+## v2018.08.4
+
+- Change BCL to v2018.08.4 in JNLP file.
+- Remove code that writes png files for the fingerprints on the disk.
+
 ## v2018.08.3
 
 - Check if the system supports 3D graphics before using it.

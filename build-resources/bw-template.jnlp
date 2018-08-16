@@ -12,7 +12,7 @@
         <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se"/>
 
         <!-- List of jars -->
-        <jar href="jnlp-jars/bcl-2018.04.1.jar"/>
+        <jar href="jnlp-jars/bcl-2018.08.1.jar"/>
         <jar href="jnlp-jars/bcl-utils-2018.04.1.jar"/>
         <jar href="jnlp-jars/gson-2.8.2.jar"/>
 
@@ -26,10 +26,11 @@
         <property name="jnlp.bcl.shared" value="false"/>
 
         <!-- Optional properties. Add "jnlp.noPrefix" as a prefix to remove it when bypassing it to the application
-             i.e. The key "jnlp.noPrefix.javafx.preloader" will be bypassed as "javafx.preloader" -->
-        <property name="jnlp.noPrefix.java.ext.dirs" value="C:/bio/java/jre8u152-32bit/lib/ext;C:/bio/user-apps/${user.name}/bw/resources/extensions"/>
-        <property name="jnlp.noPrefix.java.locale.providers" value="SPI,CLDR,JRE,HOST,"/>
-        <property name="jnlp.noPrefix.javafx.preloader" value="sa.gov.nic.bio.bw.client.preloader.AppPreloader"/>
+             i.e. The key "jnlp.noPrefix.-Djavafx.preloader" will be bypassed as "-Djavafx.preloader" -->
+        <property name="jnlp.noPrefix.-Djava.ext.dirs=" value='C:/bio/java/jre8u152-32bit/lib/ext;C:/bio/user-apps/${user.name}/bw/resources/extensions'/>
+        <property name="jnlp.noPrefix.-Djava.locale.providers=" value='SPI,CLDR,JRE,HOST,'/>
+        <property name="jnlp.noPrefix.-Djavafx.preloader=" value='sa.gov.nic.bio.bw.client.preloader.AppPreloader'/>
+        <property name="jnlp.noPrefix.-Xmx" value='1024m'/>
 
         <!-- application properties (NOTE: the property name should start with "jnlp.bio.") -->
         <!--PROPERTIES PLACE HOLDER-->
