@@ -261,8 +261,11 @@ public class FingerprintCardIdentificationWorkflow extends WizardWorkflowBase<Vo
 							{
 								uiInputData.put(InquiryByFingerprintsPaneFxController.KEY_FINGERPRINT_INQUIRY_HIT,
 								                Boolean.TRUE);
+								
+								long samisId = result.getSamisId();
 								PersonInfo personInfo = result.getPersonInfo();
 								
+								uiInputData.put(InquiryResultPaneFxController.KEY_INQUIRY_HIT_SAMIS_ID, samisId);
 								uiInputData.put(InquiryResultPaneFxController.KEY_INQUIRY_HIT_RESULT, personInfo);
 								formRenderer.get().renderForm(InquiryByFingerprintsPaneFxController.class, uiInputData);
 							}

@@ -1,5 +1,9 @@
 # Release Notes:
 
+## v2018.08.5
+
+- Fingerprint Card Identification: set samis id to idNumber in case of personInfo is null.
+
 ## v2018.08.4
 
 - Change BCL to v2018.08.4 in JNLP file.

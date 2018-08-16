@@ -48,6 +48,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class InquiryResultPaneFxController extends WizardStepFxControllerBase
 {
+	public static final String KEY_INQUIRY_HIT_SAMIS_ID = "INQUIRY_HIT_SAMIS_ID";
 	public static final String KEY_INQUIRY_HIT_RESULT = "INQUIRY_HIT_RESULT";
 	public static final String KEY_FINGERPRINTS_IMAGES = "FINGERPRINTS_IMAGES";
 	
@@ -116,11 +117,14 @@ public class InquiryResultPaneFxController extends WizardStepFxControllerBase
 			
 			if(fingerprintHit)
 			{
+				Long samisId = (Long) uiInputData.get(KEY_INQUIRY_HIT_SAMIS_ID);
 				PersonInfo personInfo = (PersonInfo) uiInputData.get(KEY_INQUIRY_HIT_RESULT);
+				
 				@SuppressWarnings("unchecked")
 				Map<Integer, String> fingerprintImages =
 													(Map<Integer, String>) uiInputData.get(KEY_FINGERPRINTS_IMAGES);
-				populateData(personInfo, fingerprintImages);
+				
+				populateData(samisId, personInfo, fingerprintImages);
 				GuiUtils.showNode(paneResult, true);
 			}
 		}
@@ -245,7 +249,7 @@ public class InquiryResultPaneFxController extends WizardStepFxControllerBase
 		}
 	}
 	
-	private void populateData(PersonInfo personInfo, Map<Integer, String> fingerprintsImages)
+	private void populateData(Long samisId, PersonInfo personInfo, Map<Integer, String> fingerprintsImages)
 	{
 		String faceBase64 = null;
 		String firstName = null;
@@ -411,6 +415,7 @@ public class InquiryResultPaneFxController extends WizardStepFxControllerBase
 				lblBirthDate.setText(birthDate);
 			}
 		}
+		else idNumber = String.valueOf(samisId);
 		
 		if(fingerprintsImages != null)
 		{
