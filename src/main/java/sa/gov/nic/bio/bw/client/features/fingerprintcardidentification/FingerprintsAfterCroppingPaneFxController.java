@@ -85,6 +85,8 @@ public class FingerprintsAfterCroppingPaneFxController extends WizardStepFxContr
 			                   resources.getString("label.fingers.little") + " (" +
 					                   resources.getString("label.leftHand") + ")");
 			
+			boolean disableNext = true;
+			
 			for(int i = 0; i <= 10; i++)
 			{
 				Image image = (Image) uiInputData.get(
@@ -92,6 +94,8 @@ public class FingerprintsAfterCroppingPaneFxController extends WizardStepFxContr
 				
 				if(image != null)
 				{
+					disableNext = false;
+					
 					ImageView imageView = imageViewMap.get(i + 1);
 					String title = dialogTitleMap.get(i + 1);
 					
@@ -104,6 +108,8 @@ public class FingerprintsAfterCroppingPaneFxController extends WizardStepFxContr
 					}
 				}
 			}
+			
+			btnNext.setDisable(disableNext);
 		}
 	}
 	

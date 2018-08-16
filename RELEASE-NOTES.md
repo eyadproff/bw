@@ -4,6 +4,7 @@
 
 - Change BCL to v2018.08.4 in JNLP file.
 - Remove code that writes png files for the fingerprints on the disk.
+- Fingerprint Card Identification: prevent empty list of fingerprints to the backend.
 
 ## v2018.08.3
 
