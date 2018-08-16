@@ -1,4 +1,4 @@
-package sa.gov.nic.bio.bw.client.features.printdeadpersonrecord.workflow;
+package sa.gov.nic.bio.bw.client.features.commons.workflow;
 
 import retrofit2.Call;
 import sa.gov.nic.bio.bw.client.core.Context;
@@ -11,9 +11,9 @@ import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
 import java.util.List;
 import java.util.logging.Logger;
 
-public class LookupService
+public class PersonInfoLookupService
 {
-	private static final Logger LOGGER = Logger.getLogger(LookupService.class.getName());
+	private static final Logger LOGGER = Logger.getLogger(PersonInfoLookupService.class.getName());
 	
 	public static ServiceResponse<Void> execute()
 	{

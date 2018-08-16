@@ -29,12 +29,14 @@ import javafx.scene.control.TextField;
 import javafx.scene.effect.GaussianBlur;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.image.WritableImage;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
@@ -588,5 +590,31 @@ public class GuiUtils
 		    String resultText = text.trim() + " (" + countryBean.getMofaNationalityCode() + ")";
 		    item.setText(resultText);
 		});
+	}
+	
+	public static Image extractImageByRectangleBounds(ImageView imageView, Rectangle rectangle, boolean rtl,
+	                                                   double extraImageY)
+	{
+		double strokeWidth = rectangle.getStrokeWidth();
+		double imageScaledWidth = imageView.getBoundsInParent().getWidth();
+		double rectWidth = rectangle.getWidth() - strokeWidth;
+		double rectHeight = rectangle.getHeight() - strokeWidth;
+		double imageOriginalWidth = imageView.getImage().getWidth();
+		double rectX = rectangle.getLayoutX();
+		double rectY = rectangle.getLayoutY();
+		double imageX = imageView.getLayoutX();
+		double imageY = extraImageY + imageView.getLayoutY();
+		
+		double scale = imageOriginalWidth / imageScaledWidth;
+		double scaledRectWidth = scale * rectWidth;
+		double scaledRectHeight = scale * rectHeight;
+		double scaledRectX = scale * (rectX - imageX);
+		double scaledRectY = scale * (rectY - imageY);
+		
+		if(rtl) scaledRectX = imageOriginalWidth - scaledRectX - scaledRectWidth;
+		
+		return new WritableImage(imageView.getImage().getPixelReader(),
+		                         (int) scaledRectX, (int) scaledRectY,
+		                         (int) scaledRectWidth, (int) scaledRectHeight);
 	}
 }

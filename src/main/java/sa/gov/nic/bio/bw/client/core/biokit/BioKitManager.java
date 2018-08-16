@@ -11,6 +11,7 @@ import sa.gov.nic.bio.biokit.face.FaceService;
 import sa.gov.nic.bio.biokit.fingerprint.FingerprintService;
 import sa.gov.nic.bio.biokit.fingerprint.FingerprintUtilitiesService;
 import sa.gov.nic.bio.biokit.passport.PassportScannerService;
+import sa.gov.nic.bio.biokit.scanner.ScannerService;
 import sa.gov.nic.bio.biokit.utils.JsonMapper;
 import sa.gov.nic.bio.biokit.websocket.ClosureListener;
 import sa.gov.nic.bio.biokit.websocket.UpdateListener;
@@ -27,6 +28,7 @@ public class BioKitManager
 	private FingerprintService fingerprintService;
 	private FingerprintUtilitiesService fingerprintUtilitiesService;
 	private PassportScannerService passportScannerService;
+	private ScannerService scannerService;
 	private BiokitCommander biokitCommander;
 	
 	public BioKitManager(String bclId, int websocketPort, String websocketServerUrl,
@@ -45,6 +47,7 @@ public class BioKitManager
 		fingerprintService = DeviceServiceFactory.getFingerprintService(websocketClient);
 		fingerprintUtilitiesService = DeviceUtilitiesServiceFactory.getFingerprintUtilitiesService(websocketClient);
 		passportScannerService = DeviceServiceFactory.getPassportScannerService(websocketClient);
+		scannerService = DeviceServiceFactory.getScannerService(websocketClient);
 		biokitCommander = BiokitCommanderFactory.getBiokitCommander(websocketClient);
 	}
 	
@@ -74,5 +77,6 @@ public class BioKitManager
 	public FingerprintService getFingerprintService(){return fingerprintService;}
 	public FingerprintUtilitiesService getFingerprintUtilitiesService(){return fingerprintUtilitiesService;}
 	public PassportScannerService getPassportScannerService(){return passportScannerService;}
+	public ScannerService getScannerService(){return scannerService;}
 	public BiokitCommander getBiokitCommander(){return biokitCommander;}
 }

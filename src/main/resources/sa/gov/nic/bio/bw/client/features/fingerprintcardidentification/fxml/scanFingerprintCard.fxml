@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import sa.gov.nic.bio.bw.client.features.commons.ui.ImageViewPane?>
+<BorderPane xmlns="http://javafx.com/javafx/8.0.152" xmlns:fx="http://javafx.com/fxml/1"
+            fx:id="rootPane" stylesheets="@../css/style.css"
+            fx:controller="sa.gov.nic.bio.bw.client.features.fingerprintcardidentification.ScanFingerprintCardPaneFxController">
+    <center>
+        <VBox alignment="CENTER">
+            <HBox alignment="CENTER" VBox.vgrow="ALWAYS">
+                <padding>
+                    <Insets top="5.0" bottom="5.0"/>
+                </padding>
+                <TitledPane text="%label.fingerprintCardImage" maxHeight="Infinity" collapsible="false" focusTraversable="false" HBox.hgrow="ALWAYS">
+                    <StackPane>
+                        <ImageViewPane>
+                            <imageView>
+                                <ImageView fx:id="ivFingerprintImagePlaceHolder" preserveRatio="true">
+                                    <Image url="@../../commons/images/image_place_holder_square.png"/>
+                                </ImageView>
+                            </imageView>
+                        </ImageViewPane>
+                        <ImageViewPane>
+                            <imageView>
+                                <ImageView fx:id="ivFingerprintImage" preserveRatio="true"/>
+                            </imageView>
+                        </ImageViewPane>
+                    </StackPane>
+                </TitledPane>
+            </HBox>
+        </VBox>
+    </center>
+    <bottom>
+        <HBox alignment="CENTER" spacing="10">
+            <padding>
+                <Insets bottom="10"/>
+            </padding>
+            <Button fx:id="btnScanFingerprints" text="%button.scanFingerprints" onAction="#onScanCardButtonClicked"/>
+            <Button fx:id="btnNext" text="%button.next" onAction="#onNextButtonClicked"/>
+        </HBox>
+    </bottom>
+</BorderPane>

@@ -1,7 +1,9 @@
 package sa.gov.nic.bio.bw.client.core.utils;
 
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
 import javafx.geometry.NodeOrientation;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -11,15 +13,20 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.ChoiceDialog;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Hyperlink;
+import javafx.scene.control.Label;
+import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TextArea;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.Window;
+import sa.gov.nic.bio.bcl.utils.CancelCommand;
 import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.interfaces.IdleMonitorRegisterer;
 
@@ -27,6 +34,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class DialogUtils
@@ -260,5 +268,57 @@ public class DialogUtils
 		stage.setOnCloseRequest(event -> stage.close());
 		
 		return loader.getController();
+	}
+	
+	public static Stage buildProgressDialog(CancelCommand cancelCommand, String message, Future<?> future,
+	                                        String cancelButtonText)
+	{
+		boolean rtl = Context.getGuiLanguage().getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT;
+		
+		Button btnCancel = new Button(cancelButtonText);
+		btnCancel.setFocusTraversable(false);
+		Label lblProgress = new Label(message);
+		ProgressIndicator progressIndicator = new ProgressIndicator();
+		progressIndicator.setMaxHeight(18.0);
+		progressIndicator.setMaxWidth(18.0);
+		
+		VBox inner = new VBox(5.0);
+		inner.setAlignment(Pos.CENTER);
+		inner.getChildren().addAll(progressIndicator, lblProgress);
+		
+		VBox outer = new VBox(15.0);
+		outer.getStylesheets().setAll("sa/gov/nic/bio/bw/client/core/css/style.css");
+		outer.setAlignment(Pos.CENTER);
+		outer.getChildren().addAll(inner, btnCancel);
+		outer.setPadding(new Insets(10.0));
+		
+		Stage dialogStage = DialogUtils.buildCustomDialog(Context.getCoreFxController().getStage(),
+		                                                  null, outer, rtl, true);
+		
+		dialogStage.setOnCloseRequest(event ->
+		{
+		    cancelCommand.cancel();
+		    if(future != null) future.cancel(true);
+		});
+		
+		btnCancel.setOnAction(e ->
+		{
+		    cancelCommand.cancel();
+		    if(future != null) future.cancel(true);
+		    dialogStage.close();
+		});
+		
+		dialogStage.addEventHandler(KeyEvent.KEY_PRESSED, event ->
+		{
+			if(event.getCode() == KeyCode.ESCAPE)
+			{
+				cancelCommand.cancel();
+				if(future != null) future.cancel(true);
+				dialogStage.close();
+				event.consume();
+			}
+		});
+		
+		return dialogStage;
 	}
 }
