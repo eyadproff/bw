@@ -37,8 +37,9 @@ import java.util.Map;
 
 public class InquiryResultPaneFxController extends WizardStepFxControllerBase
 {
+	public static final String KEY_INQUIRY_SAMIS_ID = "INQUIRY_SAMIS_ID";
 	public static final String KEY_INQUIRY_HIT_RESULT = "INQUIRY_HIT_RESULT";
-	
+
 	@FXML private VBox paneNoHitMessage;
 	@FXML private GridPane gridPane;
 	@FXML private ImageView ivPersonPhoto;
@@ -116,9 +117,10 @@ public class InquiryResultPaneFxController extends WizardStepFxControllerBase
 						lblGeneralFileNumber.setText(notAvailable);
 						lblGeneralFileNumber.setTextFill(Color.RED);
 					}
-					
+
+					Long samisId = (Long) uiInputData.get(KEY_INQUIRY_SAMIS_ID);
 					PersonInfo personInfo = (PersonInfo) uiInputData.get(KEY_INQUIRY_HIT_RESULT);
-					populatePersonInfo(personInfo, notAvailable);
+					populatePersonInfo(samisId, personInfo, notAvailable);
 				}
 				else
 				{
@@ -139,9 +141,10 @@ public class InquiryResultPaneFxController extends WizardStepFxControllerBase
 				
 				lblGeneralFileNumber.setText(notAvailable);
 				lblGeneralFileNumber.setTextFill(Color.RED);
-				
+
+				Long samisId = (Long) uiInputData.get(KEY_INQUIRY_SAMIS_ID);
 				PersonInfo personInfo = (PersonInfo) uiInputData.get(KEY_INQUIRY_HIT_RESULT);
-				populatePersonInfo(personInfo, notAvailable);
+				populatePersonInfo(samisId, personInfo, notAvailable);
 			}
 		}
 	}
@@ -176,7 +179,7 @@ public class InquiryResultPaneFxController extends WizardStepFxControllerBase
 		if(confirmed) startOver();
 	}
 	
-	private void populatePersonInfo(PersonInfo personInfo, String notAvailable)
+	private void populatePersonInfo(Long samisId, PersonInfo personInfo, String notAvailable)
 	{
 		if(personInfo == null)
 		{
@@ -198,8 +201,14 @@ public class InquiryResultPaneFxController extends WizardStepFxControllerBase
 			lblBirthPlace.setTextFill(Color.RED);
 			lblBirthDate.setText(notAvailable);
 			lblBirthDate.setTextFill(Color.RED);
-			lblIdNumber.setText(notAvailable);
-			lblIdNumber.setTextFill(Color.RED);
+
+			if(samisId != null) lblIdNumber.setText(String.valueOf(samisId));
+			else
+			{
+				lblIdNumber.setText(notAvailable);
+				lblIdNumber.setTextFill(Color.RED);
+			}
+
 			lblIdType.setText(notAvailable);
 			lblIdType.setTextFill(Color.RED);
 			lblIdIssuanceDate.setText(notAvailable);
@@ -390,36 +399,40 @@ public class InquiryResultPaneFxController extends WizardStepFxControllerBase
 		{
 			lblIdNumber.setText(AppUtils.replaceNumbersOnly(idNumber, Locale.getDefault()));
 			personInfoMap.put(PersonInfoPaneFxController.KEY_PERSON_INFO_ID_NUMBER, idNumber);
-		}
-		else
-		{
-			lblIdNumber.setText(notAvailable);
-			lblIdNumber.setTextFill(Color.RED);
-		}
-		
-		@SuppressWarnings("unchecked") List<IdType> idTypes = (List<IdType>)
-													Context.getUserSession().getAttribute("lookups.idTypes");
-		
-		Integer idType = identityInfo != null ? identityInfo.getIdType() : null;
-		if(idType != null)
-		{
-			IdType it = null;
-			for(IdType type : idTypes)
+
+			@SuppressWarnings("unchecked") List<IdType> idTypes = (List<IdType>)
+								Context.getUserSession().getAttribute("lookups.idTypes");
+
+			Integer idType = identityInfo.getIdType();
+			if(idType != null)
 			{
-				if(type.getCode() == idType)
+				IdType it = null;
+				for(IdType type : idTypes)
 				{
-					it = type;
-					break;
+					if(type.getCode() == idType)
+					{
+						it = type;
+						break;
+					}
 				}
+
+				if(it != null) lblIdType.setText(it.getDesc());
+				personInfoMap.put(PersonInfoPaneFxController.KEY_PERSON_INFO_ID_TYPE, it);
 			}
-			
-			if(it != null) lblIdType.setText(it.getDesc());
-			personInfoMap.put(PersonInfoPaneFxController.KEY_PERSON_INFO_ID_TYPE, it);
+			else
+			{
+				lblIdType.setText(notAvailable);
+				lblIdType.setTextFill(Color.RED);
+			}
 		}
 		else
 		{
-			lblIdType.setText(notAvailable);
-			lblIdType.setTextFill(Color.RED);
+			if(samisId != null) lblIdNumber.setText(String.valueOf(samisId));
+			else
+			{
+				lblIdNumber.setText(notAvailable);
+				lblIdNumber.setTextFill(Color.RED);
+			}
 		}
 		
 		Date idIssueDate = identityInfo != null ? identityInfo.getIdIssueDate() : null;

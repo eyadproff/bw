@@ -1,5 +1,9 @@
 # Release Notes:
 
+## v2018.08.7
+
+- Set id number to be samis id in case the former is null.
+
 ## v2018.08.6
 
 - Bug fixes in convicted report workflow and fingerprint card identification workflow.

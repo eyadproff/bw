@@ -440,10 +440,13 @@ public class ShowRecordPaneFxController extends WizardStepFxControllerBase
 				lblBirthDate.setText(birthDate);
 			}
 		}
-		else
+
+		if(idNumber == null)
 		{
 			idNumber = AppUtils.replaceNumbersOnly(String.valueOf(samisId), Locale.getDefault());
+			idType = null;
 			lblIdNumber.setText(idNumber);
+			lblIdType.setText(idType);
 		}
 		
 		if(fingerprintsImages != null)

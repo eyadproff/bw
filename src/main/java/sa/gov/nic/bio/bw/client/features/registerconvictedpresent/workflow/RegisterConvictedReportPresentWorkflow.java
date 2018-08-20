@@ -152,9 +152,12 @@ public class RegisterConvictedReportPresentWorkflow extends WizardWorkflowBase<V
 							{
 								uiInputData.put(InquiryByFingerprintsPaneFxController.KEY_FINGERPRINT_INQUIRY_HIT,
 								                Boolean.TRUE);
+								long samisId = result.getSamisId();
 								long criminalHitBioId = result.getCrimnalHitBioId();
 								PersonInfo personInfo = result.getPersonInfo();
-								
+
+								uiInputData.put(InquiryResultPaneFxController.KEY_INQUIRY_SAMIS_ID,
+												samisId);
 								if(criminalHitBioId > 0) uiInputData.put(
 													PersonInfoPaneFxController.KEY_PERSON_INFO_GENERAL_FILE_NUMBER,
 													criminalHitBioId);
