@@ -1,5 +1,9 @@
 # Release Notes:
 
+## v2018.08.6
+
+- Bug fixes in convicted report workflow and fingerprint card identification workflow.
+
 ## v2018.08.5
 
 - Fingerprint Card Identification: set samis id to idNumber in case of personInfo is null.

@@ -415,7 +415,11 @@ public class InquiryResultPaneFxController extends WizardStepFxControllerBase
 				lblBirthDate.setText(birthDate);
 			}
 		}
-		else idNumber = String.valueOf(samisId);
+		else
+		{
+			idNumber = AppUtils.replaceNumbersOnly(String.valueOf(samisId), Locale.getDefault());
+			lblIdNumber.setText(idNumber);
+		}
 		
 		if(fingerprintsImages != null)
 		{

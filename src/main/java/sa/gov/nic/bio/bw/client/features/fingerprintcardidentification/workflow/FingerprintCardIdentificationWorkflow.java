@@ -96,7 +96,7 @@ public class FingerprintCardIdentificationWorkflow extends WizardWorkflowBase<Vo
 					
 					Boolean running = (Boolean) uiOutputData.get(
 												InquiryByFingerprintsPaneFxController.KEY_DEVICES_RUNNER_IS_RUNNING);
-					if(!running) break;
+					if(running != null && !running) break;
 				}
 				
 				Map<Integer, String> fingerprintImagesMap = new HashMap<>();

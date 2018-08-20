@@ -49,6 +49,7 @@ import java.util.concurrent.atomic.AtomicReference;
 public class ShowRecordPaneFxController extends WizardStepFxControllerBase
 {
 	public static final String KEY_DEAD_PERSON_RECORD = "DEAD_PERSON_RECORD";
+	public static final String KEY_SAMIS_ID = "SAMIS_ID";
 	public static final String KEY_PERSON_INFO = "PERSON_INFO";
 	public static final String KEY_PERSON_FINGERPRINTS_IMAGES = "PERSON_FINGERPRINTS_IMAGES";
 	
@@ -111,15 +112,16 @@ public class ShowRecordPaneFxController extends WizardStepFxControllerBase
 		if(newForm)
 		{
 			DeadPersonRecord deadPersonRecord = (DeadPersonRecord) uiInputData.get(KEY_DEAD_PERSON_RECORD);
+			Long samisId = (Long) uiInputData.get(KEY_SAMIS_ID);
 			PersonInfo personInfo = (PersonInfo) uiInputData.get(KEY_PERSON_INFO);
-			
+
 			@SuppressWarnings("unchecked")
 			Map<Integer, String> fingerprintImages =
 											(Map<Integer, String>) uiInputData.get(KEY_PERSON_FINGERPRINTS_IMAGES);
 			
 			Long recordIdLong = (Long) uiInputData.get(RecordIdPaneFxController.KEY_RECORD_ID);
 			
-			populateData(recordIdLong, deadPersonRecord, personInfo, fingerprintImages);
+			populateData(samisId, recordIdLong, deadPersonRecord, personInfo, fingerprintImages);
 		}
 	}
 	
@@ -241,8 +243,8 @@ public class ShowRecordPaneFxController extends WizardStepFxControllerBase
 		}
 	}
 	
-	private void populateData(Long recordIdLong, DeadPersonRecord deadPersonRecord, PersonInfo personInfo,
-	                          Map<Integer, String> fingerprintsImages)
+	private void populateData(Long samisId, Long recordIdLong, DeadPersonRecord deadPersonRecord,
+							  PersonInfo personInfo, Map<Integer, String> fingerprintsImages)
 	{
 		String recordId = null;
 		String enrollerId = null;
@@ -437,6 +439,11 @@ public class ShowRecordPaneFxController extends WizardStepFxControllerBase
 				birthDate = AppUtils.formatHijriGregorianDate(AppUtils.gregorianDateToMilliSeconds(localDate));
 				lblBirthDate.setText(birthDate);
 			}
+		}
+		else
+		{
+			idNumber = AppUtils.replaceNumbersOnly(String.valueOf(samisId), Locale.getDefault());
+			lblIdNumber.setText(idNumber);
 		}
 		
 		if(fingerprintsImages != null)

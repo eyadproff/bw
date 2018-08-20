@@ -108,8 +108,12 @@ public class PrintDeadPersonRecordWorkflow extends WizardWorkflowBase<Void, Void
 						{
 							serviceResponse = GetPersonInfoByIdService.execute(samisId, 0);
 							
-							if(serviceResponse.isSuccess()) uiInputData.put(ShowRecordPaneFxController.KEY_PERSON_INFO,
-									                                        serviceResponse.getResult());
+							if(serviceResponse.isSuccess())
+							{
+								uiInputData.put(ShowRecordPaneFxController.KEY_SAMIS_ID, samisId);
+								uiInputData.put(ShowRecordPaneFxController.KEY_PERSON_INFO,
+												serviceResponse.getResult());
+							}
 							else break block;
 						}
 						
