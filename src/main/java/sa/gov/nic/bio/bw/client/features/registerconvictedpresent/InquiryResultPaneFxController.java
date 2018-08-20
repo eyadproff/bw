@@ -427,12 +427,10 @@ public class InquiryResultPaneFxController extends WizardStepFxControllerBase
 		}
 		else
 		{
-			if(samisId != null) lblIdNumber.setText(String.valueOf(samisId));
-			else
-			{
-				lblIdNumber.setText(notAvailable);
-				lblIdNumber.setTextFill(Color.RED);
-			}
+			if(samisId != null) lblIdNumber.setText(AppUtils.replaceNumbersOnly(String.valueOf(samisId), Locale.getDefault()));
+
+			lblIdNumber.setText(notAvailable);
+			lblIdNumber.setTextFill(Color.RED);
 		}
 		
 		Date idIssueDate = identityInfo != null ? identityInfo.getIdIssueDate() : null;
