@@ -59,14 +59,13 @@ dependencies {
 
     // Tomcat websocket client
     implementation name: "javax.websocket-api-1.1"
-    implementation name: "tomcat-websocket-9.0.11"
-    implementation name: "tomcat-api-9.0.11"
-    implementation name: "tomcat-util-9.0.11"
-    implementation name: "tomcat-juli-9.0.11"
+    implementation name: "tomcat-websocket-8.5.33"
+    implementation name: "tomcat-util-8.5.33"
+    implementation name: "tomcat-juli-8.5.33"
+    implementation name: "tomcat-api-8.5.33"
 
     // Jasper reports
     implementation name: "jasperreports-6.5.1"
-    implementation name: "jasper-compiler-jdt-5.5.23"
     implementation name: "commons-logging-1.2"
     implementation name: "commons-digester-2.1"
     implementation name: "commons-collections-3.2.2"
@@ -151,7 +150,7 @@ task packageWebStart(group: 'web-start') {
         }
 
         // compress the jars
-        fileTree(dir: 'build/web-start/classpath-jars', include: '**/*.jar', excludes: ['bw-client-*.jar', 'controlsfx-8.40.14.jar', 'tomcat-*.jar']).visit { FileVisitDetails details ->
+        fileTree(dir: 'build/web-start/classpath-jars', include: '**/*.jar', excludes: ['bw-client-*.jar', 'controlsfx-8.40.14.jar']).visit { FileVisitDetails details ->
             String fileName = details.file.name
             exec {
                 workingDir 'build/web-start/classpath-jars'
@@ -160,7 +159,7 @@ task packageWebStart(group: 'web-start') {
         }
 
         // delete the un-compressed jars
-        fileTree(dir: 'build/web-start/classpath-jars', include: '**/*.jar', excludes: ['bw-client-*.jar', 'controlsfx-8.40.14.jar', 'tomcat-*.jar']).visit { FileVisitDetails details ->
+        fileTree(dir: 'build/web-start/classpath-jars', include: '**/*.jar', excludes: ['bw-client-*.jar', 'controlsfx-8.40.14.jar']).visit { FileVisitDetails details ->
             details.file.delete()
         }
 

@@ -3,7 +3,7 @@
 ## v2018.08.8
 
 - Upgrade libraries to the latest version.
-- Remove "jasperreports-fonts" from dependencies.
+- Remove unnecessary dependencies and reduce size of the final packages to the minimum.
 
 ## v2018.08.7
 
