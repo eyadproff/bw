@@ -1,5 +1,10 @@
 # Release Notes:
 
+## v2018.08.8
+
+- Upgrade libraries to the latest version.
+- Remove "jasperreports-fonts" from dependencies.
+
 ## v2018.08.7
 
 - Set id number to be samis id in case the former is null.

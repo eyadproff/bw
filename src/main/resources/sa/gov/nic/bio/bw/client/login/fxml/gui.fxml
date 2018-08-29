@@ -24,7 +24,7 @@
         <Insets topRightBottomLeft="10.0"/>
     </padding>
     <ImageView>
-        <Image url="@../../core/images/nic_logo_150.png"/>
+        <Image url="@../../core/images/nic_logo.png"/>
     </ImageView>
     <VBox alignment="CENTER" spacing="10.0">
         <HBox alignment="CENTER">
