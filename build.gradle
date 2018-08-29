@@ -76,7 +76,22 @@ dependencies {
     implementation name: "barbecue-1.5-beta1"
 
     // JUnit
-    testImplementation name: "junit-4.12"
+    testImplementation name : "junit-platform-commons-1.2.0"
+    testImplementation name : "junit-platform-console-1.2.0"
+    testImplementation name : "junit-platform-console-standalone-1.2.0"
+    testImplementation name : "junit-platform-engine-1.2.0"
+    testImplementation name : "junit-platform-gradle-plugin-1.2.0"
+    testImplementation name : "junit-platform-launcher-1.2.0"
+    testImplementation name : "junit-platform-runner-1.2.0"
+    testImplementation name : "junit-platform-suite-api-1.2.0"
+    testImplementation name : "junit-platform-surefire-provider-1.2.0"
+    testImplementation name : "junit-jupiter-api-5.2.0"
+    testImplementation name : "junit-jupiter-engine-5.2.0"
+    testImplementation name : "junit-jupiter-params-5.2.0"
+    testImplementation name : "junit-jupiter-migrationsupport-5.2.0"
+    testImplementation name : "junit-vintage-engine-5.2.0"
+    testImplementation name : "apiguardian-api-1.0.0"
+    testImplementation name : "opentest4j-1.1.0"
 }
 
 processResources {

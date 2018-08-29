@@ -5,6 +5,7 @@
 - Upgrade libraries to the latest version.
 - Remove unnecessary dependencies and reduce size of the final packages to the minimum.
 - Upgrade gradle to 4.10.
+- Upgrade JUnit to 5.2.
 
 ## v2018.08.7
 
