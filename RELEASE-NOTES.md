@@ -4,6 +4,7 @@
 
 - Upgrade libraries to the latest version.
 - Remove unnecessary dependencies and reduce size of the final packages to the minimum.
+- Upgrade gradle to 4.10.
 
 ## v2018.08.7
 
