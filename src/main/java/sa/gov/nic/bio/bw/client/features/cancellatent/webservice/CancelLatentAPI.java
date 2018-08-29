@@ -6,6 +6,6 @@ import retrofit2.http.*;
 public interface CancelLatentAPI
 {
 	@FormUrlEncoded
-	@POST
-	Call<Boolean> cancelLatent(@Url String url, @Field("person-id") long personId, @Field("latent-id") String latentId);
+	@POST("services-gateway-biooperation/api/latent/delink/v1")
+	Call<Boolean> cancelLatent(@Field("person-id") long personId, @Field("latent-id") String latentId);
 }

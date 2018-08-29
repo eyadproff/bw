@@ -4,13 +4,12 @@ import retrofit2.Call;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.POST;
-import retrofit2.http.Url;
 
 import java.util.List;
 
 public interface SearchByFaceImageAPI
 {
 	@FormUrlEncoded
-	@POST
-	Call<List<Candidate>> searchByFaceImage(@Url String url, @Field("image") String imageBase64);
+	@POST("services-gateway-biooperation/api/face/search/v1")
+	Call<List<Candidate>> searchByFaceImage(@Field("image") String imageBase64);
 }

@@ -11,8 +11,7 @@ public class FaceVerificationService
 	public static ServiceResponse<PersonInfo> execute(long personId, String imageBase64)
 	{
 		FaceVerificationAPI faceVerificationAPI = Context.getWebserviceManager().getApi(FaceVerificationAPI.class);
-		String url = System.getProperty("jnlp.bio.bw.service.faceVerification");
-		Call<PersonInfo> apiCall = faceVerificationAPI.verifyFaceImage(url, personId, imageBase64);
+		Call<PersonInfo> apiCall = faceVerificationAPI.verifyFaceImage(personId, imageBase64);
 		return Context.getWebserviceManager().executeApi(apiCall);
 	}
 }

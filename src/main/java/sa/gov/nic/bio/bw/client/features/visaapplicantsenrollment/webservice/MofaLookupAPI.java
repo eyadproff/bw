@@ -7,9 +7,9 @@ import java.util.List;
 
 public interface MofaLookupAPI
 {
-	@GET
-	Call<List<VisaTypeBean>> lookupVisaTypes(@Url String url);
+	@GET("services-gateway-lookups/api/application/visa-type/all/v2")
+	Call<List<VisaTypeBean>> lookupVisaTypes();
 	
-	@GET
-	Call<List<PassportTypeBean>> lookupPassportTypes(@Url String url);
+	@GET("services-gateway-lookups/api/application/passport-types/v1")
+	Call<List<PassportTypeBean>> lookupPassportTypes();
 }

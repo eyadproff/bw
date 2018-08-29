@@ -10,16 +10,14 @@ public class CancelCriminalService
 	public static ServiceResponse<Boolean> execute(long personId, int personIdType, long criminalId)
 	{
 		CancelCriminalAPI cancelCriminalAPI = Context.getWebserviceManager().getApi(CancelCriminalAPI.class);
-		String url = System.getProperty("jnlp.bio.bw.service.cancelCriminal.byPersonId");
-		Call<Boolean> apiCall = cancelCriminalAPI.cancelCriminalByPersonId(url, personId, personIdType, criminalId);
+		Call<Boolean> apiCall = cancelCriminalAPI.cancelCriminalByPersonId(personId, personIdType, criminalId);
 		return Context.getWebserviceManager().executeApi(apiCall);
 	}
 	
 	public static ServiceResponse<Boolean> execute(long inquiryId, long criminalId)
 	{
 		CancelCriminalAPI cancelCriminalAPI = Context.getWebserviceManager().getApi(CancelCriminalAPI.class);
-		String url = System.getProperty("jnlp.bio.bw.service.cancelCriminal.byInquiryId");
-		Call<Boolean> apiCall = cancelCriminalAPI.cancelCriminalByInquiryId(url, inquiryId, criminalId);
+		Call<Boolean> apiCall = cancelCriminalAPI.cancelCriminalByInquiryId(inquiryId, criminalId);
 		return Context.getWebserviceManager().executeApi(apiCall);
 	}
 }

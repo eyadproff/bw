@@ -460,8 +460,7 @@ public class AppEntryPoint extends Application
 	                   executorService, scheduledExecutorService, errorsBundle, new UserSession(), serverUrl);
 	
 	    LookupAPI lookupAPI = webserviceManager.getApi(LookupAPI.class);
-	    String url = System.getProperty("jnlp.bio.bw.service.lookupNicHijriCalendarData");
-	    Call<NicHijriCalendarData> apiCall = lookupAPI.lookupNicHijriCalendarData(url);
+	    Call<NicHijriCalendarData> apiCall = lookupAPI.lookupNicHijriCalendarData();
 	    ServiceResponse<NicHijriCalendarData> webServiceResponse = webserviceManager.executeApi(apiCall);
 	
 	    if(webServiceResponse.isSuccess())

@@ -11,9 +11,7 @@ public class DeadPersonRecordByIdService
 	public static ServiceResponse<DeadPersonRecord> execute(long recordId)
 	{
 		DeadPersonRecordById deadPersonRecordById = Context.getWebserviceManager().getApi(DeadPersonRecordById.class);
-		String url = System.getProperty("jnlp.bio.bw.service.getDeadPersonRecordById");
-		
-		Call<DeadPersonRecord> apiCall = deadPersonRecordById.getDeadPersonRecordById(url, recordId);
+		Call<DeadPersonRecord> apiCall = deadPersonRecordById.getDeadPersonRecordById(recordId);
 		return Context.getWebserviceManager().executeApi(apiCall);
 	}
 }

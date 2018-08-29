@@ -32,9 +32,8 @@ public class ConvictedReportLookupService
 		
 		if(countries == null)
 		{
-			String url = System.getProperty("jnlp.bio.bw.service.lookupNationalities");
 			LookupAPI lookupAPI = Context.getWebserviceManager().getApi(LookupAPI.class);
-			Call<List<CountryBean>> nationalitiesCall = lookupAPI.lookupNationalities(url);
+			Call<List<CountryBean>> nationalitiesCall = lookupAPI.lookupNationalities();
 			ServiceResponse<List<CountryBean>> nationalitiesResponse = Context.getWebserviceManager()
 																				  .executeApi(nationalitiesCall);
 			
@@ -53,9 +52,8 @@ public class ConvictedReportLookupService
 		
 		if(personIdTypes == null)
 		{
-			String url = System.getProperty("jnlp.bio.bw.service.lookupPersonIdTypes");
 			LookupAPI lookupAPI = Context.getWebserviceManager().getApi(LookupAPI.class);
-			Call<List<PersonIdType>> personIdTypesCall = lookupAPI.lookupPersonIdTypes(url);
+			Call<List<PersonIdType>> personIdTypesCall = lookupAPI.lookupPersonIdTypes();
 			ServiceResponse<List<PersonIdType>> personIdTypesResponse = Context.getWebserviceManager()
 																		       .executeApi(personIdTypesCall);
 			
@@ -70,9 +68,8 @@ public class ConvictedReportLookupService
 		
 		if(crimeTypes == null)
 		{
-			String url = System.getProperty("jnlp.bio.bw.service.lookupCrimeTypes");
 			LookupAPI lookupAPI = Context.getWebserviceManager().getApi(LookupAPI.class);
-			Call<List<CrimeType>> crimeTypesCall = lookupAPI.lookupCrimeTypes(url);
+			Call<List<CrimeType>> crimeTypesCall = lookupAPI.lookupCrimeTypes();
 			ServiceResponse<List<CrimeType>> crimeTypesResponse = Context.getWebserviceManager()
 																		 .executeApi(crimeTypesCall);
 			
@@ -87,9 +84,8 @@ public class ConvictedReportLookupService
 		
 		if(idTypes == null)
 		{
-			String url = System.getProperty("jnlp.bio.bw.service.lookupIdTypes");
 			LookupAPI lookupAPI = Context.getWebserviceManager().getApi(LookupAPI.class);
-			Call<List<IdType>> idTypesCall = lookupAPI.lookupIdTypes(url);
+			Call<List<IdType>> idTypesCall = lookupAPI.lookupIdTypes();
 			ServiceResponse<List<IdType>> idTypesResponse = Context.getWebserviceManager().executeApi(idTypesCall);
 			
 			if(idTypesResponse.isSuccess()) idTypes = idTypesResponse.getResult();

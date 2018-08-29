@@ -13,9 +13,7 @@ public class FetchingFingerprintsService
 	public static ServiceResponse<List<Finger>> execute(long personId)
 	{
 		FingerprintsByIdAPI fingerprintsByIdAPI = Context.getWebserviceManager().getApi(FingerprintsByIdAPI.class);
-		String url = System.getProperty("jnlp.bio.bw.service.getFingerprintsById");
-		
-		Call<List<Finger>> apiCall = fingerprintsByIdAPI.getFingerprintsById(url, personId);
+		Call<List<Finger>> apiCall = fingerprintsByIdAPI.getFingerprintsById(personId);
 		return Context.getWebserviceManager().executeApi(apiCall);
 	}
 }

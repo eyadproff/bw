@@ -14,13 +14,12 @@ public class VisaApplicantsEnrollmentService
 	{
 		VisaApplicantsEnrollmentAPI visaApplicantsEnrollmentAPI =
 											Context.getWebserviceManager().getApi(VisaApplicantsEnrollmentAPI.class);
-		String url = System.getProperty("jnlp.bio.bw.service.visaApplicantsEnrollment");
 		
 		String visaApplicantInfoJson = new Gson().toJson(visaApplicantInfo,
 		                                                 TypeToken.get(VisaApplicantInfo.class).getType());
 		
 		Call<VisaApplicantEnrollmentResponse> apiCall =
-											visaApplicantsEnrollmentAPI.enrollVisaApplicant(url, visaApplicantInfoJson);
+											visaApplicantsEnrollmentAPI.enrollVisaApplicant(visaApplicantInfoJson);
 		return Context.getWebserviceManager().executeApi(apiCall);
 	}
 }

@@ -10,9 +10,7 @@ public class GeneratingGeneralFileNumberService
 	public static ServiceResponse<Long> execute()
 	{
 		ConvictedReportAPI convictedReportAPI = Context.getWebserviceManager().getApi(ConvictedReportAPI.class);
-		String url = System.getProperty("jnlp.bio.bw.service.generateGeneralFileNumber");
-		
-		Call<Long> apiCall = convictedReportAPI.generateGeneralFileNumber(url);
+		Call<Long> apiCall = convictedReportAPI.generateGeneralFileNumber();
 		return Context.getWebserviceManager().executeApi(apiCall);
 	}
 }

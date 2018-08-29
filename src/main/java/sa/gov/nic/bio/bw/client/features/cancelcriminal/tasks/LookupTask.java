@@ -23,9 +23,8 @@ public class LookupTask extends Task<ServiceResponse<List<PersonIdType>>>
 		if(personIdTypes != null) return ServiceResponse.success(personIdTypes);
 		else
 		{
-			String url = System.getProperty("jnlp.bio.bw.service.lookupPersonIdTypes");
 			LookupAPI lookupAPI = Context.getWebserviceManager().getApi(LookupAPI.class);
-			Call<List<PersonIdType>> personIdTypesCall = lookupAPI.lookupPersonIdTypes(url);
+			Call<List<PersonIdType>> personIdTypesCall = lookupAPI.lookupPersonIdTypes();
 			return Context.getWebserviceManager().executeApi(personIdTypesCall);
 		}
 	}

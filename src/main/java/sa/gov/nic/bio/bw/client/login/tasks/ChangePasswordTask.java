@@ -23,8 +23,7 @@ public class ChangePasswordTask extends Task<ServiceResponse<Boolean>>
 	protected ServiceResponse<Boolean> call()
 	{
 		IdentityAPI identityAPI = Context.getWebserviceManager().getApi(IdentityAPI.class);
-		String url = System.getProperty("jnlp.bio.bw.service.changePassword");
-		Call<Boolean> apiCall = identityAPI.changePassword(url, username, oldPassword, newPassword, "BW",
+		Call<Boolean> apiCall = identityAPI.changePassword(username, oldPassword, newPassword, "BW",
 		                                                   "U"); // U = User?
 		return Context.getWebserviceManager().executeApi(apiCall);
 	}

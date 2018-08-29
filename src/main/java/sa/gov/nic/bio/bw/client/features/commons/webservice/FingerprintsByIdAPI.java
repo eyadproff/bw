@@ -3,15 +3,14 @@ package sa.gov.nic.bio.bw.client.features.commons.webservice;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
-import retrofit2.http.Url;
 
 import java.util.List;
 
 public interface FingerprintsByIdAPI
 {
-	@GET
-	Call<List<Finger>> getFingerprintsById(@Url String url, @Query("person-id") long personId);
+	@GET("services-gateway-biooperation/api/fingerprint/images/v1")
+	Call<List<Finger>> getFingerprintsById(@Query("person-id") long personId);
 	
-	@GET
-	Call<List<Integer>> getFingerprintAvailability(@Url String url, @Query("person-id") long personId);
+	@GET("services-gateway-biooperation/api/fingerprint/available/v1")
+	Call<List<Integer>> getFingerprintAvailability(@Query("person-id") long personId);
 }
