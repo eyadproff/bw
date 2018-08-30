@@ -32,8 +32,7 @@ public class LogoutTask extends Task<Void>
 		Platform.runLater(() -> Context.getCoreFxController().getHeaderPaneController().setAvatarImage(null));
 		
 		IdentityAPI identityAPI = Context.getWebserviceManager().getApi(IdentityAPI.class);
-		String url = System.getProperty("jnlp.bio.bw.service.logout");
-		Call<Void> apiCall = identityAPI.logout(url, userToken);
+		Call<Void> apiCall = identityAPI.logout(userToken);
 		ServiceResponse<Void> response = Context.getWebserviceManager().executeApi(apiCall);
 		
 		if(!response.isSuccess())

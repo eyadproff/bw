@@ -9,9 +9,9 @@ import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.wizard.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.client.core.workflow.Workflow;
-import sa.gov.nic.bio.bw.client.features.registerconvictednotpresent.utils.RegisterConvictedNotPresentErrorCodes;
-import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.InquiryResultPaneFxController;
+import sa.gov.nic.bio.bw.client.features.citizenenrollment.utils.CitizenEnrollmentErrorCodes;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.PersonInfo;
+import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.InquiryResultPaneFxController;
 import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
 
 import java.net.URL;
@@ -35,7 +35,8 @@ public class PersonIdPaneFxController extends WizardStepFxControllerBase
 	@Override
 	protected void initialize()
 	{
-		GuiUtils.applyValidatorToTextField(txtPersonId, "\\d*", "[^\\d]", 10);
+		GuiUtils.applyValidatorToTextField(txtPersonId, "^1\\d*", "\\D+|^[02-9]",
+		                                   10);
 		
 		btnNext.disableProperty().bind(txtPersonId.textProperty().isEmpty().or(txtPersonId.disabledProperty()));
 		btnNext.setOnAction(actionEvent ->
@@ -74,7 +75,7 @@ public class PersonIdPaneFxController extends WizardStepFxControllerBase
 				}
 				else
 				{
-					String errorCode = RegisterConvictedNotPresentErrorCodes.C009_00001.getCode();
+					String errorCode = CitizenEnrollmentErrorCodes.C011_00001.getCode();
 					String[] errorDetails = {"result is null!"};
 					reportNegativeResponse(errorCode, null, errorDetails);
 				}

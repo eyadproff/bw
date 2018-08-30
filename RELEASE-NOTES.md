@@ -1,5 +1,14 @@
 # Release Notes:
 
+## v2018.08.8
+
+- Upgrade libraries to the latest version.
+- Remove unnecessary dependencies and reduce size of the final packages to the minimum.
+- Upgrade gradle to 4.10.
+- Upgrade JUnit to 5.2.
+- Make webservice urls hardcoded into retrofit interfaces.
+- Migrate app configurations to the database.
+
 ## v2018.08.7
 
 - Set id number to be samis id in case the former is null.

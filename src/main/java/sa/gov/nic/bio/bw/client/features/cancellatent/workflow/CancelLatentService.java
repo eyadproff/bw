@@ -10,8 +10,7 @@ public class CancelLatentService
 	public static ServiceResponse<Boolean> execute(long personId, String latentId)
 	{
 		CancelLatentAPI cancelLatentAPI = Context.getWebserviceManager().getApi(CancelLatentAPI.class);
-		String url = System.getProperty("jnlp.bio.bw.service.cancelLatent");
-		Call<Boolean> apiCall = cancelLatentAPI.cancelLatent(url, personId, latentId);
+		Call<Boolean> apiCall = cancelLatentAPI.cancelLatent(personId, latentId);
 		return Context.getWebserviceManager().executeApi(apiCall);
 	}
 }

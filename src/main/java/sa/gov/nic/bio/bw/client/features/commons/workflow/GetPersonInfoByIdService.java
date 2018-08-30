@@ -11,9 +11,7 @@ public class GetPersonInfoByIdService
 	public static ServiceResponse<PersonInfo> execute(long personId, int personType)
 	{
 		PersonInfoByIdAPI personInfoByIdAPI = Context.getWebserviceManager().getApi(PersonInfoByIdAPI.class);
-		String url = System.getProperty("jnlp.bio.bw.service.getPersonInfoById");
-		
-		Call<PersonInfo> apiCall = personInfoByIdAPI.getPersonInfoById(url, personId, personType);
+		Call<PersonInfo> apiCall = personInfoByIdAPI.getPersonInfoById(personId, personType);
 		return Context.getWebserviceManager().executeApi(apiCall);
 	}
 }

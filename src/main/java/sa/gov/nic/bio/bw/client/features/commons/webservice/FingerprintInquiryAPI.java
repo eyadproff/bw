@@ -6,16 +6,14 @@ import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Query;
-import retrofit2.http.Url;
 
 public interface FingerprintInquiryAPI
 {
 	@FormUrlEncoded
-	@POST
-	Call<Integer> inquireWithFingerprints(@Url String url, @Field("fingers") String collectedFingerprints,
-                                                           @Field("missing") String missingFingerprints);
+	@POST("services-gateway-biooperation/api/fingerprint/inquiry/v1")
+	Call<Integer> inquireWithFingerprints(@Field("fingers") String collectedFingerprints,
+                                          @Field("missing") String missingFingerprints);
 	
-	@GET
-	Call<FingerprintInquiryStatusResult> checkFingerprintsInquiryStatus(@Url String url,
-	                                                                    @Query("inquiry-id") int inquiryId);
+	@GET("services-gateway-biooperation/api/fingerprint/inquiry/status/v1")
+	Call<FingerprintInquiryStatusResult> checkFingerprintsInquiryStatus(@Query("inquiry-id") int inquiryId);
 }

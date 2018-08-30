@@ -46,9 +46,8 @@ public class LookupService
 		
 		if(countries == null)
 		{
-			String url = System.getProperty("jnlp.bio.bw.service.lookupNationalities");
 			LookupAPI lookupAPI = Context.getWebserviceManager().getApi(LookupAPI.class);
-			Call<List<CountryBean>> nationalitiesCall = lookupAPI.lookupNationalities(url);
+			Call<List<CountryBean>> nationalitiesCall = lookupAPI.lookupNationalities();
 			ServiceResponse<List<CountryBean>> nationalitiesResponse = Context.getWebserviceManager()
 																				  .executeApi(nationalitiesCall);
 			
@@ -66,9 +65,8 @@ public class LookupService
 		
 		if(visaTypes == null)
 		{
-			String url = System.getProperty("jnlp.bio.bw.service.lookupVisaTypes");
 			MofaLookupAPI mofaLookupAPI = Context.getWebserviceManager().getApi(MofaLookupAPI.class);
-			Call<List<VisaTypeBean>> visaTypesCall = mofaLookupAPI.lookupVisaTypes(url);
+			Call<List<VisaTypeBean>> visaTypesCall = mofaLookupAPI.lookupVisaTypes();
 			ServiceResponse<List<VisaTypeBean>> visaTypesResponse = Context.getWebserviceManager()
 																		   .executeApi(visaTypesCall);
 			
@@ -82,9 +80,8 @@ public class LookupService
 		
 		if(passportTypes == null)
 		{
-			String url = System.getProperty("jnlp.bio.bw.service.lookupPassportTypes");
 			MofaLookupAPI mofaLookupAPI = Context.getWebserviceManager().getApi(MofaLookupAPI.class);
-			Call<List<PassportTypeBean>> passportTypesCall = mofaLookupAPI.lookupPassportTypes(url);
+			Call<List<PassportTypeBean>> passportTypesCall = mofaLookupAPI.lookupPassportTypes();
 			ServiceResponse<List<PassportTypeBean>> passportTypesResponse = Context.getWebserviceManager()
 																				   .executeApi(passportTypesCall);
 			

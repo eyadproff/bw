@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.Map;
 import java.util.Properties;
 
 public class ConfigManager
@@ -16,6 +17,11 @@ public class ConfigManager
 		InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream(CONFIG_FILE_PATH);
 		InputStreamReader isr = new InputStreamReader(is, StandardCharsets.UTF_8);
 		properties.load(isr);
+	}
+	
+	public void addProperties(Map<String, String> properties)
+	{
+		this.properties.putAll(properties);
 	}
 	
 	public String getProperty(String key)

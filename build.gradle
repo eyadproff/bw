@@ -13,7 +13,7 @@ buildscript {
     }
 }
 
-project.version = '2018.08.7'
+project.version = '2018.08.8'
 group = 'sa.gov.nic.bio'
 
 apply plugin: 'java'
@@ -40,30 +40,58 @@ repositories {
 }
 
 dependencies {
-    implementation name: "controlsfx-8.40.14"
-    implementation name: "okhttp-3.8.1"
-    implementation name: "okio-1.13.0"
-    implementation name: "retrofit-2.3.0"
-    implementation name: "gson-2.8.2"
-    implementation name: "converter-gson-2.3.0"
-    implementation name: "javax.websocket-api-1.1"
-    implementation name: "tomcat-api-9.0.2"
-    implementation name: "tomcat-juli-9.0.2"
-    implementation name: "tomcat-util-9.0.2"
-    implementation name: "tomcat-websocket-9.0.2"
+    // BCL-Utils and Biokit library
     implementation name: "bcl-utils-2018.04.1"
     implementation name: "biokit-library-2018.08.2"
+
+    // font to support arabic in jasper reports
+    implementation name: "custom-report-font-1.0.0"
+
+    // JavaFX extension library
+    implementation name: "controlsfx-8.40.14"
+    
+    // Retrofit HTTP client
+    implementation name: "retrofit-2.4.0"
+    implementation name: "okhttp-3.11.0"
+    implementation name: "okio-1.15.0"
+    implementation name: "converter-gson-2.4.0"
+    implementation name: "gson-2.8.5"
+
+    // Tomcat websocket client
+    implementation name: "javax.websocket-api-1.1"
+    implementation name: "tomcat-websocket-8.5.33"
+    implementation name: "tomcat-util-8.5.33"
+    implementation name: "tomcat-juli-8.5.33"
+    implementation name: "tomcat-api-8.5.33"
+
+    // Jasper reports
     implementation name: "jasperreports-6.5.1"
-    implementation name: "jasperreports-fonts-6.5.1"
-    implementation name: "jasper-compiler-jdt-5.5.23"
     implementation name: "commons-logging-1.2"
     implementation name: "commons-digester-2.1"
     implementation name: "commons-collections-3.2.2"
     implementation name: "commons-beanutils-1.9.3"
-    implementation name: "custom-report-font-1.0.0"
     implementation name: "itext-4.2.1"
+
+    // Barbecue barcode generator
     implementation name: "barbecue-1.5-beta1"
-    testImplementation name: "junit-4.12"
+
+    // JUnit
+    testImplementation name : "junit-platform-commons-1.2.0"
+    testImplementation name : "junit-platform-console-1.2.0"
+    testImplementation name : "junit-platform-console-standalone-1.2.0"
+    testImplementation name : "junit-platform-engine-1.2.0"
+    testImplementation name : "junit-platform-gradle-plugin-1.2.0"
+    testImplementation name : "junit-platform-launcher-1.2.0"
+    testImplementation name : "junit-platform-runner-1.2.0"
+    testImplementation name : "junit-platform-suite-api-1.2.0"
+    testImplementation name : "junit-platform-surefire-provider-1.2.0"
+    testImplementation name : "junit-jupiter-api-5.2.0"
+    testImplementation name : "junit-jupiter-engine-5.2.0"
+    testImplementation name : "junit-jupiter-params-5.2.0"
+    testImplementation name : "junit-jupiter-migrationsupport-5.2.0"
+    testImplementation name : "junit-vintage-engine-5.2.0"
+    testImplementation name : "apiguardian-api-1.0.0"
+    testImplementation name : "opentest4j-1.1.0"
 }
 
 processResources {
@@ -137,7 +165,7 @@ task packageWebStart(group: 'web-start') {
         }
 
         // compress the jars
-        fileTree(dir: 'build/web-start/classpath-jars', include: '**/*.jar', excludes: ['bw-client-*.jar', 'controlsfx-8.40.14.jar', 'tomcat-*.jar']).visit { FileVisitDetails details ->
+        fileTree(dir: 'build/web-start/classpath-jars', include: '**/*.jar', excludes: ['bw-client-*.jar', 'controlsfx-*.jar']).visit { FileVisitDetails details ->
             String fileName = details.file.name
             exec {
                 workingDir 'build/web-start/classpath-jars'
@@ -146,7 +174,7 @@ task packageWebStart(group: 'web-start') {
         }
 
         // delete the un-compressed jars
-        fileTree(dir: 'build/web-start/classpath-jars', include: '**/*.jar', excludes: ['bw-client-*.jar', 'controlsfx-8.40.14.jar', 'tomcat-*.jar']).visit { FileVisitDetails details ->
+        fileTree(dir: 'build/web-start/classpath-jars', include: '**/*.jar', excludes: ['bw-client-*.jar', 'controlsfx-*.jar']).visit { FileVisitDetails details ->
             details.file.delete()
         }
 

@@ -249,8 +249,7 @@ public class WebserviceManager
 				scheduledRefreshTokenFuture = Context.getScheduledExecutorService().schedule(() ->
 				{
 				    IdentityAPI identityAPI = Context.getWebserviceManager().getApi(IdentityAPI.class);
-				    String url = System.getProperty("jnlp.bio.bw.service.refreshToken");
-				    Call<RefreshTokenBean> apiCall = identityAPI.refreshToken(url, userToken);
+				    Call<RefreshTokenBean> apiCall = identityAPI.refreshToken(userToken);
 					ServiceResponse<RefreshTokenBean> response = Context.getWebserviceManager().executeApi(apiCall);
 				
 				    if(response.isSuccess())

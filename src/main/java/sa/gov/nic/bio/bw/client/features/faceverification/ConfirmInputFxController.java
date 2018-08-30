@@ -103,7 +103,7 @@ public class ConfirmInputFxController extends WizardStepFxControllerBase
 				}
 				catch(Exception e)
 				{
-					String errorCode = SearchByFaceImageErrorCodes.C005_00001.getCode();
+					String errorCode = SearchByFaceImageErrorCodes.C005_00005.getCode();
 					String[] errorDetails = {"Failed to convert image to Base64-encoded representation!"};
 					Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails);
 					btnMatch.setDisable(true);

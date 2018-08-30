@@ -12,6 +12,7 @@ import javafx.stage.Stage;
 import retrofit2.Call;
 import sa.gov.nic.bio.biokit.exceptions.JsonMappingException;
 import sa.gov.nic.bio.biokit.utils.JsonMapper;
+import sa.gov.nic.bio.biokit.websocket.UpdateListener;
 import sa.gov.nic.bio.biokit.websocket.WebsocketLogger;
 import sa.gov.nic.bio.biokit.websocket.beans.Message;
 import sa.gov.nic.bio.bw.client.core.Context;
@@ -37,22 +38,17 @@ import sa.gov.nic.bio.bw.client.preloader.utils.StartupErrorCodes;
 
 import javax.websocket.CloseReason;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
-import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.MissingResourceException;
-import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -102,16 +98,13 @@ public class AppEntryPoint extends Application
     {
 	    LOGGER.entering(AppEntryPoint.class.getName(), "init()");
 	
-	    Executors.newSingleThreadScheduledExecutor(DAEMON_THREAD_FACTORY).scheduleAtFixedRate(System::gc,
-                                                                          0, 2, TimeUnit.SECONDS);
-	
 	    try
 	    {
 		    configManager.load();
 	    }
 	    catch(IOException e)
 	    {
-	    	String errorCode = StartupErrorCodes.C001_00004.getCode();
+	    	String errorCode = StartupErrorCodes.C001_00005.getCode();
 	    	String[] errorDetails = {"Failed to load the config file!"};
 		    notifyPreloader(PreloaderNotification.failure(e, errorCode, errorDetails));
 		    return;
@@ -121,71 +114,7 @@ public class AppEntryPoint extends Application
 	    String sRuntimeEnvironment = System.getProperty("jnlp.bio.runtime.environment", "LOCAL");
 	    
 	    RuntimeEnvironment runtimeEnvironment = RuntimeEnvironment.byName(sRuntimeEnvironment);
-	    
-	    if(runtimeEnvironment == RuntimeEnvironment.LOCAL)
-	    {
-		    serverUrl = AppConstants.DEV_SERVER_URL;
-	    	
-		    // populate the JNLP properties to the system properties
-		    InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream(
-				    "sa/gov/nic/bio/bw/client/core/config/jnlp.properties");
-		    InputStreamReader isr = new InputStreamReader(is, StandardCharsets.UTF_8);
-		    Properties properties = new Properties();
-		    try
-		    {
-			    properties.load(isr);
-			    isr.close();
-			    LOGGER.info("Populate jnlp.properties to System properties.");
-			    for(Object key : Collections.list(properties.propertyNames()))
-			    {
-				    String sKey = (String) key;
-				    String value = properties.getProperty(sKey);
-				    LOGGER.info(sKey + " = " + value);
-				    System.setProperty(sKey, value);
-			    }
-		    }
-		    catch(IOException e1)
-		    {
-			    LOGGER.log(Level.SEVERE, "Failed to load the file jnlp.properties!", e1);
-		    }
-	    }
-	    
-	    String sReadTimeoutSeconds = System.getProperty("jnlp.bio.bw.webservice.readTimeoutSeconds");
-	    String sConnectTimeoutSeconds = System.getProperty("jnlp.bio.bw.webservice.connectTimeoutSeconds");
-	    
-	    // default values
-	    int readTimeoutSeconds = 60; // 1 minute
-	    int connectTimeoutSeconds = 60; // 1 minute
-	
-	    if(sReadTimeoutSeconds == null)
-	    {
-		    LOGGER.warning("sReadTimeoutSeconds is null! Default value is " + readTimeoutSeconds);
-	    }
-	    else try
-	    {
-		    readTimeoutSeconds = Integer.parseInt(sReadTimeoutSeconds);
-		    LOGGER.info("readTimeoutSeconds = " + readTimeoutSeconds);
-	    }
-	    catch(NumberFormatException e)
-	    {
-		    LOGGER.warning("Failed to parse sReadTimeoutSeconds as int! sReadTimeoutSeconds = " +
-				           sReadTimeoutSeconds);
-	    }
-	
-	    if(sConnectTimeoutSeconds == null)
-	    {
-		    LOGGER.warning("sConnectTimeoutSeconds is null! Default value is " + connectTimeoutSeconds);
-	    }
-	    else try
-	    {
-		    connectTimeoutSeconds = Integer.parseInt(sConnectTimeoutSeconds);
-		    LOGGER.info("connectTimeoutSeconds = " + connectTimeoutSeconds);
-	    }
-	    catch(NumberFormatException e)
-	    {
-		    LOGGER.warning("Failed to parse sConnectTimeoutSeconds as int! sConnectTimeoutSeconds = " +
-				           sConnectTimeoutSeconds);
-	    }
+	    GuiLanguage guiLanguage = Context.getGuiLanguage();
 	
 	    List<String> errorBundleNames;
 	
@@ -197,17 +126,16 @@ public class AppEntryPoint extends Application
 	    }
 	    catch(Exception e)
 	    {
-		    String errorCode = StartupErrorCodes.C001_00005.getCode();
+		    String errorCode = StartupErrorCodes.C001_00006.getCode();
 		    String[] errorDetails = {"Failed to load the error bundles!"};
 		    notifyPreloader(PreloaderNotification.failure(e, errorCode, errorDetails));
 		    return;
 	    }
 	
-	    GuiLanguage guiLanguage = Context.getGuiLanguage();
-	    ResourceBundle errorsBundle = new CombinedResourceBundle(errorBundleNames, guiLanguage.getLocale(),
-	                                                             new UTF8Control());
-	    ((CombinedResourceBundle) errorsBundle).load();
-	    
+	    CombinedResourceBundle errorsBundle = new CombinedResourceBundle(errorBundleNames, guiLanguage.getLocale(),
+	                                                                     new UTF8Control());
+	    errorsBundle.load();
+	
 	    try
 	    {
 		    stringsBundle = ResourceBundle.getBundle(CoreFxController.RB_LABELS_FILE, guiLanguage.getLocale(),
@@ -215,7 +143,7 @@ public class AppEntryPoint extends Application
 	    }
 	    catch(MissingResourceException e)
 	    {
-		    String errorCode = StartupErrorCodes.C001_00006.getCode();
+		    String errorCode = StartupErrorCodes.C001_00007.getCode();
 		    String[] errorDetails = {"Core \"stringsBundle\" resource bundle is missing!"};
 		    notifyPreloader(PreloaderNotification.failure(e, errorCode, errorDetails));
 		    return;
@@ -224,11 +152,11 @@ public class AppEntryPoint extends Application
 	    try
 	    {
 		    appIcon = new Image(Thread.currentThread().getContextClassLoader().getResourceAsStream(
-		    		CoreFxController.APP_ICON_FILE));
+				    CoreFxController.APP_ICON_FILE));
 	    }
 	    catch(Exception e)
 	    {
-		    String errorCode = StartupErrorCodes.C001_00007.getCode();
+		    String errorCode = StartupErrorCodes.C001_00008.getCode();
 		    String[] errorDetails = {"Failed to load the app icon!"};
 		    notifyPreloader(PreloaderNotification.failure(e, errorCode, errorDetails));
 		    return;
@@ -237,14 +165,14 @@ public class AppEntryPoint extends Application
 	    URL fxmlUrl = Thread.currentThread().getContextClassLoader().getResource(CoreFxController.FXML_FILE);
 	    if(fxmlUrl == null)
 	    {
-		    String errorCode = StartupErrorCodes.C001_00008.getCode();
+		    String errorCode = StartupErrorCodes.C001_00009.getCode();
 		    String[] errorDetails = {"Core \"fxmlUrl\" is null!"};
 		    notifyPreloader(PreloaderNotification.failure(null, errorCode, errorDetails));
 		    return;
 	    }
 	
 	    String[] urls = configManager.getProperty("dev.webservice.urls").split("[,\\s]+");
-	    
+	
 	    if(runtimeEnvironment == RuntimeEnvironment.LOCAL || runtimeEnvironment == RuntimeEnvironment.DEV)
 	    {
 		    CountDownLatch latch = new CountDownLatch(1);
@@ -257,8 +185,8 @@ public class AppEntryPoint extends Application
 			    String buttonText = stringsBundle.getString("dialog.choice.selectServer.button");
 			
 			    reference.set(DialogUtils.showChoiceDialog(null, null, dialogTitle,
-			                                  headerText, urls, buttonText, true,
-			                                  guiLanguage.getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT));
+			                               headerText, urls, buttonText, true,
+                                           guiLanguage.getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT));
 			    latch.countDown();
 		    });
 		
@@ -276,7 +204,7 @@ public class AppEntryPoint extends Application
 	
 	    if(serverUrl == null)
 	    {
-		    String errorCode = StartupErrorCodes.C001_00009.getCode();
+		    String errorCode = StartupErrorCodes.C001_00010.getCode();
 		    String[] errorDetails = {"\"serverUrl\" is null!"};
 		    notifyPreloader(PreloaderNotification.failure(null, errorCode, errorDetails));
 		    return;
@@ -284,24 +212,81 @@ public class AppEntryPoint extends Application
 	
 	    LOGGER.info("serverUrl = " + serverUrl);
 	
+	    // default values
+	    int readTimeoutSeconds = 60; // 1 minute
+	    int connectTimeoutSeconds = 60; // 1 minute
+	
+	    String sReadTimeoutSeconds = configManager.getProperty("webservice.readTimeoutSeconds");
+	    String sConnectTimeoutSeconds = configManager.getProperty("webservice.connectTimeoutSeconds");
+	    
+	    if(sReadTimeoutSeconds == null)
+	    {
+		    LOGGER.warning("sReadTimeoutSeconds is null! Default value is " + readTimeoutSeconds);
+	    }
+	    else try
+	    {
+		    readTimeoutSeconds = Integer.parseInt(sReadTimeoutSeconds);
+		    LOGGER.info("readTimeoutSeconds = " + readTimeoutSeconds);
+	    }
+	    catch(NumberFormatException e)
+	    {
+		    LOGGER.warning("Failed to parse sReadTimeoutSeconds as int! sReadTimeoutSeconds = " +
+				                   sReadTimeoutSeconds);
+	    }
+	
+	    if(sConnectTimeoutSeconds == null)
+	    {
+		    LOGGER.warning("sConnectTimeoutSeconds is null! Default value is " + connectTimeoutSeconds);
+	    }
+	    else try
+	    {
+		    connectTimeoutSeconds = Integer.parseInt(sConnectTimeoutSeconds);
+		    LOGGER.info("connectTimeoutSeconds = " + connectTimeoutSeconds);
+	    }
+	    catch(NumberFormatException e)
+	    {
+		    LOGGER.warning("Failed to parse sConnectTimeoutSeconds as int! sConnectTimeoutSeconds = " +
+				                   sConnectTimeoutSeconds);
+	    }
+	
 	    try
 	    {
 		    webserviceManager.init(serverUrl, readTimeoutSeconds, connectTimeoutSeconds);
 	    }
 	    catch(Exception e)
 	    {
-		    String errorCode = StartupErrorCodes.C001_00019.getCode();
+		    String errorCode = StartupErrorCodes.C001_00011.getCode();
 		    String[] errorDetails = {"Failed to initialize the webservice manager!"};
 		    notifyPreloader(PreloaderNotification.failure(e, errorCode, errorDetails));
 		    return;
 	    }
 	
-	    String sResponseTimeoutSeconds = System.getProperty("jnlp.bio.bw.biokit.responseTimeoutSeconds");
+	    LookupAPI lookupAPI = webserviceManager.getApi(LookupAPI.class);
+	    Call<Map<String, String>> apiCall = lookupAPI.lookupAppConfigs("BW");
+	    ServiceResponse<Map<String, String>> webServiceResponse = webserviceManager.executeApi(apiCall);
+	
+	    if(webServiceResponse.isSuccess())
+	    {
+		    Map<String, String> appConfigs = webServiceResponse.getResult();
+		    configManager.addProperties(appConfigs);
+	    }
+	    else
+	    {
+		    String errorCode = webServiceResponse.getErrorCode();
+		    String[] errorDetails = webServiceResponse.getErrorDetails();
+		    Exception exception = webServiceResponse.getException();
+		    notifyPreloader(PreloaderNotification.failure(exception, errorCode, errorDetails));
+		    return;
+	    }
+	
+	    
+	
+	    String sResponseTimeoutSeconds = configManager.getProperty("biokit.responseTimeoutSeconds");
 	
 	    String sMaxTextMessageBufferSizeInBytes =
-			                                System.getProperty("jnlp.bio.bw.biokit.maxTextMessageBufferSizeInBytes");
+			    configManager.getProperty("biokit.maxTextMessageBufferSizeInBytes");
 	    String sMaxBinaryMessageBufferSizeInBytes =
-			                                System.getProperty("jnlp.bio.bw.biokit.maxBinaryMessageBufferSizeInBytes");
+			    configManager.getProperty("biokit.maxBinaryMessageBufferSizeInBytes");
 	    
 	    // default values
 	    int maxTextMessageBufferSizeInBytes = 60; // 10 MB
@@ -356,13 +341,13 @@ public class AppEntryPoint extends Application
 				                                                                            + sResponseTimeoutSeconds);
 	    }
 	
-	    String biokitWebsocketUrl = System.getProperty("jnlp.bio.bw.biokit.serverUrl");
-	    String sBiokitWebsocketPort = System.getProperty("jnlp.bio.bw.biokit.port");
-	    String biokitBclId = System.getProperty("jnlp.bio.bw.biokit.bclId");
+	    String biokitWebsocketUrl = configManager.getProperty("biokit.serverUrl");
+	    String sBiokitWebsocketPort = configManager.getProperty("biokit.port");
+	    String biokitBclId = configManager.getProperty("biokit.bclId");
 	
 	    if(biokitWebsocketUrl == null)
 	    {
-		    String errorCode = StartupErrorCodes.C001_00015.getCode();
+		    String errorCode = StartupErrorCodes.C001_00012.getCode();
 		    String[] errorDetails = {"\"biokitWebsocketUrl\" is null!"};
 		    notifyPreloader(PreloaderNotification.failure(null, errorCode, errorDetails));
 		    return;
@@ -370,7 +355,7 @@ public class AppEntryPoint extends Application
 	
 	    if(sBiokitWebsocketPort == null)
 	    {
-		    String errorCode = StartupErrorCodes.C001_00016.getCode();
+		    String errorCode = StartupErrorCodes.C001_00013.getCode();
 		    String[] errorDetails = {"\"sBiokitWebsocketPort\" is null!"};
 		    notifyPreloader(PreloaderNotification.failure(null, errorCode, errorDetails));
 		    return;
@@ -382,7 +367,7 @@ public class AppEntryPoint extends Application
 	    }
 	    catch(NumberFormatException e)
 	    {
-		    String errorCode = StartupErrorCodes.C001_00017.getCode();
+		    String errorCode = StartupErrorCodes.C001_00014.getCode();
 		    String[] errorDetails = {"\"sBiokitWebsocketPort\" is not int!"};
 		    notifyPreloader(PreloaderNotification.failure(e, errorCode, errorDetails));
 		    return;
@@ -390,7 +375,7 @@ public class AppEntryPoint extends Application
 	
 	    if(biokitBclId == null)
 	    {
-		    String errorCode = StartupErrorCodes.C001_00018.getCode();
+		    String errorCode = StartupErrorCodes.C001_00015.getCode();
 		    String[] errorDetails = {"\"biokitBclId\" is null!"};
 		    notifyPreloader(PreloaderNotification.failure(null, errorCode, errorDetails));
 		    return;
@@ -425,55 +410,59 @@ public class AppEntryPoint extends Application
 		    }
 	    };
 	
-	    BioKitManager bioKitManager = new BioKitManager(biokitBclId, biokitWebsocketPort, biokitWebsocketUrl,
-	                                                    maxTextMessageBufferSizeInBytes,
-	                                                    maxBinaryMessageBufferSizeInBytes,
-	                                                    responseTimeoutSeconds, jsonMapper, null,
-	                                                    new WebsocketLogger()
+	    WebsocketLogger biokitWebsocketLogger = new WebsocketLogger()
 	    {
 		    @Override
 		    public void logConnectionOpening()
 		    {
-			
+			    LOGGER.info("A new connection to BioKit is established.");
 		    }
 		
 		    @Override
 		    public void logConnectionClosure(CloseReason closeReason)
 		    {
-			
+		    	String sCloseReason = null;
+		    	if(closeReason != null) sCloseReason = "closeCode = " + closeReason.getCloseCode() +
+					                                            " - reasonPhrase = " + closeReason.getReasonPhrase();
+		    	
+			    LOGGER.info("The connection to BioKit is closed, closeReason = " + sCloseReason);
 		    }
 		
 		    @Override
 		    public void logError(Throwable throwable)
 		    {
-			
+			    LOGGER.log(Level.SEVERE, "An error occurs with connection to BioKit!", throwable);
 		    }
 		
 		    @Override
 		    public void logNewMessage(Message message)
 		    {
-		    	LOGGER.fine(message.toShortString());
+			    LOGGER.fine(message.toShortString());
 		    }
-	    }, null);
+	    };
+	
+	    UpdateListener biokitUpdateListener = () -> LOGGER.info("New update for BioKit is available!");
+	
+	    BioKitManager bioKitManager = new BioKitManager(biokitBclId, biokitWebsocketPort, biokitWebsocketUrl,
+                            maxTextMessageBufferSizeInBytes, maxBinaryMessageBufferSizeInBytes, responseTimeoutSeconds,
+                            jsonMapper, null, biokitWebsocketLogger, biokitUpdateListener);
 	
 	    Context.attach(runtimeEnvironment, configManager, workflowManager, webserviceManager, bioKitManager,
 	                   executorService, scheduledExecutorService, errorsBundle, new UserSession(), serverUrl);
 	
-	    LookupAPI lookupAPI = webserviceManager.getApi(LookupAPI.class);
-	    String url = System.getProperty("jnlp.bio.bw.service.lookupNicHijriCalendarData");
-	    Call<NicHijriCalendarData> apiCall = lookupAPI.lookupNicHijriCalendarData(url);
-	    ServiceResponse<NicHijriCalendarData> webServiceResponse = webserviceManager.executeApi(apiCall);
+	    Call<NicHijriCalendarData> apiCall2 = lookupAPI.lookupNicHijriCalendarData();
+	    ServiceResponse<NicHijriCalendarData> webServiceResponse2 = webserviceManager.executeApi(apiCall2);
 	
-	    if(webServiceResponse.isSuccess())
+	    if(webServiceResponse2.isSuccess())
 	    {
-		    NicHijriCalendarData nicHijriCalendarData = webServiceResponse.getResult();
+		    NicHijriCalendarData nicHijriCalendarData = webServiceResponse2.getResult();
 		    try
 		    {
 			    AppUtils.injectNicHijriCalendarData(nicHijriCalendarData);
 		    }
 		    catch(Exception e)
 		    {
-			    String errorCode = StartupErrorCodes.C001_00010.getCode();
+			    String errorCode = StartupErrorCodes.C001_00016.getCode();
 			    String[] errorDetails = {"Failed to inject NicHijriCalendarData!"};
 			    notifyPreloader(PreloaderNotification.failure(e, errorCode, errorDetails));
 			    return;
@@ -481,9 +470,9 @@ public class AppEntryPoint extends Application
 	    }
 	    else
 	    {
-		    Exception exception = webServiceResponse.getException();
-		    String errorCode = webServiceResponse.getErrorCode();
-		    String[] errorDetails = webServiceResponse.getErrorDetails();
+		    Exception exception = webServiceResponse2.getException();
+		    String errorCode = webServiceResponse2.getErrorCode();
+		    String[] errorDetails = webServiceResponse2.getErrorDetails();
 		    notifyPreloader(PreloaderNotification.failure(exception, errorCode, errorDetails));
 		    return;
 	    }
@@ -492,7 +481,7 @@ public class AppEntryPoint extends Application
 	
 	    if(version == null)
 	    {
-		    String errorCode = StartupErrorCodes.C001_00011.getCode();
+		    String errorCode = StartupErrorCodes.C001_00017.getCode();
 		    String[] errorDetails = {"Config \"app.version\" is missing!"};
 		    notifyPreloader(PreloaderNotification.failure(null, errorCode, errorDetails));
 		    return;
@@ -510,7 +499,7 @@ public class AppEntryPoint extends Application
 	    }
 	    catch(MissingResourceException e)
 	    {
-		    String errorCode = StartupErrorCodes.C001_00012.getCode();
+		    String errorCode = StartupErrorCodes.C001_00018.getCode();
 		    String[] errorDetails = {"Label text \"window.title\" is missing!"};
 		    notifyPreloader(PreloaderNotification.failure(e, errorCode, errorDetails));
 		    return;
@@ -527,7 +516,7 @@ public class AppEntryPoint extends Application
 	    }
 	    catch(IOException e)
 	    {
-		    String errorCode = StartupErrorCodes.C001_00013.getCode();
+		    String errorCode = StartupErrorCodes.C001_00019.getCode();
 		    String[] errorDetails = {"Failed to load the core FXML correctly!"};
 		    notifyPreloader(PreloaderNotification.failure(e, errorCode, errorDetails));
 		    return;

@@ -17,14 +17,13 @@ public class FingerprintInquiryService
 	{
 		FingerprintInquiryAPI fingerprintInquiryAPI =
 												Context.getWebserviceManager().getApi(FingerprintInquiryAPI.class);
-		String url = System.getProperty("jnlp.bio.bw.service.inquireWithFingerprints");
 		
 		String a = new Gson().toJson(collectedFingerprints,
 		                                            TypeToken.getParameterized(List.class, Finger.class).getType());
 		String b = new Gson().toJson(missingFingerprints,
 		                                            TypeToken.getParameterized(List.class, Integer.class).getType());
 		
-		Call<Integer> apiCall = fingerprintInquiryAPI.inquireWithFingerprints(url, a, b);
+		Call<Integer> apiCall = fingerprintInquiryAPI.inquireWithFingerprints(a, b);
 		return Context.getWebserviceManager().executeApi(apiCall);
 	}
 }

@@ -70,9 +70,8 @@ public class LoginService
 		LOGGER.fine("username = " + username);
 		LOGGER.fine("password = " + password);
 		
-		String url = System.getProperty("jnlp.bio.bw.service.lookupMenusRoles");
 		LookupAPI lookupAPI = Context.getWebserviceManager().getApi(LookupAPI.class);
-		Call<Map<String, Set<String>>> menusRolesCall = lookupAPI.lookupMenuRoles(url, "BW");
+		Call<Map<String, Set<String>>> menusRolesCall = lookupAPI.lookupMenuRoles("BW");
 		ServiceResponse<Map<String, Set<String>>> menusRolesResponse = Context.getWebserviceManager()
 																			  .executeApi(menusRolesCall);
 		
@@ -90,13 +89,11 @@ public class LoginService
 		
 		if(password != null)
 		{
-			url = System.getProperty("jnlp.bio.bw.service.login");
-			apiCall = identityAPI.login(url, username, password, "BW", "U"); // U = User?
+			apiCall = identityAPI.login(username, password, "BW", "U"); // U = User?
 		}
 		else
 		{
-			url = System.getProperty("jnlp.bio.bw.service.loginByFingerprint");
-			apiCall = identityAPI.loginByFingerprint(url, username, fingerPosition, fingerprint, "BW");
+			apiCall = identityAPI.loginByFingerprint(username, fingerPosition, fingerprint, "BW");
 		}
 		
 		ServiceResponse<LoginBean> response = Context.getWebserviceManager().executeApi(apiCall);

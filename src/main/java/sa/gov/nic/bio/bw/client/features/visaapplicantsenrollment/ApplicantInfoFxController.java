@@ -338,7 +338,8 @@ public class ApplicantInfoFxController extends WizardStepFxControllerBase
 			}
 			else
 			{
-				boolean devicesRunnerAutoRun = "true".equals(System.getProperty("jnlp.bio.bw.devicesRunner.autoRun"));
+				boolean devicesRunnerAutoRun = "true".equals(
+													Context.getConfigManager().getProperty("devicesRunner.autoRun"));
 				
 				if(devicesRunnerAutoRun) deviceManagerGadgetPaneController.runAndConnectDevicesRunner();
 			}

@@ -2,6 +2,8 @@ package sa.gov.nic.bio.bw.client.features.searchbyfaceimage;
 
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
+import javafx.concurrent.Task;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -14,6 +16,7 @@ import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.wizard.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.client.features.searchbyfaceimage.utils.SearchByFaceImageErrorCodes;
 
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.net.URL;
 import java.nio.file.Files;
@@ -118,7 +121,8 @@ public class UploadImageFileFxController extends WizardStepFxControllerBase
 			{
 				long fileSizeBytes = Files.size(selectedFile.toPath());
 				double fileSizeKB = fileSizeBytes / 1024.0;
-				String maxFileSizeKbProperty = System.getProperty("jnlp.bio.bw.config.uploadFaceImage.fileMaxSizeKB");
+				String maxFileSizeKbProperty =
+										Context.getConfigManager().getProperty("config.uploadFaceImage.fileMaxSizeKB");
 				
 				double maxFileSizeKb = Double.parseDouble(maxFileSizeKbProperty);
 				if(fileSizeKB > maxFileSizeKb)
@@ -137,24 +141,52 @@ public class UploadImageFileFxController extends WizardStepFxControllerBase
 				Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails);
 			}
 			
-			try
+			Image image = new Image("file:///" + selectedFile.getAbsolutePath());
+			
+			Task<BufferedImage> task = new Task<BufferedImage>()
 			{
-				Image image = new Image("file:///" + selectedFile.getAbsolutePath());
-				ivUploadedImage.setImage(image);
-				imageSelected = true;
-				btnNext.setDisable(false);
-				btnSelectImage.setText(resources.getString("button.selectNewImage"));
-				
-				GuiUtils.attachImageDialog(Context.getCoreFxController(), ivUploadedImage,
-				                           resources.getString("label.uploadedImage"),
-				                           resources.getString("label.contextMenu.showImage"), false);
-			}
-			catch(Exception e)
+				@Override
+				protected BufferedImage call()
+				{
+					return SwingFXUtils.fromFXImage(image, null); // test if the file is really an image
+				}
+			};
+			task.setOnSucceeded(event ->
 			{
-				String errorCode = SearchByFaceImageErrorCodes.C005_00003.getCode();
-				String[] errorDetails = {"Failed to load the image (" + selectedFile.getAbsolutePath() + ")!"};
-				Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails);
-			}
+				try
+				{
+					BufferedImage value = task.getValue();
+					
+					if(value != null)
+					{
+						ivUploadedImage.setImage(image);
+						imageSelected = true;
+						btnNext.setDisable(false);
+						btnSelectImage.setText(resources.getString("button.selectNewImage"));
+						
+						GuiUtils.attachImageDialog(Context.getCoreFxController(), ivUploadedImage,
+						                           resources.getString("label.uploadedImage"),
+						                           resources.getString("label.contextMenu.showImage"), false);
+					}
+					else showWarningNotification(resources.getString(
+														"selectNewFaceImage.fileChooser.notImageFile"));
+				}
+				catch(Exception e)
+				{
+					String errorCode = SearchByFaceImageErrorCodes.C005_00003.getCode();
+					String[] errorDetails = {"Failed to load the image (" + selectedFile.getAbsolutePath() + ")!"};
+					Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails);
+				}
+			});
+			task.setOnFailed(event ->
+			{
+				String errorCode = SearchByFaceImageErrorCodes.C005_00004.getCode();
+				String[] errorDetails = {"Failed to convert the selected file into an image (" +
+																				selectedFile.getAbsolutePath() + ")!"};
+				Context.getCoreFxController().showErrorDialog(errorCode, task.getException(), errorDetails);
+			});
+			
+			Context.getExecutorService().execute(task);
 		}
 	}
 }

@@ -12,6 +12,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.controlsfx.control.NotificationPane;
+import sa.gov.nic.bio.bw.client.core.Context;
 
 import java.util.function.Consumer;
 import java.util.logging.Logger;
@@ -39,8 +40,8 @@ public class IdleMonitor
 	public IdleMonitor(Consumer<Integer> onShowingIdleWarning, Runnable onIdle, Runnable onIdleInterrupt,
 	                   Consumer<Integer> onTick, Node warningNode)
 	{
-		String sIdleWarningBeforeSeconds = System.getProperty("jnlp.bio.bw.idle.warning.before.seconds");
-		String sIdleWarningAfterSeconds = System.getProperty("jnlp.bio.bw.idle.warning.after.seconds");
+		String sIdleWarningBeforeSeconds = Context.getConfigManager().getProperty("idle.warning.before.seconds");
+		String sIdleWarningAfterSeconds = Context.getConfigManager().getProperty("idle.warning.after.seconds");
 		
 		int idleWarningBeforeSeconds = 480; // default: 8 minutes
 		int idleWarningAfterSeconds = 120; // default: 2 minutes

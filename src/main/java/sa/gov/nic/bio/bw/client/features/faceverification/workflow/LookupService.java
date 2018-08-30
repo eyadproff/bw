@@ -23,9 +23,8 @@ public class LookupService
 		
 		if(countries == null)
 		{
-			String url = System.getProperty("jnlp.bio.bw.service.lookupNationalities");
 			LookupAPI lookupAPI = Context.getWebserviceManager().getApi(LookupAPI.class);
-			Call<List<CountryBean>> nationalitiesCall = lookupAPI.lookupNationalities(url);
+			Call<List<CountryBean>> nationalitiesCall = lookupAPI.lookupNationalities();
 			ServiceResponse<List<CountryBean>> nationalitiesResponse = Context.getWebserviceManager()
 																				  .executeApi(nationalitiesCall);
 			

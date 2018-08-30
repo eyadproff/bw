@@ -370,8 +370,8 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 				
 				for(int i = 10; i >= 1; i--)
 				{
-					String skipNRole = System.getProperty(String.format(AppConstants.Locales.SAUDI_EN_LOCALE,
-	                                                    "jnlp.bio.bw.fingerprint.roles.skip%02d", i));
+					String skipNRole = Context.getConfigManager().getProperty(
+						String.format(AppConstants.Locales.SAUDI_EN_LOCALE, "fingerprint.roles.skip%02d", i));
 					if(userRoles.contains(skipNRole))
 					{
 						userSkipAbility = i;
@@ -593,7 +593,8 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 			// register a listener to the event of the devices-runner being running or not
 			deviceManagerGadgetPaneController.setDevicesRunnerRunningListener(running ->
 			{
-				boolean autoInitialize = "true".equals(System.getProperty("jnlp.bio.bw.fingerprint.autoInitialize"));
+				boolean autoInitialize = "true".equals(
+												Context.getConfigManager().getProperty("fingerprint.autoInitialize"));
 				
 				if(running && autoInitialize &&
 						!deviceManagerGadgetPaneController.isFingerprintScannerInitialized(FingerprintDeviceType.SLAP))
@@ -649,7 +650,7 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 			else if(deviceManagerGadgetPaneController.isDevicesRunnerRunning())
 			{
 				boolean autoInitialize = "true".equals(
-						System.getProperty("jnlp.bio.bw.fingerprint.autoInitialize"));
+												Context.getConfigManager().getProperty("fingerprint.autoInitialize"));
 				
 				if(autoInitialize)
 				{
@@ -663,7 +664,8 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 			}
 			else
 			{
-				boolean devicesRunnerAutoRun = "true".equals(System.getProperty("jnlp.bio.bw.devicesRunner.autoRun"));
+				boolean devicesRunnerAutoRun = "true".equals(
+													Context.getConfigManager().getProperty("devicesRunner.autoRun"));
 				GuiUtils.showNode(lblStatus, true);
 				lblStatus.setText(resources.getString("label.status.fingerprintScannerNotInitialized"));
 				
@@ -1471,7 +1473,7 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 		// check if the user has the permission to accept wrong slap
 		@SuppressWarnings("unchecked")
 		List<String> userRoles = (List<String>) Context.getUserSession().getAttribute("userRoles");
-		String acceptWrongHandRole = System.getProperty("jnlp.bio.bw.fingerprint.roles.acceptWrongHand");
+		String acceptWrongHandRole = Context.getConfigManager().getProperty("fingerprint.roles.acceptWrongHand");
 		boolean authorized = userRoles.contains(acceptWrongHandRole);
 		
 		if(authorized)

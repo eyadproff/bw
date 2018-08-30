@@ -118,7 +118,7 @@ public class GuiUtils
 				LOGGER.info("The main window is closed");
 				
 				Future<?> future = Context.getExecutorService().submit(new LogoutTask());
-				int timeout = Integer.parseInt(System.getProperty("jnlp.bio.bw.onExit.logout.timeout.seconds"));
+				int timeout = Integer.parseInt(Context.getConfigManager().getProperty("onExit.logout.timeout.seconds"));
 				try
 				{
 					future.get(timeout, TimeUnit.SECONDS);
@@ -148,9 +148,19 @@ public class GuiUtils
 	{
 		textField.textProperty().addListener((observable, oldValue, newValue) ->
 		{
-			if(newValue.length() > maxCharCount) textField.setText(oldValue);
+			int oldCaretPosition = textField.getCaretPosition();
+			
+			if(newValue.length() > maxCharCount)
+			{
+				textField.setText(oldValue);
+				textField.positionCaret(maxCharCount);
+			}
+			
 			if(validationRegex != null && discardRegex != null && !newValue.matches(validationRegex))
-												textField.setText(newValue.replaceAll(discardRegex, ""));
+						Platform.runLater(() -> {
+							textField.setText(newValue.replaceAll(discardRegex, ""));
+							textField.positionCaret(oldCaretPosition);
+						});
 		});
 	}
 	
@@ -333,10 +343,10 @@ public class GuiUtils
 			ImageView iv = new ImageView(imageView.getImage());
 			iv.setPreserveRatio(true);
 			
-			int radius = Integer.parseInt(System.getProperty("jnlp.bio.bw.image.blur.radius"));
+			int radius = Integer.parseInt(Context.getConfigManager().getProperty("image.blur.radius"));
 			@SuppressWarnings("unchecked")
 			List<String> userRoles = (List<String>) Context.getUserSession().getAttribute("userRoles");
-			String maleSeeFemaleRole = System.getProperty("jnlp.bio.bw.face.roles.maleSeeFemale");
+			String maleSeeFemaleRole = Context.getConfigManager().getProperty("face.roles.maleSeeFemale");
 			boolean authorized = userRoles.contains(maleSeeFemaleRole);
 			if(!authorized && blur) iv.setEffect(new GaussianBlur(radius));
 

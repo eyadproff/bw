@@ -12,10 +12,7 @@ public class FingerprintInquiryStatusCheckerService
 	{
 		FingerprintInquiryAPI fingerprintInquiryAPI =
 												Context.getWebserviceManager().getApi(FingerprintInquiryAPI.class);
-		String url = System.getProperty("jnlp.bio.bw.service.checkFingerprintsInquiryStatus");
-		
-		Call<FingerprintInquiryStatusResult> apiCall = fingerprintInquiryAPI.checkFingerprintsInquiryStatus(url,
-		                                                                                                    inquiryId);
+		Call<FingerprintInquiryStatusResult> apiCall = fingerprintInquiryAPI.checkFingerprintsInquiryStatus(inquiryId);
 		return Context.getWebserviceManager().executeApi(apiCall);
 	}
 }

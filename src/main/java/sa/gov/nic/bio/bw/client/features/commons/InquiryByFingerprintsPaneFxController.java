@@ -127,8 +127,8 @@ public class InquiryByFingerprintsPaneFxController extends WizardStepFxControlle
 				return;
 			}
 			
-			Boolean hit = (Boolean) uiInputData.get(KEY_FINGERPRINT_INQUIRY_HIT);
-			if(hit != null)
+			Boolean hitResult = (Boolean) uiInputData.get(KEY_FINGERPRINT_INQUIRY_HIT);
+			if(hitResult != null)
 			{
 				goNext();
 				return;
@@ -151,7 +151,7 @@ public class InquiryByFingerprintsPaneFxController extends WizardStepFxControlle
 				Context.getExecutorService().submit(() ->
 				{
 					int seconds = Integer.parseInt(
-						System.getProperty("jnlp.bio.bw.fingerprint.inquiry.checkEverySeconds"));
+									Context.getConfigManager().getProperty("fingerprint.inquiry.checkEverySeconds"));
 					
 					try
 					{
@@ -193,7 +193,8 @@ public class InquiryByFingerprintsPaneFxController extends WizardStepFxControlle
 			
 			@SuppressWarnings("unchecked")
 			ServiceResponse<Integer> serviceResponse = (ServiceResponse<Integer>)
-					uiInputData.get(Workflow.KEY_WEBSERVICE_RESPONSE);
+																	uiInputData.get(Workflow.KEY_WEBSERVICE_RESPONSE);
+			
 			if(serviceResponse.isSuccess())
 			{
 				if(serviceResponse.getResult() == null)

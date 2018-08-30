@@ -13,8 +13,7 @@ public class SearchByFaceImageService
 	public static ServiceResponse<List<Candidate>> execute(String imageBase64)
 	{
 		SearchByFaceImageAPI searchByFaceImageAPI = Context.getWebserviceManager().getApi(SearchByFaceImageAPI.class);
-		String url = System.getProperty("jnlp.bio.bw.service.searchByFaceImage");
-		Call<List<Candidate>> apiCall = searchByFaceImageAPI.searchByFaceImage(url, imageBase64);
+		Call<List<Candidate>> apiCall = searchByFaceImageAPI.searchByFaceImage(imageBase64);
 		return Context.getWebserviceManager().executeApi(apiCall);
 	}
 }
