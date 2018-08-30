@@ -1,5 +1,6 @@
 package sa.gov.nic.bio.bw.client.features.visaapplicantsenrollment.workflow;
 
+import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.interfaces.FormRenderer;
 import sa.gov.nic.bio.bw.client.core.workflow.Signal;
 import sa.gov.nic.bio.bw.client.core.workflow.WizardWorkflowBase;
@@ -54,10 +55,11 @@ public class VisaApplicantsEnrollmentWorkflow extends WizardWorkflowBase<Void, V
 			case 1:
 			{
 				boolean acceptBadQualityFingerprint = "true".equals(
-					System.getProperty("jnlp.bio.bw.visaApplicantsEnrollment.fingerprint.acceptBadQualityFingerprint"));
+						Context.getConfigManager().getProperty(
+												"visaApplicantsEnrollment.fingerprint.acceptBadQualityFingerprint"));
 				int acceptedBadQualityFingerprintMinRetries = Integer.parseInt(
-					System.getProperty(
-						"jnlp.bio.bw.visaApplicantsEnrollment.fingerprint.acceptedBadQualityFingerprintMinRetries"));
+						Context.getConfigManager().getProperty(
+									"visaApplicantsEnrollment.fingerprint.acceptedBadQualityFingerprintMinRetries"));
 				
 				uiInputData.put(FingerprintCapturingFxController.KEY_HIDE_FINGERPRINT_PREVIOUS_BUTTON, Boolean.FALSE);
 				uiInputData.put(FingerprintCapturingFxController.KEY_ACCEPT_BAD_QUALITY_FINGERPRINT,
@@ -73,9 +75,10 @@ public class VisaApplicantsEnrollmentWorkflow extends WizardWorkflowBase<Void, V
 			case 2:
 			{
 				boolean acceptBadQualityFace = "true".equals(
-								System.getProperty("jnlp.bio.bw.visaApplicantsEnrollment.face.acceptBadQualityFace"));
+						Context.getConfigManager().getProperty("visaApplicantsEnrollment.face.acceptBadQualityFace"));
 				int acceptedBadQualityFaceMinRetries = Integer.parseInt(
-					System.getProperty("jnlp.bio.bw.visaApplicantsEnrollment.face.acceptedBadQualityFaceMinRetries"));
+						Context.getConfigManager().getProperty(
+													"visaApplicantsEnrollment.face.acceptedBadQualityFaceMinRetries"));
 				
 				uiInputData.put(FaceCapturingFxController.KEY_ACCEPT_BAD_QUALITY_FACE, acceptBadQualityFace);
 				uiInputData.put(FaceCapturingFxController.KEY_ACCEPTED_BAD_QUALITY_FACE_MIN_RETIRES,

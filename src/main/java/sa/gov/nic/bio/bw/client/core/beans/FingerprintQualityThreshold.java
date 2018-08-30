@@ -1,5 +1,6 @@
 package sa.gov.nic.bio.bw.client.core.beans;
 
+import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.biokit.FingerPosition;
 
 import java.io.Serializable;
@@ -27,14 +28,14 @@ public class FingerprintQualityThreshold implements Serializable
 	{
 		String sFingerPosition = fingerPosition.name().replace("_", ".").toLowerCase();
 		
-		this.maximumAcceptableNFIQ = Integer.parseInt(System.getProperty(
-									"jnlp.bio.bw.fingerprint." + sFingerPosition + ".maximumAcceptableValue.nfiq"));
-		this.minimumAcceptableMinutiaeCount = Integer.parseInt(System.getProperty(
-							"jnlp.bio.bw.fingerprint." + sFingerPosition + ".minimumAcceptableValue.minutiaeCount"));
-		this.minimumAcceptableImageIntensity = Integer.parseInt(System.getProperty(
-							"jnlp.bio.bw.fingerprint." + sFingerPosition + ".minimumAcceptableValue.imageIntensity"));
-		this.maximumAcceptableImageIntensity = Integer.parseInt(System.getProperty(
-							"jnlp.bio.bw.fingerprint." + sFingerPosition + ".maximumAcceptableValue.imageIntensity"));
+		this.maximumAcceptableNFIQ = Integer.parseInt(Context.getConfigManager().getProperty(
+									"fingerprint." + sFingerPosition + ".maximumAcceptableValue.nfiq"));
+		this.minimumAcceptableMinutiaeCount = Integer.parseInt(Context.getConfigManager().getProperty(
+									"fingerprint." + sFingerPosition + ".minimumAcceptableValue.minutiaeCount"));
+		this.minimumAcceptableImageIntensity = Integer.parseInt(Context.getConfigManager().getProperty(
+									"fingerprint." + sFingerPosition + ".minimumAcceptableValue.imageIntensity"));
+		this.maximumAcceptableImageIntensity = Integer.parseInt(Context.getConfigManager().getProperty(
+									"fingerprint." + sFingerPosition + ".maximumAcceptableValue.imageIntensity"));
 	}
 	
 	public int getMaximumAcceptableNFIQ(){return maximumAcceptableNFIQ;}

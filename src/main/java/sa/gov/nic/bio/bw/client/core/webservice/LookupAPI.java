@@ -14,4 +14,7 @@ public interface LookupAPI
 	
 	@GET("services-gateway-lookups/api/application/menu-roles/v1")
 	Call<Map<String, Set<String>>> lookupMenuRoles(@Query("app-code") String appCode);
+	
+	@GET("services-gateway-lookups/api/application/configs/v1")
+	Call<Map<String, String>> lookupAppConfigs(@Query("app-code") String appCode);
 }

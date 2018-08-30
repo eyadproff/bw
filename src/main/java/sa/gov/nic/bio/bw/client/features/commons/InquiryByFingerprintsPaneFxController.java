@@ -151,7 +151,7 @@ public class InquiryByFingerprintsPaneFxController extends WizardStepFxControlle
 				Context.getExecutorService().submit(() ->
 				{
 					int seconds = Integer.parseInt(
-						System.getProperty("jnlp.bio.bw.fingerprint.inquiry.checkEverySeconds"));
+									Context.getConfigManager().getProperty("fingerprint.inquiry.checkEverySeconds"));
 					
 					try
 					{

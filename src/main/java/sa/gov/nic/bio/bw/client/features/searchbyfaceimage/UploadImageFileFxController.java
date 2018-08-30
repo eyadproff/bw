@@ -121,7 +121,8 @@ public class UploadImageFileFxController extends WizardStepFxControllerBase
 			{
 				long fileSizeBytes = Files.size(selectedFile.toPath());
 				double fileSizeKB = fileSizeBytes / 1024.0;
-				String maxFileSizeKbProperty = System.getProperty("jnlp.bio.bw.config.uploadFaceImage.fileMaxSizeKB");
+				String maxFileSizeKbProperty =
+										Context.getConfigManager().getProperty("config.uploadFaceImage.fileMaxSizeKB");
 				
 				double maxFileSizeKb = Double.parseDouble(maxFileSizeKbProperty);
 				if(fileSizeKB > maxFileSizeKb)

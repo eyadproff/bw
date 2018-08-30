@@ -179,7 +179,7 @@ public class AppPreloader extends Preloader
 		
 		Thread.setDefaultUncaughtExceptionHandler((thread, throwable) ->
 		{
-		    String errorCode = StartupErrorCodes.C001_00014.getCode();
+		    String errorCode = StartupErrorCodes.C001_00001.getCode();
 		    String[] errorDetails = {"Uncaught exception!"};
 		    showErrorDialogAndExit(errorCode, throwable, errorDetails);
 		});
@@ -193,7 +193,7 @@ public class AppPreloader extends Preloader
 		}
 		catch(MissingResourceException e)
 		{
-			String errorCode = StartupErrorCodes.C001_00001.getCode();
+			String errorCode = StartupErrorCodes.C001_00002.getCode();
 			String[] errorDetails = {"Preloader \"stringsBundle\" resource bundle is missing!"};
 			
 			Platform.runLater(() ->
@@ -222,7 +222,7 @@ public class AppPreloader extends Preloader
 		fxmlUrl = Thread.currentThread().getContextClassLoader().getResource(FXML_FILE);
 		if(fxmlUrl == null)
 		{
-			String errorCode = StartupErrorCodes.C001_00002.getCode();
+			String errorCode = StartupErrorCodes.C001_00003.getCode();
 			String[] errorDetails = {"Preloader \"fxmlUrl\" is null!"};
 			
 			Platform.runLater(() ->
@@ -258,7 +258,7 @@ public class AppPreloader extends Preloader
 		}
 		catch(IOException e)
 		{
-			String errorCode = StartupErrorCodes.C001_00003.getCode();
+			String errorCode = StartupErrorCodes.C001_00004.getCode();
 			String[] errorDetails = {"Failed to load the splash screen FXML correctly!"};
 			showErrorDialogAndExit(errorCode, e, errorDetails);
 			return;

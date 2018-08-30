@@ -7,6 +7,7 @@
 - Upgrade gradle to 4.10.
 - Upgrade JUnit to 5.2.
 - Make webservice urls hardcoded into retrofit interfaces.
+- Migrate app configurations to the database.
 
 ## v2018.08.7
 
