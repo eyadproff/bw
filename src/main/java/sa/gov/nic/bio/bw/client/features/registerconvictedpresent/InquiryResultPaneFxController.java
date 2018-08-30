@@ -202,7 +202,10 @@ public class InquiryResultPaneFxController extends WizardStepFxControllerBase
 			lblBirthDate.setText(notAvailable);
 			lblBirthDate.setTextFill(Color.RED);
 
-			if(samisId != null) lblIdNumber.setText(String.valueOf(samisId));
+			if(samisId != null)
+			{
+				lblIdNumber.setText(AppUtils.replaceNumbersOnly(String.valueOf(samisId), Locale.getDefault()));
+			}
 			else
 			{
 				lblIdNumber.setText(notAvailable);
@@ -397,7 +400,7 @@ public class InquiryResultPaneFxController extends WizardStepFxControllerBase
 		String idNumber = identityInfo != null ? identityInfo.getIdNumber() : null;
 		if(idNumber != null && !idNumber.trim().isEmpty())
 		{
-			lblIdNumber.setText(AppUtils.replaceNumbersOnly(idNumber, Locale.getDefault()));
+			lblIdNumber.setText(idNumber);
 			personInfoMap.put(PersonInfoPaneFxController.KEY_PERSON_INFO_ID_NUMBER, idNumber);
 
 			@SuppressWarnings("unchecked") List<IdType> idTypes = (List<IdType>)
@@ -427,10 +430,15 @@ public class InquiryResultPaneFxController extends WizardStepFxControllerBase
 		}
 		else
 		{
-			if(samisId != null) lblIdNumber.setText(AppUtils.replaceNumbersOnly(String.valueOf(samisId), Locale.getDefault()));
-
-			lblIdNumber.setText(notAvailable);
-			lblIdNumber.setTextFill(Color.RED);
+			if(samisId != null)
+			{
+				lblIdNumber.setText(AppUtils.replaceNumbersOnly(String.valueOf(samisId), Locale.getDefault()));
+			}
+			else
+			{
+				lblIdNumber.setText(notAvailable);
+				lblIdNumber.setTextFill(Color.RED);
+			}
 		}
 		
 		Date idIssueDate = identityInfo != null ? identityInfo.getIdIssueDate() : null;

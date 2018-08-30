@@ -378,7 +378,7 @@ public class ShowRecordPaneFxController extends WizardStepFxControllerBase
 				String sIdNumber = identityInfo.getIdNumber();
 				if(sIdNumber != null && !sIdNumber.trim().isEmpty())
 				{
-					idNumber = AppUtils.replaceNumbersOnly(sIdNumber, Locale.getDefault());
+					idNumber = sIdNumber;
 					lblIdNumber.setText(idNumber);
 				}
 				

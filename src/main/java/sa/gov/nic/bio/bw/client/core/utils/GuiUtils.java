@@ -148,9 +148,19 @@ public class GuiUtils
 	{
 		textField.textProperty().addListener((observable, oldValue, newValue) ->
 		{
-			if(newValue.length() > maxCharCount) textField.setText(oldValue);
+			int oldCaretPosition = textField.getCaretPosition();
+			
+			if(newValue.length() > maxCharCount)
+			{
+				textField.setText(oldValue);
+				textField.positionCaret(maxCharCount);
+			}
+			
 			if(validationRegex != null && discardRegex != null && !newValue.matches(validationRegex))
-												textField.setText(newValue.replaceAll(discardRegex, ""));
+						Platform.runLater(() -> {
+							textField.setText(newValue.replaceAll(discardRegex, ""));
+							textField.positionCaret(oldCaretPosition);
+						});
 		});
 	}
 	

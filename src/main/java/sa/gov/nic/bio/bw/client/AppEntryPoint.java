@@ -12,6 +12,7 @@ import javafx.stage.Stage;
 import retrofit2.Call;
 import sa.gov.nic.bio.biokit.exceptions.JsonMappingException;
 import sa.gov.nic.bio.biokit.utils.JsonMapper;
+import sa.gov.nic.bio.biokit.websocket.UpdateListener;
 import sa.gov.nic.bio.biokit.websocket.WebsocketLogger;
 import sa.gov.nic.bio.biokit.websocket.beans.Message;
 import sa.gov.nic.bio.bw.client.core.Context;
@@ -52,7 +53,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -101,9 +101,6 @@ public class AppEntryPoint extends Application
     public void init()
     {
 	    LOGGER.entering(AppEntryPoint.class.getName(), "init()");
-	
-	    Executors.newSingleThreadScheduledExecutor(DAEMON_THREAD_FACTORY).scheduleAtFixedRate(System::gc,
-                                                                          0, 2, TimeUnit.SECONDS);
 	
 	    try
 	    {
@@ -425,36 +422,42 @@ public class AppEntryPoint extends Application
 		    }
 	    };
 	
-	    BioKitManager bioKitManager = new BioKitManager(biokitBclId, biokitWebsocketPort, biokitWebsocketUrl,
-	                                                    maxTextMessageBufferSizeInBytes,
-	                                                    maxBinaryMessageBufferSizeInBytes,
-	                                                    responseTimeoutSeconds, jsonMapper, null,
-	                                                    new WebsocketLogger()
+	    WebsocketLogger biokitWebsocketLogger = new WebsocketLogger()
 	    {
 		    @Override
 		    public void logConnectionOpening()
 		    {
-			
+			    LOGGER.info("A new connection to BioKit is established.");
 		    }
 		
 		    @Override
 		    public void logConnectionClosure(CloseReason closeReason)
 		    {
-			
+		    	String sCloseReason = null;
+		    	if(closeReason != null) sCloseReason = "closeCode = " + closeReason.getCloseCode() +
+					                                            " - reasonPhrase = " + closeReason.getReasonPhrase();
+		    	
+			    LOGGER.info("The connection to BioKit is closed, closeReason = " + sCloseReason);
 		    }
 		
 		    @Override
 		    public void logError(Throwable throwable)
 		    {
-			
+			    LOGGER.log(Level.SEVERE, "An error occurs with connection to BioKit!", throwable);
 		    }
 		
 		    @Override
 		    public void logNewMessage(Message message)
 		    {
-		    	LOGGER.fine(message.toShortString());
+			    LOGGER.fine(message.toShortString());
 		    }
-	    }, null);
+	    };
+	
+	    UpdateListener biokitUpdateListener = () -> LOGGER.info("New update for BioKit is available!");
+	
+	    BioKitManager bioKitManager = new BioKitManager(biokitBclId, biokitWebsocketPort, biokitWebsocketUrl,
+                            maxTextMessageBufferSizeInBytes, maxBinaryMessageBufferSizeInBytes, responseTimeoutSeconds,
+                            jsonMapper, null, biokitWebsocketLogger, biokitUpdateListener);
 	
 	    Context.attach(runtimeEnvironment, configManager, workflowManager, webserviceManager, bioKitManager,
 	                   executorService, scheduledExecutorService, errorsBundle, new UserSession(), serverUrl);

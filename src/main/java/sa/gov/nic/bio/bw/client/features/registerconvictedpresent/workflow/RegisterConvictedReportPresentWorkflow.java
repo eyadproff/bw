@@ -116,7 +116,7 @@ public class RegisterConvictedReportPresentWorkflow extends WizardWorkflowBase<V
 									uiInputData.get(FingerprintCapturingFxController.KEY_MISSING_FINGERPRINTS);
 				
 				ServiceResponse<Integer> serviceResponse =
-						FingerprintInquiryService.execute(collectedFingerprints, missingFingerprints);
+										FingerprintInquiryService.execute(collectedFingerprints, missingFingerprints);
 				Integer inquiryId = serviceResponse.getResult();
 				
 				if(serviceResponse.isSuccess() && inquiryId != null)
@@ -156,13 +156,11 @@ public class RegisterConvictedReportPresentWorkflow extends WizardWorkflowBase<V
 								long criminalHitBioId = result.getCrimnalHitBioId();
 								PersonInfo personInfo = result.getPersonInfo();
 
-								uiInputData.put(InquiryResultPaneFxController.KEY_INQUIRY_SAMIS_ID,
-												samisId);
+								uiInputData.put(InquiryResultPaneFxController.KEY_INQUIRY_SAMIS_ID, samisId);
 								if(criminalHitBioId > 0) uiInputData.put(
 													PersonInfoPaneFxController.KEY_PERSON_INFO_GENERAL_FILE_NUMBER,
 													criminalHitBioId);
-								uiInputData.put(InquiryResultPaneFxController.KEY_INQUIRY_HIT_RESULT,
-								                personInfo);
+								uiInputData.put(InquiryResultPaneFxController.KEY_INQUIRY_HIT_RESULT, personInfo);
 								formRenderer.get().renderForm(InquiryByFingerprintsPaneFxController.class, uiInputData);
 							}
 							else // report the error
