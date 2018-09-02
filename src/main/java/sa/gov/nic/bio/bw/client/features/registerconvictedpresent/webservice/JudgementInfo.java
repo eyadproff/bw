@@ -29,14 +29,14 @@ public class JudgementInfo
 	private boolean libel;
 	private List<CrimeCode> crimeCodes;
 	private String policeFileNum;
-	private long arrestDate;
+	private Long arrestDate;
 	
 	public JudgementInfo(String judgIssuer, long judgDate, String judgNum, int judgTazeerLashesCount,
 	                     int judgHadLashesCount, int judgFine, String judgOthers, int jailYearCount, int jailMonthCount,
 	                     int jailDayCount, int trvlBanDayCount, int trvlBanMonthCount, int trvlBanYearCount,
 	                     int deportDayCount, int deportMonthCount, int deportYearCount, int exileDayCount,
 	                     int exileMonthCount, int exileYearCount, boolean finalDeport, boolean covenant, boolean libel,
-	                     List<CrimeCode> crimeCodes, String policeFileNum, long arrestDate)
+	                     List<CrimeCode> crimeCodes, String policeFileNum, Long arrestDate)
 	{
 		this.judgIssuer = judgIssuer;
 		this.judgDate = judgDate;
@@ -137,8 +137,8 @@ public class JudgementInfo
 	public String getPoliceFileNum(){return policeFileNum;}
 	public void setPoliceFileNum(String policeFileNum){this.policeFileNum = policeFileNum;}
 	
-	public long getArrestDate(){return arrestDate;}
-	public void setArrestDate(long arrestDate){this.arrestDate = arrestDate;}
+	public Long getArrestDate(){return arrestDate;}
+	public void setArrestDate(Long arrestDate){this.arrestDate = arrestDate;}
 	
 	@Override
 	public boolean equals(Object o)
@@ -155,7 +155,7 @@ public class JudgementInfo
 			   deportYearCount == that.deportYearCount && exileDayCount == that.exileDayCount &&
 			   exileMonthCount == that.exileMonthCount && exileYearCount == that.exileYearCount &&
 			   finalDeport == that.finalDeport && covenant == that.covenant && libel == that.libel &&
-			   arrestDate == that.arrestDate && Objects.equals(judgIssuer, that.judgIssuer) &&
+			   Objects.equals(arrestDate, that.arrestDate) && Objects.equals(judgIssuer, that.judgIssuer) &&
 			   Objects.equals(judgNum, that.judgNum) && Objects.equals(judgOthers, that.judgOthers) &&
 			   Objects.equals(crimeCodes, that.crimeCodes) && Objects.equals(policeFileNum, that.policeFileNum);
 	}

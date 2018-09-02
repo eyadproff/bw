@@ -302,7 +302,11 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 			if(policeFileNum != null)
 						lblPoliceFileNumber.setText(AppUtils.replaceNumbersOnly(policeFileNum, Locale.getDefault()));
 			lblJudgmentNumber.setText(AppUtils.replaceNumbersOnly(judgementInfo.getJudgNum(), Locale.getDefault()));
-			lblArrestDate.setText(AppUtils.formatHijriGregorianDate(judgementInfo.getArrestDate() * 1000));
+			
+			Long arrestDate = judgementInfo.getArrestDate();
+			if(arrestDate != null)
+							lblArrestDate.setText(AppUtils.formatHijriGregorianDate(arrestDate * 1000));
+			
 			lblJudgmentDate.setText(AppUtils.formatHijriGregorianDate(judgementInfo.getJudgDate() * 1000));
 			lblTazeerLashes.setText(AppUtils.replaceNumbersOnly(
 					String.valueOf(judgementInfo.getJudgTazeerLashesCount()), Locale.getDefault()));
@@ -549,9 +553,11 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 		
 		String policeFileNum = (String)
 							uiInputData.get(JudgmentDetailsPaneFxController.KEY_JUDGMENT_DETAILS_POLICE_FILE_NUMBER);
-		long arrestDate =
-					((LocalDate) uiInputData.get(JudgmentDetailsPaneFxController.KEY_JUDGMENT_DETAILS_ARREST_DATE))
-											.atStartOfDay(AppConstants.SAUDI_ZONE).toEpochSecond();
+		LocalDate arrestDate = (LocalDate)
+									uiInputData.get(JudgmentDetailsPaneFxController.KEY_JUDGMENT_DETAILS_ARREST_DATE);
+		
+		Long arrestDateLong = null;
+		if(arrestDate != null) arrestDateLong = arrestDate.atStartOfDay(AppConstants.SAUDI_ZONE).toEpochSecond();
 		
 		JudgementInfo subjJudgementInfo = new JudgementInfo(judgIssuer, judgDate, judgNum, judgTazeerLashesCount,
 		                                                    judgHadLashesCount, judgFine, judgOthers, jailYearCount,
@@ -559,7 +565,7 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 		                                                    trvlBanMonthCount, trvlBanYearCount, deportDayCount,
 		                                                    deportMonthCount, deportYearCount, exileDayCount,
 		                                                    exileMonthCount, exileYearCount, finalDeport, covenant,
-		                                                    libel, crimeCodes, policeFileNum, arrestDate);
+		                                                    libel, crimeCodes, policeFileNum, arrestDateLong);
 		
 		@SuppressWarnings("unchecked")
 		List<Finger> subjFingers = (List<Finger>)
