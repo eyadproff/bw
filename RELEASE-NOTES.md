@@ -1,5 +1,23 @@
 # Release Notes:
 
+| prefix |         description          |
+|:------ |:-----------------------------|
+| FIX    | bug fixes note               |
+| ENH    | enhancement on existing code |
+| NEW    | new feature added            |
+| CHN    | change functionality         |
+
+<sub><b>VERSION SCHEMA:</b> vYYYY.MM.#SEQ</sub>
+
+---
+
+## v2018.09.1
+
+- FIX: add jasper-compiler-jdt jar to the libraries which provides javac at runtime.
+- CHN: make arrest-date field optional.
+
+---
+
 ## v2018.08.8
 
 - Upgrade libraries to the latest version.

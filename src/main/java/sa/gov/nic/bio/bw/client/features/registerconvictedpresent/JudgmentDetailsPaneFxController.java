@@ -226,7 +226,6 @@ public class JudgmentDetailsPaneFxController extends WizardStepFxControllerBase
 		
 		BooleanBinding txtJudgmentIssuerEmptyBinding = txtJudgmentIssuer.textProperty().isEmpty();
 		BooleanBinding txtJudgmentNumberEmptyBinding = txtJudgmentNumber.textProperty().isEmpty();
-		BooleanBinding dpArrestDateEmptyBinding = dpArrestDate.valueProperty().isNull();
 		BooleanBinding dpJudgmentDateEmptyBinding = dpJudgmentDate.valueProperty().isNull();
 		
 		// prevent duplicates
@@ -278,7 +277,6 @@ public class JudgmentDetailsPaneFxController extends WizardStepFxControllerBase
 		
 		btnNext.disableProperty().bind(crimeTypeDuplicated.or(txtJudgmentIssuerEmptyBinding)
 				                                          .or(txtJudgmentNumberEmptyBinding)
-			                                              .or(dpArrestDateEmptyBinding)
 				                                          .or(dpJudgmentDateEmptyBinding));
 	}
 	
@@ -342,7 +340,6 @@ public class JudgmentDetailsPaneFxController extends WizardStepFxControllerBase
 			
 			LocalDate arrestDate = (LocalDate) uiInputData.get(KEY_JUDGMENT_DETAILS_ARREST_DATE);
 			if(arrestDate != null) dpArrestDate.setValue(arrestDate);
-			else if(focusedNode == null) focusedNode = dpArrestDate;
 			
 			Boolean arrestDateUseHijri = (Boolean) uiInputData.get(KEY_JUDGMENT_DETAILS_ARREST_DATE_USE_HIJRI);
 			if(arrestDateUseHijri == null || arrestDateUseHijri) rdoArrestDateUseHijri.setSelected(true);

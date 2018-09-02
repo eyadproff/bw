@@ -13,7 +13,7 @@ buildscript {
     }
 }
 
-project.version = '2018.08.8'
+project.version = '2018.09.1'
 group = 'sa.gov.nic.bio'
 
 apply plugin: 'java'
@@ -66,6 +66,7 @@ dependencies {
 
     // Jasper reports
     implementation name: "jasperreports-6.5.1"
+    implementation name: "jasper-compiler-jdt-5.5.23" // javac
     implementation name: "commons-logging-1.2"
     implementation name: "commons-digester-2.1"
     implementation name: "commons-collections-3.2.2"
@@ -131,26 +132,6 @@ task packageWebStart(group: 'web-start') {
     doLast {
 
         String jnlpTemplate = new File("build-resources/bw-template.jnlp").getText('UTF-8')
-
-        // add JNLP properties to the JNLP file
-        def sProperties = StringBuilder.getDeclaredConstructor().newInstance()
-        boolean first = true
-        Properties properties = new Properties()
-        InputStream inputStream = new FileInputStream("src/main/resources/sa/gov/nic/bio/bw/client/core/config/jnlp.properties")
-        properties.load(inputStream)
-        inputStream.close()
-        for(Object key : Collections.list(properties.propertyNames()))
-        {
-            String sKey = (String) key
-            String value = properties.getProperty(sKey)
-
-            if(first) first = false
-            else sProperties << '\n        '
-
-            sProperties << '<property name="' + sKey + '" value="' + value + '"/>'
-        }
-
-        jnlpTemplate = jnlpTemplate.replace('<!--PROPERTIES PLACE HOLDER-->', sProperties)
 
         File directory = new File("${projectDir}/build/web-start")
         directory.mkdirs()

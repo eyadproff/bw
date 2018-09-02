@@ -31,9 +31,6 @@
         <property name="jnlp.noPrefix.-Djava.locale.providers=" value='SPI,CLDR,JRE,HOST,'/>
         <property name="jnlp.noPrefix.-Djavafx.preloader=" value='sa.gov.nic.bio.bw.client.preloader.AppPreloader'/>
         <property name="jnlp.noPrefix.-Xmx" value='1024m'/>
-
-        <!-- application properties (NOTE: the property name should start with "jnlp.bio.") -->
-        <!--PROPERTIES PLACE HOLDER-->
     </resources>
     <application-desc main-class="sa.gov.nic.bio.bcl.ClientLauncher"/>
 </jnlp>

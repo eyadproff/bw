@@ -62,7 +62,7 @@
                         <Insets bottom="5.0"/>
                     </GridPane.margin>
                 </Label>
-                <DatePicker fx:id="dpArrestDate" styleClass="required" promptText="dd/MM/yyyy" GridPane.rowIndex="2" GridPane.columnIndex="1">
+                <DatePicker fx:id="dpArrestDate" promptText="dd/MM/yyyy" GridPane.rowIndex="2" GridPane.columnIndex="1">
                     <GridPane.margin>
                         <Insets right="20.0"/>
                     </GridPane.margin>
