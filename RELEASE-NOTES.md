@@ -7,7 +7,13 @@
 | NEW    | new feature added            |
 | CHN    | change functionality         |
 
-<sub><b>VERSION SCHEMA:</b> vYYYY.MM.#SEQ</sub>
+<sub> <b>VERSION SCHEMA:</b> vYYYY.MM.#SEQ</sub>
+
+---
+
+## v2018.09.2
+
+- NEW: Convicted Report Inquiry.
 
 ---
 
