@@ -28,7 +28,7 @@
     </ImageView>
     <VBox alignment="CENTER" spacing="10.0">
         <HBox alignment="CENTER">
-            <TabPane fx:id="tabPane" styleClass="floating">
+            <TabPane fx:id="tabPane" styleClass="floating" minWidth="400.0">
                 <Tab fx:id="tabLoginByPassword" text="%tab.loginByPassword" closable="false">
                     <GridPane alignment="CENTER" vgap="5.0" hgap="20.0" styleClass="formBox-with-tabs">
                         <padding>
