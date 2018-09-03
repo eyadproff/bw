@@ -8,6 +8,6 @@ public class LogoutService
 	public static void execute()
 	{
 		// we don't care about logout response, so just make it asynchronous
-		Context.getExecutorService().execute(new LogoutTask());
+		Context.getExecutorService().submit(new LogoutTask());
 	}
 }

@@ -36,7 +36,7 @@
                                 </padding>
                             </Label>
                             <TextField fx:id="txtGeneralFileNumber" onAction="#onEnterPressed"/>
-                            <Button fx:id="btnInquiry" text="%button.inquiry"/>
+                            <Button fx:id="btnInquiry" text="%button.inquiry" onAction="#onInquiryButtonClicked"/>
                             <ProgressIndicator fx:id="piInquiry" prefHeight="25.0" prefWidth="25.0" managed="false" visible="false"/>
                         </HBox>
                     </VBox>
@@ -51,14 +51,13 @@
                                 <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
                             </columnResizePolicy>
                             <columns>
-                                <TableColumn text="#"/>
-                                <TableColumn text="%table.column.generalFileNumber"/>
-                                <TableColumn text="%table.column.name"/>
-                                <TableColumn text="%table.column.idNumber"/>
-                                <TableColumn text="%table.column.idType"/>
-                                <TableColumn text="%table.column.nationality"/>
-                                <TableColumn text="%table.column.operatorId"/>
-                                <TableColumn text="%table.column.registrationDate"/>
+                                <TableColumn fx:id="tcSequence" text="#"/>
+                                <TableColumn fx:id="tvName" text="%table.column.name"/>
+                                <TableColumn fx:id="tcIdNumber" text="%table.column.idNumber"/>
+                                <TableColumn fx:id="tcIdType" text="%table.column.idType"/>
+                                <TableColumn fx:id="tcNationality" text="%table.column.nationality"/>
+                                <TableColumn fx:id="tcOperatorId" text="%table.column.operatorId"/>
+                                <TableColumn fx:id="tcRegistrationDate" text="%table.column.registrationDate"/>
                             </columns>
                         </TableView>
                     </ScrollPane>
