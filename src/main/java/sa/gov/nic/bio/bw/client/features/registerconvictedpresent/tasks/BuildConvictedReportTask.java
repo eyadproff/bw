@@ -190,8 +190,11 @@ public class BuildConvictedReportTask extends Task<JasperPrint>
 		String policeFileNum = judgementInfo.getPoliceFileNum();
 		if(policeFileNum != null) params.put(PARAMETER_POLICE_FILE_NUMBER,
 	                                         AppUtils.replaceNumbersOnly(policeFileNum, Locales.SAUDI_AR_LOCALE));
-		params.put(PARAMETER_ARREST_DATE,
-		           AppUtils.formatHijriGregorianDate(judgementInfo.getArrestDate() * 1000));
+		
+		Long arrestDate = judgementInfo.getArrestDate();
+		
+		if(arrestDate != null) params.put(PARAMETER_ARREST_DATE,
+		                                            AppUtils.formatHijriGregorianDate(arrestDate * 1000));
 		
 		@SuppressWarnings("unchecked") List<CrimeType> crimeTypes = (List<CrimeType>)
 													Context.getUserSession().getAttribute("lookups.crimeTypes");
