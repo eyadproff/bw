@@ -17,6 +17,13 @@
 
 ---
 
+## v2018.09.2
+
+- FIX: make the check-mark symbol appears in convicted report.
+- ENH: make the login box wider to appear correctly on small screens.
+
+---
+
 ## v2018.09.1
 
 - FIX: add jasper-compiler-jdt jar to the libraries which provides javac at runtime.
