@@ -413,7 +413,7 @@ public class CoreFxController extends FxControllerBase implements IdleMonitorReg
 		String title = stringsBundle.getString("window.title") + " " + version + " (" +
 				stringsBundle.getString("label.environment." +
 							                  Context.getRuntimeEnvironment().name().toLowerCase()) + ")";
-		String windowTitle = AppUtils.replaceNumbersOnly(title, Locale.getDefault());
+		String windowTitle = AppUtils.localizeNumbers(title, Locale.getDefault(), false);
 		
 		FXMLLoader newRootPane = new FXMLLoader(fxmlUrl, stringsBundle);
 		newRootPane.setClassLoader(Context.getFxClassLoader());

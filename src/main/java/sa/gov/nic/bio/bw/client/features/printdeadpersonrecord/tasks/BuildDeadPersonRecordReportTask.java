@@ -5,6 +5,7 @@ import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
+import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.client.features.printdeadpersonrecord.beans.DeadPersonRecordReport;
 
 import java.io.ByteArrayInputStream;
@@ -83,13 +84,7 @@ public class BuildDeadPersonRecordReportTask extends Task<JasperPrint>
 		String grandfatherName = deadPersonRecordReport.getGrandfatherName();
 		String familyName = deadPersonRecordReport.getFamilyName();
 		
-		if(firstName == null) firstName = "";
-		if(fatherName == null) fatherName = "";
-		if(grandfatherName == null) grandfatherName = "";
-		if(familyName == null) familyName = "";
-		
-		String fullName = firstName + " " + fatherName + " " + grandfatherName + " " + familyName;
-		fullName = fullName.trim().replaceAll("\\s+", " "); // remove extra spaces
+		String fullName = AppUtils.constructName(firstName, fatherName, grandfatherName, familyName);
 		params.put(PARAMETER_NAME, fullName);
 		
 		params.put(PARAMETER_NATIONALITY, deadPersonRecordReport.getNationality());

@@ -17,9 +17,9 @@ import sa.gov.nic.bio.bw.client.core.utils.GuiLanguage;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.wizard.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.client.features.commons.InquiryByFingerprintsPaneFxController;
-import sa.gov.nic.bio.bw.client.features.commons.webservice.IdType;
-import sa.gov.nic.bio.bw.client.features.commons.webservice.CountryBean;
 import sa.gov.nic.bio.bw.client.features.commons.beans.GenderType;
+import sa.gov.nic.bio.bw.client.features.commons.webservice.CountryBean;
+import sa.gov.nic.bio.bw.client.features.commons.webservice.IdType;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.Name;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.PersonIdInfo;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.PersonInfo;
@@ -32,7 +32,6 @@ import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 public class InquiryResultPaneFxController extends WizardStepFxControllerBase
@@ -204,7 +203,7 @@ public class InquiryResultPaneFxController extends WizardStepFxControllerBase
 
 			if(samisId != null)
 			{
-				lblIdNumber.setText(AppUtils.replaceNumbersOnly(String.valueOf(samisId), Locale.getDefault()));
+				lblIdNumber.setText(AppUtils.localizeNumbers(String.valueOf(samisId)));
 			}
 			else
 			{
@@ -363,7 +362,7 @@ public class InquiryResultPaneFxController extends WizardStepFxControllerBase
 		String occupation = identityInfo != null ? identityInfo.getOccupation() : null;
 		if(occupation != null && !occupation.trim().isEmpty())
 		{
-			lblOccupation.setText(occupation);
+			lblOccupation.setText(AppUtils.localizeNumbers(occupation));
 			personInfoMap.put(PersonInfoPaneFxController.KEY_PERSON_INFO_OCCUPATION, occupation);
 		}
 		else
@@ -375,7 +374,7 @@ public class InquiryResultPaneFxController extends WizardStepFxControllerBase
 		String birthPlace = personInfo.getBirthPlace();
 		if(birthPlace != null && !birthPlace.trim().isEmpty())
 		{
-			lblBirthPlace.setText(birthPlace);
+			lblBirthPlace.setText(AppUtils.localizeNumbers(birthPlace));
 			personInfoMap.put(PersonInfoPaneFxController.KEY_PERSON_INFO_BIRTH_PLACE, birthPlace);
 		}
 		else
@@ -400,7 +399,7 @@ public class InquiryResultPaneFxController extends WizardStepFxControllerBase
 		String idNumber = identityInfo != null ? identityInfo.getIdNumber() : null;
 		if(idNumber != null && !idNumber.trim().isEmpty())
 		{
-			lblIdNumber.setText(idNumber);
+			lblIdNumber.setText(AppUtils.localizeNumbers(idNumber));
 			personInfoMap.put(PersonInfoPaneFxController.KEY_PERSON_INFO_ID_NUMBER, idNumber);
 
 			@SuppressWarnings("unchecked") List<IdType> idTypes = (List<IdType>)
@@ -432,7 +431,7 @@ public class InquiryResultPaneFxController extends WizardStepFxControllerBase
 		{
 			if(samisId != null)
 			{
-				lblIdNumber.setText(AppUtils.replaceNumbersOnly(String.valueOf(samisId), Locale.getDefault()));
+				lblIdNumber.setText(AppUtils.localizeNumbers(String.valueOf(samisId)));
 			}
 			else
 			{

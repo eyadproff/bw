@@ -5,6 +5,7 @@ import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.NodeOrientation;
 import javafx.scene.control.Button;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TableCell;
@@ -12,6 +13,8 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.BorderPane;
 import javafx.util.Callback;
 import sa.gov.nic.bio.bw.client.core.BodyFxControllerBase;
@@ -23,30 +26,31 @@ import sa.gov.nic.bio.bw.client.core.workflow.Workflow;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.CountryBean;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.IdType;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.Name;
-import sa.gov.nic.bio.bw.client.features.convictedreportinquiry.tasks.InquiryTask;
 import sa.gov.nic.bio.bw.client.features.convictedreportinquiry.tasks.LookupTask;
 import sa.gov.nic.bio.bw.client.features.convictedreportinquiry.utils.ConvictedReportInquiryErrorCodes;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.ConvictedReport;
 import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
 
+import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 public class ConvictedReportInquiryPaneFxController extends BodyFxControllerBase
 {
-	public TableColumn<ConvictedReport, ConvictedReport> tcSequence;
-	public TableColumn<ConvictedReport, String> tvName;
-	public TableColumn<ConvictedReport, String> tcIdNumber;
-	public TableColumn<ConvictedReport, String> tcIdType;
-	public TableColumn<ConvictedReport, String> tcNationality;
-	public TableColumn<ConvictedReport, String> tcOperatorId;
-	public TableColumn<ConvictedReport, String> tcRegistrationDate;
+	public static final String KEY_GENERAL_FILE_NUMBER = "GENERAL_FILE_NUMBER";
+	
+	@FXML private TableView<ConvictedReport> tvConvictedReports;
+	@FXML private TableColumn<ConvictedReport, ConvictedReport> tcSequence;
+	@FXML private TableColumn<ConvictedReport, String> tvName;
+	@FXML private TableColumn<ConvictedReport, String> tcIdNumber;
+	@FXML private TableColumn<ConvictedReport, String> tcIdType;
+	@FXML private TableColumn<ConvictedReport, String> tcNationality;
+	@FXML private TableColumn<ConvictedReport, String> tcOperatorId;
+	@FXML private TableColumn<ConvictedReport, String> tcRegistrationDate;
 	@FXML private BorderPane paneConvictedReports;
 	@FXML private ProgressIndicator piLookup;
 	@FXML private ProgressIndicator piInquiry;
 	@FXML private TextField txtGeneralFileNumber;
-	@FXML private TableView<ConvictedReport> tvConvictedReports;
 	@FXML private Button btnRetryLookup;
 	@FXML private Button btnInquiry;
 	@FXML private Button btnShowReport;
@@ -57,14 +61,28 @@ public class ConvictedReportInquiryPaneFxController extends BodyFxControllerBase
 	@Override
 	protected void initialize()
 	{
-		GuiUtils.applyValidatorToTextField(txtGeneralFileNumber, null, null,
+		GuiUtils.applyValidatorToTextField(txtGeneralFileNumber, "\\d*", "[^\\d]",
 		                                   10);
 		
 		btnInquiry.disableProperty().bind(txtGeneralFileNumber.textProperty().isEmpty()
 				                                                                    .or(piInquiry.visibleProperty()));
-		btnShowReport.disableProperty().bind(Bindings.size(tvConvictedReports.getItems()).isEqualTo(0));
+		btnShowReport.disableProperty().bind(Bindings.size(tvConvictedReports.getSelectionModel().getSelectedItems())
+			                                                                                    .isEqualTo(0));
+		
+		tvConvictedReports.setOnKeyReleased(keyEvent ->
+		{
+			if(keyEvent.getCode() == KeyCode.ENTER) btnShowReport.fire();
+		});
+		tvConvictedReports.setOnMouseClicked(mouseEvent ->
+		{
+			if(mouseEvent.getButton().equals(MouseButton.PRIMARY) && mouseEvent.getClickCount() == 2)
+			{
+				btnShowReport.fire();
+			}
+		});
 		
 		tcSequence.setSortable(false);
+		tcSequence.impl_setReorderable(false);
 		tcSequence.setCellValueFactory(p -> new ReadOnlyObjectWrapper(p.getValue()));
 		tcSequence.setCellFactory(new Callback<TableColumn<ConvictedReport, ConvictedReport>,
 				TableCell<ConvictedReport, ConvictedReport>>()
@@ -83,8 +101,7 @@ public class ConvictedReportInquiryPaneFxController extends BodyFxControllerBase
 						
 						if(tableRow != null && item != null)
 						{
-							setText(AppUtils.replaceNumbersOnly(String.valueOf(tableRow.getIndex() + 1),
-							                                    Locale.getDefault()));
+							setText(AppUtils.localizeNumbers(String.valueOf(tableRow.getIndex() + 1)));
 						}
 						else setText("");
 					}
@@ -92,35 +109,22 @@ public class ConvictedReportInquiryPaneFxController extends BodyFxControllerBase
 			}
 		});
 		
+		tvName.impl_setReorderable(false);
 		tvName.setCellValueFactory(param ->
 		{
 		    ConvictedReport convictedReport = param.getValue();
-			
 		    Name name = convictedReport.getSubjtName();
-			if(name == null) return null;
-			
-			String firstName = name.getFirstName();
-			String fatherName = name.getFatherName();
-			String grandfatherName = name.getGrandfatherName();
-			String familyName = name.getFamilyName();
-			
-			if(firstName == null || firstName.trim().equals("-")) firstName = "";
-			if(fatherName == null || fatherName.trim().equals("-")) fatherName = "";
-			if(grandfatherName == null || grandfatherName.trim().equals("-")) grandfatherName = "";
-			if(familyName == null || familyName.trim().equals("-")) familyName = "";
-			
-			String fullName = firstName + " " + fatherName + " " + grandfatherName + " " + familyName;
-			fullName = fullName.trim().replaceAll("\\s+", " "); // remove extra spaces
-		    
-		    return new SimpleStringProperty(fullName);
+		    return new SimpleStringProperty(AppUtils.constructName(name));
 		});
 		
+		tcIdNumber.impl_setReorderable(false);
 		tcIdNumber.setCellValueFactory(param ->
 		{
 		    ConvictedReport convictedReport = param.getValue();
-		    return new SimpleStringProperty(convictedReport.getSubjDocId());
+		    return new SimpleStringProperty(AppUtils.localizeNumbers(convictedReport.getSubjDocId()));
 		});
 		
+		tcIdType.impl_setReorderable(false);
 		tcIdType.setCellValueFactory(param ->
 		{
 		    ConvictedReport convictedReport = param.getValue();
@@ -144,7 +148,7 @@ public class ConvictedReportInquiryPaneFxController extends BodyFxControllerBase
 				
 				if(theIdType != null)
 				{
-					String idType = AppUtils.replaceNumbersOnly(theIdType.getDesc(), Locale.getDefault());
+					String idType = AppUtils.localizeNumbers(theIdType.getDesc());
 					return new SimpleStringProperty(idType);
 				}
 			}
@@ -152,6 +156,7 @@ public class ConvictedReportInquiryPaneFxController extends BodyFxControllerBase
 		    return null;
 		});
 		
+		tcNationality.impl_setReorderable(false);
 		tcNationality.setCellValueFactory(param ->
 		{
 		    ConvictedReport convictedReport = param.getValue();
@@ -180,17 +185,20 @@ public class ConvictedReportInquiryPaneFxController extends BodyFxControllerBase
 		    return null;
 		});
 		
+		tcOperatorId.impl_setReorderable(false);
 		tcOperatorId.setCellValueFactory(param ->
 		{
 			ConvictedReport convictedReport = param.getValue();
-			return new SimpleStringProperty(convictedReport.getOperatorId());
+			return new SimpleStringProperty(AppUtils.localizeNumbers(convictedReport.getOperatorId()));
 		});
 		
+		tcRegistrationDate.impl_setReorderable(false);
 		tcRegistrationDate.setCellValueFactory(param ->
 		{
+			boolean rtl = Context.getGuiLanguage().getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT;
 		    ConvictedReport convictedReport = param.getValue();
 			return new SimpleStringProperty(
-								AppUtils.formatHijriGregorianDate(convictedReport.getReportDate() * 1000));
+							AppUtils.formatHijriDateSimple(convictedReport.getReportDate() * 1000, rtl));
 		});
 		
 		initializeLookupTask();
@@ -202,13 +210,21 @@ public class ConvictedReportInquiryPaneFxController extends BodyFxControllerBase
 		if(newForm) Context.getExecutorService().submit(lookupTask);
 		else
 		{
-			ServiceResponse<?> serviceResponse = (ServiceResponse<?>) uiInputData.get(Workflow.KEY_WEBSERVICE_RESPONSE);
+			@SuppressWarnings("unchecked")
+			ServiceResponse<List<ConvictedReport>> serviceResponse =
+							(ServiceResponse<List<ConvictedReport>>) uiInputData.get(Workflow.KEY_WEBSERVICE_RESPONSE);
 			
 			disableUiControls(false);
 			
 			if(serviceResponse.isSuccess())
 			{
-				// TODO
+				if(serviceResponse.isSuccess())
+				{
+					List<ConvictedReport> convictedReports = serviceResponse.getResult();
+					tvConvictedReports.getItems().setAll(convictedReports);
+				}
+				else reportNegativeResponse(serviceResponse.getErrorCode(), serviceResponse.getException(),
+					                        serviceResponse.getErrorDetails());
 			}
 			else reportNegativeResponse(serviceResponse.getErrorCode(), serviceResponse.getException(),
 			                            serviceResponse.getErrorDetails());
@@ -286,42 +302,17 @@ public class ConvictedReportInquiryPaneFxController extends BodyFxControllerBase
 		
 		String sGeneralFileNumber = txtGeneralFileNumber.getText();
 		long generalFileNumber = Long.parseLong(sGeneralFileNumber);
-		InquiryTask inquiryTask = new InquiryTask(generalFileNumber);
 		
-		inquiryTask.setOnSucceeded(event ->
-		{
-			disableUiControls(false);
-			
-			ServiceResponse<List<ConvictedReport>> serviceResponse = inquiryTask.getValue();
-			
-			if(serviceResponse.isSuccess())
-			{
-				List<ConvictedReport> convictedReports = serviceResponse.getResult();
-				tvConvictedReports.getItems().setAll(convictedReports);
-			}
-			else
-			{
-				reportNegativeResponse(serviceResponse.getErrorCode(), serviceResponse.getException(),
-				                       serviceResponse.getErrorDetails());
-			}
-		});
+		Map<String, Object> uiDataMap = new HashMap<>();
+		uiDataMap.put(KEY_GENERAL_FILE_NUMBER, generalFileNumber);
 		
-		inquiryTask.setOnFailed(event ->
-		{
-			disableUiControls(false);
-			
-			Throwable exception = inquiryTask.getException();
-			String errorCode = ConvictedReportInquiryErrorCodes.C014_00002.getCode();
-			String[] errorDetails = {"failed while inquire for the convicted report (" + sGeneralFileNumber + ")!"};
-			Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails);
-		});
-		
-		Context.getExecutorService().submit(inquiryTask);
+		Context.getWorkflowManager().submitUserTask(uiDataMap);
 	}
 	
 	@FXML
 	private void onShowReportButtonClicked(ActionEvent actionEvent)
 	{
-	
+		ConvictedReport selectedItem = tvConvictedReports.getSelectionModel().getSelectedItem();
+		System.out.println("selectedItem = " + selectedItem);
 	}
 }

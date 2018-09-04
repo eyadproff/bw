@@ -34,7 +34,6 @@ import sa.gov.nic.bio.bw.client.features.faceverification.webservice.FaceMatchin
 
 import java.net.URL;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 public class ShowResultFxController extends WizardStepFxControllerBase
@@ -111,14 +110,17 @@ public class ShowResultFxController extends WizardStepFxControllerBase
 				String grandfatherName = name.getGrandfatherName();
 				String familyName = name.getFamilyName();
 				
-				if(firstName != null && firstName.trim().isEmpty()) firstName = null;
-				if(fatherName != null && fatherName.trim().isEmpty()) fatherName = null;
-				if(grandfatherName != null && grandfatherName.trim().isEmpty()) fatherName = null;
-				if(familyName != null && familyName.trim().isEmpty()) familyName = null;
+				if(firstName != null && (firstName.trim().isEmpty() || firstName.trim().equals("-"))) firstName = null;
+				if(fatherName != null && (fatherName.trim().isEmpty() || fatherName.trim().equals("-")))
+																									fatherName = null;
+				if(grandfatherName != null && (grandfatherName.trim().isEmpty() || grandfatherName.trim().equals("-")))
+																								grandfatherName = null;
+				if(familyName != null && (familyName.trim().isEmpty() || familyName.trim().equals("-")))
+																									familyName = null;
 				
 				if(samisId > 0)
 				{
-					String sSamisId = AppUtils.replaceNumbersOnly(String.valueOf(samisId), Locale.getDefault());
+					String sSamisId = AppUtils.localizeNumbers(String.valueOf(samisId));
 					lblSamisId.setText(sSamisId);
 				}
 				else

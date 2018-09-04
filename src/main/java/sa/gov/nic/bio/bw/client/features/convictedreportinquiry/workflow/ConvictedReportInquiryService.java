@@ -2,22 +2,20 @@ package sa.gov.nic.bio.bw.client.features.convictedreportinquiry.workflow;
 
 import retrofit2.Call;
 import sa.gov.nic.bio.bw.client.core.Context;
-import sa.gov.nic.bio.bw.client.features.cancelcriminal.webservice.CancelCriminalAPI;
+import sa.gov.nic.bio.bw.client.features.convictedreportinquiry.webservice.ConvictedReportInquiryAPI;
+import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.ConvictedReport;
 import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
+
+import java.util.List;
 
 public class ConvictedReportInquiryService
 {
-	public static ServiceResponse<Boolean> execute(long personId, int personIdType, long criminalId)
+	public static ServiceResponse<List<ConvictedReport>> execute(long generalFileNumber)
 	{
-		CancelCriminalAPI cancelCriminalAPI = Context.getWebserviceManager().getApi(CancelCriminalAPI.class);
-		Call<Boolean> apiCall = cancelCriminalAPI.cancelCriminalByPersonId(personId, personIdType, criminalId);
-		return Context.getWebserviceManager().executeApi(apiCall);
-	}
-	
-	public static ServiceResponse<Boolean> execute(long inquiryId, long criminalId)
-	{
-		CancelCriminalAPI cancelCriminalAPI = Context.getWebserviceManager().getApi(CancelCriminalAPI.class);
-		Call<Boolean> apiCall = cancelCriminalAPI.cancelCriminalByInquiryId(inquiryId, criminalId);
+		ConvictedReportInquiryAPI convictedReportInquiryAPI =
+												Context.getWebserviceManager().getApi(ConvictedReportInquiryAPI.class);
+		Call<List<ConvictedReport>> apiCall =
+								convictedReportInquiryAPI.inquireConvictedReportByGeneralFileNumber(generalFileNumber);
 		return Context.getWebserviceManager().executeApi(apiCall);
 	}
 }

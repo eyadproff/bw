@@ -103,7 +103,8 @@ public class SpecifyFingerprintCoordinatesPaneFxController extends WizardStepFxC
 			}
 			else finalI = i;
 			
-			labels[finalI] = new Label(AppUtils.replaceNumbersOnly(String.valueOf(finalI + 1), Locale.getDefault()));
+			labels[finalI] = new Label(AppUtils.localizeNumbers(String.valueOf(finalI + 1), Locale.getDefault(),
+			                                                    false));
 			labels[finalI].setMouseTransparent(true);
 			labels[finalI].setTextAlignment(TextAlignment.CENTER);
 			labels[finalI].setAlignment(Pos.CENTER);

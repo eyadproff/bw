@@ -505,7 +505,7 @@ public class AppEntryPoint extends Application
 		    return;
 	    }
 	
-	    windowTitle = AppUtils.replaceNumbersOnly(title, Locale.getDefault());
+	    windowTitle = AppUtils.localizeNumbers(title, Locale.getDefault(), false);
 	
 	    FXMLLoader rootPaneLoader = new FXMLLoader(fxmlUrl, stringsBundle);
 	    rootPaneLoader.setClassLoader(Context.getFxClassLoader());

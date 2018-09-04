@@ -7,6 +7,7 @@ import javafx.scene.image.Image;
 import org.controlsfx.glyphfont.FontAwesome;
 import org.controlsfx.glyphfont.Glyph;
 import sa.gov.nic.bio.bw.client.core.webservice.NicHijriCalendarData;
+import sa.gov.nic.bio.bw.client.features.commons.webservice.Name;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -57,6 +58,8 @@ public final class AppUtils
 	private static final DateTimeFormatter DATE_TIME_FORMATTER =
 													DateTimeFormatter.ofPattern("hh:mm:ss a (Z) - EEEE dd MMMM yyyy G");
 	private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd MMMM yyyy G");
+	private static final DateTimeFormatter DATE_FORMATTER_SIMPLE = DateTimeFormatter.ofPattern("dd/MM/yyyy G");
+	private static final DateTimeFormatter DATE_FORMATTER_SIMPLE_RTL = DateTimeFormatter.ofPattern("yyyy/MM/dd G");
 	private static final DateTimeFormatter DATE_WTH_WEEK_DAY_FORMATTER =
 																	DateTimeFormatter.ofPattern("EEEE dd MMMM yyyy G");
 	private static final DateTimeFormatter FORMAL_DATE_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
@@ -116,19 +119,28 @@ public final class AppUtils
 	
 	public static String formatDateTime(TemporalAccessor temporal)
 	{
-		return replaceNumbersOnly(DATE_TIME_FORMATTER.withLocale(Locale.getDefault()).format(temporal),
-		                          Locale.getDefault());
+		return localizeNumbers(DATE_TIME_FORMATTER.withLocale(Locale.getDefault()).format(temporal),
+		                       Locale.getDefault(), false);
 	}
 	
 	public static String formatDate(TemporalAccessor temporal)
 	{
-		return replaceNumbersOnly(DATE_FORMATTER.withLocale(Locale.getDefault()).format(temporal), Locale.getDefault());
+		return localizeNumbers(DATE_FORMATTER.withLocale(Locale.getDefault()).format(temporal), Locale.getDefault(),
+		                       false);
 	}
 	
 	public static String formatFullDate(TemporalAccessor temporal)
 	{
-		return replaceNumbersOnly(DATE_WTH_WEEK_DAY_FORMATTER.withLocale(Locale.getDefault()).format(temporal),
-		                          Locale.getDefault());
+		return localizeNumbers(DATE_WTH_WEEK_DAY_FORMATTER.withLocale(Locale.getDefault()).format(temporal),
+		                       Locale.getDefault(), false);
+	}
+	
+	public static String formatDateSimple(TemporalAccessor temporal, boolean rtl)
+	{
+		if(rtl) return localizeNumbers(DATE_FORMATTER_SIMPLE_RTL.withLocale(
+							Locale.getDefault()).format(temporal), Locale.getDefault(), false);
+		else return localizeNumbers(DATE_FORMATTER_SIMPLE.withLocale(
+							Locale.getDefault()).format(temporal), Locale.getDefault(), false);
 	}
 	
 	public static LocalDate parseFormalDate(String sDate)
@@ -136,8 +148,10 @@ public final class AppUtils
 		return LocalDate.parse(sDate, FORMAL_DATE_FORMATTER);
 	}
 	
-	public static String replaceNumbersOnly(String text, Locale locale)
+	public static String localizeNumbers(String text, Locale locale, boolean textContainsNumbersOnly)
 	{
+		if(textContainsNumbersOnly && !text.matches("\\d+")) return text;
+		
 		NumberFormat numberFormat = NumberFormat.getNumberInstance(locale);
 		
 		StringBuilder sb = new StringBuilder();
@@ -151,6 +165,11 @@ public final class AppUtils
 		}
 		
 		return sb.toString();
+	}
+	
+	public static String localizeNumbers(String text)
+	{
+		return localizeNumbers(text, Locale.getDefault(), true);
 	}
 	
 	public static void injectNicHijriCalendarData(NicHijriCalendarData nicHijriCalendarData)
@@ -258,6 +277,23 @@ public final class AppUtils
 			return AppUtils.formatDateTime(hijriDateTime) + " - " + AppUtils.formatDate(gregorianDateTime);
 		}
 		else return AppUtils.formatDateTime(gregorianDateTime);
+	}
+	
+	public static String formatHijriDateSimple(long milliSeconds, boolean rtl)
+	{
+		HijrahDate hijriDate = null;
+		
+		try
+		{
+			hijriDate = AppUtils.milliSecondsToHijriDate(milliSeconds);
+		}
+		catch(DateTimeException e)
+		{
+			// thrown in case of "Hijrah date out of range"
+		}
+		
+		if(hijriDate != null) return AppUtils.formatDateSimple(hijriDate, rtl);
+		else return "";
 	}
 	
 	public static String formatHijriGregorianDate(long milliSeconds)
@@ -407,16 +443,17 @@ public final class AppUtils
 	
 	public static String buildNamePart(String namePart, String namePartTranslated, boolean combined)
 	{
-		if((namePart == null || namePart.trim().isEmpty()) &&
-				(namePartTranslated == null || namePartTranslated.trim().isEmpty()))
+		if((namePart == null || namePart.trim().isEmpty() || namePart.trim().equals("-")) &&
+		(namePartTranslated == null || namePartTranslated.trim().isEmpty() || namePartTranslated.trim().equals("-")))
 		{
 			return null;
 		}
-		else if((namePart == null || namePart.trim().isEmpty()))
+		else if((namePart == null || namePart.trim().isEmpty() || namePart.trim().equals("-")))
 		{
 			return namePartTranslated;
 		}
-		else if(namePartTranslated == null || namePartTranslated.trim().isEmpty())
+		else if(namePartTranslated == null || namePartTranslated.trim().isEmpty()
+																			|| namePartTranslated.trim().equals("-"))
 		{
 			return namePart;
 		}
@@ -459,5 +496,28 @@ public final class AppUtils
 	{
 		byte[] imageByteArray = Base64.getDecoder().decode(base64Image);
 		return new Image(new ByteArrayInputStream(imageByteArray));
+	}
+	
+	public static String constructName(Name name)
+	{
+		if(name == null) return null;
+		
+		String firstName = name.getFirstName();
+		String fatherName = name.getFatherName();
+		String grandfatherName = name.getGrandfatherName();
+		String familyName = name.getFamilyName();
+		
+		return constructName(firstName, fatherName, grandfatherName, familyName);
+	}
+	
+	public static String constructName(String firstName, String fatherName, String grandfatherName, String familyName)
+	{
+		if(firstName == null || firstName.trim().equals("-")) firstName = "";
+		if(fatherName == null || fatherName.trim().equals("-")) fatherName = "";
+		if(grandfatherName == null || grandfatherName.trim().equals("-")) grandfatherName = "";
+		if(familyName == null || familyName.trim().equals("-")) familyName = "";
+		
+		String fullName = firstName + " " + fatherName + " " + grandfatherName + " " + familyName;
+		return fullName.trim().replaceAll("\\s+", " "); // remove extra spaces
 	}
 }

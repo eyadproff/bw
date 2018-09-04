@@ -42,7 +42,6 @@ import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -266,19 +265,19 @@ public class ShowRecordPaneFxController extends WizardStepFxControllerBase
 		
 		if(recordIdLong != null)
 		{
-			recordId = AppUtils.replaceNumbersOnly(String.valueOf(recordIdLong), Locale.getDefault());
+			recordId = AppUtils.localizeNumbers(String.valueOf(recordIdLong));
 			lblRecordId.setText(recordId);
 		}
 		
 		UserInfo userInfo = (UserInfo) Context.getUserSession().getAttribute("userInfo");
-		String inquirerId = AppUtils.replaceNumbersOnly(String.valueOf(userInfo.getOperatorId()), Locale.getDefault());
+		String inquirerId = AppUtils.localizeNumbers(String.valueOf(userInfo.getOperatorId()));
 		
 		if(deadPersonRecord != null)
 		{
 			String sEnrollerId = deadPersonRecord.getOperatorId();
 			if(sEnrollerId != null && !sEnrollerId.trim().isEmpty())
 			{
-				enrollerId = AppUtils.replaceNumbersOnly(sEnrollerId, Locale.getDefault());
+				enrollerId = AppUtils.localizeNumbers(sEnrollerId);
 				lblEnrollerId.setText(enrollerId);
 			}
 			
@@ -308,28 +307,29 @@ public class ShowRecordPaneFxController extends WizardStepFxControllerBase
 			if(name != null)
 			{
 				String sFirstName = name.getFirstName();
-				if(sFirstName != null && !sFirstName.trim().isEmpty())
+				if(sFirstName != null && !sFirstName.trim().isEmpty() && !sFirstName.trim().equals("-"))
 				{
 					firstName = sFirstName;
 					lblFirstName.setText(firstName);
 				}
 				
 				String sFatherName = name.getFatherName();
-				if(sFatherName != null && !sFatherName.trim().isEmpty())
+				if(sFatherName != null && !sFatherName.trim().isEmpty() && !sFatherName.trim().equals("-"))
 				{
 					fatherName = sFatherName;
 					lblFatherName.setText(fatherName);
 				}
 				
 				String sGrandfatherName = name.getGrandfatherName();
-				if(sGrandfatherName != null && !sGrandfatherName.trim().isEmpty())
+				if(sGrandfatherName != null && !sGrandfatherName.trim().isEmpty()
+																				&& !sGrandfatherName.trim().equals("-"))
 				{
 					grandfatherName = sGrandfatherName;
 					lblGrandfatherName.setText(grandfatherName);
 				}
 				
 				String sFamilyName = name.getFamilyName();
-				if(sFamilyName != null && !sFamilyName.trim().isEmpty())
+				if(sFamilyName != null && !sFamilyName.trim().isEmpty() && !sFamilyName.trim().equals("-"))
 				{
 					familyName = sFamilyName;
 					lblFamilyName.setText(familyName);
@@ -371,14 +371,14 @@ public class ShowRecordPaneFxController extends WizardStepFxControllerBase
 				String sOccupation = identityInfo.getOccupation();
 				if(sOccupation != null && !sOccupation.trim().isEmpty())
 				{
-					occupation = sOccupation;
+					occupation = AppUtils.localizeNumbers(sOccupation);
 					lblOccupation.setText(occupation);
 				}
 				
 				String sIdNumber = identityInfo.getIdNumber();
 				if(sIdNumber != null && !sIdNumber.trim().isEmpty())
 				{
-					idNumber = sIdNumber;
+					idNumber = AppUtils.localizeNumbers(sIdNumber);
 					lblIdNumber.setText(idNumber);
 				}
 				
@@ -401,7 +401,7 @@ public class ShowRecordPaneFxController extends WizardStepFxControllerBase
 					
 					if(theIdType != null)
 					{
-						idType = AppUtils.replaceNumbersOnly(theIdType.getDesc(), Locale.getDefault());
+						idType = AppUtils.localizeNumbers(theIdType.getDesc());
 						lblIdType.setText(idType);
 					}
 				}
@@ -428,7 +428,7 @@ public class ShowRecordPaneFxController extends WizardStepFxControllerBase
 			String sBirthPlace = personInfo.getBirthPlace();
 			if(sBirthPlace != null && !sBirthPlace.trim().isEmpty())
 			{
-				birthPlace = sBirthPlace;
+				birthPlace = AppUtils.localizeNumbers(sBirthPlace);
 				lblBirthPlace.setText(birthPlace);
 			}
 			
@@ -443,7 +443,7 @@ public class ShowRecordPaneFxController extends WizardStepFxControllerBase
 
 		if(idNumber == null)
 		{
-			idNumber = AppUtils.replaceNumbersOnly(String.valueOf(samisId), Locale.getDefault());
+			idNumber = AppUtils.localizeNumbers(String.valueOf(samisId));
 			idType = null;
 			lblIdNumber.setText(idNumber);
 			lblIdType.setText(idType);
