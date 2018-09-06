@@ -43,8 +43,9 @@ public class LookupFxController extends WizardStepFxControllerBase
 			GuiUtils.showNode(btnTryAgain, true);
 			
 			ServiceResponse<?> serviceResponse = (ServiceResponse<?>) dataMap.get(Workflow.KEY_WEBSERVICE_RESPONSE);
-			if(!serviceResponse.isSuccess()) reportNegativeResponse(serviceResponse.getErrorCode(),
-			                                                        serviceResponse.getException(),
+			if(serviceResponse != null && !serviceResponse.isSuccess())
+											 reportNegativeResponse(serviceResponse.getErrorCode(),
+		                                                            serviceResponse.getException(),
 			                                                        serviceResponse.getErrorDetails());
 		}
 	}
@@ -61,6 +62,6 @@ public class LookupFxController extends WizardStepFxControllerBase
 	
 	private void submitTask()
 	{
-		Context.getWorkflowManager().submitUserTask(new HashMap<>());
+		if(!isDetached()) Context.getWorkflowManager().submitUserTask(new HashMap<>());
 	}
 }

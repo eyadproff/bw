@@ -99,6 +99,6 @@ public class FetchingFingerprintsPaneFxController extends WizardStepFxController
 		
 		Map<String, Object> uiDataMap = new HashMap<>();
 		uiDataMap.put(KEY_RETRY_FINGERPRINT_FETCHING, Boolean.TRUE);
-		Context.getWorkflowManager().submitUserTask(uiDataMap);
+		if(!isDetached()) Context.getWorkflowManager().submitUserTask(uiDataMap);
 	}
 }

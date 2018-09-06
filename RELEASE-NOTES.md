@@ -16,6 +16,8 @@
 - NEW: Convicted Report Inquiry.
 - ENH: remove any name part that equals to '-'.
 - ENH: make all number-labels to show arabic numbers in case of choosing Arabic language.
+- FIX: change the reports font from 'Arial' to 'Times New Roman'.
+- ENH: improve the workflow engine.
 
 ---
 

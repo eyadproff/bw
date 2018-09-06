@@ -226,7 +226,7 @@ public class CancelCriminalPaneFxController extends BodyFxControllerBase
 			uiDataMap.put("criminalId", Long.parseLong(criminalId));
 		}
 		
-		Context.getWorkflowManager().submitUserTask(uiDataMap);
+		if(!isDetached()) Context.getWorkflowManager().submitUserTask(uiDataMap);
 	}
 	
 	private String formatPersonIdType(PersonIdType personIdType)

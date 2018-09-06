@@ -174,11 +174,12 @@ remotes {
     webServer {
         host = '10.0.73.50'
         user = 'root'
-        identity = file('build-resources/integration_server_id_rsa')
+        identity = file('build-resources/id_rsa')
+        knownHosts = file('build-resources/known_hosts')
     }
 }
 
-task packageWebStartAndDeploy(group: 'web-start') {
+task packageWebStartAndDeployDev(group: 'web-start') {
     doLast {
         ssh.run {
             session(remotes.webServer) {
@@ -189,15 +190,40 @@ task packageWebStartAndDeploy(group: 'web-start') {
         }
     }
 }
-packageWebStartAndDeploy.dependsOn(packageWebStart)
+packageWebStartAndDeployDev.dependsOn(packageWebStart)
 
-task deploy(group: 'web-start') {
+task packageWebStartAndDeployInt(group: 'web-start') {
+    doLast {
+        ssh.run {
+            session(remotes.webServer) {
+                remove '/opt/int/wlp/usr/servers/bio-client-downloader/clients/bw'
+                execute 'mkdir /opt/int/wlp/usr/servers/bio-client-downloader/clients/bw'
+                put from: new File('build/web-start').listFiles().toList(), into: '/opt/int/wlp/usr/servers/bio-client-downloader/clients/bw'
+            }
+        }
+    }
+}
+packageWebStartAndDeployInt.dependsOn(packageWebStart)
+
+task deploy_dev(group: 'web-start') {
     doLast {
         ssh.run {
             session(remotes.webServer) {
                 remove '/opt/dev/wlp/usr/servers/bio-client-downloader/clients/bw'
                 execute 'mkdir /opt/dev/wlp/usr/servers/bio-client-downloader/clients/bw'
                 put from: new File('build/web-start').listFiles().toList(), into: '/opt/dev/wlp/usr/servers/bio-client-downloader/clients/bw'
+            }
+        }
+    }
+}
+
+task deploy_int(group: 'web-start') {
+    doLast {
+        ssh.run {
+            session(remotes.webServer) {
+                remove '/opt/int/wlp/usr/servers/bio-client-downloader/clients/bw'
+                execute 'mkdir /opt/int/wlp/usr/servers/bio-client-downloader/clients/bw'
+                put from: new File('build/web-start').listFiles().toList(), into: '/opt/int/wlp/usr/servers/bio-client-downloader/clients/bw'
             }
         }
     }

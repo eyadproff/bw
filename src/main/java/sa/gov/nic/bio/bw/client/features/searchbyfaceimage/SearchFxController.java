@@ -79,7 +79,7 @@ public class SearchFxController extends WizardStepFxControllerBase
 		
 		Map<String, Object> uiDataMap = new HashMap<>();
 		uiDataMap.put(Workflow.KEY_WEBSERVICE_RESPONSE, null);
-		Context.getWorkflowManager().submitUserTask(uiDataMap);
+		if(!isDetached()) Context.getWorkflowManager().submitUserTask(uiDataMap);
 	}
 	
 	private void showProgress(boolean bShow)

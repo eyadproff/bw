@@ -63,7 +63,7 @@ public class FetchingPersonInfoPaneFxController extends WizardStepFxControllerBa
 			
 			    Map<String, Object> uiDataMap = new HashMap<>();
 			    uiDataMap.put(KEY_DEVICES_RUNNER_IS_RUNNING, running);
-			    Context.getWorkflowManager().submitUserTask(uiDataMap);
+				if(!isDetached()) Context.getWorkflowManager().submitUserTask(uiDataMap);
 			});
 			
 			if(!deviceManagerGadgetPaneController.isDevicesRunnerRunning())
@@ -79,7 +79,7 @@ public class FetchingPersonInfoPaneFxController extends WizardStepFxControllerBa
 			{
 				Map<String, Object> uiDataMap = new HashMap<>();
 				uiDataMap.put(KEY_DEVICES_RUNNER_IS_RUNNING, Boolean.TRUE);
-				Context.getWorkflowManager().submitUserTask(uiDataMap);
+				if(!isDetached()) Context.getWorkflowManager().submitUserTask(uiDataMap);
 			}
 		}
 		else
@@ -116,6 +116,6 @@ public class FetchingPersonInfoPaneFxController extends WizardStepFxControllerBa
 		
 		Map<String, Object> uiDataMap = new HashMap<>();
 		uiDataMap.put(KEY_RETRY_PERSON_INFO_FETCHING, Boolean.TRUE);
-		Context.getWorkflowManager().submitUserTask(uiDataMap);
+		if(!isDetached()) Context.getWorkflowManager().submitUserTask(uiDataMap);
 	}
 }

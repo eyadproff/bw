@@ -9,6 +9,7 @@ import sa.gov.nic.bio.bw.client.core.interfaces.NotificationController;
 import sa.gov.nic.bio.bw.client.core.interfaces.WorkflowUserTaskController;
 
 import java.net.URL;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Logger;
 
 /**
@@ -28,6 +29,11 @@ public abstract class BodyFxControllerBase extends RegionFxControllerBase implem
 			                        .getResourceAsStream("sa/gov/nic/bio/bw/client/core/images/warning.png"));
 	private Image errorIcon = new Image(Thread.currentThread().getContextClassLoader()
 			                        .getResourceAsStream("sa/gov/nic/bio/bw/client/core/images/error.png"));
+	
+	private AtomicBoolean detached = new AtomicBoolean();
+	
+	public boolean isDetached(){return detached.get();}
+	public void detach(){detached.set(true);}
 	
 	/**
 	 * Show a sliding notification message in the top edge of the body region.

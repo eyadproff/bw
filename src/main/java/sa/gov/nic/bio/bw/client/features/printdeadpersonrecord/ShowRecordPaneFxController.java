@@ -443,7 +443,7 @@ public class ShowRecordPaneFxController extends WizardStepFxControllerBase
 
 		if(idNumber == null)
 		{
-			idNumber = AppUtils.localizeNumbers(String.valueOf(samisId));
+			if(samisId != null) idNumber = AppUtils.localizeNumbers(String.valueOf(samisId));
 			idType = null;
 			lblIdNumber.setText(idNumber);
 			lblIdType.setText(idType);

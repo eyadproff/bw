@@ -327,7 +327,7 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 			
 			Map<String, Object> uiDataMap = new HashMap<>();
 			uiDataMap.put(KEY_VISA_APPLICANT_INFO, visaApplicantInfo);
-			Context.getWorkflowManager().submitUserTask(uiDataMap);
+			if(!isDetached()) Context.getWorkflowManager().submitUserTask(uiDataMap);
 		}
 	}
 	

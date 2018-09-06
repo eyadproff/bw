@@ -37,6 +37,7 @@ import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.utils.RuntimeEnvironment;
 import sa.gov.nic.bio.bw.client.core.workflow.Workflow;
 import sa.gov.nic.bio.bw.client.features.commons.ui.AutoScalingStackPane;
+import sa.gov.nic.bio.bw.client.login.utils.LoginErrorCodes;
 import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
 
 import java.util.HashMap;
@@ -271,37 +272,45 @@ public class LoginPaneFxController extends BodyFxControllerBase implements Persi
 			uiDataMap.put("username", username);
 			uiDataMap.put("password", password);
 			
-			Context.getWorkflowManager().submitUserTask(uiDataMap);
+			if(!isDetached()) Context.getWorkflowManager().submitUserTask(uiDataMap);
 		}
 		else if(tabLoginByFingerprint.isSelected())
 		{
-			boolean rtl = Context.getGuiLanguage().getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT;
-			
-			CaptureFingerprintDialogFxController captureFingerprintDialogFxController =
-										DialogUtils.buildCustomDialogByFxml(Context.getCoreFxController().getStage(),
-					                                                        FXML_CAPTURE_FINGERPRINT, resources, rtl);
-			
-			if(captureFingerprintDialogFxController != null)
+			try
 			{
-				captureFingerprintDialogFxController.setFingerPosition(currentFingerPosition);
-				captureFingerprintDialogFxController.showDialogAndWait();
+				boolean rtl = Context.getGuiLanguage().getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT;
+				CaptureFingerprintDialogFxController captureFingerprintDialogFxController =
+						DialogUtils.buildCustomDialogByFxml(Context.getCoreFxController().getStage(),
+						                                    FXML_CAPTURE_FINGERPRINT, resources, rtl, false);
 				
-				String fingerprint = captureFingerprintDialogFxController.getResult();
-				
-				if(fingerprint != null)
+				if(captureFingerprintDialogFxController != null)
 				{
-					disableUiControls(true);
+					captureFingerprintDialogFxController.setFingerPosition(currentFingerPosition);
+					captureFingerprintDialogFxController.showDialogAndWait();
 					
-					String username = txtUsernameLoginByFingerprint.getText().trim();
+					String fingerprint = captureFingerprintDialogFxController.getResult();
 					
-					Map<String, Object> uiDataMap = new HashMap<>();
-					uiDataMap.put("username", username);
-					uiDataMap.put("fingerprint", fingerprint);
-					uiDataMap.put("fingerPosition", currentFingerPosition.getPosition());
-					
-					Context.getWorkflowManager().submitUserTask(uiDataMap);
+					if(fingerprint != null)
+					{
+						disableUiControls(true);
+						
+						String username = txtUsernameLoginByFingerprint.getText().trim();
+						
+						Map<String, Object> uiDataMap = new HashMap<>();
+						uiDataMap.put("username", username);
+						uiDataMap.put("fingerprint", fingerprint);
+						uiDataMap.put("fingerPosition", currentFingerPosition.getPosition());
+						
+						if(!isDetached()) Context.getWorkflowManager().submitUserTask(uiDataMap);
+					}
+					else captureFingerprintDialogFxController.stopCapturingFingerprint();
 				}
-				else captureFingerprintDialogFxController.stopCapturingFingerprint();
+			}
+			catch(Exception e)
+			{
+				String errorCode = LoginErrorCodes.C003_00009.getCode();
+				String[] errorDetails = {"Failed to load (" + FXML_CAPTURE_FINGERPRINT + ")!"};
+				Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails);
 			}
 		}
 	}
@@ -311,25 +320,34 @@ public class LoginPaneFxController extends BodyFxControllerBase implements Persi
 	{
 		hideNotification();
 		
-		boolean rtl = Context.getGuiLanguage().getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT;
-		ChangePasswordDialogFxController controller = DialogUtils.buildCustomDialogByFxml(
-				Context.getCoreFxController().getStage(), FXML_CHANGE_PASSWORD, resources, rtl);
-		
-		if(controller != null)
+		try
 		{
-			controller.setUsernameAndPassword(txtUsernameLoginByPassword.getText(), txtPassword.getText());
-			controller.requestFocus();
-			controller.showDialogAndWait();
-			boolean passwordChanged = controller.isPasswordChangedSuccessfully();
+			boolean rtl = Context.getGuiLanguage().getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT;
+			ChangePasswordDialogFxController controller = DialogUtils.buildCustomDialogByFxml(
+					Context.getCoreFxController().getStage(), FXML_CHANGE_PASSWORD, resources, rtl, false);
 			
-			if(passwordChanged)
+			if(controller != null)
 			{
-				txtPassword.setText("");
-				showSuccessNotification(resources.getString("changePassword.success"));
+				controller.setUsernameAndPassword(txtUsernameLoginByPassword.getText(), txtPassword.getText());
+				controller.requestFocus();
+				controller.showDialogAndWait();
+				boolean passwordChanged = controller.isPasswordChangedSuccessfully();
+				
+				if(passwordChanged)
+				{
+					txtPassword.setText("");
+					showSuccessNotification(resources.getString("changePassword.success"));
+				}
+				
+				if(txtUsernameLoginByPassword.getText().isEmpty()) txtUsernameLoginByPassword.requestFocus();
+				else txtPassword.requestFocus();
 			}
-			
-			if(txtUsernameLoginByPassword.getText().isEmpty()) txtUsernameLoginByPassword.requestFocus();
-			else txtPassword.requestFocus();
+		}
+		catch(Exception e)
+		{
+			String errorCode = LoginErrorCodes.C003_00010.getCode();
+			String[] errorDetails = {"Failed to load (" + FXML_CHANGE_PASSWORD + ")!"};
+			Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails);
 		}
 	}
 	
@@ -438,20 +456,29 @@ public class LoginPaneFxController extends BodyFxControllerBase implements Persi
 	@FXML
 	private void onChangeFingerprintButtonClicked(ActionEvent actionEvent)
 	{
-		boolean rtl = Context.getGuiLanguage().getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT;
-		ChangeFingerprintDialogFxController controller = DialogUtils.buildCustomDialogByFxml(
-				Context.getCoreFxController().getStage(), FXML_CHANGE_FINGERPRINT, resources, rtl);
-		
-		if(controller != null)
+		try
 		{
-			controller.setCurrentFingerPosition(currentFingerPosition);
-			boolean confirmed = controller.showDialogAndWait();
+			boolean rtl = Context.getGuiLanguage().getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT;
+			ChangeFingerprintDialogFxController controller = DialogUtils.buildCustomDialogByFxml(
+					Context.getCoreFxController().getStage(), FXML_CHANGE_FINGERPRINT, resources, rtl, false);
 			
-			if(confirmed)
+			if(controller != null)
 			{
-				FingerPosition fingerPosition = controller.getCurrentFingerPosition();
-				if(fingerPosition != null) activateFingerprint(fingerPosition);
+				controller.setCurrentFingerPosition(currentFingerPosition);
+				boolean confirmed = controller.showDialogAndWait();
+				
+				if(confirmed)
+				{
+					FingerPosition fingerPosition = controller.getCurrentFingerPosition();
+					if(fingerPosition != null) activateFingerprint(fingerPosition);
+				}
 			}
+		}
+		catch(Exception e)
+		{
+			String errorCode = LoginErrorCodes.C003_00011.getCode();
+			String[] errorDetails = {"Failed to load (" + FXML_CHANGE_FINGERPRINT + ")!"};
+			Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails);
 		}
 	}
 	

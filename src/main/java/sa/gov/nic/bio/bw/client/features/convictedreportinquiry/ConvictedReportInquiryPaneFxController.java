@@ -20,6 +20,7 @@ import javafx.util.Callback;
 import sa.gov.nic.bio.bw.client.core.BodyFxControllerBase;
 import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
+import sa.gov.nic.bio.bw.client.core.utils.DialogUtils;
 import sa.gov.nic.bio.bw.client.core.utils.GuiLanguage;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.workflow.Workflow;
@@ -39,6 +40,9 @@ public class ConvictedReportInquiryPaneFxController extends BodyFxControllerBase
 {
 	public static final String KEY_GENERAL_FILE_NUMBER = "GENERAL_FILE_NUMBER";
 	
+	private static final String FXML_SHOW_REPORT_DIALOG =
+								"sa/gov/nic/bio/bw/client/features/convictedreportinquiry/fxml/show_report_dialog.fxml";
+	
 	@FXML private TableView<ConvictedReport> tvConvictedReports;
 	@FXML private TableColumn<ConvictedReport, ConvictedReport> tcSequence;
 	@FXML private TableColumn<ConvictedReport, String> tvName;
@@ -57,7 +61,7 @@ public class ConvictedReportInquiryPaneFxController extends BodyFxControllerBase
 	
 	private LookupTask lookupTask;
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({"unchecked", "deprecation"})
 	@Override
 	protected void initialize()
 	{
@@ -222,6 +226,7 @@ public class ConvictedReportInquiryPaneFxController extends BodyFxControllerBase
 				{
 					List<ConvictedReport> convictedReports = serviceResponse.getResult();
 					tvConvictedReports.getItems().setAll(convictedReports);
+					tvConvictedReports.requestFocus();
 				}
 				else reportNegativeResponse(serviceResponse.getErrorCode(), serviceResponse.getException(),
 					                        serviceResponse.getErrorDetails());
@@ -298,6 +303,7 @@ public class ConvictedReportInquiryPaneFxController extends BodyFxControllerBase
 	@FXML
 	private void onInquiryButtonClicked(ActionEvent actionEvent)
 	{
+		tvConvictedReports.getItems().clear();
 		disableUiControls(true);
 		
 		String sGeneralFileNumber = txtGeneralFileNumber.getText();
@@ -306,13 +312,33 @@ public class ConvictedReportInquiryPaneFxController extends BodyFxControllerBase
 		Map<String, Object> uiDataMap = new HashMap<>();
 		uiDataMap.put(KEY_GENERAL_FILE_NUMBER, generalFileNumber);
 		
-		Context.getWorkflowManager().submitUserTask(uiDataMap);
+		if(!isDetached()) Context.getWorkflowManager().submitUserTask(uiDataMap);
 	}
 	
 	@FXML
 	private void onShowReportButtonClicked(ActionEvent actionEvent)
 	{
-		ConvictedReport selectedItem = tvConvictedReports.getSelectionModel().getSelectedItem();
-		System.out.println("selectedItem = " + selectedItem);
+		hideNotification();
+		
+		boolean rtl = Context.getGuiLanguage().getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT;
+		try
+		{
+			
+			ShowReportDialogFxController controller = DialogUtils.buildCustomDialogByFxml(
+					Context.getCoreFxController().getStage(), FXML_SHOW_REPORT_DIALOG, resources, rtl, true);
+			
+			if(controller != null)
+			{
+				ConvictedReport selectedItem = tvConvictedReports.getSelectionModel().getSelectedItem();
+				controller.setConvictedReport(selectedItem);
+				controller.show();
+			}
+		}
+		catch(Exception e)
+		{
+			String errorCode = ConvictedReportInquiryErrorCodes.C014_00002.getCode();
+			String[] errorDetails = {"Failed to load (" + FXML_SHOW_REPORT_DIALOG + ")!"};
+			Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails);
+		}
 	}
 }

@@ -30,7 +30,6 @@ import sa.gov.nic.bio.bcl.utils.CancelCommand;
 import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.interfaces.IdleMonitorRegisterer;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -235,31 +234,16 @@ public class DialogUtils
 	}
 	
 	public static <T> T buildCustomDialogByFxml(Stage ownerStage, String fxml, ResourceBundle resourceBundle,
-	                                            boolean rtl)
+	                                            boolean rtl, boolean resizable) throws Exception
 	{
 		URL fxmlResource = Thread.currentThread().getContextClassLoader().getResource(fxml);
-		
-		if(fxmlResource == null)
-		{
-			// TODO: handle error
-			return null;
-		}
-		
 		FXMLLoader loader = new FXMLLoader(fxmlResource, resourceBundle);
 		loader.setClassLoader(Context.getFxClassLoader());
-		Dialog<ButtonType> dialog;
-		try
-		{
-			dialog = loader.load();
-		}
-		catch(IOException e)
-		{
-			e.printStackTrace();
-			// TODO: handle error
-			return null;
-		}
+		Dialog<ButtonType> dialog = loader.load();
 		
 		dialog.initOwner(ownerStage);
+		dialog.setResizable(resizable);
+		
 		Scene scene = dialog.getDialogPane().getScene();
 		scene.setNodeOrientation(rtl ? NodeOrientation.RIGHT_TO_LEFT : NodeOrientation.LEFT_TO_RIGHT);
 		

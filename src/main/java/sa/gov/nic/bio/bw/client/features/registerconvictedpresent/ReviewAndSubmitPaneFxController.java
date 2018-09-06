@@ -298,8 +298,7 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 			lblJudgmentIssuer.setText(AppUtils.localizeNumbers(judgementInfo.getJudgIssuer()));
 			
 			String policeFileNum = judgementInfo.getPoliceFileNum();
-			if(policeFileNum != null)
-						lblPoliceFileNumber.setText(AppUtils.localizeNumbers(policeFileNum));
+			if(policeFileNum != null) lblPoliceFileNumber.setText(AppUtils.localizeNumbers(policeFileNum));
 			lblJudgmentNumber.setText(AppUtils.localizeNumbers(judgementInfo.getJudgNum()));
 			
 			Long arrestDate = judgementInfo.getArrestDate();
@@ -452,7 +451,7 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 			
 			Map<String, Object> uiDataMap = new HashMap<>();
 			uiDataMap.put(KEY_FINAL_CONVICTED_REPORT, convictedReport);
-			Context.getWorkflowManager().submitUserTask(uiDataMap);
+			if(!isDetached()) Context.getWorkflowManager().submitUserTask(uiDataMap);
 		}
 	}
 	

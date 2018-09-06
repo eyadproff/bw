@@ -132,7 +132,20 @@ public class CoreFxController extends FxControllerBase implements IdleMonitorReg
 	
 	public void logout()
 	{
+		GuiUtils.showNode(menuPane, false);
+		GuiUtils.showNode(headerPane, false);
+		GuiUtils.showNode(devicesRunnerGadgetPane, false);
+		GuiUtils.showNode(footerPane, true);
 		clearWizardBar();
+		showMenuTransitionProgressIndicator(true);
+		
+		final BodyFxControllerBase controller = currentBodyController;
+		if(controller != null)
+		{
+			controller.detach();
+			Platform.runLater(controller::onDetachingFromScene);
+		}
+		
 		Map<String, Object> uiDataMap = new HashMap<>();
 		uiDataMap.put(Workflow.KEY_SIGNAL_TYPE, SignalType.LOGOUT);
 		Context.getWorkflowManager().submitUserTask(uiDataMap);
@@ -140,11 +153,21 @@ public class CoreFxController extends FxControllerBase implements IdleMonitorReg
 	
 	public void goToMenu(Class<?> menuWorkflowClass)
 	{
+		clearWizardBar();
+		showMenuTransitionProgressIndicator(true);
+		
+		final BodyFxControllerBase controller = currentBodyController;
+		if(controller != null)
+		{
+			controller.detach();
+			Platform.runLater(controller::onDetachingFromScene);
+		}
+		
 		newMenuSelected = true;
-		Map<String, Object> dataMap = new HashMap<>();
-		dataMap.put(Workflow.KEY_SIGNAL_TYPE, SignalType.MENU_NAVIGATION);
-		dataMap.put(HomeWorkflow.KEY_MENU_WORKFLOW_CLASS, menuWorkflowClass);
-		Context.getWorkflowManager().submitUserTask(dataMap);
+		Map<String, Object> uiDataMap = new HashMap<>();
+		uiDataMap.put(Workflow.KEY_SIGNAL_TYPE, SignalType.MENU_NAVIGATION);
+		uiDataMap.put(HomeWorkflow.KEY_MENU_WORKFLOW_CLASS, menuWorkflowClass);
+		Context.getWorkflowManager().submitUserTask(uiDataMap);
 	}
 	
 	/**
@@ -154,37 +177,54 @@ public class CoreFxController extends FxControllerBase implements IdleMonitorReg
 	 * @param controllerClass class of the new/existing controller class of the body
 	 * @param uiInputData data passed by the workflow manager to the controller
 	 */
-	private void renderBodyForm(Class<?> controllerClass, Map<String, Object> uiInputData)
+	private BodyFxControllerBase renderBodyForm(Class<?> controllerClass, Map<String, Object> uiInputData)
 	{
-		if(!newMenuSelected && currentBodyController != null && currentBodyController.getClass() == controllerClass)
+		synchronized(CoreFxController.class)
 		{
-			// same form
-			Platform.runLater(() -> currentBodyController.onWorkflowUserTaskLoad(false, uiInputData));
-			
-		}
-		else // new form
-		{
-			newMenuSelected = false;
-			
-			try
+			if(!newMenuSelected && currentBodyController != null && currentBodyController.getClass() == controllerClass)
 			{
-				ControllerResourcesLocator controllerResourcesLocator = (ControllerResourcesLocator)
-																controllerClass.getDeclaredConstructor().newInstance();
-				if(currentBodyController != null) Platform.runLater(currentBodyController::onDetachingFromScene);
-				currentBodyController = renderNewBodyForm(controllerResourcesLocator);
+				// same form
+				final BodyFxControllerBase controller = currentBodyController;
 				
-				if(currentBodyController != null)
+				if(!controller.isDetached())
+					Platform.runLater(() -> controller.onWorkflowUserTaskLoad(false, uiInputData));
+				
+			}
+			else // new form
+			{
+				newMenuSelected = false;
+				
+				try
 				{
-					Platform.runLater(() -> currentBodyController.onWorkflowUserTaskLoad(true, uiInputData));
+					ControllerResourcesLocator controllerResourcesLocator = (ControllerResourcesLocator)
+							controllerClass.getDeclaredConstructor().newInstance();
+					
+					final BodyFxControllerBase oldController = currentBodyController;
+					if(oldController != null)
+					{
+						oldController.detach();
+						Platform.runLater(oldController::onDetachingFromScene);
+					}
+					final BodyFxControllerBase newController = renderNewBodyForm(controllerResourcesLocator);
+					currentBodyController = newController;
+					
+					Platform.runLater(() ->
+					                  {
+						                  if(newController != null && !newController.isDetached())
+							                  newController.onWorkflowUserTaskLoad(true, uiInputData);
+					                  });
+				}
+				catch(InstantiationException | IllegalAccessException | NoSuchMethodException
+																						| InvocationTargetException e)
+				{
+					String errorCode = CoreErrorCodes.C002_00001.getCode();
+					String[] errorDetails = {"Failed to load the class " + controllerClass.getName()};
+					showErrorDialog(errorCode, e, errorDetails);
 				}
 			}
-			catch(InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e)
-			{
-				String errorCode = CoreErrorCodes.C002_00001.getCode();
-				String[] errorDetails = {"Failed to load the class " + controllerClass.getName()};
-				showErrorDialog(errorCode, e, errorDetails);
-			}
 		}
+		
+		return currentBodyController;
 	}
 	
 	/**
@@ -232,7 +272,7 @@ public class CoreFxController extends FxControllerBase implements IdleMonitorReg
 		{
 			loadedPane = paneLoader.load();
 			FxControllerBase fxController = paneLoader.getController();
-			fxController.postInitialization(paneLoader.getRoot());
+			Platform.runLater(() -> fxController.postInitialization(paneLoader.getRoot()));
 		}
 		catch(IOException e)
 		{
