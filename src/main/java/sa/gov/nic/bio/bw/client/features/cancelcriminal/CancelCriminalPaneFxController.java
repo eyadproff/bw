@@ -25,6 +25,7 @@ import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class CancelCriminalPaneFxController extends BodyFxControllerBase
@@ -225,7 +226,7 @@ public class CancelCriminalPaneFxController extends BodyFxControllerBase
 			uiDataMap.put("criminalId", Long.parseLong(criminalId));
 		}
 		
-		Context.getWorkflowManager().submitUserTask(uiDataMap);
+		if(!isDetached()) Context.getWorkflowManager().submitUserTask(uiDataMap);
 	}
 	
 	private String formatPersonIdType(PersonIdType personIdType)
@@ -238,7 +239,7 @@ public class CancelCriminalPaneFxController extends BodyFxControllerBase
 		}
 		else sb.append(personIdType.getDescriptionEN());
 		
-		return AppUtils.replaceNumbersOnly(sb.toString(), Context.getGuiLanguage().getLocale());
+		return AppUtils.localizeNumbers(sb.toString(), Locale.getDefault(), false);
 	}
 	
 	private void initializeLookupTask()

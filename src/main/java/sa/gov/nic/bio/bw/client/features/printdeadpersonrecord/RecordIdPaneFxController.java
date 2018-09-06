@@ -44,7 +44,7 @@ public class RecordIdPaneFxController extends WizardStepFxControllerBase
 		
 		    Map<String, Object> uiDataMap = new HashMap<>();
 		    uiDataMap.put(KEY_RECORD_ID, Long.parseLong(txtRecordId.getText()));
-		    Context.getWorkflowManager().submitUserTask(uiDataMap);
+			if(!isDetached()) Context.getWorkflowManager().submitUserTask(uiDataMap);
 		});
 	}
 	

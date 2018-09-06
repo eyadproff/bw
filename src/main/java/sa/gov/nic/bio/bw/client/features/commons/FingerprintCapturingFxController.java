@@ -67,7 +67,6 @@ import java.util.Base64;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
@@ -1987,9 +1986,9 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 		gridPane.add(lblIntensity, 0, 2);
 		gridPane.add(lblDuplicatedFingerprint, 0, 3);
 		
-		String sNfiq = AppUtils.replaceNumbersOnly(String.valueOf(nfiq), Locale.getDefault());
-		String sMinutiaeCount = AppUtils.replaceNumbersOnly(String.valueOf(minutiaeCount), Locale.getDefault());
-		String sIntensity = AppUtils.replaceNumbersOnly(String.valueOf(imageIntensity), Locale.getDefault()) + "%";
+		String sNfiq = AppUtils.localizeNumbers(String.valueOf(nfiq));
+		String sMinutiaeCount = AppUtils.localizeNumbers(String.valueOf(minutiaeCount));
+		String sIntensity = AppUtils.localizeNumbers(String.valueOf(imageIntensity)) + "%";
 		String sDuplicatedFingerprint = resources.getString(duplicated ? "label.tooltip.yes" : "label.tooltip.no");
 		
 		TextField txtNfiq = new TextField(sNfiq);

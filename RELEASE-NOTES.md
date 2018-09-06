@@ -7,7 +7,17 @@
 | NEW    | new feature added            |
 | CHN    | change functionality         |
 
-<sub><b>VERSION SCHEMA:</b> vYYYY.MM.#SEQ</sub>
+**VERSION SCHEMA:** vYYYY.MM.#SEQ
+
+---
+
+## v2018.09.3
+
+- NEW: Convicted Report Inquiry.
+- ENH: remove any name part that equals to '-'.
+- ENH: make all number-labels to show arabic numbers in case of choosing Arabic language.
+- FIX: change the reports font from 'Arial' to 'Times New Roman'.
+- ENH: improve the workflow engine.
 
 ---
 

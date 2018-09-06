@@ -34,14 +34,12 @@ import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.wizard.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.client.features.searchbyfaceimage.ui.ToggleTitledPane;
 import sa.gov.nic.bio.bw.client.features.searchbyfaceimage.webservice.Candidate;
-import sa.gov.nic.bio.bw.client.features.searchbyfaceimage.workflow.SearchByFaceImageWorkflow;
 
 import java.io.ByteArrayInputStream;
 import java.net.URL;
 import java.util.Base64;
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 public class ShowResultsFxController extends WizardStepFxControllerBase
@@ -193,7 +191,7 @@ public class ShowResultsFxController extends WizardStepFxControllerBase
 			candidateImageView.setPreserveRatio(true);
 			candidateImageView.fitHeightProperty().bind(spCandidates.heightProperty().subtract(
 											hScrollbarHeight[0] * 3 + 2)); // 2 = top border + bottom border
-			String scoreTitle = AppUtils.replaceNumbersOnly(String.valueOf(candidate.getScore()), Locale.getDefault());
+			String scoreTitle = AppUtils.localizeNumbers(String.valueOf(candidate.getScore()));
 			
 			GuiUtils.attachImageDialog(Context.getCoreFxController(), candidateImageView, scoreTitle,
 			                           resources.getString("label.contextMenu.showImage"), false);
@@ -225,19 +223,21 @@ public class ShowResultsFxController extends WizardStepFxControllerBase
 			    String fatherName = candidate.getFatherName();
 			    String familyName = candidate.getFamilyName();
 			
-			    if(firstName != null && firstName.trim().isEmpty()) firstName = null;
-			    if(fatherName != null && fatherName.trim().isEmpty()) fatherName = null;
-			    if(familyName != null && familyName.trim().isEmpty()) familyName = null;
+			    if(firstName != null && (firstName.trim().isEmpty() || firstName.trim().equals("-"))) firstName = null;
+			    if(fatherName != null && (fatherName.trim().isEmpty() || fatherName.trim().equals("-")))
+			    	                                                                                fatherName = null;
+			    if(familyName != null && (familyName.trim().isEmpty() || familyName.trim().equals("-")))
+			    	                                                                                familyName = null;
 			
-			    String sBioId = AppUtils.replaceNumbersOnly(String.valueOf(bioId), Locale.getDefault());
-			    String sScore = AppUtils.replaceNumbersOnly(String.valueOf(score), Locale.getDefault());
+			    String sBioId = AppUtils.localizeNumbers(String.valueOf(bioId));
+			    String sScore = AppUtils.localizeNumbers(String.valueOf(score));
 			
 			    lblBioId.setText(sBioId);
 			    lblScore.setText(sScore);
 			
 			    if(samisId > 0)
 			    {
-			        String sSamisId = AppUtils.replaceNumbersOnly(String.valueOf(samisId), Locale.getDefault());
+			        String sSamisId = AppUtils.localizeNumbers(String.valueOf(samisId));
 			        lblSamisId.setText(sSamisId);
 			    }
 			

@@ -47,7 +47,7 @@ public class PersonIdPaneFxController extends WizardStepFxControllerBase
 			
 			Map<String, Object> uiDataMap = new HashMap<>();
 			uiDataMap.put(KEY_PERSON_INFO_INQUIRY_PERSON_ID, Long.parseLong(txtPersonId.getText()));
-			Context.getWorkflowManager().submitUserTask(uiDataMap);
+			if(!isDetached()) Context.getWorkflowManager().submitUserTask(uiDataMap);
 		});
 	}
 	

@@ -169,28 +169,28 @@ public class PersonInfoPaneFxController extends WizardStepFxControllerBase
 			String grandfatherName = (String) uiInputData.get(KEY_PERSON_INFO_GRANDFATHER_NAME);
 			String familyName = (String) uiInputData.get(KEY_PERSON_INFO_FAMILY_NAME);
 			
-			if(firstName != null && !firstName.trim().isEmpty())
+			if(firstName != null && !firstName.trim().isEmpty() && !firstName.trim().equals("-"))
 			{
 				txtFirstName.setText(firstName);
 				if(firstNameDisabled == null || firstNameDisabled) txtFirstName.setDisable(true);
 			}
 			else focusedNode = txtFirstName;
 			
-			if(fatherName != null && !fatherName.trim().isEmpty())
+			if(fatherName != null && !fatherName.trim().isEmpty() && !fatherName.trim().equals("-"))
 			{
 				txtFatherName.setText(fatherName);
 				if(fatherNameDisabled == null || fatherNameDisabled) txtFatherName.setDisable(true);
 			}
 			else if(focusedNode == null) focusedNode = txtFatherName;
 			
-			if(grandfatherName != null && !grandfatherName.trim().isEmpty())
+			if(grandfatherName != null && !grandfatherName.trim().isEmpty() && !grandfatherName.trim().equals("-"))
 			{
 				txtGrandfatherName.setText(grandfatherName);
 				if(grandfatherNameDisabled == null || grandfatherNameDisabled) txtGrandfatherName.setDisable(true);
 			}
 			else if(focusedNode == null) focusedNode = txtGrandfatherName;
 			
-			if(familyName != null && !familyName.trim().isEmpty())
+			if(familyName != null && !familyName.trim().isEmpty() && !familyName.trim().equals("-"))
 			{
 				txtFamilyName.setText(familyName);
 				if(familyNameDisabled == null || familyNameDisabled) txtFamilyName.setDisable(true);

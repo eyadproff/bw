@@ -97,7 +97,7 @@ public class HomePaneFxController extends BodyFxControllerBase
 			try
 			{
 				String sDateTime = isDate ? AppUtils.formatHijriGregorianDateTime(value) :
-						AppUtils.replaceNumbersOnly(String.valueOf(value), Locale.getDefault());
+											AppUtils.localizeNumbers(String.valueOf(value));
 				valueLabel.setText(sDateTime);
 			}
 			catch(DateTimeException e) // date out of range?
@@ -198,8 +198,8 @@ public class HomePaneFxController extends BodyFxControllerBase
 		location = location.trim().replaceAll("\\s+", " ");
 		
 		// localize numbers
-		operator = AppUtils.replaceNumbersOnly(operator, Locale.getDefault());
-		location = AppUtils.replaceNumbersOnly(location, Locale.getDefault());
+		operator = AppUtils.localizeNumbers(operator, Locale.getDefault(), false);
+		location = AppUtils.localizeNumbers(location, Locale.getDefault(), false);
 		
 		Context.getCoreFxController().getHeaderPaneController().setUsername(username);
 		Context.getCoreFxController().getHeaderPaneController().setOperatorName(operator);

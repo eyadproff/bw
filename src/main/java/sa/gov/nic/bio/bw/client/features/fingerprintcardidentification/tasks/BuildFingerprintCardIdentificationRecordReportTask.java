@@ -16,7 +16,6 @@ import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.Base64;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
 public class BuildFingerprintCardIdentificationRecordReportTask extends Task<JasperPrint>
@@ -83,14 +82,7 @@ public class BuildFingerprintCardIdentificationRecordReportTask extends Task<Jas
 		String fatherName = fingerprintCardIdentificationRecordReport.getFatherName();
 		String grandfatherName = fingerprintCardIdentificationRecordReport.getGrandfatherName();
 		String familyName = fingerprintCardIdentificationRecordReport.getFamilyName();
-		
-		if(firstName == null) firstName = "";
-		if(fatherName == null) fatherName = "";
-		if(grandfatherName == null) grandfatherName = "";
-		if(familyName == null) familyName = "";
-		
-		String fullName = firstName + " " + fatherName + " " + grandfatherName + " " + familyName;
-		fullName = fullName.trim().replaceAll("\\s+", " "); // remove extra spaces
+		String fullName = AppUtils.constructName(firstName, fatherName, grandfatherName, familyName);
 		params.put(PARAMETER_NAME, fullName);
 		
 		params.put(PARAMETER_NATIONALITY, fingerprintCardIdentificationRecordReport.getNationality());
@@ -105,7 +97,7 @@ public class BuildFingerprintCardIdentificationRecordReportTask extends Task<Jas
 		params.put(PARAMETER_LOGO, Thread.currentThread().getContextClassLoader().getResourceAsStream(LOGO_FILE));
 		
 		UserInfo userInfo = (UserInfo) Context.getUserSession().getAttribute("userInfo");
-		String inquirerId = AppUtils.replaceNumbersOnly(String.valueOf(userInfo.getOperatorId()), Locale.getDefault());
+		String inquirerId = AppUtils.localizeNumbers(String.valueOf(userInfo.getOperatorId()));
 		params.put(PARAMETER_INQUIRER_ID, inquirerId);
 		
 		params.put(PARAMETER_INQUIRY_TIME, AppUtils.formatHijriGregorianDateTime(

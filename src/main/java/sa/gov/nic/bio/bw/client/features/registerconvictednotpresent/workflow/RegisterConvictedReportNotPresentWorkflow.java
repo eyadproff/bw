@@ -16,6 +16,8 @@ import sa.gov.nic.bio.bw.client.features.commons.webservice.Finger;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.FingerprintInquiryStatusResult;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.PersonInfo;
 import sa.gov.nic.bio.bw.client.features.commons.workflow.FetchingFingerprintsService;
+import sa.gov.nic.bio.bw.client.features.commons.workflow.FingerprintInquiryService;
+import sa.gov.nic.bio.bw.client.features.commons.workflow.FingerprintInquiryStatusCheckerService;
 import sa.gov.nic.bio.bw.client.features.commons.workflow.GetFingerprintAvailabilityService;
 import sa.gov.nic.bio.bw.client.features.commons.workflow.GetPersonInfoByIdService;
 import sa.gov.nic.bio.bw.client.features.registerconvictednotpresent.FetchingFingerprintsPaneFxController;
@@ -30,8 +32,6 @@ import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.ShowReportPane
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.ConvictedReport;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.workflow.ConvictedReportLookupService;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.workflow.ConvictedReportResponse;
-import sa.gov.nic.bio.bw.client.features.commons.workflow.FingerprintInquiryService;
-import sa.gov.nic.bio.bw.client.features.commons.workflow.FingerprintInquiryStatusCheckerService;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.workflow.GeneratingGeneralFileNumberService;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.workflow.SubmittingConvictedReportService;
 import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;

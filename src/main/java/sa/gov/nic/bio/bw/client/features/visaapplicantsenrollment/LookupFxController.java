@@ -61,6 +61,6 @@ public class LookupFxController extends WizardStepFxControllerBase
 	
 	private void submitTask()
 	{
-		Context.getWorkflowManager().submitUserTask(new HashMap<>());
+		if(!isDetached()) Context.getWorkflowManager().submitUserTask(new HashMap<>());
 	}
 }

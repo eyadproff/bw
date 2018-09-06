@@ -42,7 +42,6 @@ import java.time.LocalDate;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
@@ -209,18 +208,19 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 			
 			String subjOccupation = convictedReport.getSubjOccupation();
 			if(subjOccupation != null && !subjOccupation.trim().isEmpty())
-				lblOccupation.setText(AppUtils.replaceNumbersOnly(subjOccupation, Locale.getDefault()));
+													lblOccupation.setText(AppUtils.localizeNumbers(subjOccupation));
 			
 			String subjBirthPlace = convictedReport.getSubjBirthPlace();
 			if(subjBirthPlace != null && !subjBirthPlace.trim().isEmpty())
-				lblBirthPlace.setText(AppUtils.replaceNumbersOnly(subjBirthPlace, Locale.getDefault()));
+													lblBirthPlace.setText(AppUtils.localizeNumbers(subjBirthPlace));
 			
 			Long subjBirthDate = convictedReport.getSubjBirthDate();
 			if(subjBirthDate != null)
 				lblBirthDate.setText(AppUtils.formatHijriGregorianDate(subjBirthDate * 1000));
 			
 			String subjDocId = convictedReport.getSubjDocId();
-			if(subjDocId != null && !subjDocId.trim().isEmpty()) lblIdNumber.setText(subjDocId);
+			if(subjDocId != null && !subjDocId.trim().isEmpty())
+															lblIdNumber.setText(AppUtils.localizeNumbers(subjDocId));
 			
 			@SuppressWarnings("unchecked") List<IdType> idTypes = (List<IdType>)
 														Context.getUserSession().getAttribute("lookups.idTypes");
@@ -239,8 +239,7 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 					}
 				}
 				
-				if(idType != null)
-								lblIdType.setText(AppUtils.replaceNumbersOnly(idType.getDesc(), Locale.getDefault()));
+				if(idType != null) lblIdType.setText(AppUtils.localizeNumbers(idType.getDesc()));
 			}
 			
 			Long subjDocIssDate = convictedReport.getSubjDocIssDate();
@@ -296,55 +295,39 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 				}
 			}
 			
-			lblJudgmentIssuer.setText(AppUtils.replaceNumbersOnly(judgementInfo.getJudgIssuer(), Locale.getDefault()));
+			lblJudgmentIssuer.setText(AppUtils.localizeNumbers(judgementInfo.getJudgIssuer()));
 			
 			String policeFileNum = judgementInfo.getPoliceFileNum();
-			if(policeFileNum != null)
-						lblPoliceFileNumber.setText(AppUtils.replaceNumbersOnly(policeFileNum, Locale.getDefault()));
-			lblJudgmentNumber.setText(AppUtils.replaceNumbersOnly(judgementInfo.getJudgNum(), Locale.getDefault()));
+			if(policeFileNum != null) lblPoliceFileNumber.setText(AppUtils.localizeNumbers(policeFileNum));
+			lblJudgmentNumber.setText(AppUtils.localizeNumbers(judgementInfo.getJudgNum()));
 			
 			Long arrestDate = judgementInfo.getArrestDate();
 			if(arrestDate != null)
 							lblArrestDate.setText(AppUtils.formatHijriGregorianDate(arrestDate * 1000));
 			
 			lblJudgmentDate.setText(AppUtils.formatHijriGregorianDate(judgementInfo.getJudgDate() * 1000));
-			lblTazeerLashes.setText(AppUtils.replaceNumbersOnly(
-					String.valueOf(judgementInfo.getJudgTazeerLashesCount()), Locale.getDefault()));
-			lblHadLashes.setText(AppUtils.replaceNumbersOnly(
-					String.valueOf(judgementInfo.getJudgHadLashesCount()), Locale.getDefault()));
-			lblFine.setText(AppUtils.replaceNumbersOnly(
-					String.valueOf(judgementInfo.getJudgFine()), Locale.getDefault()));
-			lblJailYears.setText(AppUtils.replaceNumbersOnly(
-					String.valueOf(judgementInfo.getJailYearCount()), Locale.getDefault()));
-			lblJailMonths.setText(AppUtils.replaceNumbersOnly(
-					String.valueOf(judgementInfo.getJailMonthCount()), Locale.getDefault()));
-			lblJailDays.setText(AppUtils.replaceNumbersOnly(
-					String.valueOf(judgementInfo.getJailDayCount()), Locale.getDefault()));
-			lblTravelBanYears.setText(AppUtils.replaceNumbersOnly(
-					String.valueOf(judgementInfo.getTrvlBanYearCount()), Locale.getDefault()));
-			lblTravelBanMonths.setText(AppUtils.replaceNumbersOnly(
-					String.valueOf(judgementInfo.getTrvlBanMonthCount()), Locale.getDefault()));
-			lblTravelBanDays.setText(AppUtils.replaceNumbersOnly(
-					String.valueOf(judgementInfo.getTrvlBanDayCount()), Locale.getDefault()));
-			lblExilingYears.setText(AppUtils.replaceNumbersOnly(
-					String.valueOf(judgementInfo.getExileYearCount()), Locale.getDefault()));
-			lblExilingMonths.setText(AppUtils.replaceNumbersOnly(
-					String.valueOf(judgementInfo.getExileMonthCount()), Locale.getDefault()));
-			lblExilingDays.setText(AppUtils.replaceNumbersOnly(
-					String.valueOf(judgementInfo.getExileDayCount()), Locale.getDefault()));
-			lblDeportationYears.setText(AppUtils.replaceNumbersOnly(
-					String.valueOf(judgementInfo.getDeportYearCount()), Locale.getDefault()));
-			lblDeportationMonths.setText(AppUtils.replaceNumbersOnly(
-					String.valueOf(judgementInfo.getDeportMonthCount()), Locale.getDefault()));
-			lblDeportationDays.setText(AppUtils.replaceNumbersOnly(
-					String.valueOf(judgementInfo.getDeportDayCount()), Locale.getDefault()));
+			lblTazeerLashes.setText(AppUtils.localizeNumbers(String.valueOf(judgementInfo.getJudgTazeerLashesCount())));
+			lblHadLashes.setText(AppUtils.localizeNumbers(String.valueOf(judgementInfo.getJudgHadLashesCount())));
+			lblFine.setText(AppUtils.localizeNumbers(String.valueOf(judgementInfo.getJudgFine())));
+			lblJailYears.setText(AppUtils.localizeNumbers(String.valueOf(judgementInfo.getJailYearCount())));
+			lblJailMonths.setText(AppUtils.localizeNumbers(String.valueOf(judgementInfo.getJailMonthCount())));
+			lblJailDays.setText(AppUtils.localizeNumbers(String.valueOf(judgementInfo.getJailDayCount())));
+			lblTravelBanYears.setText(AppUtils.localizeNumbers(String.valueOf(judgementInfo.getTrvlBanYearCount())));
+			lblTravelBanMonths.setText(AppUtils.localizeNumbers(String.valueOf(judgementInfo.getTrvlBanMonthCount())));
+			lblTravelBanDays.setText(AppUtils.localizeNumbers(String.valueOf(judgementInfo.getTrvlBanDayCount())));
+			lblExilingYears.setText(AppUtils.localizeNumbers(String.valueOf(judgementInfo.getExileYearCount())));
+			lblExilingMonths.setText(AppUtils.localizeNumbers(String.valueOf(judgementInfo.getExileMonthCount())));
+			lblExilingDays.setText(AppUtils.localizeNumbers(String.valueOf(judgementInfo.getExileDayCount())));
+			lblDeportationYears.setText(AppUtils.localizeNumbers(String.valueOf(judgementInfo.getDeportYearCount())));
+			lblDeportationMonths.setText(AppUtils.localizeNumbers(String.valueOf(judgementInfo.getDeportMonthCount())));
+			lblDeportationDays.setText(AppUtils.localizeNumbers(String.valueOf(judgementInfo.getDeportDayCount())));
 			cbFinalDeportation.setSelected(judgementInfo.isFinalDeport());
 			cbLibel.setSelected(judgementInfo.isLibel());
 			cbCovenant.setSelected(judgementInfo.isCovenant());
 			
 			String judgOthers = judgementInfo.getJudgOthers();
 			if(judgOthers != null && !judgOthers.trim().isEmpty())
-									lblOther.setText(AppUtils.replaceNumbersOnly(judgOthers, Locale.getDefault()));
+															lblOther.setText(AppUtils.localizeNumbers(judgOthers));
 			
 			// make the checkboxes look like they are enabled
 			cbFinalDeportation.setStyle("-fx-opacity: 1");
@@ -468,7 +451,7 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 			
 			Map<String, Object> uiDataMap = new HashMap<>();
 			uiDataMap.put(KEY_FINAL_CONVICTED_REPORT, convictedReport);
-			Context.getWorkflowManager().submitUserTask(uiDataMap);
+			if(!isDetached()) Context.getWorkflowManager().submitUserTask(uiDataMap);
 		}
 	}
 	

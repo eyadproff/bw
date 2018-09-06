@@ -186,7 +186,7 @@ public class UploadImageFileFxController extends WizardStepFxControllerBase
 				Context.getCoreFxController().showErrorDialog(errorCode, task.getException(), errorDetails);
 			});
 			
-			Context.getExecutorService().execute(task);
+			Context.getExecutorService().submit(task);
 		}
 	}
 }

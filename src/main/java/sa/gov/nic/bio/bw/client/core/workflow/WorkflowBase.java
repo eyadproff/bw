@@ -22,7 +22,7 @@ public abstract class WorkflowBase<I, O> implements Workflow<I, O>
 	private static final Logger LOGGER = Logger.getLogger(WorkflowBase.class.getName());
 	
 	protected final AtomicReference<FormRenderer> formRenderer;
-	protected BlockingQueue<Map<String, Object>> userTasks;
+	protected final BlockingQueue<Map<String, Object>> userTasks;
 	
 	/**
 	 * @param formRenderer the form renderer that will render the form on the screen

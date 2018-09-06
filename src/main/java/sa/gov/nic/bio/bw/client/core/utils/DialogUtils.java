@@ -30,7 +30,6 @@ import sa.gov.nic.bio.bcl.utils.CancelCommand;
 import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.interfaces.IdleMonitorRegisterer;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -176,7 +175,43 @@ public class DialogUtils
 		return buttonType.isPresent() && buttonType.get() == buttonTypeConfirm;
 	}
 	
-	public static void showWarningDialog(Window ownerWindow, IdleMonitorRegisterer idleMonitorRegisterer, String title, String headerText, String contentText, String buttonText, boolean rtl)
+	public static void showInformationDialog(Window ownerWindow, IdleMonitorRegisterer idleMonitorRegisterer,
+	                                         String title, String headerText, String contentText, String buttonText,
+	                                         boolean rtl)
+	{
+		Alert alert = new Alert(AlertType.INFORMATION);
+		alert.initOwner(ownerWindow);
+		Scene scene = alert.getDialogPane().getScene();
+		scene.setNodeOrientation(rtl ? NodeOrientation.RIGHT_TO_LEFT : NodeOrientation.LEFT_TO_RIGHT);
+		Stage stage = (Stage) scene.getWindow();
+		alert.setTitle(title);
+		
+		if(headerText != null)
+		{
+			alert.setHeaderText(headerText);
+			alert.setContentText(contentText);
+		}
+		else alert.setHeaderText(contentText);
+		
+		ButtonType buttonType = new ButtonType(buttonText, ButtonBar.ButtonData.CANCEL_CLOSE);
+		alert.getButtonTypes().setAll(buttonType);
+		
+		Button button = (Button) alert.getDialogPane().lookupButton(buttonType);
+		
+		button.setDefaultButton(false);
+		button.setOnKeyReleased(event ->
+		{
+		    if(event.getCode() == KeyCode.ENTER) alert.setResult(buttonType);
+		});
+		
+		stage.sizeToScene();
+		if(idleMonitorRegisterer != null) idleMonitorRegisterer.registerStageForIdleMonitoring(stage);
+		alert.showAndWait();
+		if(idleMonitorRegisterer != null) idleMonitorRegisterer.unregisterStageForIdleMonitoring(stage);
+	}
+	
+	public static void showWarningDialog(Window ownerWindow, IdleMonitorRegisterer idleMonitorRegisterer, String title,
+	                                     String headerText, String contentText, String buttonText, boolean rtl)
 	{
 		Alert alert = new Alert(AlertType.WARNING);
 		alert.initOwner(ownerWindow);
@@ -235,31 +270,16 @@ public class DialogUtils
 	}
 	
 	public static <T> T buildCustomDialogByFxml(Stage ownerStage, String fxml, ResourceBundle resourceBundle,
-	                                            boolean rtl)
+	                                            boolean rtl, boolean resizable) throws Exception
 	{
 		URL fxmlResource = Thread.currentThread().getContextClassLoader().getResource(fxml);
-		
-		if(fxmlResource == null)
-		{
-			// TODO: handle error
-			return null;
-		}
-		
 		FXMLLoader loader = new FXMLLoader(fxmlResource, resourceBundle);
 		loader.setClassLoader(Context.getFxClassLoader());
-		Dialog<ButtonType> dialog;
-		try
-		{
-			dialog = loader.load();
-		}
-		catch(IOException e)
-		{
-			e.printStackTrace();
-			// TODO: handle error
-			return null;
-		}
+		Dialog<ButtonType> dialog = loader.load();
 		
 		dialog.initOwner(ownerStage);
+		dialog.setResizable(resizable);
+		
 		Scene scene = dialog.getDialogPane().getScene();
 		scene.setNodeOrientation(rtl ? NodeOrientation.RIGHT_TO_LEFT : NodeOrientation.LEFT_TO_RIGHT);
 		

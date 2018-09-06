@@ -85,7 +85,7 @@ public class InquiryByFingerprintsPaneFxController extends WizardStepFxControlle
 				{
 					Map<String, Object> uiDataMap = new HashMap<>();
 					uiDataMap.put(KEY_DEVICES_RUNNER_IS_RUNNING, Boolean.TRUE);
-					Context.getWorkflowManager().submitUserTask(uiDataMap);
+					if(!isDetached()) Context.getWorkflowManager().submitUserTask(uiDataMap);
 				}
 			});
 			
@@ -104,7 +104,7 @@ public class InquiryByFingerprintsPaneFxController extends WizardStepFxControlle
 			{
 				Map<String, Object> uiDataMap = new HashMap<>();
 				uiDataMap.put(KEY_DEVICES_RUNNER_IS_RUNNING, Boolean.TRUE);
-				Context.getWorkflowManager().submitUserTask(uiDataMap);
+				if(!isDetached()) Context.getWorkflowManager().submitUserTask(uiDataMap);
 			}
 		}
 		else
@@ -177,7 +177,7 @@ public class InquiryByFingerprintsPaneFxController extends WizardStepFxControlle
 							
 							uiDataMap.put(KEY_WAITING_FINGERPRINT_INQUIRY_CANCELLED, Boolean.TRUE);
 						}
-						Context.getWorkflowManager().submitUserTask(uiDataMap);
+						if(!isDetached()) Context.getWorkflowManager().submitUserTask(uiDataMap);
 					});
 				});
 				return;
@@ -231,6 +231,6 @@ public class InquiryByFingerprintsPaneFxController extends WizardStepFxControlle
 		
 		Map<String, Object> uiDataMap = new HashMap<>();
 		uiDataMap.put(KEY_RETRY_FINGERPRINT_INQUIRY, Boolean.TRUE);
-		Context.getWorkflowManager().submitUserTask(uiDataMap);
+		if(!isDetached()) Context.getWorkflowManager().submitUserTask(uiDataMap);
 	}
 }
