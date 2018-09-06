@@ -19,6 +19,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.util.Callback;
 import sa.gov.nic.bio.bw.client.core.BodyFxControllerBase;
 import sa.gov.nic.bio.bw.client.core.Context;
+import sa.gov.nic.bio.bw.client.core.DevicesRunnerGadgetPaneFxController;
 import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.client.core.utils.DialogUtils;
 import sa.gov.nic.bio.bw.client.core.utils.GuiLanguage;
@@ -211,7 +212,18 @@ public class ConvictedReportInquiryPaneFxController extends BodyFxControllerBase
 	@Override
 	public void onWorkflowUserTaskLoad(boolean newForm, Map<String, Object> uiInputData)
 	{
-		if(newForm) Context.getExecutorService().submit(lookupTask);
+		if(newForm)
+		{
+			Context.getExecutorService().submit(lookupTask);
+			
+			DevicesRunnerGadgetPaneFxController deviceManagerGadgetPaneController =
+												Context.getCoreFxController().getDeviceManagerGadgetPaneController();
+			
+			if(!deviceManagerGadgetPaneController.isDevicesRunnerRunning())
+			{
+				deviceManagerGadgetPaneController.runAndConnectDevicesRunner();
+			}
+		}
 		else
 		{
 			@SuppressWarnings("unchecked")

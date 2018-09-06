@@ -3,6 +3,7 @@ package sa.gov.nic.bio.bw.client.features.convictedreportinquiry;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
+import javafx.geometry.NodeOrientation;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
@@ -15,35 +16,45 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import net.sf.jasperreports.engine.JasperPrint;
 import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.FxControllerBase;
 import sa.gov.nic.bio.bw.client.core.biokit.FingerPosition;
 import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
+import sa.gov.nic.bio.bw.client.core.utils.DialogUtils;
 import sa.gov.nic.bio.bw.client.core.utils.GuiLanguage;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.features.commons.beans.GenderType;
+import sa.gov.nic.bio.bw.client.features.commons.tasks.PrintReportTask;
+import sa.gov.nic.bio.bw.client.features.commons.tasks.SaveReportAsPdfTask;
 import sa.gov.nic.bio.bw.client.features.commons.ui.ImageViewPane;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.CountryBean;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.CrimeType;
+import sa.gov.nic.bio.bw.client.features.commons.webservice.Finger;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.IdType;
+import sa.gov.nic.bio.bw.client.features.convictedreportinquiry.utils.ConvictedReportInquiryErrorCodes;
+import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.tasks.BuildConvictedReportTask;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.ConvictedReport;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.CrimeCode;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.JudgementInfo;
 import sa.gov.nic.bio.bw.client.login.webservice.UserInfo;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class ShowReportDialogFxController extends FxControllerBase
 {
 	@FXML private VBox paneImage;
-	@FXML private ImageViewPane paneImageView;
-	@FXML private ImageView ivPersonPhoto;
+	@FXML private HBox buttonPane;
 	@FXML private Label lblReportNumber;
 	@FXML private Label lblEnrollerId;
 	@FXML private Label lblEnrollmentTime;
@@ -90,6 +101,8 @@ public class ShowReportDialogFxController extends FxControllerBase
 	@FXML private CheckBox cbFinalDeportation;
 	@FXML private CheckBox cbLibel;
 	@FXML private CheckBox cbCovenant;
+	@FXML private ImageViewPane paneImageView;
+	@FXML private ImageView ivPersonPhoto;
 	@FXML private ImageView ivRightThumb;
 	@FXML private ImageView ivRightIndex;
 	@FXML private ImageView ivRightMiddle;
@@ -100,21 +113,33 @@ public class ShowReportDialogFxController extends FxControllerBase
 	@FXML private ImageView ivLeftMiddle;
 	@FXML private ImageView ivLeftRing;
 	@FXML private ImageView ivLeftLittle;
-	@FXML private HBox buttonPane;
 	@FXML private ProgressIndicator piProgress;
-	@FXML private Button btnStartOver;
 	@FXML private Button btnPrintReport;
 	@FXML private Button btnSaveReportAsPDF;
 	@FXML private Dialog<ButtonType> dialog;
 	
 	private Map<Integer, String> crimeEventTitles = new HashMap<>();
 	private Map<Integer, String> crimeClassTitles = new HashMap<>();
+	private FileChooser fileChooser = new FileChooser();
+	private AtomicReference<JasperPrint> jasperPrint = new AtomicReference<>();
+	
 	private ConvictedReport convictedReport;
+	private Map<Integer, String> fingerprintImages;
 	
 	@Override
 	protected void initialize()
 	{
 		paneImageView.maxWidthProperty().bind(paneImage.widthProperty());
+		
+		// make the checkboxes look like they are enabled
+		cbFinalDeportation.setStyle("-fx-opacity: 1");
+		cbLibel.setStyle("-fx-opacity: 1");
+		cbCovenant.setStyle("-fx-opacity: 1");
+		
+		fileChooser.setTitle(resources.getString("fileChooser.saveReportAsPDF.title"));
+		FileChooser.ExtensionFilter extFilterPDF = new FileChooser.ExtensionFilter(
+									resources.getString("fileChooser.saveReportAsPDF.types"), "*.pdf");
+		fileChooser.getExtensionFilters().addAll(extFilterPDF);
 		
 		@SuppressWarnings("unchecked") List<CrimeType> crimeTypes = (List<CrimeType>)
 													Context.getUserSession().getAttribute("lookups.crimeTypes");
@@ -148,8 +173,20 @@ public class ShowReportDialogFxController extends FxControllerBase
 		});
 	}
 	
-	public void populateData()
+	private void populateData()
 	{
+		long reportNumber = convictedReport.getReportNumber();
+		lblReportNumber.setText(AppUtils.localizeNumbers(String.valueOf(reportNumber)));
+		
+		String sEnrollerId = convictedReport.getOperatorId();
+		if(sEnrollerId != null && !sEnrollerId.trim().isEmpty())
+		{
+			lblEnrollerId.setText(AppUtils.localizeNumbers(sEnrollerId));
+		}
+		
+		long enrollmentTimeLong = convictedReport.getReportDate();
+		lblEnrollmentTime.setText(AppUtils.formatHijriGregorianDateTime(enrollmentTimeLong * 1000));
+		
 		String facePhotoBase64 = convictedReport.getSubjFace();
 		if(facePhotoBase64 != null)
 		{
@@ -180,8 +217,7 @@ public class ShowReportDialogFxController extends FxControllerBase
 		lblFamilyName.setText(convictedReport.getSubjtName().getFamilyName());
 		
 		Long generalFileNumber = convictedReport.getGeneralFileNum();
-		if(generalFileNumber != null) lblGeneralFileNumber.setText(String.valueOf(generalFileNumber));
-		else lblGeneralFileNumber.setTextFill(Color.RED);
+		lblGeneralFileNumber.setText(AppUtils.localizeNumbers(String.valueOf(generalFileNumber)));
 		
 		lblGender.setText("F".equals(convictedReport.getSubjGender()) ? resources.getString("label.female") :
 				                                                        resources.getString("label.male"));
@@ -203,8 +239,7 @@ public class ShowReportDialogFxController extends FxControllerBase
 		if(countryBean != null)
 		{
 			boolean arabic = Context.getGuiLanguage() == GuiLanguage.ARABIC;
-			lblNationality.setText(arabic ? countryBean.getDescriptionAR() :
-					                       countryBean.getDescriptionEN());
+			lblNationality.setText(arabic ? countryBean.getDescriptionAR() : countryBean.getDescriptionEN());
 		}
 		else lblNationality.setText(resources.getString("combobox.unknownNationality"));
 		
@@ -332,70 +367,70 @@ public class ShowReportDialogFxController extends FxControllerBase
 			String judgOthers = judgementInfo.getJudgOthers();
 			if(judgOthers != null && !judgOthers.trim().isEmpty())
 				lblOther.setText(AppUtils.localizeNumbers(judgOthers));
-			
-			// make the checkboxes look like they are enabled
-			cbFinalDeportation.setStyle("-fx-opacity: 1");
-			cbLibel.setStyle("-fx-opacity: 1");
-			cbCovenant.setStyle("-fx-opacity: 1");
 		}
 		
-		//Map<Integer, String> fingerprintImages = (Map<Integer, String>)
-		//		uiInputData.get(FingerprintCapturingFxController.KEY_FINGERPRINTS_IMAGES);
-		Map<Integer, ImageView> imageViewMap = new HashMap<>();
-		Map<Integer, String> dialogTitleMap = new HashMap<>();
-		
-		imageViewMap.put(FingerPosition.RIGHT_THUMB.getPosition(), ivRightThumb);
-		imageViewMap.put(FingerPosition.RIGHT_INDEX.getPosition(), ivRightIndex);
-		imageViewMap.put(FingerPosition.RIGHT_MIDDLE.getPosition(), ivRightMiddle);
-		imageViewMap.put(FingerPosition.RIGHT_RING.getPosition(), ivRightRing);
-		imageViewMap.put(FingerPosition.RIGHT_LITTLE.getPosition(), ivRightLittle);
-		imageViewMap.put(FingerPosition.LEFT_THUMB.getPosition(), ivLeftThumb);
-		imageViewMap.put(FingerPosition.LEFT_INDEX.getPosition(), ivLeftIndex);
-		imageViewMap.put(FingerPosition.LEFT_MIDDLE.getPosition(), ivLeftMiddle);
-		imageViewMap.put(FingerPosition.LEFT_RING.getPosition(), ivLeftRing);
-		imageViewMap.put(FingerPosition.LEFT_LITTLE.getPosition(), ivLeftLittle);
-		dialogTitleMap.put(FingerPosition.RIGHT_THUMB.getPosition(),
-		                   resources.getString("label.fingers.thumb") + " (" +
-				                   resources.getString("label.rightHand") + ")");
-		dialogTitleMap.put(FingerPosition.RIGHT_INDEX.getPosition(),
-		                   resources.getString("label.fingers.index") + " (" +
-				                   resources.getString("label.rightHand") + ")");
-		dialogTitleMap.put(FingerPosition.RIGHT_MIDDLE.getPosition(),
-		                   resources.getString("label.fingers.middle") + " (" +
-				                   resources.getString("label.rightHand") + ")");
-		dialogTitleMap.put(FingerPosition.RIGHT_RING.getPosition(),
-		                   resources.getString("label.fingers.ring") + " (" +
-				                   resources.getString("label.rightHand") + ")");
-		dialogTitleMap.put(FingerPosition.RIGHT_LITTLE.getPosition(),
-		                   resources.getString("label.fingers.little") + " (" +
-				                   resources.getString("label.rightHand") + ")");
-		dialogTitleMap.put(FingerPosition.LEFT_THUMB.getPosition(),
-		                   resources.getString("label.fingers.thumb") + " (" +
-				                   resources.getString("label.leftHand") + ")");
-		dialogTitleMap.put(FingerPosition.LEFT_INDEX.getPosition(),
-		                   resources.getString("label.fingers.index") + " (" +
-				                   resources.getString("label.leftHand") + ")");
-		dialogTitleMap.put(FingerPosition.LEFT_MIDDLE.getPosition(),
-		                   resources.getString("label.fingers.middle") + " (" +
-				                   resources.getString("label.leftHand") + ")");
-		dialogTitleMap.put(FingerPosition.LEFT_RING.getPosition(),
-		                   resources.getString("label.fingers.ring") + " (" +
-				                   resources.getString("label.leftHand") + ")");
-		dialogTitleMap.put(FingerPosition.LEFT_LITTLE.getPosition(),
-		                   resources.getString("label.fingers.little") + " (" +
-				                   resources.getString("label.leftHand") + ")");
-		
-		//fingerprintImages.forEach((position, fingerprintImage) ->
-		//{
-		//    ImageView imageView = imageViewMap.get(position);
-		//    String dialogTitle = dialogTitleMap.get(position);
-		//
-		//    byte[] bytes = Base64.getDecoder().decode(fingerprintImage);
-		//    imageView.setImage(new Image(new ByteArrayInputStream(bytes)));
-		//    GuiUtils.attachImageDialog(Context.getCoreFxController(), imageView,
-		//                               dialogTitle, resources.getString("label.contextMenu.showImage"),
-		//                               false);
-		//});
+		List<Finger> subjFingers = convictedReport.getSubjFingers();
+		if(subjFingers != null)
+		{
+			fingerprintImages = new HashMap<>();
+			subjFingers.forEach(finger -> fingerprintImages.put(finger.getType(), finger.getImage()));
+			
+			Map<Integer, ImageView> imageViewMap = new HashMap<>();
+			Map<Integer, String> dialogTitleMap = new HashMap<>();
+			
+			imageViewMap.put(FingerPosition.RIGHT_THUMB.getPosition(), ivRightThumb);
+			imageViewMap.put(FingerPosition.RIGHT_INDEX.getPosition(), ivRightIndex);
+			imageViewMap.put(FingerPosition.RIGHT_MIDDLE.getPosition(), ivRightMiddle);
+			imageViewMap.put(FingerPosition.RIGHT_RING.getPosition(), ivRightRing);
+			imageViewMap.put(FingerPosition.RIGHT_LITTLE.getPosition(), ivRightLittle);
+			imageViewMap.put(FingerPosition.LEFT_THUMB.getPosition(), ivLeftThumb);
+			imageViewMap.put(FingerPosition.LEFT_INDEX.getPosition(), ivLeftIndex);
+			imageViewMap.put(FingerPosition.LEFT_MIDDLE.getPosition(), ivLeftMiddle);
+			imageViewMap.put(FingerPosition.LEFT_RING.getPosition(), ivLeftRing);
+			imageViewMap.put(FingerPosition.LEFT_LITTLE.getPosition(), ivLeftLittle);
+			dialogTitleMap.put(FingerPosition.RIGHT_THUMB.getPosition(),
+			                   resources.getString("label.fingers.thumb") + " (" +
+			                   resources.getString("label.rightHand") + ")");
+			dialogTitleMap.put(FingerPosition.RIGHT_INDEX.getPosition(),
+			                   resources.getString("label.fingers.index") + " (" +
+			                   resources.getString("label.rightHand") + ")");
+			dialogTitleMap.put(FingerPosition.RIGHT_MIDDLE.getPosition(),
+			                   resources.getString("label.fingers.middle") + " (" +
+			                   resources.getString("label.rightHand") + ")");
+			dialogTitleMap.put(FingerPosition.RIGHT_RING.getPosition(),
+			                   resources.getString("label.fingers.ring") + " (" +
+			                   resources.getString("label.rightHand") + ")");
+			dialogTitleMap.put(FingerPosition.RIGHT_LITTLE.getPosition(),
+			                   resources.getString("label.fingers.little") + " (" +
+			                   resources.getString("label.rightHand") + ")");
+			dialogTitleMap.put(FingerPosition.LEFT_THUMB.getPosition(),
+			                   resources.getString("label.fingers.thumb") + " (" +
+			                   resources.getString("label.leftHand") + ")");
+			dialogTitleMap.put(FingerPosition.LEFT_INDEX.getPosition(),
+			                   resources.getString("label.fingers.index") + " (" +
+			                   resources.getString("label.leftHand") + ")");
+			dialogTitleMap.put(FingerPosition.LEFT_MIDDLE.getPosition(),
+			                   resources.getString("label.fingers.middle") + " (" +
+			                   resources.getString("label.leftHand") + ")");
+			dialogTitleMap.put(FingerPosition.LEFT_RING.getPosition(),
+			                   resources.getString("label.fingers.ring") + " (" +
+			                   resources.getString("label.leftHand") + ")");
+			dialogTitleMap.put(FingerPosition.LEFT_LITTLE.getPosition(),
+			                   resources.getString("label.fingers.little") + " (" +
+			                   resources.getString("label.leftHand") + ")");
+			
+			fingerprintImages.forEach((position, fingerprintImage) ->
+			{
+			    ImageView imageView = imageViewMap.get(position);
+			    String dialogTitle = dialogTitleMap.get(position);
+			
+			    byte[] bytes = Base64.getDecoder().decode(fingerprintImage);
+			    imageView.setImage(new Image(new ByteArrayInputStream(bytes)));
+			    GuiUtils.attachImageDialog(Context.getCoreFxController(), imageView,
+			                               dialogTitle, resources.getString("label.contextMenu.showImage"),
+			                               false);
+			});
+		}
 	}
 	
 	public void setConvictedReport(ConvictedReport convictedReport){this.convictedReport = convictedReport;}
@@ -405,11 +440,163 @@ public class ShowReportDialogFxController extends FxControllerBase
 		dialog.show();
 	}
 	
-	public void onPrintReportButtonClicked(ActionEvent actionEvent)
+	@FXML
+	private void onPrintReportButtonClicked(ActionEvent actionEvent)
 	{
+		GuiUtils.showNode(btnPrintReport, false);
+		GuiUtils.showNode(btnSaveReportAsPDF, false);
+		GuiUtils.showNode(piProgress, true);
+		
+		if(jasperPrint.get() == null)
+		{
+			BuildConvictedReportTask buildConvictedReportTask = new BuildConvictedReportTask(convictedReport,
+			                                                                                 fingerprintImages);
+			buildConvictedReportTask.setOnSucceeded(event ->
+			{
+			    JasperPrint value = buildConvictedReportTask.getValue();
+			    jasperPrint.set(value);
+			    printConvictedReport(value);
+			});
+			buildConvictedReportTask.setOnFailed(event ->
+			{
+			    GuiUtils.showNode(piProgress, false);
+			    GuiUtils.showNode(btnPrintReport, true);
+			    GuiUtils.showNode(btnSaveReportAsPDF, true);
+			
+			    Throwable exception = buildConvictedReportTask.getException();
+			
+			    String errorCode = ConvictedReportInquiryErrorCodes.C014_00003.getCode();
+			    String[] errorDetails = {"failed while building the convicted report!"};
+			    Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails);
+			});
+			Context.getExecutorService().submit(buildConvictedReportTask);
+		}
+		else printConvictedReport(jasperPrint.get());
 	}
 	
-	public void onSaveReportAsPdfButtonClicked(ActionEvent actionEvent)
+	@FXML
+	private void onSaveReportAsPdfButtonClicked(ActionEvent actionEvent)
 	{
+		File selectedFile = fileChooser.showSaveDialog(Context.getCoreFxController().getStage());
+		
+		if(selectedFile != null)
+		{
+			GuiUtils.showNode(btnPrintReport, false);
+			GuiUtils.showNode(btnSaveReportAsPDF, false);
+			GuiUtils.showNode(piProgress, true);
+			
+			if(jasperPrint.get() == null)
+			{
+				BuildConvictedReportTask buildConvictedReportTask = new BuildConvictedReportTask(convictedReport,
+				                                                                                 fingerprintImages);
+				buildConvictedReportTask.setOnSucceeded(event ->
+				{
+				    JasperPrint value = buildConvictedReportTask.getValue();
+				    jasperPrint.set(value);
+				    try
+				    {
+				        saveConvictedReportAsPDF(value, new FileOutputStream(selectedFile));
+				    }
+				    catch(Exception e)
+				    {
+				        GuiUtils.showNode(piProgress, false);
+				        GuiUtils.showNode(btnPrintReport, true);
+				        GuiUtils.showNode(btnSaveReportAsPDF, true);
+				
+				        String errorCode = ConvictedReportInquiryErrorCodes.C014_00004.getCode();
+				        String[] errorDetails = {"failed while saving the convicted report as PDF!"};
+				        Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails);
+				    }
+				});
+				buildConvictedReportTask.setOnFailed(event ->
+				{
+				    GuiUtils.showNode(piProgress, false);
+				    GuiUtils.showNode(btnPrintReport, true);
+				    GuiUtils.showNode(btnSaveReportAsPDF, true);
+				
+				    Throwable exception = buildConvictedReportTask.getException();
+				
+				    String errorCode = ConvictedReportInquiryErrorCodes.C014_00005.getCode();
+				    String[] errorDetails = {"failed while building the convicted report!"};
+				    Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails);
+				});
+				Context.getExecutorService().submit(buildConvictedReportTask);
+			}
+			else
+			{
+				try
+				{
+					saveConvictedReportAsPDF(jasperPrint.get(), new FileOutputStream(selectedFile));
+				}
+				catch(Exception e)
+				{
+					GuiUtils.showNode(piProgress, false);
+					GuiUtils.showNode(btnPrintReport, true);
+					GuiUtils.showNode(btnSaveReportAsPDF, true);
+					
+					String errorCode = ConvictedReportInquiryErrorCodes.C014_00006.getCode();
+					String[] errorDetails = {"failed while saving the convicted report as PDF!"};
+					Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails);
+				}
+			}
+		}
+	}
+	
+	private void printConvictedReport(JasperPrint jasperPrint)
+	{
+		PrintReportTask printReportTask = new PrintReportTask(jasperPrint);
+		printReportTask.setOnSucceeded(event ->
+		{
+		    GuiUtils.showNode(piProgress, false);
+		    GuiUtils.showNode(btnPrintReport, true);
+		    GuiUtils.showNode(btnSaveReportAsPDF, true);
+		});
+		printReportTask.setOnFailed(event ->
+		{
+		    GuiUtils.showNode(piProgress, false);
+		    GuiUtils.showNode(btnPrintReport, true);
+		    GuiUtils.showNode(btnSaveReportAsPDF, true);
+		
+		    Throwable exception = printReportTask.getException();
+		
+		    String errorCode = ConvictedReportInquiryErrorCodes.C014_00007.getCode();
+		    String[] errorDetails = {"failed while printing the convicted report!"};
+		    Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails);
+		});
+		Context.getExecutorService().submit(printReportTask);
+	}
+	
+	private void saveConvictedReportAsPDF(JasperPrint jasperPrint, OutputStream pdfOutputStream)
+	{
+		SaveReportAsPdfTask printReportTaskAsPdfTask = new SaveReportAsPdfTask(jasperPrint, pdfOutputStream);
+		printReportTaskAsPdfTask.setOnSucceeded(event ->
+		{
+		    GuiUtils.showNode(piProgress, false);
+		    GuiUtils.showNode(btnPrintReport, true);
+		    GuiUtils.showNode(btnSaveReportAsPDF, true);
+			
+			
+			String title = resources.getString("printConvictedPresent.savingAsPDF.success.title");
+			String contentText = resources.getString("printConvictedPresent.savingAsPDF.success.message");
+			String buttonText = resources.getString("printConvictedPresent.savingAsPDF.success.button");
+			boolean rtl = Context.getGuiLanguage().getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT;
+			Stage stage = (Stage) dialog.getDialogPane().getScene().getWindow();
+			
+			DialogUtils.showInformationDialog(stage, Context.getCoreFxController(), title, null, contentText,
+			                                  buttonText, rtl);
+		});
+		printReportTaskAsPdfTask.setOnFailed(event ->
+		{
+		    GuiUtils.showNode(piProgress, false);
+		    GuiUtils.showNode(btnPrintReport, true);
+		    GuiUtils.showNode(btnSaveReportAsPDF, true);
+		
+		    Throwable exception = printReportTaskAsPdfTask.getException();
+		
+		    String errorCode = ConvictedReportInquiryErrorCodes.C014_00008.getCode();
+		    String[] errorDetails = {"failed while saving the convicted report as PDF!"};
+		    Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails);
+		});
+		Context.getExecutorService().submit(printReportTaskAsPdfTask);
 	}
 }
