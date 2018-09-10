@@ -33,14 +33,14 @@ public class CancelCriminalWorkflow extends WorkflowBase<Void, Void>
 			
 			Long personId = (Long) userTaskDataMap.get("personId");
 			Long inquiryId = (Long) userTaskDataMap.get("inquiryId");
-			Integer personIdType = (Integer) userTaskDataMap.get("personIdType");
+			Integer samisIdTypes = (Integer) userTaskDataMap.get("samisIdTypes");
 			Long criminalId = (Long) userTaskDataMap.get("criminalId");
 			
 			ServiceResponse<Boolean> response;
 			
 			if(personId != null) // by person id
 			{
-				response = CancelCriminalService.execute(personId, personIdType, criminalId);
+				response = CancelCriminalService.execute(personId, samisIdTypes, criminalId);
 			}
 			else // by inquiry id
 			{

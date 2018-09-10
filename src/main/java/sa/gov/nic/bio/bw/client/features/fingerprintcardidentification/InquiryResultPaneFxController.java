@@ -23,7 +23,7 @@ import sa.gov.nic.bio.bw.client.features.commons.beans.GenderType;
 import sa.gov.nic.bio.bw.client.features.commons.tasks.PrintReportTask;
 import sa.gov.nic.bio.bw.client.features.commons.tasks.SaveReportAsPdfTask;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.CountryBean;
-import sa.gov.nic.bio.bw.client.features.commons.webservice.IdType;
+import sa.gov.nic.bio.bw.client.features.commons.webservice.DocumentType;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.Name;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.PersonIdInfo;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.PersonInfo;
@@ -356,26 +356,26 @@ public class InquiryResultPaneFxController extends WizardStepFxControllerBase
 					lblIdNumber.setText(idNumber);
 				}
 				
-				@SuppressWarnings("unchecked") List<IdType> idTypes = (List<IdType>)
-						Context.getUserSession().getAttribute("lookups.idTypes");
+				@SuppressWarnings("unchecked") List<DocumentType> documentTypes = (List<DocumentType>)
+												Context.getUserSession().getAttribute("lookups.documentTypes");
 				
 				Integer idTypeInteger = identityInfo.getIdType();
 				if(idTypeInteger != null)
 				{
-					IdType theIdType = null;
+					DocumentType theDocumentType = null;
 					
-					for(IdType type : idTypes)
+					for(DocumentType type : documentTypes)
 					{
 						if(type.getCode() == idTypeInteger)
 						{
-							theIdType = type;
+							theDocumentType = type;
 							break;
 						}
 					}
 					
-					if(theIdType != null)
+					if(theDocumentType != null)
 					{
-						idType = AppUtils.localizeNumbers(theIdType.getDesc());
+						idType = AppUtils.localizeNumbers(theDocumentType.getDesc());
 						lblIdType.setText(idType);
 					}
 				}

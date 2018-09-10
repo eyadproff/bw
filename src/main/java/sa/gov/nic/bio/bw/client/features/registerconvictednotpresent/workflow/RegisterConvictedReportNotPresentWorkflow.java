@@ -373,12 +373,19 @@ public class RegisterConvictedReportNotPresentWorkflow extends WizardWorkflowBas
 							{
 								uiInputData.put(InquiryByFingerprintsPaneFxController.KEY_FINGERPRINT_INQUIRY_HIT,
 								                Boolean.TRUE);
+								
+								long samisId = result.getSamisId();
+								long civilHitBioId = result.getCivilHitBioId();
 								long criminalHitBioId = result.getCrimnalHitBioId();
 								PersonInfo personInfo = result.getPersonInfo();
 								
+								uiInputData.put(InquiryResultPaneFxController.KEY_INQUIRY_SAMIS_ID, samisId);
+								
+								if(civilHitBioId > 0) uiInputData.put(
+											PersonInfoPaneFxController.KEY_PERSON_INFO_CIVIL_BIO_ID, civilHitBioId);
+								
 								if(criminalHitBioId > 0) uiInputData.put(
-														PersonInfoPaneFxController.KEY_PERSON_INFO_GENERAL_FILE_NUMBER,
-														criminalHitBioId);
+									PersonInfoPaneFxController.KEY_PERSON_INFO_GENERAL_FILE_NUMBER, criminalHitBioId);
 								uiInputData.put(InquiryResultPaneFxController.KEY_INQUIRY_HIT_RESULT,
 								                personInfo);
 								formRenderer.get().renderForm(InquiryByFingerprintsPaneFxController.class, uiInputData);

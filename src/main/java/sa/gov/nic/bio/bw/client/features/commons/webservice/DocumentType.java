@@ -2,12 +2,12 @@ package sa.gov.nic.bio.bw.client.features.commons.webservice;
 
 import java.util.Objects;
 
-public class IdType
+public class DocumentType
 {
 	private int code;
 	private String desc;
 	
-	public IdType(int code, String desc)
+	public DocumentType(int code, String desc)
 	{
 		this.code = code;
 		this.desc = desc;
@@ -24,8 +24,8 @@ public class IdType
 	{
 		if(this == o) return true;
 		if(o == null || getClass() != o.getClass()) return false;
-		IdType idType = (IdType) o;
-		return code == idType.code && Objects.equals(desc, idType.desc);
+		DocumentType documentType = (DocumentType) o;
+		return code == documentType.code && Objects.equals(desc, documentType.desc);
 	}
 	
 	@Override
@@ -37,6 +37,6 @@ public class IdType
 	@Override
 	public String toString()
 	{
-		return "IdType{" + "code=" + code + ", desc='" + desc + '\'' + '}';
+		return "DocumentType{" + "code=" + code + ", desc='" + desc + '\'' + '}';
 	}
 }

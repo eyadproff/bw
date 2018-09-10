@@ -149,54 +149,74 @@
                         <RadioButton fx:id="rdoBirthDateUseHijri" toggleGroup="$toggleGroup1" text="%radio.hijri" styleClass="small-font, small-radio-button" focusTraversable="false"/>
                         <RadioButton fx:id="rdoBirthDateUseGregorian" toggleGroup="$toggleGroup1" text="%radio.gregorian" styleClass="small-font, small-radio-button" focusTraversable="false"/>
                     </HBox>
-                    <Label text="%label.idNumber" GridPane.rowIndex="6" GridPane.columnIndex="0">
+                    <Label text="%label.samisId" GridPane.rowIndex="6" GridPane.columnIndex="0">
                         <GridPane.margin>
                             <Insets bottom="5.0"/>
                         </GridPane.margin>
                     </Label>
-                    <TextField fx:id="txtIdNumber" GridPane.rowIndex="6" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS">
+                    <TextField fx:id="txtSamisId" GridPane.rowIndex="6" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS">
                         <GridPane.margin>
                             <Insets bottom="5.0" right="20.0"/>
                         </GridPane.margin>
                     </TextField>
-                    <Label text="%label.idType" GridPane.rowIndex="6" GridPane.columnIndex="2">
+                    <Label text="%label.samisIdType" GridPane.rowIndex="6" GridPane.columnIndex="2">
                         <GridPane.margin>
                             <Insets bottom="5.0"/>
                         </GridPane.margin>
                     </Label>
-                    <ComboBox fx:id="cboIdType" GridPane.rowIndex="6" GridPane.columnIndex="3" GridPane.hgrow="ALWAYS">
+                    <ComboBox fx:id="cboSamisIdType" GridPane.rowIndex="6" GridPane.columnIndex="3" GridPane.hgrow="ALWAYS">
                         <GridPane.margin>
                             <Insets bottom="5.0"/>
                         </GridPane.margin>
                     </ComboBox>
-                    <Label text="%label.idIssuanceDate" GridPane.rowIndex="7" GridPane.columnIndex="0">
+                    <Label text="%label.documentId" GridPane.rowIndex="7" GridPane.columnIndex="0">
                         <GridPane.margin>
                             <Insets bottom="5.0"/>
                         </GridPane.margin>
                     </Label>
-                    <DatePicker fx:id="dpIdIssuanceDate" promptText="dd/MM/yyyy" GridPane.rowIndex="7" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS">
+                    <TextField fx:id="txtDocumentId" GridPane.rowIndex="7" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS">
+                        <GridPane.margin>
+                            <Insets bottom="5.0" right="20.0"/>
+                        </GridPane.margin>
+                    </TextField>
+                    <Label text="%label.documentType" GridPane.rowIndex="7" GridPane.columnIndex="2">
+                        <GridPane.margin>
+                            <Insets bottom="5.0"/>
+                        </GridPane.margin>
+                    </Label>
+                    <ComboBox fx:id="cboDocumentType" GridPane.rowIndex="7" GridPane.columnIndex="3" GridPane.hgrow="ALWAYS">
+                        <GridPane.margin>
+                            <Insets bottom="5.0"/>
+                        </GridPane.margin>
+                    </ComboBox>
+                    <Label text="%label.documentIssuanceDate" GridPane.rowIndex="8" GridPane.columnIndex="0">
+                        <GridPane.margin>
+                            <Insets bottom="5.0"/>
+                        </GridPane.margin>
+                    </Label>
+                    <DatePicker fx:id="dpDocumentIssuanceDate" promptText="dd/MM/yyyy" GridPane.rowIndex="8" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS">
                         <GridPane.margin>
                             <Insets right="20.0"/>
                         </GridPane.margin>
                     </DatePicker>
-                    <HBox GridPane.rowIndex="8" GridPane.columnIndex="1" spacing="5.0">
+                    <HBox GridPane.rowIndex="9" GridPane.columnIndex="1" spacing="5.0">
                         <GridPane.margin>
                             <Insets bottom="5.0" right="20.0"/>
                         </GridPane.margin>
                         <Label text="%label.input" styleClass="small-font"/>
-                        <RadioButton fx:id="rdoIdIssuanceDateUseHijri" toggleGroup="$toggleGroup2" text="%radio.hijri" styleClass="small-font, small-radio-button" focusTraversable="false"/>
-                        <RadioButton fx:id="rdoIdIssuanceDateUseGregorian" toggleGroup="$toggleGroup2" text="%radio.gregorian" styleClass="small-font, small-radio-button" focusTraversable="false"/>
+                        <RadioButton fx:id="rdoDocumentIssuanceDateUseHijri" toggleGroup="$toggleGroup2" text="%radio.hijri" styleClass="small-font, small-radio-button" focusTraversable="false"/>
+                        <RadioButton fx:id="rdoDocumentIssuanceDateUseGregorian" toggleGroup="$toggleGroup2" text="%radio.gregorian" styleClass="small-font, small-radio-button" focusTraversable="false"/>
                     </HBox>
-                    <Label text="%label.idExpiry" GridPane.rowIndex="7" GridPane.columnIndex="2">
+                    <Label text="%label.documentExpiryDate" GridPane.rowIndex="8" GridPane.columnIndex="2">
                         <GridPane.margin>
                             <Insets bottom="5.0"/>
                         </GridPane.margin>
                     </Label>
-                    <DatePicker fx:id="dpIdExpiryDate" promptText="dd/MM/yyyy" GridPane.rowIndex="7" GridPane.columnIndex="3" GridPane.hgrow="ALWAYS"/>
-                    <HBox GridPane.rowIndex="8" GridPane.columnIndex="3" spacing="5.0">
+                    <DatePicker fx:id="dpDocumentExpiryDate" promptText="dd/MM/yyyy" GridPane.rowIndex="8" GridPane.columnIndex="3" GridPane.hgrow="ALWAYS"/>
+                    <HBox GridPane.rowIndex="9" GridPane.columnIndex="3" spacing="5.0">
                         <Label text="%label.input" styleClass="small-font"/>
-                        <RadioButton fx:id="rdoIdExpiryDateUseHijri" toggleGroup="$toggleGroup3" text="%radio.hijri" styleClass="small-font, small-radio-button" focusTraversable="false"/>
-                        <RadioButton fx:id="rdoIdExpiryDateUseGregorian" toggleGroup="$toggleGroup3" text="%radio.gregorian" styleClass="small-font, small-radio-button" focusTraversable="false"/>
+                        <RadioButton fx:id="rdoDocumentExpiryDateUseHijri" toggleGroup="$toggleGroup3" text="%radio.hijri" styleClass="small-font, small-radio-button" focusTraversable="false"/>
+                        <RadioButton fx:id="rdoDocumentExpiryDateUseGregorian" toggleGroup="$toggleGroup3" text="%radio.gregorian" styleClass="small-font, small-radio-button" focusTraversable="false"/>
                     </HBox>
                 </GridPane>
             </center>

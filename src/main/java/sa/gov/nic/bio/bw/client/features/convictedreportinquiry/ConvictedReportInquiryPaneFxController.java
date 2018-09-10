@@ -26,7 +26,7 @@ import sa.gov.nic.bio.bw.client.core.utils.GuiLanguage;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.workflow.Workflow;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.CountryBean;
-import sa.gov.nic.bio.bw.client.features.commons.webservice.IdType;
+import sa.gov.nic.bio.bw.client.features.commons.webservice.DocumentType;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.Name;
 import sa.gov.nic.bio.bw.client.features.convictedreportinquiry.tasks.LookupTask;
 import sa.gov.nic.bio.bw.client.features.convictedreportinquiry.utils.ConvictedReportInquiryErrorCodes;
@@ -134,26 +134,26 @@ public class ConvictedReportInquiryPaneFxController extends BodyFxControllerBase
 		{
 		    ConvictedReport convictedReport = param.getValue();
 			
-			@SuppressWarnings("unchecked") List<IdType> idTypes = (List<IdType>)
-													Context.getUserSession().getAttribute("lookups.idTypes");
+			@SuppressWarnings("unchecked") List<DocumentType> documentTypes = (List<DocumentType>)
+												Context.getUserSession().getAttribute("lookups.documentTypes");
 			
 			Integer idTypeInteger = convictedReport.getSubjDocType();
 			if(idTypeInteger != null)
 			{
-				IdType theIdType = null;
+				DocumentType theDocumentType = null;
 				
-				for(IdType type : idTypes)
+				for(DocumentType type : documentTypes)
 				{
 					if(type.getCode() == idTypeInteger)
 					{
-						theIdType = type;
+						theDocumentType = type;
 						break;
 					}
 				}
 				
-				if(theIdType != null)
+				if(theDocumentType != null)
 				{
-					String idType = AppUtils.localizeNumbers(theIdType.getDesc());
+					String idType = AppUtils.localizeNumbers(theDocumentType.getDesc());
 					return new SimpleStringProperty(idType);
 				}
 			}

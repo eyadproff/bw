@@ -82,7 +82,7 @@
                                         <Label fx:id="lblIdNumber" GridPane.rowIndex="4" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
                                         <Label text="%label.idIssuanceDate" GridPane.rowIndex="4" GridPane.columnIndex="2" styleClass="bold-label"/>
                                         <Label fx:id="lblIdIssuanceDate" GridPane.rowIndex="4" GridPane.columnIndex="3" GridPane.hgrow="ALWAYS"/>
-                                        <Label text="%label.idType" GridPane.rowIndex="5" GridPane.columnIndex="0" styleClass="bold-label"/>
+                                        <Label text="%label.documentType" GridPane.rowIndex="5" GridPane.columnIndex="0" styleClass="bold-label"/>
                                         <Label fx:id="lblIdType" GridPane.rowIndex="5" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
                                         <Label text="%label.idExpiry" GridPane.rowIndex="5" GridPane.columnIndex="2" styleClass="bold-label"/>
                                         <Label fx:id="lblIdExpiry" GridPane.rowIndex="5" GridPane.columnIndex="3" GridPane.hgrow="ALWAYS"/>

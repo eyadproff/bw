@@ -25,9 +25,10 @@ import sa.gov.nic.bio.bw.client.features.commons.beans.GenderType;
 import sa.gov.nic.bio.bw.client.features.commons.ui.ImageViewPane;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.CountryBean;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.CrimeType;
+import sa.gov.nic.bio.bw.client.features.commons.webservice.DocumentType;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.Finger;
-import sa.gov.nic.bio.bw.client.features.commons.webservice.IdType;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.Name;
+import sa.gov.nic.bio.bw.client.features.commons.webservice.SamisIdType;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.utils.RegisterConvictedPresentErrorCodes;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.ConvictedReport;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.CrimeCode;
@@ -55,16 +56,19 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 	@FXML private Label lblFatherName;
 	@FXML private Label lblGrandfatherName;
 	@FXML private Label lblFamilyName;
+	@FXML private Label lblBiometricsId;
 	@FXML private Label lblGeneralFileNumber;
 	@FXML private Label lblGender;
 	@FXML private Label lblNationality;
 	@FXML private Label lblOccupation;
 	@FXML private Label lblBirthPlace;
 	@FXML private Label lblBirthDate;
-	@FXML private Label lblIdNumber;
-	@FXML private Label lblIdType;
-	@FXML private Label lblIdIssuanceDate;
-	@FXML private Label lblIdExpiry;
+	@FXML private Label lblSamisId;
+	@FXML private Label lblSamisIdType;
+	@FXML private Label lblDocumentId;
+	@FXML private Label lblDocumentType;
+	@FXML private Label lblDocumentIssuanceDate;
+	@FXML private Label lblDocumentExpiryDate;
 	@FXML private Label lblCrimeClassification1;
 	@FXML private Label lblCrimeClassification2;
 	@FXML private Label lblCrimeClassification3;
@@ -177,8 +181,12 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 			lblGrandfatherName.setText(convictedReport.getSubjtName().getGrandfatherName());
 			lblFamilyName.setText(convictedReport.getSubjtName().getFamilyName());
 			
+			Long subjBioId = convictedReport.getSubjBioId();
+			if(subjBioId != null) lblBiometricsId.setText(AppUtils.localizeNumbers(String.valueOf(subjBioId)));
+			
 			Long generalFileNumber = convictedReport.getGeneralFileNum();
-			if(generalFileNumber != null) lblGeneralFileNumber.setText(String.valueOf(generalFileNumber));
+			if(generalFileNumber != null)
+				            lblGeneralFileNumber.setText(AppUtils.localizeNumbers(String.valueOf(generalFileNumber)));
 			else lblGeneralFileNumber.setTextFill(Color.RED);
 			
 			lblGender.setText("F".equals(convictedReport.getSubjGender()) ? resources.getString("label.female") :
@@ -218,36 +226,64 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 			if(subjBirthDate != null)
 				lblBirthDate.setText(AppUtils.formatHijriGregorianDate(subjBirthDate * 1000));
 			
-			String subjDocId = convictedReport.getSubjDocId();
-			if(subjDocId != null && !subjDocId.trim().isEmpty())
-															lblIdNumber.setText(AppUtils.localizeNumbers(subjDocId));
+			Long subjSamisId = convictedReport.getSubjSamisId();
+			if(subjSamisId != null) lblSamisId.setText(AppUtils.localizeNumbers(String.valueOf(subjSamisId)));
 			
-			@SuppressWarnings("unchecked") List<IdType> idTypes = (List<IdType>)
-														Context.getUserSession().getAttribute("lookups.idTypes");
+			@SuppressWarnings("unchecked") List<SamisIdType> samisIdTypes = (List<SamisIdType>)
+												Context.getUserSession().getAttribute("lookups.samisIdTypes");
 			
-			Integer subjDocType = convictedReport.getSubjDocType();
-			if(subjDocType != null)
+			Integer subjSamisType = convictedReport.getSubjSamisType();
+			if(subjSamisType != null)
 			{
-				IdType idType = null;
+				SamisIdType samisIdType = null;
 				
-				for(IdType type : idTypes)
+				for(SamisIdType type : samisIdTypes)
 				{
-					if(type.getCode() == subjDocType)
+					if(type.getCode() == subjSamisType)
 					{
-						idType = type;
+						samisIdType = type;
 						break;
 					}
 				}
 				
-				if(idType != null) lblIdType.setText(AppUtils.localizeNumbers(idType.getDesc()));
+				if(samisIdType != null)
+				{
+					boolean arabic = Context.getGuiLanguage() == GuiLanguage.ARABIC;
+					lblSamisIdType.setText(AppUtils.localizeNumbers(arabic ? samisIdType.getDescriptionAR() :
+							                                                 samisIdType.getDescriptionEN()));
+				}
+			}
+			
+			String subjDocId = convictedReport.getSubjDocId();
+			if(subjDocId != null && !subjDocId.trim().isEmpty())
+															lblDocumentId.setText(AppUtils.localizeNumbers(subjDocId));
+			
+			@SuppressWarnings("unchecked") List<DocumentType> documentTypes = (List<DocumentType>)
+												Context.getUserSession().getAttribute("lookups.documentTypes");
+			
+			Integer subjDocType = convictedReport.getSubjDocType();
+			if(subjDocType != null)
+			{
+				DocumentType documentType = null;
+				
+				for(DocumentType type : documentTypes)
+				{
+					if(type.getCode() == subjDocType)
+					{
+						documentType = type;
+						break;
+					}
+				}
+				
+				if(documentType != null) lblDocumentType.setText(AppUtils.localizeNumbers(documentType.getDesc()));
 			}
 			
 			Long subjDocIssDate = convictedReport.getSubjDocIssDate();
-			if(subjDocIssDate != null) lblIdIssuanceDate.setText(
+			if(subjDocIssDate != null) lblDocumentIssuanceDate.setText(
 					AppUtils.formatHijriGregorianDate(subjDocIssDate * 1000));
 			
 			Long subjDocExpDate = convictedReport.getSubjDocExpDate();
-			if(subjDocExpDate != null) lblIdExpiry.setText(
+			if(subjDocExpDate != null) lblDocumentExpiryDate.setText(
 					AppUtils.formatHijriGregorianDate(subjDocExpDate * 1000));
 			
 			JudgementInfo judgementInfo = convictedReport.getSubjJudgementInfo();
@@ -457,6 +493,7 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 	
 	private ConvictedReport buildConvictedReport(Map<String, Object> uiInputData)
 	{
+		Long biometricsId = (Long) uiInputData.get(PersonInfoPaneFxController.KEY_PERSON_INFO_CIVIL_BIO_ID);
 		Long generalFileNum = (Long) uiInputData.get(PersonInfoPaneFxController.KEY_PERSON_INFO_GENERAL_FILE_NUMBER);
 		
 		String firstName = (String) uiInputData.get(PersonInfoPaneFxController.KEY_PERSON_INFO_FIRST_NAME);
@@ -476,18 +513,27 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 		if(birthDate != null) subjBirthDate = birthDate.atStartOfDay(AppConstants.SAUDI_ZONE).toEpochSecond();
 		
 		String subjBirthPlace = (String) uiInputData.get(PersonInfoPaneFxController.KEY_PERSON_INFO_BIRTH_PLACE);
-		String subjDocId = (String) uiInputData.get(PersonInfoPaneFxController.KEY_PERSON_INFO_ID_NUMBER);
-		IdType docType = (IdType) uiInputData.get(PersonInfoPaneFxController.KEY_PERSON_INFO_ID_TYPE);
+		Long subjSamisId = (Long) uiInputData.get(PersonInfoPaneFxController.KEY_PERSON_INFO_SAMIS_ID);
+		SamisIdType samisIdType = (SamisIdType)
+											uiInputData.get(PersonInfoPaneFxController.KEY_PERSON_INFO_SAMIS_ID_TYPE);
+		
+		Integer subjSamisType = null;
+		if(samisIdType != null) subjSamisType = samisIdType.getCode();
+		
+		String subjDocId = (String) uiInputData.get(PersonInfoPaneFxController.KEY_PERSON_INFO_DOCUMENT_ID);
+		DocumentType docType = (DocumentType) uiInputData.get(PersonInfoPaneFxController.KEY_PERSON_INFO_DOCUMENT_TYPE);
 		
 		Integer subjDocType = null;
 		if(docType != null) subjDocType = docType.getCode();
 		
-		LocalDate docIssDate = (LocalDate) uiInputData.get(PersonInfoPaneFxController.KEY_PERSON_INFO_ID_ISSUANCE_DATE);
+		LocalDate docIssDate = (LocalDate)
+									uiInputData.get(PersonInfoPaneFxController.KEY_PERSON_INFO_DOCUMENT_ISSUANCE_DATE);
 		
 		Long subjDocIssDate = null;
 		if(docIssDate != null) subjDocIssDate = docIssDate.atStartOfDay(AppConstants.SAUDI_ZONE).toEpochSecond();
 		
-		LocalDate docExpDate = (LocalDate) uiInputData.get(PersonInfoPaneFxController.KEY_PERSON_INFO_ID_EXPIRY_DATE);
+		LocalDate docExpDate = (LocalDate)
+									uiInputData.get(PersonInfoPaneFxController.KEY_PERSON_INFO_DOCUMENT_EXPIRY_DATE);
 		Long subjDocExpDate = null;
 		if(docExpDate != null) subjDocExpDate = docExpDate.atStartOfDay(AppConstants.SAUDI_ZONE).toEpochSecond();
 		
@@ -560,8 +606,8 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 		String subjFace = (String) uiInputData.get(FaceCapturingFxController.KEY_FINAL_FACE_IMAGE);
 		
 		return new ConvictedReport(0L, 0L, generalFileNum, subjtName, subjNationalityCode,
-		                           subjOccupation, subjGender, subjBirthDate, subjBirthPlace, subjDocId, subjDocType,
-		                           subjDocIssDate, subjDocExpDate, subjJudgementInfo, subjFingers, subjMissingFingers,
-		                           subjFace, null);
+		                           subjOccupation, subjGender, subjBirthDate, subjBirthPlace, subjSamisId,
+		                           subjSamisType, biometricsId, subjDocId, subjDocType, subjDocIssDate, subjDocExpDate,
+		                           subjJudgementInfo, subjFingers, subjMissingFingers, subjFace, null);
 	}
 }

@@ -10,7 +10,7 @@ import sa.gov.nic.bio.bw.client.core.utils.AppConstants.Locales;
 import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.CountryBean;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.CrimeType;
-import sa.gov.nic.bio.bw.client.features.commons.webservice.IdType;
+import sa.gov.nic.bio.bw.client.features.commons.webservice.DocumentType;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.ConvictedReport;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.CrimeCode;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.JudgementInfo;
@@ -157,14 +157,14 @@ public class BuildConvictedReportTask extends Task<JasperPrint>
 		if(subjDocId != null) params.put(PARAMETER_ID, AppUtils.localizeNumbers(subjDocId, Locales.SAUDI_AR_LOCALE,
 		                                                                        true));
 		
-		@SuppressWarnings("unchecked") List<IdType> idTypes = (List<IdType>)
-														Context.getUserSession().getAttribute("lookups.idTypes");
+		@SuppressWarnings("unchecked") List<DocumentType> documentTypes = (List<DocumentType>)
+												Context.getUserSession().getAttribute("lookups.documentTypes");
 		
 		Integer subjDocType = convictedReport.getSubjDocType();
 		if(subjDocType != null)
 		{
-			IdType it = null;
-			for(IdType type : idTypes)
+			DocumentType it = null;
+			for(DocumentType type : documentTypes)
 			{
 				if(type.getCode() == subjDocType)
 				{

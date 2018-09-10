@@ -32,8 +32,8 @@ import sa.gov.nic.bio.bw.client.features.commons.tasks.SaveReportAsPdfTask;
 import sa.gov.nic.bio.bw.client.features.commons.ui.ImageViewPane;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.CountryBean;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.CrimeType;
+import sa.gov.nic.bio.bw.client.features.commons.webservice.DocumentType;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.Finger;
-import sa.gov.nic.bio.bw.client.features.commons.webservice.IdType;
 import sa.gov.nic.bio.bw.client.features.convictedreportinquiry.utils.ConvictedReportInquiryErrorCodes;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.tasks.BuildConvictedReportTask;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.ConvictedReport;
@@ -259,24 +259,24 @@ public class ShowReportDialogFxController extends FxControllerBase
 		if(subjDocId != null && !subjDocId.trim().isEmpty())
 			lblIdNumber.setText(AppUtils.localizeNumbers(subjDocId));
 		
-		@SuppressWarnings("unchecked") List<IdType> idTypes = (List<IdType>)
-				Context.getUserSession().getAttribute("lookups.idTypes");
+		@SuppressWarnings("unchecked") List<DocumentType> documentTypes = (List<DocumentType>)
+												Context.getUserSession().getAttribute("lookups.documentTypes");
 		
 		Integer subjDocType = convictedReport.getSubjDocType();
 		if(subjDocType != null)
 		{
-			IdType idType = null;
+			DocumentType documentType = null;
 			
-			for(IdType type : idTypes)
+			for(DocumentType type : documentTypes)
 			{
 				if(type.getCode() == subjDocType)
 				{
-					idType = type;
+					documentType = type;
 					break;
 				}
 			}
 			
-			if(idType != null) lblIdType.setText(AppUtils.localizeNumbers(idType.getDesc()));
+			if(documentType != null) lblIdType.setText(AppUtils.localizeNumbers(documentType.getDesc()));
 		}
 		
 		Long subjDocIssDate = convictedReport.getSubjDocIssDate();
@@ -574,7 +574,6 @@ public class ShowReportDialogFxController extends FxControllerBase
 		    GuiUtils.showNode(piProgress, false);
 		    GuiUtils.showNode(btnPrintReport, true);
 		    GuiUtils.showNode(btnSaveReportAsPDF, true);
-			
 			
 			String title = resources.getString("printConvictedPresent.savingAsPDF.success.title");
 			String contentText = resources.getString("printConvictedPresent.savingAsPDF.success.message");

@@ -150,6 +150,8 @@ public final class AppUtils
 	
 	public static String localizeNumbers(String text, Locale locale, boolean textContainsNumbersOnly)
 	{
+		if(text == null) return null;
+		
 		if(textContainsNumbersOnly && !text.matches("\\d+")) return text;
 		
 		NumberFormat numberFormat = NumberFormat.getNumberInstance(locale);

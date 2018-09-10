@@ -11,6 +11,12 @@
 
 ---
 
+## v2018.09.4
+
+- FIX: close the stream after saving the pdf file.
+
+---
+
 ## v2018.09.3
 
 - NEW: Convicted Report Inquiry.

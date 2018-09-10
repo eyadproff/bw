@@ -11,11 +11,11 @@ public interface LookupAPI
 	Call<List<CountryBean>> lookupNationalities();
 	
 	@GET("services-gateway-lookups/api/application/person-type/v1")
-	Call<List<PersonIdType>> lookupPersonIdTypes();
+	Call<List<SamisIdType>> lookupPersonIdTypes();
 	
 	@GET("services-gateway-lookups/api/application/crime-type/v1")
 	Call<List<CrimeType>> lookupCrimeTypes();
 	
 	@GET("services-gateway-lookups/api/application/id-types/v1")
-	Call<List<IdType>> lookupIdTypes();
+	Call<List<DocumentType>> lookupIdTypes();
 }
