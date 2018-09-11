@@ -21,6 +21,7 @@ public class SaveReportAsPdfTask extends Task<Void>
 	protected Void call() throws Exception
 	{
 		JasperExportManager.exportReportToPdfStream(jasperPrint, pdfOutputStream);
+		pdfOutputStream.close();
 		return null;
 	}
 }

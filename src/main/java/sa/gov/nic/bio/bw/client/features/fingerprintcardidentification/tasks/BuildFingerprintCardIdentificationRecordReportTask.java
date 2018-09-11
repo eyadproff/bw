@@ -23,14 +23,18 @@ public class BuildFingerprintCardIdentificationRecordReportTask extends Task<Jas
 	private static final String PARAMETER_FACE_IMAGE = "FACE_IMAGE";
 	private static final String PARAMETER_NAME = "NAME";
 	private static final String PARAMETER_NATIONALITY = "NATIONALITY";
-	private static final String PARAMETER_JOB = "JOB";
-	private static final String PARAMETER_SEX = "SEX";
-	private static final String PARAMETER_ID = "ID";
-	private static final String PARAMETER_ID_TYPE = "ID_TYPE";
-	private static final String PARAMETER_ID_ISSUANCE = "ID_ISSUANCE";
+	private static final String PARAMETER_OCCUPATION = "OCCUPATION";
+	private static final String PARAMETER_GENDER = "GENDER";
+	private static final String PARAMETER_BIOMETRICS_ID = "BIOMETRICS_ID";
+	private static final String PARAMETER_GENERAL_FILE_NUMBER = "GENERAL_FILE_NUMBER";
+	private static final String PARAMETER_SAMIS_ID = "SAMIS_ID";
+	private static final String PARAMETER_SAMIS_ID_TYPE = "SAMIS_ID_TYPE";
+	private static final String PARAMETER_DOCUMENT_ID = "DOCUMENT_ID";
+	private static final String PARAMETER_DOCUMENT_TYPE = "DOCUMENT_TYPE";
+	private static final String PARAMETER_DOCUMENT_ISSUANCE_DATE = "DOCUMENT_ISSUANCE_DATE";
+	private static final String PARAMETER_DOCUMENT_EXPIRY_DATE = "DOCUMENT_EXPIRY_DATE";
 	private static final String PARAMETER_BIRTH_OF_DATE = "BIRTH_OF_DATE";
 	private static final String PARAMETER_BIRTH_PLACE = "BIRTH_PLACE";
-	private static final String PARAMETER_ID_EXPIRY = "ID_EXPIRY";
 	private static final String PARAMETER_INQUIRER_ID = "INQUIRER_ID";
 	private static final String PARAMETER_INQUIRY_TIME = "INQUIRY_TIME";
 	private static final String PARAMETER_LOGO = "LOGO";
@@ -86,14 +90,19 @@ public class BuildFingerprintCardIdentificationRecordReportTask extends Task<Jas
 		params.put(PARAMETER_NAME, fullName);
 		
 		params.put(PARAMETER_NATIONALITY, fingerprintCardIdentificationRecordReport.getNationality());
-		params.put(PARAMETER_JOB, fingerprintCardIdentificationRecordReport.getOccupation());
-		params.put(PARAMETER_SEX, fingerprintCardIdentificationRecordReport.getGender());
-		params.put(PARAMETER_ID, fingerprintCardIdentificationRecordReport.getIdNumber());
-		params.put(PARAMETER_ID_TYPE, fingerprintCardIdentificationRecordReport.getIdType());
-		params.put(PARAMETER_ID_ISSUANCE, fingerprintCardIdentificationRecordReport.getIdIssuanceDate());
+		params.put(PARAMETER_OCCUPATION, fingerprintCardIdentificationRecordReport.getOccupation());
+		params.put(PARAMETER_GENDER, fingerprintCardIdentificationRecordReport.getGender());
+		params.put(PARAMETER_BIOMETRICS_ID, fingerprintCardIdentificationRecordReport.getBiometricsId());
+		params.put(PARAMETER_GENERAL_FILE_NUMBER, fingerprintCardIdentificationRecordReport.getGeneralFileNumber());
+		params.put(PARAMETER_SAMIS_ID, fingerprintCardIdentificationRecordReport.getSamisId());
+		params.put(PARAMETER_SAMIS_ID_TYPE, fingerprintCardIdentificationRecordReport.getSamisIdType());
+		params.put(PARAMETER_DOCUMENT_ID, fingerprintCardIdentificationRecordReport.getDocumentId());
+		params.put(PARAMETER_DOCUMENT_TYPE, fingerprintCardIdentificationRecordReport.getDocumentType());
+		params.put(PARAMETER_DOCUMENT_ISSUANCE_DATE,
+		           fingerprintCardIdentificationRecordReport.getDocumentIssuanceDate());
 		params.put(PARAMETER_BIRTH_OF_DATE, fingerprintCardIdentificationRecordReport.getBirthDate());
 		params.put(PARAMETER_BIRTH_PLACE, fingerprintCardIdentificationRecordReport.getBirthPlace());
-		params.put(PARAMETER_ID_EXPIRY, fingerprintCardIdentificationRecordReport.getIdExpirationDate());
+		params.put(PARAMETER_DOCUMENT_EXPIRY_DATE, fingerprintCardIdentificationRecordReport.getDocumentExpiryDate());
 		params.put(PARAMETER_LOGO, Thread.currentThread().getContextClassLoader().getResourceAsStream(LOGO_FILE));
 		
 		UserInfo userInfo = (UserInfo) Context.getUserSession().getAttribute("userInfo");

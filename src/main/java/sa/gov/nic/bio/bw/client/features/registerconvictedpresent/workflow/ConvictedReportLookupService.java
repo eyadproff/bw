@@ -5,9 +5,9 @@ import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.beans.UserSession;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.CountryBean;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.CrimeType;
-import sa.gov.nic.bio.bw.client.features.commons.webservice.IdType;
+import sa.gov.nic.bio.bw.client.features.commons.webservice.DocumentType;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.LookupAPI;
-import sa.gov.nic.bio.bw.client.features.commons.webservice.PersonIdType;
+import sa.gov.nic.bio.bw.client.features.commons.webservice.SamisIdType;
 import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
 
 import java.util.List;
@@ -23,12 +23,12 @@ public class ConvictedReportLookupService
 		
 		@SuppressWarnings("unchecked") List<CountryBean> countries = (List<CountryBean>)
 														userSession.getAttribute("lookups.countries");
-		@SuppressWarnings("unchecked") List<PersonIdType> personIdTypes = (List<PersonIdType>)
-														userSession.getAttribute("lookups.personIdTypes");
+		@SuppressWarnings("unchecked") List<SamisIdType> samisIdTypes = (List<SamisIdType>)
+														userSession.getAttribute("lookups.samisIdTypes");
 		@SuppressWarnings("unchecked") List<CrimeType> crimeTypes = (List<CrimeType>)
 														userSession.getAttribute("lookups.crimeTypes");
-		@SuppressWarnings("unchecked") List<IdType> idTypes = (List<IdType>)
-														userSession.getAttribute("lookups.idTypes");
+		@SuppressWarnings("unchecked") List<DocumentType> documentTypes = (List<DocumentType>)
+														userSession.getAttribute("lookups.documentTypes");
 		
 		if(countries == null)
 		{
@@ -50,20 +50,20 @@ public class ConvictedReportLookupService
 			LOGGER.info("countries = " + countries);
 		}
 		
-		if(personIdTypes == null)
+		if(samisIdTypes == null)
 		{
 			LookupAPI lookupAPI = Context.getWebserviceManager().getApi(LookupAPI.class);
-			Call<List<PersonIdType>> personIdTypesCall = lookupAPI.lookupPersonIdTypes();
-			ServiceResponse<List<PersonIdType>> personIdTypesResponse = Context.getWebserviceManager()
-																		       .executeApi(personIdTypesCall);
+			Call<List<SamisIdType>> samisIdTypesCall = lookupAPI.lookupPersonIdTypes();
+			ServiceResponse<List<SamisIdType>> samisIdTypesResponse = Context.getWebserviceManager()
+																		       .executeApi(samisIdTypesCall);
 			
-			if(personIdTypesResponse.isSuccess()) personIdTypes = personIdTypesResponse.getResult();
-			else return ServiceResponse.failure(personIdTypesResponse.getErrorCode(),
-			                                    personIdTypesResponse.getException(),
-			                                    personIdTypesResponse.getErrorDetails());
+			if(samisIdTypesResponse.isSuccess()) samisIdTypes = samisIdTypesResponse.getResult();
+			else return ServiceResponse.failure(samisIdTypesResponse.getErrorCode(),
+			                                    samisIdTypesResponse.getException(),
+			                                    samisIdTypesResponse.getErrorDetails());
 			
-			userSession.setAttribute("lookups.personIdTypes", personIdTypes);
-			LOGGER.info("personIdTypes = " + personIdTypes);
+			userSession.setAttribute("lookups.samisIdTypes", samisIdTypes);
+			LOGGER.info("samisIdTypes = " + samisIdTypes);
 		}
 		
 		if(crimeTypes == null)
@@ -82,19 +82,20 @@ public class ConvictedReportLookupService
 			LOGGER.info("crimeTypes = " + crimeTypes);
 		}
 		
-		if(idTypes == null)
+		if(documentTypes == null)
 		{
 			LookupAPI lookupAPI = Context.getWebserviceManager().getApi(LookupAPI.class);
-			Call<List<IdType>> idTypesCall = lookupAPI.lookupIdTypes();
-			ServiceResponse<List<IdType>> idTypesResponse = Context.getWebserviceManager().executeApi(idTypesCall);
+			Call<List<DocumentType>> documentTypesCall = lookupAPI.lookupIdTypes();
+			ServiceResponse<List<DocumentType>> documentTypesResponse =
+														Context.getWebserviceManager().executeApi(documentTypesCall);
 			
-			if(idTypesResponse.isSuccess()) idTypes = idTypesResponse.getResult();
-			else return ServiceResponse.failure(idTypesResponse.getErrorCode(),
-			                                    idTypesResponse.getException(),
-			                                    idTypesResponse.getErrorDetails());
+			if(documentTypesResponse.isSuccess()) documentTypes = documentTypesResponse.getResult();
+			else return ServiceResponse.failure(documentTypesResponse.getErrorCode(),
+			                                    documentTypesResponse.getException(),
+			                                    documentTypesResponse.getErrorDetails());
 			
-			userSession.setAttribute("lookups.idTypes", idTypes);
-			LOGGER.info("idTypes = " + idTypes);
+			userSession.setAttribute("lookups.documentTypes", documentTypes);
+			LOGGER.info("documentTypes = " + documentTypes);
 		}
 		
 		return ServiceResponse.success(null);

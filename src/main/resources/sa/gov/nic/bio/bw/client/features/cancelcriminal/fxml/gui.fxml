@@ -25,14 +25,14 @@
                     </padding>
                     <Label text="%label.personId" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
                     <TextField fx:id="txtPersonId" GridPane.columnIndex="1" GridPane.rowIndex="0" onAction="#onEnterPressed"/>
-                    <Label text="%label.personIdType" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+                    <Label text="%label.samisIdType" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
                     <ComboBox fx:id="cboPersonIdType" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
                     <Label text="%label.criminalId" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
                     <TextField fx:id="txtCriminalId" GridPane.columnIndex="1" GridPane.rowIndex="2" onAction="#onEnterPressed"/>
                 </GridPane>
             </Tab>
             <Tab fx:id="tabByInquiryId" text="%tab.byInquiryId" closable="false">
-                <GridPane alignment="CENTER" vgap="5" hgap="20" styleClass="formBox">
+                <GridPane alignment="CENTER" vgap="5" hgap="20" styleClass="formBox-with-tabs">
                     <padding>
                         <Insets top="20" right="20" bottom="20" left="20"/>
                     </padding>

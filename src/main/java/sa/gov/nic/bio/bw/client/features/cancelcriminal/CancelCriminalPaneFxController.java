@@ -20,7 +20,7 @@ import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.workflow.Workflow;
 import sa.gov.nic.bio.bw.client.features.cancelcriminal.tasks.LookupTask;
 import sa.gov.nic.bio.bw.client.features.cancelcriminal.utils.CancelCriminalErrorCodes;
-import sa.gov.nic.bio.bw.client.features.commons.webservice.PersonIdType;
+import sa.gov.nic.bio.bw.client.features.commons.webservice.SamisIdType;
 import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
 
 import java.util.HashMap;
@@ -36,7 +36,7 @@ public class CancelCriminalPaneFxController extends BodyFxControllerBase
 	@FXML private Tab tabByPersonId;
 	@FXML private Tab tabByInquiryId;
 	@FXML private TextField txtPersonId;
-	@FXML private ComboBox<PersonIdType> cboPersonIdType;
+	@FXML private ComboBox<SamisIdType> cboPersonIdType;
 	@FXML private TextField txtCriminalId;
 	@FXML private TextField txtInquiryId;
 	@FXML private TextField txtCriminalId2;
@@ -83,16 +83,16 @@ public class CancelCriminalPaneFxController extends BodyFxControllerBase
 		
 		btnCancelCriminal.disableProperty().bind(byPersonIdTabReadyBinding.not().and(byInquiryIdTabReadyBinding.not()));
 		
-		cboPersonIdType.setConverter(new StringConverter<PersonIdType>()
+		cboPersonIdType.setConverter(new StringConverter<SamisIdType>()
 		{
 			@Override
-			public String toString(PersonIdType object)
+			public String toString(SamisIdType object)
 			{
 				return formatPersonIdType(object);
 			}
 			
 			@Override
-			public PersonIdType fromString(String string)
+			public SamisIdType fromString(String string)
 			{
 				return null;
 			}
@@ -120,7 +120,7 @@ public class CancelCriminalPaneFxController extends BodyFxControllerBase
 			if(serviceResponse.isSuccess())
 			{
 				String personId = txtPersonId.getText().trim();
-				PersonIdType personIdType = cboPersonIdType.getValue();
+				SamisIdType samisIdType = cboPersonIdType.getValue();
 				String criminalId = txtCriminalId.getText().trim();
 				String inquiryId = txtInquiryId.getText().trim();
 				String criminalId2 = txtCriminalId2.getText().trim();
@@ -132,7 +132,7 @@ public class CancelCriminalPaneFxController extends BodyFxControllerBase
 					{
 						String message = String.format(
 								resources.getString("cancelCriminal.byPersonId.success"), criminalId,
-								personId, formatPersonIdType(personIdType));
+								personId, formatPersonIdType(samisIdType));
 						showSuccessNotification(message);
 					}
 					else
@@ -149,7 +149,7 @@ public class CancelCriminalPaneFxController extends BodyFxControllerBase
 					{
 						String message = String.format(
 								resources.getString("cancelCriminal.byPersonId.failure"), criminalId,
-								personId, formatPersonIdType(personIdType));
+								personId, formatPersonIdType(samisIdType));
 						showWarningNotification(message);
 					}
 					else
@@ -190,12 +190,12 @@ public class CancelCriminalPaneFxController extends BodyFxControllerBase
 		if(tabByPersonId.isSelected())
 		{
 			String personId = txtPersonId.getText().trim();
-			PersonIdType personIdType = cboPersonIdType.getValue();
+			SamisIdType samisIdType = cboPersonIdType.getValue();
 			String criminalId = txtCriminalId.getText().trim();
 			
 			String contentText = String.format(
 										resources.getString("cancelCriminal.byPersonId.confirmation.message"),
-			                            criminalId, personId, formatPersonIdType(personIdType));
+			                            criminalId, personId, formatPersonIdType(samisIdType));
 			boolean confirmed = Context.getCoreFxController().showConfirmationDialogAndWait(headerText, contentText);
 			
 			if(!confirmed) return;
@@ -204,7 +204,7 @@ public class CancelCriminalPaneFxController extends BodyFxControllerBase
 			disableUiControls(true);
 			
 			uiDataMap.put("personId", Long.parseLong(personId));
-			uiDataMap.put("personIdType", personIdType.getCode());
+			uiDataMap.put("samisIdType", samisIdType.getCode());
 			uiDataMap.put("criminalId", Long.parseLong(criminalId));
 		}
 		else
@@ -229,15 +229,15 @@ public class CancelCriminalPaneFxController extends BodyFxControllerBase
 		if(!isDetached()) Context.getWorkflowManager().submitUserTask(uiDataMap);
 	}
 	
-	private String formatPersonIdType(PersonIdType personIdType)
+	private String formatPersonIdType(SamisIdType samisIdType)
 	{
 		StringBuilder sb = new StringBuilder();
 		
 		if(Context.getGuiLanguage() == GuiLanguage.ARABIC)
 		{
-			sb.append(personIdType.getDescriptionAR());
+			sb.append(samisIdType.getDescriptionAR());
 		}
-		else sb.append(personIdType.getDescriptionEN());
+		else sb.append(samisIdType.getDescriptionEN());
 		
 		return AppUtils.localizeNumbers(sb.toString(), Locale.getDefault(), false);
 	}
@@ -247,11 +247,11 @@ public class CancelCriminalPaneFxController extends BodyFxControllerBase
 		lookupTask = new LookupTask();
 		lookupTask.setOnSucceeded(event ->
 		{
-		    ServiceResponse<List<PersonIdType>> serviceResponse = lookupTask.getValue();
+		    ServiceResponse<List<SamisIdType>> serviceResponse = lookupTask.getValue();
 		    if(serviceResponse.isSuccess())
 		    {
-		        List<PersonIdType> personIdTypes = serviceResponse.getResult();
-		        cboPersonIdType.getItems().addAll(personIdTypes);
+		        List<SamisIdType> samisIdTypes = serviceResponse.getResult();
+		        cboPersonIdType.getItems().addAll(samisIdTypes);
 		        cboPersonIdType.getSelectionModel().select(0);
 		        afterLookup(true);
 		    }

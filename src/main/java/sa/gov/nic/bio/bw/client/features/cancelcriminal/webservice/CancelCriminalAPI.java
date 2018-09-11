@@ -9,7 +9,7 @@ public interface CancelCriminalAPI
 {
 	@FormUrlEncoded
 	@POST("services-gateway-biooperation/api/xafis/delink/person-id/v1")
-	Call<Boolean> cancelCriminalByPersonId(@Field("person-id") long personId, @Field("person-type") int personIdType,
+	Call<Boolean> cancelCriminalByPersonId(@Field("person-id") long personId, @Field("person-type") int samisIdTypes,
 	                                       @Field("criminal-id") long criminalId);
 	
 	@FormUrlEncoded

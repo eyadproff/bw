@@ -16,11 +16,13 @@ import javafx.scene.paint.Color;
 import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.beans.HideableItem;
 import sa.gov.nic.bio.bw.client.core.beans.ItemWithText;
+import sa.gov.nic.bio.bw.client.core.utils.GuiLanguage;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.wizard.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.client.features.commons.beans.GenderType;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.CountryBean;
-import sa.gov.nic.bio.bw.client.features.commons.webservice.IdType;
+import sa.gov.nic.bio.bw.client.features.commons.webservice.DocumentType;
+import sa.gov.nic.bio.bw.client.features.commons.webservice.SamisIdType;
 
 import java.net.URL;
 import java.time.LocalDate;
@@ -34,6 +36,7 @@ public class PersonInfoPaneFxController extends WizardStepFxControllerBase
 	public static final String KEY_PERSON_INFO_FATHER_NAME = "PERSON_INFO_FATHER__NAME";
 	public static final String KEY_PERSON_INFO_GRANDFATHER_NAME = "PERSON_INFO_GRANDFATHER_NAME";
 	public static final String KEY_PERSON_INFO_FAMILY_NAME = "PERSON_INFO_FAMILY_NAME";
+	public static final String KEY_PERSON_INFO_CIVIL_BIO_ID = "PERSON_INFO_CIVIL_BIO_ID";
 	public static final String KEY_PERSON_INFO_GENERAL_FILE_NUMBER = "PERSON_INFO_GENERAL_FILE_NUMBER";
 	public static final String KEY_PERSON_INFO_GENDER = "PERSON_INFO_GENDER";
 	public static final String KEY_PERSON_INFO_NATIONALITY = "PERSON_INFO_NATIONALITY";
@@ -41,13 +44,16 @@ public class PersonInfoPaneFxController extends WizardStepFxControllerBase
 	public static final String KEY_PERSON_INFO_BIRTH_PLACE = "PERSON_INFO_BIRTH_PLACE";
 	public static final String KEY_PERSON_INFO_BIRTH_DATE = "PERSON_INFO_BIRTH_DATE";
 	public static final String KEY_PERSON_INFO_BIRTH_DATE_USE_HIJRI = "PERSON_INFO_BIRTH_DATE_USE_HIJRI";
-	public static final String KEY_PERSON_INFO_ID_NUMBER = "PERSON_INFO_ID_NUMBER";
-	public static final String KEY_PERSON_INFO_ID_TYPE = "PERSON_INFO_ID_TYPE";
-	public static final String KEY_PERSON_INFO_ID_ISSUANCE_DATE = "PERSON_INFO_ID_ISSUANCE_DATE";
-	public static final String KEY_PERSON_INFO_ID_ISSUANCE_DATE_USE_HIJRI = "PERSON_INFO_ID_ISSUANCE_DATE_USE_HIJRI";
-	public static final String KEY_PERSON_INFO_ID_EXPIRY_DATE = "PERSON_INFO_ID_EXPIRY_DATE";
-	public static final String KEY_PERSON_INFO_ID_EXPIRY_DATE_USE_HIJRI = "PERSON_INFO_ID_EXPIRY_DATE_USE_HIJRI";
-	
+	public static final String KEY_PERSON_INFO_SAMIS_ID = "PERSON_INFO_SAMIS_ID";
+	public static final String KEY_PERSON_INFO_SAMIS_ID_TYPE = "PERSON_INFO_SAMIS_ID_TYPE";
+	public static final String KEY_PERSON_INFO_DOCUMENT_ID = "PERSON_INFO_DOCUMENT_ID";
+	public static final String KEY_PERSON_INFO_DOCUMENT_TYPE = "PERSON_INFO_DOCUMENT_TYPE";
+	public static final String KEY_PERSON_INFO_DOCUMENT_ISSUANCE_DATE = "PERSON_INFO_DOCUMENT_ISSUANCE_DATE";
+	public static final String KEY_PERSON_INFO_DOCUMENT_ISSUANCE_DATE_USE_HIJRI =
+																		"PERSON_INFO_DOCUMENT_ISSUANCE_DATE_USE_HIJRI";
+	public static final String KEY_PERSON_INFO_DOCUMENT_EXPIRY_DATE = "PERSON_INFO_DOCUMENT_EXPIRY_DATE";
+	public static final String KEY_PERSON_INFO_DOCUMENT_EXPIRY_DATE_USE_HIJRI =
+																		"PERSON_INFO_DOCUMENT_EXPIRY_DATE_USE_HIJRI";
 	private static final String KEY_PERSON_INFO_FIRST_NAME_DISABLED = "PERSON_INFO_FIRST_NAME_DISABLED";
 	private static final String KEY_PERSON_INFO_FATHER_NAME_DISABLED = "PERSON_INFO_FATHER__NAME_DISABLED";
 	private static final String KEY_PERSON_INFO_GRANDFATHER_NAME_DISABLED = "PERSON_INFO_GRANDFATHER_NAME_DISABLED";
@@ -57,10 +63,14 @@ public class PersonInfoPaneFxController extends WizardStepFxControllerBase
 	private static final String KEY_PERSON_INFO_OCCUPATION_DISABLED = "PERSON_INFO_OCCUPATION_DISABLED";
 	private static final String KEY_PERSON_INFO_BIRTH_PLACE_DISABLED = "PERSON_INFO_BIRTH_PLACE_DISABLED";
 	private static final String KEY_PERSON_INFO_BIRTH_DATE_DISABLED = "PERSON_INFO_BIRTH_DATE_DISABLED";
-	private static final String KEY_PERSON_INFO_ID_NUMBER_DISABLED = "PERSON_INFO_ID_NUMBER_DISABLED";
-	private static final String KEY_PERSON_INFO_ID_TYPE_DISABLED = "PERSON_INFO_ID_TYPE_DISABLED";
-	private static final String KEY_PERSON_INFO_ID_ISSUANCE_DATE_DISABLED = "PERSON_INFO_ID_ISSUANCE_DATE_DISABLED";
-	private static final String KEY_PERSON_INFO_ID_EXPIRY_DATE_DISABLED = "PERSON_INFO_ID_EXPIRY_DATE_DISABLED";
+	private static final String KEY_PERSON_INFO_SAMIS_ID_DISABLED = "PERSON_INFO_SAMIS_ID_DISABLED";
+	private static final String KEY_PERSON_INFO_SAMIS_ID_TYPE_DISABLED = "PERSON_INFO_SAMIS_ID_TYPE_DISABLED";
+	private static final String KEY_PERSON_INFO_DOCUMENT_ID_DISABLED = "PERSON_INFO_DOCUMENT_ID_DISABLED";
+	private static final String KEY_PERSON_INFO_DOCUMENT_TYPE_DISABLED = "PERSON_INFO_DOCUMENT_TYPE_DISABLED";
+	private static final String KEY_PERSON_INFO_DOCUMENT_ISSUANCE_DATE_DISABLED =
+																		"PERSON_INFO_DOCUMENT_ISSUANCE_DATE_DISABLED";
+	private static final String KEY_PERSON_INFO_DOCUMENT_EXPIRY_DATE_DISABLED =
+																		"PERSON_INFO_DOCUMENT_EXPIRY_DATE_DISABLED";
 	
 	@FXML private Label lblGeneralFileNumber;
 	@FXML private TextField txtFirstName;
@@ -69,19 +79,21 @@ public class PersonInfoPaneFxController extends WizardStepFxControllerBase
 	@FXML private TextField txtFamilyName;
 	@FXML private TextField txtOccupation;
 	@FXML private TextField txtBirthPlace;
-	@FXML private TextField txtIdNumber;
+	@FXML private TextField txtSamisId;
+	@FXML private TextField txtDocumentId;
 	@FXML private ComboBox<ItemWithText<GenderType>> cboGender;
 	@FXML private ComboBox<HideableItem<CountryBean>> cboNationality;
-	@FXML private ComboBox<ItemWithText<IdType>> cboIdType;
+	@FXML private ComboBox<ItemWithText<SamisIdType>> cboSamisIdType;
+	@FXML private ComboBox<ItemWithText<DocumentType>> cboDocumentType;
 	@FXML private RadioButton rdoBirthDateUseHijri;
 	@FXML private RadioButton rdoBirthDateUseGregorian;
-	@FXML private RadioButton rdoIdIssuanceDateUseHijri;
-	@FXML private RadioButton rdoIdIssuanceDateUseGregorian;
-	@FXML private RadioButton rdoIdExpiryDateUseHijri;
-	@FXML private RadioButton rdoIdExpiryDateUseGregorian;
+	@FXML private RadioButton rdoDocumentIssuanceDateUseHijri;
+	@FXML private RadioButton rdoDocumentIssuanceDateUseGregorian;
+	@FXML private RadioButton rdoDocumentExpiryDateUseHijri;
+	@FXML private RadioButton rdoDocumentExpiryDateUseGregorian;
 	@FXML private DatePicker dpBirthDate;
-	@FXML private DatePicker dpIdIssuanceDate;
-	@FXML private DatePicker dpIdExpiryDate;
+	@FXML private DatePicker dpDocumentIssuanceDate;
+	@FXML private DatePicker dpDocumentExpiryDate;
 	@FXML private Button btnStartOver;
 	@FXML private Button btnNext;
 	
@@ -101,22 +113,33 @@ public class PersonInfoPaneFxController extends WizardStepFxControllerBase
 		@SuppressWarnings("unchecked") List<CountryBean> countries = (List<CountryBean>)
 												Context.getUserSession().getAttribute("lookups.countries");
 		
-		@SuppressWarnings("unchecked") List<IdType> idTypes = (List<IdType>)
-														Context.getUserSession().getAttribute("lookups.idTypes");
+		@SuppressWarnings("unchecked") List<SamisIdType> samisIdTypes = (List<SamisIdType>)
+												Context.getUserSession().getAttribute("lookups.samisIdTypes");
+		
+		@SuppressWarnings("unchecked") List<DocumentType> documentTypes = (List<DocumentType>)
+												Context.getUserSession().getAttribute("lookups.documentTypes");
 		
 		GuiUtils.addAutoCompletionSupportToComboBox(cboNationality, countries);
 		
 		GuiUtils.makeComboBoxOpenableByPressingEnter(cboGender);
 		GuiUtils.makeComboBoxOpenableByPressingEnter(cboNationality);
-		GuiUtils.makeComboBoxOpenableByPressingEnter(cboIdType);
+		GuiUtils.makeComboBoxOpenableByPressingEnter(cboSamisIdType);
+		GuiUtils.makeComboBoxOpenableByPressingEnter(cboDocumentType);
 		
-		ObservableList<ItemWithText<IdType>> items = FXCollections.observableArrayList();
-		idTypes.forEach(idType -> items.add(new ItemWithText<>(idType, idType.getDesc())));
-		cboIdType.setItems(items);
+		boolean arabic = Context.getGuiLanguage() == GuiLanguage.ARABIC;
+		ObservableList<ItemWithText<SamisIdType>> SamisIdTypeItems = FXCollections.observableArrayList();
+		samisIdTypes.forEach(idType -> SamisIdTypeItems.add(new ItemWithText<>(idType, arabic ?
+															idType.getDescriptionAR() : idType.getDescriptionEN())));
+		cboSamisIdType.setItems(SamisIdTypeItems);
+		
+		ObservableList<ItemWithText<DocumentType>> DocumentTypeItems = FXCollections.observableArrayList();
+		documentTypes.forEach(documentType -> DocumentTypeItems.add(new ItemWithText<>(documentType,
+		                                                                               documentType.getDesc())));
+		cboDocumentType.setItems(DocumentTypeItems);
 		
 		GuiUtils.initDatePicker(rdoBirthDateUseHijri, dpBirthDate, birthDateValidator);
-		GuiUtils.initDatePicker(rdoIdIssuanceDateUseHijri, dpIdIssuanceDate, null);
-		GuiUtils.initDatePicker(rdoIdExpiryDateUseHijri, dpIdExpiryDate, null);
+		GuiUtils.initDatePicker(rdoDocumentIssuanceDateUseHijri, dpDocumentIssuanceDate, null);
+		GuiUtils.initDatePicker(rdoDocumentExpiryDateUseHijri, dpDocumentExpiryDate, null);
 		
 		GuiUtils.applyValidatorToTextField(txtFirstName, null, null, 15);
 		GuiUtils.applyValidatorToTextField(txtFatherName, null, null, 15);
@@ -124,17 +147,16 @@ public class PersonInfoPaneFxController extends WizardStepFxControllerBase
 		GuiUtils.applyValidatorToTextField(txtFamilyName, null, null, 15);
 		GuiUtils.applyValidatorToTextField(txtOccupation, null, null, 20);
 		GuiUtils.applyValidatorToTextField(txtBirthPlace, null, null, 20);
-		GuiUtils.applyValidatorToTextField(txtIdNumber, null, null, 10);
+		GuiUtils.applyValidatorToTextField(txtSamisId, "\\d*", "[^\\d]", 10);
+		GuiUtils.applyValidatorToTextField(txtDocumentId, null, null, 10);
 		
 		BooleanBinding txtFirstNameBinding = txtFirstName.textProperty().isEmpty();
-		BooleanBinding txtFatherNameBinding = txtFatherName.textProperty().isEmpty();
-		BooleanBinding txtGrandfatherNameBinding = txtGrandfatherName.textProperty().isEmpty();
 		BooleanBinding txtFamilyNameBinding = txtFamilyName.textProperty().isEmpty();
 		BooleanBinding cboGenderBinding = cboGender.valueProperty().isNull();
 		BooleanBinding cboNationalityBinding = cboNationality.valueProperty().isNull();
 		
-		btnNext.disableProperty().bind(txtFirstNameBinding.or(txtFatherNameBinding).or(txtGrandfatherNameBinding)
-	                             .or(txtFamilyNameBinding).or(cboGenderBinding).or(cboNationalityBinding));
+		btnNext.disableProperty().bind(txtFirstNameBinding.or(txtFamilyNameBinding).or(cboGenderBinding)
+				                                                                   .or(cboNationalityBinding));
 	}
 	
 	@Override
@@ -157,10 +179,14 @@ public class PersonInfoPaneFxController extends WizardStepFxControllerBase
 			Boolean occupationDisabled = (Boolean) uiInputData.get(KEY_PERSON_INFO_OCCUPATION_DISABLED);
 			Boolean birthPlaceDisabled = (Boolean) uiInputData.get(KEY_PERSON_INFO_BIRTH_PLACE_DISABLED);
 			Boolean birthDateDisabled = (Boolean) uiInputData.get(KEY_PERSON_INFO_BIRTH_DATE_DISABLED);
-			Boolean idNumberDisabled = (Boolean) uiInputData.get(KEY_PERSON_INFO_ID_NUMBER_DISABLED);
-			Boolean idTypeDisabled = (Boolean) uiInputData.get(KEY_PERSON_INFO_ID_TYPE_DISABLED);
-			Boolean idIssuanceDateDisabled = (Boolean) uiInputData.get(KEY_PERSON_INFO_ID_ISSUANCE_DATE_DISABLED);
-			Boolean idExpiryDateDisabled = (Boolean) uiInputData.get(KEY_PERSON_INFO_ID_EXPIRY_DATE_DISABLED);
+			Boolean samisIdDisabled = (Boolean) uiInputData.get(KEY_PERSON_INFO_SAMIS_ID_DISABLED);
+			Boolean samisIdTypeDisabled = (Boolean) uiInputData.get(KEY_PERSON_INFO_SAMIS_ID_TYPE_DISABLED);
+			Boolean documentIdDisabled = (Boolean) uiInputData.get(KEY_PERSON_INFO_DOCUMENT_ID_DISABLED);
+			Boolean documentTypeDisabled = (Boolean) uiInputData.get(KEY_PERSON_INFO_DOCUMENT_TYPE_DISABLED);
+			Boolean documentIssuanceDateDisabled = (Boolean)
+													uiInputData.get(KEY_PERSON_INFO_DOCUMENT_ISSUANCE_DATE_DISABLED);
+			Boolean documentExpiryDateDisabled = (Boolean)
+													uiInputData.get(KEY_PERSON_INFO_DOCUMENT_EXPIRY_DATE_DISABLED);
 			
 			Node focusedNode = null;
 			
@@ -216,16 +242,16 @@ public class PersonInfoPaneFxController extends WizardStepFxControllerBase
 			
 			CountryBean countryBean = (CountryBean) uiInputData.get(KEY_PERSON_INFO_NATIONALITY);
 			if(countryBean != null && countryBean.getCode() != 0)
-										cboNationality.getItems()
-						                              .stream()
-						                              .filter(item -> item.getObject() == countryBean)
-						                              .findFirst()
-						                              .ifPresent(value ->
-						                              {
-						                                  cboNationality.setValue(value);
-							                              if(nationalityDisabled == null || nationalityDisabled)
-							                              	                            cboNationality.setDisable(true);
-						                              });
+						cboNationality.getItems()
+						              .stream()
+						              .filter(item -> item.getObject() == countryBean)
+						              .findFirst()
+						              .ifPresent(value ->
+						              {
+						                  cboNationality.setValue(value);
+						                  if(nationalityDisabled == null || nationalityDisabled)
+						                  	                            cboNationality.setDisable(true);
+						              });
 			else
 			{
 				String text = resources.getString("combobox.unknownNationality");
@@ -268,47 +294,69 @@ public class PersonInfoPaneFxController extends WizardStepFxControllerBase
 			if(birthDateUseHijri == null || birthDateUseHijri) rdoBirthDateUseHijri.setSelected(true);
 			else rdoBirthDateUseGregorian.setSelected(true);
 			
-			String idNumber = (String) uiInputData.get(KEY_PERSON_INFO_ID_NUMBER);
-			if(idNumber != null && !idNumber.trim().isEmpty())
+			Long samisId = (Long) uiInputData.get(KEY_PERSON_INFO_SAMIS_ID);
+			if(samisId != null)
 			{
-				txtIdNumber.setText(idNumber);
-				if(idNumberDisabled == null || idNumberDisabled) txtIdNumber.setDisable(true);
+				txtSamisId.setText(String.valueOf(samisId));
+				if(samisIdDisabled == null || samisIdDisabled) txtSamisId.setDisable(true);
 			}
 			
-			IdType idType = (IdType) uiInputData.get(KEY_PERSON_INFO_ID_TYPE);
-			if(idType != null) cboIdType.getItems()
-										.stream()
-										.filter(item -> item.getItem() == idType)
-										.findFirst()
-										.ifPresent(value ->
-										{
-											cboIdType.setValue(value);
-											if(idTypeDisabled == null || idTypeDisabled) cboIdType.setDisable(true);
-										});
+			SamisIdType samisIdType = (SamisIdType) uiInputData.get(KEY_PERSON_INFO_SAMIS_ID_TYPE);
+			if(samisIdType != null) cboSamisIdType.getItems()
+					.stream()
+					.filter(item -> item.getItem() == samisIdType)
+					.findFirst()
+					.ifPresent(value ->
+					{
+					    cboSamisIdType.setValue(value);
+					    if(samisIdTypeDisabled == null || samisIdTypeDisabled) cboSamisIdType.setDisable(true);
+					});
 			
-			LocalDate idIssuanceDate = (LocalDate) uiInputData.get(KEY_PERSON_INFO_ID_ISSUANCE_DATE);
+			String documentId = (String) uiInputData.get(KEY_PERSON_INFO_DOCUMENT_ID);
+			if(documentId != null && !documentId.trim().isEmpty())
+			{
+				txtDocumentId.setText(documentId);
+				if(documentIdDisabled == null || documentIdDisabled) txtDocumentId.setDisable(true);
+			}
+			
+			DocumentType documentType = (DocumentType) uiInputData.get(KEY_PERSON_INFO_DOCUMENT_TYPE);
+			if(documentType != null) cboDocumentType.getItems()
+						.stream()
+						.filter(item -> item.getItem() == documentType)
+						.findFirst()
+						.ifPresent(value ->
+						{
+							cboDocumentType.setValue(value);
+							if(documentTypeDisabled == null || documentTypeDisabled) cboDocumentType.setDisable(true);
+						});
+			
+			LocalDate idIssuanceDate = (LocalDate) uiInputData.get(KEY_PERSON_INFO_DOCUMENT_ISSUANCE_DATE);
 			if(idIssuanceDate != null)
 			{
-				dpIdIssuanceDate.setValue(idIssuanceDate);
+				dpDocumentIssuanceDate.setValue(idIssuanceDate);
 				
-				if(idIssuanceDateDisabled == null || idIssuanceDateDisabled) dpIdIssuanceDate.setDisable(true);
+				if(documentIssuanceDateDisabled == null || documentIssuanceDateDisabled)
+																			dpDocumentIssuanceDate.setDisable(true);
 			}
 			
-			Boolean idIssuanceDateUseHijri = (Boolean) uiInputData.get(KEY_PERSON_INFO_ID_ISSUANCE_DATE_USE_HIJRI);
-			if(idIssuanceDateUseHijri == null || idIssuanceDateUseHijri) rdoIdIssuanceDateUseHijri.setSelected(true);
-			else rdoIdIssuanceDateUseGregorian.setSelected(true);
+			Boolean idIssuanceDateUseHijri = (Boolean)
+												uiInputData.get(KEY_PERSON_INFO_DOCUMENT_ISSUANCE_DATE_USE_HIJRI);
+			if(idIssuanceDateUseHijri == null || idIssuanceDateUseHijri)
+																	rdoDocumentIssuanceDateUseHijri.setSelected(true);
+			else rdoDocumentIssuanceDateUseGregorian.setSelected(true);
 			
-			LocalDate idExpiryDate = (LocalDate) uiInputData.get(KEY_PERSON_INFO_ID_EXPIRY_DATE);
+			LocalDate idExpiryDate = (LocalDate) uiInputData.get(KEY_PERSON_INFO_DOCUMENT_EXPIRY_DATE);
 			if(idExpiryDate != null)
 			{
-				dpIdExpiryDate.setValue(idExpiryDate);
+				dpDocumentExpiryDate.setValue(idExpiryDate);
 				
-				if(idExpiryDateDisabled == null || idExpiryDateDisabled) dpIdExpiryDate.setDisable(true);
+				if(documentExpiryDateDisabled == null || documentExpiryDateDisabled)
+																			dpDocumentExpiryDate.setDisable(true);
 			}
 			
-			Boolean idExpiryDateUseHijri = (Boolean) uiInputData.get(KEY_PERSON_INFO_ID_EXPIRY_DATE_USE_HIJRI);
-			if(idExpiryDateUseHijri == null || idExpiryDateUseHijri) rdoIdExpiryDateUseHijri.setSelected(true);
-			else rdoIdExpiryDateUseGregorian.setSelected(true);
+			Boolean idExpiryDateUseHijri = (Boolean) uiInputData.get(KEY_PERSON_INFO_DOCUMENT_EXPIRY_DATE_USE_HIJRI);
+			if(idExpiryDateUseHijri == null || idExpiryDateUseHijri) rdoDocumentExpiryDateUseHijri.setSelected(true);
+			else rdoDocumentExpiryDateUseGregorian.setSelected(true);
 			
 			if(focusedNode != null) focusedNode.requestFocus();
 			else btnNext.requestFocus();
@@ -324,9 +372,13 @@ public class PersonInfoPaneFxController extends WizardStepFxControllerBase
 	@Override
 	public void onGoingNext(Map<String, Object> uiDataMap)
 	{
-		String text = txtIdNumber.getText();
-		if(text != null && !text.isEmpty()) uiDataMap.put(KEY_PERSON_INFO_ID_NUMBER, text);
-		else uiDataMap.remove(KEY_PERSON_INFO_ID_NUMBER);
+		String text = txtSamisId.getText();
+		if(text != null && !text.isEmpty()) uiDataMap.put(KEY_PERSON_INFO_SAMIS_ID, Long.parseLong(text));
+		else uiDataMap.remove(KEY_PERSON_INFO_SAMIS_ID);
+		
+		text = txtDocumentId.getText();
+		if(text != null && !text.isEmpty()) uiDataMap.put(KEY_PERSON_INFO_DOCUMENT_ID, text);
+		else uiDataMap.remove(KEY_PERSON_INFO_DOCUMENT_ID);
 		
 		ItemWithText<GenderType> genderItem = cboGender.getValue();
 		if(genderItem != null) uiDataMap.put(KEY_PERSON_INFO_GENDER, genderItem.getItem());
@@ -352,14 +404,18 @@ public class PersonInfoPaneFxController extends WizardStepFxControllerBase
 		uiDataMap.put(KEY_PERSON_INFO_BIRTH_DATE, dpBirthDate.getValue());
 		uiDataMap.put(KEY_PERSON_INFO_BIRTH_DATE_USE_HIJRI, rdoBirthDateUseHijri.isSelected());
 		
-		ItemWithText<IdType> value = cboIdType.getValue();
-		if(value != null) uiDataMap.put(KEY_PERSON_INFO_ID_TYPE, value.getItem());
-		else uiDataMap.remove(KEY_PERSON_INFO_ID_TYPE);
+		ItemWithText<SamisIdType> samisIdTypeValue = cboSamisIdType.getValue();
+		if(samisIdTypeValue != null) uiDataMap.put(KEY_PERSON_INFO_SAMIS_ID_TYPE, samisIdTypeValue.getItem());
+		else uiDataMap.remove(KEY_PERSON_INFO_SAMIS_ID_TYPE);
 		
-		uiDataMap.put(KEY_PERSON_INFO_ID_ISSUANCE_DATE, dpIdIssuanceDate.getValue());
-		uiDataMap.put(KEY_PERSON_INFO_ID_ISSUANCE_DATE_USE_HIJRI, rdoIdIssuanceDateUseHijri.isSelected());
-		uiDataMap.put(KEY_PERSON_INFO_ID_EXPIRY_DATE, dpIdExpiryDate.getValue());
-		uiDataMap.put(KEY_PERSON_INFO_ID_EXPIRY_DATE_USE_HIJRI, rdoIdExpiryDateUseHijri.isSelected());
+		ItemWithText<DocumentType> documentTypeValue = cboDocumentType.getValue();
+		if(documentTypeValue != null) uiDataMap.put(KEY_PERSON_INFO_DOCUMENT_TYPE, documentTypeValue.getItem());
+		else uiDataMap.remove(KEY_PERSON_INFO_DOCUMENT_TYPE);
+		
+		uiDataMap.put(KEY_PERSON_INFO_DOCUMENT_ISSUANCE_DATE, dpDocumentIssuanceDate.getValue());
+		uiDataMap.put(KEY_PERSON_INFO_DOCUMENT_ISSUANCE_DATE_USE_HIJRI, rdoDocumentIssuanceDateUseHijri.isSelected());
+		uiDataMap.put(KEY_PERSON_INFO_DOCUMENT_EXPIRY_DATE, dpDocumentExpiryDate.getValue());
+		uiDataMap.put(KEY_PERSON_INFO_DOCUMENT_EXPIRY_DATE_USE_HIJRI, rdoDocumentExpiryDateUseHijri.isSelected());
 		
 		uiDataMap.put(KEY_PERSON_INFO_FIRST_NAME_DISABLED, txtFirstName.isDisabled());
 		uiDataMap.put(KEY_PERSON_INFO_FATHER_NAME_DISABLED, txtFatherName.isDisabled());
@@ -370,10 +426,12 @@ public class PersonInfoPaneFxController extends WizardStepFxControllerBase
 		uiDataMap.put(KEY_PERSON_INFO_OCCUPATION_DISABLED, txtOccupation.isDisabled());
 		uiDataMap.put(KEY_PERSON_INFO_BIRTH_PLACE_DISABLED, txtBirthPlace.isDisabled());
 		uiDataMap.put(KEY_PERSON_INFO_BIRTH_DATE_DISABLED, dpBirthDate.isDisabled());
-		uiDataMap.put(KEY_PERSON_INFO_ID_NUMBER_DISABLED, txtIdNumber.isDisabled());
-		uiDataMap.put(KEY_PERSON_INFO_ID_TYPE_DISABLED, cboIdType.isDisabled());
-		uiDataMap.put(KEY_PERSON_INFO_ID_ISSUANCE_DATE_DISABLED, dpIdIssuanceDate.isDisabled());
-		uiDataMap.put(KEY_PERSON_INFO_ID_EXPIRY_DATE_DISABLED, dpIdExpiryDate.isDisabled());
+		uiDataMap.put(KEY_PERSON_INFO_SAMIS_ID_DISABLED, txtSamisId.isDisabled());
+		uiDataMap.put(KEY_PERSON_INFO_SAMIS_ID_TYPE_DISABLED, cboSamisIdType.isDisabled());
+		uiDataMap.put(KEY_PERSON_INFO_DOCUMENT_ID_DISABLED, txtDocumentId.isDisabled());
+		uiDataMap.put(KEY_PERSON_INFO_DOCUMENT_TYPE_DISABLED, cboDocumentType.isDisabled());
+		uiDataMap.put(KEY_PERSON_INFO_DOCUMENT_ISSUANCE_DATE_DISABLED, dpDocumentIssuanceDate.isDisabled());
+		uiDataMap.put(KEY_PERSON_INFO_DOCUMENT_EXPIRY_DATE_DISABLED, dpDocumentExpiryDate.isDisabled());
 	}
 	
 	@FXML

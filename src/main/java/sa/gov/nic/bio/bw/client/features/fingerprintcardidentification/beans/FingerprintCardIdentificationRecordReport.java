@@ -15,18 +15,23 @@ public class FingerprintCardIdentificationRecordReport
 	private String occupation;
 	private String birthPlace;
 	private String birthDate;
-	private String idNumber;
-	private String idType;
-	private String idIssuanceDate;
-	private String idExpirationDate;
+	private String samisId;
+	private String samisIdType;
+	private String biometricsId;
+	private String generalFileNumber;
+	private String documentId;
+	private String documentType;
+	private String documentIssuanceDate;
+	private String documentExpiryDate;
 	private Map<Integer, String> fingerprintsImages;
 	
 	public FingerprintCardIdentificationRecordReport(String faceBase64, String firstName, String fatherName,
 	                                                 String grandfatherName, String familyName, String gender,
 	                                                 String nationality, String occupation, String birthPlace,
-	                                                 String birthDate, String idNumber, String idType,
-	                                                 String idIssuanceDate, String idExpirationDate,
-	                                                 Map<Integer, String> fingerprintsImages)
+	                                                 String birthDate, String samisId, String samisIdType,
+	                                                 String biometricsId, String generalFileNumber, String documentId,
+	                                                 String documentType, String documentIssuanceDate,
+	                                                 String documentExpiryDate, Map<Integer, String> fingerprintsImages)
 	{
 		this.faceBase64 = faceBase64;
 		this.firstName = firstName;
@@ -38,10 +43,14 @@ public class FingerprintCardIdentificationRecordReport
 		this.occupation = occupation;
 		this.birthPlace = birthPlace;
 		this.birthDate = birthDate;
-		this.idNumber = idNumber;
-		this.idType = idType;
-		this.idIssuanceDate = idIssuanceDate;
-		this.idExpirationDate = idExpirationDate;
+		this.samisId = samisId;
+		this.samisIdType = samisIdType;
+		this.biometricsId = biometricsId;
+		this.generalFileNumber = generalFileNumber;
+		this.documentId = documentId;
+		this.documentType = documentType;
+		this.documentIssuanceDate = documentIssuanceDate;
+		this.documentExpiryDate = documentExpiryDate;
 		this.fingerprintsImages = fingerprintsImages;
 	}
 	
@@ -75,17 +84,29 @@ public class FingerprintCardIdentificationRecordReport
 	public String getBirthDate(){return birthDate;}
 	public void setBirthDate(String birthDate){this.birthDate = birthDate;}
 	
-	public String getIdNumber(){return idNumber;}
-	public void setIdNumber(String idNumber){this.idNumber = idNumber;}
+	public String getSamisId(){return samisId;}
+	public void setSamisId(String samisId){this.samisId = samisId;}
 	
-	public String getIdType(){return idType;}
-	public void setIdType(String idType){this.idType = idType;}
+	public String getSamisIdType(){return samisIdType;}
+	public void setSamisIdType(String samisIdType){this.samisIdType = samisIdType;}
 	
-	public String getIdIssuanceDate(){return idIssuanceDate;}
-	public void setIdIssuanceDate(String idIssuanceDate){this.idIssuanceDate = idIssuanceDate;}
+	public String getBiometricsId(){return biometricsId;}
+	public void setBiometricsId(String biometricsId){this.biometricsId = biometricsId;}
 	
-	public String getIdExpirationDate(){return idExpirationDate;}
-	public void setIdExpirationDate(String idExpirationDate){this.idExpirationDate = idExpirationDate;}
+	public String getGeneralFileNumber(){return generalFileNumber;}
+	public void setGeneralFileNumber(String generalFileNumber){this.generalFileNumber = generalFileNumber;}
+	
+	public String getDocumentId(){return documentId;}
+	public void setDocumentId(String documentId){this.documentId = documentId;}
+	
+	public String getDocumentType(){return documentType;}
+	public void setDocumentType(String documentType){this.documentType = documentType;}
+	
+	public String getDocumentIssuanceDate(){return documentIssuanceDate;}
+	public void setDocumentIssuanceDate(String documentIssuanceDate){this.documentIssuanceDate = documentIssuanceDate;}
+	
+	public String getDocumentExpiryDate(){return documentExpiryDate;}
+	public void setDocumentExpiryDate(String documentExpiryDate){this.documentExpiryDate = documentExpiryDate;}
 	
 	public Map<Integer, String> getFingerprintsImages(){return fingerprintsImages;}
 	public void setFingerprintsImages(Map<Integer, String> fingerprintsImages)
@@ -102,9 +123,12 @@ public class FingerprintCardIdentificationRecordReport
 			   Objects.equals(familyName, that.familyName) && Objects.equals(gender, that.gender) &&
 			   Objects.equals(nationality, that.nationality) && Objects.equals(occupation, that.occupation) &&
 			   Objects.equals(birthPlace, that.birthPlace) && Objects.equals(birthDate, that.birthDate) &&
-			   Objects.equals(idNumber, that.idNumber) && Objects.equals(idType, that.idType) &&
-			   Objects.equals(idIssuanceDate, that.idIssuanceDate) &&
-			   Objects.equals(idExpirationDate, that.idExpirationDate) &&
+			   Objects.equals(samisId, that.samisId) && Objects.equals(samisIdType, that.samisIdType) &&
+			   Objects.equals(biometricsId, that.biometricsId) &&
+			   Objects.equals(generalFileNumber, that.generalFileNumber) &&
+			   Objects.equals(documentId, that.documentId) && Objects.equals(documentType, that.documentType) &&
+			   Objects.equals(documentIssuanceDate, that.documentIssuanceDate) &&
+			   Objects.equals(documentExpiryDate, that.documentExpiryDate) &&
 			   Objects.equals(fingerprintsImages, that.fingerprintsImages);
 	}
 	
@@ -112,19 +136,21 @@ public class FingerprintCardIdentificationRecordReport
 	public int hashCode()
 	{
 		return Objects.hash(faceBase64, firstName, fatherName, grandfatherName, familyName, gender, nationality,
-		                    occupation, birthPlace, birthDate, idNumber, idType, idIssuanceDate, idExpirationDate,
-		                    fingerprintsImages);
+		                    occupation, birthPlace, birthDate, samisId, samisIdType, biometricsId, generalFileNumber,
+		                    documentId, documentType, documentIssuanceDate, documentExpiryDate, fingerprintsImages);
 	}
 	
 	@Override
 	public String toString()
 	{
-		return "DeadPersonRecordReport{" + "faceBase64='" + faceBase64 + '\'' + ", firstName='" + firstName + '\'' +
-			   ", fatherName='" + fatherName + '\'' + ", grandfatherName='" + grandfatherName + '\'' +
-			   ", familyName='" + familyName + '\'' + ", gender='" + gender + '\'' + ", nationality='" + nationality +
-			   '\'' + ", occupation='" + occupation + '\'' + ", birthPlace='" + birthPlace + '\'' + ", birthDate='" +
-			   birthDate + '\'' + ", idNumber='" + idNumber + '\'' + ", idType='" + idType + '\'' +
-			   ", idIssuanceDate='" + idIssuanceDate + '\'' + ", idExpirationDate='" + idExpirationDate + '\'' +
-			   ", fingerprintsImages=" + fingerprintsImages + '}';
+		return "FingerprintCardIdentificationRecordReport{" + "faceBase64='" + faceBase64 + '\'' + ", firstName='" +
+			   firstName + '\'' + ", fatherName='" + fatherName + '\'' + ", grandfatherName='" + grandfatherName +
+			   '\'' + ", familyName='" + familyName + '\'' + ", gender='" + gender + '\'' + ", nationality='" +
+			   nationality + '\'' + ", occupation='" + occupation + '\'' + ", birthPlace='" + birthPlace + '\'' +
+			   ", birthDate='" + birthDate + '\'' + ", samisId='" + samisId + '\'' + ", samisIdType='" + samisIdType +
+			   '\'' + ", biometricsId='" + biometricsId + '\'' + ", generalFileNumber='" + generalFileNumber + '\'' +
+			   ", documentId='" + documentId + '\'' + ", documentType='" + documentType + '\'' +
+			   ", documentIssuanceDate='" + documentIssuanceDate + '\'' + ", documentExpiryDate='" +
+			   documentExpiryDate + '\'' + ", fingerprintsImages=" + fingerprintsImages + '}';
 	}
 }

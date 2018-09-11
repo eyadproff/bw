@@ -12,11 +12,14 @@ public class ConvictedReport
 	private long reportDate;
 	private Long generalFileNum;
 	private Name subjtName;
-	private int subjNationalityCode;
+	private Integer subjNationalityCode;
 	private String subjOccupation;
 	private String subjGender; //'M' or 'F'
 	private Long subjBirthDate;
 	private String subjBirthPlace;
+	private Long subjSamisId;
+	private Integer subjSamisType;
+	private Long subjBioId;
 	private String subjDocId;
 	private Integer subjDocType;
 	private Long subjDocIssDate;
@@ -28,8 +31,9 @@ public class ConvictedReport
 	private String operatorId;
 	
 	public ConvictedReport(long reportNumber, long reportDate, Long generalFileNum, Name subjtName,
-	                       int subjNationalityCode, String subjOccupation, String subjGender, Long subjBirthDate,
-	                       String subjBirthPlace, String subjDocId, Integer subjDocType, Long subjDocIssDate,
+	                       Integer subjNationalityCode, String subjOccupation, String subjGender,
+	                       Long subjBirthDate, String subjBirthPlace, Long subjSamisId, Integer subjSamisType,
+	                       Long subjBioId, String subjDocId, Integer subjDocType, Long subjDocIssDate,
 	                       Long subjDocExpDate, JudgementInfo subjJudgementInfo, List<Finger> subjFingers,
 	                       List<Integer> subjMissingFingers, String subjFace, String operatorId)
 	{
@@ -42,6 +46,9 @@ public class ConvictedReport
 		this.subjGender = subjGender;
 		this.subjBirthDate = subjBirthDate;
 		this.subjBirthPlace = subjBirthPlace;
+		this.subjSamisId = subjSamisId;
+		this.subjSamisType = subjSamisType;
+		this.subjBioId = subjBioId;
 		this.subjDocId = subjDocId;
 		this.subjDocType = subjDocType;
 		this.subjDocIssDate = subjDocIssDate;
@@ -65,8 +72,8 @@ public class ConvictedReport
 	public Name getSubjtName(){return subjtName;}
 	public void setSubjtName(Name subjtName){this.subjtName = subjtName;}
 	
-	public int getSubjNationalityCode(){return subjNationalityCode;}
-	public void setSubjNationalityCode(int subjNationalityCode){this.subjNationalityCode = subjNationalityCode;}
+	public Integer getSubjNationalityCode(){return subjNationalityCode;}
+	public void setSubjNationalityCode(Integer subjNationalityCode){this.subjNationalityCode = subjNationalityCode;}
 	
 	public String getSubjOccupation(){return subjOccupation;}
 	public void setSubjOccupation(String subjOccupation){this.subjOccupation = subjOccupation;}
@@ -79,6 +86,15 @@ public class ConvictedReport
 	
 	public String getSubjBirthPlace(){return subjBirthPlace;}
 	public void setSubjBirthPlace(String subjBirthPlace){this.subjBirthPlace = subjBirthPlace;}
+	
+	public Long getSubjSamisId(){return subjSamisId;}
+	public void setSubjSamisId(Long subjSamisId){this.subjSamisId = subjSamisId;}
+	
+	public Integer getSubjSamisType(){return subjSamisType;}
+	public void setSubjSamisType(Integer subjSamisType){this.subjSamisType = subjSamisType;}
+	
+	public Long getSubjBioId(){return subjBioId;}
+	public void setSubjBioId(Long subjBioId){this.subjBioId = subjBioId;}
 	
 	public String getSubjDocId(){return subjDocId;}
 	public void setSubjDocId(String subjDocId){this.subjDocId = subjDocId;}
@@ -114,11 +130,13 @@ public class ConvictedReport
 		if(o == null || getClass() != o.getClass()) return false;
 		ConvictedReport that = (ConvictedReport) o;
 		return reportNumber == that.reportNumber && reportDate == that.reportDate &&
-			   subjNationalityCode == that.subjNationalityCode &&
 			   Objects.equals(generalFileNum, that.generalFileNum) && Objects.equals(subjtName, that.subjtName) &&
+			   Objects.equals(subjNationalityCode, that.subjNationalityCode) &&
 			   Objects.equals(subjOccupation, that.subjOccupation) && Objects.equals(subjGender, that.subjGender) &&
 			   Objects.equals(subjBirthDate, that.subjBirthDate) &&
-			   Objects.equals(subjBirthPlace, that.subjBirthPlace) && Objects.equals(subjDocId, that.subjDocId) &&
+			   Objects.equals(subjBirthPlace, that.subjBirthPlace) &&
+			   Objects.equals(subjSamisId, that.subjSamisId) && Objects.equals(subjSamisType, that.subjSamisType) &&
+			   Objects.equals(subjBioId, that.subjBioId) && Objects.equals(subjDocId, that.subjDocId) &&
 			   Objects.equals(subjDocType, that.subjDocType) && Objects.equals(subjDocIssDate, that.subjDocIssDate) &&
 			   Objects.equals(subjDocExpDate, that.subjDocExpDate) &&
 			   Objects.equals(subjJudgementInfo, that.subjJudgementInfo) &&
@@ -131,20 +149,22 @@ public class ConvictedReport
 	public int hashCode()
 	{
 		return Objects.hash(reportNumber, reportDate, generalFileNum, subjtName, subjNationalityCode, subjOccupation,
-		                    subjGender, subjBirthDate, subjBirthPlace, subjDocId, subjDocType, subjDocIssDate,
-		                    subjDocExpDate, subjJudgementInfo, subjFingers, subjMissingFingers, subjFace, operatorId);
+		                    subjGender, subjBirthDate, subjBirthPlace, subjSamisId, subjSamisType, subjBioId, subjDocId,
+		                    subjDocType, subjDocIssDate, subjDocExpDate, subjJudgementInfo, subjFingers,
+		                    subjMissingFingers, subjFace, operatorId);
 	}
 	
 	@Override
 	public String toString()
 	{
 		return "ConvictedReport{" + "reportNumber=" + reportNumber + ", reportDate=" + reportDate +
-			   ", generalFileNum='" + generalFileNum + '\'' + ", subjtName=" + subjtName +
-			   ", subjNationalityCode=" + subjNationalityCode + ", subjOccupation='" + subjOccupation + '\'' +
-			   ", subjGender='" + subjGender + '\'' + ", subjBirthDate=" + subjBirthDate + ", subjBirthPlace='" +
-			   subjBirthPlace + '\'' + ", subjDocId='" + subjDocId + '\'' + ", subjDocType='" + subjDocType + '\'' +
-			   ", subjDocIssDate=" + subjDocIssDate + ", subjDocExpDate=" + subjDocExpDate + ", subjJudgementInfo=" +
-			   subjJudgementInfo + ", subjFingers=" + subjFingers + ", subjMissingFingers=" + subjMissingFingers +
-			   ", subjFace='" + subjFace + '\'' + ", operatorId='" + operatorId + '\'' + '}';
+			   ", generalFileNum=" + generalFileNum + ", subjtName=" + subjtName + ", subjNationalityCode=" +
+			   subjNationalityCode + ", subjOccupation='" + subjOccupation + '\'' + ", subjGender='" + subjGender +
+			   '\'' + ", subjBirthDate=" + subjBirthDate + ", subjBirthPlace='" + subjBirthPlace + '\'' +
+			   ", subjSamisId=" + subjSamisId + ", subjSamisType=" + subjSamisType + ", subjBioId=" + subjBioId +
+			   ", subjDocId='" + subjDocId + '\'' + ", subjDocType=" + subjDocType + ", subjDocIssDate=" +
+			   subjDocIssDate + ", subjDocExpDate=" + subjDocExpDate + ", subjJudgementInfo=" + subjJudgementInfo +
+			   ", subjFingers=" + subjFingers + ", subjMissingFingers=" + subjMissingFingers + ", subjFace='" +
+			   subjFace + '\'' + ", operatorId='" + operatorId + '\'' + '}';
 	}
 }

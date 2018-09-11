@@ -32,8 +32,9 @@ import sa.gov.nic.bio.bw.client.features.commons.tasks.SaveReportAsPdfTask;
 import sa.gov.nic.bio.bw.client.features.commons.ui.ImageViewPane;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.CountryBean;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.CrimeType;
+import sa.gov.nic.bio.bw.client.features.commons.webservice.DocumentType;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.Finger;
-import sa.gov.nic.bio.bw.client.features.commons.webservice.IdType;
+import sa.gov.nic.bio.bw.client.features.commons.webservice.SamisIdType;
 import sa.gov.nic.bio.bw.client.features.convictedreportinquiry.utils.ConvictedReportInquiryErrorCodes;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.tasks.BuildConvictedReportTask;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.ConvictedReport;
@@ -62,16 +63,19 @@ public class ShowReportDialogFxController extends FxControllerBase
 	@FXML private Label lblFatherName;
 	@FXML private Label lblGrandfatherName;
 	@FXML private Label lblFamilyName;
+	@FXML private Label lblBiometricsId;
 	@FXML private Label lblGeneralFileNumber;
 	@FXML private Label lblGender;
 	@FXML private Label lblNationality;
 	@FXML private Label lblOccupation;
 	@FXML private Label lblBirthPlace;
 	@FXML private Label lblBirthDate;
-	@FXML private Label lblIdNumber;
-	@FXML private Label lblIdType;
-	@FXML private Label lblIdIssuanceDate;
-	@FXML private Label lblIdExpiry;
+	@FXML private Label lblSamisId;
+	@FXML private Label lblSamisIdType;
+	@FXML private Label lblDocumentId;
+	@FXML private Label lblDocumentType;
+	@FXML private Label lblDocumentIssuanceDate;
+	@FXML private Label lblDocumentExpiryDate;
 	@FXML private Label lblCrimeClassification1;
 	@FXML private Label lblCrimeClassification2;
 	@FXML private Label lblCrimeClassification3;
@@ -216,8 +220,12 @@ public class ShowReportDialogFxController extends FxControllerBase
 		lblGrandfatherName.setText(convictedReport.getSubjtName().getGrandfatherName());
 		lblFamilyName.setText(convictedReport.getSubjtName().getFamilyName());
 		
+		Long biometricsId = convictedReport.getSubjBioId();
+		if(biometricsId != null) lblBiometricsId.setText(AppUtils.localizeNumbers(String.valueOf(biometricsId)));
+		
 		Long generalFileNumber = convictedReport.getGeneralFileNum();
-		lblGeneralFileNumber.setText(AppUtils.localizeNumbers(String.valueOf(generalFileNumber)));
+		if(generalFileNumber != null)
+						lblGeneralFileNumber.setText(AppUtils.localizeNumbers(String.valueOf(generalFileNumber)));
 		
 		lblGender.setText("F".equals(convictedReport.getSubjGender()) ? resources.getString("label.female") :
 				                                                        resources.getString("label.male"));
@@ -253,39 +261,66 @@ public class ShowReportDialogFxController extends FxControllerBase
 		
 		Long subjBirthDate = convictedReport.getSubjBirthDate();
 		if(subjBirthDate != null)
-			lblBirthDate.setText(AppUtils.formatHijriGregorianDate(subjBirthDate * 1000));
+						lblBirthDate.setText(AppUtils.formatHijriGregorianDate(subjBirthDate * 1000));
 		
-		String subjDocId = convictedReport.getSubjDocId();
-		if(subjDocId != null && !subjDocId.trim().isEmpty())
-			lblIdNumber.setText(AppUtils.localizeNumbers(subjDocId));
+		Long samisId = convictedReport.getSubjSamisId();
+		if(samisId != null) lblSamisId.setText(AppUtils.localizeNumbers(String.valueOf(samisId)));
 		
-		@SuppressWarnings("unchecked") List<IdType> idTypes = (List<IdType>)
-				Context.getUserSession().getAttribute("lookups.idTypes");
+		@SuppressWarnings("unchecked") List<SamisIdType> samisIdTypes = (List<SamisIdType>)
+													Context.getUserSession().getAttribute("lookups.samisIdTypes");
 		
-		Integer subjDocType = convictedReport.getSubjDocType();
-		if(subjDocType != null)
+		Integer subjSamisType = convictedReport.getSubjSamisType();
+		if(subjSamisType != null)
 		{
-			IdType idType = null;
+			SamisIdType samisIdType = null;
 			
-			for(IdType type : idTypes)
+			for(SamisIdType type : samisIdTypes)
 			{
-				if(type.getCode() == subjDocType)
+				if(type.getCode() == subjSamisType)
 				{
-					idType = type;
+					samisIdType = type;
 					break;
 				}
 			}
 			
-			if(idType != null) lblIdType.setText(AppUtils.localizeNumbers(idType.getDesc()));
+			if(samisIdType != null)
+			{
+				boolean arabic = Context.getGuiLanguage() == GuiLanguage.ARABIC;
+				lblSamisIdType.setText(AppUtils.localizeNumbers(arabic ? samisIdType.getDescriptionAR() :
+						                                                 samisIdType.getDescriptionEN()));
+			}
+		}
+		
+		String subjDocId = convictedReport.getSubjDocId();
+		if(subjDocId != null && !subjDocId.trim().isEmpty()) lblDocumentId.setText(AppUtils.localizeNumbers(subjDocId));
+		
+		@SuppressWarnings("unchecked") List<DocumentType> documentTypes = (List<DocumentType>)
+												Context.getUserSession().getAttribute("lookups.documentTypes");
+		
+		Integer subjDocType = convictedReport.getSubjDocType();
+		if(subjDocType != null)
+		{
+			DocumentType documentType = null;
+			
+			for(DocumentType type : documentTypes)
+			{
+				if(type.getCode() == subjDocType)
+				{
+					documentType = type;
+					break;
+				}
+			}
+			
+			if(documentType != null) lblDocumentType.setText(AppUtils.localizeNumbers(documentType.getDesc()));
 		}
 		
 		Long subjDocIssDate = convictedReport.getSubjDocIssDate();
-		if(subjDocIssDate != null) lblIdIssuanceDate.setText(
-				AppUtils.formatHijriGregorianDate(subjDocIssDate * 1000));
+		if(subjDocIssDate != null) lblDocumentIssuanceDate.setText(
+												AppUtils.formatHijriGregorianDate(subjDocIssDate * 1000));
 		
 		Long subjDocExpDate = convictedReport.getSubjDocExpDate();
-		if(subjDocExpDate != null) lblIdExpiry.setText(
-				AppUtils.formatHijriGregorianDate(subjDocExpDate * 1000));
+		if(subjDocExpDate != null) lblDocumentExpiryDate.setText(
+												AppUtils.formatHijriGregorianDate(subjDocExpDate * 1000));
 		
 		JudgementInfo judgementInfo = convictedReport.getSubjJudgementInfo();
 		
@@ -372,9 +407,6 @@ public class ShowReportDialogFxController extends FxControllerBase
 		List<Finger> subjFingers = convictedReport.getSubjFingers();
 		if(subjFingers != null)
 		{
-			fingerprintImages = new HashMap<>();
-			subjFingers.forEach(finger -> fingerprintImages.put(finger.getType(), finger.getImage()));
-			
 			Map<Integer, ImageView> imageViewMap = new HashMap<>();
 			Map<Integer, String> dialogTitleMap = new HashMap<>();
 			
@@ -421,11 +453,22 @@ public class ShowReportDialogFxController extends FxControllerBase
 			
 			fingerprintImages.forEach((position, fingerprintImage) ->
 			{
-			    ImageView imageView = imageViewMap.get(position);
-			    String dialogTitle = dialogTitleMap.get(position);
-			
-			    byte[] bytes = Base64.getDecoder().decode(fingerprintImage);
-			    imageView.setImage(new Image(new ByteArrayInputStream(bytes)));
+				if(fingerprintImage == null)
+				{
+					return;
+				}
+				
+				ImageView imageView = imageViewMap.get(position);
+				String dialogTitle = dialogTitleMap.get(position);
+				
+				byte[] bytes = Base64.getDecoder().decode(fingerprintImage);
+				
+				if(bytes == null)
+				{
+					return;
+				}
+				
+				imageView.setImage(new Image(new ByteArrayInputStream(bytes)));
 			    GuiUtils.attachImageDialog(Context.getCoreFxController(), imageView,
 			                               dialogTitle, resources.getString("label.contextMenu.showImage"),
 			                               false);
@@ -433,7 +476,12 @@ public class ShowReportDialogFxController extends FxControllerBase
 		}
 	}
 	
-	public void setConvictedReport(ConvictedReport convictedReport){this.convictedReport = convictedReport;}
+	public void setConvictedReportWithFingerprintImages(ConvictedReport convictedReport,
+	                                                    Map<Integer, String> fingerprintImages)
+	{
+		this.convictedReport = convictedReport;
+		this.fingerprintImages = fingerprintImages;
+	}
 	
 	public void show()
 	{
@@ -574,7 +622,6 @@ public class ShowReportDialogFxController extends FxControllerBase
 		    GuiUtils.showNode(piProgress, false);
 		    GuiUtils.showNode(btnPrintReport, true);
 		    GuiUtils.showNode(btnSaveReportAsPDF, true);
-			
 			
 			String title = resources.getString("printConvictedPresent.savingAsPDF.success.title");
 			String contentText = resources.getString("printConvictedPresent.savingAsPDF.success.message");

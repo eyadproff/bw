@@ -1,6 +1,7 @@
 package sa.gov.nic.bio.bw.client.features.convictedreportinquiry.workflow;
 
 import javafx.application.Platform;
+import javafx.util.Pair;
 import sa.gov.nic.bio.biokit.fingerprint.beans.ConvertedFingerprintImagesResponse;
 import sa.gov.nic.bio.biokit.fingerprint.beans.SegmentFingerprintsResponse;
 import sa.gov.nic.bio.biokit.websocket.beans.DMFingerData;
@@ -53,14 +54,16 @@ public class ConvictedReportInquiryWorkflow extends WorkflowBase<Void, Void>
 			{
 				ServiceResponse<?> serviceResponse = null;
 				
+				List<Pair<ConvictedReport, Map<Integer, String>>> convictedReports = new ArrayList<>();
+				
 				List<ConvictedReport> result = response.getResult();
 				for(int i = 0; i < result.size(); i++)
 				{
-					ConvictedReport convictedReport = result.get(0);
+					ConvictedReport convictedReport = result.get(i);
 					
 					List<Finger> fingerprints = convictedReport.getSubjFingers();
-					
 					List<Integer> missingFingerprints = convictedReport.getSubjMissingFingers();
+					
 					List<Integer> availableFingerprints = IntStream.rangeClosed(1, 10)
 																   .boxed()
 																   .collect(Collectors.toList());
@@ -78,6 +81,12 @@ public class ConvictedReportInquiryWorkflow extends WorkflowBase<Void, Void>
 								position == FingerPosition.TWO_THUMBS.getPosition())
 						{
 							String slapImageBase64 = finger.getImage();
+							if(slapImageBase64 == null)
+							{
+								serviceResponse = ServiceResponse.success(null);
+								continue;
+							}
+							
 							String slapImageFormat = "WSQ";
 							int expectedFingersCount = 0;
 							List<Integer> slapMissingFingers = new ArrayList<>();
@@ -190,16 +199,12 @@ public class ConvictedReportInquiryWorkflow extends WorkflowBase<Void, Void>
 						}
 					}
 					
-					for(Finger finger : fingerprints)
-					{
-						int position = finger.getType();
-						finger.setImage(fingerprintImages.get(position));
-					}
+					convictedReports.add(new Pair<>(convictedReport, fingerprintImages));
 				}
 				
 				if(serviceResponse != null && !serviceResponse.isSuccess())
 														workflowResponse.put(KEY_WEBSERVICE_RESPONSE, serviceResponse);
-				else workflowResponse.put(KEY_WEBSERVICE_RESPONSE, response);
+				else workflowResponse.put(KEY_WEBSERVICE_RESPONSE, ServiceResponse.success(convictedReports));
 			}
 			else workflowResponse.put(KEY_WEBSERVICE_RESPONSE, response);
 		}

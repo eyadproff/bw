@@ -2,17 +2,19 @@ package sa.gov.nic.bio.bw.client.features.commons.webservice;
 
 import java.util.Objects;
 
-public class PersonIdType
+public class SamisIdType
 {
 	private int code;
 	private String descriptionAR;
 	private String descriptionEN;
+	private String ifrPersonType;
 	
-	public PersonIdType(int code, String descriptionAR, String descriptionEN)
+	public SamisIdType(int code, String descriptionAR, String descriptionEN, String ifrPersonType)
 	{
 		this.code = code;
 		this.descriptionAR = descriptionAR;
 		this.descriptionEN = descriptionEN;
+		this.ifrPersonType = ifrPersonType;
 	}
 	
 	public int getCode(){return code;}
@@ -24,26 +26,30 @@ public class PersonIdType
 	public String getDescriptionEN(){return descriptionEN;}
 	public void setDescriptionEN(String descriptionEN){this.descriptionEN = descriptionEN;}
 	
+	public String getIfrPersonType(){return ifrPersonType;}
+	public void setIfrPersonType(String ifrPersonType){this.ifrPersonType = ifrPersonType;}
+	
 	@Override
 	public boolean equals(Object o)
 	{
 		if(this == o) return true;
 		if(o == null || getClass() != o.getClass()) return false;
-		PersonIdType that = (PersonIdType) o;
+		SamisIdType that = (SamisIdType) o;
 		return code == that.code && Objects.equals(descriptionAR, that.descriptionAR) &&
-			   Objects.equals(descriptionEN, that.descriptionEN);
+			   Objects.equals(descriptionEN, that.descriptionEN) &&
+			   Objects.equals(ifrPersonType, that.ifrPersonType);
 	}
 	
 	@Override
 	public int hashCode()
 	{
-		return Objects.hash(code, descriptionAR, descriptionEN);
+		return Objects.hash(code, descriptionAR, descriptionEN, ifrPersonType);
 	}
 	
 	@Override
 	public String toString()
 	{
-		return "PersonIdType{" + "code=" + code + ", descriptionAR='" + descriptionAR + '\'' + ", descriptionEN='" +
-			   descriptionEN + '\'' + '}';
+		return "SamisIdType{" + "code=" + code + ", descriptionAR='" + descriptionAR + '\'' +
+			   ", descriptionEN='" + descriptionEN + '\'' + ", ifrPersonType='" + ifrPersonType + '\'' + '}';
 	}
 }
