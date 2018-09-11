@@ -151,14 +151,12 @@ public class PersonInfoPaneFxController extends WizardStepFxControllerBase
 		GuiUtils.applyValidatorToTextField(txtDocumentId, null, null, 10);
 		
 		BooleanBinding txtFirstNameBinding = txtFirstName.textProperty().isEmpty();
-		BooleanBinding txtFatherNameBinding = txtFatherName.textProperty().isEmpty();
-		BooleanBinding txtGrandfatherNameBinding = txtGrandfatherName.textProperty().isEmpty();
 		BooleanBinding txtFamilyNameBinding = txtFamilyName.textProperty().isEmpty();
 		BooleanBinding cboGenderBinding = cboGender.valueProperty().isNull();
 		BooleanBinding cboNationalityBinding = cboNationality.valueProperty().isNull();
 		
-		btnNext.disableProperty().bind(txtFirstNameBinding.or(txtFatherNameBinding).or(txtGrandfatherNameBinding)
-	                             .or(txtFamilyNameBinding).or(cboGenderBinding).or(cboNationalityBinding));
+		btnNext.disableProperty().bind(txtFirstNameBinding.or(txtFamilyNameBinding).or(cboGenderBinding)
+				                                                                   .or(cboNationalityBinding));
 	}
 	
 	@Override
