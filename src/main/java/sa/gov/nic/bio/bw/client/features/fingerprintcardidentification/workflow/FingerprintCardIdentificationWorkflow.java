@@ -263,9 +263,15 @@ public class FingerprintCardIdentificationWorkflow extends WizardWorkflowBase<Vo
 								                Boolean.TRUE);
 								
 								long samisId = result.getSamisId();
+								long civilBioId = result.getCivilHitBioId();
+								long criminalBioId = result.getCrimnalHitBioId();
 								PersonInfo personInfo = result.getPersonInfo();
 								
 								uiInputData.put(InquiryResultPaneFxController.KEY_INQUIRY_HIT_SAMIS_ID, samisId);
+								if(civilBioId > 0) uiInputData.put(
+											InquiryResultPaneFxController.KEY_INQUIRY_HIT_CIVIL_BIO_ID, civilBioId);
+								if(criminalBioId > 0) uiInputData.put(
+									InquiryResultPaneFxController.KEY_INQUIRY_HIT_GENERAL_FILE_NUMBER, criminalBioId);
 								uiInputData.put(InquiryResultPaneFxController.KEY_INQUIRY_HIT_RESULT, personInfo);
 								formRenderer.get().renderForm(InquiryByFingerprintsPaneFxController.class, uiInputData);
 							}

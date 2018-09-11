@@ -40,7 +40,8 @@
 	<parameter name="LOGO" class="java.io.InputStream" isForPrompting="false"/>
 	<parameter name="SAMIS_ID" class="java.lang.String"/>
 	<parameter name="SAMIS_ID_TYPE" class="java.lang.String"/>
-	<parameter name="BIO_ID" class="java.lang.String"/>
+	<parameter name="BIOMETRICS_ID" class="java.lang.String"/>
+	<parameter name="GENERAL_FILE_NUMBER" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
@@ -136,7 +137,7 @@
 				<textElement textAlignment="Right">
 					<font fontName="CustomFont" isBold="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{REF_NUMBER}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{GENERAL_FILE_NUMBER}]]></textFieldExpression>
 			</textField>
 		</band>
 	</title>
@@ -844,7 +845,7 @@
 				<textElement textAlignment="Center">
 					<font fontName="CustomFont" isBold="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{BIO_ID}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{BIOMETRICS_ID}]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageHeader>

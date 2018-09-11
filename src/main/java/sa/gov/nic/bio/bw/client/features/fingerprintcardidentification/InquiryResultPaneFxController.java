@@ -27,6 +27,7 @@ import sa.gov.nic.bio.bw.client.features.commons.webservice.DocumentType;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.Name;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.PersonIdInfo;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.PersonInfo;
+import sa.gov.nic.bio.bw.client.features.commons.webservice.SamisIdType;
 import sa.gov.nic.bio.bw.client.features.fingerprintcardidentification.beans.FingerprintCardIdentificationRecordReport;
 import sa.gov.nic.bio.bw.client.features.fingerprintcardidentification.tasks.BuildFingerprintCardIdentificationRecordReportTask;
 import sa.gov.nic.bio.bw.client.features.fingerprintcardidentification.utils.FingerprintCardIdentificationErrorCodes;
@@ -46,6 +47,8 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class InquiryResultPaneFxController extends WizardStepFxControllerBase
 {
+	public static final String KEY_INQUIRY_HIT_GENERAL_FILE_NUMBER = "INQUIRY_HIT_GENERAL_FILE_NUMBER";
+	public static final String KEY_INQUIRY_HIT_CIVIL_BIO_ID = "INQUIRY_HIT_CIVIL_BIO_ID";
 	public static final String KEY_INQUIRY_HIT_SAMIS_ID = "INQUIRY_HIT_SAMIS_ID";
 	public static final String KEY_INQUIRY_HIT_RESULT = "INQUIRY_HIT_RESULT";
 	public static final String KEY_FINGERPRINTS_IMAGES = "FINGERPRINTS_IMAGES";
@@ -71,10 +74,14 @@ public class InquiryResultPaneFxController extends WizardStepFxControllerBase
 	@FXML private Label lblNationality;
 	@FXML private Label lblBirthPlace;
 	@FXML private Label lblBirthDate;
-	@FXML private Label lblIdNumber;
-	@FXML private Label lblIdIssuanceDate;
-	@FXML private Label lblIdType;
-	@FXML private Label lblIdExpiry;
+	@FXML private Label lblBiometricsId;
+	@FXML private Label lblGeneralFileNumber;
+	@FXML private Label lblSamisId;
+	@FXML private Label lblSamisIdType;
+	@FXML private Label lblDocumentId;
+	@FXML private Label lblDocumentType;
+	@FXML private Label lblDocumentIssuanceDate;
+	@FXML private Label lblDocumentExpiryDate;
 	@FXML private Label lblOccupation;
 	@FXML private ProgressIndicator piProgress;
 	@FXML private Button btnStartOver;
@@ -116,13 +123,15 @@ public class InquiryResultPaneFxController extends WizardStepFxControllerBase
 			if(fingerprintHit)
 			{
 				Long samisId = (Long) uiInputData.get(KEY_INQUIRY_HIT_SAMIS_ID);
+				Long biometricsId = (Long) uiInputData.get(KEY_INQUIRY_HIT_CIVIL_BIO_ID);
+				Long gerneralFileNumber = (Long) uiInputData.get(KEY_INQUIRY_HIT_GENERAL_FILE_NUMBER);
 				PersonInfo personInfo = (PersonInfo) uiInputData.get(KEY_INQUIRY_HIT_RESULT);
 				
 				@SuppressWarnings("unchecked")
 				Map<Integer, String> fingerprintImages =
 													(Map<Integer, String>) uiInputData.get(KEY_FINGERPRINTS_IMAGES);
 				
-				populateData(samisId, personInfo, fingerprintImages);
+				populateData(samisId, biometricsId, gerneralFileNumber, personInfo, fingerprintImages);
 				GuiUtils.showNode(paneResult, true);
 			}
 		}
@@ -247,8 +256,13 @@ public class InquiryResultPaneFxController extends WizardStepFxControllerBase
 		}
 	}
 	
-	private void populateData(Long samisId, PersonInfo personInfo, Map<Integer, String> fingerprintsImages)
+	private void populateData(Long samisIdLong, Long biometricsIdLong, Long generalFileNumberLong,
+	                          PersonInfo personInfo, Map<Integer, String> fingerprintsImages)
 	{
+		String samisId = null;
+		String samisIdType = null;
+		String biometricsId = null;
+		String generalFileNumber = null;
 		String faceBase64 = null;
 		String firstName = null;
 		String fatherName = null;
@@ -259,10 +273,28 @@ public class InquiryResultPaneFxController extends WizardStepFxControllerBase
 		String occupation = null;
 		String birthPlace = null;
 		String birthDate = null;
-		String idNumber = null;
-		String idType = null;
-		String idIssuanceDate = null;
-		String idExpirationDate = null;
+		String documentId = null;
+		String documentType = null;
+		String documentIssuanceDate = null;
+		String documentExpiryDate = null;
+		
+		if(samisIdLong != null)
+		{
+			samisId = AppUtils.localizeNumbers(String.valueOf(samisIdLong));
+			lblSamisId.setText(samisId);
+		}
+		
+		if(biometricsIdLong != null)
+		{
+			biometricsId = AppUtils.localizeNumbers(String.valueOf(biometricsIdLong));
+			lblBiometricsId.setText(biometricsId);
+		}
+		
+		if(generalFileNumberLong != null)
+		{
+			generalFileNumber = AppUtils.localizeNumbers(String.valueOf(generalFileNumberLong));
+			lblGeneralFileNumber.setText(generalFileNumber);
+		}
 		
 		if(personInfo != null)
 		{
@@ -339,6 +371,39 @@ public class InquiryResultPaneFxController extends WizardStepFxControllerBase
 				lblNationality.setText(nationality);
 			}
 			
+			samisIdLong = personInfo.getSamisId();
+			if(samisIdLong != null)
+			{
+				samisId = AppUtils.localizeNumbers(String.valueOf(samisIdLong));
+				lblSamisId.setText(samisId);
+			}
+			
+			@SuppressWarnings("unchecked") List<SamisIdType> samisIdTypes = (List<SamisIdType>)
+												Context.getUserSession().getAttribute("lookups.samisIdTypes");
+			
+			String personType = personInfo.getPersonType();
+			if(personType != null)
+			{
+				SamisIdType theSamisIdType = null;
+				
+				for(SamisIdType type : samisIdTypes)
+				{
+					if(personType.equals(type.getIfrPersonType()))
+					{
+						theSamisIdType = type;
+						break;
+					}
+				}
+				
+				if(theSamisIdType != null)
+				{
+					boolean arabic = Context.getGuiLanguage() == GuiLanguage.ARABIC;
+					samisIdType = AppUtils.localizeNumbers(arabic ? theSamisIdType.getDescriptionAR() :
+							                                        theSamisIdType.getDescriptionEN());
+					lblSamisIdType.setText(samisIdType);
+				}
+			}
+			
 			PersonIdInfo identityInfo = personInfo.getIdentityInfo();
 			if(identityInfo != null)
 			{
@@ -349,24 +414,24 @@ public class InquiryResultPaneFxController extends WizardStepFxControllerBase
 					lblOccupation.setText(occupation);
 				}
 				
-				String sIdNumber = identityInfo.getIdNumber();
-				if(sIdNumber != null && !sIdNumber.trim().isEmpty())
+				String sDocumentId = identityInfo.getIdNumber();
+				if(sDocumentId != null && !sDocumentId.trim().isEmpty())
 				{
-					idNumber = AppUtils.localizeNumbers(sIdNumber);
-					lblIdNumber.setText(idNumber);
+					documentId = AppUtils.localizeNumbers(sDocumentId);
+					lblDocumentId.setText(documentId);
 				}
 				
 				@SuppressWarnings("unchecked") List<DocumentType> documentTypes = (List<DocumentType>)
 												Context.getUserSession().getAttribute("lookups.documentTypes");
 				
-				Integer idTypeInteger = identityInfo.getIdType();
-				if(idTypeInteger != null)
+				Integer documentTypeInteger = identityInfo.getIdType();
+				if(documentTypeInteger != null)
 				{
 					DocumentType theDocumentType = null;
 					
 					for(DocumentType type : documentTypes)
 					{
-						if(type.getCode() == idTypeInteger)
+						if(type.getCode() == documentTypeInteger)
 						{
 							theDocumentType = type;
 							break;
@@ -375,8 +440,8 @@ public class InquiryResultPaneFxController extends WizardStepFxControllerBase
 					
 					if(theDocumentType != null)
 					{
-						idType = AppUtils.localizeNumbers(theDocumentType.getDesc());
-						lblIdType.setText(idType);
+						documentType = AppUtils.localizeNumbers(theDocumentType.getDesc());
+						lblDocumentType.setText(documentType);
 					}
 				}
 				
@@ -384,18 +449,18 @@ public class InquiryResultPaneFxController extends WizardStepFxControllerBase
 				if(theIssueDate != null && theIssueDate.getTime() > AppConstants.SAMIS_DB_DATE_NOT_SET_VALUE)
 				{
 					LocalDate localDate = theIssueDate.toInstant().atZone(AppConstants.SAUDI_ZONE).toLocalDate();
-					idIssuanceDate = AppUtils.formatHijriGregorianDate(AppUtils.gregorianDateToMilliSeconds(localDate));
-					lblIdIssuanceDate.setText(idIssuanceDate);
+					documentIssuanceDate = AppUtils.formatHijriGregorianDate(
+																	AppUtils.gregorianDateToMilliSeconds(localDate));
+					lblDocumentIssuanceDate.setText(documentIssuanceDate);
 				}
 				
-				Date theExpirationDate = identityInfo.getIdExpirDate();
-				if(theExpirationDate != null &&
-						theExpirationDate.getTime() > AppConstants.SAMIS_DB_DATE_NOT_SET_VALUE)
+				Date theExpiryDate = identityInfo.getIdExpirDate();
+				if(theExpiryDate != null && theExpiryDate.getTime() > AppConstants.SAMIS_DB_DATE_NOT_SET_VALUE)
 				{
-					LocalDate localDate = theExpirationDate.toInstant().atZone(AppConstants.SAUDI_ZONE).toLocalDate();
-					idExpirationDate = AppUtils.formatHijriGregorianDate(
-							AppUtils.gregorianDateToMilliSeconds(localDate));
-					lblIdExpiry.setText(idExpirationDate);
+					LocalDate localDate = theExpiryDate.toInstant().atZone(AppConstants.SAUDI_ZONE).toLocalDate();
+					documentExpiryDate = AppUtils.formatHijriGregorianDate(
+																	AppUtils.gregorianDateToMilliSeconds(localDate));
+					lblDocumentExpiryDate.setText(documentExpiryDate);
 				}
 			}
 			
@@ -413,14 +478,6 @@ public class InquiryResultPaneFxController extends WizardStepFxControllerBase
 				birthDate = AppUtils.formatHijriGregorianDate(AppUtils.gregorianDateToMilliSeconds(localDate));
 				lblBirthDate.setText(birthDate);
 			}
-		}
-
-		if(idNumber == null)
-		{
-			idNumber = AppUtils.localizeNumbers(String.valueOf(samisId));
-			idType = null;
-			lblIdNumber.setText(idNumber);
-			lblIdType.setText(idType);
 		}
 		
 		if(fingerprintsImages != null)
@@ -485,8 +542,10 @@ public class InquiryResultPaneFxController extends WizardStepFxControllerBase
 		
 		fingerprintCardIdentificationRecordReport = new FingerprintCardIdentificationRecordReport(faceBase64, firstName,
                                                           fatherName, grandfatherName, familyName, gender,
-                                                          nationality, occupation, birthPlace, birthDate, idNumber,
-                                                          idType, idIssuanceDate, idExpirationDate, fingerprintsImages);
+                                                          nationality, occupation, birthPlace, birthDate, samisId,
+                                                          samisIdType, biometricsId, generalFileNumber, documentId,
+                                                          documentType, documentIssuanceDate, documentExpiryDate,
+                                                          fingerprintsImages);
 	}
 	
 	private void printDeadPersonRecordReport(JasperPrint jasperPrint)
