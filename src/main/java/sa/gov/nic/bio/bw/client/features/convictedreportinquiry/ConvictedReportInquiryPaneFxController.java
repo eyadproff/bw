@@ -17,6 +17,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.BorderPane;
 import javafx.util.Callback;
+import javafx.util.Pair;
 import sa.gov.nic.bio.bw.client.core.BodyFxControllerBase;
 import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.DevicesRunnerGadgetPaneFxController;
@@ -44,14 +45,15 @@ public class ConvictedReportInquiryPaneFxController extends BodyFxControllerBase
 	private static final String FXML_SHOW_REPORT_DIALOG =
 								"sa/gov/nic/bio/bw/client/features/convictedreportinquiry/fxml/show_report_dialog.fxml";
 	
-	@FXML private TableView<ConvictedReport> tvConvictedReports;
-	@FXML private TableColumn<ConvictedReport, ConvictedReport> tcSequence;
-	@FXML private TableColumn<ConvictedReport, String> tvName;
-	@FXML private TableColumn<ConvictedReport, String> tcSamisId;
-	@FXML private TableColumn<ConvictedReport, String> tcSamisIdType;
-	@FXML private TableColumn<ConvictedReport, String> tcNationality;
-	@FXML private TableColumn<ConvictedReport, String> tcOperatorId;
-	@FXML private TableColumn<ConvictedReport, String> tcRegistrationDate;
+	@FXML private TableView<Pair<ConvictedReport, Map<Integer, String>>> tvConvictedReports;
+	@FXML private TableColumn<Pair<ConvictedReport, Map<Integer, String>>, Pair<ConvictedReport, Map<Integer, String>>>
+																											tcSequence;
+	@FXML private TableColumn<Pair<ConvictedReport, Map<Integer, String>>, String> tvName;
+	@FXML private TableColumn<Pair<ConvictedReport, Map<Integer, String>>, String> tcSamisId;
+	@FXML private TableColumn<Pair<ConvictedReport, Map<Integer, String>>, String> tcSamisIdType;
+	@FXML private TableColumn<Pair<ConvictedReport, Map<Integer, String>>, String> tcNationality;
+	@FXML private TableColumn<Pair<ConvictedReport, Map<Integer, String>>, String> tcOperatorId;
+	@FXML private TableColumn<Pair<ConvictedReport, Map<Integer, String>>, String> tcRegistrationDate;
 	@FXML private BorderPane paneConvictedReports;
 	@FXML private ProgressIndicator piLookup;
 	@FXML private ProgressIndicator piInquiry;
@@ -89,16 +91,20 @@ public class ConvictedReportInquiryPaneFxController extends BodyFxControllerBase
 		tcSequence.setSortable(false);
 		tcSequence.impl_setReorderable(false);
 		tcSequence.setCellValueFactory(p -> new ReadOnlyObjectWrapper(p.getValue()));
-		tcSequence.setCellFactory(new Callback<TableColumn<ConvictedReport, ConvictedReport>,
-				TableCell<ConvictedReport, ConvictedReport>>()
+		tcSequence.setCellFactory(new Callback<TableColumn<Pair<ConvictedReport, Map<Integer, String>>,
+				Pair<ConvictedReport, Map<Integer, String>>>,
+				TableCell<Pair<ConvictedReport, Map<Integer, String>>, Pair<ConvictedReport, Map<Integer, String>>>>()
 		{
 			@Override
-			public TableCell<ConvictedReport, ConvictedReport> call(TableColumn<ConvictedReport, ConvictedReport> param)
+			public TableCell<Pair<ConvictedReport, Map<Integer, String>>, Pair<ConvictedReport, Map<Integer, String>>>
+									call(TableColumn<Pair<ConvictedReport, Map<Integer, String>>, Pair<ConvictedReport,
+																		   Map<Integer, String>>> param)
 			{
-				return new TableCell<ConvictedReport, ConvictedReport>()
+				return new TableCell<Pair<ConvictedReport, Map<Integer, String>>,
+									 Pair<ConvictedReport, Map<Integer, String>>>()
 				{
 					@Override
-					protected void updateItem(ConvictedReport item, boolean empty)
+					protected void updateItem(Pair<ConvictedReport, Map<Integer, String>> item, boolean empty)
 					{
 						super.updateItem(item, empty);
 						
@@ -117,7 +123,7 @@ public class ConvictedReportInquiryPaneFxController extends BodyFxControllerBase
 		tvName.impl_setReorderable(false);
 		tvName.setCellValueFactory(param ->
 		{
-		    ConvictedReport convictedReport = param.getValue();
+		    ConvictedReport convictedReport = param.getValue().getKey();
 		    Name name = convictedReport.getSubjtName();
 		    return new SimpleStringProperty(AppUtils.constructName(name));
 		});
@@ -125,14 +131,14 @@ public class ConvictedReportInquiryPaneFxController extends BodyFxControllerBase
 		tcSamisId.impl_setReorderable(false);
 		tcSamisId.setCellValueFactory(param ->
 		{
-		    ConvictedReport convictedReport = param.getValue();
+		    ConvictedReport convictedReport = param.getValue().getKey();
 		    return new SimpleStringProperty(AppUtils.localizeNumbers(String.valueOf(convictedReport.getSubjSamisId())));
 		});
 		
 		tcSamisIdType.impl_setReorderable(false);
 		tcSamisIdType.setCellValueFactory(param ->
 		{
-		    ConvictedReport convictedReport = param.getValue();
+		    ConvictedReport convictedReport = param.getValue().getKey();
 			
 			@SuppressWarnings("unchecked") List<SamisIdType> samisIdTypes = (List<SamisIdType>)
 												Context.getUserSession().getAttribute("lookups.samisIdTypes");
@@ -166,7 +172,7 @@ public class ConvictedReportInquiryPaneFxController extends BodyFxControllerBase
 		tcNationality.impl_setReorderable(false);
 		tcNationality.setCellValueFactory(param ->
 		{
-		    ConvictedReport convictedReport = param.getValue();
+		    ConvictedReport convictedReport = param.getValue().getKey();
 		
 			@SuppressWarnings("unchecked") List<CountryBean> countries = (List<CountryBean>)
 													Context.getUserSession().getAttribute("lookups.countries");
@@ -195,7 +201,7 @@ public class ConvictedReportInquiryPaneFxController extends BodyFxControllerBase
 		tcOperatorId.impl_setReorderable(false);
 		tcOperatorId.setCellValueFactory(param ->
 		{
-			ConvictedReport convictedReport = param.getValue();
+			ConvictedReport convictedReport = param.getValue().getKey();
 			return new SimpleStringProperty(AppUtils.localizeNumbers(convictedReport.getOperatorId()));
 		});
 		
@@ -203,7 +209,7 @@ public class ConvictedReportInquiryPaneFxController extends BodyFxControllerBase
 		tcRegistrationDate.setCellValueFactory(param ->
 		{
 			boolean rtl = Context.getGuiLanguage().getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT;
-		    ConvictedReport convictedReport = param.getValue();
+		    ConvictedReport convictedReport = param.getValue().getKey();
 			return new SimpleStringProperty(
 							AppUtils.formatHijriDateSimple(convictedReport.getReportDate() * 1000, rtl));
 		});
@@ -229,8 +235,9 @@ public class ConvictedReportInquiryPaneFxController extends BodyFxControllerBase
 		else
 		{
 			@SuppressWarnings("unchecked")
-			ServiceResponse<List<ConvictedReport>> serviceResponse =
-							(ServiceResponse<List<ConvictedReport>>) uiInputData.get(Workflow.KEY_WEBSERVICE_RESPONSE);
+			ServiceResponse<List<Pair<ConvictedReport, Map<Integer, String>>>> serviceResponse =
+									(ServiceResponse<List<Pair<ConvictedReport, Map<Integer, String>>>>)
+																uiInputData.get(Workflow.KEY_WEBSERVICE_RESPONSE);
 			
 			disableUiControls(false);
 			
@@ -238,7 +245,8 @@ public class ConvictedReportInquiryPaneFxController extends BodyFxControllerBase
 			{
 				if(serviceResponse.isSuccess())
 				{
-					List<ConvictedReport> convictedReports = serviceResponse.getResult();
+					List<Pair<ConvictedReport, Map<Integer, String>>> convictedReports = serviceResponse.getResult();
+					convictedReports.stream().mapToLong(value -> value.getKey().getReportNumber()).forEach(System.out::println);
 					tvConvictedReports.getItems().setAll(convictedReports);
 					tvConvictedReports.requestFocus();
 				}
@@ -343,8 +351,9 @@ public class ConvictedReportInquiryPaneFxController extends BodyFxControllerBase
 			
 			if(controller != null)
 			{
-				ConvictedReport selectedItem = tvConvictedReports.getSelectionModel().getSelectedItem();
-				controller.setConvictedReport(selectedItem);
+				Pair<ConvictedReport, Map<Integer, String>> selectedItem =
+															tvConvictedReports.getSelectionModel().getSelectedItem();
+				controller.setConvictedReportWithFingerprintImages(selectedItem.getKey(), selectedItem.getValue());
 				controller.show();
 			}
 		}

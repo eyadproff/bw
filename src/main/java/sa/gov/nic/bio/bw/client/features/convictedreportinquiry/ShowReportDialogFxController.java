@@ -319,7 +319,6 @@ public class ShowReportDialogFxController extends FxControllerBase
 												AppUtils.formatHijriGregorianDate(subjDocIssDate * 1000));
 		
 		Long subjDocExpDate = convictedReport.getSubjDocExpDate();
-		System.out.println("subjDocExpDate = " + subjDocExpDate);
 		if(subjDocExpDate != null) lblDocumentExpiryDate.setText(
 												AppUtils.formatHijriGregorianDate(subjDocExpDate * 1000));
 		
@@ -408,9 +407,6 @@ public class ShowReportDialogFxController extends FxControllerBase
 		List<Finger> subjFingers = convictedReport.getSubjFingers();
 		if(subjFingers != null)
 		{
-			fingerprintImages = new HashMap<>();
-			subjFingers.forEach(finger -> fingerprintImages.put(finger.getType(), finger.getImage()));
-			
 			Map<Integer, ImageView> imageViewMap = new HashMap<>();
 			Map<Integer, String> dialogTitleMap = new HashMap<>();
 			
@@ -480,7 +476,12 @@ public class ShowReportDialogFxController extends FxControllerBase
 		}
 	}
 	
-	public void setConvictedReport(ConvictedReport convictedReport){this.convictedReport = convictedReport;}
+	public void setConvictedReportWithFingerprintImages(ConvictedReport convictedReport,
+	                                                    Map<Integer, String> fingerprintImages)
+	{
+		this.convictedReport = convictedReport;
+		this.fingerprintImages = fingerprintImages;
+	}
 	
 	public void show()
 	{
