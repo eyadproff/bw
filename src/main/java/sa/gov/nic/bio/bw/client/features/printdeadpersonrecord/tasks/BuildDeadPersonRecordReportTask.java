@@ -22,14 +22,16 @@ public class BuildDeadPersonRecordReportTask extends Task<JasperPrint>
 	private static final String PARAMETER_ENROLLMENT_TIME = "ENROLLMENT_TIME";
 	private static final String PARAMETER_NAME = "NAME";
 	private static final String PARAMETER_NATIONALITY = "NATIONALITY";
-	private static final String PARAMETER_JOB = "JOB";
-	private static final String PARAMETER_SEX = "SEX";
-	private static final String PARAMETER_ID = "ID";
-	private static final String PARAMETER_ID_TYPE = "ID_TYPE";
-	private static final String PARAMETER_ID_ISSUANCE = "ID_ISSUANCE";
+	private static final String PARAMETER_OCCUPATION = "OCCUPATION";
+	private static final String PARAMETER_GENDER = "GENDER";
+	private static final String PARAMETER_SAMIS_ID = "SAMIS_ID";
+	private static final String PARAMETER_SAMIS_ID_TYPE = "SAMIS_ID_TYPE";
+	private static final String PARAMETER_DOCUMENT_ID = "DOCUMENT_ID";
+	private static final String PARAMETER_DOCUMENT_TYPE = "DOCUMENT_TYPE";
+	private static final String PARAMETER_DOCUMENT_ISSUANCE = "DOCUMENT_ISSUANCE_DATE";
+	private static final String PARAMETER_DOCUMENT_EXPIRY_DATE = "DOCUMENT_EXPIRY_DATE";
 	private static final String PARAMETER_BIRTH_OF_DATE = "BIRTH_OF_DATE";
 	private static final String PARAMETER_BIRTH_PLACE = "BIRTH_PLACE";
-	private static final String PARAMETER_ID_EXPIRY = "ID_EXPIRY";
 	private static final String PARAMETER_INQUIRER_ID = "INQUIRER_ID";
 	private static final String PARAMETER_LOGO = "LOGO";
 	
@@ -88,14 +90,16 @@ public class BuildDeadPersonRecordReportTask extends Task<JasperPrint>
 		params.put(PARAMETER_NAME, fullName);
 		
 		params.put(PARAMETER_NATIONALITY, deadPersonRecordReport.getNationality());
-		params.put(PARAMETER_JOB, deadPersonRecordReport.getOccupation());
-		params.put(PARAMETER_SEX, deadPersonRecordReport.getGender());
-		params.put(PARAMETER_ID, deadPersonRecordReport.getIdNumber());
-		params.put(PARAMETER_ID_TYPE, deadPersonRecordReport.getIdType());
-		params.put(PARAMETER_ID_ISSUANCE, deadPersonRecordReport.getIdIssuanceDate());
+		params.put(PARAMETER_OCCUPATION, deadPersonRecordReport.getOccupation());
+		params.put(PARAMETER_GENDER, deadPersonRecordReport.getGender());
+		params.put(PARAMETER_SAMIS_ID, deadPersonRecordReport.getSamisId());
+		params.put(PARAMETER_SAMIS_ID_TYPE, deadPersonRecordReport.getSamisIdType());
+		params.put(PARAMETER_DOCUMENT_ID, deadPersonRecordReport.getDocumentId());
+		params.put(PARAMETER_DOCUMENT_TYPE, deadPersonRecordReport.getDocumentType());
+		params.put(PARAMETER_DOCUMENT_ISSUANCE, deadPersonRecordReport.getDocumentIssuanceDate());
 		params.put(PARAMETER_BIRTH_OF_DATE, deadPersonRecordReport.getBirthDate());
 		params.put(PARAMETER_BIRTH_PLACE, deadPersonRecordReport.getBirthPlace());
-		params.put(PARAMETER_ID_EXPIRY, deadPersonRecordReport.getIdExpirationDate());
+		params.put(PARAMETER_DOCUMENT_EXPIRY_DATE, deadPersonRecordReport.getDocumentExpiryDate());
 		params.put(PARAMETER_INQUIRER_ID, deadPersonRecordReport.getInquirerId());
 		params.put(PARAMETER_LOGO, Thread.currentThread().getContextClassLoader().getResourceAsStream(LOGO_FILE));
 		

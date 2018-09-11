@@ -6,6 +6,7 @@ import sa.gov.nic.bio.bw.client.core.beans.UserSession;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.CountryBean;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.DocumentType;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.LookupAPI;
+import sa.gov.nic.bio.bw.client.features.commons.webservice.SamisIdType;
 import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
 
 import java.util.List;
@@ -21,6 +22,9 @@ public class PersonInfoLookupService
 		
 		@SuppressWarnings("unchecked")
 		List<CountryBean> countries = (List<CountryBean>) userSession.getAttribute("lookups.countries");
+		
+		@SuppressWarnings("unchecked") List<SamisIdType> samisIdTypes = (List<SamisIdType>)
+															userSession.getAttribute("lookups.samisIdTypes");
 		
 		@SuppressWarnings("unchecked") List<DocumentType> documentTypes = (List<DocumentType>)
 															userSession.getAttribute("lookups.documentTypes");
@@ -42,6 +46,22 @@ public class PersonInfoLookupService
 			                                    nationalitiesResponse.getErrorDetails());
 			
 			userSession.setAttribute("lookups.countries", countries);
+		}
+		
+		if(samisIdTypes == null)
+		{
+			LookupAPI lookupAPI = Context.getWebserviceManager().getApi(LookupAPI.class);
+			Call<List<SamisIdType>> samisIdTypesCall = lookupAPI.lookupPersonIdTypes();
+			ServiceResponse<List<SamisIdType>> samisIdTypesResponse = Context.getWebserviceManager()
+					.executeApi(samisIdTypesCall);
+			
+			if(samisIdTypesResponse.isSuccess()) samisIdTypes = samisIdTypesResponse.getResult();
+			else return ServiceResponse.failure(samisIdTypesResponse.getErrorCode(),
+			                                    samisIdTypesResponse.getException(),
+			                                    samisIdTypesResponse.getErrorDetails());
+			
+			userSession.setAttribute("lookups.samisIdTypes", samisIdTypes);
+			LOGGER.info("samisIdTypes = " + samisIdTypes);
 		}
 		
 		if(documentTypes == null)

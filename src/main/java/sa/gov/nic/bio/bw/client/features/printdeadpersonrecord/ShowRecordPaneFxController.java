@@ -26,6 +26,7 @@ import sa.gov.nic.bio.bw.client.features.commons.webservice.DocumentType;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.Name;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.PersonIdInfo;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.PersonInfo;
+import sa.gov.nic.bio.bw.client.features.commons.webservice.SamisIdType;
 import sa.gov.nic.bio.bw.client.features.printdeadpersonrecord.beans.DeadPersonRecordReport;
 import sa.gov.nic.bio.bw.client.features.printdeadpersonrecord.tasks.BuildDeadPersonRecordReportTask;
 import sa.gov.nic.bio.bw.client.features.printdeadpersonrecord.utils.PrintDeadPersonRecordPresentErrorCodes;
@@ -64,10 +65,12 @@ public class ShowRecordPaneFxController extends WizardStepFxControllerBase
 	@FXML private Label lblOccupation;
 	@FXML private Label lblBirthPlace;
 	@FXML private Label lblBirthDate;
-	@FXML private Label lblIdNumber;
-	@FXML private Label lblIdType;
-	@FXML private Label lblIdIssuanceDate;
-	@FXML private Label lblIdExpiry;
+	@FXML private Label lblSamisId;
+	@FXML private Label lblSamisIdType;
+	@FXML private Label lblDocumentId;
+	@FXML private Label lblDocumentType;
+	@FXML private Label lblDocumentIssuanceDate;
+	@FXML private Label lblDocumentExpiryDate;
 	@FXML private Label lblEnrollerId;
 	@FXML private Label lblEnrollmentTime;
 	@FXML private Label lblRecordId;
@@ -242,9 +245,11 @@ public class ShowRecordPaneFxController extends WizardStepFxControllerBase
 		}
 	}
 	
-	private void populateData(Long samisId, Long recordIdLong, DeadPersonRecord deadPersonRecord,
-							  PersonInfo personInfo, Map<Integer, String> fingerprintsImages)
+	private void populateData(Long samisIdLong, Long recordIdLong, DeadPersonRecord deadPersonRecord,
+	                          PersonInfo personInfo, Map<Integer, String> fingerprintsImages)
 	{
+		String samisId = null;
+		String samisIdType = null;
 		String recordId = null;
 		String enrollerId = null;
 		String enrollmentTime = null;
@@ -258,15 +263,21 @@ public class ShowRecordPaneFxController extends WizardStepFxControllerBase
 		String occupation = null;
 		String birthPlace = null;
 		String birthDate = null;
-		String idNumber = null;
-		String idType = null;
-		String idIssuanceDate = null;
-		String idExpirationDate = null;
+		String documentId = null;
+		String documentType = null;
+		String documentIssuanceDate = null;
+		String documentExpiryDate = null;
 		
 		if(recordIdLong != null)
 		{
 			recordId = AppUtils.localizeNumbers(String.valueOf(recordIdLong));
 			lblRecordId.setText(recordId);
+		}
+		
+		if(samisIdLong != null)
+		{
+			samisId = AppUtils.localizeNumbers(String.valueOf(samisIdLong));
+			lblSamisId.setText(samisId);
 		}
 		
 		UserInfo userInfo = (UserInfo) Context.getUserSession().getAttribute("userInfo");
@@ -280,7 +291,6 @@ public class ShowRecordPaneFxController extends WizardStepFxControllerBase
 				enrollerId = AppUtils.localizeNumbers(sEnrollerId);
 				lblEnrollerId.setText(enrollerId);
 			}
-			
 			
 			Long enrollmentTimeLong = deadPersonRecord.getEnrollmentDate();
 			if(enrollmentTimeLong != null)
@@ -365,6 +375,39 @@ public class ShowRecordPaneFxController extends WizardStepFxControllerBase
 				lblNationality.setText(nationality);
 			}
 			
+			samisIdLong = personInfo.getSamisId();
+			if(samisIdLong != null)
+			{
+				samisId = AppUtils.localizeNumbers(String.valueOf(samisIdLong));
+				lblSamisId.setText(samisId);
+			}
+			
+			@SuppressWarnings("unchecked") List<SamisIdType> samisIdTypes = (List<SamisIdType>)
+												Context.getUserSession().getAttribute("lookups.samisIdTypes");
+			
+			String personType = personInfo.getPersonType();
+			if(personType != null)
+			{
+				SamisIdType theSamisIdType = null;
+				
+				for(SamisIdType type : samisIdTypes)
+				{
+					if(personType.equals(type.getIfrPersonType()))
+					{
+						theSamisIdType = type;
+						break;
+					}
+				}
+				
+				if(theSamisIdType != null)
+				{
+					boolean arabic = Context.getGuiLanguage() == GuiLanguage.ARABIC;
+					samisIdType = AppUtils.localizeNumbers(arabic ? theSamisIdType.getDescriptionAR() :
+							                                        theSamisIdType.getDescriptionEN());
+					lblSamisIdType.setText(samisIdType);
+				}
+			}
+			
 			PersonIdInfo identityInfo = personInfo.getIdentityInfo();
 			if(identityInfo != null)
 			{
@@ -375,24 +418,24 @@ public class ShowRecordPaneFxController extends WizardStepFxControllerBase
 					lblOccupation.setText(occupation);
 				}
 				
-				String sIdNumber = identityInfo.getIdNumber();
-				if(sIdNumber != null && !sIdNumber.trim().isEmpty())
+				String sDocumentId = identityInfo.getIdNumber();
+				if(sDocumentId != null && !sDocumentId.trim().isEmpty())
 				{
-					idNumber = AppUtils.localizeNumbers(sIdNumber);
-					lblIdNumber.setText(idNumber);
+					documentId = AppUtils.localizeNumbers(sDocumentId);
+					lblDocumentId.setText(documentId);
 				}
 				
 				@SuppressWarnings("unchecked") List<DocumentType> documentTypes = (List<DocumentType>)
 												Context.getUserSession().getAttribute("lookups.documentTypes");
 				
-				Integer idTypeInteger = identityInfo.getIdType();
-				if(idTypeInteger != null)
+				Integer documentTypeInteger = identityInfo.getIdType();
+				if(documentTypeInteger != null)
 				{
 					DocumentType theDocumentType = null;
 					
 					for(DocumentType type : documentTypes)
 					{
-						if(type.getCode() == idTypeInteger)
+						if(type.getCode() == documentTypeInteger)
 						{
 							theDocumentType = type;
 							break;
@@ -401,8 +444,8 @@ public class ShowRecordPaneFxController extends WizardStepFxControllerBase
 					
 					if(theDocumentType != null)
 					{
-						idType = AppUtils.localizeNumbers(theDocumentType.getDesc());
-						lblIdType.setText(idType);
+						documentType = AppUtils.localizeNumbers(theDocumentType.getDesc());
+						lblDocumentType.setText(documentType);
 					}
 				}
 				
@@ -410,18 +453,18 @@ public class ShowRecordPaneFxController extends WizardStepFxControllerBase
 				if(theIssueDate != null && theIssueDate.getTime() > AppConstants.SAMIS_DB_DATE_NOT_SET_VALUE)
 				{
 					LocalDate localDate = theIssueDate.toInstant().atZone(AppConstants.SAUDI_ZONE).toLocalDate();
-					idIssuanceDate = AppUtils.formatHijriGregorianDate(AppUtils.gregorianDateToMilliSeconds(localDate));
-					lblIdIssuanceDate.setText(idIssuanceDate);
+					documentIssuanceDate = AppUtils.formatHijriGregorianDate(
+																	AppUtils.gregorianDateToMilliSeconds(localDate));
+					lblDocumentIssuanceDate.setText(documentIssuanceDate);
 				}
 				
-				Date theExpirationDate = identityInfo.getIdExpirDate();
-				if(theExpirationDate != null &&
-												theExpirationDate.getTime() > AppConstants.SAMIS_DB_DATE_NOT_SET_VALUE)
+				Date theExpiryDate = identityInfo.getIdExpirDate();
+				if(theExpiryDate != null && theExpiryDate.getTime() > AppConstants.SAMIS_DB_DATE_NOT_SET_VALUE)
 				{
-					LocalDate localDate = theExpirationDate.toInstant().atZone(AppConstants.SAUDI_ZONE).toLocalDate();
-					idExpirationDate = AppUtils.formatHijriGregorianDate(
+					LocalDate localDate = theExpiryDate.toInstant().atZone(AppConstants.SAUDI_ZONE).toLocalDate();
+					documentExpiryDate = AppUtils.formatHijriGregorianDate(
 																	AppUtils.gregorianDateToMilliSeconds(localDate));
-					lblIdExpiry.setText(idExpirationDate);
+					lblDocumentExpiryDate.setText(documentExpiryDate);
 				}
 			}
 			
@@ -441,14 +484,6 @@ public class ShowRecordPaneFxController extends WizardStepFxControllerBase
 			}
 		}
 
-		if(idNumber == null)
-		{
-			if(samisId != null) idNumber = AppUtils.localizeNumbers(String.valueOf(samisId));
-			idType = null;
-			lblIdNumber.setText(idNumber);
-			lblIdType.setText(idType);
-		}
-		
 		if(fingerprintsImages != null)
 		{
 			Map<Integer, ImageView> imageViewMap = new HashMap<>();
@@ -512,8 +547,9 @@ public class ShowRecordPaneFxController extends WizardStepFxControllerBase
 		deadPersonRecordReport = new DeadPersonRecordReport(recordId, enrollerId, inquirerId, enrollmentTime,
 		                                                    faceBase64, firstName, fatherName, grandfatherName,
 		                                                    familyName, gender, nationality, occupation, birthPlace,
-		                                                    birthDate, idNumber, idType, idIssuanceDate,
-		                                                    idExpirationDate, fingerprintsImages);
+		                                                    birthDate, samisId, samisIdType, documentId, documentType,
+		                                                    documentIssuanceDate, documentExpiryDate,
+		                                                    fingerprintsImages);
 	}
 	
 	private void printDeadPersonRecordReport(JasperPrint jasperPrint)

@@ -132,7 +132,11 @@ public class ConvictedReportInquiryPaneFxController extends BodyFxControllerBase
 		tcSamisId.setCellValueFactory(param ->
 		{
 		    ConvictedReport convictedReport = param.getValue().getKey();
-		    return new SimpleStringProperty(AppUtils.localizeNumbers(String.valueOf(convictedReport.getSubjSamisId())));
+			
+		    Long subjSamisId = convictedReport.getSubjSamisId();
+			if(subjSamisId == null) return null;
+			
+			return new SimpleStringProperty(AppUtils.localizeNumbers(String.valueOf(subjSamisId)));
 		});
 		
 		tcSamisIdType.impl_setReorderable(false);
@@ -177,11 +181,18 @@ public class ConvictedReportInquiryPaneFxController extends BodyFxControllerBase
 			@SuppressWarnings("unchecked") List<CountryBean> countries = (List<CountryBean>)
 													Context.getUserSession().getAttribute("lookups.countries");
 			
+			Integer nationalityCode = convictedReport.getSubjNationalityCode();
+			
+			if(nationalityCode == 0)
+			{
+				return new SimpleStringProperty(resources.getString("combobox.unknownNationality"));
+			}
+			
 			CountryBean countryBean = null;
 			
 			for(CountryBean country : countries)
 			{
-				if(country.getCode() == convictedReport.getSubjNationalityCode())
+				if(country.getCode() == nationalityCode)
 				{
 					countryBean = country;
 					break;
@@ -246,7 +257,6 @@ public class ConvictedReportInquiryPaneFxController extends BodyFxControllerBase
 				if(serviceResponse.isSuccess())
 				{
 					List<Pair<ConvictedReport, Map<Integer, String>>> convictedReports = serviceResponse.getResult();
-					convictedReports.stream().mapToLong(value -> value.getKey().getReportNumber()).forEach(System.out::println);
 					tvConvictedReports.getItems().setAll(convictedReports);
 					tvConvictedReports.requestFocus();
 				}

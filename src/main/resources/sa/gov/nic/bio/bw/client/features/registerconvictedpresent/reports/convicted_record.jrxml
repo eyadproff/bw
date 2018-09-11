@@ -1450,7 +1450,7 @@
 			</image>
 			<textField evaluationTime="Report" isBlankWhenNull="true">
 				<reportElement key="" x="20" y="-3" width="492" height="16" uuid="3510e8cf-ef76-41db-9934-79b18217c4b2"/>
-				<textElement textAlignment="Center">
+				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="CustomFont" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{NAME}]]></textFieldExpression>

@@ -118,6 +118,26 @@
 				<reportElement x="234" y="3" width="76" height="68" uuid="678e04c7-dea5-4f5a-843a-6c1cf4fda04c"/>
 				<imageExpression><![CDATA[$P{LOGO}]]></imageExpression>
 			</image>
+			<rectangle>
+				<reportElement x="150" y="136" width="396" height="23" uuid="1152f340-884d-4eda-8763-8d656d91fa65"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</rectangle>
+			<staticText>
+				<reportElement x="483" y="140" width="62" height="15" uuid="438a5ab9-fb8d-4fb2-b914-2ca8aee076d8"/>
+				<textElement>
+					<font fontName="CustomFont" size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[رقم الملف العام:]]></text>
+			</staticText>
+			<textField evaluationTime="Report" isBlankWhenNull="true">
+				<reportElement key="" x="153" y="141" width="326" height="15" uuid="31d54d86-85ed-4d37-bda4-94b9419c5dc6"/>
+				<textElement textAlignment="Right">
+					<font fontName="CustomFont" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{REF_NUMBER}]]></textFieldExpression>
+			</textField>
 		</band>
 	</title>
 	<pageHeader>
@@ -689,7 +709,7 @@
 			</staticText>
 			<textField evaluationTime="Report" isBlankWhenNull="true">
 				<reportElement key="" x="20" y="5" width="492" height="16" uuid="db9e4d00-4807-46b5-ae7a-73a5b61fbfa3"/>
-				<textElement textAlignment="Center">
+				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="CustomFont" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{NAME}]]></textFieldExpression>

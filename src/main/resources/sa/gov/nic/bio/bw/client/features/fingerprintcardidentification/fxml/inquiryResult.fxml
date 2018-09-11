@@ -51,7 +51,7 @@
                                 <VBox alignment="CENTER">
                                     <GridPane alignment="CENTER" hgap="10.0" vgap="3.0">
                                         <columnConstraints>
-                                            <ColumnConstraints prefWidth="70.0"/>
+                                            <ColumnConstraints prefWidth="120.0"/>
                                             <ColumnConstraints/>
                                             <ColumnConstraints prefWidth="100.0"/>
                                             <ColumnConstraints/>
@@ -72,7 +72,7 @@
                                         <Label fx:id="lblBirthPlace" GridPane.rowIndex="3" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
                                         <Label text="%label.birthDate" GridPane.rowIndex="3" GridPane.columnIndex="2" styleClass="bold-label"/>
                                         <Label fx:id="lblBirthDate" GridPane.rowIndex="3" GridPane.columnIndex="3" GridPane.hgrow="ALWAYS"/>
-                                        <Label text="%label.idNumber" GridPane.rowIndex="4" GridPane.columnIndex="0" styleClass="bold-label"/>
+                                        <Label text="%label.documentId" GridPane.rowIndex="4" GridPane.columnIndex="0" styleClass="bold-label"/>
                                         <Label fx:id="lblIdNumber" GridPane.rowIndex="4" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
                                         <Label text="%label.idIssuanceDate" GridPane.rowIndex="4" GridPane.columnIndex="2" styleClass="bold-label"/>
                                         <Label fx:id="lblIdIssuanceDate" GridPane.rowIndex="4" GridPane.columnIndex="3" GridPane.hgrow="ALWAYS"/>

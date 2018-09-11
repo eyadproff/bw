@@ -41,7 +41,6 @@
 	<parameter name="LOGO" class="java.io.InputStream" isForPrompting="false"/>
 	<parameter name="SAMIS_ID" class="java.lang.String"/>
 	<parameter name="SAMIS_ID_TYPE" class="java.lang.String"/>
-	<parameter name="BIO_ID" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
@@ -730,7 +729,7 @@
 			</staticText>
 			<textField evaluationTime="Report" isBlankWhenNull="true">
 				<reportElement key="" x="20" y="5" width="492" height="16" uuid="275205da-870d-486c-9c23-d883194669f4"/>
-				<textElement textAlignment="Center">
+				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="CustomFont" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{NAME}]]></textFieldExpression>
@@ -839,13 +838,6 @@
 				</textElement>
 				<text><![CDATA[نوع الهوية:]]></text>
 			</staticText>
-			<staticText>
-				<reportElement x="141" y="51" width="48" height="15" uuid="e1f336d6-4e7c-40bf-a416-c2ff9b37dbcc"/>
-				<textElement textAlignment="Right">
-					<font fontName="CustomFont" size="11" isBold="true"/>
-				</textElement>
-				<text><![CDATA[رقم السمات:]]></text>
-			</staticText>
 			<textField evaluationTime="Report" isBlankWhenNull="true">
 				<reportElement key="" x="380" y="64" width="158" height="15" uuid="936d1905-b6d0-4940-a50e-ce6b9791079f"/>
 				<textElement textAlignment="Center">
@@ -859,13 +851,6 @@
 					<font fontName="CustomFont" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{SAMIS_ID_TYPE}]]></textFieldExpression>
-			</textField>
-			<textField evaluationTime="Report" isBlankWhenNull="true">
-				<reportElement key="" x="20" y="64" width="167" height="15" uuid="c861ae59-1276-4a4a-8c60-2e3c32423150"/>
-				<textElement textAlignment="Center">
-					<font fontName="CustomFont" isBold="false"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{BIO_ID}]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageHeader>

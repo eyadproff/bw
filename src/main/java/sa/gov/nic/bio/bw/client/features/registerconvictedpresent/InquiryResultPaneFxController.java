@@ -188,6 +188,28 @@ public class InquiryResultPaneFxController extends WizardStepFxControllerBase
 	
 	private void populatePersonInfo(Long samisId, Long biometricsId, PersonInfo personInfo, String notAvailable)
 	{
+		if(samisId != null)
+		{
+			lblSamisId.setText(AppUtils.localizeNumbers(String.valueOf(samisId)));
+			personInfoMap.put(PersonInfoPaneFxController.KEY_PERSON_INFO_SAMIS_ID, samisId);
+		}
+		else
+		{
+			lblSamisId.setText(notAvailable);
+			lblSamisId.setTextFill(Color.RED);
+		}
+		
+		if(biometricsId != null)
+		{
+			lblBiometricsId.setText(AppUtils.localizeNumbers(String.valueOf(biometricsId)));
+			personInfoMap.put(PersonInfoPaneFxController.KEY_PERSON_INFO_CIVIL_BIO_ID, biometricsId);
+		}
+		else
+		{
+			lblBiometricsId.setText(notAvailable);
+			lblBiometricsId.setTextFill(Color.RED);
+		}
+		
 		if(personInfo == null)
 		{
 			lblFirstName.setText(notAvailable);
@@ -208,19 +230,6 @@ public class InquiryResultPaneFxController extends WizardStepFxControllerBase
 			lblBirthPlace.setTextFill(Color.RED);
 			lblBirthDate.setText(notAvailable);
 			lblBirthDate.setTextFill(Color.RED);
-			lblBiometricsId.setText(notAvailable);
-			lblBiometricsId.setTextFill(Color.RED);
-
-			if(samisId != null)
-			{
-				lblSamisId.setText(AppUtils.localizeNumbers(String.valueOf(samisId)));
-			}
-			else
-			{
-				lblSamisId.setText(notAvailable);
-				lblSamisId.setTextFill(Color.RED);
-			}
-
 			lblSamisIdType.setText(notAvailable);
 			lblSamisIdType.setTextFill(Color.RED);
 			lblDocumentId.setText(notAvailable);
@@ -410,27 +419,6 @@ public class InquiryResultPaneFxController extends WizardStepFxControllerBase
 			lblBirthDate.setTextFill(Color.RED);
 		}
 		
-		if(biometricsId != null)
-		{
-			lblBiometricsId.setText(AppUtils.localizeNumbers(String.valueOf(biometricsId)));
-		}
-		else
-		{
-			lblBiometricsId.setText(notAvailable);
-			lblBiometricsId.setTextFill(Color.RED);
-		}
-		
-		if(samisId != null)
-		{
-			lblSamisId.setText(AppUtils.localizeNumbers(String.valueOf(samisId)));
-			personInfoMap.put(PersonInfoPaneFxController.KEY_PERSON_INFO_SAMIS_ID, samisId);
-		}
-		else
-		{
-			lblSamisId.setText(notAvailable);
-			lblSamisId.setTextFill(Color.RED);
-		}
-		
 		@SuppressWarnings("unchecked") List<SamisIdType> samisIdTypes = (List<SamisIdType>)
 												Context.getUserSession().getAttribute("lookups.samisIdTypes");
 		
@@ -528,7 +516,8 @@ public class InquiryResultPaneFxController extends WizardStepFxControllerBase
 		if(idExpiryDate != null && idExpiryDate.getTime() > AppConstants.SAMIS_DB_DATE_NOT_SET_VALUE)
 		{
 			LocalDate localDate = idExpiryDate.toInstant().atZone(AppConstants.SAUDI_ZONE).toLocalDate();
-			lblDocumentExpiryDate.setText(AppUtils.formatHijriGregorianDate(AppUtils.gregorianDateToMilliSeconds(localDate)));
+			lblDocumentExpiryDate.setText(AppUtils.formatHijriGregorianDate(
+																	AppUtils.gregorianDateToMilliSeconds(localDate)));
 			personInfoMap.put(PersonInfoPaneFxController.KEY_PERSON_INFO_DOCUMENT_EXPIRY_DATE, localDate);
 		}
 		else
