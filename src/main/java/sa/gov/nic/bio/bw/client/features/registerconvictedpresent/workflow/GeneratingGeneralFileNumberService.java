@@ -7,10 +7,10 @@ import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
 
 public class GeneratingGeneralFileNumberService
 {
-	public static ServiceResponse<Long> execute()
+	public static ServiceResponse<Long> execute(Long personId, Long bioId)
 	{
 		ConvictedReportAPI convictedReportAPI = Context.getWebserviceManager().getApi(ConvictedReportAPI.class);
-		Call<Long> apiCall = convictedReportAPI.generateGeneralFileNumber();
+		Call<Long> apiCall = convictedReportAPI.generateGeneralFileNumber(personId, bioId);
 		return Context.getWebserviceManager().executeApi(apiCall);
 	}
 }

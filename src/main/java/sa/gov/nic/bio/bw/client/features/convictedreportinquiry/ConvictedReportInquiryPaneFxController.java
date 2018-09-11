@@ -26,8 +26,8 @@ import sa.gov.nic.bio.bw.client.core.utils.GuiLanguage;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.workflow.Workflow;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.CountryBean;
-import sa.gov.nic.bio.bw.client.features.commons.webservice.DocumentType;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.Name;
+import sa.gov.nic.bio.bw.client.features.commons.webservice.SamisIdType;
 import sa.gov.nic.bio.bw.client.features.convictedreportinquiry.tasks.LookupTask;
 import sa.gov.nic.bio.bw.client.features.convictedreportinquiry.utils.ConvictedReportInquiryErrorCodes;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.ConvictedReport;
@@ -47,8 +47,8 @@ public class ConvictedReportInquiryPaneFxController extends BodyFxControllerBase
 	@FXML private TableView<ConvictedReport> tvConvictedReports;
 	@FXML private TableColumn<ConvictedReport, ConvictedReport> tcSequence;
 	@FXML private TableColumn<ConvictedReport, String> tvName;
-	@FXML private TableColumn<ConvictedReport, String> tcIdNumber;
-	@FXML private TableColumn<ConvictedReport, String> tcIdType;
+	@FXML private TableColumn<ConvictedReport, String> tcSamisId;
+	@FXML private TableColumn<ConvictedReport, String> tcSamisIdType;
 	@FXML private TableColumn<ConvictedReport, String> tcNationality;
 	@FXML private TableColumn<ConvictedReport, String> tcOperatorId;
 	@FXML private TableColumn<ConvictedReport, String> tcRegistrationDate;
@@ -122,39 +122,41 @@ public class ConvictedReportInquiryPaneFxController extends BodyFxControllerBase
 		    return new SimpleStringProperty(AppUtils.constructName(name));
 		});
 		
-		tcIdNumber.impl_setReorderable(false);
-		tcIdNumber.setCellValueFactory(param ->
+		tcSamisId.impl_setReorderable(false);
+		tcSamisId.setCellValueFactory(param ->
 		{
 		    ConvictedReport convictedReport = param.getValue();
-		    return new SimpleStringProperty(AppUtils.localizeNumbers(convictedReport.getSubjDocId()));
+		    return new SimpleStringProperty(AppUtils.localizeNumbers(String.valueOf(convictedReport.getSubjSamisId())));
 		});
 		
-		tcIdType.impl_setReorderable(false);
-		tcIdType.setCellValueFactory(param ->
+		tcSamisIdType.impl_setReorderable(false);
+		tcSamisIdType.setCellValueFactory(param ->
 		{
 		    ConvictedReport convictedReport = param.getValue();
 			
-			@SuppressWarnings("unchecked") List<DocumentType> documentTypes = (List<DocumentType>)
-												Context.getUserSession().getAttribute("lookups.documentTypes");
+			@SuppressWarnings("unchecked") List<SamisIdType> samisIdTypes = (List<SamisIdType>)
+												Context.getUserSession().getAttribute("lookups.samisIdTypes");
 			
-			Integer idTypeInteger = convictedReport.getSubjDocType();
-			if(idTypeInteger != null)
+			Integer samisIdTypeInteger = convictedReport.getSubjSamisType();
+			if(samisIdTypeInteger != null)
 			{
-				DocumentType theDocumentType = null;
+				SamisIdType theSamisIdType = null;
 				
-				for(DocumentType type : documentTypes)
+				for(SamisIdType type : samisIdTypes)
 				{
-					if(type.getCode() == idTypeInteger)
+					if(type.getCode() == samisIdTypeInteger)
 					{
-						theDocumentType = type;
+						theSamisIdType = type;
 						break;
 					}
 				}
 				
-				if(theDocumentType != null)
+				if(theSamisIdType != null)
 				{
-					String idType = AppUtils.localizeNumbers(theDocumentType.getDesc());
-					return new SimpleStringProperty(idType);
+					boolean arabic = Context.getGuiLanguage() == GuiLanguage.ARABIC;
+					String samisIdType = AppUtils.localizeNumbers(arabic ? theSamisIdType.getDescriptionAR() :
+							                                               theSamisIdType.getDescriptionEN());
+					return new SimpleStringProperty(samisIdType);
 				}
 			}
 		    

@@ -29,18 +29,18 @@
 	<parameter name="ENROLLMENT_TIME" class="java.lang.String"/>
 	<parameter name="NAME" class="java.lang.String"/>
 	<parameter name="NATIONALITY" class="java.lang.String"/>
-	<parameter name="JOB" class="java.lang.String"/>
-	<parameter name="SEX" class="java.lang.String"/>
+	<parameter name="OCCUPATION" class="java.lang.String"/>
+	<parameter name="GENDER" class="java.lang.String"/>
 	<parameter name="DOCUMENT_ID" class="java.lang.String"/>
 	<parameter name="DOCUMENT_TYPE" class="java.lang.String"/>
-	<parameter name="DOCUMENT_ISSUANCE" class="java.lang.String"/>
-	<parameter name="DOCUMENT_EXPIRY" class="java.lang.String"/>
+	<parameter name="DOCUMENT_ISSUANCE_DATE" class="java.lang.String"/>
+	<parameter name="DOCUMENT_EXPIRY_DATE" class="java.lang.String"/>
 	<parameter name="BIRTH_OF_DATE" class="java.lang.String"/>
 	<parameter name="BIRTH_PLACE" class="java.lang.String"/>
 	<parameter name="INQUIRER_ID" class="java.lang.String"/>
 	<parameter name="LOGO" class="java.io.InputStream" isForPrompting="false"/>
 	<parameter name="SAMIS_ID" class="java.lang.String"/>
-	<parameter name="SAMIS_TYPE" class="java.lang.String"/>
+	<parameter name="SAMIS_ID_TYPE" class="java.lang.String"/>
 	<parameter name="BIO_ID" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[]]>
@@ -747,14 +747,14 @@
 				<textElement textAlignment="Center">
 					<font fontName="CustomFont" isBold="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{JOB}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{OCCUPATION}]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report" isBlankWhenNull="true">
 				<reportElement key="" x="20" y="37" width="167" height="15" uuid="a4824504-7d5c-4477-a1e9-cac379b25ff7"/>
 				<textElement textAlignment="Center">
 					<font fontName="CustomFont" isBold="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{SEX}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{GENDER}]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report" isBlankWhenNull="true">
 				<reportElement key="" x="384" y="91" width="154" height="15" uuid="8a05beb0-35f7-49d1-ae54-2c361082e636"/>
@@ -775,7 +775,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="CustomFont" size="8" isBold="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{DOCUMENT_ISSUANCE}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{DOCUMENT_ISSUANCE_DATE}]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report" isBlankWhenNull="true">
 				<reportElement key="" x="375" y="118" width="171" height="15" uuid="778d6475-f0b6-4db7-aa04-7eda8f66b20c"/>
@@ -796,7 +796,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="CustomFont" size="8" isBold="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{DOCUMENT_EXPIRY}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{DOCUMENT_EXPIRY_DATE}]]></textFieldExpression>
 			</textField>
 			<rectangle>
 				<reportElement x="375" y="51" width="171" height="27" uuid="163a21f4-02ac-4c47-b80b-d636100cd44d">
@@ -858,7 +858,7 @@
 				<textElement textAlignment="Center">
 					<font fontName="CustomFont" isBold="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{SAMIS_TYPE}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{SAMIS_ID_TYPE}]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report" isBlankWhenNull="true">
 				<reportElement key="" x="20" y="64" width="167" height="15" uuid="c861ae59-1276-4a4a-8c60-2e3c32423150"/>

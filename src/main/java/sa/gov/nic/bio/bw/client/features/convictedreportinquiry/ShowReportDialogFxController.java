@@ -34,6 +34,7 @@ import sa.gov.nic.bio.bw.client.features.commons.webservice.CountryBean;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.CrimeType;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.DocumentType;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.Finger;
+import sa.gov.nic.bio.bw.client.features.commons.webservice.SamisIdType;
 import sa.gov.nic.bio.bw.client.features.convictedreportinquiry.utils.ConvictedReportInquiryErrorCodes;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.tasks.BuildConvictedReportTask;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.ConvictedReport;
@@ -62,16 +63,19 @@ public class ShowReportDialogFxController extends FxControllerBase
 	@FXML private Label lblFatherName;
 	@FXML private Label lblGrandfatherName;
 	@FXML private Label lblFamilyName;
+	@FXML private Label lblBiometricsId;
 	@FXML private Label lblGeneralFileNumber;
 	@FXML private Label lblGender;
 	@FXML private Label lblNationality;
 	@FXML private Label lblOccupation;
 	@FXML private Label lblBirthPlace;
 	@FXML private Label lblBirthDate;
-	@FXML private Label lblIdNumber;
-	@FXML private Label lblIdType;
-	@FXML private Label lblIdIssuanceDate;
-	@FXML private Label lblIdExpiry;
+	@FXML private Label lblSamisId;
+	@FXML private Label lblSamisIdType;
+	@FXML private Label lblDocumentId;
+	@FXML private Label lblDocumentType;
+	@FXML private Label lblDocumentIssuanceDate;
+	@FXML private Label lblDocumentExpiryDate;
 	@FXML private Label lblCrimeClassification1;
 	@FXML private Label lblCrimeClassification2;
 	@FXML private Label lblCrimeClassification3;
@@ -216,8 +220,12 @@ public class ShowReportDialogFxController extends FxControllerBase
 		lblGrandfatherName.setText(convictedReport.getSubjtName().getGrandfatherName());
 		lblFamilyName.setText(convictedReport.getSubjtName().getFamilyName());
 		
+		Long biometricsId = convictedReport.getSubjBioId();
+		if(biometricsId != null) lblBiometricsId.setText(AppUtils.localizeNumbers(String.valueOf(biometricsId)));
+		
 		Long generalFileNumber = convictedReport.getGeneralFileNum();
-		lblGeneralFileNumber.setText(AppUtils.localizeNumbers(String.valueOf(generalFileNumber)));
+		if(generalFileNumber != null)
+						lblGeneralFileNumber.setText(AppUtils.localizeNumbers(String.valueOf(generalFileNumber)));
 		
 		lblGender.setText("F".equals(convictedReport.getSubjGender()) ? resources.getString("label.female") :
 				                                                        resources.getString("label.male"));
@@ -253,11 +261,38 @@ public class ShowReportDialogFxController extends FxControllerBase
 		
 		Long subjBirthDate = convictedReport.getSubjBirthDate();
 		if(subjBirthDate != null)
-			lblBirthDate.setText(AppUtils.formatHijriGregorianDate(subjBirthDate * 1000));
+						lblBirthDate.setText(AppUtils.formatHijriGregorianDate(subjBirthDate * 1000));
+		
+		Long samisId = convictedReport.getSubjSamisId();
+		if(samisId != null) lblSamisId.setText(AppUtils.localizeNumbers(String.valueOf(samisId)));
+		
+		@SuppressWarnings("unchecked") List<SamisIdType> samisIdTypes = (List<SamisIdType>)
+													Context.getUserSession().getAttribute("lookups.samisIdTypes");
+		
+		Integer subjSamisType = convictedReport.getSubjSamisType();
+		if(subjSamisType != null)
+		{
+			SamisIdType samisIdType = null;
+			
+			for(SamisIdType type : samisIdTypes)
+			{
+				if(type.getCode() == subjSamisType)
+				{
+					samisIdType = type;
+					break;
+				}
+			}
+			
+			if(samisIdType != null)
+			{
+				boolean arabic = Context.getGuiLanguage() == GuiLanguage.ARABIC;
+				lblSamisIdType.setText(AppUtils.localizeNumbers(arabic ? samisIdType.getDescriptionAR() :
+						                                                 samisIdType.getDescriptionEN()));
+			}
+		}
 		
 		String subjDocId = convictedReport.getSubjDocId();
-		if(subjDocId != null && !subjDocId.trim().isEmpty())
-			lblIdNumber.setText(AppUtils.localizeNumbers(subjDocId));
+		if(subjDocId != null && !subjDocId.trim().isEmpty()) lblDocumentId.setText(AppUtils.localizeNumbers(subjDocId));
 		
 		@SuppressWarnings("unchecked") List<DocumentType> documentTypes = (List<DocumentType>)
 												Context.getUserSession().getAttribute("lookups.documentTypes");
@@ -276,16 +311,17 @@ public class ShowReportDialogFxController extends FxControllerBase
 				}
 			}
 			
-			if(documentType != null) lblIdType.setText(AppUtils.localizeNumbers(documentType.getDesc()));
+			if(documentType != null) lblDocumentType.setText(AppUtils.localizeNumbers(documentType.getDesc()));
 		}
 		
 		Long subjDocIssDate = convictedReport.getSubjDocIssDate();
-		if(subjDocIssDate != null) lblIdIssuanceDate.setText(
-				AppUtils.formatHijriGregorianDate(subjDocIssDate * 1000));
+		if(subjDocIssDate != null) lblDocumentIssuanceDate.setText(
+												AppUtils.formatHijriGregorianDate(subjDocIssDate * 1000));
 		
 		Long subjDocExpDate = convictedReport.getSubjDocExpDate();
-		if(subjDocExpDate != null) lblIdExpiry.setText(
-				AppUtils.formatHijriGregorianDate(subjDocExpDate * 1000));
+		System.out.println("subjDocExpDate = " + subjDocExpDate);
+		if(subjDocExpDate != null) lblDocumentExpiryDate.setText(
+												AppUtils.formatHijriGregorianDate(subjDocExpDate * 1000));
 		
 		JudgementInfo judgementInfo = convictedReport.getSubjJudgementInfo();
 		
@@ -421,11 +457,22 @@ public class ShowReportDialogFxController extends FxControllerBase
 			
 			fingerprintImages.forEach((position, fingerprintImage) ->
 			{
-			    ImageView imageView = imageViewMap.get(position);
-			    String dialogTitle = dialogTitleMap.get(position);
-			
-			    byte[] bytes = Base64.getDecoder().decode(fingerprintImage);
-			    imageView.setImage(new Image(new ByteArrayInputStream(bytes)));
+				if(fingerprintImage == null)
+				{
+					return;
+				}
+				
+				ImageView imageView = imageViewMap.get(position);
+				String dialogTitle = dialogTitleMap.get(position);
+				
+				byte[] bytes = Base64.getDecoder().decode(fingerprintImage);
+				
+				if(bytes == null)
+				{
+					return;
+				}
+				
+				imageView.setImage(new Image(new ByteArrayInputStream(bytes)));
 			    GuiUtils.attachImageDialog(Context.getCoreFxController(), imageView,
 			                               dialogTitle, resources.getString("label.contextMenu.showImage"),
 			                               false);

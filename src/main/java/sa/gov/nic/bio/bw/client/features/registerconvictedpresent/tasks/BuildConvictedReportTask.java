@@ -8,9 +8,11 @@ import net.sf.jasperreports.engine.JasperReport;
 import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.utils.AppConstants.Locales;
 import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
+import sa.gov.nic.bio.bw.client.core.utils.GuiLanguage;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.CountryBean;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.CrimeType;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.DocumentType;
+import sa.gov.nic.bio.bw.client.features.commons.webservice.SamisIdType;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.ConvictedReport;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.CrimeCode;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.JudgementInfo;
@@ -32,15 +34,18 @@ public class BuildConvictedReportTask extends Task<JasperPrint>
 	private static final String PARAMETER_REPORT_DATE = "REPORT_DATE";
 	private static final String PARAMETER_NAME = "NAME";
 	private static final String PARAMETER_NATIONALITY = "NATIONALITY";
-	private static final String PARAMETER_JOB = "JOB";
-	private static final String PARAMETER_SEX = "SEX";
-	private static final String PARAMETER_ID = "ID";
-	private static final String PARAMETER_ID_TYPE = "ID_TYPE";
-	private static final String PARAMETER_ID_ISSUANCE = "ID_ISSUANCE";
+	private static final String PARAMETER_OCCUPATION = "OCCUPATION";
+	private static final String PARAMETER_GENDER = "GENDER";
+	private static final String PARAMETER_BIOMETRICS_ID = "BIOMETRICS_ID";
+	private static final String PARAMETER_SAMIS_ID = "SAMIS_ID";
+	private static final String PARAMETER_SAMIS_ID_TYPE = "SAMIS_ID_TYPE";
+	private static final String PARAMETER_DOCUMENT_ID = "DOCUMENT_ID";
+	private static final String PARAMETER_DOCUMENT_TYPE = "DOCUMENT_TYPE";
+	private static final String PARAMETER_DOCUMENT_ISSUANCE_DATE = "DOCUMENT_ISSUANCE_DATE";
+	private static final String PARAMETER_DOCUMENT_EXPIRY_DATE = "DOCUMENT_EXPIRY_DATE";
 	private static final String PARAMETER_BIRTH_OF_DATE = "BIRTH_OF_DATE";
 	private static final String PARAMETER_BIRTH_PLACE = "BIRTH_PLACE";
-	private static final String PARAMETER_ID_EXPIRY = "ID_EXPIRY";
-	private static final String PARAMETER_POLICE_FILE_NUMBER = "POLICE_FILE_NUMBER";
+	private static final String PARAMETER_CASE_FILE_NUMBER = "CASE_FILE_NUMBER";
 	private static final String PARAMETER_ARREST_DATE = "ARREST_DATE";
 	private static final String PARAMETER_CRIMINAL_CLASS1 = "CRIMINAL_CLASS1";
 	private static final String PARAMETER_CRIMINAL_CLASS2 = "CRIMINAL_CLASS2";
@@ -148,14 +153,48 @@ public class BuildConvictedReportTask extends Task<JasperPrint>
 		
 		if(countryBean != null) params.put(PARAMETER_NATIONALITY, countryBean.getDescriptionAR());
 		
-		params.put(PARAMETER_JOB, AppUtils.localizeNumbers(convictedReport.getSubjOccupation(), Locales.SAUDI_AR_LOCALE,
-		                                                   true));
-		params.put(PARAMETER_SEX, "F".equals(convictedReport.getSubjGender()) ? "أنثى" : "ذكر");
+		params.put(PARAMETER_OCCUPATION, AppUtils.localizeNumbers(convictedReport.getSubjOccupation(),
+		                                                          Locales.SAUDI_AR_LOCALE,
+		                                                          true));
+		params.put(PARAMETER_GENDER, "F".equals(convictedReport.getSubjGender()) ? "أنثى" : "ذكر");
+		
+		Long subjBioId = convictedReport.getSubjBioId();
+		if(subjBioId != null) params.put(PARAMETER_BIOMETRICS_ID, AppUtils.localizeNumbers(String.valueOf(subjBioId),
+		                                                                                   Locales.SAUDI_AR_LOCALE,
+		                                                                                   true));
+		
+		Long subjSamisId = convictedReport.getSubjSamisId();
+		if(subjSamisId != null) params.put(PARAMETER_SAMIS_ID, AppUtils.localizeNumbers(String.valueOf(subjSamisId),
+		                                                                                Locales.SAUDI_AR_LOCALE,
+		                                                                                true));
+		
+		@SuppressWarnings("unchecked") List<SamisIdType> samisIdTypes = (List<SamisIdType>)
+												Context.getUserSession().getAttribute("lookups.samisIdTypes");
+		
+		Integer subjSamisType = convictedReport.getSubjSamisType();
+		if(subjSamisType != null)
+		{
+			SamisIdType it = null;
+			for(SamisIdType type : samisIdTypes)
+			{
+				if(type.getCode() == subjSamisType)
+				{
+					it = type;
+					break;
+				}
+			}
+			
+			if(it != null)
+			{
+				boolean arabic = Context.getGuiLanguage() == GuiLanguage.ARABIC;
+				params.put(PARAMETER_SAMIS_ID_TYPE, arabic ? it.getDescriptionAR() : it.getDescriptionEN());
+			}
+		}
 		
 		String subjDocId = convictedReport.getSubjDocId();
-		
-		if(subjDocId != null) params.put(PARAMETER_ID, AppUtils.localizeNumbers(subjDocId, Locales.SAUDI_AR_LOCALE,
-		                                                                        true));
+		if(subjDocId != null) params.put(PARAMETER_DOCUMENT_ID, AppUtils.localizeNumbers(subjDocId,
+		                                                                                 Locales.SAUDI_AR_LOCALE,
+		                                                                                 true));
 		
 		@SuppressWarnings("unchecked") List<DocumentType> documentTypes = (List<DocumentType>)
 												Context.getUserSession().getAttribute("lookups.documentTypes");
@@ -173,11 +212,11 @@ public class BuildConvictedReportTask extends Task<JasperPrint>
 				}
 			}
 			
-			if(it != null) params.put(PARAMETER_ID_TYPE, it.getDesc());
+			if(it != null) params.put(PARAMETER_DOCUMENT_TYPE, it.getDesc());
 		}
 		
 		Long subjDocIssDate = convictedReport.getSubjDocIssDate();
-		if(subjDocIssDate != null) params.put(PARAMETER_ID_ISSUANCE,
+		if(subjDocIssDate != null) params.put(PARAMETER_DOCUMENT_ISSUANCE_DATE,
 		                                      AppUtils.formatHijriGregorianDate(subjDocIssDate * 1000));
 		
 		Long subjBirthDate = convictedReport.getSubjBirthDate();
@@ -187,18 +226,17 @@ public class BuildConvictedReportTask extends Task<JasperPrint>
 	                                                           Locales.SAUDI_AR_LOCALE, true));
 		
 		Long subjDocExpDate = convictedReport.getSubjDocExpDate();
-		if(subjDocExpDate != null) params.put(PARAMETER_ID_EXPIRY,
+		if(subjDocExpDate != null) params.put(PARAMETER_DOCUMENT_EXPIRY_DATE,
 		                                      AppUtils.formatHijriGregorianDate(subjDocExpDate * 1000));
 		
 		JudgementInfo judgementInfo = convictedReport.getSubjJudgementInfo();
 		
-		String policeFileNum = judgementInfo.getPoliceFileNum();
-		if(policeFileNum != null) params.put(PARAMETER_POLICE_FILE_NUMBER,
-	                                         AppUtils.localizeNumbers(policeFileNum, Locales.SAUDI_AR_LOCALE,
-	                                                                  true));
+		String caseFileNum = judgementInfo.getPoliceFileNum();
+		if(caseFileNum != null) params.put(PARAMETER_CASE_FILE_NUMBER, AppUtils.localizeNumbers(caseFileNum,
+		                                                                                Locales.SAUDI_AR_LOCALE,
+	                                                                                    true));
 		
 		Long arrestDate = judgementInfo.getArrestDate();
-		
 		if(arrestDate != null) params.put(PARAMETER_ARREST_DATE,
 		                                            AppUtils.formatHijriGregorianDate(arrestDate * 1000));
 		

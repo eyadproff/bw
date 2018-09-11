@@ -29,15 +29,15 @@
 	<parameter name="REPORT_DATE" class="java.lang.String"/>
 	<parameter name="NAME" class="java.lang.String"/>
 	<parameter name="NATIONALITY" class="java.lang.String"/>
-	<parameter name="JOB" class="java.lang.String"/>
-	<parameter name="SEX" class="java.lang.String"/>
+	<parameter name="OCCUPATION" class="java.lang.String"/>
+	<parameter name="GENDER" class="java.lang.String"/>
 	<parameter name="DOCUMENT_ID" class="java.lang.String"/>
 	<parameter name="DOCUMENT_TYPE" class="java.lang.String"/>
-	<parameter name="DOCUMENT_ISSUANCE" class="java.lang.String"/>
-	<parameter name="DOCUMENT_EXPIRY" class="java.lang.String"/>
+	<parameter name="DOCUMENT_ISSUANCE_DATE" class="java.lang.String"/>
+	<parameter name="DOCUMENT_EXPIRY_DATE" class="java.lang.String"/>
 	<parameter name="BIRTH_OF_DATE" class="java.lang.String"/>
 	<parameter name="BIRTH_PLACE" class="java.lang.String"/>
-	<parameter name="POLICE_FILE_NUMBER" class="java.lang.String"/>
+	<parameter name="CASE_FILE_NUMBER" class="java.lang.String"/>
 	<parameter name="ARREST_DATE" class="java.lang.String"/>
 	<parameter name="CRIMINAL_CLASS1" class="java.lang.String"/>
 	<parameter name="CRIMINAL_CLASS2" class="java.lang.String"/>
@@ -75,8 +75,8 @@
 	</parameter>
 	<parameter name="LOGO" class="java.io.InputStream" isForPrompting="false"/>
 	<parameter name="SAMIS_ID" class="java.lang.String"/>
-	<parameter name="SAMIS_TYPE" class="java.lang.String"/>
-	<parameter name="BIO_ID" class="java.lang.String"/>
+	<parameter name="SAMIS_ID_TYPE" class="java.lang.String"/>
+	<parameter name="BIOMETRICS_ID" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
@@ -426,7 +426,7 @@
 				<textElement textAlignment="Right">
 					<font fontName="CustomFont" size="11" isBold="true"/>
 				</textElement>
-				<text><![CDATA[رقم ملف الشرطة:]]></text>
+				<text><![CDATA[رقم ملف القضية:]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="319" y="124" width="53" height="15" uuid="fb9d3aa0-bebe-4ef9-80bf-dded34be7c9c"/>
@@ -1467,14 +1467,14 @@
 				<textElement textAlignment="Center">
 					<font fontName="CustomFont" isBold="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{JOB}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{OCCUPATION}]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report" isBlankWhenNull="true">
 				<reportElement key="" x="20" y="29" width="167" height="15" uuid="b4558f7e-d587-415b-8368-20666dcfc66f"/>
 				<textElement textAlignment="Center">
 					<font fontName="CustomFont" isBold="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{SEX}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{GENDER}]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report" isBlankWhenNull="true">
 				<reportElement key="" x="384" y="83" width="154" height="15" uuid="a41c2ebc-03a5-468b-81e8-3c709417941d"/>
@@ -1495,7 +1495,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="CustomFont" size="8" isBold="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{DOCUMENT_ISSUANCE}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{DOCUMENT_ISSUANCE_DATE}]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report" isBlankWhenNull="true">
 				<reportElement key="" x="375" y="110" width="171" height="15" uuid="2a48f368-6ead-4803-af0a-1cd1c5215351"/>
@@ -1516,14 +1516,14 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="CustomFont" size="8" isBold="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{DOCUMENT_EXPIRY}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{DOCUMENT_EXPIRY_DATE}]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report" isBlankWhenNull="true">
 				<reportElement key="" x="380" y="137" width="158" height="15" uuid="2ff962da-7944-4c47-9fed-fb3361e40a3e"/>
 				<textElement textAlignment="Center">
 					<font fontName="CustomFont" isBold="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{POLICE_FILE_NUMBER}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{CASE_FILE_NUMBER}]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report" isBlankWhenNull="true">
 				<reportElement key="" x="192" y="137" width="183" height="15" uuid="953bbe8a-e968-47e9-886a-78b35120e068"/>
@@ -1893,14 +1893,14 @@
 				<textElement textAlignment="Center">
 					<font fontName="CustomFont" isBold="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{SAMIS_TYPE}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{SAMIS_ID_TYPE}]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report" isBlankWhenNull="true">
 				<reportElement key="" x="20" y="56" width="167" height="15" uuid="bb45e7ff-9c23-428b-b2ab-efbb2e746c6f"/>
 				<textElement textAlignment="Center">
 					<font fontName="CustomFont" isBold="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{BIO_ID}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{BIOMETRICS_ID}]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageHeader>

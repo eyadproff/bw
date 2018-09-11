@@ -236,45 +236,38 @@ public class RegisterConvictedReportPresentWorkflow extends WizardWorkflowBase<V
 				uiOutputData = waitForUserTask();
 				uiInputData.putAll(uiOutputData);
 				
-				while(true)
+				if(uiOutputData.get("direction") != null) break;
+				
+				ConvictedReport convictedReport = (ConvictedReport)
+						uiInputData.get(ReviewAndSubmitPaneFxController.KEY_FINAL_CONVICTED_REPORT);
+				
+				Long generalFileNumber = (Long)
+						uiInputData.get(PersonInfoPaneFxController.KEY_PERSON_INFO_GENERAL_FILE_NUMBER);
+				
+				if(generalFileNumber == null)
 				{
-					ConvictedReport convictedReport = (ConvictedReport)
-										uiInputData.get(ReviewAndSubmitPaneFxController.KEY_FINAL_CONVICTED_REPORT);
-					if(convictedReport == null) break;
+					Long samisId = convictedReport.getSubjSamisId();
+					Long civilHitBioId = convictedReport.getSubjBioId();
 					
-					Long generalFileNumber = (Long)
-									uiInputData.get(PersonInfoPaneFxController.KEY_PERSON_INFO_GENERAL_FILE_NUMBER);
+					ServiceResponse<Long> serviceResponse =
+							GeneratingGeneralFileNumberService.execute(samisId, civilHitBioId);
 					
-					if(generalFileNumber == null)
+					if(!serviceResponse.isSuccess())
 					{
-						ServiceResponse<Long> serviceResponse = GeneratingGeneralFileNumberService.execute();
-						generalFileNumber = serviceResponse.getResult();
-						uiInputData.put(PersonInfoPaneFxController.KEY_PERSON_INFO_GENERAL_FILE_NUMBER,
-						                generalFileNumber);
-					}
-					
-					convictedReport.setGeneralFileNum(generalFileNumber);
-					
-					ServiceResponse<ConvictedReportResponse> serviceResponse =
-															SubmittingConvictedReportService.execute(convictedReport);
-					boolean success = serviceResponse.isSuccess() && serviceResponse.getResult() != null;
-					
-					uiInputData.put(KEY_WEBSERVICE_RESPONSE, serviceResponse);
-					formRenderer.get().renderForm(ReviewAndSubmitPaneFxController.class, uiInputData);
-					
-					if(success)
-					{
-						uiOutputData = waitForUserTask();
-						uiInputData.putAll(uiOutputData);
+						uiInputData.put(KEY_WEBSERVICE_RESPONSE, serviceResponse);
 						break;
 					}
-					else
-					{
-						uiInputData.remove(ReviewAndSubmitPaneFxController.KEY_FINAL_CONVICTED_REPORT);
-						uiOutputData = waitForUserTask();
-						uiInputData.putAll(uiOutputData);
-					}
+					
+					generalFileNumber = serviceResponse.getResult();
+					uiInputData.put(PersonInfoPaneFxController.KEY_PERSON_INFO_GENERAL_FILE_NUMBER,
+					                generalFileNumber);
 				}
+				
+				convictedReport.setGeneralFileNum(generalFileNumber);
+				
+				ServiceResponse<ConvictedReportResponse> serviceResponse =
+														SubmittingConvictedReportService.execute(convictedReport);
+				uiInputData.put(KEY_WEBSERVICE_RESPONSE, serviceResponse);
 				
 				break;
 			}

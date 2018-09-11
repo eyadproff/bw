@@ -8,8 +8,9 @@ import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.workflow.Convi
 
 public interface ConvictedReportAPI
 {
-	@POST("services-gateway-biooperation/api/xafis/general-file-number/v1")
-	Call<Long> generateGeneralFileNumber();
+	@FormUrlEncoded
+	@POST("services-gateway-biooperation/api/xafis/general-file-number/v2")
+	Call<Long> generateGeneralFileNumber(@Field("personId") Long personId, @Field("bioId") Long bioId);
 	
 	@FormUrlEncoded
 	@POST("services-gateway-biooperation/api/xafis/report/v1")

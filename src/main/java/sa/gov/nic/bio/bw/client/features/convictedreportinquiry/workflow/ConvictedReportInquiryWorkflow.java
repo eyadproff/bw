@@ -59,8 +59,8 @@ public class ConvictedReportInquiryWorkflow extends WorkflowBase<Void, Void>
 					ConvictedReport convictedReport = result.get(0);
 					
 					List<Finger> fingerprints = convictedReport.getSubjFingers();
-					
 					List<Integer> missingFingerprints = convictedReport.getSubjMissingFingers();
+					
 					List<Integer> availableFingerprints = IntStream.rangeClosed(1, 10)
 																   .boxed()
 																   .collect(Collectors.toList());
@@ -78,6 +78,12 @@ public class ConvictedReportInquiryWorkflow extends WorkflowBase<Void, Void>
 								position == FingerPosition.TWO_THUMBS.getPosition())
 						{
 							String slapImageBase64 = finger.getImage();
+							if(slapImageBase64 == null)
+							{
+								serviceResponse = ServiceResponse.success(null);
+								continue;
+							}
+							
 							String slapImageFormat = "WSQ";
 							int expectedFingersCount = 0;
 							List<Integer> slapMissingFingers = new ArrayList<>();
