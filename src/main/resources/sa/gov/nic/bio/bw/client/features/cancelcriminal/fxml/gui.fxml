@@ -32,7 +32,7 @@
                 </GridPane>
             </Tab>
             <Tab fx:id="tabByInquiryId" text="%tab.byInquiryId" closable="false">
-                <GridPane alignment="CENTER" vgap="5" hgap="20" styleClass="formBox">
+                <GridPane alignment="CENTER" vgap="5" hgap="20" styleClass="formBox-with-tabs">
                     <padding>
                         <Insets top="20" right="20" bottom="20" left="20"/>
                     </padding>

@@ -14,6 +14,8 @@
 ## v2018.09.4
 
 - FIX: close the stream after saving the pdf file.
+- CHN: integrate SAMIS id, SAMIS id type and bio id into the following workflows: "convicted-report", "dead-person-report", "fingerprints-card-identification".
+- FIX: fix a bug in "delink criminal" workflow upon submitting the request. Also fix the style.
 
 ---
 
