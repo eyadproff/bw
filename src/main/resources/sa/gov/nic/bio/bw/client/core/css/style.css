@@ -69,6 +69,14 @@
     -fx-border-width: 1px 0 0 0;
 }
 
+.white-background {
+    -fx-background-color: white;
+}
+
+.edge-to-edge > .viewport {
+    -fx-background-color: transparent;
+}
+
 .background-overlay {
     -fx-background-color: rgba(0, 0, 0, 0.5);
 }
@@ -203,6 +211,13 @@
     -fx-border-color: #398755;
     -fx-border-width: 1px;
     -fx-border-style: dashed;
+}
+
+.wizard-indicator-container {
+    -fx-background-color: white;
+    -fx-focus-color: -fx-control-inner-background;
+    -fx-faint-focus-color: -fx-control-inner-background;
+    -fx-border-width: 0.0;
 }
 
 .wizard-indicator > .wizard-indicator-circle {

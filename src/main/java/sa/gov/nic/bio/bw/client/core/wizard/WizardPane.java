@@ -1,5 +1,9 @@
 package sa.gov.nic.bio.bw.client.core.wizard;
 
+import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
 import javafx.beans.NamedArg;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleListProperty;
@@ -11,12 +15,15 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.TextAlignment;
+import javafx.util.Duration;
 import sa.gov.nic.bio.bw.client.core.Context;
+import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -26,6 +33,7 @@ public class WizardPane extends BorderPane
 {
 	private static final String FXML_WIZARD = "sa/gov/nic/bio/bw/client/core/fxml/wizard.fxml";
 	@FXML private Pane stepsIndicatorPane;
+	@FXML private ScrollPane stepsIndicatorScrollPane;
 	
 	private ListProperty<WizardStep> steps;
 	private List<WizardStepIndicator> indicators = new ArrayList<>();
@@ -183,6 +191,7 @@ public class WizardPane extends BorderPane
 			{
 				indicator.setVisited(true);
 				indicator.setSelected(true);
+				GuiUtils.ensureNodeVisibilityInHorizontalScrollPane(stepsIndicatorScrollPane, indicator);
 				return;
 			}
 			
@@ -207,6 +216,7 @@ public class WizardPane extends BorderPane
 			if(indicator.isVisited())
 			{
 				indicator.setSelected(true);
+				GuiUtils.ensureNodeVisibilityInHorizontalScrollPane(stepsIndicatorScrollPane, indicator);
 				return;
 			}
 		}
@@ -222,5 +232,9 @@ public class WizardPane extends BorderPane
 			indicator.setVisited(i == 0);
 			indicator.setSelected(i == 0);
 		}
+		
+		Animation animation = new Timeline(new KeyFrame(Duration.seconds(0.5),
+				             new KeyValue(stepsIndicatorScrollPane.hvalueProperty(), 0.0)));
+		animation.play();
 	}
 }

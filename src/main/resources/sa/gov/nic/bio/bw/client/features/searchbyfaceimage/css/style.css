@@ -10,10 +10,6 @@
     -fx-border-style: solid;
 }
 
-.white-background {
-    -fx-background-color: white;
-}
-
 .hidden-divider *.split-pane-divider {
     -fx-padding: 1 0 1 0;
 }

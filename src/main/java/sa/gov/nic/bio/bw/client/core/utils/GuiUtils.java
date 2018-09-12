@@ -1,7 +1,11 @@
 package sa.gov.nic.bio.bw.client.core.utils;
 
 import com.sun.javafx.scene.control.skin.ComboBoxListViewSkin;
+import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
 import javafx.animation.PauseTransition;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.beans.Observable;
 import javafx.beans.value.ChangeListener;
@@ -25,6 +29,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.RadioButton;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.effect.GaussianBlur;
 import javafx.scene.image.Image;
@@ -626,5 +631,15 @@ public class GuiUtils
 		return new WritableImage(imageView.getImage().getPixelReader(),
 		                         (int) scaledRectX, (int) scaledRectY,
 		                         (int) scaledRectWidth, (int) scaledRectHeight);
+	}
+	
+	public static void ensureNodeVisibilityInHorizontalScrollPane(ScrollPane pane, Node node)
+	{
+		double width = pane.getContent().getBoundsInLocal().getWidth();
+		double x = node.getBoundsInParent().getMaxX();
+		
+		Animation animation = new Timeline(new KeyFrame(Duration.seconds(0.5),
+                                           new KeyValue(pane.hvalueProperty(), x / width)));
+		animation.play();
 	}
 }

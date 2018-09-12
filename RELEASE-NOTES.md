@@ -11,6 +11,12 @@
 
 ---
 
+## v2018.09.5
+
+- ENH: improve the wizard slider to support unlimited number of items.
+
+---
+
 ## v2018.09.4
 
 - FIX: close the stream after saving the pdf file.
