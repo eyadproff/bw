@@ -26,10 +26,11 @@ import sa.gov.nic.bio.bw.client.core.utils.DialogUtils;
 import sa.gov.nic.bio.bw.client.core.utils.GuiLanguage;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.workflow.Workflow;
+import sa.gov.nic.bio.bw.client.features.commons.lookups.CountriesLookup;
+import sa.gov.nic.bio.bw.client.features.commons.lookups.SamisIdTypesLookup;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.CountryBean;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.Name;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.SamisIdType;
-import sa.gov.nic.bio.bw.client.features.convictedreportinquiry.tasks.LookupTask;
 import sa.gov.nic.bio.bw.client.features.convictedreportinquiry.utils.ConvictedReportInquiryErrorCodes;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.ConvictedReport;
 import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
@@ -58,11 +59,8 @@ public class ConvictedReportInquiryPaneFxController extends BodyFxControllerBase
 	@FXML private ProgressIndicator piLookup;
 	@FXML private ProgressIndicator piInquiry;
 	@FXML private TextField txtGeneralFileNumber;
-	@FXML private Button btnRetryLookup;
 	@FXML private Button btnInquiry;
 	@FXML private Button btnShowReport;
-	
-	private LookupTask lookupTask;
 	
 	@SuppressWarnings({"unchecked", "deprecation"})
 	@Override
@@ -144,8 +142,9 @@ public class ConvictedReportInquiryPaneFxController extends BodyFxControllerBase
 		{
 		    ConvictedReport convictedReport = param.getValue().getKey();
 			
-			@SuppressWarnings("unchecked") List<SamisIdType> samisIdTypes = (List<SamisIdType>)
-												Context.getUserSession().getAttribute("lookups.samisIdTypes");
+			@SuppressWarnings("unchecked")
+			List<SamisIdType> samisIdTypes = (List<SamisIdType>)
+														Context.getUserSession().getAttribute(SamisIdTypesLookup.KEY);
 			
 			Integer samisIdTypeInteger = convictedReport.getSubjSamisType();
 			if(samisIdTypeInteger != null)
@@ -178,8 +177,9 @@ public class ConvictedReportInquiryPaneFxController extends BodyFxControllerBase
 		{
 		    ConvictedReport convictedReport = param.getValue().getKey();
 		
-			@SuppressWarnings("unchecked") List<CountryBean> countries = (List<CountryBean>)
-													Context.getUserSession().getAttribute("lookups.countries");
+			@SuppressWarnings("unchecked")
+			List<CountryBean> countries = (List<CountryBean>)
+														Context.getUserSession().getAttribute(CountriesLookup.KEY);
 			
 			Integer nationalityCode = convictedReport.getSubjNationalityCode();
 			
@@ -224,8 +224,6 @@ public class ConvictedReportInquiryPaneFxController extends BodyFxControllerBase
 			return new SimpleStringProperty(
 							AppUtils.formatHijriDateSimple(convictedReport.getReportDate() * 1000, rtl));
 		});
-		
-		initializeLookupTask();
 	}
 	
 	@Override
@@ -233,8 +231,6 @@ public class ConvictedReportInquiryPaneFxController extends BodyFxControllerBase
 	{
 		if(newForm)
 		{
-			Context.getExecutorService().submit(lookupTask);
-			
 			DevicesRunnerGadgetPaneFxController deviceManagerGadgetPaneController =
 												Context.getCoreFxController().getDeviceManagerGadgetPaneController();
 			
@@ -274,53 +270,6 @@ public class ConvictedReportInquiryPaneFxController extends BodyFxControllerBase
 	private void onEnterPressed(ActionEvent event)
 	{
 		btnInquiry.fire();
-	}
-	
-	@FXML
-	private void onRetryLookupButtonClicked(ActionEvent actionEvent)
-	{
-		initializeLookupTask();
-		Context.getExecutorService().submit(lookupTask);
-	}
-	
-	private void initializeLookupTask()
-	{
-		lookupTask = new LookupTask();
-		lookupTask.setOnSucceeded(event ->
-		{
-		    ServiceResponse<Void> serviceResponse = lookupTask.getValue();
-		    
-		    if(serviceResponse.isSuccess()) afterLookup(true);
-		    else
-		    {
-		        afterLookup(false);
-		        reportNegativeResponse(serviceResponse.getErrorCode(), serviceResponse.getException(),
-		                               serviceResponse.getErrorDetails());
-		    }
-		});
-		lookupTask.setOnFailed(event ->
-		{
-		    afterLookup(false);
-		    String errorCode = ConvictedReportInquiryErrorCodes.C014_00001.getCode();
-		    Exception exception = (Exception) lookupTask.getException();
-		    String[] errorDetails = {"Failed to load lookup data!"};
-		    Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails);
-		});
-	}
-	
-	private void afterLookup(boolean success)
-	{
-		if(success)
-		{
-			GuiUtils.showNode(piLookup, false);
-			GuiUtils.showNode(paneConvictedReports, true);
-			txtGeneralFileNumber.requestFocus();
-		}
-		else
-		{
-			GuiUtils.showNode(piLookup, false);
-			GuiUtils.showNode(btnRetryLookup, true);
-		}
 	}
 	
 	private void disableUiControls(boolean bool)

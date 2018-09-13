@@ -9,14 +9,18 @@ import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.utils.AppConstants.Locales;
 import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.client.core.utils.GuiLanguage;
+import sa.gov.nic.bio.bw.client.features.commons.lookups.CountriesLookup;
+import sa.gov.nic.bio.bw.client.features.commons.lookups.DocumentTypesLookup;
+import sa.gov.nic.bio.bw.client.features.commons.lookups.SamisIdTypesLookup;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.CountryBean;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.CrimeType;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.DocumentType;
+import sa.gov.nic.bio.bw.client.features.commons.webservice.Name;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.SamisIdType;
+import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.lookups.CrimeTypesLookup;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.ConvictedReport;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.CrimeCode;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.JudgementInfo;
-import sa.gov.nic.bio.bw.client.features.commons.webservice.Name;
 import sa.gov.nic.bio.bw.client.login.webservice.UserInfo;
 
 import java.io.ByteArrayInputStream;
@@ -137,8 +141,8 @@ public class BuildConvictedReportTask extends Task<JasperPrint>
 		
 		params.put(PARAMETER_NAME, fullName);
 		
-		@SuppressWarnings("unchecked") List<CountryBean> countries = (List<CountryBean>)
-													Context.getUserSession().getAttribute("lookups.countries");
+		@SuppressWarnings("unchecked")
+		List<CountryBean> countries = (List<CountryBean>) Context.getUserSession().getAttribute(CountriesLookup.KEY);
 		
 		CountryBean countryBean = null;
 		
@@ -168,8 +172,9 @@ public class BuildConvictedReportTask extends Task<JasperPrint>
 		                                                                                Locales.SAUDI_AR_LOCALE,
 		                                                                                true));
 		
-		@SuppressWarnings("unchecked") List<SamisIdType> samisIdTypes = (List<SamisIdType>)
-												Context.getUserSession().getAttribute("lookups.samisIdTypes");
+		@SuppressWarnings("unchecked")
+		List<SamisIdType> samisIdTypes = (List<SamisIdType>)
+														Context.getUserSession().getAttribute(SamisIdTypesLookup.KEY);
 		
 		Integer subjSamisType = convictedReport.getSubjSamisType();
 		if(subjSamisType != null)
@@ -196,8 +201,9 @@ public class BuildConvictedReportTask extends Task<JasperPrint>
 		                                                                                 Locales.SAUDI_AR_LOCALE,
 		                                                                                 true));
 		
-		@SuppressWarnings("unchecked") List<DocumentType> documentTypes = (List<DocumentType>)
-												Context.getUserSession().getAttribute("lookups.documentTypes");
+		@SuppressWarnings("unchecked")
+		List<DocumentType> documentTypes = (List<DocumentType>)
+														Context.getUserSession().getAttribute(DocumentTypesLookup.KEY);
 		
 		Integer subjDocType = convictedReport.getSubjDocType();
 		if(subjDocType != null)
@@ -240,8 +246,8 @@ public class BuildConvictedReportTask extends Task<JasperPrint>
 		if(arrestDate != null) params.put(PARAMETER_ARREST_DATE,
 		                                            AppUtils.formatHijriGregorianDate(arrestDate * 1000));
 		
-		@SuppressWarnings("unchecked") List<CrimeType> crimeTypes = (List<CrimeType>)
-													Context.getUserSession().getAttribute("lookups.crimeTypes");
+		@SuppressWarnings("unchecked")
+		List<CrimeType> crimeTypes = (List<CrimeType>) Context.getUserSession().getAttribute(CrimeTypesLookup.KEY);
 		
 		crimeTypes.forEach(crimeType ->
 		{

@@ -18,8 +18,7 @@ import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.client.core.utils.GuiLanguage;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.workflow.Workflow;
-import sa.gov.nic.bio.bw.client.features.cancelcriminal.tasks.LookupTask;
-import sa.gov.nic.bio.bw.client.features.cancelcriminal.utils.CancelCriminalErrorCodes;
+import sa.gov.nic.bio.bw.client.features.commons.lookups.SamisIdTypesLookup;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.SamisIdType;
 import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
 
@@ -30,8 +29,6 @@ import java.util.Map;
 
 public class CancelCriminalPaneFxController extends BodyFxControllerBase
 {
-	@FXML private ProgressIndicator piLookupPersonIdTypes;
-	@FXML private Button btnRetryLookupPersonIdTypes;
 	@FXML private TabPane tabPane;
 	@FXML private Tab tabByPersonId;
 	@FXML private Tab tabByInquiryId;
@@ -43,8 +40,6 @@ public class CancelCriminalPaneFxController extends BodyFxControllerBase
 	@FXML private VBox bottomBox;
 	@FXML private Button btnCancelCriminal;
 	@FXML private ProgressIndicator piCancelCriminal;
-	
-	private LookupTask lookupTask;
 	
 	@Override
 	protected void initialize()
@@ -83,6 +78,8 @@ public class CancelCriminalPaneFxController extends BodyFxControllerBase
 		
 		btnCancelCriminal.disableProperty().bind(byPersonIdTabReadyBinding.not().and(byInquiryIdTabReadyBinding.not()));
 		
+		
+		
 		cboPersonIdType.setConverter(new StringConverter<SamisIdType>()
 		{
 			@Override
@@ -98,7 +95,11 @@ public class CancelCriminalPaneFxController extends BodyFxControllerBase
 			}
 		});
 		
-		initializeLookupTask();
+		@SuppressWarnings("unchecked")
+		List<SamisIdType> samisIdTypes = (List<SamisIdType>)
+													Context.getUserSession().getAttribute(SamisIdTypesLookup.KEY);
+		cboPersonIdType.getItems().addAll(samisIdTypes);
+		cboPersonIdType.getSelectionModel().select(0);
 	}
 	
 	@Override
@@ -110,8 +111,7 @@ public class CancelCriminalPaneFxController extends BodyFxControllerBase
 	@Override
 	public void onWorkflowUserTaskLoad(boolean newForm, Map<String, Object> uiInputData)
 	{
-		if(newForm) Context.getExecutorService().submit(lookupTask);
-		else
+		if(!newForm)
 		{
 			ServiceResponse<?> serviceResponse = (ServiceResponse<?>) uiInputData.get(Workflow.KEY_WEBSERVICE_RESPONSE);
 			
@@ -175,13 +175,6 @@ public class CancelCriminalPaneFxController extends BodyFxControllerBase
 	}
 	
 	@FXML
-	private void onRetryLookupPersonIdTypesButtonClicked(ActionEvent actionEvent)
-	{
-		initializeLookupTask();
-		Context.getExecutorService().submit(lookupTask);
-	}
-	
-	@FXML
 	private void onCancelCriminalButtonClicked(ActionEvent actionEvent)
 	{
 		String headerText = resources.getString("cancelCriminal.confirmation.header");
@@ -240,52 +233,6 @@ public class CancelCriminalPaneFxController extends BodyFxControllerBase
 		else sb.append(samisIdType.getDescriptionEN());
 		
 		return AppUtils.localizeNumbers(sb.toString(), Locale.getDefault(), false);
-	}
-	
-	private void initializeLookupTask()
-	{
-		lookupTask = new LookupTask();
-		lookupTask.setOnSucceeded(event ->
-		{
-		    ServiceResponse<List<SamisIdType>> serviceResponse = lookupTask.getValue();
-		    if(serviceResponse.isSuccess())
-		    {
-		        List<SamisIdType> samisIdTypes = serviceResponse.getResult();
-		        cboPersonIdType.getItems().addAll(samisIdTypes);
-		        cboPersonIdType.getSelectionModel().select(0);
-		        afterLookup(true);
-		    }
-		    else
-		    {
-		        afterLookup(false);
-		        reportNegativeResponse(serviceResponse.getErrorCode(), serviceResponse.getException(),
-		                               serviceResponse.getErrorDetails());
-		    }
-		});
-		lookupTask.setOnFailed(event ->
-		{
-		    afterLookup(false);
-		    String errorCode = CancelCriminalErrorCodes.C006_00001.getCode();
-		    Exception exception = (Exception) lookupTask.getException();
-		    String[] errorDetails = {"Failed to load PersonIdTypes!"};
-		    Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails);
-		});
-	}
-	
-	private void afterLookup(boolean success)
-	{
-		if(success)
-		{
-			GuiUtils.showNode(piLookupPersonIdTypes, false);
-			GuiUtils.showNode(tabPane, true);
-			GuiUtils.showNode(bottomBox, true);
-			txtPersonId.requestFocus();
-		}
-		else
-		{
-			GuiUtils.showNode(piLookupPersonIdTypes, false);
-			GuiUtils.showNode(btnRetryLookupPersonIdTypes, true);
-		}
 	}
 	
 	private void disableUiControls(boolean bool)

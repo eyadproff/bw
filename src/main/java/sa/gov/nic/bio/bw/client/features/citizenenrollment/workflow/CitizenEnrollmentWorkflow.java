@@ -18,7 +18,7 @@ public class CitizenEnrollmentWorkflow extends WizardWorkflowBase<Void, Void>
 	}
 	
 	@Override
-	public Map<String, Object> onStep(int step) throws InterruptedException, Signal
+	public void onStep(int step) throws InterruptedException, Signal
 	{
 		Map<String, Object> uiOutputData = null;
 		
@@ -26,9 +26,8 @@ public class CitizenEnrollmentWorkflow extends WizardWorkflowBase<Void, Void>
 		{
 			case 0:
 			{
-				formRenderer.get().renderForm(PersonIdPaneFxController.class, uiInputData);
-				uiOutputData = waitForUserTask();
-				uiInputData.putAll(uiOutputData);
+				renderUi(PersonIdPaneFxController.class);
+				waitForUserInput();
 				break;
 			}
 			case 1:
@@ -57,11 +56,9 @@ public class CitizenEnrollmentWorkflow extends WizardWorkflowBase<Void, Void>
 			}
 			default:
 			{
-				uiOutputData = waitForUserTask();
+				waitForUserInput();
 				break;
 			}
 		}
-		
-		return uiOutputData;
 	}
 }

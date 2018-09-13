@@ -1,46 +1,45 @@
-package sa.gov.nic.bio.bw.client.features.faceverification.workflow;
+package sa.gov.nic.bio.bw.client.features.commons.lookups;
 
 import retrofit2.Call;
 import sa.gov.nic.bio.bw.client.core.Context;
-import sa.gov.nic.bio.bw.client.core.beans.UserSession;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.CountryBean;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.LookupAPI;
 import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
 
 import java.util.List;
+import java.util.concurrent.Callable;
 import java.util.logging.Logger;
 
-public class LookupService
+public class CountriesLookup implements Callable<ServiceResponse<Void>>
 {
-	private static final Logger LOGGER = Logger.getLogger(LookupService.class.getName());
+	public static final String KEY = "lookups.countries";
+	private static final Logger LOGGER = Logger.getLogger(CountriesLookup.class.getName());
 	
-	public static ServiceResponse<Void> execute()
+	@Override
+	public ServiceResponse<Void> call()
 	{
-		UserSession userSession = Context.getUserSession();
-		
 		@SuppressWarnings("unchecked")
-		List<CountryBean> countries = (List<CountryBean>) userSession.getAttribute("lookups.countries");
+		List<CountryBean> countries = (List<CountryBean>) Context.getUserSession().getAttribute(KEY);
 		
 		if(countries == null)
 		{
 			LookupAPI lookupAPI = Context.getWebserviceManager().getApi(LookupAPI.class);
-			Call<List<CountryBean>> nationalitiesCall = lookupAPI.lookupNationalities();
+			Call<List<CountryBean>> nationalitiesCall = lookupAPI.lookupCountries();
 			ServiceResponse<List<CountryBean>> nationalitiesResponse = Context.getWebserviceManager()
-																				  .executeApi(nationalitiesCall);
+																			  .executeApi(nationalitiesCall);
 			
 			if(nationalitiesResponse.isSuccess())
 			{
 				countries = nationalitiesResponse.getResult();
-				countries.removeIf(countryBean -> countryBean.getMofaNationalityCode().trim().isEmpty());
+				countries.removeIf(nationalityBean -> nationalityBean.getMofaNationalityCode().trim().isEmpty());
 			}
 			else return ServiceResponse.failure(nationalitiesResponse.getErrorCode(),
 			                                    nationalitiesResponse.getException(),
 			                                    nationalitiesResponse.getErrorDetails());
 			
-			userSession.setAttribute("lookups.countries", countries);
+			Context.getUserSession().setAttribute(KEY, countries);
+			LOGGER.info(KEY + " = " + countries);
 		}
-		
-		LOGGER.info("countries = " + countries);
 		
 		return ServiceResponse.success(null);
 	}

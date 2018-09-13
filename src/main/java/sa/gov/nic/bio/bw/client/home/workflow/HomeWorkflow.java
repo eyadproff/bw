@@ -10,7 +10,6 @@ import sa.gov.nic.bio.bw.client.home.utils.HomeErrorCodes;
 import sa.gov.nic.bio.bw.client.login.webservice.LoginBean;
 
 import java.lang.reflect.Constructor;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.atomic.AtomicReference;
@@ -27,15 +26,13 @@ public class HomeWorkflow extends WorkflowBase<LoginBean, Void>
 	@Override
 	public Void onProcess(LoginBean input) throws InterruptedException, Signal
 	{
-		Map<String, Object> uiInputData = new HashMap<>();
-		
 		while(true)
 		{
-			formRenderer.get().renderForm(HomePaneFxController.class, uiInputData); // render home page
+			renderUi(HomePaneFxController.class); // render home page
 			
 			try
 			{
-				waitForUserTask(); // user selects a menu or logout
+				waitForUserInput(); // user selects a menu or logout
 			}
 			catch(Signal signal)
 			{

@@ -22,6 +22,9 @@ import sa.gov.nic.bio.bw.client.core.workflow.Workflow;
 import sa.gov.nic.bio.bw.client.features.commons.FaceCapturingFxController;
 import sa.gov.nic.bio.bw.client.features.commons.FingerprintCapturingFxController;
 import sa.gov.nic.bio.bw.client.features.commons.beans.GenderType;
+import sa.gov.nic.bio.bw.client.features.commons.lookups.CountriesLookup;
+import sa.gov.nic.bio.bw.client.features.commons.lookups.DocumentTypesLookup;
+import sa.gov.nic.bio.bw.client.features.commons.lookups.SamisIdTypesLookup;
 import sa.gov.nic.bio.bw.client.features.commons.ui.ImageViewPane;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.CountryBean;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.CrimeType;
@@ -29,6 +32,7 @@ import sa.gov.nic.bio.bw.client.features.commons.webservice.DocumentType;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.Finger;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.Name;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.SamisIdType;
+import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.lookups.CrimeTypesLookup;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.utils.RegisterConvictedPresentErrorCodes;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.ConvictedReport;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.CrimeCode;
@@ -130,8 +134,8 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 		
 		paneImageView.maxWidthProperty().bind(paneImage.widthProperty());
 		
-		@SuppressWarnings("unchecked") List<CrimeType> crimeTypes = (List<CrimeType>)
-				Context.getUserSession().getAttribute("lookups.crimeTypes");
+		@SuppressWarnings("unchecked")
+		List<CrimeType> crimeTypes = (List<CrimeType>) Context.getUserSession().getAttribute(CrimeTypesLookup.KEY);
 		
 		crimeTypes.forEach(crimeType ->
 		{
@@ -193,7 +197,7 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 					                                                        resources.getString("label.male"));
 			
 			@SuppressWarnings("unchecked") List<CountryBean> countries = (List<CountryBean>)
-												Context.getUserSession().getAttribute("lookups.countries");
+															Context.getUserSession().getAttribute(CountriesLookup.KEY);
 			
 			CountryBean countryBean = null;
 			
@@ -229,8 +233,9 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 			Long subjSamisId = convictedReport.getSubjSamisId();
 			if(subjSamisId != null) lblSamisId.setText(AppUtils.localizeNumbers(String.valueOf(subjSamisId)));
 			
-			@SuppressWarnings("unchecked") List<SamisIdType> samisIdTypes = (List<SamisIdType>)
-												Context.getUserSession().getAttribute("lookups.samisIdTypes");
+			@SuppressWarnings("unchecked")
+			List<SamisIdType> samisIdTypes = (List<SamisIdType>)
+														Context.getUserSession().getAttribute(SamisIdTypesLookup.KEY);
 			
 			Integer subjSamisType = convictedReport.getSubjSamisType();
 			if(subjSamisType != null)
@@ -258,8 +263,9 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 			if(subjDocId != null && !subjDocId.trim().isEmpty())
 															lblDocumentId.setText(AppUtils.localizeNumbers(subjDocId));
 			
-			@SuppressWarnings("unchecked") List<DocumentType> documentTypes = (List<DocumentType>)
-												Context.getUserSession().getAttribute("lookups.documentTypes");
+			@SuppressWarnings("unchecked")
+			List<DocumentType> documentTypes = (List<DocumentType>)
+														Context.getUserSession().getAttribute(DocumentTypesLookup.KEY);
 			
 			Integer subjDocType = convictedReport.getSubjDocType();
 			if(subjDocType != null)

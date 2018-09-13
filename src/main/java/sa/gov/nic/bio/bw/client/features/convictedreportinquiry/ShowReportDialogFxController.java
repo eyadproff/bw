@@ -27,6 +27,9 @@ import sa.gov.nic.bio.bw.client.core.utils.DialogUtils;
 import sa.gov.nic.bio.bw.client.core.utils.GuiLanguage;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.features.commons.beans.GenderType;
+import sa.gov.nic.bio.bw.client.features.commons.lookups.CountriesLookup;
+import sa.gov.nic.bio.bw.client.features.commons.lookups.DocumentTypesLookup;
+import sa.gov.nic.bio.bw.client.features.commons.lookups.SamisIdTypesLookup;
 import sa.gov.nic.bio.bw.client.features.commons.tasks.PrintReportTask;
 import sa.gov.nic.bio.bw.client.features.commons.tasks.SaveReportAsPdfTask;
 import sa.gov.nic.bio.bw.client.features.commons.ui.ImageViewPane;
@@ -36,6 +39,7 @@ import sa.gov.nic.bio.bw.client.features.commons.webservice.DocumentType;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.Finger;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.SamisIdType;
 import sa.gov.nic.bio.bw.client.features.convictedreportinquiry.utils.ConvictedReportInquiryErrorCodes;
+import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.lookups.CrimeTypesLookup;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.tasks.BuildConvictedReportTask;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.ConvictedReport;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.CrimeCode;
@@ -145,8 +149,8 @@ public class ShowReportDialogFxController extends FxControllerBase
 									resources.getString("fileChooser.saveReportAsPDF.types"), "*.pdf");
 		fileChooser.getExtensionFilters().addAll(extFilterPDF);
 		
-		@SuppressWarnings("unchecked") List<CrimeType> crimeTypes = (List<CrimeType>)
-													Context.getUserSession().getAttribute("lookups.crimeTypes");
+		@SuppressWarnings("unchecked")
+		List<CrimeType> crimeTypes = (List<CrimeType>) Context.getUserSession().getAttribute(CrimeTypesLookup.KEY);
 		
 		crimeTypes.forEach(crimeType ->
 		{
@@ -230,8 +234,8 @@ public class ShowReportDialogFxController extends FxControllerBase
 		lblGender.setText("F".equals(convictedReport.getSubjGender()) ? resources.getString("label.female") :
 				                                                        resources.getString("label.male"));
 		
-		@SuppressWarnings("unchecked") List<CountryBean> countries = (List<CountryBean>)
-													Context.getUserSession().getAttribute("lookups.countries");
+		@SuppressWarnings("unchecked")
+		List<CountryBean> countries = (List<CountryBean>) Context.getUserSession().getAttribute(CountriesLookup.KEY);
 		
 		CountryBean countryBean = null;
 		
@@ -266,8 +270,9 @@ public class ShowReportDialogFxController extends FxControllerBase
 		Long samisId = convictedReport.getSubjSamisId();
 		if(samisId != null) lblSamisId.setText(AppUtils.localizeNumbers(String.valueOf(samisId)));
 		
-		@SuppressWarnings("unchecked") List<SamisIdType> samisIdTypes = (List<SamisIdType>)
-													Context.getUserSession().getAttribute("lookups.samisIdTypes");
+		@SuppressWarnings("unchecked")
+		List<SamisIdType> samisIdTypes = (List<SamisIdType>)
+														Context.getUserSession().getAttribute(SamisIdTypesLookup.KEY);
 		
 		Integer subjSamisType = convictedReport.getSubjSamisType();
 		if(subjSamisType != null)
@@ -294,8 +299,9 @@ public class ShowReportDialogFxController extends FxControllerBase
 		String subjDocId = convictedReport.getSubjDocId();
 		if(subjDocId != null && !subjDocId.trim().isEmpty()) lblDocumentId.setText(AppUtils.localizeNumbers(subjDocId));
 		
-		@SuppressWarnings("unchecked") List<DocumentType> documentTypes = (List<DocumentType>)
-												Context.getUserSession().getAttribute("lookups.documentTypes");
+		@SuppressWarnings("unchecked")
+		List<DocumentType> documentTypes = (List<DocumentType>)
+														Context.getUserSession().getAttribute(DocumentTypesLookup.KEY);
 		
 		Integer subjDocType = convictedReport.getSubjDocType();
 		if(subjDocType != null)

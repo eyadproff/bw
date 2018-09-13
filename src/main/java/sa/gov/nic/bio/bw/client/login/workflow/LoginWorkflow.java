@@ -6,7 +6,6 @@ import sa.gov.nic.bio.bw.client.core.workflow.WorkflowBase;
 import sa.gov.nic.bio.bw.client.login.LoginPaneFxController;
 import sa.gov.nic.bio.bw.client.login.webservice.LoginBean;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.atomic.AtomicReference;
@@ -26,23 +25,21 @@ public class LoginWorkflow extends WorkflowBase<Void, LoginBean>
 	@Override
 	public LoginBean onProcess(Void input) throws InterruptedException, Signal
 	{
-		Map<String, Object> uiInputData = new HashMap<>();
-		
 		while(true)
 		{
-			formRenderer.get().renderForm(LoginPaneFxController.class, uiInputData);
-			Map<String, Object> userTaskDataMap = waitForUserTask();
+			renderUi(LoginPaneFxController.class);
+			waitForUserInput();
 			
-			String username = (String) userTaskDataMap.get("username");
-			String password = (String) userTaskDataMap.get("password");
+			String username = (String) uiInputData.get("username");
+			String password = (String) uiInputData.get("password");
 			
 			ServiceResponse<LoginBean> response;
 			
 			if(password != null) response = LoginService.execute(username, password);
 			else
 			{
-				int fingerPosition = (int) userTaskDataMap.get("fingerPosition");
-				String fingerprint = (String) userTaskDataMap.get("fingerprint");
+				int fingerPosition = (int) uiInputData.get("fingerPosition");
+				String fingerprint = (String) uiInputData.get("fingerprint");
 				response = LoginService.execute(username, fingerPosition, fingerprint);
 			}
 			

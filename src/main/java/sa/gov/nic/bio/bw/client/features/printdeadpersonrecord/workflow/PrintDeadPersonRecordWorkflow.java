@@ -6,12 +6,14 @@ import sa.gov.nic.bio.biokit.websocket.beans.DMFingerData;
 import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.biokit.FingerPosition;
 import sa.gov.nic.bio.bw.client.core.interfaces.FormRenderer;
+import sa.gov.nic.bio.bw.client.core.wizard.WithLookups;
 import sa.gov.nic.bio.bw.client.core.workflow.Signal;
 import sa.gov.nic.bio.bw.client.core.workflow.WizardWorkflowBase;
-import sa.gov.nic.bio.bw.client.features.commons.LookupFxController;
+import sa.gov.nic.bio.bw.client.features.commons.lookups.CountriesLookup;
+import sa.gov.nic.bio.bw.client.features.commons.lookups.DocumentTypesLookup;
+import sa.gov.nic.bio.bw.client.features.commons.lookups.SamisIdTypesLookup;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.Finger;
 import sa.gov.nic.bio.bw.client.features.commons.workflow.GetPersonInfoByIdService;
-import sa.gov.nic.bio.bw.client.features.commons.workflow.PersonInfoLookupService;
 import sa.gov.nic.bio.bw.client.features.printdeadpersonrecord.FetchingPersonInfoPaneFxController;
 import sa.gov.nic.bio.bw.client.features.printdeadpersonrecord.RecordIdPaneFxController;
 import sa.gov.nic.bio.bw.client.features.printdeadpersonrecord.ShowRecordPaneFxController;
@@ -29,6 +31,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+@WithLookups({SamisIdTypesLookup.class, DocumentTypesLookup.class, CountriesLookup.class})
 public class PrintDeadPersonRecordWorkflow extends WizardWorkflowBase<Void, Void>
 {
 	public PrintDeadPersonRecordWorkflow(AtomicReference<FormRenderer> formRenderer,
@@ -37,42 +40,25 @@ public class PrintDeadPersonRecordWorkflow extends WizardWorkflowBase<Void, Void
 		super(formRenderer, userTasks);
 	}
 	
-	@Override
-	public void init() throws InterruptedException, Signal
-	{
-		while(true)
-		{
-			formRenderer.get().renderForm(LookupFxController.class, uiInputData);
-			waitForUserTask();
-			ServiceResponse<Void> serviceResponse = PersonInfoLookupService.execute();
-			if(serviceResponse.isSuccess()) break;
-			else uiInputData.put(KEY_WEBSERVICE_RESPONSE, serviceResponse);
-		}
-	}
-	
 	@SuppressWarnings("unchecked")
 	@Override
-	public Map<String, Object> onStep(int step) throws InterruptedException, Signal
+	public void onStep(int step) throws InterruptedException, Signal
 	{
-		Map<String, Object> uiOutputData;
-		
 		switch(step)
 		{
 			case 0:
 			{
-				formRenderer.get().renderForm(RecordIdPaneFxController.class, uiInputData);
-				uiOutputData = waitForUserTask();
-				uiInputData.putAll(uiOutputData);
+				renderUi(RecordIdPaneFxController.class);
+				waitForUserInput();
 				
 				while(true)
 				{
-					Long recordId = (Long) uiOutputData.get(RecordIdPaneFxController.KEY_RECORD_ID);
+					Long recordId = (Long) uiInputData.get(RecordIdPaneFxController.KEY_RECORD_ID);
 					
 					ServiceResponse<DeadPersonRecord> serviceResponse = DeadPersonRecordByIdService.execute(recordId);
 					uiInputData.put(KEY_WEBSERVICE_RESPONSE, serviceResponse);
-					formRenderer.get().renderForm(RecordIdPaneFxController.class, uiInputData);
-					uiOutputData = waitForUserTask();
-					uiInputData.putAll(uiOutputData);
+					renderUi(RecordIdPaneFxController.class);
+					waitForUserInput();
 					
 					if(serviceResponse.isSuccess())
 					{
@@ -85,11 +71,10 @@ public class PrintDeadPersonRecordWorkflow extends WizardWorkflowBase<Void, Void
 			}
 			case 1:
 			{
-				formRenderer.get().renderForm(FetchingPersonInfoPaneFxController.class, uiInputData);
-				uiOutputData = waitForUserTask();
-				uiInputData.putAll(uiOutputData);
+				renderUi(FetchingPersonInfoPaneFxController.class);
+				waitForUserInput();
 				
-				if(uiOutputData.get(FetchingPersonInfoPaneFxController.KEY_DEVICES_RUNNER_IS_RUNNING) != Boolean.TRUE)
+				if(uiInputData.get(FetchingPersonInfoPaneFxController.KEY_DEVICES_RUNNER_IS_RUNNING) != Boolean.TRUE)
 				{
 					break;
 				}
@@ -259,9 +244,8 @@ public class PrintDeadPersonRecordWorkflow extends WizardWorkflowBase<Void, Void
 					
 					while(true)
 					{
-						formRenderer.get().renderForm(FetchingPersonInfoPaneFxController.class, uiInputData);
-						uiOutputData = waitForUserTask();
-						uiInputData.putAll(uiOutputData);
+						renderUi(FetchingPersonInfoPaneFxController.class);
+						waitForUserInput();
 						
 						Boolean retry = (Boolean) uiInputData.get(
 								FetchingPersonInfoPaneFxController.KEY_RETRY_PERSON_INFO_FETCHING);
@@ -269,7 +253,7 @@ public class PrintDeadPersonRecordWorkflow extends WizardWorkflowBase<Void, Void
 						if(retry == null || !retry) break loop;
 						
 						Boolean running = (Boolean)
-									uiOutputData.get(FetchingPersonInfoPaneFxController.KEY_DEVICES_RUNNER_IS_RUNNING);
+									uiInputData.get(FetchingPersonInfoPaneFxController.KEY_DEVICES_RUNNER_IS_RUNNING);
 						if(running != null && running) break;
 					}
 				}
@@ -278,18 +262,15 @@ public class PrintDeadPersonRecordWorkflow extends WizardWorkflowBase<Void, Void
 			}
 			case 2:
 			{
-				formRenderer.get().renderForm(ShowRecordPaneFxController.class, uiInputData);
-				uiOutputData = waitForUserTask();
-				uiInputData.putAll(uiOutputData);
+				renderUi(ShowRecordPaneFxController.class);
+				waitForUserInput();
 				break;
 			}
 			default:
 			{
-				uiOutputData = waitForUserTask();
+				waitForUserInput();
 				break;
 			}
 		}
-		
-		return uiOutputData;
 	}
 }

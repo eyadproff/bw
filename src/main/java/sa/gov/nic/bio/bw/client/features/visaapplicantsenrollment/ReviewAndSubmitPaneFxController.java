@@ -19,9 +19,12 @@ import sa.gov.nic.bio.bw.client.core.workflow.Workflow;
 import sa.gov.nic.bio.bw.client.features.commons.FaceCapturingFxController;
 import sa.gov.nic.bio.bw.client.features.commons.FingerprintCapturingFxController;
 import sa.gov.nic.bio.bw.client.features.commons.beans.GenderType;
+import sa.gov.nic.bio.bw.client.features.commons.lookups.CountriesLookup;
 import sa.gov.nic.bio.bw.client.features.commons.ui.ImageViewPane;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.CountryBean;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.Finger;
+import sa.gov.nic.bio.bw.client.features.visaapplicantsenrollment.lookups.PassportTypesLookup;
+import sa.gov.nic.bio.bw.client.features.visaapplicantsenrollment.lookups.VisaTypesLookup;
 import sa.gov.nic.bio.bw.client.features.visaapplicantsenrollment.utils.VisaApplicantsEnrollmentErrorCodes;
 import sa.gov.nic.bio.bw.client.features.visaapplicantsenrollment.webservice.CountryDialingCode;
 import sa.gov.nic.bio.bw.client.features.visaapplicantsenrollment.webservice.PassportTypeBean;
@@ -114,8 +117,9 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 			if(otherName != null) lblOtherName.setText(otherName);
 			if(familyName != null) lblFamilyName.setText(familyName);
 			
-			@SuppressWarnings("unchecked") List<CountryBean> countries = (List<CountryBean>)
-												Context.getUserSession().getAttribute("lookups.countries");
+			@SuppressWarnings("unchecked")
+			List<CountryBean> countries = (List<CountryBean>)
+														Context.getUserSession().getAttribute(CountriesLookup.KEY);
 			
 			Integer nationalityCode = visaApplicantInfo.getNationalityCode();
 			Integer birthPlaceCode = visaApplicantInfo.getBirthPlaceCode();
@@ -160,7 +164,7 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 			if(birthDate != null) lblBirthDate.setText(AppUtils.formatHijriGregorianDate(birthDate * 1000));
 			
 			@SuppressWarnings("unchecked") List<VisaTypeBean> visaTypes = (List<VisaTypeBean>)
-												Context.getUserSession().getAttribute("lookups.visaTypes");
+															Context.getUserSession().getAttribute(VisaTypesLookup.KEY);
 			
 			Integer visaTypeCode = visaApplicantInfo.getVisaTypeCode();
 			
@@ -192,8 +196,9 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 			if(expirationDate != null) lblExpirationDate.setText(
 												AppUtils.formatHijriGregorianDate(expirationDate * 1000));
 			
-			@SuppressWarnings("unchecked") List<PassportTypeBean> passportTypes = (List<PassportTypeBean>)
-												Context.getUserSession().getAttribute("lookups.passportTypes");
+			@SuppressWarnings("unchecked")
+			List<PassportTypeBean> passportTypes = (List<PassportTypeBean>)
+														Context.getUserSession().getAttribute(PassportTypesLookup.KEY);
 			
 			Integer passportType = visaApplicantInfo.getPassportType();
 			

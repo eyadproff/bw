@@ -8,9 +8,12 @@ import net.sf.jasperreports.engine.JasperReport;
 import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.client.core.utils.GuiLanguage;
+import sa.gov.nic.bio.bw.client.features.commons.lookups.CountriesLookup;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.CountryBean;
-import sa.gov.nic.bio.bw.client.features.visaapplicantsenrollment.webservice.VisaApplicantInfo;
+import sa.gov.nic.bio.bw.client.features.visaapplicantsenrollment.lookups.PassportTypesLookup;
+import sa.gov.nic.bio.bw.client.features.visaapplicantsenrollment.lookups.VisaTypesLookup;
 import sa.gov.nic.bio.bw.client.features.visaapplicantsenrollment.webservice.PassportTypeBean;
+import sa.gov.nic.bio.bw.client.features.visaapplicantsenrollment.webservice.VisaApplicantInfo;
 import sa.gov.nic.bio.bw.client.features.visaapplicantsenrollment.webservice.VisaTypeBean;
 
 import java.io.ByteArrayInputStream;
@@ -97,8 +100,8 @@ public class BuildForeignEnrollmentReceiptTask extends Task<JasperPrint>
 		params.put(PARAMETER_OTHER_NAME, visaApplicantInfo.getOtherName());
 		params.put(PARAMETER_FAMILY_NAME, visaApplicantInfo.getFamilyName());
 		
-		@SuppressWarnings("unchecked") List<CountryBean> countries = (List<CountryBean>)
-													Context.getUserSession().getAttribute("lookups.countries");
+		@SuppressWarnings("unchecked")
+		List<CountryBean> countries = (List<CountryBean>) Context.getUserSession().getAttribute(CountriesLookup.KEY);
 		
 		CountryBean countryBean = null;
 		
@@ -134,8 +137,8 @@ public class BuildForeignEnrollmentReceiptTask extends Task<JasperPrint>
 		
 		params.put(PARAMETER_BIRTH_DATE, AppUtils.formatHijriGregorianDate(visaApplicantInfo.getBirthDate() * 1000));
 		
-		@SuppressWarnings("unchecked") List<VisaTypeBean> visaTypes = (List<VisaTypeBean>)
-													Context.getUserSession().getAttribute("lookups.visaTypes");
+		@SuppressWarnings("unchecked")
+		List<VisaTypeBean> visaTypes = (List<VisaTypeBean>) Context.getUserSession().getAttribute(VisaTypesLookup.KEY);
 		
 		VisaTypeBean visaTypeBean = null;
 		
@@ -171,8 +174,9 @@ public class BuildForeignEnrollmentReceiptTask extends Task<JasperPrint>
 		if(countryBean != null) params.put(PARAMETER_ISSUANCE_COUNTRY, arabic ? countryBean.getDescriptionAR() :
 																				countryBean.getDescriptionEN());
 		
-		@SuppressWarnings("unchecked") List<PassportTypeBean> passportTypes = (List<PassportTypeBean>)
-												Context.getUserSession().getAttribute("lookups.passportTypes");
+		@SuppressWarnings("unchecked")
+		List<PassportTypeBean> passportTypes = (List<PassportTypeBean>)
+														Context.getUserSession().getAttribute(PassportTypesLookup.KEY);
 		
 		PassportTypeBean passportTypeBean = null;
 		

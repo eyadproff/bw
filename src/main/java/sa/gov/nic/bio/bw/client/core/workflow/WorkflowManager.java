@@ -75,7 +75,7 @@ public class WorkflowManager
 			return;
 		}
 		
-		coreWorkflow.submitUserTask(uiDataMap);
+		coreWorkflow.submitUserInput(uiDataMap);
 	}
 	
 	/**

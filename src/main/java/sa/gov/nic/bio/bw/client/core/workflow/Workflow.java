@@ -1,13 +1,15 @@
 package sa.gov.nic.bio.bw.client.core.workflow;
 
+import sa.gov.nic.bio.bw.client.core.BodyFxControllerBase;
+
 import java.util.Map;
 
 /**
  * The workflow that manages business processes and monitors their state. The workflow starts by starting its
- * <code>onProcess()</code> method. <code>waitForUserTask()</code> is called from within <code>onProcess()</code>
- * to wait for user tasks which can be submitted by a different thread/context using <code>submitUserTask()</code>.
+ * <code>onProcess()</code> method. <code>waitForUserInput()</code> is called from within <code>onProcess()</code>
+ * to wait for user tasks which can be submitted by a different thread/context using <code>submitUserInput()</code>.
  * Workflows can be nested, i.e. workflow A's onProcess() can invoke workflow B's onProcess().
- * <code>waitForUserTask()</code> can throw a signal which is used to carry and propagate a message to
+ * <code>waitForUserInput()</code> can throw a signal which is used to carry and propagate a message to
  * a parent workflow.
  *
  * @param <I> type of the workflow's input. Use <code>Void</code> in case of not input
@@ -39,14 +41,15 @@ public interface Workflow<I, O>
 	 *
 	 * @param uiDataMap the data submitted by the user when filling the form
 	 */
-	void submitUserTask(Map<String, Object> uiDataMap);
+	void submitUserInput(Map<String, Object> uiDataMap);
 	
 	/**
 	 * Waits until some other thread submits a user task.
 	 *
-	 * @return the submitted user task
 	 * @throws InterruptedException thrown upon interrupting the workflow thread
 	 * @throws Signal thrown in case the submitted user task is a signal
 	 */
-	Map<String, Object> waitForUserTask() throws InterruptedException, Signal;
+	void waitForUserInput() throws InterruptedException, Signal;
+	
+	void renderUi(Class<? extends BodyFxControllerBase> controllerClass);
 }

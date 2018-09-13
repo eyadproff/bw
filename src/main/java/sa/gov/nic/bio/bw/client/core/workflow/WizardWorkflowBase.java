@@ -1,10 +1,12 @@
 package sa.gov.nic.bio.bw.client.core.workflow;
 
-import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.interfaces.FormRenderer;
 import sa.gov.nic.bio.bw.client.core.utils.UTF8Control;
+import sa.gov.nic.bio.bw.client.core.wizard.WithLookups;
+import sa.gov.nic.bio.bw.client.features.commons.LookupFxController;
+import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
 
 import java.net.URL;
 import java.util.HashMap;
@@ -12,11 +14,18 @@ import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicReference;
 
 public abstract class WizardWorkflowBase<I, O> extends WorkflowBase<I, O> implements WizardWorkflow<I, O>
 {
-	protected Map<String, Object> uiInputData = new HashMap<>();
+	public static final String KEY_WORKFLOW_DIRECTION = "WORKFLOW_DIRECTION";
+	public static final String VALUE_WORKFLOW_DIRECTION_BACKWARD = "WORKFLOW_DIRECTION_BACKWARD";
+	public static final String VALUE_WORKFLOW_DIRECTION_FORWARD = "WORKFLOW_DIRECTION_FORWARD";
+	public static final String VALUE_WORKFLOW_DIRECTION_START_OVER = "WORKFLOW_DIRECTION_START_OVER";
+	
+	private final Map<Class<? extends Callable<ServiceResponse<Void>>>,
+											Callable<ServiceResponse<Void>>> lookupInstancesCache = new HashMap<>();
 	
 	public WizardWorkflowBase(AtomicReference<FormRenderer> formRenderer, BlockingQueue<Map<String, Object>> userTasks)
 	{
@@ -43,37 +52,95 @@ public abstract class WizardWorkflowBase<I, O> extends WorkflowBase<I, O> implem
 		
 		URL wizardFxmlLocation = Thread.currentThread().getContextClassLoader()
 																.getResource(basePackage + "/fxml/wizard.fxml");
-		FXMLLoader wizardPaneLoader = new FXMLLoader(wizardFxmlLocation, stringsBundle);
-		wizardPaneLoader.setClassLoader(Context.getFxClassLoader());
-		Context.getCoreFxController().loadWizardBar(wizardPaneLoader);
+		if(wizardFxmlLocation != null)
+		{
+			FXMLLoader wizardPaneLoader = new FXMLLoader(wizardFxmlLocation, stringsBundle);
+			wizardPaneLoader.setClassLoader(Context.getFxClassLoader());
+			Context.getCoreFxController().loadWizardBar(wizardPaneLoader);
+		}
 		
-		init();
+		WithLookups annotation = getClass().getAnnotation(WithLookups.class);
+		if(annotation != null)
+		{
+			Class<? extends Callable<ServiceResponse<Void>>>[] lookupClasses = annotation.value();
+			try
+			{
+				outer: while(true)
+				{
+					renderUi(LookupFxController.class);
+					waitForUserInput();
+					
+					for(Class<? extends Callable<ServiceResponse<Void>>> lookupClass : lookupClasses)
+					{
+						Callable<ServiceResponse<Void>> instance = lookupInstancesCache.get(lookupClass);
+						if(instance == null)
+						{
+							instance = lookupClass.newInstance();
+							lookupInstancesCache.put(lookupClass, instance);
+						}
+						
+						ServiceResponse<Void> serviceResponse = instance.call();
+						if(!serviceResponse.isSuccess())
+						{
+							uiInputData.put(KEY_WEBSERVICE_RESPONSE, serviceResponse);
+							continue outer;
+						}
+					}
+					
+					break;
+				}
+			}
+			catch(Exception e)
+			{
+				e.printStackTrace();
+			}
+		}
+		
 		int step = 0;
 		
 		while(true)
 		{
-			Map<String, Object> uiOutputData = onStep(step);
+			onStep(step);
 			
-			if(uiOutputData != null)
+			if(isGoingBackward())
 			{
-				Object direction = uiOutputData.get("direction");
-				if("backward".equals(direction))
-				{
-					Platform.runLater(() -> Context.getCoreFxController().moveWizardBackward());
-					step--;
-				}
-				else if("forward".equals(direction))
-				{
-					Platform.runLater(() -> Context.getCoreFxController().moveWizardForward());
-					step++;
-				}
-				else if("startOver".equals(direction))
-				{
-					Platform.runLater(() -> Context.getCoreFxController().moveWizardToTheBeginning());
-					uiInputData.clear();
-					step = 0;
-				}
+				Context.getCoreFxController().moveWizardBackward();
+				step--;
+			}
+			else if(isGoingForward())
+			{
+				Context.getCoreFxController().moveWizardForward();
+				step++;
+			}
+			else if(isStartingOver())
+			{
+				uiInputData.clear();
+				Context.getCoreFxController().moveWizardToTheBeginning();
+				step = 0;
 			}
 		}
+	}
+	
+	protected boolean isGoingBackward()
+	{
+		Object direction = uiInputData.get(KEY_WORKFLOW_DIRECTION);
+		return VALUE_WORKFLOW_DIRECTION_BACKWARD.equals(direction);
+	}
+	
+	protected boolean isGoingForward()
+	{
+		Object direction = uiInputData.get(KEY_WORKFLOW_DIRECTION);
+		return VALUE_WORKFLOW_DIRECTION_FORWARD.equals(direction);
+	}
+	
+	protected boolean isStartingOver()
+	{
+		Object direction = uiInputData.get(KEY_WORKFLOW_DIRECTION);
+		return VALUE_WORKFLOW_DIRECTION_START_OVER.equals(direction);
+	}
+	
+	protected boolean isLeaving()
+	{
+		return isGoingBackward() || isGoingForward() || isStartingOver();
 	}
 }

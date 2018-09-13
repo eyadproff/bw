@@ -5,11 +5,12 @@
 
 <WizardPane xmlns="http://javafx.com/javafx/8.0.152">
     <steps>
-        <WizardStep iconId="\\uf2bb" title="%wizard.fingerprintsSource"/>
+        <WizardStep iconId="question" title="%wizard.selectFingerprintsSource"/>
         <WizardStep iconId="\\uf2bb" title="%wizard.enterPersonId"/>
-        <WizardStep iconId="database" title="%wizard.showPersonInformation"/>
+        <WizardStep iconId="\\uf2b9" title="%wizard.showPersonInformation"/>
         <WizardStep iconId="\\uf256" title="%wizard.showFingerprintsView"/>
         <WizardStep iconId="search" title="%wizard.inquiryByFingerprints"/>
+        <WizardStep iconId="database" title="%wizard.showInquiryResult"/>
         <WizardStep iconId="user" title="%wizard.updatePersonInformation"/>
         <WizardStep iconId="gavel" title="%wizard.addJudgementDetails"/>
         <WizardStep iconId="university" title="%wizard.addPunishmentDetails"/>

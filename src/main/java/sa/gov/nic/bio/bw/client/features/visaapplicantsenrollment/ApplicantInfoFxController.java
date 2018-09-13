@@ -36,7 +36,11 @@ import sa.gov.nic.bio.bw.client.core.utils.GuiLanguage;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.wizard.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.client.features.commons.beans.GenderType;
+import sa.gov.nic.bio.bw.client.features.commons.lookups.CountriesLookup;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.CountryBean;
+import sa.gov.nic.bio.bw.client.features.visaapplicantsenrollment.lookups.DialingCodesLookup;
+import sa.gov.nic.bio.bw.client.features.visaapplicantsenrollment.lookups.PassportTypesLookup;
+import sa.gov.nic.bio.bw.client.features.visaapplicantsenrollment.lookups.VisaTypesLookup;
 import sa.gov.nic.bio.bw.client.features.visaapplicantsenrollment.utils.VisaApplicantsEnrollmentErrorCodes;
 import sa.gov.nic.bio.bw.client.features.visaapplicantsenrollment.webservice.CountryDialingCode;
 import sa.gov.nic.bio.bw.client.features.visaapplicantsenrollment.webservice.PassportTypeBean;
@@ -121,18 +125,18 @@ public class ApplicantInfoFxController extends WizardStepFxControllerBase
 		UserSession userSession = Context.getUserSession();
 		
 		@SuppressWarnings("unchecked")
-		List<CountryBean> countries = (List<CountryBean>) userSession.getAttribute("lookups.countries");
+		List<CountryBean> countries = (List<CountryBean>) userSession.getAttribute(CountriesLookup.KEY);
 		
 		@SuppressWarnings("unchecked")
-		List<VisaTypeBean> visaTypes = (List<VisaTypeBean>) userSession.getAttribute("lookups.visaTypes");
+		List<VisaTypeBean> visaTypes = (List<VisaTypeBean>) userSession.getAttribute(VisaTypesLookup.KEY);
 		
 		@SuppressWarnings("unchecked")
 		List<PassportTypeBean> passportTypes = (List<PassportTypeBean>)
-															userSession.getAttribute("lookups.passportTypes");
+																	userSession.getAttribute(PassportTypesLookup.KEY);
 		
 		@SuppressWarnings("unchecked")
 		List<CountryDialingCode> dialingCodes = (List<CountryDialingCode>)
-															userSession.getAttribute("lookups.dialingCodes");
+																	userSession.getAttribute(DialingCodesLookup.KEY);
 		
 		GuiUtils.addAutoCompletionSupportToComboBox(cboNationality, countries);
 		GuiUtils.addAutoCompletionSupportToComboBox(cboBirthPlace, countries);

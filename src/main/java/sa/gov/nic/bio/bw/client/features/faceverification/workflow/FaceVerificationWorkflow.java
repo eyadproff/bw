@@ -1,10 +1,11 @@
 package sa.gov.nic.bio.bw.client.features.faceverification.workflow;
 
 import sa.gov.nic.bio.bw.client.core.interfaces.FormRenderer;
+import sa.gov.nic.bio.bw.client.core.wizard.WithLookups;
 import sa.gov.nic.bio.bw.client.core.workflow.Signal;
 import sa.gov.nic.bio.bw.client.core.workflow.WizardWorkflowBase;
 import sa.gov.nic.bio.bw.client.features.commons.FaceCapturingFxController;
-import sa.gov.nic.bio.bw.client.features.commons.LookupFxController;
+import sa.gov.nic.bio.bw.client.features.commons.lookups.CountriesLookup;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.PersonInfo;
 import sa.gov.nic.bio.bw.client.features.faceverification.ConfirmInputFxController;
 import sa.gov.nic.bio.bw.client.features.faceverification.MatchingFxController;
@@ -18,6 +19,7 @@ import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.atomic.AtomicReference;
 
+@WithLookups(CountriesLookup.class)
 public class FaceVerificationWorkflow extends WizardWorkflowBase<Void, Void>
 {
 	public FaceVerificationWorkflow(AtomicReference<FormRenderer> formRenderer,
@@ -27,37 +29,20 @@ public class FaceVerificationWorkflow extends WizardWorkflowBase<Void, Void>
 	}
 	
 	@Override
-	public void init() throws InterruptedException, Signal
+	public void onStep(int step) throws InterruptedException, Signal
 	{
-		while(true)
-		{
-			formRenderer.get().renderForm(LookupFxController.class, uiInputData);
-			waitForUserTask();
-			ServiceResponse<Void> serviceResponse = LookupService.execute();
-			if(serviceResponse.isSuccess()) break;
-			else uiInputData.put(KEY_WEBSERVICE_RESPONSE, serviceResponse);
-		}
-	}
-	
-	@Override
-	public Map<String, Object> onStep(int step) throws InterruptedException, Signal
-	{
-		Map<String, Object> uiOutputData;
-		
 		switch(step)
 		{
 			case 0:
 			{
-				formRenderer.get().renderForm(PersonIdPaneFxController.class, uiInputData);
-				uiOutputData = waitForUserTask();
-				uiInputData.putAll(uiOutputData);
+				renderUi(PersonIdPaneFxController.class);
+				waitForUserInput();
 				break;
 			}
 			case 1:
 			{
-				formRenderer.get().renderForm(ImageSourceFxController.class, uiInputData);
-				uiOutputData = waitForUserTask();
-				uiInputData.putAll(uiOutputData);
+				renderUi(ImageSourceFxController.class);
+				waitForUserInput();
 				break;
 			}
 			case 2:
@@ -67,28 +52,26 @@ public class FaceVerificationWorkflow extends WizardWorkflowBase<Void, Void>
 				if(ImageSourceFxController.VALUE_IMAGE_SOURCE_CAMERA.equals(imageInput))
 				{
 					uiInputData.put(FaceCapturingFxController.KEY_ACCEPT_ANY_CAPTURED_IMAGE, Boolean.TRUE);
-					formRenderer.get().renderForm(FaceCapturingFxController.class, uiInputData);
+					renderUi(FaceCapturingFxController.class);
 				}
 				else if(ImageSourceFxController.VALUE_IMAGE_SOURCE_UPLOAD.equals(imageInput))
 				{
-					formRenderer.get().renderForm(UploadImageFileFxController.class, uiInputData);
+					renderUi(UploadImageFileFxController.class);
 				}
 				
-				uiOutputData = waitForUserTask();
-				uiInputData.putAll(uiOutputData);
+				waitForUserInput();
 				break;
 			}
 			case 3:
 			{
-				formRenderer.get().renderForm(ConfirmInputFxController.class, uiInputData);
-				uiOutputData = waitForUserTask();
-				uiInputData.putAll(uiOutputData);
+				renderUi(ConfirmInputFxController.class);
+				waitForUserInput();
 				break;
 			}
 			case 4:
 			{
 				// show progress indicator here
-				formRenderer.get().renderForm(MatchingFxController.class, uiInputData);
+				renderUi(MatchingFxController.class);
 				
 				String imageBase64 = (String) uiInputData.get(ConfirmInputFxController.KEY_FINAL_IMAGE_BASE64);
 				long personId = (long) uiInputData.get(PersonIdPaneFxController.KEY_PERSON_ID);
@@ -97,25 +80,21 @@ public class FaceVerificationWorkflow extends WizardWorkflowBase<Void, Void>
 				uiInputData.put(KEY_WEBSERVICE_RESPONSE, response);
 				
 				// if success, ask for goNext() automatically. Otherwise, show failure message and retry button
-				formRenderer.get().renderForm(MatchingFxController.class, uiInputData);
-				uiOutputData = waitForUserTask();
-				uiInputData.putAll(uiOutputData);
+				renderUi(MatchingFxController.class);
+				waitForUserInput();
 				break;
 			}
 			case 5:
 			{
-				formRenderer.get().renderForm(ShowResultFxController.class, uiInputData);
-				uiOutputData = waitForUserTask();
-				uiInputData.putAll(uiOutputData);
+				renderUi(ShowResultFxController.class);
+				waitForUserInput();
 				break;
 			}
 			default:
 			{
-				uiOutputData = waitForUserTask();
+				waitForUserInput();
 				break;
 			}
 		}
-		
-		return uiOutputData;
 	}
 }

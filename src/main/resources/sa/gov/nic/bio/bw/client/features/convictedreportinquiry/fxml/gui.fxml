@@ -17,12 +17,6 @@
             fx:id="rootPane" stylesheets="@../css/style.css">
     <center>
         <StackPane>
-            <VBox alignment="CENTER">
-                <HBox alignment="CENTER">
-                    <ProgressIndicator fx:id="piLookup" prefHeight="25.0" prefWidth="25.0"/>
-                    <Button fx:id="btnRetryLookup" text="%button.retryLookup" visible="false" managed="false" onAction="#onRetryLookupButtonClicked"/>
-                </HBox>
-            </VBox>
             <BorderPane fx:id="paneConvictedReports">
                 <top>
                     <VBox alignment="CENTER">

@@ -20,6 +20,9 @@ import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.wizard.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.client.features.commons.InquiryByFingerprintsPaneFxController;
 import sa.gov.nic.bio.bw.client.features.commons.beans.GenderType;
+import sa.gov.nic.bio.bw.client.features.commons.lookups.CountriesLookup;
+import sa.gov.nic.bio.bw.client.features.commons.lookups.DocumentTypesLookup;
+import sa.gov.nic.bio.bw.client.features.commons.lookups.SamisIdTypesLookup;
 import sa.gov.nic.bio.bw.client.features.commons.tasks.PrintReportTask;
 import sa.gov.nic.bio.bw.client.features.commons.tasks.SaveReportAsPdfTask;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.CountryBean;
@@ -350,8 +353,9 @@ public class InquiryResultPaneFxController extends WizardStepFxControllerBase
 			}
 			lblGender.setText(gender);
 			
-			@SuppressWarnings("unchecked") List<CountryBean> countries = (List<CountryBean>)
-													Context.getUserSession().getAttribute("lookups.countries");
+			@SuppressWarnings("unchecked")
+			List<CountryBean> countries = (List<CountryBean>)
+														Context.getUserSession().getAttribute(CountriesLookup.KEY);
 			
 			CountryBean countryBean = null;
 			
@@ -378,8 +382,9 @@ public class InquiryResultPaneFxController extends WizardStepFxControllerBase
 				lblSamisId.setText(samisId);
 			}
 			
-			@SuppressWarnings("unchecked") List<SamisIdType> samisIdTypes = (List<SamisIdType>)
-												Context.getUserSession().getAttribute("lookups.samisIdTypes");
+			@SuppressWarnings("unchecked")
+			List<SamisIdType> samisIdTypes = (List<SamisIdType>)
+														Context.getUserSession().getAttribute(SamisIdTypesLookup.KEY);
 			
 			String personType = personInfo.getPersonType();
 			if(personType != null)
@@ -421,8 +426,9 @@ public class InquiryResultPaneFxController extends WizardStepFxControllerBase
 					lblDocumentId.setText(documentId);
 				}
 				
-				@SuppressWarnings("unchecked") List<DocumentType> documentTypes = (List<DocumentType>)
-												Context.getUserSession().getAttribute("lookups.documentTypes");
+				@SuppressWarnings("unchecked")
+				List<DocumentType> documentTypes = (List<DocumentType>)
+														Context.getUserSession().getAttribute(DocumentTypesLookup.KEY);
 				
 				Integer documentTypeInteger = identityInfo.getIdType();
 				if(documentTypeInteger != null)

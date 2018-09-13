@@ -6,16 +6,18 @@ import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.biokit.FingerPosition;
 import sa.gov.nic.bio.bw.client.core.interfaces.FormRenderer;
 import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
+import sa.gov.nic.bio.bw.client.core.wizard.WithLookups;
 import sa.gov.nic.bio.bw.client.core.workflow.Signal;
 import sa.gov.nic.bio.bw.client.core.workflow.WizardWorkflowBase;
 import sa.gov.nic.bio.bw.client.features.commons.InquiryByFingerprintsPaneFxController;
-import sa.gov.nic.bio.bw.client.features.commons.LookupFxController;
+import sa.gov.nic.bio.bw.client.features.commons.lookups.CountriesLookup;
+import sa.gov.nic.bio.bw.client.features.commons.lookups.DocumentTypesLookup;
+import sa.gov.nic.bio.bw.client.features.commons.lookups.SamisIdTypesLookup;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.Finger;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.FingerprintInquiryStatusResult;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.PersonInfo;
 import sa.gov.nic.bio.bw.client.features.commons.workflow.FingerprintInquiryService;
 import sa.gov.nic.bio.bw.client.features.commons.workflow.FingerprintInquiryStatusCheckerService;
-import sa.gov.nic.bio.bw.client.features.commons.workflow.PersonInfoLookupService;
 import sa.gov.nic.bio.bw.client.features.fingerprintcardidentification.FingerprintsAfterCroppingPaneFxController;
 import sa.gov.nic.bio.bw.client.features.fingerprintcardidentification.InquiryResultPaneFxController;
 import sa.gov.nic.bio.bw.client.features.fingerprintcardidentification.ScanFingerprintCardPaneFxController;
@@ -32,6 +34,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicReference;
 
+@WithLookups({SamisIdTypesLookup.class, DocumentTypesLookup.class, CountriesLookup.class})
 public class FingerprintCardIdentificationWorkflow extends WizardWorkflowBase<Void, Void>
 {
 	public FingerprintCardIdentificationWorkflow(AtomicReference<FormRenderer> formRenderer,
@@ -41,44 +44,26 @@ public class FingerprintCardIdentificationWorkflow extends WizardWorkflowBase<Vo
 	}
 	
 	@Override
-	public void init() throws InterruptedException, Signal
+	public void onStep(int step) throws InterruptedException, Signal
 	{
-		while(true)
-		{
-			formRenderer.get().renderForm(LookupFxController.class, uiInputData);
-			waitForUserTask();
-			ServiceResponse<Void> serviceResponse = PersonInfoLookupService.execute();
-			if(serviceResponse.isSuccess()) break;
-			else uiInputData.put(KEY_WEBSERVICE_RESPONSE, serviceResponse);
-		}
-	}
-	
-	@Override
-	public Map<String, Object> onStep(int step) throws InterruptedException, Signal
-	{
-		Map<String, Object> uiOutputData;
-		
 		switch(step)
 		{
 			case 0:
 			{
-				formRenderer.get().renderForm(ScanFingerprintCardPaneFxController.class, uiInputData);
-				uiOutputData = waitForUserTask();
-				uiInputData.putAll(uiOutputData);
+				renderUi(ScanFingerprintCardPaneFxController.class);
+				waitForUserInput();
 				break;
 			}
 			case 1:
 			{
-				formRenderer.get().renderForm(SpecifyFingerprintCoordinatesPaneFxController.class, uiInputData);
-				uiOutputData = waitForUserTask();
-				uiInputData.putAll(uiOutputData);
+				renderUi(SpecifyFingerprintCoordinatesPaneFxController.class);
+				waitForUserInput();
 				break;
 			}
 			case 2:
 			{
-				formRenderer.get().renderForm(FingerprintsAfterCroppingPaneFxController.class, uiInputData);
-				uiOutputData = waitForUserTask();
-				uiInputData.putAll(uiOutputData);
+				renderUi(FingerprintsAfterCroppingPaneFxController.class);
+				waitForUserInput();
 				break;
 			}
 			case 3:
@@ -90,11 +75,10 @@ public class FingerprintCardIdentificationWorkflow extends WizardWorkflowBase<Vo
 				if(retry == null || !retry)
 				{
 					// show progress only
-					formRenderer.get().renderForm(InquiryByFingerprintsPaneFxController.class, uiInputData);
-					uiOutputData = waitForUserTask();
-					uiInputData.putAll(uiOutputData);
+					renderUi(InquiryByFingerprintsPaneFxController.class);
+					waitForUserInput();
 					
-					Boolean running = (Boolean) uiOutputData.get(
+					Boolean running = (Boolean) uiInputData.get(
 												InquiryByFingerprintsPaneFxController.KEY_DEVICES_RUNNER_IS_RUNNING);
 					if(running != null && !running) break;
 				}
@@ -154,12 +138,11 @@ public class FingerprintCardIdentificationWorkflow extends WizardWorkflowBase<Vo
 					uiInputData.put(InquiryByFingerprintsPaneFxController.KEY_INQUIRY_ERROR_CODE, errorCode);
 					uiInputData.put(InquiryByFingerprintsPaneFxController.KEY_INQUIRY_ERROR_EXCEPTION, e);
 					uiInputData.put(InquiryByFingerprintsPaneFxController.KEY_INQUIRY_ERROR_DETAILS, errorDetails);
-					formRenderer.get().renderForm(InquiryByFingerprintsPaneFxController.class, uiInputData);
+					renderUi(InquiryByFingerprintsPaneFxController.class);
 					uiInputData.remove(InquiryByFingerprintsPaneFxController.KEY_INQUIRY_ERROR_CODE);
 					uiInputData.remove(InquiryByFingerprintsPaneFxController.KEY_INQUIRY_ERROR_EXCEPTION);
 					uiInputData.remove(InquiryByFingerprintsPaneFxController.KEY_INQUIRY_ERROR_DETAILS);
-					uiOutputData = waitForUserTask();
-					uiInputData.putAll(uiOutputData);
+					waitForUserInput();
 					break;
 				}
 				
@@ -180,12 +163,11 @@ public class FingerprintCardIdentificationWorkflow extends WizardWorkflowBase<Vo
 					uiInputData.put(InquiryByFingerprintsPaneFxController.KEY_INQUIRY_ERROR_CODE, errorCode);
 					uiInputData.put(InquiryByFingerprintsPaneFxController.KEY_INQUIRY_ERROR_EXCEPTION, e);
 					uiInputData.put(InquiryByFingerprintsPaneFxController.KEY_INQUIRY_ERROR_DETAILS, errorDetails);
-					formRenderer.get().renderForm(InquiryByFingerprintsPaneFxController.class, uiInputData);
+					renderUi(InquiryByFingerprintsPaneFxController.class);
 					uiInputData.remove(InquiryByFingerprintsPaneFxController.KEY_INQUIRY_ERROR_CODE);
 					uiInputData.remove(InquiryByFingerprintsPaneFxController.KEY_INQUIRY_ERROR_EXCEPTION);
 					uiInputData.remove(InquiryByFingerprintsPaneFxController.KEY_INQUIRY_ERROR_DETAILS);
-					uiOutputData = waitForUserTask();
-					uiInputData.putAll(uiOutputData);
+					waitForUserInput();
 					break;
 				}
 				
@@ -205,12 +187,11 @@ public class FingerprintCardIdentificationWorkflow extends WizardWorkflowBase<Vo
 					uiInputData.put(InquiryByFingerprintsPaneFxController.KEY_INQUIRY_ERROR_EXCEPTION,
 					                response.getException());
 					uiInputData.put(InquiryByFingerprintsPaneFxController.KEY_INQUIRY_ERROR_DETAILS, errorDetails);
-					formRenderer.get().renderForm(InquiryByFingerprintsPaneFxController.class, uiInputData);
+					renderUi(InquiryByFingerprintsPaneFxController.class);
 					uiInputData.remove(InquiryByFingerprintsPaneFxController.KEY_INQUIRY_ERROR_CODE);
 					uiInputData.remove(InquiryByFingerprintsPaneFxController.KEY_INQUIRY_ERROR_EXCEPTION);
 					uiInputData.remove(InquiryByFingerprintsPaneFxController.KEY_INQUIRY_ERROR_DETAILS);
-					uiOutputData = waitForUserTask();
-					uiInputData.putAll(uiOutputData);
+					waitForUserInput();
 					break;
 				}
 				
@@ -243,19 +224,19 @@ public class FingerprintCardIdentificationWorkflow extends WizardWorkflowBase<Vo
 							{
 								uiInputData.put(InquiryByFingerprintsPaneFxController.KEY_WAITING_FINGERPRINT_INQUIRY,
 								                Boolean.TRUE);
-								formRenderer.get().renderForm(InquiryByFingerprintsPaneFxController.class, uiInputData);
-								uiOutputData = waitForUserTask();
-								Boolean cancelled = (Boolean) uiOutputData.get(
-										InquiryByFingerprintsPaneFxController.KEY_WAITING_FINGERPRINT_INQUIRY_CANCELLED);
+								renderUi(InquiryByFingerprintsPaneFxController.class);
+								waitForUserInput();
+								Boolean cancelled = (Boolean) uiInputData.get(
+									InquiryByFingerprintsPaneFxController.KEY_WAITING_FINGERPRINT_INQUIRY_CANCELLED);
 								if(cancelled == null || !cancelled) continue;
 								else uiInputData.remove(
-										InquiryByFingerprintsPaneFxController.KEY_WAITING_FINGERPRINT_INQUIRY_CANCELLED);
+									InquiryByFingerprintsPaneFxController.KEY_WAITING_FINGERPRINT_INQUIRY_CANCELLED);
 							}
 							else if(result.getStatus() == FingerprintInquiryStatusResult.STATUS_INQUIRY_NO_HIT)
 							{
 								uiInputData.put(InquiryByFingerprintsPaneFxController.KEY_FINGERPRINT_INQUIRY_HIT,
 								                Boolean.FALSE);
-								formRenderer.get().renderForm(InquiryByFingerprintsPaneFxController.class, uiInputData);
+								renderUi(InquiryByFingerprintsPaneFxController.class);
 							}
 							else if(result.getStatus() == FingerprintInquiryStatusResult.STATUS_INQUIRY_HIT)
 							{
@@ -273,26 +254,24 @@ public class FingerprintCardIdentificationWorkflow extends WizardWorkflowBase<Vo
 								if(criminalBioId > 0) uiInputData.put(
 									InquiryResultPaneFxController.KEY_INQUIRY_HIT_GENERAL_FILE_NUMBER, criminalBioId);
 								uiInputData.put(InquiryResultPaneFxController.KEY_INQUIRY_HIT_RESULT, personInfo);
-								formRenderer.get().renderForm(InquiryByFingerprintsPaneFxController.class, uiInputData);
+								renderUi(InquiryByFingerprintsPaneFxController.class);
 							}
 							else // report the error
 							{
 								uiInputData.put(
 										InquiryByFingerprintsPaneFxController.KEY_FINGERPRINT_INQUIRY_UNKNOWN_STATUS,
 										result.getStatus());
-								formRenderer.get().renderForm(InquiryByFingerprintsPaneFxController.class, uiInputData);
+								renderUi(InquiryByFingerprintsPaneFxController.class);
 							}
 							
-							uiOutputData = waitForUserTask();
-							uiInputData.putAll(uiOutputData);
+							waitForUserInput();
 							break;
 						}
 						else // report the error
 						{
 							uiInputData.put(KEY_WEBSERVICE_RESPONSE, response2);
-							formRenderer.get().renderForm(InquiryByFingerprintsPaneFxController.class, uiInputData);
-							uiOutputData = waitForUserTask();
-							uiInputData.putAll(uiOutputData);
+							renderUi(InquiryByFingerprintsPaneFxController.class);
+							waitForUserInput();
 							break;
 						}
 					}
@@ -300,28 +279,23 @@ public class FingerprintCardIdentificationWorkflow extends WizardWorkflowBase<Vo
 				else // report the error
 				{
 					uiInputData.put(KEY_WEBSERVICE_RESPONSE, serviceResponse);
-					formRenderer.get().renderForm(InquiryByFingerprintsPaneFxController.class, uiInputData);
-					uiOutputData = waitForUserTask();
-					uiInputData.putAll(uiOutputData);
+					renderUi(InquiryByFingerprintsPaneFxController.class);
+					waitForUserInput();
 				}
 				
 				break;
 			}
 			case 4:
 			{
-				formRenderer.get().renderForm(InquiryResultPaneFxController.class, uiInputData);
-				uiOutputData = waitForUserTask();
-				uiInputData.putAll(uiOutputData);
+				renderUi(InquiryResultPaneFxController.class);
+				waitForUserInput();
 				break;
 			}
 			default:
 			{
-				uiOutputData = waitForUserTask();
-				uiInputData.putAll(uiOutputData);
+				waitForUserInput();
 				break;
 			}
 		}
-		
-		return uiOutputData;
 	}
 }

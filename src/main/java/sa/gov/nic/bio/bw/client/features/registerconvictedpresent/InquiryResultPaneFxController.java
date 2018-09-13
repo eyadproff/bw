@@ -20,12 +20,15 @@ import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.wizard.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.client.features.commons.InquiryByFingerprintsPaneFxController;
 import sa.gov.nic.bio.bw.client.features.commons.beans.GenderType;
+import sa.gov.nic.bio.bw.client.features.commons.lookups.CountriesLookup;
+import sa.gov.nic.bio.bw.client.features.commons.lookups.DocumentTypesLookup;
+import sa.gov.nic.bio.bw.client.features.commons.lookups.SamisIdTypesLookup;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.CountryBean;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.DocumentType;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.Name;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.PersonIdInfo;
-import sa.gov.nic.bio.bw.client.features.commons.webservice.SamisIdType;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.PersonInfo;
+import sa.gov.nic.bio.bw.client.features.commons.webservice.SamisIdType;
 import sa.gov.nic.bio.bw.client.login.webservice.UserInfo;
 
 import java.io.ByteArrayInputStream;
@@ -354,7 +357,7 @@ public class InquiryResultPaneFxController extends WizardStepFxControllerBase
 		}
 		
 		@SuppressWarnings("unchecked") List<CountryBean> countries = (List<CountryBean>)
-												Context.getUserSession().getAttribute("lookups.countries");
+															Context.getUserSession().getAttribute(CountriesLookup.KEY);
 		
 		CountryBean countryBean = null;
 		
@@ -419,8 +422,9 @@ public class InquiryResultPaneFxController extends WizardStepFxControllerBase
 			lblBirthDate.setTextFill(Color.RED);
 		}
 		
-		@SuppressWarnings("unchecked") List<SamisIdType> samisIdTypes = (List<SamisIdType>)
-												Context.getUserSession().getAttribute("lookups.samisIdTypes");
+		@SuppressWarnings("unchecked")
+		List<SamisIdType> samisIdTypes = (List<SamisIdType>)
+														Context.getUserSession().getAttribute(SamisIdTypesLookup.KEY);
 		
 		String samisIdType = personInfo.getPersonType();
 		if(samisIdType != null)
@@ -465,8 +469,9 @@ public class InquiryResultPaneFxController extends WizardStepFxControllerBase
 			lblDocumentId.setTextFill(Color.RED);
 		}
 		
-		@SuppressWarnings("unchecked") List<DocumentType> documentTypes = (List<DocumentType>)
-												Context.getUserSession().getAttribute("lookups.documentTypes");
+		@SuppressWarnings("unchecked")
+		List<DocumentType> documentTypes = (List<DocumentType>)
+														Context.getUserSession().getAttribute(DocumentTypesLookup.KEY);
 		
 		Integer documentType = identityInfo != null ? identityInfo.getIdType() : null;
 		if(documentType != null)

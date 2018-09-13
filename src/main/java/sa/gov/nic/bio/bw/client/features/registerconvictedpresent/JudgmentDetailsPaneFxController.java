@@ -21,6 +21,7 @@ import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.wizard.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.CrimeType;
+import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.lookups.CrimeTypesLookup;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.CrimeCode;
 
 import java.net.URL;
@@ -156,8 +157,8 @@ public class JudgmentDetailsPaneFxController extends WizardStepFxControllerBase
 		btnAddMore.managedProperty().bind(paneCrime2.managedProperty().not().or(paneCrime3.managedProperty().not())
 	                                  .or(paneCrime4.managedProperty().not()).or(paneCrime5.managedProperty().not()));
 		
-		@SuppressWarnings("unchecked") List<CrimeType> crimeTypes = (List<CrimeType>)
-												Context.getUserSession().getAttribute("lookups.crimeTypes");
+		@SuppressWarnings("unchecked")
+		List<CrimeType> crimeTypes = (List<CrimeType>) Context.getUserSession().getAttribute(CrimeTypesLookup.KEY);
 		
 		crimeTypes.forEach(crimeType ->
 		{

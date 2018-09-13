@@ -3,6 +3,7 @@ package sa.gov.nic.bio.bw.client.core.wizard;
 import sa.gov.nic.bio.bw.client.core.BodyFxControllerBase;
 import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.interfaces.NavigableController;
+import sa.gov.nic.bio.bw.client.core.workflow.WizardWorkflowBase;
 
 import java.net.URL;
 import java.util.HashMap;
@@ -15,7 +16,7 @@ public abstract class WizardStepFxControllerBase extends BodyFxControllerBase im
 	{
 		Context.getCoreFxController().showWizardTransitionProgressIndicator(true);
 		Map<String, Object> uiDataMap = new HashMap<>();
-		uiDataMap.put("direction", "forward");
+		uiDataMap.put(WizardWorkflowBase.KEY_WORKFLOW_DIRECTION, WizardWorkflowBase.VALUE_WORKFLOW_DIRECTION_FORWARD);
 		onGoingNext(uiDataMap);
 		if(!isDetached()) Context.getWorkflowManager().submitUserTask(uiDataMap);
 	}
@@ -25,7 +26,7 @@ public abstract class WizardStepFxControllerBase extends BodyFxControllerBase im
 	{
 		Context.getCoreFxController().showWizardTransitionProgressIndicator(true);
 		Map<String, Object> uiDataMap = new HashMap<>();
-		uiDataMap.put("direction", "backward");
+		uiDataMap.put(WizardWorkflowBase.KEY_WORKFLOW_DIRECTION, WizardWorkflowBase.VALUE_WORKFLOW_DIRECTION_BACKWARD);
 		onGoingPrevious(uiDataMap);
 		if(!isDetached()) Context.getWorkflowManager().submitUserTask(uiDataMap);
 	}
@@ -35,7 +36,8 @@ public abstract class WizardStepFxControllerBase extends BodyFxControllerBase im
 	{
 		Context.getCoreFxController().showWizardTransitionProgressIndicator(true);
 		Map<String, Object> uiDataMap = new HashMap<>();
-		uiDataMap.put("direction", "startOver");
+		uiDataMap.put(WizardWorkflowBase.KEY_WORKFLOW_DIRECTION,
+		              WizardWorkflowBase.VALUE_WORKFLOW_DIRECTION_START_OVER);
 		if(!isDetached()) Context.getWorkflowManager().submitUserTask(uiDataMap);
 	}
 	

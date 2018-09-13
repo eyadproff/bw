@@ -74,9 +74,9 @@ public class CoreFxController extends FxControllerBase implements IdleMonitorReg
 	@FXML private NotificationPane idleNotifier;
 	@FXML private NotificationPane notificationPane;
 	@FXML private BorderPane bodyPane;
-	@FXML private WizardPane wizardPane;
 	
 	private Stage stage;
+	private WizardPane wizardPane;
 	private IdleMonitor idleMonitor;
 	private BodyFxControllerBase currentBodyController;
 	private boolean newMenuSelected;
@@ -209,10 +209,10 @@ public class CoreFxController extends FxControllerBase implements IdleMonitorReg
 					currentBodyController = newController;
 					
 					Platform.runLater(() ->
-					                  {
-						                  if(newController != null && !newController.isDetached())
-							                  newController.onWorkflowUserTaskLoad(true, uiInputData);
-					                  });
+					{
+					    if(newController != null && !newController.isDetached())
+		                                    newController.onWorkflowUserTaskLoad(true, uiInputData);
+					});
 				}
 				catch(InstantiationException | IllegalAccessException | NoSuchMethodException
 																						| InvocationTargetException e)
@@ -328,23 +328,31 @@ public class CoreFxController extends FxControllerBase implements IdleMonitorReg
 	
 	public void clearWizardBar()
 	{
-		wizardPane = null;
-		bodyPane.setTop(null);
+		Platform.runLater(() -> bodyPane.setTop(null));
 	}
 	
 	public void moveWizardForward()
 	{
-		wizardPane.goNext();
+		Platform.runLater(() ->
+		{
+		    if(wizardPane != null) wizardPane.goNext();
+		});
 	}
 	
 	public void moveWizardBackward()
 	{
-		wizardPane.goPrevious();
+		Platform.runLater(() ->
+		{
+		    if(wizardPane != null) wizardPane.goPrevious();
+		});
 	}
 	
 	public void moveWizardToTheBeginning()
 	{
-		wizardPane.startOver();
+		Platform.runLater(() ->
+		{
+		    if(wizardPane != null) wizardPane.startOver();
+		});
 	}
 	
 	// must be called from UI thread

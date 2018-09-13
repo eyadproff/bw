@@ -5,7 +5,7 @@ import retrofit2.http.*;
 
 import java.util.List;
 
-public interface MofaLookupAPI
+public interface LookupAPI
 {
 	@GET("services-gateway-lookups/api/application/visa-type/all/v2")
 	Call<List<VisaTypeBean>> lookupVisaTypes();

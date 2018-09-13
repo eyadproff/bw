@@ -26,18 +26,15 @@ public class SearchByFaceImageWorkflow extends WizardWorkflowBase<Void, Void>
 	}
 	
 	@Override
-	public Map<String, Object> onStep(int step) throws InterruptedException, Signal
+	public void onStep(int step) throws InterruptedException, Signal
 	{
-		Map<String, Object> uiOutputData;
-		
 		switch(step)
 		{
 			case 0:
 			{
 				uiInputData.put(ImageSourceFxController.KEY_HIDE_IMAGE_SOURCE_PREVIOUS_BUTTON, Boolean.TRUE);
-				formRenderer.get().renderForm(ImageSourceFxController.class, uiInputData);
-				uiOutputData = waitForUserTask();
-				uiInputData.putAll(uiOutputData);
+				renderUi(ImageSourceFxController.class);
+				waitForUserInput();
 				break;
 			}
 			case 1:
@@ -47,53 +44,47 @@ public class SearchByFaceImageWorkflow extends WizardWorkflowBase<Void, Void>
 				if(ImageSourceFxController.VALUE_IMAGE_SOURCE_CAMERA.equals(imageInput))
 				{
 					uiInputData.put(FaceCapturingFxController.KEY_ACCEPT_ANY_CAPTURED_IMAGE, Boolean.TRUE);
-					formRenderer.get().renderForm(FaceCapturingFxController.class, uiInputData);
+					renderUi(FaceCapturingFxController.class);
 				}
 				else if(ImageSourceFxController.VALUE_IMAGE_SOURCE_UPLOAD.equals(imageInput))
 				{
-					formRenderer.get().renderForm(UploadImageFileFxController.class, uiInputData);
+					renderUi(UploadImageFileFxController.class);
 				}
 				
-				uiOutputData = waitForUserTask();
-				uiInputData.putAll(uiOutputData);
+				waitForUserInput();
 				break;
 			}
 			case 2:
 			{
-				formRenderer.get().renderForm(ConfirmImageFxController.class, uiInputData);
-				uiOutputData = waitForUserTask();
-				uiInputData.putAll(uiOutputData);
+				renderUi(ConfirmImageFxController.class);
+				waitForUserInput();
 				break;
 			}
 			case 3:
 			{
 				// show progress indicator here
-				formRenderer.get().renderForm(SearchFxController.class, uiInputData);
+				renderUi(SearchFxController.class);
 				
 				String imageBase64 = (String) uiInputData.get(ConfirmImageFxController.KEY_FINAL_IMAGE_BASE64);
 				ServiceResponse<List<Candidate>> response = SearchByFaceImageService.execute(imageBase64);
 				uiInputData.put(KEY_WEBSERVICE_RESPONSE, response);
 				
 				// if success, ask for goNext() automatically. Otherwise, show failure message and retry button
-				formRenderer.get().renderForm(SearchFxController.class, uiInputData);
-				uiOutputData = waitForUserTask();
-				uiInputData.putAll(uiOutputData);
+				renderUi(SearchFxController.class);
+				waitForUserInput();
 				break;
 			}
 			case 4:
 			{
-				formRenderer.get().renderForm(ShowResultsFxController.class, uiInputData);
-				uiOutputData = waitForUserTask();
-				uiInputData.putAll(uiOutputData);
+				renderUi(ShowResultsFxController.class);
+				waitForUserInput();
 				break;
 			}
 			default:
 			{
-				uiOutputData = waitForUserTask();
+				waitForUserInput();
 				break;
 			}
 		}
-		
-		return uiOutputData;
 	}
 }

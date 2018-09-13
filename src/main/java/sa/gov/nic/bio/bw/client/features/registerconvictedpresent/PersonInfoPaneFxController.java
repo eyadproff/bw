@@ -20,6 +20,9 @@ import sa.gov.nic.bio.bw.client.core.utils.GuiLanguage;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.wizard.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.client.features.commons.beans.GenderType;
+import sa.gov.nic.bio.bw.client.features.commons.lookups.CountriesLookup;
+import sa.gov.nic.bio.bw.client.features.commons.lookups.DocumentTypesLookup;
+import sa.gov.nic.bio.bw.client.features.commons.lookups.SamisIdTypesLookup;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.CountryBean;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.DocumentType;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.SamisIdType;
@@ -110,14 +113,16 @@ public class PersonInfoPaneFxController extends WizardStepFxControllerBase
 	{
 		btnNext.setOnAction(actionEvent -> goNext());
 		
-		@SuppressWarnings("unchecked") List<CountryBean> countries = (List<CountryBean>)
-												Context.getUserSession().getAttribute("lookups.countries");
+		@SuppressWarnings("unchecked")
+		List<CountryBean> countries = (List<CountryBean>) Context.getUserSession().getAttribute(CountriesLookup.KEY);
 		
-		@SuppressWarnings("unchecked") List<SamisIdType> samisIdTypes = (List<SamisIdType>)
-												Context.getUserSession().getAttribute("lookups.samisIdTypes");
+		@SuppressWarnings("unchecked")
+		List<SamisIdType> samisIdTypes = (List<SamisIdType>)
+														Context.getUserSession().getAttribute(SamisIdTypesLookup.KEY);
 		
-		@SuppressWarnings("unchecked") List<DocumentType> documentTypes = (List<DocumentType>)
-												Context.getUserSession().getAttribute("lookups.documentTypes");
+		@SuppressWarnings("unchecked")
+		List<DocumentType> documentTypes = (List<DocumentType>)
+														Context.getUserSession().getAttribute(DocumentTypesLookup.KEY);
 		
 		GuiUtils.addAutoCompletionSupportToComboBox(cboNationality, countries);
 		
