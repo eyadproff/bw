@@ -24,23 +24,19 @@ import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.wizard.WizardStepFxControllerBase;
+import sa.gov.nic.bio.bw.client.core.workflow.Input;
+import sa.gov.nic.bio.bw.client.core.workflow.Output;
 import sa.gov.nic.bio.bw.client.features.fingerprintcardidentification.gui.SelectionOverlay;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
 public class SpecifyFingerprintCoordinatesPaneFxController extends WizardStepFxControllerBase
 {
-	public static final String KEY_PREFIX_FINGERPRINT_IMAGE = "FINGERPRINT_IMAGE_";
-	private static final String KEY_PREFIX_FINGERPRINT_RECT_X = "FINGERPRINT_RECT_X_";
-	private static final String KEY_PREFIX_FINGERPRINT_RECT_Y = "FINGERPRINT_RECT_Y_";
-	private static final String KEY_PREFIX_FINGERPRINT_RECT_WIDTH = "FINGERPRINT_RECT_WIDTH_";
-	private static final String KEY_PREFIX_FINGERPRINT_RECT_HEIGHT = "FINGERPRINT_RECT_HEIGHT_";
-	private static final String KEY_IMAGE_VIEW_X = "IMAGE_VIEW_X";
-	private static final String KEY_IMAGE_VIEW_Y = "IMAGE_VIEW_Y";
-	
-	
 	private static final double[][] DEFAULT_BOUNDS = {{0.935, 0.350, 0.160, 0.117}, // x, y, width, height
 													  {0.755, 0.350, 0.160, 0.117},
 													  {0.570, 0.350, 0.160, 0.117},
@@ -53,12 +49,35 @@ public class SpecifyFingerprintCoordinatesPaneFxController extends WizardStepFxC
 													  {0.200, 0.500, 0.160, 0.117}};
 	
 	private static final double TITLED_PANE_TITLE_HEIGHT = 25.0;
-	private static class DragContext
+	private static class Point
 	{
-		
 		private double x;
 		private double y;
+		
+		private Point(double x, double y)
+		{
+			this.x = x;
+			this.y = y;
+		}
 	}
+	private static class Dimension
+	{
+		private double width;
+		private double height;
+		
+		private Dimension(double width, double height)
+		{
+			this.width = width;
+			this.height = height;
+		}
+	}
+	
+	@Input(required = true) private Image cardImage;
+	@Output private Map<Integer, Image> fingerprintImages;
+	@Output private List<Integer> missingFingerprints;
+	@Output private Map<Integer, Dimension> fingerprintsDimensions;
+	@Output private Map<Integer, Point> fingerprintsCoordinates;
+	@Output private Point imagesViewCoordinates;
 	
 	@FXML private StackPane spFingerprintCardImage;
 	@FXML private ImageView ivFingerprintCardImage;
@@ -162,33 +181,36 @@ public class SpecifyFingerprintCoordinatesPaneFxController extends WizardStepFxC
 	{
 		if(newForm)
 		{
-			Image image = (Image) uiInputData.get(ScanFingerprintCardPaneFxController.KEY_CARD_IMAGE);
-			ivFingerprintCardImage.setImage(image);
+			if(fingerprintImages == null) fingerprintImages = new HashMap<>();
+			if(missingFingerprints == null) missingFingerprints = new ArrayList<>();
+			if(fingerprintsCoordinates == null) fingerprintsCoordinates = new HashMap<>();
+			if(fingerprintsDimensions == null) fingerprintsDimensions = new HashMap<>();
 			
-			Double imageViewX = (Double) uiInputData.get(KEY_IMAGE_VIEW_X);
-			Double imageViewY = (Double) uiInputData.get(KEY_IMAGE_VIEW_Y);
+			ivFingerprintCardImage.setImage(cardImage);
+			
+			Double imageViewX = imagesViewCoordinates != null ? imagesViewCoordinates.x : null;
+			Double imageViewY = imagesViewCoordinates != null ? imagesViewCoordinates.y : null;
 			
 			for(int i = 0; i < rectangles.length; i++)
 			{
-				Double x = (Double) uiInputData.get(KEY_PREFIX_FINGERPRINT_RECT_X + (i + 1));
-				Double y = (Double) uiInputData.get(KEY_PREFIX_FINGERPRINT_RECT_Y + (i + 1));
-				Double width = (Double) uiInputData.get(KEY_PREFIX_FINGERPRINT_RECT_WIDTH + (i + 1));
-				Double height = (Double) uiInputData.get(KEY_PREFIX_FINGERPRINT_RECT_HEIGHT + (i + 1));
+				Point point = fingerprintsCoordinates.get(i + 1);
+				Dimension dimension = fingerprintsDimensions.get(i + 1);
 				
-				if(x != null && y != null && width != null && height != null)
+				if(imageViewX != null && point != null && dimension != null)
 				{
-					rectangles[i].relocate(x * ivFingerprintCardImage.getBoundsInParent().getWidth() -
+					rectangles[i].relocate(point.x * ivFingerprintCardImage.getBoundsInParent().getWidth() -
 			                       ivFingerprintCardImage.getLayoutX() - rectangles[i].getStrokeWidth() / 2.0 +
 							                       2 * (ivFingerprintCardImage.getLayoutX() - imageViewX),
-				                           y * ivFingerprintCardImage.getBoundsInParent().getHeight() -
+					                       point.y * ivFingerprintCardImage.getBoundsInParent().getHeight() -
 		                           ivFingerprintCardImage.getLayoutY() - rectangles[i].getStrokeWidth() / 2.0 +
 						                           2 * (ivFingerprintCardImage.getLayoutY() - imageViewY));
-					rectangles[i].setWidth(width * ivFingerprintCardImage.getBoundsInParent().getWidth() -
+					rectangles[i].setWidth(dimension.width * ivFingerprintCardImage.getBoundsInParent().getWidth() -
 							                       rectangles[i].getStrokeWidth());
-					rectangles[i].setHeight(height * ivFingerprintCardImage.getBoundsInParent().getHeight() -
+					rectangles[i].setHeight(dimension.height * ivFingerprintCardImage.getBoundsInParent().getHeight() -
 							                        rectangles[i].getStrokeWidth());
 					
-					boolean disabled = uiInputData.get(KEY_PREFIX_FINGERPRINT_IMAGE + (i + 1)) == null;
+					Image fingerprintImage = fingerprintImages.get(i + 1);
+					boolean disabled = fingerprintImage == null;
 					if(disabled)
 					{
 						rectangles[i].getStyleClass().remove("fingerprint-rectangle");
@@ -229,16 +251,11 @@ public class SpecifyFingerprintCoordinatesPaneFxController extends WizardStepFxC
 	@Override
 	protected void onGoingPrevious(Map<String, Object> uiDataMap)
 	{
-		for(int i = 0; i < rectangles.length; i++)
-		{
-			uiDataMap.put(KEY_PREFIX_FINGERPRINT_IMAGE + (i + 1), null);
-			uiDataMap.put(KEY_PREFIX_FINGERPRINT_RECT_X + (i + 1), null);
-			uiDataMap.put(KEY_PREFIX_FINGERPRINT_RECT_Y + (i + 1), null);
-			uiDataMap.put(KEY_PREFIX_FINGERPRINT_RECT_WIDTH + (i + 1), null);
-			uiDataMap.put(KEY_PREFIX_FINGERPRINT_RECT_HEIGHT + (i + 1), null);
-			uiDataMap.put(KEY_IMAGE_VIEW_X, null);
-			uiDataMap.put(KEY_IMAGE_VIEW_Y, null);
-		}
+		fingerprintImages = null;
+		missingFingerprints = null;
+		fingerprintsDimensions = null;
+		fingerprintsCoordinates = null;
+		imagesViewCoordinates = null;
 	}
 	
 	@Override
@@ -252,22 +269,25 @@ public class SpecifyFingerprintCoordinatesPaneFxController extends WizardStepFxC
 			{
 				Image image = GuiUtils.extractImageByRectangleBounds(ivFingerprintCardImage, rectangles[i], rtl,
 				                                                     TITLED_PANE_TITLE_HEIGHT);
-				uiDataMap.put(KEY_PREFIX_FINGERPRINT_IMAGE + (i + 1), image);
+				fingerprintImages.put(i + 1, image);
 			}
-			else uiDataMap.put(KEY_PREFIX_FINGERPRINT_IMAGE + (i + 1), null);
+			else
+			{
+				fingerprintImages.put(i + 1, null);
+				missingFingerprints.add(i + 1);
+			}
 			
-			uiDataMap.put(KEY_PREFIX_FINGERPRINT_RECT_X + (i + 1), (rectangles[i].getLayoutX() +
-						ivFingerprintCardImage.getLayoutX()) / ivFingerprintCardImage.getBoundsInParent().getWidth());
-			uiDataMap.put(KEY_PREFIX_FINGERPRINT_RECT_Y + (i + 1), (rectangles[i].getLayoutY() +
-						ivFingerprintCardImage.getLayoutY()) / ivFingerprintCardImage.getBoundsInParent().getHeight());
-			uiDataMap.put(KEY_PREFIX_FINGERPRINT_RECT_WIDTH + (i + 1), rectangles[i].getBoundsInParent().getWidth() /
-																ivFingerprintCardImage.getBoundsInParent().getWidth());
-			uiDataMap.put(KEY_PREFIX_FINGERPRINT_RECT_HEIGHT + (i + 1), rectangles[i].getBoundsInParent().getHeight() /
-																ivFingerprintCardImage.getBoundsInParent().getHeight());
+			fingerprintsCoordinates.put((i + 1), new Point((rectangles[i].getLayoutX() +
+					ivFingerprintCardImage.getLayoutX()) / ivFingerprintCardImage.getBoundsInParent().getWidth(),
+			                                               (rectangles[i].getLayoutY() +
+                    ivFingerprintCardImage.getLayoutY()) / ivFingerprintCardImage.getBoundsInParent().getHeight()));
+			fingerprintsDimensions.put(i + 1, new Dimension(rectangles[i].getBoundsInParent().getWidth() /
+															ivFingerprintCardImage.getBoundsInParent().getWidth(),
+			                                                rectangles[i].getBoundsInParent().getHeight() /
+															ivFingerprintCardImage.getBoundsInParent().getHeight()));
 		}
 		
-		uiDataMap.put(KEY_IMAGE_VIEW_X, ivFingerprintCardImage.getLayoutX());
-		uiDataMap.put(KEY_IMAGE_VIEW_Y, ivFingerprintCardImage.getLayoutY());
+		imagesViewCoordinates = new Point(ivFingerprintCardImage.getLayoutX(),ivFingerprintCardImage.getLayoutY());
 	}
 	
 	@FXML
@@ -296,7 +316,7 @@ public class SpecifyFingerprintCoordinatesPaneFxController extends WizardStepFxC
 	
 	private void makeNodeDraggable(ImageView ivCard, Group selectionLayer, Rectangle rectangle, boolean rtl)
 	{
-		DragContext dragDelta = new DragContext();
+		Point dragDelta = new Point(0.0, 0.0);
 		
 		// prevent bubbling up the mouse-click event to the parent (spFingerprintCardImage)
 		rectangle.addEventFilter(MouseEvent.MOUSE_CLICKED, Event::consume);

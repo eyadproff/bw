@@ -1,6 +1,7 @@
 package sa.gov.nic.bio.bw.client.core.interfaces;
 
 import sa.gov.nic.bio.bw.client.core.BodyFxControllerBase;
+import sa.gov.nic.bio.bw.client.core.workflow.Signal;
 
 import java.util.Map;
 
@@ -17,5 +18,5 @@ public interface FormRenderer
 	 * @param controllerClass the class of JavaFX controller that is responsible for rendering the form
 	 * @param inputDataMap the input data used to populate data on the form
 	 */
-	BodyFxControllerBase renderForm(Class<?> controllerClass, Map<String, Object> inputDataMap);
+	BodyFxControllerBase renderForm(Class<?> controllerClass, Map<String, Object> inputDataMap) throws Signal;
 }

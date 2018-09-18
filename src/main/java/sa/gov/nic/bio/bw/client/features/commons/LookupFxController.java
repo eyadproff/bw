@@ -35,14 +35,14 @@ public class LookupFxController extends WizardStepFxControllerBase
 	}
 	
 	@Override
-	public void onWorkflowUserTaskLoad(boolean newForm, Map<String, Object> dataMap)
+	public void onWorkflowUserTaskLoad(boolean newForm, Map<String, Object> uiInputData)
 	{
 		if(!newForm)
 		{
 			GuiUtils.showNode(progressIndicator, false);
 			GuiUtils.showNode(btnTryAgain, true);
 			
-			ServiceResponse<?> serviceResponse = (ServiceResponse<?>) dataMap.get(Workflow.KEY_WEBSERVICE_RESPONSE);
+			ServiceResponse<?> serviceResponse = (ServiceResponse<?>) uiInputData.get(Workflow.KEY_WEBSERVICE_RESPONSE);
 			if(serviceResponse != null && !serviceResponse.isSuccess())
 											 reportNegativeResponse(serviceResponse.getErrorCode(),
 		                                                            serviceResponse.getException(),

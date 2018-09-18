@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class CitizenEnrollmentWorkflow extends WizardWorkflowBase<Void, Void>
+public class CitizenEnrollmentWorkflow extends WizardWorkflowBase
 {
 	public CitizenEnrollmentWorkflow(AtomicReference<FormRenderer> formRenderer,
 	                                 BlockingQueue<Map<String, Object>> userTasks)
@@ -18,7 +18,7 @@ public class CitizenEnrollmentWorkflow extends WizardWorkflowBase<Void, Void>
 	}
 	
 	@Override
-	public void onStep(int step) throws InterruptedException, Signal
+	public boolean onStep(int step) throws InterruptedException, Signal
 	{
 		Map<String, Object> uiOutputData = null;
 		
@@ -28,37 +28,33 @@ public class CitizenEnrollmentWorkflow extends WizardWorkflowBase<Void, Void>
 			{
 				renderUi(PersonIdPaneFxController.class);
 				waitForUserInput();
-				break;
+				return true;
 			}
 			case 1:
 			{
-				break;
+				return false;
 			}
 			case 2:
 			{
-				break;
+				return false;
 			}
 			case 3:
 			{
-				break;
+				return false;
 			}
 			case 4:
 			{
-				break;
+				return false;
 			}
 			case 5:
 			{
-				break;
+				return false;
 			}
 			case 6:
 			{
-				break;
+				return false;
 			}
-			default:
-			{
-				waitForUserInput();
-				break;
-			}
+			default: return false;
 		}
 	}
 }

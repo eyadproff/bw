@@ -496,6 +496,8 @@ public final class AppUtils
 	
 	public static Image imageFromBase64(String base64Image)
 	{
+		if(base64Image == null) return null;
+		
 		byte[] imageByteArray = Base64.getDecoder().decode(base64Image);
 		return new Image(new ByteArrayInputStream(imageByteArray));
 	}

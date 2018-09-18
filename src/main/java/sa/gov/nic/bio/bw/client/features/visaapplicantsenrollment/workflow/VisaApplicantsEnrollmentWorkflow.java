@@ -22,7 +22,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.atomic.AtomicReference;
 
 @WithLookups({CountriesLookup.class, VisaTypesLookup.class, PassportTypesLookup.class, DialingCodesLookup.class})
-public class VisaApplicantsEnrollmentWorkflow extends WizardWorkflowBase<Void, Void>
+public class VisaApplicantsEnrollmentWorkflow extends WizardWorkflowBase
 {
 	public VisaApplicantsEnrollmentWorkflow(AtomicReference<FormRenderer> formRenderer,
 	                                        BlockingQueue<Map<String, Object>> userTasks)
@@ -31,7 +31,7 @@ public class VisaApplicantsEnrollmentWorkflow extends WizardWorkflowBase<Void, V
 	}
 	
 	@Override
-	public void onStep(int step) throws InterruptedException, Signal
+	public boolean onStep(int step) throws InterruptedException, Signal
 	{
 		switch(step)
 		{
@@ -39,7 +39,7 @@ public class VisaApplicantsEnrollmentWorkflow extends WizardWorkflowBase<Void, V
 			{
 				renderUi(ApplicantInfoFxController.class);
 				waitForUserInput();
-				break;
+				return true;
 			}
 			case 1:
 			{
@@ -58,7 +58,7 @@ public class VisaApplicantsEnrollmentWorkflow extends WizardWorkflowBase<Void, V
 				
 				renderUi(FingerprintCapturingFxController.class);
 				waitForUserInput();
-				break;
+				return true;
 			}
 			case 2:
 			{
@@ -74,7 +74,7 @@ public class VisaApplicantsEnrollmentWorkflow extends WizardWorkflowBase<Void, V
 				
 				renderUi(FaceCapturingFxController.class);
 				waitForUserInput();
-				break;
+				return true;
 			}
 			case 3:
 			{
@@ -106,19 +106,15 @@ public class VisaApplicantsEnrollmentWorkflow extends WizardWorkflowBase<Void, V
 					}
 				}
 				
-				break;
+				return true;
 			}
 			case 4:
 			{
 				renderUi(ShowReceiptFxController.class);
 				waitForUserInput();
-				break;
+				return true;
 			}
-			default:
-			{
-				waitForUserInput();
-				break;
-			}
+			default: return false;
 		}
 	}
 }

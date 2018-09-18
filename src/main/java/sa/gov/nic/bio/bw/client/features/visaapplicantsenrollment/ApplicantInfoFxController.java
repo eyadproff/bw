@@ -35,6 +35,7 @@ import sa.gov.nic.bio.bw.client.core.utils.DialogUtils;
 import sa.gov.nic.bio.bw.client.core.utils.GuiLanguage;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.wizard.WizardStepFxControllerBase;
+import sa.gov.nic.bio.bw.client.core.workflow.Output;
 import sa.gov.nic.bio.bw.client.features.commons.beans.GenderType;
 import sa.gov.nic.bio.bw.client.features.commons.lookups.CountriesLookup;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.CountryBean;
@@ -60,29 +61,28 @@ import java.util.logging.Logger;
 public class ApplicantInfoFxController extends WizardStepFxControllerBase
 {
 	private static final Logger LOGGER = Logger.getLogger(ApplicantInfoFxController.class.getName());
-	
-	public static final String KEY_FIRST_NAME = "FIRST_NAME";
-	public static final String KEY_SECOND_NAME = "SECOND_NAME";
-	public static final String KEY_OTHER_NAME = "OTHER_NAME";
-	public static final String KEY_FAMILY_NAME = "FAMILY_NAME";
-	public static final String KEY_NATIONALITY = "NATIONALITY";
-	public static final String KEY_GENDER = "GENDER";
-	public static final String KEY_BIRTH_PLACE = "BIRTH_PLACE";
-	public static final String KEY_BIRTH_DATE = "BIRTH_DATE";
-	public static final String KEY_BIRTH_DATE_USE_HIJRI = "BIRTH_DATE_USE_HIJRI";
-	public static final String KEY_VISA_TYPE = "VISA_TYPE";
-	public static final String KEY_PASSPORT_NUMBER = "PASSPORT_NUMBER";
-	public static final String KEY_ISSUE_DATE = "ISSUE_DATE";
-	public static final String KEY_ISSUE_DATE_USE_HIJRI = "ISSUE_DATE_USE_HIJRI";
-	public static final String KEY_EXPIRATION_DATE = "EXPIRATION_DATE";
-	public static final String KEY_EXPIRATION_DATE_USE_HIJRI = "EXPIRATION_DATE_USE_HIJRI";
-	public static final String KEY_ISSUANCE_COUNTRY = "ISSUANCE_COUNTRY";
-	public static final String KEY_PASSPORT_TYPE = "PASSPORT_TYPE";
-	public static final String KEY_DIALING_CODE = "DIALING_CODE";
-	public static final String KEY_MOBILE_NUMBER = "MOBILE_NUMBER";
-	
 	private static final String PASSPORT_ICON_FILE =
 								"sa/gov/nic/bio/bw/client/features/visaapplicantsenrollment/images/passport-icon.png";
+	
+	@Output private String firstName;
+	@Output private String secondName;
+	@Output private String otherName;
+	@Output private String familyName;
+	@Output private CountryBean nationality;
+	@Output private GenderType gender;
+	@Output private CountryBean birthPlace;
+	@Output private LocalDate birthDate;
+	@Output private Boolean birthDateUseHijri;
+	@Output private VisaTypeBean visaType;
+	@Output private String passportNumber;
+	@Output private LocalDate issueDate;
+	@Output private Boolean issueDateUseHijri;
+	@Output private LocalDate expirationDate;
+	@Output private Boolean expirationDateUseHijri;
+	@Output private CountryBean issuanceCountry;
+	@Output private PassportTypeBean passportType;
+	@Output private CountryDialingCode dialingCode;
+	@Output private String mobileNumber;
 	
 	@FXML private TextField txtFirstName;
 	@FXML private TextField txtSecondName;
@@ -367,65 +367,45 @@ public class ApplicantInfoFxController extends WizardStepFxControllerBase
 	@Override
 	public void onGoingNext(Map<String, Object> uiDataMap)
 	{
-		uiDataMap.put(KEY_FIRST_NAME, txtFirstName.getText());
-		uiDataMap.put(KEY_SECOND_NAME, txtSecondName.getText());
-		uiDataMap.put(KEY_OTHER_NAME, txtOtherName.getText());
-		uiDataMap.put(KEY_FAMILY_NAME, txtFamilyName.getText());
-		uiDataMap.put(KEY_PASSPORT_NUMBER, txtPassportNumber.getText());
-		uiDataMap.put(KEY_MOBILE_NUMBER, txtMobileNumber.getText());
+		firstName = txtFirstName.getText();
+		secondName = txtSecondName.getText();
+		otherName = txtOtherName.getText();
+		familyName = txtFamilyName.getText();
+		passportNumber = txtPassportNumber.getText();
+		mobileNumber = txtMobileNumber.getText();
 		
 		HideableItem<CountryBean> nationalityItem = cboNationality.getValue();
-		uiDataMap.put(KEY_NATIONALITY, nationalityItem != null ? nationalityItem.getObject() : null);
+		nationality = nationalityItem != null ? nationalityItem.getObject() : null;
 		
 		ItemWithText<GenderType> genderItem = cboGender.getValue();
-		uiDataMap.put(KEY_GENDER, genderItem != null ? genderItem.getItem() : null);
+		gender = genderItem != null ? genderItem.getItem() : null;
 		
 		HideableItem<CountryBean> birthPlaceItem = cboBirthPlace.getValue();
-		uiDataMap.put(KEY_BIRTH_PLACE, birthPlaceItem != null ? birthPlaceItem.getObject() : null);
+		birthPlace = birthPlaceItem != null ? birthPlaceItem.getObject() : null;
 		
 		HideableItem<VisaTypeBean> visaTypeItem = cboVisaType.getValue();
-		uiDataMap.put(KEY_VISA_TYPE, visaTypeItem != null ? visaTypeItem.getObject() : null);
+		visaType = visaTypeItem != null ? visaTypeItem.getObject() : null;
 		
 		HideableItem<CountryBean> issueCountryItem = cboIssuanceCountry.getValue();
-		uiDataMap.put(KEY_ISSUANCE_COUNTRY, issueCountryItem != null ? issueCountryItem.getObject() : null);
+		issuanceCountry = issueCountryItem != null ? issueCountryItem.getObject() : null;
 		
 		HideableItem<PassportTypeBean> passportTypeItem = cboPassportType.getValue();
-		uiDataMap.put(KEY_PASSPORT_TYPE, passportTypeItem != null ? passportTypeItem.getObject() : null);
+		passportType = passportTypeItem != null ? passportTypeItem.getObject() : null;
 		
 		HideableItem<CountryDialingCode> dialingCodeItem = cboDialingCode.getValue();
-		uiDataMap.put(KEY_DIALING_CODE, dialingCodeItem != null ? dialingCodeItem.getObject() : null);
+		dialingCode = dialingCodeItem != null ? dialingCodeItem.getObject() : null;
 		
-		uiDataMap.put(KEY_BIRTH_DATE, dpBirthDate.getValue());
-		uiDataMap.put(KEY_ISSUE_DATE, dpIssueDate.getValue());
-		uiDataMap.put(KEY_EXPIRATION_DATE, dpExpirationDate.getValue());
+		birthDate = dpBirthDate.getValue();
+		issueDate = dpIssueDate.getValue();
+		expirationDate = dpExpirationDate.getValue();
 		
-		uiDataMap.put(KEY_BIRTH_DATE_USE_HIJRI, rdoBirthDateUseHijri.isSelected());
-		uiDataMap.put(KEY_ISSUE_DATE_USE_HIJRI, rdoIssueDateUseHijri.isSelected());
-		uiDataMap.put(KEY_EXPIRATION_DATE_USE_HIJRI, rdoExpirationDateUseHijri.isSelected());
+		birthDateUseHijri = rdoBirthDateUseHijri.isSelected();
+		issueDateUseHijri = rdoIssueDateUseHijri.isSelected();
+		expirationDateUseHijri = rdoExpirationDateUseHijri.isSelected();
 	}
 	
 	private void loadOldDateIfExist(Map<String, Object> dataMap)
 	{
-		String firstName = (String) dataMap.get(KEY_FIRST_NAME);
-		String secondName = (String) dataMap.get(KEY_SECOND_NAME);
-		String otherName = (String) dataMap.get(KEY_OTHER_NAME);
-		String familyName = (String) dataMap.get(KEY_FAMILY_NAME);
-		CountryBean nationality = (CountryBean) dataMap.get(KEY_NATIONALITY);
-		GenderType gender = (GenderType) dataMap.get(KEY_GENDER);
-		CountryBean birthPlace = (CountryBean) dataMap.get(KEY_BIRTH_PLACE);
-		LocalDate birthDate = (LocalDate) dataMap.get(KEY_BIRTH_DATE);
-		Boolean birthDateUseHijri = (Boolean) dataMap.get(KEY_BIRTH_DATE_USE_HIJRI);
-		VisaTypeBean visaType = (VisaTypeBean) dataMap.get(KEY_VISA_TYPE);
-		String passportNumber = (String) dataMap.get(KEY_PASSPORT_NUMBER);
-		LocalDate issueDate = (LocalDate) dataMap.get(KEY_ISSUE_DATE);
-		Boolean issueDateUseHijri = (Boolean) dataMap.get(KEY_ISSUE_DATE_USE_HIJRI);
-		LocalDate expirationDate = (LocalDate) dataMap.get(KEY_EXPIRATION_DATE);
-		Boolean expirationDateUseHijri = (Boolean) dataMap.get(KEY_EXPIRATION_DATE_USE_HIJRI);
-		CountryBean issuanceCountry = (CountryBean) dataMap.get(KEY_ISSUANCE_COUNTRY);
-		PassportTypeBean passportType = (PassportTypeBean) dataMap.get(KEY_PASSPORT_TYPE);
-		CountryDialingCode dialingCode = (CountryDialingCode) dataMap.get(KEY_DIALING_CODE);
-		String mobileNumber = (String) dataMap.get(KEY_MOBILE_NUMBER);
-		
 		if(firstName != null) txtFirstName.setText(firstName);
 		if(secondName != null) txtSecondName.setText(secondName);
 		if(otherName != null) txtOtherName.setText(otherName);

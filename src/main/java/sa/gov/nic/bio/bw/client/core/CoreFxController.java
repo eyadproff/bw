@@ -30,12 +30,12 @@ import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.utils.IdleMonitor;
 import sa.gov.nic.bio.bw.client.core.utils.UTF8Control;
 import sa.gov.nic.bio.bw.client.core.wizard.WizardPane;
+import sa.gov.nic.bio.bw.client.core.workflow.Signal;
 import sa.gov.nic.bio.bw.client.core.workflow.SignalType;
 import sa.gov.nic.bio.bw.client.core.workflow.Workflow;
 import sa.gov.nic.bio.bw.client.home.workflow.HomeWorkflow;
 
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
@@ -177,50 +177,59 @@ public class CoreFxController extends FxControllerBase implements IdleMonitorReg
 	 * @param controllerClass class of the new/existing controller class of the body
 	 * @param uiInputData data passed by the workflow manager to the controller
 	 */
-	private BodyFxControllerBase renderBodyForm(Class<?> controllerClass, Map<String, Object> uiInputData)
+	private BodyFxControllerBase renderBodyForm(Class<?> controllerClass, Map<String, Object> uiInputData) throws Signal
 	{
 		synchronized(CoreFxController.class)
 		{
-			if(!newMenuSelected && currentBodyController != null && currentBodyController.getClass() == controllerClass)
+			try
 			{
-				// same form
-				final BodyFxControllerBase controller = currentBodyController;
-				
-				if(!controller.isDetached())
-					Platform.runLater(() -> controller.onWorkflowUserTaskLoad(false, uiInputData));
-				
-			}
-			else // new form
-			{
-				newMenuSelected = false;
-				
-				try
+				if(!newMenuSelected && currentBodyController != null &&
+																currentBodyController.getClass() == controllerClass)
 				{
-					ControllerResourcesLocator controllerResourcesLocator = (ControllerResourcesLocator)
-							controllerClass.getDeclaredConstructor().newInstance();
+					// same form
+					final BodyFxControllerBase controller = currentBodyController;
 					
-					final BodyFxControllerBase oldController = currentBodyController;
-					if(oldController != null)
+					if(!controller.isDetached())
 					{
-						oldController.detach();
-						Platform.runLater(oldController::onDetachingFromScene);
+						Workflow.loadWorkflowInputs(controller, uiInputData, true);
+						Platform.runLater(() -> controller.onWorkflowUserTaskLoad(false, uiInputData));
 					}
-					final BodyFxControllerBase newController = renderNewBodyForm(controllerResourcesLocator);
-					currentBodyController = newController;
 					
-					Platform.runLater(() ->
-					{
-					    if(newController != null && !newController.isDetached())
-		                                    newController.onWorkflowUserTaskLoad(true, uiInputData);
-					});
 				}
-				catch(InstantiationException | IllegalAccessException | NoSuchMethodException
-																						| InvocationTargetException e)
+				else // new form
 				{
-					String errorCode = CoreErrorCodes.C002_00001.getCode();
-					String[] errorDetails = {"Failed to load the class " + controllerClass.getName()};
-					showErrorDialog(errorCode, e, errorDetails);
+					newMenuSelected = false;
+					
+					
+						ControllerResourcesLocator controllerResourcesLocator = (ControllerResourcesLocator)
+								controllerClass.getDeclaredConstructor().newInstance();
+						
+						final BodyFxControllerBase oldController = currentBodyController;
+						if(oldController != null)
+						{
+							oldController.detach();
+							Platform.runLater(oldController::onDetachingFromScene);
+						}
+						
+						final BodyFxControllerBase newController = renderNewBodyForm(controllerResourcesLocator);
+						if(newController != null) Workflow.loadWorkflowInputs(newController, uiInputData,
+						                                                      true);
+						
+						currentBodyController = newController;
+						
+						Platform.runLater(() ->
+						{
+						    if(newController != null && !newController.isDetached())
+			                                    newController.onWorkflowUserTaskLoad(true, uiInputData);
+						});
+					
 				}
+			}
+			catch(Exception e)
+			{
+				String errorCode = CoreErrorCodes.C002_00001.getCode();
+				String[] errorDetails = {"Failed to render the UI! controllerClass = " + controllerClass.getName()};
+				showErrorDialog(errorCode, e, errorDetails);
 			}
 		}
 		

@@ -33,9 +33,10 @@ import sa.gov.nic.bio.biokit.face.beans.CaptureFaceResponse;
 import sa.gov.nic.bio.biokit.face.beans.FaceStartPreviewResponse;
 import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.DevicesRunnerGadgetPaneFxController;
-import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.wizard.WizardStepFxControllerBase;
+import sa.gov.nic.bio.bw.client.core.workflow.Input;
+import sa.gov.nic.bio.bw.client.core.workflow.Output;
 import sa.gov.nic.bio.bw.client.features.commons.ui.AutoScalingStackPane;
 import sa.gov.nic.bio.bw.client.features.commons.ui.FourStateTitledPane;
 import sa.gov.nic.bio.bw.client.features.commons.utils.CommonsErrorCodes;
@@ -54,25 +55,28 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 {
 	private static final Logger LOGGER = Logger.getLogger(FaceCapturingFxController.class.getName());
 	
-	public static final String KEY_ACCEPT_ANY_CAPTURED_IMAGE = "ACCEPT_ANY_CAPTURED_IMAGE";
+	@Input private Boolean acceptAnyCapturedImage;
+	@Input private Boolean acceptBadQualityFace;
+	@Input private Integer acceptBadQualityFaceMinRetries;
+	@Output private Image capturedFaceImage;
+	@Output private Image croppedFaceImage;
+	@Output private Image faceImage;
+	@Output private Boolean icaoSuccessIconVisible;
+	@Output private Boolean icaoWarningIconVisible;
+	@Output private Boolean icaoErrorIconVisible;
+	@Output private Boolean icaoMessageVisible;
+	@Output private String icaoMessage;
+	@Output private Boolean capturedImageTitledPaneActive;
+	@Output private Boolean capturedImageTitledPaneCaptured;
+	@Output private Boolean capturedImageTitledPaneDuplicated;
+	@Output private Boolean capturedImageTitledPaneValid;
+	@Output private Boolean croppedImageTitledPaneActive;
+	@Output private Boolean croppedImageTitledPaneCaptured;
+	@Output private Boolean croppedImageTitledPaneDuplicated;
+	@Output private Boolean croppedImageTitledPaneValid;
+	
 	public static final String KEY_ACCEPT_BAD_QUALITY_FACE = "ACCEPT_BAD_QUALITY_FACE";
 	public static final String KEY_ACCEPTED_BAD_QUALITY_FACE_MIN_RETIRES = "ACCEPTED_BAD_QUALITY_FACE_MIN_RETIRES";
-	public static final String KEY_CAPTURED_IMAGE = "CAPTURED_IMAGE";
-	public static final String KEY_CROPPED_IMAGE = "CROPPED_IMAGE";
-	private static final String KEY_HIDE_FACE_PREVIOUS_BUTTON = "HIDE_FACE_PREVIOUS_BUTTON";
-	private static final String KEY_ICAO_SUCCESS_ICON_VISIBLE = "ICAO_SUCCESS_ICON_VISIBLE";
-	private static final String KEY_ICAO_WARNING_ICON_VISIBLE = "ICAO_WARNING_ICON_VISIBLE";
-	private static final String KEY_ICAO_ERROR_ICON_VISIBLE = "ICAO_ERROR_ICON_VISIBLE";
-	private static final String KEY_ICAO_MESSAGE_VISIBLE = "ICAO_MESSAGE_VISIBLE";
-	private static final String KEY_ICAO_MESSAGE = "ICAO_MESSAGE";
-	private static final String KEY_CAPTURED_IMAGE_TP_ACTIVE = "CAPTURED_IMAGE_TP_ACTIVE";
-	private static final String KEY_CAPTURED_IMAGE_TP_CAPTURED = "CAPTURED_IMAGE_TP_CAPTURED";
-	private static final String KEY_CAPTURED_IMAGE_TP_DUPLICATED = "CAPTURED_IMAGE_TP_DUPLICATED";
-	private static final String KEY_CAPTURED_IMAGE_TP_VALID = "CAPTURED_IMAGE_TP_VALID";
-	private static final String KEY_CROPPED_IMAGE_TP_ACTIVE = "CROPPED_IMAGE_TP_ACTIVE";
-	private static final String KEY_CROPPED_IMAGE_TP_CAPTURED = "CROPPED_IMAGE_TP_CAPTURED";
-	private static final String KEY_CROPPED_IMAGE_TP_DUPLICATED = "CROPPED_IMAGE_TP_DUPLICATED";
-	private static final String KEY_CROPPED_IMAGE_TP_VALID = "CROPPED_IMAGE_TP_VALID";
 	
 	public static final String KEY_FINAL_FACE_IMAGE = "FINAL_FACE_IMAGE";
 	
@@ -107,8 +111,6 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 	private PerspectiveCamera perspectiveCamera = new PerspectiveCamera();
 	private boolean cameraInitializedAtLeastOnce = false;
 	private boolean captureInProgress = false;
-	private boolean acceptAnyCapturedImage = false;
-	private boolean acceptBadQualityFace = false;
 	private int acceptedBadQualityFaceMinRetires = Integer.MAX_VALUE;
 	private int successfulCroppedCapturingCount = 0;
 	
@@ -186,22 +188,12 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 	{
 		if(newForm)
 		{
-			// collect configurations from the workflow
-			Boolean hidePreviousButton = (Boolean) uiInputData.get(KEY_HIDE_FACE_PREVIOUS_BUTTON);
-			if(hidePreviousButton != null) GuiUtils.showNode(btnPrevious, !hidePreviousButton);
-			Boolean bool = (Boolean) uiInputData.get(KEY_ACCEPT_ANY_CAPTURED_IMAGE);
-			if(bool != null) acceptAnyCapturedImage = bool;
-			bool = (Boolean) uiInputData.get(KEY_ACCEPT_BAD_QUALITY_FACE);
-			if(bool != null) acceptBadQualityFace = bool;
-			Integer i = (Integer) uiInputData.get(KEY_ACCEPTED_BAD_QUALITY_FACE_MIN_RETIRES);
-			if(bool != null) acceptedBadQualityFaceMinRetires = i;
-			
-			if(acceptAnyCapturedImage)
+			if(acceptAnyCapturedImage != null && acceptAnyCapturedImage)
 			{
 				btnNext.disableProperty().bind(ivCapturedImage.imageProperty().isNull().and(
 											   ivCroppedImage.imageProperty().isNull()));
 			}
-			else if(acceptBadQualityFace)
+			else if(acceptBadQualityFace != null && acceptBadQualityFace)
 			{
 				btnNext.setDisable(!ivSuccessIcao.isVisible() &&
 				                   successfulCroppedCapturingCount < acceptedBadQualityFaceMinRetires);
@@ -213,61 +205,36 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 											   ivSuccessIcao.visibleProperty().not()));
 			}
 			
+			if(icaoSuccessIconVisible != null) GuiUtils.showNode(ivSuccessIcao, icaoSuccessIconVisible);
+			if(icaoWarningIconVisible != null) GuiUtils.showNode(ivWarningIcao, icaoWarningIconVisible);
+			if(icaoErrorIconVisible != null) GuiUtils.showNode(ivErrorIcao, icaoErrorIconVisible);
+			if(icaoMessageVisible != null) GuiUtils.showNode(lblIcaoMessage, icaoMessageVisible);
 			
-			bool = (Boolean) uiInputData.get(KEY_ICAO_SUCCESS_ICON_VISIBLE);
-			if(bool != null) GuiUtils.showNode(ivSuccessIcao, bool);
-			
-			bool = (Boolean) uiInputData.get(KEY_ICAO_WARNING_ICON_VISIBLE);
-			if(bool != null) GuiUtils.showNode(ivWarningIcao, bool);
-			
-			bool = (Boolean) uiInputData.get(KEY_ICAO_ERROR_ICON_VISIBLE);
-			if(bool != null) GuiUtils.showNode(ivErrorIcao, bool);
-			
-			bool = (Boolean) uiInputData.get(KEY_ICAO_MESSAGE_VISIBLE);
-			if(bool != null) GuiUtils.showNode(lblIcaoMessage, bool);
-			
-			String icaoMessage = (String) uiInputData.get(KEY_ICAO_MESSAGE);
 			lblIcaoMessage.setText(icaoMessage);
 			
-			Image capturedImage = (Image) uiInputData.get(KEY_CAPTURED_IMAGE);
-			if(capturedImage != null)
+			if(capturedFaceImage != null)
 			{
-				ivCapturedImage.setImage(capturedImage);
+				ivCapturedImage.setImage(capturedFaceImage);
 				GuiUtils.attachImageDialog(Context.getCoreFxController(), ivCapturedImage, tpCapturedImage.getText(),
 				                           resources.getString("label.contextMenu.showImage"), false);
 			}
 			
-			Image croppedImage = (Image) uiInputData.get(KEY_CROPPED_IMAGE);
-			if(croppedImage != null)
+			if(croppedFaceImage != null)
 			{
-				ivCroppedImage.setImage(croppedImage);
+				ivCroppedImage.setImage(croppedFaceImage);
 				GuiUtils.attachImageDialog(Context.getCoreFxController(), ivCroppedImage, tpCroppedImage.getText(),
 				                           resources.getString("label.contextMenu.showImage"), false);
 			}
 			
-			bool = (Boolean) uiInputData.get(KEY_CAPTURED_IMAGE_TP_ACTIVE);
-			if(bool != null) tpCapturedImage.setActive(bool);
-			
-			bool = (Boolean) uiInputData.get(KEY_CAPTURED_IMAGE_TP_CAPTURED);
-			if(bool != null) tpCapturedImage.setCaptured(bool);
-			
-			bool = (Boolean) uiInputData.get(KEY_CAPTURED_IMAGE_TP_DUPLICATED);
-			if(bool != null) tpCapturedImage.setDuplicated(bool);
-			
-			bool = (Boolean) uiInputData.get(KEY_CAPTURED_IMAGE_TP_VALID);
-			if(bool != null) tpCapturedImage.setValid(bool);
-			
-			bool = (Boolean) uiInputData.get(KEY_CROPPED_IMAGE_TP_ACTIVE);
-			if(bool != null) tpCroppedImage.setActive(bool);
-			
-			bool = (Boolean) uiInputData.get(KEY_CROPPED_IMAGE_TP_CAPTURED);
-			if(bool != null) tpCroppedImage.setCaptured(bool);
-			
-			bool = (Boolean) uiInputData.get(KEY_CROPPED_IMAGE_TP_DUPLICATED);
-			if(bool != null) tpCroppedImage.setDuplicated(bool);
-			
-			bool = (Boolean) uiInputData.get(KEY_CROPPED_IMAGE_TP_VALID);
-			if(bool != null) tpCroppedImage.setValid(bool);
+			if(capturedImageTitledPaneActive != null) tpCapturedImage.setActive(capturedImageTitledPaneActive);
+			if(capturedImageTitledPaneCaptured != null) tpCapturedImage.setCaptured(capturedImageTitledPaneCaptured);
+			if(capturedImageTitledPaneDuplicated != null)
+													tpCapturedImage.setDuplicated(capturedImageTitledPaneDuplicated);
+			if(capturedImageTitledPaneValid != null) tpCapturedImage.setValid(capturedImageTitledPaneValid);
+			if(croppedImageTitledPaneActive != null) tpCroppedImage.setActive(croppedImageTitledPaneActive);
+			if(croppedImageTitledPaneCaptured != null) tpCroppedImage.setCaptured(croppedImageTitledPaneCaptured);
+			if(croppedImageTitledPaneDuplicated != null) tpCroppedImage.setDuplicated(croppedImageTitledPaneDuplicated);
+			if(croppedImageTitledPaneValid != null) tpCroppedImage.setValid(croppedImageTitledPaneValid);
 			
 			DevicesRunnerGadgetPaneFxController deviceManagerGadgetPaneController =
 												Context.getCoreFxController().getDeviceManagerGadgetPaneController();
@@ -332,55 +299,35 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 	@Override
 	public void onGoingNext(Map<String, Object> uiDataMap)
 	{
-		uiDataMap.put(KEY_ICAO_SUCCESS_ICON_VISIBLE, ivSuccessIcao.isVisible());
-		uiDataMap.put(KEY_ICAO_WARNING_ICON_VISIBLE, ivWarningIcao.isVisible());
-		uiDataMap.put(KEY_ICAO_ERROR_ICON_VISIBLE, ivErrorIcao.isVisible());
-		uiDataMap.put(KEY_ICAO_MESSAGE_VISIBLE, lblIcaoMessage.isVisible());
-		uiDataMap.put(KEY_ICAO_MESSAGE, lblIcaoMessage.getText());
-		uiDataMap.put(KEY_CAPTURED_IMAGE, ivCapturedImage.getImage());
-		uiDataMap.put(KEY_CROPPED_IMAGE, ivCroppedImage.getImage());
+		icaoSuccessIconVisible = ivSuccessIcao.isVisible();
+		icaoWarningIconVisible = ivWarningIcao.isVisible();
+		icaoErrorIconVisible = ivErrorIcao.isVisible();
+		icaoMessageVisible = lblIcaoMessage.isVisible();
+		icaoMessage = lblIcaoMessage.getText();
+		capturedFaceImage = ivCapturedImage.getImage();
+		croppedFaceImage = ivCroppedImage.getImage();
 		
 		if(tpCapturedImage.isCaptured())
 		{
-			uiDataMap.put(KEY_CAPTURED_IMAGE_TP_ACTIVE, tpCapturedImage.isActive());
-			uiDataMap.put(KEY_CAPTURED_IMAGE_TP_CAPTURED, true);
-			uiDataMap.put(KEY_CAPTURED_IMAGE_TP_DUPLICATED, tpCapturedImage.isDuplicated());
-			uiDataMap.put(KEY_CAPTURED_IMAGE_TP_VALID, tpCapturedImage.isValid());
+			capturedImageTitledPaneActive = tpCapturedImage.isActive();
+			capturedImageTitledPaneCaptured = true;
+			capturedImageTitledPaneDuplicated = tpCapturedImage.isDuplicated();
+			capturedImageTitledPaneValid = tpCapturedImage.isValid();
 		}
 		
 		if(tpCroppedImage.isCaptured())
 		{
-			uiDataMap.put(KEY_CROPPED_IMAGE_TP_CAPTURED, true);
-			uiDataMap.put(KEY_CROPPED_IMAGE_TP_ACTIVE, tpCroppedImage.isActive());
-			uiDataMap.put(KEY_CROPPED_IMAGE_TP_DUPLICATED, tpCroppedImage.isDuplicated());
-			uiDataMap.put(KEY_CROPPED_IMAGE_TP_VALID, tpCroppedImage.isValid());
+			croppedImageTitledPaneCaptured = true;
+			croppedImageTitledPaneActive = tpCroppedImage.isActive();
+			croppedImageTitledPaneDuplicated = tpCroppedImage.isDuplicated();
+			croppedImageTitledPaneValid = tpCroppedImage.isValid();
 		}
 		
-		prepareFaceForBackend(uiDataMap);
-	}
-	
-	private void prepareFaceForBackend(Map<String, Object> uiDataMap)
-	{
 		Image capturedImage = ivCapturedImage.getImage();
 		Image croppedImage = ivCroppedImage.getImage();
 		
-		Image finalImage;
-		if(croppedImage != null) finalImage = croppedImage;
-		else finalImage = capturedImage;
-		
-		if(finalImage == null) return;
-		
-		try
-		{
-			String imageBase64 = AppUtils.imageToBase64(finalImage, "jpg");
-			uiDataMap.put(KEY_FINAL_FACE_IMAGE, imageBase64);
-		}
-		catch(Exception e)
-		{
-			String errorCode = CommonsErrorCodes.C008_00016.getCode();
-			String[] errorDetails = {"Failed to convert the person image to base64!"};
-			reportNegativeResponse(errorCode, e, errorDetails);
-		}
+		if(croppedImage != null) faceImage = croppedImage;
+		else faceImage = capturedImage;
 	}
 	
 	@FXML
@@ -629,7 +576,7 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 	private void onCaptureFaceButtonClicked(ActionEvent actionEvent)
 	{
 		LOGGER.info("capturing the face...");
-		if(acceptBadQualityFace) btnNext.setDisable(true);
+		if(acceptBadQualityFace != null && acceptBadQualityFace) btnNext.setDisable(true);
 		
 		GuiUtils.showNode(btnCaptureFace, false);
 		GuiUtils.showNode(btnStopCameraLivePreview, false);
@@ -838,7 +785,7 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 					    }
 				    }
 				
-				    if(acceptBadQualityFace)
+				    if(acceptBadQualityFace != null && acceptBadQualityFace)
 				    {
 					    btnNext.setDisable(ivErrorIcao.isVisible() || (!icaoSuccess &&
 					                       successfulCroppedCapturingCount < acceptedBadQualityFaceMinRetires));

@@ -32,7 +32,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.atomic.AtomicReference;
 
 @WithLookups({SamisIdTypesLookup.class, DocumentTypesLookup.class, CountriesLookup.class, CrimeTypesLookup.class})
-public class RegisterConvictedReportPresentWorkflow extends WizardWorkflowBase<Void, Void>
+public class RegisterConvictedReportPresentWorkflow extends WizardWorkflowBase
 {
 	public RegisterConvictedReportPresentWorkflow(AtomicReference<FormRenderer> formRenderer,
 	                                              BlockingQueue<Map<String, Object>> userTasks)
@@ -41,7 +41,7 @@ public class RegisterConvictedReportPresentWorkflow extends WizardWorkflowBase<V
 	}
 	
 	@Override
-	public void onStep(int step) throws InterruptedException, Signal
+	public boolean onStep(int step) throws InterruptedException, Signal
 	{
 		switch(step)
 		{
@@ -51,17 +51,17 @@ public class RegisterConvictedReportPresentWorkflow extends WizardWorkflowBase<V
 													"printConvictedReport.fingerprint.acceptBadQualityFingerprint"));
 				int acceptedBadQualityFingerprintMinRetries = Integer.parseInt(Context.getConfigManager().getProperty(
 										"printConvictedReport.fingerprint.acceptedBadQualityFingerprintMinRetries"));
-				
+		
 				uiInputData.put(FingerprintCapturingFxController.KEY_HIDE_FINGERPRINT_PREVIOUS_BUTTON,
 				                Boolean.TRUE);
 				uiInputData.put(FingerprintCapturingFxController.KEY_ACCEPT_BAD_QUALITY_FINGERPRINT,
 				                acceptBadQualityFingerprint);
 				uiInputData.put(FingerprintCapturingFxController.KEY_ACCEPTED_BAD_QUALITY_FINGERPRINT_MIN_RETIRES,
 								acceptedBadQualityFingerprintMinRetries);
-				
+		
 				renderUi(FingerprintCapturingFxController.class);
 				waitForUserInput();
-				break;
+				return true;
 			}
 			case 1:
 			{
@@ -69,53 +69,52 @@ public class RegisterConvictedReportPresentWorkflow extends WizardWorkflowBase<V
 																"printConvictedReport.face.acceptBadQualityFace"));
 				int acceptedBadQualityFaceMinRetries = Integer.parseInt(Context.getConfigManager().getProperty(
 													"printConvictedReport.face.acceptedBadQualityFaceMinRetries"));
-				
+		
 				uiInputData.put(FaceCapturingFxController.KEY_ACCEPT_BAD_QUALITY_FACE, acceptBadQualityFace);
 				uiInputData.put(FaceCapturingFxController.KEY_ACCEPTED_BAD_QUALITY_FACE_MIN_RETIRES,
 				                acceptedBadQualityFaceMinRetries);
-				
+		
 				renderUi(FaceCapturingFxController.class);
 				waitForUserInput();
-				break;
+				return true;
 			}
 			case 2:
 			{
 				Boolean retry = (Boolean) uiInputData.get(
 						InquiryByFingerprintsPaneFxController.KEY_RETRY_FINGERPRINT_INQUIRY);
 				uiInputData.remove(InquiryByFingerprintsPaneFxController.KEY_RETRY_FINGERPRINT_INQUIRY);
-				
+		
 				if(retry == null || !retry)
 				{
 					// show progress only
 					renderUi(InquiryByFingerprintsPaneFxController.class);
 					waitForUserInput();
-					
+		
 					Boolean running = (Boolean)
 							uiInputData.get(InquiryByFingerprintsPaneFxController.KEY_DEVICES_RUNNER_IS_RUNNING);
 					if(running != null && !running) break;
 				}
-				
+		
 				@SuppressWarnings("unchecked")
 				List<Finger> collectedFingerprints = (List<Finger>)
 									uiInputData.get(FingerprintCapturingFxController.KEY_SEGMENTED_FINGERPRINTS);
-				
-				@SuppressWarnings("unchecked")
-				List<Integer> missingFingerprints = (List<Integer>)
+		
+				@SuppressWarnings("unchecked") List<Integer> missingFingerprints = (List<Integer>)
 									uiInputData.get(FingerprintCapturingFxController.KEY_MISSING_FINGERPRINTS);
-				
+		
 				ServiceResponse<Integer> serviceResponse =
 										FingerprintInquiryService.execute(collectedFingerprints, missingFingerprints);
 				Integer inquiryId = serviceResponse.getResult();
-				
+		
 				if(serviceResponse.isSuccess() && inquiryId != null)
 				{
 					while(true)
 					{
 						ServiceResponse<FingerprintInquiryStatusResult> response =
 															FingerprintInquiryStatusCheckerService.execute(inquiryId);
-						
+		
 						FingerprintInquiryStatusResult result = response.getResult();
-						
+		
 						if(response.isSuccess() && result != null)
 						{
 							if(result.getStatus() == FingerprintInquiryStatusResult.STATUS_INQUIRY_PENDING)
@@ -140,14 +139,14 @@ public class RegisterConvictedReportPresentWorkflow extends WizardWorkflowBase<V
 							{
 								uiInputData.put(InquiryByFingerprintsPaneFxController.KEY_FINGERPRINT_INQUIRY_HIT,
 								                Boolean.TRUE);
-								
+		
 								long samisId = result.getSamisId();
 								long civilHitBioId = result.getCivilHitBioId();
 								long criminalHitBioId = result.getCrimnalHitBioId();
 								PersonInfo personInfo = result.getPersonInfo();
-								
+		
 								uiInputData.put(InquiryResultPaneFxController.KEY_INQUIRY_SAMIS_ID, samisId);
-								
+		
 								if(civilHitBioId > 0) uiInputData.put(
 										PersonInfoPaneFxController.KEY_PERSON_INFO_CIVIL_BIO_ID, civilHitBioId);
 
@@ -164,7 +163,7 @@ public class RegisterConvictedReportPresentWorkflow extends WizardWorkflowBase<V
 						                result.getStatus());
 								renderUi(InquiryByFingerprintsPaneFxController.class);
 							}
-							
+		
 							waitForUserInput();
 							break;
 						}
@@ -184,83 +183,81 @@ public class RegisterConvictedReportPresentWorkflow extends WizardWorkflowBase<V
 					waitForUserInput();
 				}
 				
-				break;
+				return true;
 			}
 			case 3:
 			{
 				renderUi(InquiryResultPaneFxController.class);
 				waitForUserInput();
-				break;
+				return true;
 			}
 			case 4:
 			{
 				renderUi(PersonInfoPaneFxController.class);
 				waitForUserInput();
-				break;
+				return true;
 			}
 			case 5:
 			{
 				renderUi(JudgmentDetailsPaneFxController.class);
 				waitForUserInput();
-				break;
+				return true;
 			}
 			case 6:
 			{
 				renderUi(PunishmentDetailsPaneFxController.class);
 				waitForUserInput();
-				break;
+				return true;
 			}
 			case 7:
 			{
 				renderUi(ReviewAndSubmitPaneFxController.class);
 				waitForUserInput();
-				
+		
 				if(isLeaving()) break;
-				
+		
 				ConvictedReport convictedReport = (ConvictedReport)
 						uiInputData.get(ReviewAndSubmitPaneFxController.KEY_FINAL_CONVICTED_REPORT);
-				
+		
 				Long generalFileNumber = (Long)
 						uiInputData.get(PersonInfoPaneFxController.KEY_PERSON_INFO_GENERAL_FILE_NUMBER);
-				
+		
 				if(generalFileNumber == null)
 				{
 					Long samisId = convictedReport.getSubjSamisId();
 					Long civilHitBioId = convictedReport.getSubjBioId();
-					
+		
 					ServiceResponse<Long> serviceResponse =
 							GeneratingGeneralFileNumberService.execute(samisId, civilHitBioId);
-					
+		
 					if(!serviceResponse.isSuccess())
 					{
 						uiInputData.put(KEY_WEBSERVICE_RESPONSE, serviceResponse);
 						break;
 					}
-					
+		
 					generalFileNumber = serviceResponse.getResult();
 					uiInputData.put(PersonInfoPaneFxController.KEY_PERSON_INFO_GENERAL_FILE_NUMBER,
 					                generalFileNumber);
 				}
-				
+		
 				convictedReport.setGeneralFileNum(generalFileNumber);
-				
+		
 				ServiceResponse<ConvictedReportResponse> serviceResponse =
 														SubmittingConvictedReportService.execute(convictedReport);
 				uiInputData.put(KEY_WEBSERVICE_RESPONSE, serviceResponse);
 				
-				break;
+				return true;
 			}
 			case 8:
 			{
 				renderUi(ShowReportPaneFxController.class);
 				waitForUserInput();
-				break;
+				return true;
 			}
-			default:
-			{
-				waitForUserInput();
-				break;
-			}
+			default: return false;
 		}
+		
+		return true;
 	}
 }

@@ -26,6 +26,7 @@ import sa.gov.nic.bio.bw.client.core.utils.DialogUtils;
 import sa.gov.nic.bio.bw.client.core.utils.GuiLanguage;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.wizard.WizardStepFxControllerBase;
+import sa.gov.nic.bio.bw.client.core.workflow.Input;
 import sa.gov.nic.bio.bw.client.features.commons.beans.GenderType;
 import sa.gov.nic.bio.bw.client.features.commons.lookups.CountriesLookup;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.CountryBean;
@@ -39,7 +40,11 @@ import java.util.Map;
 
 public class ShowResultFxController extends WizardStepFxControllerBase
 {
-	public static final String KEY_FACE_MATCHING_RESPONSE = "FACE_MATCHING_RESPONSE";
+	private static final String AVATAR_PLACEHOLDER_FILE = "sa/gov/nic/bio/bw/client/core/images/avatar_placeholder.jpg";
+	
+	@Input(required = true) private Long personId;
+	@Input(required = true) private Image faceImage;
+	@Input(required = true) private FaceMatchingResponse faceMatchingResponse;
 	
 	@FXML private Pane matchedPane;
 	@FXML private Pane notMatchedPane;
@@ -87,15 +92,11 @@ public class ShowResultFxController extends WizardStepFxControllerBase
 	{
 		if(newForm)
 		{
-			long personId = (long) uiInputData.get(PersonIdPaneFxController.KEY_PERSON_ID);
-			FaceMatchingResponse faceMatchingResponse = (FaceMatchingResponse)
-																		uiInputData.get(KEY_FACE_MATCHING_RESPONSE);
-			
 			if(!faceMatchingResponse.isMatched())
 			{
 				GuiUtils.showNode(notMatchedPane, true);
 				lblNotMatched.setText(String.format(resources.getString("label.faceImageIsNotMatched"),
-				                                    String.valueOf(personId)));
+				                                    AppUtils.localizeNumbers(String.valueOf(personId))));
 			}
 			else // matched
 			{
@@ -196,11 +197,17 @@ public class ShowResultFxController extends WizardStepFxControllerBase
 					lblOutOfKingdom.setTextFill(Color.RED);
 				}
 				
-				Image uploadedImage = (Image) uiInputData.get(ConfirmInputFxController.KEY_FINAL_IMAGE);
-				Image dbImage = AppUtils.imageFromBase64(personInfo.getFace());
+				String face = personInfo.getFace();
+				Image dbImage = AppUtils.imageFromBase64(face);
 				
-				ivUploadedImage.setImage(uploadedImage);
-				ivDBImage.setImage(dbImage);
+				ivUploadedImage.setImage(faceImage);
+				
+				if(dbImage != null) ivDBImage.setImage(dbImage);
+				else
+				{
+					ivDBImage.setImage(new Image(Thread.currentThread().getContextClassLoader()
+							                            .getResourceAsStream(AVATAR_PLACEHOLDER_FILE)));
+				}
 				
 				GuiUtils.attachImageDialog(Context.getCoreFxController(), ivUploadedImage,
 				                           resources.getString("label.uploadedImage"),

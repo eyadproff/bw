@@ -32,6 +32,7 @@ import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.client.core.utils.DialogUtils;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.wizard.WizardStepFxControllerBase;
+import sa.gov.nic.bio.bw.client.core.workflow.Input;
 import sa.gov.nic.bio.bw.client.features.searchbyfaceimage.ui.ToggleTitledPane;
 import sa.gov.nic.bio.bw.client.features.searchbyfaceimage.webservice.Candidate;
 
@@ -44,7 +45,8 @@ import java.util.Map;
 
 public class ShowResultsFxController extends WizardStepFxControllerBase
 {
-	public static final String KEY_CANDIDATES = "CANDIDATES";
+	@Input(required = true) private Image finalImage;
+	@Input(required = true) private List<Candidate> candidates;
 	
 	@FXML private SplitPane splitPane;
 	@FXML private HBox imagePane;
@@ -62,8 +64,6 @@ public class ShowResultsFxController extends WizardStepFxControllerBase
 	@FXML private HBox hbCandidatesContainer;
 	@FXML private HBox hbCandidatesImages;
 	@FXML private Button btnStartOver;
-	
-	private Image finalImage;
 	
 	@Override
 	public URL getFxmlLocation()
@@ -109,7 +109,6 @@ public class ShowResultsFxController extends WizardStepFxControllerBase
 	@SuppressWarnings("unchecked")
 	public void onWorkflowUserTaskLoad(boolean newForm, Map<String, Object> uiInputData)
 	{
-		List<Candidate> candidates = (List<Candidate>) uiInputData.get(KEY_CANDIDATES);
 		Collections.sort(candidates);
 		
 		spCandidates.maxHeightProperty().bind(new SimpleDoubleProperty(Double.MAX_VALUE));
@@ -133,7 +132,6 @@ public class ShowResultsFxController extends WizardStepFxControllerBase
 		splitPane.getStyleClass().remove("hidden-divider"); // show the divider
 		
 		ImageView imageView = new ImageView();
-		finalImage = (Image) uiInputData.get(ConfirmImageFxController.KEY_FINAL_IMAGE);
 		imageView.setImage(finalImage);
 		imageView.setPreserveRatio(true);
 		

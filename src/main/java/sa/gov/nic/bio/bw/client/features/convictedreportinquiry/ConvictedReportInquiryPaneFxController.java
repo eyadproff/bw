@@ -25,6 +25,8 @@ import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.client.core.utils.DialogUtils;
 import sa.gov.nic.bio.bw.client.core.utils.GuiLanguage;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
+import sa.gov.nic.bio.bw.client.core.workflow.Input;
+import sa.gov.nic.bio.bw.client.core.workflow.Output;
 import sa.gov.nic.bio.bw.client.core.workflow.Workflow;
 import sa.gov.nic.bio.bw.client.features.commons.lookups.CountriesLookup;
 import sa.gov.nic.bio.bw.client.features.commons.lookups.SamisIdTypesLookup;
@@ -35,16 +37,16 @@ import sa.gov.nic.bio.bw.client.features.convictedreportinquiry.utils.ConvictedR
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.ConvictedReport;
 import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class ConvictedReportInquiryPaneFxController extends BodyFxControllerBase
 {
-	public static final String KEY_GENERAL_FILE_NUMBER = "GENERAL_FILE_NUMBER";
-	
 	private static final String FXML_SHOW_REPORT_DIALOG =
 								"sa/gov/nic/bio/bw/client/features/convictedreportinquiry/fxml/show_report_dialog.fxml";
+	
+	@Input private List<Pair<ConvictedReport, Map<Integer, String>>> convictedReports;
+	@Output private Long generalFileNumber;
 	
 	@FXML private TableView<Pair<ConvictedReport, Map<Integer, String>>> tvConvictedReports;
 	@FXML private TableColumn<Pair<ConvictedReport, Map<Integer, String>>, Pair<ConvictedReport, Map<Integer, String>>>
@@ -242,22 +244,14 @@ public class ConvictedReportInquiryPaneFxController extends BodyFxControllerBase
 		else
 		{
 			@SuppressWarnings("unchecked")
-			ServiceResponse<List<Pair<ConvictedReport, Map<Integer, String>>>> serviceResponse =
-									(ServiceResponse<List<Pair<ConvictedReport, Map<Integer, String>>>>)
-																uiInputData.get(Workflow.KEY_WEBSERVICE_RESPONSE);
+			ServiceResponse<?> serviceResponse = (ServiceResponse<?>) uiInputData.get(Workflow.KEY_WEBSERVICE_RESPONSE);
 			
 			disableUiControls(false);
 			
 			if(serviceResponse.isSuccess())
 			{
-				if(serviceResponse.isSuccess())
-				{
-					List<Pair<ConvictedReport, Map<Integer, String>>> convictedReports = serviceResponse.getResult();
-					tvConvictedReports.getItems().setAll(convictedReports);
-					tvConvictedReports.requestFocus();
-				}
-				else reportNegativeResponse(serviceResponse.getErrorCode(), serviceResponse.getException(),
-					                        serviceResponse.getErrorDetails());
+				tvConvictedReports.getItems().setAll(convictedReports);
+				tvConvictedReports.requestFocus();
 			}
 			else reportNegativeResponse(serviceResponse.getErrorCode(), serviceResponse.getException(),
 			                            serviceResponse.getErrorDetails());
@@ -288,12 +282,9 @@ public class ConvictedReportInquiryPaneFxController extends BodyFxControllerBase
 		disableUiControls(true);
 		
 		String sGeneralFileNumber = txtGeneralFileNumber.getText();
-		long generalFileNumber = Long.parseLong(sGeneralFileNumber);
+		generalFileNumber = Long.parseLong(sGeneralFileNumber);
 		
-		Map<String, Object> uiDataMap = new HashMap<>();
-		uiDataMap.put(KEY_GENERAL_FILE_NUMBER, generalFileNumber);
-		
-		if(!isDetached()) Context.getWorkflowManager().submitUserTask(uiDataMap);
+		continueWorkflow();
 	}
 	
 	@FXML

@@ -8,6 +8,7 @@ import javafx.scene.control.TextField;
 import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.wizard.WizardStepFxControllerBase;
+import sa.gov.nic.bio.bw.client.core.workflow.Output;
 import sa.gov.nic.bio.bw.client.core.workflow.Workflow;
 import sa.gov.nic.bio.bw.client.features.printdeadpersonrecord.webservice.DeadPersonRecord;
 import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
@@ -18,7 +19,8 @@ import java.util.Map;
 
 public class RecordIdPaneFxController extends WizardStepFxControllerBase
 {
-	public static final String KEY_RECORD_ID = "RECORD_ID";
+	@Output private Long recordId;
+	@Output private DeadPersonRecord deadPersonRecord;
 	
 	@FXML private TextField txtRecordId;
 	@FXML private ProgressIndicator piProgress;
@@ -41,10 +43,9 @@ public class RecordIdPaneFxController extends WizardStepFxControllerBase
 		    hideNotification();
 			txtRecordId.setDisable(true);
 			piProgress.setVisible(true);
-		
-		    Map<String, Object> uiDataMap = new HashMap<>();
-		    uiDataMap.put(KEY_RECORD_ID, Long.parseLong(txtRecordId.getText()));
-			if(!isDetached()) Context.getWorkflowManager().submitUserTask(uiDataMap);
+			
+			recordId = Long.parseLong(txtRecordId.getText());
+			if(!isDetached()) Context.getWorkflowManager().submitUserTask(new HashMap<>());
 		});
 	}
 	
@@ -53,10 +54,7 @@ public class RecordIdPaneFxController extends WizardStepFxControllerBase
 	{
 		if(newForm)
 		{
-			// load the old state, if exists
-			Long personId = (Long) uiInputData.get(KEY_RECORD_ID);
-			if(personId != null) txtRecordId.setText(String.valueOf(personId));
-			
+			if(recordId != null) txtRecordId.setText(String.valueOf(recordId));
 			txtRecordId.requestFocus();
 		}
 		else
@@ -68,7 +66,11 @@ public class RecordIdPaneFxController extends WizardStepFxControllerBase
 			ServiceResponse<DeadPersonRecord> serviceResponse =
 								(ServiceResponse<DeadPersonRecord>) uiInputData.get(Workflow.KEY_WEBSERVICE_RESPONSE);
 			
-			if(serviceResponse.isSuccess()) goNext();
+			if(serviceResponse.isSuccess())
+			{
+				deadPersonRecord = serviceResponse.getResult();
+				goNext();
+			}
 			else reportNegativeResponse(serviceResponse.getErrorCode(), serviceResponse.getException(),
 				                        serviceResponse.getErrorDetails());
 		}

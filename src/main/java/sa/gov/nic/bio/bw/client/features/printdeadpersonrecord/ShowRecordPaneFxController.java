@@ -11,12 +11,12 @@ import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import net.sf.jasperreports.engine.JasperPrint;
 import sa.gov.nic.bio.bw.client.core.Context;
-import sa.gov.nic.bio.bw.client.core.biokit.FingerPosition;
 import sa.gov.nic.bio.bw.client.core.utils.AppConstants;
 import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.client.core.utils.GuiLanguage;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.wizard.WizardStepFxControllerBase;
+import sa.gov.nic.bio.bw.client.core.workflow.Input;
 import sa.gov.nic.bio.bw.client.features.commons.beans.GenderType;
 import sa.gov.nic.bio.bw.client.features.commons.lookups.CountriesLookup;
 import sa.gov.nic.bio.bw.client.features.commons.lookups.DocumentTypesLookup;
@@ -44,17 +44,16 @@ import java.net.URL;
 import java.time.LocalDate;
 import java.util.Base64;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class ShowRecordPaneFxController extends WizardStepFxControllerBase
 {
-	public static final String KEY_DEAD_PERSON_RECORD = "DEAD_PERSON_RECORD";
-	public static final String KEY_SAMIS_ID = "SAMIS_ID";
-	public static final String KEY_PERSON_INFO = "PERSON_INFO";
-	public static final String KEY_PERSON_FINGERPRINTS_IMAGES = "PERSON_FINGERPRINTS_IMAGES";
+	@Input(required = true) private Long recordId;
+	@Input(required = true) private DeadPersonRecord deadPersonRecord;
+	@Input private PersonInfo personInfo;
+	@Input private Map<Integer, String> fingerprintImages;
 	
 	@FXML private VBox paneImage;
 	@FXML private ImageViewPane paneImageView;
@@ -116,17 +115,7 @@ public class ShowRecordPaneFxController extends WizardStepFxControllerBase
 	{
 		if(newForm)
 		{
-			DeadPersonRecord deadPersonRecord = (DeadPersonRecord) uiInputData.get(KEY_DEAD_PERSON_RECORD);
-			Long samisId = (Long) uiInputData.get(KEY_SAMIS_ID);
-			PersonInfo personInfo = (PersonInfo) uiInputData.get(KEY_PERSON_INFO);
-
-			@SuppressWarnings("unchecked")
-			Map<Integer, String> fingerprintImages =
-											(Map<Integer, String>) uiInputData.get(KEY_PERSON_FINGERPRINTS_IMAGES);
-			
-			Long recordIdLong = (Long) uiInputData.get(RecordIdPaneFxController.KEY_RECORD_ID);
-			
-			populateData(samisId, recordIdLong, deadPersonRecord, personInfo, fingerprintImages);
+			populateData(recordId, deadPersonRecord, personInfo, fingerprintImages);
 		}
 	}
 	
@@ -248,7 +237,7 @@ public class ShowRecordPaneFxController extends WizardStepFxControllerBase
 		}
 	}
 	
-	private void populateData(Long samisIdLong, Long recordIdLong, DeadPersonRecord deadPersonRecord,
+	private void populateData(Long recordIdLong, DeadPersonRecord deadPersonRecord,
 	                          PersonInfo personInfo, Map<Integer, String> fingerprintsImages)
 	{
 		String samisId = null;
@@ -277,6 +266,7 @@ public class ShowRecordPaneFxController extends WizardStepFxControllerBase
 			lblRecordId.setText(recordId);
 		}
 		
+		Long samisIdLong = deadPersonRecord.getSamisId();
 		if(samisIdLong != null)
 		{
 			samisId = AppUtils.localizeNumbers(String.valueOf(samisIdLong));
@@ -491,50 +481,12 @@ public class ShowRecordPaneFxController extends WizardStepFxControllerBase
 
 		if(fingerprintsImages != null)
 		{
-			Map<Integer, ImageView> imageViewMap = new HashMap<>();
-			Map<Integer, String> dialogTitleMap = new HashMap<>();
-			
-			imageViewMap.put(FingerPosition.RIGHT_THUMB.getPosition(), ivRightThumb);
-			imageViewMap.put(FingerPosition.RIGHT_INDEX.getPosition(), ivRightIndex);
-			imageViewMap.put(FingerPosition.RIGHT_MIDDLE.getPosition(), ivRightMiddle);
-			imageViewMap.put(FingerPosition.RIGHT_RING.getPosition(), ivRightRing);
-			imageViewMap.put(FingerPosition.RIGHT_LITTLE.getPosition(), ivRightLittle);
-			imageViewMap.put(FingerPosition.LEFT_THUMB.getPosition(), ivLeftThumb);
-			imageViewMap.put(FingerPosition.LEFT_INDEX.getPosition(), ivLeftIndex);
-			imageViewMap.put(FingerPosition.LEFT_MIDDLE.getPosition(), ivLeftMiddle);
-			imageViewMap.put(FingerPosition.LEFT_RING.getPosition(), ivLeftRing);
-			imageViewMap.put(FingerPosition.LEFT_LITTLE.getPosition(), ivLeftLittle);
-			
-			dialogTitleMap.put(FingerPosition.RIGHT_THUMB.getPosition(),
-			                                                resources.getString("label.fingers.thumb") + " (" +
-					                                        resources.getString("label.rightHand") + ")");
-			dialogTitleMap.put(FingerPosition.RIGHT_INDEX.getPosition(),
-			                                                resources.getString("label.fingers.index") + " (" +
-					                                        resources.getString("label.rightHand") + ")");
-			dialogTitleMap.put(FingerPosition.RIGHT_MIDDLE.getPosition(),
-			                                                resources.getString("label.fingers.middle") + " (" +
-					                                        resources.getString("label.rightHand") + ")");
-			dialogTitleMap.put(FingerPosition.RIGHT_RING.getPosition(),
-			                                                resources.getString("label.fingers.ring") + " (" +
-					                                        resources.getString("label.rightHand") + ")");
-			dialogTitleMap.put(FingerPosition.RIGHT_LITTLE.getPosition(),
-			                                                resources.getString("label.fingers.little") + " (" +
-					                                        resources.getString("label.rightHand") + ")");
-			dialogTitleMap.put(FingerPosition.LEFT_THUMB.getPosition(),
-			                                                resources.getString("label.fingers.thumb") + " (" +
-					                                        resources.getString("label.leftHand") + ")");
-			dialogTitleMap.put(FingerPosition.LEFT_INDEX.getPosition(),
-			                                                resources.getString("label.fingers.index") + " (" +
-					                                        resources.getString("label.leftHand") + ")");
-			dialogTitleMap.put(FingerPosition.LEFT_MIDDLE.getPosition(),
-			                                                resources.getString("label.fingers.middle") + " (" +
-					                                        resources.getString("label.leftHand") + ")");
-			dialogTitleMap.put(FingerPosition.LEFT_RING.getPosition(),
-			                                                resources.getString("label.fingers.ring") + " (" +
-					                                        resources.getString("label.leftHand") + ")");
-			dialogTitleMap.put(FingerPosition.LEFT_LITTLE.getPosition(),
-			                                                resources.getString("label.fingers.little") + " (" +
-					                                        resources.getString("label.leftHand") + ")");
+			Map<Integer, String> dialogTitleMap = GuiUtils.constructFingerprintDialogTitles(resources);
+			Map<Integer, ImageView> imageViewMap = GuiUtils.constructFingerprintImageViewMap(ivRightThumb, ivRightIndex,
+			                                                                                 ivRightMiddle, ivRightRing,
+			                                                                                 ivRightLittle, ivLeftThumb,
+			                                                                                 ivLeftIndex, ivLeftMiddle,
+			                                                                                 ivLeftRing, ivLeftLittle);
 			
 			fingerprintsImages.forEach((position, fingerprintImage) ->
 			{

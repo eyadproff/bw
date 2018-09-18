@@ -5,8 +5,13 @@ import java.util.Objects;
 
 public class Signal extends Throwable
 {
-	private final SignalType signalType;
-	private final Map<String, Object> payload;
+	private SignalType signalType;
+	private Map<String, Object> payload;
+	
+	public Signal(SignalType signalType)
+	{
+		this.signalType = signalType;
+	}
 	
 	public Signal(SignalType signalType, Map<String, Object> payload)
 	{

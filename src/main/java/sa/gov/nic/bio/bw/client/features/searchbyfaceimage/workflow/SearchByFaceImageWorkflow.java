@@ -6,18 +6,16 @@ import sa.gov.nic.bio.bw.client.core.workflow.WizardWorkflowBase;
 import sa.gov.nic.bio.bw.client.features.commons.FaceCapturingFxController;
 import sa.gov.nic.bio.bw.client.features.searchbyfaceimage.ConfirmImageFxController;
 import sa.gov.nic.bio.bw.client.features.searchbyfaceimage.ImageSourceFxController;
+import sa.gov.nic.bio.bw.client.features.searchbyfaceimage.ImageSourceFxController.Source;
 import sa.gov.nic.bio.bw.client.features.searchbyfaceimage.SearchFxController;
 import sa.gov.nic.bio.bw.client.features.searchbyfaceimage.ShowResultsFxController;
 import sa.gov.nic.bio.bw.client.features.searchbyfaceimage.UploadImageFileFxController;
-import sa.gov.nic.bio.bw.client.features.searchbyfaceimage.webservice.Candidate;
-import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
 
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class SearchByFaceImageWorkflow extends WizardWorkflowBase<Void, Void>
+public class SearchByFaceImageWorkflow extends WizardWorkflowBase
 {
 	public SearchByFaceImageWorkflow(AtomicReference<FormRenderer> formRenderer,
 	                                 BlockingQueue<Map<String, Object>> userTasks)
@@ -26,65 +24,76 @@ public class SearchByFaceImageWorkflow extends WizardWorkflowBase<Void, Void>
 	}
 	
 	@Override
-	public void onStep(int step) throws InterruptedException, Signal
+	public boolean onStep(int step) throws InterruptedException, Signal
 	{
 		switch(step)
 		{
 			case 0:
 			{
-				uiInputData.put(ImageSourceFxController.KEY_HIDE_IMAGE_SOURCE_PREVIOUS_BUTTON, Boolean.TRUE);
+				setData(ImageSourceFxController.class, "hidePreviousButton", true);
 				renderUi(ImageSourceFxController.class);
 				waitForUserInput();
-				break;
+				return true;
 			}
 			case 1:
 			{
-				String imageInput = (String) uiInputData.get(ImageSourceFxController.KEY_IMAGE_SOURCE);
+				Source imageSource = getData(ImageSourceFxController.class, "imageSource");
 				
-				if(ImageSourceFxController.VALUE_IMAGE_SOURCE_CAMERA.equals(imageInput))
+				if(Source.CAMERA.equals(imageSource))
 				{
-					uiInputData.put(FaceCapturingFxController.KEY_ACCEPT_ANY_CAPTURED_IMAGE, Boolean.TRUE);
+					setData(FaceCapturingFxController.class, "acceptAnyCapturedImage", true);
 					renderUi(FaceCapturingFxController.class);
 				}
-				else if(ImageSourceFxController.VALUE_IMAGE_SOURCE_UPLOAD.equals(imageInput))
+				else if(Source.UPLOAD.equals(imageSource))
 				{
 					renderUi(UploadImageFileFxController.class);
 				}
 				
 				waitForUserInput();
-				break;
+				return true;
 			}
 			case 2:
 			{
+				Source imageSource = getData(ImageSourceFxController.class, "imageSource");
+				
+				if(Source.UPLOAD.equals(imageSource))
+				{
+					passData(UploadImageFileFxController.class, "uploadedImage",
+					         ConfirmImageFxController.class, "faceImage");
+				}
+				else if(Source.CAMERA.equals(imageSource))
+				{
+					passData(FaceCapturingFxController.class, ConfirmImageFxController.class,
+					         "faceImage");
+				}
+				
 				renderUi(ConfirmImageFxController.class);
 				waitForUserInput();
-				break;
+				return true;
 			}
 			case 3:
 			{
-				// show progress indicator here
-				renderUi(SearchFxController.class);
-				
-				String imageBase64 = (String) uiInputData.get(ConfirmImageFxController.KEY_FINAL_IMAGE_BASE64);
-				ServiceResponse<List<Candidate>> response = SearchByFaceImageService.execute(imageBase64);
-				uiInputData.put(KEY_WEBSERVICE_RESPONSE, response);
-				
-				// if success, ask for goNext() automatically. Otherwise, show failure message and retry button
 				renderUi(SearchFxController.class);
 				waitForUserInput();
-				break;
+				
+				passData(ConfirmImageFxController.class, SearchByFaceImageWorkflowTask.class,
+				         "faceImageBase64");
+				executeTask(SearchByFaceImageWorkflowTask.class);
+				
+				return true;
 			}
 			case 4:
 			{
+				passData(ConfirmImageFxController.class, ShowResultsFxController.class,
+				         "finalImage");
+				passData(SearchByFaceImageWorkflowTask.class,  ShowResultsFxController.class,
+				         "candidates");
+				
 				renderUi(ShowResultsFxController.class);
 				waitForUserInput();
-				break;
+				return true;
 			}
-			default:
-			{
-				waitForUserInput();
-				break;
-			}
+			default: return false;
 		}
 	}
 }

@@ -9,20 +9,17 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import sa.gov.nic.bio.bw.client.core.Context;
-import sa.gov.nic.bio.bw.client.core.biokit.FingerPosition;
-import sa.gov.nic.bio.bw.client.core.utils.AppConstants;
 import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.client.core.utils.GuiLanguage;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.wizard.WizardStepFxControllerBase;
+import sa.gov.nic.bio.bw.client.core.workflow.Input;
 import sa.gov.nic.bio.bw.client.core.workflow.Workflow;
-import sa.gov.nic.bio.bw.client.features.commons.FaceCapturingFxController;
 import sa.gov.nic.bio.bw.client.features.commons.FingerprintCapturingFxController;
 import sa.gov.nic.bio.bw.client.features.commons.beans.GenderType;
 import sa.gov.nic.bio.bw.client.features.commons.lookups.CountriesLookup;
 import sa.gov.nic.bio.bw.client.features.commons.ui.ImageViewPane;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.CountryBean;
-import sa.gov.nic.bio.bw.client.features.commons.webservice.Finger;
 import sa.gov.nic.bio.bw.client.features.visaapplicantsenrollment.lookups.PassportTypesLookup;
 import sa.gov.nic.bio.bw.client.features.visaapplicantsenrollment.lookups.VisaTypesLookup;
 import sa.gov.nic.bio.bw.client.features.visaapplicantsenrollment.utils.VisaApplicantsEnrollmentErrorCodes;
@@ -44,6 +41,26 @@ import java.util.Map;
 public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 {
 	public static final String KEY_VISA_APPLICANT_INFO = "VISA_APPLICANT_INFO";
+	
+	@Input(required = true) private String firstName;
+	@Input private String secondName;
+	@Input private String otherName;
+	@Input(required = true) private String familyName;
+	@Input(required = true) private CountryBean nationality;
+	@Input(required = true) private GenderType gender;
+	@Input private CountryBean birthPlace;
+	@Input(required = true) private LocalDate birthDate;
+	@Input(required = true) private Boolean birthDateUseHijri;
+	@Input(required = true) private VisaTypeBean visaType;
+	@Input(required = true) private String passportNumber;
+	@Input(required = true) private LocalDate issueDate;
+	@Input(required = true) private Boolean issueDateUseHijri;
+	@Input(required = true) private LocalDate expirationDate;
+	@Input(required = true) private Boolean expirationDateUseHijri;
+	@Input(required = true) private CountryBean issuanceCountry;
+	@Input(required = true) private PassportTypeBean passportType;
+	@Input(required = true) private CountryDialingCode dialingCode;
+	@Input(required = true) private String mobileNumber;
 	
 	@FXML private VBox paneImage;
 	@FXML private ImageViewPane paneImageView;
@@ -229,49 +246,13 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 			@SuppressWarnings("unchecked")
 			Map<Integer, String> fingerprintImages = (Map<Integer, String>)
 								uiInputData.get(FingerprintCapturingFxController.KEY_FINGERPRINTS_IMAGES);
-			Map<Integer, ImageView> imageViewMap = new HashMap<>();
-			Map<Integer, String> dialogTitleMap = new HashMap<>();
 			
-			imageViewMap.put(FingerPosition.RIGHT_THUMB.getPosition(), ivRightThumb);
-			imageViewMap.put(FingerPosition.RIGHT_INDEX.getPosition(), ivRightIndex);
-			imageViewMap.put(FingerPosition.RIGHT_MIDDLE.getPosition(), ivRightMiddle);
-			imageViewMap.put(FingerPosition.RIGHT_RING.getPosition(), ivRightRing);
-			imageViewMap.put(FingerPosition.RIGHT_LITTLE.getPosition(), ivRightLittle);
-			imageViewMap.put(FingerPosition.LEFT_THUMB.getPosition(), ivLeftThumb);
-			imageViewMap.put(FingerPosition.LEFT_INDEX.getPosition(), ivLeftIndex);
-			imageViewMap.put(FingerPosition.LEFT_MIDDLE.getPosition(), ivLeftMiddle);
-			imageViewMap.put(FingerPosition.LEFT_RING.getPosition(), ivLeftRing);
-			imageViewMap.put(FingerPosition.LEFT_LITTLE.getPosition(), ivLeftLittle);
-			dialogTitleMap.put(FingerPosition.RIGHT_THUMB.getPosition(),
-			                                        resources.getString("label.fingers.thumb") + " (" +
-													resources.getString("label.rightHand") + ")");
-			dialogTitleMap.put(FingerPosition.RIGHT_INDEX.getPosition(),
-			                                        resources.getString("label.fingers.index") + " (" +
-					                                resources.getString("label.rightHand") + ")");
-			dialogTitleMap.put(FingerPosition.RIGHT_MIDDLE.getPosition(),
-			                                        resources.getString("label.fingers.middle") + " (" +
-				                                    resources.getString("label.rightHand") + ")");
-			dialogTitleMap.put(FingerPosition.RIGHT_RING.getPosition(),
-			                                        resources.getString("label.fingers.ring") + " (" +
-				                                    resources.getString("label.rightHand") + ")");
-			dialogTitleMap.put(FingerPosition.RIGHT_LITTLE.getPosition(),
-			                                        resources.getString("label.fingers.little") + " (" +
-				                                    resources.getString("label.rightHand") + ")");
-			dialogTitleMap.put(FingerPosition.LEFT_THUMB.getPosition(),
-			                                        resources.getString("label.fingers.thumb") + " (" +
-				                                    resources.getString("label.leftHand") + ")");
-			dialogTitleMap.put(FingerPosition.LEFT_INDEX.getPosition(),
-			                                        resources.getString("label.fingers.index") + " (" +
-				                                    resources.getString("label.leftHand") + ")");
-			dialogTitleMap.put(FingerPosition.LEFT_MIDDLE.getPosition(),
-			                                        resources.getString("label.fingers.middle") + " (" +
-				                                    resources.getString("label.leftHand") + ")");
-			dialogTitleMap.put(FingerPosition.LEFT_RING.getPosition(),
-			                                        resources.getString("label.fingers.ring") + " (" +
-				                                    resources.getString("label.leftHand") + ")");
-			dialogTitleMap.put(FingerPosition.LEFT_LITTLE.getPosition(),
-			                                        resources.getString("label.fingers.little") + " (" +
-				                                    resources.getString("label.leftHand") + ")");
+			Map<Integer, String> dialogTitleMap = GuiUtils.constructFingerprintDialogTitles(resources);
+			Map<Integer, ImageView> imageViewMap = GuiUtils.constructFingerprintImageViewMap(ivRightThumb, ivRightIndex,
+			                                                                                 ivRightMiddle, ivRightRing,
+			                                                                                 ivRightLittle, ivLeftThumb,
+			                                                                                 ivLeftIndex, ivLeftMiddle,
+			                                                                                 ivLeftRing, ivLeftLittle);
 			
 			fingerprintImages.forEach((position, fingerprintImage) ->
 			{
@@ -338,74 +319,75 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 	
 	private VisaApplicantInfo buildForeignInfo(Map<String, Object> uiInputData)
 	{
-		String firstName = (String) uiInputData.get(ApplicantInfoFxController.KEY_FIRST_NAME);
-		String secondName = (String) uiInputData.get(ApplicantInfoFxController.KEY_SECOND_NAME);
-		String otherName = (String) uiInputData.get(ApplicantInfoFxController.KEY_OTHER_NAME);
-		String familyName = (String) uiInputData.get(ApplicantInfoFxController.KEY_FAMILY_NAME);
-		
-		CountryBean countryBean = (CountryBean) uiInputData.get(ApplicantInfoFxController.KEY_NATIONALITY);
-		Integer nationalityCode = null;
-		if(countryBean != null) nationalityCode = countryBean.getCode();
-		
-		LocalDate birthLocalDate = (LocalDate) uiInputData.get(ApplicantInfoFxController.KEY_BIRTH_DATE);
-		Long birthDate = null;
-		if(birthLocalDate != null) birthDate = birthLocalDate.atStartOfDay(AppConstants.SAUDI_ZONE).toEpochSecond();
-		
-		String passportNumber = (String) uiInputData.get(ApplicantInfoFxController.KEY_PASSPORT_NUMBER);
-		
-		GenderType genderType = (GenderType) uiInputData.get(ApplicantInfoFxController.KEY_GENDER);
-		Integer genderCode = null;
-		if(genderType != null) genderCode = genderType.ordinal();
-		
-		VisaTypeBean visaType = (VisaTypeBean) uiInputData.get(ApplicantInfoFxController.KEY_VISA_TYPE);
-		Integer visaTypeCode = null;
-		if(visaType != null) visaTypeCode = visaType.getCode();
-		
-		LocalDate issueLocalDate = (LocalDate) uiInputData.get(ApplicantInfoFxController.KEY_ISSUE_DATE);
-		Long issueDate = null;
-		if(issueLocalDate != null) issueDate = issueLocalDate.atStartOfDay(AppConstants.SAUDI_ZONE).toEpochSecond();
-		
-		countryBean = (CountryBean) uiInputData.get(ApplicantInfoFxController.KEY_ISSUANCE_COUNTRY);
-		Integer issuanceCountry = null;
-		if(countryBean != null) issuanceCountry = countryBean.getCode();
-		
-		LocalDate expirationLocalDate = (LocalDate) uiInputData.get(ApplicantInfoFxController.KEY_EXPIRATION_DATE);
-		Long expirationDate = null;
-		if(expirationLocalDate != null) expirationDate = expirationLocalDate.atStartOfDay(AppConstants.SAUDI_ZONE)
-																			.toEpochSecond();
-		
-		countryBean = (CountryBean) uiInputData.get(ApplicantInfoFxController.KEY_BIRTH_PLACE);
-		Integer birthPlaceCode = null;
-		if(countryBean != null) birthPlaceCode = countryBean.getCode();
-		
-		PassportTypeBean passportTypeBean = (PassportTypeBean)
-														uiInputData.get(ApplicantInfoFxController.KEY_PASSPORT_TYPE);
-		Integer passportType = null;
-		if(passportTypeBean != null) passportType = passportTypeBean.getCode();
-		
-		CountryDialingCode dialingCode = (CountryDialingCode)
-														uiInputData.get(ApplicantInfoFxController.KEY_DIALING_CODE);
-		String mobileNumber = (String) uiInputData.get(ApplicantInfoFxController.KEY_MOBILE_NUMBER);
-		
-		if(dialingCode != null && mobileNumber != null && !mobileNumber.trim().isEmpty())
-		{
-			mobileNumber = dialingCode.getDialingCode() + "-" + mobileNumber;
-		}
-		else mobileNumber = null;
-		
-		String face = (String) uiInputData.get(FaceCapturingFxController.KEY_FINAL_FACE_IMAGE);
-		
-		@SuppressWarnings("unchecked")
-		List<Finger> fingers = (List<Finger>)
-								uiInputData.get(FingerprintCapturingFxController.KEY_SLAP_FINGERPRINTS);
-		
-		@SuppressWarnings("unchecked")
-		List<Integer> missingFingers = (List<Integer>)
-								uiInputData.get(FingerprintCapturingFxController.KEY_MISSING_FINGERPRINTS);
-		
-		return new VisaApplicantInfo(null, null, firstName, secondName, otherName, familyName,
-		                             nationalityCode, birthDate, passportNumber, genderCode, visaTypeCode, issueDate,
-		                             issuanceCountry, expirationDate, birthPlaceCode, passportType, mobileNumber, face,
-		                             fingers, missingFingers);
+		//String firstName = (String) uiInputData.get(ApplicantInfoFxController.KEY_FIRST_NAME);
+		//String secondName = (String) uiInputData.get(ApplicantInfoFxController.KEY_SECOND_NAME);
+		//String otherName = (String) uiInputData.get(ApplicantInfoFxController.KEY_OTHER_NAME);
+		//String familyName = (String) uiInputData.get(ApplicantInfoFxController.KEY_FAMILY_NAME);
+		//
+		//CountryBean countryBean = (CountryBean) uiInputData.get(ApplicantInfoFxController.KEY_NATIONALITY);
+		//Integer nationalityCode = null;
+		//if(countryBean != null) nationalityCode = countryBean.getCode();
+		//
+		//LocalDate birthLocalDate = (LocalDate) uiInputData.get(ApplicantInfoFxController.KEY_BIRTH_DATE);
+		//Long birthDate = null;
+		//if(birthLocalDate != null) birthDate = birthLocalDate.atStartOfDay(AppConstants.SAUDI_ZONE).toEpochSecond();
+		//
+		//String passportNumber = (String) uiInputData.get(ApplicantInfoFxController.KEY_PASSPORT_NUMBER);
+		//
+		//GenderType genderType = (GenderType) uiInputData.get(ApplicantInfoFxController.KEY_GENDER);
+		//Integer genderCode = null;
+		//if(genderType != null) genderCode = genderType.ordinal();
+		//
+		//VisaTypeBean visaType = (VisaTypeBean) uiInputData.get(ApplicantInfoFxController.KEY_VISA_TYPE);
+		//Integer visaTypeCode = null;
+		//if(visaType != null) visaTypeCode = visaType.getCode();
+		//
+		//LocalDate issueLocalDate = (LocalDate) uiInputData.get(ApplicantInfoFxController.KEY_ISSUE_DATE);
+		//Long issueDate = null;
+		//if(issueLocalDate != null) issueDate = issueLocalDate.atStartOfDay(AppConstants.SAUDI_ZONE).toEpochSecond();
+		//
+		//countryBean = (CountryBean) uiInputData.get(ApplicantInfoFxController.KEY_ISSUANCE_COUNTRY);
+		//Integer issuanceCountry = null;
+		//if(countryBean != null) issuanceCountry = countryBean.getCode();
+		//
+		//LocalDate expirationLocalDate = (LocalDate) uiInputData.get(ApplicantInfoFxController.KEY_EXPIRATION_DATE);
+		//Long expirationDate = null;
+		//if(expirationLocalDate != null) expirationDate = expirationLocalDate.atStartOfDay(AppConstants.SAUDI_ZONE)
+		//																	.toEpochSecond();
+		//
+		//countryBean = (CountryBean) uiInputData.get(ApplicantInfoFxController.KEY_BIRTH_PLACE);
+		//Integer birthPlaceCode = null;
+		//if(countryBean != null) birthPlaceCode = countryBean.getCode();
+		//
+		//PassportTypeBean passportTypeBean = (PassportTypeBean)
+		//												uiInputData.get(ApplicantInfoFxController.KEY_PASSPORT_TYPE);
+		//Integer passportType = null;
+		//if(passportTypeBean != null) passportType = passportTypeBean.getCode();
+		//
+		//CountryDialingCode dialingCode = (CountryDialingCode)
+		//												uiInputData.get(ApplicantInfoFxController.KEY_DIALING_CODE);
+		//String mobileNumber = (String) uiInputData.get(ApplicantInfoFxController.KEY_MOBILE_NUMBER);
+		//
+		//if(dialingCode != null && mobileNumber != null && !mobileNumber.trim().isEmpty())
+		//{
+		//	mobileNumber = dialingCode.getDialingCode() + "-" + mobileNumber;
+		//}
+		//else mobileNumber = null;
+		//
+		//String face = (String) uiInputData.get(FaceCapturingFxController.KEY_FINAL_FACE_IMAGE);
+		//
+		//@SuppressWarnings("unchecked")
+		//List<Finger> fingers = (List<Finger>)
+		//						uiInputData.get(FingerprintCapturingFxController.KEY_SLAP_FINGERPRINTS);
+		//
+		//@SuppressWarnings("unchecked")
+		//List<Integer> missingFingers = (List<Integer>)
+		//						uiInputData.get(FingerprintCapturingFxController.KEY_MISSING_FINGERPRINTS);
+		//
+		//return new VisaApplicantInfo(null, null, firstName, secondName, otherName, familyName,
+		//                             nationalityCode, birthDate, passportNumber, genderCode, visaTypeCode, issueDate,
+		//                             issuanceCountry, expirationDate, birthPlaceCode, passportType, mobileNumber, face,
+		//                             fingers, missingFingers);
+		return null;
 	}
 }

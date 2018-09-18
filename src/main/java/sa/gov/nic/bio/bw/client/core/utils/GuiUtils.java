@@ -54,6 +54,7 @@ import org.controlsfx.control.PopOver.ArrowLocation;
 import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.CoreFxController;
 import sa.gov.nic.bio.bw.client.core.beans.HideableItem;
+import sa.gov.nic.bio.bw.client.core.biokit.FingerPosition;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.CountryBean;
 import sa.gov.nic.bio.bw.client.login.tasks.LogoutTask;
 
@@ -69,7 +70,10 @@ import java.time.chrono.HijrahChronology;
 import java.time.chrono.IsoChronology;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.ResourceBundle;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -641,5 +645,70 @@ public class GuiUtils
 		Animation animation = new Timeline(new KeyFrame(Duration.seconds(0.5),
                                            new KeyValue(pane.hvalueProperty(), x / width)));
 		animation.play();
+	}
+	
+	public static Map<Integer, ImageView> constructFingerprintImageViewMap(ImageView ivRightThumb,
+	                                                                       ImageView ivRightIndex,
+	                                                                       ImageView ivRightMiddle,
+	                                                                       ImageView ivRightRing,
+	                                                                       ImageView ivRightLittle,
+	                                                                       ImageView ivLeftThumb,
+	                                                                       ImageView ivLeftIndex,
+	                                                                       ImageView ivLeftMiddle,
+	                                                                       ImageView ivLeftRing,
+	                                                                       ImageView ivLeftLittle)
+	{
+		Map<Integer, ImageView> imageViewMap = new HashMap<>();
+		
+		imageViewMap.put(FingerPosition.RIGHT_THUMB.getPosition(), ivRightThumb);
+		imageViewMap.put(FingerPosition.RIGHT_INDEX.getPosition(), ivRightIndex);
+		imageViewMap.put(FingerPosition.RIGHT_MIDDLE.getPosition(), ivRightMiddle);
+		imageViewMap.put(FingerPosition.RIGHT_RING.getPosition(), ivRightRing);
+		imageViewMap.put(FingerPosition.RIGHT_LITTLE.getPosition(), ivRightLittle);
+		imageViewMap.put(FingerPosition.LEFT_THUMB.getPosition(), ivLeftThumb);
+		imageViewMap.put(FingerPosition.LEFT_INDEX.getPosition(), ivLeftIndex);
+		imageViewMap.put(FingerPosition.LEFT_MIDDLE.getPosition(), ivLeftMiddle);
+		imageViewMap.put(FingerPosition.LEFT_RING.getPosition(), ivLeftRing);
+		imageViewMap.put(FingerPosition.LEFT_LITTLE.getPosition(), ivLeftLittle);
+		
+		return imageViewMap;
+	}
+	
+	public static Map<Integer, String> constructFingerprintDialogTitles(ResourceBundle resources)
+	{
+		Map<Integer, String> dialogTitleMap = new HashMap<>();
+		
+		dialogTitleMap.put(FingerPosition.RIGHT_THUMB.getPosition(),
+		                   resources.getString("label.fingers.thumb") + " (" +
+		                   resources.getString("label.rightHand") + ")");
+		dialogTitleMap.put(FingerPosition.RIGHT_INDEX.getPosition(),
+		                   resources.getString("label.fingers.index") + " (" +
+		                   resources.getString("label.rightHand") + ")");
+		dialogTitleMap.put(FingerPosition.RIGHT_MIDDLE.getPosition(),
+		                   resources.getString("label.fingers.middle") + " (" +
+		                   resources.getString("label.rightHand") + ")");
+		dialogTitleMap.put(FingerPosition.RIGHT_RING.getPosition(),
+		                   resources.getString("label.fingers.ring") + " (" +
+		                   resources.getString("label.rightHand") + ")");
+		dialogTitleMap.put(FingerPosition.RIGHT_LITTLE.getPosition(),
+		                   resources.getString("label.fingers.little") + " (" +
+		                   resources.getString("label.rightHand") + ")");
+		dialogTitleMap.put(FingerPosition.LEFT_THUMB.getPosition(),
+		                   resources.getString("label.fingers.thumb") + " (" +
+		                   resources.getString("label.leftHand") + ")");
+		dialogTitleMap.put(FingerPosition.LEFT_INDEX.getPosition(),
+		                   resources.getString("label.fingers.index") + " (" +
+		                   resources.getString("label.leftHand") + ")");
+		dialogTitleMap.put(FingerPosition.LEFT_MIDDLE.getPosition(),
+		                   resources.getString("label.fingers.middle") + " (" +
+		                   resources.getString("label.leftHand") + ")");
+		dialogTitleMap.put(FingerPosition.LEFT_RING.getPosition(),
+		                   resources.getString("label.fingers.ring") + " (" +
+		                   resources.getString("label.leftHand") + ")");
+		dialogTitleMap.put(FingerPosition.LEFT_LITTLE.getPosition(),
+		                   resources.getString("label.fingers.little") + " (" +
+		                   resources.getString("label.leftHand") + ")");
+		
+		return dialogTitleMap;
 	}
 }

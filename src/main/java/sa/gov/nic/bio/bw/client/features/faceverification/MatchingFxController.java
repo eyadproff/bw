@@ -10,7 +10,6 @@ import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.wizard.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.client.core.workflow.Workflow;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.PersonInfo;
-import sa.gov.nic.bio.bw.client.features.faceverification.webservice.FaceMatchingResponse;
 import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
 
 import java.net.URL;
@@ -23,8 +22,6 @@ public class MatchingFxController extends WizardStepFxControllerBase
 	@FXML private Label txtProgress;
 	@FXML private Button btnRetry;
 	@FXML private Button btnStartOver;
-	
-	private FaceMatchingResponse faceMatchingResponse;
 	
 	@Override
 	public URL getFxmlLocation()
@@ -39,43 +36,28 @@ public class MatchingFxController extends WizardStepFxControllerBase
 	}
 	
 	@Override
-	@SuppressWarnings("unchecked")
 	public void onWorkflowUserTaskLoad(boolean newForm, Map<String, Object> uiInputData)
 	{
-		if(newForm) showProgress(true);
+		if(newForm)
+		{
+			showProgress(true);
+			continueWorkflow();
+		}
 		else
 		{
+			showProgress(false);
+			
+			@SuppressWarnings("unchecked")
 			ServiceResponse<PersonInfo> response = (ServiceResponse<PersonInfo>)
 															uiInputData.get(Workflow.KEY_WEBSERVICE_RESPONSE);
 			
 			if(response != null) // there is a result
 			{
-				if(response.isSuccess())
-				{
-					PersonInfo personInfo = response.getResult();
-					faceMatchingResponse = new FaceMatchingResponse(true, personInfo);
-					goNext();
-				}
-				else
-				{
-					showProgress(false);
-					
-					if("B003-0021".equals(response.getErrorCode())) // not matched
-					{
-						faceMatchingResponse = new FaceMatchingResponse(false, null);
-						goNext();
-					}
-					else reportNegativeResponse(response.getErrorCode(), response.getException(),
-					                            response.getErrorDetails());
-				}
+				if(response.isSuccess()) goNext();
+				else reportNegativeResponse(response.getErrorCode(), response.getException(),
+				                            response.getErrorDetails());
 			}
 		}
-	}
-	
-	@Override
-	protected void onGoingNext(Map<String, Object> uiDataMap)
-	{
-		uiDataMap.put(ShowResultFxController.KEY_FACE_MATCHING_RESPONSE, faceMatchingResponse);
 	}
 	
 	@FXML

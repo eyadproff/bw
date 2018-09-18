@@ -3,6 +3,7 @@ package sa.gov.nic.bio.bw.client.core.workflow;
 import sa.gov.nic.bio.bw.client.core.BodyFxControllerBase;
 import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.interfaces.FormRenderer;
+import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -26,6 +27,8 @@ public abstract class WorkflowBase<I, O> implements Workflow<I, O>
 	protected final Map<String, Object> uiInputData = new HashMap<>();
 	protected final AtomicReference<FormRenderer> formRenderer;
 	protected final BlockingQueue<Map<String, Object>> userTasks;
+	
+	private BodyFxControllerBase currentBodyFxController;
 	
 	/**
 	 * @param formRenderer the form renderer that will render the form on the screen
@@ -67,11 +70,47 @@ public abstract class WorkflowBase<I, O> implements Workflow<I, O>
 		
 		if(signalType != null) throw new Signal(signalType, uiDataMap);
 		else uiInputData.putAll(uiDataMap);
+		
+		try
+		{
+			Workflow.saveWorkflowOutputs(currentBodyFxController, uiInputData);
+		}
+		catch(Exception e)
+		{
+			Map<String, Object> payload = new HashMap<>();
+			payload.put(KEY_ERROR_DETAILS, new String[]{"Failure upon saving the workflow output! workflow = " +
+							(currentBodyFxController != null ? currentBodyFxController.getClass().getName() : null)});
+			payload.put(KEY_EXCEPTION, e);
+			throw new Signal(SignalType.INVALID_STATE, payload);
+		}
 	}
 	
 	@Override
-	public void renderUi(Class<? extends BodyFxControllerBase> controllerClass)
+	public void renderUi(Class<? extends BodyFxControllerBase> controllerClass) throws Signal
 	{
-		formRenderer.get().renderForm(controllerClass, uiInputData);
+		currentBodyFxController = formRenderer.get().renderForm(controllerClass, uiInputData);
+	}
+	
+	@Override
+	public void executeTask(Class<? extends WorkflowTask> taskClass) throws Signal
+	{
+		try
+		{
+			WorkflowTask workflowTask = taskClass.newInstance();
+			Workflow.loadWorkflowInputs(workflowTask, uiInputData, false);
+			ServiceResponse<?> serviceResponse = workflowTask.execute();
+			uiInputData.put(KEY_WEBSERVICE_RESPONSE, serviceResponse);
+			Workflow.saveWorkflowOutputs(workflowTask, uiInputData);
+			
+			if(!serviceResponse.isSuccess()) throw new Signal(SignalType.INTERRUPT_SEQUENT_TASKS, null);
+		}
+		catch(Exception e)
+		{
+			Map<String, Object> payload = new HashMap<>();
+			payload.put(KEY_ERROR_DETAILS, new String[]{"Failure upon executing the workflow task! task = " +
+																(taskClass != null ? taskClass.getName() : null)});
+			payload.put(KEY_EXCEPTION, e);
+			throw new Signal(SignalType.INVALID_STATE, payload);
+		}
 	}
 }

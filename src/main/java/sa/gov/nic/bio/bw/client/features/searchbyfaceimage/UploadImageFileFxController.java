@@ -14,6 +14,7 @@ import javafx.stage.FileChooser;
 import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.wizard.WizardStepFxControllerBase;
+import sa.gov.nic.bio.bw.client.core.workflow.Output;
 import sa.gov.nic.bio.bw.client.features.searchbyfaceimage.utils.SearchByFaceImageErrorCodes;
 
 import java.awt.image.BufferedImage;
@@ -25,7 +26,7 @@ import java.util.Map;
 
 public class UploadImageFileFxController extends WizardStepFxControllerBase
 {
-	public static final String KEY_UPLOADED_IMAGE = "UPLOADED_IMAGE";
+	@Output private Image uploadedImage;
 	
 	@FXML private HBox imagePane;
 	@FXML private ImageView ivUploadedImage;
@@ -87,7 +88,6 @@ public class UploadImageFileFxController extends WizardStepFxControllerBase
 	{
 		if(newForm)
 		{
-			Image uploadedImage = (Image) uiInputData.get(KEY_UPLOADED_IMAGE);
 			if(uploadedImage != null)
 			{
 				ivUploadedImage.setImage(uploadedImage);
@@ -106,7 +106,7 @@ public class UploadImageFileFxController extends WizardStepFxControllerBase
 	@Override
 	public void onGoingNext(Map<String, Object> uiDataMap)
 	{
-		if(imageSelected) uiDataMap.put(KEY_UPLOADED_IMAGE, ivUploadedImage.getImage());
+		if(imageSelected) uploadedImage = ivUploadedImage.getImage();
 	}
 	
 	@FXML

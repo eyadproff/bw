@@ -28,7 +28,7 @@ public class HomeWorkflow extends WorkflowBase<LoginBean, Void>
 	{
 		while(true)
 		{
-			renderUi(HomePaneFxController.class); // render home page
+			renderUi(HomePaneFxController.class); // render home page or show error
 			
 			try
 			{
@@ -41,7 +41,7 @@ public class HomeWorkflow extends WorkflowBase<LoginBean, Void>
 		}
 	}
 	
-	private void handleSignal(Signal signal, Map<String, Object> uiInputData) throws InterruptedException, Signal
+	private void handleSignal(Signal signal, Map<String, Object> uiInputData) throws Signal
 	{
 		outerLoop: while(true)
 		{
@@ -90,7 +90,7 @@ public class HomeWorkflow extends WorkflowBase<LoginBean, Void>
 					}
 					catch(Throwable t)
 					{
-						String errorCode = HomeErrorCodes.C004_00006.getCode();
+						String errorCode = HomeErrorCodes.C004_00004.getCode();
 						String[] errorDetails = {"The subWorkflow throws uncaught exception!",
 								"subWorkflow type = " + subWorkflow.getClass().getName()};
 						
@@ -102,7 +102,7 @@ public class HomeWorkflow extends WorkflowBase<LoginBean, Void>
 					}
 					
 					// shouldn't reach here
-					String errorCode = HomeErrorCodes.C004_00004.getCode();
+					String errorCode = HomeErrorCodes.C004_00005.getCode();
 					String[] errorDetails = {"The subWorkflow returns normally without a signal!",
 											 "subWorkflow type = " + subWorkflow.getClass().getName()};
 					
@@ -112,9 +112,22 @@ public class HomeWorkflow extends WorkflowBase<LoginBean, Void>
 					
 					break outerLoop;
 				}
+				case INVALID_STATE:
+				{
+					String errorCode = HomeErrorCodes.C004_00006.getCode();
+					
+					uiInputData.put(KEY_ERROR_CODE, errorCode);
+					if(payload != null)
+					{
+						uiInputData.put(KEY_ERROR_DETAILS, payload.get(KEY_ERROR_DETAILS));
+						uiInputData.put(KEY_EXCEPTION, payload.get(KEY_EXCEPTION));
+					}
+					
+					break outerLoop;
+				}
 				default:
 				{
-					String errorCode = HomeErrorCodes.C004_00005.getCode();
+					String errorCode = HomeErrorCodes.C004_00007.getCode();
 					String[] errorDetails = {"Unknown signal type!", "signalType = " + signalType};
 					
 					uiInputData.put(KEY_ERROR_CODE, errorCode);

@@ -11,12 +11,13 @@ import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.DevicesRunnerGadgetPaneFxController;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.wizard.WizardStepFxControllerBase;
+import sa.gov.nic.bio.bw.client.core.workflow.Input;
 import sa.gov.nic.bio.bw.client.core.workflow.Workflow;
-import sa.gov.nic.bio.bw.client.features.commons.utils.CommonsErrorCodes;
+import sa.gov.nic.bio.bw.client.features.fingerprintcardidentification.utils.FingerprintCardIdentificationErrorCodes;
+import sa.gov.nic.bio.bw.client.features.fingerprintcardidentification.workflow.FingerprintInquiryStatusCheckerWorkflowTask.Status;
 import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
 
 import java.net.URL;
-import java.util.HashMap;
 import java.util.Map;
 
 public class InquiryByFingerprintsPaneFxController extends WizardStepFxControllerBase
@@ -30,6 +31,8 @@ public class InquiryByFingerprintsPaneFxController extends WizardStepFxControlle
 	public static final String KEY_INQUIRY_ERROR_CODE = "INQUIRY_ERROR_CODE";
 	public static final String KEY_INQUIRY_ERROR_EXCEPTION = "INQUIRY_ERROR_EXCEPTION";
 	public static final String KEY_INQUIRY_ERROR_DETAILS = "INQUIRY_ERROR_DETAILS";
+	
+	@Input private Status status;
 	
 	@FXML private VBox paneError;
 	@FXML private VBox paneDevicesRunnerNotRunning;
@@ -81,12 +84,7 @@ public class InquiryByFingerprintsPaneFxController extends WizardStepFxControlle
 				GuiUtils.showNode(paneDevicesRunnerNotRunning, !running);
 				GuiUtils.showNode(btnStartOver, !running);
 				
-				if(running)
-				{
-					Map<String, Object> uiDataMap = new HashMap<>();
-					uiDataMap.put(KEY_DEVICES_RUNNER_IS_RUNNING, Boolean.TRUE);
-					if(!isDetached()) Context.getWorkflowManager().submitUserTask(uiDataMap);
-				}
+				if(running && !isDetached()) continueWorkflow();
 			});
 			
 			if(!deviceManagerGadgetPaneController.isDevicesRunnerRunning())
@@ -100,113 +98,78 @@ public class InquiryByFingerprintsPaneFxController extends WizardStepFxControlle
 				GuiUtils.showNode(btnStartOver, true);
 				deviceManagerGadgetPaneController.runAndConnectDevicesRunner();
 			}
-			else
-			{
-				Map<String, Object> uiDataMap = new HashMap<>();
-				uiDataMap.put(KEY_DEVICES_RUNNER_IS_RUNNING, Boolean.TRUE);
-				if(!isDetached()) Context.getWorkflowManager().submitUserTask(uiDataMap);
-			}
+			else continueWorkflow();
 		}
 		else
 		{
-			String errorCode = (String) uiInputData.get(KEY_INQUIRY_ERROR_CODE);
-			if(errorCode != null)
-			{
-				GuiUtils.showNode(piProgress, false);
-				GuiUtils.showNode(lblProgress, false);
-				GuiUtils.showNode(btnCancel, false);
-				GuiUtils.showNode(lblCanceling, false);
-				GuiUtils.showNode(btnRetry, true);
-				GuiUtils.showNode(btnStartOver, true);
-				GuiUtils.showNode(paneError, true);
-				
-				Throwable exception = (Throwable) uiInputData.get(KEY_INQUIRY_ERROR_EXCEPTION);
-				String[] errorDetails = (String[]) uiInputData.get(KEY_INQUIRY_ERROR_DETAILS);
-				
-				reportNegativeResponse(errorCode, exception, errorDetails);
-				return;
-			}
-			
-			Boolean hitResult = (Boolean) uiInputData.get(KEY_FINGERPRINT_INQUIRY_HIT);
-			if(hitResult != null)
-			{
-				goNext();
-				return;
-			}
-			
-			Integer unknownStatus = (Integer) uiInputData.get(KEY_FINGERPRINT_INQUIRY_UNKNOWN_STATUS);
-			if(unknownStatus != null)
-			{
-				errorCode = CommonsErrorCodes.C008_00017.getCode();
-				String[] errorDetails = {"Unknown fingerprint inquiry status (" + unknownStatus + ")!"};
-				Context.getCoreFxController().showErrorDialog(errorCode, null, errorDetails);
-				return;
-			}
-			
-			Boolean waiting = (Boolean) uiInputData.get(
-												InquiryByFingerprintsPaneFxController.KEY_WAITING_FINGERPRINT_INQUIRY);
-			if(waiting != null && waiting)
-			{
-				btnCancel.setDisable(false);
-				Context.getExecutorService().submit(() ->
-				{
-					int seconds = Integer.parseInt(
-									Context.getConfigManager().getProperty("fingerprint.inquiry.checkEverySeconds"));
-					
-					try
-					{
-						Thread.sleep(seconds * 1000);
-					}
-					catch(InterruptedException e)
-					{
-						e.printStackTrace();
-					}
-					
-					Platform.runLater(() ->
-					{
-						Map<String, Object> uiDataMap = new HashMap<>();
-						if(fingerprintInquiryCancelled)
-						{
-							fingerprintInquiryCancelled = false;
-							
-							GuiUtils.showNode(piProgress, false);
-							GuiUtils.showNode(lblCanceling, false);
-							GuiUtils.showNode(lblCancelled, true);
-							GuiUtils.showNode(btnStartOver, true);
-							GuiUtils.showNode(btnRetry, true);
-							
-							uiDataMap.put(KEY_WAITING_FINGERPRINT_INQUIRY_CANCELLED, Boolean.TRUE);
-						}
-						if(!isDetached()) Context.getWorkflowManager().submitUserTask(uiDataMap);
-					});
-				});
-				return;
-			}
-			
-			GuiUtils.showNode(piProgress, false);
-			GuiUtils.showNode(lblProgress, false);
-			GuiUtils.showNode(btnCancel, false);
-			GuiUtils.showNode(lblCanceling, false);
-			GuiUtils.showNode(btnRetry, true);
-			GuiUtils.showNode(btnStartOver, true);
-			GuiUtils.showNode(paneError, true);
-			
 			@SuppressWarnings("unchecked")
 			ServiceResponse<Integer> serviceResponse = (ServiceResponse<Integer>)
-																	uiInputData.get(Workflow.KEY_WEBSERVICE_RESPONSE);
+																uiInputData.get(Workflow.KEY_WEBSERVICE_RESPONSE);
 			
 			if(serviceResponse.isSuccess())
 			{
-				if(serviceResponse.getResult() == null)
+				if(status == null)
 				{
-					errorCode = CommonsErrorCodes.C008_00018.getCode();
-					String[] errorDetails = {"TCN is null!"};
+					showControlsOnError();
+					
+					String errorCode = FingerprintCardIdentificationErrorCodes.C013_00011.getCode();
+					String[] errorDetails = {"The fingerprint inquiry status is not set!"};
 					reportNegativeResponse(errorCode, null, errorDetails);
+					return;
 				}
+				
+				if(status == Status.PENDING)
+				{
+					btnCancel.setDisable(false);
+					Context.getExecutorService().submit(() ->
+					{
+					    int seconds = Integer.parseInt(
+					            Context.getConfigManager().getProperty("fingerprint.inquiry.checkEverySeconds"));
+					
+					    try
+					    {
+					        Thread.sleep(seconds * 1000);
+					    }
+					    catch(InterruptedException e)
+					    {
+					        e.printStackTrace();
+					    }
+					
+					    Platform.runLater(() ->
+					    {
+					        if(fingerprintInquiryCancelled)
+					        {
+					            fingerprintInquiryCancelled = false;
+					            GuiUtils.showNode(piProgress, false);
+					            GuiUtils.showNode(lblCanceling, false);
+					            GuiUtils.showNode(lblCancelled, true);
+					            GuiUtils.showNode(btnStartOver, true);
+					            GuiUtils.showNode(btnRetry, true);
+					        }
+					        else continueWorkflow();
+					    });
+					});
+				}
+				else goNext();
 			}
-			else reportNegativeResponse(serviceResponse.getErrorCode(), serviceResponse.getException(),
-				                        serviceResponse.getErrorDetails());
+			else
+			{
+				showControlsOnError();
+				reportNegativeResponse(serviceResponse.getErrorCode(), serviceResponse.getException(),
+				                       serviceResponse.getErrorDetails());
+			}
 		}
+	}
+	
+	private void showControlsOnError()
+	{
+		GuiUtils.showNode(piProgress, false);
+		GuiUtils.showNode(lblProgress, false);
+		GuiUtils.showNode(btnCancel, false);
+		GuiUtils.showNode(lblCanceling, false);
+		GuiUtils.showNode(btnRetry, true);
+		GuiUtils.showNode(btnStartOver, true);
+		GuiUtils.showNode(paneError, true);
 	}
 	
 	@Override
@@ -229,8 +192,6 @@ public class InquiryByFingerprintsPaneFxController extends WizardStepFxControlle
 		GuiUtils.showNode(lblProgress, true);
 		GuiUtils.showNode(btnCancel, true);
 		
-		Map<String, Object> uiDataMap = new HashMap<>();
-		uiDataMap.put(KEY_RETRY_FINGERPRINT_INQUIRY, Boolean.TRUE);
-		if(!isDetached()) Context.getWorkflowManager().submitUserTask(uiDataMap);
+		continueWorkflow();
 	}
 }

@@ -20,6 +20,11 @@ public class ServiceResponse<T>
 		this.result = result;
 	}
 	
+	public static <T> ServiceResponse<T> success()
+	{
+		return success(null);
+	}
+	
 	public static <T> ServiceResponse<T> success(T result)
 	{
 		return new ServiceResponse<>(true, null, null, null, result);

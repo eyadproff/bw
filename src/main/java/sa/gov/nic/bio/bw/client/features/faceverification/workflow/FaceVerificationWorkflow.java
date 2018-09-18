@@ -6,21 +6,20 @@ import sa.gov.nic.bio.bw.client.core.workflow.Signal;
 import sa.gov.nic.bio.bw.client.core.workflow.WizardWorkflowBase;
 import sa.gov.nic.bio.bw.client.features.commons.FaceCapturingFxController;
 import sa.gov.nic.bio.bw.client.features.commons.lookups.CountriesLookup;
-import sa.gov.nic.bio.bw.client.features.commons.webservice.PersonInfo;
-import sa.gov.nic.bio.bw.client.features.faceverification.ConfirmInputFxController;
 import sa.gov.nic.bio.bw.client.features.faceverification.MatchingFxController;
 import sa.gov.nic.bio.bw.client.features.faceverification.PersonIdPaneFxController;
 import sa.gov.nic.bio.bw.client.features.faceverification.ShowResultFxController;
+import sa.gov.nic.bio.bw.client.features.searchbyfaceimage.ConfirmImageFxController;
 import sa.gov.nic.bio.bw.client.features.searchbyfaceimage.ImageSourceFxController;
+import sa.gov.nic.bio.bw.client.features.searchbyfaceimage.ImageSourceFxController.Source;
 import sa.gov.nic.bio.bw.client.features.searchbyfaceimage.UploadImageFileFxController;
-import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
 
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.atomic.AtomicReference;
 
 @WithLookups(CountriesLookup.class)
-public class FaceVerificationWorkflow extends WizardWorkflowBase<Void, Void>
+public class FaceVerificationWorkflow extends WizardWorkflowBase
 {
 	public FaceVerificationWorkflow(AtomicReference<FormRenderer> formRenderer,
 	                                BlockingQueue<Map<String, Object>> userTasks)
@@ -29,7 +28,7 @@ public class FaceVerificationWorkflow extends WizardWorkflowBase<Void, Void>
 	}
 	
 	@Override
-	public void onStep(int step) throws InterruptedException, Signal
+	public boolean onStep(int step) throws InterruptedException, Signal
 	{
 		switch(step)
 		{
@@ -37,64 +36,80 @@ public class FaceVerificationWorkflow extends WizardWorkflowBase<Void, Void>
 			{
 				renderUi(PersonIdPaneFxController.class);
 				waitForUserInput();
-				break;
+				return true;
 			}
 			case 1:
 			{
 				renderUi(ImageSourceFxController.class);
 				waitForUserInput();
-				break;
+				return true;
 			}
 			case 2:
 			{
-				String imageInput = (String) uiInputData.get(ImageSourceFxController.KEY_IMAGE_SOURCE);
+				Source imageSource = getData(ImageSourceFxController.class, "imageSource");
 				
-				if(ImageSourceFxController.VALUE_IMAGE_SOURCE_CAMERA.equals(imageInput))
-				{
-					uiInputData.put(FaceCapturingFxController.KEY_ACCEPT_ANY_CAPTURED_IMAGE, Boolean.TRUE);
-					renderUi(FaceCapturingFxController.class);
-				}
-				else if(ImageSourceFxController.VALUE_IMAGE_SOURCE_UPLOAD.equals(imageInput))
+				if(Source.UPLOAD.equals(imageSource))
 				{
 					renderUi(UploadImageFileFxController.class);
 				}
+				else if(Source.CAMERA.equals(imageSource))
+				{
+					setData(FaceCapturingFxController.class, "acceptAnyCapturedImage", true);
+					renderUi(FaceCapturingFxController.class);
+				}
 				
 				waitForUserInput();
-				break;
+				return true;
 			}
 			case 3:
 			{
-				renderUi(ConfirmInputFxController.class);
+				Source imageSource = getData(ImageSourceFxController.class, "imageSource");
+				
+				passData(PersonIdPaneFxController.class, ConfirmImageFxController.class,
+				         "personId");
+				
+				if(Source.UPLOAD.equals(imageSource))
+				{
+					passData(UploadImageFileFxController.class, "uploadedImage",
+					         ConfirmImageFxController.class, "faceImage");
+				}
+				else if(Source.CAMERA.equals(imageSource))
+				{
+					passData(FaceCapturingFxController.class, ConfirmImageFxController.class,
+					         "faceImage");
+				}
+				
+				renderUi(ConfirmImageFxController.class);
 				waitForUserInput();
-				break;
+				return true;
 			}
 			case 4:
 			{
-				// show progress indicator here
-				renderUi(MatchingFxController.class);
-				
-				String imageBase64 = (String) uiInputData.get(ConfirmInputFxController.KEY_FINAL_IMAGE_BASE64);
-				long personId = (long) uiInputData.get(PersonIdPaneFxController.KEY_PERSON_ID);
-				
-				ServiceResponse<PersonInfo> response = FaceVerificationService.execute(personId, imageBase64);
-				uiInputData.put(KEY_WEBSERVICE_RESPONSE, response);
-				
-				// if success, ask for goNext() automatically. Otherwise, show failure message and retry button
 				renderUi(MatchingFxController.class);
 				waitForUserInput();
-				break;
+				
+				passData(PersonIdPaneFxController.class, FaceVerificationWorkflowTask.class,
+				         "personId");
+				passData(ConfirmImageFxController.class, FaceVerificationWorkflowTask.class,
+				         "faceImageBase64");
+				executeTask(FaceVerificationWorkflowTask.class);
+				
+				return true;
 			}
 			case 5:
 			{
+				passData(PersonIdPaneFxController.class, ShowResultFxController.class,
+				         "personId");
+				passData(ConfirmImageFxController.class, ShowResultFxController.class,
+				         "faceImage");
+				passData(FaceVerificationWorkflowTask.class, ShowResultFxController.class,
+				         "faceMatchingResponse");
+				
 				renderUi(ShowResultFxController.class);
 				waitForUserInput();
-				break;
+				return true;
 			}
-			default:
-			{
-				waitForUserInput();
-				break;
-			}
+			default: return false;
 		}
 	}
 }

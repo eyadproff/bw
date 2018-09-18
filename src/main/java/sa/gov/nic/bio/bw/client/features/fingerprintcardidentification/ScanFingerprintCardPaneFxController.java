@@ -16,6 +16,7 @@ import sa.gov.nic.bio.bw.client.core.DevicesRunnerGadgetPaneFxController;
 import sa.gov.nic.bio.bw.client.core.utils.DialogUtils;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.wizard.WizardStepFxControllerBase;
+import sa.gov.nic.bio.bw.client.core.workflow.Output;
 import sa.gov.nic.bio.bw.client.features.fingerprintcardidentification.utils.FingerprintCardIdentificationErrorCodes;
 
 import java.io.ByteArrayInputStream;
@@ -28,9 +29,9 @@ import java.util.logging.Logger;
 
 public class ScanFingerprintCardPaneFxController extends WizardStepFxControllerBase
 {
-	public static final String KEY_CARD_IMAGE = "CARD_IMAGE";
-	
 	private static final Logger LOGGER = Logger.getLogger(ScanFingerprintCardPaneFxController.class.getName());
+	
+	@Output private Image cardImage;
 	
 	@FXML private ImageView ivFingerprintImage;
 	@FXML private ImageView ivFingerprintImagePlaceHolder;
@@ -56,10 +57,9 @@ public class ScanFingerprintCardPaneFxController extends WizardStepFxControllerB
 	{
 		if(newForm)
 		{
-			Image image = (Image) uiInputData.get(KEY_CARD_IMAGE);
-			if(image != null)
+			if(cardImage != null)
 			{
-				ivFingerprintImage.setImage(image);
+				ivFingerprintImage.setImage(cardImage);
 				GuiUtils.attachImageDialog(Context.getCoreFxController(), ivFingerprintImage,
 				                           resources.getString("label.fingerprintCardImage"),
 				                           resources.getString("label.contextMenu.showImage"), false);
@@ -80,7 +80,7 @@ public class ScanFingerprintCardPaneFxController extends WizardStepFxControllerB
 	@Override
 	protected void onGoingNext(Map<String, Object> uiDataMap)
 	{
-		uiDataMap.put(KEY_CARD_IMAGE, ivFingerprintImage.getImage());
+		cardImage = ivFingerprintImage.getImage();
 	}
 	
 	@FXML

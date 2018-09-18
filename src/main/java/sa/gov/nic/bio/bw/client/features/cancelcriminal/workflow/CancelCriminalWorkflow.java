@@ -1,10 +1,9 @@
 package sa.gov.nic.bio.bw.client.features.cancelcriminal.workflow;
 
-import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.interfaces.FormRenderer;
 import sa.gov.nic.bio.bw.client.core.wizard.WithLookups;
 import sa.gov.nic.bio.bw.client.core.workflow.Signal;
-import sa.gov.nic.bio.bw.client.core.workflow.WizardWorkflowBase;
+import sa.gov.nic.bio.bw.client.core.workflow.SinglePageWorkflowBase;
 import sa.gov.nic.bio.bw.client.features.cancelcriminal.CancelCriminalPaneFxController;
 import sa.gov.nic.bio.bw.client.features.commons.lookups.SamisIdTypesLookup;
 import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
@@ -14,7 +13,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.atomic.AtomicReference;
 
 @WithLookups(SamisIdTypesLookup.class)
-public class CancelCriminalWorkflow extends WizardWorkflowBase<Void, Void>
+public class CancelCriminalWorkflow extends SinglePageWorkflowBase
 {
 	public CancelCriminalWorkflow(AtomicReference<FormRenderer> formRenderer, BlockingQueue<Map<String, Object>> userTasks)
 	{
@@ -22,9 +21,8 @@ public class CancelCriminalWorkflow extends WizardWorkflowBase<Void, Void>
 	}
 	
 	@Override
-	public void onStep(int step) throws InterruptedException, Signal
+	public boolean onStep() throws InterruptedException, Signal
 	{
-		Context.getCoreFxController().clearWizardBar();
 		renderUi(CancelCriminalPaneFxController.class);
 		waitForUserInput();
 		
@@ -46,5 +44,7 @@ public class CancelCriminalWorkflow extends WizardWorkflowBase<Void, Void>
 		}
 		
 		uiInputData.put(KEY_WEBSERVICE_RESPONSE, response);
+		
+		return true;
 	}
 }

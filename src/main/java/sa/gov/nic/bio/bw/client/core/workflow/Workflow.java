@@ -2,7 +2,10 @@ package sa.gov.nic.bio.bw.client.core.workflow;
 
 import sa.gov.nic.bio.bw.client.core.BodyFxControllerBase;
 
+import java.lang.reflect.Field;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.function.BooleanSupplier;
 
 /**
  * The workflow that manages business processes and monitors their state. The workflow starts by starting its
@@ -51,5 +54,77 @@ public interface Workflow<I, O>
 	 */
 	void waitForUserInput() throws InterruptedException, Signal;
 	
-	void renderUi(Class<? extends BodyFxControllerBase> controllerClass);
+	void renderUi(Class<? extends BodyFxControllerBase> controllerClass) throws InterruptedException, Signal;
+	
+	void executeTask(Class<? extends WorkflowTask> taskClass) throws InterruptedException, Signal;
+	
+	static void loadWorkflowInputs(Object instance, Map<String, Object> uiInputData, boolean includeOutputs)
+														throws IllegalAccessException, InstantiationException, Signal
+	{
+		Class<?> controllerClass = instance.getClass();
+		Field[] declaredFields = instance.getClass().getDeclaredFields();
+		
+		for(Field declaredField : declaredFields)
+		{
+			declaredField.setAccessible(true);
+			
+			String fieldName = controllerClass.getName() + "#" + declaredField.getName();
+			Class<?> declaredType = declaredField.getType();
+			Input input = declaredField.getAnnotation(Input.class);
+			
+			if(input != null)
+			{
+				Object value = uiInputData.get(fieldName);
+				if(value != null || !declaredType.isPrimitive()) declaredField.set(instance, value);
+				
+				if(input.required())
+				{
+					Class<? extends BooleanSupplier> requirementConditionClass = input.requirementCondition();
+					BooleanSupplier requirementCondition = requirementConditionClass.newInstance();
+					
+					if(requirementCondition.getAsBoolean())
+					{
+						if(value == null)
+						{
+							String errorMessage = "The value of the required input (" + fieldName + ") is null!";
+							Map<String, Object> payload = new HashMap<>();
+							payload.put(Workflow.KEY_ERROR_DETAILS, new String[]{errorMessage});
+							throw new Signal(SignalType.INVALID_STATE, payload);
+						}
+					}
+				}
+				
+				continue;
+			}
+			
+			Output output = declaredField.getAnnotation(Output.class);
+			
+			if(output != null)
+			{
+				Object value = uiInputData.get(fieldName);
+				if(includeOutputs) declaredField.set(instance, value);
+				else declaredField.set(instance, null);
+			}
+		}
+	}
+	
+	static void saveWorkflowOutputs(Object instance, Map<String, Object> uiInputData) throws IllegalAccessException
+	{
+		Class<?> controllerClass = instance.getClass();
+		Field[] declaredFields = controllerClass.getDeclaredFields();
+		
+		for(Field declaredField : declaredFields)
+		{
+			declaredField.setAccessible(true);
+			
+			String fieldName = controllerClass.getName() + "#" + declaredField.getName();
+			Output output = declaredField.getAnnotation(Output.class);
+			
+			if(output != null)
+			{
+				Object value = declaredField.get(instance);
+				uiInputData.put(fieldName, value);
+			}
+		}
+	}
 }

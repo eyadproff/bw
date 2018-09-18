@@ -50,7 +50,7 @@ public class CoreWorkflow extends WorkflowBase<Void, Void>
 					}
 					default: // shouldn't happen
 					{
-					
+						LOGGER.severe("signalType = " + signalType);
 					}
 				}
 			}

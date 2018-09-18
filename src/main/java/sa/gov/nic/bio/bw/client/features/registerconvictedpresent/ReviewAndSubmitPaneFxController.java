@@ -12,7 +12,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import sa.gov.nic.bio.bw.client.core.Context;
-import sa.gov.nic.bio.bw.client.core.biokit.FingerPosition;
 import sa.gov.nic.bio.bw.client.core.utils.AppConstants;
 import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.client.core.utils.GuiLanguage;
@@ -379,49 +378,13 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 			@SuppressWarnings("unchecked")
 			Map<Integer, String> fingerprintImages = (Map<Integer, String>)
 											uiInputData.get(FingerprintCapturingFxController.KEY_FINGERPRINTS_IMAGES);
-			Map<Integer, ImageView> imageViewMap = new HashMap<>();
-			Map<Integer, String> dialogTitleMap = new HashMap<>();
 			
-			imageViewMap.put(FingerPosition.RIGHT_THUMB.getPosition(), ivRightThumb);
-			imageViewMap.put(FingerPosition.RIGHT_INDEX.getPosition(), ivRightIndex);
-			imageViewMap.put(FingerPosition.RIGHT_MIDDLE.getPosition(), ivRightMiddle);
-			imageViewMap.put(FingerPosition.RIGHT_RING.getPosition(), ivRightRing);
-			imageViewMap.put(FingerPosition.RIGHT_LITTLE.getPosition(), ivRightLittle);
-			imageViewMap.put(FingerPosition.LEFT_THUMB.getPosition(), ivLeftThumb);
-			imageViewMap.put(FingerPosition.LEFT_INDEX.getPosition(), ivLeftIndex);
-			imageViewMap.put(FingerPosition.LEFT_MIDDLE.getPosition(), ivLeftMiddle);
-			imageViewMap.put(FingerPosition.LEFT_RING.getPosition(), ivLeftRing);
-			imageViewMap.put(FingerPosition.LEFT_LITTLE.getPosition(), ivLeftLittle);
-			dialogTitleMap.put(FingerPosition.RIGHT_THUMB.getPosition(),
-			                                        resources.getString("label.fingers.thumb") + " (" +
-													resources.getString("label.rightHand") + ")");
-			dialogTitleMap.put(FingerPosition.RIGHT_INDEX.getPosition(),
-			                                        resources.getString("label.fingers.index") + " (" +
-					                                resources.getString("label.rightHand") + ")");
-			dialogTitleMap.put(FingerPosition.RIGHT_MIDDLE.getPosition(),
-			                                        resources.getString("label.fingers.middle") + " (" +
-				                                    resources.getString("label.rightHand") + ")");
-			dialogTitleMap.put(FingerPosition.RIGHT_RING.getPosition(),
-			                                        resources.getString("label.fingers.ring") + " (" +
-				                                    resources.getString("label.rightHand") + ")");
-			dialogTitleMap.put(FingerPosition.RIGHT_LITTLE.getPosition(),
-			                                        resources.getString("label.fingers.little") + " (" +
-				                                    resources.getString("label.rightHand") + ")");
-			dialogTitleMap.put(FingerPosition.LEFT_THUMB.getPosition(),
-			                                        resources.getString("label.fingers.thumb") + " (" +
-				                                    resources.getString("label.leftHand") + ")");
-			dialogTitleMap.put(FingerPosition.LEFT_INDEX.getPosition(),
-			                                        resources.getString("label.fingers.index") + " (" +
-				                                    resources.getString("label.leftHand") + ")");
-			dialogTitleMap.put(FingerPosition.LEFT_MIDDLE.getPosition(),
-			                                        resources.getString("label.fingers.middle") + " (" +
-				                                    resources.getString("label.leftHand") + ")");
-			dialogTitleMap.put(FingerPosition.LEFT_RING.getPosition(),
-			                                        resources.getString("label.fingers.ring") + " (" +
-				                                    resources.getString("label.leftHand") + ")");
-			dialogTitleMap.put(FingerPosition.LEFT_LITTLE.getPosition(),
-			                                        resources.getString("label.fingers.little") + " (" +
-				                                    resources.getString("label.leftHand") + ")");
+			Map<Integer, String> dialogTitleMap = GuiUtils.constructFingerprintDialogTitles(resources);
+			Map<Integer, ImageView> imageViewMap = GuiUtils.constructFingerprintImageViewMap(ivRightThumb, ivRightIndex,
+			                                                                                 ivRightMiddle, ivRightRing,
+			                                                                                 ivRightLittle, ivLeftThumb,
+			                                                                                 ivLeftIndex, ivLeftMiddle,
+			                                                                                 ivLeftRing, ivLeftLittle);
 			
 			fingerprintImages.forEach((position, fingerprintImage) ->
 			{

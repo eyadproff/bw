@@ -15,6 +15,7 @@
 
 - ENH: improve the wizard slider to support unlimited number of items.
 - ENH: improve lookups across the features.
+- ENH: improve the workflow engine.
 
 ---
 

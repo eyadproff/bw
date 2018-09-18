@@ -7,13 +7,14 @@ import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TextField;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.wizard.WizardStepFxControllerBase;
+import sa.gov.nic.bio.bw.client.core.workflow.Output;
 
 import java.net.URL;
 import java.util.Map;
 
 public class PersonIdPaneFxController extends WizardStepFxControllerBase
 {
-	public static final String KEY_PERSON_ID = "PERSON_ID";
+	@Output private Long personId;
 	
 	@FXML private ProgressIndicator piProgress;
 	@FXML private TextField txtPersonId;
@@ -39,8 +40,6 @@ public class PersonIdPaneFxController extends WizardStepFxControllerBase
 	{
 		if(newForm)
 		{
-			// load the old state, if exists
-			Long personId = (Long) uiInputData.get(KEY_PERSON_ID);
 			if(personId != null) txtPersonId.setText(String.valueOf(personId));
 			
 			txtPersonId.requestFocus();
@@ -50,7 +49,7 @@ public class PersonIdPaneFxController extends WizardStepFxControllerBase
 	@Override
 	protected void onGoingNext(Map<String, Object> uiDataMap)
 	{
-		uiDataMap.put(KEY_PERSON_ID, Long.parseLong(txtPersonId.getText()));
+		personId = Long.valueOf(txtPersonId.getText());
 	}
 	
 	@FXML

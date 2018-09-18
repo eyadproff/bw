@@ -9,16 +9,22 @@ import javafx.scene.input.KeyEvent;
 import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.wizard.WizardStepFxControllerBase;
+import sa.gov.nic.bio.bw.client.core.workflow.Input;
+import sa.gov.nic.bio.bw.client.core.workflow.Output;
 
 import java.net.URL;
 import java.util.Map;
 
 public class ImageSourceFxController extends WizardStepFxControllerBase
 {
-	public static final String KEY_HIDE_IMAGE_SOURCE_PREVIOUS_BUTTON = "HIDE_IMAGE_SOURCE_PREVIOUS_BUTTON";
-	public static final String KEY_IMAGE_SOURCE = "IMAGE_SOURCE";
-	public static final String VALUE_IMAGE_SOURCE_UPLOAD = "IMAGE_SOURCE_UPLOAD";
-	public static final String VALUE_IMAGE_SOURCE_CAMERA = "IMAGE_SOURCE_CAMERA";
+	public enum Source
+	{
+		UPLOAD,
+		CAMERA
+	}
+	
+	@Input private Boolean hidePreviousButton;
+	@Output private Source imageSource;
 	
 	@FXML private RadioButton rbByUploadingImage;
 	@FXML private RadioButton rbByCamera;
@@ -77,13 +83,10 @@ public class ImageSourceFxController extends WizardStepFxControllerBase
 	{
 		if(newForm)
 		{
-			// collect configurations from the workflow
-			Boolean hidePreviousButton = (Boolean) uiInputData.get(KEY_HIDE_IMAGE_SOURCE_PREVIOUS_BUTTON);
 			if(hidePreviousButton != null) GuiUtils.showNode(btnPrevious, !hidePreviousButton);
 			
 			// load the old state, if exists
-			String imageSource = (String) uiInputData.get(KEY_IMAGE_SOURCE);
-			if(VALUE_IMAGE_SOURCE_CAMERA.equals(imageSource))
+			if(Source.CAMERA.equals(imageSource))
 			{
 				rbByCamera.setSelected(true);
 				rbByCamera.requestFocus();
@@ -105,8 +108,7 @@ public class ImageSourceFxController extends WizardStepFxControllerBase
 	@Override
 	public void onGoingNext(Map<String, Object> uiDataMap)
 	{
-		// save the selected source of image into the map
-		if(rbByCamera.isSelected()) uiDataMap.put(KEY_IMAGE_SOURCE, VALUE_IMAGE_SOURCE_CAMERA);
-		else uiDataMap.put(KEY_IMAGE_SOURCE, VALUE_IMAGE_SOURCE_UPLOAD);
+		if(rbByCamera.isSelected()) imageSource = Source.CAMERA;
+		else imageSource = Source.UPLOAD;
 	}
 }

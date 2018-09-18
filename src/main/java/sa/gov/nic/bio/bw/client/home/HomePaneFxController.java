@@ -40,7 +40,8 @@ public class HomePaneFxController extends BodyFxControllerBase
 {
 	private static final Logger LOGGER = Logger.getLogger(HomePaneFxController.class.getName());
 	
-	@FXML private VBox loginTimestampBox;
+	@FXML private VBox paneError;
+	@FXML private VBox paneLoginTimestampBox;
 	@FXML private Label lblLoginTimeText;
 	@FXML private Label lblLoginTime;
 	@FXML private Label lblLastSuccessLoginText;
@@ -123,18 +124,15 @@ public class HomePaneFxController extends BodyFxControllerBase
 		
 		if(errorCode != null)
 		{
-			loginTimestampBox.setManaged(false);
-			loginTimestampBox.setVisible(false);
+			GuiUtils.showNode(paneLoginTimestampBox, false);
+			GuiUtils.showNode(paneError, true);
 			
 			String[] errorDetails = (String[]) uiInputData.get(Workflow.KEY_ERROR_DETAILS);
 			Exception exception = (Exception) uiInputData.get(Workflow.KEY_EXCEPTION);
 			
 			Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails);
 		}
-		else
-		{
-			firstLoadAfterLogin();
-		}
+		else firstLoadAfterLogin();
 	}
 	
 	private void firstLoadAfterLogin()

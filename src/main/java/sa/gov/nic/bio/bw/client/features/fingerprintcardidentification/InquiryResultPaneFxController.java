@@ -12,13 +12,12 @@ import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import net.sf.jasperreports.engine.JasperPrint;
 import sa.gov.nic.bio.bw.client.core.Context;
-import sa.gov.nic.bio.bw.client.core.biokit.FingerPosition;
 import sa.gov.nic.bio.bw.client.core.utils.AppConstants;
 import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.client.core.utils.GuiLanguage;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.wizard.WizardStepFxControllerBase;
-import sa.gov.nic.bio.bw.client.features.commons.InquiryByFingerprintsPaneFxController;
+import sa.gov.nic.bio.bw.client.core.workflow.Input;
 import sa.gov.nic.bio.bw.client.features.commons.beans.GenderType;
 import sa.gov.nic.bio.bw.client.features.commons.lookups.CountriesLookup;
 import sa.gov.nic.bio.bw.client.features.commons.lookups.DocumentTypesLookup;
@@ -34,6 +33,7 @@ import sa.gov.nic.bio.bw.client.features.commons.webservice.SamisIdType;
 import sa.gov.nic.bio.bw.client.features.fingerprintcardidentification.beans.FingerprintCardIdentificationRecordReport;
 import sa.gov.nic.bio.bw.client.features.fingerprintcardidentification.tasks.BuildFingerprintCardIdentificationRecordReportTask;
 import sa.gov.nic.bio.bw.client.features.fingerprintcardidentification.utils.FingerprintCardIdentificationErrorCodes;
+import sa.gov.nic.bio.bw.client.features.fingerprintcardidentification.workflow.FingerprintInquiryStatusCheckerWorkflowTask.Status;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -43,18 +43,19 @@ import java.net.URL;
 import java.time.LocalDate;
 import java.util.Base64;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class InquiryResultPaneFxController extends WizardStepFxControllerBase
 {
-	public static final String KEY_INQUIRY_HIT_GENERAL_FILE_NUMBER = "INQUIRY_HIT_GENERAL_FILE_NUMBER";
-	public static final String KEY_INQUIRY_HIT_CIVIL_BIO_ID = "INQUIRY_HIT_CIVIL_BIO_ID";
-	public static final String KEY_INQUIRY_HIT_SAMIS_ID = "INQUIRY_HIT_SAMIS_ID";
-	public static final String KEY_INQUIRY_HIT_RESULT = "INQUIRY_HIT_RESULT";
-	public static final String KEY_FINGERPRINTS_IMAGES = "FINGERPRINTS_IMAGES";
+	@Input private Status status;
+	@Input private Long samisId;
+	@Input private Long civilBioId;
+	@Input private Long criminalBioId;
+	@Input private PersonInfo personInfo;
+	@Input private Map<Integer, Image> fingerprintImages;
+	@Input private Map<Integer, String> fingerprintBase64Images;
 	
 	@FXML private VBox paneNoHitMessage;
 	@FXML private ScrollPane paneResult;
@@ -115,8 +116,7 @@ public class InquiryResultPaneFxController extends WizardStepFxControllerBase
 	{
 		if(newForm)
 		{
-			Boolean fingerprintHit = (Boolean)
-					uiInputData.get(InquiryByFingerprintsPaneFxController.KEY_FINGERPRINT_INQUIRY_HIT);
+			boolean fingerprintHit = status == Status.HIT;
 			
 			GuiUtils.showNode(paneResult, fingerprintHit);
 			GuiUtils.showNode(btnPrintRecord, fingerprintHit);
@@ -125,16 +125,7 @@ public class InquiryResultPaneFxController extends WizardStepFxControllerBase
 			
 			if(fingerprintHit)
 			{
-				Long samisId = (Long) uiInputData.get(KEY_INQUIRY_HIT_SAMIS_ID);
-				Long biometricsId = (Long) uiInputData.get(KEY_INQUIRY_HIT_CIVIL_BIO_ID);
-				Long gerneralFileNumber = (Long) uiInputData.get(KEY_INQUIRY_HIT_GENERAL_FILE_NUMBER);
-				PersonInfo personInfo = (PersonInfo) uiInputData.get(KEY_INQUIRY_HIT_RESULT);
-				
-				@SuppressWarnings("unchecked")
-				Map<Integer, String> fingerprintImages =
-													(Map<Integer, String>) uiInputData.get(KEY_FINGERPRINTS_IMAGES);
-				
-				populateData(samisId, biometricsId, gerneralFileNumber, personInfo, fingerprintImages);
+				populateData();
 				GuiUtils.showNode(paneResult, true);
 			}
 		}
@@ -259,13 +250,12 @@ public class InquiryResultPaneFxController extends WizardStepFxControllerBase
 		}
 	}
 	
-	private void populateData(Long samisIdLong, Long biometricsIdLong, Long generalFileNumberLong,
-	                          PersonInfo personInfo, Map<Integer, String> fingerprintsImages)
+	private void populateData()
 	{
-		String samisId = null;
+		String sSamisId = null;
 		String samisIdType = null;
-		String biometricsId = null;
-		String generalFileNumber = null;
+		String sCivilBioId = null;
+		String sCriminalBioId = null;
 		String faceBase64 = null;
 		String firstName = null;
 		String fatherName = null;
@@ -281,22 +271,22 @@ public class InquiryResultPaneFxController extends WizardStepFxControllerBase
 		String documentIssuanceDate = null;
 		String documentExpiryDate = null;
 		
-		if(samisIdLong != null)
+		if(samisId != null)
 		{
-			samisId = AppUtils.localizeNumbers(String.valueOf(samisIdLong));
-			lblSamisId.setText(samisId);
+			sSamisId = AppUtils.localizeNumbers(String.valueOf(samisId));
+			lblSamisId.setText(sSamisId);
 		}
 		
-		if(biometricsIdLong != null)
+		if(civilBioId != null)
 		{
-			biometricsId = AppUtils.localizeNumbers(String.valueOf(biometricsIdLong));
-			lblBiometricsId.setText(biometricsId);
+			sCivilBioId = AppUtils.localizeNumbers(String.valueOf(civilBioId));
+			lblBiometricsId.setText(sCivilBioId);
 		}
 		
-		if(generalFileNumberLong != null)
+		if(criminalBioId != null)
 		{
-			generalFileNumber = AppUtils.localizeNumbers(String.valueOf(generalFileNumberLong));
-			lblGeneralFileNumber.setText(generalFileNumber);
+			sCriminalBioId = AppUtils.localizeNumbers(String.valueOf(criminalBioId));
+			lblGeneralFileNumber.setText(sCriminalBioId);
 		}
 		
 		if(personInfo != null)
@@ -375,11 +365,11 @@ public class InquiryResultPaneFxController extends WizardStepFxControllerBase
 				lblNationality.setText(nationality);
 			}
 			
-			samisIdLong = personInfo.getSamisId();
-			if(samisIdLong != null)
+			samisId = personInfo.getSamisId();
+			if(samisId != null)
 			{
-				samisId = AppUtils.localizeNumbers(String.valueOf(samisIdLong));
-				lblSamisId.setText(samisId);
+				sSamisId = AppUtils.localizeNumbers(String.valueOf(samisId));
+				lblSamisId.setText(sSamisId);
 			}
 			
 			@SuppressWarnings("unchecked")
@@ -486,72 +476,30 @@ public class InquiryResultPaneFxController extends WizardStepFxControllerBase
 			}
 		}
 		
-		if(fingerprintsImages != null)
+		Map<Integer, String> dialogTitleMap = GuiUtils.constructFingerprintDialogTitles(resources);
+		Map<Integer, ImageView> imageViewMap = GuiUtils.constructFingerprintImageViewMap(ivRightThumb, ivRightIndex,
+		                                                                                 ivRightMiddle, ivRightRing,
+		                                                                                 ivRightLittle, ivLeftThumb,
+		                                                                                 ivLeftIndex, ivLeftMiddle,
+		                                                                                 ivLeftRing, ivLeftLittle);
+		
+		fingerprintImages.forEach((position, fingerprintImage) ->
 		{
-			Map<Integer, ImageView> imageViewMap = new HashMap<>();
-			Map<Integer, String> dialogTitleMap = new HashMap<>();
-			
-			imageViewMap.put(FingerPosition.RIGHT_THUMB.getPosition(), ivRightThumb);
-			imageViewMap.put(FingerPosition.RIGHT_INDEX.getPosition(), ivRightIndex);
-			imageViewMap.put(FingerPosition.RIGHT_MIDDLE.getPosition(), ivRightMiddle);
-			imageViewMap.put(FingerPosition.RIGHT_RING.getPosition(), ivRightRing);
-			imageViewMap.put(FingerPosition.RIGHT_LITTLE.getPosition(), ivRightLittle);
-			imageViewMap.put(FingerPosition.LEFT_THUMB.getPosition(), ivLeftThumb);
-			imageViewMap.put(FingerPosition.LEFT_INDEX.getPosition(), ivLeftIndex);
-			imageViewMap.put(FingerPosition.LEFT_MIDDLE.getPosition(), ivLeftMiddle);
-			imageViewMap.put(FingerPosition.LEFT_RING.getPosition(), ivLeftRing);
-			imageViewMap.put(FingerPosition.LEFT_LITTLE.getPosition(), ivLeftLittle);
-			
-			dialogTitleMap.put(FingerPosition.RIGHT_THUMB.getPosition(),
-			                                            resources.getString("label.fingers.thumb") + " (" +
-				                                        resources.getString("label.rightHand") + ")");
-			dialogTitleMap.put(FingerPosition.RIGHT_INDEX.getPosition(),
-			                                            resources.getString("label.fingers.index") + " (" +
-				                                        resources.getString("label.rightHand") + ")");
-			dialogTitleMap.put(FingerPosition.RIGHT_MIDDLE.getPosition(),
-			                                            resources.getString("label.fingers.middle") + " (" +
-				                                        resources.getString("label.rightHand") + ")");
-			dialogTitleMap.put(FingerPosition.RIGHT_RING.getPosition(),
-			                                            resources.getString("label.fingers.ring") + " (" +
-				                                        resources.getString("label.rightHand") + ")");
-			dialogTitleMap.put(FingerPosition.RIGHT_LITTLE.getPosition(),
-			                                            resources.getString("label.fingers.little") + " (" +
-				                                        resources.getString("label.rightHand") + ")");
-			dialogTitleMap.put(FingerPosition.LEFT_THUMB.getPosition(),
-			                                            resources.getString("label.fingers.thumb") + " (" +
-				                                        resources.getString("label.leftHand") + ")");
-			dialogTitleMap.put(FingerPosition.LEFT_INDEX.getPosition(),
-			                                            resources.getString("label.fingers.index") + " (" +
-				                                        resources.getString("label.leftHand") + ")");
-			dialogTitleMap.put(FingerPosition.LEFT_MIDDLE.getPosition(),
-			                                            resources.getString("label.fingers.middle") + " (" +
-				                                        resources.getString("label.leftHand") + ")");
-			dialogTitleMap.put(FingerPosition.LEFT_RING.getPosition(),
-			                                            resources.getString("label.fingers.ring") + " (" +
-				                                        resources.getString("label.leftHand") + ")");
-			dialogTitleMap.put(FingerPosition.LEFT_LITTLE.getPosition(),
-			                                            resources.getString("label.fingers.little") + " (" +
-				                                        resources.getString("label.leftHand") + ")");
-			
-			fingerprintsImages.forEach((position, fingerprintImage) ->
-			{
-			    ImageView imageView = imageViewMap.get(position);
-			    String dialogTitle = dialogTitleMap.get(position);
-			
-			    byte[] bytes = Base64.getDecoder().decode(fingerprintImage);
-			    imageView.setImage(new Image(new ByteArrayInputStream(bytes)));
-			    GuiUtils.attachImageDialog(Context.getCoreFxController(), imageView,
-			                               dialogTitle, resources.getString("label.contextMenu.showImage"),
-			                               false);
-			});
-		}
+		    ImageView imageView = imageViewMap.get(position);
+		    String dialogTitle = dialogTitleMap.get(position);
+		
+		    imageView.setImage(fingerprintImage);
+		    GuiUtils.attachImageDialog(Context.getCoreFxController(), imageView,
+		                               dialogTitle, resources.getString("label.contextMenu.showImage"),
+		                               false);
+		});
 		
 		fingerprintCardIdentificationRecordReport = new FingerprintCardIdentificationRecordReport(faceBase64, firstName,
                                                           fatherName, grandfatherName, familyName, gender,
-                                                          nationality, occupation, birthPlace, birthDate, samisId,
-                                                          samisIdType, biometricsId, generalFileNumber, documentId,
+                                                          nationality, occupation, birthPlace, birthDate, sSamisId,
+                                                          samisIdType, sCivilBioId, sCriminalBioId, documentId,
                                                           documentType, documentIssuanceDate, documentExpiryDate,
-                                                          fingerprintsImages);
+                                                          fingerprintBase64Images);
 	}
 	
 	private void printDeadPersonRecordReport(JasperPrint jasperPrint)

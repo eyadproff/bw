@@ -24,8 +24,6 @@ public class SearchFxController extends WizardStepFxControllerBase
 	@FXML private Button btnRetry;
 	@FXML private Button btnStartOver;
 	
-	private List<Candidate> candidates;
-	
 	@Override
 	public URL getFxmlLocation()
 	{
@@ -42,7 +40,11 @@ public class SearchFxController extends WizardStepFxControllerBase
 	@SuppressWarnings("unchecked")
 	public void onWorkflowUserTaskLoad(boolean newForm, Map<String, Object> uiInputData)
 	{
-		if(newForm) showProgress(true);
+		if(newForm)
+		{
+			showProgress(true);
+			continueWorkflow();
+		}
 		else
 		{
 			ServiceResponse<List<Candidate>> response = (ServiceResponse<List<Candidate>>)
@@ -50,11 +52,7 @@ public class SearchFxController extends WizardStepFxControllerBase
 			
 			if(response != null) // there is a result
 			{
-				if(response.isSuccess())
-				{
-					candidates = response.getResult();
-					goNext();
-				}
+				if(response.isSuccess()) goNext();
 				else
 				{
 					showProgress(false);
@@ -63,12 +61,6 @@ public class SearchFxController extends WizardStepFxControllerBase
 				}
 			}
 		}
-	}
-	
-	@Override
-	protected void onGoingNext(Map<String, Object> uiDataMap)
-	{
-		uiDataMap.put(ShowResultsFxController.KEY_CANDIDATES, candidates);
 	}
 	
 	@FXML

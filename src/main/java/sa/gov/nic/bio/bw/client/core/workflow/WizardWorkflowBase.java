@@ -17,7 +17,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicReference;
 
-public abstract class WizardWorkflowBase<I, O> extends WorkflowBase<I, O> implements WizardWorkflow<I, O>
+public abstract class WizardWorkflowBase extends WorkflowBase<Void, Void> implements WizardWorkflow
 {
 	public static final String KEY_WORKFLOW_DIRECTION = "WORKFLOW_DIRECTION";
 	public static final String VALUE_WORKFLOW_DIRECTION_BACKWARD = "WORKFLOW_DIRECTION_BACKWARD";
@@ -33,7 +33,7 @@ public abstract class WizardWorkflowBase<I, O> extends WorkflowBase<I, O> implem
 	}
 	
 	@Override
-	public O onProcess(I input) throws InterruptedException, Signal
+	public Void onProcess(Void input) throws InterruptedException, Signal
 	{
 		String basePackage = getClass().getPackage().getName().replace(".", "/");
 		basePackage = basePackage.substring(0, basePackage.lastIndexOf('/'));
@@ -50,13 +50,20 @@ public abstract class WizardWorkflowBase<I, O> extends WorkflowBase<I, O> implem
 			return null;
 		}
 		
-		URL wizardFxmlLocation = Thread.currentThread().getContextClassLoader()
-																.getResource(basePackage + "/fxml/wizard.fxml");
-		if(wizardFxmlLocation != null)
+		if(SinglePageWorkflowBase.class.isAssignableFrom(getClass()))
 		{
-			FXMLLoader wizardPaneLoader = new FXMLLoader(wizardFxmlLocation, stringsBundle);
-			wizardPaneLoader.setClassLoader(Context.getFxClassLoader());
-			Context.getCoreFxController().loadWizardBar(wizardPaneLoader);
+			Context.getCoreFxController().clearWizardBar();
+		}
+		else
+		{
+			URL wizardFxmlLocation = Thread.currentThread().getContextClassLoader()
+														   .getResource(basePackage + "/fxml/wizard.fxml");
+			if(wizardFxmlLocation != null)
+			{
+				FXMLLoader wizardPaneLoader = new FXMLLoader(wizardFxmlLocation, stringsBundle);
+				wizardPaneLoader.setClassLoader(Context.getFxClassLoader());
+				Context.getCoreFxController().loadWizardBar(wizardPaneLoader);
+			}
 		}
 		
 		WithLookups annotation = getClass().getAnnotation(WithLookups.class);
@@ -100,15 +107,33 @@ public abstract class WizardWorkflowBase<I, O> extends WorkflowBase<I, O> implem
 		
 		while(true)
 		{
-			onStep(step);
+			try
+			{
+				boolean handled = onStep(step);
+				
+				if(!handled)
+				{
+					Map<String, Object> payload = new HashMap<>();
+					payload.put(KEY_ERROR_DETAILS, new String[]{"Step number (" + step +
+													") was not handled in workflow (" + getClass().getName() + ")!"});
+					throw new Signal(SignalType.INVALID_STATE, payload);
+				}
+			}
+			catch(Signal signal)
+			{
+				if(signal.getSignalType() != SignalType.WIZARD_NAVIGATION &&
+						signal.getSignalType() != SignalType.INTERRUPT_SEQUENT_TASKS) throw signal;
+			}
 			
 			if(isGoingBackward())
 			{
+				uiInputData.remove(KEY_WORKFLOW_DIRECTION);
 				Context.getCoreFxController().moveWizardBackward();
 				step--;
 			}
 			else if(isGoingForward())
 			{
+				uiInputData.remove(KEY_WORKFLOW_DIRECTION);
 				Context.getCoreFxController().moveWizardForward();
 				step++;
 			}
@@ -119,6 +144,44 @@ public abstract class WizardWorkflowBase<I, O> extends WorkflowBase<I, O> implem
 				step = 0;
 			}
 		}
+	}
+	
+	@Override
+	public void waitForUserInput() throws InterruptedException, Signal
+	{
+		super.waitForUserInput();
+		
+		if(isLeaving()) throw new Signal(SignalType.WIZARD_NAVIGATION, null);
+	}
+	
+	@SuppressWarnings("unchecked")
+	protected <T> T getData(Class<?> outputClass, String outputName)
+	{
+		return (T) uiInputData.get(outputClass.getName() + "#" + outputName);
+	}
+	
+	protected void passData(Class<?> outputClass, Class<?> inputClass, String inputOutputName)
+	{
+		passData(outputClass, inputOutputName, inputClass, inputOutputName, null);
+	}
+	
+	protected void passData(Class<?> outputClass, String outputName, Class<?> inputClass, String inputName)
+	{
+		passData(outputClass, outputName, inputClass, inputName, null);
+	}
+	
+	@SuppressWarnings("unchecked")
+	protected <T1, T2> void passData(Class<?> outputClass, String outputName, Class<?> inputClass, String inputName,
+                                     Converter<T1, T2> converter)
+	{
+		Object value = uiInputData.get(outputClass.getName() + "#" + outputName);
+		if(converter != null) value = converter.convert((T1) value);
+		setData(inputClass, inputName, value);
+	}
+	
+	protected void setData(Class<?> inputClass, String inputName, Object value)
+	{
+		uiInputData.put(inputClass.getName() + "#" + inputName, value);
 	}
 	
 	protected boolean isGoingBackward()

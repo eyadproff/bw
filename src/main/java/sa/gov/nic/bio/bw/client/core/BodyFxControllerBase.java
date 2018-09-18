@@ -9,6 +9,7 @@ import sa.gov.nic.bio.bw.client.core.interfaces.NotificationController;
 import sa.gov.nic.bio.bw.client.core.interfaces.WorkflowUserTaskController;
 
 import java.net.URL;
+import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Logger;
 
@@ -136,5 +137,10 @@ public abstract class BodyFxControllerBase extends RegionFxControllerBase implem
 	public final String getStringsResourceBundle()
 	{
 		return getClass().getPackage().getName().replace(".", "/") + "/bundles/strings";
+	}
+	
+	protected void continueWorkflow()
+	{
+		if(!isDetached()) Context.getWorkflowManager().submitUserTask(new HashMap<>());
 	}
 }
