@@ -1,14 +1,16 @@
 package sa.gov.nic.bio.bw.client.core.workflow;
 
-import javafx.fxml.FXMLLoader;
 import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.interfaces.FormRenderer;
 import sa.gov.nic.bio.bw.client.core.utils.UTF8Control;
+import sa.gov.nic.bio.bw.client.core.wizard.Step;
 import sa.gov.nic.bio.bw.client.core.wizard.WithLookups;
+import sa.gov.nic.bio.bw.client.core.wizard.Wizard;
+import sa.gov.nic.bio.bw.client.core.wizard.WizardPane;
+import sa.gov.nic.bio.bw.client.core.wizard.WizardStep;
 import sa.gov.nic.bio.bw.client.features.commons.LookupFxController;
 import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
 
-import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.MissingResourceException;
@@ -50,26 +52,10 @@ public abstract class WizardWorkflowBase extends WorkflowBase<Void, Void> implem
 			return null;
 		}
 		
-		if(SinglePageWorkflowBase.class.isAssignableFrom(getClass()))
+		WithLookups withLookups = getClass().getAnnotation(WithLookups.class);
+		if(withLookups != null)
 		{
-			Context.getCoreFxController().clearWizardBar();
-		}
-		else
-		{
-			URL wizardFxmlLocation = Thread.currentThread().getContextClassLoader()
-														   .getResource(basePackage + "/fxml/wizard.fxml");
-			if(wizardFxmlLocation != null)
-			{
-				FXMLLoader wizardPaneLoader = new FXMLLoader(wizardFxmlLocation, stringsBundle);
-				wizardPaneLoader.setClassLoader(Context.getFxClassLoader());
-				Context.getCoreFxController().loadWizardBar(wizardPaneLoader);
-			}
-		}
-		
-		WithLookups annotation = getClass().getAnnotation(WithLookups.class);
-		if(annotation != null)
-		{
-			Class<? extends Callable<ServiceResponse<Void>>>[] lookupClasses = annotation.value();
+			Class<? extends Callable<ServiceResponse<Void>>>[] lookupClasses = withLookups.value();
 			try
 			{
 				outer: while(true)
@@ -100,6 +86,33 @@ public abstract class WizardWorkflowBase extends WorkflowBase<Void, Void> implem
 			catch(Exception e)
 			{
 				e.printStackTrace();
+			}
+		}
+		
+		if(SinglePageWorkflowBase.class.isAssignableFrom(getClass()))
+		{
+			Context.getCoreFxController().clearWizardBar();
+		}
+		else
+		{
+			Wizard wizard = getClass().getAnnotation(Wizard.class);
+			if(wizard != null)
+			{
+				Step[] steps = wizard.value();
+				WizardStep[] wizardSteps = new WizardStep[steps.length];
+				
+				for(int i = 0; i < steps.length; i++)
+				{
+					Step step = steps[i];
+					String iconId = step.iconId();
+					String title = step.title();
+					
+					WizardStep wizardStep = new WizardStep(iconId, stringsBundle.getString(title));
+					wizardSteps[i] = wizardStep;
+				}
+				
+				WizardPane wizardPane = new WizardPane(wizardSteps);
+				Context.getCoreFxController().setWizardPane(wizardPane);
 			}
 		}
 		

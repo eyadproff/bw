@@ -4,7 +4,6 @@ import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
-import javafx.beans.NamedArg;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleListProperty;
 import javafx.beans.value.ChangeListener;
@@ -32,6 +31,7 @@ import java.util.List;
 public class WizardPane extends BorderPane
 {
 	private static final String FXML_WIZARD = "sa/gov/nic/bio/bw/client/core/fxml/wizard.fxml";
+	
 	@FXML private Pane stepsIndicatorPane;
 	@FXML private ScrollPane stepsIndicatorScrollPane;
 	
@@ -39,12 +39,7 @@ public class WizardPane extends BorderPane
 	private List<WizardStepIndicator> indicators = new ArrayList<>();
 	private int currentStep = 0;
 	
-	public WizardPane()
-	{
-		this(new WizardStep[0]);
-	}
-	
-	public WizardPane(@NamedArg("steps") WizardStep[] steps)
+	public WizardPane(WizardStep[] steps)
 	{
 		loadFxml();
 		this.steps = new SimpleListProperty<>(this.steps, "steps",
@@ -52,20 +47,11 @@ public class WizardPane extends BorderPane
 		setSteps(FXCollections.observableArrayList(steps));
 	}
 	
-	public ListProperty<WizardStep> stepsProperty(){return this.steps;}
 	public void setSteps(ObservableList<WizardStep> value)
 	{
 		this.steps.get().setAll(value); drawStepsIndicators(true);
 	}
 	public ObservableList<WizardStep> getSteps(){return this.steps.get();}
-	
-	public int getCurrentStep(){return currentStep;}
-	public void setCurrentStep(int currentStep){this.currentStep = currentStep;}
-	
-	public void clearSteps()
-	{
-		setSteps(FXCollections.observableArrayList());
-	}
 	
 	private void loadFxml()
 	{

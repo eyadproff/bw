@@ -314,25 +314,15 @@ public class CoreFxController extends FxControllerBase implements IdleMonitorReg
 		if(bShow) bodyPane.setCenter(null);
 	}
 	
-	public void showMenuTransitionProgressIndicator(boolean bShow)
+	private void showMenuTransitionProgressIndicator(boolean bShow)
 	{
 		menuTransitionOverlayPane.setVisible(bShow);
 	}
 	
-	public void loadWizardBar(FXMLLoader wizardPaneLoader)
+	public void setWizardPane(WizardPane wizardPane)
 	{
-		try
-		{
-			wizardPane = wizardPaneLoader.load();
-			Platform.runLater(() -> bodyPane.setTop(wizardPane));
-		}
-		catch(Exception e)
-		{
-			String errorCode = CoreErrorCodes.C002_00005.getCode();
-			String[] errorDetails = {"Failed to load FXML correctly!", "wizardFxmlLocation = " +
-																					wizardPaneLoader.getLocation()};
-			showErrorDialog(errorCode, e, errorDetails);
-		}
+		this.wizardPane = wizardPane;
+		Platform.runLater(() -> bodyPane.setTop(wizardPane));
 	}
 	
 	public void clearWizardBar()
@@ -439,9 +429,9 @@ public class CoreFxController extends FxControllerBase implements IdleMonitorReg
 			return;
 		}
 		
-		ResourceBundle errorsBundle = new CombinedResourceBundle(errorBundleNames, toLanguage.getLocale(),
-		                                                         new UTF8Control());
-		((CombinedResourceBundle) errorsBundle).load();
+		CombinedResourceBundle errorsBundle = new CombinedResourceBundle(errorBundleNames, toLanguage.getLocale(),
+		                                                                 new UTF8Control());
+		errorsBundle.load();
 		Context.setErrorsBundle(errorsBundle);
 		
 		ResourceBundle stringsBundle;

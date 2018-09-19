@@ -1,6 +1,8 @@
 package sa.gov.nic.bio.bw.client.features.searchbyfaceimage.workflow;
 
 import sa.gov.nic.bio.bw.client.core.interfaces.FormRenderer;
+import sa.gov.nic.bio.bw.client.core.wizard.Step;
+import sa.gov.nic.bio.bw.client.core.wizard.Wizard;
 import sa.gov.nic.bio.bw.client.core.workflow.Signal;
 import sa.gov.nic.bio.bw.client.core.workflow.WizardWorkflowBase;
 import sa.gov.nic.bio.bw.client.features.commons.FaceCapturingFxController;
@@ -15,6 +17,11 @@ import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.atomic.AtomicReference;
 
+@Wizard({@Step(iconId = "question", title = "wizard.imageSource"),
+		@Step(iconId = "upload", title = "wizard.uploadImage"),
+		@Step(iconId = "unlock", title = "wizard.confirm"),
+		@Step(iconId = "search", title = "wizard.search"),
+		@Step(iconId = "users", title = "wizard.showResults")})
 public class SearchByFaceImageWorkflow extends WizardWorkflowBase
 {
 	public SearchByFaceImageWorkflow(AtomicReference<FormRenderer> formRenderer,

@@ -2,7 +2,9 @@ package sa.gov.nic.bio.bw.client.features.registerconvictedpresent.workflow;
 
 import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.interfaces.FormRenderer;
+import sa.gov.nic.bio.bw.client.core.wizard.Step;
 import sa.gov.nic.bio.bw.client.core.wizard.WithLookups;
+import sa.gov.nic.bio.bw.client.core.wizard.Wizard;
 import sa.gov.nic.bio.bw.client.core.workflow.Signal;
 import sa.gov.nic.bio.bw.client.core.workflow.WizardWorkflowBase;
 import sa.gov.nic.bio.bw.client.features.commons.FaceCapturingFxController;
@@ -32,6 +34,15 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.atomic.AtomicReference;
 
 @WithLookups({SamisIdTypesLookup.class, DocumentTypesLookup.class, CountriesLookup.class, CrimeTypesLookup.class})
+@Wizard({@Step(iconId = "\\uf256", title = "wizard.fingerprintCapturing"),
+		@Step(iconId = "camera", title = "wizard.facePhotoCapturing"),
+		@Step(iconId = "search", title = "wizard.inquiryByFingerprints"),
+		@Step(iconId = "database", title = "wizard.inquiryResult"),
+		@Step(iconId = "user", title = "wizard.personInfo"),
+		@Step(iconId = "gavel", title = "wizard.judgementDetails"),
+		@Step(iconId = "university", title = "wizard.punishmentDetails"),
+		@Step(iconId = "th_list", title = "wizard.reviewAndSubmit"),
+		@Step(iconId = "file_pdf_alt", title = "wizard.showReport")})
 public class RegisterConvictedReportPresentWorkflow extends WizardWorkflowBase
 {
 	public RegisterConvictedReportPresentWorkflow(AtomicReference<FormRenderer> formRenderer,

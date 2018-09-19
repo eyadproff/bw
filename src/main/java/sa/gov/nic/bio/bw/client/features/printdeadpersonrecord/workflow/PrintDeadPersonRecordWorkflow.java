@@ -1,7 +1,9 @@
 package sa.gov.nic.bio.bw.client.features.printdeadpersonrecord.workflow;
 
 import sa.gov.nic.bio.bw.client.core.interfaces.FormRenderer;
+import sa.gov.nic.bio.bw.client.core.wizard.Step;
 import sa.gov.nic.bio.bw.client.core.wizard.WithLookups;
+import sa.gov.nic.bio.bw.client.core.wizard.Wizard;
 import sa.gov.nic.bio.bw.client.core.workflow.Signal;
 import sa.gov.nic.bio.bw.client.core.workflow.WizardWorkflowBase;
 import sa.gov.nic.bio.bw.client.features.commons.lookups.CountriesLookup;
@@ -19,6 +21,9 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.atomic.AtomicReference;
 
 @WithLookups({SamisIdTypesLookup.class, DocumentTypesLookup.class, CountriesLookup.class})
+@Wizard({@Step(iconId = "\\uf2c1", title = "wizard.enteringRecordId"),
+		@Step(iconId = "user", title = "wizard.fetchingPersonInformation"),
+		@Step(iconId = "file_pdf_alt", title = "wizard.showRecord")})
 public class PrintDeadPersonRecordWorkflow extends WizardWorkflowBase
 {
 	public PrintDeadPersonRecordWorkflow(AtomicReference<FormRenderer> formRenderer,

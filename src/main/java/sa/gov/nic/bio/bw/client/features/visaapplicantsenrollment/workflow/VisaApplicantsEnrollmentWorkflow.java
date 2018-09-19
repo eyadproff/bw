@@ -2,7 +2,9 @@ package sa.gov.nic.bio.bw.client.features.visaapplicantsenrollment.workflow;
 
 import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.interfaces.FormRenderer;
+import sa.gov.nic.bio.bw.client.core.wizard.Step;
 import sa.gov.nic.bio.bw.client.core.wizard.WithLookups;
+import sa.gov.nic.bio.bw.client.core.wizard.Wizard;
 import sa.gov.nic.bio.bw.client.core.workflow.Signal;
 import sa.gov.nic.bio.bw.client.core.workflow.WizardWorkflowBase;
 import sa.gov.nic.bio.bw.client.features.commons.FaceCapturingFxController;
@@ -22,6 +24,11 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.atomic.AtomicReference;
 
 @WithLookups({CountriesLookup.class, VisaTypesLookup.class, PassportTypesLookup.class, DialingCodesLookup.class})
+@Wizard({@Step(iconId = "\\uf2bb", title = "wizard.applicantInfo"),
+		@Step(iconId = "\\uf256", title = "wizard.fingerprintCapturing"),
+		@Step(iconId = "camera", title = "wizard.facePhotoCapturing"),
+		@Step(iconId = "th_list", title = "wizard.reviewAndSubmit"),
+		@Step(iconId = "file_pdf_alt", title = "wizard.showReceipt")})
 public class VisaApplicantsEnrollmentWorkflow extends WizardWorkflowBase
 {
 	public VisaApplicantsEnrollmentWorkflow(AtomicReference<FormRenderer> formRenderer,

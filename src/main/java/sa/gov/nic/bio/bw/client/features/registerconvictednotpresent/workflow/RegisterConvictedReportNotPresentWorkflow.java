@@ -6,7 +6,9 @@ import sa.gov.nic.bio.biokit.websocket.beans.DMFingerData;
 import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.biokit.FingerPosition;
 import sa.gov.nic.bio.bw.client.core.interfaces.FormRenderer;
+import sa.gov.nic.bio.bw.client.core.wizard.Step;
 import sa.gov.nic.bio.bw.client.core.wizard.WithLookups;
+import sa.gov.nic.bio.bw.client.core.wizard.Wizard;
 import sa.gov.nic.bio.bw.client.core.workflow.Signal;
 import sa.gov.nic.bio.bw.client.core.workflow.WizardWorkflowBase;
 import sa.gov.nic.bio.bw.client.features.commons.FaceCapturingFxController;
@@ -49,6 +51,17 @@ import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicReference;
 
 @WithLookups({SamisIdTypesLookup.class, DocumentTypesLookup.class, CountriesLookup.class, CrimeTypesLookup.class})
+@Wizard({@Step(iconId = "question", title = "wizard.selectFingerprintsSource"),
+		@Step(iconId = "\\uf2bb", title = "wizard.enterPersonId"),
+		@Step(iconId = "\\uf2b9", title = "wizard.showPersonInformation"),
+		@Step(iconId = "\\uf256", title = "wizard.showFingerprintsView"),
+		@Step(iconId = "search", title = "wizard.inquiryByFingerprints"),
+		@Step(iconId = "database", title = "wizard.showInquiryResult"),
+		@Step(iconId = "user", title = "wizard.updatePersonInformation"),
+		@Step(iconId = "gavel", title = "wizard.addJudgementDetails"),
+		@Step(iconId = "university", title = "wizard.addPunishmentDetails"),
+		@Step(iconId = "th_list", title = "wizard.reviewAndSubmit"),
+		@Step(iconId = "file_pdf_alt", title = "wizard.showReport")})
 public class RegisterConvictedReportNotPresentWorkflow extends WizardWorkflowBase
 {
 	public RegisterConvictedReportNotPresentWorkflow(AtomicReference<FormRenderer> formRenderer,

@@ -1,7 +1,9 @@
 package sa.gov.nic.bio.bw.client.features.fingerprintcardidentification.workflow;
 
 import sa.gov.nic.bio.bw.client.core.interfaces.FormRenderer;
+import sa.gov.nic.bio.bw.client.core.wizard.Step;
 import sa.gov.nic.bio.bw.client.core.wizard.WithLookups;
+import sa.gov.nic.bio.bw.client.core.wizard.Wizard;
 import sa.gov.nic.bio.bw.client.core.workflow.Signal;
 import sa.gov.nic.bio.bw.client.core.workflow.WizardWorkflowBase;
 import sa.gov.nic.bio.bw.client.features.commons.InquiryByFingerprintsPaneFxController;
@@ -19,6 +21,11 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.atomic.AtomicReference;
 
 @WithLookups({SamisIdTypesLookup.class, DocumentTypesLookup.class, CountriesLookup.class})
+@Wizard({@Step(iconId = "file", title = "wizard.scanFingerprintCard"),
+		@Step(iconId = "\\uf247", title = "wizard.specifyFingerprintCoordinates"),
+		@Step(iconId = "scissors", title = "wizard.fingerprintsAfterCropping"),
+		@Step(iconId = "search", title = "wizard.inquiryByFingerprints"),
+		@Step(iconId = "database", title = "wizard.inquiryResult")})
 public class FingerprintCardIdentificationWorkflow extends WizardWorkflowBase
 {
 	public FingerprintCardIdentificationWorkflow(AtomicReference<FormRenderer> formRenderer,
