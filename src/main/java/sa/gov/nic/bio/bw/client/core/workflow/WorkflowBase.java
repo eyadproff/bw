@@ -1,7 +1,8 @@
 package sa.gov.nic.bio.bw.client.core.workflow;
 
-import sa.gov.nic.bio.bw.client.core.BodyFxControllerBase;
 import sa.gov.nic.bio.bw.client.core.Context;
+import sa.gov.nic.bio.bw.client.core.WithResourceBundle;
+import sa.gov.nic.bio.bw.client.core.controllers.BodyFxControllerBase;
 import sa.gov.nic.bio.bw.client.core.interfaces.FormRenderer;
 import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
 
@@ -20,6 +21,7 @@ import java.util.logging.Logger;
  *
  * @author Fouad Almalki
  */
+@WithResourceBundle
 public abstract class WorkflowBase<I, O> implements Workflow<I, O>
 {
 	private static final Logger LOGGER = Logger.getLogger(WorkflowBase.class.getName());

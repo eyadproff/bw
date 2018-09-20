@@ -13,7 +13,7 @@
 <?import javafx.scene.layout.GridPane?>
 <BorderPane xmlns="http://javafx.com/javafx/8.0.152" xmlns:fx="http://javafx.com/fxml/1"
             fx:id="rootPane" stylesheets="@../css/style.css"
-            fx:controller="sa.gov.nic.bio.bw.client.features.registerconvictedpresent.ShowReportPaneFxController">
+            fx:controller="sa.gov.nic.bio.bw.client.features.registerconvictedpresent.controllers.ShowReportPaneFxController">
     <center>
         <VBox alignment="CENTER" spacing="20.0">
             <VBox alignment="CENTER" spacing="5.0">

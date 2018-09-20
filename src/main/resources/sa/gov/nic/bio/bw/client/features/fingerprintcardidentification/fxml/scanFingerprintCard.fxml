@@ -12,7 +12,7 @@
 <?import sa.gov.nic.bio.bw.client.features.commons.ui.ImageViewPane?>
 <BorderPane xmlns="http://javafx.com/javafx/8.0.152" xmlns:fx="http://javafx.com/fxml/1"
             fx:id="rootPane" stylesheets="@../css/style.css"
-            fx:controller="sa.gov.nic.bio.bw.client.features.fingerprintcardidentification.ScanFingerprintCardPaneFxController">
+            fx:controller="sa.gov.nic.bio.bw.client.features.fingerprintcardidentification.controllers.ScanFingerprintCardPaneFxController">
     <center>
         <VBox alignment="CENTER">
             <HBox alignment="CENTER" VBox.vgrow="ALWAYS">

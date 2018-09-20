@@ -1,6 +1,6 @@
 package sa.gov.nic.bio.bw.client.core.interfaces;
 
-import sa.gov.nic.bio.bw.client.core.BodyFxControllerBase;
+import sa.gov.nic.bio.bw.client.core.controllers.BodyFxControllerBase;
 import sa.gov.nic.bio.bw.client.core.workflow.Signal;
 
 import java.util.Map;

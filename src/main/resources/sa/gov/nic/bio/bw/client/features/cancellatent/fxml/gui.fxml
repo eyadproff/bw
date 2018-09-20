@@ -10,7 +10,7 @@
 <?import javafx.scene.control.ProgressIndicator?>
 
 <VBox xmlns="http://javafx.com/javafx/8.0.152" xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="sa.gov.nic.bio.bw.client.features.cancellatent.CancelLatentPaneFxController"
+      fx:controller="sa.gov.nic.bio.bw.client.features.cancellatent.controllers.CancelLatentPaneFxController"
       fx:id="rootPane" stylesheets="@../css/style.css" alignment="CENTER" spacing="20">
     <HBox alignment="CENTER">
         <GridPane alignment="CENTER" vgap="5" hgap="20" styleClass="formBox">

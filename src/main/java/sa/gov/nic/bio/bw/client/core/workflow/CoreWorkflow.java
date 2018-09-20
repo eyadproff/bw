@@ -1,10 +1,10 @@
 package sa.gov.nic.bio.bw.client.core.workflow;
 
 import sa.gov.nic.bio.bw.client.core.interfaces.FormRenderer;
-import sa.gov.nic.bio.bw.client.home.workflow.HomeWorkflow;
+import sa.gov.nic.bio.bw.client.home.HomeWorkflow;
 import sa.gov.nic.bio.bw.client.login.webservice.LoginBean;
-import sa.gov.nic.bio.bw.client.login.workflow.LoginWorkflow;
-import sa.gov.nic.bio.bw.client.login.workflow.LogoutWorkflow;
+import sa.gov.nic.bio.bw.client.login.LoginWorkflow;
+import sa.gov.nic.bio.bw.client.login.LogoutWorkflow;
 
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;

@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.VBox?>
 <BorderPane xmlns="http://javafx.com/javafx/8.0.152" xmlns:fx="http://javafx.com/fxml/1"
             fx:id="rootPane" stylesheets="@../css/style.css"
-            fx:controller="sa.gov.nic.bio.bw.client.features.printdeadpersonrecord.RecordIdPaneFxController">
+            fx:controller="sa.gov.nic.bio.bw.client.features.printdeadpersonrecord.controllers.RecordIdPaneFxController">
     <center>
         <HBox alignment="CENTER">
             <VBox alignment="CENTER" spacing="5.0">

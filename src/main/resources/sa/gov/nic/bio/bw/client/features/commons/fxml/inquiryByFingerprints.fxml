@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <BorderPane xmlns="http://javafx.com/javafx/8.0.152" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="sa.gov.nic.bio.bw.client.features.commons.InquiryByFingerprintsPaneFxController"
+            fx:controller="sa.gov.nic.bio.bw.client.features.commons.controllers.InquiryByFingerprintsPaneFxController"
             fx:id="rootPane" stylesheets="@../../fingerprintcardidentification/css/style.css">
     <center>
         <VBox alignment="CENTER" spacing="5.0">

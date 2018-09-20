@@ -16,7 +16,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import sa.gov.nic.bio.bw.client.features.commons.ui.ImageViewPane?>
 <BorderPane xmlns="http://javafx.com/javafx/8.0.152" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="sa.gov.nic.bio.bw.client.features.fingerprintcardidentification.InquiryResultPaneFxController"
+            fx:controller="sa.gov.nic.bio.bw.client.features.fingerprintcardidentification.controllers.InquiryResultPaneFxController"
             fx:id="rootPane" stylesheets="@../css/style.css">
     <center>
         <VBox alignment="CENTER">

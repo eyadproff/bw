@@ -77,6 +77,67 @@ public final class AppUtils
 		return FONTAWESOME_INSTANCE.create(character);
 	}
 	
+	public static List<Class<?>> listClasspathClasses(ProtectionDomain protectionDomain,
+	                                                RuntimeEnvironment runtimeEnvironment)
+																				throws IOException, URISyntaxException
+	{
+		List<Class<?>> classes = new ArrayList<>();
+		URL location = protectionDomain.getCodeSource().getLocation();
+		String matcher = "^.*\\.class$";
+		
+		if(runtimeEnvironment == RuntimeEnvironment.LOCAL)
+		{
+			// location.toURI() is ./build/classes/java/main
+			Path classesPath = Paths.get(location.toURI()).normalize();
+			
+			Files.walk(classesPath)
+					.filter(Files::isRegularFile) // we want files only
+					.map(path -> classesPath.relativize(path).toString()) // form absolute path to relative path string
+					.map(path -> path.replace("\\", ".")) // replace back-slashes with dots
+					.filter(path -> path.matches(matcher))
+					.map(path -> path.substring(0, path.lastIndexOf('.')))
+					.map(name ->
+					{
+						try
+						{
+							return Class.forName(name);
+						}
+						catch(ClassNotFoundException e)
+						{
+							LOGGER.log(Level.SEVERE, "failed to load the class (" + name + ")!", e);
+							return null;
+						}
+					})
+					.filter(Objects::nonNull)
+					.forEach(classes::add);
+		}
+		else
+		{
+			ZipInputStream zip = new ZipInputStream(location.openStream());
+			
+			while(true)
+			{
+				ZipEntry entry = zip.getNextEntry();
+				if(entry == null) break;
+				String name = entry.getName();
+				
+				if(name.matches(matcher))
+				{
+					try
+					{
+						classes.add(Class.forName(name.substring(0, name.lastIndexOf('.'))));
+					}
+					catch(ClassNotFoundException e)
+					{
+						LOGGER.log(Level.SEVERE, "failed to load the class (" + name + ")!", e);
+					}
+				}
+			}
+		}
+		
+		return classes;
+	}
+	
 	public static List<String> listResourceFiles(ProtectionDomain protectionDomain, String matcher,
 	                                             boolean removeFileExtensions, RuntimeEnvironment runtimeEnvironment)
 																				throws IOException, URISyntaxException

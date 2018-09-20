@@ -11,7 +11,7 @@
 <?import javafx.scene.control.ProgressIndicator?>
 <?import javafx.scene.control.ScrollPane?>
 <VBox xmlns="http://javafx.com/javafx/8.0.152" xmlns:fx="http://javafx.com/fxml/1"
-      fx:id="rootPane" fx:controller="sa.gov.nic.bio.bw.client.core.DevicesRunnerGadgetPaneFxController" alignment="BOTTOM_CENTER">
+      fx:id="rootPane" fx:controller="sa.gov.nic.bio.bw.client.core.controllers.DevicesRunnerGadgetPaneFxController" alignment="BOTTOM_CENTER">
     <TitledPane fx:id="tpDevicesRunner" text="%label.devicesRunner" alignment="BOTTOM_CENTER" styleClass="devices-runner-gadget" focusTraversable="false">
         <VBox alignment="BOTTOM_CENTER" spacing="5.0">
             <padding>
@@ -34,7 +34,7 @@
                 </Label>
                 <Button fx:id="btnDevicesRunnerAction" focusTraversable="false" onMouseClicked="#onDevicesRunnerActionButtonClicked"/>
             </HBox>
-            <ScrollPane fx:id="spDevices" hbarPolicy="NEVER" vbarPolicy="ALWAYS" fitToWidth="true">
+            <ScrollPane fx:id="spDevices" hbarPolicy="NEVER" vbarPolicy="ALWAYS" fitToWidth="true" minHeight="75.0">
                 <VBox alignment="CENTER" spacing="5.0" HBox.hgrow="ALWAYS">
                     <TitledPane fx:id="tpFingerprintScanner" text="%label.fingerprintScanner" alignment="CENTER" collapsible="false" focusTraversable="false" HBox.hgrow="ALWAYS">
                         <HBox alignment="CENTER" spacing="10.0">

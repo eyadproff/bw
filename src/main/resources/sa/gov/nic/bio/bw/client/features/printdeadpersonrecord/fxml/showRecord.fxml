@@ -17,7 +17,7 @@
 <?import sa.gov.nic.bio.bw.client.features.commons.ui.ImageViewPane?>
 <BorderPane xmlns="http://javafx.com/javafx/8.0.152" xmlns:fx="http://javafx.com/fxml/1"
             fx:id="rootPane" stylesheets="@../css/style.css"
-            fx:controller="sa.gov.nic.bio.bw.client.features.printdeadpersonrecord.ShowRecordPaneFxController">
+            fx:controller="sa.gov.nic.bio.bw.client.features.printdeadpersonrecord.controllers.ShowRecordPaneFxController">
     <center>
         <VBox alignment="CENTER">
             <padding>

@@ -13,7 +13,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import sa.gov.nic.bio.bw.client.features.commons.ui.PTableColumn?>
 <BorderPane xmlns="http://javafx.com/javafx/8.0.152" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="sa.gov.nic.bio.bw.client.features.convictedreportinquiry.ConvictedReportInquiryPaneFxController"
+            fx:controller="sa.gov.nic.bio.bw.client.features.convictedreportinquiry.controllers.ConvictedReportInquiryPaneFxController"
             fx:id="rootPane" stylesheets="@../css/style.css">
     <center>
         <StackPane>

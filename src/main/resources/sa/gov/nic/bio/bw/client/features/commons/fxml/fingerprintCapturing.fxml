@@ -21,7 +21,7 @@
 <?import sa.gov.nic.bio.bw.client.features.commons.ui.FourStateTitledPane?>
 <?import sa.gov.nic.bio.bw.client.features.commons.ui.ImageViewPane?>
 <BorderPane xmlns="http://javafx.com/javafx/8.0.152" xmlns:fx="http://javafx.com/fxml/1"
-            fx:id="rootPane" fx:controller="sa.gov.nic.bio.bw.client.features.commons.FingerprintCapturingFxController"
+            fx:id="rootPane" fx:controller="sa.gov.nic.bio.bw.client.features.commons.controllers.FingerprintCapturingFxController"
             stylesheets="@../css/style.css">
     <center>
         <VBox>

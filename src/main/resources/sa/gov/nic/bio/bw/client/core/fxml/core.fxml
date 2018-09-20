@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.VBox?>
 
 <StackPane xmlns="http://javafx.com/javafx/8.0.152" xmlns:fx="http://javafx.com/fxml/1"
-           fx:controller="sa.gov.nic.bio.bw.client.core.CoreFxController"
+           fx:controller="sa.gov.nic.bio.bw.client.core.controllers.CoreFxController"
            styleClass="root-pane" stylesheets="@../css/style.css">
     <BorderPane>
         <top>

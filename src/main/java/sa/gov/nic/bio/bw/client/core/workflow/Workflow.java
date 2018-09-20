@@ -1,6 +1,6 @@
 package sa.gov.nic.bio.bw.client.core.workflow;
 
-import sa.gov.nic.bio.bw.client.core.BodyFxControllerBase;
+import sa.gov.nic.bio.bw.client.core.controllers.BodyFxControllerBase;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;

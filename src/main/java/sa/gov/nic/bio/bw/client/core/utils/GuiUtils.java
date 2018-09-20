@@ -52,7 +52,7 @@ import javafx.util.StringConverter;
 import org.controlsfx.control.PopOver;
 import org.controlsfx.control.PopOver.ArrowLocation;
 import sa.gov.nic.bio.bw.client.core.Context;
-import sa.gov.nic.bio.bw.client.core.CoreFxController;
+import sa.gov.nic.bio.bw.client.core.controllers.CoreFxController;
 import sa.gov.nic.bio.bw.client.core.beans.HideableItem;
 import sa.gov.nic.bio.bw.client.core.biokit.FingerPosition;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.CountryBean;

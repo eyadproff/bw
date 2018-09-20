@@ -2,18 +2,15 @@ package sa.gov.nic.bio.bw.client.core.workflow;
 
 import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.interfaces.FormRenderer;
-import sa.gov.nic.bio.bw.client.core.utils.UTF8Control;
 import sa.gov.nic.bio.bw.client.core.wizard.Step;
-import sa.gov.nic.bio.bw.client.core.wizard.WithLookups;
 import sa.gov.nic.bio.bw.client.core.wizard.Wizard;
 import sa.gov.nic.bio.bw.client.core.wizard.WizardPane;
 import sa.gov.nic.bio.bw.client.core.wizard.WizardStep;
-import sa.gov.nic.bio.bw.client.features.commons.LookupFxController;
+import sa.gov.nic.bio.bw.client.features.commons.controllers.LookupFxController;
 import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Callable;
@@ -37,20 +34,7 @@ public abstract class WizardWorkflowBase extends WorkflowBase<Void, Void> implem
 	@Override
 	public Void onProcess(Void input) throws InterruptedException, Signal
 	{
-		String basePackage = getClass().getPackage().getName().replace(".", "/");
-		basePackage = basePackage.substring(0, basePackage.lastIndexOf('/'));
-		
-		ResourceBundle stringsBundle;
-		try
-		{
-			stringsBundle = ResourceBundle.getBundle(basePackage + "/bundles/strings",
-			                                         Context.getGuiLanguage().getLocale(), new UTF8Control());
-		}
-		catch(MissingResourceException e)
-		{
-			e.printStackTrace();
-			return null;
-		}
+		ResourceBundle stringsBundle = Context.getCoreFxController().getResourceBundleByClass(getClass());
 		
 		WithLookups withLookups = getClass().getAnnotation(WithLookups.class);
 		if(withLookups != null)

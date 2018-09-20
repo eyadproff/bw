@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.control.Label?>
 <HBox xmlns="http://javafx.com/javafx/8.0.152" xmlns:fx="http://javafx.com/fxml/1"
-      fx:id="rootPane" fx:controller="sa.gov.nic.bio.bw.client.core.FooterPaneFxController"
+      fx:id="rootPane" fx:controller="sa.gov.nic.bio.bw.client.core.controllers.FooterPaneFxController"
       alignment="CENTER" spacing="7.0">
     <ImageView>
         <Image url="@../images/semat_logo_small.png"/>

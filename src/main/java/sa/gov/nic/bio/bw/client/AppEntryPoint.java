@@ -16,7 +16,9 @@ import sa.gov.nic.bio.biokit.websocket.UpdateListener;
 import sa.gov.nic.bio.biokit.websocket.WebsocketLogger;
 import sa.gov.nic.bio.biokit.websocket.beans.Message;
 import sa.gov.nic.bio.bw.client.core.Context;
-import sa.gov.nic.bio.bw.client.core.CoreFxController;
+import sa.gov.nic.bio.bw.client.core.controllers.CoreFxController;
+import sa.gov.nic.bio.bw.client.core.WithResourceBundle;
+import sa.gov.nic.bio.bw.client.core.beans.MenuItem;
 import sa.gov.nic.bio.bw.client.core.beans.UserSession;
 import sa.gov.nic.bio.bw.client.core.biokit.BioKitManager;
 import sa.gov.nic.bio.bw.client.core.utils.AppConstants;
@@ -32,16 +34,24 @@ import sa.gov.nic.bio.bw.client.core.utils.UTF8Control;
 import sa.gov.nic.bio.bw.client.core.webservice.LookupAPI;
 import sa.gov.nic.bio.bw.client.core.webservice.NicHijriCalendarData;
 import sa.gov.nic.bio.bw.client.core.webservice.WebserviceManager;
+import sa.gov.nic.bio.bw.client.core.workflow.AssociatedMenu;
+import sa.gov.nic.bio.bw.client.core.workflow.Workflow;
 import sa.gov.nic.bio.bw.client.core.workflow.WorkflowManager;
+import sa.gov.nic.bio.bw.client.home.utils.HomeErrorCodes;
 import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
 import sa.gov.nic.bio.bw.client.preloader.utils.StartupErrorCodes;
 
 import javax.websocket.CloseReason;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.concurrent.CountDownLatch;
@@ -93,6 +103,7 @@ public class AppEntryPoint extends Application
 	private CoreFxController coreFxController;
 	private boolean successfulInit = false;
 	
+	@SuppressWarnings("unchecked")
     @Override
     public void init()
     {
@@ -447,8 +458,68 @@ public class AppEntryPoint extends Application
                             maxTextMessageBufferSizeInBytes, maxBinaryMessageBufferSizeInBytes, responseTimeoutSeconds,
                             jsonMapper, null, biokitWebsocketLogger, biokitUpdateListener);
 	
+	    List<MenuItem> subMenus = new ArrayList<>();
+	    Map<String, MenuItem> topMenus = new HashMap<>();
+	
+	    List<Class<?>> appClasses;
+	    try
+	    {
+		    appClasses = AppUtils.listClasspathClasses(getClass().getProtectionDomain(), runtimeEnvironment);
+	    }
+	    catch(Exception e)
+	    {
+		    String errorCode = HomeErrorCodes.C004_00001.getCode();
+		    String[] errorDetails = {"Failed to load the app classes!"};
+		    notifyPreloader(PreloaderNotification.failure(e, errorCode, errorDetails));
+		    return;
+	    }
+	    
+	    Map<Class<? extends Workflow<?, ?>>, AssociatedMenu> workflowMenuClasses = new HashMap<>();
+	    Map<Class<?>, WithResourceBundle> classesWithResourceBundles = new HashMap<>();
+	
+	    for(Class appClass : appClasses)
+	    {
+		    AssociatedMenu associatedMenu = (AssociatedMenu) appClass.getAnnotation(AssociatedMenu.class);
+		    if(associatedMenu != null) workflowMenuClasses.put(appClass, associatedMenu);
+	    	
+		    WithResourceBundle withResourceBundle = (WithResourceBundle) appClass.getAnnotation(WithResourceBundle.class);
+		    if(withResourceBundle != null) classesWithResourceBundles.put(appClass, withResourceBundle);
+	    }
+	
+	    for(Entry<Class<? extends Workflow<?, ?>>, AssociatedMenu> workflowMenuClass : workflowMenuClasses.entrySet())
+	    {
+		    Class<? extends Workflow<?, ?>> workflowClass = workflowMenuClass.getKey();
+		    AssociatedMenu associatedMenu = workflowMenuClass.getValue();
+		
+		    MenuItem menuItem = new MenuItem();
+		    menuItem.setMenuId(associatedMenu.id());
+		    menuItem.setLabel(associatedMenu.title());
+		    menuItem.setOrder(associatedMenu.order());
+		    menuItem.setDevices(new HashSet<>(Arrays.asList(associatedMenu.devices())));
+		    menuItem.setWorkflowClass(workflowClass);
+		
+		    String topMenu = associatedMenu.id().substring(0, associatedMenu.id().lastIndexOf('.'));
+		    if(!topMenus.containsKey(topMenu))
+		    {
+			    String icon = configManager.getProperty(topMenu + ".icon");
+			    int order = Integer.parseInt(configManager.getProperty(topMenu + ".order"));
+			
+			    MenuItem topMenuItem = new MenuItem();
+			    topMenuItem.setMenuId(topMenu);
+			    topMenuItem.setLabel(topMenu);
+			    topMenuItem.setIconId(icon);
+			    topMenuItem.setOrder(order);
+			
+			    topMenus.put(topMenu, topMenuItem);
+		    }
+		    
+		    subMenus.add(menuItem);
+	    }
+	
+	
 	    Context.attach(runtimeEnvironment, configManager, workflowManager, webserviceManager, bioKitManager,
-	                   executorService, scheduledExecutorService, errorsBundle, new UserSession(), serverUrl);
+	                   executorService, scheduledExecutorService, errorsBundle, new UserSession(), serverUrl, topMenus,
+	                   subMenus, classesWithResourceBundles);
 	
 	    Call<NicHijriCalendarData> apiCall2 = lookupAPI.lookupNicHijriCalendarData();
 	    ServiceResponse<NicHijriCalendarData> webServiceResponse2 = webserviceManager.executeApi(apiCall2);

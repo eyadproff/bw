@@ -14,7 +14,7 @@
 <Dialog xmlns="http://javafx.com/javafx"
         xmlns:fx="http://javafx.com/fxml"
         fx:id="dialog" title="%dialog.title.fingerprintCapturingWindow"
-        fx:controller="sa.gov.nic.bio.bw.client.login.CaptureFingerprintDialogFxController">
+        fx:controller="sa.gov.nic.bio.bw.client.login.controllers.CaptureFingerprintDialogFxController">
 
     <fx:define>
         <ToggleGroup fx:id="toggleGroup"/>

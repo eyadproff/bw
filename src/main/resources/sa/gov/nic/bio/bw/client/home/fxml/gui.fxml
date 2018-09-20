@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <StackPane xmlns="http://javafx.com/javafx/8.0.152" xmlns:fx="http://javafx.com/fxml/1"
-           fx:controller="sa.gov.nic.bio.bw.client.home.HomePaneFxController"
+           fx:controller="sa.gov.nic.bio.bw.client.home.controllers.HomePaneFxController"
            stylesheets="@../css/style.css">
     <VBox fx:id="paneError" alignment="CENTER" spacing="5.0" managed="false" visible="false">
         <HBox alignment="CENTER">
