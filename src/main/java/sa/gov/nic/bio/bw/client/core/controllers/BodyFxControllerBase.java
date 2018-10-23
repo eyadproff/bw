@@ -5,12 +5,10 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import org.controlsfx.control.NotificationPane;
 import sa.gov.nic.bio.bw.client.core.Context;
-import sa.gov.nic.bio.bw.client.core.interfaces.ControllerResourcesLocator;
 import sa.gov.nic.bio.bw.client.core.interfaces.NotificationController;
 import sa.gov.nic.bio.bw.client.core.interfaces.WorkflowUserTaskController;
 import sa.gov.nic.bio.bw.client.core.utils.WithResourceBundle;
 
-import java.net.URL;
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -21,8 +19,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 @WithResourceBundle
 public abstract class BodyFxControllerBase extends RegionFxControllerBase implements WorkflowUserTaskController,
-																					 NotificationController,
-																					 ControllerResourcesLocator
+																					 NotificationController
 {
 	private Image successIcon = new Image(Thread.currentThread().getContextClassLoader()
 			                        .getResourceAsStream("sa/gov/nic/bio/bw/client/core/images/success.png"));
@@ -119,24 +116,6 @@ public abstract class BodyFxControllerBase extends RegionFxControllerBase implem
 		{
 			Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails);
 		}
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public URL getFxmlLocation()
-	{
-		return getClass().getResource("../fxml/gui.fxml");
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public final String getStringsResourceBundle()
-	{
-		return getClass().getPackage().getName().replace(".", "/") + "/bundles/strings";
 	}
 	
 	protected void continueWorkflow()

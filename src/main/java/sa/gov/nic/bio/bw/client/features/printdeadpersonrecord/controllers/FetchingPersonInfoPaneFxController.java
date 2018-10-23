@@ -8,17 +8,18 @@ import javafx.scene.control.ProgressIndicator;
 import javafx.scene.layout.VBox;
 import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.controllers.DevicesRunnerGadgetPaneFxController;
-import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.controllers.WizardStepFxControllerBase;
+import sa.gov.nic.bio.bw.client.core.utils.FxmlFile;
+import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.workflow.Workflow;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.Finger;
 import sa.gov.nic.bio.commons.TaskResponse;
 
-import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@FxmlFile("fetchingPersonInfo.fxml")
 public class FetchingPersonInfoPaneFxController extends WizardStepFxControllerBase
 {
 	public static final String KEY_DEVICES_RUNNER_IS_RUNNING = "DEVICES_RUNNER_IS_RUNNING";
@@ -30,12 +31,6 @@ public class FetchingPersonInfoPaneFxController extends WizardStepFxControllerBa
 	@FXML private Label lblProgress;
 	@FXML private Button btnRetry;
 	@FXML private Button btnStartOver;
-	
-	@Override
-	public URL getFxmlLocation()
-	{
-		return getClass().getResource("../fxml/fetchingPersonInfo.fxml");
-	}
 	
 	@Override
 	protected void initialize()

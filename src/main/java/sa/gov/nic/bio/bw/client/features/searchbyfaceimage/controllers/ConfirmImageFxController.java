@@ -9,16 +9,17 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import sa.gov.nic.bio.bw.client.core.Context;
-import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
-import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.controllers.WizardStepFxControllerBase;
+import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
+import sa.gov.nic.bio.bw.client.core.utils.FxmlFile;
+import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.workflow.Input;
 import sa.gov.nic.bio.bw.client.core.workflow.Output;
 import sa.gov.nic.bio.bw.client.features.searchbyfaceimage.utils.SearchByFaceImageErrorCodes;
 
-import java.net.URL;
 import java.util.Map;
 
+@FxmlFile("confirmImage.fxml")
 public class ConfirmImageFxController extends WizardStepFxControllerBase
 {
 	@Input private Long personId;
@@ -31,12 +32,6 @@ public class ConfirmImageFxController extends WizardStepFxControllerBase
 	@FXML private Label lblPersonId;
 	@FXML private Button btnPrevious;
 	@FXML private Button btnSearch;
-	
-	@Override
-	public URL getFxmlLocation()
-	{
-		return getClass().getResource("../fxml/confirmImage.fxml");
-	}
 	
 	@Override
 	protected void initialize()

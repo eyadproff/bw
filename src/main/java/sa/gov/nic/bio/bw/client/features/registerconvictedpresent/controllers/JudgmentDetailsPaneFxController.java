@@ -17,14 +17,14 @@ import org.controlsfx.glyphfont.FontAwesome;
 import org.controlsfx.glyphfont.Glyph;
 import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.beans.HideableItem;
-import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
-import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.controllers.WizardStepFxControllerBase;
+import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
+import sa.gov.nic.bio.bw.client.core.utils.FxmlFile;
+import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.CrimeType;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.lookups.CrimeTypesLookup;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.CrimeCode;
 
-import java.net.URL;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@FxmlFile("judgmentDetails.fxml")
 public class JudgmentDetailsPaneFxController extends WizardStepFxControllerBase
 {
 	public static final String KEY_JUDGMENT_DETAILS_CRIMES = "JUDGMENT_DETAILS_CRIMES";
@@ -117,12 +118,6 @@ public class JudgmentDetailsPaneFxController extends WizardStepFxControllerBase
 	private ChangeListener<Boolean>[] showingPropertyChangeListenerReference = new ChangeListener[]{null};
 	@SuppressWarnings("unchecked")
 	private ChangeListener<String>[] textPropertyChangeListenerReference = new ChangeListener[]{null};
-	
-	@Override
-	public URL getFxmlLocation()
-	{
-		return getClass().getResource("../fxml/judgmentDetails.fxml");
-	}
 	
 	@Override
 	protected void initialize()

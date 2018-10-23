@@ -21,20 +21,21 @@ import javafx.scene.text.TextAlignment;
 import org.controlsfx.glyphfont.FontAwesome;
 import org.controlsfx.glyphfont.Glyph;
 import sa.gov.nic.bio.bw.client.core.Context;
-import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
-import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.controllers.WizardStepFxControllerBase;
+import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
+import sa.gov.nic.bio.bw.client.core.utils.FxmlFile;
+import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.workflow.Input;
 import sa.gov.nic.bio.bw.client.core.workflow.Output;
 import sa.gov.nic.bio.bw.client.features.fingerprintcardidentification.gui.SelectionOverlay;
 
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+@FxmlFile("specifyFingerprintCoordinates.fxml")
 public class SpecifyFingerprintCoordinatesPaneFxController extends WizardStepFxControllerBase
 {
 	private static final double[][] DEFAULT_BOUNDS = {{0.935, 0.350, 0.160, 0.117}, // x, y, width, height
@@ -89,12 +90,6 @@ public class SpecifyFingerprintCoordinatesPaneFxController extends WizardStepFxC
 	private Rectangle[] rectangles = new Rectangle[10];
 	private Label[] labels = new Label[10];
 	private Rectangle selectedRectangle;
-	
-	@Override
-	public URL getFxmlLocation()
-	{
-		return getClass().getResource("../fxml/specifyFingerprintCoordinates.fxml");
-	}
 	
 	@Override
 	protected void initialize()

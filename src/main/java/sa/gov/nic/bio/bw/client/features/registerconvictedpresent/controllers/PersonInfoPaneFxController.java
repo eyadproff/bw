@@ -16,9 +16,10 @@ import javafx.scene.paint.Color;
 import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.beans.HideableItem;
 import sa.gov.nic.bio.bw.client.core.beans.ItemWithText;
+import sa.gov.nic.bio.bw.client.core.controllers.WizardStepFxControllerBase;
+import sa.gov.nic.bio.bw.client.core.utils.FxmlFile;
 import sa.gov.nic.bio.bw.client.core.utils.GuiLanguage;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
-import sa.gov.nic.bio.bw.client.core.controllers.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.client.features.commons.beans.GenderType;
 import sa.gov.nic.bio.bw.client.features.commons.lookups.CountriesLookup;
 import sa.gov.nic.bio.bw.client.features.commons.lookups.DocumentTypesLookup;
@@ -27,12 +28,12 @@ import sa.gov.nic.bio.bw.client.features.commons.webservice.CountryBean;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.DocumentType;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.SamisIdType;
 
-import java.net.URL;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 
+@FxmlFile("personInfo.fxml")
 public class PersonInfoPaneFxController extends WizardStepFxControllerBase
 {
 	public static final String KEY_PERSON_INFO_FIRST_NAME = "PERSON_INFO_FIRST_NAME";
@@ -101,12 +102,6 @@ public class PersonInfoPaneFxController extends WizardStepFxControllerBase
 	@FXML private Button btnNext;
 	
 	private static final Predicate<LocalDate> birthDateValidator = localDate -> !localDate.isAfter(LocalDate.now());
-	
-	@Override
-	public URL getFxmlLocation()
-	{
-		return getClass().getResource("../fxml/personInfo.fxml");
-	}
 	
 	@Override
 	protected void initialize()

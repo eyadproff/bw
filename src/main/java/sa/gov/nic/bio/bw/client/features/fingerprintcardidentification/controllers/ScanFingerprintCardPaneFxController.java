@@ -14,18 +14,19 @@ import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.controllers.DevicesRunnerGadgetPaneFxController;
 import sa.gov.nic.bio.bw.client.core.controllers.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.client.core.utils.DialogUtils;
+import sa.gov.nic.bio.bw.client.core.utils.FxmlFile;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.workflow.Output;
 import sa.gov.nic.bio.bw.client.features.fingerprintcardidentification.utils.FingerprintCardIdentificationErrorCodes;
 import sa.gov.nic.bio.commons.TaskResponse;
 
 import java.io.ByteArrayInputStream;
-import java.net.URL;
 import java.util.Base64;
 import java.util.Map;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.Future;
 
+@FxmlFile("scanFingerprintCard.fxml")
 public class ScanFingerprintCardPaneFxController extends WizardStepFxControllerBase
 {
 	@Output private Image cardImage;
@@ -34,12 +35,6 @@ public class ScanFingerprintCardPaneFxController extends WizardStepFxControllerB
 	@FXML private ImageView ivFingerprintImagePlaceHolder;
 	@FXML private Button btnScanFingerprints;
 	@FXML private Button btnNext;
-	
-	@Override
-	public URL getFxmlLocation()
-	{
-		return getClass().getResource("../fxml/scanFingerprintCard.fxml");
-	}
 	
 	@Override
 	protected void initialize()

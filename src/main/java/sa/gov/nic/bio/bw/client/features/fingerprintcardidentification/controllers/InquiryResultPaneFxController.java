@@ -12,11 +12,12 @@ import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import net.sf.jasperreports.engine.JasperPrint;
 import sa.gov.nic.bio.bw.client.core.Context;
+import sa.gov.nic.bio.bw.client.core.controllers.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.client.core.utils.AppConstants;
 import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
+import sa.gov.nic.bio.bw.client.core.utils.FxmlFile;
 import sa.gov.nic.bio.bw.client.core.utils.GuiLanguage;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
-import sa.gov.nic.bio.bw.client.core.controllers.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.client.core.workflow.Input;
 import sa.gov.nic.bio.bw.client.features.commons.beans.GenderType;
 import sa.gov.nic.bio.bw.client.features.commons.lookups.CountriesLookup;
@@ -30,16 +31,15 @@ import sa.gov.nic.bio.bw.client.features.commons.webservice.Name;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.PersonIdInfo;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.PersonInfo;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.SamisIdType;
+import sa.gov.nic.bio.bw.client.features.commons.workflow.FingerprintInquiryStatusCheckerWorkflowTask.Status;
 import sa.gov.nic.bio.bw.client.features.fingerprintcardidentification.beans.FingerprintCardIdentificationRecordReport;
 import sa.gov.nic.bio.bw.client.features.fingerprintcardidentification.tasks.BuildFingerprintCardIdentificationRecordReportTask;
 import sa.gov.nic.bio.bw.client.features.fingerprintcardidentification.utils.FingerprintCardIdentificationErrorCodes;
-import sa.gov.nic.bio.bw.client.features.commons.workflow.FingerprintInquiryStatusCheckerWorkflowTask.Status;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
-import java.net.URL;
 import java.time.LocalDate;
 import java.util.Base64;
 import java.util.Date;
@@ -47,6 +47,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
+@FxmlFile("inquiryResult.fxml")
 public class InquiryResultPaneFxController extends WizardStepFxControllerBase
 {
 	@Input private Status status;
@@ -95,12 +96,6 @@ public class InquiryResultPaneFxController extends WizardStepFxControllerBase
 	private FingerprintCardIdentificationRecordReport fingerprintCardIdentificationRecordReport;
 	private AtomicReference<JasperPrint> jasperPrint = new AtomicReference<>();
 	private FileChooser fileChooser = new FileChooser();
-	
-	@Override
-	public URL getFxmlLocation()
-	{
-		return getClass().getResource("../fxml/inquiryResult.fxml");
-	}
 	
 	@Override
 	protected void onAttachedToScene()

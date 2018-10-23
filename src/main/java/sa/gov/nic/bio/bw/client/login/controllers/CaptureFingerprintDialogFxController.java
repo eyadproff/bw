@@ -20,6 +20,7 @@ import sa.gov.nic.bio.biokit.fingerprint.beans.FingerprintStopPreviewResponse;
 import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.biokit.FingerPosition;
 import sa.gov.nic.bio.bw.client.core.controllers.FxControllerBase;
+import sa.gov.nic.bio.bw.client.core.utils.FxmlFile;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.features.commons.ui.ImageViewPane;
 import sa.gov.nic.bio.bw.client.login.utils.LoginErrorCodes;
@@ -31,6 +32,7 @@ import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
+@FxmlFile("captureFingerprintDialog.fxml")
 public class CaptureFingerprintDialogFxController extends FxControllerBase
 {
 	@FXML private Dialog<ButtonType> dialog;

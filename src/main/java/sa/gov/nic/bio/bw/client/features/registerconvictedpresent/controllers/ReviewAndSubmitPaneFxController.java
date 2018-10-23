@@ -12,15 +12,16 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import sa.gov.nic.bio.bw.client.core.Context;
+import sa.gov.nic.bio.bw.client.core.controllers.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.client.core.utils.AppConstants;
 import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
+import sa.gov.nic.bio.bw.client.core.utils.FxmlFile;
 import sa.gov.nic.bio.bw.client.core.utils.GuiLanguage;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
-import sa.gov.nic.bio.bw.client.core.controllers.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.client.core.workflow.Workflow;
+import sa.gov.nic.bio.bw.client.features.commons.beans.GenderType;
 import sa.gov.nic.bio.bw.client.features.commons.controllers.FaceCapturingFxController;
 import sa.gov.nic.bio.bw.client.features.commons.controllers.FingerprintCapturingFxController;
-import sa.gov.nic.bio.bw.client.features.commons.beans.GenderType;
 import sa.gov.nic.bio.bw.client.features.commons.lookups.CountriesLookup;
 import sa.gov.nic.bio.bw.client.features.commons.lookups.DocumentTypesLookup;
 import sa.gov.nic.bio.bw.client.features.commons.lookups.SamisIdTypesLookup;
@@ -41,13 +42,13 @@ import sa.gov.nic.bio.bw.client.login.webservice.UserInfo;
 import sa.gov.nic.bio.commons.TaskResponse;
 
 import java.io.ByteArrayInputStream;
-import java.net.URL;
 import java.time.LocalDate;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@FxmlFile("reviewAndSubmit.fxml")
 public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 {
 	public static final String KEY_FINAL_CONVICTED_REPORT = "FINAL_CONVICTED_REPORT";
@@ -119,12 +120,6 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 	private ConvictedReport convictedReport;
 	private Map<Integer, String> crimeEventTitles = new HashMap<>();
 	private Map<Integer, String> crimeClassTitles = new HashMap<>();
-	
-	@Override
-	public URL getFxmlLocation()
-	{
-		return getClass().getResource("../fxml/reviewAndSubmit.fxml");
-	}
 	
 	@Override
 	protected void initialize()

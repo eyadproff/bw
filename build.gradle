@@ -118,6 +118,7 @@ jar {
                 'JavaFX-Preloader-Class': 'sa.gov.nic.bio.bw.client.preloader.AppPreloader',
                 'JavaFX-Application-Class': 'sa.gov.nic.bio.bw.client.AppEntryPoint',
                 'Main-Class': 'sa.gov.nic.bio.bw.client.AppEntryPoint',
+                'Trusted-Library': true,
                 'Class-Path': configurations.runtimeClasspath.files.collect { it.getName() }.join(' '))
     }
 }

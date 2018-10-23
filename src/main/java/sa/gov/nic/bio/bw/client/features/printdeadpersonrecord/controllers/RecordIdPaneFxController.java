@@ -6,17 +6,18 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TextField;
 import sa.gov.nic.bio.bw.client.core.Context;
-import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.controllers.WizardStepFxControllerBase;
+import sa.gov.nic.bio.bw.client.core.utils.FxmlFile;
+import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.workflow.Output;
 import sa.gov.nic.bio.bw.client.core.workflow.Workflow;
 import sa.gov.nic.bio.bw.client.features.printdeadpersonrecord.webservice.DeadPersonRecord;
 import sa.gov.nic.bio.commons.TaskResponse;
 
-import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
+@FxmlFile("recordId.fxml")
 public class RecordIdPaneFxController extends WizardStepFxControllerBase
 {
 	@Output private Long recordId;
@@ -25,12 +26,6 @@ public class RecordIdPaneFxController extends WizardStepFxControllerBase
 	@FXML private TextField txtRecordId;
 	@FXML private ProgressIndicator piProgress;
 	@FXML private Button btnNext;
-	
-	@Override
-	public URL getFxmlLocation()
-	{
-		return getClass().getResource("../fxml/recordId.fxml");
-	}
 	
 	@Override
 	protected void initialize()

@@ -28,21 +28,22 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import sa.gov.nic.bio.bw.client.core.Context;
+import sa.gov.nic.bio.bw.client.core.controllers.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.client.core.utils.DialogUtils;
+import sa.gov.nic.bio.bw.client.core.utils.FxmlFile;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
-import sa.gov.nic.bio.bw.client.core.controllers.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.client.core.workflow.Input;
 import sa.gov.nic.bio.bw.client.features.searchbyfaceimage.ui.ToggleTitledPane;
 import sa.gov.nic.bio.bw.client.features.searchbyfaceimage.webservice.Candidate;
 
 import java.io.ByteArrayInputStream;
-import java.net.URL;
 import java.util.Base64;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+@FxmlFile("showResults.fxml")
 public class ShowResultsFxController extends WizardStepFxControllerBase
 {
 	@Input(required = true) private Image finalImage;
@@ -64,12 +65,6 @@ public class ShowResultsFxController extends WizardStepFxControllerBase
 	@FXML private HBox hbCandidatesContainer;
 	@FXML private HBox hbCandidatesImages;
 	@FXML private Button btnStartOver;
-	
-	@Override
-	public URL getFxmlLocation()
-	{
-		return getClass().getResource("../fxml/showResults.fxml");
-	}
 	
 	@Override
 	protected void initialize()

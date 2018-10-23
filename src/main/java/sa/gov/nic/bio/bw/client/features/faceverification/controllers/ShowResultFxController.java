@@ -21,11 +21,12 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import sa.gov.nic.bio.bw.client.core.Context;
+import sa.gov.nic.bio.bw.client.core.controllers.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.client.core.utils.DialogUtils;
+import sa.gov.nic.bio.bw.client.core.utils.FxmlFile;
 import sa.gov.nic.bio.bw.client.core.utils.GuiLanguage;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
-import sa.gov.nic.bio.bw.client.core.controllers.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.client.core.workflow.Input;
 import sa.gov.nic.bio.bw.client.features.commons.beans.GenderType;
 import sa.gov.nic.bio.bw.client.features.commons.lookups.CountriesLookup;
@@ -34,10 +35,10 @@ import sa.gov.nic.bio.bw.client.features.commons.webservice.Name;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.PersonInfo;
 import sa.gov.nic.bio.bw.client.features.faceverification.webservice.FaceMatchingResponse;
 
-import java.net.URL;
 import java.util.List;
 import java.util.Map;
 
+@FxmlFile("showResult.fxml")
 public class ShowResultFxController extends WizardStepFxControllerBase
 {
 	private static final String AVATAR_PLACEHOLDER_FILE = "sa/gov/nic/bio/bw/client/core/images/avatar_placeholder.jpg";
@@ -62,12 +63,6 @@ public class ShowResultFxController extends WizardStepFxControllerBase
 	@FXML private Label lblOutOfKingdom;
 	@FXML private Button btnCompareWithUploadedImage;
 	@FXML private Button btnStartOver;
-	
-	@Override
-	public URL getFxmlLocation()
-	{
-		return getClass().getResource("../fxml/showResult.fxml");
-	}
 	
 	@Override
 	protected void initialize()

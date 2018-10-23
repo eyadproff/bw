@@ -5,13 +5,14 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TextField;
-import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.controllers.WizardStepFxControllerBase;
+import sa.gov.nic.bio.bw.client.core.utils.FxmlFile;
+import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.workflow.Output;
 
-import java.net.URL;
 import java.util.Map;
 
+@FxmlFile("personId.fxml")
 public class PersonIdPaneFxController extends WizardStepFxControllerBase
 {
 	@Output private Long personId;
@@ -19,12 +20,6 @@ public class PersonIdPaneFxController extends WizardStepFxControllerBase
 	@FXML private ProgressIndicator piProgress;
 	@FXML private TextField txtPersonId;
 	@FXML private Button btnNext;
-	
-	@Override
-	public URL getFxmlLocation()
-	{
-		return getClass().getResource("../fxml/personId.fxml");
-	}
 	
 	@Override
 	protected void initialize()

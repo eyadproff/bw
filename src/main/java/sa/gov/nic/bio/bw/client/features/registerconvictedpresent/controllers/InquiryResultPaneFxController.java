@@ -13,13 +13,14 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import sa.gov.nic.bio.bw.client.core.Context;
+import sa.gov.nic.bio.bw.client.core.controllers.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.client.core.utils.AppConstants;
 import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
+import sa.gov.nic.bio.bw.client.core.utils.FxmlFile;
 import sa.gov.nic.bio.bw.client.core.utils.GuiLanguage;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
-import sa.gov.nic.bio.bw.client.core.controllers.WizardStepFxControllerBase;
-import sa.gov.nic.bio.bw.client.features.commons.controllers.InquiryByFingerprintsPaneFxController;
 import sa.gov.nic.bio.bw.client.features.commons.beans.GenderType;
+import sa.gov.nic.bio.bw.client.features.commons.controllers.InquiryByFingerprintsPaneFxController;
 import sa.gov.nic.bio.bw.client.features.commons.lookups.CountriesLookup;
 import sa.gov.nic.bio.bw.client.features.commons.lookups.DocumentTypesLookup;
 import sa.gov.nic.bio.bw.client.features.commons.lookups.SamisIdTypesLookup;
@@ -32,7 +33,6 @@ import sa.gov.nic.bio.bw.client.features.commons.webservice.SamisIdType;
 import sa.gov.nic.bio.bw.client.login.webservice.UserInfo;
 
 import java.io.ByteArrayInputStream;
-import java.net.URL;
 import java.time.LocalDate;
 import java.util.Base64;
 import java.util.Date;
@@ -40,6 +40,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@FxmlFile("inquiryResult.fxml")
 public class InquiryResultPaneFxController extends WizardStepFxControllerBase
 {
 	public static final String KEY_INQUIRY_SAMIS_ID = "INQUIRY_SAMIS_ID";
@@ -74,12 +75,6 @@ public class InquiryResultPaneFxController extends WizardStepFxControllerBase
 	
 	private boolean registeringUnknownPerson = false;
 	private Map<String, Object> personInfoMap = new HashMap<>();
-	
-	@Override
-	public URL getFxmlLocation()
-	{
-		return getClass().getResource("../fxml/inquiryResult.fxml");
-	}
 	
 	@Override
 	protected void initialize()

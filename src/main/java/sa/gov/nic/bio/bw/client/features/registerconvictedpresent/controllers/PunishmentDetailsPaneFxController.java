@@ -12,12 +12,13 @@ import javafx.scene.control.Spinner;
 import javafx.scene.control.TextField;
 import javafx.util.StringConverter;
 import sa.gov.nic.bio.bw.client.core.Context;
-import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.controllers.WizardStepFxControllerBase;
+import sa.gov.nic.bio.bw.client.core.utils.FxmlFile;
+import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 
-import java.net.URL;
 import java.util.Map;
 
+@FxmlFile("punishmentDetails.fxml")
 public class PunishmentDetailsPaneFxController extends WizardStepFxControllerBase
 {
 	public static final String KEY_PUNISHMENT_DETAILS_TAZEER_LASHES = "PUNISHMENT_DETAILS_TAZEER_LASHES";
@@ -62,12 +63,6 @@ public class PunishmentDetailsPaneFxController extends WizardStepFxControllerBas
 	@FXML private Button btnPrevious;
 	@FXML private Button btnStartOver;
 	@FXML private Button btnNext;
-	
-	@Override
-	public URL getFxmlLocation()
-	{
-		return getClass().getResource("../fxml/punishmentDetails.fxml");
-	}
 	
 	@SuppressWarnings("unchecked")
 	@Override

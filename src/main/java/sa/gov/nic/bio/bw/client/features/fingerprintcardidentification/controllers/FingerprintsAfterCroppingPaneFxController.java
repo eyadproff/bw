@@ -6,13 +6,14 @@ import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import sa.gov.nic.bio.bw.client.core.Context;
-import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.controllers.WizardStepFxControllerBase;
+import sa.gov.nic.bio.bw.client.core.utils.FxmlFile;
+import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.workflow.Input;
 
-import java.net.URL;
 import java.util.Map;
 
+@FxmlFile("fingerprintsAfterCropping.fxml")
 public class FingerprintsAfterCroppingPaneFxController extends WizardStepFxControllerBase
 {
 	@Input(required = true) private Map<Integer, Image> fingerprintImages;
@@ -29,12 +30,6 @@ public class FingerprintsAfterCroppingPaneFxController extends WizardStepFxContr
 	@FXML private ImageView ivLeftLittle;
 	@FXML private Button btnPrevious;
 	@FXML private Button btnNext;
-	
-	@Override
-	public URL getFxmlLocation()
-	{
-		return getClass().getResource("../fxml/fingerprintsAfterCropping.fxml");
-	}
 	
 	@Override
 	public void onWorkflowUserTaskLoad(boolean newForm, Map<String, Object> uiInputData)

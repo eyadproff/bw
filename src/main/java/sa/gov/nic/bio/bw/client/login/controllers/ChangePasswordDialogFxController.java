@@ -16,11 +16,13 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.controllers.FxControllerBase;
+import sa.gov.nic.bio.bw.client.core.utils.FxmlFile;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.login.tasks.ChangePasswordTask;
 import sa.gov.nic.bio.bw.client.login.utils.LoginErrorCodes;
 import sa.gov.nic.bio.commons.TaskResponse;
 
+@FxmlFile("changePasswordDialog.fxml")
 public class ChangePasswordDialogFxController extends FxControllerBase
 {
 	@FXML private Dialog<ButtonType> dialog;

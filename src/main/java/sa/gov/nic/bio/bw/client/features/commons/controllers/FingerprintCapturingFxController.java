@@ -34,7 +34,6 @@ import org.controlsfx.glyphfont.FontAwesome;
 import org.controlsfx.glyphfont.Glyph;
 import sa.gov.nic.bio.biokit.ResponseProcessor;
 import sa.gov.nic.bio.biokit.beans.LivePreviewingResponse;
-import sa.gov.nic.bio.commons.TaskResponse;
 import sa.gov.nic.bio.biokit.exceptions.NotConnectedException;
 import sa.gov.nic.bio.biokit.exceptions.TimeoutException;
 import sa.gov.nic.bio.biokit.fingerprint.beans.CaptureFingerprintResponse;
@@ -42,26 +41,27 @@ import sa.gov.nic.bio.biokit.fingerprint.beans.DuplicatedFingerprintsResponse;
 import sa.gov.nic.bio.biokit.fingerprint.beans.FingerprintStopPreviewResponse;
 import sa.gov.nic.bio.biokit.websocket.beans.DMFingerData;
 import sa.gov.nic.bio.bw.client.core.Context;
-import sa.gov.nic.bio.bw.client.core.controllers.DevicesRunnerGadgetPaneFxController;
 import sa.gov.nic.bio.bw.client.core.beans.Fingerprint;
 import sa.gov.nic.bio.bw.client.core.beans.FingerprintQualityThreshold;
 import sa.gov.nic.bio.bw.client.core.beans.UserSession;
 import sa.gov.nic.bio.bw.client.core.biokit.FingerPosition;
+import sa.gov.nic.bio.bw.client.core.controllers.DevicesRunnerGadgetPaneFxController;
+import sa.gov.nic.bio.bw.client.core.controllers.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.client.core.utils.AppConstants;
 import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.client.core.utils.FingerprintDeviceType;
+import sa.gov.nic.bio.bw.client.core.utils.FxmlFile;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
-import sa.gov.nic.bio.bw.client.core.controllers.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.client.features.commons.beans.FingerprintUiComponents;
 import sa.gov.nic.bio.bw.client.features.commons.ui.AutoScalingStackPane;
 import sa.gov.nic.bio.bw.client.features.commons.ui.FourStateTitledPane;
 import sa.gov.nic.bio.bw.client.features.commons.utils.CommonsErrorCodes;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.Finger;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.FingerCoordinate;
+import sa.gov.nic.bio.commons.TaskResponse;
 
 import java.awt.Point;
 import java.io.ByteArrayInputStream;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Comparator;
@@ -73,9 +73,9 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Predicate;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+@FxmlFile("fingerprintCapturing.fxml")
 public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 {
 	public static final String KEY_HIDE_FINGERPRINT_PREVIOUS_BUTTON = "HIDE_FINGERPRINT_PREVIOUS_BUTTON";
@@ -190,12 +190,6 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 	private boolean acceptBadQualityFingerprint = false;
 	private int acceptedBadQualityFingerprintMinRetires = Integer.MAX_VALUE;
 	private AtomicBoolean stopCapturingIsInProgress = new AtomicBoolean();
-	
-	@Override
-	public URL getFxmlLocation()
-	{
-		return getClass().getResource("../fxml/fingerprintCapturing.fxml");
-	}
 	
 	@Override
 	protected void initialize()

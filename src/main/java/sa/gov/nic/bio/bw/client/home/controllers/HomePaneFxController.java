@@ -6,7 +6,7 @@ import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
-import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
 import sa.gov.nic.bio.bcl.utils.BclUtils;
 import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.beans.MenuItem;
@@ -14,6 +14,7 @@ import sa.gov.nic.bio.bw.client.core.beans.UserSession;
 import sa.gov.nic.bio.bw.client.core.controllers.BodyFxControllerBase;
 import sa.gov.nic.bio.bw.client.core.controllers.DevicesRunnerGadgetPaneFxController;
 import sa.gov.nic.bio.bw.client.core.utils.Device;
+import sa.gov.nic.bio.bw.client.core.utils.FxmlFile;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.home.utils.HomeErrorCodes;
 import sa.gov.nic.bio.bw.client.login.beans.HomeBean;
@@ -22,10 +23,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+@FxmlFile("home.fxml")
 public class HomePaneFxController extends BodyFxControllerBase
 {
+	@FXML private Pane paneLoginBox;
 	@FXML private Label lblPlaceholder;
-	@FXML private GridPane paneLoginBox;
 	@FXML private Label lblLoginTimeText;
 	@FXML private Label lblLoginTime;
 	@FXML private Label lblLastSuccessLoginText;

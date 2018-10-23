@@ -13,8 +13,9 @@ import net.sf.jasperreports.engine.JasperPrint;
 import net.sourceforge.barbecue.Barcode;
 import net.sourceforge.barbecue.BarcodeFactory;
 import sa.gov.nic.bio.bw.client.core.Context;
-import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.controllers.WizardStepFxControllerBase;
+import sa.gov.nic.bio.bw.client.core.utils.FxmlFile;
+import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.features.commons.controllers.FingerprintCapturingFxController;
 import sa.gov.nic.bio.bw.client.features.commons.tasks.PrintReportTask;
 import sa.gov.nic.bio.bw.client.features.commons.tasks.SaveReportAsPdfTask;
@@ -26,10 +27,10 @@ import javax.swing.SwingUtilities;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
-import java.net.URL;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
+@FxmlFile("showReceipt.fxml")
 public class ShowReceiptFxController extends WizardStepFxControllerBase
 {
 	@FXML private TextField txtRegistrationNumber;
@@ -45,12 +46,6 @@ public class ShowReceiptFxController extends WizardStepFxControllerBase
 	private VisaApplicantInfo visaApplicantInfo;
 	private Map<Integer, String> fingerprintImages;
 	private AtomicReference<JasperPrint> jasperPrint = new AtomicReference<>();
-	
-	@Override
-	public URL getFxmlLocation()
-	{
-		return getClass().getResource("../fxml/showReceipt.fxml");
-	}
 	
 	@Override
 	protected void onAttachedToScene()

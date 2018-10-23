@@ -9,14 +9,15 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import sa.gov.nic.bio.bw.client.core.Context;
+import sa.gov.nic.bio.bw.client.core.controllers.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
+import sa.gov.nic.bio.bw.client.core.utils.FxmlFile;
 import sa.gov.nic.bio.bw.client.core.utils.GuiLanguage;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
-import sa.gov.nic.bio.bw.client.core.controllers.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.client.core.workflow.Input;
 import sa.gov.nic.bio.bw.client.core.workflow.Workflow;
-import sa.gov.nic.bio.bw.client.features.commons.controllers.FingerprintCapturingFxController;
 import sa.gov.nic.bio.bw.client.features.commons.beans.GenderType;
+import sa.gov.nic.bio.bw.client.features.commons.controllers.FingerprintCapturingFxController;
 import sa.gov.nic.bio.bw.client.features.commons.lookups.CountriesLookup;
 import sa.gov.nic.bio.bw.client.features.commons.ui.ImageViewPane;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.CountryBean;
@@ -31,13 +32,13 @@ import sa.gov.nic.bio.bw.client.features.visaapplicantsenrollment.workflow.VisaA
 import sa.gov.nic.bio.commons.TaskResponse;
 
 import java.io.ByteArrayInputStream;
-import java.net.URL;
 import java.time.LocalDate;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@FxmlFile("reviewAndSubmit.fxml")
 public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 {
 	public static final String KEY_VISA_APPLICANT_INFO = "VISA_APPLICANT_INFO";
@@ -95,12 +96,6 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 	@FXML private Button btnSubmit;
 	
 	private VisaApplicantInfo visaApplicantInfo;
-	
-	@Override
-	public URL getFxmlLocation()
-	{
-		return getClass().getResource("../fxml/reviewAndSubmit.fxml");
-	}
 	
 	@Override
 	protected void initialize()

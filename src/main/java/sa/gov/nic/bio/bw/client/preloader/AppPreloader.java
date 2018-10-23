@@ -164,7 +164,7 @@ public class AppPreloader extends Preloader implements AppLogger
 		Locale.setDefault(Context.getGuiLanguage().getLocale());
 	}
 	
-	private static final String FXML_FILE = "sa/gov/nic/bio/bw/client/preloader/fxml/gui.fxml";
+	private static final String FXML_FILE = "sa/gov/nic/bio/bw/client/preloader/fxml/splash.fxml";
 	private static final String RB_STRINGS_FILE = "sa/gov/nic/bio/bw/client/preloader/bundles/strings";
 	
 	private ResourceBundle stringsBundle;

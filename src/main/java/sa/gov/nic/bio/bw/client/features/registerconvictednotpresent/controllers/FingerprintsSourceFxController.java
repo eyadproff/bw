@@ -8,10 +8,11 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.controllers.WizardStepFxControllerBase;
+import sa.gov.nic.bio.bw.client.core.utils.FxmlFile;
 
-import java.net.URL;
 import java.util.Map;
 
+@FxmlFile("fingerprintsSource.fxml")
 public class FingerprintsSourceFxController extends WizardStepFxControllerBase
 {
 	public static final String KEY_FINGERPRINTS_SOURCE = "FINGERPRINTS_SOURCE";
@@ -25,12 +26,6 @@ public class FingerprintsSourceFxController extends WizardStepFxControllerBase
 	@FXML private RadioButton rbByScanningFingerprintsCard;
 	@FXML private RadioButton rbByUploadingNistFile;
 	@FXML private Button btnNext;
-	
-	@Override
-	public URL getFxmlLocation()
-	{
-		return getClass().getResource("../fxml/fingerprintsSource.fxml");
-	}
 	
 	@Override
 	protected void initialize()

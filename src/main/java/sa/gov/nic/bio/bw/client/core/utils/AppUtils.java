@@ -122,13 +122,15 @@ public final class AppUtils implements AppLogger
 				
 				if(name.matches(matcher))
 				{
+					String className = name.substring(0, name.lastIndexOf('.')).replace('/', '.');
+					
 					try
 					{
-						classes.add(Class.forName(name.substring(0, name.lastIndexOf('.'))));
+						classes.add(Class.forName(className));
 					}
 					catch(ClassNotFoundException e)
 					{
-						LOGGER.log(Level.SEVERE, "failed to load the class (" + name + ")!", e);
+						LOGGER.log(Level.SEVERE, "failed to load the class (" + className + ")!", e);
 					}
 				}
 			}

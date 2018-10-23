@@ -5,25 +5,20 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ProgressIndicator;
 import sa.gov.nic.bio.bw.client.core.Context;
-import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.controllers.WizardStepFxControllerBase;
+import sa.gov.nic.bio.bw.client.core.utils.FxmlFile;
+import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.workflow.Workflow;
 import sa.gov.nic.bio.commons.TaskResponse;
 
-import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
+@FxmlFile("lookup.fxml")
 public class LookupFxController extends WizardStepFxControllerBase
 {
 	@FXML private ProgressIndicator progressIndicator;
 	@FXML private Button btnTryAgain;
-	
-	@Override
-	public URL getFxmlLocation()
-	{
-		return getClass().getResource("../fxml/lookup.fxml");
-	}
 	
 	@Override
 	protected void initialize(){}

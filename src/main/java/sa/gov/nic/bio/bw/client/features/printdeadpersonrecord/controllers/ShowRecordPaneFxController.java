@@ -11,11 +11,12 @@ import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import net.sf.jasperreports.engine.JasperPrint;
 import sa.gov.nic.bio.bw.client.core.Context;
+import sa.gov.nic.bio.bw.client.core.controllers.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.client.core.utils.AppConstants;
 import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
+import sa.gov.nic.bio.bw.client.core.utils.FxmlFile;
 import sa.gov.nic.bio.bw.client.core.utils.GuiLanguage;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
-import sa.gov.nic.bio.bw.client.core.controllers.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.client.core.workflow.Input;
 import sa.gov.nic.bio.bw.client.features.commons.beans.GenderType;
 import sa.gov.nic.bio.bw.client.features.commons.lookups.CountriesLookup;
@@ -40,7 +41,6 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
-import java.net.URL;
 import java.time.LocalDate;
 import java.util.Base64;
 import java.util.Date;
@@ -48,6 +48,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
+@FxmlFile("showRecord.fxml")
 public class ShowRecordPaneFxController extends WizardStepFxControllerBase
 {
 	@Input(required = true) private Long recordId;
@@ -94,12 +95,6 @@ public class ShowRecordPaneFxController extends WizardStepFxControllerBase
 	private DeadPersonRecordReport deadPersonRecordReport;
 	private AtomicReference<JasperPrint> jasperPrint = new AtomicReference<>();
 	private FileChooser fileChooser = new FileChooser();
-	
-	@Override
-	public URL getFxmlLocation()
-	{
-		return getClass().getResource("../fxml/showRecord.fxml");
-	}
 	
 	@Override
 	protected void onAttachedToScene()

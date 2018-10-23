@@ -32,6 +32,7 @@ import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.client.core.utils.Device;
 import sa.gov.nic.bio.bw.client.core.utils.DialogUtils;
 import sa.gov.nic.bio.bw.client.core.utils.FingerprintDeviceType;
+import sa.gov.nic.bio.bw.client.core.utils.FxmlFile;
 import sa.gov.nic.bio.bw.client.core.utils.GuiLanguage;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.utils.RuntimeEnvironment;
@@ -45,15 +46,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.prefs.Preferences;
 
+@FxmlFile("login.fxml")
 public class LoginPaneFxController extends BodyFxControllerBase implements PersistableEntity
 {
-	private static final String FXML_CHANGE_FINGERPRINT =
-										"sa/gov/nic/bio/bw/client/login/fxml/change_fingerprint_dialog.fxml";
-	private static final String FXML_CAPTURE_FINGERPRINT =
-										"sa/gov/nic/bio/bw/client/login/fxml/capture_fingerprint_dialog.fxml";
-	private static final String FXML_CHANGE_PASSWORD =
-										"sa/gov/nic/bio/bw/client/login/fxml/change_password_dialog.fxml";
-	
 	public enum LoginMethod
 	{
 		USERNAME_AND_PASSWORD, USERNAME_AND_FINGERPRINT
@@ -276,7 +271,8 @@ public class LoginPaneFxController extends BodyFxControllerBase implements Persi
 				boolean rtl = Context.getGuiLanguage().getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT;
 				CaptureFingerprintDialogFxController captureFingerprintDialogFxController =
 						DialogUtils.buildCustomDialogByFxml(Context.getCoreFxController().getStage(),
-						                                    FXML_CAPTURE_FINGERPRINT, resources, rtl, false);
+						                                    CaptureFingerprintDialogFxController.class, resources, rtl,
+						                                    false);
 				
 				if(captureFingerprintDialogFxController != null)
 				{
@@ -301,7 +297,8 @@ public class LoginPaneFxController extends BodyFxControllerBase implements Persi
 			catch(Exception e)
 			{
 				String errorCode = LoginErrorCodes.C003_00009.getCode();
-				String[] errorDetails = {"Failed to load (" + FXML_CAPTURE_FINGERPRINT + ")!"};
+				String[] errorDetails =
+									{"Failed to load (" + CaptureFingerprintDialogFxController.class.getName() + ")!"};
 				Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails);
 			}
 		}
@@ -316,7 +313,8 @@ public class LoginPaneFxController extends BodyFxControllerBase implements Persi
 		{
 			boolean rtl = Context.getGuiLanguage().getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT;
 			ChangePasswordDialogFxController controller = DialogUtils.buildCustomDialogByFxml(
-					Context.getCoreFxController().getStage(), FXML_CHANGE_PASSWORD, resources, rtl, false);
+					Context.getCoreFxController().getStage(), ChangePasswordDialogFxController.class, resources, rtl,
+					false);
 			
 			if(controller != null)
 			{
@@ -338,7 +336,7 @@ public class LoginPaneFxController extends BodyFxControllerBase implements Persi
 		catch(Exception e)
 		{
 			String errorCode = LoginErrorCodes.C003_00010.getCode();
-			String[] errorDetails = {"Failed to load (" + FXML_CHANGE_PASSWORD + ")!"};
+			String[] errorDetails = {"Failed to load (" + ChangePasswordDialogFxController.class.getName() + ")!"};
 			Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails);
 		}
 	}
@@ -452,7 +450,8 @@ public class LoginPaneFxController extends BodyFxControllerBase implements Persi
 		{
 			boolean rtl = Context.getGuiLanguage().getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT;
 			ChangeFingerprintDialogFxController controller = DialogUtils.buildCustomDialogByFxml(
-					Context.getCoreFxController().getStage(), FXML_CHANGE_FINGERPRINT, resources, rtl, false);
+					Context.getCoreFxController().getStage(), ChangeFingerprintDialogFxController.class, resources, rtl,
+					false);
 			
 			if(controller != null)
 			{
@@ -469,7 +468,7 @@ public class LoginPaneFxController extends BodyFxControllerBase implements Persi
 		catch(Exception e)
 		{
 			String errorCode = LoginErrorCodes.C003_00011.getCode();
-			String[] errorDetails = {"Failed to load (" + FXML_CHANGE_FINGERPRINT + ")!"};
+			String[] errorDetails = {"Failed to load (" + ChangeFingerprintDialogFxController.class.getName() + ")!"};
 			Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails);
 		}
 	}

@@ -9,17 +9,18 @@ import javafx.scene.control.ProgressIndicator;
 import javafx.scene.layout.VBox;
 import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.controllers.DevicesRunnerGadgetPaneFxController;
-import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.controllers.WizardStepFxControllerBase;
+import sa.gov.nic.bio.bw.client.core.utils.FxmlFile;
+import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.workflow.Input;
 import sa.gov.nic.bio.bw.client.core.workflow.Workflow;
-import sa.gov.nic.bio.bw.client.features.fingerprintcardidentification.utils.FingerprintCardIdentificationErrorCodes;
 import sa.gov.nic.bio.bw.client.features.commons.workflow.FingerprintInquiryStatusCheckerWorkflowTask.Status;
+import sa.gov.nic.bio.bw.client.features.fingerprintcardidentification.utils.FingerprintCardIdentificationErrorCodes;
 import sa.gov.nic.bio.commons.TaskResponse;
 
-import java.net.URL;
 import java.util.Map;
 
+@FxmlFile("inquiryByFingerprints.fxml")
 public class InquiryByFingerprintsPaneFxController extends WizardStepFxControllerBase
 {
 	public static final String KEY_WAITING_FINGERPRINT_INQUIRY = "WAITING_FINGERPRINT_INQUIRY";
@@ -45,12 +46,6 @@ public class InquiryByFingerprintsPaneFxController extends WizardStepFxControlle
 	@FXML private Button btnStartOver;
 	
 	private boolean fingerprintInquiryCancelled = false;
-	
-	@Override
-	public URL getFxmlLocation()
-	{
-		return getClass().getResource("../fxml/inquiryByFingerprints.fxml");
-	}
 	
 	@Override
 	protected void initialize()

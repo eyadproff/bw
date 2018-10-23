@@ -8,22 +8,23 @@ import javafx.scene.control.TextField;
 import javafx.stage.FileChooser;
 import net.sf.jasperreports.engine.JasperPrint;
 import sa.gov.nic.bio.bw.client.core.Context;
-import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.controllers.WizardStepFxControllerBase;
+import sa.gov.nic.bio.bw.client.core.utils.FxmlFile;
+import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.features.commons.controllers.FingerprintCapturingFxController;
-import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.tasks.BuildConvictedReportTask;
 import sa.gov.nic.bio.bw.client.features.commons.tasks.PrintReportTask;
 import sa.gov.nic.bio.bw.client.features.commons.tasks.SaveReportAsPdfTask;
+import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.tasks.BuildConvictedReportTask;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.utils.RegisterConvictedPresentErrorCodes;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.ConvictedReport;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
-import java.net.URL;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
+@FxmlFile("showReport.fxml")
 public class ShowReportPaneFxController extends WizardStepFxControllerBase
 {
 	public static final String KEY_CONVICTED_REPORT_NUMBER = "CONVICTED_REPORT_NUMBER";
@@ -40,12 +41,6 @@ public class ShowReportPaneFxController extends WizardStepFxControllerBase
 	private ConvictedReport convictedReport;
 	private Map<Integer, String> fingerprintImages;
 	private AtomicReference<JasperPrint> jasperPrint = new AtomicReference<>();
-	
-	@Override
-	public URL getFxmlLocation()
-	{
-		return getClass().getResource("../fxml/showReport.fxml");
-	}
 	
 	@Override
 	protected void onAttachedToScene()

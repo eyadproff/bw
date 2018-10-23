@@ -7,19 +7,20 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.layout.VBox;
 import sa.gov.nic.bio.bw.client.core.Context;
-import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.controllers.WizardStepFxControllerBase;
+import sa.gov.nic.bio.bw.client.core.utils.FxmlFile;
+import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.workflow.Workflow;
 import sa.gov.nic.bio.bw.client.features.commons.controllers.FingerprintCapturingFxController;
-import sa.gov.nic.bio.bw.client.features.registerconvictednotpresent.utils.RegisterConvictedNotPresentErrorCodes;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.Finger;
+import sa.gov.nic.bio.bw.client.features.registerconvictednotpresent.utils.RegisterConvictedNotPresentErrorCodes;
 import sa.gov.nic.bio.commons.TaskResponse;
 
-import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@FxmlFile("fetchingFingerprints.fxml")
 public class FetchingFingerprintsPaneFxController extends WizardStepFxControllerBase
 {
 	public static final String KEY_RETRY_FINGERPRINT_FETCHING = "RETRY_FINGERPRINT_FETCHING";
@@ -29,12 +30,6 @@ public class FetchingFingerprintsPaneFxController extends WizardStepFxController
 	@FXML private VBox paneError;
 	@FXML private Button btnStartOver;
 	@FXML private Button btnRetry;
-	
-	@Override
-	public URL getFxmlLocation()
-	{
-		return getClass().getResource("../fxml/fetchingFingerprints.fxml");
-	}
 	
 	@Override
 	protected void initialize()

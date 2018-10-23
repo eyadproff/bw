@@ -32,6 +32,7 @@ import sa.gov.nic.bio.bw.client.core.beans.UserSession;
 import sa.gov.nic.bio.bw.client.core.controllers.DevicesRunnerGadgetPaneFxController;
 import sa.gov.nic.bio.bw.client.core.controllers.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.client.core.utils.DialogUtils;
+import sa.gov.nic.bio.bw.client.core.utils.FxmlFile;
 import sa.gov.nic.bio.bw.client.core.utils.GuiLanguage;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.workflow.Output;
@@ -47,7 +48,6 @@ import sa.gov.nic.bio.bw.client.features.visaapplicantsenrollment.webservice.Pas
 import sa.gov.nic.bio.bw.client.features.visaapplicantsenrollment.webservice.VisaTypeBean;
 import sa.gov.nic.bio.commons.TaskResponse;
 
-import java.net.URL;
 import java.text.Normalizer;
 import java.time.LocalDate;
 import java.util.List;
@@ -57,6 +57,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.function.Predicate;
 
+@FxmlFile("applicantInfo.fxml")
 public class ApplicantInfoFxController extends WizardStepFxControllerBase
 {
 	private static final String PASSPORT_ICON_FILE =
@@ -108,12 +109,6 @@ public class ApplicantInfoFxController extends WizardStepFxControllerBase
 	@FXML private Button btnNext;
 	
 	private Predicate<LocalDate> birthDateValidator = localDate -> !localDate.isAfter(LocalDate.now());
-	
-	@Override
-	public URL getFxmlLocation()
-	{
-		return getClass().getResource("../fxml/applicantInfo.fxml");
-	}
 	
 	@Override
 	protected void initialize()

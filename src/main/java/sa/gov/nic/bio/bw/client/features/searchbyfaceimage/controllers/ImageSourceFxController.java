@@ -7,14 +7,15 @@ import javafx.scene.control.RadioButton;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import sa.gov.nic.bio.bw.client.core.Context;
-import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.controllers.WizardStepFxControllerBase;
+import sa.gov.nic.bio.bw.client.core.utils.FxmlFile;
+import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.workflow.Input;
 import sa.gov.nic.bio.bw.client.core.workflow.Output;
 
-import java.net.URL;
 import java.util.Map;
 
+@FxmlFile("imageSource.fxml")
 public class ImageSourceFxController extends WizardStepFxControllerBase
 {
 	public enum Source
@@ -30,12 +31,6 @@ public class ImageSourceFxController extends WizardStepFxControllerBase
 	@FXML private RadioButton rbByCamera;
 	@FXML private Button btnPrevious;
 	@FXML private Button btnNext;
-	
-	@Override
-	public URL getFxmlLocation()
-	{
-		return getClass().getResource("../fxml/imageSource.fxml");
-	}
 	
 	@Override
 	protected void initialize()

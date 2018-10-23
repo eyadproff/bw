@@ -18,7 +18,6 @@ import javafx.stage.Stage;
 import org.controlsfx.control.NotificationPane;
 import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.beans.StateBundle;
-import sa.gov.nic.bio.bw.client.core.interfaces.ControllerResourcesLocator;
 import sa.gov.nic.bio.bw.client.core.interfaces.IdleMonitorRegisterer;
 import sa.gov.nic.bio.bw.client.core.interfaces.PersistableEntity;
 import sa.gov.nic.bio.bw.client.core.utils.AppConstants;
@@ -26,6 +25,7 @@ import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.client.core.utils.CombinedResourceBundle;
 import sa.gov.nic.bio.bw.client.core.utils.CoreErrorCodes;
 import sa.gov.nic.bio.bw.client.core.utils.DialogUtils;
+import sa.gov.nic.bio.bw.client.core.utils.FxmlFile;
 import sa.gov.nic.bio.bw.client.core.utils.GuiLanguage;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.utils.IdleMonitor;
@@ -298,10 +298,6 @@ public class CoreFxController extends FxControllerBase implements IdleMonitorReg
 				{
 					newMenuSelected = false;
 					
-					
-					ControllerResourcesLocator controllerResourcesLocator = (ControllerResourcesLocator)
-							controllerClass.getDeclaredConstructor().newInstance();
-					
 					final BodyFxControllerBase oldController = currentBodyController;
 					if(oldController != null)
 					{
@@ -311,7 +307,7 @@ public class CoreFxController extends FxControllerBase implements IdleMonitorReg
 					
 					currentBodyResourceBundle = resourceBundlesMap.get(controllerClass);
 					final BodyFxControllerBase newController = renderNewBodyForm(currentBodyResourceBundle,
-					                                                             controllerResourcesLocator);
+					                                                             controllerClass);
 					if(newController != null) Workflow.loadWorkflowInputs(newController, uiInputData,
 					                                                      true);
 					
@@ -340,19 +336,28 @@ public class CoreFxController extends FxControllerBase implements IdleMonitorReg
 	 * Render the body form by first locating its FXML file and its resource bundles and load them. Next, replace
 	 * the existing body node with the created node.
 	 *
-	 * @param controllerResourcesLocator a locator for the FXML file and the resource bundles
-	 *
 	 * @return the created JavaFX controller
 	 */
 	private BodyFxControllerBase renderNewBodyForm(ResourceBundle stringsBundle,
-	                                               ControllerResourcesLocator controllerResourcesLocator)
+	                                               Class<?> controllerClass)
 	{
-		URL fxmlUrl = controllerResourcesLocator.getFxmlLocation();
+		FxmlFile fxmlFile = controllerClass.getAnnotation(FxmlFile.class);
+		if(fxmlFile == null)
+		{
+			String errorCode = CoreErrorCodes.C002_00031.getCode();
+			String[] errorDetails = {"\"@FxmlFile\" is not set!", "controllerClass = " + controllerClass};
+			showErrorDialog(errorCode, null, errorDetails);
+			return null;
+		}
+		
+		String packageName = controllerClass.getPackage().getName().replace('.', '/');
+		String parentPackageName = packageName.substring(0, packageName.lastIndexOf('/'));
+		URL fxmlUrl = Thread.currentThread().getContextClassLoader()
+											.getResource(parentPackageName + "/fxml/" + fxmlFile.value());
 		if(fxmlUrl == null)
 		{
 			String errorCode = CoreErrorCodes.C002_00002.getCode();
-			String[] errorDetails = {"\"fxmlUrl\" is null!", "controllerClass = " +
-									controllerResourcesLocator.getClass().getName()};
+			String[] errorDetails = {"\"fxmlUrl\" is null!", "controllerClass = " + controllerClass};
 			showErrorDialog(errorCode, null, errorDetails);
 			return null;
 		}
@@ -369,8 +374,7 @@ public class CoreFxController extends FxControllerBase implements IdleMonitorReg
 		catch(IOException e)
 		{
 			String errorCode = CoreErrorCodes.C002_00004.getCode();
-			String[] errorDetails = {"Failed to load FXML correctly!", "controllerClass = " +
-									controllerResourcesLocator.getClass().getName()};
+			String[] errorDetails = {"Failed to load FXML correctly!", "controllerClass = " + controllerClass};
 			showErrorDialog(errorCode, e, errorDetails);
 			return null;
 		}
@@ -613,7 +617,8 @@ public class CoreFxController extends FxControllerBase implements IdleMonitorReg
 	 */
 	private boolean applyStateBundle(StateBundle stateBundle)
 	{
-		BodyFxControllerBase newBodyController = renderNewBodyForm(currentBodyResourceBundle, currentBodyController);
+		BodyFxControllerBase newBodyController = renderNewBodyForm(currentBodyResourceBundle,
+		                                                           currentBodyController.getClass());
 		currentBodyController = newBodyController;
 		
 		if(newBodyController instanceof PersistableEntity)

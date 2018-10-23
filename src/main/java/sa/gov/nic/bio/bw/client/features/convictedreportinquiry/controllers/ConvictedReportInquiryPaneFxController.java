@@ -23,6 +23,7 @@ import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.controllers.DevicesRunnerGadgetPaneFxController;
 import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.client.core.utils.DialogUtils;
+import sa.gov.nic.bio.bw.client.core.utils.FxmlFile;
 import sa.gov.nic.bio.bw.client.core.utils.GuiLanguage;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.workflow.Input;
@@ -40,11 +41,9 @@ import sa.gov.nic.bio.commons.TaskResponse;
 import java.util.List;
 import java.util.Map;
 
+@FxmlFile("convictedReportInquiry.fxml")
 public class ConvictedReportInquiryPaneFxController extends BodyFxControllerBase
 {
-	private static final String FXML_SHOW_REPORT_DIALOG =
-								"sa/gov/nic/bio/bw/client/features/convictedreportinquiry/fxml/show_report_dialog.fxml";
-	
 	@Input private List<Pair<ConvictedReport, Map<Integer, String>>> convictedReports;
 	@Output private Long generalFileNumber;
 	
@@ -243,7 +242,9 @@ public class ConvictedReportInquiryPaneFxController extends BodyFxControllerBase
 		}
 		else
 		{
-			@SuppressWarnings("unchecked") TaskResponse<?> taskResponse = (TaskResponse<?>) uiInputData.get(Workflow.KEY_WORKFLOW_TASK_NEGATIVE_RESPONSE);
+			@SuppressWarnings("unchecked")
+			TaskResponse<?> taskResponse = (TaskResponse<?>)
+														uiInputData.get(Workflow.KEY_WORKFLOW_TASK_NEGATIVE_RESPONSE);
 			
 			disableUiControls(false);
 			
@@ -296,7 +297,8 @@ public class ConvictedReportInquiryPaneFxController extends BodyFxControllerBase
 		{
 			
 			ShowReportDialogFxController controller = DialogUtils.buildCustomDialogByFxml(
-					Context.getCoreFxController().getStage(), FXML_SHOW_REPORT_DIALOG, resources, rtl, true);
+					Context.getCoreFxController().getStage(), ShowReportDialogFxController.class, resources, rtl,
+					true);
 			
 			if(controller != null)
 			{
@@ -309,7 +311,7 @@ public class ConvictedReportInquiryPaneFxController extends BodyFxControllerBase
 		catch(Exception e)
 		{
 			String errorCode = ConvictedReportInquiryErrorCodes.C014_00002.getCode();
-			String[] errorDetails = {"Failed to load (" + FXML_SHOW_REPORT_DIALOG + ")!"};
+			String[] errorDetails = {"Failed to load (" + ShowReportDialogFxController.class.getName() + ")!"};
 			Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails);
 		}
 	}

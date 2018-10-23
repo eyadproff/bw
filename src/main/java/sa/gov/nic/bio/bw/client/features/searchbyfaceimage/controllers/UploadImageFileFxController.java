@@ -12,18 +12,19 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser;
 import sa.gov.nic.bio.bw.client.core.Context;
-import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.controllers.WizardStepFxControllerBase;
+import sa.gov.nic.bio.bw.client.core.utils.FxmlFile;
+import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.workflow.Output;
 import sa.gov.nic.bio.bw.client.features.searchbyfaceimage.utils.SearchByFaceImageErrorCodes;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.net.URL;
 import java.nio.file.Files;
 import java.text.DecimalFormat;
 import java.util.Map;
 
+@FxmlFile("uploadImage.fxml")
 public class UploadImageFileFxController extends WizardStepFxControllerBase
 {
 	@Output private Image uploadedImage;
@@ -36,12 +37,6 @@ public class UploadImageFileFxController extends WizardStepFxControllerBase
 	
 	private FileChooser fileChooser = new FileChooser();
 	private boolean imageSelected = false;
-	
-	@Override
-	public URL getFxmlLocation()
-	{
-		return getClass().getResource("../fxml/uploadImage.fxml");
-	}
 	
 	@Override
 	protected void initialize()

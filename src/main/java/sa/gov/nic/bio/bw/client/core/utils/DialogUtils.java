@@ -269,11 +269,17 @@ public class DialogUtils
 		return stage;
 	}
 	
-	public static <T> T buildCustomDialogByFxml(Stage ownerStage, String fxml, ResourceBundle resourceBundle,
-	                                            boolean rtl, boolean resizable) throws Exception
+	public static <T> T buildCustomDialogByFxml(Stage ownerStage, Class<?> controllerClass,
+	                                            ResourceBundle resourceBundle, boolean rtl, boolean resizable)
+																									throws Exception
 	{
-		URL fxmlResource = Thread.currentThread().getContextClassLoader().getResource(fxml);
-		FXMLLoader loader = new FXMLLoader(fxmlResource, resourceBundle);
+		FxmlFile fxmlFile = controllerClass.getAnnotation(FxmlFile.class);
+		String packageName = controllerClass.getPackage().getName().replace('.', '/');
+		String parentPackageName = packageName.substring(0, packageName.lastIndexOf('/'));
+		URL fxmlUrl = Thread.currentThread().getContextClassLoader()
+											.getResource(parentPackageName + "/fxml/" + fxmlFile.value());
+		
+		FXMLLoader loader = new FXMLLoader(fxmlUrl, resourceBundle);
 		Dialog<ButtonType> dialog = loader.load();
 		
 		dialog.initOwner(ownerStage);

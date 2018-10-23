@@ -7,8 +7,9 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TextField;
-import sa.gov.nic.bio.bw.client.core.controllers.BodyFxControllerBase;
 import sa.gov.nic.bio.bw.client.core.Context;
+import sa.gov.nic.bio.bw.client.core.controllers.BodyFxControllerBase;
+import sa.gov.nic.bio.bw.client.core.utils.FxmlFile;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.workflow.Workflow;
 import sa.gov.nic.bio.commons.TaskResponse;
@@ -16,6 +17,7 @@ import sa.gov.nic.bio.commons.TaskResponse;
 import java.util.HashMap;
 import java.util.Map;
 
+@FxmlFile("cancelLatent.fxml")
 public class CancelLatentPaneFxController extends BodyFxControllerBase
 {
 	@FXML private TextField txtPersonId;

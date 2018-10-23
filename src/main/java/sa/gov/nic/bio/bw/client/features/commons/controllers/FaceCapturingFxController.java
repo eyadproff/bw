@@ -33,6 +33,7 @@ import sa.gov.nic.bio.biokit.face.beans.FaceStartPreviewResponse;
 import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.controllers.DevicesRunnerGadgetPaneFxController;
 import sa.gov.nic.bio.bw.client.core.controllers.WizardStepFxControllerBase;
+import sa.gov.nic.bio.bw.client.core.utils.FxmlFile;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.workflow.Input;
 import sa.gov.nic.bio.bw.client.core.workflow.Output;
@@ -43,13 +44,13 @@ import sa.gov.nic.bio.commons.TaskResponse;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.net.URL;
 import java.util.Base64;
 import java.util.Map;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
+@FxmlFile("faceCapturing.fxml")
 public class FaceCapturingFxController extends WizardStepFxControllerBase
 {
 	@Input private Boolean acceptAnyCapturedImage;
@@ -115,12 +116,6 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 	private Rotate xRotateBase = new Rotate(0.0, Rotate.X_AXIS);
 	private Rotate yRotateBase = new Rotate(0.0, Rotate.Y_AXIS);
 	private Rotate zRotateBase = new Rotate(0.0, Rotate.Z_AXIS);
-	
-	@Override
-	public URL getFxmlLocation()
-	{
-		return getClass().getResource("../fxml/faceCapturing.fxml");
-	}
 	
 	@Override
 	protected void initialize()
