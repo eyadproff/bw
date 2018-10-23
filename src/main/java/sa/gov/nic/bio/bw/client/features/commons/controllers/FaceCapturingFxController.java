@@ -25,7 +25,6 @@ import javafx.scene.transform.Translate;
 import javafx.util.Duration;
 import sa.gov.nic.bio.biokit.ResponseProcessor;
 import sa.gov.nic.bio.biokit.beans.LivePreviewingResponse;
-import sa.gov.nic.bio.biokit.beans.ServiceResponse;
 import sa.gov.nic.bio.biokit.exceptions.NotConnectedException;
 import sa.gov.nic.bio.biokit.exceptions.TimeoutException;
 import sa.gov.nic.bio.biokit.face.FaceStopPreviewResponse;
@@ -33,13 +32,14 @@ import sa.gov.nic.bio.biokit.face.beans.CaptureFaceResponse;
 import sa.gov.nic.bio.biokit.face.beans.FaceStartPreviewResponse;
 import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.controllers.DevicesRunnerGadgetPaneFxController;
-import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.controllers.WizardStepFxControllerBase;
+import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.workflow.Input;
 import sa.gov.nic.bio.bw.client.core.workflow.Output;
 import sa.gov.nic.bio.bw.client.features.commons.ui.AutoScalingStackPane;
 import sa.gov.nic.bio.bw.client.features.commons.ui.FourStateTitledPane;
 import sa.gov.nic.bio.bw.client.features.commons.utils.CommonsErrorCodes;
+import sa.gov.nic.bio.commons.TaskResponse;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -49,12 +49,9 @@ import java.util.Map;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-import java.util.logging.Logger;
 
 public class FaceCapturingFxController extends WizardStepFxControllerBase
 {
-	private static final Logger LOGGER = Logger.getLogger(FaceCapturingFxController.class.getName());
-	
 	@Input private Boolean acceptAnyCapturedImage;
 	@Input private Boolean acceptBadQualityFace;
 	@Input private Integer acceptBadQualityFaceMinRetries;
@@ -342,10 +339,10 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 		lblStatus.setText(resources.getString("label.status.waitingDeviceResponse"));
 		boolean[] first = {true};
 		
-		Task<ServiceResponse<FaceStartPreviewResponse>> task = new Task<ServiceResponse<FaceStartPreviewResponse>>()
+		Task<TaskResponse<FaceStartPreviewResponse>> task = new Task<TaskResponse<FaceStartPreviewResponse>>()
 		{
 			@Override
-			protected ServiceResponse<FaceStartPreviewResponse> call() throws Exception
+			protected TaskResponse<FaceStartPreviewResponse> call() throws Exception
 			{
 				ResponseProcessor<LivePreviewingResponse> responseProcessor = response -> Platform.runLater(() ->
 				{
@@ -371,7 +368,7 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 				
 				String cameraDeviceName = Context.getCoreFxController().getDeviceManagerGadgetPaneController()
 																	   .getCameraDeviceName();
-				Future<ServiceResponse<FaceStartPreviewResponse>> future = Context.getBioKitManager().getFaceService()
+				Future<TaskResponse<FaceStartPreviewResponse>> future = Context.getBioKitManager().getFaceService()
 															  .startPreview(cameraDeviceName, responseProcessor);
 				return future.get();
 			}
@@ -383,11 +380,11 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 			GuiUtils.showNode(btnStopCameraLivePreview, false);
 			GuiUtils.showNode(btnCaptureFace, false);
 			
-		    ServiceResponse<FaceStartPreviewResponse> serviceResponse = task.getValue();
+		    TaskResponse<FaceStartPreviewResponse> taskResponse = task.getValue();
 			
-		    if(serviceResponse.isSuccess())
+		    if(taskResponse.isSuccess())
 		    {
-			    FaceStartPreviewResponse result = serviceResponse.getResult();
+			    FaceStartPreviewResponse result = taskResponse.getResult();
 			
 			    if(result.getReturnCode() != FaceStartPreviewResponse.SuccessCodes.SUCCESS)
 			    {
@@ -425,11 +422,11 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 			    GuiUtils.showNode(btnStartCameraLivePreview, true);
 			    lblStatus.setText(String.format(
 					    resources.getString("label.status.failedToStartCameraLivePreviewingWithErrorCode"),
-					    serviceResponse.getErrorCode()));
+					    taskResponse.getErrorCode()));
 			
 			    String errorCode = CommonsErrorCodes.C008_00002.getCode();
 			    String[] errorDetails = {"failed while starting the camera live preview!"};
-			    Context.getCoreFxController().showErrorDialog(errorCode, serviceResponse.getException(), errorDetails);
+			    Context.getCoreFxController().showErrorDialog(errorCode, taskResponse.getException(), errorDetails);
 		    }
 		});
 		task.setOnFailed(e ->
@@ -486,13 +483,13 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 		
 		String cameraDeviceName = Context.getCoreFxController().getDeviceManagerGadgetPaneController()
 															   .getCameraDeviceName();
-		Future<ServiceResponse<FaceStopPreviewResponse>> future = Context.getBioKitManager().getFaceService()
+		Future<TaskResponse<FaceStopPreviewResponse>> future = Context.getBioKitManager().getFaceService()
 																		 .stopPreview(cameraDeviceName);
 		
-		Task<ServiceResponse<FaceStopPreviewResponse>> task = new Task<ServiceResponse<FaceStopPreviewResponse>>()
+		Task<TaskResponse<FaceStopPreviewResponse>> task = new Task<TaskResponse<FaceStopPreviewResponse>>()
 		{
 			@Override
-			protected ServiceResponse<FaceStopPreviewResponse> call() throws Exception
+			protected TaskResponse<FaceStopPreviewResponse> call() throws Exception
 			{
 				return future.get();
 			}
@@ -506,11 +503,11 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 		
 		    GuiUtils.showNode(btnStartCameraLivePreview, true);
 		
-		    ServiceResponse<FaceStopPreviewResponse> serviceResponse = task.getValue();
+		    TaskResponse<FaceStopPreviewResponse> taskResponse = task.getValue();
 		
-		    if(serviceResponse.isSuccess())
+		    if(taskResponse.isSuccess())
 		    {
-		        FaceStopPreviewResponse result = serviceResponse.getResult();
+		        FaceStopPreviewResponse result = taskResponse.getResult();
 		
 		        if(result.getReturnCode() == FaceStopPreviewResponse.SuccessCodes.SUCCESS)
 		        {
@@ -527,12 +524,12 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 		    else
 		    {
 		        lblStatus.setText(String.format(
-		                resources.getString("label.status.failedToStopCameraLivePreviewingWithErrorCode"),
-		                serviceResponse.getErrorCode()));
+				        resources.getString("label.status.failedToStopCameraLivePreviewingWithErrorCode"),
+				        taskResponse.getErrorCode()));
 		
 		        String errorCode = CommonsErrorCodes.C008_00004.getCode();
 		        String[] errorDetails = {"failed while stopping the camera live preview!"};
-		        Context.getCoreFxController().showErrorDialog(errorCode, serviceResponse.getException(), errorDetails);
+		        Context.getCoreFxController().showErrorDialog(errorCode, taskResponse.getException(), errorDetails);
 		    }
 		});
 		task.setOnFailed(e ->
@@ -615,13 +612,13 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 		
 		String cameraDeviceName = Context.getCoreFxController().getDeviceManagerGadgetPaneController()
 															   .getCameraDeviceName();
-		Future<ServiceResponse<CaptureFaceResponse>> future = Context.getBioKitManager().getFaceService()
+		Future<TaskResponse<CaptureFaceResponse>> future = Context.getBioKitManager().getFaceService()
 																	 .captureFace(cameraDeviceName, true);
 		
-		Task<ServiceResponse<CaptureFaceResponse>> task = new Task<ServiceResponse<CaptureFaceResponse>>()
+		Task<TaskResponse<CaptureFaceResponse>> task = new Task<TaskResponse<CaptureFaceResponse>>()
 		{
 			@Override
-			protected ServiceResponse<CaptureFaceResponse> call() throws Exception
+			protected TaskResponse<CaptureFaceResponse> call() throws Exception
 			{
 				return future.get();
 			}
@@ -639,11 +636,11 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 			tpCameraLivePreview.setDisable(false);
 			captureInProgress = false;
 			
-		    ServiceResponse<CaptureFaceResponse> serviceResponse = task.getValue();
+		    TaskResponse<CaptureFaceResponse> taskResponse = task.getValue();
 		
-		    if(serviceResponse.isSuccess())
+		    if(taskResponse.isSuccess())
 		    {
-			    CaptureFaceResponse result = serviceResponse.getResult();
+			    CaptureFaceResponse result = taskResponse.getResult();
 			    
 			    if(result.getReturnCode() == CaptureFaceResponse.SuccessCodes.SUCCESS)
 			    {
@@ -805,11 +802,11 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 			    
 			    lblStatus.setText(String.format(
 					    resources.getString("label.status.failedToCaptureTheFaceWithErrorCode"),
-					    serviceResponse.getErrorCode()));
+					    taskResponse.getErrorCode()));
 			
 			    String errorCode = CommonsErrorCodes.C008_00006.getCode();
 			    String[] errorDetails = {"failed while capturing the face!"};
-			    Context.getCoreFxController().showErrorDialog(errorCode, serviceResponse.getException(), errorDetails);
+			    Context.getCoreFxController().showErrorDialog(errorCode, taskResponse.getException(), errorDetails);
 		    }
 		});
 		task.setOnFailed(e ->

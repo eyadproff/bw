@@ -6,7 +6,7 @@ import sa.gov.nic.bio.bw.client.core.workflow.Signal;
 import sa.gov.nic.bio.bw.client.core.workflow.SinglePageWorkflowBase;
 import sa.gov.nic.bio.bw.client.features.cancellatent.controllers.CancelLatentPaneFxController;
 import sa.gov.nic.bio.bw.client.features.cancellatent.workflow.CancelLatentService;
-import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
+import sa.gov.nic.bio.commons.TaskResponse;
 
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
@@ -21,18 +21,15 @@ public class CancelLatentWorkflow extends SinglePageWorkflowBase
 	}
 	
 	@Override
-	public boolean onStep() throws InterruptedException, Signal
+	public void onStep() throws InterruptedException, Signal
 	{
-		renderUi(CancelLatentPaneFxController.class);
-		waitForUserInput();
+		renderUiAndWaitForUserInput(CancelLatentPaneFxController.class);
 		
 		Long personId = (Long) uiInputData.get("personId");
 		String latentId = (String) uiInputData.get("latentId");
 		uiInputData.clear();
 		
-		ServiceResponse<Boolean> response = CancelLatentService.execute(personId, latentId);
-		uiInputData.put(KEY_WEBSERVICE_RESPONSE, response);
-		
-		return true;
+		TaskResponse<Boolean> response = CancelLatentService.execute(personId, latentId);
+		uiInputData.put(KEY_WORKFLOW_TASK_NEGATIVE_RESPONSE, response);
 	}
 }

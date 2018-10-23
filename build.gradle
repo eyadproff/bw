@@ -13,7 +13,7 @@ buildscript {
     }
 }
 
-project.version = '2018.09.5'
+project.version = '2018.10.1'
 group = 'sa.gov.nic.bio'
 
 apply plugin: 'java'
@@ -42,7 +42,7 @@ repositories {
 dependencies {
     // BCL-Utils and Biokit library
     implementation name: "bcl-utils-2018.04.1"
-    implementation name: "biokit-library-2018.08.2"
+    implementation name: "biokit-library-2018.09.1"
 
     // font to support arabic in jasper reports
     implementation name: "custom-report-font-1.0.0"

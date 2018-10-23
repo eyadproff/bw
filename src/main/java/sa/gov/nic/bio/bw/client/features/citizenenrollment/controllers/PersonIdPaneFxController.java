@@ -12,7 +12,7 @@ import sa.gov.nic.bio.bw.client.core.workflow.Workflow;
 import sa.gov.nic.bio.bw.client.features.citizenenrollment.utils.CitizenEnrollmentErrorCodes;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.PersonInfo;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.controllers.InquiryResultPaneFxController;
-import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
+import sa.gov.nic.bio.commons.TaskResponse;
 
 import java.net.URL;
 import java.util.HashMap;
@@ -60,13 +60,12 @@ public class PersonIdPaneFxController extends WizardStepFxControllerBase
 			piProgress.setVisible(false);
 			txtPersonId.setDisable(false);
 			
-			@SuppressWarnings("unchecked")
-			ServiceResponse<PersonInfo> serviceResponse = (ServiceResponse<PersonInfo>)
-																	uiInputData.get(Workflow.KEY_WEBSERVICE_RESPONSE);
+			@SuppressWarnings("unchecked") TaskResponse<PersonInfo> taskResponse = (TaskResponse<PersonInfo>)
+																	uiInputData.get(Workflow.KEY_WORKFLOW_TASK_NEGATIVE_RESPONSE);
 			
-			if(serviceResponse.isSuccess())
+			if(taskResponse.isSuccess())
 			{
-				PersonInfo result = serviceResponse.getResult();
+				PersonInfo result = taskResponse.getResult();
 				
 				if(result != null)
 				{
@@ -77,11 +76,11 @@ public class PersonIdPaneFxController extends WizardStepFxControllerBase
 				{
 					String errorCode = CitizenEnrollmentErrorCodes.C011_00001.getCode();
 					String[] errorDetails = {"result is null!"};
-					reportNegativeResponse(errorCode, null, errorDetails);
+					reportNegativeTaskResponse(errorCode, null, errorDetails);
 				}
 			}
-			else reportNegativeResponse(serviceResponse.getErrorCode(), serviceResponse.getException(),
-			                            serviceResponse.getErrorDetails());
+			else reportNegativeTaskResponse(taskResponse.getErrorCode(), taskResponse.getException(),
+			                                taskResponse.getErrorDetails());
 		}
 	}
 	

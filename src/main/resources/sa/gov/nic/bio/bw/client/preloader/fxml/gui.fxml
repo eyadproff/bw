@@ -19,7 +19,7 @@
                 <ImageView>
                     <Image url="@../images/splash_screen.jpg"/>
                 </ImageView>
-                <ProgressBar StackPane.alignment="BOTTOM_CENTER" maxWidth="Infinity">
+                <ProgressBar StackPane.alignment="BOTTOM_CENTER" maxWidth="Infinity" cache="true" cacheHint="SPEED">
                     <padding>
                         <Insets bottom="15.0" right="3.0" left="3.0"/>
                     </padding>

@@ -75,6 +75,7 @@ public class MenuPaneFxController extends RegionFxControllerBase
 		ListView<MenuItem> listView = newListView(listViewIndex++);
 		listView.setFocusTraversable(false);
 		listView.getItems().add(menuItem);
+		
 		TitledPane titledPane = new TitledPane();
 		titledPane.setFocusTraversable(false);
 		ResourceBundle resourceBundle = Context.getCoreFxController().getResourceBundle();
@@ -269,5 +270,15 @@ public class MenuPaneFxController extends RegionFxControllerBase
 		
 		selectedMenu = null;
 		selectedListView = null;
+	}
+	
+	public void emptyMenus()
+	{
+		accordion.getPanes().clear();
+	}
+	
+	public boolean isMenuEmpty()
+	{
+		return accordion.getPanes().isEmpty();
 	}
 }

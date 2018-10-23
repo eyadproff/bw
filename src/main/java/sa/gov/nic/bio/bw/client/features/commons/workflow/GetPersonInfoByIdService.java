@@ -4,11 +4,11 @@ import retrofit2.Call;
 import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.PersonInfoByIdAPI;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.PersonInfo;
-import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
+import sa.gov.nic.bio.commons.TaskResponse;
 
 public class GetPersonInfoByIdService
 {
-	public static ServiceResponse<PersonInfo> execute(long personId, int personType)
+	public static TaskResponse<PersonInfo> execute(long personId, int personType)
 	{
 		PersonInfoByIdAPI personInfoByIdAPI = Context.getWebserviceManager().getApi(PersonInfoByIdAPI.class);
 		Call<PersonInfo> apiCall = personInfoByIdAPI.getPersonInfoById(personId, personType);

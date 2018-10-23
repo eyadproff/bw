@@ -21,11 +21,11 @@ import javafx.stage.Stage;
 import org.controlsfx.glyphfont.FontAwesome;
 import org.controlsfx.glyphfont.FontAwesome.Glyph;
 import sa.gov.nic.bio.biokit.websocket.ClosureListener;
-import sa.gov.nic.bio.bw.client.core.controllers.BodyFxControllerBase;
 import sa.gov.nic.bio.bw.client.core.Context;
-import sa.gov.nic.bio.bw.client.core.controllers.DevicesRunnerGadgetPaneFxController;
 import sa.gov.nic.bio.bw.client.core.beans.StateBundle;
 import sa.gov.nic.bio.bw.client.core.biokit.FingerPosition;
+import sa.gov.nic.bio.bw.client.core.controllers.BodyFxControllerBase;
+import sa.gov.nic.bio.bw.client.core.controllers.DevicesRunnerGadgetPaneFxController;
 import sa.gov.nic.bio.bw.client.core.interfaces.PersistableEntity;
 import sa.gov.nic.bio.bw.client.core.utils.AppConstants;
 import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
@@ -35,12 +35,10 @@ import sa.gov.nic.bio.bw.client.core.utils.FingerprintDeviceType;
 import sa.gov.nic.bio.bw.client.core.utils.GuiLanguage;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.utils.RuntimeEnvironment;
-import sa.gov.nic.bio.bw.client.core.workflow.Workflow;
+import sa.gov.nic.bio.bw.client.core.workflow.Output;
 import sa.gov.nic.bio.bw.client.features.commons.ui.AutoScalingStackPane;
 import sa.gov.nic.bio.bw.client.login.utils.LoginErrorCodes;
-import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map;
@@ -55,6 +53,17 @@ public class LoginPaneFxController extends BodyFxControllerBase implements Persi
 										"sa/gov/nic/bio/bw/client/login/fxml/capture_fingerprint_dialog.fxml";
 	private static final String FXML_CHANGE_PASSWORD =
 										"sa/gov/nic/bio/bw/client/login/fxml/change_password_dialog.fxml";
+	
+	public enum LoginMethod
+	{
+		USERNAME_AND_PASSWORD, USERNAME_AND_FINGERPRINT
+	}
+	
+	@Output private String username;
+	@Output private String password;
+	@Output private Integer fingerPosition;
+	@Output private String fingerprint;
+	@Output private LoginMethod loginMethod;
 	
 	@FXML private Label lblFingerprintScannerNotInitialized;
 	@FXML private Label lblFingerprintScannerNotConnected;
@@ -186,10 +195,6 @@ public class LoginPaneFxController extends BodyFxControllerBase implements Persi
 		Context.getCoreFxController().getDeviceManagerGadgetPaneController().hideRegion();
 		Context.getCoreFxController().getFooterPaneController().showRegion();
 		
-		// request focus once the scene is attached to txtUsernameLoginByPassword
-		txtUsernameLoginByPassword.sceneProperty().addListener((observable, oldValue, newValue) ->
-				                                                       txtUsernameLoginByPassword.requestFocus());
-		
 		if(Context.getRuntimeEnvironment() == RuntimeEnvironment.LOCAL ||
 		   Context.getRuntimeEnvironment() == RuntimeEnvironment.DEV)
 		{
@@ -200,52 +205,46 @@ public class LoginPaneFxController extends BodyFxControllerBase implements Persi
 		ClosureListener closureListener = Context.getCoreFxController().getDeviceManagerGadgetPaneController()
 																	   .getClosureListener();
 		Context.getBioKitManager().setClosureListener(closureListener);
+		
+		txtUsernameLoginByPassword.requestFocus();
 	}
 	
 	@Override
 	public void onWorkflowUserTaskLoad(boolean newForm, Map<String, Object> uiInputData)
 	{
-		if(newForm)
+		Preferences prefs = Preferences.userNodeForPackage(AppConstants.PREF_NODE_CLASS);
+		String fingerprintPosition = prefs.get(AppConstants.LOGIN_FINGERPRINT_POSITION_PREF_NAME, null);
+		
+		if(fingerprintPosition != null && !fingerprintPosition.trim().isEmpty())
 		{
-			Preferences prefs = Preferences.userNodeForPackage(AppConstants.PREF_NODE_CLASS);
-			String fingerprintPosition = prefs.get(AppConstants.LOGIN_FINGERPRINT_POSITION_PREF_NAME, null);
-			
-			if(fingerprintPosition != null && !fingerprintPosition.trim().isEmpty())
+			switch(fingerprintPosition)
 			{
-				switch(fingerprintPosition)
-				{
-					case "1": currentFingerPosition = FingerPosition.RIGHT_THUMB; break;
-					case "2": currentFingerPosition = FingerPosition.RIGHT_INDEX; break;
-					case "3": currentFingerPosition = FingerPosition.RIGHT_MIDDLE; break;
-					case "4": currentFingerPosition = FingerPosition.RIGHT_RING; break;
-					case "5": currentFingerPosition = FingerPosition.RIGHT_LITTLE; break;
-					case "6": currentFingerPosition = FingerPosition.LEFT_THUMB; break;
-					case "7": currentFingerPosition = FingerPosition.LEFT_INDEX; break;
-					case "8": currentFingerPosition = FingerPosition.LEFT_MIDDLE; break;
-					case "9": currentFingerPosition = FingerPosition.LEFT_RING; break;
-					case "10": currentFingerPosition = FingerPosition.LEFT_LITTLE; break;
-					default: currentFingerPosition = FingerPosition.RIGHT_INDEX; break;
-				}
-			}
-			else currentFingerPosition = FingerPosition.RIGHT_INDEX;
-			
-			activateFingerprint(currentFingerPosition);
-		}
-		else
-		{
-			txtPassword.clear();
-			disableUiControls(false);
-			
-			ServiceResponse<?> serviceResponse = (ServiceResponse<?>) uiInputData.get(Workflow.KEY_WEBSERVICE_RESPONSE);
-			if(!serviceResponse.isSuccess())
-			{
-				reportNegativeResponse(serviceResponse.getErrorCode(), serviceResponse.getException(),
-				                       serviceResponse.getErrorDetails());
-				
-				if(tabLoginByPassword.isSelected()) txtUsernameLoginByPassword.requestFocus();
-				else if(tabLoginByFingerprint.isSelected()) txtUsernameLoginByFingerprint.requestFocus();
+				case "1": currentFingerPosition = FingerPosition.RIGHT_THUMB; break;
+				case "2": currentFingerPosition = FingerPosition.RIGHT_INDEX; break;
+				case "3": currentFingerPosition = FingerPosition.RIGHT_MIDDLE; break;
+				case "4": currentFingerPosition = FingerPosition.RIGHT_RING; break;
+				case "5": currentFingerPosition = FingerPosition.RIGHT_LITTLE; break;
+				case "6": currentFingerPosition = FingerPosition.LEFT_THUMB; break;
+				case "7": currentFingerPosition = FingerPosition.LEFT_INDEX; break;
+				case "8": currentFingerPosition = FingerPosition.LEFT_MIDDLE; break;
+				case "9": currentFingerPosition = FingerPosition.LEFT_RING; break;
+				case "10": currentFingerPosition = FingerPosition.LEFT_LITTLE; break;
+				default: currentFingerPosition = FingerPosition.RIGHT_INDEX; break;
 			}
 		}
+		else currentFingerPosition = FingerPosition.RIGHT_INDEX;
+		
+		activateFingerprint(currentFingerPosition);
+	}
+	
+	@Override
+	public void preReportNegativeTaskResponse()
+	{
+		txtPassword.clear();
+		disableUiControls(false);
+		
+		if(tabLoginByPassword.isSelected()) txtUsernameLoginByPassword.requestFocus();
+		else if(tabLoginByFingerprint.isSelected()) txtUsernameLoginByFingerprint.requestFocus();
 	}
 	
 	@Override
@@ -265,14 +264,10 @@ public class LoginPaneFxController extends BodyFxControllerBase implements Persi
 		{
 			disableUiControls(true);
 			
-			String username = txtUsernameLoginByPassword.getText().trim();
-			String password = txtPassword.getText().trim();
-			
-			Map<String, Object> uiDataMap = new HashMap<>();
-			uiDataMap.put("username", username);
-			uiDataMap.put("password", password);
-			
-			if(!isDetached()) Context.getWorkflowManager().submitUserTask(uiDataMap);
+			loginMethod = LoginMethod.USERNAME_AND_PASSWORD;
+			username = txtUsernameLoginByPassword.getText().trim();
+			password = txtPassword.getText().trim();
+			continueWorkflow();
 		}
 		else if(tabLoginByFingerprint.isSelected())
 		{
@@ -288,20 +283,17 @@ public class LoginPaneFxController extends BodyFxControllerBase implements Persi
 					captureFingerprintDialogFxController.setFingerPosition(currentFingerPosition);
 					captureFingerprintDialogFxController.showDialogAndWait();
 					
-					String fingerprint = captureFingerprintDialogFxController.getResult();
+					fingerprint = captureFingerprintDialogFxController.getResult();
 					
 					if(fingerprint != null)
 					{
 						disableUiControls(true);
 						
-						String username = txtUsernameLoginByFingerprint.getText().trim();
-						
-						Map<String, Object> uiDataMap = new HashMap<>();
-						uiDataMap.put("username", username);
-						uiDataMap.put("fingerprint", fingerprint);
-						uiDataMap.put("fingerPosition", currentFingerPosition.getPosition());
-						
-						if(!isDetached()) Context.getWorkflowManager().submitUserTask(uiDataMap);
+						loginMethod = LoginMethod.USERNAME_AND_FINGERPRINT;
+						username = txtUsernameLoginByFingerprint.getText().trim();
+						password = txtPassword.getText().trim();
+						fingerPosition =  currentFingerPosition.getPosition();
+						continueWorkflow();
 					}
 					else captureFingerprintDialogFxController.stopCapturingFingerprint();
 				}

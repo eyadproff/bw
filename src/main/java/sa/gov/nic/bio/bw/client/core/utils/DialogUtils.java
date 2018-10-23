@@ -274,7 +274,6 @@ public class DialogUtils
 	{
 		URL fxmlResource = Thread.currentThread().getContextClassLoader().getResource(fxml);
 		FXMLLoader loader = new FXMLLoader(fxmlResource, resourceBundle);
-		loader.setClassLoader(Context.getFxClassLoader());
 		Dialog<ButtonType> dialog = loader.load();
 		
 		dialog.initOwner(ownerStage);

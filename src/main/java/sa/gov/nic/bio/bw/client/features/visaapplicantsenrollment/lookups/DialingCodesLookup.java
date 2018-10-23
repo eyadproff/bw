@@ -1,9 +1,10 @@
 package sa.gov.nic.bio.bw.client.features.visaapplicantsenrollment.lookups;
 
 import sa.gov.nic.bio.bw.client.core.Context;
+import sa.gov.nic.bio.bw.client.core.interfaces.AppLogger;
 import sa.gov.nic.bio.bw.client.features.visaapplicantsenrollment.utils.VisaApplicantsEnrollmentErrorCodes;
 import sa.gov.nic.bio.bw.client.features.visaapplicantsenrollment.webservice.CountryDialingCode;
-import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
+import sa.gov.nic.bio.commons.TaskResponse;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -12,18 +13,16 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-public class DialingCodesLookup implements Callable<ServiceResponse<Void>>
+public class DialingCodesLookup implements Callable<TaskResponse<Void>>, AppLogger
 {
 	public static final String KEY = "lookups.dialingCodes";
-	private static final Logger LOGGER = Logger.getLogger(DialingCodesLookup.class.getName());
 	private static final String DIALING_CODES_FILE =
 								"sa/gov/nic/bio/bw/client/features/visaapplicantsenrollment/data/dialing_codes.csv";
 	
 	@Override
-	public ServiceResponse<Void> call()
+	public TaskResponse<Void> call()
 	{
 		@SuppressWarnings("unchecked")
 		List<CountryDialingCode> dialingCodes = (List<CountryDialingCode>) Context.getUserSession().getAttribute(KEY);
@@ -58,13 +57,13 @@ public class DialingCodesLookup implements Callable<ServiceResponse<Void>>
 			{
 				String errorCode = VisaApplicantsEnrollmentErrorCodes.C010_00002.getCode();
 				String[] errorDetails = {"failed to read the dialing codes from the file!"};
-				return ServiceResponse.failure(errorCode, e, errorDetails);
+				return TaskResponse.failure(errorCode, e, errorDetails);
 			}
 			
 			Context.getUserSession().setAttribute(KEY, dialingCodes);
 			LOGGER.info(KEY + " = " + dialingCodes);
 		}
 		
-		return ServiceResponse.success(null);
+		return TaskResponse.success(null);
 	}
 }

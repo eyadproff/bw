@@ -5,7 +5,6 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.image.Image?>
@@ -22,11 +21,11 @@
             </StackPane>
             <GridPane alignment="CENTER" hgap="20" vgap="5" styleClass="userBox">
                 <Label fx:id="lblUsername" text="%label.username" style="-fx-font-weight: bold;" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
-                <Label fx:id="txtUsername" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+                <Label fx:id="txtUsername" text="-" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
                 <Label fx:id="lblOperatorName" text="%label.operatorName" style="-fx-font-weight: bold;" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
-                <Label fx:id="txtOperatorName" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                <Label fx:id="txtOperatorName" text="-" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
                 <Label fx:id="lblLocation" text="%label.location" style="-fx-font-weight: bold;" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
-                <Label fx:id="txtLocation" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+                <Label fx:id="txtLocation" text="-" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
             </GridPane>
         </HBox>
     </left>

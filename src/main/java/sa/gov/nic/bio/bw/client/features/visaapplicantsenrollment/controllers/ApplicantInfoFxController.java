@@ -21,20 +21,19 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
-import sa.gov.nic.bio.biokit.beans.ServiceResponse;
 import sa.gov.nic.bio.biokit.exceptions.NotConnectedException;
 import sa.gov.nic.bio.biokit.exceptions.TimeoutException;
 import sa.gov.nic.bio.biokit.passport.beans.CapturePassportResponse;
 import sa.gov.nic.bio.biokit.websocket.beans.MRZData;
 import sa.gov.nic.bio.bw.client.core.Context;
-import sa.gov.nic.bio.bw.client.core.controllers.DevicesRunnerGadgetPaneFxController;
 import sa.gov.nic.bio.bw.client.core.beans.HideableItem;
 import sa.gov.nic.bio.bw.client.core.beans.ItemWithText;
 import sa.gov.nic.bio.bw.client.core.beans.UserSession;
+import sa.gov.nic.bio.bw.client.core.controllers.DevicesRunnerGadgetPaneFxController;
+import sa.gov.nic.bio.bw.client.core.controllers.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.client.core.utils.DialogUtils;
 import sa.gov.nic.bio.bw.client.core.utils.GuiLanguage;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
-import sa.gov.nic.bio.bw.client.core.controllers.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.client.core.workflow.Output;
 import sa.gov.nic.bio.bw.client.features.commons.beans.GenderType;
 import sa.gov.nic.bio.bw.client.features.commons.lookups.CountriesLookup;
@@ -46,6 +45,7 @@ import sa.gov.nic.bio.bw.client.features.visaapplicantsenrollment.utils.VisaAppl
 import sa.gov.nic.bio.bw.client.features.visaapplicantsenrollment.webservice.CountryDialingCode;
 import sa.gov.nic.bio.bw.client.features.visaapplicantsenrollment.webservice.PassportTypeBean;
 import sa.gov.nic.bio.bw.client.features.visaapplicantsenrollment.webservice.VisaTypeBean;
+import sa.gov.nic.bio.commons.TaskResponse;
 
 import java.net.URL;
 import java.text.Normalizer;
@@ -56,11 +56,9 @@ import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.function.Predicate;
-import java.util.logging.Logger;
 
 public class ApplicantInfoFxController extends WizardStepFxControllerBase
 {
-	private static final Logger LOGGER = Logger.getLogger(ApplicantInfoFxController.class.getName());
 	private static final String PASSPORT_ICON_FILE =
 								"sa/gov/nic/bio/bw/client/features/visaapplicantsenrollment/images/passport-icon.png";
 	
@@ -521,15 +519,15 @@ public class ApplicantInfoFxController extends WizardStepFxControllerBase
 			
 			btnStart.setOnAction(event ->
 			{
-				Task<ServiceResponse<CapturePassportResponse>> passportScanningTask =
-						new Task<ServiceResponse<CapturePassportResponse>>()
+				Task<TaskResponse<CapturePassportResponse>> passportScanningTask =
+						new Task<TaskResponse<CapturePassportResponse>>()
 				{
 					@Override
-					protected ServiceResponse<CapturePassportResponse> call() throws Exception
+					protected TaskResponse<CapturePassportResponse> call() throws Exception
 					{
 						String passportScannerDeviceName =
 													deviceManagerGadgetPaneController.getPassportScannerDeviceName();
-						Future<ServiceResponse<CapturePassportResponse>> future = Context.getBioKitManager()
+						Future<TaskResponse<CapturePassportResponse>> future = Context.getBioKitManager()
 								.getPassportScannerService().capture(passportScannerDeviceName);
 						
 						return future.get();
@@ -539,11 +537,11 @@ public class ApplicantInfoFxController extends WizardStepFxControllerBase
 				{
 				    if(dialogStage.isShowing())
 				    {
-				        ServiceResponse<CapturePassportResponse> serviceResponse = passportScanningTask.getValue();
+				        TaskResponse<CapturePassportResponse> taskResponse = passportScanningTask.getValue();
 				
-				        if(serviceResponse.isSuccess())
+				        if(taskResponse.isSuccess())
 				        {
-				            CapturePassportResponse result = serviceResponse.getResult();
+				            CapturePassportResponse result = taskResponse.getResult();
 				
 				            int returnCode = result.getReturnCode();
 				
@@ -631,8 +629,8 @@ public class ApplicantInfoFxController extends WizardStepFxControllerBase
 				            dialogStage.close();
 				            String errorCode = VisaApplicantsEnrollmentErrorCodes.C010_00003.getCode();
 				            String[] errorDetails = {"failed to scan the passport!",
-				                    "serviceResponse errorCode = " + serviceResponse.getErrorCode()};
-				            Context.getCoreFxController().showErrorDialog(errorCode, serviceResponse.getException(),
+				                    "taskResponse errorCode = " + taskResponse.getErrorCode()};
+				            Context.getCoreFxController().showErrorDialog(errorCode, taskResponse.getException(),
 				                                                          errorDetails);
 				        }
 				    }

@@ -20,7 +20,7 @@ import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.workflow.Workflow;
 import sa.gov.nic.bio.bw.client.features.commons.lookups.SamisIdTypesLookup;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.SamisIdType;
-import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
+import sa.gov.nic.bio.commons.TaskResponse;
 
 import java.util.HashMap;
 import java.util.List;
@@ -113,11 +113,11 @@ public class CancelCriminalPaneFxController extends BodyFxControllerBase
 	{
 		if(!newForm)
 		{
-			ServiceResponse<?> serviceResponse = (ServiceResponse<?>) uiInputData.get(Workflow.KEY_WEBSERVICE_RESPONSE);
+			TaskResponse<?> taskResponse = (TaskResponse<?>) uiInputData.get(Workflow.KEY_WORKFLOW_TASK_NEGATIVE_RESPONSE);
 			
 			disableUiControls(false);
 			
-			if(serviceResponse.isSuccess())
+			if(taskResponse.isSuccess())
 			{
 				String personId = txtPersonId.getText().trim();
 				SamisIdType samisIdType = cboPersonIdType.getValue();
@@ -125,7 +125,7 @@ public class CancelCriminalPaneFxController extends BodyFxControllerBase
 				String inquiryId = txtInquiryId.getText().trim();
 				String criminalId2 = txtCriminalId2.getText().trim();
 				
-				Boolean resultBean = (Boolean) serviceResponse.getResult();
+				Boolean resultBean = (Boolean) taskResponse.getResult();
 				if(resultBean != null && resultBean)
 				{
 					if(tabByPersonId.isSelected())
@@ -161,8 +161,8 @@ public class CancelCriminalPaneFxController extends BodyFxControllerBase
 					}
 				}
 			}
-			else reportNegativeResponse(serviceResponse.getErrorCode(), serviceResponse.getException(),
-			                            serviceResponse.getErrorDetails());
+			else reportNegativeTaskResponse(taskResponse.getErrorCode(), taskResponse.getException(),
+			                                taskResponse.getErrorDetails());
 			
 			txtPersonId.requestFocus();
 		}

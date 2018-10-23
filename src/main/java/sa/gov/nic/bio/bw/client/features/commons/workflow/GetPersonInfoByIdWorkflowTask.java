@@ -4,10 +4,11 @@ import retrofit2.Call;
 import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.workflow.Input;
 import sa.gov.nic.bio.bw.client.core.workflow.Output;
+import sa.gov.nic.bio.bw.client.core.workflow.Signal;
 import sa.gov.nic.bio.bw.client.core.workflow.WorkflowTask;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.PersonInfo;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.PersonInfoByIdAPI;
-import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
+import sa.gov.nic.bio.commons.TaskResponse;
 
 public class GetPersonInfoByIdWorkflowTask implements WorkflowTask
 {
@@ -15,14 +16,13 @@ public class GetPersonInfoByIdWorkflowTask implements WorkflowTask
 	@Output private PersonInfo personInfo;
 	
 	@Override
-	public ServiceResponse<?> execute()
+	public void execute() throws Signal
 	{
 		PersonInfoByIdAPI personInfoByIdAPI = Context.getWebserviceManager().getApi(PersonInfoByIdAPI.class);
 		Call<PersonInfo> apiCall = personInfoByIdAPI.getPersonInfoById(personId, 0);
-		ServiceResponse<PersonInfo> serviceResponse = Context.getWebserviceManager().executeApi(apiCall);
+		TaskResponse<PersonInfo> taskResponse = Context.getWebserviceManager().executeApi(apiCall);
+		resetWorkflowStepIfNegativeOrNullTaskResponse(taskResponse);
 		
-		if(serviceResponse.isSuccess()) personInfo = serviceResponse.getResult();
-		
-		return serviceResponse;
+		personInfo = taskResponse.getResult();
 	}
 }

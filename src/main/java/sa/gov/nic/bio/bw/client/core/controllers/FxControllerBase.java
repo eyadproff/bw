@@ -3,6 +3,7 @@ package sa.gov.nic.bio.bw.client.core.controllers;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import sa.gov.nic.bio.bw.client.core.interfaces.AppLogger;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 
 import java.net.URL;
@@ -14,7 +15,7 @@ import java.util.Set;
  *
  * @author Fouad Almalki
  */
-public abstract class FxControllerBase
+public abstract class FxControllerBase implements AppLogger
 {
 	/*
 	 *	location and resources are injected automatically by JavaFX.

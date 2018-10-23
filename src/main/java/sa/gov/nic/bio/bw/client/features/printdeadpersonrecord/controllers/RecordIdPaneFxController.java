@@ -11,7 +11,7 @@ import sa.gov.nic.bio.bw.client.core.controllers.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.client.core.workflow.Output;
 import sa.gov.nic.bio.bw.client.core.workflow.Workflow;
 import sa.gov.nic.bio.bw.client.features.printdeadpersonrecord.webservice.DeadPersonRecord;
-import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
+import sa.gov.nic.bio.commons.TaskResponse;
 
 import java.net.URL;
 import java.util.HashMap;
@@ -62,17 +62,16 @@ public class RecordIdPaneFxController extends WizardStepFxControllerBase
 			piProgress.setVisible(false);
 			txtRecordId.setDisable(false);
 			
-			@SuppressWarnings("unchecked")
-			ServiceResponse<DeadPersonRecord> serviceResponse =
-								(ServiceResponse<DeadPersonRecord>) uiInputData.get(Workflow.KEY_WEBSERVICE_RESPONSE);
+			@SuppressWarnings("unchecked") TaskResponse<DeadPersonRecord> taskResponse =
+								(TaskResponse<DeadPersonRecord>) uiInputData.get(Workflow.KEY_WORKFLOW_TASK_NEGATIVE_RESPONSE);
 			
-			if(serviceResponse.isSuccess())
+			if(taskResponse.isSuccess())
 			{
-				deadPersonRecord = serviceResponse.getResult();
+				deadPersonRecord = taskResponse.getResult();
 				goNext();
 			}
-			else reportNegativeResponse(serviceResponse.getErrorCode(), serviceResponse.getException(),
-				                        serviceResponse.getErrorDetails());
+			else reportNegativeTaskResponse(taskResponse.getErrorCode(), taskResponse.getException(),
+			                                taskResponse.getErrorDetails());
 		}
 	}
 	

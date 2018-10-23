@@ -4,11 +4,12 @@ import retrofit2.Call;
 import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.workflow.Input;
 import sa.gov.nic.bio.bw.client.core.workflow.Output;
+import sa.gov.nic.bio.bw.client.core.workflow.Signal;
 import sa.gov.nic.bio.bw.client.core.workflow.WorkflowTask;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.PersonInfo;
 import sa.gov.nic.bio.bw.client.features.faceverification.webservice.FaceMatchingResponse;
 import sa.gov.nic.bio.bw.client.features.faceverification.webservice.FaceVerificationAPI;
-import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
+import sa.gov.nic.bio.commons.TaskResponse;
 
 public class FaceVerificationWorkflowTask implements WorkflowTask
 {
@@ -17,26 +18,24 @@ public class FaceVerificationWorkflowTask implements WorkflowTask
 	@Output private FaceMatchingResponse faceMatchingResponse;
 	
 	@Override
-	public ServiceResponse<?> execute()
+	public void execute() throws Signal
 	{
 		FaceVerificationAPI faceVerificationAPI = Context.getWebserviceManager().getApi(FaceVerificationAPI.class);
 		Call<PersonInfo> apiCall = faceVerificationAPI.verifyFaceImage(personId, faceImageBase64);
-		ServiceResponse<PersonInfo> serviceResponse = Context.getWebserviceManager().executeApi(apiCall);
+		TaskResponse<PersonInfo> taskResponse = Context.getWebserviceManager().executeApi(apiCall);
 		
-		if(serviceResponse.isSuccess())
+		if(taskResponse.isSuccess())
 		{
-			PersonInfo personInfo = serviceResponse.getResult();
+			PersonInfo personInfo = taskResponse.getResult();
 			faceMatchingResponse = new FaceMatchingResponse(true, personInfo);
-			return serviceResponse;
 		}
 		else
 		{
-			if("B003-0021".equals(serviceResponse.getErrorCode())) // not matched
+			if("B003-0021".equals(taskResponse.getErrorCode())) // not matched
 			{
 				faceMatchingResponse = new FaceMatchingResponse(false, null);
-				return ServiceResponse.success();
 			}
-			else return serviceResponse;
+			else resetWorkflowStepIfNegativeOrNullTaskResponse(taskResponse);
 		}
 	}
 }

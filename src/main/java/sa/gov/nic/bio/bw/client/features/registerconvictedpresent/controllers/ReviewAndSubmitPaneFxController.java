@@ -38,7 +38,7 @@ import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.Cri
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.JudgementInfo;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.workflow.ConvictedReportResponse;
 import sa.gov.nic.bio.bw.client.login.webservice.UserInfo;
-import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
+import sa.gov.nic.bio.commons.TaskResponse;
 
 import java.io.ByteArrayInputStream;
 import java.net.URL;
@@ -405,11 +405,11 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 			GuiUtils.showNode(btnStartOver, true);
 			GuiUtils.showNode(btnSubmit, true);
 			
-			@SuppressWarnings("unchecked") ServiceResponse<ConvictedReportResponse> serviceResponse =
-						(ServiceResponse<ConvictedReportResponse>) uiInputData.get(Workflow.KEY_WEBSERVICE_RESPONSE);
-			if(serviceResponse.isSuccess())
+			@SuppressWarnings("unchecked") TaskResponse<ConvictedReportResponse> taskResponse =
+						(TaskResponse<ConvictedReportResponse>) uiInputData.get(Workflow.KEY_WORKFLOW_TASK_NEGATIVE_RESPONSE);
+			if(taskResponse.isSuccess())
 			{
-				ConvictedReportResponse result = serviceResponse.getResult();
+				ConvictedReportResponse result = taskResponse.getResult();
 				if(result != null)
 				{
 					uiInputData.put(ShowReportPaneFxController.KEY_CONVICTED_REPORT_NUMBER, result.getReportNumber());
@@ -420,11 +420,11 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 				{
 					String errorCode = RegisterConvictedPresentErrorCodes.C007_00003.getCode();
 					String[] errorDetails = {"result is null!"};
-					reportNegativeResponse(errorCode, null, errorDetails);
+					reportNegativeTaskResponse(errorCode, null, errorDetails);
 				}
 			}
-			else reportNegativeResponse(serviceResponse.getErrorCode(), serviceResponse.getException(),
-				                        serviceResponse.getErrorDetails());
+			else reportNegativeTaskResponse(taskResponse.getErrorCode(), taskResponse.getException(),
+			                                taskResponse.getErrorDetails());
 		}
 	}
 	

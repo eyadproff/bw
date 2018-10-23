@@ -1,5 +1,6 @@
 package sa.gov.nic.bio.bw.client.home;
 
+import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.interfaces.FormRenderer;
 import sa.gov.nic.bio.bw.client.core.workflow.Signal;
 import sa.gov.nic.bio.bw.client.core.workflow.SignalType;
@@ -28,113 +29,67 @@ public class HomeWorkflow extends WorkflowBase<LoginBean, Void>
 	{
 		while(true)
 		{
-			renderUi(HomePaneFxController.class); // render home page or show error
-			
 			try
 			{
-				waitForUserInput(); // user selects a menu or logout
+				renderUiAndWaitForUserInput(HomePaneFxController.class); // render home page on first load only
 			}
 			catch(Signal signal)
 			{
-				handleSignal(signal, uiInputData);
-			}
-		}
-	}
-	
-	private void handleSignal(Signal signal, Map<String, Object> uiInputData) throws Signal
-	{
-		outerLoop: while(true)
-		{
-			Map<String, Object> payload = signal.getPayload();
-			SignalType signalType = signal.getSignalType();
-			
-			switch(signalType)
-			{
-				case LOGOUT:
+				SignalType signalType = signal.getSignalType();
+				
+				outerLoop: while(true) switch(signalType)
 				{
-					throw signal;
-				}
-				case MENU_NAVIGATION:
-				{
-					Class<?> menuWorkflowClass = (Class<?>) payload.get(KEY_MENU_WORKFLOW_CLASS);
-					
-					Workflow<?, ?> subWorkflow;
-					try
+					default: throw signal;
+					case MENU_NAVIGATION:
 					{
-						Constructor<?> declaredConstructor = menuWorkflowClass
-								.getDeclaredConstructor(AtomicReference.class, BlockingQueue.class);
-						subWorkflow = (Workflow<?, ?>) declaredConstructor.newInstance(formRenderer, userTasks);
-					}
-					catch(Exception e)
-					{
-						String errorCode = HomeErrorCodes.C004_00003.getCode();
-						String[] errorDetails = {"Failed to load the menu workflow class!",
-								"menuWorkflowClass = " +
-										(menuWorkflowClass == null ? null : menuWorkflowClass.getName())};
+						Map<String, Object> payload = signal.getPayload();
+						Class<?> menuWorkflowClass = (Class<?>) payload.get(KEY_MENU_WORKFLOW_CLASS);
 						
-						uiInputData.put(KEY_ERROR_CODE, errorCode);
-						uiInputData.put(KEY_ERROR_DETAILS, errorDetails);
-						uiInputData.put(KEY_EXCEPTION, e);
+						Workflow<?, ?> subWorkflow;
+						try
+						{
+							Constructor<?> declaredConstructor = menuWorkflowClass
+												.getDeclaredConstructor(AtomicReference.class, BlockingQueue.class);
+							subWorkflow = (Workflow<?, ?>) declaredConstructor.newInstance(formRenderer, userTasks);
+						}
+						catch(Exception e)
+						{
+							String errorCode = HomeErrorCodes.C004_00003.getCode();
+							String[] errorDetails = {"Failed to load the menu workflow class!",
+													 "menuWorkflowClass = " +
+													(menuWorkflowClass == null ? null : menuWorkflowClass.getName())};
+							
+							Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails);
+							break outerLoop;
+						}
 						
+						try
+						{
+							subWorkflow.onProcess(null);
+						}
+						catch(Signal subWorkflowSignal)
+						{
+							signal = subWorkflowSignal;
+							signalType = subWorkflowSignal.getSignalType();
+							continue outerLoop;
+						}
+						catch(Throwable t)
+						{
+							String errorCode = HomeErrorCodes.C004_00004.getCode();
+							String[] errorDetails = {"The subWorkflow throws uncaught exception!",
+													 "subWorkflow type = " + subWorkflow.getClass().getName()};
+							Context.getCoreFxController().showErrorDialog(errorCode, t, errorDetails);
+							break outerLoop;
+						}
+						
+						// shouldn't reach here
+						String errorCode = HomeErrorCodes.C004_00005.getCode();
+						String[] errorDetails = {"The subWorkflow returns normally without a signal!",
+															"subWorkflow type = " + subWorkflow.getClass().getName()};
+						
+						Context.getCoreFxController().showErrorDialog(errorCode, null, errorDetails);
 						break outerLoop;
 					}
-					
-					try
-					{
-						subWorkflow.onProcess(null);
-					}
-					catch(Signal subWorkflowSignal)
-					{
-						signal = subWorkflowSignal;
-						continue outerLoop;
-					}
-					catch(Throwable t)
-					{
-						String errorCode = HomeErrorCodes.C004_00004.getCode();
-						String[] errorDetails = {"The subWorkflow throws uncaught exception!",
-								"subWorkflow type = " + subWorkflow.getClass().getName()};
-						
-						uiInputData.put(KEY_ERROR_CODE, errorCode);
-						uiInputData.put(KEY_ERROR_DETAILS, errorDetails);
-						uiInputData.put(KEY_EXCEPTION, t);
-						
-						break outerLoop;
-					}
-					
-					// shouldn't reach here
-					String errorCode = HomeErrorCodes.C004_00005.getCode();
-					String[] errorDetails = {"The subWorkflow returns normally without a signal!",
-											 "subWorkflow type = " + subWorkflow.getClass().getName()};
-					
-					uiInputData.put(KEY_ERROR_CODE, errorCode);
-					uiInputData.put(KEY_ERROR_DETAILS, errorDetails);
-					uiInputData.put(KEY_EXCEPTION, null);
-					
-					break outerLoop;
-				}
-				case INVALID_STATE:
-				{
-					String errorCode = HomeErrorCodes.C004_00006.getCode();
-					
-					uiInputData.put(KEY_ERROR_CODE, errorCode);
-					if(payload != null)
-					{
-						uiInputData.put(KEY_ERROR_DETAILS, payload.get(KEY_ERROR_DETAILS));
-						uiInputData.put(KEY_EXCEPTION, payload.get(KEY_EXCEPTION));
-					}
-					
-					break outerLoop;
-				}
-				default:
-				{
-					String errorCode = HomeErrorCodes.C004_00007.getCode();
-					String[] errorDetails = {"Unknown signal type!", "signalType = " + signalType};
-					
-					uiInputData.put(KEY_ERROR_CODE, errorCode);
-					uiInputData.put(KEY_ERROR_DETAILS, errorDetails);
-					uiInputData.put(KEY_EXCEPTION, null);
-					
-					break outerLoop;
 				}
 			}
 		}

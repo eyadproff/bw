@@ -2,21 +2,20 @@ package sa.gov.nic.bio.bw.client.features.visaapplicantsenrollment.lookups;
 
 import retrofit2.Call;
 import sa.gov.nic.bio.bw.client.core.Context;
+import sa.gov.nic.bio.bw.client.core.interfaces.AppLogger;
 import sa.gov.nic.bio.bw.client.features.visaapplicantsenrollment.webservice.LookupAPI;
 import sa.gov.nic.bio.bw.client.features.visaapplicantsenrollment.webservice.PassportTypeBean;
-import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
+import sa.gov.nic.bio.commons.TaskResponse;
 
 import java.util.List;
 import java.util.concurrent.Callable;
-import java.util.logging.Logger;
 
-public class PassportTypesLookup implements Callable<ServiceResponse<Void>>
+public class PassportTypesLookup implements Callable<TaskResponse<Void>>, AppLogger
 {
 	public static final String KEY = "lookups.passportTypes";
-	private static final Logger LOGGER = Logger.getLogger(PassportTypesLookup.class.getName());
 	
 	@Override
-	public ServiceResponse<Void> call()
+	public TaskResponse<Void> call()
 	{
 		@SuppressWarnings("unchecked")
 		List<PassportTypeBean> passportTypes = (List<PassportTypeBean>) Context.getUserSession().getAttribute(KEY);
@@ -25,18 +24,18 @@ public class PassportTypesLookup implements Callable<ServiceResponse<Void>>
 		{
 			LookupAPI lookupAPI = Context.getWebserviceManager().getApi(LookupAPI.class);
 			Call<List<PassportTypeBean>> passportTypesCall = lookupAPI.lookupPassportTypes();
-			ServiceResponse<List<PassportTypeBean>> passportTypesResponse = Context.getWebserviceManager()
+			TaskResponse<List<PassportTypeBean>> passportTypesResponse = Context.getWebserviceManager()
 																				   .executeApi(passportTypesCall);
 			
 			if(passportTypesResponse.isSuccess()) passportTypes = passportTypesResponse.getResult();
-			else return ServiceResponse.failure(passportTypesResponse.getErrorCode(),
-			                                    passportTypesResponse.getException(),
-			                                    passportTypesResponse.getErrorDetails());
+			else return TaskResponse.failure(passportTypesResponse.getErrorCode(),
+			                                 passportTypesResponse.getException(),
+			                                 passportTypesResponse.getErrorDetails());
 			
 			Context.getUserSession().setAttribute(KEY, passportTypes);
 			LOGGER.info(KEY + " = " + passportTypes);
 		}
 		
-		return ServiceResponse.success(null);
+		return TaskResponse.success(null);
 	}
 }

@@ -6,6 +6,7 @@ import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
 import org.controlsfx.glyphfont.FontAwesome;
 import org.controlsfx.glyphfont.Glyph;
+import sa.gov.nic.bio.bw.client.core.interfaces.AppLogger;
 import sa.gov.nic.bio.bw.client.core.webservice.NicHijriCalendarData;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.Name;
 
@@ -46,13 +47,11 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-public final class AppUtils
+public final class AppUtils implements AppLogger
 {
-	private static final Logger LOGGER = Logger.getLogger(AppUtils.class.getName());
 	private static final String FONT_AWESOME_FILE = "sa/gov/nic/bio/bw/client/core/fonts/" +
 													"fontawesome-webfont-4.7.0.2016.ttf";
 	private static final DateTimeFormatter DATE_TIME_FORMATTER =

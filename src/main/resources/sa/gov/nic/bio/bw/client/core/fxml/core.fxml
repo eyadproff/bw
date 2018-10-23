@@ -33,8 +33,10 @@
                         <content>
                             <StackPane>
                                 <BorderPane fx:id="bodyPane">
-                                    <!-- default place holder -->
-                                    <ProgressIndicator maxHeight="25.0" maxWidth="25.0"/>
+                                    <center>
+                                        <!-- default place holder -->
+                                        <ProgressIndicator maxHeight="25.0" maxWidth="25.0"/>
+                                    </center>
                                 </BorderPane>
                                 <ProgressIndicator fx:id="piWizardTransition" visible="false" maxHeight="25.0" maxWidth="25.0"/>
                                 <StackPane fx:id="menuTransitionOverlayPane" styleClass="background-overlay-white" visible="false">

@@ -4,9 +4,10 @@ import javafx.scene.image.Image;
 import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.client.core.workflow.Input;
 import sa.gov.nic.bio.bw.client.core.workflow.Output;
+import sa.gov.nic.bio.bw.client.core.workflow.Signal;
 import sa.gov.nic.bio.bw.client.core.workflow.WorkflowTask;
 import sa.gov.nic.bio.bw.client.features.fingerprintcardidentification.utils.FingerprintCardIdentificationErrorCodes;
-import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
+import sa.gov.nic.bio.commons.TaskResponse;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -19,7 +20,7 @@ public class ConvertFingerprintImagesToBase64WorkflowTask implements WorkflowTas
 	@Output private Map<Integer, String> fingerprintBase64Images;
 	
 	@Override
-	public ServiceResponse<?> execute()
+	public void execute() throws Signal
 	{
 		fingerprintBase64Images = new HashMap<>();
 		
@@ -33,10 +34,8 @@ public class ConvertFingerprintImagesToBase64WorkflowTask implements WorkflowTas
 			{
 				String errorCode = FingerprintCardIdentificationErrorCodes.C013_00002.getCode();
 				String[] errorDetails = {"failed to convert images to base64 string!"};
-				return ServiceResponse.failure(errorCode, e, errorDetails);
+				resetWorkflowStepIfNegativeOrNullTaskResponse(TaskResponse.failure(errorCode, e, errorDetails));
 			}
 		}
-		
-		return ServiceResponse.success();
 	}
 }

@@ -33,7 +33,7 @@ import sa.gov.nic.bio.bw.client.features.commons.webservice.SamisIdType;
 import sa.gov.nic.bio.bw.client.features.fingerprintcardidentification.beans.FingerprintCardIdentificationRecordReport;
 import sa.gov.nic.bio.bw.client.features.fingerprintcardidentification.tasks.BuildFingerprintCardIdentificationRecordReportTask;
 import sa.gov.nic.bio.bw.client.features.fingerprintcardidentification.utils.FingerprintCardIdentificationErrorCodes;
-import sa.gov.nic.bio.bw.client.features.fingerprintcardidentification.workflow.FingerprintInquiryStatusCheckerWorkflowTask.Status;
+import sa.gov.nic.bio.bw.client.features.commons.workflow.FingerprintInquiryStatusCheckerWorkflowTask.Status;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;

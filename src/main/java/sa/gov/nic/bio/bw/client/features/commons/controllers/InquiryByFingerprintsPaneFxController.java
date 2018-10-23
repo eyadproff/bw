@@ -14,8 +14,8 @@ import sa.gov.nic.bio.bw.client.core.controllers.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.client.core.workflow.Input;
 import sa.gov.nic.bio.bw.client.core.workflow.Workflow;
 import sa.gov.nic.bio.bw.client.features.fingerprintcardidentification.utils.FingerprintCardIdentificationErrorCodes;
-import sa.gov.nic.bio.bw.client.features.fingerprintcardidentification.workflow.FingerprintInquiryStatusCheckerWorkflowTask.Status;
-import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
+import sa.gov.nic.bio.bw.client.features.commons.workflow.FingerprintInquiryStatusCheckerWorkflowTask.Status;
+import sa.gov.nic.bio.commons.TaskResponse;
 
 import java.net.URL;
 import java.util.Map;
@@ -102,11 +102,10 @@ public class InquiryByFingerprintsPaneFxController extends WizardStepFxControlle
 		}
 		else
 		{
-			@SuppressWarnings("unchecked")
-			ServiceResponse<Integer> serviceResponse = (ServiceResponse<Integer>)
-																uiInputData.get(Workflow.KEY_WEBSERVICE_RESPONSE);
+			@SuppressWarnings("unchecked") TaskResponse<Integer> taskResponse = (TaskResponse<Integer>)
+																uiInputData.get(Workflow.KEY_WORKFLOW_TASK_NEGATIVE_RESPONSE);
 			
-			if(serviceResponse.isSuccess())
+			if(taskResponse.isSuccess())
 			{
 				if(status == null)
 				{
@@ -114,7 +113,7 @@ public class InquiryByFingerprintsPaneFxController extends WizardStepFxControlle
 					
 					String errorCode = FingerprintCardIdentificationErrorCodes.C013_00011.getCode();
 					String[] errorDetails = {"The fingerprint inquiry status is not set!"};
-					reportNegativeResponse(errorCode, null, errorDetails);
+					reportNegativeTaskResponse(errorCode, null, errorDetails);
 					return;
 				}
 				
@@ -155,8 +154,8 @@ public class InquiryByFingerprintsPaneFxController extends WizardStepFxControlle
 			else
 			{
 				showControlsOnError();
-				reportNegativeResponse(serviceResponse.getErrorCode(), serviceResponse.getException(),
-				                       serviceResponse.getErrorDetails());
+				reportNegativeTaskResponse(taskResponse.getErrorCode(), taskResponse.getException(),
+				                           taskResponse.getErrorDetails());
 			}
 		}
 	}

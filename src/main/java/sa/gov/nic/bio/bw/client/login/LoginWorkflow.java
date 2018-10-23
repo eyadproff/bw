@@ -2,12 +2,21 @@ package sa.gov.nic.bio.bw.client.login;
 
 import sa.gov.nic.bio.bw.client.core.interfaces.FormRenderer;
 import sa.gov.nic.bio.bw.client.core.workflow.Signal;
-import sa.gov.nic.bio.bw.client.core.workflow.WorkflowBase;
+import sa.gov.nic.bio.bw.client.core.workflow.SignalType;
+import sa.gov.nic.bio.bw.client.core.workflow.SinglePageWorkflowBase;
 import sa.gov.nic.bio.bw.client.login.controllers.LoginPaneFxController;
+import sa.gov.nic.bio.bw.client.login.controllers.LoginPaneFxController.LoginMethod;
 import sa.gov.nic.bio.bw.client.login.webservice.LoginBean;
-import sa.gov.nic.bio.bw.client.login.workflow.LoginService;
-import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
+import sa.gov.nic.bio.bw.client.login.workflow.CheckForNewUpdatesWorkflowTask;
+import sa.gov.nic.bio.bw.client.login.workflow.LoginByUsernameAndFingerprintWorkflowTask;
+import sa.gov.nic.bio.bw.client.login.workflow.LoginByUsernameAndPasswordWorkflowTask;
+import sa.gov.nic.bio.bw.client.login.workflow.MenuRolesLookupWorkflowTask;
+import sa.gov.nic.bio.bw.client.login.workflow.PrepareHomeBeanWorkflowTask;
+import sa.gov.nic.bio.bw.client.login.workflow.PrepareUserMenusWorkflowTask;
+import sa.gov.nic.bio.bw.client.login.workflow.ScheduleRefreshTokenWorkflowTask;
+import sa.gov.nic.bio.bw.client.login.workflow.UserSessionCreationWorkflowTask;
 
+import java.util.Arrays;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.atomic.AtomicReference;
@@ -17,7 +26,7 @@ import java.util.concurrent.atomic.AtomicReference;
  *
  * @author Fouad Almalki
  */
-public class LoginWorkflow extends WorkflowBase<Void, LoginBean>
+public class LoginWorkflow extends SinglePageWorkflowBase
 {
 	public LoginWorkflow(AtomicReference<FormRenderer> formRenderer, BlockingQueue<Map<String, Object>> userTasks)
 	{
@@ -25,28 +34,58 @@ public class LoginWorkflow extends WorkflowBase<Void, LoginBean>
 	}
 	
 	@Override
-	public LoginBean onProcess(Void input) throws InterruptedException, Signal
+	public void onStep() throws InterruptedException, Signal
 	{
-		while(true)
+		renderUiAndWaitForUserInput(LoginPaneFxController.class);
+		
+		executeTask(CheckForNewUpdatesWorkflowTask.class);
+		
+		LoginBean loginBean;
+		LoginMethod loginMethod = getData(LoginPaneFxController.class, "loginMethod");
+		
+		switch(loginMethod)
 		{
-			renderUi(LoginPaneFxController.class);
-			waitForUserInput();
-			
-			String username = (String) uiInputData.get("username");
-			String password = (String) uiInputData.get("password");
-			
-			ServiceResponse<LoginBean> response;
-			
-			if(password != null) response = LoginService.execute(username, password);
-			else
+			default:
+			case USERNAME_AND_PASSWORD:
 			{
-				int fingerPosition = (int) uiInputData.get("fingerPosition");
-				String fingerprint = (String) uiInputData.get("fingerprint");
-				response = LoginService.execute(username, fingerPosition, fingerprint);
+				passData(LoginPaneFxController.class, LoginByUsernameAndPasswordWorkflowTask.class,
+				         "username");
+				passData(LoginPaneFxController.class, LoginByUsernameAndPasswordWorkflowTask.class,
+				         "password");
+				
+				executeTask(LoginByUsernameAndPasswordWorkflowTask.class);
+				loginBean = getData(LoginByUsernameAndPasswordWorkflowTask.class, "loginBean");
+				break;
 			}
-			
-			if(response.isSuccess()) return response.getResult();
-			else uiInputData.put(KEY_WEBSERVICE_RESPONSE, response);
+			case USERNAME_AND_FINGERPRINT:
+			{
+				passData(LoginPaneFxController.class, LoginByUsernameAndFingerprintWorkflowTask.class,
+				         "username");
+				passData(LoginPaneFxController.class, LoginByUsernameAndFingerprintWorkflowTask.class,
+				         "fingerPosition");
+				passData(LoginPaneFxController.class, LoginByUsernameAndFingerprintWorkflowTask.class,
+				         "fingerprint");
+				
+				executeTask(LoginByUsernameAndFingerprintWorkflowTask.class);
+				loginBean = getData(LoginByUsernameAndFingerprintWorkflowTask.class, "loginBean");
+				break;
+			}
 		}
+		
+		executeTask(UserSessionCreationWorkflowTask.class);
+		executeTask(MenuRolesLookupWorkflowTask.class);
+		
+		setData(PrepareHomeBeanWorkflowTask.class, "userInfo", loginBean.getUserInfo());
+		executeTask(PrepareHomeBeanWorkflowTask.class);
+		
+		passData(MenuRolesLookupWorkflowTask.class, PrepareUserMenusWorkflowTask.class, "menusRoles");
+		setData(PrepareUserMenusWorkflowTask.class, "userRoles",
+                Arrays.asList(loginBean.getUserInfo().getOriginalStringRoles()));
+		executeTask(PrepareUserMenusWorkflowTask.class);
+		
+		setData(ScheduleRefreshTokenWorkflowTask.class, "userToken", loginBean.getUserToken());
+		executeTask(ScheduleRefreshTokenWorkflowTask.class);
+		
+		throw new Signal(SignalType.SUCCESS_LOGIN);
 	}
 }

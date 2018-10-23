@@ -52,9 +52,10 @@ import javafx.util.StringConverter;
 import org.controlsfx.control.PopOver;
 import org.controlsfx.control.PopOver.ArrowLocation;
 import sa.gov.nic.bio.bw.client.core.Context;
-import sa.gov.nic.bio.bw.client.core.controllers.CoreFxController;
 import sa.gov.nic.bio.bw.client.core.beans.HideableItem;
 import sa.gov.nic.bio.bw.client.core.biokit.FingerPosition;
+import sa.gov.nic.bio.bw.client.core.controllers.CoreFxController;
+import sa.gov.nic.bio.bw.client.core.interfaces.AppLogger;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.CountryBean;
 import sa.gov.nic.bio.bw.client.login.tasks.LogoutTask;
 
@@ -79,11 +80,9 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Predicate;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
-public class GuiUtils
+public class GuiUtils implements AppLogger
 {
-	private static final Logger LOGGER = Logger.getLogger(GuiUtils.class.getName());
 	private static final DateTimeFormatter dateFormatterForParsing =
 							DateTimeFormatter.ofPattern("d/M/yyyy", AppConstants.Locales.SAUDI_EN_LOCALE);
 	private static final DateTimeFormatter dateFormatterForFormatting =

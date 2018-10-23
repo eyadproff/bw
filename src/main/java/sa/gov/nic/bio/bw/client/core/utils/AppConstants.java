@@ -18,7 +18,9 @@ public interface AppConstants
 	double STAGE_WIDTH = 800.0;
 	double STAGE_HEIGHT = 560.0;
 	
+	String APP_CODE = "BW";
 	Class<?> PREF_NODE_CLASS = AppEntryPoint.class;
+	String APP_BASE_PACKAGE = "sa.gov.nic.bio.bw.client";
 	String UI_LANGUAGE_PREF_NAME = "sa.gov.nic.bio.bw.ui.language";
 	String LOGIN_FINGERPRINT_POSITION_PREF_NAME = "sa.gov.nic.bio.bw.login.fingerprint";
 	ZoneId SAUDI_ZONE = ZoneId.of("GMT+3");

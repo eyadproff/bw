@@ -3,10 +3,11 @@ package sa.gov.nic.bio.bw.client.login.tasks;
 import javafx.concurrent.Task;
 import retrofit2.Call;
 import sa.gov.nic.bio.bw.client.core.Context;
+import sa.gov.nic.bio.bw.client.core.utils.AppConstants;
 import sa.gov.nic.bio.bw.client.login.webservice.IdentityAPI;
-import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
+import sa.gov.nic.bio.commons.TaskResponse;
 
-public class ChangePasswordTask extends Task<ServiceResponse<Boolean>>
+public class ChangePasswordTask extends Task<TaskResponse<Boolean>>
 {
 	private String username;
 	private String oldPassword;
@@ -20,10 +21,10 @@ public class ChangePasswordTask extends Task<ServiceResponse<Boolean>>
 	}
 	
 	@Override
-	protected ServiceResponse<Boolean> call()
+	protected TaskResponse<Boolean> call()
 	{
 		IdentityAPI identityAPI = Context.getWebserviceManager().getApi(IdentityAPI.class);
-		Call<Boolean> apiCall = identityAPI.changePassword(username, oldPassword, newPassword, "BW",
+		Call<Boolean> apiCall = identityAPI.changePassword(username, oldPassword, newPassword, AppConstants.APP_CODE,
 		                                                   "U"); // U = User?
 		return Context.getWebserviceManager().executeApi(apiCall);
 	}

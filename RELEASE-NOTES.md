@@ -11,12 +11,14 @@
 
 ---
 
-## v2018.09.5
+## v2018.10.1
 
 - ENH: improve the wizard slider to support unlimited number of items.
 - ENH: improve lookups across the features.
 - ENH: improve the workflow engine.
 - ENH: improve the menu navigation.
+- ENH: update biokit-library jar to v2018.09.1.
+- ENH: improve the login transition and eliminate the ui lagging.
 
 ---
 

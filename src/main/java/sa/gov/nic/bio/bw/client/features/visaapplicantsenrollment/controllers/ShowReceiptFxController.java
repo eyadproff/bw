@@ -106,7 +106,7 @@ public class ShowReceiptFxController extends WizardStepFxControllerBase
 				
 				String errorCode = VisaApplicantsEnrollmentErrorCodes.C010_00005.getCode();
 				String[] errorDetails = {"failed to generate the barcode for the number " + sRegistrationId};
-				reportNegativeResponse(errorCode, exception, errorDetails);
+				reportNegativeTaskResponse(errorCode, exception, errorDetails);
 			});
 			Context.getExecutorService().submit(generatingBarcodeTask);
 		}

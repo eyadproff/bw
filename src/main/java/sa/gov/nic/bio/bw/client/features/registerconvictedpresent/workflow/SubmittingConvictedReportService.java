@@ -6,11 +6,11 @@ import retrofit2.Call;
 import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.ConvictedReport;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.ConvictedReportAPI;
-import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
+import sa.gov.nic.bio.commons.TaskResponse;
 
 public class SubmittingConvictedReportService
 {
-	public static ServiceResponse<ConvictedReportResponse> execute(ConvictedReport convictedReport)
+	public static TaskResponse<ConvictedReportResponse> execute(ConvictedReport convictedReport)
 	{
 		ConvictedReportAPI convictedReportAPI = Context.getWebserviceManager().getApi(ConvictedReportAPI.class);
 		String convictedReportJson = new Gson().toJson(convictedReport, TypeToken.get(ConvictedReport.class).getType());

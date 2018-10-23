@@ -39,26 +39,24 @@ public class PrintDeadPersonRecordWorkflow extends WizardWorkflowBase
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public boolean onStep(int step) throws InterruptedException, Signal
+	public void onStep(int step) throws InterruptedException, Signal
 	{
 		switch(step)
 		{
 			case 0:
 			{
-				renderUi(RecordIdPaneFxController.class);
-				waitForUserInput();
+				renderUiAndWaitForUserInput(RecordIdPaneFxController.class);
 				
 				passData(RecordIdPaneFxController.class, DeadPersonRecordByIdWorkflowTask.class,
 				         "recordId");
 				
 				executeTask(DeadPersonRecordByIdWorkflowTask.class);
 				
-				return true;
+				break;
 			}
 			case 1:
 			{
-				renderUi(FetchingPersonInfoPaneFxController.class);
-				waitForUserInput();
+				renderUiAndWaitForUserInput(FetchingPersonInfoPaneFxController.class);
 				
 				DeadPersonRecord deadPersonRecord = getData(RecordIdPaneFxController.class,
 				                                            "deadPersonRecord");
@@ -77,7 +75,7 @@ public class PrintDeadPersonRecordWorkflow extends WizardWorkflowBase
 				
 				executeTask(ConvertWsqFingerprintsToSegmentedFingerprintImagesWorkflowTask.class);
 				
-				return true;
+				break;
 			}
 			case 2:
 			{
@@ -90,11 +88,9 @@ public class PrintDeadPersonRecordWorkflow extends WizardWorkflowBase
 				passData(ConvertWsqFingerprintsToSegmentedFingerprintImagesWorkflowTask.class,
 				         ShowRecordPaneFxController.class, "fingerprintImages");
 				
-				renderUi(ShowRecordPaneFxController.class);
-				waitForUserInput();
-				return true;
+				renderUiAndWaitForUserInput(ShowRecordPaneFxController.class);
+				break;
 			}
-			default: return false;
 		}
 	}
 }

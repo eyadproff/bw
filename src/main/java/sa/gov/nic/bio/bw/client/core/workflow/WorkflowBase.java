@@ -1,20 +1,19 @@
 package sa.gov.nic.bio.bw.client.core.workflow;
 
 import sa.gov.nic.bio.bw.client.core.Context;
-import sa.gov.nic.bio.bw.client.core.WithResourceBundle;
 import sa.gov.nic.bio.bw.client.core.controllers.BodyFxControllerBase;
 import sa.gov.nic.bio.bw.client.core.interfaces.FormRenderer;
-import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
+import sa.gov.nic.bio.bw.client.core.utils.CoreErrorCodes;
+import sa.gov.nic.bio.bw.client.core.utils.WithResourceBundle;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.logging.Logger;
 
 /**
  * The base class for all other workflow classes. It provides an implementation for <code>submitUserInput()</code>
- * and <code>waitForUserInput()</code>.
+ * and <code>renderUiAndWaitForUserInput()</code>.
  *
  * @param <I> type of the workflow's input. Use <code>Void</code> in case of not input
  * @param <O> type of the workflow's output. Use <code>Void</code> in case of no output
@@ -24,13 +23,11 @@ import java.util.logging.Logger;
 @WithResourceBundle
 public abstract class WorkflowBase<I, O> implements Workflow<I, O>
 {
-	private static final Logger LOGGER = Logger.getLogger(WorkflowBase.class.getName());
-	
 	protected final Map<String, Object> uiInputData = new HashMap<>();
 	protected final AtomicReference<FormRenderer> formRenderer;
 	protected final BlockingQueue<Map<String, Object>> userTasks;
 	
-	private BodyFxControllerBase currentBodyFxController;
+	boolean renderedAtLeastOnceInTheStep = false;
 	
 	/**
 	 * @param formRenderer the form renderer that will render the form on the screen
@@ -61,16 +58,17 @@ public abstract class WorkflowBase<I, O> implements Workflow<I, O>
 		});
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
-	public void waitForUserInput() throws InterruptedException, Signal
+	public void renderUiAndWaitForUserInput(Class<? extends BodyFxControllerBase> controllerClass)
+																					throws InterruptedException, Signal
 	{
+		BodyFxControllerBase currentBodyFxController = formRenderer.get().renderForm(controllerClass, uiInputData);
+		renderedAtLeastOnceInTheStep = true;
+		
 		Map<String, Object> uiDataMap = userTasks.take();
 		SignalType signalType = (SignalType) uiDataMap.get(KEY_SIGNAL_TYPE);
 		
-		if(signalType != null) throw new Signal(signalType, uiDataMap);
+		if(signalType != null) throw new Signal(signalType, uiDataMap); // menu navigation, wizard navigation and logout
 		else uiInputData.putAll(uiDataMap);
 		
 		try
@@ -79,18 +77,15 @@ public abstract class WorkflowBase<I, O> implements Workflow<I, O>
 		}
 		catch(Exception e)
 		{
+			String errorCode = CoreErrorCodes.C002_00029.getCode();
+			String[] errorDetails = {"Failure upon saving the workflow output! workflow = " +
+							(currentBodyFxController != null ? currentBodyFxController.getClass().getName() : null)};
 			Map<String, Object> payload = new HashMap<>();
-			payload.put(KEY_ERROR_DETAILS, new String[]{"Failure upon saving the workflow output! workflow = " +
-							(currentBodyFxController != null ? currentBodyFxController.getClass().getName() : null)});
-			payload.put(KEY_EXCEPTION, e);
+			payload.put(Workflow.KEY_ERROR_CODE, errorCode);
+			payload.put(Workflow.KEY_EXCEPTION, e);
+			payload.put(Workflow.KEY_ERROR_DETAILS, errorDetails);
 			throw new Signal(SignalType.INVALID_STATE, payload);
 		}
-	}
-	
-	@Override
-	public void renderUi(Class<? extends BodyFxControllerBase> controllerClass) throws Signal
-	{
-		currentBodyFxController = formRenderer.get().renderForm(controllerClass, uiInputData);
 	}
 	
 	@Override
@@ -100,18 +95,18 @@ public abstract class WorkflowBase<I, O> implements Workflow<I, O>
 		{
 			WorkflowTask workflowTask = taskClass.newInstance();
 			Workflow.loadWorkflowInputs(workflowTask, uiInputData, false);
-			ServiceResponse<?> serviceResponse = workflowTask.execute();
-			uiInputData.put(KEY_WEBSERVICE_RESPONSE, serviceResponse);
+			workflowTask.execute();
 			Workflow.saveWorkflowOutputs(workflowTask, uiInputData);
-			
-			if(!serviceResponse.isSuccess()) throw new Signal(SignalType.INTERRUPT_SEQUENT_TASKS, null);
 		}
 		catch(Exception e)
 		{
+			String errorCode = CoreErrorCodes.C002_00030.getCode();
+			String[] errorDetails = {"Failure upon executing the workflow task! task = " +
+																	(taskClass != null ? taskClass.getName() : null)};
 			Map<String, Object> payload = new HashMap<>();
-			payload.put(KEY_ERROR_DETAILS, new String[]{"Failure upon executing the workflow task! task = " +
-																(taskClass != null ? taskClass.getName() : null)});
-			payload.put(KEY_EXCEPTION, e);
+			payload.put(Workflow.KEY_ERROR_CODE, errorCode);
+			payload.put(Workflow.KEY_EXCEPTION, e);
+			payload.put(Workflow.KEY_ERROR_DETAILS, errorDetails);
 			throw new Signal(SignalType.INVALID_STATE, payload);
 		}
 	}

@@ -8,7 +8,7 @@ import sa.gov.nic.bio.bw.client.core.workflow.WithLookups;
 import sa.gov.nic.bio.bw.client.features.cancelcriminal.controllers.CancelCriminalPaneFxController;
 import sa.gov.nic.bio.bw.client.features.cancelcriminal.workflow.CancelCriminalService;
 import sa.gov.nic.bio.bw.client.features.commons.lookups.SamisIdTypesLookup;
-import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
+import sa.gov.nic.bio.commons.TaskResponse;
 
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
@@ -24,10 +24,9 @@ public class CancelCriminalWorkflow extends SinglePageWorkflowBase
 	}
 	
 	@Override
-	public boolean onStep() throws InterruptedException, Signal
+	public void onStep() throws InterruptedException, Signal
 	{
-		renderUi(CancelCriminalPaneFxController.class);
-		waitForUserInput();
+		renderUiAndWaitForUserInput(CancelCriminalPaneFxController.class);
 		
 		Long personId = (Long) uiInputData.get("personId");
 		Long inquiryId = (Long) uiInputData.get("inquiryId");
@@ -35,7 +34,7 @@ public class CancelCriminalWorkflow extends SinglePageWorkflowBase
 		Long criminalId = (Long) uiInputData.get("criminalId");
 		uiInputData.clear();
 		
-		ServiceResponse<Boolean> response;
+		TaskResponse<Boolean> response;
 		
 		if(personId != null) // by person id
 		{
@@ -46,8 +45,6 @@ public class CancelCriminalWorkflow extends SinglePageWorkflowBase
 			response = CancelCriminalService.execute(inquiryId, criminalId);
 		}
 		
-		uiInputData.put(KEY_WEBSERVICE_RESPONSE, response);
-		
-		return true;
+		uiInputData.put(KEY_WORKFLOW_TASK_NEGATIVE_RESPONSE, response);
 	}
 }

@@ -8,11 +8,11 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import sa.gov.nic.bio.bw.client.core.Context;
+import sa.gov.nic.bio.bw.client.core.interfaces.AppLogger;
 import sa.gov.nic.bio.bw.client.core.utils.AppConstants;
 import sa.gov.nic.bio.bw.client.core.utils.AppInstanceManager;
 import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.client.core.utils.DialogUtils;
-import sa.gov.nic.bio.bw.client.core.utils.FxClassLoader;
 import sa.gov.nic.bio.bw.client.core.utils.GuiLanguage;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.utils.LogFormatter;
@@ -46,7 +46,7 @@ import java.util.prefs.Preferences;
  *
  * @author Fouad Almalki
  */
-public class AppPreloader extends Preloader
+public class AppPreloader extends Preloader implements AppLogger
 {
 	static
 	{
@@ -167,7 +167,6 @@ public class AppPreloader extends Preloader
 	private static final String FXML_FILE = "sa/gov/nic/bio/bw/client/preloader/fxml/gui.fxml";
 	private static final String RB_STRINGS_FILE = "sa/gov/nic/bio/bw/client/preloader/bundles/strings";
 	
-	private static final Logger LOGGER = Logger.getLogger(AppPreloader.class.getName());
 	private ResourceBundle stringsBundle;
 	private URL fxmlUrl;
 	private Stage splashScreenStage;
@@ -247,10 +246,6 @@ public class AppPreloader extends Preloader
 		// must be done on the JavaFX UI thread.
 		
 		FXMLLoader fxmlLoader = new FXMLLoader(fxmlUrl, stringsBundle);
-		
-		FxClassLoader fxClassLoader = new FxClassLoader(Thread.currentThread().getContextClassLoader());
-		fxmlLoader.setClassLoader(fxClassLoader);
-		Context.setFxClassLoader(fxClassLoader);
 		
 		try
 		{

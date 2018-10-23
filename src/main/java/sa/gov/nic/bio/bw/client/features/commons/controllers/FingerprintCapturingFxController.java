@@ -34,7 +34,7 @@ import org.controlsfx.glyphfont.FontAwesome;
 import org.controlsfx.glyphfont.Glyph;
 import sa.gov.nic.bio.biokit.ResponseProcessor;
 import sa.gov.nic.bio.biokit.beans.LivePreviewingResponse;
-import sa.gov.nic.bio.biokit.beans.ServiceResponse;
+import sa.gov.nic.bio.commons.TaskResponse;
 import sa.gov.nic.bio.biokit.exceptions.NotConnectedException;
 import sa.gov.nic.bio.biokit.exceptions.TimeoutException;
 import sa.gov.nic.bio.biokit.fingerprint.beans.CaptureFingerprintResponse;
@@ -78,8 +78,6 @@ import java.util.stream.Collectors;
 
 public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 {
-	private static final Logger LOGGER = Logger.getLogger(FingerprintCapturingFxController.class.getName());
-	
 	public static final String KEY_HIDE_FINGERPRINT_PREVIOUS_BUTTON = "HIDE_FINGERPRINT_PREVIOUS_BUTTON";
 	public static final String KEY_ACCEPT_BAD_QUALITY_FINGERPRINT = "ACCEPT_BAD_QUALITY_FINGERPRINT";
 	public static final String KEY_ACCEPTED_BAD_QUALITY_FINGERPRINT_MIN_RETIRES =
@@ -938,11 +936,11 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 		lblStatus.setText(resources.getString("label.status.waitingDeviceResponse"));
 		boolean[] firstLivePreviewingResponse = {true};
 		
-		Task<ServiceResponse<CaptureFingerprintResponse>> capturingFingerprintTask =
-																new Task<ServiceResponse<CaptureFingerprintResponse>>()
+		Task<TaskResponse<CaptureFingerprintResponse>> capturingFingerprintTask =
+																new Task<TaskResponse<CaptureFingerprintResponse>>()
 		{
 			@Override
-			protected ServiceResponse<CaptureFingerprintResponse> call() throws Exception
+			protected TaskResponse<CaptureFingerprintResponse> call() throws Exception
 			{
 				// the processor that will process every frame of the live previewing
 				ResponseProcessor<LivePreviewingResponse> responseProcessor = response -> Platform.runLater(() ->
@@ -987,7 +985,7 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 				// start the real capturing
 				String fingerprintDeviceName = Context.getCoreFxController().getDeviceManagerGadgetPaneController()
 						.getFingerprintScannerDeviceName();
-				Future<ServiceResponse<CaptureFingerprintResponse>> future = Context.getBioKitManager()
+				Future<TaskResponse<CaptureFingerprintResponse>> future = Context.getBioKitManager()
 						.getFingerprintService().startPreviewAndAutoCapture(fingerprintDeviceName,
 						                                                    currentSlapPosition,
 						                                                    expectedFingersCount[0], missingFingers,
@@ -1004,11 +1002,11 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 	        GuiUtils.showNode(piFingerprintDeviceLivePreview, false);
 	        
 	        // get the response from the BioKit for the captured fingerprints
-	        ServiceResponse<CaptureFingerprintResponse> serviceResponse = capturingFingerprintTask.getValue();
+	        TaskResponse<CaptureFingerprintResponse> taskResponse = capturingFingerprintTask.getValue();
 	        
-	        if(serviceResponse.isSuccess())
+	        if(taskResponse.isSuccess())
 	        {
-		        CaptureFingerprintResponse result = serviceResponse.getResult();
+		        CaptureFingerprintResponse result = taskResponse.getResult();
 	        	
 		        if(result.getReturnCode() == CaptureFingerprintResponse.SuccessCodes.SUCCESS)
 		        {
@@ -1152,14 +1150,14 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 		        lblStatus.setText(String.format(firstLivePreviewingResponse[0] ?
 				        resources.getString("label.status.failedToStartFingerprintCapturingWithErrorCode") :
 				        resources.getString("label.status.failedToCaptureFingerprintsWithErrorCode"),
-				        serviceResponse.getErrorCode()));
+		                                        taskResponse.getErrorCode()));
 		
 		        String errorCode = firstLivePreviewingResponse[0] ? CommonsErrorCodes.C008_00008.getCode() :
 			                                                        CommonsErrorCodes.C008_00009.getCode();
 		        String[] errorDetails = {firstLivePreviewingResponse[0] ?
 				        "failed while starting the fingerprint capturing!" :
 				        "failed while capturing the fingerprints!"};
-		        Context.getCoreFxController().showErrorDialog(errorCode, serviceResponse.getException(), errorDetails);
+		        Context.getCoreFxController().showErrorDialog(errorCode, taskResponse.getException(), errorDetails);
 	        }
 	
 	        stopCapturingIsInProgress.set(false);
@@ -1219,11 +1217,11 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 		String slapImage = captureFingerprintResponse.getCapturedImage();
 		
 		List<DMFingerData> fingerData = captureFingerprintResponse.getFingerData();
-		Task<ServiceResponse<DuplicatedFingerprintsResponse>> findDuplicatesTask =
-															new Task<ServiceResponse<DuplicatedFingerprintsResponse>>()
+		Task<TaskResponse<DuplicatedFingerprintsResponse>> findDuplicatesTask =
+															new Task<TaskResponse<DuplicatedFingerprintsResponse>>()
 		{
 			@Override
-			protected ServiceResponse<DuplicatedFingerprintsResponse> call() throws Exception
+			protected TaskResponse<DuplicatedFingerprintsResponse> call() throws Exception
 			{
 				Map<Integer, String> gallery = new HashMap<>();
 				Map<Integer, String> probes = new HashMap<>();
@@ -1270,19 +1268,19 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 			GuiUtils.showNode(piFingerprintDeviceLivePreview, false);
 			GuiUtils.showNode(btnStartFingerprintCapturing, true);
 			
-			ServiceResponse<DuplicatedFingerprintsResponse> serviceResponse = findDuplicatesTask.getValue();
+			TaskResponse<DuplicatedFingerprintsResponse> taskResponse = findDuplicatesTask.getValue();
 			
 			List<Fingerprint> fingerprints = fingerData.stream()
 											   .map(dmFingerData -> new Fingerprint(dmFingerData, slapWsq, slapImage))
 											   .collect(Collectors.toList());
 			
-			if(serviceResponse == null) // no duplicates
+			if(taskResponse == null) // no duplicates
 			{
 				processSlapFingerprints(fingerprints, null);
 			}
-			else if(serviceResponse.isSuccess())
+			else if(taskResponse.isSuccess())
 			{
-				DuplicatedFingerprintsResponse result = serviceResponse.getResult();
+				DuplicatedFingerprintsResponse result = taskResponse.getResult();
 				
 				if(result.getReturnCode() == DuplicatedFingerprintsResponse.SuccessCodes.SUCCESS)
 				{
@@ -1310,12 +1308,12 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 					                                        GuiUtils.showNode(components.getSvgPath(), false));
 				
 				lblStatus.setText(String.format(
-							resources.getString("label.status.failedToFindDuplicatedFingerprintsWithErrorCode"),
-                            serviceResponse.getErrorCode()));
+						resources.getString("label.status.failedToFindDuplicatedFingerprintsWithErrorCode"),
+						taskResponse.getErrorCode()));
 				
 				String errorCode = CommonsErrorCodes.C008_00012.getCode();
 				String[] errorDetails = {"failed while finding duplicated fingerprints!"};
-				Context.getCoreFxController().showErrorDialog(errorCode, serviceResponse.getException(), errorDetails);
+				Context.getCoreFxController().showErrorDialog(errorCode, taskResponse.getException(), errorDetails);
 			}
 		});
 		findDuplicatesTask.setOnFailed(e ->
@@ -1369,15 +1367,15 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 		
 		String fingerprintDeviceName = Context.getCoreFxController().getDeviceManagerGadgetPaneController()
 																	.getFingerprintScannerDeviceName();
-		Future<ServiceResponse<FingerprintStopPreviewResponse>> future = Context.getBioKitManager()
+		Future<TaskResponse<FingerprintStopPreviewResponse>> future = Context.getBioKitManager()
 									.getFingerprintService().cancelCapture(fingerprintDeviceName,
 															               FingerPosition.RIGHT_SLAP.getPosition());
 		
-		Task<ServiceResponse<FingerprintStopPreviewResponse>> task =
-															new Task<ServiceResponse<FingerprintStopPreviewResponse>>()
+		Task<TaskResponse<FingerprintStopPreviewResponse>> task =
+															new Task<TaskResponse<FingerprintStopPreviewResponse>>()
 		{
 			@Override
-			protected ServiceResponse<FingerprintStopPreviewResponse> call() throws Exception
+			protected TaskResponse<FingerprintStopPreviewResponse> call() throws Exception
 			{
 				return future.get();
 			}
@@ -1394,11 +1392,11 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 			GuiUtils.showNode(btnStartFingerprintCapturing, true);
 			GuiUtils.showNode(btnStartOver, true);
 		
-		    ServiceResponse<FingerprintStopPreviewResponse> serviceResponse = task.getValue();
+		    TaskResponse<FingerprintStopPreviewResponse> taskResponse = task.getValue();
 		
-		    if(serviceResponse.isSuccess())
+		    if(taskResponse.isSuccess())
 		    {
-			    FingerprintStopPreviewResponse result = serviceResponse.getResult();
+			    FingerprintStopPreviewResponse result = taskResponse.getResult();
 			
 			    if(result.getReturnCode() == FingerprintStopPreviewResponse.SuccessCodes.SUCCESS ||
 				   result.getReturnCode() == FingerprintStopPreviewResponse.FailureCodes.NOT_CAPTURING_NOW)
@@ -1415,12 +1413,12 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 		    else
 		    {
 		        lblStatus.setText(String.format(
-		                resources.getString("label.status.failedToStopFingerprintCapturingWithErrorCode"),
-		                serviceResponse.getErrorCode()));
+				        resources.getString("label.status.failedToStopFingerprintCapturingWithErrorCode"),
+				        taskResponse.getErrorCode()));
 		
 		        String errorCode = CommonsErrorCodes.C008_00014.getCode();
 		        String[] errorDetails = {"failed while stopping the fingerprint capturing!"};
-		        Context.getCoreFxController().showErrorDialog(errorCode, serviceResponse.getException(), errorDetails);
+		        Context.getCoreFxController().showErrorDialog(errorCode, taskResponse.getException(), errorDetails);
 		    }
 		});
 		task.setOnFailed(e ->

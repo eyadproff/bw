@@ -10,7 +10,7 @@ import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.controllers.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.client.core.workflow.Workflow;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.PersonInfo;
-import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
+import sa.gov.nic.bio.commons.TaskResponse;
 
 import java.net.URL;
 import java.util.HashMap;
@@ -47,15 +47,14 @@ public class MatchingFxController extends WizardStepFxControllerBase
 		{
 			showProgress(false);
 			
-			@SuppressWarnings("unchecked")
-			ServiceResponse<PersonInfo> response = (ServiceResponse<PersonInfo>)
-															uiInputData.get(Workflow.KEY_WEBSERVICE_RESPONSE);
+			@SuppressWarnings("unchecked") TaskResponse<PersonInfo> response = (TaskResponse<PersonInfo>)
+															uiInputData.get(Workflow.KEY_WORKFLOW_TASK_NEGATIVE_RESPONSE);
 			
 			if(response != null) // there is a result
 			{
 				if(response.isSuccess()) goNext();
-				else reportNegativeResponse(response.getErrorCode(), response.getException(),
-				                            response.getErrorDetails());
+				else reportNegativeTaskResponse(response.getErrorCode(), response.getException(),
+				                                response.getErrorDetails());
 			}
 		}
 	}
@@ -67,7 +66,7 @@ public class MatchingFxController extends WizardStepFxControllerBase
 		showProgress(true);
 		
 		Map<String, Object> uiDataMap = new HashMap<>();
-		uiDataMap.put(Workflow.KEY_WEBSERVICE_RESPONSE, null);
+		uiDataMap.put(Workflow.KEY_WORKFLOW_TASK_NEGATIVE_RESPONSE, null);
 		if(!isDetached()) Context.getWorkflowManager().submitUserTask(uiDataMap);
 	}
 	

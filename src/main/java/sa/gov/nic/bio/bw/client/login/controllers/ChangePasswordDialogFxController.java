@@ -19,14 +19,10 @@ import sa.gov.nic.bio.bw.client.core.controllers.FxControllerBase;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.login.tasks.ChangePasswordTask;
 import sa.gov.nic.bio.bw.client.login.utils.LoginErrorCodes;
-import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
-
-import java.util.logging.Logger;
+import sa.gov.nic.bio.commons.TaskResponse;
 
 public class ChangePasswordDialogFxController extends FxControllerBase
 {
-	private static final Logger LOGGER = Logger.getLogger(ChangePasswordDialogFxController.class.getName());
-	
 	@FXML private Dialog<ButtonType> dialog;
 	@FXML private TextField txtUsername;
 	@FXML private TextField txtCurrentPassword;
@@ -81,10 +77,10 @@ public class ChangePasswordDialogFxController extends FxControllerBase
 					ChangePasswordTask task = new ChangePasswordTask(username, oldPassword, newPassword);
 					task.setOnSucceeded(event2 ->
 					{
-						ServiceResponse<Boolean> serviceResponse;
+						TaskResponse<Boolean> taskResponse;
 						try
 						{
-							serviceResponse = task.get();
+							taskResponse = task.get();
 						}
 						catch(Exception e)
 						{
@@ -94,7 +90,7 @@ public class ChangePasswordDialogFxController extends FxControllerBase
 							return;
 						}
 						
-						if(serviceResponse.isSuccess())
+						if(taskResponse.isSuccess())
 						{
 							LOGGER.info("The password of (" + username + ") has been changed successfully!");
 							passwordChangedSuccessfully = true;
@@ -104,9 +100,9 @@ public class ChangePasswordDialogFxController extends FxControllerBase
 						}
 						else
 						{
-							String errorCode = serviceResponse.getErrorCode();
-							Exception exception = serviceResponse.getException();
-							String[] errorDetails = serviceResponse.getErrorDetails();
+							String errorCode = taskResponse.getErrorCode();
+							Exception exception = taskResponse.getException();
+							String[] errorDetails = taskResponse.getErrorDetails();
 							
 							if(errorCode.startsWith("B") || errorCode.startsWith("N")) // business error
 							{

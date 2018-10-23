@@ -11,7 +11,7 @@ import sa.gov.nic.bio.bw.client.core.controllers.BodyFxControllerBase;
 import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.workflow.Workflow;
-import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
+import sa.gov.nic.bio.commons.TaskResponse;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -48,18 +48,17 @@ public class CancelLatentPaneFxController extends BodyFxControllerBase
 	{
 		if(!newForm)
 		{
-			@SuppressWarnings("unchecked")
-			ServiceResponse<Boolean> serviceResponse = (ServiceResponse<Boolean>)
-																	uiInputData.get(Workflow.KEY_WEBSERVICE_RESPONSE);
+			@SuppressWarnings("unchecked") TaskResponse<Boolean> taskResponse = (TaskResponse<Boolean>)
+																	uiInputData.get(Workflow.KEY_WORKFLOW_TASK_NEGATIVE_RESPONSE);
 			
 			disableUiControls(false);
 			
-			if(serviceResponse.isSuccess())
+			if(taskResponse.isSuccess())
 			{
 				String personId = txtPersonId.getText();
 				String latentId = txtLatentId.getText();
 				
-				Boolean resultBean = serviceResponse.getResult();
+				Boolean resultBean = taskResponse.getResult();
 				if(resultBean != null && resultBean)
 				{
 					String message = String.format(resources.getString("cancelLatent.success"),
@@ -73,8 +72,8 @@ public class CancelLatentPaneFxController extends BodyFxControllerBase
 					showWarningNotification(message);
 				}
 			}
-			else reportNegativeResponse(serviceResponse.getErrorCode(), serviceResponse.getException(),
-			                            serviceResponse.getErrorDetails());
+			else reportNegativeTaskResponse(taskResponse.getErrorCode(), taskResponse.getException(),
+			                                taskResponse.getErrorDetails());
 			
 			txtPersonId.requestFocus();
 		}

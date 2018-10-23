@@ -29,41 +29,40 @@ public class CitizenEnrollmentWorkflow extends WizardWorkflowBase
 	}
 	
 	@Override
-	public boolean onStep(int step) throws InterruptedException, Signal
+	public void onStep(int step) throws InterruptedException, Signal
 	{
 		switch(step)
 		{
 			case 0:
 			{
-				renderUi(PersonIdPaneFxController.class);
-				waitForUserInput();
-				return true;
+				renderUiAndWaitForUserInput(PersonIdPaneFxController.class);
+				break;
 			}
 			case 1:
 			{
-				return false;
+				break;
 			}
 			case 2:
 			{
-				return false;
+				break;
 			}
 			case 3:
 			{
-				return false;
+				break;
 			}
 			case 4:
 			{
-				return false;
+				break;
 			}
 			case 5:
 			{
-				return false;
+				break;
 			}
 			case 6:
 			{
-				return false;
+				break;
 			}
-			default: return false;
+			default: break;
 		}
 	}
 }

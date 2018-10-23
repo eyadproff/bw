@@ -42,7 +42,7 @@ import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.Con
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.workflow.ConvictedReportResponse;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.workflow.GeneratingGeneralFileNumberService;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.workflow.SubmittingConvictedReportService;
-import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
+import sa.gov.nic.bio.commons.TaskResponse;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -75,15 +75,14 @@ public class RegisterConvictedReportNotPresentWorkflow extends WizardWorkflowBas
 	}
 	
 	@Override
-	public boolean onStep(int step) throws InterruptedException, Signal
+	public void onStep(int step) throws InterruptedException, Signal
 	{
 		switch(step)
 		{
 			case 0:
 			{
-				renderUi(FingerprintsSourceFxController.class);
-				waitForUserInput();
-				return true;
+				renderUiAndWaitForUserInput(FingerprintsSourceFxController.class);
+				break;
 			}
 			case 1:
 			{
@@ -93,19 +92,17 @@ public class RegisterConvictedReportNotPresentWorkflow extends WizardWorkflowBas
 				if(FingerprintsSourceFxController.VALUE_FINGERPRINTS_SOURCE_ENTERING_PERSON_ID
 												 .equals(fingerprintsSource))
 				{
-					renderUi(PersonIdPaneFxController.class);
-					waitForUserInput();
-					if(isLeaving()) break;
+					renderUiAndWaitForUserInput(PersonIdPaneFxController.class);
 		
 					Long personId = (Long) uiInputData.get(PersonIdPaneFxController.KEY_PERSON_INFO_INQUIRY_PERSON_ID);
 		
-					ServiceResponse<PersonInfo> serviceResponse = GetPersonInfoByIdService.execute(personId,
-					                                                                               0);
+					TaskResponse<PersonInfo> taskResponse = GetPersonInfoByIdService.execute(personId,
+					                                                                         0);
 		
-					uiInputData.put(KEY_WEBSERVICE_RESPONSE, serviceResponse);
+					uiInputData.put(KEY_WORKFLOW_TASK_NEGATIVE_RESPONSE, taskResponse);
 		
-					PersonInfo personInfo = serviceResponse.getResult();
-					if(serviceResponse.isSuccess() && personInfo != null)
+					PersonInfo personInfo = taskResponse.getResult();
+					if(taskResponse.isSuccess() && personInfo != null)
 					{
 						uiInputData.put(FaceCapturingFxController.KEY_FINAL_FACE_IMAGE, personInfo.getFace());
 					}
@@ -115,19 +112,15 @@ public class RegisterConvictedReportNotPresentWorkflow extends WizardWorkflowBas
 				else if(FingerprintsSourceFxController.VALUE_FINGERPRINTS_SOURCE_SCANNING_FINGERPRINTS_CARD
 													  .equals(fingerprintsSource))
 				{
-					renderUi(PersonIdPaneFxController.class);
-					waitForUserInput();
-					if(isLeaving()) break;
+					renderUiAndWaitForUserInput(PersonIdPaneFxController.class);
 				}
 				else if(FingerprintsSourceFxController.VALUE_FINGERPRINTS_SOURCE_UPLOADING_NIST_FILE
 													  .equals(fingerprintsSource))
 				{
-					renderUi(PersonIdPaneFxController.class);
-					waitForUserInput();
-					if(isLeaving()) break;
+					renderUiAndWaitForUserInput(PersonIdPaneFxController.class);
 				}
 				
-				return true;
+				break;
 			}
 			case 2:
 			{
@@ -137,38 +130,35 @@ public class RegisterConvictedReportNotPresentWorkflow extends WizardWorkflowBas
 				if(FingerprintsSourceFxController.VALUE_FINGERPRINTS_SOURCE_ENTERING_PERSON_ID
 						.equals(fingerprintsSource))
 				{
-					renderUi(InquiryResultPaneFxController.class);
-					waitForUserInput();
-					if(isLeaving()) break;
+					renderUiAndWaitForUserInput(InquiryResultPaneFxController.class);
 		
 					Long personId = (Long) uiInputData.get(PersonIdPaneFxController.KEY_PERSON_INFO_INQUIRY_PERSON_ID);
 		
-					ServiceResponse<List<Finger>> serviceResponse = FetchingFingerprintsService.execute(personId);
+					TaskResponse<List<Finger>> taskResponse = FetchingFingerprintsService.execute(personId);
 		
-					uiInputData.put(KEY_WEBSERVICE_RESPONSE, serviceResponse);
+					uiInputData.put(KEY_WORKFLOW_TASK_NEGATIVE_RESPONSE, taskResponse);
 				}
 				
-				return true;
+				break;
 			}
 			case 3:
 			{
-				return false;
+				break;
 			}
 			case 4:
 			{
-				renderUi(FetchingFingerprintsPaneFxController.class);
+				renderUiAndWaitForUserInput(FetchingFingerprintsPaneFxController.class);
 		
 				while(true)
 				{
 		
 					Long personId = (Long) uiInputData.get(PersonIdPaneFxController.KEY_PERSON_INFO_INQUIRY_PERSON_ID);
 		
-					ServiceResponse<List<Finger>> serviceResponse = FetchingFingerprintsService.execute(personId);
+					TaskResponse<List<Finger>> taskResponse = FetchingFingerprintsService.execute(personId);
 		
 					uiInputData.remove(FetchingFingerprintsPaneFxController.KEY_RETRY_FINGERPRINT_FETCHING);
-					uiInputData.put(KEY_WEBSERVICE_RESPONSE, serviceResponse);
-					renderUi(FetchingFingerprintsPaneFxController.class);
-					waitForUserInput();
+					uiInputData.put(KEY_WORKFLOW_TASK_NEGATIVE_RESPONSE, taskResponse);
+					renderUiAndWaitForUserInput(FetchingFingerprintsPaneFxController.class);
 		
 					Boolean retry = (Boolean) uiInputData.get(
 												FetchingFingerprintsPaneFxController.KEY_RETRY_FINGERPRINT_FETCHING);
@@ -176,7 +166,7 @@ public class RegisterConvictedReportNotPresentWorkflow extends WizardWorkflowBas
 					if(retry == null || !retry) break;
 				}
 				
-				return true;
+				break;
 			}
 			case 5:
 			{
@@ -187,8 +177,7 @@ public class RegisterConvictedReportNotPresentWorkflow extends WizardWorkflowBas
 				if(retry == null || !retry)
 				{
 					// show progress only
-					renderUi(InquiryByFingerprintsPaneFxController.class);
-					waitForUserInput();
+					renderUiAndWaitForUserInput(InquiryByFingerprintsPaneFxController.class);
 		
 					Boolean running = (Boolean) uiInputData.get(
 												InquiryByFingerprintsPaneFxController.KEY_DEVICES_RUNNER_IS_RUNNING);
@@ -200,14 +189,13 @@ public class RegisterConvictedReportNotPresentWorkflow extends WizardWorkflowBas
 										uiInputData.get(FingerprintCapturingFxController.KEY_SLAP_FINGERPRINTS);
 		
 				Long personId = (Long) uiInputData.get(PersonIdPaneFxController.KEY_PERSON_INFO_INQUIRY_PERSON_ID);
-				ServiceResponse<List<Integer>> sr = GetFingerprintAvailabilityService.execute(personId);
+				TaskResponse<List<Integer>> sr = GetFingerprintAvailabilityService.execute(personId);
 				List<Integer> availableFingerprints = sr.getResult();
 		
 				if(!sr.isSuccess() || availableFingerprints == null)
 				{
-					uiInputData.put(KEY_WEBSERVICE_RESPONSE, sr);
-					renderUi(InquiryByFingerprintsPaneFxController.class);
-					waitForUserInput();
+					uiInputData.put(KEY_WORKFLOW_TASK_NEGATIVE_RESPONSE, sr);
+					renderUiAndWaitForUserInput(InquiryByFingerprintsPaneFxController.class);
 					break;
 				}
 		
@@ -262,13 +250,13 @@ public class RegisterConvictedReportNotPresentWorkflow extends WizardWorkflowBas
 							else slapMissingFingers.add(FingerPosition.LEFT_THUMB.getPosition());
 						}
 		
-						Future<sa.gov.nic.bio.biokit.beans.ServiceResponse<SegmentFingerprintsResponse>>
+						Future<TaskResponse<SegmentFingerprintsResponse>>
 								serviceResponseFuture = Context.getBioKitManager()
 															   .getFingerprintUtilitiesService()
 															   .segmentSlap(slapImageBase64, slapImageFormat, position,
 								                                            expectedFingersCount, slapMissingFingers);
 		
-						sa.gov.nic.bio.biokit.beans.ServiceResponse<SegmentFingerprintsResponse> response;
+						TaskResponse<SegmentFingerprintsResponse> response;
 						try
 						{
 							response = serviceResponseFuture.get();
@@ -281,11 +269,10 @@ public class RegisterConvictedReportNotPresentWorkflow extends WizardWorkflowBas
 							uiInputData.put(InquiryByFingerprintsPaneFxController.KEY_INQUIRY_ERROR_EXCEPTION, e);
 							uiInputData.put(InquiryByFingerprintsPaneFxController.KEY_INQUIRY_ERROR_DETAILS,
 							                errorDetails);
-							renderUi(InquiryByFingerprintsPaneFxController.class);
+							renderUiAndWaitForUserInput(InquiryByFingerprintsPaneFxController.class);
 							uiInputData.remove(InquiryByFingerprintsPaneFxController.KEY_INQUIRY_ERROR_CODE);
 							uiInputData.remove(InquiryByFingerprintsPaneFxController.KEY_INQUIRY_ERROR_EXCEPTION);
 							uiInputData.remove(InquiryByFingerprintsPaneFxController.KEY_INQUIRY_ERROR_DETAILS);
-							waitForUserInput();
 							break;
 						}
 		
@@ -305,11 +292,10 @@ public class RegisterConvictedReportNotPresentWorkflow extends WizardWorkflowBas
 							                response.getException());
 							uiInputData.put(InquiryByFingerprintsPaneFxController.KEY_INQUIRY_ERROR_DETAILS,
 							                errorDetails);
-							renderUi(InquiryByFingerprintsPaneFxController.class);
+							renderUiAndWaitForUserInput(InquiryByFingerprintsPaneFxController.class);
 							uiInputData.remove(InquiryByFingerprintsPaneFxController.KEY_INQUIRY_ERROR_CODE);
 							uiInputData.remove(InquiryByFingerprintsPaneFxController.KEY_INQUIRY_ERROR_EXCEPTION);
 							uiInputData.remove(InquiryByFingerprintsPaneFxController.KEY_INQUIRY_ERROR_DETAILS);
-							waitForUserInput();
 							break;
 						}
 					}
@@ -325,12 +311,12 @@ public class RegisterConvictedReportNotPresentWorkflow extends WizardWorkflowBas
 		
 				if(!fingerprintWsqMap.isEmpty())
 				{
-					Future<sa.gov.nic.bio.biokit.beans.ServiceResponse<ConvertedFingerprintImagesResponse>>
+					Future<TaskResponse<ConvertedFingerprintImagesResponse>>
 							serviceResponseFuture = Context.getBioKitManager()
 							.getFingerprintUtilitiesService()
 							.convertWsqToImages(fingerprintWsqMap);
 		
-					sa.gov.nic.bio.biokit.beans.ServiceResponse<ConvertedFingerprintImagesResponse> response;
+					TaskResponse<ConvertedFingerprintImagesResponse> response;
 					try
 					{
 						response = serviceResponseFuture.get();
@@ -342,11 +328,10 @@ public class RegisterConvictedReportNotPresentWorkflow extends WizardWorkflowBas
 						uiInputData.put(InquiryByFingerprintsPaneFxController.KEY_INQUIRY_ERROR_CODE, errorCode);
 						uiInputData.put(InquiryByFingerprintsPaneFxController.KEY_INQUIRY_ERROR_EXCEPTION, e);
 						uiInputData.put(InquiryByFingerprintsPaneFxController.KEY_INQUIRY_ERROR_DETAILS, errorDetails);
-						renderUi(InquiryByFingerprintsPaneFxController.class);
+						renderUiAndWaitForUserInput(InquiryByFingerprintsPaneFxController.class);
 						uiInputData.remove(InquiryByFingerprintsPaneFxController.KEY_INQUIRY_ERROR_CODE);
 						uiInputData.remove(InquiryByFingerprintsPaneFxController.KEY_INQUIRY_ERROR_EXCEPTION);
 						uiInputData.remove(InquiryByFingerprintsPaneFxController.KEY_INQUIRY_ERROR_DETAILS);
-						waitForUserInput();
 						break;
 					}
 		
@@ -364,11 +349,10 @@ public class RegisterConvictedReportNotPresentWorkflow extends WizardWorkflowBas
 						uiInputData.put(InquiryByFingerprintsPaneFxController.KEY_INQUIRY_ERROR_EXCEPTION,
 						                response.getException());
 						uiInputData.put(InquiryByFingerprintsPaneFxController.KEY_INQUIRY_ERROR_DETAILS, errorDetails);
-						renderUi(InquiryByFingerprintsPaneFxController.class);
+						renderUiAndWaitForUserInput(InquiryByFingerprintsPaneFxController.class);
 						uiInputData.remove(InquiryByFingerprintsPaneFxController.KEY_INQUIRY_ERROR_CODE);
 						uiInputData.remove(InquiryByFingerprintsPaneFxController.KEY_INQUIRY_ERROR_EXCEPTION);
 						uiInputData.remove(InquiryByFingerprintsPaneFxController.KEY_INQUIRY_ERROR_DETAILS);
-						waitForUserInput();
 						break;
 					}
 				}
@@ -376,15 +360,15 @@ public class RegisterConvictedReportNotPresentWorkflow extends WizardWorkflowBas
 				uiInputData.put(FingerprintCapturingFxController.KEY_FINGERPRINTS_IMAGES,
 				                fingerprintImages);
 		
-				ServiceResponse<Integer> serviceResponse =
+				TaskResponse<Integer> taskResponse =
 						FingerprintInquiryService.execute(collectedFingerprints, missingFingerprints);
-				Integer inquiryId = serviceResponse.getResult();
+				Integer inquiryId = taskResponse.getResult();
 		
-				if(serviceResponse.isSuccess() && inquiryId != null)
+				if(taskResponse.isSuccess() && inquiryId != null)
 				{
 					while(true)
 					{
-						ServiceResponse<FingerprintInquiryStatusResult> response2 =
+						TaskResponse<FingerprintInquiryStatusResult> response2 =
 								FingerprintInquiryStatusCheckerService.execute(inquiryId);
 		
 						FingerprintInquiryStatusResult result = response2.getResult();
@@ -395,8 +379,7 @@ public class RegisterConvictedReportNotPresentWorkflow extends WizardWorkflowBas
 							{
 								uiInputData.put(InquiryByFingerprintsPaneFxController.KEY_WAITING_FINGERPRINT_INQUIRY,
 								                Boolean.TRUE);
-								renderUi(InquiryByFingerprintsPaneFxController.class);
-								waitForUserInput();
+								renderUiAndWaitForUserInput(InquiryByFingerprintsPaneFxController.class);
 								Boolean cancelled = (Boolean) uiInputData.get(
 									InquiryByFingerprintsPaneFxController.KEY_WAITING_FINGERPRINT_INQUIRY_CANCELLED);
 								if(cancelled == null || !cancelled) continue;
@@ -407,7 +390,7 @@ public class RegisterConvictedReportNotPresentWorkflow extends WizardWorkflowBas
 							{
 								uiInputData.put(InquiryByFingerprintsPaneFxController.KEY_FINGERPRINT_INQUIRY_HIT,
 								                Boolean.FALSE);
-								renderUi(InquiryByFingerprintsPaneFxController.class);
+								renderUiAndWaitForUserInput(InquiryByFingerprintsPaneFxController.class);
 							}
 							else if(result.getStatus() == FingerprintInquiryStatusResult.STATUS_INQUIRY_HIT)
 							{
@@ -428,60 +411,52 @@ public class RegisterConvictedReportNotPresentWorkflow extends WizardWorkflowBas
 									PersonInfoPaneFxController.KEY_PERSON_INFO_GENERAL_FILE_NUMBER, criminalHitBioId);
 								uiInputData.put(InquiryResultPaneFxController.KEY_INQUIRY_HIT_RESULT,
 								                personInfo);
-								renderUi(InquiryByFingerprintsPaneFxController.class);
+								renderUiAndWaitForUserInput(InquiryByFingerprintsPaneFxController.class);
 							}
 							else // report the error
 							{
 								uiInputData.put(
 										InquiryByFingerprintsPaneFxController.KEY_FINGERPRINT_INQUIRY_UNKNOWN_STATUS,
 								        result.getStatus());
-								renderUi(InquiryByFingerprintsPaneFxController.class);
+								renderUiAndWaitForUserInput(InquiryByFingerprintsPaneFxController.class);
 							}
-		
-							waitForUserInput();
+							
 							break;
 						}
 						else // report the error
 						{
-							uiInputData.put(KEY_WEBSERVICE_RESPONSE, response2);
-							renderUi(InquiryByFingerprintsPaneFxController.class);
-							waitForUserInput();
+							uiInputData.put(KEY_WORKFLOW_TASK_NEGATIVE_RESPONSE, response2);
+							renderUiAndWaitForUserInput(InquiryByFingerprintsPaneFxController.class);
 							break;
 						}
 					}
 				}
 				else // report the error
 				{
-					uiInputData.put(KEY_WEBSERVICE_RESPONSE, serviceResponse);
-					renderUi(InquiryByFingerprintsPaneFxController.class);
-					waitForUserInput();
+					uiInputData.put(KEY_WORKFLOW_TASK_NEGATIVE_RESPONSE, taskResponse);
+					renderUiAndWaitForUserInput(InquiryByFingerprintsPaneFxController.class);
 				}
 				
-				return true;
+				break;
 			}
 			case 6:
 			{
-				renderUi(PersonInfoPaneFxController.class);
-				waitForUserInput();
-				return true;
+				renderUiAndWaitForUserInput(PersonInfoPaneFxController.class);
+				break;
 			}
 			case 7:
 			{
-				renderUi(JudgmentDetailsPaneFxController.class);
-				waitForUserInput();
-				return true;
+				renderUiAndWaitForUserInput(JudgmentDetailsPaneFxController.class);
+				break;
 			}
 			case 8:
 			{
-				renderUi(PunishmentDetailsPaneFxController.class);
-				waitForUserInput();
-				return true;
+				renderUiAndWaitForUserInput(PunishmentDetailsPaneFxController.class);
+				break;
 			}
 			case 9:
 			{
-				renderUi(ReviewAndSubmitPaneFxController.class);
-				waitForUserInput();
-				if(isLeaving()) break;
+				renderUiAndWaitForUserInput(ReviewAndSubmitPaneFxController.class);
 		
 				ConvictedReport convictedReport = (ConvictedReport)
 						uiInputData.get(ReviewAndSubmitPaneFxController.KEY_FINAL_CONVICTED_REPORT);
@@ -494,37 +469,33 @@ public class RegisterConvictedReportNotPresentWorkflow extends WizardWorkflowBas
 					Long samisId = convictedReport.getSubjSamisId();
 					Long civilHitBioId = convictedReport.getSubjBioId();
 		
-					ServiceResponse<Long> serviceResponse =
+					TaskResponse<Long> taskResponse =
 							GeneratingGeneralFileNumberService.execute(samisId, civilHitBioId);
 		
-					if(!serviceResponse.isSuccess())
+					if(!taskResponse.isSuccess())
 					{
-						uiInputData.put(KEY_WEBSERVICE_RESPONSE, serviceResponse);
+						uiInputData.put(KEY_WORKFLOW_TASK_NEGATIVE_RESPONSE, taskResponse);
 						break;
 					}
 		
-					generalFileNumber = serviceResponse.getResult();
+					generalFileNumber = taskResponse.getResult();
 					uiInputData.put(PersonInfoPaneFxController.KEY_PERSON_INFO_GENERAL_FILE_NUMBER,
 					                generalFileNumber);
 				}
 		
 				convictedReport.setGeneralFileNum(generalFileNumber);
 		
-				ServiceResponse<ConvictedReportResponse> serviceResponse =
+				TaskResponse<ConvictedReportResponse> taskResponse =
 															SubmittingConvictedReportService.execute(convictedReport);
-				uiInputData.put(KEY_WEBSERVICE_RESPONSE, serviceResponse);
+				uiInputData.put(KEY_WORKFLOW_TASK_NEGATIVE_RESPONSE, taskResponse);
 				
-				return true;
+				break;
 			}
 			case 10:
 			{
-				renderUi(ShowReportPaneFxController.class);
-				waitForUserInput();
-				return true;
+				renderUiAndWaitForUserInput(ShowReportPaneFxController.class);
+				break;
 			}
-			default: return false;
 		}
-		
-		return true;
 	}
 }

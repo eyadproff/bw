@@ -17,7 +17,6 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import org.controlsfx.control.NotificationPane;
 import sa.gov.nic.bio.bw.client.core.Context;
-import sa.gov.nic.bio.bw.client.core.WithResourceBundle;
 import sa.gov.nic.bio.bw.client.core.beans.StateBundle;
 import sa.gov.nic.bio.bw.client.core.interfaces.ControllerResourcesLocator;
 import sa.gov.nic.bio.bw.client.core.interfaces.IdleMonitorRegisterer;
@@ -31,11 +30,13 @@ import sa.gov.nic.bio.bw.client.core.utils.GuiLanguage;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.utils.IdleMonitor;
 import sa.gov.nic.bio.bw.client.core.utils.UTF8Control;
+import sa.gov.nic.bio.bw.client.core.utils.WithResourceBundle;
 import sa.gov.nic.bio.bw.client.core.wizard.WizardPane;
 import sa.gov.nic.bio.bw.client.core.workflow.Signal;
 import sa.gov.nic.bio.bw.client.core.workflow.SignalType;
 import sa.gov.nic.bio.bw.client.core.workflow.Workflow;
 import sa.gov.nic.bio.bw.client.home.HomeWorkflow;
+import sa.gov.nic.bio.commons.TaskResponse;
 
 import java.io.IOException;
 import java.net.URL;
@@ -46,7 +47,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
-import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 
 /**
@@ -56,7 +56,6 @@ import java.util.prefs.Preferences;
  */
 public class CoreFxController extends FxControllerBase implements IdleMonitorRegisterer, PersistableEntity
 {
-	private static final Logger LOGGER = Logger.getLogger(CoreFxController.class.getName());
 	public static final String FXML_FILE = "sa/gov/nic/bio/bw/client/core/fxml/core.fxml";
 	public static final String APP_ICON_FILE = "sa/gov/nic/bio/bw/client/core/images/app_icon.png";
 	public static final String RB_LABELS_FILE = "sa/gov/nic/bio/bw/client/core/bundles/strings";
@@ -219,6 +218,7 @@ public class CoreFxController extends FxControllerBase implements IdleMonitorReg
 		GuiUtils.showNode(footerPane, true);
 		clearWizardBar();
 		showMenuTransitionProgressIndicator(true);
+		menuPaneController.emptyMenus();
 		
 		final BodyFxControllerBase controller = currentBodyController;
 		if(controller != null)
@@ -272,8 +272,25 @@ public class CoreFxController extends FxControllerBase implements IdleMonitorReg
 					
 					if(!controller.isDetached())
 					{
-						Workflow.loadWorkflowInputs(controller, uiInputData, true);
-						Platform.runLater(() -> controller.onWorkflowUserTaskLoad(false, uiInputData));
+						TaskResponse<?> negativeTaskResponse = (TaskResponse<?>)
+														uiInputData.get(Workflow.KEY_WORKFLOW_TASK_NEGATIVE_RESPONSE);
+						
+						if(negativeTaskResponse != null)
+						{
+							uiInputData.put(Workflow.KEY_WORKFLOW_TASK_NEGATIVE_RESPONSE, null);
+							Platform.runLater(() ->
+							{
+								controller.preReportNegativeTaskResponse();
+								controller.reportNegativeTaskResponse(negativeTaskResponse.getErrorCode(),
+								                                      negativeTaskResponse.getException(),
+								                                      negativeTaskResponse.getErrorDetails());
+							});
+						}
+						else
+						{
+							Workflow.loadWorkflowInputs(controller, uiInputData, true);
+							Platform.runLater(() -> controller.onWorkflowUserTaskLoad(false, uiInputData));
+						}
 					}
 					
 				}
@@ -341,7 +358,6 @@ public class CoreFxController extends FxControllerBase implements IdleMonitorReg
 		}
 		
 		FXMLLoader paneLoader = new FXMLLoader(fxmlUrl, stringsBundle);
-		paneLoader.setClassLoader(Context.getFxClassLoader());
 		
 		Node loadedPane;
 		try
@@ -360,14 +376,14 @@ public class CoreFxController extends FxControllerBase implements IdleMonitorReg
 		}
 		
 		BodyFxControllerBase bodyFxController = paneLoader.getController();
-		
 		Platform.runLater(() ->
 		{
 			notificationPane.hide();
-			bodyFxController.onAttachedToScene();
+			bodyFxController.preAttachingToScene();
 			bodyPane.setCenter(loadedPane);
 			bodyPane.applyCss();
 			bodyPane.layout();
+			bodyFxController.onAttachedToScene();
 			showMenuTransitionProgressIndicator(false);
 			showWizardTransitionProgressIndicator(false);
 		});
@@ -530,7 +546,6 @@ public class CoreFxController extends FxControllerBase implements IdleMonitorReg
 		String windowTitle = AppUtils.localizeNumbers(title, Locale.getDefault(), false);
 		
 		FXMLLoader newRootPane = new FXMLLoader(fxmlUrl, stringsBundle);
-		newRootPane.setClassLoader(Context.getFxClassLoader());
 		
 		Stage oldStage = stage;
 		

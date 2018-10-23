@@ -13,25 +13,23 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.controlsfx.control.NotificationPane;
 import sa.gov.nic.bio.bw.client.core.Context;
+import sa.gov.nic.bio.bw.client.core.interfaces.AppLogger;
 
 import java.util.function.Consumer;
-import java.util.logging.Logger;
 
 /**
  * A utility class that helps to detect idleness of user activity across the application GUI. When active,
- * any mouse or keyboard action will interrupt the idleness counter and start it over again.
+ * any mouse or keyboard action will resetWorkflowStep the idleness counter and start it over again.
  *
  * The idle monitor consists of two periods. The first period starts when the idle monitor as a whole started
  * and ends by the start of the second period. When the second period started, the warning notification message
  * should be shown on the GUI including a counter that counts until the end of the second period. Any activity
- * by the user should the interrupt the process and the first period starts over.
+ * by the user should the resetWorkflowStep the process and the first period starts over.
  *
  * @author Fouad Almalki
  */
-public class IdleMonitor
+public class IdleMonitor implements AppLogger
 {
-	private static final Logger LOGGER = Logger.getLogger(IdleMonitor.class.getName());
-	
 	private final Timeline beforeWarningTimeline = new Timeline();
 	private final Timeline afterWarningTimeline = new Timeline();
 	private final EventHandler<Event> userEventHandler;
@@ -147,7 +145,7 @@ public class IdleMonitor
 	 * Register a JavaFX stage to monitored for idleness.
 	 *
 	 * @param stage the JavaFX stage to register
-	 * @param eventType the type of event that to be registered which would interrupt the idleness counter
+	 * @param eventType the type of event that to be registered which would resetWorkflowStep the idleness counter
 	 */
 	public void register(Stage stage, EventType<? extends Event> eventType)
 	{

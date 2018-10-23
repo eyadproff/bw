@@ -35,16 +35,15 @@ public class SearchByFaceImageWorkflow extends WizardWorkflowBase
 	}
 	
 	@Override
-	public boolean onStep(int step) throws InterruptedException, Signal
+	public void onStep(int step) throws InterruptedException, Signal
 	{
 		switch(step)
 		{
 			case 0:
 			{
 				setData(ImageSourceFxController.class, "hidePreviousButton", true);
-				renderUi(ImageSourceFxController.class);
-				waitForUserInput();
-				return true;
+				renderUiAndWaitForUserInput(ImageSourceFxController.class);
+				break;
 			}
 			case 1:
 			{
@@ -53,15 +52,14 @@ public class SearchByFaceImageWorkflow extends WizardWorkflowBase
 				if(Source.CAMERA.equals(imageSource))
 				{
 					setData(FaceCapturingFxController.class, "acceptAnyCapturedImage", true);
-					renderUi(FaceCapturingFxController.class);
+					renderUiAndWaitForUserInput(FaceCapturingFxController.class);
 				}
 				else if(Source.UPLOAD.equals(imageSource))
 				{
-					renderUi(UploadImageFileFxController.class);
+					renderUiAndWaitForUserInput(UploadImageFileFxController.class);
 				}
 				
-				waitForUserInput();
-				return true;
+				break;
 			}
 			case 2:
 			{
@@ -78,20 +76,18 @@ public class SearchByFaceImageWorkflow extends WizardWorkflowBase
 					         "faceImage");
 				}
 				
-				renderUi(ConfirmImageFxController.class);
-				waitForUserInput();
-				return true;
+				renderUiAndWaitForUserInput(ConfirmImageFxController.class);
+				break;
 			}
 			case 3:
 			{
-				renderUi(SearchFxController.class);
-				waitForUserInput();
+				renderUiAndWaitForUserInput(SearchFxController.class);
 				
 				passData(ConfirmImageFxController.class, SearchByFaceImageWorkflowTask.class,
 				         "faceImageBase64");
 				executeTask(SearchByFaceImageWorkflowTask.class);
 				
-				return true;
+				break;
 			}
 			case 4:
 			{
@@ -100,11 +96,9 @@ public class SearchByFaceImageWorkflow extends WizardWorkflowBase
 				passData(SearchByFaceImageWorkflowTask.class,  ShowResultsFxController.class,
 				         "candidates");
 				
-				renderUi(ShowResultsFxController.class);
-				waitForUserInput();
-				return true;
+				renderUiAndWaitForUserInput(ShowResultsFxController.class);
+				break;
 			}
-			default: return false;
 		}
 	}
 }

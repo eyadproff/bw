@@ -18,7 +18,6 @@ import org.controlsfx.glyphfont.Glyph;
 import sa.gov.nic.bio.bcl.utils.BclUtils;
 import sa.gov.nic.bio.bcl.utils.CancelCommand;
 import sa.gov.nic.bio.biokit.beans.InitializeResponse;
-import sa.gov.nic.bio.biokit.beans.ServiceResponse;
 import sa.gov.nic.bio.biokit.beans.ShutdownResponse;
 import sa.gov.nic.bio.biokit.exceptions.AlreadyConnectedException;
 import sa.gov.nic.bio.biokit.websocket.ClosureListener;
@@ -33,12 +32,12 @@ import sa.gov.nic.bio.bw.client.core.utils.FingerprintDeviceType;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.utils.RuntimeEnvironment;
 import sa.gov.nic.bio.bw.client.features.commons.utils.CommonsErrorCodes;
+import sa.gov.nic.bio.commons.TaskResponse;
 
 import java.util.Set;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.Future;
 import java.util.function.Consumer;
-import java.util.logging.Logger;
 
 /**
  * JavaFX controller for the devices runner gadget.
@@ -47,9 +46,6 @@ import java.util.logging.Logger;
  */
 public class DevicesRunnerGadgetPaneFxController extends RegionFxControllerBase
 {
-	private static final Logger LOGGER = Logger.getLogger(DevicesRunnerGadgetPaneFxController.class.getName());
-
-	
 	enum DeviceStatus
 	{
 		INITIALIZED,
@@ -365,7 +361,7 @@ public class DevicesRunnerGadgetPaneFxController extends RegionFxControllerBase
 		CancelCommand cancelCommand = new CancelCommand();
 		String message = resources.getString("label.restartingDevicesRunner");
 		
-		Future<ServiceResponse<ShutdownResponse>> future = Context.getBioKitManager().getBiokitCommander().shutdown();
+		Future<TaskResponse<ShutdownResponse>> future = Context.getBioKitManager().getBiokitCommander().shutdown();
 		Stage dialogStage = DialogUtils.buildProgressDialog(cancelCommand, message, future,
 		                                                    resources.getString("button.cancel"));
 		
@@ -374,11 +370,11 @@ public class DevicesRunnerGadgetPaneFxController extends RegionFxControllerBase
 			@Override
 			protected Void call() throws Exception
 			{
-				ServiceResponse<ShutdownResponse> serviceResponse = future.get();
+				TaskResponse<ShutdownResponse> taskResponse = future.get();
 				
-				if(serviceResponse.isSuccess())
+				if(taskResponse.isSuccess())
 				{
-					ShutdownResponse result = serviceResponse.getResult();
+					ShutdownResponse result = taskResponse.getResult();
 					
 					if(result.getReturnCode() == ShutdownResponse.SuccessCodes.BIOKIT_IS_SHUTTING_DOWN)
 					{
@@ -408,8 +404,8 @@ public class DevicesRunnerGadgetPaneFxController extends RegionFxControllerBase
 					LOGGER.severe("failed to receive a response for shutting down the devices runner!");
 					
 					String[] errorDetails = {"failed to receive a response for shutting down the devices runner!"};
-					Context.getCoreFxController().showErrorDialog(serviceResponse.getErrorCode(),
-					                                              serviceResponse.getException(), errorDetails);
+					Context.getCoreFxController().showErrorDialog(taskResponse.getErrorCode(),
+					                                              taskResponse.getException(), errorDetails);
 				}
 				
 				return null;
@@ -452,15 +448,15 @@ public class DevicesRunnerGadgetPaneFxController extends RegionFxControllerBase
 		CancelCommand cancelCommand = new CancelCommand();
 		String message = resources.getString("label.initializingFingerprintScanner");
 		
-		Future<ServiceResponse<InitializeResponse>> future = Context.getBioKitManager().getFingerprintService()
+		Future<TaskResponse<InitializeResponse>> future = Context.getBioKitManager().getFingerprintService()
 																	.initialize(fingerprintDeviceType.getPosition());
 		Stage dialogStage = DialogUtils.buildProgressDialog(cancelCommand, message, future,
 		                                                    resources.getString("button.cancel"));
 		
-		Task<ServiceResponse<InitializeResponse>> task = new Task<ServiceResponse<InitializeResponse>>()
+		Task<TaskResponse<InitializeResponse>> task = new Task<TaskResponse<InitializeResponse>>()
 		{
 			@Override
-			protected ServiceResponse<InitializeResponse> call() throws Exception
+			protected TaskResponse<InitializeResponse> call() throws Exception
 			{
 				return future.get();
 			}
@@ -471,11 +467,11 @@ public class DevicesRunnerGadgetPaneFxController extends RegionFxControllerBase
 		    dialogStage.close();
 		    if(cancelCommand.isCanceled()) return;
 		
-		    ServiceResponse<InitializeResponse> serviceResponse = task.getValue();
+		    TaskResponse<InitializeResponse> taskResponse = task.getValue();
 		
-		    if(serviceResponse.isSuccess())
+		    if(taskResponse.isSuccess())
 		    {
-		        InitializeResponse result = serviceResponse.getResult();
+		        InitializeResponse result = taskResponse.getResult();
 		
 		        if(result.getReturnCode() == InitializeResponse.SuccessCodes.SUCCESS)
 		        {
@@ -515,8 +511,8 @@ public class DevicesRunnerGadgetPaneFxController extends RegionFxControllerBase
 		        LOGGER.severe("failed to receive a response for initializing the fingerprint scanner!");
 		
 		        String[] errorDetails = {"failed to receive a response for initializing the fingerprint scanner!"};
-		        Context.getCoreFxController().showErrorDialog(serviceResponse.getErrorCode(),
-		                                                      serviceResponse.getException(), errorDetails);
+		        Context.getCoreFxController().showErrorDialog(taskResponse.getErrorCode(),
+		                                                      taskResponse.getException(), errorDetails);
 		    }
 		});
 		task.setOnFailed(e ->
@@ -552,14 +548,14 @@ public class DevicesRunnerGadgetPaneFxController extends RegionFxControllerBase
 		CancelCommand cancelCommand = new CancelCommand();
 		String message = resources.getString("label.initializingCamera");
 		
-		Future<ServiceResponse<InitializeResponse>> future = Context.getBioKitManager().getFaceService().initialize();
+		Future<TaskResponse<InitializeResponse>> future = Context.getBioKitManager().getFaceService().initialize();
 		Stage dialogStage = DialogUtils.buildProgressDialog(cancelCommand, message, future,
 		                                                    resources.getString("button.cancel"));
 		
-		Task<ServiceResponse<InitializeResponse>> task = new Task<ServiceResponse<InitializeResponse>>()
+		Task<TaskResponse<InitializeResponse>> task = new Task<TaskResponse<InitializeResponse>>()
 		{
 			@Override
-			protected ServiceResponse<InitializeResponse> call() throws Exception
+			protected TaskResponse<InitializeResponse> call() throws Exception
 			{
 				return future.get();
 			}
@@ -570,11 +566,11 @@ public class DevicesRunnerGadgetPaneFxController extends RegionFxControllerBase
 			dialogStage.close();
 			if(cancelCommand.isCanceled()) return;
 			
-		    ServiceResponse<InitializeResponse> serviceResponse = task.getValue();
+		    TaskResponse<InitializeResponse> taskResponse = task.getValue();
 		
-		    if(serviceResponse.isSuccess())
+		    if(taskResponse.isSuccess())
 		    {
-		        InitializeResponse result = serviceResponse.getResult();
+		        InitializeResponse result = taskResponse.getResult();
 		
 		        if(result.getReturnCode() == InitializeResponse.SuccessCodes.SUCCESS)
 		        {
@@ -602,8 +598,8 @@ public class DevicesRunnerGadgetPaneFxController extends RegionFxControllerBase
 			    LOGGER.severe("failed to receive a response for initializing the camera!");
 			
 			    String[] errorDetails = {"failed to receive a response for initializing the camera!"};
-			    Context.getCoreFxController().showErrorDialog(serviceResponse.getErrorCode(),
-			                                                  serviceResponse.getException(), errorDetails);
+			    Context.getCoreFxController().showErrorDialog(taskResponse.getErrorCode(),
+			                                                  taskResponse.getException(), errorDetails);
 		    }
 		});
 		task.setOnFailed(e ->
@@ -639,15 +635,15 @@ public class DevicesRunnerGadgetPaneFxController extends RegionFxControllerBase
 		CancelCommand cancelCommand = new CancelCommand();
 		String message = resources.getString("label.initializingPassportScanner");
 		
-		Future<ServiceResponse<InitializeResponse>> future = Context.getBioKitManager().getPassportScannerService()
+		Future<TaskResponse<InitializeResponse>> future = Context.getBioKitManager().getPassportScannerService()
 																					   .initialize();
 		Stage dialogStage = DialogUtils.buildProgressDialog(cancelCommand, message, future,
 		                                                    resources.getString("button.cancel"));
 		
-		Task<ServiceResponse<InitializeResponse>> task = new Task<ServiceResponse<InitializeResponse>>()
+		Task<TaskResponse<InitializeResponse>> task = new Task<TaskResponse<InitializeResponse>>()
 		{
 			@Override
-			protected ServiceResponse<InitializeResponse> call() throws Exception
+			protected TaskResponse<InitializeResponse> call() throws Exception
 			{
 				return future.get();
 			}
@@ -658,11 +654,11 @@ public class DevicesRunnerGadgetPaneFxController extends RegionFxControllerBase
 		    dialogStage.close();
 		    if(cancelCommand.isCanceled()) return;
 		
-		    ServiceResponse<InitializeResponse> serviceResponse = task.getValue();
+		    TaskResponse<InitializeResponse> taskResponse = task.getValue();
 		
-		    if(serviceResponse.isSuccess())
+		    if(taskResponse.isSuccess())
 		    {
-		        InitializeResponse result = serviceResponse.getResult();
+		        InitializeResponse result = taskResponse.getResult();
 		
 		        if(result.getReturnCode() == InitializeResponse.SuccessCodes.SUCCESS)
 		        {
@@ -690,8 +686,8 @@ public class DevicesRunnerGadgetPaneFxController extends RegionFxControllerBase
 		        LOGGER.severe("failed to receive a response for initializing the passport scanner!");
 		
 		        String[] errorDetails = {"failed to receive a response for initializing the passport scanner!"};
-		        Context.getCoreFxController().showErrorDialog(serviceResponse.getErrorCode(),
-		                                                      serviceResponse.getException(), errorDetails);
+		        Context.getCoreFxController().showErrorDialog(taskResponse.getErrorCode(),
+		                                                      taskResponse.getException(), errorDetails);
 		    }
 		});
 		task.setOnFailed(e ->

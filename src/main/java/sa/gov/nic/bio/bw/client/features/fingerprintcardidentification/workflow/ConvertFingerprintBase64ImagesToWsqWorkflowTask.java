@@ -4,9 +4,10 @@ import sa.gov.nic.bio.biokit.fingerprint.beans.ConvertedFingerprintWsqResponse;
 import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.workflow.Input;
 import sa.gov.nic.bio.bw.client.core.workflow.Output;
+import sa.gov.nic.bio.bw.client.core.workflow.Signal;
 import sa.gov.nic.bio.bw.client.core.workflow.WorkflowTask;
 import sa.gov.nic.bio.bw.client.features.fingerprintcardidentification.utils.FingerprintCardIdentificationErrorCodes;
-import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
+import sa.gov.nic.bio.commons.TaskResponse;
 
 import java.util.Map;
 import java.util.concurrent.Future;
@@ -17,14 +18,14 @@ public class ConvertFingerprintBase64ImagesToWsqWorkflowTask implements Workflow
 	@Output private Map<Integer, String> fingerprintWsqImages;
 	
 	@Override
-	public ServiceResponse<?> execute()
+	public void execute() throws Signal
 	{
-		Future<sa.gov.nic.bio.biokit.beans.ServiceResponse<ConvertedFingerprintWsqResponse>>
+		Future<TaskResponse<ConvertedFingerprintWsqResponse>>
 										 serviceResponseFuture = Context.getBioKitManager()
 																		.getFingerprintUtilitiesService()
 																		.convertImagesToWsq(fingerprintBase64Images);
 		
-		sa.gov.nic.bio.biokit.beans.ServiceResponse<ConvertedFingerprintWsqResponse> response;
+		TaskResponse<ConvertedFingerprintWsqResponse> response;
 		try
 		{
 			response = serviceResponseFuture.get();
@@ -33,20 +34,11 @@ public class ConvertFingerprintBase64ImagesToWsqWorkflowTask implements Workflow
 		{
 			String errorCode = FingerprintCardIdentificationErrorCodes.C013_00003.getCode();
 			String[] errorDetails = {"Failed to call the service for converting to WSQ!"};
-			return ServiceResponse.failure(errorCode, e, errorDetails);
+			resetWorkflowStepIfNegativeOrNullTaskResponse(TaskResponse.failure(errorCode, e, errorDetails));
+			return;
 		}
 		
-		if(response.isSuccess())
-		{
-			ConvertedFingerprintWsqResponse responseResult = response.getResult();
-			fingerprintWsqImages = responseResult.getFingerprintWsqMap();
-		}
-		else
-		{
-			String[] errorDetails = {"Failed to convert to WSQ!"};
-			return ServiceResponse.failure(response.getErrorCode(), response.getException(), errorDetails);
-		}
-		
-		return ServiceResponse.success();
+		ConvertedFingerprintWsqResponse responseResult = response.getResult();
+		fingerprintWsqImages = responseResult.getFingerprintWsqMap();
 	}
 }

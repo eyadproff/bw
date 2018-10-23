@@ -1,15 +1,14 @@
 package sa.gov.nic.bio.bw.client.core.utils;
 
+import sa.gov.nic.bio.bw.client.core.interfaces.AppLogger;
+
 import java.io.File;
 import java.io.RandomAccessFile;
 import java.nio.channels.FileLock;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
-public class AppInstanceManager
+public class AppInstanceManager implements AppLogger
 {
-	private static final Logger LOGGER = Logger.getLogger(AppInstanceManager.class.getName());
-	
 	public static boolean checkIfAlreadyRunning()
 	{
 		String userHomeDirectory = System.getProperty("user.home");

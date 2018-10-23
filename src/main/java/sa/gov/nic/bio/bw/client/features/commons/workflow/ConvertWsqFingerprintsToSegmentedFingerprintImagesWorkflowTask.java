@@ -7,10 +7,11 @@ import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.biokit.FingerPosition;
 import sa.gov.nic.bio.bw.client.core.workflow.Input;
 import sa.gov.nic.bio.bw.client.core.workflow.Output;
+import sa.gov.nic.bio.bw.client.core.workflow.Signal;
 import sa.gov.nic.bio.bw.client.core.workflow.WorkflowTask;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.Finger;
 import sa.gov.nic.bio.bw.client.features.printdeadpersonrecord.utils.PrintDeadPersonRecordPresentErrorCodes;
-import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
+import sa.gov.nic.bio.commons.TaskResponse;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,7 +29,7 @@ public class ConvertWsqFingerprintsToSegmentedFingerprintImagesWorkflowTask impl
 	@Output private Map<Integer, String> fingerprintImages;
 	
 	@Override
-	public ServiceResponse<?> execute()
+	public void execute() throws Signal
 	{
 		List<Integer> availableFingerprints = IntStream.rangeClosed(1, 10).boxed().collect(Collectors.toList());
 		availableFingerprints.removeAll(missingFingerprints);
@@ -76,14 +77,14 @@ public class ConvertWsqFingerprintsToSegmentedFingerprintImagesWorkflowTask impl
 					else slapMissingFingers.add(FingerPosition.LEFT_THUMB.getPosition());
 				}
 				
-				Future<sa.gov.nic.bio.biokit.beans.ServiceResponse<SegmentFingerprintsResponse>>
+				Future<TaskResponse<SegmentFingerprintsResponse>>
 										 serviceResponseFuture = Context.getBioKitManager()
 																		.getFingerprintUtilitiesService()
 																		.segmentSlap(slapImageBase64, slapImageFormat,
 																		             position, expectedFingersCount,
 																		             slapMissingFingers);
 				
-				sa.gov.nic.bio.biokit.beans.ServiceResponse<SegmentFingerprintsResponse> response;
+				TaskResponse<SegmentFingerprintsResponse> response;
 				try
 				{
 					response = serviceResponseFuture.get();
@@ -93,21 +94,16 @@ public class ConvertWsqFingerprintsToSegmentedFingerprintImagesWorkflowTask impl
 					String errorCode = PrintDeadPersonRecordPresentErrorCodes.C012_00001.getCode();
 					String[] errorDetails =
 							{"Failed to call the service for segmenting the fingerprints!"};
-					return ServiceResponse.failure(errorCode, e, errorDetails);
+					resetWorkflowStepIfNegativeOrNullTaskResponse(TaskResponse.failure(errorCode, e, errorDetails));
+					return;
 				}
 				
-				if(response.isSuccess())
-				{
-					SegmentFingerprintsResponse result = response.getResult();
-					List<DMFingerData> fingerData = result.getFingerData();
-					fingerData.forEach(dmFingerData -> fingerprintImages.put(dmFingerData.getPosition(),
-					                                                         dmFingerData.getFinger()));
-				}
-				else
-				{
-					String[] errorDetails = {"Failed to segment the fingerprints!"};
-					return ServiceResponse.failure(response.getErrorCode(), response.getException(), errorDetails);
-				}
+				resetWorkflowStepIfNegativeOrNullTaskResponse(response);
+				
+				SegmentFingerprintsResponse result = response.getResult();
+				List<DMFingerData> fingerData = result.getFingerData();
+				fingerData.forEach(dmFingerData -> fingerprintImages.put(dmFingerData.getPosition(),
+				                                                         dmFingerData.getFinger()));
 			}
 			else
 			{
@@ -122,12 +118,12 @@ public class ConvertWsqFingerprintsToSegmentedFingerprintImagesWorkflowTask impl
 		
 		if(!fingerprintWsqMap.isEmpty())
 		{
-			Future<sa.gov.nic.bio.biokit.beans.ServiceResponse<ConvertedFingerprintImagesResponse>>
+			Future<TaskResponse<ConvertedFingerprintImagesResponse>>
 												serviceResponseFuture = Context.getBioKitManager()
 																			   .getFingerprintUtilitiesService()
 																			   .convertWsqToImages(fingerprintWsqMap);
 			
-			sa.gov.nic.bio.biokit.beans.ServiceResponse<ConvertedFingerprintImagesResponse> response;
+			TaskResponse<ConvertedFingerprintImagesResponse> response;
 			try
 			{
 				response = serviceResponseFuture.get();
@@ -136,23 +132,17 @@ public class ConvertWsqFingerprintsToSegmentedFingerprintImagesWorkflowTask impl
 			{
 				String errorCode = PrintDeadPersonRecordPresentErrorCodes.C012_00002.getCode();
 				String[] errorDetails = {"Failed to call the service for converting the WSQ!"};
-				return ServiceResponse.failure(errorCode, e, errorDetails);
+				resetWorkflowStepIfNegativeOrNullTaskResponse(TaskResponse.failure(errorCode, e, errorDetails));
+				return;
 			}
 			
-			if(response.isSuccess())
-			{
-				ConvertedFingerprintImagesResponse responseResult = response.getResult();
-				Map<Integer, String> result = responseResult.getFingerprintImagesMap();
-				fingerprintImages.putAll(result);
-			}
-			else
-			{
-				String[] errorDetails = {"Failed to convert the WSQ!"};
-				return ServiceResponse.failure(response.getErrorCode(), response.getException(), errorDetails);
-			}
+			resetWorkflowStepIfNegativeOrNullTaskResponse(response);
+			
+			ConvertedFingerprintImagesResponse responseResult = response.getResult();
+			Map<Integer, String> result = responseResult.getFingerprintImagesMap();
+			fingerprintImages.putAll(result);
 		}
 		
 		this.fingerprintImages = fingerprintImages;
-		return ServiceResponse.success();
 	}
 }

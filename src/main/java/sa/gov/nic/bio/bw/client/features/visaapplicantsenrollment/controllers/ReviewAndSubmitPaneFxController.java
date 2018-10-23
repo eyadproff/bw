@@ -28,7 +28,7 @@ import sa.gov.nic.bio.bw.client.features.visaapplicantsenrollment.webservice.Pas
 import sa.gov.nic.bio.bw.client.features.visaapplicantsenrollment.webservice.VisaApplicantInfo;
 import sa.gov.nic.bio.bw.client.features.visaapplicantsenrollment.webservice.VisaTypeBean;
 import sa.gov.nic.bio.bw.client.features.visaapplicantsenrollment.workflow.VisaApplicantEnrollmentResponse;
-import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
+import sa.gov.nic.bio.commons.TaskResponse;
 
 import java.io.ByteArrayInputStream;
 import java.net.URL;
@@ -272,11 +272,11 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 			GuiUtils.showNode(btnPrevious, true);
 			GuiUtils.showNode(btnSubmit, true);
 			
-			@SuppressWarnings("unchecked") ServiceResponse<VisaApplicantEnrollmentResponse> serviceResponse =
-				(ServiceResponse<VisaApplicantEnrollmentResponse>) uiInputData.get(Workflow.KEY_WEBSERVICE_RESPONSE);
-			if(serviceResponse.isSuccess())
+			@SuppressWarnings("unchecked") TaskResponse<VisaApplicantEnrollmentResponse> taskResponse =
+				(TaskResponse<VisaApplicantEnrollmentResponse>) uiInputData.get(Workflow.KEY_WORKFLOW_TASK_NEGATIVE_RESPONSE);
+			if(taskResponse.isSuccess())
 			{
-				VisaApplicantEnrollmentResponse result = serviceResponse.getResult();
+				VisaApplicantEnrollmentResponse result = taskResponse.getResult();
 				if(result != null)
 				{
 					visaApplicantInfo.setApplicantId(result.getApplicantId());
@@ -287,11 +287,11 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 				{
 					String errorCode = VisaApplicantsEnrollmentErrorCodes.C010_00001.getCode();
 					String[] errorDetails = {"result is null!"};
-					reportNegativeResponse(errorCode, null, errorDetails);
+					reportNegativeTaskResponse(errorCode, null, errorDetails);
 				}
 			}
-			else reportNegativeResponse(serviceResponse.getErrorCode(), serviceResponse.getException(),
-				                        serviceResponse.getErrorDetails());
+			else reportNegativeTaskResponse(taskResponse.getErrorCode(), taskResponse.getException(),
+			                                taskResponse.getErrorDetails());
 		}
 	}
 	

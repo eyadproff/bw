@@ -16,11 +16,11 @@ import sa.gov.nic.bio.biokit.websocket.UpdateListener;
 import sa.gov.nic.bio.biokit.websocket.WebsocketLogger;
 import sa.gov.nic.bio.biokit.websocket.beans.Message;
 import sa.gov.nic.bio.bw.client.core.Context;
-import sa.gov.nic.bio.bw.client.core.controllers.CoreFxController;
-import sa.gov.nic.bio.bw.client.core.WithResourceBundle;
 import sa.gov.nic.bio.bw.client.core.beans.MenuItem;
 import sa.gov.nic.bio.bw.client.core.beans.UserSession;
 import sa.gov.nic.bio.bw.client.core.biokit.BioKitManager;
+import sa.gov.nic.bio.bw.client.core.controllers.CoreFxController;
+import sa.gov.nic.bio.bw.client.core.interfaces.AppLogger;
 import sa.gov.nic.bio.bw.client.core.utils.AppConstants;
 import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.client.core.utils.CombinedResourceBundle;
@@ -31,6 +31,7 @@ import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.utils.PreloaderNotification;
 import sa.gov.nic.bio.bw.client.core.utils.RuntimeEnvironment;
 import sa.gov.nic.bio.bw.client.core.utils.UTF8Control;
+import sa.gov.nic.bio.bw.client.core.utils.WithResourceBundle;
 import sa.gov.nic.bio.bw.client.core.webservice.LookupAPI;
 import sa.gov.nic.bio.bw.client.core.webservice.NicHijriCalendarData;
 import sa.gov.nic.bio.bw.client.core.webservice.WebserviceManager;
@@ -38,8 +39,8 @@ import sa.gov.nic.bio.bw.client.core.workflow.AssociatedMenu;
 import sa.gov.nic.bio.bw.client.core.workflow.Workflow;
 import sa.gov.nic.bio.bw.client.core.workflow.WorkflowManager;
 import sa.gov.nic.bio.bw.client.home.utils.HomeErrorCodes;
-import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
 import sa.gov.nic.bio.bw.client.preloader.utils.StartupErrorCodes;
+import sa.gov.nic.bio.commons.TaskResponse;
 
 import javax.websocket.CloseReason;
 import java.io.IOException;
@@ -61,7 +62,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * The entry point of the application. Since Java 8, the main method is not required as long as the entry point
@@ -77,10 +77,8 @@ import java.util.logging.Logger;
  *
  * @author Fouad Almalki
  */
-public class AppEntryPoint extends Application
+public class AppEntryPoint extends Application implements AppLogger
 {
-	private static final Logger LOGGER = Logger.getLogger(AppEntryPoint.class.getName());
-	
 	private static final ThreadFactory DAEMON_THREAD_FACTORY = runnable ->
 	{
 		Thread thread = Executors.defaultThreadFactory().newThread(runnable);
@@ -273,19 +271,19 @@ public class AppEntryPoint extends Application
 	    }
 	
 	    LookupAPI lookupAPI = webserviceManager.getApi(LookupAPI.class);
-	    Call<Map<String, String>> apiCall = lookupAPI.lookupAppConfigs("BW");
-	    ServiceResponse<Map<String, String>> webServiceResponse = webserviceManager.executeApi(apiCall);
+	    Call<Map<String, String>> apiCall = lookupAPI.lookupAppConfigs(AppConstants.APP_CODE);
+	    TaskResponse<Map<String, String>> webTaskResponse = webserviceManager.executeApi(apiCall);
 	
-	    if(webServiceResponse.isSuccess())
+	    if(webTaskResponse.isSuccess())
 	    {
-		    Map<String, String> appConfigs = webServiceResponse.getResult();
+		    Map<String, String> appConfigs = webTaskResponse.getResult();
 		    configManager.addProperties(appConfigs);
 	    }
 	    else
 	    {
-		    String errorCode = webServiceResponse.getErrorCode();
-		    String[] errorDetails = webServiceResponse.getErrorDetails();
-		    Exception exception = webServiceResponse.getException();
+		    String errorCode = webTaskResponse.getErrorCode();
+		    String[] errorDetails = webTaskResponse.getErrorDetails();
+		    Exception exception = webTaskResponse.getException();
 		    notifyPreloader(PreloaderNotification.failure(exception, errorCode, errorDetails));
 		    return;
 	    }
@@ -522,11 +520,11 @@ public class AppEntryPoint extends Application
 	                   subMenus, classesWithResourceBundles);
 	
 	    Call<NicHijriCalendarData> apiCall2 = lookupAPI.lookupNicHijriCalendarData();
-	    ServiceResponse<NicHijriCalendarData> webServiceResponse2 = webserviceManager.executeApi(apiCall2);
+	    TaskResponse<NicHijriCalendarData> webTaskResponse2 = webserviceManager.executeApi(apiCall2);
 	
-	    if(webServiceResponse2.isSuccess())
+	    if(webTaskResponse2.isSuccess())
 	    {
-		    NicHijriCalendarData nicHijriCalendarData = webServiceResponse2.getResult();
+		    NicHijriCalendarData nicHijriCalendarData = webTaskResponse2.getResult();
 		    try
 		    {
 			    AppUtils.injectNicHijriCalendarData(nicHijriCalendarData);
@@ -541,9 +539,9 @@ public class AppEntryPoint extends Application
 	    }
 	    else
 	    {
-		    Exception exception = webServiceResponse2.getException();
-		    String errorCode = webServiceResponse2.getErrorCode();
-		    String[] errorDetails = webServiceResponse2.getErrorDetails();
+		    Exception exception = webTaskResponse2.getException();
+		    String errorCode = webTaskResponse2.getErrorCode();
+		    String[] errorDetails = webTaskResponse2.getErrorDetails();
 		    notifyPreloader(PreloaderNotification.failure(exception, errorCode, errorDetails));
 		    return;
 	    }
@@ -579,7 +577,6 @@ public class AppEntryPoint extends Application
 	    windowTitle = AppUtils.localizeNumbers(title, Locale.getDefault(), false);
 	
 	    FXMLLoader rootPaneLoader = new FXMLLoader(fxmlUrl, stringsBundle);
-	    rootPaneLoader.setClassLoader(Context.getFxClassLoader());
 	
 	    try
 	    {

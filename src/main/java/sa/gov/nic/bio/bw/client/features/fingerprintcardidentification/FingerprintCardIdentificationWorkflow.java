@@ -18,9 +18,9 @@ import sa.gov.nic.bio.bw.client.features.fingerprintcardidentification.controlle
 import sa.gov.nic.bio.bw.client.features.fingerprintcardidentification.controllers.SpecifyFingerprintCoordinatesPaneFxController;
 import sa.gov.nic.bio.bw.client.features.fingerprintcardidentification.workflow.ConvertFingerprintBase64ImagesToWsqWorkflowTask;
 import sa.gov.nic.bio.bw.client.features.fingerprintcardidentification.workflow.ConvertFingerprintImagesToBase64WorkflowTask;
-import sa.gov.nic.bio.bw.client.features.fingerprintcardidentification.workflow.FingerprintInquiryStatusCheckerWorkflowTask;
-import sa.gov.nic.bio.bw.client.features.fingerprintcardidentification.workflow.FingerprintInquiryStatusCheckerWorkflowTask.Status;
-import sa.gov.nic.bio.bw.client.features.fingerprintcardidentification.workflow.FingerprintInquiryWorkflowTask;
+import sa.gov.nic.bio.bw.client.features.commons.workflow.FingerprintInquiryStatusCheckerWorkflowTask;
+import sa.gov.nic.bio.bw.client.features.commons.workflow.FingerprintInquiryStatusCheckerWorkflowTask.Status;
+import sa.gov.nic.bio.bw.client.features.commons.workflow.FingerprintInquiryWorkflowTask;
 import sa.gov.nic.bio.bw.client.features.fingerprintcardidentification.workflow.FingerprintsWsqToFingerConverter;
 
 import java.util.Map;
@@ -44,24 +44,22 @@ public class FingerprintCardIdentificationWorkflow extends WizardWorkflowBase
 	}
 	
 	@Override
-	public boolean onStep(int step) throws InterruptedException, Signal
+	public void onStep(int step) throws InterruptedException, Signal
 	{
 		switch(step)
 		{
 			case 0:
 			{
-				renderUi(ScanFingerprintCardPaneFxController.class);
-				waitForUserInput();
-				return true;
+				renderUiAndWaitForUserInput(ScanFingerprintCardPaneFxController.class);
+				break;
 			}
 			case 1:
 			{
 				passData(ScanFingerprintCardPaneFxController.class, "cardImage",
 				         SpecifyFingerprintCoordinatesPaneFxController.class, "cardImage");
 				
-				renderUi(SpecifyFingerprintCoordinatesPaneFxController.class);
-				waitForUserInput();
-				return true;
+				renderUiAndWaitForUserInput(SpecifyFingerprintCoordinatesPaneFxController.class);
+				break;
 			}
 			case 2:
 			{
@@ -69,9 +67,8 @@ public class FingerprintCardIdentificationWorkflow extends WizardWorkflowBase
 				         FingerprintsAfterCroppingPaneFxController.class,
 				         "fingerprintImages");
 				
-				renderUi(FingerprintsAfterCroppingPaneFxController.class);
-				waitForUserInput();
-				return true;
+				renderUiAndWaitForUserInput(FingerprintsAfterCroppingPaneFxController.class);
+				break;
 			}
 			case 3:
 			{
@@ -79,8 +76,7 @@ public class FingerprintCardIdentificationWorkflow extends WizardWorkflowBase
 				         InquiryByFingerprintsPaneFxController.class,
 				         "status");
 				
-				renderUi(InquiryByFingerprintsPaneFxController.class);
-				waitForUserInput();
+				renderUiAndWaitForUserInput(InquiryByFingerprintsPaneFxController.class);
 				
 				Integer inquiryId = getData(FingerprintInquiryWorkflowTask.class, "inquiryId");
 				
@@ -113,7 +109,7 @@ public class FingerprintCardIdentificationWorkflow extends WizardWorkflowBase
 				if(status == Status.HIT || status == Status.NOT_HIT)
 									setData(FingerprintInquiryWorkflowTask.class, "inquiryId", null);
 				
-				return true;
+				break;
 			}
 			case 4:
 			{
@@ -130,12 +126,10 @@ public class FingerprintCardIdentificationWorkflow extends WizardWorkflowBase
 				passData(ConvertFingerprintImagesToBase64WorkflowTask.class, InquiryResultPaneFxController.class,
 				         "fingerprintBase64Images");
 				
-				renderUi(InquiryResultPaneFxController.class);
-				waitForUserInput();
+				renderUiAndWaitForUserInput(InquiryResultPaneFxController.class);
 				
-				return true;
+				break;
 			}
-			default: return false;
 		}
 	}
 }

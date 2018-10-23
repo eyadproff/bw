@@ -1,11 +1,11 @@
 package sa.gov.nic.bio.bw.client.core.workflow;
 
+import sa.gov.nic.bio.bw.client.core.interfaces.AppLogger;
 import sa.gov.nic.bio.bw.client.core.interfaces.FormRenderer;
 
 import java.util.Map;
 import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.logging.Logger;
 
 /**
  * It manages starting the core workflow and submitting user tasks to the core workflow. A user task represents
@@ -13,9 +13,8 @@ import java.util.logging.Logger;
  *
  * @author Fouad Almalki
  */
-public class WorkflowManager
+public class WorkflowManager implements AppLogger
 {
-	private static final Logger LOGGER = Logger.getLogger(WorkflowManager.class.getName());
 	private Workflow<Void, Void> coreWorkflow;
 	private Thread workflowThread;
 	private AtomicReference<FormRenderer> formRendererReference = new AtomicReference<>();

@@ -1,6 +1,8 @@
 package sa.gov.nic.bio.bw.client.core.workflow;
 
 import sa.gov.nic.bio.bw.client.core.controllers.BodyFxControllerBase;
+import sa.gov.nic.bio.bw.client.core.interfaces.AppLogger;
+import sa.gov.nic.bio.bw.client.core.utils.CoreErrorCodes;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;
@@ -9,10 +11,10 @@ import java.util.function.BooleanSupplier;
 
 /**
  * The workflow that manages business processes and monitors their state. The workflow starts by starting its
- * <code>onProcess()</code> method. <code>waitForUserInput()</code> is called from within <code>onProcess()</code>
+ * <code>onProcess()</code> method. <code>renderUiAndWaitForUserInput()</code> is called from within <code>onProcess()</code>
  * to wait for user tasks which can be submitted by a different thread/context using <code>submitUserInput()</code>.
  * Workflows can be nested, i.e. workflow A's onProcess() can invoke workflow B's onProcess().
- * <code>waitForUserInput()</code> can throw a signal which is used to carry and propagate a message to
+ * <code>renderUiAndWaitForUserInput()</code> can throw a signal which is used to carry and propagate a message to
  * a parent workflow.
  *
  * @param <I> type of the workflow's input. Use <code>Void</code> in case of not input
@@ -20,9 +22,9 @@ import java.util.function.BooleanSupplier;
  *
  * @author Fouad Almalki
  */
-public interface Workflow<I, O>
+public interface Workflow<I, O> extends AppLogger
 {
-	String KEY_WEBSERVICE_RESPONSE = "WEBSERVICE_RESPONSE";
+	String KEY_WORKFLOW_TASK_NEGATIVE_RESPONSE = "WORKFLOW_TASK_NEGATIVE_RESPONSE";
 	String KEY_SIGNAL_TYPE = "SIGNAL_TYPE";
 	String KEY_ERROR_CODE = "ERROR_CODE";
 	String KEY_ERROR_DETAILS = "ERROR_DETAILS";
@@ -47,14 +49,15 @@ public interface Workflow<I, O>
 	void submitUserInput(Map<String, Object> uiDataMap);
 	
 	/**
-	 * Waits until some other thread submits a user task.
+	 * Renders the UI based on the passed controllerClass and then waits until the controller submits user input.
+	 *
+	 * @param controllerClass the controller class that will be used to render the new UI
 	 *
 	 * @throws InterruptedException thrown upon interrupting the workflow thread
 	 * @throws Signal thrown in case the submitted user task is a signal
 	 */
-	void waitForUserInput() throws InterruptedException, Signal;
-	
-	void renderUi(Class<? extends BodyFxControllerBase> controllerClass) throws InterruptedException, Signal;
+	void renderUiAndWaitForUserInput(Class<? extends BodyFxControllerBase> controllerClass) throws InterruptedException,
+	                                                                                               Signal;
 	
 	void executeTask(Class<? extends WorkflowTask> taskClass) throws InterruptedException, Signal;
 	
@@ -86,9 +89,11 @@ public interface Workflow<I, O>
 					{
 						if(value == null)
 						{
-							String errorMessage = "The value of the required input (" + fieldName + ") is null!";
+							String errorCode = CoreErrorCodes.C002_00028.getCode();
+							String[] errorDetails = {"The value of the required input (" + fieldName + ") is null!"};
 							Map<String, Object> payload = new HashMap<>();
-							payload.put(Workflow.KEY_ERROR_DETAILS, new String[]{errorMessage});
+							payload.put(Workflow.KEY_ERROR_CODE, errorCode);
+							payload.put(Workflow.KEY_ERROR_DETAILS, errorDetails);
 							throw new Signal(SignalType.INVALID_STATE, payload);
 						}
 					}

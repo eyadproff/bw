@@ -8,16 +8,16 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import sa.gov.nic.bio.bcl.utils.CancelCommand;
-import sa.gov.nic.bio.biokit.beans.ServiceResponse;
 import sa.gov.nic.bio.biokit.exceptions.NotConnectedException;
 import sa.gov.nic.bio.biokit.scanner.beans.ScanResponse;
 import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.controllers.DevicesRunnerGadgetPaneFxController;
+import sa.gov.nic.bio.bw.client.core.controllers.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.client.core.utils.DialogUtils;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
-import sa.gov.nic.bio.bw.client.core.controllers.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.client.core.workflow.Output;
 import sa.gov.nic.bio.bw.client.features.fingerprintcardidentification.utils.FingerprintCardIdentificationErrorCodes;
+import sa.gov.nic.bio.commons.TaskResponse;
 
 import java.io.ByteArrayInputStream;
 import java.net.URL;
@@ -25,12 +25,9 @@ import java.util.Base64;
 import java.util.Map;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.Future;
-import java.util.logging.Logger;
 
 public class ScanFingerprintCardPaneFxController extends WizardStepFxControllerBase
 {
-	private static final Logger LOGGER = Logger.getLogger(ScanFingerprintCardPaneFxController.class.getName());
-	
 	@Output private Image cardImage;
 	
 	@FXML private ImageView ivFingerprintImage;
@@ -92,14 +89,14 @@ public class ScanFingerprintCardPaneFxController extends WizardStepFxControllerB
 		CancelCommand cancelCommand = new CancelCommand();
 		String message = resources.getString("label.scanningFingerprintsCard");
 		
-		Future<ServiceResponse<ScanResponse>> future = Context.getBioKitManager().getScannerService().scan();
+		Future<TaskResponse<ScanResponse>> future = Context.getBioKitManager().getScannerService().scan();
 		Stage dialogStage = DialogUtils.buildProgressDialog(cancelCommand, message, future,
 		                                                    resources.getString("button.cancel"));
 		
-		Task<ServiceResponse<ScanResponse>> task = new Task<ServiceResponse<ScanResponse>>()
+		Task<TaskResponse<ScanResponse>> task = new Task<TaskResponse<ScanResponse>>()
 		{
 			@Override
-			protected ServiceResponse<ScanResponse> call() throws Exception
+			protected TaskResponse<ScanResponse> call() throws Exception
 			{
 				return future.get();
 			}
@@ -109,11 +106,11 @@ public class ScanFingerprintCardPaneFxController extends WizardStepFxControllerB
 			dialogStage.close();
 			if(cancelCommand.isCanceled()) return;
 			
-		    ServiceResponse<ScanResponse> serviceResponse = task.getValue();
+		    TaskResponse<ScanResponse> taskResponse = task.getValue();
 		
-		    if(serviceResponse.isSuccess())
+		    if(taskResponse.isSuccess())
 		    {
-		        ScanResponse result = serviceResponse.getResult();
+		        ScanResponse result = taskResponse.getResult();
 		
 		        if(result.getReturnCode() == ScanResponse.SuccessCodes.SUCCESS)
 		        {
@@ -149,8 +146,8 @@ public class ScanFingerprintCardPaneFxController extends WizardStepFxControllerB
 		    {
 		        LOGGER.severe("failed to receive a response for scanning the ten-print card!");
 		        String[] errorDetails = {"failed to receive a response for scanning the ten-print card!"};
-		        Context.getCoreFxController().showErrorDialog(serviceResponse.getErrorCode(),
-		                                                      serviceResponse.getException(), errorDetails);
+		        Context.getCoreFxController().showErrorDialog(taskResponse.getErrorCode(),
+		                                                      taskResponse.getException(), errorDetails);
 		    }
 		});
 		task.setOnFailed(e ->

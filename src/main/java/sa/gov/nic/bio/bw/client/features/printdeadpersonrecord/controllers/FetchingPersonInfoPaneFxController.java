@@ -12,7 +12,7 @@ import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.controllers.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.client.core.workflow.Workflow;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.Finger;
-import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
+import sa.gov.nic.bio.commons.TaskResponse;
 
 import java.net.URL;
 import java.util.HashMap;
@@ -89,17 +89,17 @@ public class FetchingPersonInfoPaneFxController extends WizardStepFxControllerBa
 			
 			if(uiInputData.get(KEY_DEVICES_RUNNER_IS_RUNNING) == Boolean.FALSE) return;
 			
-			@SuppressWarnings("unchecked") ServiceResponse<List<Finger>> serviceResponse =
-									(ServiceResponse<List<Finger>>) uiInputData.get(Workflow.KEY_WEBSERVICE_RESPONSE);
-			if(serviceResponse.isSuccess()) goNext();
+			@SuppressWarnings("unchecked") TaskResponse<List<Finger>> taskResponse =
+									(TaskResponse<List<Finger>>) uiInputData.get(Workflow.KEY_WORKFLOW_TASK_NEGATIVE_RESPONSE);
+			if(taskResponse.isSuccess()) goNext();
 			else
 			{
 				GuiUtils.showNode(paneError, true);
 				GuiUtils.showNode(btnRetry, true);
 				GuiUtils.showNode(btnStartOver, true);
 				
-				reportNegativeResponse(serviceResponse.getErrorCode(), serviceResponse.getException(),
-				                       serviceResponse.getErrorDetails());
+				reportNegativeTaskResponse(taskResponse.getErrorCode(), taskResponse.getException(),
+				                           taskResponse.getErrorDetails());
 			}
 		}
 	}

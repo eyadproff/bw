@@ -15,10 +15,10 @@ public abstract class SinglePageWorkflowBase extends WizardWorkflowBase
 	}
 	
 	@Override
-	public boolean onStep(int step) throws InterruptedException, Signal
+	public void onStep(int step) throws InterruptedException, Signal
 	{
-		return onStep();
+		onStep();
 	}
 	
-	public abstract boolean onStep() throws InterruptedException, Signal;
+	public abstract void onStep() throws InterruptedException, Signal;
 }

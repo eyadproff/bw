@@ -16,4 +16,6 @@ public interface WorkflowUserTaskController
 	 * @param uiInputData data passed by the workflow to the controller
 	 */
 	void onWorkflowUserTaskLoad(boolean newForm, Map<String, Object> uiInputData);
+	
+	default void preReportNegativeTaskResponse(){}
 }

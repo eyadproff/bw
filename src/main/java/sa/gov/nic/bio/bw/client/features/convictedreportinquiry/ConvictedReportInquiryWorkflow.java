@@ -34,10 +34,9 @@ public class ConvictedReportInquiryWorkflow extends SinglePageWorkflowBase
 	}
 	
 	@Override
-	public boolean onStep() throws InterruptedException, Signal
+	public void onStep() throws InterruptedException, Signal
 	{
-		renderUi(ConvictedReportInquiryPaneFxController.class);
-		waitForUserInput();
+		renderUiAndWaitForUserInput(ConvictedReportInquiryPaneFxController.class);
 		
 		passData(ConvictedReportInquiryPaneFxController.class, ConvictedReportInquiryWorkflowTask.class,
 		         "generalFileNumber");
@@ -66,7 +65,5 @@ public class ConvictedReportInquiryWorkflow extends SinglePageWorkflowBase
 		}
 		
 		setData(ConvictedReportInquiryPaneFxController.class, "convictedReports", convictedReportPairs);
-		
-		return true;
 	}
 }

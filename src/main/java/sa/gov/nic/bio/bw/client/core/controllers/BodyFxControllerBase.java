@@ -5,15 +5,14 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import org.controlsfx.control.NotificationPane;
 import sa.gov.nic.bio.bw.client.core.Context;
-import sa.gov.nic.bio.bw.client.core.WithResourceBundle;
 import sa.gov.nic.bio.bw.client.core.interfaces.ControllerResourcesLocator;
 import sa.gov.nic.bio.bw.client.core.interfaces.NotificationController;
 import sa.gov.nic.bio.bw.client.core.interfaces.WorkflowUserTaskController;
+import sa.gov.nic.bio.bw.client.core.utils.WithResourceBundle;
 
 import java.net.URL;
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.logging.Logger;
 
 /**
  * A base class for any JavaFX controller that will be associated with the body region.
@@ -25,8 +24,6 @@ public abstract class BodyFxControllerBase extends RegionFxControllerBase implem
 																					 NotificationController,
 																					 ControllerResourcesLocator
 {
-	private static final Logger LOGGER = Logger.getLogger(BodyFxControllerBase.class.getName());
-	
 	private Image successIcon = new Image(Thread.currentThread().getContextClassLoader()
 			                        .getResourceAsStream("sa/gov/nic/bio/bw/client/core/images/success.png"));
 	private Image warningIcon = new Image(Thread.currentThread().getContextClassLoader()
@@ -93,6 +90,8 @@ public abstract class BodyFxControllerBase extends RegionFxControllerBase implem
 		showNotification(message, errorIcon);
 	}
 	
+	protected void preAttachingToScene(){}
+	
 	/**
 	 * A callback that is invoked after the root pane of this controller is attached to the scene.
 	 */
@@ -104,13 +103,11 @@ public abstract class BodyFxControllerBase extends RegionFxControllerBase implem
 	protected void onDetachingFromScene(){}
 	
 	
-	protected void reportNegativeResponse(String errorCode, Throwable exception, String[] errorDetails)
+	protected void reportNegativeTaskResponse(String errorCode, Throwable exception, String[] errorDetails)
 	{
 		if(errorCode.startsWith("B") || errorCode.startsWith("N")) // business error
 		{
 			// no exceptions/errorDetails in case of business error
-			
-			if(errorCode.startsWith("N")) errorCode = errorCode.replace("-", "_");
 
 			String guiErrorMessage = Context.getErrorsBundle().getString(errorCode);
 			String logErrorMessage = Context.getErrorsBundle().getString(errorCode + ".internal");

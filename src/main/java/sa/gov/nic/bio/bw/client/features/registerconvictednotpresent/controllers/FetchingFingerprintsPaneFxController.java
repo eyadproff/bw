@@ -13,7 +13,7 @@ import sa.gov.nic.bio.bw.client.core.workflow.Workflow;
 import sa.gov.nic.bio.bw.client.features.commons.controllers.FingerprintCapturingFxController;
 import sa.gov.nic.bio.bw.client.features.registerconvictednotpresent.utils.RegisterConvictedNotPresentErrorCodes;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.Finger;
-import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
+import sa.gov.nic.bio.commons.TaskResponse;
 
 import java.net.URL;
 import java.util.HashMap;
@@ -54,11 +54,11 @@ public class FetchingFingerprintsPaneFxController extends WizardStepFxController
 			GuiUtils.showNode(piProgress, false);
 			GuiUtils.showNode(txtProgress, false);
 			
-			@SuppressWarnings("unchecked") ServiceResponse<List<Finger>> serviceResponse =
-									(ServiceResponse<List<Finger>>) uiInputData.get(Workflow.KEY_WEBSERVICE_RESPONSE);
-			if(serviceResponse.isSuccess())
+			@SuppressWarnings("unchecked") TaskResponse<List<Finger>> taskResponse =
+									(TaskResponse<List<Finger>>) uiInputData.get(Workflow.KEY_WORKFLOW_TASK_NEGATIVE_RESPONSE);
+			if(taskResponse.isSuccess())
 			{
-				List<Finger> result = serviceResponse.getResult();
+				List<Finger> result = taskResponse.getResult();
 				if(result != null)
 				{
 					uiInputData.put(FingerprintCapturingFxController.KEY_SLAP_FINGERPRINTS, result);
@@ -72,7 +72,7 @@ public class FetchingFingerprintsPaneFxController extends WizardStepFxController
 					
 					String errorCode = RegisterConvictedNotPresentErrorCodes.C009_00002.getCode();
 					String[] errorDetails = {"result is null!"};
-					reportNegativeResponse(errorCode, null, errorDetails);
+					reportNegativeTaskResponse(errorCode, null, errorDetails);
 				}
 			}
 			else
@@ -81,8 +81,8 @@ public class FetchingFingerprintsPaneFxController extends WizardStepFxController
 				GuiUtils.showNode(btnRetry, true);
 				GuiUtils.showNode(btnStartOver, true);
 				
-				reportNegativeResponse(serviceResponse.getErrorCode(), serviceResponse.getException(),
-				                       serviceResponse.getErrorDetails());
+				reportNegativeTaskResponse(taskResponse.getErrorCode(), taskResponse.getException(),
+				                           taskResponse.getErrorDetails());
 			}
 		}
 	}

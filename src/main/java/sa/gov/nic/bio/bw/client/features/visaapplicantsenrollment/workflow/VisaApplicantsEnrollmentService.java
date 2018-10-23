@@ -6,11 +6,11 @@ import retrofit2.Call;
 import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.features.visaapplicantsenrollment.webservice.VisaApplicantsEnrollmentAPI;
 import sa.gov.nic.bio.bw.client.features.visaapplicantsenrollment.webservice.VisaApplicantInfo;
-import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
+import sa.gov.nic.bio.commons.TaskResponse;
 
 public class VisaApplicantsEnrollmentService
 {
-	public static ServiceResponse<VisaApplicantEnrollmentResponse> execute(VisaApplicantInfo visaApplicantInfo)
+	public static TaskResponse<VisaApplicantEnrollmentResponse> execute(VisaApplicantInfo visaApplicantInfo)
 	{
 		VisaApplicantsEnrollmentAPI visaApplicantsEnrollmentAPI =
 											Context.getWebserviceManager().getApi(VisaApplicantsEnrollmentAPI.class);

@@ -6,14 +6,14 @@ import retrofit2.Call;
 import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.Finger;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.FingerprintInquiryAPI;
-import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
+import sa.gov.nic.bio.commons.TaskResponse;
 
 import java.util.List;
 
 public class FingerprintInquiryService
 {
-	public static ServiceResponse<Integer> execute(List<Finger> collectedFingerprints,
-	                                                     List<Integer> missingFingerprints)
+	public static TaskResponse<Integer> execute(List<Finger> collectedFingerprints,
+	                                            List<Integer> missingFingerprints)
 	{
 		FingerprintInquiryAPI fingerprintInquiryAPI =
 												Context.getWebserviceManager().getApi(FingerprintInquiryAPI.class);

@@ -21,7 +21,7 @@ import sa.gov.nic.bio.bw.client.features.visaapplicantsenrollment.lookups.VisaTy
 import sa.gov.nic.bio.bw.client.features.visaapplicantsenrollment.webservice.VisaApplicantInfo;
 import sa.gov.nic.bio.bw.client.features.visaapplicantsenrollment.workflow.VisaApplicantEnrollmentResponse;
 import sa.gov.nic.bio.bw.client.features.visaapplicantsenrollment.workflow.VisaApplicantsEnrollmentService;
-import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
+import sa.gov.nic.bio.commons.TaskResponse;
 
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
@@ -44,15 +44,14 @@ public class VisaApplicantsEnrollmentWorkflow extends WizardWorkflowBase
 	}
 	
 	@Override
-	public boolean onStep(int step) throws InterruptedException, Signal
+	public void onStep(int step) throws InterruptedException, Signal
 	{
 		switch(step)
 		{
 			case 0:
 			{
-				renderUi(ApplicantInfoFxController.class);
-				waitForUserInput();
-				return true;
+				renderUiAndWaitForUserInput(ApplicantInfoFxController.class);
+				break;
 			}
 			case 1:
 			{
@@ -69,9 +68,8 @@ public class VisaApplicantsEnrollmentWorkflow extends WizardWorkflowBase
 				uiInputData.put(FingerprintCapturingFxController.KEY_ACCEPTED_BAD_QUALITY_FINGERPRINT_MIN_RETIRES,
 				                acceptedBadQualityFingerprintMinRetries);
 				
-				renderUi(FingerprintCapturingFxController.class);
-				waitForUserInput();
-				return true;
+				renderUiAndWaitForUserInput(FingerprintCapturingFxController.class);
+				break;
 			}
 			case 2:
 			{
@@ -85,14 +83,12 @@ public class VisaApplicantsEnrollmentWorkflow extends WizardWorkflowBase
 				uiInputData.put(FaceCapturingFxController.KEY_ACCEPTED_BAD_QUALITY_FACE_MIN_RETIRES,
 				                acceptedBadQualityFaceMinRetries);
 				
-				renderUi(FaceCapturingFxController.class);
-				waitForUserInput();
-				return true;
+				renderUiAndWaitForUserInput(FaceCapturingFxController.class);
+				break;
 			}
 			case 3:
 			{
-				renderUi(ReviewAndSubmitPaneFxController.class);
-				waitForUserInput();
+				renderUiAndWaitForUserInput(ReviewAndSubmitPaneFxController.class);
 				
 				while(true)
 				{
@@ -100,34 +96,31 @@ public class VisaApplicantsEnrollmentWorkflow extends WizardWorkflowBase
 											uiInputData.get(ReviewAndSubmitPaneFxController.KEY_VISA_APPLICANT_INFO);
 					if(visaApplicantInfo == null) break;
 					
-					ServiceResponse<VisaApplicantEnrollmentResponse> serviceResponse =
+					TaskResponse<VisaApplicantEnrollmentResponse> taskResponse =
 															VisaApplicantsEnrollmentService.execute(visaApplicantInfo);
-					boolean success = serviceResponse.isSuccess() && serviceResponse.getResult() != null;
+					boolean success = taskResponse.isSuccess() && taskResponse.getResult() != null;
 					
-					uiInputData.put(KEY_WEBSERVICE_RESPONSE, serviceResponse);
-					renderUi(ReviewAndSubmitPaneFxController.class);
+					uiInputData.put(KEY_WORKFLOW_TASK_NEGATIVE_RESPONSE, taskResponse);
 					
 					if(success)
 					{
-						waitForUserInput();
+						renderUiAndWaitForUserInput(ReviewAndSubmitPaneFxController.class);
 						break;
 					}
 					else
 					{
 						uiInputData.remove(ReviewAndSubmitPaneFxController.KEY_VISA_APPLICANT_INFO);
-						waitForUserInput();
+						renderUiAndWaitForUserInput(ReviewAndSubmitPaneFxController.class);
 					}
 				}
 				
-				return true;
+				break;
 			}
 			case 4:
 			{
-				renderUi(ShowReceiptFxController.class);
-				waitForUserInput();
-				return true;
+				renderUiAndWaitForUserInput(ShowReceiptFxController.class);
+				break;
 			}
-			default: return false;
 		}
 	}
 }

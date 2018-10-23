@@ -35,7 +35,7 @@ import sa.gov.nic.bio.bw.client.features.commons.webservice.Name;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.SamisIdType;
 import sa.gov.nic.bio.bw.client.features.convictedreportinquiry.utils.ConvictedReportInquiryErrorCodes;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.ConvictedReport;
-import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
+import sa.gov.nic.bio.commons.TaskResponse;
 
 import java.util.List;
 import java.util.Map;
@@ -243,18 +243,17 @@ public class ConvictedReportInquiryPaneFxController extends BodyFxControllerBase
 		}
 		else
 		{
-			@SuppressWarnings("unchecked")
-			ServiceResponse<?> serviceResponse = (ServiceResponse<?>) uiInputData.get(Workflow.KEY_WEBSERVICE_RESPONSE);
+			@SuppressWarnings("unchecked") TaskResponse<?> taskResponse = (TaskResponse<?>) uiInputData.get(Workflow.KEY_WORKFLOW_TASK_NEGATIVE_RESPONSE);
 			
 			disableUiControls(false);
 			
-			if(serviceResponse.isSuccess())
+			if(taskResponse.isSuccess())
 			{
 				tvConvictedReports.getItems().setAll(convictedReports);
 				tvConvictedReports.requestFocus();
 			}
-			else reportNegativeResponse(serviceResponse.getErrorCode(), serviceResponse.getException(),
-			                            serviceResponse.getErrorDetails());
+			else reportNegativeTaskResponse(taskResponse.getErrorCode(), taskResponse.getException(),
+			                                taskResponse.getErrorDetails());
 			
 			tvConvictedReports.requestFocus();
 		}

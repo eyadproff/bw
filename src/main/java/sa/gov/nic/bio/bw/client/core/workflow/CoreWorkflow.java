@@ -1,59 +1,87 @@
 package sa.gov.nic.bio.bw.client.core.workflow;
 
+import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.interfaces.FormRenderer;
 import sa.gov.nic.bio.bw.client.home.HomeWorkflow;
-import sa.gov.nic.bio.bw.client.login.webservice.LoginBean;
 import sa.gov.nic.bio.bw.client.login.LoginWorkflow;
 import sa.gov.nic.bio.bw.client.login.LogoutWorkflow;
 
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.logging.Logger;
 
 public class CoreWorkflow extends WorkflowBase<Void, Void>
 {
-	private static final Logger LOGGER = Logger.getLogger(CoreWorkflow.class.getName());
-	
-	public CoreWorkflow(AtomicReference<FormRenderer> formRenderer, BlockingQueue<Map<String, Object>> userTasks)
+	CoreWorkflow(AtomicReference<FormRenderer> formRenderer, BlockingQueue<Map<String, Object>> userTasks)
 	{
 		super(formRenderer, userTasks);
 	}
 	
 	@Override
-	public Void onProcess(Void input) throws InterruptedException, Signal
+	public Void onProcess(Void input) throws InterruptedException
 	{
 		while(true)
 		{
-			LoginBean loginBean = new LoginWorkflow(formRenderer, userTasks).onProcess(null);
-			
-			if(loginBean == null)
-			{
-				LOGGER.severe("The login workflow returns null!");
-				continue;
-			}
-			
 			try
 			{
-				new HomeWorkflow(formRenderer, userTasks).onProcess(loginBean);
+				new LoginWorkflow(formRenderer, userTasks).onProcess(null);
 			}
-			catch(Signal signal)
+			catch(Signal loginSignal)
 			{
-				SignalType signalType = signal.getSignalType();
+				SignalType loginSignalType = loginSignal.getSignalType();
 				
-				switch(signalType)
+				switch(loginSignalType)
 				{
-					case LOGOUT:
+					case SUCCESS_LOGIN:
 					{
-						new LogoutWorkflow(formRenderer, userTasks).onProcess(null);
+						try
+						{
+							new HomeWorkflow(formRenderer, userTasks).onProcess(null);
+						}
+						catch(Signal homeSignal)
+						{
+							SignalType homeSignalType = homeSignal.getSignalType();
+							
+							switch(homeSignalType)
+							{
+								case LOGOUT:
+								{
+									new LogoutWorkflow(formRenderer, userTasks).onProcess(null);
+									break;
+								}
+								case INVALID_STATE:
+								{
+									handleInvalidStateSignal(homeSignal.getPayload());
+									break;
+								}
+								default: // wrong signal
+								{
+									LOGGER.severe("homeSignalType = " + homeSignalType);
+								}
+							}
+						}
 						break;
 					}
-					default: // shouldn't happen
+					case INVALID_STATE:
 					{
-						LOGGER.severe("signalType = " + signalType);
+						handleInvalidStateSignal(loginSignal.getPayload());
+						break;
+					}
+					default: // wrong signal
+					{
+						LOGGER.severe("loginSignalType = " + loginSignalType);
 					}
 				}
+				
 			}
 		}
+	}
+	
+	private static void handleInvalidStateSignal(Map<String, Object> payload)
+	{
+		String errorCode = (String) payload.get(KEY_ERROR_CODE);
+		Exception exception = (Exception) payload.get(KEY_EXCEPTION);
+		String[] errorDetails = (String[]) payload.get(KEY_ERROR_DETAILS);
+		Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails);
 	}
 }

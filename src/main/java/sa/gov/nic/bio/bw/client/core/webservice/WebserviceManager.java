@@ -14,12 +14,13 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.beans.UserSession;
+import sa.gov.nic.bio.bw.client.core.interfaces.AppLogger;
 import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.client.core.utils.CoreErrorCodes;
 import sa.gov.nic.bio.bw.client.core.utils.NormalizationStringTypeAdapter;
 import sa.gov.nic.bio.bw.client.core.utils.UnixEpochDateTypeAdapter;
 import sa.gov.nic.bio.bw.client.login.webservice.IdentityAPI;
-import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
+import sa.gov.nic.bio.commons.TaskResponse;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
@@ -44,11 +45,9 @@ import java.util.Map;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
-public class WebserviceManager
+public class WebserviceManager implements AppLogger
 {
-	private static final Logger LOGGER = Logger.getLogger(WebserviceManager.class.getName());
 	private static final String SSL_CERTIFICATE_FILE_PATH =
 												"sa/gov/nic/bio/bw/client/core/config/bio-middleware-certificate.pem";
 	private static final String PROTOCOL = "https";
@@ -159,7 +158,7 @@ public class WebserviceManager
 	}
 	
 	// synchronized because we send only one request at a time
-	public synchronized <T> ServiceResponse<T> executeApi(Call<T> apiCall)
+	public synchronized <T> TaskResponse<T> executeApi(Call<T> apiCall)
 	{
 		String apiUrl = apiCall.request().url().toString();
 		
@@ -172,13 +171,13 @@ public class WebserviceManager
 		{
 			String errorCode = CoreErrorCodes.C002_00011.getCode();
 			String[] errorDetails = {"webservice timeout!"};
-			return ServiceResponse.failure(errorCode, e, errorDetails);
+			return TaskResponse.failure(errorCode, e, errorDetails);
 		}
 		catch(IOException e)
 		{
 			String errorCode = CoreErrorCodes.C002_00012.getCode();
 			String[] errorDetails = {"webservice IOException!"};
-			return ServiceResponse.failure(errorCode, e, errorDetails);
+			return TaskResponse.failure(errorCode, e, errorDetails);
 		}
 		
 		int httpCode = response.code();
@@ -190,7 +189,7 @@ public class WebserviceManager
 			LOGGER.info("webservice = \"" + apiCall.request().url() + "\", responseCode = " + httpCode);
 			LOGGER.fine("resultBean = " + resultBean);
 			
-			return ServiceResponse.success(resultBean);
+			return TaskResponse.success(resultBean);
 		}
 		else if(httpCode == 400 || httpCode == 401 || httpCode == 403 || httpCode == 500)
 		{
@@ -201,7 +200,7 @@ public class WebserviceManager
 			{
 				errorCode = CoreErrorCodes.C002_00013.getCode();
 				String[] errorDetails = {"\"errorBody\" is null!", "apiUrl = " + apiUrl, "httpCode = " + httpCode};
-				return ServiceResponse.failure(errorCode, null, errorDetails);
+				return TaskResponse.failure(errorCode, null, errorDetails);
 			}
 			
 			try
@@ -216,20 +215,20 @@ public class WebserviceManager
 				errorCode = CoreErrorCodes.C002_00014.getCode();
 				String[] errorDetails = {"failed to extract the error code from the error body!", "apiUrl = " + apiUrl,
 										 "httpCode = " + httpCode};
-				return ServiceResponse.failure(errorCode, null, errorDetails);
+				return TaskResponse.failure(errorCode, null, errorDetails);
 			}
 			
 			LOGGER.info("webservice = \"" + apiCall.request().url() + "\", responseCode = " + httpCode +
 					    ", errorCode = " + errorCode);
 			
 			String[] errorDetails = {"apiUrl = " + apiUrl, "httpCode = " + httpCode};
-			return ServiceResponse.failure(errorCode, null, errorDetails);
+			return TaskResponse.failure(errorCode, null, errorDetails);
 		}
 		else // we don't support other HTTP codes
 		{
 			String errorCode = CoreErrorCodes.C002_00015.getCode();
 			String[] errorDetails = {"Unsupported HTTP code!", "apiUrl = " + apiUrl, "httpCode = " + httpCode};
-			return ServiceResponse.failure(errorCode, null, errorDetails);
+			return TaskResponse.failure(errorCode, null, errorDetails);
 		}
 	}
 	
@@ -250,7 +249,7 @@ public class WebserviceManager
 				{
 				    IdentityAPI identityAPI = Context.getWebserviceManager().getApi(IdentityAPI.class);
 				    Call<RefreshTokenBean> apiCall = identityAPI.refreshToken(userToken);
-					ServiceResponse<RefreshTokenBean> response = Context.getWebserviceManager().executeApi(apiCall);
+					TaskResponse<RefreshTokenBean> response = Context.getWebserviceManager().executeApi(apiCall);
 				
 				    if(response.isSuccess())
 				    {

@@ -5,19 +5,17 @@ import javafx.concurrent.Task;
 import retrofit2.Call;
 import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.beans.UserSession;
+import sa.gov.nic.bio.bw.client.core.interfaces.AppLogger;
 import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.client.login.webservice.IdentityAPI;
 import sa.gov.nic.bio.bw.client.login.webservice.UserInfo;
-import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
+import sa.gov.nic.bio.commons.TaskResponse;
 
 import java.util.Arrays;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
-public class LogoutTask extends Task<Void>
+public class LogoutTask extends Task<Void> implements AppLogger
 {
-	private static final Logger LOGGER = Logger.getLogger(LogoutTask.class.getName());
-	
 	@Override
 	protected Void call()
 	{
@@ -33,7 +31,7 @@ public class LogoutTask extends Task<Void>
 		
 		IdentityAPI identityAPI = Context.getWebserviceManager().getApi(IdentityAPI.class);
 		Call<Void> apiCall = identityAPI.logout(userToken);
-		ServiceResponse<Void> response = Context.getWebserviceManager().executeApi(apiCall);
+		TaskResponse<Void> response = Context.getWebserviceManager().executeApi(apiCall);
 		
 		if(!response.isSuccess())
 		{

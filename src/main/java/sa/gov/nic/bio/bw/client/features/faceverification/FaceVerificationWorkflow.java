@@ -40,21 +40,19 @@ public class FaceVerificationWorkflow extends WizardWorkflowBase
 	}
 	
 	@Override
-	public boolean onStep(int step) throws InterruptedException, Signal
+	public void onStep(int step) throws InterruptedException, Signal
 	{
 		switch(step)
 		{
 			case 0:
 			{
-				renderUi(PersonIdPaneFxController.class);
-				waitForUserInput();
-				return true;
+				renderUiAndWaitForUserInput(PersonIdPaneFxController.class);
+				break;
 			}
 			case 1:
 			{
-				renderUi(ImageSourceFxController.class);
-				waitForUserInput();
-				return true;
+				renderUiAndWaitForUserInput(ImageSourceFxController.class);
+				break;
 			}
 			case 2:
 			{
@@ -62,16 +60,15 @@ public class FaceVerificationWorkflow extends WizardWorkflowBase
 				
 				if(Source.UPLOAD.equals(imageSource))
 				{
-					renderUi(UploadImageFileFxController.class);
+					renderUiAndWaitForUserInput(UploadImageFileFxController.class);
 				}
 				else if(Source.CAMERA.equals(imageSource))
 				{
 					setData(FaceCapturingFxController.class, "acceptAnyCapturedImage", true);
-					renderUi(FaceCapturingFxController.class);
+					renderUiAndWaitForUserInput(FaceCapturingFxController.class);
 				}
 				
-				waitForUserInput();
-				return true;
+				break;
 			}
 			case 3:
 			{
@@ -91,14 +88,12 @@ public class FaceVerificationWorkflow extends WizardWorkflowBase
 					         "faceImage");
 				}
 				
-				renderUi(ConfirmImageFxController.class);
-				waitForUserInput();
-				return true;
+				renderUiAndWaitForUserInput(ConfirmImageFxController.class);
+				break;
 			}
 			case 4:
 			{
-				renderUi(MatchingFxController.class);
-				waitForUserInput();
+				renderUiAndWaitForUserInput(MatchingFxController.class);
 				
 				passData(PersonIdPaneFxController.class, FaceVerificationWorkflowTask.class,
 				         "personId");
@@ -106,7 +101,7 @@ public class FaceVerificationWorkflow extends WizardWorkflowBase
 				         "faceImageBase64");
 				executeTask(FaceVerificationWorkflowTask.class);
 				
-				return true;
+				break;
 			}
 			case 5:
 			{
@@ -117,11 +112,9 @@ public class FaceVerificationWorkflow extends WizardWorkflowBase
 				passData(FaceVerificationWorkflowTask.class, ShowResultFxController.class,
 				         "faceMatchingResponse");
 				
-				renderUi(ShowResultFxController.class);
-				waitForUserInput();
-				return true;
+				renderUiAndWaitForUserInput(ShowResultFxController.class);
+				break;
 			}
-			default: return false;
 		}
 	}
 }

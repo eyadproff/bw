@@ -8,7 +8,7 @@ import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.controllers.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.client.core.workflow.Workflow;
-import sa.gov.nic.bio.bw.client.login.workflow.ServiceResponse;
+import sa.gov.nic.bio.commons.TaskResponse;
 
 import java.net.URL;
 import java.util.HashMap;
@@ -42,11 +42,11 @@ public class LookupFxController extends WizardStepFxControllerBase
 			GuiUtils.showNode(progressIndicator, false);
 			GuiUtils.showNode(btnTryAgain, true);
 			
-			ServiceResponse<?> serviceResponse = (ServiceResponse<?>) uiInputData.get(Workflow.KEY_WEBSERVICE_RESPONSE);
-			if(serviceResponse != null && !serviceResponse.isSuccess())
-											 reportNegativeResponse(serviceResponse.getErrorCode(),
-		                                                            serviceResponse.getException(),
-			                                                        serviceResponse.getErrorDetails());
+			TaskResponse<?> taskResponse = (TaskResponse<?>) uiInputData.get(Workflow.KEY_WORKFLOW_TASK_NEGATIVE_RESPONSE);
+			if(taskResponse != null && !taskResponse.isSuccess())
+											 reportNegativeTaskResponse(taskResponse.getErrorCode(),
+											                            taskResponse.getException(),
+											                            taskResponse.getErrorDetails());
 		}
 	}
 	
