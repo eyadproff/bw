@@ -11,22 +11,23 @@ import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.controllers.BodyFxControllerBase;
 import sa.gov.nic.bio.bw.client.core.utils.FxmlFile;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
-import sa.gov.nic.bio.bw.client.core.workflow.Workflow;
-import sa.gov.nic.bio.commons.TaskResponse;
-
-import java.util.HashMap;
-import java.util.Map;
+import sa.gov.nic.bio.bw.client.core.workflow.Input;
+import sa.gov.nic.bio.bw.client.core.workflow.Output;
 
 @FxmlFile("cancelLatent.fxml")
 public class CancelLatentPaneFxController extends BodyFxControllerBase
 {
+	@Input private Boolean success;
+	@Output private Long personId;
+	@Output private String latentId;
+	
 	@FXML private TextField txtPersonId;
 	@FXML private TextField txtLatentId;
 	@FXML private Button btnCancelLatent;
 	@FXML private ProgressIndicator piCancelLatent;
 	
 	@Override
-	protected void initialize()
+	protected void onAttachedToScene()
 	{
 		GuiUtils.applyValidatorToTextField(txtPersonId, "\\d*", "[^\\d]", 10);
 		GuiUtils.applyValidatorToTextField(txtLatentId, "\\d*", "[^\\d]", 20);
@@ -37,54 +38,38 @@ public class CancelLatentPaneFxController extends BodyFxControllerBase
 		
 		btnCancelLatent.disableProperty().bind(idNumberEmptyBinding.or(latentNumberEmptyBinding)
 				                                                   .or(progressVisibility));
-	}
-	
-	@Override
-	protected void onAttachedToScene()
-	{
+		
 		txtPersonId.requestFocus();
 	}
 	
 	@Override
-	public void onWorkflowUserTaskLoad(boolean newForm, Map<String, Object> uiInputData)
+	public void onReturnFromWorkflow(boolean successfulResponse)
 	{
-		if(!newForm)
+		txtPersonId.requestFocus();
+		
+		String personId = txtPersonId.getText();
+		String latentId = txtLatentId.getText();
+		
+		if(success)
 		{
-			@SuppressWarnings("unchecked") TaskResponse<Boolean> taskResponse = (TaskResponse<Boolean>)
-																	uiInputData.get(Workflow.KEY_WORKFLOW_TASK_NEGATIVE_RESPONSE);
-			
-			disableUiControls(false);
-			
-			if(taskResponse.isSuccess())
-			{
-				String personId = txtPersonId.getText();
-				String latentId = txtLatentId.getText();
-				
-				Boolean resultBean = taskResponse.getResult();
-				if(resultBean != null && resultBean)
-				{
-					String message = String.format(resources.getString("cancelLatent.success"),
-					                               latentId, personId);
-					showSuccessNotification(message);
-				}
-				else
-				{
-					String message = String.format(resources.getString("cancelLatent.failure"),
-					                               latentId, personId);
-					showWarningNotification(message);
-				}
-			}
-			else reportNegativeTaskResponse(taskResponse.getErrorCode(), taskResponse.getException(),
-			                                taskResponse.getErrorDetails());
-			
-			txtPersonId.requestFocus();
+			String message = String.format(resources.getString("cancelLatent.success"), latentId, personId);
+			showSuccessNotification(message);
+		}
+		else
+		{
+			String message = String.format(resources.getString("cancelLatent.failure"), latentId, personId);
+			showWarningNotification(message);
 		}
 	}
 	
-	@FXML
-	private void onEnterPressed(ActionEvent event)
+	@Override
+	public void onShowingProgress(boolean bShow)
 	{
-		btnCancelLatent.fire();
+		txtPersonId.setDisable(bShow);
+		txtLatentId.setDisable(bShow);
+		
+		GuiUtils.showNode(piCancelLatent, bShow);
+		GuiUtils.showNode(btnCancelLatent, !bShow);
 	}
 	
 	@FXML
@@ -100,22 +85,9 @@ public class CancelLatentPaneFxController extends BodyFxControllerBase
 		
 		if(!confirmed) return;
 		
-		hideNotification();
-		disableUiControls(true);
+		this.personId = Long.parseLong(personId);
+		this.latentId = latentId;
 		
-		Map<String, Object> uiDataMap = new HashMap<>();
-		uiDataMap.put("personId", Long.parseLong(personId));
-		uiDataMap.put("latentId", latentId);
-		
-		if(!isDetached()) Context.getWorkflowManager().submitUserTask(uiDataMap);
-	}
-	
-	private void disableUiControls(boolean bool)
-	{
-		txtPersonId.setDisable(bool);
-		txtLatentId.setDisable(bool);
-		
-		GuiUtils.showNode(piCancelLatent, bool);
-		GuiUtils.showNode(btnCancelLatent, !bool);
+		continueWorkflow();
 	}
 }

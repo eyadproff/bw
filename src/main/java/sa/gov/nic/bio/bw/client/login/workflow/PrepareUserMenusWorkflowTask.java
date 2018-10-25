@@ -15,8 +15,8 @@ import java.util.Set;
 
 public class PrepareUserMenusWorkflowTask implements WorkflowTask
 {
-	@Input(required = true) private Map<String, Set<String>> menusRoles;
-	@Input(required = true) private List<String> userRoles;
+	@Input(alwaysRequired = true) private Map<String, Set<String>> menusRoles;
+	@Input(alwaysRequired = true) private List<String> userRoles;
 	
 	@Override
 	public void execute()

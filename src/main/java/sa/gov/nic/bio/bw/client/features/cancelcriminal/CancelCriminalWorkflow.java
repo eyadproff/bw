@@ -6,9 +6,8 @@ import sa.gov.nic.bio.bw.client.core.workflow.Signal;
 import sa.gov.nic.bio.bw.client.core.workflow.SinglePageWorkflowBase;
 import sa.gov.nic.bio.bw.client.core.workflow.WithLookups;
 import sa.gov.nic.bio.bw.client.features.cancelcriminal.controllers.CancelCriminalPaneFxController;
-import sa.gov.nic.bio.bw.client.features.cancelcriminal.workflow.CancelCriminalService;
+import sa.gov.nic.bio.bw.client.features.cancelcriminal.workflow.CancelCriminalWorkflowTask;
 import sa.gov.nic.bio.bw.client.features.commons.lookups.SamisIdTypesLookup;
-import sa.gov.nic.bio.commons.TaskResponse;
 
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
@@ -18,7 +17,8 @@ import java.util.concurrent.atomic.AtomicReference;
 @WithLookups(SamisIdTypesLookup.class)
 public class CancelCriminalWorkflow extends SinglePageWorkflowBase
 {
-	public CancelCriminalWorkflow(AtomicReference<FormRenderer> formRenderer, BlockingQueue<Map<String, Object>> userTasks)
+	public CancelCriminalWorkflow(AtomicReference<FormRenderer> formRenderer,
+	                              BlockingQueue<Map<String, Object>> userTasks)
 	{
 		super(formRenderer, userTasks);
 	}
@@ -28,23 +28,14 @@ public class CancelCriminalWorkflow extends SinglePageWorkflowBase
 	{
 		renderUiAndWaitForUserInput(CancelCriminalPaneFxController.class);
 		
-		Long personId = (Long) uiInputData.get("personId");
-		Long inquiryId = (Long) uiInputData.get("inquiryId");
-		Integer samisIdType = (Integer) uiInputData.get("samisIdType");
-		Long criminalId = (Long) uiInputData.get("criminalId");
-		uiInputData.clear();
+		passData(CancelCriminalPaneFxController.class, CancelCriminalWorkflowTask.class, "criminalId");
+		passData(CancelCriminalPaneFxController.class, CancelCriminalWorkflowTask.class, "inquiryId");
+		passData(CancelCriminalPaneFxController.class, CancelCriminalWorkflowTask.class, "personId");
+		passData(CancelCriminalPaneFxController.class, CancelCriminalWorkflowTask.class, "samisIdType");
+		passData(CancelCriminalPaneFxController.class, CancelCriminalWorkflowTask.class,
+		         "cancelCriminalMethod");
 		
-		TaskResponse<Boolean> response;
-		
-		if(personId != null) // by person id
-		{
-			response = CancelCriminalService.execute(personId, samisIdType, criminalId);
-		}
-		else // by inquiry id
-		{
-			response = CancelCriminalService.execute(inquiryId, criminalId);
-		}
-		
-		uiInputData.put(KEY_WORKFLOW_TASK_NEGATIVE_RESPONSE, response);
+		executeTask(CancelCriminalWorkflowTask.class);
+		passData(CancelCriminalWorkflowTask.class, CancelCriminalPaneFxController.class, "success");
 	}
 }

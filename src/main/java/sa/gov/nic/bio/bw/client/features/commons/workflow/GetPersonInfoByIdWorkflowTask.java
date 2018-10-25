@@ -12,7 +12,7 @@ import sa.gov.nic.bio.commons.TaskResponse;
 
 public class GetPersonInfoByIdWorkflowTask implements WorkflowTask
 {
-	@Input(required = true) private long personId;
+	@Input(alwaysRequired = true) private long personId;
 	@Output private PersonInfo personInfo;
 	
 	@Override

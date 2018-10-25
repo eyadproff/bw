@@ -14,7 +14,7 @@ import java.util.List;
 
 public class SearchByFaceImageWorkflowTask implements WorkflowTask
 {
-	@Input(required = true) private String faceImageBase64;
+	@Input(alwaysRequired = true) private String faceImageBase64;
 	@Output private List<Candidate> candidates;
 	
 	@Override

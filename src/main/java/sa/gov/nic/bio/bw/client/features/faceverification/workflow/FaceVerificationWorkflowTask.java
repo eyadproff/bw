@@ -13,8 +13,8 @@ import sa.gov.nic.bio.commons.TaskResponse;
 
 public class FaceVerificationWorkflowTask implements WorkflowTask
 {
-	@Input(required = true) private Long personId;
-	@Input(required = true) private String faceImageBase64;
+	@Input(alwaysRequired = true) private Long personId;
+	@Input(alwaysRequired = true) private String faceImageBase64;
 	@Output private FaceMatchingResponse faceMatchingResponse;
 	
 	@Override

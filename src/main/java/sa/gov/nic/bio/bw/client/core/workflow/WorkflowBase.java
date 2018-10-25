@@ -94,7 +94,7 @@ public abstract class WorkflowBase<I, O> implements Workflow<I, O>
 		try
 		{
 			WorkflowTask workflowTask = taskClass.newInstance();
-			Workflow.loadWorkflowInputs(workflowTask, uiInputData, false);
+			Workflow.loadWorkflowInputs(workflowTask, uiInputData, false, false);
 			workflowTask.execute();
 			Workflow.saveWorkflowOutputs(workflowTask, uiInputData);
 		}

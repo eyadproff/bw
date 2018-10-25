@@ -42,7 +42,6 @@ import sa.gov.nic.bio.bw.client.login.utils.LoginErrorCodes;
 
 import java.util.HashSet;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Set;
 import java.util.prefs.Preferences;
 
@@ -91,19 +90,19 @@ public class LoginPaneFxController extends BodyFxControllerBase implements Persi
 	private FingerPosition currentFingerPosition;
 	
 	@Override
-	protected void initialize()
+	protected void onAttachedToScene()
 	{
 		DevicesRunnerGadgetPaneFxController deviceManagerGadgetPaneController =
-												Context.getCoreFxController().getDeviceManagerGadgetPaneController();
+				Context.getCoreFxController().getDeviceManagerGadgetPaneController();
 		deviceManagerGadgetPaneController.setNextFingerprintDeviceType(FingerprintDeviceType.SINGLE);
 		
 		deviceManagerGadgetPaneController.setDevicesRunnerRunningListener(running ->
 		{
 		    boolean autoInitialize = "true".equals(
-		    		                            Context.getConfigManager().getProperty("fingerprint.autoInitialize"));
+		                                        Context.getConfigManager().getProperty("fingerprint.autoInitialize"));
 		
 		    if(running && autoInitialize &&
-				    !deviceManagerGadgetPaneController.isFingerprintScannerInitialized(FingerprintDeviceType.SINGLE))
+		            !deviceManagerGadgetPaneController.isFingerprintScannerInitialized(FingerprintDeviceType.SINGLE))
 		    {
 		        deviceManagerGadgetPaneController.initializeFingerprintScanner(FingerprintDeviceType.SINGLE);
 		    }
@@ -116,22 +115,22 @@ public class LoginPaneFxController extends BodyFxControllerBase implements Persi
 		{
 		    if(newValue)
 		    {
-			    txtUsernameLoginByPassword.setText(txtUsernameLoginByFingerprint.getText());
-		    	Platform.runLater(txtUsernameLoginByPassword::requestFocus);
+		        txtUsernameLoginByPassword.setText(txtUsernameLoginByFingerprint.getText());
+		        Platform.runLater(txtUsernameLoginByPassword::requestFocus);
 		    }
 		});
 		
 		tabLoginByFingerprint.selectedProperty().addListener((observable, oldValue, newValue) ->
 		{
-			if(newValue)
-			{
-				txtUsernameLoginByFingerprint.setText(txtUsernameLoginByPassword.getText());
-				Platform.runLater(() ->
-				{
-					txtUsernameLoginByFingerprint.requestFocus();
-					initializeFingerprintScanner();
-				});
-			}
+		    if(newValue)
+		    {
+		        txtUsernameLoginByFingerprint.setText(txtUsernameLoginByPassword.getText());
+		        Platform.runLater(() ->
+		        {
+		            txtUsernameLoginByFingerprint.requestFocus();
+		            initializeFingerprintScanner();
+		        });
+		    }
 		});
 		
 		org.controlsfx.glyphfont.Glyph gearIcon = AppUtils.createFontAwesomeIcon(FontAwesome.Glyph.GEAR);
@@ -147,36 +146,32 @@ public class LoginPaneFxController extends BodyFxControllerBase implements Persi
 		
 		BooleanExpression loginByFingerprintTabBinding = tabLoginByFingerprint.selectedProperty();
 		BooleanExpression usernameLoginByFingerprintEmptyBinding =
-																txtUsernameLoginByFingerprint.textProperty().isEmpty();
+				txtUsernameLoginByFingerprint.textProperty().isEmpty();
 		BooleanExpression fingerprintScannerInitializationBinding = lblFingerprintScannerInitialized.visibleProperty();
 		
 		btnLogin.disableProperty().bind(loginByPasswordTabBinding.and(usernameLoginByPasswordEmptyBinding
-				                                                                            .or(passwordEmptyBinding))
-	                                .or(loginByFingerprintTabBinding.and(usernameLoginByFingerprintEmptyBinding
-                                                                 .or(fingerprintScannerInitializationBinding.not()))));
+                                           .or(passwordEmptyBinding))
+				                           .or(loginByFingerprintTabBinding.and(usernameLoginByFingerprintEmptyBinding
+						                   .or(fingerprintScannerInitializationBinding.not()))));
 		
 		spLeftHand.setOnMouseClicked(event -> btnChangeFingerprint.fire());
 		spRightHand.setOnMouseClicked(event -> btnChangeFingerprint.fire());
 		
 		lblFingerprintScannerNotConnected.visibleProperty().bind(
-						deviceManagerGadgetPaneController.getFingerprintScannerNotConnectedLabel().visibleProperty());
+				deviceManagerGadgetPaneController.getFingerprintScannerNotConnectedLabel().visibleProperty());
 		lblFingerprintScannerNotConnected.managedProperty().bind(
-						deviceManagerGadgetPaneController.getFingerprintScannerNotConnectedLabel().managedProperty());
+				deviceManagerGadgetPaneController.getFingerprintScannerNotConnectedLabel().managedProperty());
 		
 		lblFingerprintScannerNotInitialized.visibleProperty().bind(
-						deviceManagerGadgetPaneController.getFingerprintScannerNotInitializedLabel().visibleProperty());
+				deviceManagerGadgetPaneController.getFingerprintScannerNotInitializedLabel().visibleProperty());
 		lblFingerprintScannerNotInitialized.managedProperty().bind(
-						deviceManagerGadgetPaneController.getFingerprintScannerNotInitializedLabel().managedProperty());
+				deviceManagerGadgetPaneController.getFingerprintScannerNotInitializedLabel().managedProperty());
 		
 		lblFingerprintScannerInitialized.visibleProperty().bind(
-						deviceManagerGadgetPaneController.getFingerprintScannerInitializedLabel().visibleProperty());
+				deviceManagerGadgetPaneController.getFingerprintScannerInitializedLabel().visibleProperty());
 		lblFingerprintScannerInitialized.managedProperty().bind(
-						deviceManagerGadgetPaneController.getFingerprintScannerInitializedLabel().managedProperty());
-	}
-	
-	@Override
-	protected void onAttachedToScene()
-	{
+				deviceManagerGadgetPaneController.getFingerprintScannerInitializedLabel().managedProperty());
+		
 		cboLanguage.getSelectionModel().select(Context.getGuiLanguage());
 		cboLanguage.setOnAction(event ->
         {
@@ -201,12 +196,6 @@ public class LoginPaneFxController extends BodyFxControllerBase implements Persi
 																	   .getClosureListener();
 		Context.getBioKitManager().setClosureListener(closureListener);
 		
-		txtUsernameLoginByPassword.requestFocus();
-	}
-	
-	@Override
-	public void onWorkflowUserTaskLoad(boolean newForm, Map<String, Object> uiInputData)
-	{
 		Preferences prefs = Preferences.userNodeForPackage(AppConstants.PREF_NODE_CLASS);
 		String fingerprintPosition = prefs.get(AppConstants.LOGIN_FINGERPRINT_POSITION_PREF_NAME, null);
 		
@@ -230,16 +219,35 @@ public class LoginPaneFxController extends BodyFxControllerBase implements Persi
 		else currentFingerPosition = FingerPosition.RIGHT_INDEX;
 		
 		activateFingerprint(currentFingerPosition);
+		
+		txtUsernameLoginByPassword.requestFocus();
 	}
 	
 	@Override
-	public void preReportNegativeTaskResponse()
+	public void onReturnFromWorkflow(boolean successfulResponse)
 	{
 		txtPassword.clear();
-		disableUiControls(false);
 		
 		if(tabLoginByPassword.isSelected()) txtUsernameLoginByPassword.requestFocus();
 		else if(tabLoginByFingerprint.isSelected()) txtUsernameLoginByFingerprint.requestFocus();
+	}
+	
+	@Override
+	public void onShowingProgress(boolean bShow)
+	{
+		tabLoginByPassword.setDisable(bShow);
+		txtUsernameLoginByPassword.setDisable(bShow);
+		txtPassword.setDisable(bShow);
+		cboLanguage.setDisable(bShow);
+		
+		tabLoginByFingerprint.setDisable(bShow);
+		txtUsernameLoginByFingerprint.setDisable(bShow);
+		btnFingerprintScannerAction.setDisable(bShow);
+		btnChangeFingerprint.setDisable(bShow);
+		
+		GuiUtils.showNode(piLogin, bShow);
+		GuiUtils.showNode(btnLogin, !bShow);
+		//GuiUtils.showNode(btnChangePassword, !bShow);
 	}
 	
 	@Override
@@ -257,8 +265,6 @@ public class LoginPaneFxController extends BodyFxControllerBase implements Persi
 		
 		if(tabLoginByPassword.isSelected())
 		{
-			disableUiControls(true);
-			
 			loginMethod = LoginMethod.USERNAME_AND_PASSWORD;
 			username = txtUsernameLoginByPassword.getText().trim();
 			password = txtPassword.getText().trim();
@@ -283,8 +289,6 @@ public class LoginPaneFxController extends BodyFxControllerBase implements Persi
 					
 					if(fingerprint != null)
 					{
-						disableUiControls(true);
-						
 						loginMethod = LoginMethod.USERNAME_AND_FINGERPRINT;
 						username = txtUsernameLoginByFingerprint.getText().trim();
 						password = txtPassword.getText().trim();
@@ -339,23 +343,6 @@ public class LoginPaneFxController extends BodyFxControllerBase implements Persi
 			String[] errorDetails = {"Failed to load (" + ChangePasswordDialogFxController.class.getName() + ")!"};
 			Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails);
 		}
-	}
-	
-	private void disableUiControls(boolean bool)
-	{
-		tabLoginByPassword.setDisable(bool);
-		txtUsernameLoginByPassword.setDisable(bool);
-		txtPassword.setDisable(bool);
-		cboLanguage.setDisable(bool);
-		
-		tabLoginByFingerprint.setDisable(bool);
-		txtUsernameLoginByFingerprint.setDisable(bool);
-		btnFingerprintScannerAction.setDisable(bool);
-		btnChangeFingerprint.setDisable(bool);
-		
-		GuiUtils.showNode(piLogin, bool);
-		GuiUtils.showNode(btnLogin, !bool);
-		//GuiUtils.showNode(btnChangePassword, !bool);
 	}
 	
 	@FXML

@@ -8,10 +8,8 @@ import net.sf.jasperreports.engine.JasperReport;
 import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.client.core.utils.GuiLanguage;
-import sa.gov.nic.bio.bw.client.features.commons.lookups.CountriesLookup;
+import sa.gov.nic.bio.bw.client.features.commons.beans.GenderType;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.CountryBean;
-import sa.gov.nic.bio.bw.client.features.visaapplicantsenrollment.lookups.PassportTypesLookup;
-import sa.gov.nic.bio.bw.client.features.visaapplicantsenrollment.lookups.VisaTypesLookup;
 import sa.gov.nic.bio.bw.client.features.visaapplicantsenrollment.webservice.PassportTypeBean;
 import sa.gov.nic.bio.bw.client.features.visaapplicantsenrollment.webservice.VisaApplicantInfo;
 import sa.gov.nic.bio.bw.client.features.visaapplicantsenrollment.webservice.VisaTypeBean;
@@ -20,7 +18,6 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.Base64;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class BuildForeignEnrollmentReceiptTask extends Task<JasperPrint>
@@ -72,7 +69,7 @@ public class BuildForeignEnrollmentReceiptTask extends Task<JasperPrint>
 		
 		HashMap<String, Object> params = new HashMap<>();
 		
-		String faceImageBase64 = visaApplicantInfo.getFace();
+		String faceImageBase64 = visaApplicantInfo.getFaceImage();
 		
 		if(faceImageBase64 != null)
 		{
@@ -93,104 +90,50 @@ public class BuildForeignEnrollmentReceiptTask extends Task<JasperPrint>
 		
 		params.put(PARAMETER_MOFA_LOGO, Thread.currentThread().getContextClassLoader().getResourceAsStream(LOGO_FILE));
 		params.put(PARAMETER_REGISTRATION_NUMBER, String.valueOf(visaApplicantInfo.getApplicantId()));
-		params.put(PARAMETER_RECEIPT_DATE,
-                    AppUtils.formatHijriGregorianDateTime(visaApplicantInfo.getEnrollmentDate() * 1000));
+		params.put(PARAMETER_RECEIPT_DATE, AppUtils.formatHijriGregorianDateTime(
+										AppUtils.gregorianDateToMilliSeconds(visaApplicantInfo.getEnrollmentDate())));
 		params.put(PARAMETER_FIRST_NAME, visaApplicantInfo.getFirstName());
 		params.put(PARAMETER_SECOND_NAME, visaApplicantInfo.getSecondName());
 		params.put(PARAMETER_OTHER_NAME, visaApplicantInfo.getOtherName());
 		params.put(PARAMETER_FAMILY_NAME, visaApplicantInfo.getFamilyName());
 		
-		@SuppressWarnings("unchecked")
-		List<CountryBean> countries = (List<CountryBean>) Context.getUserSession().getAttribute(CountriesLookup.KEY);
-		
-		CountryBean countryBean = null;
-		
-		for(CountryBean country : countries)
-		{
-			if(country.getCode() == visaApplicantInfo.getNationalityCode())
-			{
-				countryBean = country;
-				break;
-			}
-		}
+		CountryBean countryBean = visaApplicantInfo.getNationality();
 		
 		if(countryBean != null) params.put(PARAMETER_NATIONALITY, arabic ? countryBean.getDescriptionAR() :
 																		   countryBean.getDescriptionEN());
 		
 		
-		params.put(PARAMETER_GENDER, visaApplicantInfo.getGenderCode() == 0 ? (arabic ? "ذكر" : "Male") :
+		params.put(PARAMETER_GENDER, visaApplicantInfo.getGender() == GenderType.MALE ? (arabic ? "ذكر" : "Male") :
 																		(arabic ? "أنثى" : "Female")); // TODO: TEMP
 		
-		countryBean = null;
-		
-		for(CountryBean country : countries)
-		{
-			if(country.getCode() == visaApplicantInfo.getBirthPlaceCode())
-			{
-				countryBean = country;
-				break;
-			}
-		}
+		countryBean = visaApplicantInfo.getBirthPlace();
 		
 		if(countryBean != null) params.put(PARAMETER_BIRTH_PLACE, arabic ? countryBean.getDescriptionAR() :
 																		   countryBean.getDescriptionEN());
 		
-		params.put(PARAMETER_BIRTH_DATE, AppUtils.formatHijriGregorianDate(visaApplicantInfo.getBirthDate() * 1000));
+		params.put(PARAMETER_BIRTH_DATE, AppUtils.formatHijriGregorianDate(
+											AppUtils.gregorianDateToMilliSeconds(visaApplicantInfo.getBirthDate())));
 		
-		@SuppressWarnings("unchecked")
-		List<VisaTypeBean> visaTypes = (List<VisaTypeBean>) Context.getUserSession().getAttribute(VisaTypesLookup.KEY);
-		
-		VisaTypeBean visaTypeBean = null;
-		
-		for(VisaTypeBean visaType : visaTypes)
-		{
-			if(visaType.getCode() == visaApplicantInfo.getVisaTypeCode())
-			{
-				visaTypeBean = visaType;
-				break;
-			}
-		}
+		VisaTypeBean visaTypeBean = visaApplicantInfo.getVisaType();
 		
 		if(visaTypeBean != null) params.put(PARAMETER_VISA_TYPE, arabic ? visaTypeBean.getDescriptionAR() :
 																			visaTypeBean.getDescriptionEN());
 		
 		params.put(PARAMETER_PASSPORT_NUMBER, visaApplicantInfo.getPassportNumber());
-		params.put(PARAMETER_ISSUE_DATE,
-		           AppUtils.formatHijriGregorianDate(visaApplicantInfo.getIssueDate() * 1000));
-		params.put(PARAMETER_EXPIRATION_DATE,
-		           AppUtils.formatHijriGregorianDate(visaApplicantInfo.getExpirationDate() * 1000));
+		params.put(PARAMETER_ISSUE_DATE, AppUtils.formatHijriGregorianDate(
+											AppUtils.gregorianDateToMilliSeconds(visaApplicantInfo.getIssueDate())));
+		params.put(PARAMETER_EXPIRATION_DATE, AppUtils.formatHijriGregorianDate(
+										AppUtils.gregorianDateToMilliSeconds(visaApplicantInfo.getExpirationDate())));
 		
-		countryBean = null;
-		
-		for(CountryBean country : countries)
-		{
-			if(country.getCode() == visaApplicantInfo.getIssuanceCountry())
-			{
-				countryBean = country;
-				break;
-			}
-		}
+		countryBean = visaApplicantInfo.getIssuanceCountry();
 		
 		if(countryBean != null) params.put(PARAMETER_ISSUANCE_COUNTRY, arabic ? countryBean.getDescriptionAR() :
 																				countryBean.getDescriptionEN());
 		
-		@SuppressWarnings("unchecked")
-		List<PassportTypeBean> passportTypes = (List<PassportTypeBean>)
-														Context.getUserSession().getAttribute(PassportTypesLookup.KEY);
-		
-		PassportTypeBean passportTypeBean = null;
-		
-		for(PassportTypeBean passportType : passportTypes)
-		{
-			if(passportType.getCode() == visaApplicantInfo.getPassportType())
-			{
-				passportTypeBean = passportType;
-				break;
-			}
-		}
+		PassportTypeBean passportTypeBean = visaApplicantInfo.getPassportType();
 		
 		if(passportTypeBean != null) params.put(PARAMETER_PASSPORT_TYPE, arabic ? passportTypeBean.getDescriptionAR() :
-				passportTypeBean.getDescriptionEN());
+																				  passportTypeBean.getDescriptionEN());
 		
 		params.put(PARAMETER_MOBILE_NUMBER, "+" + visaApplicantInfo.getMobileNumber());
 		

@@ -15,7 +15,8 @@ public interface WorkflowUserTaskController
 	 * @param newForm whether this is a new form or the existing form
 	 * @param uiInputData data passed by the workflow to the controller
 	 */
-	void onWorkflowUserTaskLoad(boolean newForm, Map<String, Object> uiInputData);
+	default void onWorkflowUserTaskLoad(boolean newForm, Map<String, Object> uiInputData){} // TODO: remove it
 	
-	default void preReportNegativeTaskResponse(){}
+	default void onReturnFromWorkflow(boolean successfulResponse){}
+	default void onShowingProgress(boolean bShow){}
 }

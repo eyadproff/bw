@@ -39,15 +39,11 @@ public class UploadImageFileFxController extends WizardStepFxControllerBase
 	private boolean imageSelected = false;
 	
 	@Override
-	protected void initialize()
+	protected void onAttachedToScene()
 	{
 		btnPrevious.setOnAction(event -> goPrevious());
 		btnNext.setOnAction(event -> goNext());
-	}
-	
-	@Override
-	protected void onAttachedToScene()
-	{
+		
 		fileChooser.setTitle(resources.getString("fileChooser.selectImage.title"));
 		FileChooser.ExtensionFilter extFilterJPG = new FileChooser.ExtensionFilter(
 									resources.getString("fileChooser.selectImage.types"), "*.jpg");
@@ -76,19 +72,12 @@ public class UploadImageFileFxController extends WizardStepFxControllerBase
 		    if(newValue == null) Context.getCoreFxController().getStage().maximizedProperty()
 				                                                                .removeListener(changeListener);
 		});
-	}
-	
-	@Override
-	public void onWorkflowUserTaskLoad(boolean newForm, Map<String, Object> uiInputData)
-	{
-		if(newForm)
+		
+		if(uploadedImage != null)
 		{
-			if(uploadedImage != null)
-			{
-				ivUploadedImage.setImage(uploadedImage);
-				btnNext.setDisable(false);
-				btnSelectImage.setText(resources.getString("button.selectNewImage"));
-			}
+			ivUploadedImage.setImage(uploadedImage);
+			btnNext.setDisable(false);
+			btnSelectImage.setText(resources.getString("button.selectNewImage"));
 		}
 	}
 	

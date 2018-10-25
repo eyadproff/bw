@@ -73,7 +73,7 @@ public class SpecifyFingerprintCoordinatesPaneFxController extends WizardStepFxC
 		}
 	}
 	
-	@Input(required = true) private Image cardImage;
+	@Input(alwaysRequired = true) private Image cardImage;
 	@Output private Map<Integer, Image> fingerprintImages;
 	@Output private List<Integer> missingFingerprints;
 	@Output private Map<Integer, Dimension> fingerprintsDimensions;

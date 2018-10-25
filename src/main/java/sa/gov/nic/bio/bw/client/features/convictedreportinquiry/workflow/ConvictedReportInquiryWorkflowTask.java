@@ -14,7 +14,7 @@ import java.util.List;
 
 public class ConvictedReportInquiryWorkflowTask implements WorkflowTask
 {
-	@Input(required = true) private long generalFileNumber;
+	@Input(alwaysRequired = true) private long generalFileNumber;
 	@Output private List<ConvictedReport> convictedReports;
 	
 	@Override

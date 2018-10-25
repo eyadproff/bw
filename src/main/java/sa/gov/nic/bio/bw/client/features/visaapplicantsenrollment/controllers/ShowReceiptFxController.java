@@ -16,12 +16,13 @@ import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.controllers.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.client.core.utils.FxmlFile;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
-import sa.gov.nic.bio.bw.client.features.commons.controllers.FingerprintCapturingFxController;
+import sa.gov.nic.bio.bw.client.core.workflow.Input;
 import sa.gov.nic.bio.bw.client.features.commons.tasks.PrintReportTask;
 import sa.gov.nic.bio.bw.client.features.commons.tasks.SaveReportAsPdfTask;
 import sa.gov.nic.bio.bw.client.features.visaapplicantsenrollment.tasks.BuildForeignEnrollmentReceiptTask;
 import sa.gov.nic.bio.bw.client.features.visaapplicantsenrollment.utils.VisaApplicantsEnrollmentErrorCodes;
 import sa.gov.nic.bio.bw.client.features.visaapplicantsenrollment.webservice.VisaApplicantInfo;
+import sa.gov.nic.bio.bw.client.features.visaapplicantsenrollment.workflow.VisaApplicantEnrollmentResponse;
 
 import javax.swing.SwingUtilities;
 import java.io.File;
@@ -33,6 +34,10 @@ import java.util.concurrent.atomic.AtomicReference;
 @FxmlFile("showReceipt.fxml")
 public class ShowReceiptFxController extends WizardStepFxControllerBase
 {
+	@Input(alwaysRequired = true) private VisaApplicantInfo visaApplicantInfo;
+	@Input(alwaysRequired = true) private VisaApplicantEnrollmentResponse visaApplicantEnrollmentResponse;
+	@Input(alwaysRequired = true) private Map<Integer, String> fingerprintImages;
+	
 	@FXML private TextField txtRegistrationNumber;
 	@FXML private Pane paneProgress;
 	@FXML private Pane paneError;
@@ -43,8 +48,6 @@ public class ShowReceiptFxController extends WizardStepFxControllerBase
 	@FXML private Button btnSaveReceiptAsPDF;
 	
 	private FileChooser fileChooser = new FileChooser();
-	private VisaApplicantInfo visaApplicantInfo;
-	private Map<Integer, String> fingerprintImages;
 	private AtomicReference<JasperPrint> jasperPrint = new AtomicReference<>();
 	
 	@Override
@@ -54,57 +57,43 @@ public class ShowReceiptFxController extends WizardStepFxControllerBase
 		FileChooser.ExtensionFilter extFilterPDF = new FileChooser.ExtensionFilter(
 								resources.getString("fileChooser.saveReceiptAsPDF.types"), "*.pdf");
 		fileChooser.getExtensionFilters().addAll(extFilterPDF);
-	}
-	
-	@Override
-	public void onWorkflowUserTaskLoad(boolean newForm, Map<String, Object> uiInputData)
-	{
-		if(newForm)
+		
+		Long registrationId = visaApplicantInfo.getApplicantId();
+		String sRegistrationId = String.valueOf(registrationId);
+		txtRegistrationNumber.setText(sRegistrationId);
+		
+		@SuppressWarnings("unchecked") Task<Barcode> generatingBarcodeTask = new Task<Barcode>()
 		{
-			visaApplicantInfo = (VisaApplicantInfo)
-											uiInputData.get(ReviewAndSubmitPaneFxController.KEY_VISA_APPLICANT_INFO);
-			Long registrationId = visaApplicantInfo.getApplicantId();
-			String sRegistrationId = String.valueOf(registrationId);
-			txtRegistrationNumber.setText(sRegistrationId);
-			
-			@SuppressWarnings("unchecked")
-			Map<Integer, String> fingerprintImages = (Map<Integer, String>)
-											uiInputData.get(FingerprintCapturingFxController.KEY_FINGERPRINTS_IMAGES);
-			this.fingerprintImages = fingerprintImages;
-			
-			Task<Barcode> generatingBarcodeTask = new Task<Barcode>()
+			@Override
+			protected Barcode call() throws Exception
 			{
-				@Override
-				protected Barcode call() throws Exception
-				{
-					Barcode barcode = BarcodeFactory.createCode128(sRegistrationId);
-					barcode.setDrawingQuietSection(false);
-					
-					return barcode;
-				}
-			};
-			generatingBarcodeTask.setOnSucceeded(event ->
-			{
-				GuiUtils.showNode(paneProgress, false);
-				GuiUtils.showNode(nodeBarcode, true);
+				Barcode barcode = BarcodeFactory.createCode128(sRegistrationId);
+				barcode.setDrawingQuietSection(false);
 				
-				Barcode barcode = generatingBarcodeTask.getValue();
-				SwingUtilities.invokeLater(() -> nodeBarcode.setContent(barcode));
-			});
-			generatingBarcodeTask.setOnFailed(event ->
-			{
-				GuiUtils.showNode(paneProgress, false);
-				GuiUtils.showNode(nodeBarcode, false);
-				GuiUtils.showNode(paneError, true);
-				
-				Throwable exception = generatingBarcodeTask.getException();
-				
-				String errorCode = VisaApplicantsEnrollmentErrorCodes.C010_00005.getCode();
-				String[] errorDetails = {"failed to generate the barcode for the number " + sRegistrationId};
-				reportNegativeTaskResponse(errorCode, exception, errorDetails);
-			});
-			Context.getExecutorService().submit(generatingBarcodeTask);
-		}
+				return barcode;
+			}
+		};
+		generatingBarcodeTask.setOnSucceeded(event ->
+		{
+		    GuiUtils.showNode(paneProgress, false);
+		    GuiUtils.showNode(nodeBarcode, true);
+		
+		    Barcode barcode = generatingBarcodeTask.getValue();
+		    SwingUtilities.invokeLater(() -> nodeBarcode.setContent(barcode));
+		});
+		generatingBarcodeTask.setOnFailed(event ->
+		{
+		    GuiUtils.showNode(paneProgress, false);
+		    GuiUtils.showNode(nodeBarcode, false);
+		    GuiUtils.showNode(paneError, true);
+		
+		    Throwable exception = generatingBarcodeTask.getException();
+		
+		    String errorCode = VisaApplicantsEnrollmentErrorCodes.C010_00005.getCode();
+		    String[] errorDetails = {"failed to generate the barcode for the number " + sRegistrationId};
+		    reportNegativeTaskResponse(errorCode, exception, errorDetails);
+		});
+		Context.getExecutorService().submit(generatingBarcodeTask);
 	}
 	
 	@FXML
@@ -130,7 +119,7 @@ public class ShowReceiptFxController extends WizardStepFxControllerBase
 		if(jasperPrint.get() == null)
 		{
 			BuildForeignEnrollmentReceiptTask buildForeignEnrollmentReceiptTask =
-												new BuildForeignEnrollmentReceiptTask(visaApplicantInfo, fingerprintImages);
+											new BuildForeignEnrollmentReceiptTask(visaApplicantInfo, fingerprintImages);
 			buildForeignEnrollmentReceiptTask.setOnSucceeded(event ->
 			{
 			    JasperPrint value = buildForeignEnrollmentReceiptTask.getValue();
@@ -171,7 +160,7 @@ public class ShowReceiptFxController extends WizardStepFxControllerBase
 			if(jasperPrint.get() == null)
 			{
 				BuildForeignEnrollmentReceiptTask buildForeignEnrollmentReceiptTask =
-												new BuildForeignEnrollmentReceiptTask(visaApplicantInfo, fingerprintImages);
+											new BuildForeignEnrollmentReceiptTask(visaApplicantInfo, fingerprintImages);
 				buildForeignEnrollmentReceiptTask.setOnSucceeded(event ->
 				{
 				    JasperPrint value = buildForeignEnrollmentReceiptTask.getValue();

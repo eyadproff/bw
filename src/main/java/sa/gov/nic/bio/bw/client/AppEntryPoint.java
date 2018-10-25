@@ -64,7 +64,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 
 /**
- * The entry point of the application. Since Java 8, the main method is not required as long as the entry point
+ * The entry point of the application. Since Java 8, the main method is not alwaysRequired as long as the entry point
  * class extends <code>javafx.application.Application</code>. We kept the main method for old IDEs that don't
  * support this behavior.
  *

@@ -41,13 +41,12 @@ import java.io.ByteArrayInputStream;
 import java.util.Base64;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 @FxmlFile("showResults.fxml")
 public class ShowResultsFxController extends WizardStepFxControllerBase
 {
-	@Input(required = true) private Image finalImage;
-	@Input(required = true) private List<Candidate> candidates;
+	@Input(alwaysRequired = true) private Image finalImage;
+	@Input(alwaysRequired = true) private List<Candidate> candidates;
 	
 	@FXML private SplitPane splitPane;
 	@FXML private HBox imagePane;
@@ -67,14 +66,10 @@ public class ShowResultsFxController extends WizardStepFxControllerBase
 	@FXML private Button btnStartOver;
 	
 	@Override
-	protected void initialize()
-	{
-		btnStartOver.setOnAction(event -> startOver());
-	}
-	
-	@Override
 	protected void onAttachedToScene()
 	{
+		btnStartOver.setOnAction(event -> startOver());
+		
 		imagePane.maxWidthProperty().bind(Context.getCoreFxController().getBodyPane().widthProperty());
 		imagePane.maxHeightProperty().bind(Context.getCoreFxController().getBodyPane().heightProperty());
 		ivCenterImage.fitWidthProperty().bind(imagePane.widthProperty().divide(1.8));
@@ -98,12 +93,7 @@ public class ShowResultsFxController extends WizardStepFxControllerBase
 		    if(newValue == null) Context.getCoreFxController().getStage().maximizedProperty()
 				                                                                .removeListener(changeListener);
 		});
-	}
-	
-	@Override
-	@SuppressWarnings("unchecked")
-	public void onWorkflowUserTaskLoad(boolean newForm, Map<String, Object> uiInputData)
-	{
+		
 		Collections.sort(candidates);
 		
 		spCandidates.maxHeightProperty().bind(new SimpleDoubleProperty(Double.MAX_VALUE));
@@ -119,7 +109,7 @@ public class ShowResultsFxController extends WizardStepFxControllerBase
 		    if(event.getDeltaX() == 0 && event.getDeltaY() != 0)
 		    {
 		        spCandidates.setHvalue(spCandidates.getHvalue() - event.getDeltaY() * 3 /
-				                                                ((Pane) this.spCandidates.getContent()).getWidth());
+		                ((Pane) this.spCandidates.getContent()).getWidth());
 		    }
 		});
 		
@@ -132,7 +122,7 @@ public class ShowResultsFxController extends WizardStepFxControllerBase
 		
 		final double[] hScrollbarHeight = {13.0};
 		imageView.fitHeightProperty().bind(spCandidates.heightProperty()
-                                   .subtract(hScrollbarHeight[0] * 3 + 2)); // 2 = top border + bottom border
+                                     .subtract(hScrollbarHeight[0] * 3 + 2)); // 2 = top border + bottom border
 		GuiUtils.attachImageDialog(Context.getCoreFxController(), imageView, tpFinalImage.getText(),
 		                           resources.getString("label.contextMenu.showImage"), false);
 		
@@ -162,8 +152,8 @@ public class ShowResultsFxController extends WizardStepFxControllerBase
 		    toggleGroup.selectToggle(tpFinalImage);
 		    ivCenterImage.setImage(finalImage);
 		    btnCompareWithUploadedImage.setDisable(true);
-			GuiUtils.attachImageDialog(Context.getCoreFxController(), ivCenterImage, tpFinalImage.getText(),
-			                           resources.getString("label.contextMenu.showImage"), false);
+		    GuiUtils.attachImageDialog(Context.getCoreFxController(), ivCenterImage, tpFinalImage.getText(),
+		                               resources.getString("label.contextMenu.showImage"), false);
 		
 		    lblBioId.setText(resources.getString("label.notAvailable"));
 		    lblScore.setText(resources.getString("label.notAvailable"));
@@ -183,7 +173,7 @@ public class ShowResultsFxController extends WizardStepFxControllerBase
 			candidateImageView.setImage(candidateImage);
 			candidateImageView.setPreserveRatio(true);
 			candidateImageView.fitHeightProperty().bind(spCandidates.heightProperty().subtract(
-											hScrollbarHeight[0] * 3 + 2)); // 2 = top border + bottom border
+					hScrollbarHeight[0] * 3 + 2)); // 2 = top border + bottom border
 			String scoreTitle = AppUtils.localizeNumbers(String.valueOf(candidate.getScore()));
 			
 			GuiUtils.attachImageDialog(Context.getCoreFxController(), candidateImageView, scoreTitle,
@@ -198,8 +188,8 @@ public class ShowResultsFxController extends WizardStepFxControllerBase
 			    toggleGroup.selectToggle(toggleTitledPane);
 			    ivCenterImage.setImage(candidateImage);
 			    btnCompareWithUploadedImage.setDisable(false);
-				GuiUtils.attachImageDialog(Context.getCoreFxController(), ivCenterImage, scoreTitle,
-				                           resources.getString("label.contextMenu.showImage"), false);
+			    GuiUtils.attachImageDialog(Context.getCoreFxController(), ivCenterImage, scoreTitle,
+			                               resources.getString("label.contextMenu.showImage"), false);
 			
 			    // default values
 			    lblBioId.setText(resources.getString("label.notAvailable"));
@@ -218,9 +208,9 @@ public class ShowResultsFxController extends WizardStepFxControllerBase
 			
 			    if(firstName != null && (firstName.trim().isEmpty() || firstName.trim().equals("-"))) firstName = null;
 			    if(fatherName != null && (fatherName.trim().isEmpty() || fatherName.trim().equals("-")))
-			    	                                                                                fatherName = null;
+			        fatherName = null;
 			    if(familyName != null && (familyName.trim().isEmpty() || familyName.trim().equals("-")))
-			    	                                                                                familyName = null;
+			        familyName = null;
 			
 			    String sBioId = AppUtils.localizeNumbers(String.valueOf(bioId));
 			    String sScore = AppUtils.localizeNumbers(String.valueOf(score));

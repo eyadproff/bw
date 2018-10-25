@@ -12,7 +12,7 @@ import sa.gov.nic.bio.commons.TaskResponse;
 
 public class DeadPersonRecordByIdWorkflowTask implements WorkflowTask
 {
-	@Input(required = true) private long recordId;
+	@Input(alwaysRequired = true) private long recordId;
 	@Output private DeadPersonRecord deadPersonRecord;
 	
 	@Override

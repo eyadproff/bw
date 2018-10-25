@@ -17,13 +17,11 @@ import sa.gov.nic.bio.bw.client.core.workflow.Input;
 import sa.gov.nic.bio.bw.client.core.workflow.Output;
 import sa.gov.nic.bio.bw.client.features.searchbyfaceimage.utils.SearchByFaceImageErrorCodes;
 
-import java.util.Map;
-
 @FxmlFile("confirmImage.fxml")
 public class ConfirmImageFxController extends WizardStepFxControllerBase
 {
 	@Input private Long personId;
-	@Input(required = true) private Image faceImage;
+	@Input(alwaysRequired = true) private Image faceImage;
 	@Output private String faceImageBase64;
 	
 	@FXML private Pane imagePane;
@@ -34,15 +32,11 @@ public class ConfirmImageFxController extends WizardStepFxControllerBase
 	@FXML private Button btnSearch;
 	
 	@Override
-	protected void initialize()
+	protected void onAttachedToScene()
 	{
 		btnPrevious.setOnAction(event -> goPrevious());
 		btnSearch.setOnAction(event -> goNext());
-	}
-	
-	@Override
-	protected void onAttachedToScene()
-	{
+		
 		imagePane.maxWidthProperty().bind(Context.getCoreFxController().getBodyPane().widthProperty());
 		imagePane.maxHeightProperty().bind(Context.getCoreFxController().getBodyPane().heightProperty());
 		ivFinalImage.fitWidthProperty().bind(imagePane.widthProperty().divide(1.8));
@@ -65,53 +59,43 @@ public class ConfirmImageFxController extends WizardStepFxControllerBase
 		    if(newValue == null) Context.getCoreFxController().getStage().maximizedProperty()
 				                                                                .removeListener(changeListener);
 		});
-	}
-	
-	@Override
-	public void onWorkflowUserTaskLoad(boolean newForm, Map<String, Object> uiInputData)
-	{
-		if(newForm)
+		
+		if(personId != null)
 		{
-			if(personId != null)
-			{
-				GuiUtils.showNode(personIdPane, true);
-				lblPersonId.setText(AppUtils.localizeNumbers(String.valueOf(personId)));
-			}
-			
-			if(faceImage != null)
-			{
-				try
-				{
-					this.faceImageBase64 = AppUtils.imageToBase64(faceImage, "jpg");
-				}
-				catch(Exception e)
-				{
-					String errorCode = SearchByFaceImageErrorCodes.C005_00001.getCode();
-					String[] errorDetails = {"Failed to convert image to Base64-encoded representation!"};
-					Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails);
-					btnSearch.setDisable(true);
-				}
-			
-				Platform.runLater(() ->
-				{
-					ivFinalImage.setImage(faceImage);
-					GuiUtils.attachImageDialog(Context.getCoreFxController(), ivFinalImage,
-					                           resources.getString("label.finalImage"),
-					                           resources.getString("label.contextMenu.showImage"), false);
-					imagePane.autosize();
-			
-					// workaround to resolve the issue of not resizing sometimes
-					new Thread(() ->
-					{
-						try
-						{
-							Thread.sleep(1);
-						}
-						catch(InterruptedException e){e.printStackTrace();}
-						Platform.runLater(() -> imagePane.autosize());
-					}).start();
-				});
-			}
+			GuiUtils.showNode(personIdPane, true);
+			lblPersonId.setText(AppUtils.localizeNumbers(String.valueOf(personId)));
 		}
+		
+		try
+		{
+			this.faceImageBase64 = AppUtils.imageToBase64(faceImage, "jpg");
+		}
+		catch(Exception e)
+		{
+			String errorCode = SearchByFaceImageErrorCodes.C005_00001.getCode();
+			String[] errorDetails = {"Failed to convert image to Base64-encoded representation!"};
+			Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails);
+			btnSearch.setDisable(true);
+		}
+		
+		Platform.runLater(() ->
+		{
+		    ivFinalImage.setImage(faceImage);
+		    GuiUtils.attachImageDialog(Context.getCoreFxController(), ivFinalImage,
+		                               resources.getString("label.finalImage"),
+		                               resources.getString("label.contextMenu.showImage"), false);
+		    imagePane.autosize();
+		
+		    // workaround to resolve the issue of not resizing sometimes
+		    new Thread(() ->
+		    {
+		        try
+		        {
+		            Thread.sleep(1);
+		        }
+		        catch(InterruptedException e){e.printStackTrace();}
+		        Platform.runLater(() -> imagePane.autosize());
+		    }).start();
+		});
 	}
 }

@@ -10,25 +10,20 @@ import sa.gov.nic.bio.bw.client.core.controllers.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.client.core.utils.FxmlFile;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.workflow.Output;
-import sa.gov.nic.bio.bw.client.core.workflow.Workflow;
-import sa.gov.nic.bio.bw.client.features.printdeadpersonrecord.webservice.DeadPersonRecord;
-import sa.gov.nic.bio.commons.TaskResponse;
 
 import java.util.HashMap;
-import java.util.Map;
 
 @FxmlFile("recordId.fxml")
 public class RecordIdPaneFxController extends WizardStepFxControllerBase
 {
 	@Output private Long recordId;
-	@Output private DeadPersonRecord deadPersonRecord;
 	
 	@FXML private TextField txtRecordId;
 	@FXML private ProgressIndicator piProgress;
 	@FXML private Button btnNext;
 	
 	@Override
-	protected void initialize()
+	protected void onAttachedToScene()
 	{
 		GuiUtils.applyValidatorToTextField(txtRecordId, "\\d*", "[^\\d]", 15);
 		
@@ -42,32 +37,22 @@ public class RecordIdPaneFxController extends WizardStepFxControllerBase
 			recordId = Long.parseLong(txtRecordId.getText());
 			if(!isDetached()) Context.getWorkflowManager().submitUserTask(new HashMap<>());
 		});
+		
+		if(recordId != null) txtRecordId.setText(String.valueOf(recordId));
+		txtRecordId.requestFocus();
 	}
 	
 	@Override
-	public void onWorkflowUserTaskLoad(boolean newForm, Map<String, Object> uiInputData)
+	public void onReturnFromWorkflow(boolean successfulResponse)
 	{
-		if(newForm)
-		{
-			if(recordId != null) txtRecordId.setText(String.valueOf(recordId));
-			txtRecordId.requestFocus();
-		}
-		else
-		{
-			piProgress.setVisible(false);
-			txtRecordId.setDisable(false);
-			
-			@SuppressWarnings("unchecked") TaskResponse<DeadPersonRecord> taskResponse =
-								(TaskResponse<DeadPersonRecord>) uiInputData.get(Workflow.KEY_WORKFLOW_TASK_NEGATIVE_RESPONSE);
-			
-			if(taskResponse.isSuccess())
-			{
-				deadPersonRecord = taskResponse.getResult();
-				goNext();
-			}
-			else reportNegativeTaskResponse(taskResponse.getErrorCode(), taskResponse.getException(),
-			                                taskResponse.getErrorDetails());
-		}
+		if(successfulResponse) goNext();
+	}
+	
+	@Override
+	public void onShowingProgress(boolean bShow)
+	{
+		piProgress.setVisible(bShow);
+		txtRecordId.setDisable(bShow);
 	}
 	
 	@FXML

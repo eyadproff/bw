@@ -87,8 +87,6 @@ public abstract class BodyFxControllerBase extends RegionFxControllerBase implem
 		showNotification(message, errorIcon);
 	}
 	
-	protected void preAttachingToScene(){}
-	
 	/**
 	 * A callback that is invoked after the root pane of this controller is attached to the scene.
 	 */
@@ -120,6 +118,11 @@ public abstract class BodyFxControllerBase extends RegionFxControllerBase implem
 	
 	protected void continueWorkflow()
 	{
-		if(!isDetached()) Context.getWorkflowManager().submitUserTask(new HashMap<>());
+		if(!isDetached())
+		{
+			hideNotification();
+			onShowingProgress(true);
+			Context.getWorkflowManager().submitUserTask(new HashMap<>());
+		}
 	}
 }

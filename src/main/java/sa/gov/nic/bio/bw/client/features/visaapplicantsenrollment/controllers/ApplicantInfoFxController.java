@@ -111,7 +111,7 @@ public class ApplicantInfoFxController extends WizardStepFxControllerBase
 	private Predicate<LocalDate> birthDateValidator = localDate -> !localDate.isAfter(LocalDate.now());
 	
 	@Override
-	protected void initialize()
+	protected void onAttachedToScene()
 	{
 		btnNext.setOnAction(event -> goNext());
 		
@@ -247,11 +247,7 @@ public class ApplicantInfoFxController extends WizardStepFxControllerBase
 				                 .or(txtPassportNumberBinding).or(dpIssueDateBinding).or(dpExpirationDateBinding)
 								 .or(cboIssuanceCountryBinding).or(cboPassportTypeBinding)
 				                 .or(cboDialingCodeBinding).or(txtMobileNumberBinding));
-	}
-	
-	@Override
-	protected void onAttachedToScene()
-	{
+		
 		GuiUtils.setupNationalityComboBox(cboNationality);
 		GuiUtils.setupNationalityComboBox(cboBirthPlace);
 		GuiUtils.setupNationalityComboBox(cboIssuanceCountry);
@@ -291,56 +287,49 @@ public class ApplicantInfoFxController extends WizardStepFxControllerBase
 		    String text;
 		    if(Context.getGuiLanguage() == GuiLanguage.ARABIC)
 		    {
-		    	final char LEFT_TO_RIGHT_MARK = '\u200e';
-		    	text = dialingCode.getCountryArabicName() + " (" + LEFT_TO_RIGHT_MARK + "[+" +
-					   dialingCode.getDialingCode() + "] (" + dialingCode.getIsoAlpha3Code();
+		        final char LEFT_TO_RIGHT_MARK = '\u200e';
+		        text = dialingCode.getCountryArabicName() + " (" + LEFT_TO_RIGHT_MARK + "[+" +
+		                dialingCode.getDialingCode() + "] (" + dialingCode.getIsoAlpha3Code();
 		    }
 		    else
 		    {
-		    	text = dialingCode.getCountryEnglishName() + " (" + dialingCode.getIsoAlpha3Code() + ") [+" +
-			           dialingCode.getDialingCode() + "]";
+		        text = dialingCode.getCountryEnglishName() + " (" + dialingCode.getIsoAlpha3Code() + ") [+" +
+		                dialingCode.getDialingCode() + "]";
 		    }
 		
 		    item.setText(text);
 		});
 		
-		txtFirstName.requestFocus();
-	}
-	
-	@Override
-	public void onWorkflowUserTaskLoad(boolean newForm, Map<String, Object> uiInputData)
-	{
-		if(newForm)
-		{
-			loadOldDateIfExist(uiInputData);
-			
-			DevicesRunnerGadgetPaneFxController deviceManagerGadgetPaneController =
+		loadOldDateIfExist();
+		
+		DevicesRunnerGadgetPaneFxController deviceManagerGadgetPaneController =
 												Context.getCoreFxController().getDeviceManagerGadgetPaneController();
-			
-			// register a listener to the event of the devices-runner being running or not
-			deviceManagerGadgetPaneController.setDevicesRunnerRunningListener(running ->
+		
+		// register a listener to the event of the devices-runner being running or not
+		deviceManagerGadgetPaneController.setDevicesRunnerRunningListener(running ->
+		{
+		    if(running && !deviceManagerGadgetPaneController.isPassportScannerInitialized())
+		    {
+		        deviceManagerGadgetPaneController.initializePassportScanner();
+		    }
+		});
+		
+		if(deviceManagerGadgetPaneController.isDevicesRunnerRunning())
+		{
+			if(!deviceManagerGadgetPaneController.isPassportScannerInitialized())
 			{
-			    if(running && !deviceManagerGadgetPaneController.isPassportScannerInitialized())
-			    {
-			        deviceManagerGadgetPaneController.initializePassportScanner();
-			    }
-			});
-			
-			if(deviceManagerGadgetPaneController.isDevicesRunnerRunning())
-			{
-				if(!deviceManagerGadgetPaneController.isPassportScannerInitialized())
-				{
-					deviceManagerGadgetPaneController.initializePassportScanner();
-				}
-			}
-			else
-			{
-				boolean devicesRunnerAutoRun = "true".equals(
-													Context.getConfigManager().getProperty("devicesRunner.autoRun"));
-				
-				if(devicesRunnerAutoRun) deviceManagerGadgetPaneController.runAndConnectDevicesRunner();
+				deviceManagerGadgetPaneController.initializePassportScanner();
 			}
 		}
+		else
+		{
+			boolean devicesRunnerAutoRun = "true".equals(
+													Context.getConfigManager().getProperty("devicesRunner.autoRun"));
+			
+			if(devicesRunnerAutoRun) deviceManagerGadgetPaneController.runAndConnectDevicesRunner();
+		}
+		
+		txtFirstName.requestFocus();
 	}
 	
 	@Override
@@ -397,7 +386,7 @@ public class ApplicantInfoFxController extends WizardStepFxControllerBase
 		expirationDateUseHijri = rdoExpirationDateUseHijri.isSelected();
 	}
 	
-	private void loadOldDateIfExist(Map<String, Object> dataMap)
+	private void loadOldDateIfExist()
 	{
 		if(firstName != null) txtFirstName.setText(firstName);
 		if(secondName != null) txtSecondName.setText(secondName);

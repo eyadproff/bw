@@ -18,19 +18,29 @@ import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.client.core.utils.FxmlFile;
 import sa.gov.nic.bio.bw.client.core.utils.GuiLanguage;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
-import sa.gov.nic.bio.bw.client.core.workflow.Workflow;
+import sa.gov.nic.bio.bw.client.core.workflow.Input;
+import sa.gov.nic.bio.bw.client.core.workflow.Output;
 import sa.gov.nic.bio.bw.client.features.commons.lookups.SamisIdTypesLookup;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.SamisIdType;
-import sa.gov.nic.bio.commons.TaskResponse;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 @FxmlFile("cancelCriminal.fxml")
 public class CancelCriminalPaneFxController extends BodyFxControllerBase
 {
+	public enum CancelCriminalMethod
+	{
+		BY_PERSON_ID, BY_INQUIRY_ID
+	}
+	
+	@Input private Boolean success;
+	@Output private CancelCriminalMethod cancelCriminalMethod;
+	@Output private Long criminalId;
+	@Output private Long inquiryId;
+	@Output private Long personId;
+	@Output private Integer samisIdType;
+	
 	@FXML private TabPane tabPane;
 	@FXML private Tab tabByPersonId;
 	@FXML private Tab tabByInquiryId;
@@ -44,7 +54,7 @@ public class CancelCriminalPaneFxController extends BodyFxControllerBase
 	@FXML private ProgressIndicator piCancelCriminal;
 	
 	@Override
-	protected void initialize()
+	protected void onAttachedToScene()
 	{
 		tabByPersonId.setGraphic(AppUtils.createFontAwesomeIcon('\uf2bb'));
 		tabByInquiryId.setGraphic(AppUtils.createFontAwesomeIcon('\uf1c0'));
@@ -102,85 +112,71 @@ public class CancelCriminalPaneFxController extends BodyFxControllerBase
 													Context.getUserSession().getAttribute(SamisIdTypesLookup.KEY);
 		cboPersonIdType.getItems().addAll(samisIdTypes);
 		cboPersonIdType.getSelectionModel().select(0);
-	}
-	
-	@Override
-	protected void onAttachedToScene()
-	{
+		
 		txtPersonId.requestFocus();
 	}
 	
 	@Override
-	public void onWorkflowUserTaskLoad(boolean newForm, Map<String, Object> uiInputData)
+	public void onReturnFromWorkflow(boolean successfulResponse)
 	{
-		if(!newForm)
+		txtPersonId.requestFocus();
+		
+		if(successfulResponse)
 		{
-			TaskResponse<?> taskResponse = (TaskResponse<?>) uiInputData.get(Workflow.KEY_WORKFLOW_TASK_NEGATIVE_RESPONSE);
+			String personId = txtPersonId.getText().trim();
+			SamisIdType samisIdType = cboPersonIdType.getValue();
+			String criminalId = txtCriminalId.getText().trim();
+			String inquiryId = txtInquiryId.getText().trim();
+			String criminalId2 = txtCriminalId2.getText().trim();
 			
-			disableUiControls(false);
-			
-			if(taskResponse.isSuccess())
+			if(success)
 			{
-				String personId = txtPersonId.getText().trim();
-				SamisIdType samisIdType = cboPersonIdType.getValue();
-				String criminalId = txtCriminalId.getText().trim();
-				String inquiryId = txtInquiryId.getText().trim();
-				String criminalId2 = txtCriminalId2.getText().trim();
-				
-				Boolean resultBean = (Boolean) taskResponse.getResult();
-				if(resultBean != null && resultBean)
+				if(tabByPersonId.isSelected())
 				{
-					if(tabByPersonId.isSelected())
-					{
-						String message = String.format(
-								resources.getString("cancelCriminal.byPersonId.success"), criminalId,
-								personId, formatPersonIdType(samisIdType));
-						showSuccessNotification(message);
-					}
-					else
-					{
-						String message = String.format(
-								resources.getString("cancelCriminal.byInquiryId.success"), criminalId2,
-								inquiryId);
-						showSuccessNotification(message);
-					}
+					String message = String.format(resources.getString("cancelCriminal.byPersonId.success"),
+					                               criminalId, personId, formatPersonIdType(samisIdType));
+					showSuccessNotification(message);
 				}
 				else
 				{
-					if(tabByPersonId.isSelected())
-					{
-						String message = String.format(
-								resources.getString("cancelCriminal.byPersonId.failure"), criminalId,
-								personId, formatPersonIdType(samisIdType));
-						showWarningNotification(message);
-					}
-					else
-					{
-						String message = String.format(
-								resources.getString("cancelCriminal.byInquiryId.failure"), criminalId2,
-								inquiryId);
-						showWarningNotification(message);
-					}
+					String message = String.format(resources.getString("cancelCriminal.byInquiryId.success"),
+					                               criminalId2, inquiryId);
+					showSuccessNotification(message);
 				}
 			}
-			else reportNegativeTaskResponse(taskResponse.getErrorCode(), taskResponse.getException(),
-			                                taskResponse.getErrorDetails());
-			
-			txtPersonId.requestFocus();
+			else
+			{
+				if(tabByPersonId.isSelected())
+				{
+					String message = String.format(resources.getString("cancelCriminal.byPersonId.failure"),
+					                               criminalId, personId, formatPersonIdType(samisIdType));
+					showWarningNotification(message);
+				}
+				else
+				{
+					String message = String.format(resources.getString("cancelCriminal.byInquiryId.failure"),
+					                               criminalId2, inquiryId);
+					showWarningNotification(message);
+				}
+			}
 		}
 	}
 	
-	@FXML
-	private void onEnterPressed(ActionEvent event)
+	@Override
+	public void onShowingProgress(boolean bShow)
 	{
-		btnCancelCriminal.fire();
+		tabPane.setDisable(bShow);
+		txtPersonId.setDisable(bShow);
+		txtCriminalId.setDisable(bShow);
+		
+		GuiUtils.showNode(btnCancelCriminal, !bShow);
+		GuiUtils.showNode(piCancelCriminal, bShow);
 	}
 	
 	@FXML
 	private void onCancelCriminalButtonClicked(ActionEvent actionEvent)
 	{
 		String headerText = resources.getString("cancelCriminal.confirmation.header");
-		Map<String, Object> uiDataMap = new HashMap<>();
 		
 		if(tabByPersonId.isSelected())
 		{
@@ -195,12 +191,12 @@ public class CancelCriminalPaneFxController extends BodyFxControllerBase
 			
 			if(!confirmed) return;
 			
-			hideNotification();
-			disableUiControls(true);
+			this.cancelCriminalMethod = CancelCriminalMethod.BY_PERSON_ID;
+			this.personId = Long.parseLong(personId);
+			this.samisIdType = samisIdType.getCode();
+			this.criminalId = Long.parseLong(criminalId);
 			
-			uiDataMap.put("personId", Long.parseLong(personId));
-			uiDataMap.put("samisIdType", samisIdType.getCode());
-			uiDataMap.put("criminalId", Long.parseLong(criminalId));
+			continueWorkflow();
 		}
 		else
 		{
@@ -208,23 +204,21 @@ public class CancelCriminalPaneFxController extends BodyFxControllerBase
 			String criminalId = txtCriminalId2.getText().trim();
 			
 			String contentText = String.format(
-					resources.getString("cancelCriminal.byInquiryId.confirmation.message"),
-					criminalId, inquiryId);
+										resources.getString("cancelCriminal.byInquiryId.confirmation.message"),
+										criminalId, inquiryId);
 			boolean confirmed = Context.getCoreFxController().showConfirmationDialogAndWait(headerText, contentText);
 			
 			if(!confirmed) return;
 			
-			hideNotification();
-			disableUiControls(true);
+			this.cancelCriminalMethod = CancelCriminalMethod.BY_INQUIRY_ID;
+			this.inquiryId = Long.parseLong(inquiryId);
+			this.criminalId = Long.parseLong(criminalId);
 			
-			uiDataMap.put("inquiryId", Long.parseLong(inquiryId));
-			uiDataMap.put("criminalId", Long.parseLong(criminalId));
+			continueWorkflow();
 		}
-		
-		if(!isDetached()) Context.getWorkflowManager().submitUserTask(uiDataMap);
 	}
 	
-	private String formatPersonIdType(SamisIdType samisIdType)
+	private static String formatPersonIdType(SamisIdType samisIdType)
 	{
 		StringBuilder sb = new StringBuilder();
 		
@@ -235,15 +229,5 @@ public class CancelCriminalPaneFxController extends BodyFxControllerBase
 		else sb.append(samisIdType.getDescriptionEN());
 		
 		return AppUtils.localizeNumbers(sb.toString(), Locale.getDefault(), false);
-	}
-	
-	private void disableUiControls(boolean bool)
-	{
-		tabPane.setDisable(bool);
-		txtPersonId.setDisable(bool);
-		txtCriminalId.setDisable(bool);
-		
-		GuiUtils.showNode(piCancelCriminal, bool);
-		GuiUtils.showNode(btnCancelCriminal, !bool);
 	}
 }

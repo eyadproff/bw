@@ -33,6 +33,7 @@ import sa.gov.nic.bio.biokit.face.beans.FaceStartPreviewResponse;
 import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.controllers.DevicesRunnerGadgetPaneFxController;
 import sa.gov.nic.bio.bw.client.core.controllers.WizardStepFxControllerBase;
+import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.client.core.utils.FxmlFile;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.workflow.Input;
@@ -44,6 +45,7 @@ import sa.gov.nic.bio.commons.TaskResponse;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.net.URL;
 import java.util.Base64;
 import java.util.Map;
 import java.util.concurrent.CancellationException;
@@ -53,12 +55,15 @@ import java.util.concurrent.Future;
 @FxmlFile("faceCapturing.fxml")
 public class FaceCapturingFxController extends WizardStepFxControllerBase
 {
+	private static final String FXML_3D_FACE = "sa/gov/nic/bio/bw/client/features/commons/fxml/face3DModel.fxml";
+	
 	@Input private Boolean acceptAnyCapturedImage;
 	@Input private Boolean acceptBadQualityFace;
 	@Input private Integer acceptBadQualityFaceMinRetries;
 	@Output private Image capturedFaceImage;
 	@Output private Image croppedFaceImage;
 	@Output private Image faceImage;
+	@Output private String faceImageBase64;
 	@Output private Boolean icaoSuccessIconVisible;
 	@Output private Boolean icaoWarningIconVisible;
 	@Output private Boolean icaoErrorIconVisible;
@@ -118,27 +123,23 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 	private Rotate zRotateBase = new Rotate(0.0, Rotate.Z_AXIS);
 	
 	@Override
-	protected void initialize()
+	protected void onAttachedToScene()
 	{
 		btnPrevious.setOnAction(event -> goPrevious());
 		btnNext.setOnAction(event -> goNext());
 		
 		ivCameraLivePreviewPlaceholder.visibleProperty().bind(ivCameraLivePreview.imageProperty().isNull().and(
-																		piCameraLivePreview.visibleProperty().not()));
+				piCameraLivePreview.visibleProperty().not()));
 		ivCapturedImagePlaceholder.visibleProperty().bind(ivCapturedImage.imageProperty().isNull().and(
-																		piCapturedImage.visibleProperty().not()));
+				piCapturedImage.visibleProperty().not()));
 		ivCroppedImagePlaceholder.visibleProperty().bind(ivCroppedImage.imageProperty().isNull().and(
-																		piCroppedImage.visibleProperty().not()));
+				piCroppedImage.visibleProperty().not()));
 		
 		btnNext.disabledProperty().addListener((observable, oldValue, newValue) ->
 		{
-			if(!newValue) btnNext.requestFocus();
+		    if(!newValue) btnNext.requestFocus();
 		});
-	}
-	
-	@Override
-	protected void onAttachedToScene()
-	{
+		
 		if(Platform.isSupported(ConditionalFeature.SCENE3D))
 		{
 			Context.getExecutorService().submit(() ->
@@ -146,9 +147,18 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 				Group face3DGroup;
 				try
 				{
-					face3DGroup = FXMLLoader.load(getClass().getResource("fxml/face3DModel.fxml"), resources);
+					URL url = Thread.currentThread().getContextClassLoader().getResource(FXML_3D_FACE);
+					if(url != null) face3DGroup = FXMLLoader.load(url, resources);
+					else
+					{
+						String errorCode = CommonsErrorCodes.C008_00021.getCode();
+						String[] errorDetails = {"failed to load the face 3D fxml (" + FXML_3D_FACE + ")!"};
+						Context.getCoreFxController().showErrorDialog(errorCode, null, errorDetails);
+						
+						return;
+					}
 				}
-				catch(IOException e)
+				catch(Exception e)
 				{
 					String errorCode = CommonsErrorCodes.C008_00001.getCode();
 					String[] errorDetails = {"failed to load the face 3D model!"};
@@ -173,107 +183,100 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 				});
 			});
 		}
-	}
-	
-	@Override
-	public void onWorkflowUserTaskLoad(boolean newForm, Map<String, Object> uiInputData)
-	{
-		if(newForm)
+		
+		if(acceptAnyCapturedImage != null && acceptAnyCapturedImage)
 		{
-			if(acceptAnyCapturedImage != null && acceptAnyCapturedImage)
-			{
-				btnNext.disableProperty().bind(ivCapturedImage.imageProperty().isNull().and(
-											   ivCroppedImage.imageProperty().isNull()));
-			}
-			else if(acceptBadQualityFace != null && acceptBadQualityFace)
-			{
-				btnNext.setDisable(!ivSuccessIcao.isVisible() &&
-				                   successfulCroppedCapturingCount < acceptedBadQualityFaceMinRetires);
-			}
-			else // accept good quality face only
-			{
-				btnNext.disableProperty().bind(ivCapturedImage.imageProperty().isNull().or(
-											   ivCroppedImage.imageProperty().isNull()).or(
-											   ivSuccessIcao.visibleProperty().not()));
-			}
-			
-			if(icaoSuccessIconVisible != null) GuiUtils.showNode(ivSuccessIcao, icaoSuccessIconVisible);
-			if(icaoWarningIconVisible != null) GuiUtils.showNode(ivWarningIcao, icaoWarningIconVisible);
-			if(icaoErrorIconVisible != null) GuiUtils.showNode(ivErrorIcao, icaoErrorIconVisible);
-			if(icaoMessageVisible != null) GuiUtils.showNode(lblIcaoMessage, icaoMessageVisible);
-			
-			lblIcaoMessage.setText(icaoMessage);
-			
-			if(capturedFaceImage != null)
-			{
-				ivCapturedImage.setImage(capturedFaceImage);
-				GuiUtils.attachImageDialog(Context.getCoreFxController(), ivCapturedImage, tpCapturedImage.getText(),
-				                           resources.getString("label.contextMenu.showImage"), false);
-			}
-			
-			if(croppedFaceImage != null)
-			{
-				ivCroppedImage.setImage(croppedFaceImage);
-				GuiUtils.attachImageDialog(Context.getCoreFxController(), ivCroppedImage, tpCroppedImage.getText(),
-				                           resources.getString("label.contextMenu.showImage"), false);
-			}
-			
-			if(capturedImageTitledPaneActive != null) tpCapturedImage.setActive(capturedImageTitledPaneActive);
-			if(capturedImageTitledPaneCaptured != null) tpCapturedImage.setCaptured(capturedImageTitledPaneCaptured);
-			if(capturedImageTitledPaneDuplicated != null)
-													tpCapturedImage.setDuplicated(capturedImageTitledPaneDuplicated);
-			if(capturedImageTitledPaneValid != null) tpCapturedImage.setValid(capturedImageTitledPaneValid);
-			if(croppedImageTitledPaneActive != null) tpCroppedImage.setActive(croppedImageTitledPaneActive);
-			if(croppedImageTitledPaneCaptured != null) tpCroppedImage.setCaptured(croppedImageTitledPaneCaptured);
-			if(croppedImageTitledPaneDuplicated != null) tpCroppedImage.setDuplicated(croppedImageTitledPaneDuplicated);
-			if(croppedImageTitledPaneValid != null) tpCroppedImage.setValid(croppedImageTitledPaneValid);
-			
-			DevicesRunnerGadgetPaneFxController deviceManagerGadgetPaneController =
-												Context.getCoreFxController().getDeviceManagerGadgetPaneController();
-			
-			if(deviceManagerGadgetPaneController.isCameraInitialized())
-			{
-				GuiUtils.showNode(btnStartCameraLivePreview, true);
-			}
-			else
-			{
-				lblStatus.setText(resources.getString("label.status.cameraNotInitialized"));
-				GuiUtils.showNode(lblStatus, true);
-			}
-			
-			deviceManagerGadgetPaneController.setCameraInitializationListener(initialized -> Platform.runLater(() ->
-			{
-				GuiUtils.showNode(lblStatus, true);
-				GuiUtils.showNode(btnStopCameraLivePreview, false);
-				GuiUtils.showNode(btnCaptureFace, false);
-				
-				tpCameraLivePreview.setActive(false);
-				ivCameraLivePreview.setImage(null);
-				
-				if(initialized)
-				{
-					GuiUtils.showNode(btnStartCameraLivePreview, true);
-					lblStatus.setText(resources.getString("label.status.cameraInitializedSuccessfully"));
-					cameraInitializedAtLeastOnce = true;
-					LOGGER.info("The camera is initialized!");
-				}
-				else if(cameraInitializedAtLeastOnce)
-				{
-					GuiUtils.showNode(btnStartCameraLivePreview, false);
-					lblStatus.setText(resources.getString("label.status.cameraDisconnected"));
-					LOGGER.info("The camera is disconnected!");
-				}
-			}));
-			
-			Platform.runLater(() ->
-			{
-			    if(Context.getCoreFxController().getDeviceManagerGadgetPaneController().isDevicesRunnerRunning() &&
-			      !Context.getCoreFxController().getDeviceManagerGadgetPaneController().isCameraInitialized())
-			    {
-			        Context.getCoreFxController().getDeviceManagerGadgetPaneController().initializeCamera();
-			    }
-			});
+			btnNext.disableProperty().bind(ivCapturedImage.imageProperty().isNull().and(
+					ivCroppedImage.imageProperty().isNull()));
 		}
+		else if(acceptBadQualityFace != null && acceptBadQualityFace)
+		{
+			btnNext.setDisable(!ivSuccessIcao.isVisible() &&
+					                   successfulCroppedCapturingCount < acceptedBadQualityFaceMinRetires);
+		}
+		else // accept good quality face only
+		{
+			btnNext.disableProperty().bind(ivCapturedImage.imageProperty().isNull().or(
+					ivCroppedImage.imageProperty().isNull()).or(
+					ivSuccessIcao.visibleProperty().not()));
+		}
+		
+		if(icaoSuccessIconVisible != null) GuiUtils.showNode(ivSuccessIcao, icaoSuccessIconVisible);
+		if(icaoWarningIconVisible != null) GuiUtils.showNode(ivWarningIcao, icaoWarningIconVisible);
+		if(icaoErrorIconVisible != null) GuiUtils.showNode(ivErrorIcao, icaoErrorIconVisible);
+		if(icaoMessageVisible != null) GuiUtils.showNode(lblIcaoMessage, icaoMessageVisible);
+		
+		lblIcaoMessage.setText(icaoMessage);
+		
+		if(capturedFaceImage != null)
+		{
+			ivCapturedImage.setImage(capturedFaceImage);
+			GuiUtils.attachImageDialog(Context.getCoreFxController(), ivCapturedImage, tpCapturedImage.getText(),
+			                           resources.getString("label.contextMenu.showImage"), false);
+		}
+		
+		if(croppedFaceImage != null)
+		{
+			ivCroppedImage.setImage(croppedFaceImage);
+			GuiUtils.attachImageDialog(Context.getCoreFxController(), ivCroppedImage, tpCroppedImage.getText(),
+			                           resources.getString("label.contextMenu.showImage"), false);
+		}
+		
+		if(capturedImageTitledPaneActive != null) tpCapturedImage.setActive(capturedImageTitledPaneActive);
+		if(capturedImageTitledPaneCaptured != null) tpCapturedImage.setCaptured(capturedImageTitledPaneCaptured);
+		if(capturedImageTitledPaneDuplicated != null)
+			tpCapturedImage.setDuplicated(capturedImageTitledPaneDuplicated);
+		if(capturedImageTitledPaneValid != null) tpCapturedImage.setValid(capturedImageTitledPaneValid);
+		if(croppedImageTitledPaneActive != null) tpCroppedImage.setActive(croppedImageTitledPaneActive);
+		if(croppedImageTitledPaneCaptured != null) tpCroppedImage.setCaptured(croppedImageTitledPaneCaptured);
+		if(croppedImageTitledPaneDuplicated != null) tpCroppedImage.setDuplicated(croppedImageTitledPaneDuplicated);
+		if(croppedImageTitledPaneValid != null) tpCroppedImage.setValid(croppedImageTitledPaneValid);
+		
+		DevicesRunnerGadgetPaneFxController deviceManagerGadgetPaneController =
+				Context.getCoreFxController().getDeviceManagerGadgetPaneController();
+		
+		if(deviceManagerGadgetPaneController.isCameraInitialized())
+		{
+			GuiUtils.showNode(btnStartCameraLivePreview, true);
+		}
+		else
+		{
+			lblStatus.setText(resources.getString("label.status.cameraNotInitialized"));
+			GuiUtils.showNode(lblStatus, true);
+		}
+		
+		deviceManagerGadgetPaneController.setCameraInitializationListener(initialized -> Platform.runLater(() ->
+		{
+		    GuiUtils.showNode(lblStatus, true);
+		    GuiUtils.showNode(btnStopCameraLivePreview, false);
+		    GuiUtils.showNode(btnCaptureFace, false);
+		
+		    tpCameraLivePreview.setActive(false);
+		    ivCameraLivePreview.setImage(null);
+		
+		    if(initialized)
+		    {
+		        GuiUtils.showNode(btnStartCameraLivePreview, true);
+		        lblStatus.setText(resources.getString("label.status.cameraInitializedSuccessfully"));
+		        cameraInitializedAtLeastOnce = true;
+		        LOGGER.info("The camera is initialized!");
+		    }
+		    else if(cameraInitializedAtLeastOnce)
+		    {
+		        GuiUtils.showNode(btnStartCameraLivePreview, false);
+		        lblStatus.setText(resources.getString("label.status.cameraDisconnected"));
+		        LOGGER.info("The camera is disconnected!");
+		    }
+		}));
+		
+		Platform.runLater(() ->
+		{
+		    if(Context.getCoreFxController().getDeviceManagerGadgetPaneController().isDevicesRunnerRunning() &&
+		            !Context.getCoreFxController().getDeviceManagerGadgetPaneController().isCameraInitialized())
+		    {
+		        Context.getCoreFxController().getDeviceManagerGadgetPaneController().initializeCamera();
+		    }
+		});
 	}
 	
 	@Override
@@ -320,6 +323,18 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 		
 		if(croppedImage != null) faceImage = croppedImage;
 		else faceImage = capturedImage;
+		
+		try
+		{
+			if(faceImage != null) faceImageBase64 = AppUtils.imageToBase64(faceImage);
+			else faceImageBase64 = null;
+		}
+		catch(IOException e)
+		{
+			String errorCode = CommonsErrorCodes.C008_00022.getCode();
+			String[] errorDetails = {"failed to encode the face image as Base64!"};
+			Context.getCoreFxController().showErrorDialog(errorCode, null, errorDetails);
+		}
 	}
 	
 	@FXML

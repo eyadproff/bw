@@ -14,7 +14,7 @@ import java.util.concurrent.Future;
 
 public class ConvertFingerprintBase64ImagesToWsqWorkflowTask implements WorkflowTask
 {
-	@Input(required = true) private Map<Integer, String> fingerprintBase64Images;
+	@Input(alwaysRequired = true) private Map<Integer, String> fingerprintBase64Images;
 	@Output private Map<Integer, String> fingerprintWsqImages;
 	
 	@Override

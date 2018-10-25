@@ -280,7 +280,8 @@ public class CoreFxController extends FxControllerBase implements IdleMonitorReg
 							uiInputData.put(Workflow.KEY_WORKFLOW_TASK_NEGATIVE_RESPONSE, null);
 							Platform.runLater(() ->
 							{
-								controller.preReportNegativeTaskResponse();
+								controller.onShowingProgress(false);
+								controller.onReturnFromWorkflow(false);
 								controller.reportNegativeTaskResponse(negativeTaskResponse.getErrorCode(),
 								                                      negativeTaskResponse.getException(),
 								                                      negativeTaskResponse.getErrorDetails());
@@ -288,8 +289,12 @@ public class CoreFxController extends FxControllerBase implements IdleMonitorReg
 						}
 						else
 						{
-							Workflow.loadWorkflowInputs(controller, uiInputData, true);
-							Platform.runLater(() -> controller.onWorkflowUserTaskLoad(false, uiInputData));
+							Workflow.loadWorkflowInputs(controller, uiInputData, true, true);
+							Platform.runLater(() ->
+							{
+								controller.onShowingProgress(false);
+								controller.onReturnFromWorkflow(true);
+							});
 						}
 					}
 					
@@ -309,14 +314,13 @@ public class CoreFxController extends FxControllerBase implements IdleMonitorReg
 					final BodyFxControllerBase newController = renderNewBodyForm(currentBodyResourceBundle,
 					                                                             controllerClass);
 					if(newController != null) Workflow.loadWorkflowInputs(newController, uiInputData,
-					                                                      true);
+					                                                      true, false);
 					
 					currentBodyController = newController;
 					
 					Platform.runLater(() ->
 					{
-					    if(newController != null && !newController.isDetached())
-			                                newController.onWorkflowUserTaskLoad(true, uiInputData);
+					    if(newController != null && !newController.isDetached()) newController.onAttachedToScene();
 					});
 					
 				}
@@ -383,11 +387,9 @@ public class CoreFxController extends FxControllerBase implements IdleMonitorReg
 		Platform.runLater(() ->
 		{
 			notificationPane.hide();
-			bodyFxController.preAttachingToScene();
 			bodyPane.setCenter(loadedPane);
 			bodyPane.applyCss();
 			bodyPane.layout();
-			bodyFxController.onAttachedToScene();
 			showMenuTransitionProgressIndicator(false);
 			showWizardTransitionProgressIndicator(false);
 		});

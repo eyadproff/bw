@@ -16,8 +16,8 @@ import java.util.List;
 
 public class FingerprintInquiryWorkflowTask implements WorkflowTask
 {
-	@Input(required = true) private List<Finger> fingerprints;
-	@Input(required = true) private List<Integer> missingFingerprints;
+	@Input(alwaysRequired = true) private List<Finger> fingerprints;
+	@Input(alwaysRequired = true) private List<Integer> missingFingerprints;
 	@Output private Integer inquiryId;
 	
 	@Override

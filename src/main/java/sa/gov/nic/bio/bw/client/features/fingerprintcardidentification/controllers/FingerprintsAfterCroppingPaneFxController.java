@@ -16,7 +16,7 @@ import java.util.Map;
 @FxmlFile("fingerprintsAfterCropping.fxml")
 public class FingerprintsAfterCroppingPaneFxController extends WizardStepFxControllerBase
 {
-	@Input(required = true) private Map<Integer, Image> fingerprintImages;
+	@Input(alwaysRequired = true) private Map<Integer, Image> fingerprintImages;
 	
 	@FXML private ImageView ivRightThumb;
 	@FXML private ImageView ivRightIndex;

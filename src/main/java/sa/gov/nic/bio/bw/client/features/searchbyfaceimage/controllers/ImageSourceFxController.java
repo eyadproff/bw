@@ -33,7 +33,7 @@ public class ImageSourceFxController extends WizardStepFxControllerBase
 	@FXML private Button btnNext;
 	
 	@Override
-	protected void initialize()
+	protected void onAttachedToScene()
 	{
 		btnPrevious.setOnAction(event -> goPrevious());
 		btnNext.setOnAction(event -> goNext());
@@ -49,48 +49,37 @@ public class ImageSourceFxController extends WizardStepFxControllerBase
 		};
 		rbByUploadingImage.addEventHandler(KeyEvent.KEY_PRESSED, eventHandler);
 		rbByCamera.addEventHandler(KeyEvent.KEY_PRESSED, eventHandler);
-	}
-	
-	@Override
-	protected void onAttachedToScene()
-	{
+		
 		String uploadImageTitle = resources.getString("wizard.uploadImage");
 		String capturePhotoByCameraTitle = resources.getString("wizard.capturePhotoByCamera");
 		
 		// change the wizard-step-indicator upon changing the image source
 		int stepIndex = Context.getCoreFxController().getWizardPane().getStepIndexByTitle(uploadImageTitle);
 		if(stepIndex < 0) stepIndex = Context.getCoreFxController().getWizardPane()
-																   .getStepIndexByTitle(capturePhotoByCameraTitle);
+				.getStepIndexByTitle(capturePhotoByCameraTitle);
 		
 		final int finalStepIndex = stepIndex;
 		
 		rbByUploadingImage.selectedProperty().addListener((observable, oldValue, newValue) ->
 		{
-			if(newValue) Context.getCoreFxController().getWizardPane().updateStep(finalStepIndex, uploadImageTitle,
-			                                                                      "upload");
-			else Context.getCoreFxController().getWizardPane().updateStep(finalStepIndex, capturePhotoByCameraTitle,
-			                                                              "camera");
+		    if(newValue) Context.getCoreFxController().getWizardPane().updateStep(finalStepIndex, uploadImageTitle,
+		                                                                          "upload");
+		    else Context.getCoreFxController().getWizardPane().updateStep(finalStepIndex, capturePhotoByCameraTitle,
+		                                                                  "camera");
 		});
-	}
-	
-	@Override
-	public void onWorkflowUserTaskLoad(boolean newForm, Map<String, Object> uiInputData)
-	{
-		if(newForm)
+		
+		if(hidePreviousButton != null) GuiUtils.showNode(btnPrevious, !hidePreviousButton);
+		
+		// load the old state, if exists
+		if(Source.CAMERA.equals(imageSource))
 		{
-			if(hidePreviousButton != null) GuiUtils.showNode(btnPrevious, !hidePreviousButton);
-			
-			// load the old state, if exists
-			if(Source.CAMERA.equals(imageSource))
-			{
-				rbByCamera.setSelected(true);
-				rbByCamera.requestFocus();
-			}
-			else
-			{
-				rbByUploadingImage.setSelected(true);
-				rbByUploadingImage.requestFocus();
-			}
+			rbByCamera.setSelected(true);
+			rbByCamera.requestFocus();
+		}
+		else
+		{
+			rbByUploadingImage.setSelected(true);
+			rbByUploadingImage.requestFocus();
 		}
 	}
 	

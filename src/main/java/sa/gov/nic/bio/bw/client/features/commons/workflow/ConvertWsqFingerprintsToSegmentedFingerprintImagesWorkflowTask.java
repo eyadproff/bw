@@ -23,8 +23,8 @@ import java.util.stream.IntStream;
 
 public class ConvertWsqFingerprintsToSegmentedFingerprintImagesWorkflowTask implements WorkflowTask
 {
-	@Input(required = true) private List<Finger> fingerprints;
-	@Input(required = true) private List<Integer> missingFingerprints;
+	@Input(alwaysRequired = true) private List<Finger> fingerprints;
+	@Input(alwaysRequired = true) private List<Integer> missingFingerprints;
 	
 	@Output private Map<Integer, String> fingerprintImages;
 	

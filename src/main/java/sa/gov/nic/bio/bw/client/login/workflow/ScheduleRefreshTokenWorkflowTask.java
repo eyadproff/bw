@@ -6,7 +6,7 @@ import sa.gov.nic.bio.bw.client.core.workflow.WorkflowTask;
 
 public class ScheduleRefreshTokenWorkflowTask implements WorkflowTask
 {
-	@Input(required = true) private String userToken;
+	@Input(alwaysRequired = true) private String userToken;
 	
 	@Override
 	public void execute()

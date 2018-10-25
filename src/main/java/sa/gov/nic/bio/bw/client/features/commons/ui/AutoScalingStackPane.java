@@ -60,7 +60,7 @@ public class AutoScalingStackPane extends StackPane {
 	}
 	
 	/**
-	 * No argument constructor required for Externalizable (need this to work
+	 * No argument constructor alwaysRequired for Externalizable (need this to work
 	 * with SceneBuilder).
 	 */
 	public AutoScalingStackPane() {

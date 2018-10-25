@@ -18,8 +18,8 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.layout.BorderPane;
 import javafx.util.Callback;
 import javafx.util.Pair;
-import sa.gov.nic.bio.bw.client.core.controllers.BodyFxControllerBase;
 import sa.gov.nic.bio.bw.client.core.Context;
+import sa.gov.nic.bio.bw.client.core.controllers.BodyFxControllerBase;
 import sa.gov.nic.bio.bw.client.core.controllers.DevicesRunnerGadgetPaneFxController;
 import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.client.core.utils.DialogUtils;
@@ -28,7 +28,6 @@ import sa.gov.nic.bio.bw.client.core.utils.GuiLanguage;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.workflow.Input;
 import sa.gov.nic.bio.bw.client.core.workflow.Output;
-import sa.gov.nic.bio.bw.client.core.workflow.Workflow;
 import sa.gov.nic.bio.bw.client.features.commons.lookups.CountriesLookup;
 import sa.gov.nic.bio.bw.client.features.commons.lookups.SamisIdTypesLookup;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.CountryBean;
@@ -36,7 +35,6 @@ import sa.gov.nic.bio.bw.client.features.commons.webservice.Name;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.SamisIdType;
 import sa.gov.nic.bio.bw.client.features.convictedreportinquiry.utils.ConvictedReportInquiryErrorCodes;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.ConvictedReport;
-import sa.gov.nic.bio.commons.TaskResponse;
 
 import java.util.List;
 import java.util.Map;
@@ -65,7 +63,7 @@ public class ConvictedReportInquiryPaneFxController extends BodyFxControllerBase
 	
 	@SuppressWarnings({"unchecked", "deprecation"})
 	@Override
-	protected void initialize()
+	protected void onAttachedToScene()
 	{
 		GuiUtils.applyValidatorToTextField(txtGeneralFileNumber, "\\d*", "[^\\d]",
 		                                   10);
@@ -225,61 +223,42 @@ public class ConvictedReportInquiryPaneFxController extends BodyFxControllerBase
 			return new SimpleStringProperty(
 							AppUtils.formatHijriDateSimple(convictedReport.getReportDate() * 1000, rtl));
 		});
+		
+		DevicesRunnerGadgetPaneFxController deviceManagerGadgetPaneController =
+												Context.getCoreFxController().getDeviceManagerGadgetPaneController();
+		
+		if(!deviceManagerGadgetPaneController.isDevicesRunnerRunning())
+		{
+			deviceManagerGadgetPaneController.runAndConnectDevicesRunner();
+		}
 	}
 	
 	@Override
-	public void onWorkflowUserTaskLoad(boolean newForm, Map<String, Object> uiInputData)
+	public void onReturnFromWorkflow(boolean successfulResponse)
 	{
-		if(newForm)
+		tvConvictedReports.requestFocus();
+		
+		if(successfulResponse)
 		{
-			DevicesRunnerGadgetPaneFxController deviceManagerGadgetPaneController =
-												Context.getCoreFxController().getDeviceManagerGadgetPaneController();
-			
-			if(!deviceManagerGadgetPaneController.isDevicesRunnerRunning())
-			{
-				deviceManagerGadgetPaneController.runAndConnectDevicesRunner();
-			}
-		}
-		else
-		{
-			@SuppressWarnings("unchecked")
-			TaskResponse<?> taskResponse = (TaskResponse<?>)
-														uiInputData.get(Workflow.KEY_WORKFLOW_TASK_NEGATIVE_RESPONSE);
-			
-			disableUiControls(false);
-			
-			if(taskResponse.isSuccess())
-			{
-				tvConvictedReports.getItems().setAll(convictedReports);
-				tvConvictedReports.requestFocus();
-			}
-			else reportNegativeTaskResponse(taskResponse.getErrorCode(), taskResponse.getException(),
-			                                taskResponse.getErrorDetails());
-			
+			tvConvictedReports.getItems().setAll(convictedReports);
 			tvConvictedReports.requestFocus();
 		}
 	}
 	
-	@FXML
-	private void onEnterPressed(ActionEvent event)
+	@Override
+	public void onShowingProgress(boolean bShow)
 	{
-		btnInquiry.fire();
-	}
-	
-	private void disableUiControls(boolean bool)
-	{
-		txtGeneralFileNumber.setDisable(bool);
-		tvConvictedReports.setDisable(bool);
+		txtGeneralFileNumber.setDisable(bShow);
+		tvConvictedReports.setDisable(bShow);
 		
-		GuiUtils.showNode(btnInquiry, !bool);
-		GuiUtils.showNode(piInquiry, bool);
+		GuiUtils.showNode(btnInquiry, !bShow);
+		GuiUtils.showNode(piInquiry, bShow);
 	}
 	
 	@FXML
 	private void onInquiryButtonClicked(ActionEvent actionEvent)
 	{
 		tvConvictedReports.getItems().clear();
-		disableUiControls(true);
 		
 		String sGeneralFileNumber = txtGeneralFileNumber.getText();
 		generalFileNumber = Long.parseLong(sGeneralFileNumber);

@@ -13,8 +13,8 @@ import sa.gov.nic.bio.commons.TaskResponse;
 
 public class LoginByUsernameAndPasswordWorkflowTask implements WorkflowTask
 {
-	@Input(required = true) private String username;
-	@Input(required = true) private String password;
+	@Input(alwaysRequired = true) private String username;
+	@Input(alwaysRequired = true) private String password;
 	@Output private LoginBean loginBean;
 	
 	@Override

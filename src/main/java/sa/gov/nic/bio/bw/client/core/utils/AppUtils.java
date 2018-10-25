@@ -393,6 +393,11 @@ public final class AppUtils implements AppLogger
 		return gregorianDate.atStartOfDay(AppConstants.SAUDI_ZONE).toEpochSecond() * 1000;
 	}
 	
+	public static long gregorianDateToMilliSeconds(ZonedDateTime gregorianDateTime)
+	{
+		return gregorianDateTime.toEpochSecond() * 1000;
+	}
+	
 	public static LocalDateTime extractIssueTimeFromJWT(String jwt)
 	{
 		String iat = extractFieldFromJWT(jwt, "iat");

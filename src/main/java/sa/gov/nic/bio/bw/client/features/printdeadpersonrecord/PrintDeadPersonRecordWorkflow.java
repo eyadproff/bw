@@ -58,7 +58,7 @@ public class PrintDeadPersonRecordWorkflow extends WizardWorkflowBase
 			{
 				renderUiAndWaitForUserInput(FetchingPersonInfoPaneFxController.class);
 				
-				DeadPersonRecord deadPersonRecord = getData(RecordIdPaneFxController.class,
+				DeadPersonRecord deadPersonRecord = getData(DeadPersonRecordByIdWorkflowTask.class,
 				                                            "deadPersonRecord");
 				Long samisId = deadPersonRecord.getSamisId();
 				
@@ -81,7 +81,7 @@ public class PrintDeadPersonRecordWorkflow extends WizardWorkflowBase
 			{
 				passData(RecordIdPaneFxController.class, ShowRecordPaneFxController.class,
 				         "recordId");
-				passData(RecordIdPaneFxController.class, ShowRecordPaneFxController.class,
+				passData(DeadPersonRecordByIdWorkflowTask.class, ShowRecordPaneFxController.class,
 				         "deadPersonRecord");
 				passData(GetPersonInfoByIdWorkflowTask.class, ShowRecordPaneFxController.class,
 				         "personInfo");

@@ -22,23 +22,16 @@ public class PersonIdPaneFxController extends WizardStepFxControllerBase
 	@FXML private Button btnNext;
 	
 	@Override
-	protected void initialize()
+	protected void onAttachedToScene()
 	{
 		GuiUtils.applyValidatorToTextField(txtPersonId, "\\d*", "[^\\d]", 10);
 		
 		btnNext.disableProperty().bind(txtPersonId.textProperty().isEmpty().or(txtPersonId.disabledProperty()));
 		btnNext.setOnAction(actionEvent -> goNext());
-	}
-	
-	@Override
-	public void onWorkflowUserTaskLoad(boolean newForm, Map<String, Object> uiInputData)
-	{
-		if(newForm)
-		{
-			if(personId != null) txtPersonId.setText(String.valueOf(personId));
-			
-			txtPersonId.requestFocus();
-		}
+		
+		if(personId != null) txtPersonId.setText(String.valueOf(personId));
+		
+		txtPersonId.requestFocus();
 	}
 	
 	@Override

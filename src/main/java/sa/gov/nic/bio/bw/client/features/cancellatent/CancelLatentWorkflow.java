@@ -5,8 +5,7 @@ import sa.gov.nic.bio.bw.client.core.workflow.AssociatedMenu;
 import sa.gov.nic.bio.bw.client.core.workflow.Signal;
 import sa.gov.nic.bio.bw.client.core.workflow.SinglePageWorkflowBase;
 import sa.gov.nic.bio.bw.client.features.cancellatent.controllers.CancelLatentPaneFxController;
-import sa.gov.nic.bio.bw.client.features.cancellatent.workflow.CancelLatentService;
-import sa.gov.nic.bio.commons.TaskResponse;
+import sa.gov.nic.bio.bw.client.features.cancellatent.workflow.CancelLatentWorkflowTask;
 
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
@@ -25,11 +24,10 @@ public class CancelLatentWorkflow extends SinglePageWorkflowBase
 	{
 		renderUiAndWaitForUserInput(CancelLatentPaneFxController.class);
 		
-		Long personId = (Long) uiInputData.get("personId");
-		String latentId = (String) uiInputData.get("latentId");
-		uiInputData.clear();
+		passData(CancelLatentPaneFxController.class, CancelLatentWorkflowTask.class, "personId");
+		passData(CancelLatentPaneFxController.class, CancelLatentWorkflowTask.class, "latentId");
 		
-		TaskResponse<Boolean> response = CancelLatentService.execute(personId, latentId);
-		uiInputData.put(KEY_WORKFLOW_TASK_NEGATIVE_RESPONSE, response);
+		executeTask(CancelLatentWorkflowTask.class);
+		passData(CancelLatentWorkflowTask.class, CancelLatentPaneFxController.class, "success");
 	}
 }

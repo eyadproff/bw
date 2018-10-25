@@ -7,7 +7,6 @@ import sa.gov.nic.bio.bw.client.core.utils.CoreErrorCodes;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.BooleanSupplier;
 
 /**
  * The workflow that manages business processes and monitors their state. The workflow starts by starting its
@@ -61,11 +60,12 @@ public interface Workflow<I, O> extends AppLogger
 	
 	void executeTask(Class<? extends WorkflowTask> taskClass) throws InterruptedException, Signal;
 	
-	static void loadWorkflowInputs(Object instance, Map<String, Object> uiInputData, boolean includeOutputs)
-														throws IllegalAccessException, InstantiationException, Signal
+	static void loadWorkflowInputs(Object instance, Map<String, Object> uiInputData, boolean includeOutputs,
+	                               boolean onReturn)
+															throws IllegalAccessException, Signal
 	{
 		Class<?> controllerClass = instance.getClass();
-		Field[] declaredFields = instance.getClass().getDeclaredFields();
+		Field[] declaredFields = controllerClass.getDeclaredFields();
 		
 		for(Field declaredField : declaredFields)
 		{
@@ -80,17 +80,47 @@ public interface Workflow<I, O> extends AppLogger
 				Object value = uiInputData.get(fieldName);
 				if(value != null || !declaredType.isPrimitive()) declaredField.set(instance, value);
 				
-				if(input.required())
+				String[] requirements = input.requiredOnlyIf();
+				boolean requiredOnReturn = input.requiredOnReturn();
+				
+				if(input.alwaysRequired() || requirements.length > 0 || (requiredOnReturn && onReturn))
 				{
-					Class<? extends BooleanSupplier> requirementConditionClass = input.requirementCondition();
-					BooleanSupplier requirementCondition = requirementConditionClass.newInstance();
+					boolean allRequirementsMet = true;
 					
-					if(requirementCondition.getAsBoolean())
+					for(String requirement : requirements)
+					{
+						String[] split = requirement.split("=");
+						String requirementName = split[0];
+						String requirementValue = split[1];
+						
+						Field field;
+						try
+						{
+							field = controllerClass.getDeclaredField(requirementName);
+						}
+						catch(NoSuchFieldException e)
+						{
+							LOGGER.warning("The field (" + requirementName + " is not found inside the class (" +
+									               controllerClass + ")!");
+							allRequirementsMet = false;
+							break;
+						}
+						
+						field.setAccessible(true);
+						Object fieldValue = field.get(instance);
+						if(!String.valueOf(fieldValue).equals(requirementValue))
+						{
+							allRequirementsMet = false;
+							break;
+						}
+					}
+					
+					if(allRequirementsMet)
 					{
 						if(value == null)
 						{
 							String errorCode = CoreErrorCodes.C002_00028.getCode();
-							String[] errorDetails = {"The value of the required input (" + fieldName + ") is null!"};
+							String[] errorDetails = {"The value of the alwaysRequired input (" + fieldName + ") is null!"};
 							Map<String, Object> payload = new HashMap<>();
 							payload.put(Workflow.KEY_ERROR_CODE, errorCode);
 							payload.put(Workflow.KEY_ERROR_DETAILS, errorDetails);

@@ -49,11 +49,7 @@ public class HomePaneFxController extends BodyFxControllerBase
 		Context.getCoreFxController().getMenuPaneController().showRegion();
 		Context.getCoreFxController().getDeviceManagerGadgetPaneController().showRegion();
 		Context.getCoreFxController().startIdleMonitor();
-	}
-	
-	@Override
-	public void onWorkflowUserTaskLoad(boolean newForm, Map<String, Object> uiInputData)
-	{
+		
 		UserSession userSession = Context.getUserSession();
 		HomeBean homeBean = (HomeBean) userSession.getAttribute("homeBean");
 		
@@ -107,7 +103,7 @@ public class HomePaneFxController extends BodyFxControllerBase
 		    Context.getCoreFxController().getHeaderPaneController().setUsername(homeBean.getUsername());
 		    Context.getCoreFxController().getHeaderPaneController().setOperatorName(homeBean.getOperatorName());
 		    Context.getCoreFxController().getHeaderPaneController().setLocation(homeBean.getLocation());
-			
+		
 		    setLabelsText(homeBean.getsLoginTime(), lblLoginTimeText, lblLoginTime);
 		    setLabelsText(homeBean.getsLastLogonTime(), lblLastSuccessLoginText, lblLastSuccessLogin);
 		    setLabelsText(homeBean.getsLastFailedLoginTime(), lblLastFailedLoginText, lblLastFailedLogin);
@@ -116,9 +112,9 @@ public class HomePaneFxController extends BodyFxControllerBase
 		                  lblLastPasswordChangeTime);
 		    setLabelsText(homeBean.getsPasswordExpirationTime(), lblPasswordExpirationTimeText,
 		                  lblPasswordExpirationTime);
-			
-			GuiUtils.showNode(lblPlaceholder, false);
-			GuiUtils.showNode(paneLoginBox, true);
+		
+		    GuiUtils.showNode(lblPlaceholder, false);
+		    GuiUtils.showNode(paneLoginBox, true);
 		});
 	}
 	

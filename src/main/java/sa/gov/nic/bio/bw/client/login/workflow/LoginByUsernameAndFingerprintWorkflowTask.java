@@ -13,9 +13,9 @@ import sa.gov.nic.bio.commons.TaskResponse;
 
 public class LoginByUsernameAndFingerprintWorkflowTask implements WorkflowTask
 {
-	@Input(required = true) private String username;
-	@Input(required = true) private int fingerPosition;
-	@Input(required = true) private String fingerprint;
+	@Input(alwaysRequired = true) private String username;
+	@Input(alwaysRequired = true) private int fingerPosition;
+	@Input(alwaysRequired = true) private String fingerprint;
 	@Output private LoginBean loginBean;
 	
 	@Override

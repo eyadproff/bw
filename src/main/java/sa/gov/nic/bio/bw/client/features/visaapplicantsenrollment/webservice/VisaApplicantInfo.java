@@ -1,39 +1,43 @@
 package sa.gov.nic.bio.bw.client.features.visaapplicantsenrollment.webservice;
 
+import sa.gov.nic.bio.bw.client.features.commons.beans.GenderType;
+import sa.gov.nic.bio.bw.client.features.commons.webservice.CountryBean;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.Finger;
 
+import java.time.LocalDate;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Objects;
 
 public class VisaApplicantInfo
 {
 	private Long applicantId;
-	private Long enrollmentDate;
+	private ZonedDateTime enrollmentDate;
 	private String firstName;
 	private String secondName;
 	private String otherName;
 	private String familyName;
-	private Integer nationalityCode;
-	private Long birthDate;
+	private CountryBean nationality;
+	private LocalDate birthDate;
 	private String passportNumber;
-	private Integer genderCode;
-	private Integer visaTypeCode;
-	private Long issueDate;
-	private Integer issuanceCountry;
-	private Long expirationDate;
-	private Integer birthPlaceCode;
-	private Integer passportType;
+	private GenderType gender;
+	private VisaTypeBean visaType;
+	private LocalDate issueDate;
+	private CountryBean issuanceCountry;
+	private LocalDate expirationDate;
+	private CountryBean birthPlace;
+	private PassportTypeBean passportType;
 	private String mobileNumber;
-	private String face;
-	private List<Finger> fingers;
-	private List<Integer> missingFingers;
+	private String faceImage;
+	private List<Finger> fingerprints;
+	private List<Integer> missingFingerprints;
 	
-	public VisaApplicantInfo(Long applicantId, Long enrollmentDate, String firstName, String secondName,
-	                         String otherName, String familyName, Integer nationalityCode, Long birthDate,
-	                         String passportNumber, Integer genderCode, Integer visaTypeCode, Long issueDate,
-	                         Integer issuanceCountry, Long expirationDate, Integer birthPlaceCode,
-	                         Integer passportType, String mobileNumber, String face, List<Finger> fingers,
-	                         List<Integer> missingFingers)
+	public VisaApplicantInfo(Long applicantId, ZonedDateTime enrollmentDate, String firstName, String secondName,
+	                         String otherName, String familyName, CountryBean nationality, LocalDate birthDate,
+	                         String passportNumber, GenderType gender, VisaTypeBean visaType, LocalDate issueDate,
+	                         CountryBean issuanceCountry, LocalDate expirationDate, CountryBean birthPlace,
+	                         PassportTypeBean passportType, String mobileNumber, String faceImage,
+	                         List<Finger> fingerprints, List<Integer> missingFingerprints)
 	{
 		this.applicantId = applicantId;
 		this.enrollmentDate = enrollmentDate;
@@ -41,27 +45,27 @@ public class VisaApplicantInfo
 		this.secondName = secondName;
 		this.otherName = otherName;
 		this.familyName = familyName;
-		this.nationalityCode = nationalityCode;
+		this.nationality = nationality;
 		this.birthDate = birthDate;
 		this.passportNumber = passportNumber;
-		this.genderCode = genderCode;
-		this.visaTypeCode = visaTypeCode;
+		this.gender = gender;
+		this.visaType = visaType;
 		this.issueDate = issueDate;
 		this.issuanceCountry = issuanceCountry;
 		this.expirationDate = expirationDate;
-		this.birthPlaceCode = birthPlaceCode;
+		this.birthPlace = birthPlace;
 		this.passportType = passportType;
 		this.mobileNumber = mobileNumber;
-		this.face = face;
-		this.fingers = fingers;
-		this.missingFingers = missingFingers;
+		this.faceImage = faceImage;
+		this.fingerprints = fingerprints;
+		this.missingFingerprints = missingFingerprints;
 	}
 	
 	public Long getApplicantId(){return applicantId;}
 	public void setApplicantId(Long applicantId){this.applicantId = applicantId;}
 	
-	public Long getEnrollmentDate(){return enrollmentDate;}
-	public void setEnrollmentDate(Long enrollmentDate){this.enrollmentDate = enrollmentDate;}
+	public ZonedDateTime getEnrollmentDate(){return enrollmentDate;}
+	public void setEnrollmentDate(ZonedDateTime enrollmentDate){this.enrollmentDate = enrollmentDate;}
 	
 	public String getFirstName(){return firstName;}
 	public void setFirstName(String firstName){this.firstName = firstName;}
@@ -75,47 +79,48 @@ public class VisaApplicantInfo
 	public String getFamilyName(){return familyName;}
 	public void setFamilyName(String familyName){this.familyName = familyName;}
 	
-	public Integer getNationalityCode(){return nationalityCode;}
-	public void setNationalityCode(Integer nationalityCode){this.nationalityCode = nationalityCode;}
+	public CountryBean getNationality(){return nationality;}
+	public void setNationality(CountryBean nationality){this.nationality = nationality;}
 	
-	public Long getBirthDate(){return birthDate;}
-	public void setBirthDate(Long birthDate){this.birthDate = birthDate;}
+	public LocalDate getBirthDate(){return birthDate;}
+	public void setBirthDate(LocalDate birthDate){this.birthDate = birthDate;}
 	
 	public String getPassportNumber(){return passportNumber;}
 	public void setPassportNumber(String passportNumber){this.passportNumber = passportNumber;}
 	
-	public Integer getGenderCode(){return genderCode;}
-	public void setGenderCode(Integer genderCode){this.genderCode = genderCode;}
+	public GenderType getGender(){return gender;}
+	public void setGender(GenderType gender){this.gender = gender;}
 	
-	public Integer getVisaTypeCode(){return visaTypeCode;}
-	public void setVisaTypeCode(Integer visaTypeCode){this.visaTypeCode = visaTypeCode;}
+	public VisaTypeBean getVisaType(){return visaType;}
+	public void setVisaType(VisaTypeBean visaType){this.visaType = visaType;}
 	
-	public Long getIssueDate(){return issueDate;}
-	public void setIssueDate(Long issueDate){this.issueDate = issueDate;}
+	public LocalDate getIssueDate(){return issueDate;}
+	public void setIssueDate(LocalDate issueDate){this.issueDate = issueDate;}
 	
-	public Integer getIssuanceCountry(){return issuanceCountry;}
-	public void setIssuanceCountry(Integer issuanceCountry){this.issuanceCountry = issuanceCountry;}
+	public CountryBean getIssuanceCountry(){return issuanceCountry;}
+	public void setIssuanceCountry(CountryBean issuanceCountry){this.issuanceCountry = issuanceCountry;}
 	
-	public Long getExpirationDate(){return expirationDate;}
-	public void setExpirationDate(Long expirationDate){this.expirationDate = expirationDate;}
+	public LocalDate getExpirationDate(){return expirationDate;}
+	public void setExpirationDate(LocalDate expirationDate){this.expirationDate = expirationDate;}
 	
-	public Integer getBirthPlaceCode(){return birthPlaceCode;}
-	public void setBirthPlaceCode(Integer birthPlaceCode){this.birthPlaceCode = birthPlaceCode;}
+	public CountryBean getBirthPlace(){return birthPlace;}
+	public void setBirthPlace(CountryBean birthPlace){this.birthPlace = birthPlace;}
 	
-	public Integer getPassportType(){return passportType;}
-	public void setPassportType(Integer passportType){this.passportType = passportType;}
+	public PassportTypeBean getPassportType(){return passportType;}
+	public void setPassportType(PassportTypeBean passportType){this.passportType = passportType;}
 	
 	public String getMobileNumber(){return mobileNumber;}
 	public void setMobileNumber(String mobileNumber){this.mobileNumber = mobileNumber;}
 	
-	public String getFace(){return face;}
-	public void setFace(String face){this.face = face;}
+	public String getFaceImage(){return faceImage;}
+	public void setFaceImage(String faceImage){this.faceImage = faceImage;}
 	
-	public List<Finger> getFingers(){return fingers;}
-	public void setFingers(List<Finger> fingers){this.fingers = fingers;}
+	public List<Finger> getFingerprints(){return fingerprints;}
+	public void setFingerprints(List<Finger> fingerprints){this.fingerprints = fingerprints;}
 	
-	public List<Integer> getMissingFingers(){return missingFingers;}
-	public void setMissingFingers(List<Integer> missingFingers){this.missingFingers = missingFingers;}
+	public List<Integer> getMissingFingerprints(){return missingFingerprints;}
+	public void setMissingFingerprints(List<Integer> missingFingerprints)
+																	{this.missingFingerprints = missingFingerprints;}
 	
 	@Override
 	public boolean equals(Object o)
@@ -126,23 +131,22 @@ public class VisaApplicantInfo
 		return Objects.equals(applicantId, that.applicantId) && Objects.equals(enrollmentDate, that.enrollmentDate) &&
 			   Objects.equals(firstName, that.firstName) && Objects.equals(secondName, that.secondName) &&
 			   Objects.equals(otherName, that.otherName) && Objects.equals(familyName, that.familyName) &&
-			   Objects.equals(nationalityCode, that.nationalityCode) && Objects.equals(birthDate, that.birthDate) &&
-			   Objects.equals(passportNumber, that.passportNumber) && Objects.equals(genderCode, that.genderCode) &&
-			   Objects.equals(visaTypeCode, that.visaTypeCode) && Objects.equals(issueDate, that.issueDate) &&
+			   Objects.equals(nationality, that.nationality) && Objects.equals(birthDate, that.birthDate) &&
+			   Objects.equals(passportNumber, that.passportNumber) && gender == that.gender &&
+			   Objects.equals(visaType, that.visaType) && Objects.equals(issueDate, that.issueDate) &&
 			   Objects.equals(issuanceCountry, that.issuanceCountry) &&
-			   Objects.equals(expirationDate, that.expirationDate) &&
-			   Objects.equals(birthPlaceCode, that.birthPlaceCode) &&
+			   Objects.equals(expirationDate, that.expirationDate) && Objects.equals(birthPlace, that.birthPlace) &&
 			   Objects.equals(passportType, that.passportType) && Objects.equals(mobileNumber, that.mobileNumber) &&
-			   Objects.equals(face, that.face) && Objects.equals(fingers, that.fingers) &&
-			   Objects.equals(missingFingers, that.missingFingers);
+			   Objects.equals(faceImage, that.faceImage) && Objects.equals(fingerprints, that.fingerprints) &&
+			   Objects.equals(missingFingerprints, that.missingFingerprints);
 	}
 	
 	@Override
 	public int hashCode()
 	{
-		return Objects.hash(applicantId, enrollmentDate, firstName, secondName, otherName, familyName, nationalityCode,
-		                    birthDate, passportNumber, genderCode, visaTypeCode, issueDate, issuanceCountry,
-		                    expirationDate, birthPlaceCode, passportType, mobileNumber, face, fingers, missingFingers);
+		return Objects.hash(applicantId, enrollmentDate, firstName, secondName, otherName, familyName, nationality,
+		                    birthDate, passportNumber, gender, visaType, issueDate, issuanceCountry, expirationDate,
+		                    birthPlace, passportType, mobileNumber, faceImage, fingerprints, missingFingerprints);
 	}
 	
 	@Override
@@ -150,11 +154,11 @@ public class VisaApplicantInfo
 	{
 		return "VisaApplicantInfo{" + "applicantId=" + applicantId + ", enrollmentDate=" + enrollmentDate +
 			   ", firstName='" + firstName + '\'' + ", secondName='" + secondName + '\'' + ", otherName='" +
-			   otherName + '\'' + ", familyName='" + familyName + '\'' + ", nationalityCode=" + nationalityCode +
-			   ", birthDate=" + birthDate + ", passportNumber='" + passportNumber + '\'' + ", genderCode=" +
-			   genderCode + ", visaTypeCode=" + visaTypeCode + ", issueDate=" + issueDate + ", issuanceCountry=" +
-			   issuanceCountry + ", expirationDate=" + expirationDate + ", birthPlaceCode=" + birthPlaceCode +
-			   ", passportType=" + passportType + ", mobileNumber='" + mobileNumber + '\'' + ", face='" + face +
-			   '\'' + ", fingers=" + fingers + ", missingFingers=" + missingFingers + '}';
+			   otherName + '\'' + ", familyName='" + familyName + '\'' + ", nationality=" + nationality +
+			   ", birthDate=" + birthDate + ", passportNumber='" + passportNumber + '\'' + ", gender=" + gender +
+			   ", visaType=" + visaType + ", issueDate=" + issueDate + ", issuanceCountry=" + issuanceCountry +
+			   ", expirationDate=" + expirationDate + ", birthPlace=" + birthPlace + ", passportType=" +
+			   passportType + ", mobileNumber='" + mobileNumber + '\'' + ", faceImage='" + faceImage + '\'' +
+			   ", fingerprints=" + fingerprints + ", missingFingerprints=" + missingFingerprints + '}';
 	}
 }

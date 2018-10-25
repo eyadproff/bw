@@ -17,6 +17,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.SVGPath?>
 <?import sa.gov.nic.bio.bw.client.features.commons.ui.AutoScalingStackPane?>
+<?import org.controlsfx.glyphfont.Glyph?>
 <VBox xmlns="http://javafx.com/javafx/8.0.152" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="sa.gov.nic.bio.bw.client.login.controllers.LoginPaneFxController"
       fx:id="rootPane" stylesheets="@../css/style.css" alignment="CENTER" spacing="15.0">
@@ -28,7 +29,7 @@
     </ImageView>
     <VBox alignment="CENTER" spacing="10.0">
         <HBox alignment="CENTER">
-            <TabPane fx:id="tabPane" styleClass="floating" minWidth="400.0">
+            <TabPane fx:id="tabPane" styleClass="floating" minWidth="405.0">
                 <Tab fx:id="tabLoginByPassword" text="%tab.loginByPassword" closable="false">
                     <GridPane alignment="CENTER" vgap="5.0" hgap="20.0" styleClass="formBox-with-tabs">
                         <padding>

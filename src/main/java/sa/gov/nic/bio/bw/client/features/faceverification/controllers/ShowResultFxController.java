@@ -36,16 +36,15 @@ import sa.gov.nic.bio.bw.client.features.commons.webservice.PersonInfo;
 import sa.gov.nic.bio.bw.client.features.faceverification.webservice.FaceMatchingResponse;
 
 import java.util.List;
-import java.util.Map;
 
 @FxmlFile("showResult.fxml")
 public class ShowResultFxController extends WizardStepFxControllerBase
 {
 	private static final String AVATAR_PLACEHOLDER_FILE = "sa/gov/nic/bio/bw/client/core/images/avatar_placeholder.jpg";
 	
-	@Input(required = true) private Long personId;
-	@Input(required = true) private Image faceImage;
-	@Input(required = true) private FaceMatchingResponse faceMatchingResponse;
+	@Input(alwaysRequired = true) private Long personId;
+	@Input(alwaysRequired = true) private Image faceImage;
+	@Input(alwaysRequired = true) private FaceMatchingResponse faceMatchingResponse;
 	
 	@FXML private Pane matchedPane;
 	@FXML private Pane notMatchedPane;
@@ -65,14 +64,10 @@ public class ShowResultFxController extends WizardStepFxControllerBase
 	@FXML private Button btnStartOver;
 	
 	@Override
-	protected void initialize()
-	{
-		btnStartOver.setOnAction(event -> startOver());
-	}
-	
-	@Override
 	protected void onAttachedToScene()
 	{
+		btnStartOver.setOnAction(event -> startOver());
+		
 		imagePane.maxWidthProperty().bind(Context.getCoreFxController().getBodyPane().widthProperty());
 		imagePane.maxHeightProperty().bind(Context.getCoreFxController().getBodyPane().heightProperty());
 		ivUploadedImage.fitWidthProperty().bind(imagePane.widthProperty().divide(2.5));
@@ -80,137 +75,131 @@ public class ShowResultFxController extends WizardStepFxControllerBase
 		ivDBImage.fitWidthProperty().bind(imagePane.widthProperty().divide(2.5));
 		ivDBImage.fitHeightProperty().bind(imagePane.heightProperty().divide(1.2));
 		imagePane.autosize();
-	}
-	
-	@Override
-	public void onWorkflowUserTaskLoad(boolean newForm, Map<String, Object> uiInputData)
-	{
-		if(newForm)
+		
+		if(!faceMatchingResponse.isMatched())
 		{
-			if(!faceMatchingResponse.isMatched())
+			GuiUtils.showNode(notMatchedPane, true);
+			lblNotMatched.setText(String.format(resources.getString("label.faceImageIsNotMatched"),
+			                                    AppUtils.localizeNumbers(String.valueOf(personId))));
+		}
+		else // matched
+		{
+			GuiUtils.showNode(matchedPane, true);
+			GuiUtils.showNode(imagePane, true);
+			GuiUtils.showNode(btnCompareWithUploadedImage, true);
+			
+			PersonInfo personInfo = faceMatchingResponse.getPersonInfo();
+			long samisId = personInfo.getSamisId();
+			Name name = personInfo.getName();
+			String firstName = name.getFirstName();
+			String fatherName = name.getFatherName();
+			String grandfatherName = name.getGrandfatherName();
+			String familyName = name.getFamilyName();
+			
+			if(firstName != null && (firstName.trim().isEmpty() || firstName.trim().equals("-"))) firstName = null;
+			if(fatherName != null && (fatherName.trim().isEmpty() || fatherName.trim().equals("-")))
+				fatherName = null;
+			if(grandfatherName != null && (grandfatherName.trim().isEmpty() || grandfatherName.trim().equals("-")))
+				grandfatherName = null;
+			if(familyName != null && (familyName.trim().isEmpty() || familyName.trim().equals("-")))
+				familyName = null;
+			
+			if(samisId > 0)
 			{
-				GuiUtils.showNode(notMatchedPane, true);
-				lblNotMatched.setText(String.format(resources.getString("label.faceImageIsNotMatched"),
-				                                    AppUtils.localizeNumbers(String.valueOf(personId))));
+				String sSamisId = AppUtils.localizeNumbers(String.valueOf(samisId));
+				lblSamisId.setText(sSamisId);
 			}
-			else // matched
+			else
 			{
-				GuiUtils.showNode(matchedPane, true);
-				GuiUtils.showNode(imagePane, true);
-				GuiUtils.showNode(btnCompareWithUploadedImage, true);
-				
-				PersonInfo personInfo = faceMatchingResponse.getPersonInfo();
-				long samisId = personInfo.getSamisId();
-				Name name = personInfo.getName();
-				String firstName = name.getFirstName();
-				String fatherName = name.getFatherName();
-				String grandfatherName = name.getGrandfatherName();
-				String familyName = name.getFamilyName();
-				
-				if(firstName != null && (firstName.trim().isEmpty() || firstName.trim().equals("-"))) firstName = null;
-				if(fatherName != null && (fatherName.trim().isEmpty() || fatherName.trim().equals("-")))
-																									fatherName = null;
-				if(grandfatherName != null && (grandfatherName.trim().isEmpty() || grandfatherName.trim().equals("-")))
-																								grandfatherName = null;
-				if(familyName != null && (familyName.trim().isEmpty() || familyName.trim().equals("-")))
-																									familyName = null;
-				
-				if(samisId > 0)
-				{
-					String sSamisId = AppUtils.localizeNumbers(String.valueOf(samisId));
-					lblSamisId.setText(sSamisId);
-				}
-				else
-				{
-					lblSamisId.setText(resources.getString("label.notAvailable"));
-					lblSamisId.setTextFill(Color.RED);
-				}
-				
-				if(firstName != null) lblFirstName.setText(firstName);
-				else
-				{
-					lblFirstName.setText(resources.getString("label.notAvailable"));
-					lblFirstName.setTextFill(Color.RED);
-				}
-				
-				if(fatherName != null) lblFatherName.setText(fatherName);
-				else
-				{
-					lblFatherName.setText(resources.getString("label.notAvailable"));
-					lblFatherName.setTextFill(Color.RED);
-				}
-				
-				if(grandfatherName != null) lblGrandfatherName.setText(grandfatherName);
-				else
-				{
-					lblGrandfatherName.setText(resources.getString("label.notAvailable"));
-					lblGrandfatherName.setTextFill(Color.RED);
-				}
-				
-				if(familyName != null) lblFamilyName.setText(familyName);
-				else
-				{
-					lblFamilyName.setText(resources.getString("label.notAvailable"));
-					lblFamilyName.setTextFill(Color.RED);
-				}
-				
-				GenderType gender = GenderType.values()[personInfo.getGender() - 1];
-				lblGender.setText(gender == GenderType.MALE ? resources.getString("label.male") :
-						                                      resources.getString("label.female"));
-				
-				@SuppressWarnings("unchecked") List<CountryBean> countries = (List<CountryBean>)
-															Context.getUserSession().getAttribute(CountriesLookup.KEY);
-				
-				CountryBean countryBean = null;
-				
-				for(CountryBean country : countries)
-				{
-					if(country.getCode() == personInfo.getNationality())
-					{
-						countryBean = country;
-						break;
-					}
-				}
-				
-				if(countryBean != null)
-				{
-					boolean arabic = Context.getGuiLanguage() == GuiLanguage.ARABIC;
-					lblNationality.setText(arabic ? countryBean.getDescriptionAR() : countryBean.getDescriptionEN());
-				}
-				else
-				{
-					lblNationality.setText(resources.getString("label.notAvailable"));
-					lblNationality.setTextFill(Color.RED);
-				}
-				
-				Boolean outOfKingdom = personInfo.isOut();
-				if(outOfKingdom != null) lblOutOfKingdom.setText(outOfKingdom ? resources.getString("label.yes") :
-						                                                        resources.getString("label.no"));
-				else
-				{
-					lblOutOfKingdom.setText(resources.getString("label.notAvailable"));
-					lblOutOfKingdom.setTextFill(Color.RED);
-				}
-				
-				String face = personInfo.getFace();
-				Image dbImage = AppUtils.imageFromBase64(face);
-				
-				ivUploadedImage.setImage(faceImage);
-				
-				if(dbImage != null) ivDBImage.setImage(dbImage);
-				else
-				{
-					ivDBImage.setImage(new Image(Thread.currentThread().getContextClassLoader()
-							                            .getResourceAsStream(AVATAR_PLACEHOLDER_FILE)));
-				}
-				
-				GuiUtils.attachImageDialog(Context.getCoreFxController(), ivUploadedImage,
-				                           resources.getString("label.uploadedImage"),
-				                           resources.getString("label.contextMenu.showImage"), false);
-				GuiUtils.attachImageDialog(Context.getCoreFxController(), ivDBImage,
-				                           resources.getString("label.dbImage"),
-				                           resources.getString("label.contextMenu.showImage"), false);
+				lblSamisId.setText(resources.getString("label.notAvailable"));
+				lblSamisId.setTextFill(Color.RED);
 			}
+			
+			if(firstName != null) lblFirstName.setText(firstName);
+			else
+			{
+				lblFirstName.setText(resources.getString("label.notAvailable"));
+				lblFirstName.setTextFill(Color.RED);
+			}
+			
+			if(fatherName != null) lblFatherName.setText(fatherName);
+			else
+			{
+				lblFatherName.setText(resources.getString("label.notAvailable"));
+				lblFatherName.setTextFill(Color.RED);
+			}
+			
+			if(grandfatherName != null) lblGrandfatherName.setText(grandfatherName);
+			else
+			{
+				lblGrandfatherName.setText(resources.getString("label.notAvailable"));
+				lblGrandfatherName.setTextFill(Color.RED);
+			}
+			
+			if(familyName != null) lblFamilyName.setText(familyName);
+			else
+			{
+				lblFamilyName.setText(resources.getString("label.notAvailable"));
+				lblFamilyName.setTextFill(Color.RED);
+			}
+			
+			GenderType gender = GenderType.values()[personInfo.getGender() - 1];
+			lblGender.setText(gender == GenderType.MALE ? resources.getString("label.male") :
+					                  resources.getString("label.female"));
+			
+			@SuppressWarnings("unchecked")
+			List<CountryBean> countries = (List<CountryBean>)
+														Context.getUserSession().getAttribute(CountriesLookup.KEY);
+			
+			CountryBean countryBean = null;
+			
+			for(CountryBean country : countries)
+			{
+				if(country.getCode() == personInfo.getNationality())
+				{
+					countryBean = country;
+					break;
+				}
+			}
+			
+			if(countryBean != null)
+			{
+				boolean arabic = Context.getGuiLanguage() == GuiLanguage.ARABIC;
+				lblNationality.setText(arabic ? countryBean.getDescriptionAR() : countryBean.getDescriptionEN());
+			}
+			else
+			{
+				lblNationality.setText(resources.getString("label.notAvailable"));
+				lblNationality.setTextFill(Color.RED);
+			}
+			
+			Boolean outOfKingdom = personInfo.isOut();
+			if(outOfKingdom != null) lblOutOfKingdom.setText(outOfKingdom ? resources.getString("label.yes") :
+					                                                 resources.getString("label.no"));
+			else
+			{
+				lblOutOfKingdom.setText(resources.getString("label.notAvailable"));
+				lblOutOfKingdom.setTextFill(Color.RED);
+			}
+			
+			String face = personInfo.getFace();
+			Image dbImage = AppUtils.imageFromBase64(face);
+			
+			ivUploadedImage.setImage(faceImage);
+			
+			if(dbImage != null) ivDBImage.setImage(dbImage);
+			else
+			{
+				ivDBImage.setImage(new Image(Thread.currentThread().getContextClassLoader()
+						                             .getResourceAsStream(AVATAR_PLACEHOLDER_FILE)));
+			}
+			
+			GuiUtils.attachImageDialog(Context.getCoreFxController(), ivUploadedImage,
+			                           resources.getString("label.uploadedImage"),
+			                           resources.getString("label.contextMenu.showImage"), false);
+			GuiUtils.attachImageDialog(Context.getCoreFxController(), ivDBImage,
+			                           resources.getString("label.dbImage"),
+			                           resources.getString("label.contextMenu.showImage"), false);
 		}
 	}
 	

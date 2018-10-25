@@ -21,7 +21,7 @@ public class FingerprintInquiryStatusCheckerWorkflowTask implements WorkflowTask
 		PENDING
 	}
 	
-	@Input(required = true) private Integer inquiryId;
+	@Input(alwaysRequired = true) private Integer inquiryId;
 	@Output private Status status;
 	@Output private Long samisId;
 	@Output private Long civilBioId;

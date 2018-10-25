@@ -51,8 +51,8 @@ import java.util.concurrent.atomic.AtomicReference;
 @FxmlFile("showRecord.fxml")
 public class ShowRecordPaneFxController extends WizardStepFxControllerBase
 {
-	@Input(required = true) private Long recordId;
-	@Input(required = true) private DeadPersonRecord deadPersonRecord;
+	@Input(alwaysRequired = true) private Long recordId;
+	@Input(alwaysRequired = true) private DeadPersonRecord deadPersonRecord;
 	@Input private PersonInfo personInfo;
 	@Input private Map<Integer, String> fingerprintImages;
 	
@@ -103,21 +103,13 @@ public class ShowRecordPaneFxController extends WizardStepFxControllerBase
 		FileChooser.ExtensionFilter extFilterPDF = new FileChooser.ExtensionFilter(
 								resources.getString("fileChooser.saveRecordAsPDF.types"), "*.pdf");
 		fileChooser.getExtensionFilters().addAll(extFilterPDF);
-	}
-	
-	@Override
-	public void onWorkflowUserTaskLoad(boolean newForm, Map<String, Object> uiInputData)
-	{
-		if(newForm)
-		{
-			populateData(recordId, deadPersonRecord, personInfo, fingerprintImages);
-		}
+		
+		populateData(recordId, deadPersonRecord, personInfo, fingerprintImages);
 	}
 	
 	@FXML
 	private void onStartOverButtonClicked(ActionEvent actionEvent)
 	{
-		hideNotification();
 		startOver();
 	}
 	

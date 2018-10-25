@@ -15,7 +15,7 @@ import java.util.logging.Level;
 
 public class PrepareHomeBeanWorkflowTask implements WorkflowTask
 {
-	@Input(required = true) private UserInfo userInfo;
+	@Input(alwaysRequired = true) private UserInfo userInfo;
 	
 	@Override
 	public void execute()

@@ -16,7 +16,7 @@ import java.util.Map.Entry;
 
 public class ConvertFingerprintImagesToBase64WorkflowTask implements WorkflowTask
 {
-	@Input(required = true) private Map<Integer, Image> fingerprintImages;
+	@Input(alwaysRequired = true) private Map<Integer, Image> fingerprintImages;
 	@Output private Map<Integer, String> fingerprintBase64Images;
 	
 	@Override

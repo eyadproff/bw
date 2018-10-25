@@ -22,11 +22,11 @@
                         <Insets top="20" right="20" bottom="20" left="20"/>
                     </padding>
                     <Label text="%label.personId" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
-                    <TextField fx:id="txtPersonId" GridPane.columnIndex="1" GridPane.rowIndex="0" onAction="#onEnterPressed"/>
+                    <TextField fx:id="txtPersonId" GridPane.columnIndex="1" GridPane.rowIndex="0" onAction="#onCancelCriminalButtonClicked"/>
                     <Label text="%label.samisIdType" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
                     <ComboBox fx:id="cboPersonIdType" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
                     <Label text="%label.criminalId" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
-                    <TextField fx:id="txtCriminalId" GridPane.columnIndex="1" GridPane.rowIndex="2" onAction="#onEnterPressed"/>
+                    <TextField fx:id="txtCriminalId" GridPane.columnIndex="1" GridPane.rowIndex="2" onAction="#onCancelCriminalButtonClicked"/>
                 </GridPane>
             </Tab>
             <Tab fx:id="tabByInquiryId" text="%tab.byInquiryId" closable="false">
@@ -35,9 +35,9 @@
                         <Insets top="20" right="20" bottom="20" left="20"/>
                     </padding>
                     <Label text="%label.inquiryId" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
-                    <TextField fx:id="txtInquiryId" GridPane.columnIndex="1" GridPane.rowIndex="0" onAction="#onEnterPressed"/>
+                    <TextField fx:id="txtInquiryId" GridPane.columnIndex="1" GridPane.rowIndex="0" onAction="#onCancelCriminalButtonClicked"/>
                     <Label text="%label.criminalId" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
-                    <TextField fx:id="txtCriminalId2" GridPane.columnIndex="1" GridPane.rowIndex="1" onAction="#onEnterPressed"/>
+                    <TextField fx:id="txtCriminalId2" GridPane.columnIndex="1" GridPane.rowIndex="1" onAction="#onCancelCriminalButtonClicked"/>
                 </GridPane>
             </Tab>
         </TabPane>

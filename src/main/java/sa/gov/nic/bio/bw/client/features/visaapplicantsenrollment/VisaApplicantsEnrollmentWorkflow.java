@@ -18,10 +18,7 @@ import sa.gov.nic.bio.bw.client.features.visaapplicantsenrollment.controllers.Sh
 import sa.gov.nic.bio.bw.client.features.visaapplicantsenrollment.lookups.DialingCodesLookup;
 import sa.gov.nic.bio.bw.client.features.visaapplicantsenrollment.lookups.PassportTypesLookup;
 import sa.gov.nic.bio.bw.client.features.visaapplicantsenrollment.lookups.VisaTypesLookup;
-import sa.gov.nic.bio.bw.client.features.visaapplicantsenrollment.webservice.VisaApplicantInfo;
-import sa.gov.nic.bio.bw.client.features.visaapplicantsenrollment.workflow.VisaApplicantEnrollmentResponse;
-import sa.gov.nic.bio.bw.client.features.visaapplicantsenrollment.workflow.VisaApplicantsEnrollmentService;
-import sa.gov.nic.bio.commons.TaskResponse;
+import sa.gov.nic.bio.bw.client.features.visaapplicantsenrollment.workflow.VisaApplicantsWorkflowTask;
 
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
@@ -62,11 +59,11 @@ public class VisaApplicantsEnrollmentWorkflow extends WizardWorkflowBase
 						Context.getConfigManager().getProperty(
 									"visaApplicantsEnrollment.fingerprint.acceptedBadQualityFingerprintMinRetries"));
 				
-				uiInputData.put(FingerprintCapturingFxController.KEY_HIDE_FINGERPRINT_PREVIOUS_BUTTON, Boolean.FALSE);
-				uiInputData.put(FingerprintCapturingFxController.KEY_ACCEPT_BAD_QUALITY_FINGERPRINT,
-				                acceptBadQualityFingerprint);
-				uiInputData.put(FingerprintCapturingFxController.KEY_ACCEPTED_BAD_QUALITY_FINGERPRINT_MIN_RETIRES,
-				                acceptedBadQualityFingerprintMinRetries);
+				setData(FingerprintCapturingFxController.class, "hidePreviousButton", Boolean.FALSE);
+				setData(FingerprintCapturingFxController.class, "acceptBadQualityFingerprint",
+				        acceptBadQualityFingerprint);
+				setData(FingerprintCapturingFxController.class, "acceptedBadQualityFingerprintMinRetires",
+				        acceptedBadQualityFingerprintMinRetries);
 				
 				renderUiAndWaitForUserInput(FingerprintCapturingFxController.class);
 				break;
@@ -75,49 +72,89 @@ public class VisaApplicantsEnrollmentWorkflow extends WizardWorkflowBase
 			{
 				boolean acceptBadQualityFace = "true".equals(
 						Context.getConfigManager().getProperty("visaApplicantsEnrollment.face.acceptBadQualityFace"));
-				int acceptedBadQualityFaceMinRetries = Integer.parseInt(
+				int acceptBadQualityFaceMinRetries = Integer.parseInt(
 						Context.getConfigManager().getProperty(
-													"visaApplicantsEnrollment.face.acceptedBadQualityFaceMinRetries"));
+													"visaApplicantsEnrollment.face.acceptBadQualityFaceMinRetries"));
 				
-				uiInputData.put(FaceCapturingFxController.KEY_ACCEPT_BAD_QUALITY_FACE, acceptBadQualityFace);
-				uiInputData.put(FaceCapturingFxController.KEY_ACCEPTED_BAD_QUALITY_FACE_MIN_RETIRES,
-				                acceptedBadQualityFaceMinRetries);
+				setData(FaceCapturingFxController.class, "acceptBadQualityFace", acceptBadQualityFace);
+				setData(FaceCapturingFxController.class, "acceptBadQualityFaceMinRetries",
+				        acceptBadQualityFaceMinRetries);
 				
 				renderUiAndWaitForUserInput(FaceCapturingFxController.class);
 				break;
 			}
 			case 3:
 			{
+				passData(ApplicantInfoFxController.class, ReviewAndSubmitPaneFxController.class,
+				         "firstName");
+				passData(ApplicantInfoFxController.class, ReviewAndSubmitPaneFxController.class,
+				         "secondName");
+				passData(ApplicantInfoFxController.class, ReviewAndSubmitPaneFxController.class,
+				         "otherName");
+				passData(ApplicantInfoFxController.class, ReviewAndSubmitPaneFxController.class,
+				         "familyName");
+				passData(ApplicantInfoFxController.class, ReviewAndSubmitPaneFxController.class,
+				         "nationality");
+				passData(ApplicantInfoFxController.class, ReviewAndSubmitPaneFxController.class,
+				         "gender");
+				passData(ApplicantInfoFxController.class, ReviewAndSubmitPaneFxController.class,
+				         "birthPlace");
+				passData(ApplicantInfoFxController.class, ReviewAndSubmitPaneFxController.class,
+				         "birthDate");
+				passData(ApplicantInfoFxController.class, ReviewAndSubmitPaneFxController.class,
+				         "birthDateUseHijri");
+				passData(ApplicantInfoFxController.class, ReviewAndSubmitPaneFxController.class,
+				         "visaType");
+				passData(ApplicantInfoFxController.class, ReviewAndSubmitPaneFxController.class,
+				         "passportNumber");
+				passData(ApplicantInfoFxController.class, ReviewAndSubmitPaneFxController.class,
+				         "issueDate");
+				passData(ApplicantInfoFxController.class, ReviewAndSubmitPaneFxController.class,
+				         "issueDateUseHijri");
+				passData(ApplicantInfoFxController.class, ReviewAndSubmitPaneFxController.class,
+				         "expirationDate");
+				passData(ApplicantInfoFxController.class, ReviewAndSubmitPaneFxController.class,
+				         "expirationDateUseHijri");
+				passData(ApplicantInfoFxController.class, ReviewAndSubmitPaneFxController.class,
+				         "issuanceCountry");
+				passData(ApplicantInfoFxController.class, ReviewAndSubmitPaneFxController.class,
+				         "passportType");
+				passData(ApplicantInfoFxController.class, ReviewAndSubmitPaneFxController.class,
+				         "dialingCode");
+				passData(ApplicantInfoFxController.class, ReviewAndSubmitPaneFxController.class,
+				         "mobileNumber");
+				passData(FaceCapturingFxController.class, ReviewAndSubmitPaneFxController.class,
+				         "faceImage");
+				passData(FaceCapturingFxController.class, ReviewAndSubmitPaneFxController.class,
+				         "faceImageBase64");
+				passData(FingerprintCapturingFxController.class, ReviewAndSubmitPaneFxController.class,
+				         "fingerprintImages");
+				passData(FingerprintCapturingFxController.class, ReviewAndSubmitPaneFxController.class,
+				         "slapFingerprints");
+				passData(FingerprintCapturingFxController.class, ReviewAndSubmitPaneFxController.class,
+				         "missingFingerprints");
+				
 				renderUiAndWaitForUserInput(ReviewAndSubmitPaneFxController.class);
 				
-				while(true)
-				{
-					VisaApplicantInfo visaApplicantInfo = (VisaApplicantInfo)
-											uiInputData.get(ReviewAndSubmitPaneFxController.KEY_VISA_APPLICANT_INFO);
-					if(visaApplicantInfo == null) break;
-					
-					TaskResponse<VisaApplicantEnrollmentResponse> taskResponse =
-															VisaApplicantsEnrollmentService.execute(visaApplicantInfo);
-					boolean success = taskResponse.isSuccess() && taskResponse.getResult() != null;
-					
-					uiInputData.put(KEY_WORKFLOW_TASK_NEGATIVE_RESPONSE, taskResponse);
-					
-					if(success)
-					{
-						renderUiAndWaitForUserInput(ReviewAndSubmitPaneFxController.class);
-						break;
-					}
-					else
-					{
-						uiInputData.remove(ReviewAndSubmitPaneFxController.KEY_VISA_APPLICANT_INFO);
-						renderUiAndWaitForUserInput(ReviewAndSubmitPaneFxController.class);
-					}
-				}
+				passData(ReviewAndSubmitPaneFxController.class, VisaApplicantsWorkflowTask.class,
+				         "visaApplicantInfo");
+				
+				executeTask(VisaApplicantsWorkflowTask.class);
+				
+				passData(VisaApplicantsWorkflowTask.class, ReviewAndSubmitPaneFxController.class,
+				         "visaApplicantEnrollmentResponse");
 				
 				break;
 			}
 			case 4:
 			{
+				passData(ReviewAndSubmitPaneFxController.class, ShowReceiptFxController.class,
+				         "visaApplicantInfo");
+				passData(VisaApplicantsWorkflowTask.class, ShowReceiptFxController.class,
+				         "visaApplicantEnrollmentResponse");
+				passData(FingerprintCapturingFxController.class, ShowReceiptFxController.class,
+				         "fingerprintImages");
+				
 				renderUiAndWaitForUserInput(ShowReceiptFxController.class);
 				break;
 			}
