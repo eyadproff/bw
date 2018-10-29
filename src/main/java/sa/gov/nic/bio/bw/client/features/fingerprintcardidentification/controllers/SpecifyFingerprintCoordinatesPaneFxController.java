@@ -1,5 +1,6 @@
 package sa.gov.nic.bio.bw.client.features.fingerprintcardidentification.controllers;
 
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -78,6 +79,7 @@ public class SpecifyFingerprintCoordinatesPaneFxController extends WizardStepFxC
 	@Output private List<Integer> missingFingerprints;
 	@Output private Map<Integer, Dimension> fingerprintsDimensions;
 	@Output private Map<Integer, Point> fingerprintsCoordinates;
+	@Output private Dimension imagesViewDimension;
 	@Output private Point imagesViewCoordinates;
 	
 	@FXML private StackPane spFingerprintCardImage;
@@ -92,8 +94,18 @@ public class SpecifyFingerprintCoordinatesPaneFxController extends WizardStepFxC
 	private Rectangle selectedRectangle;
 	
 	@Override
-	protected void initialize()
+	protected void onAttachedToScene()
 	{
+		if(fingerprintImages == null) fingerprintImages = new HashMap<>();
+		if(missingFingerprints == null) missingFingerprints = new ArrayList<>();
+		if(fingerprintsCoordinates == null) fingerprintsCoordinates = new HashMap<>();
+		if(fingerprintsDimensions == null) fingerprintsDimensions = new HashMap<>();
+		
+		Double oldImageViewX = imagesViewCoordinates != null ? imagesViewCoordinates.x : null;
+		Double oldImageViewY = imagesViewCoordinates != null ? imagesViewCoordinates.y : null;
+		Double oldImageViewWidth = imagesViewDimension != null ? imagesViewDimension.width : null;
+		
+		
 		boolean rtl = Context.getGuiLanguage().getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT;
 		
 		Pane root = new Pane();
@@ -108,139 +120,120 @@ public class SpecifyFingerprintCoordinatesPaneFxController extends WizardStepFxC
 		
 		for(int i = 0; i < rectangles.length; i++)
 		{
-			final int finalI;
+			final int index;
 			
 			if(rtl)
 			{
-				if(i < rectangles.length / 2) finalI = (rectangles.length / 2) - i - 1;
-				else finalI = rectangles.length - i - 1 + rectangles.length / 2;
+				if(i < rectangles.length / 2) index = (rectangles.length / 2) - i - 1;
+				else index = rectangles.length - i - 1 + rectangles.length / 2;
 			}
-			else finalI = i;
+			else index = i;
 			
-			labels[finalI] = new Label(AppUtils.localizeNumbers(String.valueOf(finalI + 1), Locale.getDefault(),
-			                                                    false));
-			labels[finalI].setMouseTransparent(true);
-			labels[finalI].setTextAlignment(TextAlignment.CENTER);
-			labels[finalI].setAlignment(Pos.CENTER);
+			labels[index] = new Label(AppUtils.localizeNumbers(String.valueOf(index + 1), Locale.getDefault(),
+			                                                   false));
+			labels[index].setMouseTransparent(true);
+			labels[index].setTextAlignment(TextAlignment.CENTER);
+			labels[index].setAlignment(Pos.CENTER);
 			
-			rectangles[finalI] = new Rectangle(25.0, 25.0);
-			rectangles[finalI].setUserData(Boolean.FALSE); // not skipped
-			rectangles[finalI].setFocusTraversable(true);
-			rectangles[finalI].getStyleClass().add("fingerprint-rectangle");
+			rectangles[index] = new Rectangle(25.0, 25.0);
+			rectangles[index].setUserData(Boolean.FALSE); // not skipped
+			rectangles[index].setFocusTraversable(true);
+			rectangles[index].getStyleClass().add("fingerprint-rectangle");
+			rectangles[index].setManaged(false);
 			
-			objectLayer.getChildren().add(rectangles[finalI]);
-			objectLayer.getChildren().add(labels[finalI]);
+			objectLayer.getChildren().add(rectangles[index]);
+			objectLayer.getChildren().add(labels[index]);
 			
-			labels[finalI].layoutXProperty().bind(rectangles[finalI].layoutXProperty());
-			labels[finalI].layoutYProperty().bind(rectangles[finalI].layoutYProperty());
-			labels[finalI].translateXProperty().bind(rectangles[finalI].translateXProperty());
-			labels[finalI].translateYProperty().bind(rectangles[finalI].translateYProperty());
-			labels[finalI].prefWidthProperty().bind(rectangles[finalI].widthProperty());
-			labels[finalI].prefHeightProperty().bind(rectangles[finalI].heightProperty());
+			labels[index].layoutXProperty().bind(rectangles[index].layoutXProperty());
+			labels[index].layoutYProperty().bind(rectangles[index].layoutYProperty());
+			labels[index].translateXProperty().bind(rectangles[index].translateXProperty());
+			labels[index].translateYProperty().bind(rectangles[index].translateYProperty());
+			labels[index].prefWidthProperty().bind(rectangles[index].widthProperty());
+			labels[index].prefHeightProperty().bind(rectangles[index].heightProperty());
 			
-			makeNodeDraggable(ivFingerprintCardImage, selectionLayer, rectangles[finalI], rtl);
-			
+			makeNodeDraggable(ivFingerprintCardImage, selectionLayer, rectangles[index], rtl);
 			
 			ivFingerprintCardImage.boundsInParentProperty().addListener((observable, oldValue, newValue) ->
 			{
-				double strokeWidth = rectangles[finalI].getStrokeWidth();
+			    double strokeWidth = rectangles[index].getStrokeWidth();
 			    double scale = newValue.getWidth() / oldValue.getWidth();
-			    rectangles[finalI].setWidth(rectangles[finalI].getWidth() * scale);
-			    rectangles[finalI].setHeight(rectangles[finalI].getHeight() * scale);
-			    rectangles[finalI].relocate(newValue.getMinX() +
-	                                scale * (rectangles[finalI].getLayoutX() - strokeWidth / 2.0 - oldValue.getMinX()),
-			                               TITLED_PANE_TITLE_HEIGHT + newValue.getMinY() +
-	                                scale * (rectangles[finalI].getLayoutY() - strokeWidth / 2.0 -
-			                                                        (TITLED_PANE_TITLE_HEIGHT + oldValue.getMinY())));
+			    rectangles[index].setWidth(rectangles[index].getWidth() * scale);
+			    rectangles[index].setHeight(rectangles[index].getHeight() * scale);
+			    rectangles[index].relocate(newValue.getMinX() +
+                                    scale * (rectangles[index].getLayoutX() - strokeWidth / 2.0 - oldValue.getMinX()),
+			                                TITLED_PANE_TITLE_HEIGHT + newValue.getMinY() +
+                                    scale * (rectangles[index].getLayoutY() - strokeWidth / 2.0 -
+                                            (TITLED_PANE_TITLE_HEIGHT + oldValue.getMinY())));
 			});
-		}
-		
-		spFingerprintCardImage.setOnMousePressed(mouseEvent ->
-		{
-			if(selectedRectangle != null)
+			
+			Point point = fingerprintsCoordinates.get(index + 1);
+			Dimension dimension = fingerprintsDimensions.get(index + 1);
+			
+			int finalI = i;
+			ivFingerprintCardImage.imageProperty().addListener((observable, oldValue, newValue) ->
+				                                                                                Platform.runLater(() ->
 			{
-				selectedRectangle.getStyleClass().remove("fingerprint-rectangle-selected");
-				selectedRectangle.getStyleClass().add("fingerprint-rectangle");
-				selectedRectangle = null;
-			}
-			
-			ivFingerprintImageAfterCropping.setImage(null);
-			GuiUtils.showNode(ivFingerprintImageAfterCropping, false);
-			GuiUtils.showNode(ivFingerprintImageAfterCroppingPlaceHolder, true);
-			selectionLayer.getChildren().clear();
-		});
-	}
-	
-	@Override
-	public void onWorkflowUserTaskLoad(boolean newForm, Map<String, Object> uiInputData)
-	{
-		if(newForm)
-		{
-			if(fingerprintImages == null) fingerprintImages = new HashMap<>();
-			if(missingFingerprints == null) missingFingerprints = new ArrayList<>();
-			if(fingerprintsCoordinates == null) fingerprintsCoordinates = new HashMap<>();
-			if(fingerprintsDimensions == null) fingerprintsDimensions = new HashMap<>();
-			
-			ivFingerprintCardImage.setImage(cardImage);
-			
-			Double imageViewX = imagesViewCoordinates != null ? imagesViewCoordinates.x : null;
-			Double imageViewY = imagesViewCoordinates != null ? imagesViewCoordinates.y : null;
-			
-			for(int i = 0; i < rectangles.length; i++)
-			{
-				Point point = fingerprintsCoordinates.get(i + 1);
-				Dimension dimension = fingerprintsDimensions.get(i + 1);
-				
-				if(imageViewX != null && point != null && dimension != null)
+				if(newValue != null)
 				{
-					rectangles[i].relocate(point.x * ivFingerprintCardImage.getBoundsInParent().getWidth() -
-			                       ivFingerprintCardImage.getLayoutX() - rectangles[i].getStrokeWidth() / 2.0 +
-							                       2 * (ivFingerprintCardImage.getLayoutX() - imageViewX),
-					                       point.y * ivFingerprintCardImage.getBoundsInParent().getHeight() -
-		                           ivFingerprintCardImage.getLayoutY() - rectangles[i].getStrokeWidth() / 2.0 +
-						                           2 * (ivFingerprintCardImage.getLayoutY() - imageViewY));
-					rectangles[i].setWidth(dimension.width * ivFingerprintCardImage.getBoundsInParent().getWidth() -
-							                       rectangles[i].getStrokeWidth());
-					rectangles[i].setHeight(dimension.height * ivFingerprintCardImage.getBoundsInParent().getHeight() -
-							                        rectangles[i].getStrokeWidth());
-					
-					Image fingerprintImage = fingerprintImages.get(i + 1);
-					boolean disabled = fingerprintImage == null;
-					if(disabled)
-					{
-						rectangles[i].getStyleClass().remove("fingerprint-rectangle");
-						rectangles[i].getStyleClass().add("fingerprint-rectangle-disabled");
-						rectangles[i].setUserData(Boolean.TRUE); // skipped
-					}
-				}
-				else
-				{
-					boolean rtl = Context.getGuiLanguage().getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT;
-					imageViewX = ivFingerprintCardImage.getLayoutX();
-					imageViewY = ivFingerprintCardImage.getLayoutY();
+					double imageViewX = ivFingerprintCardImage.getBoundsInParent().getMinX();
+					double imageViewY = ivFingerprintCardImage.getBoundsInParent().getMinY();
 					double imageViewWidth = ivFingerprintCardImage.getBoundsInParent().getWidth();
 					double imageViewHeight = ivFingerprintCardImage.getBoundsInParent().getHeight();
 					
-					final int finalI;
-					
-					if(rtl)
+					if(oldImageViewX != null && oldImageViewWidth != null && point != null && dimension != null)
 					{
-						if(i < rectangles.length / 2) finalI = (rectangles.length / 2) - i - 1;
-						else finalI = rectangles.length - i - 1 + rectangles.length / 2;
+						double strokeWidth = rectangles[index].getStrokeWidth();
+						double scale = ivFingerprintCardImage.getBoundsInParent().getWidth() / oldImageViewWidth;
+						
+						rectangles[index].setWidth(scale * dimension.width);
+						rectangles[index].setHeight(scale * dimension.height);
+						
+						// TODO: wrong relocation if the window is resized
+						rectangles[index].relocate(scale * point.x - strokeWidth / 2.0 +
+								                                                        (imageViewX - oldImageViewX),
+						                           scale * point.y - strokeWidth / 2.0 +
+						                                                                (imageViewY - oldImageViewY));
+						
+						Image fingerprintImage = fingerprintImages.get(index + 1);
+						boolean disabled = fingerprintImage == null;
+						if(disabled)
+						{
+							rectangles[index].getStyleClass().remove("fingerprint-rectangle");
+							rectangles[index].getStyleClass().add("fingerprint-rectangle-disabled");
+							rectangles[index].setUserData(Boolean.TRUE); // skipped
+						}
 					}
-					else finalI = i;
-					
-					double rectX = imageViewWidth * DEFAULT_BOUNDS[i][0];
-					double rectY = imageViewHeight * DEFAULT_BOUNDS[i][1];
-					double rectWidth = imageViewWidth * DEFAULT_BOUNDS[i][2];
-					double rectHeight = imageViewHeight * DEFAULT_BOUNDS[i][3];
-					
-					rectangles[finalI].setWidth(rectWidth);
-					rectangles[finalI].setHeight(rectHeight);
-					rectangles[finalI].relocate(imageViewWidth - (rectX - imageViewX), rectY - imageViewY);
+					else
+					{
+						double rectX = imageViewWidth * DEFAULT_BOUNDS[finalI][0];
+						double rectY = imageViewHeight * DEFAULT_BOUNDS[finalI][1];
+						double rectWidth = imageViewWidth * DEFAULT_BOUNDS[finalI][2];
+						double rectHeight = imageViewHeight * DEFAULT_BOUNDS[finalI][3];
+						
+						rectangles[index].setWidth(rectWidth);
+						rectangles[index].setHeight(rectHeight);
+						rectangles[index].relocate(imageViewWidth - (rectX - imageViewX), rectY - imageViewY);
+					}
 				}
-			}
+			}));
 		}
+		
+		ivFingerprintCardImage.setImage(cardImage);
+		
+		spFingerprintCardImage.setOnMousePressed(mouseEvent ->
+		{
+		    if(selectedRectangle != null)
+		    {
+		        selectedRectangle.getStyleClass().remove("fingerprint-rectangle-selected");
+		        selectedRectangle.getStyleClass().add("fingerprint-rectangle");
+		        selectedRectangle = null;
+		    }
+		
+		    ivFingerprintImageAfterCropping.setImage(null);
+		    GuiUtils.showNode(ivFingerprintImageAfterCropping, false);
+		    GuiUtils.showNode(ivFingerprintImageAfterCroppingPlaceHolder, true);
+		    selectionLayer.getChildren().clear();
+		});
 	}
 	
 	@Override
@@ -250,6 +243,7 @@ public class SpecifyFingerprintCoordinatesPaneFxController extends WizardStepFxC
 		missingFingerprints = null;
 		fingerprintsDimensions = null;
 		fingerprintsCoordinates = null;
+		imagesViewDimension = null;
 		imagesViewCoordinates = null;
 	}
 	
@@ -272,17 +266,16 @@ public class SpecifyFingerprintCoordinatesPaneFxController extends WizardStepFxC
 				missingFingerprints.add(i + 1);
 			}
 			
-			fingerprintsCoordinates.put((i + 1), new Point((rectangles[i].getLayoutX() +
-					ivFingerprintCardImage.getLayoutX()) / ivFingerprintCardImage.getBoundsInParent().getWidth(),
-			                                               (rectangles[i].getLayoutY() +
-                    ivFingerprintCardImage.getLayoutY()) / ivFingerprintCardImage.getBoundsInParent().getHeight()));
-			fingerprintsDimensions.put(i + 1, new Dimension(rectangles[i].getBoundsInParent().getWidth() /
-															ivFingerprintCardImage.getBoundsInParent().getWidth(),
-			                                                rectangles[i].getBoundsInParent().getHeight() /
-															ivFingerprintCardImage.getBoundsInParent().getHeight()));
+			fingerprintsDimensions.put(i + 1, new Dimension(rectangles[i].getBoundsInParent().getWidth(),
+			                                                rectangles[i].getBoundsInParent().getHeight()));
+			fingerprintsCoordinates.put((i + 1), new Point(rectangles[i].getBoundsInParent().getMinX(),
+			                                               rectangles[i].getBoundsInParent().getMinY()));
 		}
 		
-		imagesViewCoordinates = new Point(ivFingerprintCardImage.getLayoutX(),ivFingerprintCardImage.getLayoutY());
+		imagesViewDimension = new Dimension(ivFingerprintCardImage.getBoundsInParent().getWidth(),
+                                            ivFingerprintCardImage.getBoundsInParent().getHeight());
+		imagesViewCoordinates = new Point(ivFingerprintCardImage.getBoundsInParent().getMinX(),
+		                                  ivFingerprintCardImage.getBoundsInParent().getMinY());
 	}
 	
 	@FXML

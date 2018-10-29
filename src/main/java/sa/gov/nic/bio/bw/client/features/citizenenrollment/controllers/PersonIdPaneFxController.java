@@ -13,7 +13,7 @@ import sa.gov.nic.bio.bw.client.core.workflow.Output;
 @FxmlFile("personId.fxml")
 public class PersonIdPaneFxController extends WizardStepFxControllerBase
 {
-	@Output private long personId;
+	@Output private Long personId;
 	
 	@FXML private ProgressIndicator piProgress;
 	@FXML private TextField txtPersonId;

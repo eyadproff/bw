@@ -32,42 +32,38 @@ public class FingerprintsAfterCroppingPaneFxController extends WizardStepFxContr
 	@FXML private Button btnNext;
 	
 	@Override
-	public void onWorkflowUserTaskLoad(boolean newForm, Map<String, Object> uiInputData)
+	protected void onAttachedToScene()
 	{
-		if(newForm)
+		Map<Integer, String> dialogTitleMap = GuiUtils.constructFingerprintDialogTitles(resources);
+		Map<Integer, ImageView> imageViewMap = GuiUtils.constructFingerprintImageViewMap(ivRightThumb, ivRightIndex,
+		                                                                                 ivRightMiddle, ivRightRing,
+		                                                                                 ivRightLittle, ivLeftThumb,
+		                                                                                 ivLeftIndex, ivLeftMiddle,
+		                                                                                 ivLeftRing, ivLeftLittle);
+		boolean disableNext = true;
+		
+		for(int i = 0; i <= 10; i++)
 		{
-			Map<Integer, String> dialogTitleMap = GuiUtils.constructFingerprintDialogTitles(resources);
-			Map<Integer, ImageView> imageViewMap = GuiUtils.constructFingerprintImageViewMap(ivRightThumb, ivRightIndex,
-			                                                                                 ivRightMiddle, ivRightRing,
-			                                                                                 ivRightLittle, ivLeftThumb,
-			                                                                                 ivLeftIndex, ivLeftMiddle,
-			                                                                                 ivLeftRing, ivLeftLittle);
+			Image image = fingerprintImages.get(i + 1);
 			
-			boolean disableNext = true;
-			
-			for(int i = 0; i <= 10; i++)
+			if(image != null)
 			{
-				Image image = fingerprintImages.get(i + 1);
+				disableNext = false;
 				
-				if(image != null)
+				ImageView imageView = imageViewMap.get(i + 1);
+				String title = dialogTitleMap.get(i + 1);
+				
+				if(imageView != null)
 				{
-					disableNext = false;
-					
-					ImageView imageView = imageViewMap.get(i + 1);
-					String title = dialogTitleMap.get(i + 1);
-					
-					if(imageView != null)
-					{
-						imageView.setImage(image);
-						GuiUtils.attachImageDialog(Context.getCoreFxController(), imageView,
-						                           title, resources.getString("label.contextMenu.showImage"),
-						                           false);
-					}
+					imageView.setImage(image);
+					GuiUtils.attachImageDialog(Context.getCoreFxController(), imageView,
+					                           title, resources.getString("label.contextMenu.showImage"),
+					                           false);
 				}
 			}
-			
-			btnNext.setDisable(disableNext);
 		}
+		
+		btnNext.setDisable(disableNext);
 	}
 	
 	@FXML

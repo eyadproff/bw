@@ -37,35 +37,28 @@ public class ScanFingerprintCardPaneFxController extends WizardStepFxControllerB
 	@FXML private Button btnNext;
 	
 	@Override
-	protected void initialize()
+	protected void onAttachedToScene()
 	{
 		ivFingerprintImagePlaceHolder.visibleProperty().bind(ivFingerprintImage.imageProperty().isNull());
 		ivFingerprintImagePlaceHolder.managedProperty().bind(ivFingerprintImage.imageProperty().isNull());
 		btnNext.disableProperty().bind(ivFingerprintImage.imageProperty().isNull());
-	}
-	
-	@Override
-	public void onWorkflowUserTaskLoad(boolean newForm, Map<String, Object> uiInputData)
-	{
-		if(newForm)
+		
+		if(cardImage != null)
 		{
-			if(cardImage != null)
-			{
-				ivFingerprintImage.setImage(cardImage);
-				GuiUtils.attachImageDialog(Context.getCoreFxController(), ivFingerprintImage,
-				                           resources.getString("label.fingerprintCardImage"),
-				                           resources.getString("label.contextMenu.showImage"), false);
-			}
-			
-			DevicesRunnerGadgetPaneFxController deviceManagerGadgetPaneController =
+			ivFingerprintImage.setImage(cardImage);
+			GuiUtils.attachImageDialog(Context.getCoreFxController(), ivFingerprintImage,
+			                           resources.getString("label.fingerprintCardImage"),
+			                           resources.getString("label.contextMenu.showImage"), false);
+		}
+		
+		DevicesRunnerGadgetPaneFxController deviceManagerGadgetPaneController =
 												Context.getCoreFxController().getDeviceManagerGadgetPaneController();
-			
-			if(!deviceManagerGadgetPaneController.isDevicesRunnerRunning())
-			{
-				boolean devicesRunnerAutoRun = "true".equals(
+		
+		if(!deviceManagerGadgetPaneController.isDevicesRunnerRunning())
+		{
+			boolean devicesRunnerAutoRun = "true".equals(
 													Context.getConfigManager().getProperty("devicesRunner.autoRun"));
-				if(devicesRunnerAutoRun) deviceManagerGadgetPaneController.runAndConnectDevicesRunner();
-			}
+			if(devicesRunnerAutoRun) deviceManagerGadgetPaneController.runAndConnectDevicesRunner();
 		}
 	}
 	

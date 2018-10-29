@@ -28,7 +28,8 @@ public class ConvertFingerprintImagesToBase64WorkflowTask implements WorkflowTas
 		{
 			try
 			{
-				fingerprintBase64Images.put(entry.getKey(), AppUtils.imageToBase64(entry.getValue()));
+				Image image = entry.getValue();
+				if(image != null) fingerprintBase64Images.put(entry.getKey(), AppUtils.imageToBase64(image));
 			}
 			catch(IOException e)
 			{

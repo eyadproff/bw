@@ -13,16 +13,12 @@ import sa.gov.nic.bio.bw.client.core.controllers.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.client.core.utils.FxmlFile;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.workflow.Input;
-import sa.gov.nic.bio.bw.client.core.workflow.Workflow;
 import sa.gov.nic.bio.bw.client.features.commons.workflow.FingerprintInquiryStatusCheckerWorkflowTask.Status;
-import sa.gov.nic.bio.bw.client.features.fingerprintcardidentification.utils.FingerprintCardIdentificationErrorCodes;
-import sa.gov.nic.bio.commons.TaskResponse;
-
-import java.util.Map;
 
 @FxmlFile("inquiryByFingerprints.fxml")
 public class InquiryByFingerprintsPaneFxController extends WizardStepFxControllerBase
 {
+	// TODO: REMOVE
 	public static final String KEY_WAITING_FINGERPRINT_INQUIRY = "WAITING_FINGERPRINT_INQUIRY";
 	public static final String KEY_WAITING_FINGERPRINT_INQUIRY_CANCELLED = "WAITING_FINGERPRINT_INQUIRY_CANCELLED";
 	public static final String KEY_FINGERPRINT_INQUIRY_UNKNOWN_STATUS = "FINGERPRINT_INQUIRY_UNKNOWN_STATUS";
@@ -33,7 +29,7 @@ public class InquiryByFingerprintsPaneFxController extends WizardStepFxControlle
 	public static final String KEY_INQUIRY_ERROR_EXCEPTION = "INQUIRY_ERROR_EXCEPTION";
 	public static final String KEY_INQUIRY_ERROR_DETAILS = "INQUIRY_ERROR_DETAILS";
 	
-	@Input private Status status;
+	@Input(requiredOnReturn = true) private Status status;
 	
 	@FXML private VBox paneError;
 	@FXML private VBox paneDevicesRunnerNotRunning;
@@ -48,122 +44,99 @@ public class InquiryByFingerprintsPaneFxController extends WizardStepFxControlle
 	private boolean fingerprintInquiryCancelled = false;
 	
 	@Override
-	protected void initialize()
+	protected void onAttachedToScene()
 	{
-		btnStartOver.setOnAction(actionEvent ->
-		{
-			hideNotification();
-			startOver();
-		});
+		btnStartOver.setOnAction(actionEvent -> startOver());
 		btnCancel.setOnAction(actionEvent ->
 		{
-			GuiUtils.showNode(lblProgress, false);
-			GuiUtils.showNode(btnCancel, false);
-			GuiUtils.showNode(lblCanceling, true);
-			fingerprintInquiryCancelled = true;
+		    GuiUtils.showNode(lblProgress, false);
+		    GuiUtils.showNode(btnCancel, false);
+		    GuiUtils.showNode(lblCanceling, true);
+		    fingerprintInquiryCancelled = true;
 		});
-	}
-	
-	@Override
-	public void onWorkflowUserTaskLoad(boolean newForm, Map<String, Object> uiInputData)
-	{
-		if(newForm)
-		{
-			DevicesRunnerGadgetPaneFxController deviceManagerGadgetPaneController =
+		
+		DevicesRunnerGadgetPaneFxController deviceManagerGadgetPaneController =
 												Context.getCoreFxController().getDeviceManagerGadgetPaneController();
-			deviceManagerGadgetPaneController.setDevicesRunnerRunningListener(running ->
-			{
-				GuiUtils.showNode(piProgress, running);
-				GuiUtils.showNode(lblProgress, running);
-				GuiUtils.showNode(btnCancel, running);
-				GuiUtils.showNode(paneDevicesRunnerNotRunning, !running);
-				GuiUtils.showNode(btnStartOver, !running);
-				
-				if(running && !isDetached()) continueWorkflow();
-			});
-			
-			if(!deviceManagerGadgetPaneController.isDevicesRunnerRunning())
-			{
-				GuiUtils.showNode(piProgress, false);
-				GuiUtils.showNode(lblProgress, false);
-				GuiUtils.showNode(btnCancel, false);
-				GuiUtils.showNode(lblCanceling, false);
-				GuiUtils.showNode(paneError, false);
-				GuiUtils.showNode(paneDevicesRunnerNotRunning, true);
-				GuiUtils.showNode(btnStartOver, true);
-				deviceManagerGadgetPaneController.runAndConnectDevicesRunner();
-			}
-			else continueWorkflow();
+		deviceManagerGadgetPaneController.setDevicesRunnerRunningListener(running ->
+		{
+		    GuiUtils.showNode(piProgress, running);
+		    GuiUtils.showNode(lblProgress, running);
+		    GuiUtils.showNode(btnCancel, running);
+		    GuiUtils.showNode(paneDevicesRunnerNotRunning, !running);
+		    GuiUtils.showNode(btnStartOver, !running);
+		
+		    if(running)
+		    {
+			    showProgress(true);
+		    	continueWorkflow();
+		    }
+		});
+		
+		if(!deviceManagerGadgetPaneController.isDevicesRunnerRunning())
+		{
+			showProgress(false);
+			GuiUtils.showNode(paneDevicesRunnerNotRunning, true);
+			deviceManagerGadgetPaneController.runAndConnectDevicesRunner();
 		}
 		else
 		{
-			@SuppressWarnings("unchecked") TaskResponse<Integer> taskResponse = (TaskResponse<Integer>)
-																uiInputData.get(Workflow.KEY_WORKFLOW_TASK_NEGATIVE_RESPONSE);
-			
-			if(taskResponse.isSuccess())
-			{
-				if(status == null)
-				{
-					showControlsOnError();
-					
-					String errorCode = FingerprintCardIdentificationErrorCodes.C013_00011.getCode();
-					String[] errorDetails = {"The fingerprint inquiry status is not set!"};
-					reportNegativeTaskResponse(errorCode, null, errorDetails);
-					return;
-				}
-				
-				if(status == Status.PENDING)
-				{
-					btnCancel.setDisable(false);
-					Context.getExecutorService().submit(() ->
-					{
-					    int seconds = Integer.parseInt(
-					            Context.getConfigManager().getProperty("fingerprint.inquiry.checkEverySeconds"));
-					
-					    try
-					    {
-					        Thread.sleep(seconds * 1000);
-					    }
-					    catch(InterruptedException e)
-					    {
-					        e.printStackTrace();
-					    }
-					
-					    Platform.runLater(() ->
-					    {
-					        if(fingerprintInquiryCancelled)
-					        {
-					            fingerprintInquiryCancelled = false;
-					            GuiUtils.showNode(piProgress, false);
-					            GuiUtils.showNode(lblCanceling, false);
-					            GuiUtils.showNode(lblCancelled, true);
-					            GuiUtils.showNode(btnStartOver, true);
-					            GuiUtils.showNode(btnRetry, true);
-					        }
-					        else continueWorkflow();
-					    });
-					});
-				}
-				else goNext();
-			}
-			else
-			{
-				showControlsOnError();
-				reportNegativeTaskResponse(taskResponse.getErrorCode(), taskResponse.getException(),
-				                           taskResponse.getErrorDetails());
-			}
+			showProgress(true);
+			continueWorkflow();
 		}
 	}
 	
-	private void showControlsOnError()
+	@Override
+	public void onReturnFromWorkflow(boolean successfulResponse)
 	{
-		GuiUtils.showNode(piProgress, false);
-		GuiUtils.showNode(lblProgress, false);
-		GuiUtils.showNode(btnCancel, false);
+		if(successfulResponse)
+		{
+			if(status == Status.PENDING)
+			{
+				btnCancel.setDisable(false);
+				Context.getExecutorService().submit(() ->
+				{
+				    int seconds = Integer.parseInt(
+				                    Context.getConfigManager().getProperty("fingerprint.inquiry.checkEverySeconds"));
+				
+				    try
+				    {
+				        Thread.sleep(seconds * 1000);
+				    }
+				    catch(InterruptedException e)
+				    {
+				        e.printStackTrace();
+				    }
+				
+				    Platform.runLater(() ->
+				    {
+				        if(fingerprintInquiryCancelled)
+				        {
+				            fingerprintInquiryCancelled = false;
+				            GuiUtils.showNode(piProgress, false);
+				            GuiUtils.showNode(lblCanceling, false);
+				            GuiUtils.showNode(lblCancelled, true);
+				            GuiUtils.showNode(btnStartOver, true);
+				            GuiUtils.showNode(btnRetry, true);
+				        }
+				        else continueWorkflow();
+				    });
+				});
+			}
+			else goNext();
+		}
+		else showProgress(false);
+	}
+	
+	private void showProgress(boolean bShow)
+	{
+		GuiUtils.showNode(piProgress, bShow);
+		GuiUtils.showNode(lblProgress, bShow);
+		GuiUtils.showNode(btnCancel, bShow);
+		GuiUtils.showNode(btnRetry, !bShow);
+		GuiUtils.showNode(btnStartOver, !bShow);
+		GuiUtils.showNode(paneError, !bShow);
 		GuiUtils.showNode(lblCanceling, false);
-		GuiUtils.showNode(btnRetry, true);
-		GuiUtils.showNode(btnStartOver, true);
-		GuiUtils.showNode(paneError, true);
+		GuiUtils.showNode(lblCancelled, false);
 	}
 	
 	@Override
@@ -177,15 +150,7 @@ public class InquiryByFingerprintsPaneFxController extends WizardStepFxControlle
 	@FXML
 	private void onRetryButtonClicked(ActionEvent actionEvent)
 	{
-		hideNotification();
-		GuiUtils.showNode(paneError, false);
-		GuiUtils.showNode(lblCancelled, false);
-		GuiUtils.showNode(btnRetry, false);
-		GuiUtils.showNode(btnStartOver, false);
-		GuiUtils.showNode(piProgress, true);
-		GuiUtils.showNode(lblProgress, true);
-		GuiUtils.showNode(btnCancel, true);
-		
+		showProgress(true);
 		continueWorkflow();
 	}
 }

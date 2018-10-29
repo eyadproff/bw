@@ -104,32 +104,24 @@ public class InquiryResultPaneFxController extends WizardStepFxControllerBase
 		FileChooser.ExtensionFilter extFilterPDF = new FileChooser.ExtensionFilter(
 									resources.getString("fileChooser.saveRecordAsPDF.types"), "*.pdf");
 		fileChooser.getExtensionFilters().addAll(extFilterPDF);
-	}
-	
-	@Override
-	public void onWorkflowUserTaskLoad(boolean newForm, Map<String, Object> uiInputData)
-	{
-		if(newForm)
+		
+		boolean fingerprintHit = status == Status.HIT;
+		
+		GuiUtils.showNode(paneResult, fingerprintHit);
+		GuiUtils.showNode(btnPrintRecord, fingerprintHit);
+		GuiUtils.showNode(btnSaveRecordAsPDF, fingerprintHit);
+		GuiUtils.showNode(paneNoHitMessage, !fingerprintHit);
+		
+		if(fingerprintHit)
 		{
-			boolean fingerprintHit = status == Status.HIT;
-			
-			GuiUtils.showNode(paneResult, fingerprintHit);
-			GuiUtils.showNode(btnPrintRecord, fingerprintHit);
-			GuiUtils.showNode(btnSaveRecordAsPDF, fingerprintHit);
-			GuiUtils.showNode(paneNoHitMessage, !fingerprintHit);
-			
-			if(fingerprintHit)
-			{
-				populateData();
-				GuiUtils.showNode(paneResult, true);
-			}
+			populateData();
+			GuiUtils.showNode(paneResult, true);
 		}
 	}
 	
 	@FXML
 	private void onStartOverButtonClicked(ActionEvent actionEvent)
 	{
-		hideNotification();
 		startOver();
 	}
 	
