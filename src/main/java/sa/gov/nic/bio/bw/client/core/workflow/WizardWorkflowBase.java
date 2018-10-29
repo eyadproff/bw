@@ -171,6 +171,11 @@ public abstract class WizardWorkflowBase extends WorkflowBase<Void, Void> implem
 		return (T) uiInputData.get(outputClass.getName() + "#" + outputName);
 	}
 	
+	protected void passData(Class<?> outputClass, Class<?> inputClass, String... inputOutputNames)
+	{
+		for(String inputOutputName : inputOutputNames) passData(outputClass, inputClass, inputOutputName);
+	}
+	
 	protected void passData(Class<?> outputClass, Class<?> inputClass, String inputOutputName)
 	{
 		passData(outputClass, inputOutputName, inputClass, inputOutputName, null);

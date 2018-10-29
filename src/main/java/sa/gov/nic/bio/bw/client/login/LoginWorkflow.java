@@ -49,9 +49,7 @@ public class LoginWorkflow extends SinglePageWorkflowBase
 			case USERNAME_AND_PASSWORD:
 			{
 				passData(LoginPaneFxController.class, LoginByUsernameAndPasswordWorkflowTask.class,
-				         "username");
-				passData(LoginPaneFxController.class, LoginByUsernameAndPasswordWorkflowTask.class,
-				         "password");
+				         "username", "password");
 				
 				executeTask(LoginByUsernameAndPasswordWorkflowTask.class);
 				loginBean = getData(LoginByUsernameAndPasswordWorkflowTask.class, "loginBean");
@@ -60,11 +58,7 @@ public class LoginWorkflow extends SinglePageWorkflowBase
 			case USERNAME_AND_FINGERPRINT:
 			{
 				passData(LoginPaneFxController.class, LoginByUsernameAndFingerprintWorkflowTask.class,
-				         "username");
-				passData(LoginPaneFxController.class, LoginByUsernameAndFingerprintWorkflowTask.class,
-				         "fingerPosition");
-				passData(LoginPaneFxController.class, LoginByUsernameAndFingerprintWorkflowTask.class,
-				         "fingerprint");
+				         "username", "fingerPosition", "fingerprint");
 				
 				executeTask(LoginByUsernameAndFingerprintWorkflowTask.class);
 				loginBean = getData(LoginByUsernameAndFingerprintWorkflowTask.class, "loginBean");

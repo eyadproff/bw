@@ -86,53 +86,14 @@ public class VisaApplicantsEnrollmentWorkflow extends WizardWorkflowBase
 			case 3:
 			{
 				passData(ApplicantInfoFxController.class, ReviewAndSubmitPaneFxController.class,
-				         "firstName");
-				passData(ApplicantInfoFxController.class, ReviewAndSubmitPaneFxController.class,
-				         "secondName");
-				passData(ApplicantInfoFxController.class, ReviewAndSubmitPaneFxController.class,
-				         "otherName");
-				passData(ApplicantInfoFxController.class, ReviewAndSubmitPaneFxController.class,
-				         "familyName");
-				passData(ApplicantInfoFxController.class, ReviewAndSubmitPaneFxController.class,
-				         "nationality");
-				passData(ApplicantInfoFxController.class, ReviewAndSubmitPaneFxController.class,
-				         "gender");
-				passData(ApplicantInfoFxController.class, ReviewAndSubmitPaneFxController.class,
-				         "birthPlace");
-				passData(ApplicantInfoFxController.class, ReviewAndSubmitPaneFxController.class,
-				         "birthDate");
-				passData(ApplicantInfoFxController.class, ReviewAndSubmitPaneFxController.class,
-				         "birthDateUseHijri");
-				passData(ApplicantInfoFxController.class, ReviewAndSubmitPaneFxController.class,
-				         "visaType");
-				passData(ApplicantInfoFxController.class, ReviewAndSubmitPaneFxController.class,
-				         "passportNumber");
-				passData(ApplicantInfoFxController.class, ReviewAndSubmitPaneFxController.class,
-				         "issueDate");
-				passData(ApplicantInfoFxController.class, ReviewAndSubmitPaneFxController.class,
-				         "issueDateUseHijri");
-				passData(ApplicantInfoFxController.class, ReviewAndSubmitPaneFxController.class,
-				         "expirationDate");
-				passData(ApplicantInfoFxController.class, ReviewAndSubmitPaneFxController.class,
-				         "expirationDateUseHijri");
-				passData(ApplicantInfoFxController.class, ReviewAndSubmitPaneFxController.class,
-				         "issuanceCountry");
-				passData(ApplicantInfoFxController.class, ReviewAndSubmitPaneFxController.class,
-				         "passportType");
-				passData(ApplicantInfoFxController.class, ReviewAndSubmitPaneFxController.class,
-				         "dialingCode");
-				passData(ApplicantInfoFxController.class, ReviewAndSubmitPaneFxController.class,
-				         "mobileNumber");
+				         "firstName", "secondName", "otherName", "familyName", "nationality",
+				         "gender", "birthPlace", "birthDate", "birthDateUseHijri", "visaType", "passportNumber",
+				         "issueDate", "issueDateUseHijri", "expirationDate", "expirationDateUseHijri",
+				         "issuanceCountry", "passportType", "dialingCode", "mobileNumber");
 				passData(FaceCapturingFxController.class, ReviewAndSubmitPaneFxController.class,
-				         "faceImage");
-				passData(FaceCapturingFxController.class, ReviewAndSubmitPaneFxController.class,
-				         "faceImageBase64");
+				         "faceImage", "faceImageBase64");
 				passData(FingerprintCapturingFxController.class, ReviewAndSubmitPaneFxController.class,
-				         "fingerprintImages");
-				passData(FingerprintCapturingFxController.class, ReviewAndSubmitPaneFxController.class,
-				         "slapFingerprints");
-				passData(FingerprintCapturingFxController.class, ReviewAndSubmitPaneFxController.class,
-				         "missingFingerprints");
+				         "fingerprintImages", "slapFingerprints", "missingFingerprints");
 				
 				renderUiAndWaitForUserInput(ReviewAndSubmitPaneFxController.class);
 				

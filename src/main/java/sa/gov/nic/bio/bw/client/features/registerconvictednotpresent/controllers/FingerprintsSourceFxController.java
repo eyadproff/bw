@@ -9,6 +9,7 @@ import javafx.scene.input.KeyEvent;
 import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.controllers.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.client.core.utils.FxmlFile;
+import sa.gov.nic.bio.bw.client.core.workflow.Output;
 
 import java.util.Map;
 
@@ -22,13 +23,22 @@ public class FingerprintsSourceFxController extends WizardStepFxControllerBase
 	public static final String VALUE_FINGERPRINTS_SOURCE_UPLOADING_NIST_FILE =
 																			"FINGERPRINTS_SOURCE_UPLOADING_NIST_FILE";
 	
+	public enum Source
+	{
+		ENTERING_PERSON_ID,
+		SCANNING_FINGERPRINTS_CARD,
+		UPLOADING_NIST_FILE
+	}
+	
+	@Output private Source fingerprintsSource;
+	
 	@FXML private RadioButton rbByEnteringPersonId;
 	@FXML private RadioButton rbByScanningFingerprintsCard;
 	@FXML private RadioButton rbByUploadingNistFile;
 	@FXML private Button btnNext;
 	
 	@Override
-	protected void initialize()
+	protected void onAttachedToScene()
 	{
 		btnNext.setOnAction(event -> goNext());
 		
@@ -45,11 +55,7 @@ public class FingerprintsSourceFxController extends WizardStepFxControllerBase
 		rbByEnteringPersonId.addEventHandler(KeyEvent.KEY_PRESSED, eventHandler);
 		rbByScanningFingerprintsCard.addEventHandler(KeyEvent.KEY_PRESSED, eventHandler);
 		rbByUploadingNistFile.addEventHandler(KeyEvent.KEY_PRESSED, eventHandler);
-	}
-	
-	@Override
-	protected void onAttachedToScene()
-	{
+		
 		String enterPersonIdTitle = resources.getString("wizard.enterPersonId");
 		String scanFingerprintCardTitle = resources.getString("wizard.scanFingerprintCard");
 		String uploadNistFileTitle = resources.getString("wizard.uploadNistFile");
@@ -104,40 +110,29 @@ public class FingerprintsSourceFxController extends WizardStepFxControllerBase
 		                                                                 "\\uf2b9");
 		    }
 		});
-	}
-	
-	@Override
-	public void onWorkflowUserTaskLoad(boolean newForm, Map<String, Object> uiInputData)
-	{
-		if(newForm)
+		
+		if(fingerprintsSource == Source.SCANNING_FINGERPRINTS_CARD)
 		{
-			String fingerprintsSource = (String) uiInputData.get(KEY_FINGERPRINTS_SOURCE);
-			if(VALUE_FINGERPRINTS_SOURCE_SCANNING_FINGERPRINTS_CARD.equals(fingerprintsSource))
-			{
-				rbByScanningFingerprintsCard.setSelected(true);
-				rbByScanningFingerprintsCard.requestFocus();
-			}
-			else if(VALUE_FINGERPRINTS_SOURCE_UPLOADING_NIST_FILE.equals(fingerprintsSource))
-			{
-				rbByUploadingNistFile.setSelected(true);
-				rbByUploadingNistFile.requestFocus();
-			}
-			else
-			{
-				rbByEnteringPersonId.setSelected(true);
-				rbByEnteringPersonId.requestFocus();
-			}
+			rbByScanningFingerprintsCard.setSelected(true);
+			rbByScanningFingerprintsCard.requestFocus();
+		}
+		else if(fingerprintsSource == Source.UPLOADING_NIST_FILE)
+		{
+			rbByUploadingNistFile.setSelected(true);
+			rbByUploadingNistFile.requestFocus();
+		}
+		else
+		{
+			rbByEnteringPersonId.setSelected(true);
+			rbByEnteringPersonId.requestFocus();
 		}
 	}
 	
 	@Override
 	public void onGoingNext(Map<String, Object> uiDataMap)
 	{
-		if(rbByEnteringPersonId.isSelected()) uiDataMap.put(KEY_FINGERPRINTS_SOURCE,
-		                                                    VALUE_FINGERPRINTS_SOURCE_ENTERING_PERSON_ID);
-		else if(rbByScanningFingerprintsCard.isSelected()) uiDataMap.put(KEY_FINGERPRINTS_SOURCE,
-                                                                VALUE_FINGERPRINTS_SOURCE_SCANNING_FINGERPRINTS_CARD);
-		else if(rbByUploadingNistFile.isSelected()) uiDataMap.put(KEY_FINGERPRINTS_SOURCE,
-		                                                          VALUE_FINGERPRINTS_SOURCE_UPLOADING_NIST_FILE);
+		if(rbByEnteringPersonId.isSelected()) fingerprintsSource = Source.ENTERING_PERSON_ID;
+		else if(rbByScanningFingerprintsCard.isSelected()) fingerprintsSource = Source.SCANNING_FINGERPRINTS_CARD;
+		else if(rbByUploadingNistFile.isSelected()) fingerprintsSource = Source.UPLOADING_NIST_FILE;
 	}
 }

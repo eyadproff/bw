@@ -24,8 +24,8 @@ public class CancelLatentWorkflow extends SinglePageWorkflowBase
 	{
 		renderUiAndWaitForUserInput(CancelLatentPaneFxController.class);
 		
-		passData(CancelLatentPaneFxController.class, CancelLatentWorkflowTask.class, "personId");
-		passData(CancelLatentPaneFxController.class, CancelLatentWorkflowTask.class, "latentId");
+		passData(CancelLatentPaneFxController.class, CancelLatentWorkflowTask.class,
+		         "personId", "latentId");
 		
 		executeTask(CancelLatentWorkflowTask.class);
 		passData(CancelLatentWorkflowTask.class, CancelLatentPaneFxController.class, "success");

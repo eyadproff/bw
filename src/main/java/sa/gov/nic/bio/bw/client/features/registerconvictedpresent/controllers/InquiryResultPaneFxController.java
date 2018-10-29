@@ -19,8 +19,8 @@ import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.client.core.utils.FxmlFile;
 import sa.gov.nic.bio.bw.client.core.utils.GuiLanguage;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
+import sa.gov.nic.bio.bw.client.core.workflow.Input;
 import sa.gov.nic.bio.bw.client.features.commons.beans.GenderType;
-import sa.gov.nic.bio.bw.client.features.commons.controllers.InquiryByFingerprintsPaneFxController;
 import sa.gov.nic.bio.bw.client.features.commons.lookups.CountriesLookup;
 import sa.gov.nic.bio.bw.client.features.commons.lookups.DocumentTypesLookup;
 import sa.gov.nic.bio.bw.client.features.commons.lookups.SamisIdTypesLookup;
@@ -45,6 +45,12 @@ public class InquiryResultPaneFxController extends WizardStepFxControllerBase
 {
 	public static final String KEY_INQUIRY_SAMIS_ID = "INQUIRY_SAMIS_ID";
 	public static final String KEY_INQUIRY_HIT_RESULT = "INQUIRY_HIT_RESULT";
+	
+	@Input private Boolean fingerprintHit;
+	@Input private Long criminalBioId;
+	@Input private Long civilBioId;
+	@Input private Long personId;
+	@Input private PersonInfo personInfo;
 	
 	@FXML private ScrollPane infoPane;
 	@FXML private GridPane gridPane;
@@ -77,80 +83,63 @@ public class InquiryResultPaneFxController extends WizardStepFxControllerBase
 	private Map<String, Object> personInfoMap = new HashMap<>();
 	
 	@Override
-	protected void initialize()
+	protected void onAttachedToScene()
 	{
 		btnConfirmPersonInformation.setOnAction(actionEvent -> goNext());
-	}
-	
-	@Override
-	public void onWorkflowUserTaskLoad(boolean newForm, Map<String, Object> uiInputData)
-	{
-		if(newForm)
+		
+		String notAvailable = resources.getString("label.notAvailable");
+		
+		if(fingerprintHit != null) // workflow: inquiry by fingerprints
 		{
-			Boolean fingerprintHit = (Boolean)
-									uiInputData.get(InquiryByFingerprintsPaneFxController.KEY_FINGERPRINT_INQUIRY_HIT);
-			String notAvailable = resources.getString("label.notAvailable");
-			
-			if(fingerprintHit != null) // workflow: inquiry by fingerprints
+			if(fingerprintHit)
 			{
-				if(fingerprintHit)
-				{
-					GuiUtils.showNode(btnRegisterUnknownPerson, false);
-					GuiUtils.showNode(paneNoHitMessage, false);
-					GuiUtils.showNode(ivPersonPhoto, true);
-					GuiUtils.showNode(infoPane, true);
-					GuiUtils.showNode(btnConfirmPersonInformation, true);
-					
-					Long criminalBioId = (Long) uiInputData.get(
-													PersonInfoPaneFxController.KEY_PERSON_INFO_GENERAL_FILE_NUMBER);
-					Long civilBioId = (Long) uiInputData.get(PersonInfoPaneFxController.KEY_PERSON_INFO_CIVIL_BIO_ID);
-					
-					if(criminalBioId != null)
-					{
-						lblGeneralFileNumber.setText(String.valueOf(criminalBioId));
-						personInfoMap.put(PersonInfoPaneFxController.KEY_PERSON_INFO_GENERAL_FILE_NUMBER,
-						                  criminalBioId);
-					}
-					else
-					{
-						lblGeneralFileNumber.setText(notAvailable);
-						lblGeneralFileNumber.setTextFill(Color.RED);
-					}
-
-					Long samisId = (Long) uiInputData.get(KEY_INQUIRY_SAMIS_ID);
-					PersonInfo personInfo = (PersonInfo) uiInputData.get(KEY_INQUIRY_HIT_RESULT);
-					populatePersonInfo(samisId, civilBioId, personInfo, notAvailable);
-				}
-				else
-				{
-					GuiUtils.showNode(ivPersonPhoto, false);
-					GuiUtils.showNode(infoPane, false);
-					GuiUtils.showNode(btnConfirmPersonInformation, false);
-					GuiUtils.showNode(paneNoHitMessage, true);
-					GuiUtils.showNode(btnRegisterUnknownPerson, true);
-				}
-			}
-			else // workflow: inquiry by samis id
-			{
-				gridPane.getChildren().remove(lblBiometricsIdLabel);
-				gridPane.getChildren().remove(lblBiometricsId);
-				gridPane.getChildren().remove(lblGeneralFileNumberLabel);
-				gridPane.getChildren().remove(lblGeneralFileNumber);
-				gridPane.setPadding(new Insets(0.0, 5.0, 5.0, 5.0));
-				
 				GuiUtils.showNode(btnRegisterUnknownPerson, false);
 				GuiUtils.showNode(paneNoHitMessage, false);
 				GuiUtils.showNode(ivPersonPhoto, true);
 				GuiUtils.showNode(infoPane, true);
 				GuiUtils.showNode(btnConfirmPersonInformation, true);
 				
-				lblGeneralFileNumber.setText(notAvailable);
-				lblGeneralFileNumber.setTextFill(Color.RED);
-
-				Long samisId = (Long) uiInputData.get(KEY_INQUIRY_SAMIS_ID);
-				PersonInfo personInfo = (PersonInfo) uiInputData.get(KEY_INQUIRY_HIT_RESULT);
-				populatePersonInfo(samisId, null, personInfo, notAvailable);
+				if(criminalBioId != null)
+				{
+					lblGeneralFileNumber.setText(String.valueOf(criminalBioId));
+					personInfoMap.put(PersonInfoPaneFxController.KEY_PERSON_INFO_GENERAL_FILE_NUMBER,
+					                  criminalBioId);
+				}
+				else
+				{
+					lblGeneralFileNumber.setText(notAvailable);
+					lblGeneralFileNumber.setTextFill(Color.RED);
+				}
+				
+				populatePersonInfo(personId, civilBioId, personInfo, notAvailable);
 			}
+			else
+			{
+				GuiUtils.showNode(ivPersonPhoto, false);
+				GuiUtils.showNode(infoPane, false);
+				GuiUtils.showNode(btnConfirmPersonInformation, false);
+				GuiUtils.showNode(paneNoHitMessage, true);
+				GuiUtils.showNode(btnRegisterUnknownPerson, true);
+			}
+		}
+		else // workflow: inquiry by samis id
+		{
+			gridPane.getChildren().remove(lblBiometricsIdLabel);
+			gridPane.getChildren().remove(lblBiometricsId);
+			gridPane.getChildren().remove(lblGeneralFileNumberLabel);
+			gridPane.getChildren().remove(lblGeneralFileNumber);
+			gridPane.setPadding(new Insets(0.0, 5.0, 5.0, 5.0));
+			
+			GuiUtils.showNode(btnRegisterUnknownPerson, false);
+			GuiUtils.showNode(paneNoHitMessage, false);
+			GuiUtils.showNode(ivPersonPhoto, true);
+			GuiUtils.showNode(infoPane, true);
+			GuiUtils.showNode(btnConfirmPersonInformation, true);
+			
+			lblGeneralFileNumber.setText(notAvailable);
+			lblGeneralFileNumber.setTextFill(Color.RED);
+			
+			populatePersonInfo(personId, null, personInfo, notAvailable);
 		}
 	}
 	
@@ -184,12 +173,12 @@ public class InquiryResultPaneFxController extends WizardStepFxControllerBase
 		if(confirmed) startOver();
 	}
 	
-	private void populatePersonInfo(Long samisId, Long biometricsId, PersonInfo personInfo, String notAvailable)
+	private void populatePersonInfo(Long personId, Long biometricsId, PersonInfo personInfo, String notAvailable)
 	{
-		if(samisId != null)
+		if(personId != null)
 		{
-			lblSamisId.setText(AppUtils.localizeNumbers(String.valueOf(samisId)));
-			personInfoMap.put(PersonInfoPaneFxController.KEY_PERSON_INFO_SAMIS_ID, samisId);
+			lblSamisId.setText(AppUtils.localizeNumbers(String.valueOf(personId)));
+			personInfoMap.put(PersonInfoPaneFxController.KEY_PERSON_INFO_SAMIS_ID, personId);
 		}
 		else
 		{

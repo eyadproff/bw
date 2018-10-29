@@ -100,8 +100,7 @@ public class FingerprintCardIdentificationWorkflow extends WizardWorkflowBase
 					executeTask(FingerprintInquiryWorkflowTask.class);
 				}
 				
-				passData(FingerprintInquiryWorkflowTask.class,
-				         FingerprintInquiryStatusCheckerWorkflowTask.class,
+				passData(FingerprintInquiryWorkflowTask.class, FingerprintInquiryStatusCheckerWorkflowTask.class,
 				         "inquiryId");
 				executeTask(FingerprintInquiryStatusCheckerWorkflowTask.class);
 				
@@ -114,13 +113,7 @@ public class FingerprintCardIdentificationWorkflow extends WizardWorkflowBase
 			case 4:
 			{
 				passData(FingerprintInquiryStatusCheckerWorkflowTask.class, InquiryResultPaneFxController.class,
-				         "status");
-				passData(FingerprintInquiryStatusCheckerWorkflowTask.class, InquiryResultPaneFxController.class,
-				         "samisId");
-				passData(FingerprintInquiryStatusCheckerWorkflowTask.class, InquiryResultPaneFxController.class,
-				         "civilBioId");
-				passData(FingerprintInquiryStatusCheckerWorkflowTask.class, InquiryResultPaneFxController.class,
-				         "personInfo");
+				         "status", "samisId", "civilBioId", "personInfo");
 				passData(SpecifyFingerprintCoordinatesPaneFxController.class, InquiryResultPaneFxController.class,
 				         "fingerprintImages");
 				passData(ConvertFingerprintImagesToBase64WorkflowTask.class, InquiryResultPaneFxController.class,

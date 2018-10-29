@@ -13,7 +13,6 @@ import sa.gov.nic.bio.bw.client.core.workflow.AssociatedMenu;
 import sa.gov.nic.bio.bw.client.core.workflow.Signal;
 import sa.gov.nic.bio.bw.client.core.workflow.WithLookups;
 import sa.gov.nic.bio.bw.client.core.workflow.WizardWorkflowBase;
-import sa.gov.nic.bio.bw.client.features.commons.controllers.FaceCapturingFxController;
 import sa.gov.nic.bio.bw.client.features.commons.controllers.FingerprintCapturingFxController;
 import sa.gov.nic.bio.bw.client.features.commons.controllers.InquiryByFingerprintsPaneFxController;
 import sa.gov.nic.bio.bw.client.features.commons.lookups.CountriesLookup;
@@ -22,13 +21,14 @@ import sa.gov.nic.bio.bw.client.features.commons.lookups.SamisIdTypesLookup;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.Finger;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.FingerprintInquiryStatusResult;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.PersonInfo;
-import sa.gov.nic.bio.bw.client.features.commons.workflow.FetchingFingerprintsService;
+import sa.gov.nic.bio.bw.client.features.commons.workflow.FetchingFingerprintsWorkflowTask;
 import sa.gov.nic.bio.bw.client.features.commons.workflow.FingerprintInquiryService;
 import sa.gov.nic.bio.bw.client.features.commons.workflow.FingerprintInquiryStatusCheckerService;
 import sa.gov.nic.bio.bw.client.features.commons.workflow.GetFingerprintAvailabilityService;
-import sa.gov.nic.bio.bw.client.features.commons.workflow.GetPersonInfoByIdService;
+import sa.gov.nic.bio.bw.client.features.commons.workflow.GetPersonInfoByIdWorkflowTask;
 import sa.gov.nic.bio.bw.client.features.registerconvictednotpresent.controllers.FetchingFingerprintsPaneFxController;
 import sa.gov.nic.bio.bw.client.features.registerconvictednotpresent.controllers.FingerprintsSourceFxController;
+import sa.gov.nic.bio.bw.client.features.registerconvictednotpresent.controllers.FingerprintsSourceFxController.Source;
 import sa.gov.nic.bio.bw.client.features.registerconvictednotpresent.controllers.PersonIdPaneFxController;
 import sa.gov.nic.bio.bw.client.features.registerconvictednotpresent.utils.RegisterConvictedNotPresentErrorCodes;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.controllers.InquiryResultPaneFxController;
@@ -86,57 +86,57 @@ public class RegisterConvictedReportNotPresentWorkflow extends WizardWorkflowBas
 			}
 			case 1:
 			{
-				String fingerprintsSource = (String)
-											uiInputData.get(FingerprintsSourceFxController.KEY_FINGERPRINTS_SOURCE);
+				Source fingerprintsSource = getData(FingerprintsSourceFxController.class,
+				                                    "fingerprintsSource");
 		
-				if(FingerprintsSourceFxController.VALUE_FINGERPRINTS_SOURCE_ENTERING_PERSON_ID
-												 .equals(fingerprintsSource))
+				if(fingerprintsSource == Source.ENTERING_PERSON_ID)
 				{
 					renderUiAndWaitForUserInput(PersonIdPaneFxController.class);
-		
-					Long personId = (Long) uiInputData.get(PersonIdPaneFxController.KEY_PERSON_INFO_INQUIRY_PERSON_ID);
-		
-					TaskResponse<PersonInfo> taskResponse = GetPersonInfoByIdService.execute(personId,
-					                                                                         0);
-		
-					uiInputData.put(KEY_WORKFLOW_TASK_NEGATIVE_RESPONSE, taskResponse);
-		
-					PersonInfo personInfo = taskResponse.getResult();
-					if(taskResponse.isSuccess() && personInfo != null)
-					{
-						uiInputData.put(FaceCapturingFxController.KEY_FINAL_FACE_IMAGE, personInfo.getFace());
-					}
-		
+					
+					passData(PersonIdPaneFxController.class, GetPersonInfoByIdWorkflowTask.class,
+					         "personId");
+					
+					executeTask(GetPersonInfoByIdWorkflowTask.class);
+					
 					break;
 				}
-				else if(FingerprintsSourceFxController.VALUE_FINGERPRINTS_SOURCE_SCANNING_FINGERPRINTS_CARD
-													  .equals(fingerprintsSource))
+				else if(fingerprintsSource == Source.SCANNING_FINGERPRINTS_CARD)
 				{
-					renderUiAndWaitForUserInput(PersonIdPaneFxController.class);
+					//renderUiAndWaitForUserInput(???);
 				}
-				else if(FingerprintsSourceFxController.VALUE_FINGERPRINTS_SOURCE_UPLOADING_NIST_FILE
-													  .equals(fingerprintsSource))
+				else if(fingerprintsSource == Source.UPLOADING_NIST_FILE)
 				{
-					renderUiAndWaitForUserInput(PersonIdPaneFxController.class);
+					//renderUiAndWaitForUserInput(???);
 				}
 				
 				break;
 			}
 			case 2:
 			{
-				String fingerprintsSource = (String)
-						uiInputData.get(FingerprintsSourceFxController.KEY_FINGERPRINTS_SOURCE);
-		
-				if(FingerprintsSourceFxController.VALUE_FINGERPRINTS_SOURCE_ENTERING_PERSON_ID
-						.equals(fingerprintsSource))
+				Source fingerprintsSource = getData(FingerprintsSourceFxController.class,
+				                                    "fingerprintsSource");
+				
+				if(fingerprintsSource == Source.ENTERING_PERSON_ID)
 				{
+					passData(PersonIdPaneFxController.class, InquiryResultPaneFxController.class,
+					         "personId");
+					passData(GetPersonInfoByIdWorkflowTask.class, InquiryResultPaneFxController.class,
+					         "personInfo");
+					
 					renderUiAndWaitForUserInput(InquiryResultPaneFxController.class);
-		
-					Long personId = (Long) uiInputData.get(PersonIdPaneFxController.KEY_PERSON_INFO_INQUIRY_PERSON_ID);
-		
-					TaskResponse<List<Finger>> taskResponse = FetchingFingerprintsService.execute(personId);
-		
-					uiInputData.put(KEY_WORKFLOW_TASK_NEGATIVE_RESPONSE, taskResponse);
+					
+					passData(PersonIdPaneFxController.class, FetchingFingerprintsWorkflowTask.class,
+					         "personId");
+					
+					executeTask(FetchingFingerprintsWorkflowTask.class);
+				}
+				else if(fingerprintsSource == Source.SCANNING_FINGERPRINTS_CARD)
+				{
+					//renderUiAndWaitForUserInput(???);
+				}
+				else if(fingerprintsSource == Source.UPLOADING_NIST_FILE)
+				{
+					//renderUiAndWaitForUserInput(???);
 				}
 				
 				break;
@@ -152,21 +152,22 @@ public class RegisterConvictedReportNotPresentWorkflow extends WizardWorkflowBas
 				while(true)
 				{
 		
-					Long personId = (Long) uiInputData.get(PersonIdPaneFxController.KEY_PERSON_INFO_INQUIRY_PERSON_ID);
-		
-					TaskResponse<List<Finger>> taskResponse = FetchingFingerprintsService.execute(personId);
-		
-					uiInputData.remove(FetchingFingerprintsPaneFxController.KEY_RETRY_FINGERPRINT_FETCHING);
-					uiInputData.put(KEY_WORKFLOW_TASK_NEGATIVE_RESPONSE, taskResponse);
-					renderUiAndWaitForUserInput(FetchingFingerprintsPaneFxController.class);
-		
-					Boolean retry = (Boolean) uiInputData.get(
-												FetchingFingerprintsPaneFxController.KEY_RETRY_FINGERPRINT_FETCHING);
-		
-					if(retry == null || !retry) break;
+					//Long personId = (Long) uiInputData.get(PersonIdPaneFxController
+					// .KEY_PERSON_INFO_INQUIRY_PERSON_ID);
+		//
+					//TaskResponse<List<Finger>> taskResponse = FetchingFingerprintsWorkflowTask.execute(personId);
+		//
+					//uiInputData.remove(FetchingFingerprintsPaneFxController.KEY_RETRY_FINGERPRINT_FETCHING);
+					//uiInputData.put(KEY_WORKFLOW_TASK_NEGATIVE_RESPONSE, taskResponse);
+					//renderUiAndWaitForUserInput(FetchingFingerprintsPaneFxController.class);
+		//
+					//Boolean retry = (Boolean) uiInputData.get(
+					//							FetchingFingerprintsPaneFxController.KEY_RETRY_FINGERPRINT_FETCHING);
+		//
+					//if(retry == null || !retry) break;
 				}
 				
-				break;
+				//break;
 			}
 			case 5:
 			{

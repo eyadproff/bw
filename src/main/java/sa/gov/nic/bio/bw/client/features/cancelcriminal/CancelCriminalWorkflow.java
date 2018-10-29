@@ -28,12 +28,8 @@ public class CancelCriminalWorkflow extends SinglePageWorkflowBase
 	{
 		renderUiAndWaitForUserInput(CancelCriminalPaneFxController.class);
 		
-		passData(CancelCriminalPaneFxController.class, CancelCriminalWorkflowTask.class, "criminalId");
-		passData(CancelCriminalPaneFxController.class, CancelCriminalWorkflowTask.class, "inquiryId");
-		passData(CancelCriminalPaneFxController.class, CancelCriminalWorkflowTask.class, "personId");
-		passData(CancelCriminalPaneFxController.class, CancelCriminalWorkflowTask.class, "samisIdType");
 		passData(CancelCriminalPaneFxController.class, CancelCriminalWorkflowTask.class,
-		         "cancelCriminalMethod");
+		         "criminalId", "inquiryId", "personId", "samisIdType", "cancelCriminalMethod");
 		
 		executeTask(CancelCriminalWorkflowTask.class);
 		passData(CancelCriminalWorkflowTask.class, CancelCriminalPaneFxController.class, "success");
