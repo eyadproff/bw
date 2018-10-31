@@ -1,7 +1,6 @@
 package sa.gov.nic.bio.bw.client.features.convictedreportinquiry;
 
 import javafx.util.Pair;
-import sa.gov.nic.bio.bw.client.core.interfaces.FormRenderer;
 import sa.gov.nic.bio.bw.client.core.utils.Device;
 import sa.gov.nic.bio.bw.client.core.workflow.AssociatedMenu;
 import sa.gov.nic.bio.bw.client.core.workflow.Signal;
@@ -19,20 +18,12 @@ import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.Con
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.atomic.AtomicReference;
 
 @AssociatedMenu(id = "menu.query.convictedReportInquiry", title = "menu.title", order = 6,
 				devices = Device.BIO_UTILITIES)
 @WithLookups({SamisIdTypesLookup.class, DocumentTypesLookup.class, CountriesLookup.class, CrimeTypesLookup.class})
 public class ConvictedReportInquiryWorkflow extends SinglePageWorkflowBase
 {
-	public ConvictedReportInquiryWorkflow(AtomicReference<FormRenderer> formRenderer,
-	                                      BlockingQueue<Map<String, Object>> userTasks)
-	{
-		super(formRenderer, userTasks);
-	}
-	
 	@Override
 	public void onStep() throws InterruptedException, Signal
 	{

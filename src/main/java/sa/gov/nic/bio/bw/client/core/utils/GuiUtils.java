@@ -56,7 +56,7 @@ import sa.gov.nic.bio.bw.client.core.beans.HideableItem;
 import sa.gov.nic.bio.bw.client.core.biokit.FingerPosition;
 import sa.gov.nic.bio.bw.client.core.controllers.CoreFxController;
 import sa.gov.nic.bio.bw.client.core.interfaces.AppLogger;
-import sa.gov.nic.bio.bw.client.features.commons.webservice.CountryBean;
+import sa.gov.nic.bio.bw.client.features.commons.webservice.Country;
 import sa.gov.nic.bio.bw.client.login.tasks.LogoutTask;
 
 import java.awt.Color;
@@ -572,23 +572,23 @@ public class GuiUtils implements AppLogger
 		});
 	}
 	
-	public static void setupNationalityComboBox(ComboBox<HideableItem<CountryBean>> comboBox)
+	public static void setupNationalityComboBox(ComboBox<HideableItem<Country>> comboBox)
 	{
-		comboBox.setConverter(new StringConverter<HideableItem<CountryBean>>()
+		comboBox.setConverter(new StringConverter<HideableItem<Country>>()
 		{
 			@Override
-			public String toString(HideableItem<CountryBean> object)
+			public String toString(HideableItem<Country> object)
 			{
 				if(object == null) return "";
 				else return object.getText();
 			}
 			
 			@Override
-			public HideableItem<CountryBean> fromString(String string)
+			public HideableItem<Country> fromString(String string)
 			{
 				if(string == null || string.trim().isEmpty()) return null;
 				
-				for(HideableItem<CountryBean> nationalityBean : comboBox.getItems())
+				for(HideableItem<Country> nationalityBean : comboBox.getItems())
 				{
 					if(string.equals(nationalityBean.getText())) return nationalityBean;
 				}
@@ -599,13 +599,13 @@ public class GuiUtils implements AppLogger
 		
 		comboBox.getItems().forEach(item ->
 		{
-		    CountryBean countryBean = item.getObject();
+		    Country country = item.getObject();
 		
 		    String text;
-		    if(Context.getGuiLanguage() == GuiLanguage.ARABIC) text = countryBean.getDescriptionAR();
-		    else text = countryBean.getDescriptionEN();
+		    if(Context.getGuiLanguage() == GuiLanguage.ARABIC) text = country.getDescriptionAR();
+		    else text = country.getDescriptionEN();
 		
-		    String resultText = text.trim() + " (" + countryBean.getMofaNationalityCode() + ")";
+		    String resultText = text.trim() + " (" + country.getMofaNationalityCode() + ")";
 		    item.setText(resultText);
 		});
 	}

@@ -3,7 +3,7 @@ package sa.gov.nic.bio.bw.client.features.commons.lookups;
 import retrofit2.Call;
 import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.interfaces.AppLogger;
-import sa.gov.nic.bio.bw.client.features.commons.webservice.CountryBean;
+import sa.gov.nic.bio.bw.client.features.commons.webservice.Country;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.LookupAPI;
 import sa.gov.nic.bio.commons.TaskResponse;
 
@@ -18,13 +18,13 @@ public class CountriesLookup implements Callable<TaskResponse<Void>>, AppLogger
 	public TaskResponse<Void> call()
 	{
 		@SuppressWarnings("unchecked")
-		List<CountryBean> countries = (List<CountryBean>) Context.getUserSession().getAttribute(KEY);
+		List<Country> countries = (List<Country>) Context.getUserSession().getAttribute(KEY);
 		
 		if(countries == null)
 		{
 			LookupAPI lookupAPI = Context.getWebserviceManager().getApi(LookupAPI.class);
-			Call<List<CountryBean>> nationalitiesCall = lookupAPI.lookupCountries();
-			TaskResponse<List<CountryBean>> nationalitiesResponse = Context.getWebserviceManager()
+			Call<List<Country>> nationalitiesCall = lookupAPI.lookupCountries();
+			TaskResponse<List<Country>> nationalitiesResponse = Context.getWebserviceManager()
 																			  .executeApi(nationalitiesCall);
 			
 			if(nationalitiesResponse.isSuccess())

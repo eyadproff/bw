@@ -2,14 +2,14 @@ package sa.gov.nic.bio.bw.client.features.commons.webservice;
 
 import java.util.Objects;
 
-public class SamisIdType
+public class PersonType
 {
 	private int code;
 	private String descriptionAR;
 	private String descriptionEN;
 	private String ifrPersonType;
 	
-	public SamisIdType(int code, String descriptionAR, String descriptionEN, String ifrPersonType)
+	public PersonType(int code, String descriptionAR, String descriptionEN, String ifrPersonType)
 	{
 		this.code = code;
 		this.descriptionAR = descriptionAR;
@@ -34,7 +34,7 @@ public class SamisIdType
 	{
 		if(this == o) return true;
 		if(o == null || getClass() != o.getClass()) return false;
-		SamisIdType that = (SamisIdType) o;
+		PersonType that = (PersonType) o;
 		return code == that.code && Objects.equals(descriptionAR, that.descriptionAR) &&
 			   Objects.equals(descriptionEN, that.descriptionEN) &&
 			   Objects.equals(ifrPersonType, that.ifrPersonType);
@@ -49,7 +49,7 @@ public class SamisIdType
 	@Override
 	public String toString()
 	{
-		return "SamisIdType{" + "code=" + code + ", descriptionAR='" + descriptionAR + '\'' +
+		return "PersonType{" + "code=" + code + ", descriptionAR='" + descriptionAR + '\'' +
 			   ", descriptionEN='" + descriptionEN + '\'' + ", ifrPersonType='" + ifrPersonType + '\'' + '}';
 	}
 }

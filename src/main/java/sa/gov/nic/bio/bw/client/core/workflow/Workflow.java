@@ -32,13 +32,10 @@ public interface Workflow<I, O> extends AppLogger
 	/**
 	 * The body of the workflow.
 	 *
-	 * @param input the workflow's input if any, otherwise <code>null</code>
-	 *
-	 * @return the workflow's output if any, otherwise <code>null</code>
 	 * @throws InterruptedException thrown upon interrupting the caller thread
 	 * @throws Signal thrown to carry and propagate a message to a parent workflow
 	 */
-	O onProcess(I input) throws InterruptedException, Signal;
+	void onProcess() throws InterruptedException, Signal;
 	
 	/**
 	 * Submit a user task to the workflow.

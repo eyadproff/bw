@@ -1,6 +1,5 @@
 package sa.gov.nic.bio.bw.client.features.faceverification;
 
-import sa.gov.nic.bio.bw.client.core.interfaces.FormRenderer;
 import sa.gov.nic.bio.bw.client.core.utils.Device;
 import sa.gov.nic.bio.bw.client.core.wizard.Step;
 import sa.gov.nic.bio.bw.client.core.wizard.Wizard;
@@ -19,10 +18,6 @@ import sa.gov.nic.bio.bw.client.features.searchbyfaceimage.controllers.ImageSour
 import sa.gov.nic.bio.bw.client.features.searchbyfaceimage.controllers.ImageSourceFxController.Source;
 import sa.gov.nic.bio.bw.client.features.searchbyfaceimage.controllers.UploadImageFileFxController;
 
-import java.util.Map;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.atomic.AtomicReference;
-
 @AssociatedMenu(id = "menu.query.faceVerification", title = "menu.title", order = 2, devices = Device.CAMERA)
 @WithLookups(CountriesLookup.class)
 @Wizard({@Step(iconId = "\\uf2bb", title = "wizard.personId"),
@@ -33,12 +28,6 @@ import java.util.concurrent.atomic.AtomicReference;
 		@Step(iconId = "file_text_alt", title = "wizard.showResult")})
 public class FaceVerificationWorkflow extends WizardWorkflowBase
 {
-	public FaceVerificationWorkflow(AtomicReference<FormRenderer> formRenderer,
-	                                BlockingQueue<Map<String, Object>> userTasks)
-	{
-		super(formRenderer, userTasks);
-	}
-	
 	@Override
 	public void onStep(int step) throws InterruptedException, Signal
 	{

@@ -36,9 +36,9 @@ import sa.gov.nic.bio.bw.client.core.utils.FxmlFile;
 import sa.gov.nic.bio.bw.client.core.utils.GuiLanguage;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.workflow.Output;
-import sa.gov.nic.bio.bw.client.features.commons.beans.GenderType;
+import sa.gov.nic.bio.bw.client.features.commons.beans.Gender;
 import sa.gov.nic.bio.bw.client.features.commons.lookups.CountriesLookup;
-import sa.gov.nic.bio.bw.client.features.commons.webservice.CountryBean;
+import sa.gov.nic.bio.bw.client.features.commons.webservice.Country;
 import sa.gov.nic.bio.bw.client.features.visaapplicantsenrollment.lookups.DialingCodesLookup;
 import sa.gov.nic.bio.bw.client.features.visaapplicantsenrollment.lookups.PassportTypesLookup;
 import sa.gov.nic.bio.bw.client.features.visaapplicantsenrollment.lookups.VisaTypesLookup;
@@ -67,9 +67,9 @@ public class ApplicantInfoFxController extends WizardStepFxControllerBase
 	@Output private String secondName;
 	@Output private String otherName;
 	@Output private String familyName;
-	@Output private CountryBean nationality;
-	@Output private GenderType gender;
-	@Output private CountryBean birthPlace;
+	@Output private Country nationality;
+	@Output private Gender gender;
+	@Output private Country birthPlace;
 	@Output private LocalDate birthDate;
 	@Output private Boolean birthDateUseHijri;
 	@Output private VisaTypeBean visaType;
@@ -78,7 +78,7 @@ public class ApplicantInfoFxController extends WizardStepFxControllerBase
 	@Output private Boolean issueDateUseHijri;
 	@Output private LocalDate expirationDate;
 	@Output private Boolean expirationDateUseHijri;
-	@Output private CountryBean issuanceCountry;
+	@Output private Country issuanceCountry;
 	@Output private PassportTypeBean passportType;
 	@Output private CountryDialingCode dialingCode;
 	@Output private String mobileNumber;
@@ -88,10 +88,10 @@ public class ApplicantInfoFxController extends WizardStepFxControllerBase
 	@FXML private TextField txtOtherName;
 	@FXML private TextField txtFamilyName;
 	@FXML private TextField txtMobileNumber;
-	@FXML private ComboBox<ItemWithText<GenderType>> cboGender;
-	@FXML private ComboBox<HideableItem<CountryBean>> cboBirthPlace;
-	@FXML private ComboBox<HideableItem<CountryBean>> cboNationality;
-	@FXML private ComboBox<HideableItem<CountryBean>> cboIssuanceCountry;
+	@FXML private ComboBox<ItemWithText<Gender>> cboGender;
+	@FXML private ComboBox<HideableItem<Country>> cboBirthPlace;
+	@FXML private ComboBox<HideableItem<Country>> cboNationality;
+	@FXML private ComboBox<HideableItem<Country>> cboIssuanceCountry;
 	@FXML private ComboBox<HideableItem<PassportTypeBean>> cboPassportType;
 	@FXML private ComboBox<HideableItem<VisaTypeBean>> cboVisaType;
 	@FXML private ComboBox<HideableItem<CountryDialingCode>> cboDialingCode;
@@ -118,7 +118,7 @@ public class ApplicantInfoFxController extends WizardStepFxControllerBase
 		UserSession userSession = Context.getUserSession();
 		
 		@SuppressWarnings("unchecked")
-		List<CountryBean> countries = (List<CountryBean>) userSession.getAttribute(CountriesLookup.KEY);
+		List<Country> countries = (List<Country>) userSession.getAttribute(CountriesLookup.KEY);
 		
 		@SuppressWarnings("unchecked")
 		List<VisaTypeBean> visaTypes = (List<VisaTypeBean>) userSession.getAttribute(VisaTypesLookup.KEY);
@@ -356,19 +356,19 @@ public class ApplicantInfoFxController extends WizardStepFxControllerBase
 		passportNumber = txtPassportNumber.getText();
 		mobileNumber = txtMobileNumber.getText();
 		
-		HideableItem<CountryBean> nationalityItem = cboNationality.getValue();
+		HideableItem<Country> nationalityItem = cboNationality.getValue();
 		nationality = nationalityItem != null ? nationalityItem.getObject() : null;
 		
-		ItemWithText<GenderType> genderItem = cboGender.getValue();
+		ItemWithText<Gender> genderItem = cboGender.getValue();
 		gender = genderItem != null ? genderItem.getItem() : null;
 		
-		HideableItem<CountryBean> birthPlaceItem = cboBirthPlace.getValue();
+		HideableItem<Country> birthPlaceItem = cboBirthPlace.getValue();
 		birthPlace = birthPlaceItem != null ? birthPlaceItem.getObject() : null;
 		
 		HideableItem<VisaTypeBean> visaTypeItem = cboVisaType.getValue();
 		visaType = visaTypeItem != null ? visaTypeItem.getObject() : null;
 		
-		HideableItem<CountryBean> issueCountryItem = cboIssuanceCountry.getValue();
+		HideableItem<Country> issueCountryItem = cboIssuanceCountry.getValue();
 		issuanceCountry = issueCountryItem != null ? issueCountryItem.getObject() : null;
 		
 		HideableItem<PassportTypeBean> passportTypeItem = cboPassportType.getValue();
@@ -542,12 +542,12 @@ public class ApplicantInfoFxController extends WizardStepFxControllerBase
 					            
 					            if("M".equalsIgnoreCase(gender)) cboGender.getItems()
 					                                                .stream()
-					                                                .filter(item -> item.getItem() == GenderType.MALE)
+					                                                .filter(item -> item.getItem() == Gender.MALE)
 					                                                .findFirst()
 					                                                .ifPresent(cboGender::setValue);
 					            else if("F".equalsIgnoreCase(gender)) cboGender.getItems()
 						                                            .stream()
-						                                            .filter(item -> item.getItem() == GenderType.FEMALE)
+						                                            .filter(item -> item.getItem() == Gender.FEMALE)
 						                                            .findFirst()
 						                                            .ifPresent(cboGender::setValue);
 					

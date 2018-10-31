@@ -46,8 +46,8 @@
                 </VBox>
                 <VBox spacing="5">
                     <HBox spacing="5">
-                        <Label text="%label.samisId" styleClass="bold-text"/>
-                        <Label fx:id="lblSamisId" text="%label.notAvailable"/>
+                        <Label text="%label.personId" styleClass="bold-text"/>
+                        <Label fx:id="lblPersonId" text="%label.notAvailable"/>
                     </HBox>
                     <HBox spacing="5">
                         <Label text="%label.firstName" styleClass="bold-text"/>

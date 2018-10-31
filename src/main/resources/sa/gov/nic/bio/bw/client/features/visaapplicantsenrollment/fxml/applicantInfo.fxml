@@ -14,14 +14,14 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import sa.gov.nic.bio.bw.client.core.beans.ItemWithText?>
-<?import sa.gov.nic.bio.bw.client.features.commons.beans.GenderType?>
+<?import sa.gov.nic.bio.bw.client.features.commons.beans.Gender?>
 <BorderPane xmlns="http://javafx.com/javafx/8.0.152" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="sa.gov.nic.bio.bw.client.features.visaapplicantsenrollment.controllers.ApplicantInfoFxController"
             fx:id="rootPane" stylesheets="@../css/style.css">
 
     <fx:define>
-        <GenderType fx:id="maleGender" fx:value="MALE"/>
-        <GenderType fx:id="femaleGender" fx:value="FEMALE"/>
+        <Gender fx:id="maleGender" fx:value="MALE"/>
+        <Gender fx:id="femaleGender" fx:value="FEMALE"/>
         <ToggleGroup fx:id="toggleGroup1"/>
         <ToggleGroup fx:id="toggleGroup2"/>
         <ToggleGroup fx:id="toggleGroup3"/>

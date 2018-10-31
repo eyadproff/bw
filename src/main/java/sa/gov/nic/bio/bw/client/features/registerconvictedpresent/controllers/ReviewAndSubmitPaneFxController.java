@@ -19,19 +19,19 @@ import sa.gov.nic.bio.bw.client.core.utils.FxmlFile;
 import sa.gov.nic.bio.bw.client.core.utils.GuiLanguage;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.workflow.Workflow;
-import sa.gov.nic.bio.bw.client.features.commons.beans.GenderType;
+import sa.gov.nic.bio.bw.client.features.commons.beans.Gender;
 import sa.gov.nic.bio.bw.client.features.commons.controllers.FaceCapturingFxController;
 import sa.gov.nic.bio.bw.client.features.commons.controllers.FingerprintCapturingFxController;
 import sa.gov.nic.bio.bw.client.features.commons.lookups.CountriesLookup;
 import sa.gov.nic.bio.bw.client.features.commons.lookups.DocumentTypesLookup;
 import sa.gov.nic.bio.bw.client.features.commons.lookups.SamisIdTypesLookup;
 import sa.gov.nic.bio.bw.client.features.commons.ui.ImageViewPane;
-import sa.gov.nic.bio.bw.client.features.commons.webservice.CountryBean;
+import sa.gov.nic.bio.bw.client.features.commons.webservice.Country;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.CrimeType;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.DocumentType;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.Finger;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.Name;
-import sa.gov.nic.bio.bw.client.features.commons.webservice.SamisIdType;
+import sa.gov.nic.bio.bw.client.features.commons.webservice.PersonType;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.lookups.CrimeTypesLookup;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.utils.RegisterConvictedPresentErrorCodes;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.ConvictedReport;
@@ -67,8 +67,8 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 	@FXML private Label lblOccupation;
 	@FXML private Label lblBirthPlace;
 	@FXML private Label lblBirthDate;
-	@FXML private Label lblSamisId;
-	@FXML private Label lblSamisIdType;
+	@FXML private Label lblPersonId;
+	@FXML private Label lblPersonType;
 	@FXML private Label lblDocumentId;
 	@FXML private Label lblDocumentType;
 	@FXML private Label lblDocumentIssuanceDate;
@@ -155,7 +155,7 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 			{
 				UserInfo userInfo = (UserInfo) Context.getUserSession().getAttribute("userInfo");
 				boolean maleOperator = userInfo != null && userInfo.getGender() > 0 &&
-						GenderType.values()[userInfo.getGender() - 1] == GenderType.MALE;
+						Gender.values()[userInfo.getGender() - 1] == Gender.MALE;
 				boolean femaleSubject = "F".equals(convictedReport.getSubjGender());
 				boolean blur = maleOperator && femaleSubject;
 				
@@ -190,12 +190,12 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 			lblGender.setText("F".equals(convictedReport.getSubjGender()) ? resources.getString("label.female") :
 					                                                        resources.getString("label.male"));
 			
-			@SuppressWarnings("unchecked") List<CountryBean> countries = (List<CountryBean>)
+			@SuppressWarnings("unchecked") List<Country> countries = (List<Country>)
 															Context.getUserSession().getAttribute(CountriesLookup.KEY);
 			
-			CountryBean countryBean = null;
+			Country countryBean = null;
 			
-			for(CountryBean country : countries)
+			for(Country country : countries)
 			{
 				if(country.getCode() == convictedReport.getSubjNationalityCode())
 				{
@@ -225,31 +225,31 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 				lblBirthDate.setText(AppUtils.formatHijriGregorianDate(subjBirthDate * 1000));
 			
 			Long subjSamisId = convictedReport.getSubjSamisId();
-			if(subjSamisId != null) lblSamisId.setText(AppUtils.localizeNumbers(String.valueOf(subjSamisId)));
+			if(subjSamisId != null) lblPersonId.setText(AppUtils.localizeNumbers(String.valueOf(subjSamisId)));
 			
 			@SuppressWarnings("unchecked")
-			List<SamisIdType> samisIdTypes = (List<SamisIdType>)
+			List<PersonType> personTypes = (List<PersonType>)
 														Context.getUserSession().getAttribute(SamisIdTypesLookup.KEY);
 			
 			Integer subjSamisType = convictedReport.getSubjSamisType();
 			if(subjSamisType != null)
 			{
-				SamisIdType samisIdType = null;
+				PersonType personType = null;
 				
-				for(SamisIdType type : samisIdTypes)
+				for(PersonType type : personTypes)
 				{
 					if(type.getCode() == subjSamisType)
 					{
-						samisIdType = type;
+						personType = type;
 						break;
 					}
 				}
 				
-				if(samisIdType != null)
+				if(personType != null)
 				{
 					boolean arabic = Context.getGuiLanguage() == GuiLanguage.ARABIC;
-					lblSamisIdType.setText(AppUtils.localizeNumbers(arabic ? samisIdType.getDescriptionAR() :
-							                                                 samisIdType.getDescriptionEN()));
+					lblPersonType.setText(AppUtils.localizeNumbers(arabic ? personType.getDescriptionAR() :
+							                                                 personType.getDescriptionEN()));
 				}
 			}
 			
@@ -466,10 +466,10 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 		String familyName = (String) uiInputData.get(PersonInfoPaneFxController.KEY_PERSON_INFO_FAMILY_NAME);
 		Name subjtName = new Name(firstName, familyName, fatherName, grandfatherName, null,
 		                          null, null, null);
-		int subjNationalityCode = ((CountryBean)
+		int subjNationalityCode = ((Country)
 								uiInputData.get(PersonInfoPaneFxController.KEY_PERSON_INFO_NATIONALITY)).getCode();
 		String subjOccupation = (String) uiInputData.get(PersonInfoPaneFxController.KEY_PERSON_INFO_OCCUPATION);
-		String subjGender = ((GenderType) uiInputData.get(PersonInfoPaneFxController.KEY_PERSON_INFO_GENDER)).name()
+		String subjGender = ((Gender) uiInputData.get(PersonInfoPaneFxController.KEY_PERSON_INFO_GENDER)).name()
 													 .substring(0, 1); // 'M' or 'F'
 		LocalDate birthDate = (LocalDate) uiInputData.get(PersonInfoPaneFxController.KEY_PERSON_INFO_BIRTH_DATE);
 		
@@ -478,11 +478,11 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 		
 		String subjBirthPlace = (String) uiInputData.get(PersonInfoPaneFxController.KEY_PERSON_INFO_BIRTH_PLACE);
 		Long subjSamisId = (Long) uiInputData.get(PersonInfoPaneFxController.KEY_PERSON_INFO_SAMIS_ID);
-		SamisIdType samisIdType = (SamisIdType)
+		PersonType personType = (PersonType)
 											uiInputData.get(PersonInfoPaneFxController.KEY_PERSON_INFO_SAMIS_ID_TYPE);
 		
 		Integer subjSamisType = null;
-		if(samisIdType != null) subjSamisType = samisIdType.getCode();
+		if(personType != null) subjSamisType = personType.getCode();
 		
 		String subjDocId = (String) uiInputData.get(PersonInfoPaneFxController.KEY_PERSON_INFO_DOCUMENT_ID);
 		DocumentType docType = (DocumentType) uiInputData.get(PersonInfoPaneFxController.KEY_PERSON_INFO_DOCUMENT_TYPE);

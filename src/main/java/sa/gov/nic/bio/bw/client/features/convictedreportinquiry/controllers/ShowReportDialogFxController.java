@@ -26,18 +26,18 @@ import sa.gov.nic.bio.bw.client.core.utils.DialogUtils;
 import sa.gov.nic.bio.bw.client.core.utils.FxmlFile;
 import sa.gov.nic.bio.bw.client.core.utils.GuiLanguage;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
-import sa.gov.nic.bio.bw.client.features.commons.beans.GenderType;
+import sa.gov.nic.bio.bw.client.features.commons.beans.Gender;
 import sa.gov.nic.bio.bw.client.features.commons.lookups.CountriesLookup;
 import sa.gov.nic.bio.bw.client.features.commons.lookups.DocumentTypesLookup;
 import sa.gov.nic.bio.bw.client.features.commons.lookups.SamisIdTypesLookup;
 import sa.gov.nic.bio.bw.client.features.commons.tasks.PrintReportTask;
 import sa.gov.nic.bio.bw.client.features.commons.tasks.SaveReportAsPdfTask;
 import sa.gov.nic.bio.bw.client.features.commons.ui.ImageViewPane;
-import sa.gov.nic.bio.bw.client.features.commons.webservice.CountryBean;
+import sa.gov.nic.bio.bw.client.features.commons.webservice.Country;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.CrimeType;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.DocumentType;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.Finger;
-import sa.gov.nic.bio.bw.client.features.commons.webservice.SamisIdType;
+import sa.gov.nic.bio.bw.client.features.commons.webservice.PersonType;
 import sa.gov.nic.bio.bw.client.features.convictedreportinquiry.utils.ConvictedReportInquiryErrorCodes;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.lookups.CrimeTypesLookup;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.tasks.BuildConvictedReportTask;
@@ -75,8 +75,8 @@ public class ShowReportDialogFxController extends FxControllerBase
 	@FXML private Label lblOccupation;
 	@FXML private Label lblBirthPlace;
 	@FXML private Label lblBirthDate;
-	@FXML private Label lblSamisId;
-	@FXML private Label lblSamisIdType;
+	@FXML private Label lblPersonId;
+	@FXML private Label lblPersonType;
 	@FXML private Label lblDocumentId;
 	@FXML private Label lblDocumentType;
 	@FXML private Label lblDocumentIssuanceDate;
@@ -201,7 +201,7 @@ public class ShowReportDialogFxController extends FxControllerBase
 		{
 			UserInfo userInfo = (UserInfo) Context.getUserSession().getAttribute("userInfo");
 			boolean maleOperator = userInfo != null && userInfo.getGender() > 0 &&
-					GenderType.values()[userInfo.getGender() - 1] == GenderType.MALE;
+					Gender.values()[userInfo.getGender() - 1] == Gender.MALE;
 			boolean femaleSubject = "F".equals(convictedReport.getSubjGender());
 			boolean blur = maleOperator && femaleSubject;
 			
@@ -236,11 +236,11 @@ public class ShowReportDialogFxController extends FxControllerBase
 				                                                        resources.getString("label.male"));
 		
 		@SuppressWarnings("unchecked")
-		List<CountryBean> countries = (List<CountryBean>) Context.getUserSession().getAttribute(CountriesLookup.KEY);
+		List<Country> countries = (List<Country>) Context.getUserSession().getAttribute(CountriesLookup.KEY);
 		
-		CountryBean countryBean = null;
+		Country countryBean = null;
 		
-		for(CountryBean country : countries)
+		for(Country country : countries)
 		{
 			if(country.getCode() == convictedReport.getSubjNationalityCode())
 			{
@@ -269,31 +269,31 @@ public class ShowReportDialogFxController extends FxControllerBase
 						lblBirthDate.setText(AppUtils.formatHijriGregorianDate(subjBirthDate * 1000));
 		
 		Long samisId = convictedReport.getSubjSamisId();
-		if(samisId != null) lblSamisId.setText(AppUtils.localizeNumbers(String.valueOf(samisId)));
+		if(samisId != null) lblPersonId.setText(AppUtils.localizeNumbers(String.valueOf(samisId)));
 		
 		@SuppressWarnings("unchecked")
-		List<SamisIdType> samisIdTypes = (List<SamisIdType>)
+		List<PersonType> personTypes = (List<PersonType>)
 														Context.getUserSession().getAttribute(SamisIdTypesLookup.KEY);
 		
 		Integer subjSamisType = convictedReport.getSubjSamisType();
 		if(subjSamisType != null)
 		{
-			SamisIdType samisIdType = null;
+			PersonType personType = null;
 			
-			for(SamisIdType type : samisIdTypes)
+			for(PersonType type : personTypes)
 			{
 				if(type.getCode() == subjSamisType)
 				{
-					samisIdType = type;
+					personType = type;
 					break;
 				}
 			}
 			
-			if(samisIdType != null)
+			if(personType != null)
 			{
 				boolean arabic = Context.getGuiLanguage() == GuiLanguage.ARABIC;
-				lblSamisIdType.setText(AppUtils.localizeNumbers(arabic ? samisIdType.getDescriptionAR() :
-						                                                 samisIdType.getDescriptionEN()));
+				lblPersonType.setText(AppUtils.localizeNumbers(arabic ? personType.getDescriptionAR() :
+						                                                 personType.getDescriptionEN()));
 			}
 		}
 		

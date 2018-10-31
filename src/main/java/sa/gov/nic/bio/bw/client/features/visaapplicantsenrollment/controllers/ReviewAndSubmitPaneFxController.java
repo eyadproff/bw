@@ -16,9 +16,9 @@ import sa.gov.nic.bio.bw.client.core.utils.GuiLanguage;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.workflow.Input;
 import sa.gov.nic.bio.bw.client.core.workflow.Output;
-import sa.gov.nic.bio.bw.client.features.commons.beans.GenderType;
+import sa.gov.nic.bio.bw.client.features.commons.beans.Gender;
 import sa.gov.nic.bio.bw.client.features.commons.ui.ImageViewPane;
-import sa.gov.nic.bio.bw.client.features.commons.webservice.CountryBean;
+import sa.gov.nic.bio.bw.client.features.commons.webservice.Country;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.Finger;
 import sa.gov.nic.bio.bw.client.features.visaapplicantsenrollment.webservice.CountryDialingCode;
 import sa.gov.nic.bio.bw.client.features.visaapplicantsenrollment.webservice.PassportTypeBean;
@@ -39,9 +39,9 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 	@Input private String secondName;
 	@Input private String otherName;
 	@Input(alwaysRequired = true) private String familyName;
-	@Input(alwaysRequired = true) private CountryBean nationality;
-	@Input(alwaysRequired = true) private GenderType gender;
-	@Input private CountryBean birthPlace;
+	@Input(alwaysRequired = true) private Country nationality;
+	@Input(alwaysRequired = true) private Gender gender;
+	@Input private Country birthPlace;
 	@Input(alwaysRequired = true) private LocalDate birthDate;
 	@Input(alwaysRequired = true) private Boolean birthDateUseHijri;
 	@Input(alwaysRequired = true) private VisaTypeBean visaType;
@@ -50,7 +50,7 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 	@Input(alwaysRequired = true) private Boolean issueDateUseHijri;
 	@Input(alwaysRequired = true) private LocalDate expirationDate;
 	@Input(alwaysRequired = true) private Boolean expirationDateUseHijri;
-	@Input(alwaysRequired = true) private CountryBean issuanceCountry;
+	@Input(alwaysRequired = true) private Country issuanceCountry;
 	@Input(alwaysRequired = true) private PassportTypeBean passportType;
 	@Input(alwaysRequired = true) private CountryDialingCode dialingCode;
 	@Input(alwaysRequired = true) private String mobileNumber;
@@ -123,7 +123,7 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 		lblBirthPlace.setText(arabic ? birthPlace.getDescriptionAR() : birthPlace.getDescriptionEN());
 		lblIssuanceCountry.setText(arabic ? issuanceCountry.getDescriptionAR() : issuanceCountry.getDescriptionEN());
 		
-		lblGender.setText(gender == GenderType.FEMALE ? resources.getString("label.female") :
+		lblGender.setText(gender == Gender.FEMALE ? resources.getString("label.female") :
 				                  resources.getString("label.male"));
 		
 		lblBirthDate.setText(AppUtils.formatHijriGregorianDate(AppUtils.gregorianDateToMilliSeconds(birthDate)));

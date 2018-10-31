@@ -28,9 +28,9 @@ import sa.gov.nic.bio.bw.client.core.utils.FxmlFile;
 import sa.gov.nic.bio.bw.client.core.utils.GuiLanguage;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.workflow.Input;
-import sa.gov.nic.bio.bw.client.features.commons.beans.GenderType;
+import sa.gov.nic.bio.bw.client.features.commons.beans.Gender;
 import sa.gov.nic.bio.bw.client.features.commons.lookups.CountriesLookup;
-import sa.gov.nic.bio.bw.client.features.commons.webservice.CountryBean;
+import sa.gov.nic.bio.bw.client.features.commons.webservice.Country;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.Name;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.PersonInfo;
 import sa.gov.nic.bio.bw.client.features.faceverification.webservice.FaceMatchingResponse;
@@ -52,7 +52,7 @@ public class ShowResultFxController extends WizardStepFxControllerBase
 	@FXML private ImageView ivUploadedImage;
 	@FXML private ImageView ivDBImage;
 	@FXML private Label lblNotMatched;
-	@FXML private Label lblSamisId;
+	@FXML private Label lblPersonId;
 	@FXML private Label lblFirstName;
 	@FXML private Label lblFatherName;
 	@FXML private Label lblGrandfatherName;
@@ -107,12 +107,12 @@ public class ShowResultFxController extends WizardStepFxControllerBase
 			if(samisId > 0)
 			{
 				String sSamisId = AppUtils.localizeNumbers(String.valueOf(samisId));
-				lblSamisId.setText(sSamisId);
+				lblPersonId.setText(sSamisId);
 			}
 			else
 			{
-				lblSamisId.setText(resources.getString("label.notAvailable"));
-				lblSamisId.setTextFill(Color.RED);
+				lblPersonId.setText(resources.getString("label.notAvailable"));
+				lblPersonId.setTextFill(Color.RED);
 			}
 			
 			if(firstName != null) lblFirstName.setText(firstName);
@@ -143,17 +143,17 @@ public class ShowResultFxController extends WizardStepFxControllerBase
 				lblFamilyName.setTextFill(Color.RED);
 			}
 			
-			GenderType gender = GenderType.values()[personInfo.getGender() - 1];
-			lblGender.setText(gender == GenderType.MALE ? resources.getString("label.male") :
+			Gender gender = Gender.values()[personInfo.getGender() - 1];
+			lblGender.setText(gender == Gender.MALE ? resources.getString("label.male") :
 					                  resources.getString("label.female"));
 			
 			@SuppressWarnings("unchecked")
-			List<CountryBean> countries = (List<CountryBean>)
+			List<Country> countries = (List<Country>)
 														Context.getUserSession().getAttribute(CountriesLookup.KEY);
 			
-			CountryBean countryBean = null;
+			Country countryBean = null;
 			
-			for(CountryBean country : countries)
+			for(Country country : countries)
 			{
 				if(country.getCode() == personInfo.getNationality())
 				{

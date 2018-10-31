@@ -2,14 +2,11 @@ package sa.gov.nic.bio.bw.client.core.workflow;
 
 import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.controllers.BodyFxControllerBase;
-import sa.gov.nic.bio.bw.client.core.interfaces.FormRenderer;
 import sa.gov.nic.bio.bw.client.core.utils.CoreErrorCodes;
 import sa.gov.nic.bio.bw.client.core.utils.WithResourceBundle;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * The base class for all other workflow classes. It provides an implementation for <code>submitUserInput()</code>
@@ -24,20 +21,8 @@ import java.util.concurrent.atomic.AtomicReference;
 public abstract class WorkflowBase<I, O> implements Workflow<I, O>
 {
 	protected final Map<String, Object> uiInputData = new HashMap<>();
-	protected final AtomicReference<FormRenderer> formRenderer;
-	protected final BlockingQueue<Map<String, Object>> userTasks;
 	
 	boolean renderedAtLeastOnceInTheStep = false;
-	
-	/**
-	 * @param formRenderer the form renderer that will render the form on the screen
-	 * @param userTasks the queue instance to hold the submitted user tasks
-	 */
-	public WorkflowBase(AtomicReference<FormRenderer> formRenderer, BlockingQueue<Map<String, Object>> userTasks)
-	{
-		this.formRenderer = formRenderer;
-		this.userTasks = userTasks;
-	}
 	
 	/**
 	 * {@inheritDoc}
@@ -49,7 +34,7 @@ public abstract class WorkflowBase<I, O> implements Workflow<I, O>
 		{
 			try
 			{
-				userTasks.put(uiDataMap);
+				Context.getWorkflowManager().getUserTasks().put(uiDataMap);
 			}
 			catch(InterruptedException e) // most likely the executor service is shutting down
 			{
@@ -62,10 +47,11 @@ public abstract class WorkflowBase<I, O> implements Workflow<I, O>
 	public void renderUiAndWaitForUserInput(Class<? extends BodyFxControllerBase> controllerClass)
 																					throws InterruptedException, Signal
 	{
-		BodyFxControllerBase currentBodyFxController = formRenderer.get().renderForm(controllerClass, uiInputData);
+		BodyFxControllerBase currentBodyFxController = Context.getWorkflowManager().getFormRenderer()
+																			.renderForm(controllerClass, uiInputData);
 		renderedAtLeastOnceInTheStep = true;
 		
-		Map<String, Object> uiDataMap = userTasks.take();
+		Map<String, Object> uiDataMap = Context.getWorkflowManager().getUserTasks().take();
 		SignalType signalType = (SignalType) uiDataMap.get(KEY_SIGNAL_TYPE);
 		
 		if(signalType != null) throw new Signal(signalType, uiDataMap); // menu navigation, wizard navigation and logout

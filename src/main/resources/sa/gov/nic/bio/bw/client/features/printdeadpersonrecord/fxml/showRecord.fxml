@@ -80,10 +80,10 @@
                                         <Label fx:id="lblBirthPlace" GridPane.rowIndex="7" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
                                         <Label text="%label.birthDate" GridPane.rowIndex="8" GridPane.columnIndex="0" styleClass="bold-label"/>
                                         <Label fx:id="lblBirthDate" GridPane.rowIndex="8" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
-                                        <Label text="%label.samisId" GridPane.rowIndex="9" GridPane.columnIndex="0" styleClass="bold-label"/>
-                                        <Label fx:id="lblSamisId" GridPane.rowIndex="9" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
-                                        <Label text="%label.samisIdType" GridPane.rowIndex="10" GridPane.columnIndex="0" styleClass="bold-label"/>
-                                        <Label fx:id="lblSamisIdType" GridPane.rowIndex="10" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
+                                        <Label text="%label.personId" GridPane.rowIndex="9" GridPane.columnIndex="0" styleClass="bold-label"/>
+                                        <Label fx:id="lblPersonId" GridPane.rowIndex="9" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
+                                        <Label text="%label.personType" GridPane.rowIndex="10" GridPane.columnIndex="0" styleClass="bold-label"/>
+                                        <Label fx:id="lblPersonType" GridPane.rowIndex="10" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
                                         <Label text="%label.documentId" GridPane.rowIndex="11" GridPane.columnIndex="0" styleClass="bold-label"/>
                                         <Label fx:id="lblDocumentId" GridPane.rowIndex="11" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
                                         <Label text="%label.documentType" GridPane.rowIndex="12" GridPane.columnIndex="0" styleClass="bold-label"/>

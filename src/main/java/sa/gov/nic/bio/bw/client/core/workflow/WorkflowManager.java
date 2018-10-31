@@ -4,8 +4,8 @@ import sa.gov.nic.bio.bw.client.core.interfaces.AppLogger;
 import sa.gov.nic.bio.bw.client.core.interfaces.FormRenderer;
 
 import java.util.Map;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.SynchronousQueue;
-import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * It manages starting the core workflow and submitting user tasks to the core workflow. A user task represents
@@ -17,11 +17,12 @@ public class WorkflowManager implements AppLogger
 {
 	private Workflow<Void, Void> coreWorkflow;
 	private Thread workflowThread;
-	private AtomicReference<FormRenderer> formRendererReference = new AtomicReference<>();
+	protected FormRenderer formRenderer;
+	protected BlockingQueue<Map<String, Object>> userTasks;
 	
-	public void changeFormRenderer(FormRenderer formRenderer)
+	public void setFormRenderer(FormRenderer formRenderer)
 	{
-		this.formRendererReference.set(formRenderer);
+		this.formRenderer = formRenderer;
 	}
 	
 	/**
@@ -29,22 +30,23 @@ public class WorkflowManager implements AppLogger
 	 *
 	 * @param formRenderer the UI proxy that is responsible for rendering the forms on the GUI
 	 */
-	public synchronized void startCoreWorkflow(FormRenderer formRenderer)
+	public void startCoreWorkflow(FormRenderer formRenderer)
 	{
-		formRendererReference.set(formRenderer);
-		
 		if(isRunning())
 		{
 			LOGGER.warning("The workflow thread is already active!");
 			return;
 		}
 		
+		setFormRenderer(formRenderer);
+		this.userTasks = new SynchronousQueue<>();
+		
 		workflowThread = new Thread(() ->
 		{
 			try
 			{
-				coreWorkflow = new CoreWorkflow(formRendererReference, new SynchronousQueue<>());
-				coreWorkflow.onProcess(null);
+				coreWorkflow = new CoreWorkflow();
+				coreWorkflow.onProcess();
 				
 				LOGGER.info("The core workflow is finished.");
 			}
@@ -100,4 +102,8 @@ public class WorkflowManager implements AppLogger
 	{
 		return workflowThread != null && workflowThread.isAlive();
 	}
+	
+	public FormRenderer getFormRenderer(){return formRenderer;}
+	
+	public BlockingQueue<Map<String, Object>> getUserTasks(){return userTasks;}
 }

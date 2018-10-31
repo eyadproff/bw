@@ -1,7 +1,6 @@
 package sa.gov.nic.bio.bw.client.features.registerconvictedpresent;
 
 import sa.gov.nic.bio.bw.client.core.Context;
-import sa.gov.nic.bio.bw.client.core.interfaces.FormRenderer;
 import sa.gov.nic.bio.bw.client.core.utils.Device;
 import sa.gov.nic.bio.bw.client.core.wizard.Step;
 import sa.gov.nic.bio.bw.client.core.wizard.Wizard;
@@ -34,9 +33,6 @@ import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.workflow.Submi
 import sa.gov.nic.bio.commons.TaskResponse;
 
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.atomic.AtomicReference;
 
 @AssociatedMenu(id = "menu.register.registerConvictedPresent", title = "menu.title", order = 2,
 				devices = {Device.FINGERPRINT_SCANNER, Device.CAMERA})
@@ -52,12 +48,6 @@ import java.util.concurrent.atomic.AtomicReference;
 		@Step(iconId = "file_pdf_alt", title = "wizard.showReport")})
 public class RegisterConvictedReportPresentWorkflow extends WizardWorkflowBase
 {
-	public RegisterConvictedReportPresentWorkflow(AtomicReference<FormRenderer> formRenderer,
-	                                              BlockingQueue<Map<String, Object>> userTasks)
-	{
-		super(formRenderer, userTasks);
-	}
-	
 	@Override
 	public void onStep(int step) throws InterruptedException, Signal
 	{

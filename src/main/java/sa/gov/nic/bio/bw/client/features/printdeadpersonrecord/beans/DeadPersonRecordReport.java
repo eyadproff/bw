@@ -19,8 +19,8 @@ public class DeadPersonRecordReport
 	private String occupation;
 	private String birthPlace;
 	private String birthDate;
-	private String samisId;
-	private String samisIdType;
+	private String personId;
+	private String personType;
 	private String documentId;
 	private String documentType;
 	private String documentIssuanceDate;
@@ -30,7 +30,7 @@ public class DeadPersonRecordReport
 	public DeadPersonRecordReport(String recordId, String enrollerId, String inquirerId, String enrollmentTime,
 	                              String faceBase64, String firstName, String fatherName, String grandfatherName,
 	                              String familyName, String gender, String nationality, String occupation,
-	                              String birthPlace, String birthDate, String samisId, String samisIdType,
+	                              String birthPlace, String birthDate, String personId, String personType,
 	                              String documentId, String documentType, String documentIssuanceDate,
 	                              String documentExpiryDate, Map<Integer, String> fingerprintsImages)
 	{
@@ -48,8 +48,8 @@ public class DeadPersonRecordReport
 		this.occupation = occupation;
 		this.birthPlace = birthPlace;
 		this.birthDate = birthDate;
-		this.samisId = samisId;
-		this.samisIdType = samisIdType;
+		this.personId = personId;
+		this.personType = personType;
 		this.documentId = documentId;
 		this.documentType = documentType;
 		this.documentIssuanceDate = documentIssuanceDate;
@@ -99,11 +99,11 @@ public class DeadPersonRecordReport
 	public String getBirthDate(){return birthDate;}
 	public void setBirthDate(String birthDate){this.birthDate = birthDate;}
 	
-	public String getSamisId(){return samisId;}
-	public void setSamisId(String samisId){this.samisId = samisId;}
+	public String getPersonId(){return personId;}
+	public void setPersonId(String personId){this.personId = personId;}
 	
-	public String getSamisIdType(){return samisIdType;}
-	public void setSamisIdType(String samisIdType){this.samisIdType = samisIdType;}
+	public String getPersonType(){return personType;}
+	public void setPersonType(String personType){this.personType = personType;}
 	
 	public String getDocumentId(){return documentId;}
 	public void setDocumentId(String documentId){this.documentId = documentId;}
@@ -136,7 +136,7 @@ public class DeadPersonRecordReport
 			   Objects.equals(familyName, that.familyName) && Objects.equals(gender, that.gender) &&
 			   Objects.equals(nationality, that.nationality) && Objects.equals(occupation, that.occupation) &&
 			   Objects.equals(birthPlace, that.birthPlace) && Objects.equals(birthDate, that.birthDate) &&
-			   Objects.equals(samisId, that.samisId) && Objects.equals(samisIdType, that.samisIdType) &&
+			   Objects.equals(personId, that.personId) && Objects.equals(personType, that.personType) &&
 			   Objects.equals(documentId, that.documentId) && Objects.equals(documentType, that.documentType) &&
 			   Objects.equals(documentIssuanceDate, that.documentIssuanceDate) &&
 			   Objects.equals(documentExpiryDate, that.documentExpiryDate) &&
@@ -148,7 +148,7 @@ public class DeadPersonRecordReport
 	{
 		return Objects.hash(recordId, enrollerId, inquirerId, enrollmentTime, faceBase64, firstName, fatherName,
 		                    grandfatherName, familyName, gender, nationality, occupation, birthPlace, birthDate,
-		                    samisId, samisIdType, documentId, documentType, documentIssuanceDate, documentExpiryDate,
+		                    personId, personType, documentId, documentType, documentIssuanceDate, documentExpiryDate,
 		                    fingerprintsImages);
 	}
 	
@@ -160,8 +160,8 @@ public class DeadPersonRecordReport
 			   faceBase64 + '\'' + ", firstName='" + firstName + '\'' + ", fatherName='" + fatherName + '\'' +
 			   ", grandfatherName='" + grandfatherName + '\'' + ", familyName='" + familyName + '\'' + ", gender='" +
 			   gender + '\'' + ", nationality='" + nationality + '\'' + ", occupation='" + occupation + '\'' +
-			   ", birthPlace='" + birthPlace + '\'' + ", birthDate='" + birthDate + '\'' + ", samisId='" + samisId +
-			   '\'' + ", samisIdType='" + samisIdType + '\'' + ", documentId='" + documentId + '\'' +
+			   ", birthPlace='" + birthPlace + '\'' + ", birthDate='" + birthDate + '\'' + ", personId='" + personId +
+			   '\'' + ", personType='" + personType + '\'' + ", documentId='" + documentId + '\'' +
 			   ", documentType='" + documentType + '\'' + ", documentIssuanceDate='" + documentIssuanceDate + '\'' +
 			   ", documentExpiryDate='" + documentExpiryDate + '\'' + ", fingerprintsImages=" +
 			   fingerprintsImages + '}';

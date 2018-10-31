@@ -23,7 +23,7 @@
                 </VBox>
             </HBox>
             <HBox fx:id="personIdPane" spacing="5.0" alignment="CENTER" visible="false" managed="false">
-                <Label text="%label.samisId"/>
+                <Label text="%label.personId"/>
                 <Label fx:id="lblPersonId"/>
             </HBox>
         </VBox>

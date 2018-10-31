@@ -198,7 +198,7 @@ public class CoreFxController extends FxControllerBase implements IdleMonitorReg
 		
 		if(!Context.getWorkflowManager().isRunning())
 		{
-			Context.getWorkflowManager().startCoreWorkflow(this::renderBodyForm);
+			Platform.runLater(() -> Context.getWorkflowManager().startCoreWorkflow(this::renderBodyForm));
 		}
 	}
 	
@@ -590,7 +590,7 @@ public class CoreFxController extends FxControllerBase implements IdleMonitorReg
 										newCoreFxController.resourceBundlesMap.get(currentBodyController.getClass());
 		newCoreFxController.registerStage(newStage);
 		
-		Context.getWorkflowManager().changeFormRenderer(newCoreFxController::renderBodyForm);
+		Context.getWorkflowManager().setFormRenderer(newCoreFxController::renderBodyForm);
 		
 		// save the language for later usage
 		Preferences prefs = Preferences.userNodeForPackage(AppConstants.PREF_NODE_CLASS);

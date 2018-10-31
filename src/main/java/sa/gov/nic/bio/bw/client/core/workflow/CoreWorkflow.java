@@ -1,30 +1,22 @@
 package sa.gov.nic.bio.bw.client.core.workflow;
 
 import sa.gov.nic.bio.bw.client.core.Context;
-import sa.gov.nic.bio.bw.client.core.interfaces.FormRenderer;
 import sa.gov.nic.bio.bw.client.home.HomeWorkflow;
 import sa.gov.nic.bio.bw.client.login.LoginWorkflow;
 import sa.gov.nic.bio.bw.client.login.LogoutWorkflow;
 
 import java.util.Map;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.atomic.AtomicReference;
 
 public class CoreWorkflow extends WorkflowBase<Void, Void>
 {
-	CoreWorkflow(AtomicReference<FormRenderer> formRenderer, BlockingQueue<Map<String, Object>> userTasks)
-	{
-		super(formRenderer, userTasks);
-	}
-	
 	@Override
-	public Void onProcess(Void input) throws InterruptedException
+	public void onProcess() throws InterruptedException
 	{
 		while(true)
 		{
 			try
 			{
-				new LoginWorkflow(formRenderer, userTasks).onProcess(null);
+				new LoginWorkflow().onProcess();
 			}
 			catch(Signal loginSignal)
 			{
@@ -36,7 +28,7 @@ public class CoreWorkflow extends WorkflowBase<Void, Void>
 					{
 						try
 						{
-							new HomeWorkflow(formRenderer, userTasks).onProcess(null);
+							new HomeWorkflow().onProcess();
 						}
 						catch(Signal homeSignal)
 						{
@@ -46,7 +38,7 @@ public class CoreWorkflow extends WorkflowBase<Void, Void>
 							{
 								case LOGOUT:
 								{
-									new LogoutWorkflow(formRenderer, userTasks).onProcess(null);
+									new LogoutWorkflow().onProcess();
 									break;
 								}
 								case INVALID_STATE:

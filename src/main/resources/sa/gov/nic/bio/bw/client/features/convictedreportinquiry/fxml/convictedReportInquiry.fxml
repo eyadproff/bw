@@ -24,7 +24,7 @@
                             <padding>
                                 <Insets topRightBottomLeft="10.0"/>
                             </padding>
-                            <Label text="%label.generalFileNumber" alignment="CENTER">
+                            <Label text="%label.criminalBiometricsId" alignment="CENTER">
                                 <padding>
                                     <Insets top="3.0"/>
                                 </padding>
@@ -44,8 +44,8 @@
                             <columns>
                                 <PTableColumn fx:id="tcSequence" text="#" percentageWidth="0.04"/>
                                 <PTableColumn fx:id="tvName" text="%table.column.name" percentageWidth="0.22"/>
-                                <PTableColumn fx:id="tcSamisId" text="%table.column.samisId" percentageWidth="0.14"/>
-                                <PTableColumn fx:id="tcSamisIdType" text="%table.column.samisIdType" percentageWidth="0.15"/>
+                                <PTableColumn fx:id="tcSamisId" text="%table.column.personId" percentageWidth="0.14"/>
+                                <PTableColumn fx:id="tcSamisIdType" text="%table.column.personType" percentageWidth="0.15"/>
                                 <PTableColumn fx:id="tcNationality" text="%table.column.nationality" percentageWidth="0.15"/>
                                 <PTableColumn fx:id="tcOperatorId" text="%table.column.operatorId" percentageWidth="0.16"/>
                                 <PTableColumn fx:id="tcRegistrationDate" text="%table.column.registrationDate" percentageWidth="0.14"/>

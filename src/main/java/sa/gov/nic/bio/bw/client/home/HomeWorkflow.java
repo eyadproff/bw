@@ -1,7 +1,6 @@
 package sa.gov.nic.bio.bw.client.home;
 
 import sa.gov.nic.bio.bw.client.core.Context;
-import sa.gov.nic.bio.bw.client.core.interfaces.FormRenderer;
 import sa.gov.nic.bio.bw.client.core.workflow.Signal;
 import sa.gov.nic.bio.bw.client.core.workflow.SignalType;
 import sa.gov.nic.bio.bw.client.core.workflow.Workflow;
@@ -12,20 +11,13 @@ import sa.gov.nic.bio.bw.client.login.webservice.LoginBean;
 
 import java.lang.reflect.Constructor;
 import java.util.Map;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.atomic.AtomicReference;
 
 public class HomeWorkflow extends WorkflowBase<LoginBean, Void>
 {
 	public static final String KEY_MENU_WORKFLOW_CLASS = "MENU_WORKFLOW_CLASS";
 	
-	public HomeWorkflow(AtomicReference<FormRenderer> formRenderer, BlockingQueue<Map<String, Object>> userTasks)
-	{
-		super(formRenderer, userTasks);
-	}
-	
 	@Override
-	public Void onProcess(LoginBean input) throws InterruptedException, Signal
+	public void onProcess() throws InterruptedException, Signal
 	{
 		while(true)
 		{
@@ -48,9 +40,8 @@ public class HomeWorkflow extends WorkflowBase<LoginBean, Void>
 						Workflow<?, ?> subWorkflow;
 						try
 						{
-							Constructor<?> declaredConstructor = menuWorkflowClass
-												.getDeclaredConstructor(AtomicReference.class, BlockingQueue.class);
-							subWorkflow = (Workflow<?, ?>) declaredConstructor.newInstance(formRenderer, userTasks);
+							Constructor<?> declaredConstructor = menuWorkflowClass.getDeclaredConstructor();
+							subWorkflow = (Workflow<?, ?>) declaredConstructor.newInstance();
 						}
 						catch(Exception e)
 						{
@@ -65,7 +56,7 @@ public class HomeWorkflow extends WorkflowBase<LoginBean, Void>
 						
 						try
 						{
-							subWorkflow.onProcess(null);
+							subWorkflow.onProcess();
 						}
 						catch(Signal subWorkflowSignal)
 						{

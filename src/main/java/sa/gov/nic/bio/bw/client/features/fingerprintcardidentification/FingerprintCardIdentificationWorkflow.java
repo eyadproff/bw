@@ -1,6 +1,5 @@
 package sa.gov.nic.bio.bw.client.features.fingerprintcardidentification;
 
-import sa.gov.nic.bio.bw.client.core.interfaces.FormRenderer;
 import sa.gov.nic.bio.bw.client.core.utils.Device;
 import sa.gov.nic.bio.bw.client.core.wizard.Step;
 import sa.gov.nic.bio.bw.client.core.wizard.Wizard;
@@ -12,20 +11,16 @@ import sa.gov.nic.bio.bw.client.features.commons.controllers.InquiryByFingerprin
 import sa.gov.nic.bio.bw.client.features.commons.lookups.CountriesLookup;
 import sa.gov.nic.bio.bw.client.features.commons.lookups.DocumentTypesLookup;
 import sa.gov.nic.bio.bw.client.features.commons.lookups.SamisIdTypesLookup;
+import sa.gov.nic.bio.bw.client.features.commons.workflow.FingerprintInquiryStatusCheckerWorkflowTask;
+import sa.gov.nic.bio.bw.client.features.commons.workflow.FingerprintInquiryStatusCheckerWorkflowTask.Status;
+import sa.gov.nic.bio.bw.client.features.commons.workflow.FingerprintInquiryWorkflowTask;
 import sa.gov.nic.bio.bw.client.features.fingerprintcardidentification.controllers.FingerprintsAfterCroppingPaneFxController;
 import sa.gov.nic.bio.bw.client.features.fingerprintcardidentification.controllers.InquiryResultPaneFxController;
 import sa.gov.nic.bio.bw.client.features.fingerprintcardidentification.controllers.ScanFingerprintCardPaneFxController;
 import sa.gov.nic.bio.bw.client.features.fingerprintcardidentification.controllers.SpecifyFingerprintCoordinatesPaneFxController;
 import sa.gov.nic.bio.bw.client.features.fingerprintcardidentification.workflow.ConvertFingerprintBase64ImagesToWsqWorkflowTask;
 import sa.gov.nic.bio.bw.client.features.fingerprintcardidentification.workflow.ConvertFingerprintImagesToBase64WorkflowTask;
-import sa.gov.nic.bio.bw.client.features.commons.workflow.FingerprintInquiryStatusCheckerWorkflowTask;
-import sa.gov.nic.bio.bw.client.features.commons.workflow.FingerprintInquiryStatusCheckerWorkflowTask.Status;
-import sa.gov.nic.bio.bw.client.features.commons.workflow.FingerprintInquiryWorkflowTask;
 import sa.gov.nic.bio.bw.client.features.fingerprintcardidentification.workflow.FingerprintsWsqToFingerConverter;
-
-import java.util.Map;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.atomic.AtomicReference;
 
 @AssociatedMenu(id = "menu.query.fingerprintCardIdentification", title = "menu.title", order = 5,
 				devices = Device.BIO_UTILITIES)
@@ -37,12 +32,6 @@ import java.util.concurrent.atomic.AtomicReference;
 		@Step(iconId = "database", title = "wizard.inquiryResult")})
 public class FingerprintCardIdentificationWorkflow extends WizardWorkflowBase
 {
-	public FingerprintCardIdentificationWorkflow(AtomicReference<FormRenderer> formRenderer,
-	                                             BlockingQueue<Map<String, Object>> userTasks)
-	{
-		super(formRenderer, userTasks);
-	}
-	
 	@Override
 	public void onStep(int step) throws InterruptedException, Signal
 	{
@@ -113,7 +102,8 @@ public class FingerprintCardIdentificationWorkflow extends WizardWorkflowBase
 			case 4:
 			{
 				passData(FingerprintInquiryStatusCheckerWorkflowTask.class, InquiryResultPaneFxController.class,
-				         "status", "samisId", "civilBioId", "personInfo");
+				         "status", "personId", "civilBiometricsId", "criminalBiometricsId",
+				         "personInfo");
 				passData(SpecifyFingerprintCoordinatesPaneFxController.class, InquiryResultPaneFxController.class,
 				         "fingerprintImages");
 				passData(ConvertFingerprintImagesToBase64WorkflowTask.class, InquiryResultPaneFxController.class,

@@ -13,24 +13,13 @@ import javafx.stage.FileChooser;
 import net.sf.jasperreports.engine.JasperPrint;
 import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.controllers.WizardStepFxControllerBase;
-import sa.gov.nic.bio.bw.client.core.utils.AppConstants;
-import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.client.core.utils.FxmlFile;
-import sa.gov.nic.bio.bw.client.core.utils.GuiLanguage;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.workflow.Input;
-import sa.gov.nic.bio.bw.client.features.commons.beans.GenderType;
-import sa.gov.nic.bio.bw.client.features.commons.lookups.CountriesLookup;
-import sa.gov.nic.bio.bw.client.features.commons.lookups.DocumentTypesLookup;
-import sa.gov.nic.bio.bw.client.features.commons.lookups.SamisIdTypesLookup;
 import sa.gov.nic.bio.bw.client.features.commons.tasks.PrintReportTask;
 import sa.gov.nic.bio.bw.client.features.commons.tasks.SaveReportAsPdfTask;
-import sa.gov.nic.bio.bw.client.features.commons.webservice.CountryBean;
-import sa.gov.nic.bio.bw.client.features.commons.webservice.DocumentType;
-import sa.gov.nic.bio.bw.client.features.commons.webservice.Name;
-import sa.gov.nic.bio.bw.client.features.commons.webservice.PersonIdInfo;
+import sa.gov.nic.bio.bw.client.features.commons.webservice.NormalizedPersonInfo;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.PersonInfo;
-import sa.gov.nic.bio.bw.client.features.commons.webservice.SamisIdType;
 import sa.gov.nic.bio.bw.client.features.commons.workflow.FingerprintInquiryStatusCheckerWorkflowTask.Status;
 import sa.gov.nic.bio.bw.client.features.fingerprintcardidentification.beans.FingerprintCardIdentificationRecordReport;
 import sa.gov.nic.bio.bw.client.features.fingerprintcardidentification.tasks.BuildFingerprintCardIdentificationRecordReportTask;
@@ -40,10 +29,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
-import java.time.LocalDate;
 import java.util.Base64;
-import java.util.Date;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -51,9 +37,9 @@ import java.util.concurrent.atomic.AtomicReference;
 public class InquiryResultPaneFxController extends WizardStepFxControllerBase
 {
 	@Input private Status status;
-	@Input private Long samisId;
-	@Input private Long civilBioId;
-	@Input private Long criminalBioId;
+	@Input private Long personId;
+	@Input private Long civilBiometricsId;
+	@Input private Long criminalBiometricsId;
 	@Input private PersonInfo personInfo;
 	@Input private Map<Integer, Image> fingerprintImages;
 	@Input private Map<Integer, String> fingerprintBase64Images;
@@ -79,10 +65,10 @@ public class InquiryResultPaneFxController extends WizardStepFxControllerBase
 	@FXML private Label lblNationality;
 	@FXML private Label lblBirthPlace;
 	@FXML private Label lblBirthDate;
-	@FXML private Label lblBiometricsId;
-	@FXML private Label lblGeneralFileNumber;
-	@FXML private Label lblSamisId;
-	@FXML private Label lblSamisIdType;
+	@FXML private Label lblCivilBiometricsId;
+	@FXML private Label lblCriminalBiometricsId;
+	@FXML private Label lblPersonId;
+	@FXML private Label lblPersonType;
 	@FXML private Label lblDocumentId;
 	@FXML private Label lblDocumentType;
 	@FXML private Label lblDocumentIssuanceDate;
@@ -239,229 +225,39 @@ public class InquiryResultPaneFxController extends WizardStepFxControllerBase
 	
 	private void populateData()
 	{
-		String sSamisId = null;
-		String samisIdType = null;
-		String sCivilBioId = null;
-		String sCriminalBioId = null;
-		String faceBase64 = null;
-		String firstName = null;
-		String fatherName = null;
-		String grandfatherName = null;
-		String familyName = null;
-		String gender = null;
-		String nationality = null;
-		String occupation = null;
-		String birthPlace = null;
-		String birthDate = null;
-		String documentId = null;
-		String documentType = null;
-		String documentIssuanceDate = null;
-		String documentExpiryDate = null;
+		NormalizedPersonInfo normalizedPersonInfo = new NormalizedPersonInfo(personId, civilBiometricsId,
+		                                                                     criminalBiometricsId, personInfo,
+		                                                                     null,
+		                                                                     resources.getString("label.male"),
+		                                                                     resources.getString("label.female"));
 		
-		if(samisId != null)
+		String faceImageBase64 = normalizedPersonInfo.getFaceImageBase64();
+		if(faceImageBase64 != null)
 		{
-			sSamisId = AppUtils.localizeNumbers(String.valueOf(samisId));
-			lblSamisId.setText(sSamisId);
+			byte[] bytes = Base64.getDecoder().decode(faceImageBase64);
+			ivPersonPhoto.setImage(new Image(new ByteArrayInputStream(bytes)));
+			GuiUtils.attachImageDialog(Context.getCoreFxController(), ivPersonPhoto,
+			                           resources.getString("label.personPhoto"),
+			                           resources.getString("label.contextMenu.showImage"), false);
 		}
 		
-		if(civilBioId != null)
-		{
-			sCivilBioId = AppUtils.localizeNumbers(String.valueOf(civilBioId));
-			lblBiometricsId.setText(sCivilBioId);
-		}
-		
-		if(criminalBioId != null)
-		{
-			sCriminalBioId = AppUtils.localizeNumbers(String.valueOf(criminalBioId));
-			lblGeneralFileNumber.setText(sCriminalBioId);
-		}
-		
-		if(personInfo != null)
-		{
-			String face = personInfo.getFace();
-			if(face != null)
-			{
-				faceBase64 = face;
-				byte[] bytes = Base64.getDecoder().decode(faceBase64);
-				ivPersonPhoto.setImage(new Image(new ByteArrayInputStream(bytes)));
-				GuiUtils.attachImageDialog(Context.getCoreFxController(), ivPersonPhoto,
-				                           resources.getString("label.personPhoto"),
-				                           resources.getString("label.contextMenu.showImage"), false);
-			}
-			
-			Name name = personInfo.getName();
-			if(name != null)
-			{
-				String sFirstName = name.getFirstName();
-				if(sFirstName != null && !sFirstName.trim().isEmpty() && !sFirstName.trim().equals("-"))
-				{
-					firstName = sFirstName;
-					lblFirstName.setText(firstName);
-				}
-				
-				String sFatherName = name.getFatherName();
-				if(sFatherName != null && !sFatherName.trim().isEmpty() && !sFatherName.trim().equals("-"))
-				{
-					fatherName = sFatherName;
-					lblFatherName.setText(fatherName);
-				}
-				
-				String sGrandfatherName = name.getGrandfatherName();
-				if(sGrandfatherName != null && !sGrandfatherName.trim().isEmpty() &&
-																				!sGrandfatherName.trim().equals("-"))
-				{
-					grandfatherName = sGrandfatherName;
-					lblGrandfatherName.setText(grandfatherName);
-				}
-				
-				String sFamilyName = name.getFamilyName();
-				if(sFamilyName != null && !sFamilyName.trim().isEmpty() && !sFamilyName.trim().equals("-"))
-				{
-					familyName = sFamilyName;
-					lblFamilyName.setText(familyName);
-				}
-			}
-			
-			GenderType genderType = GenderType.values()[personInfo.getGender() - 1];
-			switch(genderType)
-			{
-				case MALE: gender = resources.getString("label.male"); break;
-				case FEMALE: gender = resources.getString("label.female"); break;
-			}
-			lblGender.setText(gender);
-			
-			@SuppressWarnings("unchecked")
-			List<CountryBean> countries = (List<CountryBean>)
-														Context.getUserSession().getAttribute(CountriesLookup.KEY);
-			
-			CountryBean countryBean = null;
-			
-			for(CountryBean country : countries)
-			{
-				if(country.getCode() == personInfo.getNationality())
-				{
-					countryBean = country;
-					break;
-				}
-			}
-			
-			if(countryBean != null)
-			{
-				boolean arabic = Context.getGuiLanguage() == GuiLanguage.ARABIC;
-				nationality = arabic ? countryBean.getDescriptionAR() : countryBean.getDescriptionEN();
-				lblNationality.setText(nationality);
-			}
-			
-			samisId = personInfo.getSamisId();
-			if(samisId != null)
-			{
-				sSamisId = AppUtils.localizeNumbers(String.valueOf(samisId));
-				lblSamisId.setText(sSamisId);
-			}
-			
-			@SuppressWarnings("unchecked")
-			List<SamisIdType> samisIdTypes = (List<SamisIdType>)
-														Context.getUserSession().getAttribute(SamisIdTypesLookup.KEY);
-			
-			String personType = personInfo.getPersonType();
-			if(personType != null)
-			{
-				SamisIdType theSamisIdType = null;
-				
-				for(SamisIdType type : samisIdTypes)
-				{
-					if(personType.equals(type.getIfrPersonType()))
-					{
-						theSamisIdType = type;
-						break;
-					}
-				}
-				
-				if(theSamisIdType != null)
-				{
-					boolean arabic = Context.getGuiLanguage() == GuiLanguage.ARABIC;
-					samisIdType = AppUtils.localizeNumbers(arabic ? theSamisIdType.getDescriptionAR() :
-							                                        theSamisIdType.getDescriptionEN());
-					lblSamisIdType.setText(samisIdType);
-				}
-			}
-			
-			PersonIdInfo identityInfo = personInfo.getIdentityInfo();
-			if(identityInfo != null)
-			{
-				String sOccupation = identityInfo.getOccupation();
-				if(sOccupation != null && !sOccupation.trim().isEmpty())
-				{
-					occupation = AppUtils.localizeNumbers(sOccupation);
-					lblOccupation.setText(occupation);
-				}
-				
-				String sDocumentId = identityInfo.getIdNumber();
-				if(sDocumentId != null && !sDocumentId.trim().isEmpty())
-				{
-					documentId = AppUtils.localizeNumbers(sDocumentId);
-					lblDocumentId.setText(documentId);
-				}
-				
-				@SuppressWarnings("unchecked")
-				List<DocumentType> documentTypes = (List<DocumentType>)
-														Context.getUserSession().getAttribute(DocumentTypesLookup.KEY);
-				
-				Integer documentTypeInteger = identityInfo.getIdType();
-				if(documentTypeInteger != null)
-				{
-					DocumentType theDocumentType = null;
-					
-					for(DocumentType type : documentTypes)
-					{
-						if(type.getCode() == documentTypeInteger)
-						{
-							theDocumentType = type;
-							break;
-						}
-					}
-					
-					if(theDocumentType != null)
-					{
-						documentType = AppUtils.localizeNumbers(theDocumentType.getDesc());
-						lblDocumentType.setText(documentType);
-					}
-				}
-				
-				Date theIssueDate = identityInfo.getIdIssueDate();
-				if(theIssueDate != null && theIssueDate.getTime() > AppConstants.SAMIS_DB_DATE_NOT_SET_VALUE)
-				{
-					LocalDate localDate = theIssueDate.toInstant().atZone(AppConstants.SAUDI_ZONE).toLocalDate();
-					documentIssuanceDate = AppUtils.formatHijriGregorianDate(
-																	AppUtils.gregorianDateToMilliSeconds(localDate));
-					lblDocumentIssuanceDate.setText(documentIssuanceDate);
-				}
-				
-				Date theExpiryDate = identityInfo.getIdExpirDate();
-				if(theExpiryDate != null && theExpiryDate.getTime() > AppConstants.SAMIS_DB_DATE_NOT_SET_VALUE)
-				{
-					LocalDate localDate = theExpiryDate.toInstant().atZone(AppConstants.SAUDI_ZONE).toLocalDate();
-					documentExpiryDate = AppUtils.formatHijriGregorianDate(
-																	AppUtils.gregorianDateToMilliSeconds(localDate));
-					lblDocumentExpiryDate.setText(documentExpiryDate);
-				}
-			}
-			
-			String sBirthPlace = personInfo.getBirthPlace();
-			if(sBirthPlace != null && !sBirthPlace.trim().isEmpty())
-			{
-				birthPlace = AppUtils.localizeNumbers(sBirthPlace);
-				lblBirthPlace.setText(birthPlace);
-			}
-			
-			Date theBirthDate = personInfo.getBirthDate();
-			if(theBirthDate != null && theBirthDate.getTime() > AppConstants.SAMIS_DB_DATE_NOT_SET_VALUE)
-			{
-				LocalDate localDate = theBirthDate.toInstant().atZone(AppConstants.SAUDI_ZONE).toLocalDate();
-				birthDate = AppUtils.formatHijriGregorianDate(AppUtils.gregorianDateToMilliSeconds(localDate));
-				lblBirthDate.setText(birthDate);
-			}
-		}
+		lblPersonId.setText(normalizedPersonInfo.getPersonIdLabel());
+		lblCivilBiometricsId.setText(normalizedPersonInfo.getCivilBiometricsIdLabel());
+		lblCriminalBiometricsId.setText(normalizedPersonInfo.getCriminalBiometricsIdLabel());
+		lblFirstName.setText(normalizedPersonInfo.getFirstNameLabel());
+		lblFatherName.setText(normalizedPersonInfo.getFatherNameLabel());
+		lblGrandfatherName.setText(normalizedPersonInfo.getGrandfatherNameLabel());
+		lblFamilyName.setText(normalizedPersonInfo.getFamilyNameLabel());
+		lblGender.setText(normalizedPersonInfo.getGenderLabel());
+		lblNationality.setText(normalizedPersonInfo.getNationalityLabel());
+		lblOccupation.setText(normalizedPersonInfo.getOccupationLabel());
+		lblBirthPlace.setText(normalizedPersonInfo.getBirthPlaceLabel());
+		lblBirthDate.setText(normalizedPersonInfo.getBirthDateLabel());
+		lblPersonType.setText(normalizedPersonInfo.getPersonTypeLabel());
+		lblDocumentId.setText(normalizedPersonInfo.getDocumentIdLabel());
+		lblDocumentType.setText(normalizedPersonInfo.getDocumentTypeLabel());
+		lblDocumentIssuanceDate.setText(normalizedPersonInfo.getDocumentIssuanceDateLabel());
+		lblDocumentExpiryDate.setText(normalizedPersonInfo.getDocumentExpiryDateLabel());
 		
 		Map<Integer, String> dialogTitleMap = GuiUtils.constructFingerprintDialogTitles(resources);
 		Map<Integer, ImageView> imageViewMap = GuiUtils.constructFingerprintImageViewMap(ivRightThumb, ivRightIndex,
@@ -481,12 +277,25 @@ public class InquiryResultPaneFxController extends WizardStepFxControllerBase
 		                               false);
 		});
 		
-		fingerprintCardIdentificationRecordReport = new FingerprintCardIdentificationRecordReport(faceBase64, firstName,
-                                                          fatherName, grandfatherName, familyName, gender,
-                                                          nationality, occupation, birthPlace, birthDate, sSamisId,
-                                                          samisIdType, sCivilBioId, sCriminalBioId, documentId,
-                                                          documentType, documentIssuanceDate, documentExpiryDate,
-                                                          fingerprintBase64Images);
+		fingerprintCardIdentificationRecordReport =
+					new FingerprintCardIdentificationRecordReport(faceImageBase64, normalizedPersonInfo.getFirstName(),
+		                                                          normalizedPersonInfo.getFatherName(),
+		                                                          normalizedPersonInfo.getGrandfatherName(),
+		                                                          normalizedPersonInfo.getFamilyName(),
+		                                                          normalizedPersonInfo.getGenderLabel(),
+		                                                          normalizedPersonInfo.getNationalityLabel(),
+		                                                          normalizedPersonInfo.getOccupation(),
+		                                                          normalizedPersonInfo.getBirthPlace(),
+		                                                          normalizedPersonInfo.getBirthDateLabel(),
+		                                                          normalizedPersonInfo.getPersonIdLabel(),
+		                                                          normalizedPersonInfo.getPersonTypeLabel(),
+		                                                          normalizedPersonInfo.getCivilBiometricsIdLabel(),
+		                                                          normalizedPersonInfo.getCriminalBiometricsIdLabel(),
+		                                                          normalizedPersonInfo.getDocumentId(),
+		                                                          normalizedPersonInfo.getDocumentTypeLabel(),
+		                                                          normalizedPersonInfo.getDocumentIssuanceDateLabel(),
+		                                                          normalizedPersonInfo.getDocumentExpiryDateLabel(),
+		                                                          fingerprintBase64Images);
 	}
 	
 	private void printDeadPersonRecordReport(JasperPrint jasperPrint)

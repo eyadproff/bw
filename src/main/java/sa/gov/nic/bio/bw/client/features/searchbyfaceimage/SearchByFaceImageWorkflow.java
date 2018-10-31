@@ -1,6 +1,5 @@
 package sa.gov.nic.bio.bw.client.features.searchbyfaceimage;
 
-import sa.gov.nic.bio.bw.client.core.interfaces.FormRenderer;
 import sa.gov.nic.bio.bw.client.core.utils.Device;
 import sa.gov.nic.bio.bw.client.core.wizard.Step;
 import sa.gov.nic.bio.bw.client.core.wizard.Wizard;
@@ -16,10 +15,6 @@ import sa.gov.nic.bio.bw.client.features.searchbyfaceimage.controllers.ShowResul
 import sa.gov.nic.bio.bw.client.features.searchbyfaceimage.controllers.UploadImageFileFxController;
 import sa.gov.nic.bio.bw.client.features.searchbyfaceimage.workflow.SearchByFaceImageWorkflowTask;
 
-import java.util.Map;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.atomic.AtomicReference;
-
 @AssociatedMenu(id = "menu.query.searchByFaceImage", title = "menu.title", order = 1, devices = Device.CAMERA)
 @Wizard({@Step(iconId = "question", title = "wizard.imageSource"),
 		@Step(iconId = "upload", title = "wizard.uploadImage"),
@@ -28,12 +23,6 @@ import java.util.concurrent.atomic.AtomicReference;
 		@Step(iconId = "users", title = "wizard.showResults")})
 public class SearchByFaceImageWorkflow extends WizardWorkflowBase
 {
-	public SearchByFaceImageWorkflow(AtomicReference<FormRenderer> formRenderer,
-	                                 BlockingQueue<Map<String, Object>> userTasks)
-	{
-		super(formRenderer, userTasks);
-	}
-	
 	@Override
 	public void onStep(int step) throws InterruptedException, Signal
 	{

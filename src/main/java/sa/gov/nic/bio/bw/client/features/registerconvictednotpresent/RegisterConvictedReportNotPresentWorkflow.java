@@ -5,7 +5,6 @@ import sa.gov.nic.bio.biokit.fingerprint.beans.SegmentFingerprintsResponse;
 import sa.gov.nic.bio.biokit.websocket.beans.DMFingerData;
 import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.biokit.FingerPosition;
-import sa.gov.nic.bio.bw.client.core.interfaces.FormRenderer;
 import sa.gov.nic.bio.bw.client.core.utils.Device;
 import sa.gov.nic.bio.bw.client.core.wizard.Step;
 import sa.gov.nic.bio.bw.client.core.wizard.Wizard;
@@ -48,9 +47,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Future;
-import java.util.concurrent.atomic.AtomicReference;
 
 @AssociatedMenu(id = "menu.register.registerConvictedNotPresent", title = "menu.title", order = 3,
 				devices = Device.BIO_UTILITIES)
@@ -68,12 +65,6 @@ import java.util.concurrent.atomic.AtomicReference;
 		@Step(iconId = "file_pdf_alt", title = "wizard.showReport")})
 public class RegisterConvictedReportNotPresentWorkflow extends WizardWorkflowBase
 {
-	public RegisterConvictedReportNotPresentWorkflow(AtomicReference<FormRenderer> formRenderer,
-	                                                 BlockingQueue<Map<String, Object>> userTasks)
-	{
-		super(formRenderer, userTasks);
-	}
-	
 	@Override
 	public void onStep(int step) throws InterruptedException, Signal
 	{

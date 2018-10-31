@@ -23,9 +23,9 @@ public class FingerprintInquiryStatusCheckerWorkflowTask implements WorkflowTask
 	
 	@Input(alwaysRequired = true) private Integer inquiryId;
 	@Output private Status status;
-	@Output private Long samisId;
-	@Output private Long civilBioId;
-	@Output private Long criminalBioId;
+	@Output private Long personId;
+	@Output private Long civilBiometricsId;
+	@Output private Long criminalBiometricsId;
 	@Output private PersonInfo personInfo;
 	
 	@Override
@@ -50,9 +50,9 @@ public class FingerprintInquiryStatusCheckerWorkflowTask implements WorkflowTask
 		else if(result.getStatus() == FingerprintInquiryStatusResult.STATUS_INQUIRY_HIT)
 		{
 			status = Status.HIT;
-			samisId = result.getSamisId();
-			civilBioId = result.getCivilHitBioId();
-			criminalBioId = result.getCrimnalHitBioId();
+			personId = result.getSamisId();
+			civilBiometricsId = result.getCivilHitBioId();
+			criminalBiometricsId = result.getCrimnalHitBioId();
 			personInfo = result.getPersonInfo();
 		}
 		else

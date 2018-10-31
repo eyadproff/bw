@@ -1,6 +1,5 @@
 package sa.gov.nic.bio.bw.client.login;
 
-import sa.gov.nic.bio.bw.client.core.interfaces.FormRenderer;
 import sa.gov.nic.bio.bw.client.core.workflow.Signal;
 import sa.gov.nic.bio.bw.client.core.workflow.SignalType;
 import sa.gov.nic.bio.bw.client.core.workflow.SinglePageWorkflowBase;
@@ -17,9 +16,6 @@ import sa.gov.nic.bio.bw.client.login.workflow.ScheduleRefreshTokenWorkflowTask;
 import sa.gov.nic.bio.bw.client.login.workflow.UserSessionCreationWorkflowTask;
 
 import java.util.Arrays;
-import java.util.Map;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * The login workflow.
@@ -28,11 +24,6 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 public class LoginWorkflow extends SinglePageWorkflowBase
 {
-	public LoginWorkflow(AtomicReference<FormRenderer> formRenderer, BlockingQueue<Map<String, Object>> userTasks)
-	{
-		super(formRenderer, userTasks);
-	}
-	
 	@Override
 	public void onStep() throws InterruptedException, Signal
 	{

@@ -15,10 +15,10 @@ public class FingerprintCardIdentificationRecordReport
 	private String occupation;
 	private String birthPlace;
 	private String birthDate;
-	private String samisId;
-	private String samisIdType;
-	private String biometricsId;
-	private String generalFileNumber;
+	private String personId;
+	private String personType;
+	private String civilBiometricsId;
+	private String criminalBiometricsId;
 	private String documentId;
 	private String documentType;
 	private String documentIssuanceDate;
@@ -28,10 +28,11 @@ public class FingerprintCardIdentificationRecordReport
 	public FingerprintCardIdentificationRecordReport(String faceBase64, String firstName, String fatherName,
 	                                                 String grandfatherName, String familyName, String gender,
 	                                                 String nationality, String occupation, String birthPlace,
-	                                                 String birthDate, String samisId, String samisIdType,
-	                                                 String biometricsId, String generalFileNumber, String documentId,
-	                                                 String documentType, String documentIssuanceDate,
-	                                                 String documentExpiryDate, Map<Integer, String> fingerprintsImages)
+	                                                 String birthDate, String personId, String personType,
+	                                                 String civilBiometricsId, String criminalBiometricsId,
+	                                                 String documentId, String documentType,
+	                                                 String documentIssuanceDate, String documentExpiryDate,
+	                                                 Map<Integer, String> fingerprintsImages)
 	{
 		this.faceBase64 = faceBase64;
 		this.firstName = firstName;
@@ -43,10 +44,10 @@ public class FingerprintCardIdentificationRecordReport
 		this.occupation = occupation;
 		this.birthPlace = birthPlace;
 		this.birthDate = birthDate;
-		this.samisId = samisId;
-		this.samisIdType = samisIdType;
-		this.biometricsId = biometricsId;
-		this.generalFileNumber = generalFileNumber;
+		this.personId = personId;
+		this.personType = personType;
+		this.civilBiometricsId = civilBiometricsId;
+		this.criminalBiometricsId = criminalBiometricsId;
 		this.documentId = documentId;
 		this.documentType = documentType;
 		this.documentIssuanceDate = documentIssuanceDate;
@@ -84,17 +85,17 @@ public class FingerprintCardIdentificationRecordReport
 	public String getBirthDate(){return birthDate;}
 	public void setBirthDate(String birthDate){this.birthDate = birthDate;}
 	
-	public String getSamisId(){return samisId;}
-	public void setSamisId(String samisId){this.samisId = samisId;}
+	public String getPersonId(){return personId;}
+	public void setPersonId(String personId){this.personId = personId;}
 	
-	public String getSamisIdType(){return samisIdType;}
-	public void setSamisIdType(String samisIdType){this.samisIdType = samisIdType;}
+	public String getPersonType(){return personType;}
+	public void setPersonType(String personType){this.personType = personType;}
 	
-	public String getBiometricsId(){return biometricsId;}
-	public void setBiometricsId(String biometricsId){this.biometricsId = biometricsId;}
+	public String getCivilBiometricsId(){return civilBiometricsId;}
+	public void setCivilBiometricsId(String civilBiometricsId){this.civilBiometricsId = civilBiometricsId;}
 	
-	public String getGeneralFileNumber(){return generalFileNumber;}
-	public void setGeneralFileNumber(String generalFileNumber){this.generalFileNumber = generalFileNumber;}
+	public String getCriminalBiometricsId(){return criminalBiometricsId;}
+	public void setCriminalBiometricsId(String criminalBiometricsId){this.criminalBiometricsId = criminalBiometricsId;}
 	
 	public String getDocumentId(){return documentId;}
 	public void setDocumentId(String documentId){this.documentId = documentId;}
@@ -123,9 +124,9 @@ public class FingerprintCardIdentificationRecordReport
 			   Objects.equals(familyName, that.familyName) && Objects.equals(gender, that.gender) &&
 			   Objects.equals(nationality, that.nationality) && Objects.equals(occupation, that.occupation) &&
 			   Objects.equals(birthPlace, that.birthPlace) && Objects.equals(birthDate, that.birthDate) &&
-			   Objects.equals(samisId, that.samisId) && Objects.equals(samisIdType, that.samisIdType) &&
-			   Objects.equals(biometricsId, that.biometricsId) &&
-			   Objects.equals(generalFileNumber, that.generalFileNumber) &&
+			   Objects.equals(personId, that.personId) && Objects.equals(personType, that.personType) &&
+			   Objects.equals(civilBiometricsId, that.civilBiometricsId) &&
+			   Objects.equals(criminalBiometricsId, that.criminalBiometricsId) &&
 			   Objects.equals(documentId, that.documentId) && Objects.equals(documentType, that.documentType) &&
 			   Objects.equals(documentIssuanceDate, that.documentIssuanceDate) &&
 			   Objects.equals(documentExpiryDate, that.documentExpiryDate) &&
@@ -136,8 +137,9 @@ public class FingerprintCardIdentificationRecordReport
 	public int hashCode()
 	{
 		return Objects.hash(faceBase64, firstName, fatherName, grandfatherName, familyName, gender, nationality,
-		                    occupation, birthPlace, birthDate, samisId, samisIdType, biometricsId, generalFileNumber,
-		                    documentId, documentType, documentIssuanceDate, documentExpiryDate, fingerprintsImages);
+		                    occupation, birthPlace, birthDate, personId, personType, civilBiometricsId,
+		                    criminalBiometricsId, documentId, documentType, documentIssuanceDate, documentExpiryDate,
+		                    fingerprintsImages);
 	}
 	
 	@Override
@@ -147,10 +149,11 @@ public class FingerprintCardIdentificationRecordReport
 			   firstName + '\'' + ", fatherName='" + fatherName + '\'' + ", grandfatherName='" + grandfatherName +
 			   '\'' + ", familyName='" + familyName + '\'' + ", gender='" + gender + '\'' + ", nationality='" +
 			   nationality + '\'' + ", occupation='" + occupation + '\'' + ", birthPlace='" + birthPlace + '\'' +
-			   ", birthDate='" + birthDate + '\'' + ", samisId='" + samisId + '\'' + ", samisIdType='" + samisIdType +
-			   '\'' + ", biometricsId='" + biometricsId + '\'' + ", generalFileNumber='" + generalFileNumber + '\'' +
-			   ", documentId='" + documentId + '\'' + ", documentType='" + documentType + '\'' +
-			   ", documentIssuanceDate='" + documentIssuanceDate + '\'' + ", documentExpiryDate='" +
-			   documentExpiryDate + '\'' + ", fingerprintsImages=" + fingerprintsImages + '}';
+			   ", birthDate='" + birthDate + '\'' + ", personId='" + personId + '\'' + ", personType='" + personType +
+			   '\'' + ", civilBiometricsId='" + civilBiometricsId + '\'' + ", criminalBiometricsId='" +
+			   criminalBiometricsId + '\'' + ", documentId='" + documentId + '\'' + ", documentType='" +
+			   documentType + '\'' + ", documentIssuanceDate='" + documentIssuanceDate + '\'' +
+			   ", documentExpiryDate='" + documentExpiryDate + '\'' + ", fingerprintsImages=" +
+			   fingerprintsImages + '}';
 	}
 }

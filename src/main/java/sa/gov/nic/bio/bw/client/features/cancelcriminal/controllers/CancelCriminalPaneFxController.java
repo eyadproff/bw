@@ -21,7 +21,7 @@ import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.client.core.workflow.Input;
 import sa.gov.nic.bio.bw.client.core.workflow.Output;
 import sa.gov.nic.bio.bw.client.features.commons.lookups.SamisIdTypesLookup;
-import sa.gov.nic.bio.bw.client.features.commons.webservice.SamisIdType;
+import sa.gov.nic.bio.bw.client.features.commons.webservice.PersonType;
 
 import java.util.List;
 import java.util.Locale;
@@ -45,7 +45,7 @@ public class CancelCriminalPaneFxController extends BodyFxControllerBase
 	@FXML private Tab tabByPersonId;
 	@FXML private Tab tabByInquiryId;
 	@FXML private TextField txtPersonId;
-	@FXML private ComboBox<SamisIdType> cboPersonIdType;
+	@FXML private ComboBox<PersonType> cboPersonType;
 	@FXML private TextField txtCriminalId;
 	@FXML private TextField txtInquiryId;
 	@FXML private TextField txtCriminalId2;
@@ -92,26 +92,26 @@ public class CancelCriminalPaneFxController extends BodyFxControllerBase
 		
 		
 		
-		cboPersonIdType.setConverter(new StringConverter<SamisIdType>()
+		cboPersonType.setConverter(new StringConverter<PersonType>()
 		{
 			@Override
-			public String toString(SamisIdType object)
+			public String toString(PersonType object)
 			{
-				return formatPersonIdType(object);
+				return formatPersonType(object);
 			}
 			
 			@Override
-			public SamisIdType fromString(String string)
+			public PersonType fromString(String string)
 			{
 				return null;
 			}
 		});
 		
 		@SuppressWarnings("unchecked")
-		List<SamisIdType> samisIdTypes = (List<SamisIdType>)
+		List<PersonType> personTypes = (List<PersonType>)
 													Context.getUserSession().getAttribute(SamisIdTypesLookup.KEY);
-		cboPersonIdType.getItems().addAll(samisIdTypes);
-		cboPersonIdType.getSelectionModel().select(0);
+		cboPersonType.getItems().addAll(personTypes);
+		cboPersonType.getSelectionModel().select(0);
 		
 		txtPersonId.requestFocus();
 	}
@@ -124,7 +124,7 @@ public class CancelCriminalPaneFxController extends BodyFxControllerBase
 		if(successfulResponse)
 		{
 			String personId = txtPersonId.getText().trim();
-			SamisIdType samisIdType = cboPersonIdType.getValue();
+			PersonType personType = cboPersonType.getValue();
 			String criminalId = txtCriminalId.getText().trim();
 			String inquiryId = txtInquiryId.getText().trim();
 			String criminalId2 = txtCriminalId2.getText().trim();
@@ -134,7 +134,7 @@ public class CancelCriminalPaneFxController extends BodyFxControllerBase
 				if(tabByPersonId.isSelected())
 				{
 					String message = String.format(resources.getString("cancelCriminal.byPersonId.success"),
-					                               criminalId, personId, formatPersonIdType(samisIdType));
+					                               criminalId, personId, formatPersonType(personType));
 					showSuccessNotification(message);
 				}
 				else
@@ -149,7 +149,7 @@ public class CancelCriminalPaneFxController extends BodyFxControllerBase
 				if(tabByPersonId.isSelected())
 				{
 					String message = String.format(resources.getString("cancelCriminal.byPersonId.failure"),
-					                               criminalId, personId, formatPersonIdType(samisIdType));
+					                               criminalId, personId, formatPersonType(personType));
 					showWarningNotification(message);
 				}
 				else
@@ -181,19 +181,19 @@ public class CancelCriminalPaneFxController extends BodyFxControllerBase
 		if(tabByPersonId.isSelected())
 		{
 			String personId = txtPersonId.getText().trim();
-			SamisIdType samisIdType = cboPersonIdType.getValue();
+			PersonType personType = cboPersonType.getValue();
 			String criminalId = txtCriminalId.getText().trim();
 			
 			String contentText = String.format(
 										resources.getString("cancelCriminal.byPersonId.confirmation.message"),
-			                            criminalId, personId, formatPersonIdType(samisIdType));
+			                            criminalId, personId, formatPersonType(personType));
 			boolean confirmed = Context.getCoreFxController().showConfirmationDialogAndWait(headerText, contentText);
 			
 			if(!confirmed) return;
 			
 			this.cancelCriminalMethod = CancelCriminalMethod.BY_PERSON_ID;
 			this.personId = Long.parseLong(personId);
-			this.samisIdType = samisIdType.getCode();
+			this.samisIdType = personType.getCode();
 			this.criminalId = Long.parseLong(criminalId);
 			
 			continueWorkflow();
@@ -218,15 +218,15 @@ public class CancelCriminalPaneFxController extends BodyFxControllerBase
 		}
 	}
 	
-	private static String formatPersonIdType(SamisIdType samisIdType)
+	private static String formatPersonType(PersonType personType)
 	{
 		StringBuilder sb = new StringBuilder();
 		
 		if(Context.getGuiLanguage() == GuiLanguage.ARABIC)
 		{
-			sb.append(samisIdType.getDescriptionAR());
+			sb.append(personType.getDescriptionAR());
 		}
-		else sb.append(samisIdType.getDescriptionEN());
+		else sb.append(personType.getDescriptionEN());
 		
 		return AppUtils.localizeNumbers(sb.toString(), Locale.getDefault(), false);
 	}

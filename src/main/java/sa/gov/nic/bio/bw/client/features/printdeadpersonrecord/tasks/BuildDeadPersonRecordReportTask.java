@@ -92,8 +92,8 @@ public class BuildDeadPersonRecordReportTask extends Task<JasperPrint>
 		params.put(PARAMETER_NATIONALITY, deadPersonRecordReport.getNationality());
 		params.put(PARAMETER_OCCUPATION, deadPersonRecordReport.getOccupation());
 		params.put(PARAMETER_GENDER, deadPersonRecordReport.getGender());
-		params.put(PARAMETER_SAMIS_ID, deadPersonRecordReport.getSamisId());
-		params.put(PARAMETER_SAMIS_ID_TYPE, deadPersonRecordReport.getSamisIdType());
+		params.put(PARAMETER_SAMIS_ID, deadPersonRecordReport.getPersonId());
+		params.put(PARAMETER_SAMIS_ID_TYPE, deadPersonRecordReport.getPersonType());
 		params.put(PARAMETER_DOCUMENT_ID, deadPersonRecordReport.getDocumentId());
 		params.put(PARAMETER_DOCUMENT_TYPE, deadPersonRecordReport.getDocumentType());
 		params.put(PARAMETER_DOCUMENT_ISSUANCE, deadPersonRecordReport.getDocumentIssuanceDate());

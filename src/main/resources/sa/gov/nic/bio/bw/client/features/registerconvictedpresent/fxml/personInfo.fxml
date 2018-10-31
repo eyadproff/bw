@@ -15,13 +15,13 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import sa.gov.nic.bio.bw.client.core.beans.ItemWithText?>
-<?import sa.gov.nic.bio.bw.client.features.commons.beans.GenderType?>
+<?import sa.gov.nic.bio.bw.client.features.commons.beans.Gender?>
 <BorderPane xmlns="http://javafx.com/javafx/8.0.152" xmlns:fx="http://javafx.com/fxml/1"
             fx:id="rootPane" stylesheets="@../css/style.css"
             fx:controller="sa.gov.nic.bio.bw.client.features.registerconvictedpresent.controllers.PersonInfoPaneFxController">
     <fx:define>
-        <GenderType fx:id="maleGender" fx:value="MALE"/>
-        <GenderType fx:id="femaleGender" fx:value="FEMALE"/>
+        <Gender fx:id="maleGender" fx:value="MALE"/>
+        <Gender fx:id="femaleGender" fx:value="FEMALE"/>
         <ToggleGroup fx:id="toggleGroup1"/>
         <ToggleGroup fx:id="toggleGroup2"/>
         <ToggleGroup fx:id="toggleGroup3"/>
@@ -79,7 +79,7 @@
                             <Insets bottom="5.0"/>
                         </GridPane.margin>
                     </TextField>
-                    <Label text="%label.generalFileNumber" GridPane.rowIndex="2" GridPane.columnIndex="0">
+                    <Label text="%label.criminalBiometricsId" GridPane.rowIndex="2" GridPane.columnIndex="0">
                         <GridPane.margin>
                             <Insets bottom="5.0"/>
                         </GridPane.margin>
@@ -149,7 +149,7 @@
                         <RadioButton fx:id="rdoBirthDateUseHijri" toggleGroup="$toggleGroup1" text="%radio.hijri" styleClass="small-font, small-radio-button" focusTraversable="false"/>
                         <RadioButton fx:id="rdoBirthDateUseGregorian" toggleGroup="$toggleGroup1" text="%radio.gregorian" styleClass="small-font, small-radio-button" focusTraversable="false"/>
                     </HBox>
-                    <Label text="%label.samisId" GridPane.rowIndex="6" GridPane.columnIndex="0">
+                    <Label text="%label.personId" GridPane.rowIndex="6" GridPane.columnIndex="0">
                         <GridPane.margin>
                             <Insets bottom="5.0"/>
                         </GridPane.margin>
@@ -159,7 +159,7 @@
                             <Insets bottom="5.0" right="20.0"/>
                         </GridPane.margin>
                     </TextField>
-                    <Label text="%label.samisIdType" GridPane.rowIndex="6" GridPane.columnIndex="2">
+                    <Label text="%label.personType" GridPane.rowIndex="6" GridPane.columnIndex="2">
                         <GridPane.margin>
                             <Insets bottom="5.0"/>
                         </GridPane.margin>

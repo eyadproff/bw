@@ -1,7 +1,6 @@
 package sa.gov.nic.bio.bw.client.features.visaapplicantsenrollment;
 
 import sa.gov.nic.bio.bw.client.core.Context;
-import sa.gov.nic.bio.bw.client.core.interfaces.FormRenderer;
 import sa.gov.nic.bio.bw.client.core.utils.Device;
 import sa.gov.nic.bio.bw.client.core.wizard.Step;
 import sa.gov.nic.bio.bw.client.core.wizard.Wizard;
@@ -20,10 +19,6 @@ import sa.gov.nic.bio.bw.client.features.visaapplicantsenrollment.lookups.Passpo
 import sa.gov.nic.bio.bw.client.features.visaapplicantsenrollment.lookups.VisaTypesLookup;
 import sa.gov.nic.bio.bw.client.features.visaapplicantsenrollment.workflow.VisaApplicantsWorkflowTask;
 
-import java.util.Map;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.atomic.AtomicReference;
-
 @AssociatedMenu(id = "menu.register.visaApplicantsEnrollment", title = "menu.title", order = 4,
 				devices = {Device.FINGERPRINT_SCANNER, Device.CAMERA, Device.PASSPORT_SCANNER})
 @WithLookups({CountriesLookup.class, VisaTypesLookup.class, PassportTypesLookup.class, DialingCodesLookup.class})
@@ -34,12 +29,6 @@ import java.util.concurrent.atomic.AtomicReference;
 		@Step(iconId = "file_pdf_alt", title = "wizard.showReceipt")})
 public class VisaApplicantsEnrollmentWorkflow extends WizardWorkflowBase
 {
-	public VisaApplicantsEnrollmentWorkflow(AtomicReference<FormRenderer> formRenderer,
-	                                        BlockingQueue<Map<String, Object>> userTasks)
-	{
-		super(formRenderer, userTasks);
-	}
-	
 	@Override
 	public void onStep(int step) throws InterruptedException, Signal
 	{

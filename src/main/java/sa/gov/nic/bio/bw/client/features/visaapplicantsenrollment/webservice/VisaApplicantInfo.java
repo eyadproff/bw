@@ -1,7 +1,7 @@
 package sa.gov.nic.bio.bw.client.features.visaapplicantsenrollment.webservice;
 
-import sa.gov.nic.bio.bw.client.features.commons.beans.GenderType;
-import sa.gov.nic.bio.bw.client.features.commons.webservice.CountryBean;
+import sa.gov.nic.bio.bw.client.features.commons.beans.Gender;
+import sa.gov.nic.bio.bw.client.features.commons.webservice.Country;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.Finger;
 
 import java.time.LocalDate;
@@ -17,15 +17,15 @@ public class VisaApplicantInfo
 	private String secondName;
 	private String otherName;
 	private String familyName;
-	private CountryBean nationality;
+	private Country nationality;
 	private LocalDate birthDate;
 	private String passportNumber;
-	private GenderType gender;
+	private Gender gender;
 	private VisaTypeBean visaType;
 	private LocalDate issueDate;
-	private CountryBean issuanceCountry;
+	private Country issuanceCountry;
 	private LocalDate expirationDate;
-	private CountryBean birthPlace;
+	private Country birthPlace;
 	private PassportTypeBean passportType;
 	private String mobileNumber;
 	private String faceImage;
@@ -33,9 +33,9 @@ public class VisaApplicantInfo
 	private List<Integer> missingFingerprints;
 	
 	public VisaApplicantInfo(Long applicantId, ZonedDateTime enrollmentDate, String firstName, String secondName,
-	                         String otherName, String familyName, CountryBean nationality, LocalDate birthDate,
-	                         String passportNumber, GenderType gender, VisaTypeBean visaType, LocalDate issueDate,
-	                         CountryBean issuanceCountry, LocalDate expirationDate, CountryBean birthPlace,
+	                         String otherName, String familyName, Country nationality, LocalDate birthDate,
+	                         String passportNumber, Gender gender, VisaTypeBean visaType, LocalDate issueDate,
+	                         Country issuanceCountry, LocalDate expirationDate, Country birthPlace,
 	                         PassportTypeBean passportType, String mobileNumber, String faceImage,
 	                         List<Finger> fingerprints, List<Integer> missingFingerprints)
 	{
@@ -79,8 +79,8 @@ public class VisaApplicantInfo
 	public String getFamilyName(){return familyName;}
 	public void setFamilyName(String familyName){this.familyName = familyName;}
 	
-	public CountryBean getNationality(){return nationality;}
-	public void setNationality(CountryBean nationality){this.nationality = nationality;}
+	public Country getNationality(){return nationality;}
+	public void setNationality(Country nationality){this.nationality = nationality;}
 	
 	public LocalDate getBirthDate(){return birthDate;}
 	public void setBirthDate(LocalDate birthDate){this.birthDate = birthDate;}
@@ -88,8 +88,8 @@ public class VisaApplicantInfo
 	public String getPassportNumber(){return passportNumber;}
 	public void setPassportNumber(String passportNumber){this.passportNumber = passportNumber;}
 	
-	public GenderType getGender(){return gender;}
-	public void setGender(GenderType gender){this.gender = gender;}
+	public Gender getGender(){return gender;}
+	public void setGender(Gender gender){this.gender = gender;}
 	
 	public VisaTypeBean getVisaType(){return visaType;}
 	public void setVisaType(VisaTypeBean visaType){this.visaType = visaType;}
@@ -97,14 +97,14 @@ public class VisaApplicantInfo
 	public LocalDate getIssueDate(){return issueDate;}
 	public void setIssueDate(LocalDate issueDate){this.issueDate = issueDate;}
 	
-	public CountryBean getIssuanceCountry(){return issuanceCountry;}
-	public void setIssuanceCountry(CountryBean issuanceCountry){this.issuanceCountry = issuanceCountry;}
+	public Country getIssuanceCountry(){return issuanceCountry;}
+	public void setIssuanceCountry(Country issuanceCountry){this.issuanceCountry = issuanceCountry;}
 	
 	public LocalDate getExpirationDate(){return expirationDate;}
 	public void setExpirationDate(LocalDate expirationDate){this.expirationDate = expirationDate;}
 	
-	public CountryBean getBirthPlace(){return birthPlace;}
-	public void setBirthPlace(CountryBean birthPlace){this.birthPlace = birthPlace;}
+	public Country getBirthPlace(){return birthPlace;}
+	public void setBirthPlace(Country birthPlace){this.birthPlace = birthPlace;}
 	
 	public PassportTypeBean getPassportType(){return passportType;}
 	public void setPassportType(PassportTypeBean passportType){this.passportType = passportType;}

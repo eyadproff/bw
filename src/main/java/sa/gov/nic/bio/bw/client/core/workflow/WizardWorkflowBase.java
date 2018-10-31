@@ -2,7 +2,6 @@ package sa.gov.nic.bio.bw.client.core.workflow;
 
 import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.controllers.BodyFxControllerBase;
-import sa.gov.nic.bio.bw.client.core.interfaces.FormRenderer;
 import sa.gov.nic.bio.bw.client.core.utils.CoreErrorCodes;
 import sa.gov.nic.bio.bw.client.core.wizard.Step;
 import sa.gov.nic.bio.bw.client.core.wizard.Wizard;
@@ -14,9 +13,7 @@ import sa.gov.nic.bio.commons.TaskResponse;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
-import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Callable;
-import java.util.concurrent.atomic.AtomicReference;
 
 public abstract class WizardWorkflowBase extends WorkflowBase<Void, Void> implements WizardWorkflow
 {
@@ -27,14 +24,9 @@ public abstract class WizardWorkflowBase extends WorkflowBase<Void, Void> implem
 	
 	private final Map<Class<? extends Callable<TaskResponse<Void>>>,
 											Callable<TaskResponse<Void>>> lookupInstancesCache = new HashMap<>();
-	
-	public WizardWorkflowBase(AtomicReference<FormRenderer> formRenderer, BlockingQueue<Map<String, Object>> userTasks)
-	{
-		super(formRenderer, userTasks);
-	}
-	
+		
 	@Override
-	public Void onProcess(Void input) throws InterruptedException, Signal
+	public void onProcess() throws InterruptedException, Signal
 	{
 		ResourceBundle stringsBundle = Context.getCoreFxController().getResourceBundleByClass(getClass());
 		
@@ -200,13 +192,13 @@ public abstract class WizardWorkflowBase extends WorkflowBase<Void, Void> implem
 		uiInputData.put(inputClass.getName() + "#" + inputName, value);
 	}
 	
-	protected boolean isGoingBackward()
+	private boolean isGoingBackward()
 	{
 		Object direction = uiInputData.get(KEY_WORKFLOW_DIRECTION);
 		return VALUE_WORKFLOW_DIRECTION_BACKWARD.equals(direction);
 	}
 	
-	protected boolean isGoingForward()
+	private boolean isGoingForward()
 	{
 		Object direction = uiInputData.get(KEY_WORKFLOW_DIRECTION);
 		return VALUE_WORKFLOW_DIRECTION_FORWARD.equals(direction);

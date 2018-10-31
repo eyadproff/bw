@@ -8,8 +8,8 @@ import net.sf.jasperreports.engine.JasperReport;
 import sa.gov.nic.bio.bw.client.core.Context;
 import sa.gov.nic.bio.bw.client.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.client.core.utils.GuiLanguage;
-import sa.gov.nic.bio.bw.client.features.commons.beans.GenderType;
-import sa.gov.nic.bio.bw.client.features.commons.webservice.CountryBean;
+import sa.gov.nic.bio.bw.client.features.commons.beans.Gender;
+import sa.gov.nic.bio.bw.client.features.commons.webservice.Country;
 import sa.gov.nic.bio.bw.client.features.visaapplicantsenrollment.webservice.PassportTypeBean;
 import sa.gov.nic.bio.bw.client.features.visaapplicantsenrollment.webservice.VisaApplicantInfo;
 import sa.gov.nic.bio.bw.client.features.visaapplicantsenrollment.webservice.VisaTypeBean;
@@ -97,19 +97,19 @@ public class BuildForeignEnrollmentReceiptTask extends Task<JasperPrint>
 		params.put(PARAMETER_OTHER_NAME, visaApplicantInfo.getOtherName());
 		params.put(PARAMETER_FAMILY_NAME, visaApplicantInfo.getFamilyName());
 		
-		CountryBean countryBean = visaApplicantInfo.getNationality();
+		Country country = visaApplicantInfo.getNationality();
 		
-		if(countryBean != null) params.put(PARAMETER_NATIONALITY, arabic ? countryBean.getDescriptionAR() :
-																		   countryBean.getDescriptionEN());
+		if(country != null) params.put(PARAMETER_NATIONALITY, arabic ? country.getDescriptionAR() :
+																		   country.getDescriptionEN());
 		
 		
-		params.put(PARAMETER_GENDER, visaApplicantInfo.getGender() == GenderType.MALE ? (arabic ? "ذكر" : "Male") :
+		params.put(PARAMETER_GENDER, visaApplicantInfo.getGender() == Gender.MALE ? (arabic ? "ذكر" : "Male") :
 																		(arabic ? "أنثى" : "Female")); // TODO: TEMP
 		
-		countryBean = visaApplicantInfo.getBirthPlace();
+		country = visaApplicantInfo.getBirthPlace();
 		
-		if(countryBean != null) params.put(PARAMETER_BIRTH_PLACE, arabic ? countryBean.getDescriptionAR() :
-																		   countryBean.getDescriptionEN());
+		if(country != null) params.put(PARAMETER_BIRTH_PLACE, arabic ? country.getDescriptionAR() :
+																		   country.getDescriptionEN());
 		
 		params.put(PARAMETER_BIRTH_DATE, AppUtils.formatHijriGregorianDate(
 											AppUtils.gregorianDateToMilliSeconds(visaApplicantInfo.getBirthDate())));
@@ -125,10 +125,10 @@ public class BuildForeignEnrollmentReceiptTask extends Task<JasperPrint>
 		params.put(PARAMETER_EXPIRATION_DATE, AppUtils.formatHijriGregorianDate(
 										AppUtils.gregorianDateToMilliSeconds(visaApplicantInfo.getExpirationDate())));
 		
-		countryBean = visaApplicantInfo.getIssuanceCountry();
+		country = visaApplicantInfo.getIssuanceCountry();
 		
-		if(countryBean != null) params.put(PARAMETER_ISSUANCE_COUNTRY, arabic ? countryBean.getDescriptionAR() :
-																				countryBean.getDescriptionEN());
+		if(country != null) params.put(PARAMETER_ISSUANCE_COUNTRY, arabic ? country.getDescriptionAR() :
+																				country.getDescriptionEN());
 		
 		PassportTypeBean passportTypeBean = visaApplicantInfo.getPassportType();
 		

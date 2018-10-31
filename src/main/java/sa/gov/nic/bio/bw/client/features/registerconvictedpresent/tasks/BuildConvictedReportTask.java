@@ -12,11 +12,11 @@ import sa.gov.nic.bio.bw.client.core.utils.GuiLanguage;
 import sa.gov.nic.bio.bw.client.features.commons.lookups.CountriesLookup;
 import sa.gov.nic.bio.bw.client.features.commons.lookups.DocumentTypesLookup;
 import sa.gov.nic.bio.bw.client.features.commons.lookups.SamisIdTypesLookup;
-import sa.gov.nic.bio.bw.client.features.commons.webservice.CountryBean;
+import sa.gov.nic.bio.bw.client.features.commons.webservice.Country;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.CrimeType;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.DocumentType;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.Name;
-import sa.gov.nic.bio.bw.client.features.commons.webservice.SamisIdType;
+import sa.gov.nic.bio.bw.client.features.commons.webservice.PersonType;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.lookups.CrimeTypesLookup;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.ConvictedReport;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.CrimeCode;
@@ -142,11 +142,11 @@ public class BuildConvictedReportTask extends Task<JasperPrint>
 		params.put(PARAMETER_NAME, fullName);
 		
 		@SuppressWarnings("unchecked")
-		List<CountryBean> countries = (List<CountryBean>) Context.getUserSession().getAttribute(CountriesLookup.KEY);
+		List<Country> countries = (List<Country>) Context.getUserSession().getAttribute(CountriesLookup.KEY);
 		
-		CountryBean countryBean = null;
+		Country countryBean = null;
 		
-		for(CountryBean country : countries)
+		for(Country country : countries)
 		{
 			if(country.getCode() == convictedReport.getSubjNationalityCode())
 			{
@@ -173,14 +173,14 @@ public class BuildConvictedReportTask extends Task<JasperPrint>
 		                                                                                true));
 		
 		@SuppressWarnings("unchecked")
-		List<SamisIdType> samisIdTypes = (List<SamisIdType>)
+		List<PersonType> personTypes = (List<PersonType>)
 														Context.getUserSession().getAttribute(SamisIdTypesLookup.KEY);
 		
 		Integer subjSamisType = convictedReport.getSubjSamisType();
 		if(subjSamisType != null)
 		{
-			SamisIdType it = null;
-			for(SamisIdType type : samisIdTypes)
+			PersonType it = null;
+			for(PersonType type : personTypes)
 			{
 				if(type.getCode() == subjSamisType)
 				{

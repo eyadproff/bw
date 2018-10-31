@@ -23,8 +23,8 @@
                     </padding>
                     <Label text="%label.personId" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
                     <TextField fx:id="txtPersonId" GridPane.columnIndex="1" GridPane.rowIndex="0" onAction="#onCancelCriminalButtonClicked"/>
-                    <Label text="%label.samisIdType" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
-                    <ComboBox fx:id="cboPersonIdType" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                    <Label text="%label.personType" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+                    <ComboBox fx:id="cboPersonType" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
                     <Label text="%label.criminalId" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
                     <TextField fx:id="txtCriminalId" GridPane.columnIndex="1" GridPane.rowIndex="2" onAction="#onCancelCriminalButtonClicked"/>
                 </GridPane>

@@ -20,13 +20,13 @@ import sa.gov.nic.bio.bw.client.core.controllers.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.client.core.utils.FxmlFile;
 import sa.gov.nic.bio.bw.client.core.utils.GuiLanguage;
 import sa.gov.nic.bio.bw.client.core.utils.GuiUtils;
-import sa.gov.nic.bio.bw.client.features.commons.beans.GenderType;
+import sa.gov.nic.bio.bw.client.features.commons.beans.Gender;
 import sa.gov.nic.bio.bw.client.features.commons.lookups.CountriesLookup;
 import sa.gov.nic.bio.bw.client.features.commons.lookups.DocumentTypesLookup;
 import sa.gov.nic.bio.bw.client.features.commons.lookups.SamisIdTypesLookup;
-import sa.gov.nic.bio.bw.client.features.commons.webservice.CountryBean;
+import sa.gov.nic.bio.bw.client.features.commons.webservice.Country;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.DocumentType;
-import sa.gov.nic.bio.bw.client.features.commons.webservice.SamisIdType;
+import sa.gov.nic.bio.bw.client.features.commons.webservice.PersonType;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -85,9 +85,9 @@ public class PersonInfoPaneFxController extends WizardStepFxControllerBase
 	@FXML private TextField txtBirthPlace;
 	@FXML private TextField txtSamisId;
 	@FXML private TextField txtDocumentId;
-	@FXML private ComboBox<ItemWithText<GenderType>> cboGender;
-	@FXML private ComboBox<HideableItem<CountryBean>> cboNationality;
-	@FXML private ComboBox<ItemWithText<SamisIdType>> cboSamisIdType;
+	@FXML private ComboBox<ItemWithText<Gender>> cboGender;
+	@FXML private ComboBox<HideableItem<Country>> cboNationality;
+	@FXML private ComboBox<ItemWithText<PersonType>> cboSamisIdType;
 	@FXML private ComboBox<ItemWithText<DocumentType>> cboDocumentType;
 	@FXML private RadioButton rdoBirthDateUseHijri;
 	@FXML private RadioButton rdoBirthDateUseGregorian;
@@ -109,10 +109,10 @@ public class PersonInfoPaneFxController extends WizardStepFxControllerBase
 		btnNext.setOnAction(actionEvent -> goNext());
 		
 		@SuppressWarnings("unchecked")
-		List<CountryBean> countries = (List<CountryBean>) Context.getUserSession().getAttribute(CountriesLookup.KEY);
+		List<Country> countries = (List<Country>) Context.getUserSession().getAttribute(CountriesLookup.KEY);
 		
 		@SuppressWarnings("unchecked")
-		List<SamisIdType> samisIdTypes = (List<SamisIdType>)
+		List<PersonType> personTypes = (List<PersonType>)
 														Context.getUserSession().getAttribute(SamisIdTypesLookup.KEY);
 		
 		@SuppressWarnings("unchecked")
@@ -127,8 +127,8 @@ public class PersonInfoPaneFxController extends WizardStepFxControllerBase
 		GuiUtils.makeComboBoxOpenableByPressingEnter(cboDocumentType);
 		
 		boolean arabic = Context.getGuiLanguage() == GuiLanguage.ARABIC;
-		ObservableList<ItemWithText<SamisIdType>> SamisIdTypeItems = FXCollections.observableArrayList();
-		samisIdTypes.forEach(idType -> SamisIdTypeItems.add(new ItemWithText<>(idType, arabic ?
+		ObservableList<ItemWithText<PersonType>> SamisIdTypeItems = FXCollections.observableArrayList();
+		personTypes.forEach(idType -> SamisIdTypeItems.add(new ItemWithText<>(idType, arabic ?
 															idType.getDescriptionAR() : idType.getDescriptionEN())));
 		cboSamisIdType.setItems(SamisIdTypeItems);
 		
@@ -228,10 +228,10 @@ public class PersonInfoPaneFxController extends WizardStepFxControllerBase
 			if(generalFileNumber != null) lblGeneralFileNumber.setText(String.valueOf(generalFileNumber));
 			else lblGeneralFileNumber.setTextFill(Color.RED);
 			
-			GenderType genderType = (GenderType) uiInputData.get(KEY_PERSON_INFO_GENDER);
-			if(genderType != null) cboGender.getItems()
+			Gender gender = (Gender) uiInputData.get(KEY_PERSON_INFO_GENDER);
+			if(gender != null) cboGender.getItems()
 					                        .stream()
-					                        .filter(item -> item.getItem() == genderType)
+					                        .filter(item -> item.getItem() == gender)
 					                        .findFirst()
 					                        .ifPresent(value ->
 					                        {
@@ -240,11 +240,11 @@ public class PersonInfoPaneFxController extends WizardStepFxControllerBase
 					                        });
 			else if(focusedNode == null) focusedNode = cboGender;
 			
-			CountryBean countryBean = (CountryBean) uiInputData.get(KEY_PERSON_INFO_NATIONALITY);
-			if(countryBean != null && countryBean.getCode() != 0)
+			Country country = (Country) uiInputData.get(KEY_PERSON_INFO_NATIONALITY);
+			if(country != null && country.getCode() != 0)
 						cboNationality.getItems()
 						              .stream()
-						              .filter(item -> item.getObject() == countryBean)
+						              .filter(item -> item.getObject() == country)
 						              .findFirst()
 						              .ifPresent(value ->
 						              {
@@ -255,13 +255,13 @@ public class PersonInfoPaneFxController extends WizardStepFxControllerBase
 			else
 			{
 				String text = resources.getString("combobox.unknownNationality");
-				CountryBean unknownNationality = new CountryBean(0, null,
-				                                                 text, text);
+				Country unknownNationality = new Country(0, null,
+				                                         text, text);
 				
-				HideableItem<CountryBean> hideableItem = new HideableItem<>(unknownNationality);
+				HideableItem<Country> hideableItem = new HideableItem<>(unknownNationality);
 				hideableItem.setText(text);
 				
-				ObservableList<HideableItem<CountryBean>> items = FXCollections.observableArrayList();
+				ObservableList<HideableItem<Country>> items = FXCollections.observableArrayList();
 				items.add(hideableItem);
 				items.addAll(cboNationality.getItems());
 				cboNationality.setItems(items);
@@ -301,10 +301,10 @@ public class PersonInfoPaneFxController extends WizardStepFxControllerBase
 				if(samisIdDisabled == null || samisIdDisabled) txtSamisId.setDisable(true);
 			}
 			
-			SamisIdType samisIdType = (SamisIdType) uiInputData.get(KEY_PERSON_INFO_SAMIS_ID_TYPE);
-			if(samisIdType != null) cboSamisIdType.getItems()
+			PersonType personType = (PersonType) uiInputData.get(KEY_PERSON_INFO_SAMIS_ID_TYPE);
+			if(personType != null) cboSamisIdType.getItems()
 					.stream()
-					.filter(item -> item.getItem() == samisIdType)
+					.filter(item -> item.getItem() == personType)
 					.findFirst()
 					.ifPresent(value ->
 					{
@@ -380,11 +380,11 @@ public class PersonInfoPaneFxController extends WizardStepFxControllerBase
 		if(text != null && !text.isEmpty()) uiDataMap.put(KEY_PERSON_INFO_DOCUMENT_ID, text);
 		else uiDataMap.remove(KEY_PERSON_INFO_DOCUMENT_ID);
 		
-		ItemWithText<GenderType> genderItem = cboGender.getValue();
+		ItemWithText<Gender> genderItem = cboGender.getValue();
 		if(genderItem != null) uiDataMap.put(KEY_PERSON_INFO_GENDER, genderItem.getItem());
 		else uiDataMap.remove(KEY_PERSON_INFO_GENDER);
 		
-		HideableItem<CountryBean> nationalityItem = cboNationality.getValue();
+		HideableItem<Country> nationalityItem = cboNationality.getValue();
 		if(nationalityItem != null) uiDataMap.put(KEY_PERSON_INFO_NATIONALITY, nationalityItem.getObject());
 		else uiDataMap.remove(KEY_PERSON_INFO_NATIONALITY);
 		
@@ -404,7 +404,7 @@ public class PersonInfoPaneFxController extends WizardStepFxControllerBase
 		uiDataMap.put(KEY_PERSON_INFO_BIRTH_DATE, dpBirthDate.getValue());
 		uiDataMap.put(KEY_PERSON_INFO_BIRTH_DATE_USE_HIJRI, rdoBirthDateUseHijri.isSelected());
 		
-		ItemWithText<SamisIdType> samisIdTypeValue = cboSamisIdType.getValue();
+		ItemWithText<PersonType> samisIdTypeValue = cboSamisIdType.getValue();
 		if(samisIdTypeValue != null) uiDataMap.put(KEY_PERSON_INFO_SAMIS_ID_TYPE, samisIdTypeValue.getItem());
 		else uiDataMap.remove(KEY_PERSON_INFO_SAMIS_ID_TYPE);
 		

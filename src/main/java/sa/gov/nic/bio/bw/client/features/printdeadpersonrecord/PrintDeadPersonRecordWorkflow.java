@@ -1,6 +1,5 @@
 package sa.gov.nic.bio.bw.client.features.printdeadpersonrecord;
 
-import sa.gov.nic.bio.bw.client.core.interfaces.FormRenderer;
 import sa.gov.nic.bio.bw.client.core.utils.Device;
 import sa.gov.nic.bio.bw.client.core.wizard.Step;
 import sa.gov.nic.bio.bw.client.core.wizard.Wizard;
@@ -19,10 +18,6 @@ import sa.gov.nic.bio.bw.client.features.printdeadpersonrecord.controllers.ShowR
 import sa.gov.nic.bio.bw.client.features.printdeadpersonrecord.webservice.DeadPersonRecord;
 import sa.gov.nic.bio.bw.client.features.printdeadpersonrecord.workflow.DeadPersonRecordByIdWorkflowTask;
 
-import java.util.Map;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.atomic.AtomicReference;
-
 @AssociatedMenu(id = "menu.query.printDeadPersonRecord", title = "menu.title", order = 3,
 				devices = Device.BIO_UTILITIES)
 @WithLookups({SamisIdTypesLookup.class, DocumentTypesLookup.class, CountriesLookup.class})
@@ -31,12 +26,6 @@ import java.util.concurrent.atomic.AtomicReference;
 		@Step(iconId = "file_pdf_alt", title = "wizard.showRecord")})
 public class PrintDeadPersonRecordWorkflow extends WizardWorkflowBase
 {
-	public PrintDeadPersonRecordWorkflow(AtomicReference<FormRenderer> formRenderer,
-	                                     BlockingQueue<Map<String, Object>> userTasks)
-	{
-		super(formRenderer, userTasks);
-	}
-	
 	@SuppressWarnings("unchecked")
 	@Override
 	public void onStep(int step) throws InterruptedException, Signal

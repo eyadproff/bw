@@ -54,7 +54,7 @@ public class ShowResultsFxController extends WizardStepFxControllerBase
 	@FXML private VBox detailsPane;
 	@FXML private Label lblBioId;
 	@FXML private Label lblScore;
-	@FXML private Label lblSamisId;
+	@FXML private Label lblPersonId;
 	@FXML private Label lblFirstName;
 	@FXML private Label lblFatherName;
 	@FXML private Label lblFamilyName;
@@ -157,7 +157,7 @@ public class ShowResultsFxController extends WizardStepFxControllerBase
 		
 		    lblBioId.setText(resources.getString("label.notAvailable"));
 		    lblScore.setText(resources.getString("label.notAvailable"));
-		    lblSamisId.setText(resources.getString("label.notAvailable"));
+		    lblPersonId.setText(resources.getString("label.notAvailable"));
 		    lblFirstName.setText(resources.getString("label.notAvailable"));
 		    lblFatherName.setText(resources.getString("label.notAvailable"));
 		    lblFamilyName.setText(resources.getString("label.notAvailable"));
@@ -194,7 +194,7 @@ public class ShowResultsFxController extends WizardStepFxControllerBase
 			    // default values
 			    lblBioId.setText(resources.getString("label.notAvailable"));
 			    lblScore.setText(resources.getString("label.notAvailable"));
-			    lblSamisId.setText(resources.getString("label.notAvailable"));
+			    lblPersonId.setText(resources.getString("label.notAvailable"));
 			    lblFirstName.setText(resources.getString("label.notAvailable"));
 			    lblFatherName.setText(resources.getString("label.notAvailable"));
 			    lblFamilyName.setText(resources.getString("label.notAvailable"));
@@ -221,7 +221,7 @@ public class ShowResultsFxController extends WizardStepFxControllerBase
 			    if(samisId > 0)
 			    {
 			        String sSamisId = AppUtils.localizeNumbers(String.valueOf(samisId));
-			        lblSamisId.setText(sSamisId);
+			        lblPersonId.setText(sSamisId);
 			    }
 			
 			    if(firstName != null) lblFirstName.setText(firstName);

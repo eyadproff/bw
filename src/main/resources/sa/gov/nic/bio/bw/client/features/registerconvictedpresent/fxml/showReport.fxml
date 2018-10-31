@@ -25,7 +25,7 @@
             <GridPane alignment="CENTER" vgap="5.0" hgap="5.0">
                 <Label text="%label.enrollmentDate" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
                 <TextField fx:id="txtReportNumber" editable="false" prefColumnCount="10" focusTraversable="false" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
-                <Label text="%label.generalFileNumber" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                <Label text="%label.criminalBiometricsId" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
                 <TextField fx:id="txtGeneralFileNumber" editable="false" prefColumnCount="10" focusTraversable="false" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
             </GridPane>
         </VBox>

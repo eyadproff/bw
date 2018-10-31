@@ -92,10 +92,10 @@ public class BuildFingerprintCardIdentificationRecordReportTask extends Task<Jas
 		params.put(PARAMETER_NATIONALITY, fingerprintCardIdentificationRecordReport.getNationality());
 		params.put(PARAMETER_OCCUPATION, fingerprintCardIdentificationRecordReport.getOccupation());
 		params.put(PARAMETER_GENDER, fingerprintCardIdentificationRecordReport.getGender());
-		params.put(PARAMETER_BIOMETRICS_ID, fingerprintCardIdentificationRecordReport.getBiometricsId());
-		params.put(PARAMETER_GENERAL_FILE_NUMBER, fingerprintCardIdentificationRecordReport.getGeneralFileNumber());
-		params.put(PARAMETER_SAMIS_ID, fingerprintCardIdentificationRecordReport.getSamisId());
-		params.put(PARAMETER_SAMIS_ID_TYPE, fingerprintCardIdentificationRecordReport.getSamisIdType());
+		params.put(PARAMETER_BIOMETRICS_ID, fingerprintCardIdentificationRecordReport.getCivilBiometricsId());
+		params.put(PARAMETER_GENERAL_FILE_NUMBER, fingerprintCardIdentificationRecordReport.getCriminalBiometricsId());
+		params.put(PARAMETER_SAMIS_ID, fingerprintCardIdentificationRecordReport.getPersonId());
+		params.put(PARAMETER_SAMIS_ID_TYPE, fingerprintCardIdentificationRecordReport.getPersonType());
 		params.put(PARAMETER_DOCUMENT_ID, fingerprintCardIdentificationRecordReport.getDocumentId());
 		params.put(PARAMETER_DOCUMENT_TYPE, fingerprintCardIdentificationRecordReport.getDocumentType());
 		params.put(PARAMETER_DOCUMENT_ISSUANCE_DATE,

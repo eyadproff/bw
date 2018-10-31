@@ -30,9 +30,9 @@ import sa.gov.nic.bio.bw.client.core.workflow.Input;
 import sa.gov.nic.bio.bw.client.core.workflow.Output;
 import sa.gov.nic.bio.bw.client.features.commons.lookups.CountriesLookup;
 import sa.gov.nic.bio.bw.client.features.commons.lookups.SamisIdTypesLookup;
-import sa.gov.nic.bio.bw.client.features.commons.webservice.CountryBean;
+import sa.gov.nic.bio.bw.client.features.commons.webservice.Country;
 import sa.gov.nic.bio.bw.client.features.commons.webservice.Name;
-import sa.gov.nic.bio.bw.client.features.commons.webservice.SamisIdType;
+import sa.gov.nic.bio.bw.client.features.commons.webservice.PersonType;
 import sa.gov.nic.bio.bw.client.features.convictedreportinquiry.utils.ConvictedReportInquiryErrorCodes;
 import sa.gov.nic.bio.bw.client.features.registerconvictedpresent.webservice.ConvictedReport;
 
@@ -142,28 +142,28 @@ public class ConvictedReportInquiryPaneFxController extends BodyFxControllerBase
 		    ConvictedReport convictedReport = param.getValue().getKey();
 			
 			@SuppressWarnings("unchecked")
-			List<SamisIdType> samisIdTypes = (List<SamisIdType>)
+			List<PersonType> personTypes = (List<PersonType>)
 														Context.getUserSession().getAttribute(SamisIdTypesLookup.KEY);
 			
 			Integer samisIdTypeInteger = convictedReport.getSubjSamisType();
 			if(samisIdTypeInteger != null)
 			{
-				SamisIdType theSamisIdType = null;
+				PersonType thePersonType = null;
 				
-				for(SamisIdType type : samisIdTypes)
+				for(PersonType type : personTypes)
 				{
 					if(type.getCode() == samisIdTypeInteger)
 					{
-						theSamisIdType = type;
+						thePersonType = type;
 						break;
 					}
 				}
 				
-				if(theSamisIdType != null)
+				if(thePersonType != null)
 				{
 					boolean arabic = Context.getGuiLanguage() == GuiLanguage.ARABIC;
-					String samisIdType = AppUtils.localizeNumbers(arabic ? theSamisIdType.getDescriptionAR() :
-							                                               theSamisIdType.getDescriptionEN());
+					String samisIdType = AppUtils.localizeNumbers(arabic ? thePersonType.getDescriptionAR() :
+							                                               thePersonType.getDescriptionEN());
 					return new SimpleStringProperty(samisIdType);
 				}
 			}
@@ -177,7 +177,7 @@ public class ConvictedReportInquiryPaneFxController extends BodyFxControllerBase
 		    ConvictedReport convictedReport = param.getValue().getKey();
 		
 			@SuppressWarnings("unchecked")
-			List<CountryBean> countries = (List<CountryBean>)
+			List<Country> countries = (List<Country>)
 														Context.getUserSession().getAttribute(CountriesLookup.KEY);
 			
 			Integer nationalityCode = convictedReport.getSubjNationalityCode();
@@ -187,9 +187,9 @@ public class ConvictedReportInquiryPaneFxController extends BodyFxControllerBase
 				return new SimpleStringProperty(resources.getString("combobox.unknownNationality"));
 			}
 			
-			CountryBean countryBean = null;
+			Country countryBean = null;
 			
-			for(CountryBean country : countries)
+			for(Country country : countries)
 			{
 				if(country.getCode() == nationalityCode)
 				{

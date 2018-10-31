@@ -8,11 +8,11 @@ import java.util.List;
 public interface LookupAPI
 {
 	@GET("services-gateway-lookups/api/application/person-type/v1")
-	Call<List<SamisIdType>> lookupSamisIdTypes();
+	Call<List<PersonType>> lookupSamisIdTypes();
 	
 	@GET("services-gateway-lookups/api/application/id-types/v1")
 	Call<List<DocumentType>> lookupDocumentTypes();
 	
 	@GET("services-gateway-lookups/api/application/nationality/all/v1")
-	Call<List<CountryBean>> lookupCountries();
+	Call<List<Country>> lookupCountries();
 }
