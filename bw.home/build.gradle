@@ -1,0 +1,6 @@
+project.ext.moduleName = 'bw.home'
+
+dependencies {
+    implementation project(':bw.core')
+    implementation project(':bw.workflow.commons')
+}

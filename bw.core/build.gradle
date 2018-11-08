@@ -1,0 +1,38 @@
+import org.apache.tools.ant.filters.ReplaceTokens
+
+project.ext.moduleName = 'bw.core'
+
+apply plugin: 'java-library'
+
+dependencies {
+    // Retrofit HTTP client
+    api name: "retrofit-2.4.0"
+    implementation name: "okhttp-3.11.0"
+    implementation name: "okio-1.15.0"
+    implementation name: "converter-gson-2.4.0"
+    implementation name: "gson-2.8.5"
+
+    // Tomcat websocket client
+    implementation name: "javax.websocket-api-1.1"
+    implementation name: "tomcat-websocket-8.5.33"
+    implementation name: "tomcat-util-8.5.33"
+    implementation name: "tomcat-juli-8.5.33"
+    implementation name: "tomcat-api-8.5.33"
+
+    api project(':bio.commons')
+    runtimeOnly project(':bw.login')
+    runtimeOnly project(':bw.home')
+}
+
+processResources {
+    filesMatching('**/config.properties') {
+        def env = System.getenv('build-environemnt')
+        println 'build-environment = ' + env
+
+        filter(ReplaceTokens, tokens:['APP_VERSION': project.version])
+
+        /*if(env == 'INT') filter(ReplaceTokens, tokens:['APP_VERSION': project.version + '-SNAPSHOT' + new Date().format('yyyyMMddHHmmss')])
+        else if(env == 'PROD') filter(ReplaceTokens, tokens:['APP_VERSION': project.version])
+        else *//*(DEV)*//* filter(ReplaceTokens, tokens:['APP_VERSION': project.version + '-DEV'])*/
+    }
+}

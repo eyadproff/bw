@@ -1,0 +1,9 @@
+project.ext.moduleName = 'bw.workflow.commons'
+
+apply plugin: 'java-library'
+
+dependencies {
+    api project(':bw.core')
+    implementation project(':bw.lib.jasperreports')
+    implementation name: "gson-2.8.5"
+}

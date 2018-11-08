@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.ButtonType?>
+<?import javafx.scene.control.Dialog?>
+<?import javafx.scene.control.DialogPane?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressIndicator?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import sa.gov.nic.bio.bw.features.commons.ui.ImageViewPane?>
+<Dialog xmlns="http://javafx.com/javafx"
+        xmlns:fx="http://javafx.com/fxml"
+        fx:id="dialog" title="%dialog.title.fingerprintCapturingWindow"
+        fx:controller="sa.gov.nic.bio.bw.login.controllers.CaptureFingerprintDialogFxController">
+
+    <fx:define>
+        <ToggleGroup fx:id="toggleGroup"/>
+    </fx:define>
+
+    <dialogPane>
+        <DialogPane prefWidth="250.0" prefHeight="350.0" headerText="%captureFingerprint.message" stylesheets="@/sa/gov/nic/bio/bw/core/css/style.css,@../css/style.css">
+            <graphic>
+                <ImageView>
+                    <Image url="@../images/change_fingerprint_logo.png"/>
+                </ImageView>
+            </graphic>
+            <content>
+                <HBox alignment="CENTER">
+                    <VBox alignment="CENTER" spacing="5.0">
+                        <ImageViewPane fx:id="paneFingerprintDeviceLivePreview" minHeight="79.0" managed="false" visible="false">
+                            <imageView>
+                                <ImageView fx:id="ivFingerprintDeviceLivePreview" preserveRatio="true"/>
+                            </imageView>
+                        </ImageViewPane>
+                        <ProgressIndicator fx:id="piProgress" prefHeight="25.0" prefWidth="25.0"/>
+                        <ImageView fx:id="ivErrorIcon" managed="false" visible="false">
+                            <Image url="@/sa/gov/nic/bio/bw/core/images/error.png"/>
+                        </ImageView>
+                        <Label fx:id="lblStatus" text="%label.status.waitingDeviceResponse" wrapText="true" textAlignment="CENTER"/>
+                    </VBox>
+                </HBox>
+            </content>
+            <ButtonType fx:id="btCancel" text="%button.cancel"/>
+        </DialogPane>
+    </dialogPane>
+</Dialog>

@@ -1,0 +1,7 @@
+project.ext.moduleName = 'bw.workflow.registerconvictednotpresent'
+
+dependencies {
+    implementation project(':bw.workflow.commons')
+    implementation project(':bw.workflow.fingerprintcardidentification')
+    implementation project(':bw.workflow.registerconvictedpresent')
+}

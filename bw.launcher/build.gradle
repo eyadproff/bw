@@ -1,0 +1,52 @@
+project.ext.moduleName = 'bw.launcher'
+
+apply plugin: 'application'
+
+mainClassName = 'sa.gov.nic.bio.bw.AppLauncher'
+
+run {
+    inputs.property("moduleName", moduleName)
+    doFirst {
+        jvmArgs = [
+                '--module-path', classpath.asPath,
+                '--add-modules', 'ALL-MODULE-PATH',
+                "--add-opens=javafx.base/com.sun.javafx.runtime=controlsfx",
+                "--add-opens=javafx.graphics/com.sun.javafx.css=controlsfx",
+                "--add-opens=javafx.graphics/com.sun.javafx.scene=controlsfx",
+                "--add-opens=javafx.graphics/com.sun.javafx.scene.traversal=controlsfx",
+                "--add-opens=javafx.controls/com.sun.javafx.scene.control=controlsfx",
+                "--add-opens=javafx.controls/com.sun.javafx.scene.control.behavior=controlsfx",
+                "--add-opens=javafx.controls/javafx.scene.control.skin=controlsfx",
+                "--add-opens=javafx.graphics/javafx.scene=controlsfx",
+                "--add-opens=java.base/java.time.chrono=bw.core",
+                '-Djava.library.path=../build-resources/javafx-dlls/64-bit',
+                '-Djavafx.preloader=sa.gov.nic.bio.bw.preloader.AppPreloader',
+                '--module', "$moduleName/$mainClassName"
+        ]
+        classpath = files()
+    }
+}
+
+dependencies {
+    implementation project(':bw.core')
+    project(':').subprojects.each {
+        if(it.name.startsWith("bw.workflow.") && it.name != "bw.workflow.commons") {
+            runtimeOnly project(':' + it.name)
+        }
+    }
+}
+
+jar {
+    manifest {
+        attributes('Implementation-Title': project.name,
+                'Implementation-Version': project.version,
+                'Implementation-Vendor': 'NIC',
+                'Application-Name': 'Biometrics Workstation',
+                'Built-By': 'Biometrics Team',
+                'JavaFX-Preloader-Class': 'sa.gov.nic.bio.bw.preloader.AppPreloader',
+                'JavaFX-Application-Class': 'sa.gov.nic.bio.bw.AppLauncher',
+                'Main-Class': 'sa.gov.nic.bio.bw.AppLauncher',
+                'Trusted-Library': true,
+                'Class-Path': configurations.runtimeClasspath.files.collect { it.getName() }.join(' '))
+    }
+}
