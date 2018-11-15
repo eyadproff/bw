@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.shape.SVGPath?>
-<?import sa.gov.nic.bio.bw.features.commons.ui.AutoScalingStackPane?>
+<?import sa.gov.nic.bio.bw.workflow.commons.ui.AutoScalingStackPane?>
 <Dialog xmlns="http://javafx.com/javafx"
         xmlns:fx="http://javafx.com/fxml"
         fx:id="dialog"

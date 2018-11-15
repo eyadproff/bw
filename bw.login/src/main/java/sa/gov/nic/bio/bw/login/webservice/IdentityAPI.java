@@ -4,7 +4,7 @@ import retrofit2.Call;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.POST;
-import sa.gov.nic.bio.bw.features.commons.beans.LoginBean;
+import sa.gov.nic.bio.bw.workflow.commons.beans.LoginBean;
 
 public interface IdentityAPI
 {

@@ -4,8 +4,8 @@ module bw.workflow.searchbyfaceimage
 	requires bw.workflow.commons;
 	requires bio.commons;
 	
-	opens sa.gov.nic.bio.bw.features.searchbyfaceimage to bw.core;
-	opens sa.gov.nic.bio.bw.features.searchbyfaceimage.fxml to bw.core;
-	opens sa.gov.nic.bio.bw.features.searchbyfaceimage.controllers to javafx.fxml, bw.core;
-	exports sa.gov.nic.bio.bw.features.searchbyfaceimage.controllers;
+	opens sa.gov.nic.bio.bw.workflow.searchbyfaceimage to bw.core;
+	opens sa.gov.nic.bio.bw.workflow.searchbyfaceimage.fxml to bw.core;
+	opens sa.gov.nic.bio.bw.workflow.searchbyfaceimage.controllers to javafx.fxml, bw.core;
+	exports sa.gov.nic.bio.bw.workflow.searchbyfaceimage.controllers;
 }

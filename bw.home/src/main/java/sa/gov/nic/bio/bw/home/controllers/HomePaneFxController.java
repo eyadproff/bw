@@ -16,7 +16,7 @@ import sa.gov.nic.bio.bw.core.controllers.DevicesRunnerGadgetPaneFxController;
 import sa.gov.nic.bio.bw.core.utils.Device;
 import sa.gov.nic.bio.bw.core.utils.FxmlFile;
 import sa.gov.nic.bio.bw.core.utils.GuiUtils;
-import sa.gov.nic.bio.bw.features.commons.beans.HomeBean;
+import sa.gov.nic.bio.bw.workflow.commons.beans.HomeBean;
 import sa.gov.nic.bio.bw.home.utils.HomeErrorCodes;
 
 import java.util.List;

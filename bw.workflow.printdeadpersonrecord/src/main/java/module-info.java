@@ -5,8 +5,8 @@ module bw.workflow.printdeadpersonrecord
 	requires jasperreports;
 	requires bio.commons;
 	
-	opens sa.gov.nic.bio.bw.features.printdeadpersonrecord to bw.core;
-	opens sa.gov.nic.bio.bw.features.printdeadpersonrecord.fxml to bw.core;
-	opens sa.gov.nic.bio.bw.features.printdeadpersonrecord.workflow to bw.core;
-	opens sa.gov.nic.bio.bw.features.printdeadpersonrecord.controllers to javafx.fxml, bw.core;
+	opens sa.gov.nic.bio.bw.workflow.printdeadpersonrecord to bw.core;
+	opens sa.gov.nic.bio.bw.workflow.printdeadpersonrecord.fxml to bw.core;
+	opens sa.gov.nic.bio.bw.workflow.printdeadpersonrecord.tasks to bw.core;
+	opens sa.gov.nic.bio.bw.workflow.printdeadpersonrecord.controllers to javafx.fxml, bw.core;
 }

@@ -1,7 +1,7 @@
 module bw.workflow.commons
 {
-	exports sa.gov.nic.bio.bw.features.commons.ui;
-	exports sa.gov.nic.bio.bw.features.commons.beans;
+	exports sa.gov.nic.bio.bw.workflow.commons.ui;
+	exports sa.gov.nic.bio.bw.workflow.commons.beans;
 	requires bw.core;
 	requires bw.lib.jasperreports;
 	requires gson;
@@ -9,14 +9,13 @@ module bw.workflow.commons
 	requires biokit.library;
 	requires bio.commons;
 	
-	opens sa.gov.nic.bio.bw.features.commons.images;
-	opens sa.gov.nic.bio.bw.features.commons.fxml to bw.core;
-	opens sa.gov.nic.bio.bw.features.commons.workflow to bw.core;
-	opens sa.gov.nic.bio.bw.features.commons.controllers to javafx.fxml, bw.core;
-	exports sa.gov.nic.bio.bw.features.commons.lookups;
-	exports sa.gov.nic.bio.bw.features.commons.webservice;
-	exports sa.gov.nic.bio.bw.features.commons.controllers;
-	exports sa.gov.nic.bio.bw.features.commons.workflow;
-	exports sa.gov.nic.bio.bw.features.commons.tasks;
-	exports sa.gov.nic.bio.bw.features.commons.utils;
+	opens sa.gov.nic.bio.bw.workflow.commons.images;
+	opens sa.gov.nic.bio.bw.workflow.commons.fxml to bw.core;
+	opens sa.gov.nic.bio.bw.workflow.commons.tasks to bw.core;
+	opens sa.gov.nic.bio.bw.workflow.commons.controllers to javafx.fxml, bw.core;
+	exports sa.gov.nic.bio.bw.workflow.commons.lookups;
+	exports sa.gov.nic.bio.bw.workflow.commons.webservice;
+	exports sa.gov.nic.bio.bw.workflow.commons.controllers;
+	exports sa.gov.nic.bio.bw.workflow.commons.tasks;
+	exports sa.gov.nic.bio.bw.workflow.commons.utils;
 }

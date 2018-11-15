@@ -16,7 +16,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.SVGPath?>
-<?import sa.gov.nic.bio.bw.features.commons.ui.AutoScalingStackPane?>
+<?import sa.gov.nic.bio.bw.workflow.commons.ui.AutoScalingStackPane?>
 <VBox xmlns="http://javafx.com/javafx/8.0.152" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="sa.gov.nic.bio.bw.login.controllers.LoginPaneFxController"
       fx:id="rootPane" stylesheets="@../css/style.css" alignment="CENTER" spacing="15.0">

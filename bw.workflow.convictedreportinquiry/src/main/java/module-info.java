@@ -6,8 +6,8 @@ module bw.workflow.convictedreportinquiry
 	requires jasperreports;
 	requires bio.commons;
 	
-	opens sa.gov.nic.bio.bw.features.convictedreportinquiry to bw.core;
-	opens sa.gov.nic.bio.bw.features.convictedreportinquiry.fxml to bw.core;
-	opens sa.gov.nic.bio.bw.features.convictedreportinquiry.workflow to bw.core;
-	opens sa.gov.nic.bio.bw.features.convictedreportinquiry.controllers to javafx.fxml, bw.core;
+	opens sa.gov.nic.bio.bw.workflow.convictedreportinquiry to bw.core;
+	opens sa.gov.nic.bio.bw.workflow.convictedreportinquiry.fxml to bw.core;
+	opens sa.gov.nic.bio.bw.workflow.convictedreportinquiry.tasks to bw.core;
+	opens sa.gov.nic.bio.bw.workflow.convictedreportinquiry.controllers to javafx.fxml, bw.core;
 }

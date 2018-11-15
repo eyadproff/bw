@@ -6,8 +6,8 @@ module bw.workflow.fingerprintcardidentification
 	requires bcl.utils;
 	requires biokit.library;
 	
-	opens sa.gov.nic.bio.bw.features.fingerprintcardidentification to bw.core;
-	opens sa.gov.nic.bio.bw.features.fingerprintcardidentification.fxml to bw.core;
-	opens sa.gov.nic.bio.bw.features.fingerprintcardidentification.controllers to javafx.fxml, bw.core;
-	exports sa.gov.nic.bio.bw.features.fingerprintcardidentification.controllers;
+	opens sa.gov.nic.bio.bw.workflow.fingerprintcardidentification to bw.core;
+	opens sa.gov.nic.bio.bw.workflow.fingerprintcardidentification.fxml to bw.core;
+	opens sa.gov.nic.bio.bw.workflow.fingerprintcardidentification.controllers to javafx.fxml, bw.core;
+	exports sa.gov.nic.bio.bw.workflow.fingerprintcardidentification.controllers;
 }

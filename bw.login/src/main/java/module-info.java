@@ -16,6 +16,6 @@ module bw.login
 	
 	opens sa.gov.nic.bio.bw.login to bw.core;
 	opens sa.gov.nic.bio.bw.login.fxml to bw.core;
-	opens sa.gov.nic.bio.bw.login.workflow to bw.core;
+	opens sa.gov.nic.bio.bw.login.tasks to bw.core;
 	opens sa.gov.nic.bio.bw.login.controllers to javafx.fxml, bw.core;
 }

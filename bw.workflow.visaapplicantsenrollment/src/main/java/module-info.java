@@ -7,9 +7,9 @@ module bw.workflow.visaapplicantsenrollment
 	requires barbecue;
 	requires bio.commons;
 	
-	opens sa.gov.nic.bio.bw.features.visaapplicantsenrollment to bw.core;
-	opens sa.gov.nic.bio.bw.features.visaapplicantsenrollment.fxml to bw.core;
-	opens sa.gov.nic.bio.bw.features.visaapplicantsenrollment.lookups to bw.core;
-	opens sa.gov.nic.bio.bw.features.visaapplicantsenrollment.controllers to javafx.fxml, bw.core;
-	exports sa.gov.nic.bio.bw.features.visaapplicantsenrollment.controllers;
+	opens sa.gov.nic.bio.bw.workflow.visaapplicantsenrollment to bw.core;
+	opens sa.gov.nic.bio.bw.workflow.visaapplicantsenrollment.fxml to bw.core;
+	opens sa.gov.nic.bio.bw.workflow.visaapplicantsenrollment.lookups to bw.core;
+	opens sa.gov.nic.bio.bw.workflow.visaapplicantsenrollment.controllers to javafx.fxml, bw.core;
+	exports sa.gov.nic.bio.bw.workflow.visaapplicantsenrollment.controllers;
 }

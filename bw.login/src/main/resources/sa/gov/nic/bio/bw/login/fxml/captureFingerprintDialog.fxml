@@ -10,7 +10,7 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<?import sa.gov.nic.bio.bw.features.commons.ui.ImageViewPane?>
+<?import sa.gov.nic.bio.bw.workflow.commons.ui.ImageViewPane?>
 <Dialog xmlns="http://javafx.com/javafx"
         xmlns:fx="http://javafx.com/fxml"
         fx:id="dialog" title="%dialog.title.fingerprintCapturingWindow"
