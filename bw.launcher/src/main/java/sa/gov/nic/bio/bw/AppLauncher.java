@@ -59,7 +59,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 
 /**
@@ -162,7 +161,7 @@ public class AppLauncher extends Application implements AppLogger
 	    if(runtimeEnvironment == RuntimeEnvironment.LOCAL || runtimeEnvironment == RuntimeEnvironment.DEV)
 	    {
 		    CountDownLatch latch = new CountDownLatch(1);
-		    AtomicReference<String> reference = new AtomicReference<>();
+		    String[] userChoice = new String[1];
 		
 		    Platform.runLater(() ->
 		    {
@@ -170,16 +169,22 @@ public class AppLauncher extends Application implements AppLogger
 			    String headerText = stringsBundle.getString("dialog.choice.selectServer.headerText");
 			    String buttonText = stringsBundle.getString("dialog.choice.selectServer.button");
 			
-			    reference.set(DialogUtils.showChoiceDialog(null, null, dialogTitle,
-			                               headerText, urls, buttonText, true,
-                                           guiLanguage.getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT));
+			    userChoice[0] = DialogUtils.showChoiceDialog(null, null, dialogTitle,
+		                                         headerText, urls, buttonText, true,
+                                                guiLanguage.getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT);
 			    latch.countDown();
 		    });
 		
 		    try
 		    {
 			    latch.await(); // wait until the user choose a url
-			    serverUrl = reference.get();
+			    serverUrl = userChoice[0];
+			    
+			    if(serverUrl == null)
+			    {
+			    	Platform.exit();
+			    	return;
+			    }
 		    }
 		    catch(InterruptedException e)
 		    {

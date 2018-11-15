@@ -196,6 +196,11 @@ public abstract class WizardWorkflowBase extends WorkflowBase implements Resourc
 		uiInputData.put(inputClass.getName() + "#" + inputName, value);
 	}
 	
+	protected void removeData(Class<?> inputClass, String inputName)
+	{
+		uiInputData.remove(inputClass.getName() + "#" + inputName);
+	}
+	
 	private boolean isGoingBackward()
 	{
 		Object direction = uiInputData.get(KEY_WORKFLOW_DIRECTION);

@@ -114,7 +114,7 @@ public class PunishmentDetailsPaneFxController extends WizardStepFxControllerBas
 			@Override
 			public Integer fromString(String string)
 			{
-				if(string.matches("\\d+")) return new Integer(string);
+				if(string.matches("\\d+")) return Integer.valueOf(string);
 				else return 0;
 			}
 			

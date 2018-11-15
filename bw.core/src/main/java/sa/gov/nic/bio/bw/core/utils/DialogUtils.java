@@ -109,12 +109,10 @@ public class DialogUtils
 		
 		stage.sizeToScene();
 		if(idleMonitorRegisterer != null) idleMonitorRegisterer.registerStageForIdleMonitoring(stage);
-		choiceDialog.showAndWait();
+		Optional<String> optional = choiceDialog.showAndWait();
 		if(idleMonitorRegisterer != null) idleMonitorRegisterer.unregisterStageForIdleMonitoring(stage);
 		
-		String selectedItem = choiceDialog.getSelectedItem();
-		
-		return selectedItem != null ? selectedItem : choices[0];
+		return optional.orElse(null);
 	}
 	
 	public static boolean showConfirmationDialog(Window ownerWindow, IdleMonitorRegisterer idleMonitorRegisterer,

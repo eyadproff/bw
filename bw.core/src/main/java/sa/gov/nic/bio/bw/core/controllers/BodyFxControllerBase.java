@@ -7,9 +7,11 @@ import org.controlsfx.control.NotificationPane;
 import sa.gov.nic.bio.bw.core.Context;
 import sa.gov.nic.bio.bw.core.interfaces.NotificationController;
 import sa.gov.nic.bio.bw.core.interfaces.WorkflowUserTaskController;
-import sa.gov.nic.bio.bw.core.utils.WithResourceBundle;
+import sa.gov.nic.bio.bw.core.workflow.SignalType;
+import sa.gov.nic.bio.bw.core.workflow.Workflow;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -17,7 +19,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
  *
  * @author Fouad Almalki
  */
-@WithResourceBundle
 public abstract class BodyFxControllerBase extends RegionFxControllerBase implements WorkflowUserTaskController,
 																					 NotificationController
 {
@@ -124,5 +125,12 @@ public abstract class BodyFxControllerBase extends RegionFxControllerBase implem
 			onShowingProgress(true);
 			Context.getWorkflowManager().submitUserTask(new HashMap<>());
 		}
+	}
+	
+	protected void resetWorkflow()
+	{
+		Map<String, Object> uiDataMap = new HashMap<>();
+		uiDataMap.put(Workflow.KEY_SIGNAL_TYPE, SignalType.RESET_WORKFLOW_STEP);
+		Context.getWorkflowManager().submitUserTask(uiDataMap);
 	}
 }

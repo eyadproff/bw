@@ -13,12 +13,12 @@ module bw.core
 	requires transitive javafx.swing;
 	requires transitive controlsfx;
 	requires transitive retrofit2;
-	requires transitive bio.commons;
 	requires retrofit2.converter.gson;
 	requires gson;
 	requires okhttp3;
 	requires biokit.library;
 	requires bcl.utils;
+	requires bio.commons;
 	
 	exports sa.gov.nic.bio.bw.core.workflow;
 	exports sa.gov.nic.bio.bw.core;

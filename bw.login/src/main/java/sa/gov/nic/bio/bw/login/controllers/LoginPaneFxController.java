@@ -173,9 +173,13 @@ public class LoginPaneFxController extends BodyFxControllerBase implements Persi
 		cboLanguage.getSelectionModel().select(Context.getGuiLanguage());
 		cboLanguage.setOnAction(event ->
         {
+	        username = txtUsernameLoginByPassword.getText().trim();
+	        password = txtPassword.getText().trim();
+        	
 	        GuiLanguage guiLanguage = cboLanguage.getValue();
 	        Locale.setDefault(guiLanguage.getLocale());
 	        Context.getCoreFxController().switchLanguage(guiLanguage, this);
+	        resetWorkflow();
         });
 
 		Context.getCoreFxController().getHeaderPaneController().hideRegion();
@@ -183,8 +187,13 @@ public class LoginPaneFxController extends BodyFxControllerBase implements Persi
 		Context.getCoreFxController().getDeviceManagerGadgetPaneController().hideRegion();
 		Context.getCoreFxController().getFooterPaneController().showRegion();
 		
-		if(Context.getRuntimeEnvironment() == RuntimeEnvironment.LOCAL ||
-		   Context.getRuntimeEnvironment() == RuntimeEnvironment.DEV)
+		if(username != null && password != null)
+		{
+			txtUsernameLoginByPassword.setText(username);
+			txtPassword.setText(password);
+		}
+		else if(Context.getRuntimeEnvironment() == RuntimeEnvironment.LOCAL ||
+		        Context.getRuntimeEnvironment() == RuntimeEnvironment.DEV)
 		{
 			txtUsernameLoginByPassword.setText(Context.getConfigManager().getProperty("dev.login.username"));
 			txtPassword.setText(Context.getConfigManager().getProperty("dev.login.password"));

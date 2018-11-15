@@ -1,5 +1,4 @@
 include 'bw.lib.jasperreports'
-include 'bio.commons'
 include 'bw.core'
 include 'bw.workflow.commons'
 include 'bw.login'

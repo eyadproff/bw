@@ -10,6 +10,7 @@ module bw.login
 	requires java.prefs;
 	requires bw.workflow.commons;
 	requires bcl.utils;
+	requires bio.commons;
 	
 	provides sa.gov.nic.bio.bw.core.workflow.Workflow with sa.gov.nic.bio.bw.login.LoginWorkflow;
 	

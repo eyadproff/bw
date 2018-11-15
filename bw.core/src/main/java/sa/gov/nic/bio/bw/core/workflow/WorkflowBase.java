@@ -4,7 +4,6 @@ import sa.gov.nic.bio.bw.core.Context;
 import sa.gov.nic.bio.bw.core.controllers.BodyFxControllerBase;
 import sa.gov.nic.bio.bw.core.interfaces.AppLogger;
 import sa.gov.nic.bio.bw.core.utils.CoreErrorCodes;
-import sa.gov.nic.bio.bw.core.utils.WithResourceBundle;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -15,7 +14,6 @@ import java.util.Map;
  *
  * @author Fouad Almalki
  */
-@WithResourceBundle
 public abstract class WorkflowBase implements Workflow, AppLogger
 {
 	protected final Map<String, Object> uiInputData = new HashMap<>();
@@ -60,12 +58,14 @@ public abstract class WorkflowBase implements Workflow, AppLogger
 		Map<String, Object> uiDataMap = Context.getWorkflowManager().getUserTasks().take();
 		SignalType signalType = (SignalType) uiDataMap.get(KEY_SIGNAL_TYPE);
 		
-		if(signalType != null) throw new Signal(signalType, uiDataMap); // menu navigation, wizard navigation and logout
+		if(signalType != null && signalType != SignalType.RESET_WORKFLOW_STEP)
+							throw new Signal(signalType, uiDataMap); // menu navigation, wizard navigation and logout
 		else uiInputData.putAll(uiDataMap);
 		
 		try
 		{
 			Workflow.saveWorkflowOutputs(currentBodyFxController, uiInputData);
+			if(signalType == SignalType.RESET_WORKFLOW_STEP) throw new Signal(signalType, uiDataMap);
 		}
 		catch(Exception e)
 		{
@@ -82,11 +82,14 @@ public abstract class WorkflowBase implements Workflow, AppLogger
 	
 	public void executeTask(Class<? extends WorkflowTask> taskClass) throws Signal
 	{
+		boolean mockTasksEnabled = Context.getCoreFxController().isMockTasksEnabled();
+		
 		try
 		{
-			WorkflowTask workflowTask = taskClass.newInstance();
+			WorkflowTask workflowTask = taskClass.getConstructor().newInstance();
 			Workflow.loadWorkflowInputs(workflowTask, uiInputData, false, false);
-			workflowTask.execute();
+			if(mockTasksEnabled) workflowTask.mockExecute();
+			else workflowTask.execute();
 			Workflow.saveWorkflowOutputs(workflowTask, uiInputData);
 		}
 		catch(Exception e)

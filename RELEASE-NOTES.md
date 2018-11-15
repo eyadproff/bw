@@ -7,7 +7,7 @@
 | NEW    | new feature added            |
 | CHN    | change functionality         |
 
-**VERSION SCHEMA:** vYYYY.MM.#SEQ
+VERSION SCHEMA: vYYYY.MM.#SEQ
 
 ---
 
@@ -21,6 +21,7 @@
 - ENH: improve the login transition and eliminate the ui lagging.
 - ENH: Upgrade from Java 8 to Java 11.
 - ENH: Split the project into java modules.
+- ENH: Add the ability to mock tasks.
 
 ---
 

@@ -5,6 +5,7 @@ module bw.workflow.visaapplicantsenrollment
 	requires jasperreports;
 	requires biokit.library;
 	requires barbecue;
+	requires bio.commons;
 	
 	opens sa.gov.nic.bio.bw.features.visaapplicantsenrollment to bw.core;
 	opens sa.gov.nic.bio.bw.features.visaapplicantsenrollment.fxml to bw.core;

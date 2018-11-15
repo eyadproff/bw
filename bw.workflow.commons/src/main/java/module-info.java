@@ -7,6 +7,7 @@ module bw.workflow.commons
 	requires gson;
 	requires java.desktop;
 	requires biokit.library;
+	requires bio.commons;
 	
 	opens sa.gov.nic.bio.bw.features.commons.images;
 	opens sa.gov.nic.bio.bw.features.commons.fxml to bw.core;

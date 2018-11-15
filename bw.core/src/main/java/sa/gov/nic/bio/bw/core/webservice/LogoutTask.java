@@ -36,7 +36,7 @@ public class LogoutTask extends Task<Void> implements AppLogger
 		{
 			Exception exception = response.getException();
 			String errorMessage = "Failure on logout! errorCode = " + response.getErrorCode() +
-					", errorDetails = " + Arrays.toString(response.getErrorDetails());
+								  ", errorDetails = " + Arrays.toString(response.getErrorDetails());
 			
 			if(exception != null) LOGGER.log(Level.WARNING, errorMessage, exception);
 			else LOGGER.warning(errorMessage);
@@ -45,8 +45,7 @@ public class LogoutTask extends Task<Void> implements AppLogger
 		LOGGER.info("the user (" + username + ") is logged out");
 		LOGGER.fine("userToken = " + userToken);
 		
-		// LOGGER::fine doesn't work, I don't know WHY!!!
-		Arrays.stream(AppUtils.decodeJWT(userToken)).forEach(part -> LOGGER.fine(part));
+		Arrays.stream(AppUtils.decodeJWT(userToken)).forEach(LOGGER::fine);
 		
 		return null;
 	}

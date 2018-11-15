@@ -9,6 +9,13 @@ import java.util.Map;
 
 public interface WorkflowTask extends AppLogger
 {
+	void execute() throws Signal;
+	
+	default void mockExecute() throws Signal
+	{
+		execute();
+	}
+	
 	default <T> void resetWorkflowStepIfNegativeOrNullTaskResponse(TaskResponse<T> taskResponse) throws Signal
 	{
 		if(!taskResponse.isSuccess())
@@ -27,6 +34,4 @@ public interface WorkflowTask extends AppLogger
 			throw new Signal(SignalType.RESET_WORKFLOW_STEP, payload);
 		}
 	}
-	
-	void execute() throws Signal;
 }

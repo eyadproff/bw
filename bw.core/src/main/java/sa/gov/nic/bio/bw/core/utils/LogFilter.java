@@ -8,6 +8,7 @@ public class LogFilter implements Filter
 	@Override
 	public boolean isLoggable(LogRecord record)
 	{
-		return record.getSourceClassName().startsWith("sa.gov.nic.bio.bw");
+		return record.getSourceClassName().startsWith("sa.gov.nic.bio.bw") ||
+			   record.getSourceClassName().startsWith("java.util.Spliterators"); // for method references
 	}
 }

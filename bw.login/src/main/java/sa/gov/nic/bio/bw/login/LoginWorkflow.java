@@ -91,6 +91,9 @@ public class LoginWorkflow extends SinglePageWorkflowBase
 		setData(ScheduleRefreshTokenWorkflowTask.class, "userToken", loginBean.getUserToken());
 		executeTask(ScheduleRefreshTokenWorkflowTask.class);
 		
+		removeData(LoginPaneFxController.class, "username");
+		removeData(LoginPaneFxController.class, "password");
+		
 		throw new Signal(SignalType.SUCCESS_LOGIN);
 	}
 }

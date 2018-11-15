@@ -3,15 +3,16 @@ package sa.gov.nic.bio.bw.core.controllers;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.Pane;
 import org.controlsfx.glyphfont.FontAwesome;
 import org.controlsfx.glyphfont.Glyph;
 import sa.gov.nic.bio.bw.core.Context;
 import sa.gov.nic.bio.bw.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.core.utils.GuiUtils;
+import sa.gov.nic.bio.bw.core.utils.RuntimeEnvironment;
 
 /**
  * JavaFX controller for the header. Shown only after login. It contains information about the logged in
@@ -23,7 +24,6 @@ public class HeaderPaneFxController extends RegionFxControllerBase
 {
 	private static final String AVATAR_PLACEHOLDER_FILE = "/sa/gov/nic/bio/bw/core/images/avatar_placeholder.jpg";
 	
-	@FXML private Pane rootPane;
 	@FXML private ImageView ivAvatar;
 	@FXML private Label lblUsername;
 	@FXML private Label txtUsername;
@@ -31,6 +31,7 @@ public class HeaderPaneFxController extends RegionFxControllerBase
 	@FXML private Label txtOperatorName;
 	@FXML private Label lblLocation;
 	@FXML private Label txtLocation;
+	@FXML private CheckBox chbMockTasks;
 	@FXML private Button btnMyTransactions;
 	@FXML private Button btnLogout;
 
@@ -48,12 +49,17 @@ public class HeaderPaneFxController extends RegionFxControllerBase
 		lblLocation.setGraphic(locationIcon);
 		btnMyTransactions.setGraphic(myTransactionsIcon);
 		btnLogout.setGraphic(logoutIcon);
+		
+		if(Context.getRuntimeEnvironment() == RuntimeEnvironment.LOCAL ||
+		   Context.getRuntimeEnvironment() == RuntimeEnvironment.DEV)
+		{
+			GuiUtils.showNode(chbMockTasks, true);
+		}
 	}
 	
-	@Override
-	public Pane getRegionRootPane()
+	CheckBox getMockTasksCheckBox()
 	{
-		return rootPane;
+		return chbMockTasks;
 	}
 	
 	public void setUsername(String username)

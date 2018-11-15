@@ -99,9 +99,17 @@ public class CoreFxController extends FxControllerBase implements IdleMonitorReg
 	
 	public void reattachDeviceRunnerGadgetPane(){sidePane.getChildren().add(devicesRunnerGadgetPane);}
 	
+	public boolean isMockTasksEnabled()
+	{
+		return headerPaneController.getMockTasksCheckBox().isSelected();
+	}
+	
 	@Override
 	protected void initialize()
 	{
+		headerPaneController.getMockTasksCheckBox().selectedProperty().bindBidirectional(
+														footerPaneController.getMockTasksCheckBox().selectedProperty());
+		
 		Context.setCoreFxController(this);
 		
 		Thread.setDefaultUncaughtExceptionHandler((thread, throwable) ->
@@ -455,11 +463,8 @@ public class CoreFxController extends FxControllerBase implements IdleMonitorReg
 				stringsBundle.getString("label.environment." +
 							                  Context.getRuntimeEnvironment().name().toLowerCase()) + ")";
 		String windowTitle = AppUtils.localizeNumbers(title, Locale.getDefault(), false);
-		
 		FXMLLoader newRootPane = new FXMLLoader(fxmlUrl, stringsBundle);
-		
 		Stage oldStage = stage;
-		
 		Pane rootPane;
 		
 		try
@@ -492,20 +497,18 @@ public class CoreFxController extends FxControllerBase implements IdleMonitorReg
 		
 		ResourceBundleProvider resourceBundleProvider = Context.getModuleResourceBundleProviders()
 														.get(currentBodyController.getClass().getModule().getName());
-		newCoreFxController.currentBodyController = currentBodyController;
+		newCoreFxController.currentBodyController = currentBodyController; // to get its class info only
 		newCoreFxController.currentBodyResourceBundle =
-												resourceBundleProvider.getStringsResourceBundle(Locale.getDefault());
+												resourceBundleProvider.getStringsResourceBundle(toLanguage.getLocale());
 		newCoreFxController.registerStage(newStage);
-		
-		newCoreFxController.languageChanged = true;
 		Context.getWorkflowManager().setFormRenderer(newCoreFxController::renderBodyForm);
+		newCoreFxController.languageChanged = true;
 		
 		// save the language for later usage
 		Preferences prefs = Preferences.userNodeForPackage(AppConstants.PREF_NODE_CLASS);
 		prefs.put(AppConstants.UI_LANGUAGE_PREF_NAME, toLanguage.getLocale().getLanguage());
 		
 		boolean success = newCoreFxController.applyStateBundle(oldState);
-		
 		if(!success) return;
 		
 		oldStage.hide();
@@ -561,6 +564,7 @@ public class CoreFxController extends FxControllerBase implements IdleMonitorReg
 		stateBundle.putData("stageX", stage.getX());
 		stateBundle.putData("stageY", stage.getY());
 		stateBundle.putData("stageMaximized", stage.isMaximized());
+		stateBundle.putData("mockTasksEnabled", isMockTasksEnabled());
 	}
 	
 	/**
@@ -574,6 +578,7 @@ public class CoreFxController extends FxControllerBase implements IdleMonitorReg
 		double x = stateBundle.getDate("stageX", Double.class);
 		double y = stateBundle.getDate("stageY", Double.class);
 		boolean maximized = stateBundle.getDate("stageMaximized", Boolean.class);
+		boolean mockTasksEnabled = stateBundle.getDate("mockTasksEnabled", Boolean.class);
 		
 		if(maximized) stage.setMaximized(true);
 		else
@@ -583,6 +588,8 @@ public class CoreFxController extends FxControllerBase implements IdleMonitorReg
 			stage.setX(x);
 			stage.setY(y);
 		}
+		
+		if(mockTasksEnabled) headerPaneController.getMockTasksCheckBox().setSelected(true);
 	}
 	
 	/*
