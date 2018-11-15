@@ -5,6 +5,7 @@ import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
+import sa.gov.nic.bio.bw.commons.resources.images.CommonImages;
 import sa.gov.nic.bio.bw.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.features.printdeadpersonrecord.beans.DeadPersonRecordReport;
 
@@ -37,8 +38,6 @@ public class BuildDeadPersonRecordReportTask extends Task<JasperPrint>
 	
 	private static final String REPORT_TEMPLATE_FILE = "/sa/gov/nic/bio/bw/features/printdeadpersonrecord" +
 													   "/reports/dead_person_record.jrxml";
-	private static final String LOGO_FILE = "/sa/gov/nic/bio/bw/features/commons/images/saudi_security_logo.jpg";
-	private static final String IMAGE_PLACEHOLDER_FILE = "/sa/gov/nic/bio/bw/core/images/avatar_placeholder.jpg";
 	
 	private DeadPersonRecordReport deadPersonRecordReport;
 	
@@ -64,8 +63,7 @@ public class BuildDeadPersonRecordReportTask extends Task<JasperPrint>
 		}
 		else
 		{
-			params.put(PARAMETER_FACE_IMAGE, Thread.currentThread().getContextClassLoader()
-																   .getResourceAsStream(IMAGE_PLACEHOLDER_FILE));
+			params.put(PARAMETER_FACE_IMAGE, CommonImages.PLACEHOLDER_AVATAR.getAsInputStream());
 		}
 		
 		Map<Integer, String> fingerprintImages = deadPersonRecordReport.getFingerprintsImages();
@@ -100,7 +98,7 @@ public class BuildDeadPersonRecordReportTask extends Task<JasperPrint>
 		params.put(PARAMETER_BIRTH_PLACE, deadPersonRecordReport.getBirthPlace());
 		params.put(PARAMETER_DOCUMENT_EXPIRY_DATE, deadPersonRecordReport.getDocumentExpiryDate());
 		params.put(PARAMETER_INQUIRER_ID, deadPersonRecordReport.getInquirerId());
-		params.put(PARAMETER_LOGO, Thread.currentThread().getContextClassLoader().getResourceAsStream(LOGO_FILE));
+		params.put(PARAMETER_LOGO, CommonImages.LOGO_SAUDI_SECURITY.getAsInputStream());
 		
 		return JasperFillManager.fillReport(jasperReport, params);
 	}

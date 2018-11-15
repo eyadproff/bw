@@ -542,8 +542,7 @@ public class ApplicantInfoFxController extends WizardStepFxControllerBase
 		// check if the device is initialized
 		if(deviceManagerGadgetPaneController.isPassportScannerInitialized())
 		{
-			Image passportIcon = new Image(
-								Thread.currentThread().getContextClassLoader().getResourceAsStream(PASSPORT_ICON_FILE));
+			Image passportIcon = new Image(getClass().getResourceAsStream(PASSPORT_ICON_FILE));
 			ImageView imageView = new ImageView(passportIcon);
 			
 			Label lblMessage = new Label(

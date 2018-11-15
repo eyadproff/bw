@@ -21,14 +21,14 @@
                 <Label fx:id="lblDevicesRunnerNotWorking" text="%label.notWorking">
                     <graphic>
                         <ImageView>
-                            <Image url="@../images/red_status.png"/>
+                            <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/icon_red_status.png"/>
                         </ImageView>
                     </graphic>
                 </Label>
                 <Label fx:id="lblDevicesRunnerWorking" text="%label.working" visible="false" managed="false">
                     <graphic>
                         <ImageView>
-                            <Image url="@../images/green_status.png"/>
+                            <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/icon_green_status.png"/>
                         </ImageView>
                     </graphic>
                 </Label>
@@ -42,21 +42,21 @@
                                 <Label fx:id="lblFingerprintScannerNotInitialized" text="%label.notInitialized">
                                     <graphic>
                                         <ImageView>
-                                            <Image url="@../images/yellow_status.png"/>
+                                            <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/icon_yellow_status.png"/>
                                         </ImageView>
                                     </graphic>
                                 </Label>
                                 <Label fx:id="lblFingerprintScannerNotConnected" text="%label.notConnected" visible="false" managed="false">
                                     <graphic>
                                         <ImageView>
-                                            <Image url="@../images/red_status.png"/>
+                                            <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/icon_red_status.png"/>
                                         </ImageView>
                                     </graphic>
                                 </Label>
                                 <Label fx:id="lblFingerprintScannerInitialized" text="%label.initialized" visible="false" managed="false">
                                     <graphic>
                                         <ImageView>
-                                            <Image url="@../images/green_status.png"/>
+                                            <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/icon_green_status.png"/>
                                         </ImageView>
                                     </graphic>
                                 </Label>
@@ -71,21 +71,21 @@
                                 <Label fx:id="lblCameraNotInitialized" text="%label.notInitialized">
                                     <graphic>
                                         <ImageView>
-                                            <Image url="@../images/yellow_status.png"/>
+                                            <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/icon_yellow_status.png"/>
                                         </ImageView>
                                     </graphic>
                                 </Label>
                                 <Label fx:id="lblCameraNotConnected" text="%label.notConnected" visible="false" managed="false">
                                     <graphic>
                                         <ImageView>
-                                            <Image url="@../images/red_status.png"/>
+                                            <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/icon_red_status.png"/>
                                         </ImageView>
                                     </graphic>
                                 </Label>
                                 <Label fx:id="lblCameraInitialized" text="%label.initialized" visible="false" managed="false">
                                     <graphic>
                                         <ImageView>
-                                            <Image url="@../images/green_status.png"/>
+                                            <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/icon_green_status.png"/>
                                         </ImageView>
                                     </graphic>
                                 </Label>
@@ -100,21 +100,21 @@
                                 <Label fx:id="lblPassportScannerNotInitialized" text="%label.notInitialized">
                                     <graphic>
                                         <ImageView>
-                                            <Image url="@../images/yellow_status.png"/>
+                                            <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/icon_yellow_status.png"/>
                                         </ImageView>
                                     </graphic>
                                 </Label>
                                 <Label fx:id="lblPassportScannerNotConnected" text="%label.notConnected" visible="false" managed="false">
                                     <graphic>
                                         <ImageView>
-                                            <Image url="@../images/red_status.png"/>
+                                            <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/icon_red_status.png"/>
                                         </ImageView>
                                     </graphic>
                                 </Label>
                                 <Label fx:id="lblPassportScannerInitialized" text="%label.initialized" visible="false" managed="false">
                                     <graphic>
                                         <ImageView>
-                                            <Image url="@../images/green_status.png"/>
+                                            <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/icon_green_status.png"/>
                                         </ImageView>
                                     </graphic>
                                 </Label>

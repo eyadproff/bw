@@ -5,6 +5,7 @@ import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
+import sa.gov.nic.bio.bw.commons.resources.images.CommonImages;
 import sa.gov.nic.bio.bw.core.Context;
 import sa.gov.nic.bio.bw.core.beans.Name;
 import sa.gov.nic.bio.bw.core.beans.UserInfo;
@@ -83,8 +84,6 @@ public class BuildConvictedReportTask extends Task<JasperPrint>
 	
 	private static final String REPORT_TEMPLATE_FILE = "/sa/gov/nic/bio/bw/features/registerconvictedpresent" +
 													   "/reports/convicted_record.jrxml";
-	private static final String LOGO_FILE = "/sa/gov/nic/bio/bw/features/commons/images/saudi_security_logo.jpg";
-	private static final String IMAGE_PLACEHOLDER_FILE = "/sa/gov/nic/bio/bw/core/images/avatar_placeholder.jpg";
 	
 	private ConvictedReport convictedReport;
 	private Map<Integer, String> fingerprintImages;
@@ -114,8 +113,7 @@ public class BuildConvictedReportTask extends Task<JasperPrint>
 		}
 		else
 		{
-			params.put(PARAMETER_FACE_IMAGE, Thread.currentThread().getContextClassLoader()
-																   .getResourceAsStream(IMAGE_PLACEHOLDER_FILE));
+			params.put(PARAMETER_FACE_IMAGE, CommonImages.PLACEHOLDER_AVATAR.getAsInputStream());
 		}
 		
 		fingerprintImages.forEach((position, fingerprintImage) ->
@@ -359,7 +357,7 @@ public class BuildConvictedReportTask extends Task<JasperPrint>
 		params.put(PARAMETER_IS_CRIMINAL_LIBEL, judgementInfo.isLibel());
 		params.put(PARAMETER_IS_COVENANT, judgementInfo.isCovenant());
 		params.put(PARAMETER_IS_DEPORTATION_FINAL, judgementInfo.isFinalDeport());
-		params.put(PARAMETER_LOGO, Thread.currentThread().getContextClassLoader().getResourceAsStream(LOGO_FILE));
+		params.put(PARAMETER_LOGO, CommonImages.LOGO_SAUDI_SECURITY.getAsInputStream());
 		
 		return JasperFillManager.fillReport(jasperReport, params);
 	}

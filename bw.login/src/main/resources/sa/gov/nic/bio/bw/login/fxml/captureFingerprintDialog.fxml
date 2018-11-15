@@ -24,7 +24,7 @@
         <DialogPane prefWidth="250.0" prefHeight="350.0" headerText="%captureFingerprint.message" stylesheets="@/sa/gov/nic/bio/bw/core/css/style.css,@../css/style.css">
             <graphic>
                 <ImageView>
-                    <Image url="@../images/change_fingerprint_logo.png"/>
+                    <Image url="@../images/icon_change_fingerprint.png"/>
                 </ImageView>
             </graphic>
             <content>
@@ -37,7 +37,7 @@
                         </ImageViewPane>
                         <ProgressIndicator fx:id="piProgress" prefHeight="25.0" prefWidth="25.0"/>
                         <ImageView fx:id="ivErrorIcon" managed="false" visible="false">
-                            <Image url="@/sa/gov/nic/bio/bw/core/images/error.png"/>
+                            <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/icon_error_32px.png"/>
                         </ImageView>
                         <Label fx:id="lblStatus" text="%label.status.waitingDeviceResponse" wrapText="true" textAlignment="CENTER"/>
                     </VBox>

@@ -25,14 +25,14 @@
                         </padding>
                         <VBox fx:id="paneNoHitMessage" alignment="CENTER" spacing="5.0" managed="false" visible="false">
                             <ImageView>
-                                <Image url="@/sa/gov/nic/bio/bw/core/images/error.png"/>
+                                <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/icon_error_32px.png"/>
                             </ImageView>
                             <Label text="%label.fingerprintsInquiryNoHit"/>
                         </VBox>
                         <ImageViewPaneWithAlignment>
                             <imageView>
                                 <ImageView fx:id="ivPersonPhoto" preserveRatio="true" managed="false" visible="false">
-                                    <Image url="@/sa/gov/nic/bio/bw/core/images/avatar_placeholder.jpg"/>
+                                    <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/placeholder_avatar.jpg"/>
                                 </ImageView>
                             </imageView>
                         </ImageViewPaneWithAlignment>

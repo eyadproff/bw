@@ -35,7 +35,7 @@
                             <ImageViewPane>
                                 <imageView>
                                     <ImageView fx:id="ivFingerprintImageAfterCroppingPlaceHolder" preserveRatio="true">
-                                        <Image url="@/sa/gov/nic/bio/bw/features/commons/images/image_place_holder_square.png"/>
+                                        <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/placeholder_image_square.png"/>
                                     </ImageView>
                                 </imageView>
                             </ImageViewPane>

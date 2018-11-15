@@ -18,13 +18,13 @@
             <Label fx:id="lblProgress" text="%label.fetchingPersonInfoInProgress"/>
             <VBox fx:id="paneError" alignment="CENTER" spacing="5.0" managed="false" visible="false">
                 <ImageView>
-                    <Image url="@/sa/gov/nic/bio/bw/core/images/error.png"/>
+                    <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/icon_error_32px.png"/>
                 </ImageView>
                 <Label text="%label.fetchingPersonInfoError"/>
             </VBox>
             <VBox fx:id="paneDevicesRunnerNotRunning" alignment="CENTER" spacing="5.0" managed="false" visible="false">
                 <ImageView>
-                    <Image url="@/sa/gov/nic/bio/bw/core/images/warning.png"/>
+                    <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/icon_warning_32px.png"/>
                 </ImageView>
                 <Label text="%label.devicesRunnerNotRunning"/>
             </VBox>

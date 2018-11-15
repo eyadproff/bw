@@ -10,7 +10,7 @@
             fx:id="rootPane" fx:controller="sa.gov.nic.bio.bw.core.controllers.FooterPaneFxController">
     <HBox alignment="CENTER" spacing="7.0" AnchorPane.topAnchor="0.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
         <ImageView>
-            <Image url="@../images/semat_logo_small.png"/>
+            <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/logo_semat.png"/>
         </ImageView>
         <Label text="%label.developedBy" styleClass="credit-text"/>
     </HBox>

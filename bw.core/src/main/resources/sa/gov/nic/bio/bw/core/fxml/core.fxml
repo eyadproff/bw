@@ -25,7 +25,7 @@
             <NotificationPane fx:id="idleNotifier" minHeight="0" minWidth="0">
                 <graphic>
                     <ImageView>
-                        <Image url="@../images/warning.png"/>
+                        <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/icon_warning_32px.png"/>
                     </ImageView>
                 </graphic>
                 <content>

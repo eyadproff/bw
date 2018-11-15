@@ -11,6 +11,7 @@ module bw.core
 	requires transitive javafx.fxml;
 	requires transitive javafx.graphics;
 	requires transitive javafx.swing;
+	requires transitive bw.commons.resources;
 	requires transitive controlsfx;
 	requires transitive retrofit2;
 	requires retrofit2.converter.gson;
@@ -31,7 +32,6 @@ module bw.core
 	opens sa.gov.nic.bio.bw.core.controllers to javafx.fxml;
 	opens sa.gov.nic.bio.bw.core.wizard to javafx.fxml;
 	opens sa.gov.nic.bio.bw.core.css;
-	opens sa.gov.nic.bio.bw.core.images;
 	exports sa.gov.nic.bio.bw.core.spi;
 	exports sa.gov.nic.bio.bw.core.wizard;
 }

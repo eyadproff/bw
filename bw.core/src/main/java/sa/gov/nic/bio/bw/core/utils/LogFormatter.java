@@ -10,7 +10,8 @@ import java.util.logging.LogRecord;
 
 public class LogFormatter extends Formatter
 {
-	private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy hh:mm:ss.SSS a", Locale.ENGLISH);
+	private static final DateTimeFormatter DATE_TIME_FORMATTER =
+									DateTimeFormatter.ofPattern("dd/MM/yyyy hh:mm:ss.SSS a", Locale.ENGLISH);
 	
 	@Override
 	public synchronized String format(LogRecord record)
@@ -31,7 +32,9 @@ public class LogFormatter extends Formatter
 			PrintWriter pw = new PrintWriter(sw);
 			thrown.printStackTrace(pw);
 			String sStackTrace = sw.toString();
-			logMessage += "~" + sStackTrace + System.lineSeparator(); // added ~ to know whether the exception is coming through this formatter or not
+			
+			// added ~ to know whether the exception is coming through this formatter or not
+			logMessage += "~" + sStackTrace + System.lineSeparator();
 		}
 		
 		return logMessage;

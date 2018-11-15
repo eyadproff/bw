@@ -19,7 +19,7 @@
         <VBox alignment="CENTER" spacing="20.0">
             <VBox alignment="CENTER" spacing="5.0">
                 <ImageView>
-                    <Image url="@/sa/gov/nic/bio/bw/core/images/success.png"/>
+                    <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/icon_success_32px.png"/>
                 </ImageView>
                 <Label text="%label.successVisaApplicantEnrollment"/>
             </VBox>
@@ -34,7 +34,7 @@
                         </HBox>
                         <VBox fx:id="paneError" spacing="5.0" managed="false" visible="false">
                             <ImageView>
-                                <Image url="@/sa/gov/nic/bio/bw/core/images/error.png"/>
+                                <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/icon_error_32px.png"/>
                             </ImageView>
                             <Label text="%label.failedToGenerateBarcode"/>
                         </VBox>

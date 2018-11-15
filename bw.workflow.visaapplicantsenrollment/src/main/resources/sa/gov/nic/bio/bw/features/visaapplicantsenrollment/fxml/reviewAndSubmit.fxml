@@ -35,7 +35,7 @@
                                     <ImageViewPane fx:id="paneImageView" minHeight="200.0">
                                         <imageView>
                                             <ImageView fx:id="ivPersonPhoto" preserveRatio="true">
-                                                <Image url="@/sa/gov/nic/bio/bw/core/images/avatar_placeholder.jpg"/>
+                                                <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/placeholder_avatar.jpg"/>
                                             </ImageView>
                                         </imageView>
                                     </ImageViewPane>

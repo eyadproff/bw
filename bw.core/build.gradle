@@ -19,6 +19,7 @@ dependencies {
     implementation name: "tomcat-juli-8.5.33"
     implementation name: "tomcat-api-8.5.33"
 
+    api project(':bw.commons.resources')
     runtimeOnly project(':bw.login')
     runtimeOnly project(':bw.home')
 }

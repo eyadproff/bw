@@ -38,7 +38,7 @@
                                 </padding>
                                 <ProgressIndicator fx:id="piProgress" prefHeight="25.0" prefWidth="25.0" managed="false" visible="false"/>
                                 <ImageView fx:id="ivCompleted" managed="false" visible="false">
-                                    <Image url="@../images/success.png"/>
+                                    <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/icon_success_16px.png"/>
                                 </ImageView>
                                 <Label fx:id="lblStatus" wrapText="true" textAlignment="CENTER" managed="false" visible="false"/>
                                 <VBox alignment="CENTER" spacing="5.0">
@@ -64,7 +64,7 @@
                             <ImageViewPane>
                                 <imageView>
                                     <ImageView fx:id="ivFingerprintDeviceLivePreviewPlaceholder" preserveRatio="true">
-                                        <Image url="@../images/image_place_holder.png"/>
+                                        <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/placeholder_image.png"/>
                                     </ImageView>
                                 </imageView>
                             </ImageViewPane>
@@ -125,14 +125,14 @@
                                     <ImageViewPane>
                                         <imageView>
                                             <ImageView fx:id="ivLeftLittlePlaceholder" preserveRatio="true">
-                                                <Image url="@../images/image_place_holder.png"/>
+                                                <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/placeholder_image.png"/>
                                             </ImageView>
                                         </imageView>
                                     </ImageViewPane>
                                     <ImageViewPane>
                                         <imageView>
                                             <ImageView fx:id="ivLeftLittleSkip" preserveRatio="true">
-                                                <Image url="@../images/skip_icon.png"/>
+                                                <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/placeholder_skip.png"/>
                                             </ImageView>
                                         </imageView>
                                     </ImageViewPane>
@@ -151,14 +151,14 @@
                                     <ImageViewPane>
                                         <imageView>
                                             <ImageView fx:id="ivLeftRingPlaceholder" preserveRatio="true">
-                                                <Image url="@../images/image_place_holder.png"/>
+                                                <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/placeholder_image.png"/>
                                             </ImageView>
                                         </imageView>
                                     </ImageViewPane>
                                     <ImageViewPane>
                                         <imageView>
                                             <ImageView fx:id="ivLeftRingSkip" preserveRatio="true">
-                                                <Image url="@../images/skip_icon.png"/>
+                                                <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/placeholder_skip.png"/>
                                             </ImageView>
                                         </imageView>
                                     </ImageViewPane>
@@ -177,14 +177,14 @@
                                     <ImageViewPane>
                                         <imageView>
                                             <ImageView fx:id="ivLeftMiddlePlaceholder" preserveRatio="true">
-                                                <Image url="@../images/image_place_holder.png"/>
+                                                <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/placeholder_image.png"/>
                                             </ImageView>
                                         </imageView>
                                     </ImageViewPane>
                                     <ImageViewPane>
                                         <imageView>
                                             <ImageView fx:id="ivLeftMiddleSkip" preserveRatio="true">
-                                                <Image url="@../images/skip_icon.png"/>
+                                                <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/placeholder_skip.png"/>
                                             </ImageView>
                                         </imageView>
                                     </ImageViewPane>
@@ -203,14 +203,14 @@
                                     <ImageViewPane>
                                         <imageView>
                                             <ImageView fx:id="ivLeftIndexPlaceholder" preserveRatio="true">
-                                                <Image url="@../images/image_place_holder.png"/>
+                                                <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/placeholder_image.png"/>
                                             </ImageView>
                                         </imageView>
                                     </ImageViewPane>
                                     <ImageViewPane>
                                         <imageView>
                                             <ImageView fx:id="ivLeftIndexSkip" preserveRatio="true">
-                                                <Image url="@../images/skip_icon.png"/>
+                                                <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/placeholder_skip.png"/>
                                             </ImageView>
                                         </imageView>
                                     </ImageViewPane>
@@ -229,14 +229,14 @@
                                     <ImageViewPane>
                                         <imageView>
                                             <ImageView fx:id="ivLeftThumbPlaceholder" preserveRatio="true">
-                                                <Image url="@../images/image_place_holder.png"/>
+                                                <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/placeholder_image.png"/>
                                             </ImageView>
                                         </imageView>
                                     </ImageViewPane>
                                     <ImageViewPane>
                                         <imageView>
                                             <ImageView fx:id="ivLeftThumbSkip" preserveRatio="true">
-                                                <Image url="@../images/skip_icon.png"/>
+                                                <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/placeholder_skip.png"/>
                                             </ImageView>
                                         </imageView>
                                     </ImageViewPane>
@@ -276,14 +276,14 @@
                                     <ImageViewPane>
                                         <imageView>
                                             <ImageView fx:id="ivRightThumbPlaceholder" preserveRatio="true">
-                                                <Image url="@../images/image_place_holder.png"/>
+                                                <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/placeholder_image.png"/>
                                             </ImageView>
                                         </imageView>
                                     </ImageViewPane>
                                     <ImageViewPane>
                                         <imageView>
                                             <ImageView fx:id="ivRightThumbSkip" preserveRatio="true">
-                                                <Image url="@../images/skip_icon.png"/>
+                                                <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/placeholder_skip.png"/>
                                             </ImageView>
                                         </imageView>
                                     </ImageViewPane>
@@ -302,14 +302,14 @@
                                     <ImageViewPane>
                                         <imageView>
                                             <ImageView fx:id="ivRightIndexPlaceholder" preserveRatio="true">
-                                                <Image url="@../images/image_place_holder.png"/>
+                                                <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/placeholder_image.png"/>
                                             </ImageView>
                                         </imageView>
                                     </ImageViewPane>
                                     <ImageViewPane>
                                         <imageView>
                                             <ImageView fx:id="ivRightIndexSkip" preserveRatio="true">
-                                                <Image url="@../images/skip_icon.png"/>
+                                                <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/placeholder_skip.png"/>
                                             </ImageView>
                                         </imageView>
                                     </ImageViewPane>
@@ -328,14 +328,14 @@
                                     <ImageViewPane>
                                         <imageView>
                                             <ImageView fx:id="ivRightMiddlePlaceholder" preserveRatio="true">
-                                                <Image url="@../images/image_place_holder.png"/>
+                                                <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/placeholder_image.png"/>
                                             </ImageView>
                                         </imageView>
                                     </ImageViewPane>
                                     <ImageViewPane>
                                         <imageView>
                                             <ImageView fx:id="ivRightMiddleSkip" preserveRatio="true">
-                                                <Image url="@../images/skip_icon.png"/>
+                                                <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/placeholder_skip.png"/>
                                             </ImageView>
                                         </imageView>
                                     </ImageViewPane>
@@ -354,14 +354,14 @@
                                     <ImageViewPane>
                                         <imageView>
                                             <ImageView fx:id="ivRightRingPlaceholder" preserveRatio="true">
-                                                <Image url="@../images/image_place_holder.png"/>
+                                                <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/placeholder_image.png"/>
                                             </ImageView>
                                         </imageView>
                                     </ImageViewPane>
                                     <ImageViewPane>
                                         <imageView>
                                             <ImageView fx:id="ivRightRingSkip" preserveRatio="true">
-                                                <Image url="@../images/skip_icon.png"/>
+                                                <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/placeholder_skip.png"/>
                                             </ImageView>
                                         </imageView>
                                     </ImageViewPane>
@@ -380,14 +380,14 @@
                                     <ImageViewPane>
                                         <imageView>
                                             <ImageView fx:id="ivRightLittlePlaceholder" preserveRatio="true">
-                                                <Image url="@../images/image_place_holder.png"/>
+                                                <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/placeholder_image.png"/>
                                             </ImageView>
                                         </imageView>
                                     </ImageViewPane>
                                     <ImageViewPane>
                                         <imageView>
                                             <ImageView fx:id="ivRightLittleSkip" preserveRatio="true">
-                                                <Image url="@../images/skip_icon.png"/>
+                                                <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/placeholder_skip.png"/>
                                             </ImageView>
                                         </imageView>
                                     </ImageViewPane>

@@ -24,7 +24,7 @@
         <Insets topRightBottomLeft="10.0"/>
     </padding>
     <ImageView>
-        <Image url="@/sa/gov/nic/bio/bw/core/images/nic_logo.png"/>
+        <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/logo_nic.png"/>
     </ImageView>
     <VBox alignment="CENTER" spacing="10.0">
         <HBox alignment="CENTER">
@@ -54,21 +54,21 @@
                             <Label fx:id="lblFingerprintScannerNotInitialized" text="%label.notInitialized">
                                 <graphic>
                                     <ImageView>
-                                        <Image url="@/sa/gov/nic/bio/bw/core/images/yellow_status.png"/>
+                                        <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/icon_yellow_status.png"/>
                                     </ImageView>
                                 </graphic>
                             </Label>
                             <Label fx:id="lblFingerprintScannerNotConnected" text="%label.notConnected" visible="false" managed="false">
                                 <graphic>
                                     <ImageView>
-                                        <Image url="@/sa/gov/nic/bio/bw/core/images/red_status.png"/>
+                                        <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/icon_red_status.png"/>
                                     </ImageView>
                                 </graphic>
                             </Label>
                             <Label fx:id="lblFingerprintScannerInitialized" text="%label.initialized" visible="false" managed="false">
                                 <graphic>
                                     <ImageView>
-                                        <Image url="@/sa/gov/nic/bio/bw/core/images/green_status.png"/>
+                                        <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/icon_green_status.png"/>
                                     </ImageView>
                                 </graphic>
                             </Label>

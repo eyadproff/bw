@@ -2,7 +2,6 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.Scene?>
 <?import javafx.scene.control.ProgressBar?>
@@ -11,14 +10,11 @@
 <Stage xmlns="http://javafx.com/javafx/8.0.152"
        height="300" width="620" alwaysOnTop="true">
     <icons>
-        <Image url="@/sa/gov/nic/bio/bw/core/images/app_icon.png"/>
+        <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/icon_app.png"/>
     </icons>
     <scene>
         <Scene stylesheets="@../css/style.css">
-            <StackPane id="paneSplashScreen" prefWidth="60" nodeOrientation="RIGHT_TO_LEFT">
-                <ImageView>
-                    <Image url="@../images/splash_screen.jpg"/>
-                </ImageView>
+            <StackPane id="paneSplashScreen" prefWidth="60">
                 <ProgressBar StackPane.alignment="BOTTOM_CENTER" maxWidth="Infinity" cache="true" cacheHint="SPEED">
                     <padding>
                         <Insets bottom="15.0" right="3.0" left="3.0"/>

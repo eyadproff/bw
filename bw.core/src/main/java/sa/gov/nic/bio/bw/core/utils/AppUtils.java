@@ -59,7 +59,6 @@ import java.util.zip.ZipInputStream;
 
 public final class AppUtils implements AppLogger
 {
-	private static final String APP_ICON_FILE = "/sa/gov/nic/bio/bw/core/images/app_icon.png";
 	private static final String LOGGING_CONFIG_FILE = "/sa/gov/nic/bio/bw/core/config/logging.properties";
 	private static final String FXML_FILE = "/sa/gov/nic/bio/bw/core/fxml/core.fxml";
 	private static final String RB_STRINGS_FILE = "/sa/gov/nic/bio/bw/core/bundles/strings";
@@ -81,11 +80,6 @@ public final class AppUtils implements AppLogger
 									throws IllegalAccessException, InvocationTargetException, InstantiationException
 	{
 		return constructor.newInstance(initArgs);
-	}
-	
-	public static InputStream getAppIconFileAsInputStream()
-	{
-		return AppUtils.class.getResourceAsStream(APP_ICON_FILE);
 	}
 	
 	public static InputStream getLoggingConfigFileAsInputStream()

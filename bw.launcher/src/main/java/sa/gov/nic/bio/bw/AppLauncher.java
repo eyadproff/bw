@@ -14,6 +14,7 @@ import sa.gov.nic.bio.biokit.utils.JsonMapper;
 import sa.gov.nic.bio.biokit.websocket.UpdateListener;
 import sa.gov.nic.bio.biokit.websocket.WebsocketLogger;
 import sa.gov.nic.bio.biokit.websocket.beans.Message;
+import sa.gov.nic.bio.bw.commons.resources.images.CommonImages;
 import sa.gov.nic.bio.bw.core.Context;
 import sa.gov.nic.bio.bw.core.beans.MenuItem;
 import sa.gov.nic.bio.bw.core.beans.UserSession;
@@ -137,7 +138,7 @@ public class AppLauncher extends Application implements AppLogger
 	
 	    try
 	    {
-		    appIcon = new Image(AppUtils.getAppIconFileAsInputStream());
+		    appIcon = new Image(CommonImages.ICON_APP.getAsInputStream());
 	    }
 	    catch(Exception e)
 	    {

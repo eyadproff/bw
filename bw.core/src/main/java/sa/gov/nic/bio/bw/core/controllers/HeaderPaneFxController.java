@@ -9,6 +9,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import org.controlsfx.glyphfont.FontAwesome;
 import org.controlsfx.glyphfont.Glyph;
+import sa.gov.nic.bio.bw.commons.resources.images.CommonImages;
 import sa.gov.nic.bio.bw.core.Context;
 import sa.gov.nic.bio.bw.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.core.utils.GuiUtils;
@@ -22,8 +23,6 @@ import sa.gov.nic.bio.bw.core.utils.RuntimeEnvironment;
  */
 public class HeaderPaneFxController extends RegionFxControllerBase
 {
-	private static final String AVATAR_PLACEHOLDER_FILE = "/sa/gov/nic/bio/bw/core/images/avatar_placeholder.jpg";
-	
 	@FXML private ImageView ivAvatar;
 	@FXML private Label lblUsername;
 	@FXML private Label txtUsername;
@@ -88,7 +87,7 @@ public class HeaderPaneFxController extends RegionFxControllerBase
 		}
 		else
 		{
-			ivAvatar.setImage(new Image(getClass().getResourceAsStream(AVATAR_PLACEHOLDER_FILE)));
+			ivAvatar.setImage(new Image(CommonImages.PLACEHOLDER_AVATAR.getAsInputStream()));
 			ivAvatar.setOnMouseClicked(null);
 			ivAvatar.setOnContextMenuRequested(null);
 		}

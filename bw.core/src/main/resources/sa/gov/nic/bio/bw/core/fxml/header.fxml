@@ -18,7 +18,7 @@
         <HBox spacing="10">
             <StackPane styleClass="avatar-border">
                 <ImageView fx:id="ivAvatar" preserveRatio="true" fitHeight="70.0">
-                    <Image url="@../images/avatar_placeholder.jpg"/>
+                    <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/placeholder_avatar.jpg"/>
                 </ImageView>
             </StackPane>
             <GridPane alignment="CENTER" hgap="20" vgap="5" styleClass="userBox">

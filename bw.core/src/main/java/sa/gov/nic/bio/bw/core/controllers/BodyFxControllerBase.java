@@ -4,6 +4,7 @@ import javafx.application.Platform;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import org.controlsfx.control.NotificationPane;
+import sa.gov.nic.bio.bw.commons.resources.images.CommonImages;
 import sa.gov.nic.bio.bw.core.Context;
 import sa.gov.nic.bio.bw.core.interfaces.NotificationController;
 import sa.gov.nic.bio.bw.core.interfaces.WorkflowUserTaskController;
@@ -22,12 +23,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public abstract class BodyFxControllerBase extends RegionFxControllerBase implements WorkflowUserTaskController,
 																					 NotificationController
 {
-	private Image successIcon = new Image(BodyFxControllerBase.class
-			                        .getResourceAsStream("/sa/gov/nic/bio/bw/core/images/success.png"));
-	private Image warningIcon = new Image(BodyFxControllerBase.class
-			                        .getResourceAsStream("/sa/gov/nic/bio/bw/core/images/warning.png"));
-	private Image errorIcon = new Image(BodyFxControllerBase.class
-			                        .getResourceAsStream("/sa/gov/nic/bio/bw/core/images/error.png"));
+	private Image successIcon = new Image(CommonImages.ICON_SUCCESS_32PX.getAsInputStream());
+	private Image warningIcon = new Image(CommonImages.ICON_WARNING_32PX.getAsInputStream());
+	private Image errorIcon = new Image(CommonImages.ICON_ERROR_32PX.getAsInputStream());
 	
 	private AtomicBoolean detached = new AtomicBoolean();
 	

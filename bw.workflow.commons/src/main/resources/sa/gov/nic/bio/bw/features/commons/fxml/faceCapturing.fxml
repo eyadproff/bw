@@ -55,13 +55,13 @@
                                     </padding>
                                     <ProgressIndicator fx:id="piIcao" maxHeight="25.0" maxWidth="25.0" visible="false" managed="false"/>
                                     <ImageView fx:id="ivSuccessIcao" visible="false" managed="false">
-                                        <Image url="@../images/success.png"/>
+                                        <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/icon_success_16px.png"/>
                                     </ImageView>
                                     <ImageView fx:id="ivWarningIcao" visible="false" managed="false">
-                                        <Image url="@../images/warning.png"/>
+                                        <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/icon_warning_16px.png"/>
                                     </ImageView>
                                     <ImageView fx:id="ivErrorIcao" visible="false" managed="false">
-                                        <Image url="@../images/error.png"/>
+                                        <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/icon_error_16px.png"/>
                                     </ImageView>
                                     <Label fx:id="lblIcaoMessage" wrapText="true" alignment="CENTER" textAlignment="CENTER" visible="false" managed="false"/>
                                 </VBox>
@@ -77,7 +77,7 @@
                         <ImageViewPane>
                             <imageView>
                                 <ImageView fx:id="ivCameraLivePreviewPlaceholder" preserveRatio="true">
-                                    <Image url="@../images/image_place_holder.png"/>
+                                    <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/placeholder_image.png"/>
                                 </ImageView>
                             </imageView>
                         </ImageViewPane>
@@ -94,7 +94,7 @@
                         <ImageViewPane>
                             <imageView>
                                 <ImageView fx:id="ivCapturedImagePlaceholder" preserveRatio="true">
-                                    <Image url="@../images/image_place_holder.png"/>
+                                    <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/placeholder_image.png"/>
                                 </ImageView>
                             </imageView>
                         </ImageViewPane>
@@ -111,7 +111,7 @@
                         <ImageViewPane>
                             <imageView>
                                 <ImageView fx:id="ivCroppedImagePlaceholder" preserveRatio="true">
-                                    <Image url="@../images/image_place_holder.png"/>
+                                    <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/placeholder_image.png"/>
                                 </ImageView>
                             </imageView>
                         </ImageViewPane>

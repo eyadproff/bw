@@ -5,6 +5,7 @@ import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
+import sa.gov.nic.bio.bw.commons.resources.images.CommonImages;
 import sa.gov.nic.bio.bw.core.Context;
 import sa.gov.nic.bio.bw.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.core.utils.GuiLanguage;
@@ -46,8 +47,6 @@ public class BuildForeignEnrollmentReceiptTask extends Task<JasperPrint>
 										"visaapplicantsenrollment/reports/visa_applicants_enrollment_receipt_en.jrxml";
 	private static final String REPORT_AR_TEMPLATE_FILE = "/sa/gov/nic/bio/bw/features/" +
 										"visaapplicantsenrollment/reports/visa_applicants_enrollment_receipt_ar.jrxml";
-	private static final String LOGO_FILE = "/sa/gov/nic/bio/bw/core/images/nic_logo.png";
-	private static final String IMAGE_PLACEHOLDER_FILE = "/sa/gov/nic/bio/bw/core/images/avatar_placeholder.jpg";
 	
 	private VisaApplicantInfo visaApplicantInfo;
 	private Map<Integer, String> fingerprintImages;
@@ -78,8 +77,7 @@ public class BuildForeignEnrollmentReceiptTask extends Task<JasperPrint>
 		}
 		else
 		{
-			params.put(PARAMETER_FACE_IMAGE, Thread.currentThread().getContextClassLoader()
-																   .getResourceAsStream(IMAGE_PLACEHOLDER_FILE));
+			params.put(PARAMETER_FACE_IMAGE, CommonImages.PLACEHOLDER_AVATAR.getAsInputStream());
 		}
 		
 		fingerprintImages.forEach((position, fingerprintImage) ->
@@ -88,7 +86,7 @@ public class BuildForeignEnrollmentReceiptTask extends Task<JasperPrint>
 			params.put("FINGER_" + position, new ByteArrayInputStream(bytes));
 		});
 		
-		params.put(PARAMETER_MOFA_LOGO, Thread.currentThread().getContextClassLoader().getResourceAsStream(LOGO_FILE));
+		params.put(PARAMETER_MOFA_LOGO, CommonImages.LOGO_NIC.getAsInputStream());
 		params.put(PARAMETER_REGISTRATION_NUMBER, String.valueOf(visaApplicantInfo.getApplicantId()));
 		params.put(PARAMETER_RECEIPT_DATE, AppUtils.formatHijriGregorianDateTime(
 										AppUtils.gregorianDateToMilliSeconds(visaApplicantInfo.getEnrollmentDate())));

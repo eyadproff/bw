@@ -40,6 +40,7 @@ import sa.gov.nic.bio.biokit.fingerprint.beans.CaptureFingerprintResponse;
 import sa.gov.nic.bio.biokit.fingerprint.beans.DuplicatedFingerprintsResponse;
 import sa.gov.nic.bio.biokit.fingerprint.beans.FingerprintStopPreviewResponse;
 import sa.gov.nic.bio.biokit.websocket.beans.DMFingerData;
+import sa.gov.nic.bio.bw.commons.resources.images.CommonImages;
 import sa.gov.nic.bio.bw.core.Context;
 import sa.gov.nic.bio.bw.core.beans.Fingerprint;
 import sa.gov.nic.bio.bw.core.beans.FingerprintQualityThreshold;
@@ -1939,13 +1940,9 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 		Label lblIntensity = new Label(resources.getString("label.tooltip.imageIntensity"));
 		Label lblDuplicatedFingerprint = new Label(resources.getString("label.tooltip.duplicatedFinger"));
 		
-		Image successImage = new Image(getClass().getResourceAsStream("/sa/gov/nic/bio/bw/features/" +
-					                                                  "commons/images/success.png"));
-		Image warningImage = new Image(getClass().getResourceAsStream("/sa/gov/nic/bio/bw/features/" +
-						                                              "commons/images/warning.png"));
-		
-		Image errorImage = new Image(getClass().getResourceAsStream("/sa/gov/nic/bio/bw/features/" +
-						                                            "commons/images/error.png"));
+		Image successImage = new Image(CommonImages.ICON_SUCCESS_16PX.getAsInputStream());
+		Image warningImage = new Image(CommonImages.ICON_WARNING_16PX.getAsInputStream());
+		Image errorImage = new Image(CommonImages.ICON_ERROR_16PX.getAsInputStream());
 		
 		lblNfiq.setGraphic(new ImageView(acceptableNfiq ? successImage : warningImage));
 		lblMinutiaeCount.setGraphic(new ImageView(acceptableMinutiaeCount ? successImage : warningImage));

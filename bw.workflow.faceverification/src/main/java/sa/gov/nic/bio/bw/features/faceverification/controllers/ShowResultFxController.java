@@ -20,6 +20,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import sa.gov.nic.bio.bw.commons.resources.images.CommonImages;
 import sa.gov.nic.bio.bw.core.Context;
 import sa.gov.nic.bio.bw.core.beans.Name;
 import sa.gov.nic.bio.bw.core.controllers.WizardStepFxControllerBase;
@@ -40,8 +41,6 @@ import java.util.List;
 @FxmlFile("showResult.fxml")
 public class ShowResultFxController extends WizardStepFxControllerBase
 {
-	private static final String AVATAR_PLACEHOLDER_FILE = "/sa/gov/nic/bio/bw/core/images/avatar_placeholder.jpg";
-	
 	@Input(alwaysRequired = true) private Long personId;
 	@Input(alwaysRequired = true) private Image faceImage;
 	@Input(alwaysRequired = true) private FaceMatchingResponse faceMatchingResponse;
@@ -190,8 +189,7 @@ public class ShowResultFxController extends WizardStepFxControllerBase
 			if(dbImage != null) ivDBImage.setImage(dbImage);
 			else
 			{
-				ivDBImage.setImage(new Image(Thread.currentThread().getContextClassLoader()
-						                             .getResourceAsStream(AVATAR_PLACEHOLDER_FILE)));
+				ivDBImage.setImage(new Image(CommonImages.PLACEHOLDER_AVATAR.getAsInputStream()));
 			}
 			
 			GuiUtils.attachImageDialog(Context.getCoreFxController(), ivUploadedImage,

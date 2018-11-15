@@ -49,7 +49,7 @@ public abstract class WizardWorkflowBase extends WorkflowBase implements Resourc
 						Callable<TaskResponse<Void>> instance = lookupInstancesCache.get(lookupClass);
 						if(instance == null)
 						{
-							instance = lookupClass.newInstance();
+							instance = lookupClass.getConstructor().newInstance();
 							lookupInstancesCache.put(lookupClass, instance);
 						}
 						
