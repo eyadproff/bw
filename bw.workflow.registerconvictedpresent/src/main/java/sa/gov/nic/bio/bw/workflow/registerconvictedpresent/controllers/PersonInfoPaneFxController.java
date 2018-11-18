@@ -29,6 +29,7 @@ import sa.gov.nic.bio.bw.workflow.commons.webservice.NormalizedPersonInfo;
 import sa.gov.nic.bio.bw.workflow.commons.webservice.PersonType;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
@@ -55,7 +56,6 @@ public class PersonInfoPaneFxController extends WizardStepFxControllerBase
 	@Output private Boolean documentIssuanceDateUseHijri;
 	@Output private LocalDate documentExpiryDate;
 	@Output private Boolean documentExpiryDateUseHijri;
-	
 	
 	public static final String KEY_PERSON_INFO_FIRST_NAME = "PERSON_INFO_FIRST_NAME";
 	public static final String KEY_PERSON_INFO_FATHER_NAME = "PERSON_INFO_FATHER__NAME";
@@ -109,10 +109,6 @@ public class PersonInfoPaneFxController extends WizardStepFxControllerBase
 		@SuppressWarnings("unchecked")
 		List<Country> countries = (List<Country>) Context.getUserSession().getAttribute(CountriesLookup.KEY);
 		
-		String text = resources.getString("combobox.unknownNationality");
-		Country unknownNationality = new Country(0, null, text, text);
-		countries.add(0, unknownNationality);
-		
 		@SuppressWarnings("unchecked")
 		List<PersonType> personTypes = (List<PersonType>) Context.getUserSession().getAttribute(PersonTypesLookup.KEY);
 		
@@ -120,7 +116,12 @@ public class PersonInfoPaneFxController extends WizardStepFxControllerBase
 		List<DocumentType> documentTypes = (List<DocumentType>)
 														Context.getUserSession().getAttribute(DocumentTypesLookup.KEY);
 		
-		GuiUtils.addAutoCompletionSupportToComboBox(cboNationality, countries);
+		List<Country> countriesPlusUnknown = new ArrayList<>(countries);
+		String text = resources.getString("combobox.unknownNationality");
+		Country unknownNationality = new Country(0, null, text, text);
+		countriesPlusUnknown.add(0, unknownNationality);
+		
+		GuiUtils.addAutoCompletionSupportToComboBox(cboNationality, countriesPlusUnknown);
 		
 		GuiUtils.makeComboBoxOpenableByPressingEnter(cboGender);
 		GuiUtils.makeComboBoxOpenableByPressingEnter(cboNationality);
@@ -344,49 +345,61 @@ public class PersonInfoPaneFxController extends WizardStepFxControllerBase
 	@Override
 	public void onGoingNext(Map<String, Object> uiDataMap)
 	{
-		String firstName = txtFirstName.getText().trim();
-		if(!firstName.isEmpty()) this.firstName = firstName;
+		var firstName = txtFirstName.getText();
+		if(!firstName.isBlank()) this.firstName = firstName;
+		else this.firstName = null;
 		
-		String fatherName = txtFatherName.getText().trim();
-		if(!fatherName.isEmpty()) this.fatherName = fatherName;
+		var fatherName = txtFatherName.getText();
+		if(!fatherName.isBlank()) this.fatherName = fatherName;
+		else this.fatherName = null;
 		
-		String grandfatherName = txtGrandfatherName.getText().trim();
-		if(!grandfatherName.isEmpty()) this.grandfatherName = grandfatherName;
+		var grandfatherName = txtGrandfatherName.getText();
+		if(!grandfatherName.isBlank()) this.grandfatherName = grandfatherName;
+		else this.grandfatherName = null;
 		
-		String familyName = txtFamilyName.getText().trim();
-		if(!familyName.isEmpty()) this.familyName = familyName;
+		var familyName = txtFamilyName.getText();
+		if(!familyName.isBlank()) this.familyName = familyName;
+		else this.familyName = null;
 		
-		ComboBoxItem<Gender> genderItem = cboGender.getValue();
+		var genderItem = cboGender.getValue();
 		if(genderItem != null) this.gender = genderItem.getItem();
+		else this.gender = null;
 		
-		ComboBoxItem<Country> nationalityItem = cboNationality.getValue();
+		var nationalityItem = cboNationality.getValue();
 		if(nationalityItem != null) this.nationality = nationalityItem.getItem();
+		else this.nationality = null;
 		
-		String occupation = txtOccupation.getText();
-		if(!occupation.isEmpty()) this.occupation = occupation;
+		var occupation = txtOccupation.getText();
+		if(!occupation.isBlank()) this.occupation = occupation;
+		else this.occupation = null;
 		
-		String birthPlace = txtBirthPlace.getText();
-		if(!birthPlace.isEmpty()) this.birthPlace = birthPlace;
+		var birthPlace = txtBirthPlace.getText();
+		if(!birthPlace.isBlank()) this.birthPlace = birthPlace;
+		else this.birthPlace = null;
 		
-		LocalDate birthDate = dpBirthDate.getValue();
-		if(birthDate != null) this.birthDate = birthDate;
+		this.birthDate = dpBirthDate.getValue();
+		this.birthDateUseHijri = rdoBirthDateUseHijri.isSelected();
 		
-		String sPersonId = txtPersonId.getText();
-		if(!sPersonId.isEmpty()) this.personId = Long.parseLong(sPersonId);
+		var sPersonId = txtPersonId.getText();
+		if(!sPersonId.isBlank()) this.personId = Long.parseLong(sPersonId);
+		else this.personId = null;
 		
-		ComboBoxItem<PersonType> personTypeItem = cboPersonType.getValue();
+		var personTypeItem = cboPersonType.getValue();
 		if(personTypeItem != null) this.personType = personTypeItem.getItem();
+		else this.personType = null;
 		
-		String documentId = txtDocumentId.getText();
-		if(!documentId.isEmpty()) this.documentId = documentId;
+		var documentId = txtDocumentId.getText();
+		if(!documentId.isBlank()) this.documentId = documentId;
+		else this.documentId = null;
 		
-		ComboBoxItem<DocumentType> documentTypeItem = cboDocumentType.getValue();
+		var documentTypeItem = cboDocumentType.getValue();
 		if(documentTypeItem != null) this.documentType = documentTypeItem.getItem();
+		else this.documentType = null;
 		
-		LocalDate documentIssuanceDate = dpDocumentIssuanceDate.getValue();
-		if(documentIssuanceDate != null) this.documentIssuanceDate = documentIssuanceDate;
+		this.documentIssuanceDate = dpDocumentIssuanceDate.getValue();
+		this.documentIssuanceDateUseHijri = rdoDocumentIssuanceDateUseHijri.isSelected();
 		
-		LocalDate documentExpiryDate = dpDocumentExpiryDate.getValue();
-		if(documentExpiryDate != null) this.documentExpiryDate = documentExpiryDate;
+		this.documentExpiryDate = dpDocumentExpiryDate.getValue();
+		this.documentExpiryDateUseHijri = rdoDocumentExpiryDateUseHijri.isSelected();
 	}
 }

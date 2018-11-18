@@ -2,6 +2,7 @@ module bw.core
 {
 	uses sa.gov.nic.bio.bw.core.workflow.Workflow;
 	
+	requires static javafx.scenicview;
 	requires transitive java.logging;
 	requires transitive java.prefs;
 	requires transitive java.sql;
@@ -19,7 +20,6 @@ module bw.core
 	requires biokit.library;
 	requires bcl.utils;
 	requires bio.commons;
-	requires javafx.scenicview;
 	
 	exports sa.gov.nic.bio.bw.core.workflow;
 	exports sa.gov.nic.bio.bw.core;

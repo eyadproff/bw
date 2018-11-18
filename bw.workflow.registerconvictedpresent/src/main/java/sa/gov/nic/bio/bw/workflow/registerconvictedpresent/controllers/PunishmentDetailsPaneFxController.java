@@ -4,7 +4,6 @@ import javafx.beans.binding.BooleanBinding;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Spinner;
@@ -13,6 +12,7 @@ import javafx.util.StringConverter;
 import sa.gov.nic.bio.bw.core.controllers.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.core.utils.FxmlFile;
 import sa.gov.nic.bio.bw.core.utils.GuiUtils;
+import sa.gov.nic.bio.bw.core.workflow.Output;
 
 import java.util.Map;
 
@@ -39,6 +39,26 @@ public class PunishmentDetailsPaneFxController extends WizardStepFxControllerBas
 	public static final String KEY_PUNISHMENT_DETAILS_COVENANT = "PUNISHMENT_DETAILS_COVENANT";
 	public static final String KEY_PUNISHMENT_DETAILS_OTHER = "PUNISHMENT_DETAILS_OTHER";
 	
+	@Output private Integer tazeerLashes;
+	@Output private Integer hadLashes;
+	@Output private Integer fine;
+	@Output private Integer jailYears;
+	@Output private Integer jailMonths;
+	@Output private Integer jailDays;
+	@Output private Integer travelBanYears;
+	@Output private Integer travelBanMonths;
+	@Output private Integer travelBanDays;
+	@Output private Integer exilingYears;
+	@Output private Integer exilingMonths;
+	@Output private Integer exilingDays;
+	@Output private Integer deportationYears;
+	@Output private Integer deportationMonths;
+	@Output private Integer deportationDays;
+	@Output private Boolean finalDeportation;
+	@Output private Boolean libel;
+	@Output private Boolean covenant;
+	@Output private String other;
+	
 	@FXML private Spinner<Integer> spnTazeerLashes;
 	@FXML private Spinner<Integer> spnHadLashes;
 	@FXML private Spinner<Integer> spnFine;
@@ -64,7 +84,7 @@ public class PunishmentDetailsPaneFxController extends WizardStepFxControllerBas
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	protected void initialize()
+	protected void onAttachedToScene()
 	{
 		btnPrevious.setOnAction(actionEvent -> goPrevious());
 		btnNext.setOnAction(actionEvent -> goNext());
@@ -198,91 +218,31 @@ public class PunishmentDetailsPaneFxController extends WizardStepFxControllerBas
                            .and(spnDeportationYearsBinding).and(spnDeportationMonthsBinding)
                            .and(spnDeportationDaysBinding).and(cbFinalDeportationBinding).and(cbLibelBinding)
                            .and(cbCovenantBinding).and(txtOtherBinding));
-	}
-	
-	@Override
-	public void onWorkflowUserTaskLoad(boolean newForm, Map<String, Object> uiInputData)
-	{
-		if(newForm)
-		{
-			Node focusedNode = null;
-			
-			Integer tazeerLashes = (Integer) uiInputData.get(KEY_PUNISHMENT_DETAILS_TAZEER_LASHES);
-			if(tazeerLashes != null) spnTazeerLashes.getValueFactory().setValue(tazeerLashes);
-			else focusedNode = spnTazeerLashes;
-			
-			Integer hadLashes = (Integer) uiInputData.get(KEY_PUNISHMENT_DETAILS_HAD_LASHES);
-			if(hadLashes != null) spnHadLashes.getValueFactory().setValue(hadLashes);
-			else if(focusedNode == null) focusedNode = spnHadLashes;
-			
-			Integer fine = (Integer) uiInputData.get(KEY_PUNISHMENT_DETAILS_FINE);
-			if(fine != null) spnFine.getValueFactory().setValue(fine);
-			else if(focusedNode == null) focusedNode = spnFine;
-			
-			Integer jailYears = (Integer) uiInputData.get(KEY_PUNISHMENT_DETAILS_JAIL_YEARS);
-			if(jailYears != null) spnJailYears.getValueFactory().setValue(jailYears);
-			else if(focusedNode == null) focusedNode = spnJailYears;
-			
-			Integer jailMonths = (Integer) uiInputData.get(KEY_PUNISHMENT_DETAILS_JAIL_MONTHS);
-			if(jailMonths != null) spnJailMonths.getValueFactory().setValue(jailMonths);
-			else if(focusedNode == null) focusedNode = spnJailMonths;
-			
-			Integer jailDays = (Integer) uiInputData.get(KEY_PUNISHMENT_DETAILS_JAIL_DAYS);
-			if(jailDays != null) spnJailDays.getValueFactory().setValue(jailDays);
-			else if(focusedNode == null) focusedNode = spnJailDays;
-			
-			Integer travelBanYears = (Integer) uiInputData.get(KEY_PUNISHMENT_DETAILS_TRAVEL_BAN_YEARS);
-			if(travelBanYears != null) spnTravelBanYears.getValueFactory().setValue(travelBanYears);
-			else if(focusedNode == null) focusedNode = spnTravelBanYears;
-			
-			Integer travelBanMonths = (Integer) uiInputData.get(KEY_PUNISHMENT_DETAILS_TRAVEL_BAN_MONTHS);
-			if(travelBanMonths != null) spnTravelBanMonths.getValueFactory().setValue(travelBanMonths);
-			else if(focusedNode == null) focusedNode = spnTravelBanMonths;
-			
-			Integer travelBanDays = (Integer) uiInputData.get(KEY_PUNISHMENT_DETAILS_TRAVEL_BAN_DAYS);
-			if(travelBanDays != null) spnTravelBanDays.getValueFactory().setValue(travelBanDays);
-			else if(focusedNode == null) focusedNode = spnTravelBanDays;
-			
-			Integer exilingYears = (Integer) uiInputData.get(KEY_PUNISHMENT_DETAILS_EXILING_YEARS);
-			if(exilingYears != null) spnExilingYears.getValueFactory().setValue(exilingYears);
-			else if(focusedNode == null) focusedNode = spnExilingYears;
-			
-			Integer exilingMonths = (Integer) uiInputData.get(KEY_PUNISHMENT_DETAILS_EXILING_MONTHS);
-			if(exilingMonths != null) spnExilingMonths.getValueFactory().setValue(exilingMonths);
-			else if(focusedNode == null) focusedNode = spnExilingMonths;
-			
-			Integer exilingDays = (Integer) uiInputData.get(KEY_PUNISHMENT_DETAILS_EXILING_DAYS);
-			if(exilingDays != null) spnExilingDays.getValueFactory().setValue(exilingDays);
-			else if(focusedNode == null) focusedNode = spnExilingDays;
-			
-			Integer deportationYears = (Integer) uiInputData.get(KEY_PUNISHMENT_DETAILS_DEPORTATION_YEARS);
-			if(deportationYears != null) spnDeportationYears.getValueFactory().setValue(deportationYears);
-			else if(focusedNode == null) focusedNode = spnDeportationYears;
-			
-			Integer deportationMonths = (Integer) uiInputData.get(KEY_PUNISHMENT_DETAILS_DEPORTATION_MONTHS);
-			if(deportationMonths != null) spnDeportationMonths.getValueFactory().setValue(deportationMonths);
-			else if(focusedNode == null) focusedNode = spnDeportationMonths;
-			
-			Integer deportationDays = (Integer) uiInputData.get(KEY_PUNISHMENT_DETAILS_DEPORTATION_DAYS);
-			if(deportationDays != null) spnDeportationDays.getValueFactory().setValue(deportationDays);
-			else if(focusedNode == null) focusedNode = spnDeportationDays;
-			
-			Boolean finalDeportation = (Boolean) uiInputData.get(KEY_PUNISHMENT_DETAILS_FINAL_DEPORTATION);
-			cbFinalDeportation.setSelected(finalDeportation != null && finalDeportation);
-			
-			Boolean libel = (Boolean) uiInputData.get(KEY_PUNISHMENT_DETAILS_LIBEL);
-			cbLibel.setSelected(libel != null && libel);
-			
-			Boolean covenant = (Boolean) uiInputData.get(KEY_PUNISHMENT_DETAILS_COVENANT);
-			cbCovenant.setSelected(covenant != null && covenant);
-			
-			String other = (String) uiInputData.get(KEY_PUNISHMENT_DETAILS_OTHER);
-			if(other != null && !other.isEmpty()) txtOther.setText(other);
-			else if(focusedNode == null) focusedNode = txtOther;
-			
-			if(focusedNode != null) focusedNode.requestFocus();
-			else btnNext.requestFocus();
-		}
+		
+		if(tazeerLashes != null) spnTazeerLashes.getValueFactory().setValue(tazeerLashes);
+		if(hadLashes != null) spnHadLashes.getValueFactory().setValue(hadLashes);
+		if(fine != null) spnFine.getValueFactory().setValue(fine);
+		if(jailYears != null) spnJailYears.getValueFactory().setValue(jailYears);
+		if(jailMonths != null) spnJailMonths.getValueFactory().setValue(jailMonths);
+		if(jailDays != null) spnJailDays.getValueFactory().setValue(jailDays);
+		if(travelBanYears != null) spnTravelBanYears.getValueFactory().setValue(travelBanYears);
+		if(travelBanMonths != null) spnTravelBanMonths.getValueFactory().setValue(travelBanMonths);
+		if(travelBanDays != null) spnTravelBanDays.getValueFactory().setValue(travelBanDays);
+		if(exilingYears != null) spnExilingYears.getValueFactory().setValue(exilingYears);
+		if(exilingMonths != null) spnExilingMonths.getValueFactory().setValue(exilingMonths);
+		if(exilingDays != null) spnExilingDays.getValueFactory().setValue(exilingDays);
+		if(deportationYears != null) spnDeportationYears.getValueFactory().setValue(deportationYears);
+		if(deportationMonths != null) spnDeportationMonths.getValueFactory().setValue(deportationMonths);
+		if(deportationDays != null) spnDeportationDays.getValueFactory().setValue(deportationDays);
+		
+		cbFinalDeportation.setSelected(finalDeportation != null && finalDeportation);
+		cbLibel.setSelected(libel != null && libel);
+		cbCovenant.setSelected(covenant != null && covenant);
+		
+		if(other != null) txtOther.setText(other);
+		
+		if(btnNext.isDisabled()) spnTazeerLashes.requestFocus();
+		else btnNext.requestFocus();
 	}
 	
 	@Override
@@ -294,27 +254,27 @@ public class PunishmentDetailsPaneFxController extends WizardStepFxControllerBas
 	@Override
 	public void onGoingNext(Map<String, Object> uiDataMap)
 	{
-		uiDataMap.put(KEY_PUNISHMENT_DETAILS_TAZEER_LASHES, spnTazeerLashes.getValue());
-		uiDataMap.put(KEY_PUNISHMENT_DETAILS_HAD_LASHES, spnHadLashes.getValue());
-		uiDataMap.put(KEY_PUNISHMENT_DETAILS_FINE, spnFine.getValue());
-		uiDataMap.put(KEY_PUNISHMENT_DETAILS_JAIL_YEARS, spnJailYears.getValue());
-		uiDataMap.put(KEY_PUNISHMENT_DETAILS_JAIL_MONTHS, spnJailMonths.getValue());
-		uiDataMap.put(KEY_PUNISHMENT_DETAILS_JAIL_DAYS, spnJailDays.getValue());
-		uiDataMap.put(KEY_PUNISHMENT_DETAILS_TRAVEL_BAN_YEARS, spnTravelBanYears.getValue());
-		uiDataMap.put(KEY_PUNISHMENT_DETAILS_TRAVEL_BAN_MONTHS, spnTravelBanMonths.getValue());
-		uiDataMap.put(KEY_PUNISHMENT_DETAILS_TRAVEL_BAN_DAYS, spnTravelBanDays.getValue());
-		uiDataMap.put(KEY_PUNISHMENT_DETAILS_EXILING_YEARS, spnExilingYears.getValue());
-		uiDataMap.put(KEY_PUNISHMENT_DETAILS_EXILING_MONTHS, spnExilingMonths.getValue());
-		uiDataMap.put(KEY_PUNISHMENT_DETAILS_EXILING_DAYS, spnExilingDays.getValue());
-		uiDataMap.put(KEY_PUNISHMENT_DETAILS_DEPORTATION_YEARS, spnDeportationYears.getValue());
-		uiDataMap.put(KEY_PUNISHMENT_DETAILS_DEPORTATION_MONTHS, spnDeportationMonths.getValue());
-		uiDataMap.put(KEY_PUNISHMENT_DETAILS_DEPORTATION_DAYS, spnDeportationDays.getValue());
-		uiDataMap.put(KEY_PUNISHMENT_DETAILS_FINAL_DEPORTATION, cbFinalDeportation.isSelected());
-		uiDataMap.put(KEY_PUNISHMENT_DETAILS_LIBEL, cbLibel.isSelected());
-		uiDataMap.put(KEY_PUNISHMENT_DETAILS_COVENANT, cbCovenant.isSelected());
+		tazeerLashes = spnTazeerLashes.getValue();
+		hadLashes = spnHadLashes.getValue();
+		fine = spnFine.getValue();
+		jailYears = spnJailYears.getValue();
+		jailMonths = spnJailMonths.getValue();
+		jailDays = spnJailDays.getValue();
+		travelBanYears = spnTravelBanYears.getValue();
+		travelBanMonths = spnTravelBanMonths.getValue();
+		travelBanDays = spnTravelBanDays.getValue();
+		exilingYears = spnExilingYears.getValue();
+		exilingMonths = spnExilingMonths.getValue();
+		exilingDays = spnExilingDays.getValue();
+		deportationYears = spnDeportationYears.getValue();
+		deportationMonths = spnDeportationMonths.getValue();
+		deportationDays = spnDeportationDays.getValue();
+		finalDeportation = cbFinalDeportation.isSelected();
+		libel = cbLibel.isSelected();
+		covenant = cbCovenant.isSelected();
 		
-		String other = txtOther.getText();
-		if(other != null && !other.isEmpty()) uiDataMap.put(KEY_PUNISHMENT_DETAILS_OTHER, other);
-		else uiDataMap.remove(KEY_PUNISHMENT_DETAILS_OTHER);
+		var other = txtOther.getText();
+		if(!other.isBlank()) this.other = other;
+		else this.other = null;
 	}
 }

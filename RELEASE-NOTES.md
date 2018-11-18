@@ -23,6 +23,7 @@ VERSION SCHEMA: vYYYY.MM.#SEQ
 - ENH: Split the project into java modules.
 - ENH: Add the ability to mock tasks.
 - NEW: Embed ScenicView with BW. It opens by the shortcut CTRL+SHIFT+S.
+- ENH: Update Retrofit library to 2.5.0.
 
 ---
 

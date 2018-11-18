@@ -55,6 +55,8 @@ public class PersonIdPaneFxController extends WizardStepFxControllerBase
 	@Override
 	protected void onNextButtonClicked(ActionEvent actionEvent)
 	{
+		if(btnNext.isDisabled()) return;
+		
 		personId = Long.parseLong(txtPersonId.getText());
 		continueWorkflow();
 	}

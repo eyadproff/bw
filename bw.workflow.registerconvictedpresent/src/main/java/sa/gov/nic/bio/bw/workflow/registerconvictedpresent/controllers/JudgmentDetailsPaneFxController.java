@@ -20,6 +20,7 @@ import sa.gov.nic.bio.bw.core.controllers.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.core.utils.FxmlFile;
 import sa.gov.nic.bio.bw.core.utils.GuiUtils;
+import sa.gov.nic.bio.bw.core.workflow.Output;
 import sa.gov.nic.bio.bw.workflow.commons.webservice.CrimeType;
 import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.lookups.CrimeTypesLookup;
 import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.webservice.CrimeCode;
@@ -43,6 +44,15 @@ public class JudgmentDetailsPaneFxController extends WizardStepFxControllerBase
 	public static final String KEY_JUDGMENT_DETAILS_JUDGMENT_DATE = "JUDGMENT_DETAILS_JUDGMENT_DATE";
 	public static final String KEY_JUDGMENT_DETAILS_JUDGMENT_DATE_USE_HIJRI =
 																			"JUDGMENT_DETAILS_JUDGMENT_DATE_USE_HIJRI";
+	@Output private String judgmentIssuer;
+	@Output private String judgmentNumber;
+	@Output private LocalDate judgmentDate;
+	@Output private Boolean judgmentDateUseHijri;
+	@Output private String caseFileNumber;
+	@Output private String prisonerNumber;
+	@Output private LocalDate arrestDate;
+	@Output private Boolean arrestDateUseHijri;
+	@Output private List<CrimeCode> crimes;
 	
 	@FXML private Pane paneCrimeContainer;
 	@FXML private Pane paneCrime2;
@@ -59,9 +69,10 @@ public class JudgmentDetailsPaneFxController extends WizardStepFxControllerBase
 	@FXML private ComboBox<ComboBoxItem<Integer>> cboCrimeClass4;
 	@FXML private ComboBox<ComboBoxItem<Integer>> cboCrimeEvent5;
 	@FXML private ComboBox<ComboBoxItem<Integer>> cboCrimeClass5;
-	@FXML private TextField txtCaseFileNumber;
-	@FXML private TextField txtJudgmentNumber;
 	@FXML private TextField txtJudgmentIssuer;
+	@FXML private TextField txtJudgmentNumber;
+	@FXML private TextField txtCaseFileNumber;
+	@FXML private TextField txtPrisonerNumber;
 	@FXML private DatePicker dpArrestDate;
 	@FXML private DatePicker dpJudgmentDate;
 	@FXML private RadioButton rdoArrestDateUseHijri;
@@ -119,7 +130,7 @@ public class JudgmentDetailsPaneFxController extends WizardStepFxControllerBase
 	private ChangeListener<String>[] textPropertyChangeListenerReference = new ChangeListener[]{null};
 	
 	@Override
-	protected void initialize()
+	protected void onAttachedToScene()
 	{
 		btnPrevious.setOnAction(actionEvent -> goPrevious());
 		btnNext.setOnAction(actionEvent -> goNext());
@@ -273,84 +284,65 @@ public class JudgmentDetailsPaneFxController extends WizardStepFxControllerBase
 		btnNext.disableProperty().bind(crimeTypeDuplicated.or(txtJudgmentIssuerEmptyBinding)
 				                                          .or(txtJudgmentNumberEmptyBinding)
 				                                          .or(dpJudgmentDateEmptyBinding));
-	}
-	
-	@Override
-	protected void onAttachedToScene()
-	{
+		
 		initCrimeEventComboBox(cboCrimeEvent1, cboCrimeClass1);
 		initCrimeEventComboBox(cboCrimeEvent2, cboCrimeClass2);
 		initCrimeEventComboBox(cboCrimeEvent3, cboCrimeClass3);
 		initCrimeEventComboBox(cboCrimeEvent4, cboCrimeClass4);
 		initCrimeEventComboBox(cboCrimeEvent5, cboCrimeClass5);
-	}
-	
-	@Override
-	public void onWorkflowUserTaskLoad(boolean newForm, Map<String, Object> uiInputData)
-	{
-		if(newForm)
+		
+		Node focusedNode = null;
+		
+		if(judgmentIssuer != null && !judgmentIssuer.isEmpty()) txtJudgmentIssuer.setText(judgmentIssuer);
+		else focusedNode = txtJudgmentIssuer;
+		
+		if(judgmentNumber != null && !judgmentNumber.isEmpty()) txtJudgmentNumber.setText(judgmentNumber);
+		else if(focusedNode == null) focusedNode = txtJudgmentNumber;
+		
+		if(judgmentDate != null) dpJudgmentDate.setValue(judgmentDate);
+		else if(focusedNode == null) focusedNode = dpJudgmentDate;
+		
+		rdoJudgmentDateUseHijri.setSelected(true);
+		if(this.judgmentDateUseHijri != null && !this.judgmentDateUseHijri)
+																		rdoJudgmentDateUseGregorian.setSelected(true);
+		
+		if(caseFileNumber != null && !caseFileNumber.isEmpty()) txtCaseFileNumber.setText(caseFileNumber);
+		
+		if(prisonerNumber != null && !prisonerNumber.isEmpty()) txtPrisonerNumber.setText(prisonerNumber);
+		
+		if(arrestDate != null) dpArrestDate.setValue(arrestDate);
+		
+		rdoArrestDateUseHijri.setSelected(true);
+		if(this.arrestDateUseHijri != null && !this.arrestDateUseHijri) rdoArrestDateUseGregorian.setSelected(true);
+		
+		if(crimes != null)
 		{
-			Node focusedNode = null;
-			
-			@SuppressWarnings("unchecked")
-			List<CrimeCode> crimes = (List<CrimeCode>) uiInputData.get(KEY_JUDGMENT_DETAILS_CRIMES);
-			
-			if(crimes != null && !crimes.isEmpty())
+			for(int i = 0; i < crimes.size(); i++)
 			{
-				for(int i = 0; i < crimes.size(); i++)
+				CrimeCode crimeCode = crimes.get(i);
+				
+				if(crimeCode != null)
 				{
-					CrimeCode cc = crimes.get(i);
+					if(i > 0) GuiUtils.showNode(cboCrimePaneMap.get(i), true);
 					
-					if(cc != null)
-					{
-						if(i > 0) GuiUtils.showNode(cboCrimePaneMap.get(i), true);
-						
-						cboCrimeEventMap.get(i).getItems()
-								.stream()
-								.filter(item -> item.getItem().equals(cc.getCrimeEvent()))
-								.findFirst()
-								.ifPresent(cboCrimeEventMap.get(i)::setValue);
-						cboCrimeClassMap.get(i).getItems()
-								.stream()
-								.filter(item -> item.getItem().equals(cc.getCrimeClass()))
-								.findFirst()
-								.ifPresent(cboCrimeClassMap.get(i)::setValue);
-					}
+					cboCrimeEventMap.get(i).getItems()
+							.stream()
+							.filter(item -> item.getItem().equals(crimeCode.getCrimeEvent()))
+							.findFirst()
+							.ifPresent(cboCrimeEventMap.get(i)::setValue);
+					cboCrimeClassMap.get(i).getItems()
+							.stream()
+							.filter(item -> item.getItem().equals(crimeCode.getCrimeClass()))
+							.findFirst()
+							.ifPresent(cboCrimeClassMap.get(i)::setValue);
 				}
 			}
-			
-			checkForCrimeDuplicates.run();
-			
-			String judgmentIssuer = (String) uiInputData.get(KEY_JUDGMENT_DETAILS_JUDGMENT_ISSUER);
-			if(judgmentIssuer != null && !judgmentIssuer.trim().isEmpty()) txtJudgmentIssuer.setText(judgmentIssuer);
-			else focusedNode = txtJudgmentIssuer;
-			
-			String policeFileNumber = (String) uiInputData.get(KEY_JUDGMENT_DETAILS_POLICE_FILE_NUMBER);
-			if(policeFileNumber != null && !policeFileNumber.trim().isEmpty())
-																		txtCaseFileNumber.setText(policeFileNumber);
-			
-			String judgmentNumber = (String) uiInputData.get(KEY_JUDGMENT_DETAILS_JUDGMENT_NUMBER);
-			if(judgmentNumber != null && !judgmentNumber.trim().isEmpty()) txtJudgmentNumber.setText(judgmentNumber);
-			else if(focusedNode == null) focusedNode = txtJudgmentNumber;
-			
-			LocalDate arrestDate = (LocalDate) uiInputData.get(KEY_JUDGMENT_DETAILS_ARREST_DATE);
-			if(arrestDate != null) dpArrestDate.setValue(arrestDate);
-			
-			Boolean arrestDateUseHijri = (Boolean) uiInputData.get(KEY_JUDGMENT_DETAILS_ARREST_DATE_USE_HIJRI);
-			if(arrestDateUseHijri == null || arrestDateUseHijri) rdoArrestDateUseHijri.setSelected(true);
-			else rdoArrestDateUseGregorian.setSelected(true);
-			
-			LocalDate judgmentDate = (LocalDate) uiInputData.get(KEY_JUDGMENT_DETAILS_JUDGMENT_DATE);
-			if(judgmentDate != null) dpJudgmentDate.setValue(judgmentDate);
-			else if(focusedNode == null) focusedNode = dpJudgmentDate;
-			
-			Boolean judgmentDatUseHijri = (Boolean) uiInputData.get(KEY_JUDGMENT_DETAILS_JUDGMENT_DATE_USE_HIJRI);
-			if(judgmentDatUseHijri == null || judgmentDatUseHijri) rdoJudgmentDateUseHijri.setSelected(true);
-			else rdoJudgmentDateUseGregorian.setSelected(true);
-			
-			if(focusedNode != null) focusedNode.requestFocus();
-			else btnNext.requestFocus();
 		}
+		
+		checkForCrimeDuplicates.run();
+		
+		if(focusedNode != null) focusedNode.requestFocus();
+		else btnNext.requestFocus();
 	}
 	
 	@Override
@@ -362,8 +354,29 @@ public class JudgmentDetailsPaneFxController extends WizardStepFxControllerBase
 	@Override
 	public void onGoingNext(Map<String, Object> uiDataMap)
 	{
-		List<CrimeCode> crimes = new ArrayList<>();
+		var judgmentIssuer = txtJudgmentIssuer.getText();
+		if(!judgmentIssuer.isBlank()) this.judgmentIssuer = judgmentIssuer;
+		else this.judgmentIssuer = null;
 		
+		var judgmentNumber = txtJudgmentNumber.getText();
+		if(!judgmentNumber.isBlank()) this.judgmentNumber = judgmentNumber;
+		else this.judgmentNumber = null;
+		
+		this.judgmentDate = dpJudgmentDate.getValue();
+		this.judgmentDateUseHijri = rdoJudgmentDateUseHijri.isSelected();
+		
+		var caseFileNumber = txtCaseFileNumber.getText();
+		if(!caseFileNumber.isBlank()) this.caseFileNumber = caseFileNumber;
+		else this.caseFileNumber = null;
+		
+		var prisonerNumber = txtPrisonerNumber.getText();
+		if(!prisonerNumber.isBlank()) this.prisonerNumber = prisonerNumber;
+		else this.prisonerNumber = null;
+		
+		this.arrestDate = dpArrestDate.getValue();
+		this.arrestDateUseHijri = rdoArrestDateUseHijri.isSelected();
+		
+		crimes = new ArrayList<>();
 		crimes.add(new CrimeCode(cboCrimeEvent1.getValue().getItem(), cboCrimeClass1.getValue().getItem()));
 		
 		for(int i = 1; i <= 4; i++)
@@ -374,20 +387,6 @@ public class JudgmentDetailsPaneFxController extends WizardStepFxControllerBase
 				                         cboCrimeClassMap.get(i).getValue().getItem()));
 			}
 		}
-		
-		uiDataMap.put(KEY_JUDGMENT_DETAILS_CRIMES, crimes);
-		uiDataMap.put(KEY_JUDGMENT_DETAILS_JUDGMENT_ISSUER, txtJudgmentIssuer.getText());
-		
-		String policeFileNumber = txtCaseFileNumber.getText();
-		if(policeFileNumber != null && !policeFileNumber.trim().isEmpty())
-											uiDataMap.put(KEY_JUDGMENT_DETAILS_POLICE_FILE_NUMBER, policeFileNumber);
-		else uiDataMap.remove(KEY_JUDGMENT_DETAILS_POLICE_FILE_NUMBER);
-		
-		uiDataMap.put(KEY_JUDGMENT_DETAILS_JUDGMENT_NUMBER, txtJudgmentNumber.getText());
-		uiDataMap.put(KEY_JUDGMENT_DETAILS_ARREST_DATE, dpArrestDate.getValue());
-		uiDataMap.put(KEY_JUDGMENT_DETAILS_ARREST_DATE_USE_HIJRI, rdoArrestDateUseHijri.isSelected());
-		uiDataMap.put(KEY_JUDGMENT_DETAILS_JUDGMENT_DATE, dpJudgmentDate.getValue());
-		uiDataMap.put(KEY_JUDGMENT_DETAILS_JUDGMENT_DATE_USE_HIJRI, rdoJudgmentDateUseHijri.isSelected());
 	}
 	
 	private void initCrimeEventComboBox(ComboBox<ComboBoxItem<Integer>> cboCrimeEvent,

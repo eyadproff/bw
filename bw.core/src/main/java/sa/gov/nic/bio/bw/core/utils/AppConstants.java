@@ -29,8 +29,10 @@ public interface AppConstants
 	String LOGS_FOLDER_PATH = "C:/bio/user-apps/" + System.getProperty("user.name") + "/bw/logs";
 	String TEMP_FOLDER_PATH = "C:/bio/user-apps/" + System.getProperty("user.name") + "/bw/temp";
 	String DEV_SERVER_URL = "10.0.73.80:8080"; // TODO: TEMP
-	KeyCombination SCENIC_VIEW_KEY_COMBINATION = new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN,
-	                                                                    KeyCombination.SHIFT_DOWN);
+	KeyCombination SCENIC_VIEW_KEY_COMBINATION = new KeyCodeCombination(KeyCode.S,
+	                                                                    KeyCombination.CONTROL_DOWN,
+	                                                                    KeyCombination.SHIFT_DOWN,
+	                                                                    KeyCombination.ALT_DOWN);
 	
 	long SAMIS_DB_DATE_NOT_SET_VALUE = -62135780400000L;
 }

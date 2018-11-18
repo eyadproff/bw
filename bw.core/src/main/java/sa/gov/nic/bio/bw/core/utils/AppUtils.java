@@ -615,6 +615,13 @@ public final class AppUtils implements AppLogger
 	
 	public static void showScenicView(Scene scene)
 	{
-		ScenicView.show(scene);
+		try
+		{
+			ScenicView.show(scene);
+		}
+		catch(NoClassDefFoundError e)
+		{
+			LOGGER.info("ScenicView is not found!");
+		}
 	}
 }

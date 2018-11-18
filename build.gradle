@@ -121,10 +121,14 @@ apply plugin: 'base'
 apply plugin: "org.hidetake.ssh"
 
 task collectDependencies(type: Copy, group: 'web-start') {
-    from subprojects.collect { it.tasks.withType(Jar) }
+    from(subprojects.collect { it.tasks.withType(Jar) }) {
+        exclude 'javafx.scenicview-*.jar'
+    }
     from(subprojects.collect { it.sourceSets.main.runtimeClasspath }) {
         exclude 'sa/**'
+        exclude 'org/**'
         exclude 'module-info.class'
+        exclude 'javafx.scenicview-*.jar'
     }
     into 'build/libs'
 }
@@ -147,7 +151,7 @@ task packageWebStart(group: 'web-start') {
         }
 
         // compress the jars
-        fileTree(dir: 'build/web-start/modulepath-jars', include: '**/*.jar', excludes: ['bio.*.jar', 'bcl.*.jar', 'bw.*.jar', 'controlsfx-*.jar', 'javafx.*.jar']).visit
+        fileTree(dir: 'build/web-start/modulepath-jars', include: '**/*.jar', excludes: ['bw.*.jar', 'controlsfx-*.jar', 'javafx.*.jar']).visit
                 { FileVisitDetails details ->
                     String fileName = details.file.name
                     exec {
@@ -157,7 +161,7 @@ task packageWebStart(group: 'web-start') {
                 }
 
         // delete the un-compressed jars
-        fileTree(dir: 'build/web-start/modulepath-jars', include: '**/*.jar', excludes: ['bio.*.jar', 'bcl.*.jar', 'bw.*.jar', 'controlsfx-*.jar', 'javafx.*.jar']).visit { FileVisitDetails details ->
+        fileTree(dir: 'build/web-start/modulepath-jars', include: '**/*.jar', excludes: ['bw.*.jar', 'controlsfx-*.jar', 'javafx.*.jar']).visit { FileVisitDetails details ->
             details.file.delete()
         }
 

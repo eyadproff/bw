@@ -41,51 +41,23 @@
                             <Insets bottom="5.0"/>
                         </GridPane.margin>
                     </TextField>
-                    <Label text="%label.caseFileNumber" GridPane.rowIndex="1" GridPane.columnIndex="0">
+                    <Label text="%label.judgmentNumber" GridPane.rowIndex="1" GridPane.columnIndex="0">
                         <GridPane.margin>
                             <Insets bottom="5.0"/>
                         </GridPane.margin>
                     </Label>
-                    <TextField fx:id="txtCaseFileNumber" GridPane.rowIndex="1" GridPane.columnIndex="1">
+                    <TextField fx:id="txtJudgmentNumber" styleClass="required" GridPane.rowIndex="1" GridPane.columnIndex="1">
                         <GridPane.margin>
                             <Insets bottom="5.0"/>
                         </GridPane.margin>
                     </TextField>
-                    <Label text="%label.judgmentNumber" GridPane.rowIndex="2" GridPane.columnIndex="0">
+                    <Label text="%label.judgmentDate" GridPane.rowIndex="2" GridPane.columnIndex="0">
                         <GridPane.margin>
                             <Insets bottom="5.0"/>
                         </GridPane.margin>
                     </Label>
-                    <TextField fx:id="txtJudgmentNumber" styleClass="required" GridPane.rowIndex="2" GridPane.columnIndex="1">
-                        <GridPane.margin>
-                            <Insets bottom="5.0"/>
-                        </GridPane.margin>
-                    </TextField>
-                    <Label text="%label.arrestDate" GridPane.rowIndex="3" GridPane.columnIndex="0">
-                        <GridPane.margin>
-                            <Insets bottom="5.0"/>
-                        </GridPane.margin>
-                    </Label>
-                    <DatePicker fx:id="dpArrestDate" promptText="dd/MM/yyyy" GridPane.rowIndex="3" GridPane.columnIndex="1">
-                        <GridPane.margin>
-                            <Insets/>
-                        </GridPane.margin>
-                    </DatePicker>
-                    <HBox GridPane.rowIndex="4" GridPane.columnIndex="1" spacing="5.0">
-                        <GridPane.margin>
-                            <Insets bottom="5.0"/>
-                        </GridPane.margin>
-                        <Label text="%label.input" styleClass="small-font"/>
-                        <RadioButton fx:id="rdoArrestDateUseHijri" toggleGroup="$toggleGroup1" text="%radio.hijri" styleClass="small-font, small-radio-button" focusTraversable="false"/>
-                        <RadioButton fx:id="rdoArrestDateUseGregorian" toggleGroup="$toggleGroup1" text="%radio.gregorian" styleClass="small-font, small-radio-button" focusTraversable="false"/>
-                    </HBox>
-                    <Label text="%label.judgmentDate" GridPane.rowIndex="5" GridPane.columnIndex="0">
-                        <GridPane.margin>
-                            <Insets bottom="5.0"/>
-                        </GridPane.margin>
-                    </Label>
-                    <DatePicker fx:id="dpJudgmentDate" styleClass="required" promptText="dd/MM/yyyy" GridPane.rowIndex="5" GridPane.columnIndex="1"/>
-                    <HBox GridPane.rowIndex="6" GridPane.columnIndex="1" spacing="5.0">
+                    <DatePicker fx:id="dpJudgmentDate" styleClass="required" promptText="dd/MM/yyyy" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+                    <HBox GridPane.rowIndex="3" GridPane.columnIndex="1" spacing="5.0">
                         <GridPane.margin>
                             <Insets bottom="5.0"/>
                         </GridPane.margin>
@@ -93,8 +65,46 @@
                         <RadioButton fx:id="rdoJudgmentDateUseHijri" toggleGroup="$toggleGroup2" text="%radio.hijri" styleClass="small-font, small-radio-button" focusTraversable="false"/>
                         <RadioButton fx:id="rdoJudgmentDateUseGregorian" toggleGroup="$toggleGroup2" text="%radio.gregorian" styleClass="small-font, small-radio-button" focusTraversable="false"/>
                     </HBox>
-                    <Label text="%label.crimeClassification" GridPane.rowIndex="7" GridPane.columnIndex="0" alignment="TOP_LEFT" GridPane.valignment="TOP"/>
-                    <VBox fx:id="paneCrimeContainer" alignment="CENTER" spacing="5.0" GridPane.rowIndex="7" GridPane.columnIndex="1">
+                    <Label text="%label.caseFileNumber" GridPane.rowIndex="4" GridPane.columnIndex="0">
+                        <GridPane.margin>
+                            <Insets bottom="5.0"/>
+                        </GridPane.margin>
+                    </Label>
+                    <TextField fx:id="txtCaseFileNumber" GridPane.rowIndex="4" GridPane.columnIndex="1">
+                        <GridPane.margin>
+                            <Insets bottom="5.0"/>
+                        </GridPane.margin>
+                    </TextField>
+                    <Label text="%label.prisonerNumber" GridPane.rowIndex="5" GridPane.columnIndex="0">
+                        <GridPane.margin>
+                            <Insets bottom="5.0"/>
+                        </GridPane.margin>
+                    </Label>
+                    <TextField fx:id="txtPrisonerNumber" GridPane.rowIndex="5" GridPane.columnIndex="1">
+                        <GridPane.margin>
+                            <Insets bottom="5.0"/>
+                        </GridPane.margin>
+                    </TextField>
+                    <Label text="%label.arrestDate" GridPane.rowIndex="6" GridPane.columnIndex="0">
+                        <GridPane.margin>
+                            <Insets bottom="5.0"/>
+                        </GridPane.margin>
+                    </Label>
+                    <DatePicker fx:id="dpArrestDate" promptText="dd/MM/yyyy" GridPane.rowIndex="6" GridPane.columnIndex="1">
+                        <GridPane.margin>
+                            <Insets/>
+                        </GridPane.margin>
+                    </DatePicker>
+                    <HBox GridPane.rowIndex="7" GridPane.columnIndex="1" spacing="5.0">
+                        <GridPane.margin>
+                            <Insets bottom="5.0"/>
+                        </GridPane.margin>
+                        <Label text="%label.input" styleClass="small-font"/>
+                        <RadioButton fx:id="rdoArrestDateUseHijri" toggleGroup="$toggleGroup1" text="%radio.hijri" styleClass="small-font, small-radio-button" focusTraversable="false"/>
+                        <RadioButton fx:id="rdoArrestDateUseGregorian" toggleGroup="$toggleGroup1" text="%radio.gregorian" styleClass="small-font, small-radio-button" focusTraversable="false"/>
+                    </HBox>
+                    <Label text="%label.crimeClassification" GridPane.rowIndex="8" GridPane.columnIndex="0" alignment="TOP_LEFT" GridPane.valignment="TOP"/>
+                    <VBox fx:id="paneCrimeContainer" alignment="CENTER" spacing="5.0" GridPane.rowIndex="8" GridPane.columnIndex="1">
                         <HBox spacing="5.0">
                             <ComboBox fx:id="cboCrimeEvent1" styleClass="required" minWidth="173" maxWidth="173"/>
                             <ComboBox fx:id="cboCrimeClass1" styleClass="required" minWidth="223" maxWidth="223"/>
