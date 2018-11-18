@@ -9,6 +9,7 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ProgressIndicator;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
@@ -481,11 +482,22 @@ public class CoreFxController extends FxControllerBase implements IdleMonitorReg
 		
 		Stage newStage = new Stage();
 		
+		Scene scene = new Scene(rootPane);
+		scene.addEventFilter(KeyEvent.KEY_PRESSED, event ->
+		{
+			if(AppConstants.SCENIC_VIEW_KEY_COMBINATION.match(event))
+			{
+				LOGGER.info("Showing scenic view...");
+				AppUtils.showScenicView(scene);
+				event.consume(); // <-- stops passing the event to next node
+			}
+		});
+		
 		newStage.getIcons().setAll(oldStage.getIcons());
 		newStage.setTitle(windowTitle);
 		newStage.setWidth(AppConstants.STAGE_WIDTH);
 		newStage.setHeight(AppConstants.STAGE_HEIGHT);
-		newStage.setScene(new Scene(rootPane));
+		newStage.setScene(scene);
 		newStage.getScene().setNodeOrientation(toLanguage.getNodeOrientation());
 		
 		StateBundle oldState = new StateBundle();

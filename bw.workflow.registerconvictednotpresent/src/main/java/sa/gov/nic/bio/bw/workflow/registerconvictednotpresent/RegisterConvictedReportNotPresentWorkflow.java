@@ -12,7 +12,7 @@ import sa.gov.nic.bio.bw.workflow.commons.controllers.InquiryResultPaneFxControl
 import sa.gov.nic.bio.bw.workflow.commons.controllers.ShowingFingerprintsPaneFxController;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.CountriesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.DocumentTypesLookup;
-import sa.gov.nic.bio.bw.workflow.commons.lookups.SamisIdTypesLookup;
+import sa.gov.nic.bio.bw.workflow.commons.lookups.PersonTypesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.ConvertFingerprintBase64ImagesToWsqWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.FetchingFingerprintsWorkflowTask;
@@ -43,7 +43,7 @@ import java.util.ResourceBundle;
 
 @AssociatedMenu(id = "menu.register.registerConvictedNotPresent", title = "menu.title", order = 3,
 				devices = Device.BIO_UTILITIES)
-@WithLookups({SamisIdTypesLookup.class, DocumentTypesLookup.class, CountriesLookup.class, CrimeTypesLookup.class})
+@WithLookups({PersonTypesLookup.class, DocumentTypesLookup.class, CountriesLookup.class, CrimeTypesLookup.class})
 @Wizard({@Step(iconId = "question", title = "wizard.selectFingerprintsSource"),
 		@Step(iconId = "\\uf2bb", title = "wizard.enterPersonId"),
 		@Step(iconId = "\\uf2b9", title = "wizard.showPersonInformation"),
@@ -240,6 +240,8 @@ public class RegisterConvictedReportNotPresentWorkflow extends WizardWorkflowBas
 			}
 			case 6:
 			{
+				passData(InquiryResultPaneFxController.class, PersonInfoPaneFxController.class,
+				         "normalizedPersonInfo");
 				renderUiAndWaitForUserInput(PersonInfoPaneFxController.class);
 				break;
 			}

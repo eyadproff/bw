@@ -123,8 +123,6 @@ public class InquiryResultPaneFxController extends WizardStepFxControllerBase
 		                                                resources.getString("label.male"),
 		                                                resources.getString("label.female"));
 		
-		
-		
 		String faceImageBase64 = normalizedPersonInfo.getFaceImageBase64();
 		Gender gender = normalizedPersonInfo.getGender();
 		

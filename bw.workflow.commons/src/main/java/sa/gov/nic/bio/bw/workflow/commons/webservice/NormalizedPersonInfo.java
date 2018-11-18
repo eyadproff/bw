@@ -8,7 +8,7 @@ import sa.gov.nic.bio.bw.core.beans.Name;
 import sa.gov.nic.bio.bw.workflow.commons.beans.Gender;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.CountriesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.DocumentTypesLookup;
-import sa.gov.nic.bio.bw.workflow.commons.lookups.SamisIdTypesLookup;
+import sa.gov.nic.bio.bw.workflow.commons.lookups.PersonTypesLookup;
 
 import java.time.LocalDate;
 import java.util.Date;
@@ -69,6 +69,10 @@ public class NormalizedPersonInfo
 		if(civilBiometricsId != null)
 								civilBiometricsIdLabel = AppUtils.localizeNumbers(String.valueOf(civilBiometricsId));
 		else civilBiometricsIdLabel = notAvailable;
+		
+		if(criminalBiometricsId != null)
+							criminalBiometricsIdLabel = AppUtils.localizeNumbers(String.valueOf(criminalBiometricsId));
+		else criminalBiometricsIdLabel = notAvailable;
 		
 		if(personInfo == null)
 		{
@@ -160,7 +164,7 @@ public class NormalizedPersonInfo
 		else birthDateLabel = notAvailable;
 		
 		@SuppressWarnings("unchecked")
-		List<PersonType> personTypes = (List<PersonType>) Context.getUserSession().getAttribute(SamisIdTypesLookup.KEY);
+		List<PersonType> personTypes = (List<PersonType>) Context.getUserSession().getAttribute(PersonTypesLookup.KEY);
 		
 		String personTypeString = personInfo.getPersonType();
 		if(personTypeString != null)

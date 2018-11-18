@@ -22,6 +22,7 @@ dependencies {
     api project(':bw.commons.resources')
     runtimeOnly project(':bw.login')
     runtimeOnly project(':bw.home')
+    implementation project(':javafx.scenicview')
 }
 
 processResources {

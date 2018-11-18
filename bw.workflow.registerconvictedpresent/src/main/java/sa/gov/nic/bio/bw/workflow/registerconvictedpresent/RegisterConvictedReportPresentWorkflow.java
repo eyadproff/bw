@@ -14,7 +14,7 @@ import sa.gov.nic.bio.bw.workflow.commons.controllers.InquiryByFingerprintsPaneF
 import sa.gov.nic.bio.bw.workflow.commons.controllers.InquiryResultPaneFxController;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.CountriesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.DocumentTypesLookup;
-import sa.gov.nic.bio.bw.workflow.commons.lookups.SamisIdTypesLookup;
+import sa.gov.nic.bio.bw.workflow.commons.lookups.PersonTypesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.webservice.Finger;
 import sa.gov.nic.bio.bw.workflow.commons.webservice.FingerprintInquiryStatusResult;
 import sa.gov.nic.bio.bw.workflow.commons.webservice.PersonInfo;
@@ -38,7 +38,7 @@ import java.util.ResourceBundle;
 
 @AssociatedMenu(id = "menu.register.registerConvictedPresent", title = "menu.title", order = 2,
 				devices = {Device.FINGERPRINT_SCANNER, Device.CAMERA})
-@WithLookups({SamisIdTypesLookup.class, DocumentTypesLookup.class, CountriesLookup.class, CrimeTypesLookup.class})
+@WithLookups({PersonTypesLookup.class, DocumentTypesLookup.class, CountriesLookup.class, CrimeTypesLookup.class})
 @Wizard({@Step(iconId = "\\uf256", title = "wizard.fingerprintCapturing"),
 		@Step(iconId = "camera", title = "wizard.facePhotoCapturing"),
 		@Step(iconId = "search", title = "wizard.inquiryByFingerprints"),

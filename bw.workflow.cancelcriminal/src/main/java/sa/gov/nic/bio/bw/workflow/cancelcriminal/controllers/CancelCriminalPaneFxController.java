@@ -20,7 +20,7 @@ import sa.gov.nic.bio.bw.core.utils.GuiLanguage;
 import sa.gov.nic.bio.bw.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.core.workflow.Input;
 import sa.gov.nic.bio.bw.core.workflow.Output;
-import sa.gov.nic.bio.bw.workflow.commons.lookups.SamisIdTypesLookup;
+import sa.gov.nic.bio.bw.workflow.commons.lookups.PersonTypesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.webservice.PersonType;
 
 import java.util.List;
@@ -109,7 +109,7 @@ public class CancelCriminalPaneFxController extends BodyFxControllerBase
 		
 		@SuppressWarnings("unchecked")
 		List<PersonType> personTypes = (List<PersonType>)
-													Context.getUserSession().getAttribute(SamisIdTypesLookup.KEY);
+													Context.getUserSession().getAttribute(PersonTypesLookup.KEY);
 		cboPersonType.getItems().addAll(personTypes);
 		cboPersonType.getSelectionModel().select(0);
 		

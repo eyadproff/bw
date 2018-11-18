@@ -11,7 +11,7 @@ import sa.gov.nic.bio.bw.workflow.commons.controllers.InquiryByFingerprintsPaneF
 import sa.gov.nic.bio.bw.workflow.commons.controllers.ShowingFingerprintsPaneFxController;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.CountriesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.DocumentTypesLookup;
-import sa.gov.nic.bio.bw.workflow.commons.lookups.SamisIdTypesLookup;
+import sa.gov.nic.bio.bw.workflow.commons.lookups.PersonTypesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.ConvertFingerprintBase64ImagesToWsqWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.ConvertFingerprintImagesToBase64WorkflowTask;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.FingerprintInquiryStatusCheckerWorkflowTask;
@@ -26,7 +26,7 @@ import java.util.ResourceBundle;
 
 @AssociatedMenu(id = "menu.query.fingerprintCardIdentification", title = "menu.title", order = 5,
 				devices = Device.BIO_UTILITIES)
-@WithLookups({SamisIdTypesLookup.class, DocumentTypesLookup.class, CountriesLookup.class})
+@WithLookups({PersonTypesLookup.class, DocumentTypesLookup.class, CountriesLookup.class})
 @Wizard({@Step(iconId = "file", title = "wizard.scanFingerprintCard"),
 		@Step(iconId = "\\uf247", title = "wizard.specifyFingerprintCoordinates"),
 		@Step(iconId = "scissors", title = "wizard.fingerprintsAfterCropping"),

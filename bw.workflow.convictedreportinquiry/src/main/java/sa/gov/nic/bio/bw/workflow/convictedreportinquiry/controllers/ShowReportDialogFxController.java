@@ -30,7 +30,7 @@ import sa.gov.nic.bio.bw.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.workflow.commons.beans.Gender;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.CountriesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.DocumentTypesLookup;
-import sa.gov.nic.bio.bw.workflow.commons.lookups.SamisIdTypesLookup;
+import sa.gov.nic.bio.bw.workflow.commons.lookups.PersonTypesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.PrintReportTask;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.SaveReportAsPdfTask;
 import sa.gov.nic.bio.bw.workflow.commons.ui.ImageViewPane;
@@ -273,7 +273,7 @@ public class ShowReportDialogFxController extends FxControllerBase
 		
 		@SuppressWarnings("unchecked")
 		List<PersonType> personTypes = (List<PersonType>)
-														Context.getUserSession().getAttribute(SamisIdTypesLookup.KEY);
+														Context.getUserSession().getAttribute(PersonTypesLookup.KEY);
 		
 		Integer subjSamisType = convictedReport.getSubjSamisType();
 		if(subjSamisType != null)

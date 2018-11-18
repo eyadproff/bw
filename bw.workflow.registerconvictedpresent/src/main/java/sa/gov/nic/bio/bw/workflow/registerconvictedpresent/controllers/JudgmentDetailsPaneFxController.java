@@ -15,7 +15,7 @@ import javafx.scene.layout.Pane;
 import org.controlsfx.glyphfont.FontAwesome;
 import org.controlsfx.glyphfont.Glyph;
 import sa.gov.nic.bio.bw.core.Context;
-import sa.gov.nic.bio.bw.core.beans.HideableItem;
+import sa.gov.nic.bio.bw.core.beans.ComboBoxItem;
 import sa.gov.nic.bio.bw.core.controllers.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.core.utils.FxmlFile;
@@ -49,16 +49,16 @@ public class JudgmentDetailsPaneFxController extends WizardStepFxControllerBase
 	@FXML private Pane paneCrime3;
 	@FXML private Pane paneCrime4;
 	@FXML private Pane paneCrime5;
-	@FXML private ComboBox<HideableItem<Integer>> cboCrimeEvent1;
-	@FXML private ComboBox<HideableItem<Integer>> cboCrimeClass1;
-	@FXML private ComboBox<HideableItem<Integer>> cboCrimeEvent2;
-	@FXML private ComboBox<HideableItem<Integer>> cboCrimeClass2;
-	@FXML private ComboBox<HideableItem<Integer>> cboCrimeEvent3;
-	@FXML private ComboBox<HideableItem<Integer>> cboCrimeClass3;
-	@FXML private ComboBox<HideableItem<Integer>> cboCrimeEvent4;
-	@FXML private ComboBox<HideableItem<Integer>> cboCrimeClass4;
-	@FXML private ComboBox<HideableItem<Integer>> cboCrimeEvent5;
-	@FXML private ComboBox<HideableItem<Integer>> cboCrimeClass5;
+	@FXML private ComboBox<ComboBoxItem<Integer>> cboCrimeEvent1;
+	@FXML private ComboBox<ComboBoxItem<Integer>> cboCrimeClass1;
+	@FXML private ComboBox<ComboBoxItem<Integer>> cboCrimeEvent2;
+	@FXML private ComboBox<ComboBoxItem<Integer>> cboCrimeClass2;
+	@FXML private ComboBox<ComboBoxItem<Integer>> cboCrimeEvent3;
+	@FXML private ComboBox<ComboBoxItem<Integer>> cboCrimeClass3;
+	@FXML private ComboBox<ComboBoxItem<Integer>> cboCrimeEvent4;
+	@FXML private ComboBox<ComboBoxItem<Integer>> cboCrimeClass4;
+	@FXML private ComboBox<ComboBoxItem<Integer>> cboCrimeEvent5;
+	@FXML private ComboBox<ComboBoxItem<Integer>> cboCrimeClass5;
 	@FXML private TextField txtCaseFileNumber;
 	@FXML private TextField txtJudgmentNumber;
 	@FXML private TextField txtJudgmentIssuer;
@@ -81,8 +81,8 @@ public class JudgmentDetailsPaneFxController extends WizardStepFxControllerBase
 	private Map<Integer, String> crimeClassTitles = new HashMap<>();
 	private Map<Integer, List<Integer>> crimeClasses = new HashMap<>();
 	private Map<Integer, Pane> cboCrimePaneMap = new HashMap<>();
-	private Map<Integer, ComboBox<HideableItem<Integer>>> cboCrimeEventMap = new HashMap<>();
-	private Map<Integer, ComboBox<HideableItem<Integer>>> cboCrimeClassMap = new HashMap<>();
+	private Map<Integer, ComboBox<ComboBoxItem<Integer>>> cboCrimeEventMap = new HashMap<>();
+	private Map<Integer, ComboBox<ComboBoxItem<Integer>>> cboCrimeClassMap = new HashMap<>();
 	private Map<Integer, Button> btnHidePaneCrimeMap = new HashMap<>();
 	private BooleanProperty crimeTypeDuplicated = new SimpleBooleanProperty();
 	private int visibleCrimeTypesCount = 1;
@@ -307,12 +307,12 @@ public class JudgmentDetailsPaneFxController extends WizardStepFxControllerBase
 						
 						cboCrimeEventMap.get(i).getItems()
 								.stream()
-								.filter(item -> item.getObject().equals(cc.getCrimeEvent()))
+								.filter(item -> item.getItem().equals(cc.getCrimeEvent()))
 								.findFirst()
 								.ifPresent(cboCrimeEventMap.get(i)::setValue);
 						cboCrimeClassMap.get(i).getItems()
 								.stream()
-								.filter(item -> item.getObject().equals(cc.getCrimeClass()))
+								.filter(item -> item.getItem().equals(cc.getCrimeClass()))
 								.findFirst()
 								.ifPresent(cboCrimeClassMap.get(i)::setValue);
 					}
@@ -364,14 +364,14 @@ public class JudgmentDetailsPaneFxController extends WizardStepFxControllerBase
 	{
 		List<CrimeCode> crimes = new ArrayList<>();
 		
-		crimes.add(new CrimeCode(cboCrimeEvent1.getValue().getObject(), cboCrimeClass1.getValue().getObject()));
+		crimes.add(new CrimeCode(cboCrimeEvent1.getValue().getItem(), cboCrimeClass1.getValue().getItem()));
 		
 		for(int i = 1; i <= 4; i++)
 		{
 			if(cboCrimePaneMap.get(i).isVisible())
 			{
-				crimes.add(new CrimeCode(cboCrimeEventMap.get(i).getValue().getObject(),
-				                         cboCrimeClassMap.get(i).getValue().getObject()));
+				crimes.add(new CrimeCode(cboCrimeEventMap.get(i).getValue().getItem(),
+				                         cboCrimeClassMap.get(i).getValue().getItem()));
 			}
 		}
 		
@@ -390,10 +390,10 @@ public class JudgmentDetailsPaneFxController extends WizardStepFxControllerBase
 		uiDataMap.put(KEY_JUDGMENT_DETAILS_JUDGMENT_DATE_USE_HIJRI, rdoJudgmentDateUseHijri.isSelected());
 	}
 	
-	private void initCrimeEventComboBox(ComboBox<HideableItem<Integer>> cboCrimeEvent,
-	                                    ComboBox<HideableItem<Integer>> cboCrimeClass)
+	private void initCrimeEventComboBox(ComboBox<ComboBoxItem<Integer>> cboCrimeEvent,
+	                                    ComboBox<ComboBoxItem<Integer>> cboCrimeClass)
 	{
-		cboCrimeEvent.getItems().forEach(item -> item.setText(crimeEventTitles.get(item.getObject())));
+		cboCrimeEvent.getItems().forEach(item -> item.setText(crimeEventTitles.get(item.getItem())));
 		cboCrimeEvent.valueProperty().addListener((observable, oldValue, newValue) ->
 		{
 		    if(newValue == null)
@@ -404,11 +404,11 @@ public class JudgmentDetailsPaneFxController extends WizardStepFxControllerBase
 		        return;
 		    }
 		
-		    List<Integer> crimeClassCodes = crimeClasses.get(newValue.getObject());
+		    List<Integer> crimeClassCodes = crimeClasses.get(newValue.getItem());
 		    GuiUtils.addAutoCompletionSupportToComboBox(cboCrimeClass, crimeClassCodes,
 		                                                showingPropertyChangeListenerReference,
 		                                                textPropertyChangeListenerReference);
-			cboCrimeClass.getItems().forEach(item -> item.setText(crimeClassTitles.get(item.getObject())));
+			cboCrimeClass.getItems().forEach(item -> item.setText(crimeClassTitles.get(item.getItem())));
 			cboCrimeClass.getSelectionModel().selectFirst();
 		
 		});

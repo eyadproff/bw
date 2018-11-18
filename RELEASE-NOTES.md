@@ -22,6 +22,7 @@ VERSION SCHEMA: vYYYY.MM.#SEQ
 - ENH: Upgrade from Java 8 to Java 11.
 - ENH: Split the project into java modules.
 - ENH: Add the ability to mock tasks.
+- NEW: Embed ScenicView with BW. It opens by the shortcut CTRL+SHIFT+S.
 
 ---
 

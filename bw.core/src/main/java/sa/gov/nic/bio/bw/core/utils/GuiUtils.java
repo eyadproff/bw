@@ -53,7 +53,7 @@ import javafx.util.StringConverter;
 import org.controlsfx.control.PopOver;
 import org.controlsfx.control.PopOver.ArrowLocation;
 import sa.gov.nic.bio.bw.core.Context;
-import sa.gov.nic.bio.bw.core.beans.HideableItem;
+import sa.gov.nic.bio.bw.core.beans.ComboBoxItem;
 import sa.gov.nic.bio.bw.core.biokit.FingerPosition;
 import sa.gov.nic.bio.bw.core.controllers.CoreFxController;
 import sa.gov.nic.bio.bw.core.interfaces.AppLogger;
@@ -63,8 +63,6 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.chrono.Chronology;
@@ -75,6 +73,7 @@ import java.time.temporal.TemporalAccessor;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -203,33 +202,30 @@ public class GuiUtils implements AppLogger
 		});
 	}
 	
-	public static <T> void addAutoCompletionSupportToComboBox(ComboBox<HideableItem<T>> comboBox, List<T> items)
+	public static <T> void addAutoCompletionSupportToComboBox(ComboBox<ComboBoxItem<T>> comboBox, List<T> items)
 	{
 		addAutoCompletionSupportToComboBox(comboBox, items, null,
 		                                   null);
 	}
 	
 	@SuppressWarnings("unchecked")
-	public static <T> void addAutoCompletionSupportToComboBox(ComboBox<HideableItem<T>> comboBox, List<T> items,
+	public static <T> void addAutoCompletionSupportToComboBox(ComboBox<ComboBoxItem<T>> comboBox, List<T> items,
                                                       ChangeListener<Boolean>[] showingPropertyChangeListenerReference,
                                                       ChangeListener<String>[] textPropertyChangeListenerReference)
 	{
-		ObservableList<HideableItem<T>> hideableHideableItems = FXCollections.observableArrayList(hideableItem ->
-                                                                    new Observable[]{hideableItem.hiddenProperty()});
+		ObservableList<ComboBoxItem<T>> comboBoxItems = FXCollections.observableArrayList(comboBoxItem ->
+                                                                new Observable[]{comboBoxItem.hiddenProperty()});
 		
 		items.forEach(item ->
 		{
-			HideableItem<T> hideableItem = new HideableItem<>(item);
-			hideableHideableItems.add(hideableItem);
+			ComboBoxItem<T> comboBoxItem = new ComboBoxItem<>(item);
+			comboBoxItems.add(comboBoxItem);
 		});
 		
-		FilteredList<HideableItem<T>> filteredHideableItems = new FilteredList<>(hideableHideableItems,
-		                                                                         t -> !t.isHidden());
+		FilteredList<ComboBoxItem<T>> filteredComboBoxItems = new FilteredList<>(comboBoxItems, t -> !t.isHidden());
+		comboBox.setItems(filteredComboBoxItems);
 		
-		comboBox.setItems(filteredHideableItems);
-		
-		@SuppressWarnings("unchecked")
-		HideableItem<T>[] selectedItem = (HideableItem<T>[]) new HideableItem[1];
+		ComboBoxItem<T>[] selectedItem = (ComboBoxItem<T>[]) new ComboBoxItem[1];
 		
 		EventHandler<KeyEvent> keyPressedEventHandler = event ->
 		{
@@ -253,7 +249,7 @@ public class GuiUtils implements AppLogger
 			}
 		};
 		EventHandler<Event> onHiddenEventHandler = event ->
-														hideableHideableItems.forEach(item -> item.setHidden(false));
+														comboBoxItems.forEach(item -> item.setHidden(false));
 		ChangeListener<Boolean> showingPropertyChangeListener = (observable, oldValue, newValue) ->
 		{
 			if(newValue)
@@ -261,44 +257,27 @@ public class GuiUtils implements AppLogger
 				selectedItem[0] = comboBox.getValue();
 				
 				
-				ListView<HideableItem> lv = null;
-				try
-				{
-					Method method = ComboBoxListViewSkin.class.getDeclaredMethod("getListView");
-					method.setAccessible(true);
-					lv = (ListView<HideableItem>) method.invoke(comboBox.getSkin());
-				}
-				catch(NoSuchMethodException | IllegalAccessException | InvocationTargetException e)
-				{
-					e.printStackTrace();
-				}
+				ListView<ComboBoxItem> lv = (ListView<ComboBoxItem>)
+												((ComboBoxListViewSkin<?>) comboBox.getSkin()).getPopupContent();
+				lv.scrollTo(comboBox.getValue());
 				
-				//@SuppressWarnings("unchecked") ListView<HideableItem> lv =
-				//	((ComboBoxListViewSkin<HideableItem>) comboBox.getSkin()).getListView();
-				
-				if(lv != null)
+				Platform.runLater(() ->
 				{
-					lv.scrollTo(comboBox.getValue());
-					
-					ListView<HideableItem> finalLv = lv;
-					Platform.runLater(() ->
-					{
-					    if(selectedItem[0] == null)
-					    {
-					        double cellHeight = ((Control) finalLv.lookup(".list-cell")).getHeight();
-					        finalLv.setFixedCellSize(cellHeight);
-					        finalLv.setOnKeyPressed(event ->
-					        {
-					            if(comboBox.isShowing() && (event.getCode() == KeyCode.ENTER ||
-						                  event.getCode() == KeyCode.ESCAPE)) comboBox.hide();
-					        });
-					    }
-					});
-				}
+				    if(selectedItem[0] == null)
+				    {
+				        double cellHeight = ((Control) lv.lookup(".list-cell")).getHeight();
+					    lv.setFixedCellSize(cellHeight);
+					    lv.setOnKeyPressed(event ->
+				        {
+				            if(comboBox.isShowing() && (event.getCode() == KeyCode.ENTER ||
+		                                                event.getCode() == KeyCode.ESCAPE)) comboBox.hide();
+				        });
+				    }
+				});
 			}
 			else
 			{
-				HideableItem<T> value = comboBox.getValue();
+				ComboBoxItem<T> value = comboBox.getValue();
 				if(value != null) selectedItem[0] = value;
 				
 				comboBox.setEditable(false);
@@ -318,14 +297,14 @@ public class GuiUtils implements AppLogger
 			{
 			    if(comboBox.getSelectionModel().getSelectedItem() == null)
 			    {
-			        hideableHideableItems.forEach(item -> item.setHidden(!item.getText().toLowerCase()
+			        comboBoxItems.forEach(item -> item.setHidden(!item.getText().toLowerCase()
 			                .contains(newValue.toLowerCase())));
 			    }
 			    else
 			    {
 			        boolean validText = false;
 			
-			        for(HideableItem hideableItem : hideableHideableItems)
+			        for(ComboBoxItem hideableItem : comboBoxItems)
 			        {
 			            if(hideableItem.getText().equals(newValue))
 			            {
@@ -692,5 +671,15 @@ public class GuiUtils implements AppLogger
 		                   resources.getString("label.leftHand") + ")");
 		
 		return dialogTitleMap;
+	}
+	
+	public static <T> boolean selectComboBoxItem(ComboBox<ComboBoxItem<T>> comboBox, T item)
+	{
+		Optional<ComboBoxItem<T>> optional = comboBox.getItems()
+													 .stream()
+													 .filter(o -> o.getItem().equals(item))
+													 .findFirst();
+		optional.ifPresent(comboBox::setValue);
+		return optional.isPresent();
 	}
 }

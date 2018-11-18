@@ -6,6 +6,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.NodeOrientation;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import retrofit2.Call;
@@ -615,11 +616,22 @@ public class AppLauncher extends Application implements AppLogger
 	    
 	    if(!successfulInit) return;
 	
+	    Scene scene = new Scene(rootPane);
+	    scene.addEventFilter(KeyEvent.KEY_PRESSED, event ->
+	    {
+		    if(AppConstants.SCENIC_VIEW_KEY_COMBINATION.match(event))
+		    {
+		    	LOGGER.info("Showing scenic view...");
+			    event.consume(); // <-- stops passing the event to next node
+			    AppUtils.showScenicView(scene);
+		    }
+	    });
+	
 	    primaryStage.getIcons().setAll(appIcon);
 	    primaryStage.setTitle(windowTitle);
 	    primaryStage.setWidth(AppConstants.STAGE_WIDTH);
 	    primaryStage.setHeight(AppConstants.STAGE_HEIGHT);
-	    primaryStage.setScene(new Scene(rootPane));
+	    primaryStage.setScene(scene);
 	    primaryStage.getScene().setNodeOrientation(Context.getGuiLanguage().getNodeOrientation());
 	    primaryStage.centerOnScreen();
 	    primaryStage.setOnCloseRequest(GuiUtils.createOnExitHandler(primaryStage, coreFxController, new LogoutTask()));

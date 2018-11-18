@@ -6,13 +6,13 @@ import sa.gov.nic.bio.bw.core.workflow.SinglePageWorkflowBase;
 import sa.gov.nic.bio.bw.core.workflow.WithLookups;
 import sa.gov.nic.bio.bw.workflow.cancelcriminal.controllers.CancelCriminalPaneFxController;
 import sa.gov.nic.bio.bw.workflow.cancelcriminal.tasks.CancelCriminalWorkflowTask;
-import sa.gov.nic.bio.bw.workflow.commons.lookups.SamisIdTypesLookup;
+import sa.gov.nic.bio.bw.workflow.commons.lookups.PersonTypesLookup;
 
 import java.util.Locale;
 import java.util.ResourceBundle;
 
 @AssociatedMenu(id = "menu.cancel.cancelCriminal", title = "menu.title", order = 1)
-@WithLookups(SamisIdTypesLookup.class)
+@WithLookups(PersonTypesLookup.class)
 public class CancelCriminalWorkflow extends SinglePageWorkflowBase
 {
 	@Override

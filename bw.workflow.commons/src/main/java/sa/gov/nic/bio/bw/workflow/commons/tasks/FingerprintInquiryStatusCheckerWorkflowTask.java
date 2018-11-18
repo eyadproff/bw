@@ -63,4 +63,13 @@ public class FingerprintInquiryStatusCheckerWorkflowTask implements WorkflowTask
 			resetWorkflowStepIfNegativeOrNullTaskResponse(TaskResponse.failure(errorCode, null, errorDetails));
 		}
 	}
+	
+	@Override
+	public void mockExecute()
+	{
+		status = Status.HIT;
+		personId = 1134965811L;
+		civilBiometricsId = 123L;
+		criminalBiometricsId = 456L;
+	}
 }

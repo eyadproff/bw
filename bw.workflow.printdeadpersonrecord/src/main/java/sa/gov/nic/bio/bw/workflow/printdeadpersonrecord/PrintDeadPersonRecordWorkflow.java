@@ -9,7 +9,7 @@ import sa.gov.nic.bio.bw.core.workflow.WithLookups;
 import sa.gov.nic.bio.bw.core.workflow.WizardWorkflowBase;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.CountriesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.DocumentTypesLookup;
-import sa.gov.nic.bio.bw.workflow.commons.lookups.SamisIdTypesLookup;
+import sa.gov.nic.bio.bw.workflow.commons.lookups.PersonTypesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.GetPersonInfoByIdWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.printdeadpersonrecord.controllers.FetchingPersonInfoPaneFxController;
@@ -23,7 +23,7 @@ import java.util.ResourceBundle;
 
 @AssociatedMenu(id = "menu.query.printDeadPersonRecord", title = "menu.title", order = 3,
 				devices = Device.BIO_UTILITIES)
-@WithLookups({SamisIdTypesLookup.class, DocumentTypesLookup.class, CountriesLookup.class})
+@WithLookups({PersonTypesLookup.class, DocumentTypesLookup.class, CountriesLookup.class})
 @Wizard({@Step(iconId = "\\uf2c1", title = "wizard.enteringRecordId"),
 		@Step(iconId = "user", title = "wizard.fetchingPersonInformation"),
 		@Step(iconId = "file_pdf_alt", title = "wizard.showRecord")})

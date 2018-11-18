@@ -4,9 +4,11 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import javafx.embed.swing.SwingFXUtils;
+import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import org.controlsfx.glyphfont.FontAwesome;
 import org.controlsfx.glyphfont.Glyph;
+import org.scenicview.ScenicView;
 import sa.gov.nic.bio.bw.core.beans.Name;
 import sa.gov.nic.bio.bw.core.interfaces.AppLogger;
 import sa.gov.nic.bio.bw.core.webservice.NicHijriCalendarData;
@@ -609,5 +611,10 @@ public final class AppUtils implements AppLogger
 	public static <T> T fromJson(String json, Class<T> clazz)
 	{
 		return new Gson().fromJson(json, clazz);
+	}
+	
+	public static void showScenicView(Scene scene)
+	{
+		ScenicView.show(scene);
 	}
 }

@@ -26,8 +26,7 @@ import sa.gov.nic.bio.biokit.exceptions.TimeoutException;
 import sa.gov.nic.bio.biokit.passport.beans.CapturePassportResponse;
 import sa.gov.nic.bio.biokit.websocket.beans.MRZData;
 import sa.gov.nic.bio.bw.core.Context;
-import sa.gov.nic.bio.bw.core.beans.HideableItem;
-import sa.gov.nic.bio.bw.core.beans.ItemWithText;
+import sa.gov.nic.bio.bw.core.beans.ComboBoxItem;
 import sa.gov.nic.bio.bw.core.beans.UserSession;
 import sa.gov.nic.bio.bw.core.controllers.DevicesRunnerGadgetPaneFxController;
 import sa.gov.nic.bio.bw.core.controllers.WizardStepFxControllerBase;
@@ -88,13 +87,13 @@ public class ApplicantInfoFxController extends WizardStepFxControllerBase
 	@FXML private TextField txtOtherName;
 	@FXML private TextField txtFamilyName;
 	@FXML private TextField txtMobileNumber;
-	@FXML private ComboBox<ItemWithText<Gender>> cboGender;
-	@FXML private ComboBox<HideableItem<Country>> cboBirthPlace;
-	@FXML private ComboBox<HideableItem<Country>> cboNationality;
-	@FXML private ComboBox<HideableItem<Country>> cboIssuanceCountry;
-	@FXML private ComboBox<HideableItem<PassportTypeBean>> cboPassportType;
-	@FXML private ComboBox<HideableItem<VisaTypeBean>> cboVisaType;
-	@FXML private ComboBox<HideableItem<CountryDialingCode>> cboDialingCode;
+	@FXML private ComboBox<ComboBoxItem<Gender>> cboGender;
+	@FXML private ComboBox<ComboBoxItem<Country>> cboBirthPlace;
+	@FXML private ComboBox<ComboBoxItem<Country>> cboNationality;
+	@FXML private ComboBox<ComboBoxItem<Country>> cboIssuanceCountry;
+	@FXML private ComboBox<ComboBoxItem<PassportTypeBean>> cboPassportType;
+	@FXML private ComboBox<ComboBoxItem<VisaTypeBean>> cboVisaType;
+	@FXML private ComboBox<ComboBoxItem<CountryDialingCode>> cboDialingCode;
 	@FXML private DatePicker dpBirthDate;
 	@FXML private DatePicker dpIssueDate;
 	@FXML private DatePicker dpExpirationDate;
@@ -147,21 +146,21 @@ public class ApplicantInfoFxController extends WizardStepFxControllerBase
 		GuiUtils.makeComboBoxOpenableByPressingEnter(cboPassportType);
 		GuiUtils.makeComboBoxOpenableByPressingEnter(cboDialingCode);
 		
-		cboVisaType.setConverter(new StringConverter<HideableItem<VisaTypeBean>>()
+		cboVisaType.setConverter(new StringConverter<ComboBoxItem<VisaTypeBean>>()
 		{
 			@Override
-			public String toString(HideableItem<VisaTypeBean> object)
+			public String toString(ComboBoxItem<VisaTypeBean> object)
 			{
 				if(object == null) return "";
 				else return object.getText();
 			}
 			
 			@Override
-			public HideableItem<VisaTypeBean> fromString(String string)
+			public ComboBoxItem<VisaTypeBean> fromString(String string)
 			{
 				if(string == null || string.trim().isEmpty()) return null;
 				
-				for(HideableItem<VisaTypeBean> visaTypesBean : cboVisaType.getItems())
+				for(ComboBoxItem<VisaTypeBean> visaTypesBean : cboVisaType.getItems())
 				{
 					if(string.equals(visaTypesBean.getText())) return visaTypesBean;
 				}
@@ -170,46 +169,46 @@ public class ApplicantInfoFxController extends WizardStepFxControllerBase
 			}
 		});
 		
-		cboPassportType.setConverter(new StringConverter<HideableItem<PassportTypeBean>>()
+		cboPassportType.setConverter(new StringConverter<ComboBoxItem<PassportTypeBean>>()
 		{
 			@Override
-			public String toString(HideableItem<PassportTypeBean> object)
+			public String toString(ComboBoxItem<PassportTypeBean> object)
 			{
 				if(object == null) return "";
 				else return object.getText();
 			}
 			
 			@Override
-			public HideableItem<PassportTypeBean> fromString(String string)
+			public ComboBoxItem<PassportTypeBean> fromString(String string)
 			{
 				if(string == null || string.trim().isEmpty()) return null;
 				
-				for(HideableItem<PassportTypeBean> passportTypeHideableItem : cboPassportType.getItems())
+				for(ComboBoxItem<PassportTypeBean> passportTypeComboBoxItem : cboPassportType.getItems())
 				{
-					if(string.equals(passportTypeHideableItem.getText())) return passportTypeHideableItem;
+					if(string.equals(passportTypeComboBoxItem.getText())) return passportTypeComboBoxItem;
 				}
 				
 				return null;
 			}
 		});
 		
-		cboDialingCode.setConverter(new StringConverter<HideableItem<CountryDialingCode>>()
+		cboDialingCode.setConverter(new StringConverter<ComboBoxItem<CountryDialingCode>>()
 		{
 			@Override
-			public String toString(HideableItem<CountryDialingCode> object)
+			public String toString(ComboBoxItem<CountryDialingCode> object)
 			{
 				if(object == null) return "";
 				else return object.getText();
 			}
 			
 			@Override
-			public HideableItem<CountryDialingCode> fromString(String string)
+			public ComboBoxItem<CountryDialingCode> fromString(String string)
 			{
 				if(string == null || string.trim().isEmpty()) return null;
 				
-				for(HideableItem<CountryDialingCode> dialingCodeHideableItem : cboDialingCode.getItems())
+				for(ComboBoxItem<CountryDialingCode> dialingCodeComboBoxItem : cboDialingCode.getItems())
 				{
-					if(string.equals(dialingCodeHideableItem.getText())) return dialingCodeHideableItem;
+					if(string.equals(dialingCodeComboBoxItem.getText())) return dialingCodeComboBoxItem;
 				}
 				
 				return null;
@@ -248,9 +247,9 @@ public class ApplicantInfoFxController extends WizardStepFxControllerBase
 								 .or(cboIssuanceCountryBinding).or(cboPassportTypeBinding)
 				                 .or(cboDialingCodeBinding).or(txtMobileNumberBinding));
 		
-		Consumer<HideableItem<Country>> consumer = item ->
+		Consumer<ComboBoxItem<Country>> consumer = item ->
 		{
-			Country country = item.getObject();
+			Country country = item.getItem();
 			
 			String text;
 			if(Context.getGuiLanguage() == GuiLanguage.ARABIC) text = country.getDescriptionAR();
@@ -264,18 +263,18 @@ public class ApplicantInfoFxController extends WizardStepFxControllerBase
 		cboNationality.setConverter(new StringConverter<>()
 		{
 			@Override
-			public String toString(HideableItem<Country> object)
+			public String toString(ComboBoxItem<Country> object)
 			{
 				if(object == null) return "";
 				else return object.getText();
 			}
 			
 			@Override
-			public HideableItem<Country> fromString(String string)
+			public ComboBoxItem<Country> fromString(String string)
 			{
 				if(string == null || string.trim().isEmpty()) return null;
 				
-				for(HideableItem<Country> nationalityBean : cboNationality.getItems())
+				for(ComboBoxItem<Country> nationalityBean : cboNationality.getItems())
 				{
 					if(string.equals(nationalityBean.getText())) return nationalityBean;
 				}
@@ -286,18 +285,18 @@ public class ApplicantInfoFxController extends WizardStepFxControllerBase
 		cboIssuanceCountry.setConverter(new StringConverter<>()
 		{
 			@Override
-			public String toString(HideableItem<Country> object)
+			public String toString(ComboBoxItem<Country> object)
 			{
 				if(object == null) return "";
 				else return object.getText();
 			}
 			
 			@Override
-			public HideableItem<Country> fromString(String string)
+			public ComboBoxItem<Country> fromString(String string)
 			{
 				if(string == null || string.trim().isEmpty()) return null;
 				
-				for(HideableItem<Country> nationalityBean : cboIssuanceCountry.getItems())
+				for(ComboBoxItem<Country> nationalityBean : cboIssuanceCountry.getItems())
 				{
 					if(string.equals(nationalityBean.getText())) return nationalityBean;
 				}
@@ -308,18 +307,18 @@ public class ApplicantInfoFxController extends WizardStepFxControllerBase
 		cboBirthPlace.setConverter(new StringConverter<>()
 		{
 			@Override
-			public String toString(HideableItem<Country> object)
+			public String toString(ComboBoxItem<Country> object)
 			{
 				if(object == null) return "";
 				else return object.getText();
 			}
 			
 			@Override
-			public HideableItem<Country> fromString(String string)
+			public ComboBoxItem<Country> fromString(String string)
 			{
 				if(string == null || string.trim().isEmpty()) return null;
 				
-				for(HideableItem<Country> nationalityBean : cboBirthPlace.getItems())
+				for(ComboBoxItem<Country> nationalityBean : cboBirthPlace.getItems())
 				{
 					if(string.equals(nationalityBean.getText())) return nationalityBean;
 				}
@@ -334,7 +333,7 @@ public class ApplicantInfoFxController extends WizardStepFxControllerBase
 		
 		cboVisaType.getItems().forEach(item ->
 		{
-		    VisaTypeBean visaTypeBean = item.getObject();
+		    VisaTypeBean visaTypeBean = item.getItem();
 		
 		    String text;
 		    if(Context.getGuiLanguage() == GuiLanguage.ARABIC) text = visaTypeBean.getDescriptionAR();
@@ -348,7 +347,7 @@ public class ApplicantInfoFxController extends WizardStepFxControllerBase
 		
 		cboPassportType.getItems().forEach(item ->
 		{
-		    PassportTypeBean passportTypeBean = item.getObject();
+		    PassportTypeBean passportTypeBean = item.getItem();
 		
 		    String text;
 		    if(Context.getGuiLanguage() == GuiLanguage.ARABIC) text = passportTypeBean.getDescriptionAR();
@@ -362,7 +361,7 @@ public class ApplicantInfoFxController extends WizardStepFxControllerBase
 		
 		cboDialingCode.getItems().forEach(item ->
 		{
-		    CountryDialingCode dialingCode = item.getObject();
+		    CountryDialingCode dialingCode = item.getItem();
 		
 		    String text;
 		    if(Context.getGuiLanguage() == GuiLanguage.ARABIC)
@@ -436,26 +435,26 @@ public class ApplicantInfoFxController extends WizardStepFxControllerBase
 		passportNumber = txtPassportNumber.getText();
 		mobileNumber = txtMobileNumber.getText();
 		
-		HideableItem<Country> nationalityItem = cboNationality.getValue();
-		nationality = nationalityItem != null ? nationalityItem.getObject() : null;
+		ComboBoxItem<Country> nationalityItem = cboNationality.getValue();
+		nationality = nationalityItem != null ? nationalityItem.getItem() : null;
 		
-		ItemWithText<Gender> genderItem = cboGender.getValue();
+		ComboBoxItem<Gender> genderItem = cboGender.getValue();
 		gender = genderItem != null ? genderItem.getItem() : null;
 		
-		HideableItem<Country> birthPlaceItem = cboBirthPlace.getValue();
-		birthPlace = birthPlaceItem != null ? birthPlaceItem.getObject() : null;
+		ComboBoxItem<Country> birthPlaceItem = cboBirthPlace.getValue();
+		birthPlace = birthPlaceItem != null ? birthPlaceItem.getItem() : null;
 		
-		HideableItem<VisaTypeBean> visaTypeItem = cboVisaType.getValue();
-		visaType = visaTypeItem != null ? visaTypeItem.getObject() : null;
+		ComboBoxItem<VisaTypeBean> visaTypeItem = cboVisaType.getValue();
+		visaType = visaTypeItem != null ? visaTypeItem.getItem() : null;
 		
-		HideableItem<Country> issueCountryItem = cboIssuanceCountry.getValue();
-		issuanceCountry = issueCountryItem != null ? issueCountryItem.getObject() : null;
+		ComboBoxItem<Country> issueCountryItem = cboIssuanceCountry.getValue();
+		issuanceCountry = issueCountryItem != null ? issueCountryItem.getItem() : null;
 		
-		HideableItem<PassportTypeBean> passportTypeItem = cboPassportType.getValue();
-		passportType = passportTypeItem != null ? passportTypeItem.getObject() : null;
+		ComboBoxItem<PassportTypeBean> passportTypeItem = cboPassportType.getValue();
+		passportType = passportTypeItem != null ? passportTypeItem.getItem() : null;
 		
-		HideableItem<CountryDialingCode> dialingCodeItem = cboDialingCode.getValue();
-		dialingCode = dialingCodeItem != null ? dialingCodeItem.getObject() : null;
+		ComboBoxItem<CountryDialingCode> dialingCodeItem = cboDialingCode.getValue();
+		dialingCode = dialingCodeItem != null ? dialingCodeItem.getItem() : null;
 		
 		birthDate = dpBirthDate.getValue();
 		issueDate = dpIssueDate.getValue();
@@ -477,7 +476,7 @@ public class ApplicantInfoFxController extends WizardStepFxControllerBase
 		
 		if(nationality != null) cboNationality.getItems()
 											  .stream()
-											  .filter(item -> item.getObject().equals(nationality))
+											  .filter(item -> item.getItem().equals(nationality))
 											  .findFirst()
 											  .ifPresent(cboNationality::setValue);
 		
@@ -489,31 +488,31 @@ public class ApplicantInfoFxController extends WizardStepFxControllerBase
 		
 		if(birthPlace != null) cboBirthPlace.getItems()
 											.stream()
-											.filter(item -> item.getObject().equals(birthPlace))
+											.filter(item -> item.getItem().equals(birthPlace))
 											.findFirst()
 											.ifPresent(cboBirthPlace::setValue);
 		
 		if(visaType != null) cboVisaType.getItems()
 										.stream()
-										.filter(item -> item.getObject().equals(visaType))
+										.filter(item -> item.getItem().equals(visaType))
 										.findFirst()
 										.ifPresent(cboVisaType::setValue);
 		
 		if(issuanceCountry != null) cboIssuanceCountry.getItems()
 												      .stream()
-												      .filter(item -> item.getObject().equals(issuanceCountry))
+												      .filter(item -> item.getItem().equals(issuanceCountry))
 												      .findFirst()
 												      .ifPresent(cboIssuanceCountry::setValue);
 		
 		if(passportType != null) cboPassportType.getItems()
 												.stream()
-												.filter(item -> item.getObject().equals(passportType))
+												.filter(item -> item.getItem().equals(passportType))
 												.findFirst()
 												.ifPresent(cboPassportType::setValue);
 		
 		if(dialingCode != null) cboDialingCode.getItems()
 											  .stream()
-											  .filter(item -> item.getObject().equals(dialingCode))
+											  .filter(item -> item.getItem().equals(dialingCode))
 											  .findFirst()
 											  .ifPresent(cboDialingCode::setValue);
 		
@@ -634,7 +633,7 @@ public class ApplicantInfoFxController extends WizardStepFxControllerBase
 					
 					            cboNationality.getItems()
 							            .stream()
-							            .filter(item -> item.getObject().getMofaNationalityCode().equals(nationality))
+							            .filter(item -> item.getItem().getMofaNationalityCode().equals(nationality))
 							            .findFirst()
 							            .ifPresent(cboNationality::setValue);
 					
@@ -642,7 +641,7 @@ public class ApplicantInfoFxController extends WizardStepFxControllerBase
 					
 					            cboIssuanceCountry.getItems()
 							            .stream()
-							            .filter(item -> item.getObject().getMofaNationalityCode().equals(issuer))
+							            .filter(item -> item.getItem().getMofaNationalityCode().equals(issuer))
 							            .findFirst()
 							            .ifPresent(cboIssuanceCountry::setValue);
 					

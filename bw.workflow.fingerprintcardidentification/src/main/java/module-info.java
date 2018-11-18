@@ -5,6 +5,7 @@ module bw.workflow.fingerprintcardidentification
 	requires jasperreports;
 	requires bcl.utils;
 	requires biokit.library;
+	requires bio.commons;
 	
 	opens sa.gov.nic.bio.bw.workflow.fingerprintcardidentification to bw.core;
 	opens sa.gov.nic.bio.bw.workflow.fingerprintcardidentification.fxml to bw.core;

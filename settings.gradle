@@ -1,3 +1,4 @@
+include 'javafx.scenicview'
 include 'bw.lib.jasperreports'
 include 'bw.commons.resources'
 include 'bw.core'

@@ -14,7 +14,7 @@ import sa.gov.nic.bio.bw.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.core.utils.GuiLanguage;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.CountriesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.DocumentTypesLookup;
-import sa.gov.nic.bio.bw.workflow.commons.lookups.SamisIdTypesLookup;
+import sa.gov.nic.bio.bw.workflow.commons.lookups.PersonTypesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.webservice.Country;
 import sa.gov.nic.bio.bw.workflow.commons.webservice.CrimeType;
 import sa.gov.nic.bio.bw.workflow.commons.webservice.DocumentType;
@@ -171,7 +171,7 @@ public class BuildConvictedReportTask extends Task<JasperPrint>
 		
 		@SuppressWarnings("unchecked")
 		List<PersonType> personTypes = (List<PersonType>)
-														Context.getUserSession().getAttribute(SamisIdTypesLookup.KEY);
+														Context.getUserSession().getAttribute(PersonTypesLookup.KEY);
 		
 		Integer subjSamisType = convictedReport.getSubjSamisType();
 		if(subjSamisType != null)

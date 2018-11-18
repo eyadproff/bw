@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+Main-Class: org.scenicview.ScenicView
+Agent-Class: org.fxconnector.remote.RuntimeAttach
+Premain-Class: org.scenicview.ScenicView
+

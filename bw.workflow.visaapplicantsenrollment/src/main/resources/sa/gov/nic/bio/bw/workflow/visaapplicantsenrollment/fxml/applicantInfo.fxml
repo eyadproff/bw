@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
-<?import sa.gov.nic.bio.bw.core.beans.ItemWithText?>
+<?import sa.gov.nic.bio.bw.core.beans.ComboBoxItem?>
 <?import sa.gov.nic.bio.bw.workflow.commons.beans.Gender?>
 <BorderPane xmlns="http://javafx.com/javafx/8.0.152" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="sa.gov.nic.bio.bw.workflow.visaapplicantsenrollment.controllers.ApplicantInfoFxController"
@@ -92,8 +92,8 @@
                 </GridPane.margin>
                 <items>
                     <FXCollections fx:factory="observableArrayList">
-                        <ItemWithText item="$maleGender" text="%label.male"/>
-                        <ItemWithText item="$femaleGender" text="%label.female"/>
+                        <ComboBoxItem item="$maleGender" text="%label.male"/>
+                        <ComboBoxItem item="$femaleGender" text="%label.female"/>
                     </FXCollections>
                 </items>
             </ComboBox>

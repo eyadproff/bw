@@ -19,6 +19,7 @@ run {
                 "--add-opens=javafx.controls/javafx.scene.control.skin=controlsfx",
                 "--add-opens=javafx.graphics/javafx.scene=controlsfx",
                 "--add-opens=java.base/java.time.chrono=bw.core",
+                "--add-opens=javafx.controls/javafx.scene.control.skin=bw.core",
                 '-Djava.library.path=../build-resources/javafx-dlls/64-bit',
                 '-Djavafx.preloader=sa.gov.nic.bio.bw.preloader.AppPreloader',
                 '--module', "$moduleName/$mainClassName"

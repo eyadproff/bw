@@ -1,7 +1,6 @@
 module bw.core
 {
 	uses sa.gov.nic.bio.bw.core.workflow.Workflow;
-	uses sa.gov.nic.bio.bw.core.spi.MyResourcesProvider;
 	
 	requires transitive java.logging;
 	requires transitive java.prefs;
@@ -20,6 +19,7 @@ module bw.core
 	requires biokit.library;
 	requires bcl.utils;
 	requires bio.commons;
+	requires javafx.scenicview;
 	
 	exports sa.gov.nic.bio.bw.core.workflow;
 	exports sa.gov.nic.bio.bw.core;
@@ -32,6 +32,5 @@ module bw.core
 	opens sa.gov.nic.bio.bw.core.controllers to javafx.fxml;
 	opens sa.gov.nic.bio.bw.core.wizard to javafx.fxml;
 	opens sa.gov.nic.bio.bw.core.css;
-	exports sa.gov.nic.bio.bw.core.spi;
 	exports sa.gov.nic.bio.bw.core.wizard;
 }

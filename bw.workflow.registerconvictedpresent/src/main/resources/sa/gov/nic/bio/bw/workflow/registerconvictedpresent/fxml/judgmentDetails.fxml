@@ -6,6 +6,7 @@
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.layout.BorderPane?>
@@ -20,125 +21,122 @@
         <ToggleGroup fx:id="toggleGroup1"/>
         <ToggleGroup fx:id="toggleGroup2"/>
     </fx:define>
-
     <center>
-        <VBox alignment="CENTER" spacing="5.0">
+        <VBox>
             <padding>
-                <Insets topRightBottomLeft="10.0"/>
+                <Insets top="10.0" bottom="10.0"/>
             </padding>
-            <GridPane alignment="CENTER" hgap="5.0">
-                <Label text="%label.judgmentIssuer" GridPane.rowIndex="0" GridPane.columnIndex="0">
-                    <GridPane.margin>
-                        <Insets bottom="5.0"/>
-                    </GridPane.margin>
-                </Label>
-                <TextField fx:id="txtJudgmentIssuer" styleClass="required" GridPane.rowIndex="0" GridPane.columnIndex="1" GridPane.columnSpan="3">
-                    <GridPane.margin>
-                        <Insets bottom="5.0"/>
-                    </GridPane.margin>
-                </TextField>
-                <Label text="%label.caseFileNumber" GridPane.rowIndex="1" GridPane.columnIndex="0">
-                    <GridPane.margin>
-                        <Insets bottom="5.0"/>
-                    </GridPane.margin>
-                </Label>
-                <TextField fx:id="txtCaseFileNumber" GridPane.rowIndex="1" GridPane.columnIndex="1">
-                    <GridPane.margin>
-                        <Insets bottom="5.0" right="20.0"/>
-                    </GridPane.margin>
-                </TextField>
-                <Label text="%label.judgmentNumber" GridPane.rowIndex="1" GridPane.columnIndex="2">
-                    <GridPane.margin>
-                        <Insets bottom="5.0"/>
-                    </GridPane.margin>
-                </Label>
-                <TextField fx:id="txtJudgmentNumber" styleClass="required" GridPane.rowIndex="1" GridPane.columnIndex="3">
-                    <GridPane.margin>
-                        <Insets bottom="5.0"/>
-                    </GridPane.margin>
-                </TextField>
-                <Label text="%label.arrestDate" GridPane.rowIndex="2" GridPane.columnIndex="0">
-                    <GridPane.margin>
-                        <Insets bottom="5.0"/>
-                    </GridPane.margin>
-                </Label>
-                <DatePicker fx:id="dpArrestDate" promptText="dd/MM/yyyy" GridPane.rowIndex="2" GridPane.columnIndex="1">
-                    <GridPane.margin>
-                        <Insets right="20.0"/>
-                    </GridPane.margin>
-                </DatePicker>
-                <HBox GridPane.rowIndex="3" GridPane.columnIndex="1" spacing="5.0">
-                    <GridPane.margin>
-                        <Insets bottom="5.0"/>
-                    </GridPane.margin>
-                    <Label text="%label.input" styleClass="small-font"/>
-                    <RadioButton fx:id="rdoArrestDateUseHijri" toggleGroup="$toggleGroup1" text="%radio.hijri" styleClass="small-font, small-radio-button" focusTraversable="false"/>
-                    <RadioButton fx:id="rdoArrestDateUseGregorian" toggleGroup="$toggleGroup1" text="%radio.gregorian" styleClass="small-font, small-radio-button" focusTraversable="false"/>
-                </HBox>
-                <Label text="%label.judgmentDate" GridPane.rowIndex="2" GridPane.columnIndex="2">
-                    <GridPane.margin>
-                        <Insets bottom="5.0"/>
-                    </GridPane.margin>
-                </Label>
-                <DatePicker fx:id="dpJudgmentDate" styleClass="required" promptText="dd/MM/yyyy" GridPane.rowIndex="2" GridPane.columnIndex="3"/>
-                <HBox GridPane.rowIndex="3" GridPane.columnIndex="3" spacing="5.0">
-                    <GridPane.margin>
-                        <Insets bottom="5.0"/>
-                    </GridPane.margin>
-                    <Label text="%label.input" styleClass="small-font"/>
-                    <RadioButton fx:id="rdoJudgmentDateUseHijri" toggleGroup="$toggleGroup2" text="%radio.hijri" styleClass="small-font, small-radio-button" focusTraversable="false"/>
-                    <RadioButton fx:id="rdoJudgmentDateUseGregorian" toggleGroup="$toggleGroup2" text="%radio.gregorian" styleClass="small-font, small-radio-button" focusTraversable="false"/>
-                </HBox>
-                <Label text="%label.crimeClassification" GridPane.rowIndex="4" GridPane.columnIndex="0">
-                    <GridPane.margin>
-                        <Insets top="10.0"/>
-                    </GridPane.margin>
-                </Label>
-                <VBox fx:id="paneCrimeContainer" alignment="CENTER" spacing="5.0" GridPane.rowIndex="4" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowSpan="5">
+            <ScrollPane VBox.vgrow="ALWAYS" fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER">
+                <GridPane hgap="5.0">
                     <padding>
-                        <Insets top="10.0"/>
+                        <Insets topRightBottomLeft="10.0"/>
                     </padding>
-                    <HBox spacing="5.0">
-                        <ComboBox fx:id="cboCrimeEvent1" styleClass="required" minWidth="173" maxWidth="173"/>
-                        <ComboBox fx:id="cboCrimeClass1" styleClass="required" minWidth="223" maxWidth="223"/>
+                    <Label text="%label.judgmentIssuer" GridPane.rowIndex="0" GridPane.columnIndex="0">
+                        <GridPane.margin>
+                            <Insets bottom="5.0"/>
+                        </GridPane.margin>
+                    </Label>
+                    <TextField fx:id="txtJudgmentIssuer" styleClass="required" GridPane.rowIndex="0" GridPane.columnIndex="1">
+                        <GridPane.margin>
+                            <Insets bottom="5.0"/>
+                        </GridPane.margin>
+                    </TextField>
+                    <Label text="%label.caseFileNumber" GridPane.rowIndex="1" GridPane.columnIndex="0">
+                        <GridPane.margin>
+                            <Insets bottom="5.0"/>
+                        </GridPane.margin>
+                    </Label>
+                    <TextField fx:id="txtCaseFileNumber" GridPane.rowIndex="1" GridPane.columnIndex="1">
+                        <GridPane.margin>
+                            <Insets bottom="5.0"/>
+                        </GridPane.margin>
+                    </TextField>
+                    <Label text="%label.judgmentNumber" GridPane.rowIndex="2" GridPane.columnIndex="0">
+                        <GridPane.margin>
+                            <Insets bottom="5.0"/>
+                        </GridPane.margin>
+                    </Label>
+                    <TextField fx:id="txtJudgmentNumber" styleClass="required" GridPane.rowIndex="2" GridPane.columnIndex="1">
+                        <GridPane.margin>
+                            <Insets bottom="5.0"/>
+                        </GridPane.margin>
+                    </TextField>
+                    <Label text="%label.arrestDate" GridPane.rowIndex="3" GridPane.columnIndex="0">
+                        <GridPane.margin>
+                            <Insets bottom="5.0"/>
+                        </GridPane.margin>
+                    </Label>
+                    <DatePicker fx:id="dpArrestDate" promptText="dd/MM/yyyy" GridPane.rowIndex="3" GridPane.columnIndex="1">
+                        <GridPane.margin>
+                            <Insets/>
+                        </GridPane.margin>
+                    </DatePicker>
+                    <HBox GridPane.rowIndex="4" GridPane.columnIndex="1" spacing="5.0">
+                        <GridPane.margin>
+                            <Insets bottom="5.0"/>
+                        </GridPane.margin>
+                        <Label text="%label.input" styleClass="small-font"/>
+                        <RadioButton fx:id="rdoArrestDateUseHijri" toggleGroup="$toggleGroup1" text="%radio.hijri" styleClass="small-font, small-radio-button" focusTraversable="false"/>
+                        <RadioButton fx:id="rdoArrestDateUseGregorian" toggleGroup="$toggleGroup1" text="%radio.gregorian" styleClass="small-font, small-radio-button" focusTraversable="false"/>
                     </HBox>
-                    <HBox fx:id="paneCrime2" spacing="5.0" visible="false" managed="false">
-                        <padding>
-                            <Insets left="-32.0"/>
-                        </padding>
-                        <Button fx:id="btnHidePaneCrime2"/>
-                        <ComboBox fx:id="cboCrimeEvent2" styleClass="required" minWidth="173" maxWidth="173"/>
-                        <ComboBox fx:id="cboCrimeClass2" styleClass="required" minWidth="223" maxWidth="223"/>
+                    <Label text="%label.judgmentDate" GridPane.rowIndex="5" GridPane.columnIndex="0">
+                        <GridPane.margin>
+                            <Insets bottom="5.0"/>
+                        </GridPane.margin>
+                    </Label>
+                    <DatePicker fx:id="dpJudgmentDate" styleClass="required" promptText="dd/MM/yyyy" GridPane.rowIndex="5" GridPane.columnIndex="1"/>
+                    <HBox GridPane.rowIndex="6" GridPane.columnIndex="1" spacing="5.0">
+                        <GridPane.margin>
+                            <Insets bottom="5.0"/>
+                        </GridPane.margin>
+                        <Label text="%label.input" styleClass="small-font"/>
+                        <RadioButton fx:id="rdoJudgmentDateUseHijri" toggleGroup="$toggleGroup2" text="%radio.hijri" styleClass="small-font, small-radio-button" focusTraversable="false"/>
+                        <RadioButton fx:id="rdoJudgmentDateUseGregorian" toggleGroup="$toggleGroup2" text="%radio.gregorian" styleClass="small-font, small-radio-button" focusTraversable="false"/>
                     </HBox>
-                    <HBox fx:id="paneCrime3" spacing="5.0" visible="false" managed="false">
-                        <padding>
-                            <Insets left="-32.0"/>
-                        </padding>
-                        <Button fx:id="btnHidePaneCrime3"/>
-                        <ComboBox fx:id="cboCrimeEvent3" styleClass="required" minWidth="173" maxWidth="173"/>
-                        <ComboBox fx:id="cboCrimeClass3" styleClass="required" minWidth="223" maxWidth="223"/>
-                    </HBox>
-                    <HBox fx:id="paneCrime4" spacing="5.0" visible="false" managed="false">
-                        <padding>
-                            <Insets left="-32.0"/>
-                        </padding>
-                        <Button fx:id="btnHidePaneCrime4"/>
-                        <ComboBox fx:id="cboCrimeEvent4" styleClass="required" minWidth="173" maxWidth="173"/>
-                        <ComboBox fx:id="cboCrimeClass4" styleClass="required" minWidth="223" maxWidth="223"/>
-                    </HBox>
-                    <HBox fx:id="paneCrime5" spacing="5.0" visible="false" managed="false">
-                        <padding>
-                            <Insets left="-32.0"/>
-                        </padding>
-                        <Button fx:id="btnHidePaneCrime5"/>
-                        <ComboBox fx:id="cboCrimeEvent5" styleClass="required" minWidth="173" maxWidth="173"/>
-                        <ComboBox fx:id="cboCrimeClass5" styleClass="required" minWidth="223" maxWidth="223"/>
-                    </HBox>
-                    <HBox>
-                        <Button fx:id="btnAddMore" text="%label.addMore"/>
-                    </HBox>
-                </VBox>
-            </GridPane>
+                    <Label text="%label.crimeClassification" GridPane.rowIndex="7" GridPane.columnIndex="0" alignment="TOP_LEFT" GridPane.valignment="TOP"/>
+                    <VBox fx:id="paneCrimeContainer" alignment="CENTER" spacing="5.0" GridPane.rowIndex="7" GridPane.columnIndex="1">
+                        <HBox spacing="5.0">
+                            <ComboBox fx:id="cboCrimeEvent1" styleClass="required" minWidth="173" maxWidth="173"/>
+                            <ComboBox fx:id="cboCrimeClass1" styleClass="required" minWidth="223" maxWidth="223"/>
+                        </HBox>
+                        <HBox fx:id="paneCrime2" spacing="5.0" visible="false" managed="false">
+                            <padding>
+                                <Insets left="-32.0"/>
+                            </padding>
+                            <Button fx:id="btnHidePaneCrime2"/>
+                            <ComboBox fx:id="cboCrimeEvent2" styleClass="required" minWidth="173" maxWidth="173"/>
+                            <ComboBox fx:id="cboCrimeClass2" styleClass="required" minWidth="223" maxWidth="223"/>
+                        </HBox>
+                        <HBox fx:id="paneCrime3" spacing="5.0" visible="false" managed="false">
+                            <padding>
+                                <Insets left="-32.0"/>
+                            </padding>
+                            <Button fx:id="btnHidePaneCrime3"/>
+                            <ComboBox fx:id="cboCrimeEvent3" styleClass="required" minWidth="173" maxWidth="173"/>
+                            <ComboBox fx:id="cboCrimeClass3" styleClass="required" minWidth="223" maxWidth="223"/>
+                        </HBox>
+                        <HBox fx:id="paneCrime4" spacing="5.0" visible="false" managed="false">
+                            <padding>
+                                <Insets left="-32.0"/>
+                            </padding>
+                            <Button fx:id="btnHidePaneCrime4"/>
+                            <ComboBox fx:id="cboCrimeEvent4" styleClass="required" minWidth="173" maxWidth="173"/>
+                            <ComboBox fx:id="cboCrimeClass4" styleClass="required" minWidth="223" maxWidth="223"/>
+                        </HBox>
+                        <HBox fx:id="paneCrime5" spacing="5.0" visible="false" managed="false">
+                            <padding>
+                                <Insets left="-32.0"/>
+                            </padding>
+                            <Button fx:id="btnHidePaneCrime5"/>
+                            <ComboBox fx:id="cboCrimeEvent5" styleClass="required" minWidth="173" maxWidth="173"/>
+                            <ComboBox fx:id="cboCrimeClass5" styleClass="required" minWidth="223" maxWidth="223"/>
+                        </HBox>
+                        <HBox>
+                            <Button fx:id="btnAddMore" text="%label.addMore"/>
+                        </HBox>
+                    </VBox>
+                </GridPane>
+            </ScrollPane>
         </VBox>
     </center>
     <bottom>
