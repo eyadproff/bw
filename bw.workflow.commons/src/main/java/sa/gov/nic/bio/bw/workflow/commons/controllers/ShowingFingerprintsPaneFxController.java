@@ -4,9 +4,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.image.ImageView;
-import sa.gov.nic.bio.bw.core.Context;
 import sa.gov.nic.bio.bw.core.controllers.WizardStepFxControllerBase;
-import sa.gov.nic.bio.bw.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.core.utils.FxmlFile;
 import sa.gov.nic.bio.bw.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.core.workflow.Input;
@@ -34,35 +32,11 @@ public class ShowingFingerprintsPaneFxController extends WizardStepFxControllerB
 	@Override
 	protected void onAttachedToScene()
 	{
-		Map<Integer, String> dialogTitleMap = GuiUtils.constructFingerprintDialogTitles(resources);
-		Map<Integer, ImageView> imageViewMap = GuiUtils.constructFingerprintImageViewMap(ivRightThumb, ivRightIndex,
-		                                                                                 ivRightMiddle, ivRightRing,
-		                                                                                 ivRightLittle, ivLeftThumb,
-		                                                                                 ivLeftIndex, ivLeftMiddle,
-		                                                                                 ivLeftRing, ivLeftLittle);
-		boolean disableInquiry = true;
+		GuiUtils.attachFingerprintImages(fingerprintBase64Images, ivRightThumb, ivRightIndex, ivRightMiddle,
+		                                 ivRightRing, ivRightLittle, ivLeftThumb, ivLeftIndex, ivLeftMiddle,
+		                                 ivLeftRing, ivLeftLittle);
 		
-		for(int i = 0; i <= 10; i++)
-		{
-			String base64Image = fingerprintBase64Images.get(i + 1);
-			
-			if(base64Image != null)
-			{
-				disableInquiry = false;
-				
-				ImageView imageView = imageViewMap.get(i + 1);
-				String title = dialogTitleMap.get(i + 1);
-				
-				if(imageView != null)
-				{
-					imageView.setImage(AppUtils.imageFromBase64(base64Image));
-					GuiUtils.attachImageDialog(Context.getCoreFxController(), imageView,
-					                           title, resources.getString("label.contextMenu.showImage"),
-					                           false);
-				}
-			}
-		}
-		
+		boolean disableInquiry = fingerprintBase64Images.isEmpty();
 		btnInquiry.setDisable(disableInquiry);
 		if(!disableInquiry) btnInquiry.requestFocus();
 	}

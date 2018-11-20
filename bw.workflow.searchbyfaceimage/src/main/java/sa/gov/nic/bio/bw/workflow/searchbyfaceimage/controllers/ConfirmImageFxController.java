@@ -21,8 +21,8 @@ import sa.gov.nic.bio.bw.workflow.searchbyfaceimage.utils.SearchByFaceImageError
 public class ConfirmImageFxController extends WizardStepFxControllerBase
 {
 	@Input private Long personId;
-	@Input(alwaysRequired = true) private Image faceImage;
-	@Output private String faceImageBase64;
+	@Input(alwaysRequired = true) private Image facePhoto;
+	@Output private String facePhotoBase64;
 	
 	@FXML private Pane imagePane;
 	@FXML private Pane personIdPane;
@@ -68,7 +68,7 @@ public class ConfirmImageFxController extends WizardStepFxControllerBase
 		
 		try
 		{
-			this.faceImageBase64 = AppUtils.imageToBase64(faceImage, "jpg");
+			this.facePhotoBase64 = AppUtils.imageToBase64(facePhoto, "jpg");
 		}
 		catch(Exception e)
 		{
@@ -80,7 +80,7 @@ public class ConfirmImageFxController extends WizardStepFxControllerBase
 		
 		Platform.runLater(() ->
 		{
-		    ivFinalImage.setImage(faceImage);
+		    ivFinalImage.setImage(facePhoto);
 		    GuiUtils.attachImageDialog(Context.getCoreFxController(), ivFinalImage,
 		                               resources.getString("label.finalImage"),
 		                               resources.getString("label.contextMenu.showImage"), false);

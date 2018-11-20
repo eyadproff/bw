@@ -11,10 +11,11 @@ import sa.gov.nic.bio.bw.core.Context;
 import sa.gov.nic.bio.bw.core.controllers.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.core.utils.FxmlFile;
 import sa.gov.nic.bio.bw.core.utils.GuiUtils;
-import sa.gov.nic.bio.bw.workflow.commons.controllers.FingerprintCapturingFxController;
+import sa.gov.nic.bio.bw.core.workflow.Input;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.PrintReportTask;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.SaveReportAsPdfTask;
 import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.tasks.BuildConvictedReportTask;
+import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.tasks.ConvictedReportResponse;
 import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.utils.RegisterConvictedPresentErrorCodes;
 import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.webservice.ConvictedReport;
 
@@ -27,8 +28,9 @@ import java.util.concurrent.atomic.AtomicReference;
 @FxmlFile("showReport.fxml")
 public class ShowReportPaneFxController extends WizardStepFxControllerBase
 {
-	public static final String KEY_CONVICTED_REPORT_NUMBER = "CONVICTED_REPORT_NUMBER";
-	public static final String KEY_CONVICTED_REPORT_DATE = "CONVICTED_REPORT_DATE";
+	@Input(alwaysRequired = true) private Map<Integer, String> fingerprintBase64Images;
+	@Input(alwaysRequired = true) private ConvictedReport convictedReport;
+	@Input(alwaysRequired = true) private ConvictedReportResponse convictedReportResponse;
 	
 	@FXML private TextField txtReportNumber;
 	@FXML private TextField txtGeneralFileNumber;
@@ -38,8 +40,6 @@ public class ShowReportPaneFxController extends WizardStepFxControllerBase
 	@FXML private Button btnSaveReportAsPDF;
 	
 	private FileChooser fileChooser = new FileChooser();
-	private ConvictedReport convictedReport;
-	private Map<Integer, String> fingerprintImages;
 	private AtomicReference<JasperPrint> jasperPrint = new AtomicReference<>();
 	
 	@Override
@@ -49,31 +49,15 @@ public class ShowReportPaneFxController extends WizardStepFxControllerBase
 		FileChooser.ExtensionFilter extFilterPDF = new FileChooser.ExtensionFilter(
 								resources.getString("fileChooser.saveReportAsPDF.types"), "*.pdf");
 		fileChooser.getExtensionFilters().addAll(extFilterPDF);
-	}
-	
-	@Override
-	public void onWorkflowUserTaskLoad(boolean newForm, Map<String, Object> uiInputData)
-	{
-		if(newForm)
-		{
-			Long reportNumber = (Long) uiInputData.get(KEY_CONVICTED_REPORT_NUMBER);
-			Long reportDate = (Long) uiInputData.get(KEY_CONVICTED_REPORT_DATE);
-			txtReportNumber.setText(String.valueOf(reportNumber));
-			
-			Long GeneralFileNumber = (Long)
-									uiInputData.get(PersonInfoPaneFxController.KEY_PERSON_INFO_GENERAL_FILE_NUMBER);
-			txtGeneralFileNumber.setText(String.valueOf(GeneralFileNumber));
-			
-			convictedReport = (ConvictedReport) uiInputData.get(
-														ReviewAndSubmitPaneFxController.KEY_FINAL_CONVICTED_REPORT);
-			convictedReport.setReportNumber(reportNumber);
-			convictedReport.setReportDate(reportDate);
-			
-			@SuppressWarnings("unchecked")
-			Map<Integer, String> fingerprintImages = (Map<Integer, String>)
-								uiInputData.get(FingerprintCapturingFxController.KEY_FINGERPRINTS_IMAGES);
-			this.fingerprintImages = fingerprintImages;
-		}
+		
+		long reportNumber = convictedReportResponse.getReportNumber();
+		long reportDate = convictedReportResponse.getReportDate();
+		
+		txtReportNumber.setText(String.valueOf(reportNumber));
+		txtGeneralFileNumber.setText(String.valueOf(convictedReport.getGeneralFileNum()));
+		
+		convictedReport.setReportNumber(reportNumber);
+		convictedReport.setReportDate(reportDate);
 	}
 	
 	@FXML
@@ -88,7 +72,7 @@ public class ShowReportPaneFxController extends WizardStepFxControllerBase
 		if(jasperPrint.get() == null)
 		{
 			BuildConvictedReportTask buildConvictedReportTask = new BuildConvictedReportTask(convictedReport,
-			                                                                                 fingerprintImages);
+			                                                                                 fingerprintBase64Images);
 			buildConvictedReportTask.setOnSucceeded(event ->
 			{
 			    JasperPrint value = buildConvictedReportTask.getValue();
@@ -129,7 +113,7 @@ public class ShowReportPaneFxController extends WizardStepFxControllerBase
 			if(jasperPrint.get() == null)
 			{
 				BuildConvictedReportTask buildConvictedReportTask = new BuildConvictedReportTask(convictedReport,
-				                                                                                 fingerprintImages);
+			                                                                                 fingerprintBase64Images);
 				buildConvictedReportTask.setOnSucceeded(event ->
 				{
 				    JasperPrint value = buildConvictedReportTask.getValue();

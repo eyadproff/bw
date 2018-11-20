@@ -54,13 +54,17 @@ import org.controlsfx.control.PopOver;
 import org.controlsfx.control.PopOver.ArrowLocation;
 import sa.gov.nic.bio.bw.core.Context;
 import sa.gov.nic.bio.bw.core.beans.ComboBoxItem;
+import sa.gov.nic.bio.bw.core.beans.Gender;
+import sa.gov.nic.bio.bw.core.beans.UserInfo;
 import sa.gov.nic.bio.bw.core.biokit.FingerPosition;
 import sa.gov.nic.bio.bw.core.controllers.CoreFxController;
 import sa.gov.nic.bio.bw.core.interfaces.AppLogger;
+import sa.gov.nic.bio.bw.core.interfaces.LocalizedText;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.time.DateTimeException;
@@ -70,19 +74,39 @@ import java.time.chrono.HijrahChronology;
 import java.time.chrono.IsoChronology;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.logging.Level;
 
 public class GuiUtils implements AppLogger
 {
+	public static class OrElse<T>
+	{
+		private T object;
+		private boolean executeOrElse;
+		
+		public OrElse(T object, boolean executeOrElse)
+		{
+			this.object = object;
+			this.executeOrElse = executeOrElse;
+		}
+		
+		public void orElse(Consumer<T> consumer)
+		{
+			if(executeOrElse) consumer.accept(object);
+		}
+	}
+	
 	private static final DateTimeFormatter dateFormatterForParsing =
 							DateTimeFormatter.ofPattern("d/M/yyyy", AppConstants.Locales.SAUDI_EN_LOCALE);
 	private static final DateTimeFormatter dateFormatterForFormatting =
@@ -351,12 +375,7 @@ public class GuiUtils implements AppLogger
 			ImageView iv = new ImageView(imageView.getImage());
 			iv.setPreserveRatio(true);
 			
-			int radius = Integer.parseInt(Context.getConfigManager().getProperty("image.blur.radius"));
-			@SuppressWarnings("unchecked")
-			List<String> userRoles = (List<String>) Context.getUserSession().getAttribute("userRoles");
-			String maleSeeFemaleRole = Context.getConfigManager().getProperty("face.roles.maleSeeFemale");
-			boolean authorized = userRoles.contains(maleSeeFemaleRole);
-			if(!authorized && blur) iv.setEffect(new GaussianBlur(radius));
+			if(blur) blurImageView(imageView);
 
 			double taskBarHeight = 40.0;
 			double rightLeftWindowBorders = 6.0;
@@ -608,17 +627,47 @@ public class GuiUtils implements AppLogger
 		animation.play();
 	}
 	
-	public static Map<Integer, ImageView> constructFingerprintImageViewMap(ImageView ivRightThumb,
-	                                                                       ImageView ivRightIndex,
-	                                                                       ImageView ivRightMiddle,
-	                                                                       ImageView ivRightRing,
-	                                                                       ImageView ivRightLittle,
-	                                                                       ImageView ivLeftThumb,
-	                                                                       ImageView ivLeftIndex,
-	                                                                       ImageView ivLeftMiddle,
-	                                                                       ImageView ivLeftRing,
-	                                                                       ImageView ivLeftLittle)
+	public static void attachFingerprintImages(Map<Integer, String> fingerprintBase64Images, ImageView ivRightThumb,
+	                                           ImageView ivRightIndex, ImageView ivRightMiddle, ImageView ivRightRing,
+	                                           ImageView ivRightLittle, ImageView ivLeftThumb, ImageView ivLeftIndex,
+	                                           ImageView ivLeftMiddle, ImageView ivLeftRing, ImageView ivLeftLittle)
 	{
+		if(fingerprintBase64Images == null) return;
+		
+		ResourceBundle resourceBundle = AppUtils.getCoreStringsResourceBundle(Locale.getDefault());
+		Map<Integer, String> dialogTitleMap = new HashMap<>();
+		
+		dialogTitleMap.put(FingerPosition.RIGHT_THUMB.getPosition(),
+		                   resourceBundle.getString("label.fingers.thumb") + " (" +
+				                   resourceBundle.getString("label.rightHand") + ")");
+		dialogTitleMap.put(FingerPosition.RIGHT_INDEX.getPosition(),
+		                   resourceBundle.getString("label.fingers.index") + " (" +
+				                   resourceBundle.getString("label.rightHand") + ")");
+		dialogTitleMap.put(FingerPosition.RIGHT_MIDDLE.getPosition(),
+		                   resourceBundle.getString("label.fingers.middle") + " (" +
+				                   resourceBundle.getString("label.rightHand") + ")");
+		dialogTitleMap.put(FingerPosition.RIGHT_RING.getPosition(),
+		                   resourceBundle.getString("label.fingers.ring") + " (" +
+				                   resourceBundle.getString("label.rightHand") + ")");
+		dialogTitleMap.put(FingerPosition.RIGHT_LITTLE.getPosition(),
+		                   resourceBundle.getString("label.fingers.little") + " (" +
+				                   resourceBundle.getString("label.rightHand") + ")");
+		dialogTitleMap.put(FingerPosition.LEFT_THUMB.getPosition(),
+		                   resourceBundle.getString("label.fingers.thumb") + " (" +
+				                   resourceBundle.getString("label.leftHand") + ")");
+		dialogTitleMap.put(FingerPosition.LEFT_INDEX.getPosition(),
+		                   resourceBundle.getString("label.fingers.index") + " (" +
+				                   resourceBundle.getString("label.leftHand") + ")");
+		dialogTitleMap.put(FingerPosition.LEFT_MIDDLE.getPosition(),
+		                   resourceBundle.getString("label.fingers.middle") + " (" +
+				                   resourceBundle.getString("label.leftHand") + ")");
+		dialogTitleMap.put(FingerPosition.LEFT_RING.getPosition(),
+		                   resourceBundle.getString("label.fingers.ring") + " (" +
+				                   resourceBundle.getString("label.leftHand") + ")");
+		dialogTitleMap.put(FingerPosition.LEFT_LITTLE.getPosition(),
+		                   resourceBundle.getString("label.fingers.little") + " (" +
+				                   resourceBundle.getString("label.leftHand") + ")");
+		
 		Map<Integer, ImageView> imageViewMap = new HashMap<>();
 		
 		imageViewMap.put(FingerPosition.RIGHT_THUMB.getPosition(), ivRightThumb);
@@ -632,45 +681,16 @@ public class GuiUtils implements AppLogger
 		imageViewMap.put(FingerPosition.LEFT_RING.getPosition(), ivLeftRing);
 		imageViewMap.put(FingerPosition.LEFT_LITTLE.getPosition(), ivLeftLittle);
 		
-		return imageViewMap;
-	}
-	
-	public static Map<Integer, String> constructFingerprintDialogTitles(ResourceBundle resources)
-	{
-		Map<Integer, String> dialogTitleMap = new HashMap<>();
+		fingerprintBase64Images.forEach((position, fingerprintImage) ->
+		{
+		    ImageView imageView = imageViewMap.get(position);
+		    String dialogTitle = dialogTitleMap.get(position);
 		
-		dialogTitleMap.put(FingerPosition.RIGHT_THUMB.getPosition(),
-		                   resources.getString("label.fingers.thumb") + " (" +
-		                   resources.getString("label.rightHand") + ")");
-		dialogTitleMap.put(FingerPosition.RIGHT_INDEX.getPosition(),
-		                   resources.getString("label.fingers.index") + " (" +
-		                   resources.getString("label.rightHand") + ")");
-		dialogTitleMap.put(FingerPosition.RIGHT_MIDDLE.getPosition(),
-		                   resources.getString("label.fingers.middle") + " (" +
-		                   resources.getString("label.rightHand") + ")");
-		dialogTitleMap.put(FingerPosition.RIGHT_RING.getPosition(),
-		                   resources.getString("label.fingers.ring") + " (" +
-		                   resources.getString("label.rightHand") + ")");
-		dialogTitleMap.put(FingerPosition.RIGHT_LITTLE.getPosition(),
-		                   resources.getString("label.fingers.little") + " (" +
-		                   resources.getString("label.rightHand") + ")");
-		dialogTitleMap.put(FingerPosition.LEFT_THUMB.getPosition(),
-		                   resources.getString("label.fingers.thumb") + " (" +
-		                   resources.getString("label.leftHand") + ")");
-		dialogTitleMap.put(FingerPosition.LEFT_INDEX.getPosition(),
-		                   resources.getString("label.fingers.index") + " (" +
-		                   resources.getString("label.leftHand") + ")");
-		dialogTitleMap.put(FingerPosition.LEFT_MIDDLE.getPosition(),
-		                   resources.getString("label.fingers.middle") + " (" +
-		                   resources.getString("label.leftHand") + ")");
-		dialogTitleMap.put(FingerPosition.LEFT_RING.getPosition(),
-		                   resources.getString("label.fingers.ring") + " (" +
-		                   resources.getString("label.leftHand") + ")");
-		dialogTitleMap.put(FingerPosition.LEFT_LITTLE.getPosition(),
-		                   resources.getString("label.fingers.little") + " (" +
-		                   resources.getString("label.leftHand") + ")");
-		
-		return dialogTitleMap;
+		    byte[] bytes = Base64.getDecoder().decode(fingerprintImage);
+		    imageView.setImage(new Image(new ByteArrayInputStream(bytes)));
+		    GuiUtils.attachImageDialog(Context.getCoreFxController(), imageView, dialogTitle,
+		                               resourceBundle.getString("label.contextMenu.showImage"), false);
+		});
 	}
 	
 	public static <T> boolean selectComboBoxItem(ComboBox<ComboBoxItem<T>> comboBox, T item)
@@ -681,5 +701,85 @@ public class GuiUtils implements AppLogger
 													 .findFirst();
 		optional.ifPresent(comboBox::setValue);
 		return optional.isPresent();
+	}
+	
+	public static void blurImageView(ImageView imageView)
+	{
+		int radius = Integer.parseInt(Context.getConfigManager().getProperty("image.blur.radius"));
+		imageView.setEffect(new GaussianBlur(radius));
+	}
+	
+	public static void attachFacePhotoBase64(ImageView imageView, String facePhotoBase64, boolean blur,
+	                                         Gender subjectGender)
+	{
+		if(facePhotoBase64 != null)
+		{
+			UserInfo userInfo = (UserInfo) Context.getUserSession().getAttribute("userInfo");
+			boolean maleOperator = userInfo != null && userInfo.getGender() > 0 &&
+															Gender.values()[userInfo.getGender() - 1] == Gender.MALE;
+			boolean femaleSubject = subjectGender == Gender.FEMALE;
+			blur &= maleOperator && femaleSubject;
+			
+			@SuppressWarnings("unchecked")
+			List<String> userRoles = (List<String>) Context.getUserSession().getAttribute("userRoles");
+			String maleSeeFemaleRole = Context.getConfigManager().getProperty("face.roles.maleSeeFemale");
+			boolean authorized = userRoles.contains(maleSeeFemaleRole);
+			
+			byte[] bytes = Base64.getDecoder().decode(facePhotoBase64);
+			imageView.setImage(new Image(new ByteArrayInputStream(bytes)));
+			ResourceBundle resourceBundle = AppUtils.getCoreStringsResourceBundle(Locale.getDefault());
+			attachImageDialog(Context.getCoreFxController(), imageView,
+			                           resourceBundle.getString("label.personPhoto"),
+			                           resourceBundle.getString("label.contextMenu.showImage"),
+			                           blur && !authorized);
+			
+			if(blur && !authorized) blurImageView(imageView);
+		}
+	}
+	
+	public static <T> OrElse<Label> setLabelText(Label label, T value)
+	{
+		return setLabelText(label, value, true);
+	}
+	
+	public static <T> OrElse<Label> setLabelText(Label label, T value, boolean localizedNumbers)
+	{
+		if(value != null)
+		{
+			if(localizedNumbers) label.setText(AppUtils.localizeNumbers(String.valueOf(value)));
+			else label.setText(String.valueOf(value));
+			return new OrElse<>(null, false);
+		}
+		else return new OrElse<>(label, true);
+	}
+	
+	public static OrElse<Label> setLabelText(Label label, LocalizedText localizedText)
+	{
+		if(localizedText != null)
+		{
+			label.setText(localizedText.getLocalizedText());
+			return new OrElse<>(null, false);
+		}
+		else return new OrElse<>(label, true);
+	}
+	
+	public static OrElse<Label> setLabelText(Label label, LocalDate localDate)
+	{
+		if(localDate != null)
+		{
+			label.setText(AppUtils.formatHijriGregorianDate(localDate));
+			return new OrElse<>(null, false);
+		}
+		else return new OrElse<>(label, true);
+	}
+	
+	public static OrElse<CheckBox> setCheckBoxSelection(CheckBox checkBox, Boolean value)
+	{
+		if(value != null)
+		{
+			checkBox.setSelected(value);
+			return new OrElse<>(null, false);
+		}
+		else return new OrElse<>(checkBox, true);
 	}
 }

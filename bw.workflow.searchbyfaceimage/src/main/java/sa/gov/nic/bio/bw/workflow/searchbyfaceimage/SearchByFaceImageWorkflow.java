@@ -13,7 +13,7 @@ import sa.gov.nic.bio.bw.workflow.searchbyfaceimage.controllers.ImageSourceFxCon
 import sa.gov.nic.bio.bw.workflow.searchbyfaceimage.controllers.SearchFxController;
 import sa.gov.nic.bio.bw.workflow.searchbyfaceimage.controllers.ShowResultsFxController;
 import sa.gov.nic.bio.bw.workflow.searchbyfaceimage.controllers.UploadImageFileFxController;
-import sa.gov.nic.bio.bw.workflow.searchbyfaceimage.tasks.SearchByFaceImageWorkflowTask;
+import sa.gov.nic.bio.bw.workflow.searchbyfaceimage.tasks.SearchByFacePhotoWorkflowTask;
 
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -72,12 +72,12 @@ public class SearchByFaceImageWorkflow extends WizardWorkflowBase
 				if(Source.UPLOAD.equals(imageSource))
 				{
 					passData(UploadImageFileFxController.class, "uploadedImage",
-					         ConfirmImageFxController.class, "faceImage");
+					         ConfirmImageFxController.class, "facePhoto");
 				}
 				else if(Source.CAMERA.equals(imageSource))
 				{
 					passData(FaceCapturingFxController.class, ConfirmImageFxController.class,
-					         "faceImage");
+					         "facePhoto");
 				}
 				
 				renderUiAndWaitForUserInput(ConfirmImageFxController.class);
@@ -87,17 +87,17 @@ public class SearchByFaceImageWorkflow extends WizardWorkflowBase
 			{
 				renderUiAndWaitForUserInput(SearchFxController.class);
 				
-				passData(ConfirmImageFxController.class, SearchByFaceImageWorkflowTask.class,
-				         "faceImageBase64");
-				executeTask(SearchByFaceImageWorkflowTask.class);
+				passData(ConfirmImageFxController.class, SearchByFacePhotoWorkflowTask.class,
+				         "facePhotoBase64");
+				executeTask(SearchByFacePhotoWorkflowTask.class);
 				
 				break;
 			}
 			case 4:
 			{
 				passData(ConfirmImageFxController.class, ShowResultsFxController.class,
-				         "finalImage");
-				passData(SearchByFaceImageWorkflowTask.class,  ShowResultsFxController.class,
+				         "facePhoto");
+				passData(SearchByFacePhotoWorkflowTask.class, ShowResultsFxController.class,
 				         "candidates");
 				
 				renderUiAndWaitForUserInput(ShowResultsFxController.class);

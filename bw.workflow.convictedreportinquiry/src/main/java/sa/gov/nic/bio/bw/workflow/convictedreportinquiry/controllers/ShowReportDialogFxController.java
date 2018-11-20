@@ -11,8 +11,6 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
-import javafx.scene.effect.GaussianBlur;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -20,14 +18,13 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import net.sf.jasperreports.engine.JasperPrint;
 import sa.gov.nic.bio.bw.core.Context;
-import sa.gov.nic.bio.bw.core.beans.UserInfo;
+import sa.gov.nic.bio.bw.core.beans.Gender;
 import sa.gov.nic.bio.bw.core.controllers.FxControllerBase;
 import sa.gov.nic.bio.bw.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.core.utils.DialogUtils;
 import sa.gov.nic.bio.bw.core.utils.FxmlFile;
 import sa.gov.nic.bio.bw.core.utils.GuiLanguage;
 import sa.gov.nic.bio.bw.core.utils.GuiUtils;
-import sa.gov.nic.bio.bw.workflow.commons.beans.Gender;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.CountriesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.DocumentTypesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.PersonTypesLookup;
@@ -46,15 +43,13 @@ import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.webservice.ConvictedR
 import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.webservice.CrimeCode;
 import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.webservice.JudgementInfo;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
-import java.util.Base64;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 
 @FxmlFile("showReportDialog.fxml")
 public class ShowReportDialogFxController extends FxControllerBase
@@ -127,8 +122,6 @@ public class ShowReportDialogFxController extends FxControllerBase
 	@FXML private Button btnSaveReportAsPDF;
 	@FXML private Dialog<ButtonType> dialog;
 	
-	private Map<Integer, String> crimeEventTitles = new HashMap<>();
-	private Map<Integer, String> crimeClassTitles = new HashMap<>();
 	private FileChooser fileChooser = new FileChooser();
 	private AtomicReference<JasperPrint> jasperPrint = new AtomicReference<>();
 	
@@ -149,20 +142,6 @@ public class ShowReportDialogFxController extends FxControllerBase
 		FileChooser.ExtensionFilter extFilterPDF = new FileChooser.ExtensionFilter(
 									resources.getString("fileChooser.saveReportAsPDF.types"), "*.pdf");
 		fileChooser.getExtensionFilters().addAll(extFilterPDF);
-		
-		@SuppressWarnings("unchecked")
-		List<CrimeType> crimeTypes = (List<CrimeType>) Context.getUserSession().getAttribute(CrimeTypesLookup.KEY);
-		
-		crimeTypes.forEach(crimeType ->
-		{
-		    int eventCode = crimeType.getEventCode();
-		    int classCode = crimeType.getClassCode();
-		    String eventTitle = crimeType.getEventDesc();
-		    String classTitle = crimeType.getClassDesc();
-		
-		    crimeEventTitles.putIfAbsent(eventCode, eventTitle);
-		    crimeClassTitles.putIfAbsent(classCode, classTitle);
-		});
 		
 		dialog.setOnShown(event ->
 		{
@@ -197,28 +176,8 @@ public class ShowReportDialogFxController extends FxControllerBase
 		lblEnrollmentTime.setText(AppUtils.formatHijriGregorianDateTime(enrollmentTimeLong * 1000));
 		
 		String facePhotoBase64 = convictedReport.getSubjFace();
-		if(facePhotoBase64 != null)
-		{
-			UserInfo userInfo = (UserInfo) Context.getUserSession().getAttribute("userInfo");
-			boolean maleOperator = userInfo != null && userInfo.getGender() > 0 &&
-					Gender.values()[userInfo.getGender() - 1] == Gender.MALE;
-			boolean femaleSubject = "F".equals(convictedReport.getSubjGender());
-			boolean blur = maleOperator && femaleSubject;
-			
-			byte[] bytes = Base64.getDecoder().decode(facePhotoBase64);
-			ivPersonPhoto.setImage(new Image(new ByteArrayInputStream(bytes)));
-			GuiUtils.attachImageDialog(Context.getCoreFxController(), ivPersonPhoto,
-			                           resources.getString("label.personPhoto"),
-			                           resources.getString("label.contextMenu.showImage"), blur);
-			
-			int radius = Integer.parseInt(Context.getConfigManager().getProperty("image.blur.radius"));
-			@SuppressWarnings("unchecked")
-			List<String> userRoles = (List<String>) Context.getUserSession().getAttribute("userRoles");
-			
-			String maleSeeFemaleRole = Context.getConfigManager().getProperty("face.roles.maleSeeFemale");
-			boolean authorized = userRoles.contains(maleSeeFemaleRole);
-			if(!authorized && blur) ivPersonPhoto.setEffect(new GaussianBlur(radius));
-		}
+		GuiUtils.attachFacePhotoBase64(ivPersonPhoto, facePhotoBase64, true,
+		                               "F".equals(convictedReport.getSubjGender()) ? Gender.FEMALE : Gender.MALE);
 		
 		lblFirstName.setText(convictedReport.getSubjtName().getFirstName());
 		lblFatherName.setText(convictedReport.getSubjtName().getFatherName());
@@ -333,6 +292,14 @@ public class ShowReportDialogFxController extends FxControllerBase
 		
 		if(judgementInfo != null)
 		{
+			@SuppressWarnings("unchecked")
+			List<CrimeType> crimeTypes = (List<CrimeType>) Context.getUserSession().getAttribute(CrimeTypesLookup.KEY);
+			
+			Map<Integer, String> crimeEventTitles = crimeTypes.stream().collect(
+									Collectors.toMap(CrimeType::getEventCode, CrimeType::getEventDesc, (k1, k2) -> k1));
+			Map<Integer, String> crimeClassTitles = crimeTypes.stream().collect(
+									Collectors.toMap(CrimeType::getClassCode, CrimeType::getClassDesc, (k1, k2) -> k1));
+			
 			int counter = 0;
 			List<CrimeCode> crimeCodes = judgementInfo.getCrimeCodes();
 			for(CrimeCode crimeCode : crimeCodes)
@@ -412,38 +379,11 @@ public class ShowReportDialogFxController extends FxControllerBase
 		}
 		
 		List<Finger> subjFingers = convictedReport.getSubjFingers();
-		if(subjFingers != null)
-		{
-			Map<Integer, String> dialogTitleMap = GuiUtils.constructFingerprintDialogTitles(resources);
-			Map<Integer, ImageView> imageViewMap = GuiUtils.constructFingerprintImageViewMap(ivRightThumb, ivRightIndex,
-			                                                                                 ivRightMiddle, ivRightRing,
-			                                                                                 ivRightLittle, ivLeftThumb,
-			                                                                                 ivLeftIndex, ivLeftMiddle,
-			                                                                                 ivLeftRing, ivLeftLittle);
-			
-			fingerprintImages.forEach((position, fingerprintImage) ->
-			{
-				if(fingerprintImage == null)
-				{
-					return;
-				}
-				
-				ImageView imageView = imageViewMap.get(position);
-				String dialogTitle = dialogTitleMap.get(position);
-				
-				byte[] bytes = Base64.getDecoder().decode(fingerprintImage);
-				
-				if(bytes == null)
-				{
-					return;
-				}
-				
-				imageView.setImage(new Image(new ByteArrayInputStream(bytes)));
-			    GuiUtils.attachImageDialog(Context.getCoreFxController(), imageView,
-			                               dialogTitle, resources.getString("label.contextMenu.showImage"),
-			                               false);
-			});
-		}
+		Map<Integer, String> fingerprintBase64Images = subjFingers.stream()
+														.collect(Collectors.toMap(Finger::getType, Finger::getImage));
+		GuiUtils.attachFingerprintImages(fingerprintBase64Images, ivRightThumb, ivRightIndex, ivRightMiddle,
+		                                 ivRightRing, ivRightLittle, ivLeftThumb, ivLeftIndex, ivLeftMiddle,
+		                                 ivLeftRing, ivLeftLittle);
 	}
 	
 	public void setConvictedReportWithFingerprintImages(ConvictedReport convictedReport,

@@ -9,6 +9,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import sa.gov.nic.bio.bw.core.Context;
+import sa.gov.nic.bio.bw.core.beans.Gender;
 import sa.gov.nic.bio.bw.core.controllers.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.core.utils.FxmlFile;
@@ -16,19 +17,16 @@ import sa.gov.nic.bio.bw.core.utils.GuiLanguage;
 import sa.gov.nic.bio.bw.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.core.workflow.Input;
 import sa.gov.nic.bio.bw.core.workflow.Output;
-import sa.gov.nic.bio.bw.workflow.commons.beans.Gender;
 import sa.gov.nic.bio.bw.workflow.commons.ui.ImageViewPane;
 import sa.gov.nic.bio.bw.workflow.commons.webservice.Country;
 import sa.gov.nic.bio.bw.workflow.commons.webservice.Finger;
+import sa.gov.nic.bio.bw.workflow.visaapplicantsenrollment.tasks.VisaApplicantEnrollmentResponse;
 import sa.gov.nic.bio.bw.workflow.visaapplicantsenrollment.webservice.CountryDialingCode;
 import sa.gov.nic.bio.bw.workflow.visaapplicantsenrollment.webservice.PassportTypeBean;
 import sa.gov.nic.bio.bw.workflow.visaapplicantsenrollment.webservice.VisaApplicantInfo;
 import sa.gov.nic.bio.bw.workflow.visaapplicantsenrollment.webservice.VisaTypeBean;
-import sa.gov.nic.bio.bw.workflow.visaapplicantsenrollment.tasks.VisaApplicantEnrollmentResponse;
 
-import java.io.ByteArrayInputStream;
 import java.time.LocalDate;
-import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 
@@ -54,9 +52,9 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 	@Input(alwaysRequired = true) private PassportTypeBean passportType;
 	@Input(alwaysRequired = true) private CountryDialingCode dialingCode;
 	@Input(alwaysRequired = true) private String mobileNumber;
-	@Input(alwaysRequired = true) private Image faceImage;
-	@Input(alwaysRequired = true) private String faceImageBase64;
-	@Input(alwaysRequired = true) private Map<Integer, String> fingerprintImages;
+	@Input(alwaysRequired = true) private Image facePhoto;
+	@Input(alwaysRequired = true) private String facePhotoBase64;
+	@Input(alwaysRequired = true) private Map<Integer, String> fingerprintBase64Images;
 	@Input(alwaysRequired = true) private List<Finger> slapFingerprints;
 	@Input(alwaysRequired = true) private List<Integer> missingFingerprints;
 	@Input(requiredOnReturn = true) private VisaApplicantEnrollmentResponse visaApplicantEnrollmentResponse;
@@ -105,10 +103,10 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 		visaApplicantInfo = new VisaApplicantInfo(null, null, firstName, secondName,
 		                                          otherName, familyName, nationality, birthDate, passportNumber,
 		                                          gender, visaType, issueDate, issuanceCountry, expirationDate,
-		                                          birthPlace, passportType, mobileNumber, faceImageBase64,
+		                                          birthPlace, passportType, mobileNumber, facePhotoBase64,
 		                                          slapFingerprints, missingFingerprints);
 		
-		ivPersonPhoto.setImage(faceImage);
+		ivPersonPhoto.setImage(facePhoto);
 		GuiUtils.attachImageDialog(Context.getCoreFxController(), ivPersonPhoto,
 		                           resources.getString("label.personPhoto"),
 		                           resources.getString("label.contextMenu.showImage"), false);
@@ -138,24 +136,9 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 		
 		lblMobileNumber.setText("+" + mobileNumber);
 		
-		Map<Integer, String> dialogTitleMap = GuiUtils.constructFingerprintDialogTitles(resources);
-		Map<Integer, ImageView> imageViewMap = GuiUtils.constructFingerprintImageViewMap(ivRightThumb, ivRightIndex,
-		                                                                                 ivRightMiddle, ivRightRing,
-		                                                                                 ivRightLittle, ivLeftThumb,
-		                                                                                 ivLeftIndex, ivLeftMiddle,
-		                                                                                 ivLeftRing, ivLeftLittle);
-		
-		fingerprintImages.forEach((position, fingerprintImage) ->
-		{
-		    String dialogTitle = dialogTitleMap.get(position);
-		    ImageView imageView = imageViewMap.get(position);
-		
-		    byte[] array = Base64.getDecoder().decode(fingerprintImage);
-		    imageView.setImage(new Image(new ByteArrayInputStream(array)));
-		    GuiUtils.attachImageDialog(Context.getCoreFxController(), imageView,
-		                               dialogTitle, resources.getString("label.contextMenu.showImage"),
-		                               false);
-		});
+		GuiUtils.attachFingerprintImages(fingerprintBase64Images, ivRightThumb, ivRightIndex, ivRightMiddle,
+		                                 ivRightRing, ivRightLittle, ivLeftThumb, ivLeftIndex, ivLeftMiddle,
+		                                 ivLeftRing, ivLeftLittle);
 	}
 	
 	@Override

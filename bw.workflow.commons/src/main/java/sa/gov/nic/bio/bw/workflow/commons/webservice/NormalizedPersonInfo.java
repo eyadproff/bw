@@ -5,7 +5,7 @@ import sa.gov.nic.bio.bw.core.utils.AppConstants;
 import sa.gov.nic.bio.bw.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.core.utils.GuiLanguage;
 import sa.gov.nic.bio.bw.core.beans.Name;
-import sa.gov.nic.bio.bw.workflow.commons.beans.Gender;
+import sa.gov.nic.bio.bw.core.beans.Gender;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.CountriesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.DocumentTypesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.PersonTypesLookup;
@@ -17,7 +17,7 @@ import java.util.Objects;
 
 public class NormalizedPersonInfo
 {
-	private String faceImageBase64;
+	private String facePhotoBase64;
 	private Long personId;
 	private String personIdLabel;
 	private PersonType personType;
@@ -95,7 +95,7 @@ public class NormalizedPersonInfo
 		}
 		
 		
-		faceImageBase64 = personInfo.getFace();
+		facePhotoBase64 = personInfo.getFace();
 		
 		Name name = personInfo.getName();
 		
@@ -228,8 +228,8 @@ public class NormalizedPersonInfo
 		else documentExpiryDateLabel = notAvailable;
 	}
 	
-	public String getFaceImageBase64(){return faceImageBase64;}
-	public void setFaceImageBase64(String faceImageBase64){this.faceImageBase64 = faceImageBase64;}
+	public String getFacePhotoBase64(){return facePhotoBase64;}
+	public void setFacePhotoBase64(String facePhotoBase64){this.facePhotoBase64 = facePhotoBase64;}
 	
 	public Long getPersonId(){return personId;}
 	public void setPersonId(Long personId){this.personId = personId;}
@@ -347,7 +347,7 @@ public class NormalizedPersonInfo
 		if(this == o) return true;
 		if(o == null || getClass() != o.getClass()) return false;
 		NormalizedPersonInfo that = (NormalizedPersonInfo) o;
-		return Objects.equals(faceImageBase64, that.faceImageBase64) && Objects.equals(personId, that.personId) &&
+		return Objects.equals(facePhotoBase64, that.facePhotoBase64) && Objects.equals(personId, that.personId) &&
 			   Objects.equals(personIdLabel, that.personIdLabel) && Objects.equals(personType, that.personType) &&
 			   Objects.equals(personTypeLabel, that.personTypeLabel) && Objects.equals(documentId, that.documentId) &&
 			   Objects.equals(documentIdLabel, that.documentIdLabel) &&
@@ -378,7 +378,7 @@ public class NormalizedPersonInfo
 	@Override
 	public int hashCode()
 	{
-		return Objects.hash(faceImageBase64, personId, personIdLabel, personType, personTypeLabel, documentId,
+		return Objects.hash(facePhotoBase64, personId, personIdLabel, personType, personTypeLabel, documentId,
 		                    documentIdLabel, documentType, documentTypeLabel, documentIssuanceDate,
 		                    documentIssuanceDateLabel, documentExpiryDate, documentExpiryDateLabel, civilBiometricsId,
 		                    civilBiometricsIdLabel, criminalBiometricsId, criminalBiometricsIdLabel, firstName,
@@ -390,7 +390,7 @@ public class NormalizedPersonInfo
 	@Override
 	public String toString()
 	{
-		return "NormalizedPersonInfo{" + "faceImageBase64='" + faceImageBase64 + '\'' + ", personId=" + personId +
+		return "NormalizedPersonInfo{" + "facePhotoBase64='" + facePhotoBase64 + '\'' + ", personId=" + personId +
 			   ", personIdLabel='" + personIdLabel + '\'' + ", personType=" + personType + ", personTypeLabel='" +
 			   personTypeLabel + '\'' + ", documentId='" + documentId + '\'' + ", documentIdLabel='" +
 			   documentIdLabel + '\'' + ", documentType=" + documentType + ", documentTypeLabel='" +

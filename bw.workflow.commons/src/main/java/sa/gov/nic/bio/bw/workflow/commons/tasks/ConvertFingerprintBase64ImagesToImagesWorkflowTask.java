@@ -4,12 +4,8 @@ import javafx.scene.image.Image;
 import sa.gov.nic.bio.bw.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.core.workflow.Input;
 import sa.gov.nic.bio.bw.core.workflow.Output;
-import sa.gov.nic.bio.bw.core.workflow.Signal;
 import sa.gov.nic.bio.bw.core.workflow.WorkflowTask;
-import sa.gov.nic.bio.bw.workflow.commons.utils.CommonsErrorCodes;
-import sa.gov.nic.bio.commons.TaskResponse;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -20,23 +16,15 @@ public class ConvertFingerprintBase64ImagesToImagesWorkflowTask implements Workf
 	@Output private Map<Integer, Image> fingerprintImages;
 	
 	@Override
-	public void execute() throws Signal
+	public void execute()
 	{
-		fingerprintBase64Images = new HashMap<>();
+		fingerprintImages = new HashMap<>();
 		
-		for(Entry<Integer, Image> entry : fingerprintImages.entrySet())
+		for(Entry<Integer, String> entry : fingerprintBase64Images.entrySet())
 		{
-			try
-			{
-				Image image = entry.getValue();
-				if(image != null) fingerprintBase64Images.put(entry.getKey(), AppUtils.imageToBase64(image));
-			}
-			catch(IOException e)
-			{
-				String errorCode = CommonsErrorCodes.C008_00032.getCode();
-				String[] errorDetails = {"failed to convert images to base64 string!"};
-				resetWorkflowStepIfNegativeOrNullTaskResponse(TaskResponse.failure(errorCode, e, errorDetails));
-			}
+			String fingerprintBase64Image = entry.getValue();
+			if(fingerprintBase64Image != null) fingerprintImages.put(entry.getKey(),
+			                                                         AppUtils.imageFromBase64(fingerprintBase64Image));
 		}
 	}
 }

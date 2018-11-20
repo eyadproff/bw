@@ -1,8 +1,10 @@
 package sa.gov.nic.bio.bw.workflow.commons.webservice;
 
+import sa.gov.nic.bio.bw.core.interfaces.LocalizedText;
+
 import java.util.Objects;
 
-public class Country
+public class Country implements LocalizedText
 {
 	private int code;
 	private String mofaNationalityCode;
@@ -28,6 +30,18 @@ public class Country
 	
 	public String getDescriptionEN(){return descriptionEN;}
 	public void setDescriptionEN(String descriptionEN){this.descriptionEN = descriptionEN;}
+	
+	@Override
+	public String getArabicText()
+	{
+		return descriptionAR;
+	}
+	
+	@Override
+	public String getEnglishText()
+	{
+		return descriptionEN;
+	}
 	
 	@Override
 	public boolean equals(Object o)

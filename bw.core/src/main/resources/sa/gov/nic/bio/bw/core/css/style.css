@@ -280,3 +280,7 @@
 .small-radio-button > .radio > .dot {
     -fx-padding: 2.5;
 }
+
+.fakely-enabled {
+    -fx-opacity: 1;
+}

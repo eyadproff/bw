@@ -153,7 +153,7 @@ public class Tile3D extends Box {
 
     public void addChildrenTile(Tile3D child) {
         if (children == null) {
-            children = new ArrayList(5);
+            children = new ArrayList<>(5);
         }
         children.add(child);
     }

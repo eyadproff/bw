@@ -60,10 +60,10 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 	@Input private Boolean acceptAnyCapturedImage;
 	@Input private Boolean acceptBadQualityFace;
 	@Input private Integer acceptBadQualityFaceMinRetries;
-	@Output private Image capturedFaceImage;
-	@Output private Image croppedFaceImage;
-	@Output private Image faceImage;
-	@Output private String faceImageBase64;
+	@Output private Image capturedFacePhoto;
+	@Output private Image croppedFacePhoto;
+	@Output private Image facePhoto;
+	@Output private String facePhotoBase64;
 	@Output private Boolean icaoSuccessIconVisible;
 	@Output private Boolean icaoWarningIconVisible;
 	@Output private Boolean icaoErrorIconVisible;
@@ -77,11 +77,6 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 	@Output private Boolean croppedImageTitledPaneCaptured;
 	@Output private Boolean croppedImageTitledPaneDuplicated;
 	@Output private Boolean croppedImageTitledPaneValid;
-	
-	public static final String KEY_ACCEPT_BAD_QUALITY_FACE = "ACCEPT_BAD_QUALITY_FACE";
-	public static final String KEY_ACCEPTED_BAD_QUALITY_FACE_MIN_RETIRES = "ACCEPTED_BAD_QUALITY_FACE_MIN_RETIRES";
-	
-	public static final String KEY_FINAL_FACE_IMAGE = "FINAL_FACE_IMAGE";
 	
 	@FXML private FourStateTitledPane tpCameraLivePreview;
 	@FXML private FourStateTitledPane tpCapturedImage;
@@ -208,16 +203,16 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 		
 		lblIcaoMessage.setText(icaoMessage);
 		
-		if(capturedFaceImage != null)
+		if(capturedFacePhoto != null)
 		{
-			ivCapturedImage.setImage(capturedFaceImage);
+			ivCapturedImage.setImage(capturedFacePhoto);
 			GuiUtils.attachImageDialog(Context.getCoreFxController(), ivCapturedImage, tpCapturedImage.getText(),
 			                           resources.getString("label.contextMenu.showImage"), false);
 		}
 		
-		if(croppedFaceImage != null)
+		if(croppedFacePhoto != null)
 		{
-			ivCroppedImage.setImage(croppedFaceImage);
+			ivCroppedImage.setImage(croppedFacePhoto);
 			GuiUtils.attachImageDialog(Context.getCoreFxController(), ivCroppedImage, tpCroppedImage.getText(),
 			                           resources.getString("label.contextMenu.showImage"), false);
 		}
@@ -299,8 +294,8 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 		icaoErrorIconVisible = ivErrorIcao.isVisible();
 		icaoMessageVisible = lblIcaoMessage.isVisible();
 		icaoMessage = lblIcaoMessage.getText();
-		capturedFaceImage = ivCapturedImage.getImage();
-		croppedFaceImage = ivCroppedImage.getImage();
+		capturedFacePhoto = ivCapturedImage.getImage();
+		croppedFacePhoto = ivCroppedImage.getImage();
 		
 		if(tpCapturedImage.isCaptured())
 		{
@@ -321,13 +316,13 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 		Image capturedImage = ivCapturedImage.getImage();
 		Image croppedImage = ivCroppedImage.getImage();
 		
-		if(croppedImage != null) faceImage = croppedImage;
-		else faceImage = capturedImage;
+		if(croppedImage != null) facePhoto = croppedImage;
+		else facePhoto = capturedImage;
 		
 		try
 		{
-			if(faceImage != null) faceImageBase64 = AppUtils.imageToBase64(faceImage);
-			else faceImageBase64 = null;
+			if(facePhoto != null) facePhotoBase64 = AppUtils.imageToBase64(facePhoto);
+			else facePhotoBase64 = null;
 		}
 		catch(IOException e)
 		{

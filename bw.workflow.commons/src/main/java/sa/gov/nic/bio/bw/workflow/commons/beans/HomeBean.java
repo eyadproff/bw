@@ -15,11 +15,11 @@ public class HomeBean
 	private String sFailedLoginCount;
 	private String sLastPasswordChangeTime;
 	private String sPasswordExpirationTime;
-	private Image faceImage;
+	private Image facePhoto;
 	
 	public HomeBean(String username, String operatorName, String location, String sLoginTime, String sLastLogonTime,
 	                String sLastFailedLoginTime, String sFailedLoginCount, String sLastPasswordChangeTime,
-	                String sPasswordExpirationTime, Image faceImage)
+	                String sPasswordExpirationTime, Image facePhoto)
 	{
 		this.username = username;
 		this.operatorName = operatorName;
@@ -30,7 +30,7 @@ public class HomeBean
 		this.sFailedLoginCount = sFailedLoginCount;
 		this.sLastPasswordChangeTime = sLastPasswordChangeTime;
 		this.sPasswordExpirationTime = sPasswordExpirationTime;
-		this.faceImage = faceImage;
+		this.facePhoto = facePhoto;
 	}
 	
 	public String getUsername(){return username;}
@@ -62,8 +62,8 @@ public class HomeBean
 	public void setsPasswordExpirationTime(String sPasswordExpirationTime)
 															{this.sPasswordExpirationTime = sPasswordExpirationTime;}
 	
-	public Image getFaceImage(){return faceImage;}
-	public void setFaceImage(Image faceImage){this.faceImage = faceImage;}
+	public Image getFacePhoto(){return facePhoto;}
+	public void setFacePhoto(Image facePhoto){this.facePhoto = facePhoto;}
 	
 	@Override
 	public boolean equals(Object o)
@@ -78,14 +78,14 @@ public class HomeBean
 			   Objects.equals(sFailedLoginCount, homeBean.sFailedLoginCount) &&
 			   Objects.equals(sLastPasswordChangeTime, homeBean.sLastPasswordChangeTime) &&
 			   Objects.equals(sPasswordExpirationTime, homeBean.sPasswordExpirationTime) &&
-			   Objects.equals(faceImage, homeBean.faceImage);
+			   Objects.equals(facePhoto, homeBean.facePhoto);
 	}
 	
 	@Override
 	public int hashCode()
 	{
 		return Objects.hash(username, operatorName, location, sLoginTime, sLastLogonTime, sLastFailedLoginTime,
-		                    sFailedLoginCount, sLastPasswordChangeTime, sPasswordExpirationTime, faceImage);
+		                    sFailedLoginCount, sLastPasswordChangeTime, sPasswordExpirationTime, facePhoto);
 	}
 	
 	@Override
@@ -96,6 +96,6 @@ public class HomeBean
 			   sLastLogonTime + '\'' + ", sLastFailedLoginTime='" + sLastFailedLoginTime + '\'' +
 			   ", sFailedLoginCount='" + sFailedLoginCount + '\'' + ", sLastPasswordChangeTime='" +
 			   sLastPasswordChangeTime + '\'' + ", sPasswordExpirationTime='" + sPasswordExpirationTime + '\'' +
-			   ", faceImage='" + faceImage + '\'' + '}';
+			   ", facePhoto='" + facePhoto + '\'' + '}';
 	}
 }

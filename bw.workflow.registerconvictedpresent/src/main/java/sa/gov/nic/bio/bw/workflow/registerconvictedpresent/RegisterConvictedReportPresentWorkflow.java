@@ -15,24 +15,18 @@ import sa.gov.nic.bio.bw.workflow.commons.controllers.InquiryResultPaneFxControl
 import sa.gov.nic.bio.bw.workflow.commons.lookups.CountriesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.DocumentTypesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.PersonTypesLookup;
-import sa.gov.nic.bio.bw.workflow.commons.webservice.Finger;
-import sa.gov.nic.bio.bw.workflow.commons.webservice.FingerprintInquiryStatusResult;
-import sa.gov.nic.bio.bw.workflow.commons.webservice.PersonInfo;
-import sa.gov.nic.bio.bw.workflow.commons.tasks.FingerprintInquiryService;
-import sa.gov.nic.bio.bw.workflow.commons.tasks.FingerprintInquiryStatusCheckerService;
+import sa.gov.nic.bio.bw.workflow.commons.tasks.FingerprintInquiryStatusCheckerWorkflowTask;
+import sa.gov.nic.bio.bw.workflow.commons.tasks.FingerprintInquiryWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.controllers.JudgmentDetailsPaneFxController;
 import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.controllers.PersonInfoPaneFxController;
 import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.controllers.PunishmentDetailsPaneFxController;
 import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.controllers.ReviewAndSubmitPaneFxController;
 import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.controllers.ShowReportPaneFxController;
 import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.lookups.CrimeTypesLookup;
+import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.tasks.GeneratingNewCivilBiometricsIdWorkflowTask;
+import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.tasks.SubmittingConvictedReportWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.webservice.ConvictedReport;
-import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.tasks.ConvictedReportResponse;
-import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.tasks.GeneratingGeneralFileNumberService;
-import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.tasks.SubmittingConvictedReportService;
-import sa.gov.nic.bio.commons.TaskResponse;
 
-import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -70,16 +64,15 @@ public class RegisterConvictedReportPresentWorkflow extends WizardWorkflowBase
 			case 0:
 			{
 				boolean acceptBadQualityFingerprint = "true".equals(Context.getConfigManager().getProperty(
-													"printConvictedReport.fingerprint.acceptBadQualityFingerprint"));
-				int acceptedBadQualityFingerprintMinRetries = Integer.parseInt(Context.getConfigManager().getProperty(
-										"printConvictedReport.fingerprint.acceptedBadQualityFingerprintMinRetries"));
-		
-				uiInputData.put(FingerprintCapturingFxController.KEY_HIDE_FINGERPRINT_PREVIOUS_BUTTON,
-				                Boolean.TRUE);
-				uiInputData.put(FingerprintCapturingFxController.KEY_ACCEPT_BAD_QUALITY_FINGERPRINT,
-				                acceptBadQualityFingerprint);
-				uiInputData.put(FingerprintCapturingFxController.KEY_ACCEPTED_BAD_QUALITY_FINGERPRINT_MIN_RETIRES,
-								acceptedBadQualityFingerprintMinRetries);
+													"registerConvictedReport.fingerprint.acceptBadQualityFingerprint"));
+				int acceptBadQualityFingerprintMinRetries = Integer.parseInt(Context.getConfigManager().getProperty(
+										"registerConvictedReport.fingerprint.acceptBadQualityFingerprintMinRetries"));
+				
+				setData(FingerprintCapturingFxController.class, "hidePreviousButton", Boolean.TRUE);
+				setData(FingerprintCapturingFxController.class, "acceptBadQualityFingerprint",
+				        acceptBadQualityFingerprint);
+				setData(FingerprintCapturingFxController.class, "acceptedBadQualityFingerprintMinRetires",
+				        acceptBadQualityFingerprintMinRetries);
 		
 				renderUiAndWaitForUserInput(FingerprintCapturingFxController.class);
 				break;
@@ -87,126 +80,55 @@ public class RegisterConvictedReportPresentWorkflow extends WizardWorkflowBase
 			case 1:
 			{
 				boolean acceptBadQualityFace = "true".equals(Context.getConfigManager().getProperty(
-																"printConvictedReport.face.acceptBadQualityFace"));
-				int acceptedBadQualityFaceMinRetries = Integer.parseInt(Context.getConfigManager().getProperty(
-													"printConvictedReport.face.acceptedBadQualityFaceMinRetries"));
-		
-				uiInputData.put(FaceCapturingFxController.KEY_ACCEPT_BAD_QUALITY_FACE, acceptBadQualityFace);
-				uiInputData.put(FaceCapturingFxController.KEY_ACCEPTED_BAD_QUALITY_FACE_MIN_RETIRES,
-				                acceptedBadQualityFaceMinRetries);
+																"registerConvictedReport.face.acceptBadQualityFace"));
+				int acceptBadQualityFaceMinRetries = Integer.parseInt(Context.getConfigManager().getProperty(
+														"registerConvictedReport.face.acceptBadQualityFaceMinRetries"));
+				
+				setData(FaceCapturingFxController.class, "acceptBadQualityFace", acceptBadQualityFace);
+				setData(FaceCapturingFxController.class, "acceptBadQualityFaceMinRetries",
+				        acceptBadQualityFaceMinRetries);
 		
 				renderUiAndWaitForUserInput(FaceCapturingFxController.class);
 				break;
 			}
 			case 2:
 			{
-				Boolean retry = (Boolean) uiInputData.get(
-						InquiryByFingerprintsPaneFxController.KEY_RETRY_FINGERPRINT_INQUIRY);
-				uiInputData.remove(InquiryByFingerprintsPaneFxController.KEY_RETRY_FINGERPRINT_INQUIRY);
-		
-				if(retry == null || !retry)
+				passData(FingerprintInquiryStatusCheckerWorkflowTask.class, InquiryByFingerprintsPaneFxController.class,
+				         "status");
+				
+				renderUiAndWaitForUserInput(InquiryByFingerprintsPaneFxController.class);
+				
+				Integer inquiryId = getData(FingerprintInquiryWorkflowTask.class, "inquiryId");
+				
+				if(inquiryId == null)
 				{
-					// show progress only
-					renderUiAndWaitForUserInput(InquiryByFingerprintsPaneFxController.class);
-		
-					Boolean running = (Boolean)
-							uiInputData.get(InquiryByFingerprintsPaneFxController.KEY_DEVICES_RUNNER_IS_RUNNING);
-					if(running != null && !running) break;
+					passData(FingerprintCapturingFxController.class, "slapFingerprints",
+					         FingerprintInquiryWorkflowTask.class, "fingerprints");
+					passData(FingerprintCapturingFxController.class, FingerprintInquiryWorkflowTask.class,
+					         "missingFingerprints");
+					
+					executeTask(FingerprintInquiryWorkflowTask.class);
 				}
-		
-				@SuppressWarnings("unchecked")
-				List<Finger> collectedFingerprints = (List<Finger>)
-									uiInputData.get(FingerprintCapturingFxController.KEY_SEGMENTED_FINGERPRINTS);
-		
-				@SuppressWarnings("unchecked") List<Integer> missingFingerprints = (List<Integer>)
-									uiInputData.get(FingerprintCapturingFxController.KEY_MISSING_FINGERPRINTS);
-		
-				TaskResponse<Integer> taskResponse =
-										FingerprintInquiryService.execute(collectedFingerprints, missingFingerprints);
-				Integer inquiryId = taskResponse.getResult();
-		
-				if(taskResponse.isSuccess() && inquiryId != null)
-				{
-					while(true)
-					{
-						TaskResponse<FingerprintInquiryStatusResult> response =
-															FingerprintInquiryStatusCheckerService.execute(inquiryId);
-		
-						FingerprintInquiryStatusResult result = response.getResult();
-		
-						if(response.isSuccess() && result != null)
-						{
-							if(result.getStatus() == FingerprintInquiryStatusResult.STATUS_INQUIRY_PENDING)
-							{
-								uiInputData.put(InquiryByFingerprintsPaneFxController.KEY_WAITING_FINGERPRINT_INQUIRY,
-								                Boolean.TRUE);
-								renderUiAndWaitForUserInput(InquiryByFingerprintsPaneFxController.class);
-								Boolean cancelled = (Boolean) uiInputData.get(
-									InquiryByFingerprintsPaneFxController.KEY_WAITING_FINGERPRINT_INQUIRY_CANCELLED);
-								if(cancelled == null || !cancelled) continue;
-								else uiInputData.remove(
-									InquiryByFingerprintsPaneFxController.KEY_WAITING_FINGERPRINT_INQUIRY_CANCELLED);
-							}
-							else if(result.getStatus() == FingerprintInquiryStatusResult.STATUS_INQUIRY_NO_HIT)
-							{
-								uiInputData.put(InquiryByFingerprintsPaneFxController.KEY_FINGERPRINT_INQUIRY_HIT,
-								                Boolean.FALSE);
-								renderUiAndWaitForUserInput(InquiryByFingerprintsPaneFxController.class);
-							}
-							else if(result.getStatus() == FingerprintInquiryStatusResult.STATUS_INQUIRY_HIT)
-							{
-								uiInputData.put(InquiryByFingerprintsPaneFxController.KEY_FINGERPRINT_INQUIRY_HIT,
-								                Boolean.TRUE);
-		
-								long samisId = result.getSamisId();
-								long civilHitBioId = result.getCivilHitBioId();
-								long criminalHitBioId = result.getCrimnalHitBioId();
-								PersonInfo personInfo = result.getPersonInfo();
-		
-								uiInputData.put(InquiryResultPaneFxController.KEY_INQUIRY_SAMIS_ID, samisId);
-		
-								if(civilHitBioId > 0) uiInputData.put(
-										PersonInfoPaneFxController.KEY_PERSON_INFO_CIVIL_BIO_ID, civilHitBioId);
-
-								if(criminalHitBioId > 0) uiInputData.put(
-													PersonInfoPaneFxController.KEY_PERSON_INFO_GENERAL_FILE_NUMBER,
-													criminalHitBioId);
-								uiInputData.put(InquiryResultPaneFxController.KEY_INQUIRY_HIT_RESULT, personInfo);
-								renderUiAndWaitForUserInput(InquiryByFingerprintsPaneFxController.class);
-							}
-							else // report the error
-							{
-								uiInputData.put(
-										InquiryByFingerprintsPaneFxController.KEY_FINGERPRINT_INQUIRY_UNKNOWN_STATUS,
-						                result.getStatus());
-								renderUiAndWaitForUserInput(InquiryByFingerprintsPaneFxController.class);
-							}
-							
-							break;
-						}
-						else // report the error
-						{
-							uiInputData.put(KEY_WORKFLOW_TASK_NEGATIVE_RESPONSE, response);
-							renderUiAndWaitForUserInput(InquiryByFingerprintsPaneFxController.class);
-							break;
-						}
-					}
-				}
-				else // report the error
-				{
-					uiInputData.put(KEY_WORKFLOW_TASK_NEGATIVE_RESPONSE, taskResponse);
-					renderUiAndWaitForUserInput(InquiryByFingerprintsPaneFxController.class);
-				}
+				
+				passData(FingerprintInquiryWorkflowTask.class, FingerprintInquiryStatusCheckerWorkflowTask.class,
+				         "inquiryId");
+				executeTask(FingerprintInquiryStatusCheckerWorkflowTask.class);
 				
 				break;
 			}
 			case 3:
 			{
+				passData(FingerprintInquiryStatusCheckerWorkflowTask.class,
+				         InquiryResultPaneFxController.class,
+				         "status", "personId", "civilBiometricsId", "criminalBiometricsId",
+				         "personInfo");
 				renderUiAndWaitForUserInput(InquiryResultPaneFxController.class);
 				break;
 			}
 			case 4:
 			{
+				passData(InquiryResultPaneFxController.class, PersonInfoPaneFxController.class,
+				         "normalizedPersonInfo");
 				renderUiAndWaitForUserInput(PersonInfoPaneFxController.class);
 				break;
 			}
@@ -222,45 +144,62 @@ public class RegisterConvictedReportPresentWorkflow extends WizardWorkflowBase
 			}
 			case 7:
 			{
+				passData(FaceCapturingFxController.class, ReviewAndSubmitPaneFxController.class,
+				         "facePhotoBase64");
+				
+				passData(PersonInfoPaneFxController.class, ReviewAndSubmitPaneFxController.class,
+				         "firstName", "fatherName" ,"grandfatherName" ,"familyName" ,"gender"
+						,"nationality" ,"occupation" ,"birthPlace" ,"birthDate" ,"birthDateUseHijri" ,"personId"
+						,"personType" ,"documentId" ,"documentType" ,"documentIssuanceDate" ,"documentExpiryDate");
+				
+				passData(JudgmentDetailsPaneFxController.class, ReviewAndSubmitPaneFxController.class,
+				         "judgmentIssuer" , "judgmentNumber", "judgmentDate", "judgmentDateUseHijri",
+				         "caseFileNumber", "prisonerNumber", "arrestDate", "arrestDateUseHijri", "crimes");
+				
+				passData(PunishmentDetailsPaneFxController.class, ReviewAndSubmitPaneFxController.class,
+				         "tazeerLashes", "hadLashes", "fine", "jailYears", "jailMonths", "jailDays",
+				         "travelBanYears", "travelBanMonths", "travelBanDays", "exilingYears", "exilingMonths",
+				         "exilingDays", "deportationYears", "deportationMonths", "deportationDays", "finalDeportation",
+				         "libel", "covenant", "other");
+				
+				passData(FingerprintCapturingFxController.class, "slapFingerprints",
+				         ReviewAndSubmitPaneFxController.class, "fingerprints");
+				
+				passData(FingerprintCapturingFxController.class,
+				         ReviewAndSubmitPaneFxController.class,
+				         "fingerprintBase64Images", "missingFingerprints");
+				
 				renderUiAndWaitForUserInput(ReviewAndSubmitPaneFxController.class);
-		
-				if(isLeaving()) break;
-		
-				ConvictedReport convictedReport = (ConvictedReport)
-						uiInputData.get(ReviewAndSubmitPaneFxController.KEY_FINAL_CONVICTED_REPORT);
-		
-				Long generalFileNumber = (Long)
-						uiInputData.get(PersonInfoPaneFxController.KEY_PERSON_INFO_GENERAL_FILE_NUMBER);
-		
-				if(generalFileNumber == null)
+				
+				Long criminalBiometricsId = getData(FingerprintInquiryStatusCheckerWorkflowTask.class,
+				                                    "criminalBiometricsId");
+				
+				if(criminalBiometricsId == null)
 				{
-					Long samisId = convictedReport.getSubjSamisId();
-					Long civilHitBioId = convictedReport.getSubjBioId();
-		
-					TaskResponse<Long> taskResponse =
-							GeneratingGeneralFileNumberService.execute(samisId, civilHitBioId);
-		
-					if(!taskResponse.isSuccess())
-					{
-						uiInputData.put(KEY_WORKFLOW_TASK_NEGATIVE_RESPONSE, taskResponse);
-						break;
-					}
-		
-					generalFileNumber = taskResponse.getResult();
-					uiInputData.put(PersonInfoPaneFxController.KEY_PERSON_INFO_GENERAL_FILE_NUMBER,
-					                generalFileNumber);
+					passData(FingerprintInquiryStatusCheckerWorkflowTask.class,
+					         GeneratingNewCivilBiometricsIdWorkflowTask.class,
+					         "personId", "civilBiometricsId");
+					executeTask(GeneratingNewCivilBiometricsIdWorkflowTask.class);
+					criminalBiometricsId = getData(GeneratingNewCivilBiometricsIdWorkflowTask.class,
+					                               "criminalBiometricsId");
 				}
-		
-				convictedReport.setGeneralFileNum(generalFileNumber);
-		
-				TaskResponse<ConvictedReportResponse> taskResponse =
-														SubmittingConvictedReportService.execute(convictedReport);
-				uiInputData.put(KEY_WORKFLOW_TASK_NEGATIVE_RESPONSE, taskResponse);
+				
+				ConvictedReport convictedReport = getData(ReviewAndSubmitPaneFxController.class,
+				                                          "convictedReport");
+				convictedReport.setGeneralFileNum(criminalBiometricsId);
+				setData(SubmittingConvictedReportWorkflowTask.class, "convictedReport", convictedReport);
+				executeTask(SubmittingConvictedReportWorkflowTask.class);
 				
 				break;
 			}
 			case 8:
 			{
+				passData(ReviewAndSubmitPaneFxController.class, ShowReportPaneFxController.class,
+				         "convictedReport");
+				passData(SubmittingConvictedReportWorkflowTask.class, ShowReportPaneFxController.class,
+				         "convictedReportResponse");
+				passData(FingerprintCapturingFxController.class, ShowReportPaneFxController.class,
+				         "fingerprintBase64Images");
 				renderUiAndWaitForUserInput(ShowReportPaneFxController.class);
 				break;
 			}

@@ -1,6 +1,6 @@
 package sa.gov.nic.bio.bw.workflow.visaapplicantsenrollment.webservice;
 
-import sa.gov.nic.bio.bw.workflow.commons.beans.Gender;
+import sa.gov.nic.bio.bw.core.beans.Gender;
 import sa.gov.nic.bio.bw.workflow.commons.webservice.Country;
 import sa.gov.nic.bio.bw.workflow.commons.webservice.Finger;
 
@@ -28,7 +28,7 @@ public class VisaApplicantInfo
 	private Country birthPlace;
 	private PassportTypeBean passportType;
 	private String mobileNumber;
-	private String faceImage;
+	private String facePhoto;
 	private List<Finger> fingerprints;
 	private List<Integer> missingFingerprints;
 	
@@ -36,7 +36,7 @@ public class VisaApplicantInfo
 	                         String otherName, String familyName, Country nationality, LocalDate birthDate,
 	                         String passportNumber, Gender gender, VisaTypeBean visaType, LocalDate issueDate,
 	                         Country issuanceCountry, LocalDate expirationDate, Country birthPlace,
-	                         PassportTypeBean passportType, String mobileNumber, String faceImage,
+	                         PassportTypeBean passportType, String mobileNumber, String facePhoto,
 	                         List<Finger> fingerprints, List<Integer> missingFingerprints)
 	{
 		this.applicantId = applicantId;
@@ -56,7 +56,7 @@ public class VisaApplicantInfo
 		this.birthPlace = birthPlace;
 		this.passportType = passportType;
 		this.mobileNumber = mobileNumber;
-		this.faceImage = faceImage;
+		this.facePhoto = facePhoto;
 		this.fingerprints = fingerprints;
 		this.missingFingerprints = missingFingerprints;
 	}
@@ -112,8 +112,8 @@ public class VisaApplicantInfo
 	public String getMobileNumber(){return mobileNumber;}
 	public void setMobileNumber(String mobileNumber){this.mobileNumber = mobileNumber;}
 	
-	public String getFaceImage(){return faceImage;}
-	public void setFaceImage(String faceImage){this.faceImage = faceImage;}
+	public String getFacePhoto(){return facePhoto;}
+	public void setFacePhoto(String facePhoto){this.facePhoto = facePhoto;}
 	
 	public List<Finger> getFingerprints(){return fingerprints;}
 	public void setFingerprints(List<Finger> fingerprints){this.fingerprints = fingerprints;}
@@ -137,7 +137,7 @@ public class VisaApplicantInfo
 			   Objects.equals(issuanceCountry, that.issuanceCountry) &&
 			   Objects.equals(expirationDate, that.expirationDate) && Objects.equals(birthPlace, that.birthPlace) &&
 			   Objects.equals(passportType, that.passportType) && Objects.equals(mobileNumber, that.mobileNumber) &&
-			   Objects.equals(faceImage, that.faceImage) && Objects.equals(fingerprints, that.fingerprints) &&
+			   Objects.equals(facePhoto, that.facePhoto) && Objects.equals(fingerprints, that.fingerprints) &&
 			   Objects.equals(missingFingerprints, that.missingFingerprints);
 	}
 	
@@ -146,7 +146,7 @@ public class VisaApplicantInfo
 	{
 		return Objects.hash(applicantId, enrollmentDate, firstName, secondName, otherName, familyName, nationality,
 		                    birthDate, passportNumber, gender, visaType, issueDate, issuanceCountry, expirationDate,
-		                    birthPlace, passportType, mobileNumber, faceImage, fingerprints, missingFingerprints);
+		                    birthPlace, passportType, mobileNumber, facePhoto, fingerprints, missingFingerprints);
 	}
 	
 	@Override
@@ -158,7 +158,7 @@ public class VisaApplicantInfo
 			   ", birthDate=" + birthDate + ", passportNumber='" + passportNumber + '\'' + ", gender=" + gender +
 			   ", visaType=" + visaType + ", issueDate=" + issueDate + ", issuanceCountry=" + issuanceCountry +
 			   ", expirationDate=" + expirationDate + ", birthPlace=" + birthPlace + ", passportType=" +
-			   passportType + ", mobileNumber='" + mobileNumber + '\'' + ", faceImage='" + faceImage + '\'' +
+			   passportType + ", mobileNumber='" + mobileNumber + '\'' + ", facePhoto='" + facePhoto + '\'' +
 			   ", fingerprints=" + fingerprints + ", missingFingerprints=" + missingFingerprints + '}';
 	}
 }

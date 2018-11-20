@@ -19,7 +19,7 @@ import sa.gov.nic.bio.bw.core.utils.GuiLanguage;
 import sa.gov.nic.bio.bw.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.core.workflow.Input;
 import sa.gov.nic.bio.bw.core.workflow.Output;
-import sa.gov.nic.bio.bw.workflow.commons.beans.Gender;
+import sa.gov.nic.bio.bw.core.beans.Gender;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.CountriesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.DocumentTypesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.PersonTypesLookup;
@@ -57,23 +57,8 @@ public class PersonInfoPaneFxController extends WizardStepFxControllerBase
 	@Output private LocalDate documentExpiryDate;
 	@Output private Boolean documentExpiryDateUseHijri;
 	
-	public static final String KEY_PERSON_INFO_FIRST_NAME = "PERSON_INFO_FIRST_NAME";
-	public static final String KEY_PERSON_INFO_FATHER_NAME = "PERSON_INFO_FATHER__NAME";
-	public static final String KEY_PERSON_INFO_GRANDFATHER_NAME = "PERSON_INFO_GRANDFATHER_NAME";
-	public static final String KEY_PERSON_INFO_FAMILY_NAME = "PERSON_INFO_FAMILY_NAME";
 	public static final String KEY_PERSON_INFO_CIVIL_BIO_ID = "PERSON_INFO_CIVIL_BIO_ID";
 	public static final String KEY_PERSON_INFO_GENERAL_FILE_NUMBER = "PERSON_INFO_GENERAL_FILE_NUMBER";
-	public static final String KEY_PERSON_INFO_GENDER = "PERSON_INFO_GENDER";
-	public static final String KEY_PERSON_INFO_NATIONALITY = "PERSON_INFO_NATIONALITY";
-	public static final String KEY_PERSON_INFO_OCCUPATION = "PERSON_INFO_OCCUPATION";
-	public static final String KEY_PERSON_INFO_BIRTH_PLACE = "PERSON_INFO_BIRTH_PLACE";
-	public static final String KEY_PERSON_INFO_BIRTH_DATE = "PERSON_INFO_BIRTH_DATE";
-	public static final String KEY_PERSON_INFO_SAMIS_ID = "PERSON_INFO_SAMIS_ID";
-	public static final String KEY_PERSON_INFO_SAMIS_ID_TYPE = "PERSON_INFO_SAMIS_ID_TYPE";
-	public static final String KEY_PERSON_INFO_DOCUMENT_ID = "PERSON_INFO_DOCUMENT_ID";
-	public static final String KEY_PERSON_INFO_DOCUMENT_TYPE = "PERSON_INFO_DOCUMENT_TYPE";
-	public static final String KEY_PERSON_INFO_DOCUMENT_ISSUANCE_DATE = "PERSON_INFO_DOCUMENT_ISSUANCE_DATE";
-	public static final String KEY_PERSON_INFO_DOCUMENT_EXPIRY_DATE = "PERSON_INFO_DOCUMENT_EXPIRY_DATE";
 	
 	@FXML private TextField txtFirstName;
 	@FXML private TextField txtFatherName;

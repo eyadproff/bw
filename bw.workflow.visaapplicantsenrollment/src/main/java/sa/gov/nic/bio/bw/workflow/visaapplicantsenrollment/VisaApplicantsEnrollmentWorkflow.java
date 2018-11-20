@@ -56,28 +56,25 @@ public class VisaApplicantsEnrollmentWorkflow extends WizardWorkflowBase
 			}
 			case 1:
 			{
-				boolean acceptBadQualityFingerprint = "true".equals(
-						Context.getConfigManager().getProperty(
+				boolean acceptBadQualityFingerprint = "true".equals(Context.getConfigManager().getProperty(
 												"visaApplicantsEnrollment.fingerprint.acceptBadQualityFingerprint"));
-				int acceptedBadQualityFingerprintMinRetries = Integer.parseInt(
-						Context.getConfigManager().getProperty(
-									"visaApplicantsEnrollment.fingerprint.acceptedBadQualityFingerprintMinRetries"));
+				int acceptBadQualityFingerprintMinRetries = Integer.parseInt(Context.getConfigManager().getProperty(
+										"visaApplicantsEnrollment.fingerprint.acceptBadQualityFingerprintMinRetries"));
 				
 				setData(FingerprintCapturingFxController.class, "hidePreviousButton", Boolean.FALSE);
 				setData(FingerprintCapturingFxController.class, "acceptBadQualityFingerprint",
 				        acceptBadQualityFingerprint);
-				setData(FingerprintCapturingFxController.class, "acceptedBadQualityFingerprintMinRetires",
-				        acceptedBadQualityFingerprintMinRetries);
+				setData(FingerprintCapturingFxController.class, "acceptBadQualityFingerprintMinRetires",
+				        acceptBadQualityFingerprintMinRetries);
 				
 				renderUiAndWaitForUserInput(FingerprintCapturingFxController.class);
 				break;
 			}
 			case 2:
 			{
-				boolean acceptBadQualityFace = "true".equals(
-						Context.getConfigManager().getProperty("visaApplicantsEnrollment.face.acceptBadQualityFace"));
-				int acceptBadQualityFaceMinRetries = Integer.parseInt(
-						Context.getConfigManager().getProperty(
+				boolean acceptBadQualityFace = "true".equals(Context.getConfigManager().getProperty(
+																"visaApplicantsEnrollment.face.acceptBadQualityFace"));
+				int acceptBadQualityFaceMinRetries = Integer.parseInt(Context.getConfigManager().getProperty(
 													"visaApplicantsEnrollment.face.acceptBadQualityFaceMinRetries"));
 				
 				setData(FaceCapturingFxController.class, "acceptBadQualityFace", acceptBadQualityFace);
@@ -95,9 +92,9 @@ public class VisaApplicantsEnrollmentWorkflow extends WizardWorkflowBase
 				         "issueDate", "issueDateUseHijri", "expirationDate", "expirationDateUseHijri",
 				         "issuanceCountry", "passportType", "dialingCode", "mobileNumber");
 				passData(FaceCapturingFxController.class, ReviewAndSubmitPaneFxController.class,
-				         "faceImage", "faceImageBase64");
+				         "facePhoto", "facePhotoBase64");
 				passData(FingerprintCapturingFxController.class, ReviewAndSubmitPaneFxController.class,
-				         "fingerprintImages", "slapFingerprints", "missingFingerprints");
+				         "fingerprintBase64Images", "slapFingerprints", "missingFingerprints");
 				
 				renderUiAndWaitForUserInput(ReviewAndSubmitPaneFxController.class);
 				
@@ -118,7 +115,7 @@ public class VisaApplicantsEnrollmentWorkflow extends WizardWorkflowBase
 				passData(VisaApplicantsWorkflowTask.class, ShowReceiptFxController.class,
 				         "visaApplicantEnrollmentResponse");
 				passData(FingerprintCapturingFxController.class, ShowReceiptFxController.class,
-				         "fingerprintImages");
+				         "fingerprintBase64Images");
 				
 				renderUiAndWaitForUserInput(ShowReceiptFxController.class);
 				break;

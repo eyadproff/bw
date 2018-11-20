@@ -6,8 +6,6 @@ import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.effect.GaussianBlur;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
@@ -18,15 +16,10 @@ import sa.gov.nic.bio.bw.core.utils.FxmlFile;
 import sa.gov.nic.bio.bw.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.core.workflow.Input;
 import sa.gov.nic.bio.bw.core.workflow.Output;
-import sa.gov.nic.bio.bw.workflow.commons.beans.Gender;
-import sa.gov.nic.bio.bw.core.beans.UserInfo;
+import sa.gov.nic.bio.bw.core.beans.Gender;
 import sa.gov.nic.bio.bw.workflow.commons.webservice.NormalizedPersonInfo;
 import sa.gov.nic.bio.bw.workflow.commons.webservice.PersonInfo;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.FingerprintInquiryStatusCheckerWorkflowTask.Status;
-
-import java.io.ByteArrayInputStream;
-import java.util.Base64;
-import java.util.List;
 
 @FxmlFile("inquiryResult.fxml")
 public class InquiryResultPaneFxController extends WizardStepFxControllerBase
@@ -123,30 +116,9 @@ public class InquiryResultPaneFxController extends WizardStepFxControllerBase
 		                                                resources.getString("label.male"),
 		                                                resources.getString("label.female"));
 		
-		String faceImageBase64 = normalizedPersonInfo.getFaceImageBase64();
+		String facePhotoBase64 = normalizedPersonInfo.getFacePhotoBase64();
 		Gender gender = normalizedPersonInfo.getGender();
-		
-		if(faceImageBase64 != null)
-		{
-			UserInfo userInfo = (UserInfo) Context.getUserSession().getAttribute("userInfo");
-			boolean maleOperator = userInfo != null && userInfo.getGender() > 0 &&
-								   Gender.values()[userInfo.getGender() - 1] == Gender.MALE;
-			boolean femaleSubject = gender == Gender.FEMALE;
-			boolean blur = maleOperator && femaleSubject;
-			
-			byte[] bytes = Base64.getDecoder().decode(faceImageBase64);
-			ivPersonPhoto.setImage(new Image(new ByteArrayInputStream(bytes)));
-			GuiUtils.attachImageDialog(Context.getCoreFxController(), ivPersonPhoto,
-			                           resources.getString("label.personPhoto"),
-			                           resources.getString("label.contextMenu.showImage"), blur);
-			
-			int radius = Integer.parseInt(Context.getConfigManager().getProperty("image.blur.radius"));
-			@SuppressWarnings("unchecked")
-			List<String> userRoles = (List<String>) Context.getUserSession().getAttribute("userRoles");
-			String maleSeeFemaleRole = Context.getConfigManager().getProperty("face.roles.maleSeeFemale");
-			boolean authorized = userRoles.contains(maleSeeFemaleRole);
-			if(!authorized && blur) ivPersonPhoto.setEffect(new GaussianBlur(radius));
-		}
+		GuiUtils.attachFacePhotoBase64(ivPersonPhoto, facePhotoBase64, true, gender);
 		
 		lblPersonId.setText(normalizedPersonInfo.getPersonIdLabel());
 		lblCivilBiometricsId.setText(normalizedPersonInfo.getCivilBiometricsIdLabel());

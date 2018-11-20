@@ -7,6 +7,7 @@ module bw.workflow.registerconvictedpresent
 	
 	opens sa.gov.nic.bio.bw.workflow.registerconvictedpresent to bw.core;
 	opens sa.gov.nic.bio.bw.workflow.registerconvictedpresent.fxml to bw.core;
+	opens sa.gov.nic.bio.bw.workflow.registerconvictedpresent.tasks to bw.core;
 	opens sa.gov.nic.bio.bw.workflow.registerconvictedpresent.controllers to javafx.fxml, bw.core;
 	exports sa.gov.nic.bio.bw.workflow.registerconvictedpresent.lookups;
 	exports sa.gov.nic.bio.bw.workflow.registerconvictedpresent.webservice;

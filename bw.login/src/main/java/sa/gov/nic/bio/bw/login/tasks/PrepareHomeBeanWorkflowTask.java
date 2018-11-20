@@ -39,14 +39,14 @@ public class PrepareHomeBeanWorkflowTask implements WorkflowTask
 												!locationId.equals("0") ? " (" + userInfo.getLocationId() + ")" : "");
 		
 		String encodedFaceImage = userInfo.getFaceImage();
-		byte[] faceImageByteArray = null;
-		Image faceImage = null;
+		byte[] facePhotoByteArray = null;
+		Image facePhoto = null;
 		
 		if(encodedFaceImage != null && !encodedFaceImage.isEmpty())
 		{
 			try
 			{
-				faceImageByteArray = Base64.getDecoder().decode(encodedFaceImage);
+				facePhotoByteArray = Base64.getDecoder().decode(encodedFaceImage);
 			}
 			catch(Exception e)
 			{
@@ -54,15 +54,15 @@ public class PrepareHomeBeanWorkflowTask implements WorkflowTask
 						encodedFaceImage, e);
 			}
 			
-			if(faceImageByteArray != null)
+			if(facePhotoByteArray != null)
 			{
 				try
 				{
-					faceImage = new Image(new ByteArrayInputStream(faceImageByteArray));
+					facePhoto = new Image(new ByteArrayInputStream(facePhotoByteArray));
 				}
 				catch(Exception e)
 				{
-					LOGGER.log(Level.WARNING, "Failed to load the avatar faceImage!", e);
+					LOGGER.log(Level.WARNING, "Failed to load the avatar facePhoto!", e);
 				}
 			}
 		}
@@ -96,7 +96,7 @@ public class PrepareHomeBeanWorkflowTask implements WorkflowTask
 		
 		HomeBean homeBean = new HomeBean(username, operator, location, sLoginTime, sLastLogonTime,
 		                                 sLastFailedLoginTime, sFailedLoginCount, sLastPasswordChangeTime,
-		                                 sPasswordExpirationTime, faceImage);
+		                                 sPasswordExpirationTime, facePhoto);
 		
 		Context.getUserSession().setAttribute("homeBean", homeBean);
 	}

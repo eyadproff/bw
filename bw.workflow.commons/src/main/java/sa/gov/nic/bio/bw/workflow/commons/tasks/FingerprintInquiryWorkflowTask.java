@@ -37,4 +37,10 @@ public class FingerprintInquiryWorkflowTask implements WorkflowTask
 		
 		inquiryId = taskResponse.getResult();
 	}
+	
+	@Override
+	public void mockExecute()
+	{
+		inquiryId = 123456;
+	}
 }

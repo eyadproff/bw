@@ -21,7 +21,7 @@
                 <ImageView>
                     <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/icon_success_32px.png"/>
                 </ImageView>
-                <Label text="%label.faceImageIsMatched"/>
+                <Label text="%label.facePhotoIsMatched"/>
             </VBox>
             <VBox fx:id="notMatchedPane" alignment="CENTER" spacing="5.0" managed="false" visible="false">
                 <ImageView>

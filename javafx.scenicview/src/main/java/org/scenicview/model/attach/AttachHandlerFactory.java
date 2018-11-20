@@ -17,7 +17,14 @@
  */
 package org.scenicview.model.attach;
 
-import static org.scenicview.ScenicView.JDK_PATH_KEY;
+import javafx.stage.DirectoryChooser;
+import javafx.stage.Stage;
+import org.scenicview.ScenicView;
+import org.scenicview.utils.ExceptionLogger;
+import org.scenicview.utils.Logger;
+import org.scenicview.utils.Platform;
+import org.scenicview.utils.PropertiesUtils;
+import org.scenicview.utils.Utils;
 
 import java.io.File;
 import java.lang.reflect.Field;
@@ -28,15 +35,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-import javafx.stage.DirectoryChooser;
-import javafx.stage.Stage;
-
-import org.scenicview.ScenicView;
-import org.scenicview.utils.ExceptionLogger;
-import org.scenicview.utils.PropertiesUtils;
-import org.scenicview.utils.Logger;
-import org.scenicview.utils.Utils;
-import org.scenicview.utils.Platform;
+import static org.scenicview.ScenicView.JDK_PATH_KEY;
 
 /**
  *
@@ -144,7 +143,7 @@ public class AttachHandlerFactory {
     private static boolean isAttachAvailable() {
         // Test if we can load a class from tools.jar
         try {
-            Class.forName("com.sun.tools.attach.AttachNotSupportedException").newInstance();
+            Class.forName("com.sun.tools.attach.AttachNotSupportedException").getConstructor().newInstance();
             return true;
         } catch (final Exception e) {
             Logger.print("Java Attach API was not found on classpath, will attempt manual lookup...");

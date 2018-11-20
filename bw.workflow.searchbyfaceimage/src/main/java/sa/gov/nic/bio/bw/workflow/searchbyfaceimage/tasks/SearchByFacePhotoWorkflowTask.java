@@ -12,16 +12,16 @@ import sa.gov.nic.bio.commons.TaskResponse;
 
 import java.util.List;
 
-public class SearchByFaceImageWorkflowTask implements WorkflowTask
+public class SearchByFacePhotoWorkflowTask implements WorkflowTask
 {
-	@Input(alwaysRequired = true) private String faceImageBase64;
+	@Input(alwaysRequired = true) private String facePhotoBase64;
 	@Output private List<Candidate> candidates;
 	
 	@Override
 	public void execute() throws Signal
 	{
 		SearchByFaceImageAPI searchByFaceImageAPI = Context.getWebserviceManager().getApi(SearchByFaceImageAPI.class);
-		Call<List<Candidate>> apiCall = searchByFaceImageAPI.searchByFaceImage(faceImageBase64);
+		Call<List<Candidate>> apiCall = searchByFaceImageAPI.searchByFaceImage(facePhotoBase64);
 		TaskResponse<List<Candidate>> taskResponse = Context.getWebserviceManager().executeApi(apiCall);
 		resetWorkflowStepIfNegativeOrNullTaskResponse(taskResponse);
 		

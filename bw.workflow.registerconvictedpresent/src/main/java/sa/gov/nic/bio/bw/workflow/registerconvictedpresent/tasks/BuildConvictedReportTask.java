@@ -30,6 +30,7 @@ import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class BuildConvictedReportTask extends Task<JasperPrint>
 {
@@ -86,14 +87,12 @@ public class BuildConvictedReportTask extends Task<JasperPrint>
 													   "/reports/convicted_record.jrxml";
 	
 	private ConvictedReport convictedReport;
-	private Map<Integer, String> fingerprintImages;
-	private Map<Integer, String> crimeEventTitles = new HashMap<>();
-	private Map<Integer, String> crimeClassTitles = new HashMap<>();
+	private Map<Integer, String> fingerprintBase64Images;
 	
-	public BuildConvictedReportTask(ConvictedReport convictedReport, Map<Integer, String> fingerprintImages)
+	public BuildConvictedReportTask(ConvictedReport convictedReport, Map<Integer, String> fingerprintBase64Images)
 	{
 		this.convictedReport = convictedReport;
-		this.fingerprintImages = fingerprintImages;
+		this.fingerprintBase64Images = fingerprintBase64Images;
 	}
 	
 	@Override
@@ -104,11 +103,11 @@ public class BuildConvictedReportTask extends Task<JasperPrint>
 		
 		HashMap<String, Object> params = new HashMap<>();
 		
-		String faceImageBase64 = convictedReport.getSubjFace();
+		String facePhotoBase64 = convictedReport.getSubjFace();
 		
-		if(faceImageBase64 != null)
+		if(facePhotoBase64 != null)
 		{
-			byte[] bytes = Base64.getDecoder().decode(faceImageBase64);
+			byte[] bytes = Base64.getDecoder().decode(facePhotoBase64);
 			params.put(PARAMETER_FACE_IMAGE, new ByteArrayInputStream(bytes));
 		}
 		else
@@ -116,7 +115,7 @@ public class BuildConvictedReportTask extends Task<JasperPrint>
 			params.put(PARAMETER_FACE_IMAGE, CommonImages.PLACEHOLDER_AVATAR.getAsInputStream());
 		}
 		
-		fingerprintImages.forEach((position, fingerprintImage) ->
+		fingerprintBase64Images.forEach((position, fingerprintImage) ->
 		{
 			byte[] bytes = Base64.getDecoder().decode(fingerprintImage);
 			params.put("FINGER_" + position, new ByteArrayInputStream(bytes));
@@ -246,16 +245,10 @@ public class BuildConvictedReportTask extends Task<JasperPrint>
 		@SuppressWarnings("unchecked")
 		List<CrimeType> crimeTypes = (List<CrimeType>) Context.getUserSession().getAttribute(CrimeTypesLookup.KEY);
 		
-		crimeTypes.forEach(crimeType ->
-		{
-		    int eventCode = crimeType.getEventCode();
-		    int classCode = crimeType.getClassCode();
-		    String eventTitle = crimeType.getEventDesc();
-		    String classTitle = crimeType.getClassDesc();
-		
-		    crimeEventTitles.putIfAbsent(eventCode, eventTitle);
-		    crimeClassTitles.putIfAbsent(classCode, classTitle);
-		});
+		Map<Integer, String> crimeEventTitles = crimeTypes.stream().collect(
+									Collectors.toMap(CrimeType::getEventCode, CrimeType::getEventDesc, (k1, k2) -> k1));
+		Map<Integer, String> crimeClassTitles = crimeTypes.stream().collect(
+									Collectors.toMap(CrimeType::getClassCode, CrimeType::getClassDesc, (k1, k2) -> k1));
 		
 		int counter = 0;
 		List<CrimeCode> crimeCodes = judgementInfo.getCrimeCodes();

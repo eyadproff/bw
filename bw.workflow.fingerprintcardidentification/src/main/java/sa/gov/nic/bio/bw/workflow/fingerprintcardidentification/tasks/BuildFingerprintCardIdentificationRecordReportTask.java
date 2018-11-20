@@ -59,11 +59,11 @@ public class BuildFingerprintCardIdentificationRecordReportTask extends Task<Jas
 		
 		HashMap<String, Object> params = new HashMap<>();
 		
-		String faceImageBase64 = fingerprintCardIdentificationRecordReport.getFaceBase64();
+		String facePhotoBase64 = fingerprintCardIdentificationRecordReport.getFaceBase64();
 		
-		if(faceImageBase64 != null)
+		if(facePhotoBase64 != null)
 		{
-			byte[] bytes = Base64.getDecoder().decode(faceImageBase64);
+			byte[] bytes = Base64.getDecoder().decode(facePhotoBase64);
 			params.put(PARAMETER_FACE_IMAGE, new ByteArrayInputStream(bytes));
 		}
 		else

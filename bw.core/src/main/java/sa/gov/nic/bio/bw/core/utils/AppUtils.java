@@ -371,6 +371,12 @@ public final class AppUtils implements AppLogger
 		else return "";
 	}
 	
+	public static String formatHijriGregorianDate(LocalDate localDate)
+	{
+		long milliSeconds = gregorianDateToMilliSeconds(localDate);
+		return formatHijriGregorianDate(milliSeconds);
+	}
+	
 	public static String formatHijriGregorianDate(long milliSeconds)
 	{
 		HijrahDate hijriDate = null;

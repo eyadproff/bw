@@ -155,7 +155,7 @@ public class ScenicView extends Application {
 
         // Test if we can load a class from jfxrt.jar
         try {
-            Class.forName("javafx.beans.property.SimpleBooleanProperty").newInstance();
+            Class.forName("javafx.beans.property.SimpleBooleanProperty").getConstructor().newInstance();
         } catch (final Exception e) {
             // Fatal error - JavaFX should be on the classpath for all users
             // of Java 8.0 and above (which is what Scenic View 8.0 and above

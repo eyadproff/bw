@@ -53,8 +53,8 @@ public class HomePaneFxController extends BodyFxControllerBase
 		UserSession userSession = Context.getUserSession();
 		HomeBean homeBean = (HomeBean) userSession.getAttribute("homeBean");
 		
-		Image faceImage = homeBean.getFaceImage();
-		if(faceImage != null) Context.getCoreFxController().getHeaderPaneController().setAvatarImage(faceImage);
+		Image facePhoto = homeBean.getFacePhoto();
+		if(facePhoto != null) Context.getCoreFxController().getHeaderPaneController().setAvatarImage(facePhoto);
 		
 		@SuppressWarnings("unchecked")
 		List<MenuItem> menus = (List<MenuItem>) Context.getUserSession().getAttribute("menus");

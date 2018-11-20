@@ -1,8 +1,10 @@
 package sa.gov.nic.bio.bw.workflow.commons.webservice;
 
+import sa.gov.nic.bio.bw.core.interfaces.LocalizedText;
+
 import java.util.Objects;
 
-public class PersonType
+public class PersonType implements LocalizedText
 {
 	private int code;
 	private String descriptionAR;
@@ -28,6 +30,18 @@ public class PersonType
 	
 	public String getIfrPersonType(){return ifrPersonType;}
 	public void setIfrPersonType(String ifrPersonType){this.ifrPersonType = ifrPersonType;}
+	
+	@Override
+	public String getArabicText()
+	{
+		return descriptionAR;
+	}
+	
+	@Override
+	public String getEnglishText()
+	{
+		return descriptionEN;
+	}
 	
 	@Override
 	public boolean equals(Object o)

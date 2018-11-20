@@ -1,8 +1,10 @@
 package sa.gov.nic.bio.bw.workflow.commons.webservice;
 
+import sa.gov.nic.bio.bw.core.interfaces.LocalizedText;
+
 import java.util.Objects;
 
-public class DocumentType
+public class DocumentType implements LocalizedText
 {
 	private int code;
 	private String desc;
@@ -18,6 +20,18 @@ public class DocumentType
 	
 	public String getDesc(){return desc;}
 	public void setDesc(String desc){this.desc = desc;}
+	
+	@Override
+	public String getArabicText()
+	{
+		return desc;
+	}
+	
+	@Override
+	public String getEnglishText()
+	{
+		return desc;
+	}
 	
 	@Override
 	public boolean equals(Object o)

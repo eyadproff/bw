@@ -14,14 +14,14 @@ import sa.gov.nic.bio.commons.TaskResponse;
 public class FaceVerificationWorkflowTask implements WorkflowTask
 {
 	@Input(alwaysRequired = true) private Long personId;
-	@Input(alwaysRequired = true) private String faceImageBase64;
+	@Input(alwaysRequired = true) private String facePhotoBase64;
 	@Output private FaceMatchingResponse faceMatchingResponse;
 	
 	@Override
 	public void execute() throws Signal
 	{
 		FaceVerificationAPI faceVerificationAPI = Context.getWebserviceManager().getApi(FaceVerificationAPI.class);
-		Call<PersonInfo> apiCall = faceVerificationAPI.verifyFaceImage(personId, faceImageBase64);
+		Call<PersonInfo> apiCall = faceVerificationAPI.verifyFaceImage(personId, facePhotoBase64);
 		TaskResponse<PersonInfo> taskResponse = Context.getWebserviceManager().executeApi(apiCall);
 		
 		if(taskResponse.isSuccess())

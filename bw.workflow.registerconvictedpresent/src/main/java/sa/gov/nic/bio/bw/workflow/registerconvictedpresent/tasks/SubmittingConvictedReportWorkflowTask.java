@@ -3,17 +3,28 @@ package sa.gov.nic.bio.bw.workflow.registerconvictedpresent.tasks;
 import retrofit2.Call;
 import sa.gov.nic.bio.bw.core.Context;
 import sa.gov.nic.bio.bw.core.utils.AppUtils;
+import sa.gov.nic.bio.bw.core.workflow.Input;
+import sa.gov.nic.bio.bw.core.workflow.Output;
+import sa.gov.nic.bio.bw.core.workflow.Signal;
+import sa.gov.nic.bio.bw.core.workflow.WorkflowTask;
 import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.webservice.ConvictedReport;
 import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.webservice.ConvictedReportAPI;
 import sa.gov.nic.bio.commons.TaskResponse;
 
-public class SubmittingConvictedReportService
+public class SubmittingConvictedReportWorkflowTask implements WorkflowTask
 {
-	public static TaskResponse<ConvictedReportResponse> execute(ConvictedReport convictedReport)
+	@Input(alwaysRequired = true) private ConvictedReport convictedReport;
+	@Output private ConvictedReportResponse convictedReportResponse;
+	
+	@Override
+	public void execute() throws Signal
 	{
 		ConvictedReportAPI convictedReportAPI = Context.getWebserviceManager().getApi(ConvictedReportAPI.class);
 		String convictedReportJson = AppUtils.toJson(convictedReport);
 		Call<ConvictedReportResponse> apiCall = convictedReportAPI.submitConvictedReport(convictedReportJson);
-		return Context.getWebserviceManager().executeApi(apiCall);
+		TaskResponse<ConvictedReportResponse> taskResponse = Context.getWebserviceManager().executeApi(apiCall);
+		resetWorkflowStepIfNegativeOrNullTaskResponse(taskResponse);
+		
+		convictedReportResponse = taskResponse.getResult();
 	}
 }

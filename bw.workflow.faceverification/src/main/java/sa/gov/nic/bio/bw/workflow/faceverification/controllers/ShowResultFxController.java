@@ -30,7 +30,7 @@ import sa.gov.nic.bio.bw.core.utils.FxmlFile;
 import sa.gov.nic.bio.bw.core.utils.GuiLanguage;
 import sa.gov.nic.bio.bw.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.core.workflow.Input;
-import sa.gov.nic.bio.bw.workflow.commons.beans.Gender;
+import sa.gov.nic.bio.bw.core.beans.Gender;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.CountriesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.webservice.Country;
 import sa.gov.nic.bio.bw.workflow.commons.webservice.PersonInfo;
@@ -42,7 +42,7 @@ import java.util.List;
 public class ShowResultFxController extends WizardStepFxControllerBase
 {
 	@Input(alwaysRequired = true) private Long personId;
-	@Input(alwaysRequired = true) private Image faceImage;
+	@Input(alwaysRequired = true) private Image facePhoto;
 	@Input(alwaysRequired = true) private FaceMatchingResponse faceMatchingResponse;
 	
 	@FXML private Pane matchedPane;
@@ -78,7 +78,7 @@ public class ShowResultFxController extends WizardStepFxControllerBase
 		if(!faceMatchingResponse.isMatched())
 		{
 			GuiUtils.showNode(notMatchedPane, true);
-			lblNotMatched.setText(String.format(resources.getString("label.faceImageIsNotMatched"),
+			lblNotMatched.setText(String.format(resources.getString("label.facePhotoIsNotMatched"),
 			                                    AppUtils.localizeNumbers(String.valueOf(personId))));
 		}
 		else // matched
@@ -184,7 +184,7 @@ public class ShowResultFxController extends WizardStepFxControllerBase
 			String face = personInfo.getFace();
 			Image dbImage = AppUtils.imageFromBase64(face);
 			
-			ivUploadedImage.setImage(faceImage);
+			ivUploadedImage.setImage(facePhoto);
 			
 			if(dbImage != null) ivDBImage.setImage(dbImage);
 			else

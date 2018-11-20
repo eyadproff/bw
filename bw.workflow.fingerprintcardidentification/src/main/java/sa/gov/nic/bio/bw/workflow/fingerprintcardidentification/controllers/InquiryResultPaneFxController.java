@@ -225,10 +225,10 @@ public class InquiryResultPaneFxController extends WizardStepFxControllerBase
 		                                                                     resources.getString("label.male"),
 		                                                                     resources.getString("label.female"));
 		
-		String faceImageBase64 = normalizedPersonInfo.getFaceImageBase64();
-		if(faceImageBase64 != null)
+		String facePhotoBase64 = normalizedPersonInfo.getFacePhotoBase64();
+		if(facePhotoBase64 != null)
 		{
-			byte[] bytes = Base64.getDecoder().decode(faceImageBase64);
+			byte[] bytes = Base64.getDecoder().decode(facePhotoBase64);
 			ivPersonPhoto.setImage(new Image(new ByteArrayInputStream(bytes)));
 			GuiUtils.attachImageDialog(Context.getCoreFxController(), ivPersonPhoto,
 			                           resources.getString("label.personPhoto"),
@@ -253,26 +253,12 @@ public class InquiryResultPaneFxController extends WizardStepFxControllerBase
 		lblDocumentIssuanceDate.setText(normalizedPersonInfo.getDocumentIssuanceDateLabel());
 		lblDocumentExpiryDate.setText(normalizedPersonInfo.getDocumentExpiryDateLabel());
 		
-		Map<Integer, String> dialogTitleMap = GuiUtils.constructFingerprintDialogTitles(resources);
-		Map<Integer, ImageView> imageViewMap = GuiUtils.constructFingerprintImageViewMap(ivRightThumb, ivRightIndex,
-		                                                                                 ivRightMiddle, ivRightRing,
-		                                                                                 ivRightLittle, ivLeftThumb,
-		                                                                                 ivLeftIndex, ivLeftMiddle,
-		                                                                                 ivLeftRing, ivLeftLittle);
-		
-		fingerprintImages.forEach((position, fingerprintImage) ->
-		{
-		    ImageView imageView = imageViewMap.get(position);
-		    String dialogTitle = dialogTitleMap.get(position);
-		
-		    imageView.setImage(fingerprintImage);
-		    GuiUtils.attachImageDialog(Context.getCoreFxController(), imageView,
-		                               dialogTitle, resources.getString("label.contextMenu.showImage"),
-		                               false);
-		});
+		GuiUtils.attachFingerprintImages(fingerprintBase64Images, ivRightThumb, ivRightIndex, ivRightMiddle,
+		                                 ivRightRing, ivRightLittle, ivLeftThumb, ivLeftIndex, ivLeftMiddle,
+		                                 ivLeftRing, ivLeftLittle);
 		
 		fingerprintCardIdentificationRecordReport =
-					new FingerprintCardIdentificationRecordReport(faceImageBase64, normalizedPersonInfo.getFirstName(),
+					new FingerprintCardIdentificationRecordReport(facePhotoBase64, normalizedPersonInfo.getFirstName(),
 		                                                          normalizedPersonInfo.getFatherName(),
 		                                                          normalizedPersonInfo.getGrandfatherName(),
 		                                                          normalizedPersonInfo.getFamilyName(),

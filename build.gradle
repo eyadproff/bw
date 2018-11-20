@@ -82,6 +82,8 @@ subprojects {
             inputs.property("moduleName", moduleName)
             doFirst {
                 options.compilerArgs = [
+                        '-Xlint:unchecked',
+                        '-Xlint:deprecation',
                         '--module-path', classpath.asPath,
                         '--patch-module', "$moduleName=" + files(sourceSets.main.resources.srcDirs).asPath,
                 ]
@@ -93,6 +95,8 @@ subprojects {
             inputs.property("moduleName", moduleName)
             doFirst {
                 options.compilerArgs = [
+                        '-Xlint:unchecked',
+                        '-Xlint:deprecation',
                         '--module-path', classpath.asPath,
                         '--add-modules', 'junit',
                         '--add-reads', "$moduleName=junit",

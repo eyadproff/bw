@@ -45,7 +45,7 @@ import java.util.List;
 @FxmlFile("showResults.fxml")
 public class ShowResultsFxController extends WizardStepFxControllerBase
 {
-	@Input(alwaysRequired = true) private Image finalImage;
+	@Input(alwaysRequired = true) private Image facePhoto;
 	@Input(alwaysRequired = true) private List<Candidate> candidates;
 	
 	@FXML private SplitPane splitPane;
@@ -117,7 +117,7 @@ public class ShowResultsFxController extends WizardStepFxControllerBase
 		splitPane.getStyleClass().remove("hidden-divider"); // show the divider
 		
 		ImageView imageView = new ImageView();
-		imageView.setImage(finalImage);
+		imageView.setImage(facePhoto);
 		imageView.setPreserveRatio(true);
 		
 		final double[] hScrollbarHeight = {13.0};
@@ -139,7 +139,7 @@ public class ShowResultsFxController extends WizardStepFxControllerBase
 		    Platform.runLater(() -> imagePane.autosize());
 		}).start();
 		
-		ivCenterImage.setImage(finalImage);
+		ivCenterImage.setImage(facePhoto);
 		GuiUtils.attachImageDialog(Context.getCoreFxController(), ivCenterImage, tpFinalImage.getText(),
 		                           resources.getString("label.contextMenu.showImage"), false);
 		
@@ -150,7 +150,7 @@ public class ShowResultsFxController extends WizardStepFxControllerBase
 		tpFinalImage.setOnMouseClicked(event ->
 		{
 		    toggleGroup.selectToggle(tpFinalImage);
-		    ivCenterImage.setImage(finalImage);
+		    ivCenterImage.setImage(facePhoto);
 		    btnCompareWithUploadedImage.setDisable(true);
 		    GuiUtils.attachImageDialog(Context.getCoreFxController(), ivCenterImage, tpFinalImage.getText(),
 		                               resources.getString("label.contextMenu.showImage"), false);
@@ -239,23 +239,23 @@ public class ShowResultsFxController extends WizardStepFxControllerBase
 	{
 		Image selectedImage = ivCenterImage.getImage();
 		
-		if(finalImage.getHeight() >= selectedImage.getHeight())
+		if(facePhoto.getHeight() >= selectedImage.getHeight())
 		{
 			double ratio = selectedImage.getHeight() / selectedImage.getWidth();
 			if(ratio < 1.0) ratio = 1.0 / ratio;
-			double heightDiff = finalImage.getHeight() - selectedImage.getHeight();
+			double heightDiff = facePhoto.getHeight() - selectedImage.getHeight();
 			double extraWidth = heightDiff * ratio;
 			selectedImage = GuiUtils.scaleImage(selectedImage, selectedImage.getWidth() + extraWidth,
 			                                                    selectedImage.getHeight() + heightDiff);
 		}
 		else
 		{
-			double ratio = finalImage.getHeight() / finalImage.getWidth();
+			double ratio = facePhoto.getHeight() / facePhoto.getWidth();
 			if(ratio < 1.0) ratio = 1.0 / ratio;
-			double heightDiff = selectedImage.getHeight() - finalImage.getHeight();
+			double heightDiff = selectedImage.getHeight() - facePhoto.getHeight();
 			double extraWidth = heightDiff * ratio;
-			finalImage = GuiUtils.scaleImage(finalImage, finalImage.getWidth() + extraWidth,
-			                        finalImage.getHeight() + heightDiff);
+			facePhoto = GuiUtils.scaleImage(facePhoto, facePhoto.getWidth() + extraWidth,
+			                                facePhoto.getHeight() + heightDiff);
 		}
 		
 		String title = resources.getString("dialog.compare.title");
@@ -263,8 +263,8 @@ public class ShowResultsFxController extends WizardStepFxControllerBase
 		boolean rtl = Context.getGuiLanguage().getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT;
 		
 		Image mergedImage;
-		if(rtl) mergedImage = GuiUtils.mergeImage(finalImage, selectedImage);
-		else mergedImage = GuiUtils.mergeImage(selectedImage, finalImage);
+		if(rtl) mergedImage = GuiUtils.mergeImage(facePhoto, selectedImage);
+		else mergedImage = GuiUtils.mergeImage(selectedImage, facePhoto);
 		
 		ContextMenu contextMenu = new ContextMenu();
 		MenuItem closeMenuItem = new MenuItem(buttonText);

@@ -259,40 +259,22 @@ public class ShowRecordPaneFxController extends WizardStepFxControllerBase
 			lblEnrollmentTime.setText(enrollmentTime);
 		}
 		
-		String faceImageBase64 = deadPersonRecord.getSubjFace();
-		if(faceImageBase64 != null)
+		String facePhotoBase64 = deadPersonRecord.getSubjFace();
+		if(facePhotoBase64 != null)
 		{
-			byte[] bytes = Base64.getDecoder().decode(faceImageBase64);
+			byte[] bytes = Base64.getDecoder().decode(facePhotoBase64);
 			ivPersonPhoto.setImage(new Image(new ByteArrayInputStream(bytes)));
 			GuiUtils.attachImageDialog(Context.getCoreFxController(), ivPersonPhoto,
 			                           resources.getString("label.deadPersonPhoto"),
 			                           resources.getString("label.contextMenu.showImage"), false);
 		}
-
-		if(fingerprintsImages != null)
-		{
-			Map<Integer, String> dialogTitleMap = GuiUtils.constructFingerprintDialogTitles(resources);
-			Map<Integer, ImageView> imageViewMap = GuiUtils.constructFingerprintImageViewMap(ivRightThumb, ivRightIndex,
-			                                                                                 ivRightMiddle, ivRightRing,
-			                                                                                 ivRightLittle, ivLeftThumb,
-			                                                                                 ivLeftIndex, ivLeftMiddle,
-			                                                                                 ivLeftRing, ivLeftLittle);
-			
-			fingerprintsImages.forEach((position, fingerprintImage) ->
-			{
-			    ImageView imageView = imageViewMap.get(position);
-			    String dialogTitle = dialogTitleMap.get(position);
-			
-			    byte[] bytes = Base64.getDecoder().decode(fingerprintImage);
-			    imageView.setImage(new Image(new ByteArrayInputStream(bytes)));
-			    GuiUtils.attachImageDialog(Context.getCoreFxController(), imageView,
-			                               dialogTitle, resources.getString("label.contextMenu.showImage"),
-			                               false);
-			});
-		}
+		
+		GuiUtils.attachFingerprintImages(fingerprintBase64Images, ivRightThumb, ivRightIndex, ivRightMiddle,
+		                                 ivRightRing, ivRightLittle, ivLeftThumb, ivLeftIndex, ivLeftMiddle,
+		                                 ivLeftRing, ivLeftLittle);
 		
 		deadPersonRecordReport = new DeadPersonRecordReport(recordId, enrollerId, inquirerId, enrollmentTime,
-		                                                    faceImageBase64, normalizedPersonInfo.getFirstName(),
+		                                                    facePhotoBase64, normalizedPersonInfo.getFirstName(),
 		                                                    normalizedPersonInfo.getFatherName(),
 		                                                    normalizedPersonInfo.getGrandfatherName(),
 		                                                    normalizedPersonInfo.getFamilyName(),

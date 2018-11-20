@@ -81,23 +81,15 @@ import java.util.stream.Collectors;
 @FxmlFile("fingerprintCapturing.fxml")
 public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 {
-	public static final String KEY_HIDE_FINGERPRINT_PREVIOUS_BUTTON = "HIDE_FINGERPRINT_PREVIOUS_BUTTON";
-	public static final String KEY_ACCEPT_BAD_QUALITY_FINGERPRINT = "ACCEPT_BAD_QUALITY_FINGERPRINT";
-	public static final String KEY_ACCEPTED_BAD_QUALITY_FINGERPRINT_MIN_RETIRES =
-																		"ACCEPTED_BAD_QUALITY_FINGERPRINT_MIN_RETIRES";
-	
-	public static final String KEY_SEGMENTED_FINGERPRINTS = "COLLECTED_FINGERPRINTS";
-	public static final String KEY_SLAP_FINGERPRINTS = "COLLECTED_SLAP_FINGERPRINTS";
-	public static final String KEY_MISSING_FINGERPRINTS = "MISSING_FINGERPRINTS";
 	public static final String KEY_FINGERPRINTS_IMAGES = "FINGERPRINTS_IMAGES";
 	
 	@Input private Boolean hidePreviousButton;
 	@Input private Boolean acceptBadQualityFingerprint;
-	@Input private Integer acceptedBadQualityFingerprintMinRetires;
+	@Input private Integer acceptBadQualityFingerprintMinRetires;
 	@Output private Map<Integer, Fingerprint> capturedFingerprints;
 	@Output private List<Finger> segmentedFingerprints;
 	@Output private List<Finger> slapFingerprints;
-	@Output private Map<Integer, String> fingerprintImages;
+	@Output private Map<Integer, String> fingerprintBase64Images;
 	@Output private List<Integer> missingFingerprints;
 	
 	@FXML private VBox paneControlsInnerContainer;
@@ -769,7 +761,7 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 	{
 		segmentedFingerprints = new ArrayList<>();
 		slapFingerprints = new ArrayList<>();
-		fingerprintImages = new HashMap<>();
+		fingerprintBase64Images = new HashMap<>();
 		missingFingerprints = new ArrayList<>();
 		
 		Map<Integer, Finger> collectedFingerprintsMap = new HashMap<>();
@@ -816,7 +808,7 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 		    FingerCoordinate fingerCoordinate = new FingerCoordinate(topLeft, topRight, bottomLeft,
 		                                                             bottomRight);
 		
-		    fingerprintImages.put(position, fingerData.getFinger());
+		    fingerprintBase64Images.put(position, fingerData.getFinger());
 		    segmentedFingerprints.add(new Finger(position, fingerData.getFingerWsqImage(), null));
 		
 		    int slapPosition = slapPositions.get(position);
@@ -846,11 +838,6 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 		        collectedFingerprintsMap.put(slapPosition, finger);
 		    }
 		});
-		
-		uiDataMap.put(FingerprintCapturingFxController.KEY_FINGERPRINTS_IMAGES, fingerprintImages);
-		uiDataMap.put(FingerprintCapturingFxController.KEY_SLAP_FINGERPRINTS, slapFingerprints);
-		uiDataMap.put(FingerprintCapturingFxController.KEY_SEGMENTED_FINGERPRINTS, segmentedFingerprints);
-		uiDataMap.put(FingerprintCapturingFxController.KEY_MISSING_FINGERPRINTS, missingFingerprints);
 		
 		LOGGER.fine(new Gson().toJson(slapFingerprints,
 		                                     TypeToken.getParameterized(List.class, Finger.class).getType()));
@@ -1799,7 +1786,7 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 				currentSlapAttempts.add(fingerprints);
 				
 				GuiUtils.showNode(btnAcceptBestAttemptFingerprints,
-			                     currentSlapAttempts.size() >= acceptedBadQualityFingerprintMinRetires);
+			                     currentSlapAttempts.size() >= acceptBadQualityFingerprintMinRetires);
 			}
 		}
 		

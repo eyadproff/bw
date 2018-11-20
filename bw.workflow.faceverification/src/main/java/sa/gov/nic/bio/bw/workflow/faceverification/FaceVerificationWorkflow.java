@@ -84,12 +84,12 @@ public class FaceVerificationWorkflow extends WizardWorkflowBase
 				if(Source.UPLOAD.equals(imageSource))
 				{
 					passData(UploadImageFileFxController.class, "uploadedImage",
-					         ConfirmImageFxController.class, "faceImage");
+					         ConfirmImageFxController.class, "facePhoto");
 				}
 				else if(Source.CAMERA.equals(imageSource))
 				{
 					passData(FaceCapturingFxController.class, ConfirmImageFxController.class,
-					         "faceImage");
+					         "facePhoto");
 				}
 				
 				renderUiAndWaitForUserInput(ConfirmImageFxController.class);
@@ -102,7 +102,7 @@ public class FaceVerificationWorkflow extends WizardWorkflowBase
 				passData(PersonIdPaneFxController.class, FaceVerificationWorkflowTask.class,
 				         "personId");
 				passData(ConfirmImageFxController.class, FaceVerificationWorkflowTask.class,
-				         "faceImageBase64");
+				         "facePhotoBase64");
 				executeTask(FaceVerificationWorkflowTask.class);
 				
 				break;
@@ -112,7 +112,7 @@ public class FaceVerificationWorkflow extends WizardWorkflowBase
 				passData(PersonIdPaneFxController.class, ShowResultFxController.class,
 				         "personId");
 				passData(ConfirmImageFxController.class, ShowResultFxController.class,
-				         "faceImage");
+				         "facePhoto");
 				passData(FaceVerificationWorkflowTask.class, ShowResultFxController.class,
 				         "faceMatchingResponse");
 				

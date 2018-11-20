@@ -9,7 +9,7 @@ import sa.gov.nic.bio.bw.commons.resources.images.CommonImages;
 import sa.gov.nic.bio.bw.core.Context;
 import sa.gov.nic.bio.bw.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.core.utils.GuiLanguage;
-import sa.gov.nic.bio.bw.workflow.commons.beans.Gender;
+import sa.gov.nic.bio.bw.core.beans.Gender;
 import sa.gov.nic.bio.bw.workflow.commons.webservice.Country;
 import sa.gov.nic.bio.bw.workflow.visaapplicantsenrollment.webservice.PassportTypeBean;
 import sa.gov.nic.bio.bw.workflow.visaapplicantsenrollment.webservice.VisaApplicantInfo;
@@ -68,11 +68,11 @@ public class BuildForeignEnrollmentReceiptTask extends Task<JasperPrint>
 		
 		HashMap<String, Object> params = new HashMap<>();
 		
-		String faceImageBase64 = visaApplicantInfo.getFaceImage();
+		String facePhotoBase64 = visaApplicantInfo.getFacePhoto();
 		
-		if(faceImageBase64 != null)
+		if(facePhotoBase64 != null)
 		{
-			byte[] bytes = Base64.getDecoder().decode(faceImageBase64);
+			byte[] bytes = Base64.getDecoder().decode(facePhotoBase64);
 			params.put(PARAMETER_FACE_IMAGE, new ByteArrayInputStream(bytes));
 		}
 		else

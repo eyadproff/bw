@@ -35,15 +35,6 @@ import java.util.stream.Collectors;
 @FxmlFile("judgmentDetails.fxml")
 public class JudgmentDetailsPaneFxController extends WizardStepFxControllerBase
 {
-	public static final String KEY_JUDGMENT_DETAILS_CRIMES = "JUDGMENT_DETAILS_CRIMES";
-	public static final String KEY_JUDGMENT_DETAILS_JUDGMENT_ISSUER = "JUDGMENT_DETAILS_JUDGMENT_ISSUER";
-	public static final String KEY_JUDGMENT_DETAILS_POLICE_FILE_NUMBER = "JUDGMENT_DETAILS_POLICE_FILE_NUMBER";
-	public static final String KEY_JUDGMENT_DETAILS_JUDGMENT_NUMBER = "JUDGMENT_DETAILS_JUDGMENT_NUMBER";
-	public static final String KEY_JUDGMENT_DETAILS_ARREST_DATE = "JUDGMENT_DETAILS_ARREST_DATE";
-	public static final String KEY_JUDGMENT_DETAILS_ARREST_DATE_USE_HIJRI = "JUDGMENT_DETAILS_ARREST_DATE_USE_HIJRI";
-	public static final String KEY_JUDGMENT_DETAILS_JUDGMENT_DATE = "JUDGMENT_DETAILS_JUDGMENT_DATE";
-	public static final String KEY_JUDGMENT_DETAILS_JUDGMENT_DATE_USE_HIJRI =
-																			"JUDGMENT_DETAILS_JUDGMENT_DATE_USE_HIJRI";
 	@Output private String judgmentIssuer;
 	@Output private String judgmentNumber;
 	@Output private LocalDate judgmentDate;
@@ -88,8 +79,6 @@ public class JudgmentDetailsPaneFxController extends WizardStepFxControllerBase
 	@FXML private Button btnStartOver;
 	@FXML private Button btnNext;
 	
-	private Map<Integer, String> crimeEventTitles = new HashMap<>();
-	private Map<Integer, String> crimeClassTitles = new HashMap<>();
 	private Map<Integer, List<Integer>> crimeClasses = new HashMap<>();
 	private Map<Integer, Pane> cboCrimePaneMap = new HashMap<>();
 	private Map<Integer, ComboBox<ComboBoxItem<Integer>>> cboCrimeEventMap = new HashMap<>();
@@ -165,24 +154,15 @@ public class JudgmentDetailsPaneFxController extends WizardStepFxControllerBase
 		@SuppressWarnings("unchecked")
 		List<CrimeType> crimeTypes = (List<CrimeType>) Context.getUserSession().getAttribute(CrimeTypesLookup.KEY);
 		
-		crimeTypes.forEach(crimeType ->
-		{
-			int eventCode = crimeType.getEventCode();
-			int classCode = crimeType.getClassCode();
-			String eventTitle = crimeType.getEventDesc();
-			String classTitle = crimeType.getClassDesc();
-			
-			crimeEventTitles.putIfAbsent(eventCode, eventTitle);
-			crimeClassTitles.putIfAbsent(classCode, classTitle);
-			crimeClasses.putIfAbsent(eventCode, new ArrayList<>());
-			crimeClasses.get(eventCode).add(classCode);
-		});
+		Map<Integer, String> crimeEventTitles = crimeTypes.stream().collect(
+									Collectors.toMap(CrimeType::getEventCode, CrimeType::getEventDesc, (k1, k2) -> k1));
+		Map<Integer, String> crimeClassTitles = crimeTypes.stream().collect(
+									Collectors.toMap(CrimeType::getClassCode, CrimeType::getClassDesc, (k1, k2) -> k1));
+		crimeClasses = crimeTypes.stream().collect(Collectors.groupingBy(CrimeType::getEventCode,
+		                                                                 Collectors.mapping(CrimeType::getClassCode,
+		                                                                                    Collectors.toList())));
 		
-		List<Integer> crimeEventCodes = crimeTypes.stream()
-												  .mapToInt(CrimeType::getEventCode)
-												  .distinct()
-												  .boxed()
-												  .collect(Collectors.toList());
+		List<Integer> crimeEventCodes = List.copyOf(crimeEventTitles.keySet());
 		
 		GuiUtils.initDatePicker(rdoArrestDateUseHijri, dpArrestDate, null);
 		GuiUtils.initDatePicker(rdoJudgmentDateUseHijri, dpJudgmentDate, null);
@@ -285,11 +265,11 @@ public class JudgmentDetailsPaneFxController extends WizardStepFxControllerBase
 				                                          .or(txtJudgmentNumberEmptyBinding)
 				                                          .or(dpJudgmentDateEmptyBinding));
 		
-		initCrimeEventComboBox(cboCrimeEvent1, cboCrimeClass1);
-		initCrimeEventComboBox(cboCrimeEvent2, cboCrimeClass2);
-		initCrimeEventComboBox(cboCrimeEvent3, cboCrimeClass3);
-		initCrimeEventComboBox(cboCrimeEvent4, cboCrimeClass4);
-		initCrimeEventComboBox(cboCrimeEvent5, cboCrimeClass5);
+		initCrimeEventComboBox(cboCrimeEvent1, cboCrimeClass1, crimeEventTitles, crimeClassTitles);
+		initCrimeEventComboBox(cboCrimeEvent2, cboCrimeClass2, crimeEventTitles, crimeClassTitles);
+		initCrimeEventComboBox(cboCrimeEvent3, cboCrimeClass3, crimeEventTitles, crimeClassTitles);
+		initCrimeEventComboBox(cboCrimeEvent4, cboCrimeClass4, crimeEventTitles, crimeClassTitles);
+		initCrimeEventComboBox(cboCrimeEvent5, cboCrimeClass5, crimeEventTitles, crimeClassTitles);
 		
 		Node focusedNode = null;
 		
@@ -390,7 +370,8 @@ public class JudgmentDetailsPaneFxController extends WizardStepFxControllerBase
 	}
 	
 	private void initCrimeEventComboBox(ComboBox<ComboBoxItem<Integer>> cboCrimeEvent,
-	                                    ComboBox<ComboBoxItem<Integer>> cboCrimeClass)
+	                                    ComboBox<ComboBoxItem<Integer>> cboCrimeClass,
+	                                    Map<Integer, String> crimeEventTitles, Map<Integer, String> crimeClassTitles)
 	{
 		cboCrimeEvent.getItems().forEach(item -> item.setText(crimeEventTitles.get(item.getItem())));
 		cboCrimeEvent.valueProperty().addListener((observable, oldValue, newValue) ->
