@@ -21,7 +21,7 @@ import sa.gov.nic.bio.bw.workflow.searchbyfaceimage.controllers.UploadImageFileF
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-@AssociatedMenu(id = "menu.query.faceVerification", title = "menu.title", order = 2, devices = Device.CAMERA)
+@AssociatedMenu(workflowId = 1004, menuId = "menu.query.faceVerification", menuTitle = "menu.title", menuOrder = 2, devices = Device.CAMERA)
 @WithLookups(CountriesLookup.class)
 @Wizard({@Step(iconId = "\\uf2bb", title = "wizard.personId"),
 		@Step(iconId = "question", title = "wizard.imageSource"),

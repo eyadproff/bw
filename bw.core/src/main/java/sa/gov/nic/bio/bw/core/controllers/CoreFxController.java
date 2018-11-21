@@ -100,6 +100,13 @@ public class CoreFxController extends FxControllerBase implements IdleMonitorReg
 	
 	public void reattachDeviceRunnerGadgetPane(){sidePane.getChildren().add(devicesRunnerGadgetPane);}
 	
+	public void showMockTasksCheckBox()
+	{
+		LOGGER.info("Showing \"mock tasks\"...");
+		headerPaneController.getMockTasksCheckBox().setVisible(true);
+		footerPaneController.getMockTasksCheckBox().setVisible(true);
+	}
+	
 	public boolean isMockTasksEnabled()
 	{
 		return headerPaneController.getMockTasksCheckBox().isSelected();
@@ -459,9 +466,9 @@ public class CoreFxController extends FxControllerBase implements IdleMonitorReg
 			return;
 		}
 		
-		String version = Context.getConfigManager().getProperty("app.version");
-		String title = stringsBundle.getString("window.title") + " " + version + " (" +
-				stringsBundle.getString("label.environment." +
+		String appVersion = Context.getAppVersion();
+		String title = stringsBundle.getString("window.title") + " " + appVersion + " (" +
+					   stringsBundle.getString("label.environment." +
 							                  Context.getRuntimeEnvironment().name().toLowerCase()) + ")";
 		String windowTitle = AppUtils.localizeNumbers(title, Locale.getDefault(), false);
 		FXMLLoader newRootPane = new FXMLLoader(fxmlUrl, stringsBundle);
@@ -485,11 +492,15 @@ public class CoreFxController extends FxControllerBase implements IdleMonitorReg
 		Scene scene = new Scene(rootPane);
 		scene.addEventFilter(KeyEvent.KEY_PRESSED, event ->
 		{
-			if(AppConstants.SCENIC_VIEW_KEY_COMBINATION.match(event))
+			if(AppConstants.SHOWING_MOCK_TASKS_KEY_COMBINATION.match(event))
 			{
-				LOGGER.info("Showing scenic view...");
+				showMockTasksCheckBox();
+				event.consume();
+			}
+			else if(AppConstants.SCENIC_VIEW_KEY_COMBINATION.match(event))
+			{
 				AppUtils.showScenicView(scene);
-				event.consume(); // <-- stops passing the event to next node
+				event.consume();
 			}
 		});
 		

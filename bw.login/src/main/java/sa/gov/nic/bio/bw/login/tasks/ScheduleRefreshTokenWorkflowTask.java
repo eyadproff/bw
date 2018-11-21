@@ -9,7 +9,7 @@ public class ScheduleRefreshTokenWorkflowTask implements WorkflowTask
 	@Input(alwaysRequired = true) private String userToken;
 	
 	@Override
-	public void execute()
+	public void execute(Integer workflowId, Long workflowTcn)
 	{
 		Context.getUserSession().setAttribute("userToken", userToken);
 		Context.getWebserviceManager().scheduleRefreshToken(userToken);

@@ -18,7 +18,7 @@ public class PrepareHomeBeanWorkflowTask implements WorkflowTask
 	@Input(alwaysRequired = true) private UserInfo userInfo;
 	
 	@Override
-	public void execute()
+	public void execute(Integer workflowId, Long workflowTcn)
 	{
 		Context.getUserSession().setAttribute("userInfo", userInfo);
 		

@@ -7,5 +7,6 @@ public interface CancelLatentAPI
 {
 	@FormUrlEncoded
 	@POST("services-gateway-biooperation/api/latent/delink/v1")
-	Call<Boolean> cancelLatent(@Field("person-id") long personId, @Field("latent-id") String latentId);
+	Call<Boolean> cancelLatent(@Header("Workflow-Code") Integer workflowId, @Header("Workflow-Tcn") Long workflowTcn,
+	                           @Field("person-id") long personId, @Field("latent-id") String latentId);
 }

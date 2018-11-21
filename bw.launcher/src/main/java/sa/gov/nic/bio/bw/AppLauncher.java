@@ -72,7 +72,7 @@ import java.util.logging.Level;
  * the real initialization of the application. Whenever an error occurs, it notifies the app preloader with the error
  * details to show it on the dialog. When <code>init()</code> finishes, <code>AppEntryPoint.start()</code> starts on
  * the UI thread. <code>start()</code> is responsible for creating the primary stage. Once the primary stage is
- * ready, it notifies the app preloader with a success message in order to close the splash screen. After that,
+ * ready, it notifies the app preloader with a success message in menuOrder to close the splash screen. After that,
  * the primary stage is shown.
  *
  * @author Fouad Almalki
@@ -254,6 +254,21 @@ public class AppLauncher extends Application implements AppLogger
 		    return;
 	    }
 	
+	    String appVersion = configManager.getProperty("app.version");
+	
+	    if(appVersion == null)
+	    {
+		    String errorCode = StartupErrorCodes.C001_00012.getCode();
+		    String[] errorDetails = {"Config \"app.appVersion\" is missing!"};
+		    notifyPreloader(PreloaderNotification.failure(null, errorCode, errorDetails));
+		    return;
+	    }
+	    
+	    Context.attachAppVersion(appVersion);
+	
+	    LOGGER.info("appVersion = " + appVersion);
+	    LOGGER.info("runtime-environment = " + runtimeEnvironment);
+	
 	    LookupAPI lookupAPI = webserviceManager.getApi(LookupAPI.class);
 	    Call<Map<String, String>> apiCall = lookupAPI.lookupAppConfigs(AppConstants.APP_CODE);
 	    TaskResponse<Map<String, String>> webTaskResponse = webserviceManager.executeApi(apiCall);
@@ -340,7 +355,7 @@ public class AppLauncher extends Application implements AppLogger
 	
 	    if(biokitWebsocketUrl == null)
 	    {
-		    String errorCode = StartupErrorCodes.C001_00012.getCode();
+		    String errorCode = StartupErrorCodes.C001_00013.getCode();
 		    String[] errorDetails = {"\"biokitWebsocketUrl\" is null!"};
 		    notifyPreloader(PreloaderNotification.failure(null, errorCode, errorDetails));
 		    return;
@@ -348,7 +363,7 @@ public class AppLauncher extends Application implements AppLogger
 	
 	    if(sBiokitWebsocketPort == null)
 	    {
-		    String errorCode = StartupErrorCodes.C001_00013.getCode();
+		    String errorCode = StartupErrorCodes.C001_00014.getCode();
 		    String[] errorDetails = {"\"sBiokitWebsocketPort\" is null!"};
 		    notifyPreloader(PreloaderNotification.failure(null, errorCode, errorDetails));
 		    return;
@@ -360,7 +375,7 @@ public class AppLauncher extends Application implements AppLogger
 	    }
 	    catch(NumberFormatException e)
 	    {
-		    String errorCode = StartupErrorCodes.C001_00014.getCode();
+		    String errorCode = StartupErrorCodes.C001_00015.getCode();
 		    String[] errorDetails = {"\"sBiokitWebsocketPort\" is not int!"};
 		    notifyPreloader(PreloaderNotification.failure(e, errorCode, errorDetails));
 		    return;
@@ -368,7 +383,7 @@ public class AppLauncher extends Application implements AppLogger
 	
 	    if(biokitBclId == null)
 	    {
-		    String errorCode = StartupErrorCodes.C001_00015.getCode();
+		    String errorCode = StartupErrorCodes.C001_00016.getCode();
 		    String[] errorDetails = {"\"biokitBclId\" is null!"};
 		    notifyPreloader(PreloaderNotification.failure(null, errorCode, errorDetails));
 		    return;
@@ -503,13 +518,13 @@ public class AppLauncher extends Application implements AppLogger
 		    AssociatedMenu associatedMenu = workflowMenuClass.getValue();
 		
 		    MenuItem menuItem = new MenuItem();
-		    menuItem.setMenuId(associatedMenu.id());
-		    menuItem.setLabel(associatedMenu.title());
-		    menuItem.setOrder(associatedMenu.order());
+		    menuItem.setMenuId(associatedMenu.menuId());
+		    menuItem.setLabel(associatedMenu.menuTitle());
+		    menuItem.setOrder(associatedMenu.menuOrder());
 		    menuItem.setDevices(new HashSet<>(Arrays.asList(associatedMenu.devices())));
 		    menuItem.setWorkflowClass(workflowClass);
 		
-		    String topMenu = associatedMenu.id().substring(0, associatedMenu.id().lastIndexOf('.'));
+		    String topMenu = associatedMenu.menuId().substring(0, associatedMenu.menuId().lastIndexOf('.'));
 		    if(!topMenus.containsKey(topMenu))
 		    {
 			    String icon = configManager.getProperty(topMenu + ".icon");
@@ -520,13 +535,13 @@ public class AppLauncher extends Application implements AppLogger
 			    topMenuItem.setLabel(topMenu);
 			    topMenuItem.setIconId(icon);
 			    topMenuItem.setOrder(order);
+			    System.out.println("topMenuItem = " + topMenuItem);
 			
 			    topMenus.put(topMenu, topMenuItem);
 		    }
 		    
 		    subMenus.add(menuItem);
 	    }
-	
 	
 	    Context.attach(runtimeEnvironment, configManager, workflowManager, webserviceManager, bioKitManager,
 	                   executorService, scheduledExecutorService, errorsBundle, new UserSession(), serverUrl, topMenus,
@@ -544,7 +559,7 @@ public class AppLauncher extends Application implements AppLogger
 		    }
 		    catch(Exception e)
 		    {
-			    String errorCode = StartupErrorCodes.C001_00016.getCode();
+			    String errorCode = StartupErrorCodes.C001_00017.getCode();
 			    String[] errorDetails = {"Failed to inject NicHijriCalendarData!"};
 			    notifyPreloader(PreloaderNotification.failure(e, errorCode, errorDetails));
 			    return;
@@ -559,30 +574,17 @@ public class AppLauncher extends Application implements AppLogger
 		    return;
 	    }
 	
-	    String version = configManager.getProperty("app.version");
-	
-	    if(version == null)
-	    {
-		    String errorCode = StartupErrorCodes.C001_00017.getCode();
-		    String[] errorDetails = {"Config \"app.version\" is missing!"};
-		    notifyPreloader(PreloaderNotification.failure(null, errorCode, errorDetails));
-		    return;
-	    }
-	    
-	    LOGGER.info("version = " + version);
-	    LOGGER.info("runtime-environment = " + Context.getRuntimeEnvironment());
-	
 	    String title;
 	    try
 	    {
-		    title = stringsBundle.getString("window.title") + " " + version + " (" +
+		    title = stringsBundle.getString("window.title") + " " + appVersion + " (" +
 				    stringsBundle.getString("label.environment." +
 						                            Context.getRuntimeEnvironment().name().toLowerCase()) + ")";
 	    }
 	    catch(MissingResourceException e)
 	    {
 		    String errorCode = StartupErrorCodes.C001_00018.getCode();
-		    String[] errorDetails = {"Label text \"window.title\" is missing!"};
+		    String[] errorDetails = {"Label text \"window.menuTitle\" is missing!"};
 		    notifyPreloader(PreloaderNotification.failure(e, errorCode, errorDetails));
 		    return;
 	    }
@@ -621,9 +623,13 @@ public class AppLauncher extends Application implements AppLogger
 	    {
 		    if(AppConstants.SCENIC_VIEW_KEY_COMBINATION.match(event))
 		    {
-		    	LOGGER.info("Showing scenic view...");
-			    event.consume(); // <-- stops passing the event to next node
-			    AppUtils.showScenicView(scene);
+		    	AppUtils.showScenicView(scene);
+			    event.consume();
+		    }
+		    else if(AppConstants.SHOWING_MOCK_TASKS_KEY_COMBINATION.match(event))
+		    {
+			    coreFxController.showMockTasksCheckBox();
+			    event.consume();
 		    }
 	    });
 	

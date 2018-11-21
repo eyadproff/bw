@@ -25,7 +25,7 @@ public class CrimeTypesLookup implements Callable<TaskResponse<Void>>, AppLogger
 			LookupAPI lookupAPI = Context.getWebserviceManager().getApi(LookupAPI.class);
 			Call<List<CrimeType>> crimeTypesCall = lookupAPI.lookupCrimeTypes();
 			TaskResponse<List<CrimeType>> crimeTypesResponse = Context.getWebserviceManager()
-																		 .executeApi(crimeTypesCall);
+																		                .executeApi(crimeTypesCall);
 			
 			if(crimeTypesResponse.isSuccess()) crimeTypes = crimeTypesResponse.getResult();
 			else return TaskResponse.failure(crimeTypesResponse.getErrorCode(),

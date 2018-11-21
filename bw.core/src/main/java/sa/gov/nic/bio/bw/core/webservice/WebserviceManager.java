@@ -72,6 +72,13 @@ public class WebserviceManager implements AppLogger
 				}
 			}
 			
+			String appVersion = Context.getAppVersion();
+			String os = System.getProperty("os.name");
+			
+			requestBuilder.addHeader("Client-Code", AppConstants.APP_CODE);
+			if(appVersion != null) requestBuilder.addHeader("Client-Version", appVersion);
+			if(os != null) requestBuilder.addHeader("Client-OS", os);
+			
 			return chain.proceed(requestBuilder.build());
 		};
 		
@@ -162,7 +169,8 @@ public class WebserviceManager implements AppLogger
 	// synchronized because we send only one request at a time
 	public synchronized <T> TaskResponse<T> executeApi(Call<T> apiCall)
 	{
-		String apiUrl = apiCall.request().url().toString();
+		Request request = apiCall.request();
+		String apiUrl = request.url().toString();
 		
 		Response<T> response;
 		try
@@ -188,7 +196,7 @@ public class WebserviceManager implements AppLogger
 		{
 			T resultBean = response.body();
 			
-			LOGGER.info("webservice = \"" + apiCall.request().url() + "\", responseCode = " + httpCode);
+			LOGGER.info("webservice = \"" + apiUrl + "\", responseCode = " + httpCode);
 			LOGGER.fine("resultBean = " + resultBean);
 			
 			return TaskResponse.success(resultBean);
@@ -220,7 +228,7 @@ public class WebserviceManager implements AppLogger
 				return TaskResponse.failure(errorCode, null, errorDetails);
 			}
 			
-			LOGGER.info("webservice = \"" + apiCall.request().url() + "\", responseCode = " + httpCode +
+			LOGGER.info("webservice = \"" + request.url() + "\", responseCode = " + httpCode +
 					    ", errorCode = " + errorCode);
 			
 			String[] errorDetails = {"apiUrl = " + apiUrl, "httpCode = " + httpCode};

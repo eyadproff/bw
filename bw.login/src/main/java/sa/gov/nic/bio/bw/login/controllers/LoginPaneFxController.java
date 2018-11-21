@@ -233,8 +233,6 @@ public class LoginPaneFxController extends BodyFxControllerBase implements Persi
 	@Override
 	public void onReturnFromWorkflow(boolean successfulResponse)
 	{
-		txtPassword.clear();
-		
 		if(tabLoginByPassword.isSelected()) txtUsernameLoginByPassword.requestFocus();
 		else if(tabLoginByFingerprint.isSelected()) txtUsernameLoginByFingerprint.requestFocus();
 	}
@@ -281,10 +279,9 @@ public class LoginPaneFxController extends BodyFxControllerBase implements Persi
 		{
 			try
 			{
-				boolean rtl = Context.getGuiLanguage().getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT;
 				CaptureFingerprintDialogFxController captureFingerprintDialogFxController =
 						DialogUtils.buildCustomDialogByFxml(Context.getCoreFxController().getStage(),
-						                                    CaptureFingerprintDialogFxController.class, resources, rtl,
+						                                    CaptureFingerprintDialogFxController.class, resources,
 						                                    false);
 				
 				if(captureFingerprintDialogFxController != null)
@@ -322,9 +319,8 @@ public class LoginPaneFxController extends BodyFxControllerBase implements Persi
 		
 		try
 		{
-			boolean rtl = Context.getGuiLanguage().getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT;
 			ChangePasswordDialogFxController controller = DialogUtils.buildCustomDialogByFxml(
-					Context.getCoreFxController().getStage(), ChangePasswordDialogFxController.class, resources, rtl,
+					Context.getCoreFxController().getStage(), ChangePasswordDialogFxController.class, resources,
 					false);
 			
 			if(controller != null)
@@ -444,9 +440,8 @@ public class LoginPaneFxController extends BodyFxControllerBase implements Persi
 	{
 		try
 		{
-			boolean rtl = Context.getGuiLanguage().getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT;
 			ChangeFingerprintDialogFxController controller = DialogUtils.buildCustomDialogByFxml(
-					Context.getCoreFxController().getStage(), ChangeFingerprintDialogFxController.class, resources, rtl,
+					Context.getCoreFxController().getStage(), ChangeFingerprintDialogFxController.class, resources,
 					false);
 			
 			if(controller != null)

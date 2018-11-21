@@ -56,6 +56,6 @@
 </StackPane>
 
 <!-- NOTE:
-    We need the IDs headerPane and footerPane in order to be
+    We need the IDs headerPane and footerPane in menuOrder to be
     able to inject headerPaneController and footerPaneController
 -->

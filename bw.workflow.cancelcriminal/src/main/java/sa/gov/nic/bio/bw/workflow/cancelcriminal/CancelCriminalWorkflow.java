@@ -11,7 +11,7 @@ import sa.gov.nic.bio.bw.workflow.commons.lookups.PersonTypesLookup;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-@AssociatedMenu(id = "menu.cancel.cancelCriminal", title = "menu.title", order = 1)
+@AssociatedMenu(workflowId = 1000, menuId = "menu.cancel.cancelCriminal", menuTitle = "menu.title", menuOrder = 1)
 @WithLookups(PersonTypesLookup.class)
 public class CancelCriminalWorkflow extends SinglePageWorkflowBase
 {

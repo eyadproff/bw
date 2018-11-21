@@ -28,7 +28,7 @@ public class ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTas
 	@Output private Map<Integer, String> fingerprintBase64Images;
 	
 	@Override
-	public void execute() throws Signal
+	public void execute(Integer workflowId, Long workflowTcn) throws Signal
 	{
 		List<Integer> availableFingerprints = IntStream.rangeClosed(1, 10).boxed().collect(Collectors.toList());
 		availableFingerprints.removeAll(missingFingerprints);

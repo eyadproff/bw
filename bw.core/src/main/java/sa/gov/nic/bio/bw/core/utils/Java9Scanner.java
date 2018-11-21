@@ -26,7 +26,7 @@ public class Java9Scanner {
 		}
 	}
 	
-	/** Recursively find the topological sort order of ancestral layers. */
+	/** Recursively find the topological sort menuOrder of ancestral layers. */
 	public static void findLayerOrder(ModuleLayer layer,
 	                                   Set<ModuleLayer> visited, Deque<ModuleLayer> layersOut) {
 		if (visited.add(layer)) {

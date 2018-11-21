@@ -9,11 +9,65 @@ import java.util.Map;
 
 public interface WorkflowTask extends AppLogger
 {
-	void execute() throws Signal;
+	void execute(Integer workflowId, Long workflowTcn) throws Signal;
 	
 	default void mockExecute() throws Signal
 	{
-		execute();
+		execute(null, null);
+		
+		
+		//CountDownLatch latch = new CountDownLatch(1);
+		//
+		//Platform.runLater(() ->
+		//{
+		//	try
+		//	{
+		//		MockTaskDialogFxController captureFingerprintDialogFxController =
+		//				DialogUtils.buildCustomDialogByFxml(Context.getCoreFxController().getStage(),
+		//				                                    MockTaskDialogFxController.class,
+		//				                                    AppUtils.getCoreStringsResourceBundle(Locale.getDefault()),
+		//				                                    false);
+		//
+		//		List<TaskInput<?>> taskInputs = new ArrayList<>();
+		//		Field[] declaredFields = getClass().getDeclaredFields();
+		//
+		//		for(Field declaredField : declaredFields)
+		//		{
+		//			declaredField.setAccessible(true);
+		//
+		//			Input input = declaredField.getAnnotation(Input.class);
+		//
+		//			if(input != null)
+		//			{
+		//				String name = declaredField.getName();
+		//				Class<?> type = declaredField.getType();
+		//				boolean alwaysRequired = input.alwaysRequired();
+		//				String[] strings = input.requiredOnlyIf();
+		//				String requirementConditions = strings.length > 0 ? Arrays.toString(strings) : null;
+		//				Object value = declaredField.get(this);
+		//				taskInputs.add( new TaskInput<>(name, type, alwaysRequired, requirementConditions, value));
+		//			}
+		//		}
+		//
+		//		captureFingerprintDialogFxController.setTaskName(getClass().getSimpleName());
+		//		captureFingerprintDialogFxController.setTaskInputs(taskInputs);
+		//		captureFingerprintDialogFxController.showDialogAndWait();
+		//	}
+		//	catch(Exception e)
+		//	{
+		//		e.printStackTrace();
+		//	}
+		//	latch.countDown();
+		//});
+		//
+		//try
+		//{
+		//	latch.await();
+		//}
+		//catch(InterruptedException e)
+		//{
+		//	e.printStackTrace();
+		//}
 	}
 	
 	default <T> void resetWorkflowStepIfNegativeOrNullTaskResponse(TaskResponse<T> taskResponse) throws Signal

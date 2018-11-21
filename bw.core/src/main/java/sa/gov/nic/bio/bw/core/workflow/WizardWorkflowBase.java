@@ -3,6 +3,7 @@ package sa.gov.nic.bio.bw.core.workflow;
 import sa.gov.nic.bio.bw.core.Context;
 import sa.gov.nic.bio.bw.core.controllers.BodyFxControllerBase;
 import sa.gov.nic.bio.bw.core.controllers.LookupFxController;
+import sa.gov.nic.bio.bw.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.core.utils.CoreErrorCodes;
 import sa.gov.nic.bio.bw.core.wizard.Step;
 import sa.gov.nic.bio.bw.core.wizard.Wizard;
@@ -29,7 +30,7 @@ public abstract class WizardWorkflowBase extends WorkflowBase implements Resourc
 	public abstract void onStep(int step) throws InterruptedException, Signal;
 		
 	@Override
-	public void onProcess() throws InterruptedException, Signal
+	public void onProcess() throws Signal
 	{
 		ResourceBundle stringsBundle = Context.getModuleResourceBundleProviders().get(getClass().getModule().getName())
 																		.getStringsResourceBundle(Locale.getDefault());
@@ -97,6 +98,16 @@ public abstract class WizardWorkflowBase extends WorkflowBase implements Resourc
 		}
 		else Context.getCoreFxController().clearWizardBar();
 		
+		AssociatedMenu annotation = getClass().getAnnotation(AssociatedMenu.class);
+		Integer workflowId = annotation != null ? annotation.workflowId() : null;
+		
+		if(workflowId != null)
+		{
+			tcn = AppUtils.getRandom18DigitsNumber();
+			LOGGER.info("Generating TCN (" + tcn + ") for the workflow (" + workflowId + ": " +
+					            getClass().getSimpleName() + ")");
+		}
+		
 		int step = 0;
 		
 		while(true)
@@ -104,6 +115,18 @@ public abstract class WizardWorkflowBase extends WorkflowBase implements Resourc
 			try
 			{
 				onStep(step);
+				
+				if(!renderedAtLeastOnceInTheStep)
+				{
+					String errorCode = CoreErrorCodes.C002_00026.getCode();
+					String[] errorDetails = {"The workflow (" + getClass().getName() +
+													") has no renderUiAndWaitForUserInput() at step (" + step + ")!"};
+					Map<String, Object> payload = new HashMap<>();
+					payload.put(KEY_ERROR_CODE, errorCode);
+					payload.put(KEY_ERROR_DETAILS, errorDetails);
+					throw new Signal(SignalType.INVALID_STATE, payload);
+				}
+				else renderedAtLeastOnceInTheStep = false;
 			}
 			catch(Signal signal)
 			{
@@ -118,16 +141,6 @@ public abstract class WizardWorkflowBase extends WorkflowBase implements Resourc
 					}
 					case WIZARD_NAVIGATION:
 					{
-						if(!renderedAtLeastOnceInTheStep)
-						{
-							String errorCode = CoreErrorCodes.C002_00026.getCode();
-							String[] errorDetails = {"The workflow (" + getClass().getName() +
-												     ") has no renderUiAndWaitForUserInput() at step (" + step + ")!"};
-							Context.getCoreFxController().showErrorDialog(errorCode, null, errorDetails);
-							continue;
-						}
-						else renderedAtLeastOnceInTheStep = false;
-						
 						if(isGoingBackward())
 						{
 							uiInputData.remove(KEY_WORKFLOW_DIRECTION);
@@ -142,12 +155,26 @@ public abstract class WizardWorkflowBase extends WorkflowBase implements Resourc
 						}
 						else if(isStartingOver())
 						{
+							if(workflowId != null)
+							{
+								tcn = AppUtils.getRandom18DigitsNumber();
+								LOGGER.info("Regenerating TCN (" + tcn + ") for the workflow (" + workflowId +
+									                                        ": " + getClass().getSimpleName() + ")");
+							}
+							
 							uiInputData.clear();
 							Context.getCoreFxController().moveWizardToTheBeginning();
 							step = 0;
 						}
 					}
 				}
+			}
+			catch(Throwable t)
+			{
+				String errorCode = CoreErrorCodes.C002_00033.getCode();
+				String[] errorDetails = {"An error occurs in the workflow (" + getClass().getName() + ") at step (" +
+										 step + ")!"};
+				Context.getCoreFxController().showErrorDialog(errorCode, t, errorDetails);
 			}
 		}
 	}

@@ -621,6 +621,8 @@ public final class AppUtils implements AppLogger
 	
 	public static void showScenicView(Scene scene)
 	{
+		LOGGER.info("Showing scenic view...");
+		
 		try
 		{
 			ScenicView.show(scene);
@@ -629,5 +631,10 @@ public final class AppUtils implements AppLogger
 		{
 			LOGGER.info("ScenicView is not found!");
 		}
+	}
+	
+	public static long getRandom18DigitsNumber()
+	{
+		return (long) Math.floor(Math.random() * 900_000_000_000_000_000L) + 100_000_000_000_000_000L;
 	}
 }

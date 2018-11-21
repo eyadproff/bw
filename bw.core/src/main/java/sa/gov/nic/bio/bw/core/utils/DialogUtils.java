@@ -47,6 +47,15 @@ public class DialogUtils
 		alert.initOwner(ownerWindow);
 		Scene scene = alert.getDialogPane().getScene();
 		scene.setNodeOrientation(rtl ? NodeOrientation.RIGHT_TO_LEFT : NodeOrientation.LEFT_TO_RIGHT);
+		scene.addEventFilter(KeyEvent.KEY_PRESSED, event ->
+		{
+			if(AppConstants.SCENIC_VIEW_KEY_COMBINATION.match(event))
+			{
+				AppUtils.showScenicView(scene);
+				event.consume();
+			}
+		});
+		
 		Stage stage = (Stage) scene.getWindow();
 		alert.setTitle(title);
 		alert.setHeaderText(headerText);
@@ -96,6 +105,15 @@ public class DialogUtils
 		choiceDialog.initStyle(StageStyle.UTILITY);
 		Scene scene = choiceDialog.getDialogPane().getScene();
 		scene.setNodeOrientation(rtl ? NodeOrientation.RIGHT_TO_LEFT : NodeOrientation.LEFT_TO_RIGHT);
+		scene.addEventFilter(KeyEvent.KEY_PRESSED, event ->
+		{
+			if(AppConstants.SCENIC_VIEW_KEY_COMBINATION.match(event))
+			{
+				AppUtils.showScenicView(scene);
+				event.consume();
+			}
+		});
+		
 		Stage stage = (Stage) scene.getWindow();
 		stage.setAlwaysOnTop(alwaysOnTop);
 		choiceDialog.setTitle(title);
@@ -123,6 +141,15 @@ public class DialogUtils
 		alert.initOwner(ownerWindow);
 		Scene scene = alert.getDialogPane().getScene();
 		scene.setNodeOrientation(rtl ? NodeOrientation.RIGHT_TO_LEFT : NodeOrientation.LEFT_TO_RIGHT);
+		scene.addEventFilter(KeyEvent.KEY_PRESSED, event ->
+		{
+			if(AppConstants.SCENIC_VIEW_KEY_COMBINATION.match(event))
+			{
+				AppUtils.showScenicView(scene);
+				event.consume();
+			}
+		});
+		
 		Stage stage = (Stage) scene.getWindow();
 		alert.setTitle(title);
 		
@@ -181,6 +208,15 @@ public class DialogUtils
 		alert.initOwner(ownerWindow);
 		Scene scene = alert.getDialogPane().getScene();
 		scene.setNodeOrientation(rtl ? NodeOrientation.RIGHT_TO_LEFT : NodeOrientation.LEFT_TO_RIGHT);
+		scene.addEventFilter(KeyEvent.KEY_PRESSED, event ->
+		{
+			if(AppConstants.SCENIC_VIEW_KEY_COMBINATION.match(event))
+			{
+				AppUtils.showScenicView(scene);
+				event.consume();
+			}
+		});
+		
 		Stage stage = (Stage) scene.getWindow();
 		alert.setTitle(title);
 		
@@ -215,6 +251,15 @@ public class DialogUtils
 		alert.initOwner(ownerWindow);
 		Scene scene = alert.getDialogPane().getScene();
 		scene.setNodeOrientation(rtl ? NodeOrientation.RIGHT_TO_LEFT : NodeOrientation.LEFT_TO_RIGHT);
+		scene.addEventFilter(KeyEvent.KEY_PRESSED, event ->
+		{
+			if(AppConstants.SCENIC_VIEW_KEY_COMBINATION.match(event))
+			{
+				AppUtils.showScenicView(scene);
+				event.consume();
+			}
+		});
+		
 		Stage stage = (Stage) scene.getWindow();
 		alert.setTitle(title);
 		
@@ -252,6 +297,15 @@ public class DialogUtils
 		stage.initModality(Modality.WINDOW_MODAL);
 		Scene scene = new Scene(contentPane);
 		scene.setNodeOrientation(rtl ? NodeOrientation.RIGHT_TO_LEFT : NodeOrientation.LEFT_TO_RIGHT);
+		scene.addEventFilter(KeyEvent.KEY_PRESSED, event ->
+		{
+			if(AppConstants.SCENIC_VIEW_KEY_COMBINATION.match(event))
+			{
+				AppUtils.showScenicView(scene);
+				event.consume();
+			}
+		});
+		
 		stage.setTitle(title);
 		stage.setScene(scene);
 		
@@ -268,9 +322,9 @@ public class DialogUtils
 	}
 	
 	public static <T> T buildCustomDialogByFxml(Stage ownerStage, Class<?> controllerClass,
-	                                            ResourceBundle resourceBundle, boolean rtl, boolean resizable)
-																									throws Exception
+	                                            ResourceBundle resourceBundle, boolean resizable) throws Exception
 	{
+		boolean rtl = Context.getGuiLanguage().getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT;
 		FxmlFile fxmlFile = controllerClass.getAnnotation(FxmlFile.class);
 		String packageName = controllerClass.getPackage().getName().replace('.', '/');
 		String parentPackageName = packageName.substring(0, packageName.lastIndexOf('/'));
@@ -284,6 +338,14 @@ public class DialogUtils
 		
 		Scene scene = dialog.getDialogPane().getScene();
 		scene.setNodeOrientation(rtl ? NodeOrientation.RIGHT_TO_LEFT : NodeOrientation.LEFT_TO_RIGHT);
+		scene.addEventFilter(KeyEvent.KEY_PRESSED, event ->
+		{
+			if(AppConstants.SCENIC_VIEW_KEY_COMBINATION.match(event))
+			{
+				AppUtils.showScenicView(scene);
+				event.consume();
+			}
+		});
 		
 		Stage stage = (Stage) scene.getWindow();
 		stage.getIcons().setAll(ownerStage.getIcons());

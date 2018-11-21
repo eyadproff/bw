@@ -18,10 +18,11 @@ public class FaceVerificationWorkflowTask implements WorkflowTask
 	@Output private FaceMatchingResponse faceMatchingResponse;
 	
 	@Override
-	public void execute() throws Signal
+	public void execute(Integer workflowId, Long workflowTcn) throws Signal
 	{
 		FaceVerificationAPI faceVerificationAPI = Context.getWebserviceManager().getApi(FaceVerificationAPI.class);
-		Call<PersonInfo> apiCall = faceVerificationAPI.verifyFaceImage(personId, facePhotoBase64);
+		Call<PersonInfo> apiCall = faceVerificationAPI.verifyFaceImage(workflowId, workflowTcn, personId,
+		                                                               facePhotoBase64);
 		TaskResponse<PersonInfo> taskResponse = Context.getWebserviceManager().executeApi(apiCall);
 		
 		if(taskResponse.isSuccess())

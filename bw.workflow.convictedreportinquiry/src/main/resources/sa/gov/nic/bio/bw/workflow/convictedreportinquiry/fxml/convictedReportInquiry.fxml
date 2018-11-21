@@ -42,13 +42,13 @@
                                 <Label text="%table.placeholder"/>
                             </placeholder>
                             <columns>
-                                <PTableColumn fx:id="tcSequence" text="#" percentageWidth="0.04"/>
-                                <PTableColumn fx:id="tvName" text="%table.column.name" percentageWidth="0.22"/>
-                                <PTableColumn fx:id="tcSamisId" text="%table.column.personId" percentageWidth="0.14"/>
-                                <PTableColumn fx:id="tcSamisIdType" text="%table.column.personType" percentageWidth="0.15"/>
-                                <PTableColumn fx:id="tcNationality" text="%table.column.nationality" percentageWidth="0.15"/>
-                                <PTableColumn fx:id="tcOperatorId" text="%table.column.operatorId" percentageWidth="0.16"/>
-                                <PTableColumn fx:id="tcRegistrationDate" text="%table.column.registrationDate" percentageWidth="0.14"/>
+                                <PTableColumn fx:id="tcSequence" text="#" reorderable="false" percentageWidth="0.04"/>
+                                <PTableColumn fx:id="tvName" text="%table.column.name" reorderable="false" percentageWidth="0.22"/>
+                                <PTableColumn fx:id="tcSamisId" text="%table.column.personId" reorderable="false" percentageWidth="0.14"/>
+                                <PTableColumn fx:id="tcSamisIdType" text="%table.column.personType" reorderable="false" percentageWidth="0.15"/>
+                                <PTableColumn fx:id="tcNationality" text="%table.column.nationality" reorderable="false" percentageWidth="0.15"/>
+                                <PTableColumn fx:id="tcOperatorId" text="%table.column.operatorId" reorderable="false" percentageWidth="0.16"/>
+                                <PTableColumn fx:id="tcRegistrationDate" text="%table.column.registrationDate" reorderable="false" percentageWidth="0.14"/>
                             </columns>
                         </TableView>
                     </ScrollPane>

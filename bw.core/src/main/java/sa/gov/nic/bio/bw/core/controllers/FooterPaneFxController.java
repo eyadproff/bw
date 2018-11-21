@@ -24,7 +24,7 @@ public class FooterPaneFxController extends RegionFxControllerBase
 		if(Context.getRuntimeEnvironment() == RuntimeEnvironment.LOCAL ||
 		   Context.getRuntimeEnvironment() == RuntimeEnvironment.DEV)
 		{
-			GuiUtils.showNode(chbMockTasks, true);
+			chbMockTasks.setVisible(true);
 		}
 		
 		if(Context.getRuntimeEnvironment() == RuntimeEnvironment.LOCAL)

@@ -16,10 +16,11 @@ public class DeadPersonRecordByIdWorkflowTask implements WorkflowTask
 	@Output private DeadPersonRecord deadPersonRecord;
 	
 	@Override
-	public void execute() throws Signal
+	public void execute(Integer workflowId, Long workflowTcn) throws Signal
 	{
 		DeadPersonRecordById deadPersonRecordById = Context.getWebserviceManager().getApi(DeadPersonRecordById.class);
-		Call<DeadPersonRecord> apiCall = deadPersonRecordById.getDeadPersonRecordById(recordId);
+		Call<DeadPersonRecord> apiCall = deadPersonRecordById.getDeadPersonRecordById(workflowId, workflowTcn,
+		                                                                              recordId);
 		TaskResponse<DeadPersonRecord> taskResponse = Context.getWebserviceManager().executeApi(apiCall);
 		resetWorkflowStepIfNegativeOrNullTaskResponse(taskResponse);
 		

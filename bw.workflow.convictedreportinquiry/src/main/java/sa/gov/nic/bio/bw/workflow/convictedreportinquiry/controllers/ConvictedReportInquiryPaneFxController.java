@@ -85,20 +85,15 @@ public class ConvictedReportInquiryPaneFxController extends BodyFxControllerBase
 			}
 		});
 		
-		tcSequence.setSortable(false);
-		tcSequence.setReorderable(false);
 		tcSequence.setCellValueFactory(p -> new ReadOnlyObjectWrapper(p.getValue()));
-		tcSequence.setCellFactory(new Callback<TableColumn<Pair<ConvictedReport, Map<Integer, String>>,
-				Pair<ConvictedReport, Map<Integer, String>>>,
-				TableCell<Pair<ConvictedReport, Map<Integer, String>>, Pair<ConvictedReport, Map<Integer, String>>>>()
+		tcSequence.setCellFactory(new Callback<>()
 		{
 			@Override
 			public TableCell<Pair<ConvictedReport, Map<Integer, String>>, Pair<ConvictedReport, Map<Integer, String>>>
-									call(TableColumn<Pair<ConvictedReport, Map<Integer, String>>, Pair<ConvictedReport,
-																		   Map<Integer, String>>> param)
+									call(TableColumn<Pair<ConvictedReport, Map<Integer, String>>,
+										 Pair<ConvictedReport, Map<Integer, String>>> param)
 			{
-				return new TableCell<Pair<ConvictedReport, Map<Integer, String>>,
-									 Pair<ConvictedReport, Map<Integer, String>>>()
+				return new TableCell<>()
 				{
 					@Override
 					protected void updateItem(Pair<ConvictedReport, Map<Integer, String>> item, boolean empty)
@@ -117,7 +112,6 @@ public class ConvictedReportInquiryPaneFxController extends BodyFxControllerBase
 			}
 		});
 		
-		tvName.setReorderable(false);
 		tvName.setCellValueFactory(param ->
 		{
 		    ConvictedReport convictedReport = param.getValue().getKey();
@@ -125,7 +119,6 @@ public class ConvictedReportInquiryPaneFxController extends BodyFxControllerBase
 		    return new SimpleStringProperty(AppUtils.constructName(name));
 		});
 		
-		tcSamisId.setReorderable(false);
 		tcSamisId.setCellValueFactory(param ->
 		{
 		    ConvictedReport convictedReport = param.getValue().getKey();
@@ -136,7 +129,6 @@ public class ConvictedReportInquiryPaneFxController extends BodyFxControllerBase
 			return new SimpleStringProperty(AppUtils.localizeNumbers(String.valueOf(subjSamisId)));
 		});
 		
-		tcSamisIdType.setReorderable(false);
 		tcSamisIdType.setCellValueFactory(param ->
 		{
 		    ConvictedReport convictedReport = param.getValue().getKey();
@@ -171,7 +163,6 @@ public class ConvictedReportInquiryPaneFxController extends BodyFxControllerBase
 		    return null;
 		});
 		
-		tcNationality.setReorderable(false);
 		tcNationality.setCellValueFactory(param ->
 		{
 		    ConvictedReport convictedReport = param.getValue().getKey();
@@ -208,14 +199,12 @@ public class ConvictedReportInquiryPaneFxController extends BodyFxControllerBase
 		    return null;
 		});
 		
-		tcOperatorId.setReorderable(false);
 		tcOperatorId.setCellValueFactory(param ->
 		{
 			ConvictedReport convictedReport = param.getValue().getKey();
 			return new SimpleStringProperty(AppUtils.localizeNumbers(convictedReport.getOperatorId()));
 		});
 		
-		tcRegistrationDate.setReorderable(false);
 		tcRegistrationDate.setCellValueFactory(param ->
 		{
 			boolean rtl = Context.getGuiLanguage().getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT;
@@ -271,12 +260,10 @@ public class ConvictedReportInquiryPaneFxController extends BodyFxControllerBase
 	{
 		hideNotification();
 		
-		boolean rtl = Context.getGuiLanguage().getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT;
 		try
 		{
-			
 			ShowReportDialogFxController controller = DialogUtils.buildCustomDialogByFxml(
-					Context.getCoreFxController().getStage(), ShowReportDialogFxController.class, resources, rtl,
+					Context.getCoreFxController().getStage(), ShowReportDialogFxController.class, resources,
 					true);
 			
 			if(controller != null)

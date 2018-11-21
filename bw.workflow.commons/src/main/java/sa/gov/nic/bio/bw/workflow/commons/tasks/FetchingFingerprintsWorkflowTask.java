@@ -18,10 +18,10 @@ public class FetchingFingerprintsWorkflowTask implements WorkflowTask
 	@Output private List<Finger> fingerprints;
 	
 	@Override
-	public void execute() throws Signal
+	public void execute(Integer workflowId, Long workflowTcn) throws Signal
 	{
 		FingerprintsByIdAPI fingerprintsByIdAPI = Context.getWebserviceManager().getApi(FingerprintsByIdAPI.class);
-		Call<List<Finger>> apiCall = fingerprintsByIdAPI.getFingerprintsById(personId);
+		Call<List<Finger>> apiCall = fingerprintsByIdAPI.getFingerprintsById(workflowId, workflowTcn, personId);
 		TaskResponse<List<Finger>> taskResponse = Context.getWebserviceManager().executeApi(apiCall);
 		resetWorkflowStepIfNegativeOrNullTaskResponse(taskResponse);
 		fingerprints = taskResponse.getResult();

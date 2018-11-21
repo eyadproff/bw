@@ -19,7 +19,7 @@ public class LoginByUsernameAndFingerprintWorkflowTask implements WorkflowTask
 	@Output private LoginBean loginBean;
 	
 	@Override
-	public void execute() throws Signal
+	public void execute(Integer workflowId, Long workflowTcn) throws Signal
 	{
 		IdentityAPI identityAPI = Context.getWebserviceManager().getApi(IdentityAPI.class);
 		Call<LoginBean> apiCall = identityAPI.loginByFingerprint(username, fingerPosition, fingerprint,

@@ -18,7 +18,7 @@ public class ConvertFingerprintBase64ImagesToWsqWorkflowTask implements Workflow
 	@Output private Map<Integer, String> fingerprintWsqImages;
 	
 	@Override
-	public void execute() throws Signal
+	public void execute(Integer workflowId, Long workflowTcn) throws Signal
 	{
 		Future<TaskResponse<ConvertedFingerprintWsqResponse>>
 										 serviceResponseFuture = Context.getBioKitManager()

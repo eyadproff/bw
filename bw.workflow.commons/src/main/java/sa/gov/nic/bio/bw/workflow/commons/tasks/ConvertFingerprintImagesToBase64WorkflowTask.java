@@ -20,7 +20,7 @@ public class ConvertFingerprintImagesToBase64WorkflowTask implements WorkflowTas
 	@Output private Map<Integer, String> fingerprintBase64Images;
 	
 	@Override
-	public void execute() throws Signal
+	public void execute(Integer workflowId, Long workflowTcn) throws Signal
 	{
 		fingerprintBase64Images = new HashMap<>();
 		

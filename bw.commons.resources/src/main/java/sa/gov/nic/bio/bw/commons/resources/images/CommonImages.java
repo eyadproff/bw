@@ -16,6 +16,7 @@ public enum CommonImages implements JavaResource
 	ICON_GREEN_STATUS("icon_green_status.png"),
 	ICON_YELLOW_STATUS("icon_yellow_status.png"),
 	ICON_RED_STATUS("icon_red_status.png"),
+	ICON_XO("icon_xo.png"),
 	LOGO_NIC("logo_nic.png"),
 	LOGO_SEMAT("logo_semat.png"),
 	LOGO_SAUDI_SECURITY("logo_saudi_security.jpg"),

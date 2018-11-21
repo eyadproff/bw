@@ -18,12 +18,14 @@ public class ConvictedReportInquiryWorkflowTask implements WorkflowTask
 	@Output private List<ConvictedReport> convictedReports;
 	
 	@Override
-	public void execute() throws Signal
+	public void execute(Integer workflowId, Long workflowTcn) throws Signal
 	{
 		ConvictedReportInquiryAPI convictedReportInquiryAPI =
 												Context.getWebserviceManager().getApi(ConvictedReportInquiryAPI.class);
 		Call<List<ConvictedReport>> apiCall =
-								convictedReportInquiryAPI.inquireConvictedReportByGeneralFileNumber(generalFileNumber);
+								convictedReportInquiryAPI.inquireConvictedReportByGeneralFileNumber(workflowId,
+								                                                                    workflowTcn,
+								                                                                    generalFileNumber);
 		TaskResponse<List<ConvictedReport>> taskResponse = Context.getWebserviceManager().executeApi(apiCall);
 		resetWorkflowStepIfNegativeOrNullTaskResponse(taskResponse);
 		

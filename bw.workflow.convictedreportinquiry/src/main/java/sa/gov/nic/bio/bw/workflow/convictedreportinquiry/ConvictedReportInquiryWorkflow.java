@@ -21,7 +21,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 
-@AssociatedMenu(id = "menu.query.convictedReportInquiry", title = "menu.title", order = 6,
+@AssociatedMenu(workflowId = 1003, menuId = "menu.query.convictedReportInquiry", menuTitle = "menu.title", menuOrder = 6,
 				devices = Device.BIO_UTILITIES)
 @WithLookups({PersonTypesLookup.class, DocumentTypesLookup.class, CountriesLookup.class, CrimeTypesLookup.class})
 public class ConvictedReportInquiryWorkflow extends SinglePageWorkflowBase

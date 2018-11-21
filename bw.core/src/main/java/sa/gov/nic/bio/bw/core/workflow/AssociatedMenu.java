@@ -13,8 +13,9 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface AssociatedMenu
 {
-	String id();
-	String title();
-	int order() default Integer.MAX_VALUE;
+	int workflowId();
+	String menuId();
+	String menuTitle();
+	int menuOrder() default Integer.MAX_VALUE;
 	Device[] devices() default {};
 }

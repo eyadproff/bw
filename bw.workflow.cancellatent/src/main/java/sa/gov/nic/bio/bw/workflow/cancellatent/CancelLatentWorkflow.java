@@ -9,7 +9,7 @@ import sa.gov.nic.bio.bw.workflow.cancellatent.tasks.CancelLatentWorkflowTask;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-@AssociatedMenu(id = "menu.cancel.cancelLatent", title = "menu.title", order = 2)
+@AssociatedMenu(workflowId = 1001, menuId = "menu.cancel.cancelLatent", menuTitle = "menu.title", menuOrder = 2)
 public class CancelLatentWorkflow extends SinglePageWorkflowBase
 {
 	@Override

@@ -18,7 +18,7 @@ import sa.gov.nic.bio.bw.workflow.searchbyfaceimage.tasks.SearchByFacePhotoWorkf
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-@AssociatedMenu(id = "menu.query.searchByFaceImage", title = "menu.title", order = 1, devices = Device.CAMERA)
+@AssociatedMenu(workflowId = 1009, menuId = "menu.query.searchByFaceImage", menuTitle = "menu.title", menuOrder = 1, devices = Device.CAMERA)
 @Wizard({@Step(iconId = "question", title = "wizard.imageSource"),
 		@Step(iconId = "upload", title = "wizard.uploadImage"),
 		@Step(iconId = "unlock", title = "wizard.confirm"),

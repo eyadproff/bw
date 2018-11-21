@@ -19,7 +19,7 @@ public class PrepareUserMenusWorkflowTask implements WorkflowTask
 	@Input(alwaysRequired = true) private List<String> userRoles;
 	
 	@Override
-	public void execute()
+	public void execute(Integer workflowId, Long workflowTcn)
 	{
 		List<MenuItem> menus = new ArrayList<>();
 		for(MenuItem menuItem : Context.getSubMenus())

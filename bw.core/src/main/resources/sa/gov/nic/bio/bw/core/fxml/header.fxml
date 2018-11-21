@@ -40,7 +40,7 @@
                 <Button fx:id="btnMyTransactions" focusTraversable="false" text="%button.myTransactions" onAction="#onMyTransactionsButtonClicked" visible="false" managed="false"/>
                 <Button fx:id="btnLogout" focusTraversable="false" text="%button.logout" onAction="#onLogoutButtonClicked"/>
             </HBox>
-            <CheckBox fx:id="chbMockTasks" text="%checkbox.mockTasks" focusTraversable="false" visible="false" managed="false"/>
+            <CheckBox fx:id="chbMockTasks" text="%checkbox.mockTasks" focusTraversable="false" visible="false"/>
         </VBox>
     </right>
 </BorderPane>

@@ -16,10 +16,10 @@ public class GetPersonInfoByIdWorkflowTask implements WorkflowTask
 	@Output private PersonInfo personInfo;
 	
 	@Override
-	public void execute() throws Signal
+	public void execute(Integer workflowId, Long workflowTcn) throws Signal
 	{
 		PersonInfoByIdAPI personInfoByIdAPI = Context.getWebserviceManager().getApi(PersonInfoByIdAPI.class);
-		Call<PersonInfo> apiCall = personInfoByIdAPI.getPersonInfoById(personId, 0);
+		Call<PersonInfo> apiCall = personInfoByIdAPI.getPersonInfoById(workflowId, workflowTcn, personId, 0);
 		TaskResponse<PersonInfo> taskResponse = Context.getWebserviceManager().executeApi(apiCall);
 		resetWorkflowStepIfNegativeOrNullTaskResponse(taskResponse);
 		

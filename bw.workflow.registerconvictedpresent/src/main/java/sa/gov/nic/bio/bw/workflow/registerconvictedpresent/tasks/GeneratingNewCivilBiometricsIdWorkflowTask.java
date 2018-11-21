@@ -16,10 +16,11 @@ public class GeneratingNewCivilBiometricsIdWorkflowTask implements WorkflowTask
 	@Output	private Long criminalBiometricsId;
 	
 	@Override
-	public void execute() throws Signal
+	public void execute(Integer workflowId, Long workflowTcn) throws Signal
 	{
 		ConvictedReportAPI convictedReportAPI = Context.getWebserviceManager().getApi(ConvictedReportAPI.class);
-		Call<Long> apiCall = convictedReportAPI.generateGeneralFileNumber(personId, civilBiometricsId);
+		Call<Long> apiCall = convictedReportAPI.generateGeneralFileNumber(workflowId, workflowTcn, personId,
+		                                                                  civilBiometricsId);
 		TaskResponse<Long> taskResponse = Context.getWebserviceManager().executeApi(apiCall);
 		resetWorkflowStepIfNegativeOrNullTaskResponse(taskResponse);
 		

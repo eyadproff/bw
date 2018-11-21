@@ -21,6 +21,7 @@ public class Context
 {
 	private static final Context INSTANCE = new Context();
 	
+	private String appVersion;
 	private RuntimeEnvironment runtimeEnvironment;
 	private ConfigManager configManager;
 	private WorkflowManager workflowManager;
@@ -38,6 +39,11 @@ public class Context
 	private Map<String, ResourceBundleProvider> moduleResourceBundleProviders;
 	
 	private Context(){}
+	
+	public static void attachAppVersion(String appVersion)
+	{
+		INSTANCE.appVersion = appVersion;
+	}
 	
 	public static void attach(RuntimeEnvironment runtimeEnvironment, ConfigManager configManager,
 	                          WorkflowManager workflowManager, WebserviceManager webserviceManager,
@@ -62,6 +68,7 @@ public class Context
 		INSTANCE.moduleResourceBundleProviders = moduleResourceBundleProviders;
 	}
 	
+	public static String getAppVersion(){return INSTANCE.appVersion;}
 	public static RuntimeEnvironment getRuntimeEnvironment(){return INSTANCE.runtimeEnvironment;}
 	public static ConfigManager getConfigManager(){return INSTANCE.configManager;}
 	public static WorkflowManager getWorkflowManager(){return INSTANCE.workflowManager;}

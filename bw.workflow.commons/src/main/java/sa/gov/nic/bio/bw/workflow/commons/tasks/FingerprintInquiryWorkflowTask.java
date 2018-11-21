@@ -21,7 +21,7 @@ public class FingerprintInquiryWorkflowTask implements WorkflowTask
 	@Output private Integer inquiryId;
 	
 	@Override
-	public void execute() throws Signal
+	public void execute(Integer workflowId, Long workflowTcn) throws Signal
 	{
 		FingerprintInquiryAPI fingerprintInquiryAPI =
 				Context.getWebserviceManager().getApi(FingerprintInquiryAPI.class);
@@ -31,7 +31,7 @@ public class FingerprintInquiryWorkflowTask implements WorkflowTask
 		String b = new Gson().toJson(missingFingerprints,
 		                             TypeToken.getParameterized(List.class, Integer.class).getType());
 		
-		Call<Integer> apiCall = fingerprintInquiryAPI.inquireWithFingerprints(a, b);
+		Call<Integer> apiCall = fingerprintInquiryAPI.inquireWithFingerprints(workflowId, workflowTcn, a, b);
 		TaskResponse<Integer> taskResponse = Context.getWebserviceManager().executeApi(apiCall);
 		resetWorkflowStepIfNegativeOrNullTaskResponse(taskResponse);
 		

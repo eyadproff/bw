@@ -33,6 +33,10 @@ public interface AppConstants
 	                                                                    KeyCombination.CONTROL_DOWN,
 	                                                                    KeyCombination.SHIFT_DOWN,
 	                                                                    KeyCombination.ALT_DOWN);
+	KeyCombination SHOWING_MOCK_TASKS_KEY_COMBINATION = new KeyCodeCombination(KeyCode.M,
+                                                                               KeyCombination.CONTROL_DOWN,
+                                                                               KeyCombination.SHIFT_DOWN,
+                                                                               KeyCombination.ALT_DOWN);
 	
 	long SAMIS_DB_DATE_NOT_SET_VALUE = -62135780400000L;
 }

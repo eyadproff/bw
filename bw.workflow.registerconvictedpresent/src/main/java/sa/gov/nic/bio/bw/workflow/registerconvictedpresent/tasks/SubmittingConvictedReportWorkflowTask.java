@@ -17,11 +17,12 @@ public class SubmittingConvictedReportWorkflowTask implements WorkflowTask
 	@Output private ConvictedReportResponse convictedReportResponse;
 	
 	@Override
-	public void execute() throws Signal
+	public void execute(Integer workflowId, Long workflowTcn) throws Signal
 	{
 		ConvictedReportAPI convictedReportAPI = Context.getWebserviceManager().getApi(ConvictedReportAPI.class);
 		String convictedReportJson = AppUtils.toJson(convictedReport);
-		Call<ConvictedReportResponse> apiCall = convictedReportAPI.submitConvictedReport(convictedReportJson);
+		Call<ConvictedReportResponse> apiCall = convictedReportAPI.submitConvictedReport(workflowId, workflowTcn,
+		                                                                                 convictedReportJson);
 		TaskResponse<ConvictedReportResponse> taskResponse = Context.getWebserviceManager().executeApi(apiCall);
 		resetWorkflowStepIfNegativeOrNullTaskResponse(taskResponse);
 		

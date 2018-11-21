@@ -18,10 +18,11 @@ public class SearchByFacePhotoWorkflowTask implements WorkflowTask
 	@Output private List<Candidate> candidates;
 	
 	@Override
-	public void execute() throws Signal
+	public void execute(Integer workflowId, Long workflowTcn) throws Signal
 	{
 		SearchByFaceImageAPI searchByFaceImageAPI = Context.getWebserviceManager().getApi(SearchByFaceImageAPI.class);
-		Call<List<Candidate>> apiCall = searchByFaceImageAPI.searchByFaceImage(facePhotoBase64);
+		Call<List<Candidate>> apiCall = searchByFaceImageAPI.searchByFaceImage(workflowId, workflowTcn,
+		                                                                       facePhotoBase64);
 		TaskResponse<List<Candidate>> taskResponse = Context.getWebserviceManager().executeApi(apiCall);
 		resetWorkflowStepIfNegativeOrNullTaskResponse(taskResponse);
 		

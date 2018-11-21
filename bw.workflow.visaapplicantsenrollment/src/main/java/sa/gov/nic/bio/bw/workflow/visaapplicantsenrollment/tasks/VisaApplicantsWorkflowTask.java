@@ -17,7 +17,7 @@ public class VisaApplicantsWorkflowTask implements WorkflowTask
 	@Output private VisaApplicantEnrollmentResponse visaApplicantEnrollmentResponse;
 	
 	@Override
-	public void execute() throws Signal
+	public void execute(Integer workflowId, Long workflowTcn) throws Signal
 	{
 		VisaApplicantsEnrollmentAPI visaApplicantsEnrollmentAPI =
 											Context.getWebserviceManager().getApi(VisaApplicantsEnrollmentAPI.class);
@@ -25,7 +25,9 @@ public class VisaApplicantsWorkflowTask implements WorkflowTask
 		String visaApplicantInfoJson = AppUtils.toJson(visaApplicantInfo);
 		
 		Call<VisaApplicantEnrollmentResponse> apiCall =
-												visaApplicantsEnrollmentAPI.enrollVisaApplicant(visaApplicantInfoJson);
+												visaApplicantsEnrollmentAPI.enrollVisaApplicant(workflowId,
+												                                                workflowTcn,
+												                                                visaApplicantInfoJson);
 		TaskResponse<VisaApplicantEnrollmentResponse> taskResponse = Context.getWebserviceManager().executeApi(apiCall);
 		
 		resetWorkflowStepIfNegativeOrNullTaskResponse(taskResponse);

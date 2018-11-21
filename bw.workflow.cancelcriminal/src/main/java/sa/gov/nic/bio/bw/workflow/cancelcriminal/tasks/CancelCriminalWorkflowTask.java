@@ -20,7 +20,7 @@ public class CancelCriminalWorkflowTask implements WorkflowTask
 	@Output private Boolean success;
 	
 	@Override
-	public void execute() throws Signal
+	public void execute(Integer workflowId, Long workflowTcn) throws Signal
 	{
 		CancelCriminalAPI cancelCriminalAPI = Context.getWebserviceManager().getApi(CancelCriminalAPI.class);
 		Call<Boolean> apiCall;
@@ -30,12 +30,13 @@ public class CancelCriminalWorkflowTask implements WorkflowTask
 			default:
 			case BY_PERSON_ID:
 			{
-				apiCall = cancelCriminalAPI.cancelCriminalByPersonId(personId, samisIdType, criminalId);
+				apiCall = cancelCriminalAPI.cancelCriminalByPersonId(workflowId, workflowTcn, personId, samisIdType,
+				                                                     criminalId);
 				break;
 			}
 			case BY_INQUIRY_ID:
 			{
-				apiCall = cancelCriminalAPI.cancelCriminalByInquiryId(inquiryId, criminalId);
+				apiCall = cancelCriminalAPI.cancelCriminalByInquiryId(workflowId, workflowTcn, inquiryId, criminalId);
 				break;
 			}
 		}

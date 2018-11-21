@@ -30,7 +30,7 @@ import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.webservice.ConvictedR
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-@AssociatedMenu(id = "menu.register.registerConvictedPresent", title = "menu.title", order = 2,
+@AssociatedMenu(workflowId = 1008, menuId = "menu.register.registerConvictedPresent", menuTitle = "menu.title", menuOrder = 2,
 				devices = {Device.FINGERPRINT_SCANNER, Device.CAMERA})
 @WithLookups({PersonTypesLookup.class, DocumentTypesLookup.class, CountriesLookup.class, CrimeTypesLookup.class})
 @Wizard({@Step(iconId = "\\uf256", title = "wizard.fingerprintCapturing"),

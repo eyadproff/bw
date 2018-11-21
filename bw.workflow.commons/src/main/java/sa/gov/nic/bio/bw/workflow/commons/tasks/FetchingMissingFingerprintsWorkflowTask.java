@@ -17,18 +17,11 @@ public class FetchingMissingFingerprintsWorkflowTask implements WorkflowTask
 	@Input(alwaysRequired = true) private long personId;
 	@Output private List<Integer> missingFingerprints;
 	
-	public static TaskResponse<List<Integer>> execute(long personId)
-	{
-		FingerprintsByIdAPI fingerprintsByIdAPI = Context.getWebserviceManager().getApi(FingerprintsByIdAPI.class);
-		Call<List<Integer>> apiCall = fingerprintsByIdAPI.getFingerprintAvailability(personId);
-		return Context.getWebserviceManager().executeApi(apiCall);
-	}
-	
 	@Override
-	public void execute() throws Signal
+	public void execute(Integer workflowId, Long workflowTcn) throws Signal
 	{
 		FingerprintsByIdAPI fingerprintsByIdAPI = Context.getWebserviceManager().getApi(FingerprintsByIdAPI.class);
-		Call<List<Integer>> apiCall = fingerprintsByIdAPI.getFingerprintAvailability(personId);
+		Call<List<Integer>> apiCall = fingerprintsByIdAPI.getFingerprintAvailability(workflowId, workflowTcn, personId);
 		TaskResponse<List<Integer>> taskResponse = Context.getWebserviceManager().executeApi(apiCall);
 		resetWorkflowStepIfNegativeOrNullTaskResponse(taskResponse);
 		

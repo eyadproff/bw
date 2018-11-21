@@ -15,7 +15,7 @@ public class MenuItem implements Comparable<MenuItem>
 	private int index;
 	private String menuId;
 	private String label;
-	private int order; // lowest order == top menu
+	private int order; // lowest menuOrder == top menu
 	private Class<? extends Workflow> workflowClass;
 	private String iconId;
 	private Set<Device> devices;
@@ -75,7 +75,7 @@ public class MenuItem implements Comparable<MenuItem>
 	public String toString()
 	{
 		return "MenuItem{" + "index=" + index + ", menuId='" + menuId + '\'' + ", label='" + label + '\'' +
-			   ", order=" + order + ", workflowClass=" + workflowClass + ", iconId='" + iconId + '\'' + ", devices=" +
+			   ", menuOrder=" + order + ", workflowClass=" + workflowClass + ", iconId='" + iconId + '\'' + ", devices=" +
 			   devices + ", selected=" + selected + '}';
 	}
 	

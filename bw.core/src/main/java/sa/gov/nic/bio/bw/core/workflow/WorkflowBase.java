@@ -16,8 +16,8 @@ import java.util.Map;
  */
 public abstract class WorkflowBase implements Workflow, AppLogger
 {
-	protected final Map<String, Object> uiInputData = new HashMap<>();
-	
+	Long tcn;
+	Map<String, Object> uiInputData = new HashMap<>();
 	boolean renderedAtLeastOnceInTheStep = false;
 	
 	/**
@@ -82,14 +82,16 @@ public abstract class WorkflowBase implements Workflow, AppLogger
 	
 	public void executeTask(Class<? extends WorkflowTask> taskClass) throws Signal
 	{
-		boolean mockTasksEnabled = Context.getCoreFxController().isMockTasksEnabled();
+		AssociatedMenu annotation = getClass().getAnnotation(AssociatedMenu.class);
+		Integer workflowId = annotation != null ? annotation.workflowId() : null;
 		
 		try
 		{
 			WorkflowTask workflowTask = taskClass.getConstructor().newInstance();
 			Workflow.loadWorkflowInputs(workflowTask, uiInputData, false, false);
-			if(mockTasksEnabled) workflowTask.mockExecute();
-			else workflowTask.execute();
+			if(Context.getCoreFxController().isMockTasksEnabled()) workflowTask.mockExecute();
+			else if(workflowId != null) workflowTask.execute(workflowId, tcn);
+			else workflowTask.execute(null, null);
 			Workflow.saveWorkflowOutputs(workflowTask, uiInputData);
 		}
 		catch(Exception e)

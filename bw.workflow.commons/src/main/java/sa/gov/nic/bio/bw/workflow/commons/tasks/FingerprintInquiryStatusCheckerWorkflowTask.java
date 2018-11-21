@@ -29,13 +29,14 @@ public class FingerprintInquiryStatusCheckerWorkflowTask implements WorkflowTask
 	@Output private PersonInfo personInfo;
 	
 	@Override
-	public void execute() throws Signal
+	public void execute(Integer workflowId, Long workflowTcn) throws Signal
 	{
 		FingerprintInquiryAPI fingerprintInquiryAPI =
 				Context.getWebserviceManager().getApi(FingerprintInquiryAPI.class);
-		Call<FingerprintInquiryStatusResult> apiCall = fingerprintInquiryAPI.checkFingerprintsInquiryStatus(inquiryId);
-		TaskResponse<FingerprintInquiryStatusResult> taskResponse =
-																	Context.getWebserviceManager().executeApi(apiCall);
+		Call<FingerprintInquiryStatusResult> apiCall =
+							fingerprintInquiryAPI.checkFingerprintsInquiryStatus(workflowId, workflowTcn, inquiryId);
+		TaskResponse<FingerprintInquiryStatusResult> taskResponse = Context.getWebserviceManager()
+																		.executeApi(apiCall);
 		resetWorkflowStepIfNegativeOrNullTaskResponse(taskResponse);
 		
 		FingerprintInquiryStatusResult result = taskResponse.getResult();

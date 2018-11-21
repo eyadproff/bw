@@ -14,6 +14,6 @@
         </ImageView>
         <Label text="%label.developedBy" styleClass="credit-text"/>
     </HBox>
-    <CheckBox fx:id="chbMockTasks" text="%checkbox.mockTasks" AnchorPane.leftAnchor="0.0" AnchorPane.bottomAnchor="0.0" focusTraversable="false" visible="false" managed="false"/>
+    <CheckBox fx:id="chbMockTasks" text="%checkbox.mockTasks" AnchorPane.leftAnchor="0.0" AnchorPane.bottomAnchor="0.0" focusTraversable="false" visible="false"/>
     <Label fx:id="lblScenicViewShortcut" text="%label.scenicViewShortcut" AnchorPane.rightAnchor="0.0" AnchorPane.bottomAnchor="0.0" visible="false" managed="false"/>
 </AnchorPane>

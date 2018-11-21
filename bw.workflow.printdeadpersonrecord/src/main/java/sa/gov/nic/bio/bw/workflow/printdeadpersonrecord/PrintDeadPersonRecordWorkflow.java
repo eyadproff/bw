@@ -21,7 +21,7 @@ import sa.gov.nic.bio.bw.workflow.printdeadpersonrecord.tasks.DeadPersonRecordBy
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-@AssociatedMenu(id = "menu.query.printDeadPersonRecord", title = "menu.title", order = 3,
+@AssociatedMenu(workflowId = 1006, menuId = "menu.query.printDeadPersonRecord", menuTitle = "menu.title", menuOrder = 3,
 				devices = Device.BIO_UTILITIES)
 @WithLookups({PersonTypesLookup.class, DocumentTypesLookup.class, CountriesLookup.class})
 @Wizard({@Step(iconId = "\\uf2c1", title = "wizard.enteringRecordId"),

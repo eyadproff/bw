@@ -17,13 +17,12 @@ public class MenuRolesLookupWorkflowTask implements WorkflowTask
 	@Output private Map<String, Set<String>> menusRoles;
 	
 	@Override
-	public void execute() throws Signal
+	public void execute(Integer workflowId, Long workflowTcn) throws Signal
 	{
 		LookupAPI lookupAPI = Context.getWebserviceManager().getApi(LookupAPI.class);
-		Call<Map<String, Set<String>>> menusRolesCall = lookupAPI.lookupMenuRoles(AppConstants.APP_CODE);
-		TaskResponse<Map<String, Set<String>>> menusRolesResponse = Context.getWebserviceManager()
-																			  .executeApi(menusRolesCall);
-		resetWorkflowStepIfNegativeOrNullTaskResponse(menusRolesResponse);
-		menusRoles = menusRolesResponse.getResult();
+		Call<Map<String, Set<String>>> apiCall = lookupAPI.lookupMenuRoles(AppConstants.APP_CODE);
+		TaskResponse<Map<String, Set<String>>> taskResponse = Context.getWebserviceManager().executeApi(apiCall);
+		resetWorkflowStepIfNegativeOrNullTaskResponse(taskResponse);
+		menusRoles = taskResponse.getResult();
 	}
 }

@@ -74,7 +74,7 @@ public class InquiryResultPaneFxController extends WizardStepFxControllerBase
 			}
 			else showPersonInfoPane(false);
 		}
-		else // workflow: inquiry by person id
+		else // workflow: inquiry by person menuId
 		{
 			gridPane.getChildren().remove(lblCivilBiometricsIdLabel);
 			gridPane.getChildren().remove(lblCivilBiometricsId);

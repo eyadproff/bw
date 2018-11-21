@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ButtonType?>
+<?import javafx.scene.control.Dialog?>
+<?import javafx.scene.control.DialogPane?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.VBox?>
+<?import sa.gov.nic.bio.bw.workflow.commons.ui.PTableColumn?>
+<?import javafx.scene.layout.BorderPane?>
+<Dialog xmlns="http://javafx.com/javafx"
+        xmlns:fx="http://javafx.com/fxml"
+        fx:id="dialog" title="%dialog.mockTask.title"
+        fx:controller="sa.gov.nic.bio.bw.core.controllers.MockTaskDialogFxController">
+    <dialogPane>
+        <DialogPane prefWidth="600.0" prefHeight="450.0" headerText="%dialog.mockTask.header" stylesheets="@../css/style.css">
+            <graphic>
+                <ImageView>
+                    <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/icon_xo.png"/>
+                </ImageView>
+            </graphic>
+            <content>
+                <SplitPane dividerPositions="0.65">
+                    <padding>
+                        <Insets topRightBottomLeft="0.0"/>
+                    </padding>
+                    <VBox>
+                        <SplitPane orientation="VERTICAL">
+                            <VBox>
+                                <TitledPane fx:id="tpTaskInputs" text="%label.taskInputs" alignment="BOTTOM_CENTER" focusTraversable="false" collapsible="false">
+                                    <ScrollPane fitToHeight="true" fitToWidth="true">
+                                        <TableView fx:id="tvTaskInputs">
+                                            <columnResizePolicy>
+                                                <TableView fx:constant="UNCONSTRAINED_RESIZE_POLICY"/>
+                                            </columnResizePolicy>
+                                            <placeholder>
+                                                <Label text="%table.placeholder.noInputs"/>
+                                            </placeholder>
+                                            <columns>
+                                                <PTableColumn fx:id="tcInputSequence" text="#" reorderable="false" percentageWidth="0.05"/>
+                                                <PTableColumn fx:id="tcInputName" text="%table.column.name" reorderable="false" percentageWidth="0.3"/>
+                                                <PTableColumn fx:id="tvInputType" text="%table.column.type" reorderable="false" percentageWidth="0.15"/>
+                                                <PTableColumn fx:id="tcInputAlwaysRequired" text="%table.column.alwaysRequired" reorderable="false" percentageWidth="0.25"/>
+                                                <PTableColumn fx:id="tcInputRequiredOnlyIf" text="%table.column.requirementConditions" reorderable="false" percentageWidth="0.25"/>
+                                            </columns>
+                                        </TableView>
+                                    </ScrollPane>
+                                </TitledPane>
+                            </VBox>
+                            <SplitPane>
+                                <VBox>
+                                    <TitledPane fx:id="tpTaskResults" text="%label.taskResults" alignment="BOTTOM_CENTER" focusTraversable="false" collapsible="false">
+                                        <ScrollPane fitToHeight="true" fitToWidth="true">
+                                            <TableView fx:id="tvTaskResults">
+                                                <placeholder>
+                                                    <Label text="%table.placeholder.noResultsAvailable"/>
+                                                </placeholder>
+                                                <columns>
+                                                    <PTableColumn fx:id="tcResultSequence" text="#" reorderable="false" percentageWidth="0.1"/>
+                                                    <PTableColumn fx:id="tcResultName" text="%table.column.name" reorderable="false" percentageWidth="0.6"/>
+                                                    <PTableColumn fx:id="tvSuccessTask" text="%table.column.successfulTask" reorderable="false" percentageWidth="0.3"/>
+                                                </columns>
+                                            </TableView>
+                                        </ScrollPane>
+                                    </TitledPane>
+                                </VBox>
+                                <VBox>
+                                    <TitledPane fx:id="tpTaskOutputs" text="%label.taskOutputs" alignment="BOTTOM_CENTER" focusTraversable="false" collapsible="false">
+                                        <ScrollPane fitToHeight="true" fitToWidth="true">
+                                            <TableView fx:id="tvTaskOutputs">
+                                                <placeholder>
+                                                    <Label text="%table.placeholder.noOutputs"/>
+                                                </placeholder>
+                                                <columns>
+                                                    <PTableColumn fx:id="tcOutputSequence" text="#" reorderable="false" percentageWidth="0.1"/>
+                                                    <PTableColumn fx:id="tcOutputName" text="%table.column.name" reorderable="false" percentageWidth="0.6"/>
+                                                    <PTableColumn fx:id="tvOutputType" text="%table.column.type" reorderable="false" percentageWidth="0.3"/>
+                                                </columns>
+                                            </TableView>
+                                        </ScrollPane>
+                                    </TitledPane>
+                                </VBox>
+                            </SplitPane>
+                        </SplitPane>
+                    </VBox>
+                    <BorderPane>
+                        <center>
+                            <TitledPane fx:id="tpDetails" text="%label.details" alignment="BOTTOM_CENTER" maxHeight="Infinity" focusTraversable="false" collapsible="false">
+                                <ScrollPane fitToHeight="true" fitToWidth="true">
+                                    <TextArea fx:id="txtDetails" editable="false"/>
+                                </ScrollPane>
+                            </TitledPane>
+                        </center>
+                    </BorderPane>
+                </SplitPane>
+            </content>
+            <ButtonType fx:id="btRunMockTask" text="%button.executeMockTask"/>
+            <ButtonType fx:id="btRunRealTask" text="%button.executeRealTask"/>
+        </DialogPane>
+    </dialogPane>
+</Dialog>

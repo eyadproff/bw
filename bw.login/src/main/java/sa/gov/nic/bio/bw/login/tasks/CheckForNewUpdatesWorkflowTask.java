@@ -16,7 +16,7 @@ import java.util.logging.Level;
 public class CheckForNewUpdatesWorkflowTask implements WorkflowTask
 {
 	@Override
-	public void execute() throws Signal
+	public void execute(Integer workflowId, Long workflowTcn) throws Signal
 	{
 		if(Context.getRuntimeEnvironment() != RuntimeEnvironment.LOCAL) // if not local, check for updates
 		{

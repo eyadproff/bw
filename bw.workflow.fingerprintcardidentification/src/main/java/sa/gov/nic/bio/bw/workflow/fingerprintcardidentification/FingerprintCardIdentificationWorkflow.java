@@ -24,7 +24,7 @@ import sa.gov.nic.bio.bw.workflow.fingerprintcardidentification.controllers.Spec
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-@AssociatedMenu(id = "menu.query.fingerprintCardIdentification", title = "menu.title", order = 5,
+@AssociatedMenu(workflowId = 1005, menuId = "menu.query.fingerprintCardIdentification", menuTitle = "menu.title", menuOrder = 5,
 				devices = Device.BIO_UTILITIES)
 @WithLookups({PersonTypesLookup.class, DocumentTypesLookup.class, CountriesLookup.class})
 @Wizard({@Step(iconId = "file", title = "wizard.scanFingerprintCard"),

@@ -11,7 +11,7 @@ import sa.gov.nic.bio.bw.workflow.citizenenrollment.controllers.PersonIdPaneFxCo
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-@AssociatedMenu(id = "menu.register.citizenEnrollment", title = "menu.title", order = 1,
+@AssociatedMenu(workflowId = 1002, menuId = "menu.register.citizenEnrollment", menuTitle = "menu.title", menuOrder = 1,
 				devices = {Device.FINGERPRINT_SCANNER, Device.CAMERA})
 @Wizard({@Step(iconId = "\\uf2bb", title = "wizard.InquiryByPersonId"),
 		@Step(iconId = "database", title = "wizard.inquiryResult"),
