@@ -18,7 +18,7 @@ public class SearchByFacePhotoWorkflowTask implements WorkflowTask
 	@Output private List<Candidate> candidates;
 	
 	@Override
-	public void execute(Integer workflowId, Long workflowTcn) throws Signal
+	public void execute(Integer workflowId, Long workflowTcn) throws Signal, InterruptedException
 	{
 		SearchByFaceImageAPI searchByFaceImageAPI = Context.getWebserviceManager().getApi(SearchByFaceImageAPI.class);
 		Call<List<Candidate>> apiCall = searchByFaceImageAPI.searchByFaceImage(workflowId, workflowTcn,

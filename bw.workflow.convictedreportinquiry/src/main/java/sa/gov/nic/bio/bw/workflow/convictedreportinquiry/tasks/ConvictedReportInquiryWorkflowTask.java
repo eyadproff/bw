@@ -18,7 +18,7 @@ public class ConvictedReportInquiryWorkflowTask implements WorkflowTask
 	@Output private List<ConvictedReport> convictedReports;
 	
 	@Override
-	public void execute(Integer workflowId, Long workflowTcn) throws Signal
+	public void execute(Integer workflowId, Long workflowTcn) throws Signal, InterruptedException
 	{
 		ConvictedReportInquiryAPI convictedReportInquiryAPI =
 												Context.getWebserviceManager().getApi(ConvictedReportInquiryAPI.class);

@@ -49,7 +49,7 @@ public class LoginWorkflow extends SinglePageWorkflowBase
 	{
 		renderUiAndWaitForUserInput(LoginPaneFxController.class);
 		
-		executeTask(CheckForNewUpdatesWorkflowTask.class);
+		executeWorkflowTask(CheckForNewUpdatesWorkflowTask.class);
 		
 		LoginBean loginBean;
 		LoginMethod loginMethod = getData(LoginPaneFxController.class, "loginMethod");
@@ -62,7 +62,7 @@ public class LoginWorkflow extends SinglePageWorkflowBase
 				passData(LoginPaneFxController.class, LoginByUsernameAndPasswordWorkflowTask.class,
 				         "username", "password");
 				
-				executeTask(LoginByUsernameAndPasswordWorkflowTask.class);
+				executeWorkflowTask(LoginByUsernameAndPasswordWorkflowTask.class);
 				loginBean = getData(LoginByUsernameAndPasswordWorkflowTask.class, "loginBean");
 				break;
 			}
@@ -71,25 +71,25 @@ public class LoginWorkflow extends SinglePageWorkflowBase
 				passData(LoginPaneFxController.class, LoginByUsernameAndFingerprintWorkflowTask.class,
 				         "username", "fingerPosition", "fingerprint");
 				
-				executeTask(LoginByUsernameAndFingerprintWorkflowTask.class);
+				executeWorkflowTask(LoginByUsernameAndFingerprintWorkflowTask.class);
 				loginBean = getData(LoginByUsernameAndFingerprintWorkflowTask.class, "loginBean");
 				break;
 			}
 		}
 		
-		executeTask(UserSessionCreationWorkflowTask.class);
-		executeTask(MenuRolesLookupWorkflowTask.class);
+		executeWorkflowTask(UserSessionCreationWorkflowTask.class);
+		executeWorkflowTask(MenuRolesLookupWorkflowTask.class);
 		
 		setData(PrepareHomeBeanWorkflowTask.class, "userInfo", loginBean.getUserInfo());
-		executeTask(PrepareHomeBeanWorkflowTask.class);
+		executeWorkflowTask(PrepareHomeBeanWorkflowTask.class);
 		
 		passData(MenuRolesLookupWorkflowTask.class, PrepareUserMenusWorkflowTask.class, "menusRoles");
 		setData(PrepareUserMenusWorkflowTask.class, "userRoles",
                 Arrays.asList(loginBean.getUserInfo().getOriginalStringRoles()));
-		executeTask(PrepareUserMenusWorkflowTask.class);
+		executeWorkflowTask(PrepareUserMenusWorkflowTask.class);
 		
 		setData(ScheduleRefreshTokenWorkflowTask.class, "userToken", loginBean.getUserToken());
-		executeTask(ScheduleRefreshTokenWorkflowTask.class);
+		executeWorkflowTask(ScheduleRefreshTokenWorkflowTask.class);
 		
 		removeData(LoginPaneFxController.class, "username");
 		removeData(LoginPaneFxController.class, "password");

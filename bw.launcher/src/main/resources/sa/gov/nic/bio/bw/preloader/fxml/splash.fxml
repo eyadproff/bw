@@ -7,7 +7,7 @@
 <?import javafx.scene.control.ProgressBar?>
 <?import javafx.stage.Stage?>
 
-<Stage xmlns="http://javafx.com/javafx/8.0.152"
+<Stage xmlns="http://javafx.com/javafx/11"
        height="300" width="620" alwaysOnTop="true">
     <icons>
         <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/icon_app.png"/>

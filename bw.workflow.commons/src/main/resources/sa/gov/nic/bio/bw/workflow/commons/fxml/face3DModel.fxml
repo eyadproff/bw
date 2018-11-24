@@ -7,7 +7,7 @@
 <?import javafx.scene.shape.MeshView?>
 <?import javafx.scene.shape.TriangleMesh?>
 
-<Group xmlns="http://javafx.com/javafx/8.0.152" xmlns:fx="http://javafx.com/fxml/1">
+<Group xmlns="http://javafx.com/javafx/11" xmlns:fx="http://javafx.com/fxml/1">
     <Group id="face3D">
         <MeshView fx:id="mvLeftEye">
             <material>

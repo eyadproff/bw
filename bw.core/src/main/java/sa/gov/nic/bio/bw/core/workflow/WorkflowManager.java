@@ -3,9 +3,10 @@ package sa.gov.nic.bio.bw.core.workflow;
 import sa.gov.nic.bio.bw.core.interfaces.AppLogger;
 import sa.gov.nic.bio.bw.core.interfaces.FormRenderer;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.SynchronousQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * It manages starting the core workflow and submitting user tasks to the core workflow. A user task represents
@@ -17,8 +18,11 @@ public class WorkflowManager implements AppLogger
 {
 	private CoreWorkflow coreWorkflow;
 	private Thread workflowThread;
-	protected FormRenderer formRenderer;
-	protected BlockingQueue<Map<String, Object>> userTasks;
+	private FormRenderer formRenderer;
+	private BlockingQueue<Map<String, Object>> userTasks;
+	private Workflow currentWorkflow;
+	
+	public void setCurrentWorkflow(Workflow currentWorkflow){this.currentWorkflow = currentWorkflow;}
 	
 	public void setFormRenderer(FormRenderer formRenderer)
 	{
@@ -39,7 +43,7 @@ public class WorkflowManager implements AppLogger
 		}
 		
 		setFormRenderer(formRenderer);
-		this.userTasks = new SynchronousQueue<>();
+		userTasks = new LinkedBlockingQueue<>();
 		
 		workflowThread = new Thread(() ->
 		{
@@ -82,7 +86,7 @@ public class WorkflowManager implements AppLogger
 	/**
 	 * Interrupt the core workflow. Useful on exiting the application.
 	 */
-	public synchronized void interruptTheWorkflow()
+	public synchronized void interruptCoreWorkflow()
 	{
 		if(workflowThread == null)
 		{
@@ -106,4 +110,13 @@ public class WorkflowManager implements AppLogger
 	public FormRenderer getFormRenderer(){return formRenderer;}
 	
 	public BlockingQueue<Map<String, Object>> getUserTasks(){return userTasks;}
+	
+	public void interruptCurrentWorkflow(Signal interruptionSignal)
+	{
+		if(currentWorkflow != null)
+		{
+			currentWorkflow.interrupt(interruptionSignal);
+			submitUserTask(new HashMap<>()); // in case the workflow is waiting at queue.take()
+		}
+	}
 }

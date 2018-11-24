@@ -18,7 +18,7 @@ public class FetchingMissingFingerprintsWorkflowTask implements WorkflowTask
 	@Output private List<Integer> missingFingerprints;
 	
 	@Override
-	public void execute(Integer workflowId, Long workflowTcn) throws Signal
+	public void execute(Integer workflowId, Long workflowTcn) throws Signal, InterruptedException
 	{
 		FingerprintsByIdAPI fingerprintsByIdAPI = Context.getWebserviceManager().getApi(FingerprintsByIdAPI.class);
 		Call<List<Integer>> apiCall = fingerprintsByIdAPI.getFingerprintAvailability(workflowId, workflowTcn, personId);

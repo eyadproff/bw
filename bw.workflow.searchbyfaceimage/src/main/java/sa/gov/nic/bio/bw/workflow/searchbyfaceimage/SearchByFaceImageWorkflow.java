@@ -89,7 +89,7 @@ public class SearchByFaceImageWorkflow extends WizardWorkflowBase
 				
 				passData(ConfirmImageFxController.class, SearchByFacePhotoWorkflowTask.class,
 				         "facePhotoBase64");
-				executeTask(SearchByFacePhotoWorkflowTask.class);
+				executeWorkflowTask(SearchByFacePhotoWorkflowTask.class);
 				
 				break;
 			}

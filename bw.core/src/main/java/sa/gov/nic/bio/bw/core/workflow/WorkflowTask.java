@@ -9,9 +9,9 @@ import java.util.Map;
 
 public interface WorkflowTask extends AppLogger
 {
-	void execute(Integer workflowId, Long workflowTcn) throws Signal;
+	void execute(Integer workflowId, Long workflowTcn) throws Signal, InterruptedException;
 	
-	default void mockExecute() throws Signal
+	default void mockExecute() throws Signal, InterruptedException
 	{
 		execute(null, null);
 		

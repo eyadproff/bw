@@ -33,7 +33,7 @@ import java.util.Base64;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
-@FxmlFile("inquiryResult.fxml")
+@FxmlFile("inquiryByFingerprintsResult.fxml")
 public class InquiryResultPaneFxController extends WizardStepFxControllerBase
 {
 	@Input private Status status;
@@ -219,8 +219,8 @@ public class InquiryResultPaneFxController extends WizardStepFxControllerBase
 	
 	private void populateData()
 	{
-		NormalizedPersonInfo normalizedPersonInfo = new NormalizedPersonInfo(personId, civilBiometricsId,
-		                                                                     criminalBiometricsId, personInfo,
+		NormalizedPersonInfo normalizedPersonInfo = new NormalizedPersonInfo(personId, /*civilBiometricsId,
+		                                                                     criminalBiometricsId,*/ personInfo,
 		                                                                     null,
 		                                                                     resources.getString("label.male"),
 		                                                                     resources.getString("label.female"));
@@ -236,8 +236,8 @@ public class InquiryResultPaneFxController extends WizardStepFxControllerBase
 		}
 		
 		lblPersonId.setText(normalizedPersonInfo.getPersonIdLabel());
-		lblCivilBiometricsId.setText(normalizedPersonInfo.getCivilBiometricsIdLabel());
-		lblCriminalBiometricsId.setText(normalizedPersonInfo.getCriminalBiometricsIdLabel());
+		//lblCivilBiometricsId.setText(normalizedPersonInfo.getCivilBiometricsIdLabel());
+		//lblCriminalBiometricsId.setText(normalizedPersonInfo.getCriminalBiometricsIdLabel());
 		lblFirstName.setText(normalizedPersonInfo.getFirstNameLabel());
 		lblFatherName.setText(normalizedPersonInfo.getFatherNameLabel());
 		lblGrandfatherName.setText(normalizedPersonInfo.getGrandfatherNameLabel());
@@ -269,8 +269,9 @@ public class InquiryResultPaneFxController extends WizardStepFxControllerBase
 		                                                          normalizedPersonInfo.getBirthDateLabel(),
 		                                                          normalizedPersonInfo.getPersonIdLabel(),
 		                                                          normalizedPersonInfo.getPersonTypeLabel(),
-		                                                          normalizedPersonInfo.getCivilBiometricsIdLabel(),
-		                                                          normalizedPersonInfo.getCriminalBiometricsIdLabel(),
+		                                                          //normalizedPersonInfo.getCivilBiometricsIdLabel(),
+		                                                          //normalizedPersonInfo.getCriminalBiometricsIdLabel(),
+					                                              "", "",
 		                                                          normalizedPersonInfo.getDocumentId(),
 		                                                          normalizedPersonInfo.getDocumentTypeLabel(),
 		                                                          normalizedPersonInfo.getDocumentIssuanceDateLabel(),

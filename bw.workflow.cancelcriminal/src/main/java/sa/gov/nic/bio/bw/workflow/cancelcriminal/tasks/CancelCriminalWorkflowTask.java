@@ -20,7 +20,7 @@ public class CancelCriminalWorkflowTask implements WorkflowTask
 	@Output private Boolean success;
 	
 	@Override
-	public void execute(Integer workflowId, Long workflowTcn) throws Signal
+	public void execute(Integer workflowId, Long workflowTcn) throws Signal, InterruptedException
 	{
 		CancelCriminalAPI cancelCriminalAPI = Context.getWebserviceManager().getApi(CancelCriminalAPI.class);
 		Call<Boolean> apiCall;

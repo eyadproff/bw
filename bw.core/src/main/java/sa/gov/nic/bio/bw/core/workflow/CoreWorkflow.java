@@ -23,10 +23,13 @@ public class CoreWorkflow extends WorkflowBase
 		{
 			try
 			{
-				workflowMap.get(KEY_WORKFLOW_LOGIN).get(0).onProcess();
+				Workflow loginWorkflow = workflowMap.get(KEY_WORKFLOW_LOGIN).get(0);
+				Context.getWorkflowManager().setCurrentWorkflow(loginWorkflow);
+				loginWorkflow.onProcess();
 			}
 			catch(Signal loginSignal)
 			{
+				Context.getWorkflowManager().getUserTasks().clear();
 				SignalType loginSignalType = loginSignal.getSignalType();
 				
 				switch(loginSignalType)
@@ -35,10 +38,13 @@ public class CoreWorkflow extends WorkflowBase
 					{
 						try
 						{
-							workflowMap.get(KEY_WORKFLOW_HOME).get(0).onProcess();
+							Workflow homeWorkflow = workflowMap.get(KEY_WORKFLOW_HOME).get(0);
+							Context.getWorkflowManager().setCurrentWorkflow(homeWorkflow);
+							homeWorkflow.onProcess();
 						}
 						catch(Signal homeSignal)
 						{
+							Context.getWorkflowManager().getUserTasks().clear();
 							SignalType homeSignalType = homeSignal.getSignalType();
 							
 							switch(homeSignalType)
@@ -46,16 +52,19 @@ public class CoreWorkflow extends WorkflowBase
 								case LOGOUT:
 								{
 									Context.getExecutorService().submit(new LogoutTask());
+									Context.getWorkflowManager().setCurrentWorkflow(null);
 									break;
 								}
 								case INVALID_STATE:
 								{
 									handleInvalidStateSignal(homeSignal.getPayload());
+									Context.getWorkflowManager().setCurrentWorkflow(null);
 									break;
 								}
 								default: // wrong signal
 								{
 									LOGGER.severe("homeSignalType = " + homeSignalType);
+									Context.getWorkflowManager().setCurrentWorkflow(null);
 								}
 							}
 						}
@@ -64,11 +73,13 @@ public class CoreWorkflow extends WorkflowBase
 					case INVALID_STATE:
 					{
 						handleInvalidStateSignal(loginSignal.getPayload());
+						Context.getWorkflowManager().setCurrentWorkflow(null);
 						break;
 					}
 					default: // wrong signal
 					{
 						LOGGER.severe("loginSignalType = " + loginSignalType);
+						Context.getWorkflowManager().setCurrentWorkflow(null);
 					}
 				}
 				

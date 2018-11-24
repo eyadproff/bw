@@ -11,7 +11,7 @@ import sa.gov.nic.bio.bw.core.workflow.WizardWorkflowBase;
 import sa.gov.nic.bio.bw.workflow.commons.controllers.FaceCapturingFxController;
 import sa.gov.nic.bio.bw.workflow.commons.controllers.FingerprintCapturingFxController;
 import sa.gov.nic.bio.bw.workflow.commons.controllers.InquiryByFingerprintsPaneFxController;
-import sa.gov.nic.bio.bw.workflow.commons.controllers.InquiryResultPaneFxController;
+import sa.gov.nic.bio.bw.workflow.commons.controllers.InquiryByFingerprintsResultPaneFxController;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.CountriesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.DocumentTypesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.PersonTypesLookup;
@@ -107,27 +107,26 @@ public class RegisterConvictedReportPresentWorkflow extends WizardWorkflowBase
 					passData(FingerprintCapturingFxController.class, FingerprintInquiryWorkflowTask.class,
 					         "missingFingerprints");
 					
-					executeTask(FingerprintInquiryWorkflowTask.class);
+					executeWorkflowTask(FingerprintInquiryWorkflowTask.class);
 				}
 				
 				passData(FingerprintInquiryWorkflowTask.class, FingerprintInquiryStatusCheckerWorkflowTask.class,
 				         "inquiryId");
-				executeTask(FingerprintInquiryStatusCheckerWorkflowTask.class);
+				executeWorkflowTask(FingerprintInquiryStatusCheckerWorkflowTask.class);
 				
 				break;
 			}
 			case 3:
 			{
 				passData(FingerprintInquiryStatusCheckerWorkflowTask.class,
-				         InquiryResultPaneFxController.class,
-				         "status", "personId", "civilBiometricsId", "criminalBiometricsId",
-				         "personInfo");
-				renderUiAndWaitForUserInput(InquiryResultPaneFxController.class);
+				         InquiryByFingerprintsResultPaneFxController.class,
+				         "status", "civilBiometricsId", "criminalBiometricsId", "civilPersonIds");
+				renderUiAndWaitForUserInput(InquiryByFingerprintsResultPaneFxController.class);
 				break;
 			}
 			case 4:
 			{
-				passData(InquiryResultPaneFxController.class, PersonInfoPaneFxController.class,
+				passData(InquiryByFingerprintsResultPaneFxController.class, PersonInfoPaneFxController.class,
 				         "normalizedPersonInfo");
 				renderUiAndWaitForUserInput(PersonInfoPaneFxController.class);
 				break;
@@ -179,7 +178,7 @@ public class RegisterConvictedReportPresentWorkflow extends WizardWorkflowBase
 					passData(FingerprintInquiryStatusCheckerWorkflowTask.class,
 					         GeneratingNewCivilBiometricsIdWorkflowTask.class,
 					         "personId", "civilBiometricsId");
-					executeTask(GeneratingNewCivilBiometricsIdWorkflowTask.class);
+					executeWorkflowTask(GeneratingNewCivilBiometricsIdWorkflowTask.class);
 					criminalBiometricsId = getData(GeneratingNewCivilBiometricsIdWorkflowTask.class,
 					                               "criminalBiometricsId");
 				}
@@ -188,7 +187,7 @@ public class RegisterConvictedReportPresentWorkflow extends WizardWorkflowBase
 				                                          "convictedReport");
 				convictedReport.setGeneralFileNum(criminalBiometricsId);
 				setData(SubmittingConvictedReportWorkflowTask.class, "convictedReport", convictedReport);
-				executeTask(SubmittingConvictedReportWorkflowTask.class);
+				executeWorkflowTask(SubmittingConvictedReportWorkflowTask.class);
 				
 				break;
 			}

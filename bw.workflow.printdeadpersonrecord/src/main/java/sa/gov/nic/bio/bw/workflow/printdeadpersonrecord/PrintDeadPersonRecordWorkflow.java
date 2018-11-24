@@ -54,7 +54,7 @@ public class PrintDeadPersonRecordWorkflow extends WizardWorkflowBase
 				passData(RecordIdPaneFxController.class, DeadPersonRecordByIdWorkflowTask.class,
 				         "recordId");
 				
-				executeTask(DeadPersonRecordByIdWorkflowTask.class);
+				executeWorkflowTask(DeadPersonRecordByIdWorkflowTask.class);
 				
 				break;
 			}
@@ -69,7 +69,7 @@ public class PrintDeadPersonRecordWorkflow extends WizardWorkflowBase
 				if(samisId != null)
 				{
 					setData(GetPersonInfoByIdWorkflowTask.class, "personId", samisId);
-					executeTask(GetPersonInfoByIdWorkflowTask.class);
+					executeWorkflowTask(GetPersonInfoByIdWorkflowTask.class);
 				}
 				
 				setData(ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask.class,
@@ -77,7 +77,7 @@ public class PrintDeadPersonRecordWorkflow extends WizardWorkflowBase
 				setData(ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask.class,
 				        "missingFingerprints", deadPersonRecord.getSubjMissingFingers());
 				
-				executeTask(ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask.class);
+				executeWorkflowTask(ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask.class);
 				
 				break;
 			}

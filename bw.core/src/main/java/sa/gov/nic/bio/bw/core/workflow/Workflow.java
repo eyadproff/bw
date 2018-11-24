@@ -57,7 +57,9 @@ public interface Workflow extends AppLogger
 	void renderUiAndWaitForUserInput(Class<? extends BodyFxControllerBase> controllerClass) throws InterruptedException,
 	                                                                                               Signal;
 	
-	void executeTask(Class<? extends WorkflowTask> taskClass) throws InterruptedException, Signal;
+	void executeWorkflowTask(Class<? extends WorkflowTask> taskClass) throws InterruptedException, Signal;
+	
+	void interrupt(Signal interruptionSignal);
 	
 	static void loadWorkflowInputs(Object instance, Map<String, Object> uiInputData, boolean includeOutputs,
 	                               boolean onReturn) throws IllegalAccessException, Signal

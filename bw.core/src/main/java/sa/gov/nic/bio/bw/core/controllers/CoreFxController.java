@@ -70,6 +70,7 @@ public class CoreFxController extends FxControllerBase implements IdleMonitorReg
 	@FXML private NotificationPane idleNotifier;
 	@FXML private NotificationPane notificationPane;
 	@FXML private BorderPane bodyPane;
+	@FXML private Pane wizardPaneContainer;
 	
 	private Stage stage;
 	private WizardPane wizardPane;
@@ -161,9 +162,7 @@ public class CoreFxController extends FxControllerBase implements IdleMonitorReg
 			Platform.runLater(controller::onDetachingFromScene);
 		}
 		
-		Map<String, Object> uiDataMap = new HashMap<>();
-		uiDataMap.put(Workflow.KEY_SIGNAL_TYPE, SignalType.LOGOUT);
-		Context.getWorkflowManager().submitUserTask(uiDataMap);
+		Context.getWorkflowManager().interruptCurrentWorkflow(new Signal(SignalType.LOGOUT));
 	}
 	
 	public void goToMenu(Class<?> menuWorkflowClass)
@@ -179,10 +178,9 @@ public class CoreFxController extends FxControllerBase implements IdleMonitorReg
 		}
 		
 		newMenuSelected = true;
-		Map<String, Object> uiDataMap = new HashMap<>();
-		uiDataMap.put(Workflow.KEY_SIGNAL_TYPE, SignalType.MENU_NAVIGATION);
-		uiDataMap.put(Workflow.KEY_MENU_WORKFLOW_CLASS, menuWorkflowClass);
-		Context.getWorkflowManager().submitUserTask(uiDataMap);
+		Map<String, Object> payload = new HashMap<>();
+		payload.put(Workflow.KEY_MENU_WORKFLOW_CLASS, menuWorkflowClass);
+		Context.getWorkflowManager().interruptCurrentWorkflow(new Signal(SignalType.MENU_NAVIGATION, payload));
 	}
 	
 	/**
@@ -348,12 +346,12 @@ public class CoreFxController extends FxControllerBase implements IdleMonitorReg
 	public void setWizardPane(WizardPane wizardPane)
 	{
 		this.wizardPane = wizardPane;
-		Platform.runLater(() -> bodyPane.setTop(wizardPane));
+		Platform.runLater(() -> wizardPaneContainer.getChildren().add(wizardPane));
 	}
 	
 	public void clearWizardBar()
 	{
-		Platform.runLater(() -> bodyPane.setTop(null));
+		Platform.runLater(() -> wizardPaneContainer.getChildren().clear());
 	}
 	
 	public void moveWizardForward()

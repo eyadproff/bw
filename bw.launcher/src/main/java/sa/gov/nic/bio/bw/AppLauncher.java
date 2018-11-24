@@ -535,7 +535,6 @@ public class AppLauncher extends Application implements AppLogger
 			    topMenuItem.setLabel(topMenu);
 			    topMenuItem.setIconId(icon);
 			    topMenuItem.setOrder(order);
-			    System.out.println("topMenuItem = " + topMenuItem);
 			
 			    topMenus.put(topMenu, topMenuItem);
 		    }

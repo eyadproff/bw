@@ -32,7 +32,7 @@ public class CancelLatentWorkflow extends SinglePageWorkflowBase
 		passData(CancelLatentPaneFxController.class, CancelLatentWorkflowTask.class,
 		         "personId", "latentId");
 		
-		executeTask(CancelLatentWorkflowTask.class);
+		executeWorkflowTask(CancelLatentWorkflowTask.class);
 		passData(CancelLatentWorkflowTask.class, CancelLatentPaneFxController.class, "success");
 	}
 }

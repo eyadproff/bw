@@ -10,18 +10,14 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.DialogPane;
-import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TitledPane;
 import javafx.scene.layout.HBox;
-import javafx.util.Callback;
 import sa.gov.nic.bio.bw.core.beans.TaskInput;
 import sa.gov.nic.bio.bw.core.beans.TaskOutput;
 import sa.gov.nic.bio.bw.core.beans.TaskResult;
-import sa.gov.nic.bio.bw.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.core.utils.FxmlFile;
 import sa.gov.nic.bio.bw.core.utils.GuiUtils;
 
@@ -72,30 +68,8 @@ public class MockTaskDialogFxController extends FxControllerBase
 			String yes = resources.getString("label.yes");
 			String no = resources.getString("label.no");
 			
-			tcInputSequence.setCellValueFactory(p -> new ReadOnlyObjectWrapper(p.getValue()));
-			tcInputSequence.setCellFactory(new Callback<>()
-			{
-				@Override
-				public TableCell<TaskInput<?>, TaskInput<?>> call(TableColumn<TaskInput<?>, TaskInput<?>> param)
-				{
-					return new TableCell<>()
-					{
-						@Override
-						protected void updateItem(TaskInput<?> item, boolean empty)
-						{
-							super.updateItem(item, empty);
-							
-							TableRow tableRow = getTableRow();
-							
-							if(tableRow != null && item != null)
-							{
-								setText(AppUtils.localizeNumbers(String.valueOf(tableRow.getIndex() + 1)));
-							}
-							else setText("");
-						}
-					};
-				}
-			});
+			GuiUtils.initSequenceTableColumn(tcInputSequence);
+			tcInputSequence.setCellValueFactory(p -> new ReadOnlyObjectWrapper<>(p.getValue()));
 			tcInputName.setCellValueFactory(param ->
 			{
 			    TaskInput<?> taskInput = param.getValue();

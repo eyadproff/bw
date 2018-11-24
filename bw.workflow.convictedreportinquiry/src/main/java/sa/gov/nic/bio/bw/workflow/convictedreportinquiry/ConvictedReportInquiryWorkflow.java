@@ -46,7 +46,7 @@ public class ConvictedReportInquiryWorkflow extends SinglePageWorkflowBase
 		passData(ConvictedReportInquiryPaneFxController.class, ConvictedReportInquiryWorkflowTask.class,
 		         "generalFileNumber");
 		
-		executeTask(ConvictedReportInquiryWorkflowTask.class);
+		executeWorkflowTask(ConvictedReportInquiryWorkflowTask.class);
 		
 		List<ConvictedReport> convictedReports = getData(ConvictedReportInquiryWorkflowTask.class,
 		                                                 "convictedReports");
@@ -60,7 +60,7 @@ public class ConvictedReportInquiryWorkflow extends SinglePageWorkflowBase
 			setData(ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask.class,
 			        "missingFingerprints", convictedReport.getSubjMissingFingers());
 			
-			executeTask(ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask.class);
+			executeWorkflowTask(ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask.class);
 			
 			Map<Integer, String> fingerprintImages =
 										getData(ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask.class,

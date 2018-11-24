@@ -209,7 +209,6 @@ public class ShowRecordPaneFxController extends WizardStepFxControllerBase
 	                          PersonInfo personInfo, Map<Integer, String> fingerprintsImages)
 	{
 		NormalizedPersonInfo normalizedPersonInfo = new NormalizedPersonInfo(deadPersonRecord.getSamisId(),
-		                                                                     null, null,
 		                                                                     personInfo, null,
 		                                                                     resources.getString("label.male"),
 		                                                                     resources.getString("label.female"));

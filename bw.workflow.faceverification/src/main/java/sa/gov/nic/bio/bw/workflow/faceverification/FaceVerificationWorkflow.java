@@ -103,7 +103,7 @@ public class FaceVerificationWorkflow extends WizardWorkflowBase
 				         "personId");
 				passData(ConfirmImageFxController.class, FaceVerificationWorkflowTask.class,
 				         "facePhotoBase64");
-				executeTask(FaceVerificationWorkflowTask.class);
+				executeWorkflowTask(FaceVerificationWorkflowTask.class);
 				
 				break;
 			}

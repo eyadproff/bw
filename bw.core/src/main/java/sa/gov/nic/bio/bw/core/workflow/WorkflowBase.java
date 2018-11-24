@@ -7,6 +7,9 @@ import sa.gov.nic.bio.bw.core.utils.CoreErrorCodes;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CancellationException;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 /**
  * The base class for all other workflow classes. It provides an implementation for <code>submitUserInput()</code>
@@ -16,9 +19,19 @@ import java.util.Map;
  */
 public abstract class WorkflowBase implements Workflow, AppLogger
 {
+	private Future<?> future;
+	private Signal interruptionSignal;
+	
 	Long tcn;
 	Map<String, Object> uiInputData = new HashMap<>();
 	boolean renderedAtLeastOnceInTheStep = false;
+	
+	protected void throwInterruptionSignal() throws Signal
+	{
+		Signal temp = interruptionSignal;
+		interruptionSignal = null;
+		throw temp;
+	}
 	
 	/**
 	 * Submit a user task to the workflow.
@@ -51,11 +64,15 @@ public abstract class WorkflowBase implements Workflow, AppLogger
 	public void renderUiAndWaitForUserInput(Class<? extends BodyFxControllerBase> controllerClass)
 																					throws InterruptedException, Signal
 	{
+		if(interruptionSignal != null) throwInterruptionSignal();
+		
 		BodyFxControllerBase currentBodyFxController = Context.getWorkflowManager().getFormRenderer()
 																			.renderForm(controllerClass, uiInputData);
 		renderedAtLeastOnceInTheStep = true;
 		
 		Map<String, Object> uiDataMap = Context.getWorkflowManager().getUserTasks().take();
+		if(interruptionSignal != null) throwInterruptionSignal();
+		
 		SignalType signalType = (SignalType) uiDataMap.get(KEY_SIGNAL_TYPE);
 		
 		if(signalType != null && signalType != SignalType.RESET_WORKFLOW_STEP)
@@ -80,7 +97,15 @@ public abstract class WorkflowBase implements Workflow, AppLogger
 		}
 	}
 	
-	public void executeTask(Class<? extends WorkflowTask> taskClass) throws Signal
+	@Override
+	public void interrupt(Signal interruptionSignal)
+	{
+		this.interruptionSignal = interruptionSignal;
+		
+		if(future != null) future.cancel(true);
+	}
+	
+	public void executeWorkflowTask(Class<? extends WorkflowTask> taskClass) throws Signal
 	{
 		AssociatedMenu annotation = getClass().getAnnotation(AssociatedMenu.class);
 		Integer workflowId = annotation != null ? annotation.workflowId() : null;
@@ -89,13 +114,53 @@ public abstract class WorkflowBase implements Workflow, AppLogger
 		{
 			WorkflowTask workflowTask = taskClass.getConstructor().newInstance();
 			Workflow.loadWorkflowInputs(workflowTask, uiInputData, false, false);
-			if(Context.getCoreFxController().isMockTasksEnabled()) workflowTask.mockExecute();
-			else if(workflowId != null) workflowTask.execute(workflowId, tcn);
-			else workflowTask.execute(null, null);
+			
+			Signal[] thrownSignal = new Signal[1];
+			Thread[] taskThread = new Thread[1];
+			
+			future = Context.getExecutorService().submit(() ->
+			{
+				taskThread[0] = Thread.currentThread();
+				
+				try
+				{
+					if(interruptionSignal != null) throwInterruptionSignal();
+					
+					if(Context.getCoreFxController().isMockTasksEnabled()) workflowTask.mockExecute();
+					else if(workflowId != null) workflowTask.execute(workflowId, tcn);
+					else workflowTask.execute(null, null);
+				}
+				catch(Signal signal)
+				{
+					thrownSignal[0] = signal;
+				}
+				
+				return null;
+			});
+			
+			try
+			{
+				future.get();
+			}
+			catch(ExecutionException e)
+			{
+				throw e.getCause();
+			}
+			catch(CancellationException e)
+			{
+				LOGGER.info("The task (" + taskClass.getSimpleName() + ") is cancelled!");
+				taskThread[0].interrupt();
+				if(interruptionSignal != null) throwInterruptionSignal();
+			}
+			
+			if(thrownSignal[0] != null) throw thrownSignal[0];
+			
 			Workflow.saveWorkflowOutputs(workflowTask, uiInputData);
 		}
-		catch(Exception e)
+		catch(Throwable e)
 		{
+			if(e instanceof Signal) throw (Signal) e;
+			
 			String errorCode = CoreErrorCodes.C002_00030.getCode();
 			String[] errorDetails = {"Failure upon executing the workflow task! task = " +
 																	(taskClass != null ? taskClass.getName() : null)};

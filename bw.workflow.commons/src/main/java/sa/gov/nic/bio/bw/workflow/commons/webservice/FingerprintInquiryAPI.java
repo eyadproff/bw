@@ -17,8 +17,8 @@ public interface FingerprintInquiryAPI
 	                                      @Field("fingers") String collectedFingerprints,
 	                                      @Field("missing") String missingFingerprints);
 	
-	@GET("services-gateway-biooperation/api/fingerprint/inquiry/status/v1")
+	@GET("services-gateway-biooperation/api/fingerprint/inquiry/status/v2")
 	Call<FingerprintInquiryStatusResult> checkFingerprintsInquiryStatus(@Header("Workflow-Code") Integer workflowId,
 	                                                                    @Header("Workflow-Tcn") Long workflowTcn,
-	                                                                    @Query("inquiry-menuId") int inquiryId);
+	                                                                    @Query("inquiry-id") int inquiryId);
 }

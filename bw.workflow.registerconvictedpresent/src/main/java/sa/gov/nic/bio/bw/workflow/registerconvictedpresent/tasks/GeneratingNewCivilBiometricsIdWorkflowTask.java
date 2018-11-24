@@ -16,7 +16,7 @@ public class GeneratingNewCivilBiometricsIdWorkflowTask implements WorkflowTask
 	@Output	private Long criminalBiometricsId;
 	
 	@Override
-	public void execute(Integer workflowId, Long workflowTcn) throws Signal
+	public void execute(Integer workflowId, Long workflowTcn) throws Signal, InterruptedException
 	{
 		ConvictedReportAPI convictedReportAPI = Context.getWebserviceManager().getApi(ConvictedReportAPI.class);
 		Call<Long> apiCall = convictedReportAPI.generateGeneralFileNumber(workflowId, workflowTcn, personId,

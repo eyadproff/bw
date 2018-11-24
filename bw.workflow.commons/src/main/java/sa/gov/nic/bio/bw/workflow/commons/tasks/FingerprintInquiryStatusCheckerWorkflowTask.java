@@ -9,8 +9,9 @@ import sa.gov.nic.bio.bw.core.workflow.WorkflowTask;
 import sa.gov.nic.bio.bw.workflow.commons.utils.CommonsErrorCodes;
 import sa.gov.nic.bio.bw.workflow.commons.webservice.FingerprintInquiryAPI;
 import sa.gov.nic.bio.bw.workflow.commons.webservice.FingerprintInquiryStatusResult;
-import sa.gov.nic.bio.bw.workflow.commons.webservice.PersonInfo;
 import sa.gov.nic.bio.commons.TaskResponse;
+
+import java.util.List;
 
 public class FingerprintInquiryStatusCheckerWorkflowTask implements WorkflowTask
 {
@@ -23,13 +24,12 @@ public class FingerprintInquiryStatusCheckerWorkflowTask implements WorkflowTask
 	
 	@Input(alwaysRequired = true) private Integer inquiryId;
 	@Output private Status status;
-	@Output private Long personId;
 	@Output private Long civilBiometricsId;
 	@Output private Long criminalBiometricsId;
-	@Output private PersonInfo personInfo;
+	@Output private List<Long> civilPersonIds;
 	
 	@Override
-	public void execute(Integer workflowId, Long workflowTcn) throws Signal
+	public void execute(Integer workflowId, Long workflowTcn) throws Signal, InterruptedException
 	{
 		FingerprintInquiryAPI fingerprintInquiryAPI =
 				Context.getWebserviceManager().getApi(FingerprintInquiryAPI.class);
@@ -51,10 +51,12 @@ public class FingerprintInquiryStatusCheckerWorkflowTask implements WorkflowTask
 		else if(result.getStatus() == FingerprintInquiryStatusResult.STATUS_INQUIRY_HIT)
 		{
 			status = Status.HIT;
-			personId = result.getSamisId();
 			civilBiometricsId = result.getCivilHitBioId();
 			criminalBiometricsId = result.getCrimnalHitBioId();
-			personInfo = result.getPersonInfo();
+			civilPersonIds = result.getCivilIdList();
+			
+			if(civilBiometricsId != null && civilBiometricsId <= 0L) civilBiometricsId = null;
+			if(criminalBiometricsId != null && criminalBiometricsId <= 0L) criminalBiometricsId = null;
 		}
 		else
 		{
@@ -63,14 +65,5 @@ public class FingerprintInquiryStatusCheckerWorkflowTask implements WorkflowTask
 					result.getStatus() + ")!"};
 			resetWorkflowStepIfNegativeOrNullTaskResponse(TaskResponse.failure(errorCode, null, errorDetails));
 		}
-	}
-	
-	@Override
-	public void mockExecute()
-	{
-		status = Status.HIT;
-		personId = 1134965811L;
-		civilBiometricsId = 123L;
-		criminalBiometricsId = 456L;
 	}
 }

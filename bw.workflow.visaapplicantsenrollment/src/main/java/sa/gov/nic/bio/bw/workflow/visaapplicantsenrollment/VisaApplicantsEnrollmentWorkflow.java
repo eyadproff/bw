@@ -101,7 +101,7 @@ public class VisaApplicantsEnrollmentWorkflow extends WizardWorkflowBase
 				passData(ReviewAndSubmitPaneFxController.class, VisaApplicantsWorkflowTask.class,
 				         "visaApplicantInfo");
 				
-				executeTask(VisaApplicantsWorkflowTask.class);
+				executeWorkflowTask(VisaApplicantsWorkflowTask.class);
 				
 				passData(VisaApplicantsWorkflowTask.class, ReviewAndSubmitPaneFxController.class,
 				         "visaApplicantEnrollmentResponse");

@@ -45,6 +45,8 @@ public class HomeWorkflow extends SinglePageWorkflowBase
 			}
 			catch(Signal signal)
 			{
+				Context.getWorkflowManager().setCurrentWorkflow(null);
+				Context.getWorkflowManager().getUserTasks().clear();
 				SignalType signalType = signal.getSignalType();
 				
 				outerLoop: while(true) switch(signalType)
@@ -60,6 +62,7 @@ public class HomeWorkflow extends SinglePageWorkflowBase
 						{
 							Constructor<?> declaredConstructor = menuWorkflowClass.getDeclaredConstructor();
 							subWorkflow = (Workflow) AppUtils.instantiateClassByReflection(declaredConstructor);
+							Context.getWorkflowManager().setCurrentWorkflow(subWorkflow);
 						}
 						catch(Exception e)
 						{

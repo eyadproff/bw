@@ -8,15 +8,12 @@ import javafx.fxml.FXML;
 import javafx.geometry.NodeOrientation;
 import javafx.scene.control.Button;
 import javafx.scene.control.ProgressIndicator;
-import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.BorderPane;
-import javafx.util.Callback;
 import javafx.util.Pair;
 import sa.gov.nic.bio.bw.core.Context;
 import sa.gov.nic.bio.bw.core.beans.Name;
@@ -85,32 +82,8 @@ public class ConvictedReportInquiryPaneFxController extends BodyFxControllerBase
 			}
 		});
 		
-		tcSequence.setCellValueFactory(p -> new ReadOnlyObjectWrapper(p.getValue()));
-		tcSequence.setCellFactory(new Callback<>()
-		{
-			@Override
-			public TableCell<Pair<ConvictedReport, Map<Integer, String>>, Pair<ConvictedReport, Map<Integer, String>>>
-									call(TableColumn<Pair<ConvictedReport, Map<Integer, String>>,
-										 Pair<ConvictedReport, Map<Integer, String>>> param)
-			{
-				return new TableCell<>()
-				{
-					@Override
-					protected void updateItem(Pair<ConvictedReport, Map<Integer, String>> item, boolean empty)
-					{
-						super.updateItem(item, empty);
-						
-						TableRow tableRow = getTableRow();
-						
-						if(tableRow != null && item != null)
-						{
-							setText(AppUtils.localizeNumbers(String.valueOf(tableRow.getIndex() + 1)));
-						}
-						else setText("");
-					}
-				};
-			}
-		});
+		GuiUtils.initSequenceTableColumn(tcSequence);
+		tcSequence.setCellValueFactory(p -> new ReadOnlyObjectWrapper<>(p.getValue()));
 		
 		tvName.setCellValueFactory(param ->
 		{

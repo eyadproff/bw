@@ -13,16 +13,16 @@ VERSION SCHEMA: vYYYY.MM.#SEQ
 
 ## v2018.11.1
 
-- ENH: improve the wizard slider to support unlimited number of items.
-- ENH: improve lookups across the features.
-- ENH: improve the workflow engine.
-- ENH: improve the menu navigation.
-- ENH: update biokit-library jar to v2018.09.1.
-- ENH: improve the login transition and eliminate the ui lagging.
+- ENH: Improve the wizard slider to support unlimited number of items.
+- ENH: Improve lookups across the workflows.
+- ENH: Improve the workflow engine.
+- ENH: Improve the menu navigation.
+- ENH: Update biokit-library jar to v2018.09.1.
+- ENH: Improve the login transition and eliminate the ui lagging.
 - ENH: Upgrade from Java 8 to Java 11.
 - ENH: Split the project into java modules.
 - ENH: Add the ability to mock tasks.
-- NEW: Embed ScenicView with BW. It opens by the shortcut CTRL+SHIFT+S.
+- NEW: Embed ScenicView with BW. It opens by the shortcut CTRL+SHIFT+ALT+S.
 - ENH: Update Retrofit library to 2.5.0.
 - NEW: Integrate with the activity services.
 

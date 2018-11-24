@@ -89,19 +89,19 @@ public class FingerprintCardIdentificationWorkflow extends WizardWorkflowBase
 					passData(SpecifyFingerprintCoordinatesPaneFxController.class,
 					         ConvertFingerprintBase64ImagesToWsqWorkflowTask.class,
 					         "fingerprintBase64Images");
-					executeTask(ConvertFingerprintBase64ImagesToWsqWorkflowTask.class);
+					executeWorkflowTask(ConvertFingerprintBase64ImagesToWsqWorkflowTask.class);
 					
 					passData(ConvertFingerprintBase64ImagesToWsqWorkflowTask.class, "fingerprintWsqImages",
 					         FingerprintInquiryWorkflowTask.class, "fingerprints",
 					         new FingerprintsWsqToFingerConverter());
 					passData(SpecifyFingerprintCoordinatesPaneFxController.class, FingerprintInquiryWorkflowTask.class,
 					         "missingFingerprints");
-					executeTask(FingerprintInquiryWorkflowTask.class);
+					executeWorkflowTask(FingerprintInquiryWorkflowTask.class);
 				}
 				
 				passData(FingerprintInquiryWorkflowTask.class, FingerprintInquiryStatusCheckerWorkflowTask.class,
 				         "inquiryId");
-				executeTask(FingerprintInquiryStatusCheckerWorkflowTask.class);
+				executeWorkflowTask(FingerprintInquiryStatusCheckerWorkflowTask.class);
 				
 				break;
 			}

@@ -18,14 +18,6 @@ import sa.gov.nic.bio.bw.workflow.commons.tasks.FingerprintInquiryStatusCheckerW
 @FxmlFile("inquiryByFingerprints.fxml")
 public class InquiryByFingerprintsPaneFxController extends WizardStepFxControllerBase
 {
-	// TODO: REMOVE
-	public static final String KEY_WAITING_FINGERPRINT_INQUIRY = "WAITING_FINGERPRINT_INQUIRY";
-	public static final String KEY_WAITING_FINGERPRINT_INQUIRY_CANCELLED = "WAITING_FINGERPRINT_INQUIRY_CANCELLED";
-	public static final String KEY_FINGERPRINT_INQUIRY_UNKNOWN_STATUS = "FINGERPRINT_INQUIRY_UNKNOWN_STATUS";
-	public static final String KEY_RETRY_FINGERPRINT_INQUIRY = "RETRY_FINGERPRINT_INQUIRY";
-	public static final String KEY_FINGERPRINT_INQUIRY_HIT = "FINGERPRINT_INQUIRY_HIT";
-	public static final String KEY_DEVICES_RUNNER_IS_RUNNING = "DEVICES_RUNNER_IS_RUNNING";
-	
 	@Input(requiredOnReturn = true) private Status status;
 	
 	@FXML private VBox paneError;

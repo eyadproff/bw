@@ -30,10 +30,6 @@ public class NormalizedPersonInfo
 	private String documentIssuanceDateLabel;
 	private LocalDate documentExpiryDate;
 	private String documentExpiryDateLabel;
-	private Long civilBiometricsId;
-	private String civilBiometricsIdLabel;
-	private Long criminalBiometricsId;
-	private String criminalBiometricsIdLabel;
 	private String firstName;
 	private String firstNameLabel;
 	private String fatherName;
@@ -54,25 +50,15 @@ public class NormalizedPersonInfo
 	private String birthDateLabel;
 	private Boolean isOut;
 	
-	public NormalizedPersonInfo(Long personId, Long civilBiometricsId, Long criminalBiometricsId,
-	                            PersonInfo personInfo, String notAvailable, String maleText, String femaleText)
+	public NormalizedPersonInfo(Long personId, PersonInfo personInfo, String notAvailable, String maleText,
+	                            String femaleText)
 	{
 		this.personId = personId;
-		this.civilBiometricsId = civilBiometricsId;
-		this.criminalBiometricsId = criminalBiometricsId;
 		
 		boolean arabic = Context.getGuiLanguage() == GuiLanguage.ARABIC;
 		
 		if(personId != null) personIdLabel = AppUtils.localizeNumbers(String.valueOf(personId));
 		else personIdLabel = notAvailable;
-		
-		if(civilBiometricsId != null)
-								civilBiometricsIdLabel = AppUtils.localizeNumbers(String.valueOf(civilBiometricsId));
-		else civilBiometricsIdLabel = notAvailable;
-		
-		if(criminalBiometricsId != null)
-							criminalBiometricsIdLabel = AppUtils.localizeNumbers(String.valueOf(criminalBiometricsId));
-		else criminalBiometricsIdLabel = notAvailable;
 		
 		if(personInfo == null)
 		{
@@ -270,20 +256,6 @@ public class NormalizedPersonInfo
 	public void setDocumentExpiryDateLabel(String documentExpiryDateLabel)
 															{this.documentExpiryDateLabel = documentExpiryDateLabel;}
 	
-	public Long getCivilBiometricsId(){return civilBiometricsId;}
-	public void setCivilBiometricsId(Long civilBiometricsId){this.civilBiometricsId = civilBiometricsId;}
-	
-	public String getCivilBiometricsIdLabel(){return civilBiometricsIdLabel;}
-	public void setCivilBiometricsIdLabel(String civilBiometricsIdLabel)
-															{this.civilBiometricsIdLabel = civilBiometricsIdLabel;}
-	
-	public Long getCriminalBiometricsId(){return criminalBiometricsId;}
-	public void setCriminalBiometricsId(Long criminalBiometricsId){this.criminalBiometricsId = criminalBiometricsId;}
-	
-	public String getCriminalBiometricsIdLabel(){return criminalBiometricsIdLabel;}
-	public void setCriminalBiometricsIdLabel(String criminalBiometricsIdLabel)
-														{this.criminalBiometricsIdLabel = criminalBiometricsIdLabel;}
-	
 	public String getFirstName(){return firstName;}
 	public void setFirstName(String firstName){this.firstName = firstName;}
 	
@@ -357,10 +329,6 @@ public class NormalizedPersonInfo
 			   Objects.equals(documentIssuanceDateLabel, that.documentIssuanceDateLabel) &&
 			   Objects.equals(documentExpiryDate, that.documentExpiryDate) &&
 			   Objects.equals(documentExpiryDateLabel, that.documentExpiryDateLabel) &&
-			   Objects.equals(civilBiometricsId, that.civilBiometricsId) &&
-			   Objects.equals(civilBiometricsIdLabel, that.civilBiometricsIdLabel) &&
-			   Objects.equals(criminalBiometricsId, that.criminalBiometricsId) &&
-			   Objects.equals(criminalBiometricsIdLabel, that.criminalBiometricsIdLabel) &&
 			   Objects.equals(firstName, that.firstName) && Objects.equals(firstNameLabel, that.firstNameLabel) &&
 			   Objects.equals(fatherName, that.fatherName) && Objects.equals(fatherNameLabel, that.fatherNameLabel) &&
 			   Objects.equals(grandfatherName, that.grandfatherName) &&
@@ -380,8 +348,7 @@ public class NormalizedPersonInfo
 	{
 		return Objects.hash(facePhotoBase64, personId, personIdLabel, personType, personTypeLabel, documentId,
 		                    documentIdLabel, documentType, documentTypeLabel, documentIssuanceDate,
-		                    documentIssuanceDateLabel, documentExpiryDate, documentExpiryDateLabel, civilBiometricsId,
-		                    civilBiometricsIdLabel, criminalBiometricsId, criminalBiometricsIdLabel, firstName,
+		                    documentIssuanceDateLabel, documentExpiryDate, documentExpiryDateLabel, firstName,
 		                    firstNameLabel, fatherName, fatherNameLabel, grandfatherName, grandfatherNameLabel,
 		                    familyName, familyNameLabel, gender, genderLabel, nationality, nationalityLabel, occupation,
 		                    occupationLabel, birthPlace, birthPlaceLabel, birthDate, birthDateLabel, isOut);
@@ -396,15 +363,12 @@ public class NormalizedPersonInfo
 			   documentIdLabel + '\'' + ", documentType=" + documentType + ", documentTypeLabel='" +
 			   documentTypeLabel + '\'' + ", documentIssuanceDate=" + documentIssuanceDate +
 			   ", documentIssuanceDateLabel='" + documentIssuanceDateLabel + '\'' + ", documentExpiryDate=" +
-			   documentExpiryDate + ", documentExpiryDateLabel='" + documentExpiryDateLabel + '\'' +
-			   ", civilBiometricsId=" + civilBiometricsId + ", civilBiometricsIdLabel='" + civilBiometricsIdLabel +
-			   '\'' + ", criminalBiometricsId=" + criminalBiometricsId + ", criminalBiometricsIdLabel='" +
-			   criminalBiometricsIdLabel + '\'' + ", firstName='" + firstName + '\'' + ", firstNameLabel='" +
-			   firstNameLabel + '\'' + ", fatherName='" + fatherName + '\'' + ", fatherNameLabel='" +
-			   fatherNameLabel + '\'' + ", grandfatherName='" + grandfatherName + '\'' + ", grandfatherNameLabel='" +
-			   grandfatherNameLabel + '\'' + ", familyName='" + familyName + '\'' + ", familyNameLabel='" +
-			   familyNameLabel + '\'' + ", gender=" + gender + ", genderLabel='" + genderLabel +
-			   '\'' + ", nationality=" + nationality + ", nationalityLabel='" + nationalityLabel + '\'' +
+			   documentExpiryDate + ", documentExpiryDateLabel='" + documentExpiryDateLabel + '\'' + ", firstName='" +
+			   firstName + '\'' + ", firstNameLabel='" + firstNameLabel + '\'' + ", fatherName='" + fatherName + '\'' +
+			   ", fatherNameLabel='" + fatherNameLabel + '\'' + ", grandfatherName='" + grandfatherName + '\'' +
+			   ", grandfatherNameLabel='" + grandfatherNameLabel + '\'' + ", familyName='" + familyName + '\'' +
+			   ", familyNameLabel='" + familyNameLabel + '\'' + ", gender=" + gender + ", genderLabel='" +
+			   genderLabel + '\'' + ", nationality=" + nationality + ", nationalityLabel='" + nationalityLabel + '\'' +
 			   ", occupation='" + occupation + '\'' + ", occupationLabel='" + occupationLabel + '\'' +
 			   ", birthPlace='" + birthPlace + '\'' + ", birthPlaceLabel='" + birthPlaceLabel + '\'' +
 			   ", birthDate=" + birthDate + ", birthDateLabel='" + birthDateLabel + '\'' + ", isOut=" + isOut + '}';

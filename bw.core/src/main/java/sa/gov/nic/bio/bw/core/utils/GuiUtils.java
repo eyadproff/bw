@@ -30,6 +30,9 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TableCell;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.skin.ComboBoxListViewSkin;
@@ -168,7 +171,7 @@ public class GuiUtils implements AppLogger
 				
 				Context.getScheduledExecutorService().shutdownNow();
 				Context.getExecutorService().shutdownNow();
-				Context.getWorkflowManager().interruptTheWorkflow();
+				Context.getWorkflowManager().interruptCoreWorkflow();
 				
 				Platform.exit();
 				LOGGER.info("The application is exited!");
@@ -818,5 +821,32 @@ public class GuiUtils implements AppLogger
 		{
 			t.printStackTrace();
 		}
+	}
+	
+	public static <T> void initSequenceTableColumn(TableColumn<T, T> tableColumn)
+	{
+		tableColumn.setCellFactory(new Callback<>()
+		{
+			@Override
+			public TableCell<T, T> call(TableColumn<T, T> param)
+			{
+				return new TableCell<>()
+				{
+					@Override
+					protected void updateItem(T item, boolean empty)
+					{
+						super.updateItem(item, empty);
+						
+						TableRow tableRow = getTableRow();
+						
+						if(tableRow != null && item != null)
+						{
+							setText(AppUtils.localizeNumbers(String.valueOf(tableRow.getIndex() + 1)));
+						}
+						else setText("");
+					}
+				};
+			}
+		});
 	}
 }
