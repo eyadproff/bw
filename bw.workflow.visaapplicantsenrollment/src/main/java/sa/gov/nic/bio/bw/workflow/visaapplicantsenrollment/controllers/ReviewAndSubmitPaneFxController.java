@@ -18,13 +18,13 @@ import sa.gov.nic.bio.bw.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.core.workflow.Input;
 import sa.gov.nic.bio.bw.core.workflow.Output;
 import sa.gov.nic.bio.bw.workflow.commons.ui.ImageViewPane;
-import sa.gov.nic.bio.bw.workflow.commons.webservice.Country;
-import sa.gov.nic.bio.bw.workflow.commons.webservice.Finger;
-import sa.gov.nic.bio.bw.workflow.visaapplicantsenrollment.tasks.VisaApplicantEnrollmentResponse;
-import sa.gov.nic.bio.bw.workflow.visaapplicantsenrollment.webservice.CountryDialingCode;
-import sa.gov.nic.bio.bw.workflow.visaapplicantsenrollment.webservice.PassportTypeBean;
-import sa.gov.nic.bio.bw.workflow.visaapplicantsenrollment.webservice.VisaApplicantInfo;
-import sa.gov.nic.bio.bw.workflow.visaapplicantsenrollment.webservice.VisaTypeBean;
+import sa.gov.nic.bio.bw.workflow.commons.beans.Country;
+import sa.gov.nic.bio.bw.workflow.commons.beans.Finger;
+import sa.gov.nic.bio.bw.workflow.visaapplicantsenrollment.beans.VisaApplicantEnrollmentResponse;
+import sa.gov.nic.bio.bw.workflow.visaapplicantsenrollment.beans.CountryDialingCode;
+import sa.gov.nic.bio.bw.workflow.visaapplicantsenrollment.beans.PassportTypeBean;
+import sa.gov.nic.bio.bw.workflow.visaapplicantsenrollment.beans.VisaApplicantInfo;
+import sa.gov.nic.bio.bw.workflow.visaapplicantsenrollment.beans.VisaTypeBean;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -124,13 +124,13 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 		lblGender.setText(gender == Gender.FEMALE ? resources.getString("label.female") :
 				                  resources.getString("label.male"));
 		
-		lblBirthDate.setText(AppUtils.formatHijriGregorianDate(AppUtils.gregorianDateToMilliSeconds(birthDate)));
+		lblBirthDate.setText(AppUtils.formatHijriGregorianDate(AppUtils.gregorianDateToSeconds(birthDate)));
 		lblVisaType.setText(arabic ? visaType.getDescriptionAR() : visaType.getDescriptionEN());
 		lblPassportNumber.setText(passportNumber);
 		
-		lblIssueDate.setText(AppUtils.formatHijriGregorianDate(AppUtils.gregorianDateToMilliSeconds(issueDate)));
+		lblIssueDate.setText(AppUtils.formatHijriGregorianDate(AppUtils.gregorianDateToSeconds(issueDate)));
 		lblExpirationDate.setText(AppUtils.formatHijriGregorianDate(
-				AppUtils.gregorianDateToMilliSeconds(expirationDate)));
+				AppUtils.gregorianDateToSeconds(expirationDate)));
 		
 		lblPassportType.setText(arabic ? passportType.getDescriptionAR() : passportType.getDescriptionEN());
 		
@@ -147,7 +147,7 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 		if(successfulResponse)
 		{
 			visaApplicantInfo.setApplicantId(visaApplicantEnrollmentResponse.getApplicantId());
-			visaApplicantInfo.setEnrollmentDate(AppUtils.milliSecondsToGregorianDateTime(
+			visaApplicantInfo.setEnrollmentDate(AppUtils.secondsToGregorianDateTime(
 												visaApplicantEnrollmentResponse.getEnrollmentDate()));
 			goNext();
 		}

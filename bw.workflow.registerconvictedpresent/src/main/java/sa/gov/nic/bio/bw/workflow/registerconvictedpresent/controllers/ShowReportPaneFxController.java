@@ -15,9 +15,9 @@ import sa.gov.nic.bio.bw.core.workflow.Input;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.PrintReportTask;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.SaveReportAsPdfTask;
 import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.tasks.BuildConvictedReportTask;
-import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.tasks.ConvictedReportResponse;
+import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.beans.ConvictedReportResponse;
 import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.utils.RegisterConvictedPresentErrorCodes;
-import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.webservice.ConvictedReport;
+import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.beans.ConvictedReport;
 
 import java.io.File;
 import java.io.FileOutputStream;

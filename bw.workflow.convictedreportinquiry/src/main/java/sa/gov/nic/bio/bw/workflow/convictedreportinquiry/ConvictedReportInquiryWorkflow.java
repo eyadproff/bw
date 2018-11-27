@@ -13,7 +13,7 @@ import sa.gov.nic.bio.bw.workflow.commons.tasks.ConvertWsqFingerprintsToSegmente
 import sa.gov.nic.bio.bw.workflow.convictedreportinquiry.controllers.ConvictedReportInquiryPaneFxController;
 import sa.gov.nic.bio.bw.workflow.convictedreportinquiry.tasks.ConvictedReportInquiryWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.lookups.CrimeTypesLookup;
-import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.webservice.ConvictedReport;
+import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.beans.ConvictedReport;
 
 import java.util.ArrayList;
 import java.util.List;

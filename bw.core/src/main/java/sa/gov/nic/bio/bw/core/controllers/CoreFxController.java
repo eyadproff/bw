@@ -29,7 +29,7 @@ import sa.gov.nic.bio.bw.core.utils.FxmlFile;
 import sa.gov.nic.bio.bw.core.utils.GuiLanguage;
 import sa.gov.nic.bio.bw.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.core.utils.IdleMonitor;
-import sa.gov.nic.bio.bw.core.webservice.LogoutTask;
+import sa.gov.nic.bio.bw.core.tasks.LogoutTask;
 import sa.gov.nic.bio.bw.core.wizard.WizardPane;
 import sa.gov.nic.bio.bw.core.workflow.ResourceBundleProvider;
 import sa.gov.nic.bio.bw.core.workflow.Signal;

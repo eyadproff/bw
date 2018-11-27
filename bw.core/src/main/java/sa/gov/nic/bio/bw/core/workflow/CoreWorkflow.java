@@ -1,7 +1,7 @@
 package sa.gov.nic.bio.bw.core.workflow;
 
 import sa.gov.nic.bio.bw.core.Context;
-import sa.gov.nic.bio.bw.core.webservice.LogoutTask;
+import sa.gov.nic.bio.bw.core.tasks.LogoutTask;
 
 import java.util.ArrayList;
 import java.util.List;

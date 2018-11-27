@@ -279,8 +279,8 @@ public class AppPreloader extends Preloader implements AppLogger
 	@Override
 	public void handleApplicationNotification(PreloaderNotification info)
 	{
-		sa.gov.nic.bio.bw.core.utils.PreloaderNotification preloaderNotification =
-												(sa.gov.nic.bio.bw.core.utils.PreloaderNotification) info;
+		sa.gov.nic.bio.bw.preloader.beans.PreloaderNotification preloaderNotification =
+												(sa.gov.nic.bio.bw.preloader.beans.PreloaderNotification) info;
 		
 		if(preloaderNotification.isDone())
 		{

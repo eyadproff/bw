@@ -15,6 +15,7 @@ module bw.core
 	requires transitive controlsfx;
 	requires transitive retrofit2;
 	requires retrofit2.converter.gson;
+	requires org.apache.commons.lang3;
 	requires gson;
 	requires okhttp3;
 	requires biokit.library;
@@ -32,5 +33,7 @@ module bw.core
 	opens sa.gov.nic.bio.bw.core.controllers to javafx.fxml;
 	opens sa.gov.nic.bio.bw.core.wizard to javafx.fxml;
 	opens sa.gov.nic.bio.bw.core.css;
+	opens sa.gov.nic.bio.bw.core.beans to org.apache.commons.lang3;
 	exports sa.gov.nic.bio.bw.core.wizard;
+	exports sa.gov.nic.bio.bw.core.tasks;
 }

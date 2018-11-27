@@ -2,6 +2,9 @@ package sa.gov.nic.bio.bw.workflow.commons.webservice;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
+import sa.gov.nic.bio.bw.workflow.commons.beans.Country;
+import sa.gov.nic.bio.bw.workflow.commons.beans.DocumentType;
+import sa.gov.nic.bio.bw.workflow.commons.beans.PersonType;
 
 import java.util.List;
 

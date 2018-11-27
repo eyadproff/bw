@@ -37,14 +37,14 @@ import sa.gov.nic.bio.bw.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.core.workflow.Output;
 import sa.gov.nic.bio.bw.core.beans.Gender;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.CountriesLookup;
-import sa.gov.nic.bio.bw.workflow.commons.webservice.Country;
+import sa.gov.nic.bio.bw.workflow.commons.beans.Country;
 import sa.gov.nic.bio.bw.workflow.visaapplicantsenrollment.lookups.DialingCodesLookup;
 import sa.gov.nic.bio.bw.workflow.visaapplicantsenrollment.lookups.PassportTypesLookup;
 import sa.gov.nic.bio.bw.workflow.visaapplicantsenrollment.lookups.VisaTypesLookup;
 import sa.gov.nic.bio.bw.workflow.visaapplicantsenrollment.utils.VisaApplicantsEnrollmentErrorCodes;
-import sa.gov.nic.bio.bw.workflow.visaapplicantsenrollment.webservice.CountryDialingCode;
-import sa.gov.nic.bio.bw.workflow.visaapplicantsenrollment.webservice.PassportTypeBean;
-import sa.gov.nic.bio.bw.workflow.visaapplicantsenrollment.webservice.VisaTypeBean;
+import sa.gov.nic.bio.bw.workflow.visaapplicantsenrollment.beans.CountryDialingCode;
+import sa.gov.nic.bio.bw.workflow.visaapplicantsenrollment.beans.PassportTypeBean;
+import sa.gov.nic.bio.bw.workflow.visaapplicantsenrollment.beans.VisaTypeBean;
 import sa.gov.nic.bio.commons.TaskResponse;
 
 import java.text.Normalizer;
@@ -400,13 +400,7 @@ public class ApplicantInfoFxController extends WizardStepFxControllerBase
 				deviceManagerGadgetPaneController.initializePassportScanner();
 			}
 		}
-		else
-		{
-			boolean devicesRunnerAutoRun = "true".equals(
-													Context.getConfigManager().getProperty("devicesRunner.autoRun"));
-			
-			if(devicesRunnerAutoRun) deviceManagerGadgetPaneController.runAndConnectDevicesRunner();
-		}
+		else deviceManagerGadgetPaneController.runAndConnectDevicesRunner();
 		
 		txtFirstName.requestFocus();
 	}

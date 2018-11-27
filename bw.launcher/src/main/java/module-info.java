@@ -6,4 +6,6 @@ module bw.launcher
 	
 	exports sa.gov.nic.bio.bw;
 	exports sa.gov.nic.bio.bw.preloader;
+	
+	opens sa.gov.nic.bio.bw.preloader.beans to org.apache.commons.lang3;
 }

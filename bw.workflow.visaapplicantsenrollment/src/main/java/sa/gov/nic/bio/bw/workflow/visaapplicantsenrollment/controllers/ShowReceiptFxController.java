@@ -21,8 +21,8 @@ import sa.gov.nic.bio.bw.workflow.commons.tasks.PrintReportTask;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.SaveReportAsPdfTask;
 import sa.gov.nic.bio.bw.workflow.visaapplicantsenrollment.tasks.BuildForeignEnrollmentReceiptTask;
 import sa.gov.nic.bio.bw.workflow.visaapplicantsenrollment.utils.VisaApplicantsEnrollmentErrorCodes;
-import sa.gov.nic.bio.bw.workflow.visaapplicantsenrollment.webservice.VisaApplicantInfo;
-import sa.gov.nic.bio.bw.workflow.visaapplicantsenrollment.tasks.VisaApplicantEnrollmentResponse;
+import sa.gov.nic.bio.bw.workflow.visaapplicantsenrollment.beans.VisaApplicantInfo;
+import sa.gov.nic.bio.bw.workflow.visaapplicantsenrollment.beans.VisaApplicantEnrollmentResponse;
 
 import javax.swing.SwingUtilities;
 import java.io.File;

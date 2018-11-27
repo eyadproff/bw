@@ -10,10 +10,10 @@ import sa.gov.nic.bio.bw.core.Context;
 import sa.gov.nic.bio.bw.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.core.utils.GuiLanguage;
 import sa.gov.nic.bio.bw.core.beans.Gender;
-import sa.gov.nic.bio.bw.workflow.commons.webservice.Country;
-import sa.gov.nic.bio.bw.workflow.visaapplicantsenrollment.webservice.PassportTypeBean;
-import sa.gov.nic.bio.bw.workflow.visaapplicantsenrollment.webservice.VisaApplicantInfo;
-import sa.gov.nic.bio.bw.workflow.visaapplicantsenrollment.webservice.VisaTypeBean;
+import sa.gov.nic.bio.bw.workflow.commons.beans.Country;
+import sa.gov.nic.bio.bw.workflow.visaapplicantsenrollment.beans.PassportTypeBean;
+import sa.gov.nic.bio.bw.workflow.visaapplicantsenrollment.beans.VisaApplicantInfo;
+import sa.gov.nic.bio.bw.workflow.visaapplicantsenrollment.beans.VisaTypeBean;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -89,7 +89,7 @@ public class BuildForeignEnrollmentReceiptTask extends Task<JasperPrint>
 		params.put(PARAMETER_MOFA_LOGO, CommonImages.LOGO_NIC.getAsInputStream());
 		params.put(PARAMETER_REGISTRATION_NUMBER, String.valueOf(visaApplicantInfo.getApplicantId()));
 		params.put(PARAMETER_RECEIPT_DATE, AppUtils.formatHijriGregorianDateTime(
-										AppUtils.gregorianDateToMilliSeconds(visaApplicantInfo.getEnrollmentDate())));
+																				visaApplicantInfo.getEnrollmentDate()));
 		params.put(PARAMETER_FIRST_NAME, visaApplicantInfo.getFirstName());
 		params.put(PARAMETER_SECOND_NAME, visaApplicantInfo.getSecondName());
 		params.put(PARAMETER_OTHER_NAME, visaApplicantInfo.getOtherName());
@@ -110,7 +110,7 @@ public class BuildForeignEnrollmentReceiptTask extends Task<JasperPrint>
 																		   country.getDescriptionEN());
 		
 		params.put(PARAMETER_BIRTH_DATE, AppUtils.formatHijriGregorianDate(
-											AppUtils.gregorianDateToMilliSeconds(visaApplicantInfo.getBirthDate())));
+											AppUtils.gregorianDateToSeconds(visaApplicantInfo.getBirthDate())));
 		
 		VisaTypeBean visaTypeBean = visaApplicantInfo.getVisaType();
 		
@@ -119,9 +119,9 @@ public class BuildForeignEnrollmentReceiptTask extends Task<JasperPrint>
 		
 		params.put(PARAMETER_PASSPORT_NUMBER, visaApplicantInfo.getPassportNumber());
 		params.put(PARAMETER_ISSUE_DATE, AppUtils.formatHijriGregorianDate(
-											AppUtils.gregorianDateToMilliSeconds(visaApplicantInfo.getIssueDate())));
+											AppUtils.gregorianDateToSeconds(visaApplicantInfo.getIssueDate())));
 		params.put(PARAMETER_EXPIRATION_DATE, AppUtils.formatHijriGregorianDate(
-										AppUtils.gregorianDateToMilliSeconds(visaApplicantInfo.getExpirationDate())));
+										AppUtils.gregorianDateToSeconds(visaApplicantInfo.getExpirationDate())));
 		
 		country = visaApplicantInfo.getIssuanceCountry();
 		

@@ -7,10 +7,9 @@ import javafx.util.Callback;
 import sa.gov.nic.bio.bw.core.utils.Device;
 import sa.gov.nic.bio.bw.core.workflow.Workflow;
 
-import java.util.Objects;
 import java.util.Set;
 
-public class MenuItem implements Comparable<MenuItem>
+public class MenuItem extends JavaBean implements Comparable<MenuItem>
 {
 	private int index;
 	private String menuId;
@@ -52,32 +51,6 @@ public class MenuItem implements Comparable<MenuItem>
 	public boolean isSelected(){ return selected.get();}
 	public void setSelected(boolean selected){ this.selected.set(selected);}
 	public BooleanProperty selectedProperty(){return selected;}
-	
-	@Override
-	public boolean equals(Object o)
-	{
-		if(this == o) return true;
-		if(o == null || getClass() != o.getClass()) return false;
-		MenuItem menuItem = (MenuItem) o;
-		return index == menuItem.index && order == menuItem.order && Objects.equals(menuId, menuItem.menuId) &&
-			   Objects.equals(label, menuItem.label) && Objects.equals(workflowClass, menuItem.workflowClass) &&
-			   Objects.equals(iconId, menuItem.iconId) && Objects.equals(devices, menuItem.devices) &&
-			   Objects.equals(selected, menuItem.selected);
-	}
-	
-	@Override
-	public int hashCode()
-	{
-		return Objects.hash(index, menuId, label, order, workflowClass, iconId, devices, selected);
-	}
-	
-	@Override
-	public String toString()
-	{
-		return "MenuItem{" + "index=" + index + ", menuId='" + menuId + '\'' + ", label='" + label + '\'' +
-			   ", menuOrder=" + order + ", workflowClass=" + workflowClass + ", iconId='" + iconId + '\'' + ", devices=" +
-			   devices + ", selected=" + selected + '}';
-	}
 	
 	@Override
 	public int compareTo(MenuItem other)

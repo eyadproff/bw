@@ -97,10 +97,7 @@ public class LoginPaneFxController extends BodyFxControllerBase implements Persi
 		
 		deviceManagerGadgetPaneController.setDevicesRunnerRunningListener(running ->
 		{
-		    boolean autoInitialize = "true".equals(
-		                                        Context.getConfigManager().getProperty("fingerprint.autoInitialize"));
-		
-		    if(running && autoInitialize &&
+		    if(running &&
 		            !deviceManagerGadgetPaneController.isFingerprintScannerInitialized(FingerprintDeviceType.SINGLE))
 		    {
 		        deviceManagerGadgetPaneController.initializeFingerprintScanner(FingerprintDeviceType.SINGLE);
@@ -421,18 +418,10 @@ public class LoginPaneFxController extends BodyFxControllerBase implements Persi
 		{
 			if(!deviceManagerGadgetPaneController.isFingerprintScannerInitialized(FingerprintDeviceType.SINGLE))
 			{
-				boolean autoInitialize = "true".equals(
-												Context.getConfigManager().getProperty("fingerprint.autoInitialize"));
-				if(autoInitialize)
-						deviceManagerGadgetPaneController.initializeFingerprintScanner(FingerprintDeviceType.SINGLE);
+				deviceManagerGadgetPaneController.initializeFingerprintScanner(FingerprintDeviceType.SINGLE);
 			}
 		}
-		else
-		{
-			boolean devicesRunnerAutoRun = "true".equals(
-													Context.getConfigManager().getProperty("devicesRunner.autoRun"));
-			if(devicesRunnerAutoRun) deviceManagerGadgetPaneController.runAndConnectDevicesRunner();
-		}
+		else deviceManagerGadgetPaneController.runAndConnectDevicesRunner();
 	}
 	
 	@FXML

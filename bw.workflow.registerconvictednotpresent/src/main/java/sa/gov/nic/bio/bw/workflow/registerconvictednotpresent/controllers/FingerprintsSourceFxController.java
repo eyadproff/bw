@@ -7,6 +7,7 @@ import javafx.scene.control.RadioButton;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import sa.gov.nic.bio.bw.core.Context;
+import sa.gov.nic.bio.bw.core.controllers.DevicesRunnerGadgetPaneFxController;
 import sa.gov.nic.bio.bw.core.controllers.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.core.utils.FxmlFile;
 import sa.gov.nic.bio.bw.core.workflow.Output;
@@ -16,13 +17,6 @@ import java.util.Map;
 @FxmlFile("fingerprintsSource.fxml")
 public class FingerprintsSourceFxController extends WizardStepFxControllerBase
 {
-	public static final String KEY_FINGERPRINTS_SOURCE = "FINGERPRINTS_SOURCE";
-	public static final String VALUE_FINGERPRINTS_SOURCE_ENTERING_PERSON_ID = "FINGERPRINTS_SOURCE_ENTERING_PERSON_ID";
-	public static final String VALUE_FINGERPRINTS_SOURCE_SCANNING_FINGERPRINTS_CARD =
-																	"FINGERPRINTS_SOURCE_SCANNING_FINGERPRINTS_CARD";
-	public static final String VALUE_FINGERPRINTS_SOURCE_UPLOADING_NIST_FILE =
-																			"FINGERPRINTS_SOURCE_UPLOADING_NIST_FILE";
-	
 	public enum Source
 	{
 		ENTERING_PERSON_ID,
@@ -128,6 +122,14 @@ public class FingerprintsSourceFxController extends WizardStepFxControllerBase
 		{
 			rbByEnteringPersonId.setSelected(true);
 			rbByEnteringPersonId.requestFocus();
+		}
+		
+		DevicesRunnerGadgetPaneFxController deviceManagerGadgetPaneController =
+												Context.getCoreFxController().getDeviceManagerGadgetPaneController();
+		
+		if(!deviceManagerGadgetPaneController.isDevicesRunnerRunning())
+		{
+			deviceManagerGadgetPaneController.runAndConnectDevicesRunner();
 		}
 	}
 	

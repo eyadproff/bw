@@ -18,8 +18,8 @@ import sa.gov.nic.bio.bw.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.core.workflow.Input;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.PrintReportTask;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.SaveReportAsPdfTask;
-import sa.gov.nic.bio.bw.workflow.commons.webservice.NormalizedPersonInfo;
-import sa.gov.nic.bio.bw.workflow.commons.webservice.PersonInfo;
+import sa.gov.nic.bio.bw.workflow.commons.beans.NormalizedPersonInfo;
+import sa.gov.nic.bio.bw.workflow.commons.beans.PersonInfo;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.FingerprintInquiryStatusCheckerWorkflowTask.Status;
 import sa.gov.nic.bio.bw.workflow.fingerprintcardidentification.beans.FingerprintCardIdentificationRecordReport;
 import sa.gov.nic.bio.bw.workflow.fingerprintcardidentification.tasks.BuildFingerprintCardIdentificationRecordReportTask;
@@ -219,11 +219,7 @@ public class InquiryResultPaneFxController extends WizardStepFxControllerBase
 	
 	private void populateData()
 	{
-		NormalizedPersonInfo normalizedPersonInfo = new NormalizedPersonInfo(personId, /*civilBiometricsId,
-		                                                                     criminalBiometricsId,*/ personInfo,
-		                                                                     null,
-		                                                                     resources.getString("label.male"),
-		                                                                     resources.getString("label.female"));
+		NormalizedPersonInfo normalizedPersonInfo = new NormalizedPersonInfo(personInfo);
 		
 		String facePhotoBase64 = normalizedPersonInfo.getFacePhotoBase64();
 		if(facePhotoBase64 != null)
@@ -235,48 +231,46 @@ public class InquiryResultPaneFxController extends WizardStepFxControllerBase
 			                           resources.getString("label.contextMenu.showImage"), false);
 		}
 		
-		lblPersonId.setText(normalizedPersonInfo.getPersonIdLabel());
-		//lblCivilBiometricsId.setText(normalizedPersonInfo.getCivilBiometricsIdLabel());
-		//lblCriminalBiometricsId.setText(normalizedPersonInfo.getCriminalBiometricsIdLabel());
-		lblFirstName.setText(normalizedPersonInfo.getFirstNameLabel());
-		lblFatherName.setText(normalizedPersonInfo.getFatherNameLabel());
-		lblGrandfatherName.setText(normalizedPersonInfo.getGrandfatherNameLabel());
-		lblFamilyName.setText(normalizedPersonInfo.getFamilyNameLabel());
-		lblGender.setText(normalizedPersonInfo.getGenderLabel());
-		lblNationality.setText(normalizedPersonInfo.getNationalityLabel());
-		lblOccupation.setText(normalizedPersonInfo.getOccupationLabel());
-		lblBirthPlace.setText(normalizedPersonInfo.getBirthPlaceLabel());
-		lblBirthDate.setText(normalizedPersonInfo.getBirthDateLabel());
-		lblPersonType.setText(normalizedPersonInfo.getPersonTypeLabel());
-		lblDocumentId.setText(normalizedPersonInfo.getDocumentIdLabel());
-		lblDocumentType.setText(normalizedPersonInfo.getDocumentTypeLabel());
-		lblDocumentIssuanceDate.setText(normalizedPersonInfo.getDocumentIssuanceDateLabel());
-		lblDocumentExpiryDate.setText(normalizedPersonInfo.getDocumentExpiryDateLabel());
-		
-		GuiUtils.attachFingerprintImages(fingerprintBase64Images, ivRightThumb, ivRightIndex, ivRightMiddle,
-		                                 ivRightRing, ivRightLittle, ivLeftThumb, ivLeftIndex, ivLeftMiddle,
-		                                 ivLeftRing, ivLeftLittle);
-		
-		fingerprintCardIdentificationRecordReport =
-					new FingerprintCardIdentificationRecordReport(facePhotoBase64, normalizedPersonInfo.getFirstName(),
-		                                                          normalizedPersonInfo.getFatherName(),
-		                                                          normalizedPersonInfo.getGrandfatherName(),
-		                                                          normalizedPersonInfo.getFamilyName(),
-		                                                          normalizedPersonInfo.getGenderLabel(),
-		                                                          normalizedPersonInfo.getNationalityLabel(),
-		                                                          normalizedPersonInfo.getOccupation(),
-		                                                          normalizedPersonInfo.getBirthPlace(),
-		                                                          normalizedPersonInfo.getBirthDateLabel(),
-		                                                          normalizedPersonInfo.getPersonIdLabel(),
-		                                                          normalizedPersonInfo.getPersonTypeLabel(),
-		                                                          //normalizedPersonInfo.getCivilBiometricsIdLabel(),
-		                                                          //normalizedPersonInfo.getCriminalBiometricsIdLabel(),
-					                                              "", "",
-		                                                          normalizedPersonInfo.getDocumentId(),
-		                                                          normalizedPersonInfo.getDocumentTypeLabel(),
-		                                                          normalizedPersonInfo.getDocumentIssuanceDateLabel(),
-		                                                          normalizedPersonInfo.getDocumentExpiryDateLabel(),
-		                                                          fingerprintBase64Images);
+		//lblPersonId.setText(normalizedPersonInfo.getPersonIdLabel());
+		//lblFirstName.setText(normalizedPersonInfo.getFirstNameLabel());
+		//lblFatherName.setText(normalizedPersonInfo.getFatherNameLabel());
+		//lblGrandfatherName.setText(normalizedPersonInfo.getGrandfatherNameLabel());
+		//lblFamilyName.setText(normalizedPersonInfo.getFamilyNameLabel());
+		//lblGender.setText(normalizedPersonInfo.getGenderLabel());
+		//lblNationality.setText(normalizedPersonInfo.getNationalityLabel());
+		//lblOccupation.setText(normalizedPersonInfo.getOccupationLabel());
+		//lblBirthPlace.setText(normalizedPersonInfo.getBirthPlaceLabel());
+		//lblBirthDate.setText(normalizedPersonInfo.getBirthDateLabel());
+		//lblPersonType.setText(normalizedPersonInfo.getPersonTypeLabel());
+		//lblDocumentId.setText(normalizedPersonInfo.getDocumentIdLabel());
+		//lblDocumentType.setText(normalizedPersonInfo.getDocumentTypeLabel());
+		//lblDocumentIssuanceDate.setText(normalizedPersonInfo.getDocumentIssuanceDateLabel());
+		//lblDocumentExpiryDate.setText(normalizedPersonInfo.getDocumentExpiryDateLabel());
+		//
+		//GuiUtils.attachFingerprintImages(fingerprintBase64Images, ivRightThumb, ivRightIndex, ivRightMiddle,
+		//                                 ivRightRing, ivRightLittle, ivLeftThumb, ivLeftIndex, ivLeftMiddle,
+		//                                 ivLeftRing, ivLeftLittle);
+		//
+		//fingerprintCardIdentificationRecordReport =
+		//			new FingerprintCardIdentificationRecordReport(facePhotoBase64, normalizedPersonInfo.getFirstName(),
+		//                                                          normalizedPersonInfo.getFatherName(),
+		//                                                          normalizedPersonInfo.getGrandfatherName(),
+		//                                                          normalizedPersonInfo.getFamilyName(),
+		//                                                          normalizedPersonInfo.getGenderLabel(),
+		//                                                          normalizedPersonInfo.getNationalityLabel(),
+		//                                                          normalizedPersonInfo.getOccupation(),
+		//                                                          normalizedPersonInfo.getBirthPlace(),
+		//                                                          normalizedPersonInfo.getBirthDateLabel(),
+		//                                                          normalizedPersonInfo.getPersonIdLabel(),
+		//                                                          normalizedPersonInfo.getPersonTypeLabel(),
+		//                                                          //normalizedPersonInfo.getCivilBiometricsIdLabel(),
+		//                                                          //normalizedPersonInfo.getCriminalBiometricsIdLabel(),
+		//			                                              "", "",
+		//                                                          normalizedPersonInfo.getDocumentId(),
+		//                                                          normalizedPersonInfo.getDocumentTypeLabel(),
+		//                                                          normalizedPersonInfo.getDocumentIssuanceDateLabel(),
+		//                                                          normalizedPersonInfo.getDocumentExpiryDateLabel(),
+		//                                                          fingerprintBase64Images);
 	}
 	
 	private void printDeadPersonRecordReport(JasperPrint jasperPrint)

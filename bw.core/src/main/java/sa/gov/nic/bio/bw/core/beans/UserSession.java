@@ -3,7 +3,7 @@ package sa.gov.nic.bio.bw.core.beans;
 import java.util.HashMap;
 import java.util.Map;
 
-public class UserSession
+public class UserSession extends JavaBean
 {
 	private Map<String, Object> attributes = new HashMap<>();
 	

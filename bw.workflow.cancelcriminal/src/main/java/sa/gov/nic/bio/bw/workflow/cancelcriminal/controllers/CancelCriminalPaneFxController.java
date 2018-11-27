@@ -21,7 +21,7 @@ import sa.gov.nic.bio.bw.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.core.workflow.Input;
 import sa.gov.nic.bio.bw.core.workflow.Output;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.PersonTypesLookup;
-import sa.gov.nic.bio.bw.workflow.commons.webservice.PersonType;
+import sa.gov.nic.bio.bw.workflow.commons.beans.PersonType;
 
 import java.util.List;
 import java.util.Locale;

@@ -1,8 +1,6 @@
 package sa.gov.nic.bio.bw.core.beans;
 
-import java.util.Objects;
-
-public class TaskOutput<T>
+public class TaskOutput<T> extends JavaBean
 {
 	private String name;
 	private Class<?> type;
@@ -23,26 +21,4 @@ public class TaskOutput<T>
 	
 	public T getValue(){return value;}
 	public void setValue(T value){this.value = value;}
-	
-	@Override
-	public boolean equals(Object o)
-	{
-		if(this == o) return true;
-		if(o == null || getClass() != o.getClass()) return false;
-		TaskOutput<?> mockInput = (TaskOutput<?>) o;
-		return Objects.equals(name, mockInput.name) && Objects.equals(type, mockInput.type) &&
-			   Objects.equals(value, mockInput.value);
-	}
-	
-	@Override
-	public int hashCode()
-	{
-		return Objects.hash(name, type, value);
-	}
-	
-	@Override
-	public String toString()
-	{
-		return "TaskOutput{" + "name='" + name + '\'' + ", type=" + type + ", value=" + value + '}';
-	}
 }

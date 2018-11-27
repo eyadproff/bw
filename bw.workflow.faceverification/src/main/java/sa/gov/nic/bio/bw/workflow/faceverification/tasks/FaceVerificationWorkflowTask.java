@@ -6,8 +6,8 @@ import sa.gov.nic.bio.bw.core.workflow.Input;
 import sa.gov.nic.bio.bw.core.workflow.Output;
 import sa.gov.nic.bio.bw.core.workflow.Signal;
 import sa.gov.nic.bio.bw.core.workflow.WorkflowTask;
-import sa.gov.nic.bio.bw.workflow.commons.webservice.PersonInfo;
-import sa.gov.nic.bio.bw.workflow.faceverification.webservice.FaceMatchingResponse;
+import sa.gov.nic.bio.bw.workflow.commons.beans.PersonInfo;
+import sa.gov.nic.bio.bw.workflow.faceverification.beans.FaceMatchingResponse;
 import sa.gov.nic.bio.bw.workflow.faceverification.webservice.FaceVerificationAPI;
 import sa.gov.nic.bio.commons.TaskResponse;
 

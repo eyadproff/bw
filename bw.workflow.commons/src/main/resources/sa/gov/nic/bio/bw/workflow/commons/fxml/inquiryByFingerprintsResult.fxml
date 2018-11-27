@@ -3,39 +3,32 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.TitledPane?>
-<?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import sa.gov.nic.bio.bw.workflow.commons.ui.ImageViewPane?>
+<?import javafx.scene.control.CheckBox?>
 <BorderPane xmlns="http://javafx.com/javafx/11" xmlns:fx="http://javafx.com/fxml/1"
             fx:id="rootPane" stylesheets="@../css/style.css"
             fx:controller="sa.gov.nic.bio.bw.workflow.commons.controllers.InquiryByFingerprintsResultPaneFxController">
-
-    <fx:define>
-        <ToggleGroup fx:id="toggleGroup"/>
-    </fx:define>
-
     <center>
         <BorderPane>
             <left>
-                <VBox fx:id="paneFingerprintsHitResults" maxWidth="170.0" managed="false" visible="false">
+                <VBox fx:id="paneFingerprintsHitResults" maxWidth="200.0" managed="false" visible="false">
                     <padding>
                         <Insets top="10.0" bottom="10.0"/>
                     </padding>
                     <TitledPane text="%label.civilFingerprints" VBox.vgrow="ALWAYS" maxHeight="Infinity" focusTraversable="false" collapsible="false">
                         <graphic>
-                            <RadioButton fx:id="rdoCivilFingerprints" toggleGroup="$toggleGroup"/>
+                            <CheckBox fx:id="cbCivilFingerprints" selected="true" disable="true" styleClass="fakely-enabled"/>
                         </graphic>
                         <VBox alignment="CENTER" spacing="5.0">
                             <HBox fx:id="paneCivilFingerprintsNoHit" alignment="CENTER" spacing="5.0" managed="false" visible="false">
@@ -62,14 +55,15 @@
                                 </placeholder>
                                 <columns>
                                     <TableColumn fx:id="tcSequence" text="#" reorderable="false" sortable="false" resizable="false" prefWidth="30.0"/>
-                                    <TableColumn fx:id="tcPersonId" text="%table.column.personId" reorderable="false" resizable="false" prefWidth="100.0"/>
+                                    <TableColumn fx:id="tcPersonId" text="%table.column.personId" reorderable="false" sortable="false" resizable="false" prefWidth="100.0"/>
+                                    <TableColumn fx:id="tcCheckBox" reorderable="false" sortable="false" resizable="false" prefWidth="30.0"/>
                                 </columns>
                             </TableView>
                         </VBox>
                     </TitledPane>
                     <TitledPane text="%label.criminalFingerprints" focusTraversable="false" collapsible="false">
                         <graphic>
-                            <RadioButton fx:id="rdoCriminalFingerprints" toggleGroup="$toggleGroup"/>
+                            <CheckBox fx:id="cbCriminalFingerprints" selected="true" disable="true" styleClass="fakely-enabled"/>
                         </graphic>
                         <VBox alignment="CENTER" spacing="5.0">
                             <HBox fx:id="paneCriminalFingerprintsNoHit" alignment="CENTER" spacing="5.0" managed="false" visible="false">

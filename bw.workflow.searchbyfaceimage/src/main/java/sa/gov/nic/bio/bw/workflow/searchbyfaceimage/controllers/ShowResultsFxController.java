@@ -35,7 +35,7 @@ import sa.gov.nic.bio.bw.core.utils.FxmlFile;
 import sa.gov.nic.bio.bw.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.core.workflow.Input;
 import sa.gov.nic.bio.bw.workflow.searchbyfaceimage.ui.ToggleTitledPane;
-import sa.gov.nic.bio.bw.workflow.searchbyfaceimage.webservice.Candidate;
+import sa.gov.nic.bio.bw.workflow.searchbyfaceimage.beans.Candidate;
 
 import java.io.ByteArrayInputStream;
 import java.util.Base64;

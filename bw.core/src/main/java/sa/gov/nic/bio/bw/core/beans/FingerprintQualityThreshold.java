@@ -3,10 +3,7 @@ package sa.gov.nic.bio.bw.core.beans;
 import sa.gov.nic.bio.bw.core.Context;
 import sa.gov.nic.bio.bw.core.biokit.FingerPosition;
 
-import java.io.Serializable;
-import java.util.Objects;
-
-public class FingerprintQualityThreshold implements Serializable
+public class FingerprintQualityThreshold extends JavaBean
 {
 	private int maximumAcceptableNFIQ;
 	private int minimumAcceptableMinutiaeCount;
@@ -53,32 +50,4 @@ public class FingerprintQualityThreshold implements Serializable
 	public int getMaximumAcceptableImageIntensity(){return maximumAcceptableImageIntensity;}
 	public void setMaximumAcceptableImageIntensity(int maximumAcceptableImageIntensity)
 	{this.maximumAcceptableImageIntensity = maximumAcceptableImageIntensity;}
-	
-	@Override
-	public boolean equals(Object o)
-	{
-		if(this == o) return true;
-		if(o == null || getClass() != o.getClass()) return false;
-		FingerprintQualityThreshold that = (FingerprintQualityThreshold) o;
-		return maximumAcceptableNFIQ == that.maximumAcceptableNFIQ &&
-			   minimumAcceptableMinutiaeCount == that.minimumAcceptableMinutiaeCount &&
-			   minimumAcceptableImageIntensity == that.minimumAcceptableImageIntensity &&
-			   maximumAcceptableImageIntensity == that.maximumAcceptableImageIntensity;
-	}
-	
-	@Override
-	public int hashCode()
-	{
-		return Objects.hash(maximumAcceptableNFIQ, minimumAcceptableMinutiaeCount, minimumAcceptableImageIntensity,
-		                    maximumAcceptableImageIntensity);
-	}
-	
-	@Override
-	public String toString()
-	{
-		return "FingerprintQualityThreshold{" + "maximumAcceptableNFIQ=" + maximumAcceptableNFIQ +
-			   ", minimumAcceptableMinutiaeCount=" + minimumAcceptableMinutiaeCount +
-			   ", minimumAcceptableImageIntensity=" + minimumAcceptableImageIntensity +
-			   ", maximumAcceptableImageIntensity=" + maximumAcceptableImageIntensity + '}';
-	}
 }

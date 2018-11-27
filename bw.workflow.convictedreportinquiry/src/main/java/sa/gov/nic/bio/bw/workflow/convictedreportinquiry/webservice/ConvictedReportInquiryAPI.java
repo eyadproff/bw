@@ -4,7 +4,7 @@ import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Query;
-import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.webservice.ConvictedReport;
+import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.beans.ConvictedReport;
 
 import java.util.List;
 

@@ -11,7 +11,7 @@ import org.controlsfx.glyphfont.Glyph;
 import org.scenicview.ScenicView;
 import sa.gov.nic.bio.bw.core.beans.Name;
 import sa.gov.nic.bio.bw.core.interfaces.AppLogger;
-import sa.gov.nic.bio.bw.core.webservice.NicHijriCalendarData;
+import sa.gov.nic.bio.bw.core.beans.NicHijriCalendarData;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -310,16 +310,21 @@ public final class AppUtils implements AppLogger
 		}
 	}
 	
-	public static ChronoZonedDateTime<HijrahDate> milliSecondsToHijriDateTime(long milliSeconds)
+	public static ChronoZonedDateTime<HijrahDate> secondsToHijriDateTime(long seconds)
 											throws DateTimeException // thrown in case of "Hijrah date out of range"
 	{
-		return nicChronology.zonedDateTime(Instant.ofEpochMilli(milliSeconds).atZone(AppConstants.SAUDI_ZONE));
+		return nicChronology.zonedDateTime(Instant.ofEpochSecond(seconds).atZone(AppConstants.SAUDI_ZONE));
 	}
 	
-	public static HijrahDate milliSecondsToHijriDate(long milliSeconds)
+	public static HijrahDate secondsToHijriDate(long seconds)
+											throws DateTimeException // thrown in case of "Hijrah date out of range"
 	{
-		return nicChronology.zonedDateTime(Instant.ofEpochMilli(milliSeconds).atZone(AppConstants.SAUDI_ZONE))
-																			 .toLocalDate();
+		return secondsToHijriDateTime(seconds).toLocalDate();
+	}
+	
+	public static ZonedDateTime secondsToGregorianDateTime(long seconds)
+	{
+		return Instant.ofEpochSecond(seconds).atZone(AppConstants.SAUDI_ZONE);
 	}
 	
 	public static ZonedDateTime milliSecondsToGregorianDateTime(long milliSeconds)
@@ -327,25 +332,40 @@ public final class AppUtils implements AppLogger
 		return Instant.ofEpochMilli(milliSeconds).atZone(AppConstants.SAUDI_ZONE);
 	}
 	
-	public static LocalDate milliSecondsToGregorianDate(long milliSeconds)
+	public static LocalDate secondsToGregorianDate(long seconds)
 	{
-		return Instant.ofEpochMilli(milliSeconds).atZone(AppConstants.SAUDI_ZONE).toLocalDate();
+		return secondsToGregorianDateTime(seconds).toLocalDate();
 	}
 	
-	public static String formatHijriGregorianDateTime(long milliSeconds)
+	public static long gregorianDateToSeconds(LocalDate gregorianDate)
+	{
+		return gregorianDate.atStartOfDay(AppConstants.SAUDI_ZONE).toEpochSecond();
+	}
+	
+	public static long gregorianDateTimeToSeconds(ZonedDateTime gregorianDateTime)
+	{
+		return gregorianDateTime.toEpochSecond();
+	}
+	
+	public static String formatHijriGregorianDateTime(ZonedDateTime gregorianDateTime)
+	{
+		return formatHijriGregorianDateTime(gregorianDateTimeToSeconds(gregorianDateTime));
+	}
+	
+	public static String formatHijriGregorianDateTime(long seconds)
 	{
 		ChronoZonedDateTime<HijrahDate> hijriDateTime = null;
 		
 		try
 		{
-			hijriDateTime = AppUtils.milliSecondsToHijriDateTime(milliSeconds);
+			hijriDateTime = AppUtils.secondsToHijriDateTime(seconds);
 		}
 		catch(DateTimeException e)
 		{
 			// thrown in case of "Hijrah date out of range"
 		}
 		
-		ZonedDateTime gregorianDateTime = AppUtils.milliSecondsToGregorianDateTime(milliSeconds);
+		ZonedDateTime gregorianDateTime = AppUtils.secondsToGregorianDateTime(seconds);
 		
 		if(hijriDateTime != null)
 		{
@@ -354,13 +374,13 @@ public final class AppUtils implements AppLogger
 		else return AppUtils.formatDateTime(gregorianDateTime);
 	}
 	
-	public static String formatHijriDateSimple(long milliSeconds, boolean rtl)
+	public static String formatHijriDateSimple(long seconds, boolean rtl)
 	{
 		HijrahDate hijriDate = null;
 		
 		try
 		{
-			hijriDate = AppUtils.milliSecondsToHijriDate(milliSeconds);
+			hijriDate = AppUtils.secondsToHijriDate(seconds);
 		}
 		catch(DateTimeException e)
 		{
@@ -373,24 +393,24 @@ public final class AppUtils implements AppLogger
 	
 	public static String formatHijriGregorianDate(LocalDate localDate)
 	{
-		long milliSeconds = gregorianDateToMilliSeconds(localDate);
-		return formatHijriGregorianDate(milliSeconds);
+		long seconds = gregorianDateToSeconds(localDate);
+		return formatHijriGregorianDate(seconds);
 	}
 	
-	public static String formatHijriGregorianDate(long milliSeconds)
+	public static String formatHijriGregorianDate(long seconds)
 	{
 		HijrahDate hijriDate = null;
 		
 		try
 		{
-			hijriDate = AppUtils.milliSecondsToHijriDate(milliSeconds);
+			hijriDate = AppUtils.secondsToHijriDate(seconds);
 		}
 		catch(DateTimeException e)
 		{
 			// thrown in case of "Hijrah date out of range"
 		}
 		
-		LocalDate gregorianDate = AppUtils.milliSecondsToGregorianDate(milliSeconds);
+		LocalDate gregorianDate = AppUtils.secondsToGregorianDate(seconds);
 		
 		if(hijriDate != null)
 		{
@@ -399,30 +419,20 @@ public final class AppUtils implements AppLogger
 		else return AppUtils.formatFullDate(gregorianDate);
 	}
 	
-	public static String formatGregorianDate(long milliSeconds)
+	public static String formatGregorianDate(long seconds)
 	{
-		LocalDate localDate = AppUtils.milliSecondsToGregorianDate(milliSeconds);
+		LocalDate localDate = AppUtils.secondsToGregorianDate(seconds);
 		return AppUtils.formatFullDate(localDate);
 	}
 	
-	public static long gregorianDateToMilliSeconds(LocalDate gregorianDate)
-	{
-		return gregorianDate.atStartOfDay(AppConstants.SAUDI_ZONE).toEpochSecond() * 1000;
-	}
-	
-	public static long gregorianDateToMilliSeconds(ZonedDateTime gregorianDateTime)
-	{
-		return gregorianDateTime.toEpochSecond() * 1000;
-	}
-	
-	public static LocalDateTime extractIssueTimeFromJWT(String jwt)
+	public static ZonedDateTime extractIssueTimeFromJWT(String jwt)
 	{
 		String iat = extractFieldFromJWT(jwt, "iat");
 		
 		if(iat != null && !iat.isEmpty())
 		{
-			LocalDateTime issueDateTime = LocalDateTime.ofInstant(
-										Instant.ofEpochMilli(Long.parseLong(iat) * 1000L), AppConstants.SAUDI_ZONE);
+			long seconds = Long.parseLong(iat);
+			ZonedDateTime issueDateTime = secondsToGregorianDateTime(seconds);
 			LOGGER.fine("The issue time for the JWT is " + issueDateTime);
 			return issueDateTime;
 		}
@@ -430,14 +440,14 @@ public final class AppUtils implements AppLogger
 		return null;
 	}
 	
-	public static LocalDateTime extractExpirationTimeFromJWT(String jwt)
+	public static ZonedDateTime extractExpirationTimeFromJWT(String jwt)
 	{
 		String exp = extractFieldFromJWT(jwt, "exp");
 		
 		if(exp != null && !exp.isEmpty())
 		{
-			LocalDateTime expirationDateTime = LocalDateTime.ofInstant(
-										Instant.ofEpochMilli(Long.parseLong(exp) * 1000L), AppConstants.SAUDI_ZONE);
+			long seconds = Long.parseLong(exp);
+			ZonedDateTime expirationDateTime = secondsToGregorianDateTime(seconds);
 			LOGGER.fine("The expiration time for the JWT is " + expirationDateTime);
 			return expirationDateTime;
 		}

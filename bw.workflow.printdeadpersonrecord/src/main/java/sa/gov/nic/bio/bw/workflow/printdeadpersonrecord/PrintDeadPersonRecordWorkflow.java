@@ -15,7 +15,7 @@ import sa.gov.nic.bio.bw.workflow.commons.tasks.GetPersonInfoByIdWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.printdeadpersonrecord.controllers.FetchingPersonInfoPaneFxController;
 import sa.gov.nic.bio.bw.workflow.printdeadpersonrecord.controllers.RecordIdPaneFxController;
 import sa.gov.nic.bio.bw.workflow.printdeadpersonrecord.controllers.ShowRecordPaneFxController;
-import sa.gov.nic.bio.bw.workflow.printdeadpersonrecord.webservice.DeadPersonRecord;
+import sa.gov.nic.bio.bw.workflow.printdeadpersonrecord.beans.DeadPersonRecord;
 import sa.gov.nic.bio.bw.workflow.printdeadpersonrecord.tasks.DeadPersonRecordByIdWorkflowTask;
 
 import java.util.Locale;

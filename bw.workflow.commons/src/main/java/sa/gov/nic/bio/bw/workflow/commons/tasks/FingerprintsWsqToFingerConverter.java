@@ -1,7 +1,7 @@
 package sa.gov.nic.bio.bw.workflow.commons.tasks;
 
 import sa.gov.nic.bio.bw.core.workflow.Converter;
-import sa.gov.nic.bio.bw.workflow.commons.webservice.Finger;
+import sa.gov.nic.bio.bw.workflow.commons.beans.Finger;
 
 import java.util.ArrayList;
 import java.util.List;

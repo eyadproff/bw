@@ -1,5 +1,6 @@
 package sa.gov.nic.bio.bw.workflow.commons.tasks;
 
+import sa.gov.nic.bio.biokit.exceptions.NotConnectedException;
 import sa.gov.nic.bio.biokit.fingerprint.beans.ConvertedFingerprintImagesResponse;
 import sa.gov.nic.bio.biokit.fingerprint.beans.SegmentFingerprintsResponse;
 import sa.gov.nic.bio.biokit.websocket.beans.DMFingerData;
@@ -10,13 +11,14 @@ import sa.gov.nic.bio.bw.core.workflow.Output;
 import sa.gov.nic.bio.bw.core.workflow.Signal;
 import sa.gov.nic.bio.bw.core.workflow.WorkflowTask;
 import sa.gov.nic.bio.bw.workflow.commons.utils.CommonsErrorCodes;
-import sa.gov.nic.bio.bw.workflow.commons.webservice.Finger;
+import sa.gov.nic.bio.bw.workflow.commons.beans.Finger;
 import sa.gov.nic.bio.commons.TaskResponse;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -90,6 +92,13 @@ public class ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTas
 				}
 				catch(Exception e)
 				{
+					if(e instanceof ExecutionException && e.getCause() instanceof NotConnectedException)
+					{
+						String errorCode = CommonsErrorCodes.N008_00001.getCode();
+						resetWorkflowStepIfNegativeOrNullTaskResponse(TaskResponse.failure(errorCode));
+						return;
+					}
+					
 					String errorCode = CommonsErrorCodes.C008_00023.getCode();
 					String[] errorDetails = {"Failed to call the service for segmenting the fingerprints!"};
 					resetWorkflowStepIfNegativeOrNullTaskResponse(TaskResponse.failure(errorCode, e, errorDetails));

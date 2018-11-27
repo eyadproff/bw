@@ -1,9 +1,10 @@
 package sa.gov.nic.bio.bw.workflow.fingerprintcardidentification.beans;
 
-import java.util.Map;
-import java.util.Objects;
+import sa.gov.nic.bio.bw.core.beans.JavaBean;
 
-public class FingerprintCardIdentificationRecordReport
+import java.util.Map;
+
+public class FingerprintCardIdentificationRecordReport extends JavaBean
 {
 	private String faceBase64;
 	private String firstName;
@@ -112,48 +113,4 @@ public class FingerprintCardIdentificationRecordReport
 	public Map<Integer, String> getFingerprintsImages(){return fingerprintsImages;}
 	public void setFingerprintsImages(Map<Integer, String> fingerprintsImages)
 																		{this.fingerprintsImages = fingerprintsImages;}
-	
-	@Override
-	public boolean equals(Object o)
-	{
-		if(this == o) return true;
-		if(o == null || getClass() != o.getClass()) return false;
-		FingerprintCardIdentificationRecordReport that = (FingerprintCardIdentificationRecordReport) o;
-		return Objects.equals(faceBase64, that.faceBase64) && Objects.equals(firstName, that.firstName) &&
-			   Objects.equals(fatherName, that.fatherName) && Objects.equals(grandfatherName, that.grandfatherName) &&
-			   Objects.equals(familyName, that.familyName) && Objects.equals(gender, that.gender) &&
-			   Objects.equals(nationality, that.nationality) && Objects.equals(occupation, that.occupation) &&
-			   Objects.equals(birthPlace, that.birthPlace) && Objects.equals(birthDate, that.birthDate) &&
-			   Objects.equals(personId, that.personId) && Objects.equals(personType, that.personType) &&
-			   Objects.equals(civilBiometricsId, that.civilBiometricsId) &&
-			   Objects.equals(criminalBiometricsId, that.criminalBiometricsId) &&
-			   Objects.equals(documentId, that.documentId) && Objects.equals(documentType, that.documentType) &&
-			   Objects.equals(documentIssuanceDate, that.documentIssuanceDate) &&
-			   Objects.equals(documentExpiryDate, that.documentExpiryDate) &&
-			   Objects.equals(fingerprintsImages, that.fingerprintsImages);
-	}
-	
-	@Override
-	public int hashCode()
-	{
-		return Objects.hash(faceBase64, firstName, fatherName, grandfatherName, familyName, gender, nationality,
-		                    occupation, birthPlace, birthDate, personId, personType, civilBiometricsId,
-		                    criminalBiometricsId, documentId, documentType, documentIssuanceDate, documentExpiryDate,
-		                    fingerprintsImages);
-	}
-	
-	@Override
-	public String toString()
-	{
-		return "FingerprintCardIdentificationRecordReport{" + "faceBase64='" + faceBase64 + '\'' + ", firstName='" +
-			   firstName + '\'' + ", fatherName='" + fatherName + '\'' + ", grandfatherName='" + grandfatherName +
-			   '\'' + ", familyName='" + familyName + '\'' + ", gender='" + gender + '\'' + ", nationality='" +
-			   nationality + '\'' + ", occupation='" + occupation + '\'' + ", birthPlace='" + birthPlace + '\'' +
-			   ", birthDate='" + birthDate + '\'' + ", personId='" + personId + '\'' + ", personType='" + personType +
-			   '\'' + ", civilBiometricsId='" + civilBiometricsId + '\'' + ", criminalBiometricsId='" +
-			   criminalBiometricsId + '\'' + ", documentId='" + documentId + '\'' + ", documentType='" +
-			   documentType + '\'' + ", documentIssuanceDate='" + documentIssuanceDate + '\'' +
-			   ", documentExpiryDate='" + documentExpiryDate + '\'' + ", fingerprintsImages=" +
-			   fingerprintsImages + '}';
-	}
 }

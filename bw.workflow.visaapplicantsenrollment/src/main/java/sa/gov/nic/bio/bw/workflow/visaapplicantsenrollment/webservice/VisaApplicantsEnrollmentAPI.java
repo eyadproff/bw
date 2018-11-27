@@ -5,7 +5,7 @@ import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.Header;
 import retrofit2.http.POST;
-import sa.gov.nic.bio.bw.workflow.visaapplicantsenrollment.tasks.VisaApplicantEnrollmentResponse;
+import sa.gov.nic.bio.bw.workflow.visaapplicantsenrollment.beans.VisaApplicantEnrollmentResponse;
 
 public interface VisaApplicantsEnrollmentAPI
 {

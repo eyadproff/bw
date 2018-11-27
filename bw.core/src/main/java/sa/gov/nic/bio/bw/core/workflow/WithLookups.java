@@ -14,5 +14,5 @@ import java.util.concurrent.Callable;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface WithLookups
 {
-	Class<? extends Callable<TaskResponse<Void>>>[] value();
+	Class<? extends Callable<TaskResponse<?>>>[] value();
 }

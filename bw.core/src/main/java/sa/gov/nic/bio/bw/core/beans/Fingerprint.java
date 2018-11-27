@@ -2,10 +2,7 @@ package sa.gov.nic.bio.bw.core.beans;
 
 import sa.gov.nic.bio.biokit.websocket.beans.DMFingerData;
 
-import java.io.Serializable;
-import java.util.Objects;
-
-public class Fingerprint implements Serializable
+public class Fingerprint extends JavaBean
 {
 	private DMFingerData dmFingerData;
 	private String slapWsq;
@@ -70,36 +67,4 @@ public class Fingerprint implements Serializable
 	
 	public boolean isSkipped(){return skipped;}
 	public void setSkipped(boolean skipped){this.skipped = skipped;}
-	
-	@Override
-	public boolean equals(Object o)
-	{
-		if(this == o) return true;
-		if(o == null || getClass() != o.getClass()) return false;
-		Fingerprint that = (Fingerprint) o;
-		return acceptableFingerprintNfiq == that.acceptableFingerprintNfiq &&
-			   acceptableFingerprintMinutiaeCount == that.acceptableFingerprintMinutiaeCount &&
-			   acceptableFingerprintImageIntensity == that.acceptableFingerprintImageIntensity &&
-			   acceptableQuality == that.acceptableQuality && duplicated == that.duplicated &&
-			   skipped == that.skipped && Objects.equals(dmFingerData, that.dmFingerData) &&
-			   Objects.equals(slapWsq, that.slapWsq) && Objects.equals(slapImage, that.slapImage);
-	}
-	
-	@Override
-	public int hashCode()
-	{
-		return Objects.hash(dmFingerData, slapWsq, slapImage, acceptableFingerprintNfiq,
-		                    acceptableFingerprintMinutiaeCount, acceptableFingerprintImageIntensity, acceptableQuality,
-		                    duplicated, skipped);
-	}
-	
-	@Override
-	public String toString()
-	{
-		return "Fingerprint{" + "dmFingerData=" + dmFingerData + ", slapWsq='" + slapWsq + '\'' + ", slapImage='" +
-			   slapImage + '\'' + ", acceptableFingerprintNfiq=" + acceptableFingerprintNfiq +
-			   ", acceptableFingerprintMinutiaeCount=" + acceptableFingerprintMinutiaeCount +
-			   ", acceptableFingerprintImageIntensity=" + acceptableFingerprintImageIntensity +
-			   ", acceptableQuality=" + acceptableQuality + ", duplicated=" + duplicated + ", skipped=" + skipped + '}';
-	}
 }

@@ -1,9 +1,6 @@
 package sa.gov.nic.bio.bw.core.beans;
 
-import java.io.Serializable;
-import java.util.Arrays;
-
-public class UserInfo implements Serializable
+public class UserInfo extends JavaBean
 {
 	private String distinguishedName;
 	private String userName;
@@ -75,15 +72,4 @@ public class UserInfo implements Serializable
 	
 	public String getFaceImage(){return faceImage;}
 	public void setFaceImage(String faceImage){this.faceImage = faceImage;}
-	
-	@Override
-	public String toString()
-	{
-		return "UserInfo{" + "distinguishedName='" + distinguishedName + '\'' + ", userName='" + userName + '\'' + ", gender='" + gender + '\'' +
-				", userID='" + userID + '\'' + ", locationId='" + locationId + '\'' + ", originalStringRoles=" + Arrays.toString(originalStringRoles) +
-				", badPasswordCount=" + badPasswordCount + ", badPasswordTime=" + badPasswordTime + ", lastLogonTime=" + lastLogonTime +
-				", locationName='" + locationName + '\'' + ", operatorName='" + operatorName + '\'' + ", operatorId=" + operatorId +
-				", accountExperiyDate=" + accountExperiyDate + ", passwordLastSet=" + passwordLastSet + ", locations=" + Arrays.toString(locations) +
-				", status=" + status + ", faceImage='" + faceImage + '\'' + '}';
-	}
 }

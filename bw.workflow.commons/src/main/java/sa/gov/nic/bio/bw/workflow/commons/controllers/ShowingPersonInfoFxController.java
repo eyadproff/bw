@@ -12,8 +12,10 @@ import sa.gov.nic.bio.bw.core.utils.FxmlFile;
 import sa.gov.nic.bio.bw.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.core.workflow.Input;
 import sa.gov.nic.bio.bw.core.workflow.Output;
-import sa.gov.nic.bio.bw.workflow.commons.webservice.NormalizedPersonInfo;
-import sa.gov.nic.bio.bw.workflow.commons.webservice.PersonInfo;
+import sa.gov.nic.bio.bw.workflow.commons.beans.NormalizedPersonInfo;
+import sa.gov.nic.bio.bw.workflow.commons.beans.PersonInfo;
+
+import java.util.function.Consumer;
 
 @FxmlFile("showingPersonInfo.fxml")
 public class ShowingPersonInfoFxController extends WizardStepFxControllerBase
@@ -45,48 +47,36 @@ public class ShowingPersonInfoFxController extends WizardStepFxControllerBase
 	@Override
 	protected void onAttachedToScene()
 	{
-		normalizedPersonInfo = new NormalizedPersonInfo(personId,
-		                                                personInfo, resources.getString("label.notAvailable"),
-		                                                resources.getString("label.male"),
-		                                                resources.getString("label.female"));
+		normalizedPersonInfo = new NormalizedPersonInfo(personInfo);
 		
 		String facePhotoBase64 = normalizedPersonInfo.getFacePhotoBase64();
 		Gender gender = normalizedPersonInfo.getGender();
 		GuiUtils.attachFacePhotoBase64(ivPersonPhoto, facePhotoBase64, true, gender);
 		
-		lblPersonId.setText(normalizedPersonInfo.getPersonIdLabel());
-		lblFirstName.setText(normalizedPersonInfo.getFirstNameLabel());
-		lblFatherName.setText(normalizedPersonInfo.getFatherNameLabel());
-		lblGrandfatherName.setText(normalizedPersonInfo.getGrandfatherNameLabel());
-		lblFamilyName.setText(normalizedPersonInfo.getFamilyNameLabel());
-		lblGender.setText(normalizedPersonInfo.getGenderLabel());
-		lblNationality.setText(normalizedPersonInfo.getNationalityLabel());
-		lblOccupation.setText(normalizedPersonInfo.getOccupationLabel());
-		lblBirthPlace.setText(normalizedPersonInfo.getBirthPlaceLabel());
-		lblBirthDate.setText(normalizedPersonInfo.getBirthDateLabel());
-		lblPersonType.setText(normalizedPersonInfo.getPersonTypeLabel());
-		lblDocumentId.setText(normalizedPersonInfo.getDocumentIdLabel());
-		lblDocumentType.setText(normalizedPersonInfo.getDocumentTypeLabel());
-		lblDocumentIssuanceDate.setText(normalizedPersonInfo.getDocumentIssuanceDateLabel());
-		lblDocumentExpiryDate.setText(normalizedPersonInfo.getDocumentExpiryDateLabel());
+		String notAvailable = resources.getString("label.notAvailable");
+		Consumer<Label> consumer = label ->
+		{
+			label.setText(notAvailable);
+			label.setTextFill(Color.RED);
+		};
 		
-		if(normalizedPersonInfo.getPersonId() == null) lblPersonId.setTextFill(Color.RED);
-		if(normalizedPersonInfo.getFirstName() == null) lblFirstName.setTextFill(Color.RED);
-		if(normalizedPersonInfo.getFatherName() == null) lblFatherName.setTextFill(Color.RED);
-		if(normalizedPersonInfo.getGrandfatherName() == null) lblGrandfatherName.setTextFill(Color.RED);
-		if(normalizedPersonInfo.getFamilyName() == null) lblFamilyName.setTextFill(Color.RED);
-		if(normalizedPersonInfo.getGender() == null) lblGender.setTextFill(Color.RED);
-		if(normalizedPersonInfo.getNationality() == null) lblNationality.setTextFill(Color.RED);
-		if(normalizedPersonInfo.getOccupation() == null) lblOccupation.setTextFill(Color.RED);
-		if(normalizedPersonInfo.getBirthPlace() == null) lblBirthPlace.setTextFill(Color.RED);
-		if(normalizedPersonInfo.getBirthDate() == null) lblBirthDate.setTextFill(Color.RED);
-		if(normalizedPersonInfo.getPersonType() == null) lblPersonType.setTextFill(Color.RED);
-		if(normalizedPersonInfo.getDocumentId() == null) lblDocumentId.setTextFill(Color.RED);
-		if(normalizedPersonInfo.getDocumentType() == null) lblDocumentType.setTextFill(Color.RED);
-		if(normalizedPersonInfo.getDocumentIssuanceDate() == null) lblDocumentIssuanceDate.setTextFill(Color.RED);
-		if(normalizedPersonInfo.getDocumentExpiryDate() == null) lblDocumentExpiryDate.setTextFill(Color.RED);
+		GuiUtils.setLabelText(lblFirstName, normalizedPersonInfo.getFirstName()).orElse(consumer);
+		GuiUtils.setLabelText(lblFatherName, normalizedPersonInfo.getFatherName()).orElse(consumer);
+		GuiUtils.setLabelText(lblGrandfatherName, normalizedPersonInfo.getGrandfatherName()).orElse(consumer);
+		GuiUtils.setLabelText(lblFamilyName, normalizedPersonInfo.getFamilyName()).orElse(consumer);
+		GuiUtils.setLabelText(lblGender, normalizedPersonInfo.getGender()).orElse(consumer);
+		GuiUtils.setLabelText(lblNationality, normalizedPersonInfo.getNationality()).orElse(consumer);
+		GuiUtils.setLabelText(lblOccupation, normalizedPersonInfo.getOccupation()).orElse(consumer);
+		GuiUtils.setLabelText(lblBirthPlace, normalizedPersonInfo.getBirthPlace()).orElse(consumer);
+		GuiUtils.setLabelText(lblBirthDate, normalizedPersonInfo.getBirthDate()).orElse(consumer);
+		GuiUtils.setLabelText(lblPersonId, normalizedPersonInfo.getPersonId()).orElse(consumer);
+		GuiUtils.setLabelText(lblPersonType, normalizedPersonInfo.getPersonType()).orElse(consumer);
+		GuiUtils.setLabelText(lblDocumentId, normalizedPersonInfo.getDocumentId()).orElse(consumer);
+		GuiUtils.setLabelText(lblDocumentType, normalizedPersonInfo.getDocumentType()).orElse(consumer);
+		GuiUtils.setLabelText(lblDocumentIssuanceDate, normalizedPersonInfo.getDocumentIssuanceDate()).orElse(consumer);
+		GuiUtils.setLabelText(lblDocumentExpiryDate, normalizedPersonInfo.getDocumentExpiryDate()).orElse(consumer);
 		
-		//infoPane.autosize();
+		infoPane.autosize();
 		btnConfirmPersonInfo.requestFocus();
 	}
 }

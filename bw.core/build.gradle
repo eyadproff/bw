@@ -19,6 +19,9 @@ dependencies {
     implementation name: "tomcat-juli-8.5.33"
     implementation name: "tomcat-api-8.5.33"
 
+    // For Reflection Builders (Java Beans)
+    api name: "commons-lang3-3.8.1"
+
     api project(':bw.commons.resources')
     runtimeOnly project(':bw.login')
     runtimeOnly project(':bw.home')

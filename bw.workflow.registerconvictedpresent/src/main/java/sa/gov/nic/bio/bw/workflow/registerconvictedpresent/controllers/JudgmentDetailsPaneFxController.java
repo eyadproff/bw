@@ -21,9 +21,9 @@ import sa.gov.nic.bio.bw.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.core.utils.FxmlFile;
 import sa.gov.nic.bio.bw.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.core.workflow.Output;
-import sa.gov.nic.bio.bw.workflow.commons.webservice.CrimeType;
+import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.beans.CrimeType;
 import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.lookups.CrimeTypesLookup;
-import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.webservice.CrimeCode;
+import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.beans.CrimeCode;
 
 import java.time.LocalDate;
 import java.util.ArrayList;

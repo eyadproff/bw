@@ -24,8 +24,8 @@ public abstract class WizardWorkflowBase extends WorkflowBase implements Resourc
 	public static final String VALUE_WORKFLOW_DIRECTION_FORWARD = "WORKFLOW_DIRECTION_FORWARD";
 	public static final String VALUE_WORKFLOW_DIRECTION_START_OVER = "WORKFLOW_DIRECTION_START_OVER";
 	
-	private final Map<Class<? extends Callable<TaskResponse<Void>>>,
-											Callable<TaskResponse<Void>>> lookupInstancesCache = new HashMap<>();
+	private final Map<Class<? extends Callable<TaskResponse<?>>>,
+											Callable<TaskResponse<?>>> lookupInstancesCache = new HashMap<>();
 	
 	public abstract void onStep(int step) throws InterruptedException, Signal;
 		
@@ -38,23 +38,23 @@ public abstract class WizardWorkflowBase extends WorkflowBase implements Resourc
 		WithLookups withLookups = getClass().getAnnotation(WithLookups.class);
 		if(withLookups != null)
 		{
-			Class<? extends Callable<TaskResponse<Void>>>[] lookupClasses = withLookups.value();
+			Class<? extends Callable<TaskResponse<?>>>[] lookupClasses = withLookups.value();
 			try
 			{
 				outer: while(true)
 				{
 					renderUiAndWaitForUserInput(LookupFxController.class);
 					
-					for(Class<? extends Callable<TaskResponse<Void>>> lookupClass : lookupClasses)
+					for(Class<? extends Callable<TaskResponse<?>>> lookupClass : lookupClasses)
 					{
-						Callable<TaskResponse<Void>> instance = lookupInstancesCache.get(lookupClass);
+						Callable<TaskResponse<?>> instance = lookupInstancesCache.get(lookupClass);
 						if(instance == null)
 						{
 							instance = lookupClass.getConstructor().newInstance();
 							lookupInstancesCache.put(lookupClass, instance);
 						}
 						
-						TaskResponse<Void> taskResponse = instance.call();
+						TaskResponse<?> taskResponse = instance.call();
 						if(!taskResponse.isSuccess())
 						{
 							uiInputData.put(KEY_WORKFLOW_TASK_NEGATIVE_RESPONSE, taskResponse);

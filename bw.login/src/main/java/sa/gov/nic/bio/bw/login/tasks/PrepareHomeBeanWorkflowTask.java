@@ -83,21 +83,23 @@ public class PrepareHomeBeanWorkflowTask implements WorkflowTask
 		long lastPasswordChangeTime = userInfo.getPasswordLastSet();
 		long passwordExpirationTime = userInfo.getAccountExperiyDate();
 		
-		String sLoginTime = loginTime > 0 ? AppUtils.formatHijriGregorianDateTime(loginTime) : null;
-		String sLastLogonTime = lastLogonTime > 0 ? AppUtils.formatHijriGregorianDateTime(lastLogonTime) : null;
-		String sLastFailedLoginTime = lastFailedLoginTime > 0 ?
-													AppUtils.formatHijriGregorianDateTime(lastFailedLoginTime) : null;
-		String sFailedLoginCount = failedLoginCount > 0 ? AppUtils.localizeNumbers(String.valueOf(failedLoginCount))
-																												: null;
-		String sLastPasswordChangeTime = lastPasswordChangeTime > 0 ?
-												AppUtils.formatHijriGregorianDateTime(lastPasswordChangeTime) : null;
-		String sPasswordExpirationTime =
-					passwordExpirationTime > 0 ? AppUtils.formatHijriGregorianDateTime(passwordExpirationTime) : null;
+		String sLoginTime = formatHijriGregorianDateTime(loginTime);
+		String sLastLogonTime = formatHijriGregorianDateTime(lastLogonTime);
+		String sLastFailedLoginTime = formatHijriGregorianDateTime(lastFailedLoginTime);
+		String sLastPasswordChangeTime = formatHijriGregorianDateTime(lastPasswordChangeTime);
+		String sPasswordExpirationTime = formatHijriGregorianDateTime(passwordExpirationTime);
+		String sFailedLoginCount = failedLoginCount > 0 ?
+												AppUtils.localizeNumbers(String.valueOf(failedLoginCount)) : null;
 		
 		HomeBean homeBean = new HomeBean(username, operator, location, sLoginTime, sLastLogonTime,
 		                                 sLastFailedLoginTime, sFailedLoginCount, sLastPasswordChangeTime,
 		                                 sPasswordExpirationTime, facePhoto);
 		
 		Context.getUserSession().setAttribute("homeBean", homeBean);
+	}
+	
+	private String formatHijriGregorianDateTime(long milliSeconds)
+	{
+		return milliSeconds > 0 ? AppUtils.formatHijriGregorianDateTime(milliSeconds / 1000L) : null;
 	}
 }

@@ -3,7 +3,7 @@ package sa.gov.nic.bio.bw.core.beans;
 import java.util.HashMap;
 import java.util.Map;
 
-public class StateBundle
+public class StateBundle extends JavaBean
 {
 	private Map<String, Object> sMap = new HashMap<>();
 	

@@ -20,12 +20,12 @@ import sa.gov.nic.bio.bw.core.workflow.Input;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.PrintReportTask;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.SaveReportAsPdfTask;
 import sa.gov.nic.bio.bw.workflow.commons.ui.ImageViewPane;
-import sa.gov.nic.bio.bw.workflow.commons.webservice.NormalizedPersonInfo;
-import sa.gov.nic.bio.bw.workflow.commons.webservice.PersonInfo;
+import sa.gov.nic.bio.bw.workflow.commons.beans.NormalizedPersonInfo;
+import sa.gov.nic.bio.bw.workflow.commons.beans.PersonInfo;
 import sa.gov.nic.bio.bw.workflow.printdeadpersonrecord.beans.DeadPersonRecordReport;
 import sa.gov.nic.bio.bw.workflow.printdeadpersonrecord.tasks.BuildDeadPersonRecordReportTask;
 import sa.gov.nic.bio.bw.workflow.printdeadpersonrecord.utils.PrintDeadPersonRecordPresentErrorCodes;
-import sa.gov.nic.bio.bw.workflow.printdeadpersonrecord.webservice.DeadPersonRecord;
+import sa.gov.nic.bio.bw.workflow.printdeadpersonrecord.beans.DeadPersonRecord;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -208,26 +208,23 @@ public class ShowRecordPaneFxController extends WizardStepFxControllerBase
 	private void populateData(Long recordIdLong, DeadPersonRecord deadPersonRecord,
 	                          PersonInfo personInfo, Map<Integer, String> fingerprintsImages)
 	{
-		NormalizedPersonInfo normalizedPersonInfo = new NormalizedPersonInfo(deadPersonRecord.getSamisId(),
-		                                                                     personInfo, null,
-		                                                                     resources.getString("label.male"),
-		                                                                     resources.getString("label.female"));
+		NormalizedPersonInfo normalizedPersonInfo = new NormalizedPersonInfo(personInfo);
 		
-		lblPersonId.setText(normalizedPersonInfo.getPersonIdLabel());
-		lblFirstName.setText(normalizedPersonInfo.getFirstNameLabel());
-		lblFatherName.setText(normalizedPersonInfo.getFatherNameLabel());
-		lblGrandfatherName.setText(normalizedPersonInfo.getGrandfatherNameLabel());
-		lblFamilyName.setText(normalizedPersonInfo.getFamilyNameLabel());
-		lblGender.setText(normalizedPersonInfo.getGenderLabel());
-		lblNationality.setText(normalizedPersonInfo.getNationalityLabel());
-		lblOccupation.setText(normalizedPersonInfo.getOccupationLabel());
-		lblBirthPlace.setText(normalizedPersonInfo.getBirthPlaceLabel());
-		lblBirthDate.setText(normalizedPersonInfo.getBirthDateLabel());
-		lblPersonType.setText(normalizedPersonInfo.getPersonTypeLabel());
-		lblDocumentId.setText(normalizedPersonInfo.getDocumentIdLabel());
-		lblDocumentType.setText(normalizedPersonInfo.getDocumentTypeLabel());
-		lblDocumentIssuanceDate.setText(normalizedPersonInfo.getDocumentIssuanceDateLabel());
-		lblDocumentExpiryDate.setText(normalizedPersonInfo.getDocumentExpiryDateLabel());
+		//lblPersonId.setText(normalizedPersonInfo.getPersonIdLabel());
+		//lblFirstName.setText(normalizedPersonInfo.getFirstNameLabel());
+		//lblFatherName.setText(normalizedPersonInfo.getFatherNameLabel());
+		//lblGrandfatherName.setText(normalizedPersonInfo.getGrandfatherNameLabel());
+		//lblFamilyName.setText(normalizedPersonInfo.getFamilyNameLabel());
+		//lblGender.setText(normalizedPersonInfo.getGenderLabel());
+		//lblNationality.setText(normalizedPersonInfo.getNationalityLabel());
+		//lblOccupation.setText(normalizedPersonInfo.getOccupationLabel());
+		//lblBirthPlace.setText(normalizedPersonInfo.getBirthPlaceLabel());
+		//lblBirthDate.setText(normalizedPersonInfo.getBirthDateLabel());
+		//lblPersonType.setText(normalizedPersonInfo.getPersonTypeLabel());
+		//lblDocumentId.setText(normalizedPersonInfo.getDocumentIdLabel());
+		//lblDocumentType.setText(normalizedPersonInfo.getDocumentTypeLabel());
+		//lblDocumentIssuanceDate.setText(normalizedPersonInfo.getDocumentIssuanceDateLabel());
+		//lblDocumentExpiryDate.setText(normalizedPersonInfo.getDocumentExpiryDateLabel());
 		
 		String recordId = null;
 		String enrollerId = null;
@@ -272,23 +269,23 @@ public class ShowRecordPaneFxController extends WizardStepFxControllerBase
 		                                 ivRightRing, ivRightLittle, ivLeftThumb, ivLeftIndex, ivLeftMiddle,
 		                                 ivLeftRing, ivLeftLittle);
 		
-		deadPersonRecordReport = new DeadPersonRecordReport(recordId, enrollerId, inquirerId, enrollmentTime,
-		                                                    facePhotoBase64, normalizedPersonInfo.getFirstName(),
-		                                                    normalizedPersonInfo.getFatherName(),
-		                                                    normalizedPersonInfo.getGrandfatherName(),
-		                                                    normalizedPersonInfo.getFamilyName(),
-		                                                    normalizedPersonInfo.getGenderLabel(),
-		                                                    normalizedPersonInfo.getNationalityLabel(),
-		                                                    normalizedPersonInfo.getOccupation(),
-		                                                    normalizedPersonInfo.getBirthPlace(),
-		                                                    normalizedPersonInfo.getBirthDateLabel(),
-		                                                    normalizedPersonInfo.getPersonIdLabel(),
-		                                                    normalizedPersonInfo.getPersonTypeLabel(),
-		                                                    normalizedPersonInfo.getDocumentId(),
-				                                            normalizedPersonInfo.getDocumentTypeLabel(),
-				                                            normalizedPersonInfo.getDocumentIssuanceDateLabel(),
-				                                            normalizedPersonInfo.getDocumentExpiryDateLabel(),
-		                                                    fingerprintsImages);
+		//deadPersonRecordReport = new DeadPersonRecordReport(recordId, enrollerId, inquirerId, enrollmentTime,
+		//                                                    facePhotoBase64, normalizedPersonInfo.getFirstName(),
+		//                                                    normalizedPersonInfo.getFatherName(),
+		//                                                    normalizedPersonInfo.getGrandfatherName(),
+		//                                                    normalizedPersonInfo.getFamilyName(),
+		//                                                    normalizedPersonInfo.getGenderLabel(),
+		//                                                    normalizedPersonInfo.getNationalityLabel(),
+		//                                                    normalizedPersonInfo.getOccupation(),
+		//                                                    normalizedPersonInfo.getBirthPlace(),
+		//                                                    normalizedPersonInfo.getBirthDateLabel(),
+		//                                                    normalizedPersonInfo.getPersonIdLabel(),
+		//                                                    normalizedPersonInfo.getPersonTypeLabel(),
+		//                                                    normalizedPersonInfo.getDocumentId(),
+		//		                                            normalizedPersonInfo.getDocumentTypeLabel(),
+		//		                                            normalizedPersonInfo.getDocumentIssuanceDateLabel(),
+		//		                                            normalizedPersonInfo.getDocumentExpiryDateLabel(),
+		//                                                    fingerprintsImages);
 	}
 	
 	private void printDeadPersonRecordReport(JasperPrint jasperPrint)

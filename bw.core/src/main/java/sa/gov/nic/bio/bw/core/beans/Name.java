@@ -1,8 +1,6 @@
 package sa.gov.nic.bio.bw.core.beans;
 
-import java.util.Objects;
-
-public class Name
+public class Name extends JavaBean
 {
 	private String firstName;
 	private String familyName;
@@ -51,35 +49,4 @@ public class Name
 	public String getTranslatedGrandFatherName(){return translatedGrandFatherName;}
 	public void setTranslatedGrandFatherName(String translatedGrandFatherName)
 	{this.translatedGrandFatherName = translatedGrandFatherName;}
-	
-	@Override
-	public boolean equals(Object o)
-	{
-		if(this == o) return true;
-		if(o == null || getClass() != o.getClass()) return false;
-		Name name = (Name) o;
-		return Objects.equals(firstName, name.firstName) && Objects.equals(familyName, name.familyName) &&
-			   Objects.equals(fatherName, name.fatherName) && Objects.equals(grandfatherName, name.grandfatherName) &&
-			   Objects.equals(translatedFirstName, name.translatedFirstName) &&
-			   Objects.equals(translatedFamilyName, name.translatedFamilyName) &&
-			   Objects.equals(translatedFatherName, name.translatedFatherName) &&
-			   Objects.equals(translatedGrandFatherName, name.translatedGrandFatherName);
-	}
-	
-	@Override
-	public int hashCode()
-	{
-		return Objects.hash(firstName, familyName, fatherName, grandfatherName, translatedFirstName,
-		                    translatedFamilyName, translatedFatherName, translatedGrandFatherName);
-	}
-	
-	@Override
-	public String toString()
-	{
-		return "Name{" + "firstName='" + firstName + '\'' + ", familyName='" + familyName + '\'' +
-			   ", fatherName='" + fatherName + '\'' + ", grandfatherName='" + grandfatherName + '\'' +
-			   ", translatedFirstName='" + translatedFirstName + '\'' + ", translatedFamilyName='" +
-			   translatedFamilyName + '\'' + ", translatedFatherName='" + translatedFatherName + '\'' +
-			   ", translatedGrandFatherName='" + translatedGrandFatherName + '\'' + '}';
-	}
 }

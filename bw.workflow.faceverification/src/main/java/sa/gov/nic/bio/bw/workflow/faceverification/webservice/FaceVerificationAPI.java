@@ -5,7 +5,7 @@ import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.Header;
 import retrofit2.http.POST;
-import sa.gov.nic.bio.bw.workflow.commons.webservice.PersonInfo;
+import sa.gov.nic.bio.bw.workflow.commons.beans.PersonInfo;
 
 public interface FaceVerificationAPI
 {

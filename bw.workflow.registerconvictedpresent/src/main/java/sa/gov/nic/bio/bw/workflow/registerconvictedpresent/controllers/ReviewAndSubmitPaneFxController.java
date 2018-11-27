@@ -20,15 +20,15 @@ import sa.gov.nic.bio.bw.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.core.workflow.Input;
 import sa.gov.nic.bio.bw.core.workflow.Output;
 import sa.gov.nic.bio.bw.workflow.commons.ui.ImageViewPane;
-import sa.gov.nic.bio.bw.workflow.commons.webservice.Country;
-import sa.gov.nic.bio.bw.workflow.commons.webservice.CrimeType;
-import sa.gov.nic.bio.bw.workflow.commons.webservice.DocumentType;
-import sa.gov.nic.bio.bw.workflow.commons.webservice.Finger;
-import sa.gov.nic.bio.bw.workflow.commons.webservice.PersonType;
+import sa.gov.nic.bio.bw.workflow.commons.beans.Country;
+import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.beans.CrimeType;
+import sa.gov.nic.bio.bw.workflow.commons.beans.DocumentType;
+import sa.gov.nic.bio.bw.workflow.commons.beans.Finger;
+import sa.gov.nic.bio.bw.workflow.commons.beans.PersonType;
 import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.lookups.CrimeTypesLookup;
-import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.webservice.ConvictedReport;
-import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.webservice.CrimeCode;
-import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.webservice.JudgementInfo;
+import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.beans.ConvictedReport;
+import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.beans.CrimeCode;
+import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.beans.JudgementInfo;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -38,8 +38,6 @@ import java.util.stream.Collectors;
 @FxmlFile("reviewAndSubmit.fxml")
 public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 {
-	public static final String KEY_FINAL_CONVICTED_REPORT = "FINAL_CONVICTED_REPORT";
-	
 	@Input private Long civilBiometricsId;
 	@Input private Long criminalBiometricsId;
 	@Input private String facePhotoBase64;
@@ -292,7 +290,7 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 			                     null, null, null);
 			
 			JudgementInfo judgementInfo = new JudgementInfo(judgmentIssuer,
-			                                                AppUtils.gregorianDateToMilliSeconds(judgmentDate),
+			                                                AppUtils.gregorianDateToSeconds(judgmentDate),
 			                                                judgmentNumber, tazeerLashes, hadLashes, fine, other,
 			                                                jailYears, jailMonths, jailDays, travelBanDays,
 			                                                travelBanMonths, travelBanYears, deportationDays,
@@ -300,7 +298,7 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 			                                                exilingMonths, exilingYears, finalDeportation, covenant,
 			                                                libel, crimes, caseFileNumber,
 			                                                arrestDate == null ? null :
-				                                                    AppUtils.gregorianDateToMilliSeconds(arrestDate));
+				                                                    AppUtils.gregorianDateToSeconds(arrestDate));
 			
 			UserInfo userInfo = (UserInfo) Context.getUserSession().getAttribute("userInfo");
 			
@@ -308,14 +306,14 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 			                                      nationality.getCode(), occupation,
 			                                      gender.name().substring(0, 1), // "M" or "F"
 			                                      birthDate == null ? null :
-					                                      AppUtils.gregorianDateToMilliSeconds(birthDate), birthPlace,
+					                                      AppUtils.gregorianDateToSeconds(birthDate), birthPlace,
 			                                      personId, personType == null ? null : personType.getCode(),
 			                                      civilBiometricsId, documentId,
 			                                      documentType == null ? null : documentType.getCode(),
 			                                      documentIssuanceDate == null ? null :
-					                                        AppUtils.gregorianDateToMilliSeconds(documentIssuanceDate),
+					                                        AppUtils.gregorianDateToSeconds(documentIssuanceDate),
 			                                      documentExpiryDate == null ? null :
-					                                        AppUtils.gregorianDateToMilliSeconds(documentExpiryDate),
+					                                        AppUtils.gregorianDateToSeconds(documentExpiryDate),
 			                                      judgementInfo, fingerprints, missingFingerprints, facePhotoBase64,
 			                                      AppUtils.localizeNumbers(String.valueOf(userInfo.getOperatorId())));
 			

@@ -3,12 +3,11 @@ package sa.gov.nic.bio.bw.workflow.commons.beans;
 import javafx.scene.control.CheckBox;
 import javafx.scene.image.ImageView;
 import javafx.scene.shape.SVGPath;
+import sa.gov.nic.bio.bw.core.beans.JavaBean;
 import sa.gov.nic.bio.bw.core.biokit.FingerPosition;
 import sa.gov.nic.bio.bw.workflow.commons.ui.FourStateTitledPane;
 
-import java.util.Objects;
-
-public class FingerprintUiComponents
+public class FingerprintUiComponents extends JavaBean
 {
 	private FingerPosition fingerPosition;
 	private FingerPosition slapPosition;
@@ -56,31 +55,4 @@ public class FingerprintUiComponents
 	
 	public String getHandLabel(){return handLabel;}
 	public void setHandLabel(String handLabel){this.handLabel = handLabel;}
-	
-	@Override
-	public boolean equals(Object o)
-	{
-		if(this == o) return true;
-		if(o == null || getClass() != o.getClass()) return false;
-		FingerprintUiComponents that = (FingerprintUiComponents) o;
-		return fingerPosition == that.fingerPosition && slapPosition == that.slapPosition &&
-			   Objects.equals(imageView, that.imageView) && Objects.equals(svgPath, that.svgPath) &&
-			   Objects.equals(titledPane, that.titledPane) && Objects.equals(checkBox, that.checkBox) &&
-			   Objects.equals(fingerLabel, that.fingerLabel) && Objects.equals(handLabel, that.handLabel);
-	}
-	
-	@Override
-	public int hashCode()
-	{
-		return Objects.hash(fingerPosition, slapPosition, imageView, svgPath, titledPane, checkBox, fingerLabel,
-		                    handLabel);
-	}
-	
-	@Override
-	public String toString()
-	{
-		return "FingerprintUiComponents{" + "fingerPosition=" + fingerPosition + ", slapPosition=" + slapPosition +
-			   ", imageView=" + imageView + ", svgPath=" + svgPath + ", titledPane=" + titledPane + ", checkBox=" +
-			   checkBox + ", fingerLabel='" + fingerLabel + '\'' + ", handLabel='" + handLabel + '\'' + '}';
-	}
 }

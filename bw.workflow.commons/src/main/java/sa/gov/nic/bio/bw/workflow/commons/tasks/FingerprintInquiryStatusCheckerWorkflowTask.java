@@ -8,7 +8,7 @@ import sa.gov.nic.bio.bw.core.workflow.Signal;
 import sa.gov.nic.bio.bw.core.workflow.WorkflowTask;
 import sa.gov.nic.bio.bw.workflow.commons.utils.CommonsErrorCodes;
 import sa.gov.nic.bio.bw.workflow.commons.webservice.FingerprintInquiryAPI;
-import sa.gov.nic.bio.bw.workflow.commons.webservice.FingerprintInquiryStatusResult;
+import sa.gov.nic.bio.bw.workflow.commons.beans.FingerprintInquiryStatusResult;
 import sa.gov.nic.bio.commons.TaskResponse;
 
 import java.util.List;

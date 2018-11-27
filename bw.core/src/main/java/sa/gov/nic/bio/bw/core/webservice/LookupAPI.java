@@ -3,6 +3,7 @@ package sa.gov.nic.bio.bw.core.webservice;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
+import sa.gov.nic.bio.bw.core.beans.NicHijriCalendarData;
 
 import java.util.Map;
 import java.util.Set;

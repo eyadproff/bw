@@ -9,7 +9,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
-public class ComboBoxItem<T>
+public class ComboBoxItem<T> extends JavaBean
 {
 	private final ObjectProperty<T> item = new SimpleObjectProperty<>();
 	private final BooleanProperty hidden = new SimpleBooleanProperty() ;

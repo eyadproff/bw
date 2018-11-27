@@ -102,7 +102,7 @@ public class PunishmentDetailsPaneFxController extends WizardStepFxControllerBas
 		GuiUtils.applyValidatorToTextField(txtOther, null, null, 150);
 		
 		// set a custom converter to avoid NPE in case of empty string
-		StringConverter<Integer> integerStringConverter = new StringConverter<Integer>()
+		StringConverter<Integer> integerStringConverter = new StringConverter<>()
 		{
 			
 			@Override

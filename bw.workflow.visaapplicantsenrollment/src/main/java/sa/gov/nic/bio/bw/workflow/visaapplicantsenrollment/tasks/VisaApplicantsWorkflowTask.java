@@ -7,7 +7,8 @@ import sa.gov.nic.bio.bw.core.workflow.Input;
 import sa.gov.nic.bio.bw.core.workflow.Output;
 import sa.gov.nic.bio.bw.core.workflow.Signal;
 import sa.gov.nic.bio.bw.core.workflow.WorkflowTask;
-import sa.gov.nic.bio.bw.workflow.visaapplicantsenrollment.webservice.VisaApplicantInfo;
+import sa.gov.nic.bio.bw.workflow.visaapplicantsenrollment.beans.VisaApplicantEnrollmentResponse;
+import sa.gov.nic.bio.bw.workflow.visaapplicantsenrollment.beans.VisaApplicantInfo;
 import sa.gov.nic.bio.bw.workflow.visaapplicantsenrollment.webservice.VisaApplicantsEnrollmentAPI;
 import sa.gov.nic.bio.commons.TaskResponse;
 

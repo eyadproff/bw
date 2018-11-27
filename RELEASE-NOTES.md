@@ -25,6 +25,7 @@ VERSION SCHEMA: vYYYY.MM.#SEQ
 - NEW: Embed ScenicView with BW. It opens by the shortcut CTRL+SHIFT+ALT+S.
 - ENH: Update Retrofit library to 2.5.0.
 - NEW: Integrate with the activity services.
+- ENH: Upgrade gradle to 5.0.
 
 ---
 

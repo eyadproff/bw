@@ -1,10 +1,9 @@
 package sa.gov.nic.bio.bw.workflow.commons.beans;
 
+import sa.gov.nic.bio.bw.core.beans.JavaBean;
 import sa.gov.nic.bio.bw.core.beans.UserInfo;
 
-import java.io.Serializable;
-
-public class LoginBean implements Serializable
+public class LoginBean extends JavaBean
 {
 	private UserInfo userInfo;
 	private String userToken;
@@ -15,10 +14,4 @@ public class LoginBean implements Serializable
 	public void setUserInfo(UserInfo userInfo){this.userInfo = userInfo;}
 	public String getUserToken(){return userToken;}
 	public void setUserToken(String userToken){this.userToken = userToken;}
-	
-	@Override
-	public String toString()
-	{
-		return "LoginBean{" + "userInfo=" + userInfo + ", userToken='" + userToken + '\'' + '}';
-	}
 }

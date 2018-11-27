@@ -2,6 +2,8 @@ package sa.gov.nic.bio.bw.workflow.visaapplicantsenrollment.webservice;
 
 import retrofit2.Call;
 import retrofit2.http.*;
+import sa.gov.nic.bio.bw.workflow.visaapplicantsenrollment.beans.PassportTypeBean;
+import sa.gov.nic.bio.bw.workflow.visaapplicantsenrollment.beans.VisaTypeBean;
 
 import java.util.List;
 

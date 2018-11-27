@@ -3,7 +3,7 @@ package sa.gov.nic.bio.bw.workflow.visaapplicantsenrollment.lookups;
 import sa.gov.nic.bio.bw.core.Context;
 import sa.gov.nic.bio.bw.core.interfaces.AppLogger;
 import sa.gov.nic.bio.bw.workflow.visaapplicantsenrollment.utils.VisaApplicantsEnrollmentErrorCodes;
-import sa.gov.nic.bio.bw.workflow.visaapplicantsenrollment.webservice.CountryDialingCode;
+import sa.gov.nic.bio.bw.workflow.visaapplicantsenrollment.beans.CountryDialingCode;
 import sa.gov.nic.bio.commons.TaskResponse;
 
 import java.io.BufferedReader;
@@ -15,13 +15,14 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
 
-public class DialingCodesLookup implements Callable<TaskResponse<Void>>, AppLogger
+public class DialingCodesLookup implements Callable<TaskResponse<?>>, AppLogger
 {
 	public static final String KEY = "lookups.dialingCodes";
-	private static final String DIALING_CODES_FILE = "/sa/gov/nic/bio/bw/workflow/visaapplicantsenrollment/data/dialing_codes.csv";
+	private static final String DIALING_CODES_FILE =
+										"/sa/gov/nic/bio/bw/workflow/visaapplicantsenrollment/data/dialing_codes.csv";
 	
 	@Override
-	public TaskResponse<Void> call()
+	public TaskResponse<?> call()
 	{
 		@SuppressWarnings("unchecked")
 		List<CountryDialingCode> dialingCodes = (List<CountryDialingCode>) Context.getUserSession().getAttribute(KEY);
@@ -59,9 +60,8 @@ public class DialingCodesLookup implements Callable<TaskResponse<Void>>, AppLogg
 			}
 			
 			Context.getUserSession().setAttribute(KEY, dialingCodes);
-			LOGGER.info(KEY + " = " + dialingCodes);
 		}
 		
-		return TaskResponse.success(null);
+		return TaskResponse.success();
 	}
 }

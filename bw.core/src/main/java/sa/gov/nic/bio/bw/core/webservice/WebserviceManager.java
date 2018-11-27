@@ -13,13 +13,16 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import sa.gov.nic.bio.bw.core.Context;
+import sa.gov.nic.bio.bw.core.beans.RefreshTokenBean;
 import sa.gov.nic.bio.bw.core.beans.UserSession;
 import sa.gov.nic.bio.bw.core.interfaces.AppLogger;
 import sa.gov.nic.bio.bw.core.utils.AppConstants;
 import sa.gov.nic.bio.bw.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.core.utils.CoreErrorCodes;
-import sa.gov.nic.bio.bw.core.utils.NormalizationStringTypeAdapter;
-import sa.gov.nic.bio.bw.core.utils.UnixEpochDateTypeAdapter;
+import sa.gov.nic.bio.bw.core.utils.DateTypeAdapter;
+import sa.gov.nic.bio.bw.core.utils.LocalDateTypeAdapter;
+import sa.gov.nic.bio.bw.core.utils.NormalizedStringTypeAdapter;
+import sa.gov.nic.bio.bw.core.utils.ZonedDateTimeTypeAdapter;
 import sa.gov.nic.bio.commons.TaskResponse;
 
 import javax.net.ssl.SSLContext;
@@ -36,7 +39,8 @@ import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.Date;
@@ -139,8 +143,10 @@ public class WebserviceManager implements AppLogger
 													.sslSocketFactory(sslContext.getSocketFactory(), customTm)
 													.build();
 		
-		Gson gson = new GsonBuilder().registerTypeAdapter(Date.class, new UnixEpochDateTypeAdapter())
-									 .registerTypeAdapter(String.class, new NormalizationStringTypeAdapter())
+		Gson gson = new GsonBuilder().registerTypeAdapter(LocalDate.class, new LocalDateTypeAdapter())
+									 .registerTypeAdapter(ZonedDateTime.class, new ZonedDateTimeTypeAdapter())
+									 .registerTypeAdapter(Date.class, new DateTypeAdapter())
+									 .registerTypeAdapter(String.class, new NormalizedStringTypeAdapter())
 									 .create();
 		
 		String httpProtocol = PROTOCOL;
@@ -247,8 +253,8 @@ public class WebserviceManager implements AppLogger
 		if(userToken == null) LOGGER.warning("userToken = null");
 		else
 		{
-			LocalDateTime issueDateTime = AppUtils.extractIssueTimeFromJWT(userToken);
-			LocalDateTime expirationDateTime = AppUtils.extractExpirationTimeFromJWT(userToken);
+			ZonedDateTime issueDateTime = AppUtils.extractIssueTimeFromJWT(userToken);
+			ZonedDateTime expirationDateTime = AppUtils.extractExpirationTimeFromJWT(userToken);
 			
 			if(issueDateTime != null && expirationDateTime != null)
 			{

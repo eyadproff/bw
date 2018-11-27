@@ -7,6 +7,7 @@ import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.POST;
 import retrofit2.http.Query;
+import sa.gov.nic.bio.bw.workflow.commons.beans.FingerprintInquiryStatusResult;
 
 public interface FingerprintInquiryAPI
 {

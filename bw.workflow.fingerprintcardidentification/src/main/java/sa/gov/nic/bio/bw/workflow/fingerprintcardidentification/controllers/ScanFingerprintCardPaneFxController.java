@@ -61,9 +61,7 @@ public class ScanFingerprintCardPaneFxController extends WizardStepFxControllerB
 		
 		if(!deviceManagerGadgetPaneController.isDevicesRunnerRunning())
 		{
-			boolean devicesRunnerAutoRun = "true".equals(
-													Context.getConfigManager().getProperty("devicesRunner.autoRun"));
-			if(devicesRunnerAutoRun) deviceManagerGadgetPaneController.runAndConnectDevicesRunner();
+			deviceManagerGadgetPaneController.runAndConnectDevicesRunner();
 		}
 	}
 	

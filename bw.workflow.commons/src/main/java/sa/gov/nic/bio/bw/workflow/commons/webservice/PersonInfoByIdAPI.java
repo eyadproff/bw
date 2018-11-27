@@ -4,6 +4,7 @@ import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Query;
+import sa.gov.nic.bio.bw.workflow.commons.beans.PersonInfo;
 
 public interface PersonInfoByIdAPI
 {

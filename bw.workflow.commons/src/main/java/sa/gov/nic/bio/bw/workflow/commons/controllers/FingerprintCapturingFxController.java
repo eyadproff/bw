@@ -59,8 +59,8 @@ import sa.gov.nic.bio.bw.workflow.commons.beans.FingerprintUiComponents;
 import sa.gov.nic.bio.bw.workflow.commons.ui.AutoScalingStackPane;
 import sa.gov.nic.bio.bw.workflow.commons.ui.FourStateTitledPane;
 import sa.gov.nic.bio.bw.workflow.commons.utils.CommonsErrorCodes;
-import sa.gov.nic.bio.bw.workflow.commons.webservice.Finger;
-import sa.gov.nic.bio.bw.workflow.commons.webservice.FingerCoordinate;
+import sa.gov.nic.bio.bw.workflow.commons.beans.Finger;
+import sa.gov.nic.bio.bw.workflow.commons.beans.FingerCoordinate;
 import sa.gov.nic.bio.commons.TaskResponse;
 
 import java.awt.Point;
@@ -81,8 +81,6 @@ import java.util.stream.Collectors;
 @FxmlFile("fingerprintCapturing.fxml")
 public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 {
-	public static final String KEY_FINGERPRINTS_IMAGES = "FINGERPRINTS_IMAGES";
-	
 	@Input private Boolean hidePreviousButton;
 	@Input private Boolean acceptBadQualityFingerprint;
 	@Input private Integer acceptBadQualityFingerprintMinRetires;
@@ -565,10 +563,7 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 		// register a listener to the event of the devices-runner being running or not
 		deviceManagerGadgetPaneController.setDevicesRunnerRunningListener(running ->
 		{
-		    boolean autoInitialize = "true".equals(
-		            Context.getConfigManager().getProperty("fingerprint.autoInitialize"));
-		
-		    if(running && autoInitialize &&
+		    if(running &&
 		            !deviceManagerGadgetPaneController.isFingerprintScannerInitialized(FingerprintDeviceType.SLAP))
 		    {
 		        deviceManagerGadgetPaneController.initializeFingerprintScanner(FingerprintDeviceType.SLAP);
@@ -621,30 +616,13 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 		}
 		else if(deviceManagerGadgetPaneController.isDevicesRunnerRunning())
 		{
-			boolean autoInitialize = "true".equals(
-					Context.getConfigManager().getProperty("fingerprint.autoInitialize"));
-			
-			if(autoInitialize)
-			{
-				deviceManagerGadgetPaneController.initializeFingerprintScanner(FingerprintDeviceType.SLAP);
-			}
-			else
-			{
-				GuiUtils.showNode(lblStatus, true);
-				lblStatus.setText(resources.getString("label.status.fingerprintScannerNotInitialized"));
-			}
+			deviceManagerGadgetPaneController.initializeFingerprintScanner(FingerprintDeviceType.SLAP);
 		}
 		else
 		{
-			boolean devicesRunnerAutoRun = "true".equals(
-					Context.getConfigManager().getProperty("devicesRunner.autoRun"));
 			GuiUtils.showNode(lblStatus, true);
 			lblStatus.setText(resources.getString("label.status.fingerprintScannerNotInitialized"));
-			
-			if(devicesRunnerAutoRun)
-			{
-				deviceManagerGadgetPaneController.runAndConnectDevicesRunner();
-			}
+			deviceManagerGadgetPaneController.runAndConnectDevicesRunner();
 		}
 		
 		workflowUserTaskLoaded = true;

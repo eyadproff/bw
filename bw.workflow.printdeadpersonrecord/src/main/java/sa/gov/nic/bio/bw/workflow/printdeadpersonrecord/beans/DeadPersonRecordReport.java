@@ -1,9 +1,10 @@
 package sa.gov.nic.bio.bw.workflow.printdeadpersonrecord.beans;
 
-import java.util.Map;
-import java.util.Objects;
+import sa.gov.nic.bio.bw.core.beans.JavaBean;
 
-public class DeadPersonRecordReport
+import java.util.Map;
+
+public class DeadPersonRecordReport extends JavaBean
 {
 	private String recordId;
 	private String enrollerId;
@@ -122,48 +123,4 @@ public class DeadPersonRecordReport
 	public Map<Integer, String> getFingerprintsImages(){return fingerprintsImages;}
 	public void setFingerprintsImages(Map<Integer, String> fingerprintsImages)
 																	{this.fingerprintsImages = fingerprintsImages;}
-	
-	@Override
-	public boolean equals(Object o)
-	{
-		if(this == o) return true;
-		if(o == null || getClass() != o.getClass()) return false;
-		DeadPersonRecordReport that = (DeadPersonRecordReport) o;
-		return Objects.equals(recordId, that.recordId) && Objects.equals(enrollerId, that.enrollerId) &&
-			   Objects.equals(inquirerId, that.inquirerId) && Objects.equals(enrollmentTime, that.enrollmentTime) &&
-			   Objects.equals(faceBase64, that.faceBase64) && Objects.equals(firstName, that.firstName) &&
-			   Objects.equals(fatherName, that.fatherName) && Objects.equals(grandfatherName, that.grandfatherName) &&
-			   Objects.equals(familyName, that.familyName) && Objects.equals(gender, that.gender) &&
-			   Objects.equals(nationality, that.nationality) && Objects.equals(occupation, that.occupation) &&
-			   Objects.equals(birthPlace, that.birthPlace) && Objects.equals(birthDate, that.birthDate) &&
-			   Objects.equals(personId, that.personId) && Objects.equals(personType, that.personType) &&
-			   Objects.equals(documentId, that.documentId) && Objects.equals(documentType, that.documentType) &&
-			   Objects.equals(documentIssuanceDate, that.documentIssuanceDate) &&
-			   Objects.equals(documentExpiryDate, that.documentExpiryDate) &&
-			   Objects.equals(fingerprintsImages, that.fingerprintsImages);
-	}
-	
-	@Override
-	public int hashCode()
-	{
-		return Objects.hash(recordId, enrollerId, inquirerId, enrollmentTime, faceBase64, firstName, fatherName,
-		                    grandfatherName, familyName, gender, nationality, occupation, birthPlace, birthDate,
-		                    personId, personType, documentId, documentType, documentIssuanceDate, documentExpiryDate,
-		                    fingerprintsImages);
-	}
-	
-	@Override
-	public String toString()
-	{
-		return "DeadPersonRecordReport{" + "recordId='" + recordId + '\'' + ", enrollerId='" + enrollerId + '\'' +
-			   ", inquirerId='" + inquirerId + '\'' + ", enrollmentTime='" + enrollmentTime + '\'' + ", faceBase64='" +
-			   faceBase64 + '\'' + ", firstName='" + firstName + '\'' + ", fatherName='" + fatherName + '\'' +
-			   ", grandfatherName='" + grandfatherName + '\'' + ", familyName='" + familyName + '\'' + ", gender='" +
-			   gender + '\'' + ", nationality='" + nationality + '\'' + ", occupation='" + occupation + '\'' +
-			   ", birthPlace='" + birthPlace + '\'' + ", birthDate='" + birthDate + '\'' + ", personId='" + personId +
-			   '\'' + ", personType='" + personType + '\'' + ", documentId='" + documentId + '\'' +
-			   ", documentType='" + documentType + '\'' + ", documentIssuanceDate='" + documentIssuanceDate + '\'' +
-			   ", documentExpiryDate='" + documentExpiryDate + '\'' + ", fingerprintsImages=" +
-			   fingerprintsImages + '}';
-	}
 }

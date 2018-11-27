@@ -1,8 +1,6 @@
 package sa.gov.nic.bio.bw.core.beans;
 
-import java.util.Objects;
-
-public class TaskInput<T>
+public class TaskInput<T> extends JavaBean
 {
 	private String name;
 	private Class<?> type;
@@ -34,29 +32,4 @@ public class TaskInput<T>
 	
 	public T getValue(){return value;}
 	public void setValue(T value){this.value = value;}
-	
-	@Override
-	public boolean equals(Object o)
-	{
-		if(this == o) return true;
-		if(o == null || getClass() != o.getClass()) return false;
-		TaskInput<?> taskInput = (TaskInput<?>) o;
-		return alwaysRequired == taskInput.alwaysRequired && Objects.equals(name, taskInput.name) &&
-			   Objects.equals(type, taskInput.type) &&
-			   Objects.equals(requirementConditions, taskInput.requirementConditions) &&
-			   Objects.equals(value, taskInput.value);
-	}
-	
-	@Override
-	public int hashCode()
-	{
-		return Objects.hash(name, type, alwaysRequired, requirementConditions, value);
-	}
-	
-	@Override
-	public String toString()
-	{
-		return "TaskInput{" + "name='" + name + '\'' + ", type=" + type + ", alwaysRequired=" + alwaysRequired +
-			   ", requirementConditions='" + requirementConditions + '\'' + ", value=" + value + '}';
-	}
 }

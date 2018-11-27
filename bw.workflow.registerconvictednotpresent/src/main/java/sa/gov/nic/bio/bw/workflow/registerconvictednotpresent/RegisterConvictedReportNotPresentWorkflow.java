@@ -19,31 +19,38 @@ import sa.gov.nic.bio.bw.workflow.commons.tasks.ConvertWsqFingerprintsToSegmente
 import sa.gov.nic.bio.bw.workflow.commons.tasks.FetchingFingerprintsWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.FetchingMissingFingerprintsWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.FingerprintInquiryStatusCheckerWorkflowTask;
+import sa.gov.nic.bio.bw.workflow.commons.tasks.FingerprintInquiryStatusCheckerWorkflowTask.Status;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.FingerprintInquiryWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.FingerprintsWsqToFingerConverter;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.GetPersonInfoByIdWorkflowTask;
-import sa.gov.nic.bio.bw.workflow.commons.webservice.NormalizedPersonInfo;
+import sa.gov.nic.bio.bw.workflow.commons.beans.NormalizedPersonInfo;
+import sa.gov.nic.bio.bw.workflow.commons.beans.PersonInfo;
 import sa.gov.nic.bio.bw.workflow.fingerprintcardidentification.controllers.ScanFingerprintCardPaneFxController;
 import sa.gov.nic.bio.bw.workflow.fingerprintcardidentification.controllers.SpecifyFingerprintCoordinatesPaneFxController;
 import sa.gov.nic.bio.bw.workflow.registerconvictednotpresent.controllers.FingerprintsSourceFxController;
 import sa.gov.nic.bio.bw.workflow.registerconvictednotpresent.controllers.FingerprintsSourceFxController.Source;
 import sa.gov.nic.bio.bw.workflow.registerconvictednotpresent.controllers.PersonIdPaneFxController;
 import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.controllers.JudgmentDetailsPaneFxController;
-import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.controllers.PersonInfoPaneFxController;
+import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.controllers.ShareInformationPaneFxController;
+import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.controllers.UpdatePersonInfoPaneFxController;
 import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.controllers.PunishmentDetailsPaneFxController;
 import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.controllers.ReviewAndSubmitPaneFxController;
 import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.controllers.ShowReportPaneFxController;
+import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.lookups.BiometricsExchangeCrimeTypesLookup;
+import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.lookups.BiometricsExchangePartiesLookup;
 import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.lookups.CrimeTypesLookup;
 import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.tasks.GeneratingNewCivilBiometricsIdWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.tasks.SubmittingConvictedReportWorkflowTask;
-import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.webservice.ConvictedReport;
+import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.beans.ConvictedReport;
 
+import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
 @AssociatedMenu(workflowId = 1007, menuId = "menu.register.registerConvictedNotPresent", menuTitle = "menu.title", menuOrder = 3,
 				devices = Device.BIO_UTILITIES)
-@WithLookups({PersonTypesLookup.class, DocumentTypesLookup.class, CountriesLookup.class, CrimeTypesLookup.class})
+@WithLookups({PersonTypesLookup.class, DocumentTypesLookup.class, CountriesLookup.class, CrimeTypesLookup.class,
+			  BiometricsExchangeCrimeTypesLookup.class, BiometricsExchangePartiesLookup.class})
 @Wizard({@Step(iconId = "question", title = "wizard.selectFingerprintsSource"),
 		@Step(iconId = "\\uf2bb", title = "wizard.enterPersonId"),
 		@Step(iconId = "\\uf2b9", title = "wizard.showPersonInformation"),
@@ -53,6 +60,7 @@ import java.util.ResourceBundle;
 		@Step(iconId = "user", title = "wizard.updatePersonInformation"),
 		@Step(iconId = "gavel", title = "wizard.addJudgementDetails"),
 		@Step(iconId = "university", title = "wizard.addPunishmentDetails"),
+		@Step(iconId = "share_alt", title = "wizard.shareInformation"),
 		@Step(iconId = "th_list", title = "wizard.reviewAndSubmit"),
 		@Step(iconId = "file_pdf_alt", title = "wizard.showReport")})
 public class RegisterConvictedReportNotPresentWorkflow extends WizardWorkflowBase
@@ -221,25 +229,54 @@ public class RegisterConvictedReportNotPresentWorkflow extends WizardWorkflowBas
 				         "inquiryId");
 				executeWorkflowTask(FingerprintInquiryStatusCheckerWorkflowTask.class);
 				
+				Status status = getData(FingerprintInquiryStatusCheckerWorkflowTask.class, "status");
+				if(status == Status.HIT)
+				{
+					Long civilBiometricsId = getData(FingerprintInquiryStatusCheckerWorkflowTask.class,
+					                                 "civilBiometricsId");
+					Long criminalBiometricsId = getData(FingerprintInquiryStatusCheckerWorkflowTask.class,
+					                                    "criminalBiometricsId");
+					if(civilBiometricsId != null)
+					{
+						List<Long> civilPersonIds = getData(FingerprintInquiryStatusCheckerWorkflowTask.class,
+						                                    "civilPersonIds");
+						if(!civilPersonIds.isEmpty())
+						{
+							setData(GetPersonInfoByIdWorkflowTask.class, "personId", civilPersonIds.get(0));
+							executeWorkflowTask(GetPersonInfoByIdWorkflowTask.class);
+						}
+					}
+					else if(criminalBiometricsId != null)
+					{
+						//setData(GetPersonInfoByCriminalBiometricsIdWorkflowTask.class,
+						//        "criminalBiometricsId",
+						//        criminalBiometricsId);
+						//executeWorkflowTask(GetPersonInfoByCriminalBiometricsIdWorkflowTask.class);
+					}
+				}
+				
 				break;
 			}
 			case 5:
 			{
+				PersonInfo personInfo = getData(GetPersonInfoByIdWorkflowTask.class, "personInfo");
+				//if(personInfo == null) personInfo = getData(GetPersonInfoByCriminalBiometricsIdWorkflowTask.class, "personInfo");
+				
 				setData(InquiryByFingerprintsResultPaneFxController.class, "hideRegisterUnknownButton",
 				        Boolean.TRUE);
+				setData(InquiryByFingerprintsResultPaneFxController.class, "personInfo", personInfo);
 				passData(FingerprintInquiryStatusCheckerWorkflowTask.class,
 				         InquiryByFingerprintsResultPaneFxController.class,
 				         "status", "civilBiometricsId", "criminalBiometricsId", "civilPersonIds");
-				
 				renderUiAndWaitForUserInput(InquiryByFingerprintsResultPaneFxController.class);
 				
 				break;
 			}
 			case 6:
 			{
-				passData(InquiryByFingerprintsResultPaneFxController.class, PersonInfoPaneFxController.class,
+				passData(InquiryByFingerprintsResultPaneFxController.class, UpdatePersonInfoPaneFxController.class,
 				         "normalizedPersonInfo");
-				renderUiAndWaitForUserInput(PersonInfoPaneFxController.class);
+				renderUiAndWaitForUserInput(UpdatePersonInfoPaneFxController.class);
 				break;
 			}
 			case 7:
@@ -254,16 +291,23 @@ public class RegisterConvictedReportNotPresentWorkflow extends WizardWorkflowBas
 			}
 			case 9:
 			{
+				passData(JudgmentDetailsPaneFxController.class, ShareInformationPaneFxController.class,
+				         "crimes");
+				renderUiAndWaitForUserInput(ShareInformationPaneFxController.class);
+				break;
+			}
+			case 10:
+			{
 				NormalizedPersonInfo normalizedPersonInfo = getData(ShowingPersonInfoFxController.class,
 				                                                    "normalizedPersonInfo");
 				
 				setData(ReviewAndSubmitPaneFxController.class, "facePhotoBase64",
 				        normalizedPersonInfo.getFacePhotoBase64());
 				
-				passData(PersonInfoPaneFxController.class, ReviewAndSubmitPaneFxController.class,
-				         "firstName", "fatherName" ,"grandfatherName" ,"familyName" ,"gender"
-						,"nationality" ,"occupation" ,"birthPlace" ,"birthDate" ,"birthDateUseHijri" ,"personId"
-						,"personType" ,"documentId" ,"documentType" ,"documentIssuanceDate" ,"documentExpiryDate");
+				passData(UpdatePersonInfoPaneFxController.class, ReviewAndSubmitPaneFxController.class,
+				         "firstName", "fatherName" , "grandfatherName" , "familyName" , "gender"
+						, "nationality" , "occupation" , "birthPlace" , "birthDate" , "birthDateUseHijri" , "personId"
+						, "personType" , "documentId" , "documentType" , "documentIssuanceDate" , "documentExpiryDate");
 				
 				passData(JudgmentDetailsPaneFxController.class, ReviewAndSubmitPaneFxController.class,
 				         "judgmentIssuer" , "judgmentNumber", "judgmentDate", "judgmentDateUseHijri",
@@ -329,7 +373,7 @@ public class RegisterConvictedReportNotPresentWorkflow extends WizardWorkflowBas
 				
 				break;
 			}
-			case 10:
+			case 11:
 			{
 				passData(ReviewAndSubmitPaneFxController.class, ShowReportPaneFxController.class,
 				         "convictedReport");

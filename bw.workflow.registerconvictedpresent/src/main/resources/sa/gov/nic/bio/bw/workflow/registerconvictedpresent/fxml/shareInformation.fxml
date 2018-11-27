@@ -1,0 +1,162 @@
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import sa.gov.nic.bio.bw.workflow.commons.ui.PTableColumn?>
+<BorderPane xmlns="http://javafx.com/javafx/11" xmlns:fx="http://javafx.com/fxml/1"
+            fx:id="rootPane" stylesheets="@../css/style.css"
+            fx:controller="sa.gov.nic.bio.bw.workflow.registerconvictedpresent.controllers.ShareInformationPaneFxController">
+    <center>
+        <BorderPane>
+            <padding>
+                <Insets top="10.0" bottom="10.0"/>
+            </padding>
+            <center>
+                <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER">
+                    <VBox alignment="CENTER" spacing="10.0">
+                        <TitledPane fx:id="tpCrimeClassification1" focusTraversable="false" collapsible="false">
+                            <VBox spacing="10.0">
+                                <padding>
+                                    <Insets topRightBottomLeft="10.0"/>
+                                </padding>
+                                <HBox spacing="5.0">
+                                    <Label text="%label.firstCrimeClassification" styleClass="bold-label"/>
+                                    <Label fx:id="lblCrimeClassification1"/>
+                                </HBox>
+                                <TableView fx:id="tvCrimeClassification1">
+                                    <columnResizePolicy>
+                                        <TableView fx:constant="UNCONSTRAINED_RESIZE_POLICY"/>
+                                    </columnResizePolicy>
+                                    <placeholder>
+                                        <Label text="%table.placeholder"/>
+                                    </placeholder>
+                                    <columns>
+                                        <PTableColumn fx:id="tcInputSequence1" text="#" reorderable="false" sortable="false" percentageWidth="0.05"/>
+                                        <PTableColumn fx:id="tcPartyName1" text="%table.column.partyName" reorderable="false" sortable="false" percentageWidth="0.3"/>
+                                        <PTableColumn fx:id="tcSystemDecision1" text="%table.column.systemDecision" reorderable="false" sortable="false" percentageWidth="0.15"/>
+                                        <PTableColumn fx:id="tcOperatorDecision1" text="%table.column.operatorDecision" reorderable="false" sortable="false" percentageWidth="0.25"/>
+                                    </columns>
+                                </TableView>
+                            </VBox>
+                        </TitledPane>
+                        <TitledPane fx:id="tpCrimeClassification2" focusTraversable="false" collapsible="false" managed="false" visible="false">
+                            <VBox spacing="10.0">
+                                <padding>
+                                    <Insets topRightBottomLeft="10.0"/>
+                                </padding>
+                                <HBox spacing="5.0">
+                                    <Label text="%label.secondCrimeClassification" styleClass="bold-label"/>
+                                    <Label fx:id="lblCrimeClassification2"/>
+                                </HBox>
+                                <TableView fx:id="tvCrimeClassification2">
+                                    <columnResizePolicy>
+                                        <TableView fx:constant="UNCONSTRAINED_RESIZE_POLICY"/>
+                                    </columnResizePolicy>
+                                    <placeholder>
+                                        <Label text="%table.placeholder"/>
+                                    </placeholder>
+                                    <columns>
+                                        <PTableColumn fx:id="tcInputSequence2" text="#" reorderable="false" sortable="false" percentageWidth="0.05"/>
+                                        <PTableColumn fx:id="tcPartyName2" text="%table.column.partyName" reorderable="false" sortable="false" percentageWidth="0.3"/>
+                                        <PTableColumn fx:id="tcSystemDecision2" text="%table.column.systemDecision" reorderable="false" sortable="false" percentageWidth="0.15"/>
+                                        <PTableColumn fx:id="tcOperatorDecision2" text="%table.column.operatorDecision" reorderable="false" sortable="false" percentageWidth="0.25"/>
+                                    </columns>
+                                </TableView>
+                            </VBox>
+                        </TitledPane>
+                        <TitledPane fx:id="tpCrimeClassification3" focusTraversable="false" collapsible="false" managed="false" visible="false">
+                            <VBox spacing="10.0">
+                                <padding>
+                                    <Insets topRightBottomLeft="10.0"/>
+                                </padding>
+                                <HBox spacing="5.0">
+                                    <Label text="%label.thirdCrimeClassification" styleClass="bold-label"/>
+                                    <Label fx:id="lblCrimeClassification3"/>
+                                </HBox>
+                                <TableView fx:id="tvCrimeClassification3">
+                                    <columnResizePolicy>
+                                        <TableView fx:constant="UNCONSTRAINED_RESIZE_POLICY"/>
+                                    </columnResizePolicy>
+                                    <placeholder>
+                                        <Label text="%table.placeholder"/>
+                                    </placeholder>
+                                    <columns>
+                                        <PTableColumn fx:id="tcInputSequence3" text="#" reorderable="false" sortable="false" percentageWidth="0.05"/>
+                                        <PTableColumn fx:id="tcPartyName3" text="%table.column.partyName" reorderable="false" sortable="false" percentageWidth="0.3"/>
+                                        <PTableColumn fx:id="tcSystemDecision3" text="%table.column.systemDecision" reorderable="false" sortable="false" percentageWidth="0.15"/>
+                                        <PTableColumn fx:id="tcOperatorDecision3" text="%table.column.operatorDecision" reorderable="false" sortable="false" percentageWidth="0.25"/>
+                                    </columns>
+                                </TableView>
+                            </VBox>
+                        </TitledPane>
+                        <TitledPane fx:id="tpCrimeClassification4" focusTraversable="false" collapsible="false" managed="false" visible="false">
+                            <VBox spacing="10.0">
+                                <padding>
+                                    <Insets topRightBottomLeft="10.0"/>
+                                </padding>
+                                <HBox spacing="5.0">
+                                    <Label text="%label.fourthCrimeClassification" styleClass="bold-label"/>
+                                    <Label fx:id="lblCrimeClassification4"/>
+                                </HBox>
+                                <TableView fx:id="tvCrimeClassification4">
+                                    <columnResizePolicy>
+                                        <TableView fx:constant="UNCONSTRAINED_RESIZE_POLICY"/>
+                                    </columnResizePolicy>
+                                    <placeholder>
+                                        <Label text="%table.placeholder"/>
+                                    </placeholder>
+                                    <columns>
+                                        <PTableColumn fx:id="tcInputSequence4" text="#" reorderable="false" sortable="false" percentageWidth="0.05"/>
+                                        <PTableColumn fx:id="tcPartyName4" text="%table.column.partyName" reorderable="false" sortable="false" percentageWidth="0.3"/>
+                                        <PTableColumn fx:id="tcSystemDecision4" text="%table.column.systemDecision" reorderable="false" sortable="false" percentageWidth="0.15"/>
+                                        <PTableColumn fx:id="tcOperatorDecision4" text="%table.column.operatorDecision" reorderable="false" sortable="false" percentageWidth="0.25"/>
+                                    </columns>
+                                </TableView>
+                            </VBox>
+                        </TitledPane>
+                        <TitledPane fx:id="tpCrimeClassification5" focusTraversable="false" collapsible="false" managed="false" visible="false">
+                            <VBox spacing="10.0">
+                                <padding>
+                                    <Insets topRightBottomLeft="10.0"/>
+                                </padding>
+                                <HBox spacing="5.0">
+                                    <Label text="%label.fifthCrimeClassification" styleClass="bold-label"/>
+                                    <Label fx:id="lblCrimeClassification5"/>
+                                </HBox>
+                                <TableView fx:id="tvCrimeClassification5">
+                                    <columnResizePolicy>
+                                        <TableView fx:constant="UNCONSTRAINED_RESIZE_POLICY"/>
+                                    </columnResizePolicy>
+                                    <placeholder>
+                                        <Label text="%table.placeholder"/>
+                                    </placeholder>
+                                    <columns>
+                                        <PTableColumn fx:id="tcInputSequence5" text="#" reorderable="false" sortable="false" percentageWidth="0.05"/>
+                                        <PTableColumn fx:id="tcPartyName5" text="%table.column.partyName" reorderable="false" sortable="false" percentageWidth="0.3"/>
+                                        <PTableColumn fx:id="tcSystemDecision5" text="%table.column.systemDecision" reorderable="false" sortable="false" percentageWidth="0.15"/>
+                                        <PTableColumn fx:id="tcOperatorDecision5" text="%table.column.operatorDecision" reorderable="false" sortable="false" percentageWidth="0.25"/>
+                                    </columns>
+                                </TableView>
+                            </VBox>
+                        </TitledPane>
+                    </VBox>
+                </ScrollPane>
+            </center>
+        </BorderPane>
+    </center>
+    <bottom>
+        <HBox alignment="CENTER" spacing="10">
+            <padding>
+                <Insets bottom="10"/>
+            </padding>
+            <Button fx:id="btnPrevious" text="%button.previous" onAction="#onPreviousButtonClicked"/>
+            <Button fx:id="btnStartOver" text="%button.startOver" onAction="#onStartOverButtonClicked"/>
+            <Button fx:id="btnNext" text="%button.next" onAction="#onNextButtonClicked"/>
+        </HBox>
+    </bottom>
+</BorderPane>

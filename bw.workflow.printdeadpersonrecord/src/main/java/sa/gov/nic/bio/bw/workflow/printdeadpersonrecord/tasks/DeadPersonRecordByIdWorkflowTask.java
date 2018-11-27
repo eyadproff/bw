@@ -6,7 +6,7 @@ import sa.gov.nic.bio.bw.core.workflow.Input;
 import sa.gov.nic.bio.bw.core.workflow.Output;
 import sa.gov.nic.bio.bw.core.workflow.Signal;
 import sa.gov.nic.bio.bw.core.workflow.WorkflowTask;
-import sa.gov.nic.bio.bw.workflow.printdeadpersonrecord.webservice.DeadPersonRecord;
+import sa.gov.nic.bio.bw.workflow.printdeadpersonrecord.beans.DeadPersonRecord;
 import sa.gov.nic.bio.bw.workflow.printdeadpersonrecord.webservice.DeadPersonRecordById;
 import sa.gov.nic.bio.commons.TaskResponse;
 

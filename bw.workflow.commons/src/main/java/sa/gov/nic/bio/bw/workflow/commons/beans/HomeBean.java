@@ -1,10 +1,9 @@
 package sa.gov.nic.bio.bw.workflow.commons.beans;
 
 import javafx.scene.image.Image;
+import sa.gov.nic.bio.bw.core.beans.JavaBean;
 
-import java.util.Objects;
-
-public class HomeBean
+public class HomeBean extends JavaBean
 {
 	private String username;
 	private String operatorName;
@@ -64,38 +63,4 @@ public class HomeBean
 	
 	public Image getFacePhoto(){return facePhoto;}
 	public void setFacePhoto(Image facePhoto){this.facePhoto = facePhoto;}
-	
-	@Override
-	public boolean equals(Object o)
-	{
-		if(this == o) return true;
-		if(o == null || getClass() != o.getClass()) return false;
-		HomeBean homeBean = (HomeBean) o;
-		return Objects.equals(username, homeBean.username) && Objects.equals(operatorName, homeBean.operatorName) &&
-			   Objects.equals(location, homeBean.location) && Objects.equals(sLoginTime, homeBean.sLoginTime) &&
-			   Objects.equals(sLastLogonTime, homeBean.sLastLogonTime) &&
-			   Objects.equals(sLastFailedLoginTime, homeBean.sLastFailedLoginTime) &&
-			   Objects.equals(sFailedLoginCount, homeBean.sFailedLoginCount) &&
-			   Objects.equals(sLastPasswordChangeTime, homeBean.sLastPasswordChangeTime) &&
-			   Objects.equals(sPasswordExpirationTime, homeBean.sPasswordExpirationTime) &&
-			   Objects.equals(facePhoto, homeBean.facePhoto);
-	}
-	
-	@Override
-	public int hashCode()
-	{
-		return Objects.hash(username, operatorName, location, sLoginTime, sLastLogonTime, sLastFailedLoginTime,
-		                    sFailedLoginCount, sLastPasswordChangeTime, sPasswordExpirationTime, facePhoto);
-	}
-	
-	@Override
-	public String toString()
-	{
-		return "HomeBean{" + "username='" + username + '\'' + ", operatorName='" + operatorName + '\'' +
-			   ", location='" + location + '\'' + ", sLoginTime='" + sLoginTime + '\'' + ", sLastLogonTime='" +
-			   sLastLogonTime + '\'' + ", sLastFailedLoginTime='" + sLastFailedLoginTime + '\'' +
-			   ", sFailedLoginCount='" + sFailedLoginCount + '\'' + ", sLastPasswordChangeTime='" +
-			   sLastPasswordChangeTime + '\'' + ", sPasswordExpirationTime='" + sPasswordExpirationTime + '\'' +
-			   ", facePhoto='" + facePhoto + '\'' + '}';
-	}
 }

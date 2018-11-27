@@ -6,7 +6,7 @@ import sa.gov.nic.bio.bw.core.workflow.Input;
 import sa.gov.nic.bio.bw.core.workflow.Output;
 import sa.gov.nic.bio.bw.core.workflow.Signal;
 import sa.gov.nic.bio.bw.core.workflow.WorkflowTask;
-import sa.gov.nic.bio.bw.workflow.commons.webservice.Finger;
+import sa.gov.nic.bio.bw.workflow.commons.beans.Finger;
 import sa.gov.nic.bio.bw.workflow.commons.webservice.FingerprintsByIdAPI;
 import sa.gov.nic.bio.commons.TaskResponse;
 
