@@ -1,7 +1,11 @@
 package sa.gov.nic.bio.bw.workflow.registerconvictedpresent.controllers;
 
+import javafx.beans.property.ReadOnlyObjectWrapper;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -9,17 +13,22 @@ import javafx.scene.control.TitledPane;
 import sa.gov.nic.bio.bw.core.Context;
 import sa.gov.nic.bio.bw.core.controllers.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.core.utils.FxmlFile;
+import sa.gov.nic.bio.bw.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.core.workflow.Input;
 import sa.gov.nic.bio.bw.core.workflow.Output;
 import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.beans.BiometricsExchangeCrimeType;
 import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.beans.BiometricsExchangeDecision;
 import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.beans.BiometricsExchangeParty;
 import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.beans.CrimeCode;
+import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.beans.CrimeType;
 import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.lookups.BiometricsExchangeCrimeTypesLookup;
 import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.lookups.BiometricsExchangePartiesLookup;
+import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.lookups.CrimeTypesLookup;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @FxmlFile("shareInformation.fxml")
@@ -38,31 +47,31 @@ public class ShareInformationPaneFxController extends WizardStepFxControllerBase
 	@FXML private Label lblCrimeClassification3;
 	@FXML private Label lblCrimeClassification4;
 	@FXML private Label lblCrimeClassification5;
-	@FXML private TableView tvCrimeClassification1;
-	@FXML private TableView tvCrimeClassification2;
-	@FXML private TableView tvCrimeClassification3;
-	@FXML private TableView tvCrimeClassification4;
-	@FXML private TableView tvCrimeClassification5;
-	@FXML private TableColumn tcInputSequence1;
-	@FXML private TableColumn tcInputSequence2;
-	@FXML private TableColumn tcInputSequence3;
-	@FXML private TableColumn tcInputSequence4;
-	@FXML private TableColumn tcInputSequence5;
-	@FXML private TableColumn tcPartyName1;
-	@FXML private TableColumn tcPartyName2;
-	@FXML private TableColumn tcPartyName3;
-	@FXML private TableColumn tcPartyName4;
-	@FXML private TableColumn tcPartyName5;
-	@FXML private TableColumn tcSystemDecision1;
-	@FXML private TableColumn tcSystemDecision2;
-	@FXML private TableColumn tcSystemDecision3;
-	@FXML private TableColumn tcSystemDecision4;
-	@FXML private TableColumn tcSystemDecision5;
-	@FXML private TableColumn tcOperatorDecision1;
-	@FXML private TableColumn tcOperatorDecision2;
-	@FXML private TableColumn tcOperatorDecision3;
-	@FXML private TableColumn tcOperatorDecision4;
-	@FXML private TableColumn tcOperatorDecision5;
+	@FXML private TableView<BiometricsExchangeDecision> tvBiometricsExchangeDecision1;
+	@FXML private TableView<BiometricsExchangeDecision> tvBiometricsExchangeDecision2;
+	@FXML private TableView<BiometricsExchangeDecision> tvBiometricsExchangeDecision3;
+	@FXML private TableView<BiometricsExchangeDecision> tvBiometricsExchangeDecision4;
+	@FXML private TableView<BiometricsExchangeDecision> tvBiometricsExchangeDecision5;
+	@FXML private TableColumn<BiometricsExchangeDecision, BiometricsExchangeDecision> tcSequence1;
+	@FXML private TableColumn<BiometricsExchangeDecision, BiometricsExchangeDecision> tcSequence2;
+	@FXML private TableColumn<BiometricsExchangeDecision, BiometricsExchangeDecision> tcSequence3;
+	@FXML private TableColumn<BiometricsExchangeDecision, BiometricsExchangeDecision> tcSequence4;
+	@FXML private TableColumn<BiometricsExchangeDecision, BiometricsExchangeDecision> tcSequence5;
+	@FXML private TableColumn<BiometricsExchangeDecision, String> tcPartyName1;
+	@FXML private TableColumn<BiometricsExchangeDecision, String> tcPartyName2;
+	@FXML private TableColumn<BiometricsExchangeDecision, String> tcPartyName3;
+	@FXML private TableColumn<BiometricsExchangeDecision, String> tcPartyName4;
+	@FXML private TableColumn<BiometricsExchangeDecision, String> tcPartyName5;
+	@FXML private TableColumn<BiometricsExchangeDecision, CheckBox> tcSystemDecision1;
+	@FXML private TableColumn<BiometricsExchangeDecision, CheckBox> tcSystemDecision2;
+	@FXML private TableColumn<BiometricsExchangeDecision, CheckBox> tcSystemDecision3;
+	@FXML private TableColumn<BiometricsExchangeDecision, CheckBox> tcSystemDecision4;
+	@FXML private TableColumn<BiometricsExchangeDecision, CheckBox> tcSystemDecision5;
+	@FXML private TableColumn<BiometricsExchangeDecision, CheckBox> tcOperatorDecision1;
+	@FXML private TableColumn<BiometricsExchangeDecision, CheckBox> tcOperatorDecision2;
+	@FXML private TableColumn<BiometricsExchangeDecision, CheckBox> tcOperatorDecision3;
+	@FXML private TableColumn<BiometricsExchangeDecision, CheckBox> tcOperatorDecision4;
+	@FXML private TableColumn<BiometricsExchangeDecision, CheckBox> tcOperatorDecision5;
 	@FXML private Button btnPrevious;
 	@FXML private Button btnStartOver;
 	@FXML private Button btnNext;
@@ -116,10 +125,53 @@ public class ShareInformationPaneFxController extends WizardStepFxControllerBase
 				}
 				
 				boolean systemDecision = getSystemDecision(biometricsExchangeCrimeTypes, partyCode, crimeCode);
-				criminalBioExchange.add(new BiometricsExchangeDecision(partyCode, systemDecision,
-				                                                       false));
+				criminalBioExchange.add(new BiometricsExchangeDecision(partyCode, systemDecision, systemDecision));
 			}
 		}
+		
+		Map<Integer, BiometricsExchangeParty> biometricsExchangePartiesMap =
+												biometricsExchangeParties.stream().collect(Collectors.toMap(
+													BiometricsExchangeParty::getOrgPartyCode, Function.identity()));
+		
+		@SuppressWarnings("unchecked")
+		List<CrimeType> crimeTypes = (List<CrimeType>) Context.getUserSession().getAttribute(CrimeTypesLookup.KEY);
+		
+		Map<Integer, String> crimeEventTitles = crimeTypes.stream().collect(
+								Collectors.toMap(CrimeType::getEventCode, CrimeType::getEventDesc, (k1, k2) -> k1));
+		Map<Integer, String> crimeClassTitles = crimeTypes.stream().collect(
+								Collectors.toMap(CrimeType::getClassCode, CrimeType::getClassDesc, (k1, k2) -> k1));
+		
+		// fill data
+		for(int i = 0; i < crimesWithShares.size(); i++)
+		{
+			CrimeCode crimeCode = crimesWithShares.get(i);
+			
+			switch(i)
+			{
+				case 0: fillData(tpCrimeClassification1, lblCrimeClassification1, tvBiometricsExchangeDecision1,
+				                 tcSequence1, tcPartyName1, tcSystemDecision1, tcOperatorDecision1, crimeCode,
+				                 crimeEventTitles, crimeClassTitles, biometricsExchangePartiesMap);
+				break;
+				case 1: fillData(tpCrimeClassification2, lblCrimeClassification2, tvBiometricsExchangeDecision2,
+				                 tcSequence2, tcPartyName2, tcSystemDecision2, tcOperatorDecision2, crimeCode,
+				                 crimeEventTitles, crimeClassTitles, biometricsExchangePartiesMap);
+				break;
+				case 2: fillData(tpCrimeClassification3, lblCrimeClassification3, tvBiometricsExchangeDecision3,
+				                 tcSequence3, tcPartyName3, tcSystemDecision3, tcOperatorDecision3, crimeCode,
+				                 crimeEventTitles, crimeClassTitles, biometricsExchangePartiesMap);
+				break;
+				case 3: fillData(tpCrimeClassification4, lblCrimeClassification4, tvBiometricsExchangeDecision4,
+				                 tcSequence4, tcPartyName4, tcSystemDecision4, tcOperatorDecision4, crimeCode,
+				                 crimeEventTitles, crimeClassTitles, biometricsExchangePartiesMap);
+				break;
+				case 4: fillData(tpCrimeClassification5, lblCrimeClassification5, tvBiometricsExchangeDecision5,
+				                 tcSequence5, tcPartyName5, tcSystemDecision5, tcOperatorDecision5, crimeCode,
+				                 crimeEventTitles, crimeClassTitles, biometricsExchangePartiesMap);
+				break;
+			}
+		}
+		
+		btnNext.requestFocus();
 	}
 	
 	private static boolean containsCrime(List<CrimeCode> crimes, CrimeCode crime)
@@ -145,12 +197,58 @@ public class ShareInformationPaneFxController extends WizardStepFxControllerBase
 				continue;
 			}
 			
-			System.out.println("biometricsExchangeCrimeType = " + biometricsExchangeCrimeType);
 			CrimeCode crimeCode = new CrimeCode(biometricsExchangeCrimeType.getCrimeEventCode(),
 			                                    biometricsExchangeCrimeType.getCrimeClassCode());
 			if(equalCrimes(crimeCode, crime)) return true;
 		}
 		
 		return false;
+	}
+	
+	private static void fillData(TitledPane tpCrimeClassification, Label lblCrimeClassification,
+	                             TableView<BiometricsExchangeDecision> tvBiometricsExchangeDecision,
+	                             TableColumn<BiometricsExchangeDecision, BiometricsExchangeDecision> tcSequence,
+	                             TableColumn<BiometricsExchangeDecision, String> tcPartyName,
+	                             TableColumn<BiometricsExchangeDecision, CheckBox> tcSystemDecision,
+	                             TableColumn<BiometricsExchangeDecision, CheckBox> tcOperatorDecision,
+	                             CrimeCode crimeCode, Map<Integer, String> crimeEventTitles,
+	                             Map<Integer, String> crimeClassTitles,
+	                             Map<Integer, BiometricsExchangeParty> biometricsExchangePartiesMap)
+	{
+		GuiUtils.showNode(tpCrimeClassification, true);
+		lblCrimeClassification.setText(crimeEventTitles.get(crimeCode.getCrimeEvent()) + ": " +
+                                       crimeClassTitles.get(crimeCode.getCrimeClass()));
+		
+		GuiUtils.initSequenceTableColumn(tcSequence);
+		tcSequence.setCellValueFactory(p -> new ReadOnlyObjectWrapper<>(p.getValue()));
+		
+		tcPartyName.setCellValueFactory(param ->
+		{
+			int bioExchangePartyCode = param.getValue().getPartyCode();
+			BiometricsExchangeParty biometricsExchangeParty = biometricsExchangePartiesMap.get(bioExchangePartyCode);
+		    return new SimpleStringProperty(biometricsExchangeParty.getLocalizedText());
+		});
+		
+		tcSystemDecision.setCellValueFactory(param ->
+		{
+			BiometricsExchangeDecision biometricsExchangeDecision = param.getValue();
+			CheckBox checkBox = new CheckBox();
+			checkBox.setDisable(true);
+		    checkBox.setSelected(biometricsExchangeDecision.getSystemDecision());
+		    return new SimpleObjectProperty<>(checkBox);
+		});
+		
+		tcOperatorDecision.setCellValueFactory(param ->
+		{
+		    BiometricsExchangeDecision biometricsExchangeDecision = param.getValue();
+		    CheckBox checkBox = new CheckBox();
+		    checkBox.setSelected(biometricsExchangeDecision.getOperatorDecision());
+			checkBox.selectedProperty().addListener((observable, oldValue, newValue) ->
+		                                        biometricsExchangeDecision.setOperatorDecision(newValue));
+		    return new SimpleObjectProperty<>(checkBox);
+		});
+		
+		List<BiometricsExchangeDecision> criminalBioExchange = crimeCode.getCriminalBioExchange();
+		tvBiometricsExchangeDecision.getItems().setAll(criminalBioExchange);
 	}
 }

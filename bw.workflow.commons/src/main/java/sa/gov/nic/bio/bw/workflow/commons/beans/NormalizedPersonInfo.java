@@ -24,9 +24,13 @@ public class NormalizedPersonInfo extends JavaBean
 	private LocalDate documentIssuanceDate;
 	private LocalDate documentExpiryDate;
 	private String firstName;
+	private String firstNameLabel;
 	private String fatherName;
+	private String fatherNameLabel;
 	private String grandfatherName;
+	private String grandfatherNameLabel;
 	private String familyName;
+	private String familyNameLabel;
 	private Gender gender;
 	private Country nationality;
 	private String occupation;
@@ -36,6 +40,8 @@ public class NormalizedPersonInfo extends JavaBean
 	
 	public NormalizedPersonInfo(PersonInfo personInfo)
 	{
+		if(personInfo == null) return;
+		
 		facePhotoBase64 = personInfo.getFace();
 		
 		Name name = personInfo.getName();
@@ -45,6 +51,12 @@ public class NormalizedPersonInfo extends JavaBean
 		grandfatherName = AppUtils.buildNamePart(name.getGrandfatherName(), name.getTranslatedGrandFatherName(),
 		                                         false);
 		familyName = AppUtils.buildNamePart(name.getFamilyName(), name.getTranslatedFamilyName(), false);
+		
+		firstNameLabel = AppUtils.buildNamePart(name.getFirstName(), name.getTranslatedFirstName(), true);
+		fatherNameLabel = AppUtils.buildNamePart(name.getFatherName(), name.getTranslatedFatherName(), true);
+		grandfatherNameLabel = AppUtils.buildNamePart(name.getGrandfatherName(), name.getTranslatedGrandFatherName(),
+		                                              true);
+		familyNameLabel = AppUtils.buildNamePart(name.getFamilyName(), name.getTranslatedFamilyName(), true);
 		
 		int genderInt = personInfo.getGender();
 		if(genderInt == 1 || genderInt == 2) gender = Gender.values()[genderInt - 1];
@@ -147,14 +159,26 @@ public class NormalizedPersonInfo extends JavaBean
 	public String getFirstName(){return firstName;}
 	public void setFirstName(String firstName){this.firstName = firstName;}
 	
+	public String getFirstNameLabel(){return firstNameLabel;}
+	public void setFirstNameLabel(String firstNameLabel){this.firstNameLabel = firstNameLabel;}
+	
 	public String getFatherName(){return fatherName;}
 	public void setFatherName(String fatherName){this.fatherName = fatherName;}
+	
+	public String getFatherNameLabel(){return fatherNameLabel;}
+	public void setFatherNameLabel(String fatherNameLabel){this.fatherNameLabel = fatherNameLabel;}
 	
 	public String getGrandfatherName(){return grandfatherName;}
 	public void setGrandfatherName(String grandfatherName){this.grandfatherName = grandfatherName;}
 	
+	public String getGrandfatherNameLabel(){return grandfatherNameLabel;}
+	public void setGrandfatherNameLabel(String grandfatherNameLabel){this.grandfatherNameLabel = grandfatherNameLabel;}
+	
 	public String getFamilyName(){return familyName;}
 	public void setFamilyName(String familyName){this.familyName = familyName;}
+	
+	public String getFamilyNameLabel(){return familyNameLabel;}
+	public void setFamilyNameLabel(String familyNameLabel){this.familyNameLabel = familyNameLabel;}
 	
 	public Gender getGender(){return gender;}
 	public void setGender(Gender gender){this.gender = gender;}

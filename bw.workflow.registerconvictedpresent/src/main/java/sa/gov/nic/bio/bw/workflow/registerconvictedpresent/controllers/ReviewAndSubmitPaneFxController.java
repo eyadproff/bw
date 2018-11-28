@@ -94,8 +94,8 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 	@FXML private Label lblFatherName;
 	@FXML private Label lblGrandfatherName;
 	@FXML private Label lblFamilyName;
-	@FXML private Label lblBiometricsId;
-	@FXML private Label lblGeneralFileNumber;
+	@FXML private Label lblCivilBiometricsId;
+	@FXML private Label lblCriminalBiometricsId;
 	@FXML private Label lblGender;
 	@FXML private Label lblNationality;
 	@FXML private Label lblOccupation;
@@ -167,13 +167,13 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 									Collectors.toMap(CrimeType::getClassCode, CrimeType::getClassDesc, (k1, k2) -> k1));
 		
 		GuiUtils.attachFacePhotoBase64(ivPersonPhoto, facePhotoBase64, true, gender);
+		GuiUtils.setLabelText(lblCivilBiometricsId, civilBiometricsId);
+		GuiUtils.setLabelText(lblCriminalBiometricsId, criminalBiometricsId)
+				.orElse(label -> label.setTextFill(Color.RED));
 		GuiUtils.setLabelText(lblFirstName, firstName);
 		GuiUtils.setLabelText(lblFatherName, fatherName);
 		GuiUtils.setLabelText(lblGrandfatherName, grandfatherName);
 		GuiUtils.setLabelText(lblFamilyName, familyName);
-		GuiUtils.setLabelText(lblBiometricsId, civilBiometricsId);
-		GuiUtils.setLabelText(lblGeneralFileNumber, criminalBiometricsId)
-				.orElse(label -> label.setTextFill(Color.RED));
 		GuiUtils.setLabelText(lblGender, gender);
 		GuiUtils.setLabelText(lblNationality, nationality);
 		GuiUtils.setLabelText(lblOccupation, occupation);
@@ -296,7 +296,7 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 			                                                travelBanMonths, travelBanYears, deportationDays,
 			                                                deportationMonths, deportationYears, exilingDays,
 			                                                exilingMonths, exilingYears, finalDeportation, covenant,
-			                                                libel, crimes, caseFileNumber,
+			                                                libel, caseFileNumber,
 			                                                arrestDate == null ? null :
 				                                                    AppUtils.gregorianDateToSeconds(arrestDate));
 			
@@ -315,7 +315,8 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 			                                      documentExpiryDate == null ? null :
 					                                        AppUtils.gregorianDateToSeconds(documentExpiryDate),
 			                                      judgementInfo, fingerprints, missingFingerprints, facePhotoBase64,
-			                                      AppUtils.localizeNumbers(String.valueOf(userInfo.getOperatorId())));
+			                                      AppUtils.localizeNumbers(String.valueOf(userInfo.getOperatorId())),
+			                                      crimes);
 			
 			continueWorkflow();
 		}

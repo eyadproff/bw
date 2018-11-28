@@ -4,26 +4,23 @@ import sa.gov.nic.bio.bw.core.beans.JavaBean;
 
 public class BiometricsExchangeDecision extends JavaBean
 {
-	private int bioExchangePartyCode;
-	private boolean bioExchangeSystemDecision;
-	private boolean bioExchangeOperatorDecision;
+	private int partyCode;
+	private boolean systemDecision;
+	private boolean operatorDecision;
 	
-	public BiometricsExchangeDecision(int bioExchangePartyCode, boolean bioExchangeSystemDecision,
-	                                  boolean bioExchangeOperatorDecision)
+	public BiometricsExchangeDecision(int partyCode, boolean systemDecision, boolean operatorDecision)
 	{
-		this.bioExchangePartyCode = bioExchangePartyCode;
-		this.bioExchangeSystemDecision = bioExchangeSystemDecision;
-		this.bioExchangeOperatorDecision = bioExchangeOperatorDecision;
+		this.partyCode = partyCode;
+		this.systemDecision = systemDecision;
+		this.operatorDecision = operatorDecision;
 	}
 	
-	public int getBioExchangePartyCode(){return bioExchangePartyCode;}
-	public void setBioExchangePartyCode(int bioExchangePartyCode){this.bioExchangePartyCode = bioExchangePartyCode;}
+	public int getPartyCode(){return partyCode;}
+	public void setPartyCode(int partyCode){this.partyCode = partyCode;}
 	
-	public boolean getBioExchangeSystemDecision(){return bioExchangeSystemDecision;}
-	public void setBioExchangeSystemDecision(boolean bioExchangeSystemDecision)
-														{this.bioExchangeSystemDecision = bioExchangeSystemDecision;}
+	public boolean getSystemDecision(){return systemDecision;}
+	public void setSystemDecision(boolean systemDecision){this.systemDecision = systemDecision;}
 	
-	public boolean isBioExchangeOperatorDecision(){return bioExchangeOperatorDecision;}
-	public void setBioExchangeOperatorDecision(boolean bioExchangeOperatorDecision)
-													{this.bioExchangeOperatorDecision = bioExchangeOperatorDecision;}
+	public boolean getOperatorDecision(){return operatorDecision;}
+	public void setOperatorDecision(boolean operatorDecision){this.operatorDecision = operatorDecision;}
 }

@@ -29,9 +29,9 @@ public interface WorkflowTask extends AppLogger
 		//				                                    false);
 		//
 		//		List<TaskInput<?>> taskInputs = new ArrayList<>();
-		//		Field[] declaredFields = getClass().getDeclaredFields();
+		//		java.lang.reflect.Field[] declaredFields = getClass().getDeclaredFields();
 		//
-		//		for(Field declaredField : declaredFields)
+		//		for(java.lang.reflect.Field declaredField : declaredFields)
 		//		{
 		//			declaredField.setAccessible(true);
 		//

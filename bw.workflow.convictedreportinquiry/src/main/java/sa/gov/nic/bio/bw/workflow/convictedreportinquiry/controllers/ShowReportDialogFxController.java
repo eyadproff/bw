@@ -301,7 +301,7 @@ public class ShowReportDialogFxController extends FxControllerBase
 									Collectors.toMap(CrimeType::getClassCode, CrimeType::getClassDesc, (k1, k2) -> k1));
 			
 			int counter = 0;
-			List<CrimeCode> crimeCodes = judgementInfo.getCrimeCodes();
+			List<CrimeCode> crimeCodes = convictedReport.getCrimeCodes();
 			for(CrimeCode crimeCode : crimeCodes)
 			{
 				switch(counter++)

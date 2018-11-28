@@ -284,3 +284,34 @@
 .fakely-enabled {
     -fx-opacity: 1;
 }
+
+.center-alignment {
+    -fx-alignment: center;
+}
+
+.table-view-with-no-h-scroll *.scroll-bar:horizontal *.increment-button,
+.table-view-with-no-h-scroll *.scroll-bar:horizontal *.decrement-button {
+    -fx-background-color: null;
+    -fx-background-radius: 0;
+    -fx-background-insets: 0;
+    -fx-padding: 0;
+}
+
+.table-view-with-no-h-scroll *.scroll-bar:horizontal *.increment-arrow,
+.table-view-with-no-h-scroll *.scroll-bar:horizontal *.decrement-arrow {
+    -fx-background-color: null;
+    -fx-background-radius: 0;
+    -fx-background-insets: 0;
+    -fx-padding: 0;
+    -fx-shape: null;
+}
+
+.table-view-with-disabled-selection .table-row-cell:filled:selected {
+    -fx-background: -fx-control-inner-background ;
+    -fx-background-color: -fx-table-cell-border-color, -fx-background ;
+    -fx-background-insets: 0, 0 0 1 0 ;
+    -fx-table-cell-border-color: derive(-fx-color, 5%);
+}
+.table-view-with-disabled-selection .table-row-cell:odd:filled:selected {
+    -fx-background: -fx-control-inner-background-alt ;
+}

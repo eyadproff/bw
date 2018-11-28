@@ -7,6 +7,8 @@ import sa.gov.nic.bio.bw.core.workflow.AssociatedMenu;
 import sa.gov.nic.bio.bw.core.workflow.Signal;
 import sa.gov.nic.bio.bw.core.workflow.WithLookups;
 import sa.gov.nic.bio.bw.core.workflow.WizardWorkflowBase;
+import sa.gov.nic.bio.bw.workflow.commons.beans.NormalizedPersonInfo;
+import sa.gov.nic.bio.bw.workflow.commons.beans.PersonInfo;
 import sa.gov.nic.bio.bw.workflow.commons.controllers.InquiryByFingerprintsPaneFxController;
 import sa.gov.nic.bio.bw.workflow.commons.controllers.InquiryByFingerprintsResultPaneFxController;
 import sa.gov.nic.bio.bw.workflow.commons.controllers.ShowingFingerprintsPaneFxController;
@@ -23,25 +25,22 @@ import sa.gov.nic.bio.bw.workflow.commons.tasks.FingerprintInquiryStatusCheckerW
 import sa.gov.nic.bio.bw.workflow.commons.tasks.FingerprintInquiryWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.FingerprintsWsqToFingerConverter;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.GetPersonInfoByIdWorkflowTask;
-import sa.gov.nic.bio.bw.workflow.commons.beans.NormalizedPersonInfo;
-import sa.gov.nic.bio.bw.workflow.commons.beans.PersonInfo;
 import sa.gov.nic.bio.bw.workflow.fingerprintcardidentification.controllers.ScanFingerprintCardPaneFxController;
 import sa.gov.nic.bio.bw.workflow.fingerprintcardidentification.controllers.SpecifyFingerprintCoordinatesPaneFxController;
 import sa.gov.nic.bio.bw.workflow.registerconvictednotpresent.controllers.FingerprintsSourceFxController;
 import sa.gov.nic.bio.bw.workflow.registerconvictednotpresent.controllers.FingerprintsSourceFxController.Source;
 import sa.gov.nic.bio.bw.workflow.registerconvictednotpresent.controllers.PersonIdPaneFxController;
+import sa.gov.nic.bio.bw.workflow.registerconvictednotpresent.controllers.UploadNistFileFxController;
 import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.controllers.JudgmentDetailsPaneFxController;
-import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.controllers.ShareInformationPaneFxController;
-import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.controllers.UpdatePersonInfoPaneFxController;
 import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.controllers.PunishmentDetailsPaneFxController;
 import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.controllers.ReviewAndSubmitPaneFxController;
+import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.controllers.ShareInformationPaneFxController;
 import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.controllers.ShowReportPaneFxController;
+import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.controllers.UpdatePersonInfoPaneFxController;
 import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.lookups.BiometricsExchangeCrimeTypesLookup;
 import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.lookups.BiometricsExchangePartiesLookup;
 import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.lookups.CrimeTypesLookup;
-import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.tasks.GeneratingNewCivilBiometricsIdWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.tasks.SubmittingConvictedReportWorkflowTask;
-import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.beans.ConvictedReport;
 
 import java.util.List;
 import java.util.Locale;
@@ -124,7 +123,8 @@ public class RegisterConvictedReportNotPresentWorkflow extends WizardWorkflowBas
 				}
 				else if(fingerprintsSource == Source.UPLOADING_NIST_FILE)
 				{
-					//renderUiAndWaitForUserInput(???);
+					renderUiAndWaitForUserInput(UploadNistFileFxController.class);
+					// TODO: upload the NIST file
 				}
 				
 				break;
@@ -152,7 +152,7 @@ public class RegisterConvictedReportNotPresentWorkflow extends WizardWorkflowBas
 				}
 				else if(fingerprintsSource == Source.UPLOADING_NIST_FILE)
 				{
-					//renderUiAndWaitForUserInput(???);
+					renderUiAndWaitForUserInput(ShowingPersonInfoFxController.class);
 				}
 				
 				break;
@@ -304,6 +304,9 @@ public class RegisterConvictedReportNotPresentWorkflow extends WizardWorkflowBas
 				setData(ReviewAndSubmitPaneFxController.class, "facePhotoBase64",
 				        normalizedPersonInfo.getFacePhotoBase64());
 				
+				passData(FingerprintInquiryStatusCheckerWorkflowTask.class, ReviewAndSubmitPaneFxController.class,
+				         "civilBiometricsId", "criminalBiometricsId");
+				
 				passData(UpdatePersonInfoPaneFxController.class, ReviewAndSubmitPaneFxController.class,
 				         "firstName", "fatherName" , "grandfatherName" , "familyName" , "gender"
 						, "nationality" , "occupation" , "birthPlace" , "birthDate" , "birthDateUseHijri" , "personId"
@@ -352,23 +355,8 @@ public class RegisterConvictedReportNotPresentWorkflow extends WizardWorkflowBas
 				
 				renderUiAndWaitForUserInput(ReviewAndSubmitPaneFxController.class);
 				
-				Long criminalBiometricsId = getData(FingerprintInquiryStatusCheckerWorkflowTask.class,
-				                                    "criminalBiometricsId");
-				
-				if(criminalBiometricsId == null)
-				{
-					passData(FingerprintInquiryStatusCheckerWorkflowTask.class,
-					         GeneratingNewCivilBiometricsIdWorkflowTask.class,
-					         "personId", "civilBiometricsId");
-					executeWorkflowTask(GeneratingNewCivilBiometricsIdWorkflowTask.class);
-					criminalBiometricsId = getData(GeneratingNewCivilBiometricsIdWorkflowTask.class,
-					                               "criminalBiometricsId");
-				}
-				
-				ConvictedReport convictedReport = getData(ReviewAndSubmitPaneFxController.class,
-				                                          "convictedReport");
-				convictedReport.setGeneralFileNum(criminalBiometricsId);
-				setData(SubmittingConvictedReportWorkflowTask.class, "convictedReport", convictedReport);
+				passData(ReviewAndSubmitPaneFxController.class, SubmittingConvictedReportWorkflowTask.class,
+				         "convictedReport");
 				executeWorkflowTask(SubmittingConvictedReportWorkflowTask.class);
 				
 				break;

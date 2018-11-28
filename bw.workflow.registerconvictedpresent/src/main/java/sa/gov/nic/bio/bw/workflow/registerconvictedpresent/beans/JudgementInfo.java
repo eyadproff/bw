@@ -2,8 +2,6 @@ package sa.gov.nic.bio.bw.workflow.registerconvictedpresent.beans;
 
 import sa.gov.nic.bio.bw.core.beans.JavaBean;
 
-import java.util.List;
-
 public class JudgementInfo extends JavaBean
 {
 	private String judgIssuer;
@@ -28,7 +26,6 @@ public class JudgementInfo extends JavaBean
 	private boolean finalDeport;
 	private boolean covenant;
 	private boolean libel;
-	private List<CrimeCode> crimeCodes;
 	private String policeFileNum;
 	private Long arrestDate;
 	
@@ -37,7 +34,7 @@ public class JudgementInfo extends JavaBean
 	                     int jailDayCount, int trvlBanDayCount, int trvlBanMonthCount, int trvlBanYearCount,
 	                     int deportDayCount, int deportMonthCount, int deportYearCount, int exileDayCount,
 	                     int exileMonthCount, int exileYearCount, boolean finalDeport, boolean covenant, boolean libel,
-	                     List<CrimeCode> crimeCodes, String policeFileNum, Long arrestDate)
+	                     String policeFileNum, Long arrestDate)
 	{
 		this.judgIssuer = judgIssuer;
 		this.judgDate = judgDate;
@@ -61,7 +58,6 @@ public class JudgementInfo extends JavaBean
 		this.finalDeport = finalDeport;
 		this.covenant = covenant;
 		this.libel = libel;
-		this.crimeCodes = crimeCodes;
 		this.policeFileNum = policeFileNum;
 		this.arrestDate = arrestDate;
 	}
@@ -131,9 +127,6 @@ public class JudgementInfo extends JavaBean
 	
 	public boolean isLibel(){return libel;}
 	public void setLibel(boolean libel){this.libel = libel;}
-	
-	public List<CrimeCode> getCrimeCodes(){return crimeCodes;}
-	public void setCrimeCodes(List<CrimeCode> crimeCodes){this.crimeCodes = crimeCodes;}
 	
 	public String getPoliceFileNum(){return policeFileNum;}
 	public void setPoliceFileNum(String policeFileNum){this.policeFileNum = policeFileNum;}

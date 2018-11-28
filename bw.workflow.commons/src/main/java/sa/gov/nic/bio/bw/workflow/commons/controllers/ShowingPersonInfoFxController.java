@@ -60,10 +60,10 @@ public class ShowingPersonInfoFxController extends WizardStepFxControllerBase
 			label.setTextFill(Color.RED);
 		};
 		
-		GuiUtils.setLabelText(lblFirstName, normalizedPersonInfo.getFirstName()).orElse(consumer);
-		GuiUtils.setLabelText(lblFatherName, normalizedPersonInfo.getFatherName()).orElse(consumer);
-		GuiUtils.setLabelText(lblGrandfatherName, normalizedPersonInfo.getGrandfatherName()).orElse(consumer);
-		GuiUtils.setLabelText(lblFamilyName, normalizedPersonInfo.getFamilyName()).orElse(consumer);
+		GuiUtils.setLabelText(lblFirstName, normalizedPersonInfo.getFirstNameLabel()).orElse(consumer);
+		GuiUtils.setLabelText(lblFatherName, normalizedPersonInfo.getFatherNameLabel()).orElse(consumer);
+		GuiUtils.setLabelText(lblGrandfatherName, normalizedPersonInfo.getGrandfatherNameLabel()).orElse(consumer);
+		GuiUtils.setLabelText(lblFamilyName, normalizedPersonInfo.getFamilyNameLabel()).orElse(consumer);
 		GuiUtils.setLabelText(lblGender, normalizedPersonInfo.getGender()).orElse(consumer);
 		GuiUtils.setLabelText(lblNationality, normalizedPersonInfo.getNationality()).orElse(consumer);
 		GuiUtils.setLabelText(lblOccupation, normalizedPersonInfo.getOccupation()).orElse(consumer);

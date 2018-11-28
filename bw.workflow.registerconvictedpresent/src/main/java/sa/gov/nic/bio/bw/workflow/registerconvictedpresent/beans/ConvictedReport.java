@@ -29,13 +29,15 @@ public class ConvictedReport extends JavaBean
 	private List<Integer> subjMissingFingers;
 	private String subjFace;
 	private String operatorId;
+	private List<CrimeCode> crimeCodes;
 	
 	public ConvictedReport(long reportNumber, long reportDate, Long generalFileNum, Name subjtName,
 	                       Integer subjNationalityCode, String subjOccupation, String subjGender,
 	                       Long subjBirthDate, String subjBirthPlace, Long subjSamisId, Integer subjSamisType,
 	                       Long subjBioId, String subjDocId, Integer subjDocType, Long subjDocIssDate,
 	                       Long subjDocExpDate, JudgementInfo subjJudgementInfo, List<Finger> subjFingers,
-	                       List<Integer> subjMissingFingers, String subjFace, String operatorId)
+	                       List<Integer> subjMissingFingers, String subjFace, String operatorId,
+	                       List<CrimeCode> crimeCodes)
 	{
 		this.reportNumber = reportNumber;
 		this.reportDate = reportDate;
@@ -58,6 +60,7 @@ public class ConvictedReport extends JavaBean
 		this.subjMissingFingers = subjMissingFingers;
 		this.subjFace = subjFace;
 		this.operatorId = operatorId;
+		this.crimeCodes = crimeCodes;
 	}
 	
 	public long getReportNumber(){return reportNumber;}
@@ -122,4 +125,7 @@ public class ConvictedReport extends JavaBean
 	
 	public String getOperatorId(){return operatorId;}
 	public void setOperatorId(String operatorId){this.operatorId = operatorId;}
+	
+	public List<CrimeCode> getCrimeCodes(){return crimeCodes;}
+	public void setCrimeCodes(List<CrimeCode> crimeCodes){this.crimeCodes = crimeCodes;}
 }
