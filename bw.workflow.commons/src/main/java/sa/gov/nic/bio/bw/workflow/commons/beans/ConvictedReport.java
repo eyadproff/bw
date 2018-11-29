@@ -1,8 +1,7 @@
-package sa.gov.nic.bio.bw.workflow.registerconvictedpresent.beans;
+package sa.gov.nic.bio.bw.workflow.commons.beans;
 
 import sa.gov.nic.bio.bw.core.beans.JavaBean;
 import sa.gov.nic.bio.bw.core.beans.Name;
-import sa.gov.nic.bio.bw.workflow.commons.beans.Finger;
 
 import java.util.List;
 

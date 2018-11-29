@@ -20,9 +20,9 @@ import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.beans.CrimeType;
 import sa.gov.nic.bio.bw.workflow.commons.beans.DocumentType;
 import sa.gov.nic.bio.bw.workflow.commons.beans.PersonType;
 import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.lookups.CrimeTypesLookup;
-import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.beans.ConvictedReport;
-import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.beans.CrimeCode;
-import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.beans.JudgementInfo;
+import sa.gov.nic.bio.bw.workflow.commons.beans.ConvictedReport;
+import sa.gov.nic.bio.bw.workflow.commons.beans.CrimeCode;
+import sa.gov.nic.bio.bw.workflow.commons.beans.JudgementInfo;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -132,9 +132,18 @@ public class BuildConvictedReportTask extends Task<JasperPrint>
 		           AppUtils.formatHijriGregorianDateTime(convictedReport.getReportDate()));
 		
 		Name name = convictedReport.getSubjtName();
-		String fullName = name.getFirstName() + " " + name.getFatherName() + " " + name.getGrandfatherName() +
-						  " " + name.getFamilyName();
-		fullName = fullName.trim().replaceAll("\\s+", " "); // remove extra spaces
+		StringBuilder sb = new StringBuilder();
+		
+		String firstName = name.getFirstName();
+		String fatherName = name.getFatherName();
+		String grandfatherName = name.getGrandfatherName();
+		String familyName = name.getFamilyName();
+		
+		if(firstName != null) sb.append(firstName).append(" ");
+		if(fatherName != null) sb.append(fatherName).append(" ");
+		if(grandfatherName != null) sb.append(grandfatherName).append(" ");
+		if(familyName != null) sb.append(familyName);
+		String fullName = sb.toString().stripTrailing();
 		
 		params.put(PARAMETER_NAME, fullName);
 		

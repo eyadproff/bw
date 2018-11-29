@@ -26,9 +26,9 @@ import sa.gov.nic.bio.bw.workflow.commons.beans.DocumentType;
 import sa.gov.nic.bio.bw.workflow.commons.beans.Finger;
 import sa.gov.nic.bio.bw.workflow.commons.beans.PersonType;
 import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.lookups.CrimeTypesLookup;
-import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.beans.ConvictedReport;
-import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.beans.CrimeCode;
-import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.beans.JudgementInfo;
+import sa.gov.nic.bio.bw.workflow.commons.beans.ConvictedReport;
+import sa.gov.nic.bio.bw.workflow.commons.beans.CrimeCode;
+import sa.gov.nic.bio.bw.workflow.commons.beans.JudgementInfo;
 
 import java.time.LocalDate;
 import java.util.List;

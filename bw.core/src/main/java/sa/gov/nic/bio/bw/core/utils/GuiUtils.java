@@ -56,6 +56,7 @@ import javafx.util.Duration;
 import javafx.util.StringConverter;
 import org.controlsfx.control.PopOver;
 import org.controlsfx.control.PopOver.ArrowLocation;
+import sa.gov.nic.bio.bw.commons.resources.images.CommonImages;
 import sa.gov.nic.bio.bw.core.Context;
 import sa.gov.nic.bio.bw.core.beans.ComboBoxItem;
 import sa.gov.nic.bio.bw.core.beans.Gender;
@@ -379,7 +380,7 @@ public class GuiUtils implements AppLogger
 			ImageView iv = new ImageView(imageView.getImage());
 			iv.setPreserveRatio(true);
 			
-			if(blur) blurImageView(imageView);
+			if(blur) blurImageView(iv);
 
 			double taskBarHeight = 40.0;
 			double rightLeftWindowBorders = 6.0;
@@ -737,8 +738,18 @@ public class GuiUtils implements AppLogger
 			                           resourceBundle.getString("label.contextMenu.showImage"),
 			                           blur && !authorized);
 			
+			imageView.setEffect(null);
 			if(blur && !authorized) blurImageView(imageView);
 		}
+		else detachFacePhotoBase64(imageView);
+	}
+	
+	public static void detachFacePhotoBase64(ImageView imageView)
+	{
+		imageView.setImage(new Image(CommonImages.PLACEHOLDER_AVATAR.getAsInputStream()));
+		imageView.setOnMouseClicked(null);
+		imageView.setOnContextMenuRequested(null);
+		imageView.setEffect(null);
 	}
 	
 	public static <T> OrElse<Label> setLabelText(Label label, T value)

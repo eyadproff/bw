@@ -31,7 +31,7 @@ import sa.gov.nic.bio.bw.workflow.commons.lookups.PersonTypesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.beans.Country;
 import sa.gov.nic.bio.bw.workflow.commons.beans.PersonType;
 import sa.gov.nic.bio.bw.workflow.convictedreportinquiry.utils.ConvictedReportInquiryErrorCodes;
-import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.beans.ConvictedReport;
+import sa.gov.nic.bio.bw.workflow.commons.beans.ConvictedReport;
 
 import java.util.List;
 import java.util.Map;

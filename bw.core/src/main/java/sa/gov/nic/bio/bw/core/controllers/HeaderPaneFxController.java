@@ -9,7 +9,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import org.controlsfx.glyphfont.FontAwesome;
 import org.controlsfx.glyphfont.Glyph;
-import sa.gov.nic.bio.bw.commons.resources.images.CommonImages;
 import sa.gov.nic.bio.bw.core.Context;
 import sa.gov.nic.bio.bw.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.core.utils.GuiUtils;
@@ -85,12 +84,7 @@ public class HeaderPaneFxController extends RegionFxControllerBase
 			                           resources.getString("label.operatorPhoto"),
 			                           resources.getString("label.contextMenu.showImage"), false);
 		}
-		else
-		{
-			ivAvatar.setImage(new Image(CommonImages.PLACEHOLDER_AVATAR.getAsInputStream()));
-			ivAvatar.setOnMouseClicked(null);
-			ivAvatar.setOnContextMenuRequested(null);
-		}
+		else GuiUtils.detachFacePhotoBase64(ivAvatar);
 	}
 	
 	@FXML

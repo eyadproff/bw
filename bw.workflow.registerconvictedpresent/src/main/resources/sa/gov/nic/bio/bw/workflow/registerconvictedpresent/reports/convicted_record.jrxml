@@ -185,7 +185,7 @@
 				<text><![CDATA[رقم الصحيفة:]]></text>
 			</staticText>
 			<textField evaluationTime="Report" isBlankWhenNull="true">
-				<reportElement key="" x="180" y="117" width="299" height="15" uuid="a53c8402-506b-4205-bd4f-92a9e6d264f8"/>
+				<reportElement key="" x="181" y="117" width="307" height="15" uuid="a53c8402-506b-4205-bd4f-92a9e6d264f8"/>
 				<textElement textAlignment="Right">
 					<font fontName="CustomFont" isBold="false"/>
 				</textElement>

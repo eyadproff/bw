@@ -64,7 +64,8 @@ public class ExtractingDataFromNistFileWorkflowTask implements WorkflowTask
 		fingerprints = criminalNistFile.getFingerList();
 		missingFingerprints = criminalNistFile.getMissing();
 		
+		String facePhotoBase64 = criminalNistFile.getFace();
 		personInfo = new PersonInfo();
-		personInfo.setFace(criminalNistFile.getFace());
+		if(facePhotoBase64 != null && !facePhotoBase64.isBlank()) personInfo.setFace(facePhotoBase64);
 	}
 }

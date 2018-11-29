@@ -11,9 +11,9 @@ import sa.gov.nic.bio.bw.workflow.commons.lookups.DocumentTypesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.PersonTypesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.convictedreportinquiry.controllers.ConvictedReportInquiryPaneFxController;
-import sa.gov.nic.bio.bw.workflow.convictedreportinquiry.tasks.ConvictedReportInquiryWorkflowTask;
+import sa.gov.nic.bio.bw.workflow.commons.tasks.ConvictedReportInquiryWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.lookups.CrimeTypesLookup;
-import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.beans.ConvictedReport;
+import sa.gov.nic.bio.bw.workflow.commons.beans.ConvictedReport;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,7 +44,7 @@ public class ConvictedReportInquiryWorkflow extends SinglePageWorkflowBase
 		renderUiAndWaitForUserInput(ConvictedReportInquiryPaneFxController.class);
 		
 		passData(ConvictedReportInquiryPaneFxController.class, ConvictedReportInquiryWorkflowTask.class,
-		         "generalFileNumber");
+		         "criminalBiometricsId");
 		
 		executeWorkflowTask(ConvictedReportInquiryWorkflowTask.class);
 		
@@ -63,8 +63,8 @@ public class ConvictedReportInquiryWorkflow extends SinglePageWorkflowBase
 			executeWorkflowTask(ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask.class);
 			
 			Map<Integer, String> fingerprintImages =
-										getData(ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask.class,
-										        "fingerprintImages");
+									getData(ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask.class,
+									        "fingerprintImages");
 			
 			convictedReportPairs.add(new Pair<>(convictedReport, fingerprintImages));
 		}

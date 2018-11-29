@@ -177,140 +177,144 @@ public class UpdatePersonInfoPaneFxController extends WizardStepFxControllerBase
 		
 		Node focusedNode = null;
 		
-		String firstName = normalizedPersonInfo.getFirstName();
-		if(firstName != null)
+		if(normalizedPersonInfo != null)
 		{
-			txtFirstName.setText(firstName);
-			txtFirstName.setDisable(true);
+			String firstName = normalizedPersonInfo.getFirstName();
+			if(firstName != null)
+			{
+				txtFirstName.setText(firstName);
+				txtFirstName.setDisable(true);
+			}
+			else if(this.firstName != null) txtFirstName.setText(this.firstName);
+			else focusedNode = txtFirstName;
+			
+			String fatherName = normalizedPersonInfo.getFatherName();
+			if(fatherName != null)
+			{
+				txtFatherName.setText(fatherName);
+				txtFatherName.setDisable(true);
+			}
+			else if(this.fatherName != null) txtFatherName.setText(this.fatherName);
+			else if(focusedNode == null) focusedNode = txtFatherName;
+			
+			String grandfatherName = normalizedPersonInfo.getGrandfatherName();
+			if(grandfatherName != null)
+			{
+				txtGrandfatherName.setText(grandfatherName);
+				txtGrandfatherName.setDisable(true);
+			}
+			else if(this.grandfatherName != null) txtGrandfatherName.setText(this.grandfatherName);
+			else if(focusedNode == null) focusedNode = txtGrandfatherName;
+			
+			String familyName = normalizedPersonInfo.getFamilyName();
+			if(familyName != null)
+			{
+				txtFamilyName.setText(familyName);
+				txtFamilyName.setDisable(true);
+			}
+			else if(this.familyName != null) txtFamilyName.setText(this.familyName);
+			else if(focusedNode == null) focusedNode = txtFamilyName;
+			
+			Gender gender = normalizedPersonInfo.getGender();
+			if(gender != null)
+			{
+				boolean selected = GuiUtils.selectComboBoxItem(cboGender, gender);
+				if(selected) cboGender.setDisable(true);
+			}
+			else if(this.gender != null) GuiUtils.selectComboBoxItem(cboGender, this.gender);
+			else if(focusedNode == null) focusedNode = cboGender;
+			
+			Country nationality = normalizedPersonInfo.getNationality();
+			if(nationality != null)
+			{
+				boolean selected = GuiUtils.selectComboBoxItem(cboNationality, nationality);
+				if(selected) cboNationality.setDisable(true);
+			}
+			else if(this.nationality != null) GuiUtils.selectComboBoxItem(cboNationality, this.nationality);
+			else cboNationality.getSelectionModel().select(0);
+			
+			String occupation = normalizedPersonInfo.getOccupation();
+			if(occupation != null)
+			{
+				txtOccupation.setText(occupation);
+				txtOccupation.setDisable(true);
+			}
+			else if(this.occupation != null) txtOccupation.setText(this.occupation);
+			
+			String birthPlace = normalizedPersonInfo.getBirthPlace();
+			if(birthPlace != null)
+			{
+				txtBirthPlace.setText(birthPlace);
+				txtBirthPlace.setDisable(true);
+			}
+			else if(this.birthPlace != null) txtBirthPlace.setText(this.birthPlace);
+			
+			LocalDate birthDate = normalizedPersonInfo.getBirthDate();
+			if(birthDate != null)
+			{
+				dpBirthDate.setValue(birthDate);
+				dpBirthDate.setDisable(true);
+			}
+			else if(this.birthDate != null) dpBirthDate.setValue(this.birthDate);
+			
+			rdoBirthDateUseHijri.setSelected(true);
+			if(this.birthDateUseHijri != null && !this.birthDateUseHijri) rdoBirthDateUseGregorian.setSelected(true);
+			
+			Long personId = normalizedPersonInfo.getPersonId();
+			if(personId != null)
+			{
+				txtPersonId.setText(String.valueOf(personId));
+				txtPersonId.setDisable(true);
+			}
+			
+			PersonType personType = normalizedPersonInfo.getPersonType();
+			if(personType != null)
+			{
+				boolean selected = GuiUtils.selectComboBoxItem(cboPersonType, personType);
+				if(selected) cboPersonType.setDisable(true);
+			}
+			else if(this.personType != null) GuiUtils.selectComboBoxItem(cboPersonType, this.personType);
+			
+			String documentId = normalizedPersonInfo.getDocumentId();
+			if(documentId != null)
+			{
+				txtDocumentId.setText(documentId);
+				txtDocumentId.setDisable(true);
+			}
+			
+			DocumentType documentType = normalizedPersonInfo.getDocumentType();
+			if(documentType != null)
+			{
+				boolean selected = GuiUtils.selectComboBoxItem(cboDocumentType, documentType);
+				if(selected) cboDocumentType.setDisable(true);
+			}
+			else if(this.documentType != null) GuiUtils.selectComboBoxItem(cboDocumentType, this.documentType);
+			
+			LocalDate documentIssuanceDate = normalizedPersonInfo.getDocumentIssuanceDate();
+			if(documentIssuanceDate != null)
+			{
+				dpDocumentIssuanceDate.setValue(documentIssuanceDate);
+				dpDocumentIssuanceDate.setDisable(true);
+			}
+			else if(this.documentIssuanceDate != null) dpDocumentIssuanceDate.setValue(this.documentIssuanceDate);
+			
+			rdoDocumentIssuanceDateUseHijri.setSelected(true);
+			if(this.documentIssuanceDateUseHijri != null && !this.documentIssuanceDateUseHijri)
+				rdoDocumentIssuanceDateUseGregorian.setSelected(true);
+			
+			LocalDate documentExpiryDate = normalizedPersonInfo.getDocumentExpiryDate();
+			if(documentExpiryDate != null)
+			{
+				dpDocumentExpiryDate.setValue(documentExpiryDate);
+				dpDocumentExpiryDate.setDisable(true);
+			}
+			else if(this.documentExpiryDate != null) dpDocumentExpiryDate.setValue(this.documentExpiryDate);
+			
+			rdoDocumentExpiryDateUseHijri.setSelected(true);
+			if(this.documentExpiryDateUseHijri != null && !this.documentExpiryDateUseHijri)
+				rdoDocumentExpiryDateUseGregorian.setSelected(true);
+			
 		}
-		else if(this.firstName != null) txtFirstName.setText(this.firstName);
-		else focusedNode = txtFirstName;
-		
-		String fatherName = normalizedPersonInfo.getFatherName();
-		if(fatherName != null)
-		{
-			txtFatherName.setText(fatherName);
-			txtFatherName.setDisable(true);
-		}
-		else if(this.fatherName != null) txtFatherName.setText(this.fatherName);
-		else if(focusedNode == null) focusedNode = txtFatherName;
-		
-		String grandfatherName = normalizedPersonInfo.getGrandfatherName();
-		if(grandfatherName != null)
-		{
-			txtGrandfatherName.setText(grandfatherName);
-			txtGrandfatherName.setDisable(true);
-		}
-		else if(this.grandfatherName != null) txtGrandfatherName.setText(this.grandfatherName);
-		else if(focusedNode == null) focusedNode = txtGrandfatherName;
-		
-		String familyName = normalizedPersonInfo.getFamilyName();
-		if(familyName != null)
-		{
-			txtFamilyName.setText(familyName);
-			txtFamilyName.setDisable(true);
-		}
-		else if(this.familyName != null) txtFamilyName.setText(this.familyName);
-		else if(focusedNode == null) focusedNode = txtFamilyName;
-		
-		Gender gender = normalizedPersonInfo.getGender();
-		if(gender != null)
-		{
-			boolean selected = GuiUtils.selectComboBoxItem(cboGender, gender);
-			if(selected) cboGender.setDisable(true);
-		}
-		else if(this.gender != null) GuiUtils.selectComboBoxItem(cboGender, this.gender);
-		else if(focusedNode == null) focusedNode = cboGender;
-		
-		Country nationality = normalizedPersonInfo.getNationality();
-		if(nationality != null)
-		{
-			boolean selected = GuiUtils.selectComboBoxItem(cboNationality, nationality);
-			if(selected) cboNationality.setDisable(true);
-		}
-		else if(this.nationality != null) GuiUtils.selectComboBoxItem(cboNationality, this.nationality);
-		else cboNationality.getSelectionModel().select(0);
-		
-		String occupation = normalizedPersonInfo.getOccupation();
-		if(occupation != null)
-		{
-			txtOccupation.setText(occupation);
-			txtOccupation.setDisable(true);
-		}
-		else if(this.occupation != null) txtOccupation.setText(this.occupation);
-		
-		String birthPlace = normalizedPersonInfo.getBirthPlace();
-		if(birthPlace != null)
-		{
-			txtBirthPlace.setText(birthPlace);
-			txtBirthPlace.setDisable(true);
-		}
-		else if(this.birthPlace != null) txtBirthPlace.setText(this.birthPlace);
-		
-		LocalDate birthDate = normalizedPersonInfo.getBirthDate();
-		if(birthDate != null)
-		{
-			dpBirthDate.setValue(birthDate);
-			dpBirthDate.setDisable(true);
-		}
-		else if(this.birthDate != null) dpBirthDate.setValue(this.birthDate);
-		
-		rdoBirthDateUseHijri.setSelected(true);
-		if(this.birthDateUseHijri != null && !this.birthDateUseHijri) rdoBirthDateUseGregorian.setSelected(true);
-		
-		Long personId = normalizedPersonInfo.getPersonId();
-		if(personId != null)
-		{
-			txtPersonId.setText(String.valueOf(personId));
-			txtPersonId.setDisable(true);
-		}
-		
-		PersonType personType = normalizedPersonInfo.getPersonType();
-		if(personType != null)
-		{
-			boolean selected = GuiUtils.selectComboBoxItem(cboPersonType, personType);
-			if(selected) cboPersonType.setDisable(true);
-		}
-		else if(this.personType != null) GuiUtils.selectComboBoxItem(cboPersonType, this.personType);
-		
-		String documentId = normalizedPersonInfo.getDocumentId();
-		if(documentId != null)
-		{
-			txtDocumentId.setText(documentId);
-			txtDocumentId.setDisable(true);
-		}
-		
-		DocumentType documentType = normalizedPersonInfo.getDocumentType();
-		if(documentType != null)
-		{
-			boolean selected = GuiUtils.selectComboBoxItem(cboDocumentType, documentType);
-			if(selected) cboDocumentType.setDisable(true);
-		}
-		else if(this.documentType != null) GuiUtils.selectComboBoxItem(cboDocumentType, this.documentType);
-		
-		LocalDate documentIssuanceDate = normalizedPersonInfo.getDocumentIssuanceDate();
-		if(documentIssuanceDate != null)
-		{
-			dpDocumentIssuanceDate.setValue(documentIssuanceDate);
-			dpDocumentIssuanceDate.setDisable(true);
-		}
-		else if(this.documentIssuanceDate != null) dpDocumentIssuanceDate.setValue(this.documentIssuanceDate);
-		
-		rdoDocumentIssuanceDateUseHijri.setSelected(true);
-		if(this.documentIssuanceDateUseHijri != null && !this.documentIssuanceDateUseHijri)
-																rdoDocumentIssuanceDateUseGregorian.setSelected(true);
-		
-		LocalDate documentExpiryDate = normalizedPersonInfo.getDocumentExpiryDate();
-		if(documentExpiryDate != null)
-		{
-			dpDocumentExpiryDate.setValue(documentExpiryDate);
-			dpDocumentExpiryDate.setDisable(true);
-		}
-		else if(this.documentExpiryDate != null) dpDocumentExpiryDate.setValue(this.documentExpiryDate);
-		
-		rdoDocumentExpiryDateUseHijri.setSelected(true);
-		if(this.documentExpiryDateUseHijri != null && !this.documentExpiryDateUseHijri)
-																rdoDocumentExpiryDateUseGregorian.setSelected(true);
 		
 		if(focusedNode != null) focusedNode.requestFocus();
 		else btnNext.requestFocus();
