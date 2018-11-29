@@ -20,7 +20,6 @@ import java.util.function.Consumer;
 @FxmlFile("showingPersonInfo.fxml")
 public class ShowingPersonInfoFxController extends WizardStepFxControllerBase
 {
-	@Input private Long personId;
 	@Input private PersonInfo personInfo;
 	@Output private NormalizedPersonInfo normalizedPersonInfo;
 	

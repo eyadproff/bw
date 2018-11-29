@@ -43,9 +43,9 @@ public class BuildForeignEnrollmentReceiptTask extends Task<JasperPrint>
 	private static final String PARAMETER_PASSPORT_TYPE = "PASSPORT_TYPE";
 	private static final String PARAMETER_MOBILE_NUMBER = "MOBILE_NUMBER";
 	
-	private static final String REPORT_EN_TEMPLATE_FILE = "/sa/gov/nic/bio/bw/features/" +
+	private static final String REPORT_EN_TEMPLATE_FILE = "/sa/gov/nic/bio/bw/workflow/" +
 										"visaapplicantsenrollment/reports/visa_applicants_enrollment_receipt_en.jrxml";
-	private static final String REPORT_AR_TEMPLATE_FILE = "/sa/gov/nic/bio/bw/features/" +
+	private static final String REPORT_AR_TEMPLATE_FILE = "/sa/gov/nic/bio/bw/workflow/" +
 										"visaapplicantsenrollment/reports/visa_applicants_enrollment_receipt_ar.jrxml";
 	
 	private VisaApplicantInfo visaApplicantInfo;

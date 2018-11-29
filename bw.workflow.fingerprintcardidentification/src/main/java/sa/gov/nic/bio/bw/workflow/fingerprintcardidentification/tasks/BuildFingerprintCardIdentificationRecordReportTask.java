@@ -40,7 +40,7 @@ public class BuildFingerprintCardIdentificationRecordReportTask extends Task<Jas
 	private static final String PARAMETER_INQUIRY_TIME = "INQUIRY_TIME";
 	private static final String PARAMETER_LOGO = "LOGO";
 	
-	private static final String REPORT_TEMPLATE_FILE = "/sa/gov/nic/bio/bw/features" +
+	private static final String REPORT_TEMPLATE_FILE = "/sa/gov/nic/bio/bw/workflow" +
 								"/fingerprintcardidentification/reports/fingerprint_card_identification_report.jrxml";
 	
 	private FingerprintCardIdentificationRecordReport fingerprintCardIdentificationRecordReport;

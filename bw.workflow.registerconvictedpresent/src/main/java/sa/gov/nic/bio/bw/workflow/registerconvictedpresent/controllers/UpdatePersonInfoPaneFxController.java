@@ -86,8 +86,6 @@ public class UpdatePersonInfoPaneFxController extends WizardStepFxControllerBase
 	@Override
 	protected void onAttachedToScene()
 	{
-		btnNext.setOnAction(actionEvent -> goNext());
-		
 		@SuppressWarnings("unchecked")
 		List<Country> countries = (List<Country>) Context.getUserSession().getAttribute(CountriesLookup.KEY);
 		

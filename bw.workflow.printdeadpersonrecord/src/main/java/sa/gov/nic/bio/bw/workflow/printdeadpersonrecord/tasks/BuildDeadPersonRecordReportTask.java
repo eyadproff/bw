@@ -36,7 +36,7 @@ public class BuildDeadPersonRecordReportTask extends Task<JasperPrint>
 	private static final String PARAMETER_INQUIRER_ID = "INQUIRER_ID";
 	private static final String PARAMETER_LOGO = "LOGO";
 	
-	private static final String REPORT_TEMPLATE_FILE = "/sa/gov/nic/bio/bw/features/printdeadpersonrecord" +
+	private static final String REPORT_TEMPLATE_FILE = "/sa/gov/nic/bio/bw/workflow/printdeadpersonrecord" +
 													   "/reports/dead_person_record.jrxml";
 	
 	private DeadPersonRecordReport deadPersonRecordReport;

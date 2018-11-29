@@ -187,7 +187,7 @@ public class ShowReportDialogFxController extends FxControllerBase
 		Long biometricsId = convictedReport.getSubjBioId();
 		if(biometricsId != null) lblBiometricsId.setText(AppUtils.localizeNumbers(String.valueOf(biometricsId)));
 		
-		Long generalFileNumber = convictedReport.getGeneralFileNum();
+		Long generalFileNumber = convictedReport.getGeneralFileNumber();
 		if(generalFileNumber != null)
 						lblGeneralFileNumber.setText(AppUtils.localizeNumbers(String.valueOf(generalFileNumber)));
 		

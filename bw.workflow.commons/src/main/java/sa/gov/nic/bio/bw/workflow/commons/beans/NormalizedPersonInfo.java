@@ -46,27 +46,34 @@ public class NormalizedPersonInfo extends JavaBean
 		
 		Name name = personInfo.getName();
 		
-		firstName = AppUtils.buildNamePart(name.getFirstName(), name.getTranslatedFirstName(), false);
-		fatherName = AppUtils.buildNamePart(name.getFatherName(), name.getTranslatedFatherName(), false);
-		grandfatherName = AppUtils.buildNamePart(name.getGrandfatherName(), name.getTranslatedGrandFatherName(),
-		                                         false);
-		familyName = AppUtils.buildNamePart(name.getFamilyName(), name.getTranslatedFamilyName(), false);
+		if(name != null)
+		{
+			firstName = AppUtils.buildNamePart(name.getFirstName(), name.getTranslatedFirstName(), false);
+			fatherName = AppUtils.buildNamePart(name.getFatherName(), name.getTranslatedFatherName(), false);
+			grandfatherName = AppUtils.buildNamePart(name.getGrandfatherName(), name.getTranslatedGrandFatherName(),
+			                                         false);
+			familyName = AppUtils.buildNamePart(name.getFamilyName(), name.getTranslatedFamilyName(), false);
+			
+			firstNameLabel = AppUtils.buildNamePart(name.getFirstName(), name.getTranslatedFirstName(), true);
+			fatherNameLabel = AppUtils.buildNamePart(name.getFatherName(), name.getTranslatedFatherName(),
+			                                         true);
+			grandfatherNameLabel = AppUtils.buildNamePart(name.getGrandfatherName(),
+			                                              name.getTranslatedGrandFatherName(),
+			                                              true);
+			familyNameLabel = AppUtils.buildNamePart(name.getFamilyName(), name.getTranslatedFamilyName(),
+			                                         true);
+		}
 		
-		firstNameLabel = AppUtils.buildNamePart(name.getFirstName(), name.getTranslatedFirstName(), true);
-		fatherNameLabel = AppUtils.buildNamePart(name.getFatherName(), name.getTranslatedFatherName(), true);
-		grandfatherNameLabel = AppUtils.buildNamePart(name.getGrandfatherName(), name.getTranslatedGrandFatherName(),
-		                                              true);
-		familyNameLabel = AppUtils.buildNamePart(name.getFamilyName(), name.getTranslatedFamilyName(), true);
-		
-		int genderInt = personInfo.getGender();
-		if(genderInt == 1 || genderInt == 2) gender = Gender.values()[genderInt - 1];
+		Integer genderInt = personInfo.getGender();
+		if(genderInt != null && (genderInt == 1 || genderInt == 2)) gender = Gender.values()[genderInt - 1];
 		
 		@SuppressWarnings("unchecked")
 		List<Country> countries = (List<Country>) Context.getUserSession().getAttribute(CountriesLookup.KEY);
 		
-		for(Country country : countries)
+		Integer nationalityInteger = personInfo.getNationality();
+		if(nationalityInteger != null) for(Country country : countries)
 		{
-			if(country.getCode() == personInfo.getNationality())
+			if(country.getCode() == nationalityInteger)
 			{
 				nationality = country;
 				break;

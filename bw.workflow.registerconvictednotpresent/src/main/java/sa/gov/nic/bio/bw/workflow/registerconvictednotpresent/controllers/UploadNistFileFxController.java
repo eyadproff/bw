@@ -3,12 +3,14 @@ package sa.gov.nic.bio.bw.workflow.registerconvictednotpresent.controllers;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
 import sa.gov.nic.bio.bw.core.Context;
 import sa.gov.nic.bio.bw.core.controllers.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.core.utils.FxmlFile;
+import sa.gov.nic.bio.bw.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.core.workflow.Output;
 import sa.gov.nic.bio.bw.workflow.registerconvictednotpresent.utils.RegisterConvictedNotPresentErrorCodes;
 
@@ -22,6 +24,7 @@ public class UploadNistFileFxController extends WizardStepFxControllerBase
 	@Output private String filePath;
 	
 	@FXML private Pane paneFilePath;
+	@FXML private ProgressIndicator piProgress;
 	@FXML private TextField txtFilePath;
 	@FXML private Button btnSelectFile;
 	@FXML private Button btnPrevious;
@@ -32,6 +35,7 @@ public class UploadNistFileFxController extends WizardStepFxControllerBase
 	@Override
 	protected void onAttachedToScene()
 	{
+		btnNext.setOnAction(event -> continueWorkflow());
 		fileChooser.setTitle(resources.getString("fileChooser.selectFile.title"));
 		
 		if(filePath != null)
@@ -40,6 +44,21 @@ public class UploadNistFileFxController extends WizardStepFxControllerBase
 			paneFilePath.setVisible(true);
 			btnNext.setDisable(false);
 		}
+	}
+	
+	@Override
+	public void onShowingProgress(boolean bShow)
+	{
+		GuiUtils.showNode(piProgress, bShow);
+		GuiUtils.showNode(btnSelectFile, !bShow);
+		btnPrevious.setDisable(bShow);
+		btnNext.setDisable(bShow);
+	}
+	
+	@Override
+	public void onReturnFromWorkflow(boolean successfulResponse)
+	{
+		if(successfulResponse) goNext();
 	}
 	
 	@FXML

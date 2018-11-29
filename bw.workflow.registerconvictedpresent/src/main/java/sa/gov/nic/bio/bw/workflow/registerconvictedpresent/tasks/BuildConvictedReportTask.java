@@ -83,7 +83,7 @@ public class BuildConvictedReportTask extends Task<JasperPrint>
 	private static final String PARAMETER_IS_DEPORTATION_FINAL = "IS_DEPORTATION_FINAL";
 	private static final String PARAMETER_LOGO = "LOGO";
 	
-	private static final String REPORT_TEMPLATE_FILE = "/sa/gov/nic/bio/bw/features/registerconvictedpresent" +
+	private static final String REPORT_TEMPLATE_FILE = "/sa/gov/nic/bio/bw/workflow/registerconvictedpresent" +
 													   "/reports/convicted_record.jrxml";
 	
 	private ConvictedReport convictedReport;
@@ -125,7 +125,7 @@ public class BuildConvictedReportTask extends Task<JasperPrint>
 	           AppUtils.localizeNumbers(String.valueOf(convictedReport.getReportNumber()), Locales.SAUDI_AR_LOCALE,
 	                                    true));
 		params.put(PARAMETER_REF_NUMBER,
-           AppUtils.localizeNumbers(String.valueOf(convictedReport.getGeneralFileNum()), Locales.SAUDI_AR_LOCALE,
+           AppUtils.localizeNumbers(String.valueOf(convictedReport.getGeneralFileNumber()), Locales.SAUDI_AR_LOCALE,
                                     true));
 		params.put(PARAMETER_REPORT_DATE,
 		           AppUtils.formatHijriGregorianDateTime(convictedReport.getReportDate() * 1000));

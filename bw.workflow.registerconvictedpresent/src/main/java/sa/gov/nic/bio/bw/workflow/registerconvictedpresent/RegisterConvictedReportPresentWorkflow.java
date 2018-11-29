@@ -198,13 +198,16 @@ public class RegisterConvictedReportPresentWorkflow extends WizardWorkflowBase
 				
 				passData(JudgmentDetailsPaneFxController.class, ReviewAndSubmitPaneFxController.class,
 				         "judgmentIssuer" , "judgmentNumber", "judgmentDate", "judgmentDateUseHijri",
-				         "caseFileNumber", "prisonerNumber", "arrestDate", "arrestDateUseHijri", "crimes");
+				         "caseFileNumber", "prisonerNumber", "arrestDate", "arrestDateUseHijri");
 				
 				passData(PunishmentDetailsPaneFxController.class, ReviewAndSubmitPaneFxController.class,
 				         "tazeerLashes", "hadLashes", "fine", "jailYears", "jailMonths", "jailDays",
 				         "travelBanYears", "travelBanMonths", "travelBanDays", "exilingYears", "exilingMonths",
 				         "exilingDays", "deportationYears", "deportationMonths", "deportationDays", "finalDeportation",
 				         "libel", "covenant", "other");
+				
+				passData(ShareInformationPaneFxController.class, "crimesWithShares",
+				         ReviewAndSubmitPaneFxController.class, "crimes");
 				
 				passData(FingerprintCapturingFxController.class, "slapFingerprints",
 				         ReviewAndSubmitPaneFxController.class, "fingerprints");

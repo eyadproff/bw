@@ -26,6 +26,7 @@ VERSION SCHEMA: vYYYY.MM.#SEQ
 - ENH: Update Retrofit library to 2.5.0.
 - NEW: Integrate with the activity services.
 - ENH: Upgrade gradle to 5.0.
+- NEW: Add Upload-NIST-File in Convicted-Report-Not-Present workflow.
 
 ---
 

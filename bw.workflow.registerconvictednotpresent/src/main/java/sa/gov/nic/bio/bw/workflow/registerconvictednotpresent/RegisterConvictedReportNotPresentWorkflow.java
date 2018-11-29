@@ -31,6 +31,7 @@ import sa.gov.nic.bio.bw.workflow.registerconvictednotpresent.controllers.Finger
 import sa.gov.nic.bio.bw.workflow.registerconvictednotpresent.controllers.FingerprintsSourceFxController.Source;
 import sa.gov.nic.bio.bw.workflow.registerconvictednotpresent.controllers.PersonIdPaneFxController;
 import sa.gov.nic.bio.bw.workflow.registerconvictednotpresent.controllers.UploadNistFileFxController;
+import sa.gov.nic.bio.bw.workflow.registerconvictednotpresent.tasks.ExtractingDataFromNistFileWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.controllers.JudgmentDetailsPaneFxController;
 import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.controllers.PunishmentDetailsPaneFxController;
 import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.controllers.ReviewAndSubmitPaneFxController;
@@ -124,7 +125,18 @@ public class RegisterConvictedReportNotPresentWorkflow extends WizardWorkflowBas
 				else if(fingerprintsSource == Source.UPLOADING_NIST_FILE)
 				{
 					renderUiAndWaitForUserInput(UploadNistFileFxController.class);
-					// TODO: upload the NIST file
+					
+					passData(UploadNistFileFxController.class, "filePath",
+					         ExtractingDataFromNistFileWorkflowTask.class, "nistFilePath");
+					executeWorkflowTask(ExtractingDataFromNistFileWorkflowTask.class);
+					
+					passData(ExtractingDataFromNistFileWorkflowTask.class,
+					         ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask.class,
+					         "fingerprints");
+					passData(ExtractingDataFromNistFileWorkflowTask.class,
+					         ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask.class,
+					         "missingFingerprints");
+					executeWorkflowTask(ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask.class);
 				}
 				
 				break;
@@ -136,8 +148,6 @@ public class RegisterConvictedReportNotPresentWorkflow extends WizardWorkflowBas
 				
 				if(fingerprintsSource == Source.ENTERING_PERSON_ID)
 				{
-					passData(PersonIdPaneFxController.class, ShowingPersonInfoFxController.class,
-					         "personId");
 					passData(GetPersonInfoByIdWorkflowTask.class, ShowingPersonInfoFxController.class,
 					         "personInfo");
 					
@@ -152,6 +162,9 @@ public class RegisterConvictedReportNotPresentWorkflow extends WizardWorkflowBas
 				}
 				else if(fingerprintsSource == Source.UPLOADING_NIST_FILE)
 				{
+					passData(ExtractingDataFromNistFileWorkflowTask.class, ShowingPersonInfoFxController.class,
+					         "personInfo");
+					
 					renderUiAndWaitForUserInput(ShowingPersonInfoFxController.class);
 				}
 				
@@ -176,7 +189,9 @@ public class RegisterConvictedReportNotPresentWorkflow extends WizardWorkflowBas
 				}
 				else if(fingerprintsSource == Source.UPLOADING_NIST_FILE)
 				{
-					//renderUiAndWaitForUserInput(???);
+					passData(ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask.class,
+					         ShowingFingerprintsPaneFxController.class,
+					         "fingerprintBase64Images");
 				}
 				
 				renderUiAndWaitForUserInput(ShowingFingerprintsPaneFxController.class);
@@ -219,7 +234,10 @@ public class RegisterConvictedReportNotPresentWorkflow extends WizardWorkflowBas
 					}
 					else if(fingerprintsSource == Source.UPLOADING_NIST_FILE)
 					{
-						//renderUiAndWaitForUserInput(???);
+						passData(ExtractingDataFromNistFileWorkflowTask.class, FingerprintInquiryWorkflowTask.class,
+						         "fingerprints");
+						passData(ExtractingDataFromNistFileWorkflowTask.class, FingerprintInquiryWorkflowTask.class,
+						         "missingFingerprints");
 					}
 					
 					executeWorkflowTask(FingerprintInquiryWorkflowTask.class);
@@ -314,13 +332,16 @@ public class RegisterConvictedReportNotPresentWorkflow extends WizardWorkflowBas
 				
 				passData(JudgmentDetailsPaneFxController.class, ReviewAndSubmitPaneFxController.class,
 				         "judgmentIssuer" , "judgmentNumber", "judgmentDate", "judgmentDateUseHijri",
-				         "caseFileNumber", "prisonerNumber", "arrestDate", "arrestDateUseHijri", "crimes");
+				         "caseFileNumber", "prisonerNumber", "arrestDate", "arrestDateUseHijri");
 				
 				passData(PunishmentDetailsPaneFxController.class, ReviewAndSubmitPaneFxController.class,
 				         "tazeerLashes", "hadLashes", "fine", "jailYears", "jailMonths", "jailDays",
 				         "travelBanYears", "travelBanMonths", "travelBanDays", "exilingYears", "exilingMonths",
 				         "exilingDays", "deportationYears", "deportationMonths", "deportationDays", "finalDeportation",
 				         "libel", "covenant", "other");
+				
+				passData(ShareInformationPaneFxController.class, "crimesWithShares",
+				         ReviewAndSubmitPaneFxController.class, "crimes");
 				
 				Source fingerprintsSource = getData(FingerprintsSourceFxController.class,
 				                                    "fingerprintsSource");
@@ -350,7 +371,12 @@ public class RegisterConvictedReportNotPresentWorkflow extends WizardWorkflowBas
 				}
 				else if(fingerprintsSource == Source.UPLOADING_NIST_FILE)
 				{
-					//renderUiAndWaitForUserInput(???);
+					passData(ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask.class,
+					         ReviewAndSubmitPaneFxController.class, "fingerprintBase64Images");
+					passData(ExtractingDataFromNistFileWorkflowTask.class, FingerprintInquiryWorkflowTask.class,
+					         "fingerprints");
+					passData(ExtractingDataFromNistFileWorkflowTask.class, FingerprintInquiryWorkflowTask.class,
+					         "missingFingerprints");
 				}
 				
 				renderUiAndWaitForUserInput(ReviewAndSubmitPaneFxController.class);
@@ -374,18 +400,20 @@ public class RegisterConvictedReportNotPresentWorkflow extends WizardWorkflowBas
 				if(fingerprintsSource == Source.ENTERING_PERSON_ID)
 				{
 					passData(ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask.class,
-					         ReviewAndSubmitPaneFxController.class,
+					         ShowReportPaneFxController.class,
 					         "fingerprintBase64Images");
 				}
 				else if(fingerprintsSource == Source.SCANNING_FINGERPRINTS_CARD)
 				{
 					passData(SpecifyFingerprintCoordinatesPaneFxController.class,
-					         ShowingFingerprintsPaneFxController.class,
+					         ShowReportPaneFxController.class,
 					         "fingerprintBase64Images");
 				}
 				else if(fingerprintsSource == Source.UPLOADING_NIST_FILE)
 				{
-					//renderUiAndWaitForUserInput(???);
+					passData(ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask.class,
+					         ShowReportPaneFxController.class,
+					         "fingerprintBase64Images");
 				}
 				
 				renderUiAndWaitForUserInput(ShowReportPaneFxController.class);

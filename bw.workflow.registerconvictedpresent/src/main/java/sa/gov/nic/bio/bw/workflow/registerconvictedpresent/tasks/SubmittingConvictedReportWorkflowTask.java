@@ -18,7 +18,7 @@ public class SubmittingConvictedReportWorkflowTask implements WorkflowTask
 	@Output private ConvictedReportResponse convictedReportResponse;
 	
 	@Override
-	public void execute(Integer workflowId, Long workflowTcn) throws Signal, InterruptedException
+	public void execute(Integer workflowId, Long workflowTcn) throws Signal
 	{
 		ConvictedReportAPI convictedReportAPI = Context.getWebserviceManager().getApi(ConvictedReportAPI.class);
 		String convictedReportJson = AppUtils.toJson(convictedReport);

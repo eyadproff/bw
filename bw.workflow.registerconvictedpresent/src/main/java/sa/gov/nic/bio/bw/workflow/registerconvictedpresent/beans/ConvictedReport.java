@@ -10,7 +10,7 @@ public class ConvictedReport extends JavaBean
 {
 	private long reportNumber;
 	private long reportDate;
-	private Long generalFileNum;
+	private Long generalFileNumber;
 	private Name subjtName;
 	private Integer subjNationalityCode;
 	private String subjOccupation;
@@ -31,7 +31,7 @@ public class ConvictedReport extends JavaBean
 	private String operatorId;
 	private List<CrimeCode> crimeCodes;
 	
-	public ConvictedReport(long reportNumber, long reportDate, Long generalFileNum, Name subjtName,
+	public ConvictedReport(long reportNumber, long reportDate, Long generalFileNumber, Name subjtName,
 	                       Integer subjNationalityCode, String subjOccupation, String subjGender,
 	                       Long subjBirthDate, String subjBirthPlace, Long subjSamisId, Integer subjSamisType,
 	                       Long subjBioId, String subjDocId, Integer subjDocType, Long subjDocIssDate,
@@ -41,7 +41,7 @@ public class ConvictedReport extends JavaBean
 	{
 		this.reportNumber = reportNumber;
 		this.reportDate = reportDate;
-		this.generalFileNum = generalFileNum;
+		this.generalFileNumber = generalFileNumber;
 		this.subjtName = subjtName;
 		this.subjNationalityCode = subjNationalityCode;
 		this.subjOccupation = subjOccupation;
@@ -69,8 +69,8 @@ public class ConvictedReport extends JavaBean
 	public long getReportDate(){return reportDate;}
 	public void setReportDate(long reportDate){this.reportDate = reportDate;}
 	
-	public Long getGeneralFileNum(){return generalFileNum;}
-	public void setGeneralFileNum(Long generalFileNum){this.generalFileNum = generalFileNum;}
+	public Long getGeneralFileNumber(){return generalFileNumber;}
+	public void setGeneralFileNumber(Long generalFileNumber){this.generalFileNumber = generalFileNumber;}
 	
 	public Name getSubjtName(){return subjtName;}
 	public void setSubjtName(Name subjtName){this.subjtName = subjtName;}

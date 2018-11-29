@@ -33,7 +33,7 @@ public class ShowReportPaneFxController extends WizardStepFxControllerBase
 	@Input(alwaysRequired = true) private ConvictedReportResponse convictedReportResponse;
 	
 	@FXML private TextField txtReportNumber;
-	@FXML private TextField txtGeneralFileNumber;
+	@FXML private TextField txtCriminalBiometricsId;
 	@FXML private ProgressIndicator piProgress;
 	@FXML private Button btnStartOver;
 	@FXML private Button btnPrintReport;
@@ -52,10 +52,12 @@ public class ShowReportPaneFxController extends WizardStepFxControllerBase
 		
 		long reportNumber = convictedReportResponse.getReportNumber();
 		long reportDate = convictedReportResponse.getReportDate();
+		Long generalFileNumber = convictedReportResponse.getGeneralFileNumber();
 		
 		txtReportNumber.setText(String.valueOf(reportNumber));
-		txtGeneralFileNumber.setText(String.valueOf(convictedReport.getGeneralFileNum()));
+		if(generalFileNumber != null) txtCriminalBiometricsId.setText(String.valueOf(generalFileNumber));
 		
+		convictedReport.setGeneralFileNumber(generalFileNumber);
 		convictedReport.setReportNumber(reportNumber);
 		convictedReport.setReportDate(reportDate);
 	}

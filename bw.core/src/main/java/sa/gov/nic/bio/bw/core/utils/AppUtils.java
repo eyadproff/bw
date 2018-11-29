@@ -10,8 +10,8 @@ import org.controlsfx.glyphfont.FontAwesome;
 import org.controlsfx.glyphfont.Glyph;
 import org.scenicview.ScenicView;
 import sa.gov.nic.bio.bw.core.beans.Name;
-import sa.gov.nic.bio.bw.core.interfaces.AppLogger;
 import sa.gov.nic.bio.bw.core.beans.NicHijriCalendarData;
+import sa.gov.nic.bio.bw.core.interfaces.AppLogger;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -568,7 +568,7 @@ public final class AppUtils implements AppLogger
 		ByteArrayOutputStream byteOutput = new ByteArrayOutputStream();
 		ImageIO.write(SwingFXUtils.fromFXImage(image, null), imageExtension, byteOutput);
 		byte[] bytes = byteOutput.toByteArray();
-		return Base64.getEncoder().encodeToString(bytes);
+		return bytesToBase64(bytes);
 	}
 	
 	public static String imageToBase64(Image image) throws IOException
@@ -585,7 +585,7 @@ public final class AppUtils implements AppLogger
 		
 		ImageIO.write(newImage, "png", byteOutput);
 		byte[] bytes = byteOutput.toByteArray();
-		return Base64.getEncoder().encodeToString(bytes);
+		return bytesToBase64(bytes);
 	}
 	
 	public static Image imageFromBase64(String base64Image)
@@ -646,5 +646,10 @@ public final class AppUtils implements AppLogger
 	public static long getRandom18DigitsNumber()
 	{
 		return (long) Math.floor(Math.random() * 900_000_000_000_000_000L) + 100_000_000_000_000_000L;
+	}
+	
+	public static String bytesToBase64(byte[] bytes)
+	{
+		return Base64.getEncoder().encodeToString(bytes);
 	}
 }

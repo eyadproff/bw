@@ -97,7 +97,7 @@
                             </ImageView>
                             <Label text="%label.fingerprintsInquiryNoHit"/>
                         </VBox>
-                        <ScrollPane fx:id="infoPane" VBox.vgrow="ALWAYS" HBox.hgrow="ALWAYS" fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER">
+                        <ScrollPane fx:id="infoPane" VBox.vgrow="ALWAYS" HBox.hgrow="ALWAYS" fitToHeight="true" fitToWidth="true" managed="false" visible="false" hbarPolicy="NEVER">
                             <BorderPane>
                                 <center>
                                     <VBox alignment="TOP_CENTER" spacing="5.0" HBox.hgrow="ALWAYS">
