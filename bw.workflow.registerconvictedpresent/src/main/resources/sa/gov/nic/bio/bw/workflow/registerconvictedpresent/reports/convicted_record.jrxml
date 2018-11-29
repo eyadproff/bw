@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.6.0.final using JasperReports Library version 6.6.0  -->
+<!-- Created with Jaspersoft Studio version 6.5.1.final using JasperReports Library version 6.5.1  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="convicted_record" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="328389c7-9369-4674-94b8-851d0e7b67ed">
 	<property name="net.sf.jasperreports.awt.ignore.missing.font" value="true"/>
 	<property name="net.sf.jasperreports.default.font.name" value="CustomFont"/>
@@ -25,7 +25,7 @@
 	<parameter name="FINGER_9" class="java.io.InputStream"/>
 	<parameter name="FINGER_10" class="java.io.InputStream"/>
 	<parameter name="REPORT_NUMBER" class="java.lang.String"/>
-	<parameter name="REF_NUMBER" class="java.lang.String"/>
+	<parameter name="CRIMINAL_BIOMETRICS_ID" class="java.lang.String"/>
 	<parameter name="REPORT_DATE" class="java.lang.String"/>
 	<parameter name="NAME" class="java.lang.String"/>
 	<parameter name="NATIONALITY" class="java.lang.String"/>
@@ -76,7 +76,8 @@
 	<parameter name="LOGO" class="java.io.InputStream" isForPrompting="false"/>
 	<parameter name="SAMIS_ID" class="java.lang.String"/>
 	<parameter name="SAMIS_ID_TYPE" class="java.lang.String"/>
-	<parameter name="BIOMETRICS_ID" class="java.lang.String"/>
+	<parameter name="CIVIL_BIOMETRICS_ID" class="java.lang.String"/>
+	<parameter name="PRISONER_NUMBER" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
@@ -161,7 +162,7 @@
 				<textElement textAlignment="Right">
 					<font fontName="CustomFont" isBold="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{REF_NUMBER}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{CRIMINAL_BIOMETRICS_ID}]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report" isBlankWhenNull="true">
 				<reportElement key="" x="180" y="160" width="326" height="15" uuid="a6f9cc1a-76a4-401f-a7c2-a4c5b9222c17"/>
@@ -198,6 +199,15 @@
 	</title>
 	<pageHeader>
 		<band height="601">
+			<rectangle>
+				<reportElement x="192" y="151" width="183" height="27" uuid="98a8a06e-6bc1-44f0-afaa-d91de18bcad4">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</rectangle>
 			<rectangle>
 				<reportElement x="258" y="295" width="71" height="31" uuid="22b60d3b-68ef-419a-a48a-36fedb6314cf">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
@@ -353,7 +363,7 @@
 				</graphicElement>
 			</rectangle>
 			<rectangle>
-				<reportElement x="192" y="151" width="354" height="27" uuid="14eaa8d6-92f6-4713-b97a-3334ad59d1fc">
+				<reportElement x="375" y="151" width="171" height="27" uuid="14eaa8d6-92f6-4713-b97a-3334ad59d1fc">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
@@ -443,13 +453,13 @@
 				<text><![CDATA[التكييف الجرمي:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement key="" x="477" y="151" width="66" height="15" uuid="b3236945-3eb6-4059-9b56-5b5a8409fee5">
+				<reportElement key="" x="496" y="151" width="47" height="15" uuid="b3236945-3eb6-4059-9b56-5b5a8409fee5">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Right">
 					<font fontName="CustomFont" size="11" isBold="true"/>
 				</textElement>
-				<text><![CDATA[جهة إصدار الحكم:]]></text>
+				<text><![CDATA[رقم السجين:]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="143" y="124" width="46" height="15" uuid="fcb4fe16-de82-4ff7-ae38-ebdf199f0ae4"/>
@@ -1540,11 +1550,11 @@
 				<textFieldExpression><![CDATA[$P{CRIMINAL_CLASS1}]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report" isBlankWhenNull="true">
-				<reportElement key="" x="199" y="164" width="339" height="15" uuid="257f4522-e747-4b86-bdf5-f6cad7abfd65"/>
+				<reportElement key="" x="380" y="164" width="158" height="15" uuid="257f4522-e747-4b86-bdf5-f6cad7abfd65"/>
 				<textElement textAlignment="Center">
 					<font fontName="CustomFont" isBold="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{JUDGMENT_ISSUER}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{PRISONER_NUMBER}]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report" isBlankWhenNull="true">
 				<reportElement key="" x="12" y="137" width="180" height="15" uuid="3182cf41-8ed2-43e3-ae04-bea3e5c69829"/>
@@ -1875,11 +1885,11 @@
 				<text><![CDATA[نوع الهوية:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="141" y="43" width="48" height="15" uuid="102c22f9-0f42-49a6-afca-fbd47703bcf4"/>
+				<reportElement x="118" y="43" width="71" height="15" uuid="102c22f9-0f42-49a6-afca-fbd47703bcf4"/>
 				<textElement textAlignment="Right">
 					<font fontName="CustomFont" size="11" isBold="true"/>
 				</textElement>
-				<text><![CDATA[رقم السمات:]]></text>
+				<text><![CDATA[رقم السمات المدني:]]></text>
 			</staticText>
 			<textField evaluationTime="Report" isBlankWhenNull="true">
 				<reportElement key="" x="380" y="56" width="158" height="15" uuid="dde78b5a-9234-4dec-b15e-573f6718c499"/>
@@ -1900,8 +1910,22 @@
 				<textElement textAlignment="Center">
 					<font fontName="CustomFont" isBold="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{BIOMETRICS_ID}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{CIVIL_BIOMETRICS_ID}]]></textFieldExpression>
 			</textField>
+			<textField evaluationTime="Report" isBlankWhenNull="true">
+				<reportElement key="" x="192" y="164" width="183" height="15" uuid="3226a504-9882-4cd2-8b84-08e37a22918d"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="CustomFont" size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{JUDGMENT_ISSUER}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="303" y="151" width="69" height="15" uuid="2865d7bd-9f0e-49e7-916a-f484016400bb"/>
+				<textElement textAlignment="Right">
+					<font fontName="CustomFont" size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[جهة إصدار الحكم:]]></text>
+			</staticText>
 		</band>
 	</pageHeader>
 </jasperReport>

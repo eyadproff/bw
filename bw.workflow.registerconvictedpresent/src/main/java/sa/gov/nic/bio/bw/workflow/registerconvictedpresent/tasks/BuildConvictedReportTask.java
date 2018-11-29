@@ -36,13 +36,13 @@ public class BuildConvictedReportTask extends Task<JasperPrint>
 {
 	private static final String PARAMETER_FACE_IMAGE = "FACE_IMAGE";
 	private static final String PARAMETER_REPORT_NUMBER = "REPORT_NUMBER";
-	private static final String PARAMETER_REF_NUMBER = "REF_NUMBER";
 	private static final String PARAMETER_REPORT_DATE = "REPORT_DATE";
 	private static final String PARAMETER_NAME = "NAME";
 	private static final String PARAMETER_NATIONALITY = "NATIONALITY";
 	private static final String PARAMETER_OCCUPATION = "OCCUPATION";
 	private static final String PARAMETER_GENDER = "GENDER";
-	private static final String PARAMETER_BIOMETRICS_ID = "BIOMETRICS_ID";
+	private static final String PARAMETER_CIVIL_BIOMETRICS_ID = "CIVIL_BIOMETRICS_ID";
+	private static final String PARAMETER_CRIMINAL_BIOMETRICS_ID = "CRIMINAL_BIOMETRICS_ID";
 	private static final String PARAMETER_SAMIS_ID = "SAMIS_ID";
 	private static final String PARAMETER_SAMIS_ID_TYPE = "SAMIS_ID_TYPE";
 	private static final String PARAMETER_DOCUMENT_ID = "DOCUMENT_ID";
@@ -52,6 +52,7 @@ public class BuildConvictedReportTask extends Task<JasperPrint>
 	private static final String PARAMETER_BIRTH_OF_DATE = "BIRTH_OF_DATE";
 	private static final String PARAMETER_BIRTH_PLACE = "BIRTH_PLACE";
 	private static final String PARAMETER_CASE_FILE_NUMBER = "CASE_FILE_NUMBER";
+	private static final String PARAMETER_PRISONER_NUMBER= "PRISONER_NUMBER";
 	private static final String PARAMETER_ARREST_DATE = "ARREST_DATE";
 	private static final String PARAMETER_CRIMINAL_CLASS1 = "CRIMINAL_CLASS1";
 	private static final String PARAMETER_CRIMINAL_CLASS2 = "CRIMINAL_CLASS2";
@@ -124,11 +125,11 @@ public class BuildConvictedReportTask extends Task<JasperPrint>
 		params.put(PARAMETER_REPORT_NUMBER,
 	           AppUtils.localizeNumbers(String.valueOf(convictedReport.getReportNumber()), Locales.SAUDI_AR_LOCALE,
 	                                    true));
-		params.put(PARAMETER_REF_NUMBER,
+		params.put(PARAMETER_CRIMINAL_BIOMETRICS_ID,
            AppUtils.localizeNumbers(String.valueOf(convictedReport.getGeneralFileNumber()), Locales.SAUDI_AR_LOCALE,
                                     true));
 		params.put(PARAMETER_REPORT_DATE,
-		           AppUtils.formatHijriGregorianDateTime(convictedReport.getReportDate() * 1000));
+		           AppUtils.formatHijriGregorianDateTime(convictedReport.getReportDate()));
 		
 		Name name = convictedReport.getSubjtName();
 		String fullName = name.getFirstName() + " " + name.getFatherName() + " " + name.getGrandfatherName() +
@@ -159,9 +160,9 @@ public class BuildConvictedReportTask extends Task<JasperPrint>
 		params.put(PARAMETER_GENDER, "F".equals(convictedReport.getSubjGender()) ? "أنثى" : "ذكر");
 		
 		Long subjBioId = convictedReport.getSubjBioId();
-		if(subjBioId != null) params.put(PARAMETER_BIOMETRICS_ID, AppUtils.localizeNumbers(String.valueOf(subjBioId),
-		                                                                                   Locales.SAUDI_AR_LOCALE,
-		                                                                                   true));
+		if(subjBioId != null) params.put(PARAMETER_CIVIL_BIOMETRICS_ID, AppUtils.localizeNumbers(String.valueOf(subjBioId),
+		                                                                                         Locales.SAUDI_AR_LOCALE,
+		                                                                                         true));
 		
 		Long subjSamisId = convictedReport.getSubjSamisId();
 		if(subjSamisId != null) params.put(PARAMETER_SAMIS_ID, AppUtils.localizeNumbers(String.valueOf(subjSamisId),
@@ -219,17 +220,17 @@ public class BuildConvictedReportTask extends Task<JasperPrint>
 		
 		Long subjDocIssDate = convictedReport.getSubjDocIssDate();
 		if(subjDocIssDate != null) params.put(PARAMETER_DOCUMENT_ISSUANCE_DATE,
-		                                      AppUtils.formatHijriGregorianDate(subjDocIssDate * 1000));
+		                                      AppUtils.formatHijriGregorianDate(subjDocIssDate));
 		
 		Long subjBirthDate = convictedReport.getSubjBirthDate();
 		if(subjBirthDate != null) params.put(PARAMETER_BIRTH_OF_DATE,
-		                                     AppUtils.formatHijriGregorianDate(subjBirthDate * 1000));
+		                                     AppUtils.formatHijriGregorianDate(subjBirthDate));
 		params.put(PARAMETER_BIRTH_PLACE, AppUtils.localizeNumbers(convictedReport.getSubjBirthPlace(),
 	                                                           Locales.SAUDI_AR_LOCALE, true));
 		
 		Long subjDocExpDate = convictedReport.getSubjDocExpDate();
 		if(subjDocExpDate != null) params.put(PARAMETER_DOCUMENT_EXPIRY_DATE,
-		                                      AppUtils.formatHijriGregorianDate(subjDocExpDate * 1000));
+		                                      AppUtils.formatHijriGregorianDate(subjDocExpDate));
 		
 		JudgementInfo judgementInfo = convictedReport.getSubjJudgementInfo();
 		
@@ -238,9 +239,14 @@ public class BuildConvictedReportTask extends Task<JasperPrint>
 		                                                                                Locales.SAUDI_AR_LOCALE,
 	                                                                                    true));
 		
+		String prisonerNumber = judgementInfo.getPrisonerNumber();
+		if(prisonerNumber != null) params.put(PARAMETER_PRISONER_NUMBER, AppUtils.localizeNumbers(prisonerNumber,
+                                                                                        Locales.SAUDI_AR_LOCALE,
+                                                                                        true));
+		
 		Long arrestDate = judgementInfo.getArrestDate();
 		if(arrestDate != null) params.put(PARAMETER_ARREST_DATE,
-		                                            AppUtils.formatHijriGregorianDate(arrestDate * 1000));
+		                                            AppUtils.formatHijriGregorianDate(arrestDate));
 		
 		@SuppressWarnings("unchecked")
 		List<CrimeType> crimeTypes = (List<CrimeType>) Context.getUserSession().getAttribute(CrimeTypesLookup.KEY);
@@ -291,7 +297,7 @@ public class BuildConvictedReportTask extends Task<JasperPrint>
 	               AppUtils.localizeNumbers(judgementInfo.getJudgIssuer(), Locales.SAUDI_AR_LOCALE,
 	                                        true));
 		params.put(PARAMETER_JUDGMENT_DATE,
-		           AppUtils.formatHijriGregorianDate(judgementInfo.getJudgDate() * 1000));
+		           AppUtils.formatHijriGregorianDate(judgementInfo.getJudgDate()));
 		params.put(PARAMETER_JUDGMENT_NUMBER,
 		           AppUtils.localizeNumbers(judgementInfo.getJudgNum(), Locales.SAUDI_AR_LOCALE,
 		                                    true));

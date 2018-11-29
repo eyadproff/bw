@@ -185,6 +185,7 @@ public class JudgmentDetailsPaneFxController extends WizardStepFxControllerBase
 		GuiUtils.makeComboBoxOpenableByPressingEnter(cboCrimeClass5);
 		
 		GuiUtils.applyValidatorToTextField(txtCaseFileNumber, null, null, 20);
+		GuiUtils.applyValidatorToTextField(txtPrisonerNumber, null, null, 20);
 		GuiUtils.applyValidatorToTextField(txtJudgmentNumber, null, null, 20);
 		GuiUtils.applyValidatorToTextField(txtJudgmentIssuer, null, null, 30);
 		

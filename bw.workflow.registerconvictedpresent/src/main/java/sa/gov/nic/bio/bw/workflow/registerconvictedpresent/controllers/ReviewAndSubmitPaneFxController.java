@@ -296,7 +296,7 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 			                                                travelBanMonths, travelBanYears, deportationDays,
 			                                                deportationMonths, deportationYears, exilingDays,
 			                                                exilingMonths, exilingYears, finalDeportation, covenant,
-			                                                libel, caseFileNumber,
+			                                                libel, caseFileNumber, prisonerNumber,
 			                                                arrestDate == null ? null :
 				                                                    AppUtils.gregorianDateToSeconds(arrestDate));
 			
