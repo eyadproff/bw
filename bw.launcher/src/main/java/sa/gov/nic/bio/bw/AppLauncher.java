@@ -131,7 +131,7 @@ public class AppLauncher extends Application implements AppLogger
 	    }
 	    catch(MissingResourceException e)
 	    {
-		    String errorCode = StartupErrorCodes.C001_00007.getCode();
+		    String errorCode = StartupErrorCodes.C001_00006.getCode();
 		    String[] errorDetails = {"Core \"stringsBundle\" resource bundle is missing!"};
 		    notifyPreloader(PreloaderNotification.failure(e, errorCode, errorDetails));
 		    return;
@@ -143,7 +143,7 @@ public class AppLauncher extends Application implements AppLogger
 	    }
 	    catch(Exception e)
 	    {
-		    String errorCode = StartupErrorCodes.C001_00008.getCode();
+		    String errorCode = StartupErrorCodes.C001_00007.getCode();
 		    String[] errorDetails = {"Failed to load the app icon!"};
 		    notifyPreloader(PreloaderNotification.failure(e, errorCode, errorDetails));
 		    return;
@@ -152,7 +152,7 @@ public class AppLauncher extends Application implements AppLogger
 	    URL fxmlUrl = AppUtils.getCoreFxmlFileAsResource();
 	    if(fxmlUrl == null)
 	    {
-		    String errorCode = StartupErrorCodes.C001_00009.getCode();
+		    String errorCode = StartupErrorCodes.C001_00008.getCode();
 		    String[] errorDetails = {"Core \"fxmlUrl\" is null!"};
 		    notifyPreloader(PreloaderNotification.failure(null, errorCode, errorDetails));
 		    return;
@@ -197,7 +197,7 @@ public class AppLauncher extends Application implements AppLogger
 	
 	    if(serverUrl == null)
 	    {
-		    String errorCode = StartupErrorCodes.C001_00010.getCode();
+		    String errorCode = StartupErrorCodes.C001_00009.getCode();
 		    String[] errorDetails = {"\"serverUrl\" is null!"};
 		    notifyPreloader(PreloaderNotification.failure(null, errorCode, errorDetails));
 		    return;
@@ -248,7 +248,7 @@ public class AppLauncher extends Application implements AppLogger
 	    }
 	    catch(Exception e)
 	    {
-		    String errorCode = StartupErrorCodes.C001_00011.getCode();
+		    String errorCode = StartupErrorCodes.C001_00010.getCode();
 		    String[] errorDetails = {"Failed to initialize the webservice manager!"};
 		    notifyPreloader(PreloaderNotification.failure(e, errorCode, errorDetails));
 		    return;
@@ -258,7 +258,7 @@ public class AppLauncher extends Application implements AppLogger
 	
 	    if(appVersion == null)
 	    {
-		    String errorCode = StartupErrorCodes.C001_00012.getCode();
+		    String errorCode = StartupErrorCodes.C001_00011.getCode();
 		    String[] errorDetails = {"Config \"app.appVersion\" is missing!"};
 		    notifyPreloader(PreloaderNotification.failure(null, errorCode, errorDetails));
 		    return;
@@ -355,7 +355,7 @@ public class AppLauncher extends Application implements AppLogger
 	
 	    if(biokitWebsocketUrl == null)
 	    {
-		    String errorCode = StartupErrorCodes.C001_00013.getCode();
+		    String errorCode = StartupErrorCodes.C001_00012.getCode();
 		    String[] errorDetails = {"\"biokitWebsocketUrl\" is null!"};
 		    notifyPreloader(PreloaderNotification.failure(null, errorCode, errorDetails));
 		    return;
@@ -363,7 +363,7 @@ public class AppLauncher extends Application implements AppLogger
 	
 	    if(sBiokitWebsocketPort == null)
 	    {
-		    String errorCode = StartupErrorCodes.C001_00014.getCode();
+		    String errorCode = StartupErrorCodes.C001_00013.getCode();
 		    String[] errorDetails = {"\"sBiokitWebsocketPort\" is null!"};
 		    notifyPreloader(PreloaderNotification.failure(null, errorCode, errorDetails));
 		    return;
@@ -375,7 +375,7 @@ public class AppLauncher extends Application implements AppLogger
 	    }
 	    catch(NumberFormatException e)
 	    {
-		    String errorCode = StartupErrorCodes.C001_00015.getCode();
+		    String errorCode = StartupErrorCodes.C001_00014.getCode();
 		    String[] errorDetails = {"\"sBiokitWebsocketPort\" is not int!"};
 		    notifyPreloader(PreloaderNotification.failure(e, errorCode, errorDetails));
 		    return;
@@ -383,7 +383,7 @@ public class AppLauncher extends Application implements AppLogger
 	
 	    if(biokitBclId == null)
 	    {
-		    String errorCode = StartupErrorCodes.C001_00016.getCode();
+		    String errorCode = StartupErrorCodes.C001_00015.getCode();
 		    String[] errorDetails = {"\"biokitBclId\" is null!"};
 		    notifyPreloader(PreloaderNotification.failure(null, errorCode, errorDetails));
 		    return;
@@ -462,7 +462,7 @@ public class AppLauncher extends Application implements AppLogger
 	    }
 	    catch(Exception e)
 	    {
-		    String errorCode = StartupErrorCodes.C001_00020.getCode();
+		    String errorCode = StartupErrorCodes.C001_00019.getCode();
 		    String[] errorDetails = {"Failed to load the app classes!"};
 		    notifyPreloader(PreloaderNotification.failure(e, errorCode, errorDetails));
 		    return;
@@ -558,7 +558,7 @@ public class AppLauncher extends Application implements AppLogger
 		    }
 		    catch(Exception e)
 		    {
-			    String errorCode = StartupErrorCodes.C001_00017.getCode();
+			    String errorCode = StartupErrorCodes.C001_00016.getCode();
 			    String[] errorDetails = {"Failed to inject NicHijriCalendarData!"};
 			    notifyPreloader(PreloaderNotification.failure(e, errorCode, errorDetails));
 			    return;
@@ -582,7 +582,7 @@ public class AppLauncher extends Application implements AppLogger
 	    }
 	    catch(MissingResourceException e)
 	    {
-		    String errorCode = StartupErrorCodes.C001_00018.getCode();
+		    String errorCode = StartupErrorCodes.C001_00017.getCode();
 		    String[] errorDetails = {"Label text \"window.menuTitle\" is missing!"};
 		    notifyPreloader(PreloaderNotification.failure(e, errorCode, errorDetails));
 		    return;
@@ -598,7 +598,7 @@ public class AppLauncher extends Application implements AppLogger
 	    }
 	    catch(IOException e)
 	    {
-		    String errorCode = StartupErrorCodes.C001_00019.getCode();
+		    String errorCode = StartupErrorCodes.C001_00018.getCode();
 		    String[] errorDetails = {"Failed to load the core FXML correctly!"};
 		    notifyPreloader(PreloaderNotification.failure(e, errorCode, errorDetails));
 		    return;

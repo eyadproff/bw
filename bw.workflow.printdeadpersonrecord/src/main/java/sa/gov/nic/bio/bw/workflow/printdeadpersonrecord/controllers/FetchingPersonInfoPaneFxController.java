@@ -25,8 +25,6 @@ public class FetchingPersonInfoPaneFxController extends WizardStepFxControllerBa
 	@Override
 	protected void onAttachedToScene()
 	{
-		btnStartOver.setOnAction(actionEvent -> startOver());
-		
 		DevicesRunnerGadgetPaneFxController deviceManagerGadgetPaneController =
 												Context.getCoreFxController().getDeviceManagerGadgetPaneController();
 		deviceManagerGadgetPaneController.setDevicesRunnerRunningListener(running ->

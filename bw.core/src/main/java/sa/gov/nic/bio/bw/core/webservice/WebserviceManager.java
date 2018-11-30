@@ -185,13 +185,13 @@ public class WebserviceManager implements AppLogger
 		}
 		catch(SocketTimeoutException e)
 		{
-			String errorCode = CoreErrorCodes.C002_00011.getCode();
+			String errorCode = CoreErrorCodes.C002_00009.getCode();
 			String[] errorDetails = {"webservice timeout!"};
 			return TaskResponse.failure(errorCode, e, errorDetails);
 		}
 		catch(IOException e)
 		{
-			String errorCode = CoreErrorCodes.C002_00012.getCode();
+			String errorCode = CoreErrorCodes.C002_00010.getCode();
 			String[] errorDetails = {"webservice IOException!"};
 			return TaskResponse.failure(errorCode, e, errorDetails);
 		}
@@ -214,7 +214,7 @@ public class WebserviceManager implements AppLogger
 			
 			if(errorBody == null)
 			{
-				errorCode = CoreErrorCodes.C002_00013.getCode();
+				errorCode = CoreErrorCodes.C002_00011.getCode();
 				String[] errorDetails = {"\"errorBody\" is null!", "apiUrl = " + apiUrl, "httpCode = " + httpCode};
 				return TaskResponse.failure(errorCode, null, errorDetails);
 			}
@@ -228,7 +228,7 @@ public class WebserviceManager implements AppLogger
 			}
 			catch(Exception e)
 			{
-				errorCode = CoreErrorCodes.C002_00014.getCode();
+				errorCode = CoreErrorCodes.C002_00012.getCode();
 				String[] errorDetails = {"failed to extract the error code from the error body!", "apiUrl = " + apiUrl,
 										 "httpCode = " + httpCode};
 				return TaskResponse.failure(errorCode, null, errorDetails);
@@ -242,7 +242,7 @@ public class WebserviceManager implements AppLogger
 		}
 		else // we don't support other HTTP codes
 		{
-			String errorCode = CoreErrorCodes.C002_00015.getCode();
+			String errorCode = CoreErrorCodes.C002_00013.getCode();
 			String[] errorDetails = {"Unsupported HTTP code!", "apiUrl = " + apiUrl, "httpCode = " + httpCode};
 			return TaskResponse.failure(errorCode, null, errorDetails);
 		}

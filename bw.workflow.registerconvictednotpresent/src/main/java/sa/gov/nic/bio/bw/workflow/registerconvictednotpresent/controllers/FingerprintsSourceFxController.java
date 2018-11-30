@@ -34,8 +34,6 @@ public class FingerprintsSourceFxController extends WizardStepFxControllerBase
 	@Override
 	protected void onAttachedToScene()
 	{
-		btnNext.setOnAction(event -> goNext());
-		
 		// go next on pressing ENTER on the radio buttons
 		EventHandler<KeyEvent> eventHandler = event ->
 		{

@@ -2,10 +2,13 @@ package sa.gov.nic.bio.bw.core.workflow;
 
 import sa.gov.nic.bio.bw.core.controllers.BodyFxControllerBase;
 import sa.gov.nic.bio.bw.core.interfaces.AppLogger;
+import sa.gov.nic.bio.bw.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.core.utils.CoreErrorCodes;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -65,7 +68,7 @@ public interface Workflow extends AppLogger
 	                               boolean onReturn) throws IllegalAccessException, Signal
 	{
 		Class<?> controllerClass = instance.getClass();
-		Field[] declaredFields = controllerClass.getDeclaredFields();
+		List<Field> declaredFields = AppUtils.getAllFields(new ArrayList<>(), controllerClass);
 		
 		for(Field declaredField : declaredFields)
 		{
@@ -119,7 +122,7 @@ public interface Workflow extends AppLogger
 					{
 						if(value == null)
 						{
-							String errorCode = CoreErrorCodes.C002_00028.getCode();
+							String errorCode = CoreErrorCodes.C002_00024.getCode();
 							String[] errorDetails = {"The value of the alwaysRequired input (" + fieldName +
 																										") is null!"};
 							Map<String, Object> payload = new HashMap<>();
@@ -147,7 +150,7 @@ public interface Workflow extends AppLogger
 	static void saveWorkflowOutputs(Object instance, Map<String, Object> uiInputData) throws IllegalAccessException
 	{
 		Class<?> controllerClass = instance.getClass();
-		Field[] declaredFields = controllerClass.getDeclaredFields();
+		List<Field> declaredFields = AppUtils.getAllFields(new ArrayList<>(), controllerClass);
 		
 		for(Field declaredField : declaredFields)
 		{

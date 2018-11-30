@@ -190,7 +190,7 @@
                 <Insets bottom="10"/>
             </padding>
             <Button fx:id="btnPassportScanner" text="%button.openPassportScanner" onAction="#onOpenPassportScannerButtonClicked"/>
-            <Button fx:id="btnNext" text="%button.next"/>
+            <Button fx:id="btnNext" text="%button.next" onAction="#onNextButtonClicked"/>
         </HBox>
     </bottom>
 </BorderPane>

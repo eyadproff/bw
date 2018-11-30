@@ -6,6 +6,8 @@ import java.util.Map;
 
 public class FingerprintCardIdentificationRecordReport extends JavaBean
 {
+	private String civilBiometricsId;
+	private String criminalBiometricsId;
 	private String faceBase64;
 	private String firstName;
 	private String fatherName;
@@ -18,23 +20,23 @@ public class FingerprintCardIdentificationRecordReport extends JavaBean
 	private String birthDate;
 	private String personId;
 	private String personType;
-	private String civilBiometricsId;
-	private String criminalBiometricsId;
 	private String documentId;
 	private String documentType;
 	private String documentIssuanceDate;
 	private String documentExpiryDate;
 	private Map<Integer, String> fingerprintsImages;
 	
-	public FingerprintCardIdentificationRecordReport(String faceBase64, String firstName, String fatherName,
+	public FingerprintCardIdentificationRecordReport(String civilBiometricsId, String criminalBiometricsId,
+	                                                 String faceBase64, String firstName, String fatherName,
 	                                                 String grandfatherName, String familyName, String gender,
 	                                                 String nationality, String occupation, String birthPlace,
 	                                                 String birthDate, String personId, String personType,
-	                                                 String civilBiometricsId, String criminalBiometricsId,
 	                                                 String documentId, String documentType,
 	                                                 String documentIssuanceDate, String documentExpiryDate,
 	                                                 Map<Integer, String> fingerprintsImages)
 	{
+		this.civilBiometricsId = civilBiometricsId;
+		this.criminalBiometricsId = criminalBiometricsId;
 		this.faceBase64 = faceBase64;
 		this.firstName = firstName;
 		this.fatherName = fatherName;
@@ -47,14 +49,18 @@ public class FingerprintCardIdentificationRecordReport extends JavaBean
 		this.birthDate = birthDate;
 		this.personId = personId;
 		this.personType = personType;
-		this.civilBiometricsId = civilBiometricsId;
-		this.criminalBiometricsId = criminalBiometricsId;
 		this.documentId = documentId;
 		this.documentType = documentType;
 		this.documentIssuanceDate = documentIssuanceDate;
 		this.documentExpiryDate = documentExpiryDate;
 		this.fingerprintsImages = fingerprintsImages;
 	}
+	
+	public String getCivilBiometricsId(){return civilBiometricsId;}
+	public void setCivilBiometricsId(String civilBiometricsId){this.civilBiometricsId = civilBiometricsId;}
+	
+	public String getCriminalBiometricsId(){return criminalBiometricsId;}
+	public void setCriminalBiometricsId(String criminalBiometricsId){this.criminalBiometricsId = criminalBiometricsId;}
 	
 	public String getFaceBase64(){return faceBase64;}
 	public void setFaceBase64(String faceBase64){this.faceBase64 = faceBase64;}
@@ -91,12 +97,6 @@ public class FingerprintCardIdentificationRecordReport extends JavaBean
 	
 	public String getPersonType(){return personType;}
 	public void setPersonType(String personType){this.personType = personType;}
-	
-	public String getCivilBiometricsId(){return civilBiometricsId;}
-	public void setCivilBiometricsId(String civilBiometricsId){this.civilBiometricsId = civilBiometricsId;}
-	
-	public String getCriminalBiometricsId(){return criminalBiometricsId;}
-	public void setCriminalBiometricsId(String criminalBiometricsId){this.criminalBiometricsId = criminalBiometricsId;}
 	
 	public String getDocumentId(){return documentId;}
 	public void setDocumentId(String documentId){this.documentId = documentId;}

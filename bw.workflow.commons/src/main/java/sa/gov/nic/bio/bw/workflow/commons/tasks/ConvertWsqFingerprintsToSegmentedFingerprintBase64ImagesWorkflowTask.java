@@ -99,7 +99,7 @@ public class ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTas
 						return;
 					}
 					
-					String errorCode = CommonsErrorCodes.C008_00023.getCode();
+					String errorCode = CommonsErrorCodes.C008_00019.getCode();
 					String[] errorDetails = {"Failed to call the service for segmenting the fingerprints!"};
 					resetWorkflowStepIfNegativeOrNullTaskResponse(TaskResponse.failure(errorCode, e, errorDetails));
 					return;
@@ -116,7 +116,7 @@ public class ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTas
 				}
 				else if(result.getReturnCode() == SegmentFingerprintsResponse.FailureCodes.SEGMENTATION_FAILED)
 				{
-					String errorCode = CommonsErrorCodes.C008_00024.getCode();
+					String errorCode = CommonsErrorCodes.C008_00020.getCode();
 					String[] errorDetails = {"SegmentFingerprintsResponse.FailureCodes.SEGMENTATION_FAILED (" +
 																						result.getReturnCode() + ")"};
 					resetWorkflowStepIfNegativeOrNullTaskResponse(TaskResponse.failure(errorCode, errorDetails));
@@ -124,7 +124,7 @@ public class ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTas
 				}
 				else if(result.getReturnCode() == SegmentFingerprintsResponse.FailureCodes.WRONG_NO_OF_EXPECTED_FINGERS)
 				{
-					String errorCode = CommonsErrorCodes.C008_00025.getCode();
+					String errorCode = CommonsErrorCodes.C008_00021.getCode();
 					String[] errorDetails = {"SegmentFingerprintsResponse.FailureCodes.WRONG_NO_OF_EXPECTED_FINGERS (" +
 																						result.getReturnCode() + ")"};
 					resetWorkflowStepIfNegativeOrNullTaskResponse(TaskResponse.failure(errorCode, errorDetails));
@@ -132,7 +132,7 @@ public class ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTas
 				}
 				else
 				{
-					String errorCode = CommonsErrorCodes.C008_00026.getCode();
+					String errorCode = CommonsErrorCodes.C008_00022.getCode();
 					String[] errorDetails = {"SegmentFingerprintsResponse.FailureCodes.UNKNOWN (" +
 																						result.getReturnCode() + ")"};
 					resetWorkflowStepIfNegativeOrNullTaskResponse(TaskResponse.failure(errorCode, errorDetails));
@@ -164,7 +164,7 @@ public class ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTas
 			}
 			catch(Exception e)
 			{
-				String errorCode = CommonsErrorCodes.C008_00027.getCode();
+				String errorCode = CommonsErrorCodes.C008_00023.getCode();
 				String[] errorDetails = {"Failed to call the service for converting the WSQ!"};
 				resetWorkflowStepIfNegativeOrNullTaskResponse(TaskResponse.failure(errorCode, e, errorDetails));
 				return;
@@ -180,7 +180,7 @@ public class ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTas
 			else if(result.getReturnCode() ==
 										ConvertedFingerprintImagesResponse.FailureCodes.FAILED_TO_CONVERT_WSQ_TO_IMAGE)
 			{
-				String errorCode = CommonsErrorCodes.C008_00028.getCode();
+				String errorCode = CommonsErrorCodes.C008_00024.getCode();
 				String[] errorDetails =
 						{"ConvertedFingerprintImagesResponse.FailureCodes.FAILED_TO_CONVERT_WSQ_TO_IMAGE (" +
 																						result.getReturnCode() + ")"};
@@ -189,7 +189,7 @@ public class ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTas
 			}
 			else
 			{
-				String errorCode = CommonsErrorCodes.C008_00029.getCode();
+				String errorCode = CommonsErrorCodes.C008_00025.getCode();
 				String[] errorDetails = {"ConvertedFingerprintImagesResponse.FailureCodes.UNKNOWN (" +
 																						result.getReturnCode() + ")"};
 				resetWorkflowStepIfNegativeOrNullTaskResponse(TaskResponse.failure(errorCode, errorDetails));

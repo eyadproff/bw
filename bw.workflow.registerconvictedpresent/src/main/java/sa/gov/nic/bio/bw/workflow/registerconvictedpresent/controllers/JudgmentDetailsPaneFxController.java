@@ -121,9 +121,6 @@ public class JudgmentDetailsPaneFxController extends WizardStepFxControllerBase
 	@Override
 	protected void onAttachedToScene()
 	{
-		btnPrevious.setOnAction(actionEvent -> goPrevious());
-		btnNext.setOnAction(actionEvent -> goNext());
-		
 		Glyph plusIcon = AppUtils.createFontAwesomeIcon(FontAwesome.Glyph.PLUS);
 		btnAddMore.setGraphic(plusIcon);
 		

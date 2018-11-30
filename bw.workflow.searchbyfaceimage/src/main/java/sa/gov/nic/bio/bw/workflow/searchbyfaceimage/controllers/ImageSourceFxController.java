@@ -35,9 +35,6 @@ public class ImageSourceFxController extends WizardStepFxControllerBase
 	@Override
 	protected void onAttachedToScene()
 	{
-		btnPrevious.setOnAction(event -> goPrevious());
-		btnNext.setOnAction(event -> goNext());
-		
 		// go next on pressing ENTER on the radio buttons
 		EventHandler<KeyEvent> eventHandler = event ->
 		{

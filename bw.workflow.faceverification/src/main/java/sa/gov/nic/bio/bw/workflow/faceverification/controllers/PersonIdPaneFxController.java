@@ -27,7 +27,6 @@ public class PersonIdPaneFxController extends WizardStepFxControllerBase
 		GuiUtils.applyValidatorToTextField(txtPersonId, "\\d*", "[^\\d]", 10);
 		
 		btnNext.disableProperty().bind(txtPersonId.textProperty().isEmpty().or(txtPersonId.disabledProperty()));
-		btnNext.setOnAction(actionEvent -> goNext());
 		
 		if(personId != null) txtPersonId.setText(String.valueOf(personId));
 		

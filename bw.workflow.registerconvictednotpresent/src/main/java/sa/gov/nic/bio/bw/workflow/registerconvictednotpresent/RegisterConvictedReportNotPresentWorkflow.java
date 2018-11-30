@@ -290,13 +290,17 @@ public class RegisterConvictedReportNotPresentWorkflow extends WizardWorkflowBas
 					{
 						setData(ConvictedReportInquiryWorkflowTask.class, "criminalBiometricsId",
 						        criminalBiometricsId);
+						setData(ConvictedReportInquiryWorkflowTask.class,
+						        "returnNullResultInCaseNotFound", Boolean.TRUE);
 						executeWorkflowTask(ConvictedReportInquiryWorkflowTask.class);
 						List<ConvictedReport> convictedReports = getData(ConvictedReportInquiryWorkflowTask.class,
 						                                                 "convictedReports");
 						ConvictedReportToPersonInfoConverter converter = new ConvictedReportToPersonInfoConverter();
-						Map<Long, PersonInfo> criminalPersonInfoMap = convictedReports.stream().collect(
-											Collectors.toMap(ConvictedReport::getReportNumber, converter::convert,
-									                                            (k1, k2) -> k1, LinkedHashMap::new));
+						Map<Long, PersonInfo> criminalPersonInfoMap;
+						if(convictedReports != null) criminalPersonInfoMap = convictedReports.stream().collect(
+								Collectors.toMap(ConvictedReport::getReportNumber, converter::convert,
+								                 (k1, k2) -> k1, LinkedHashMap::new));
+						else criminalPersonInfoMap = new LinkedHashMap<>();
 						setData(getClass(), FIELD_CRIMINAL_PERSON_INFO_MAP, criminalPersonInfoMap);
 					}
 				}

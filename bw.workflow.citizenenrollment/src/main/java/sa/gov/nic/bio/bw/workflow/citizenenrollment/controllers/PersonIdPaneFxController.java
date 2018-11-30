@@ -28,13 +28,11 @@ public class PersonIdPaneFxController extends WizardStepFxControllerBase
 		btnNext.disableProperty().bind(txtPersonId.textProperty().isEmpty().or(txtPersonId.disabledProperty()));
 		btnNext.setOnAction(actionEvent ->
 		{
-			piProgress.setVisible(true);
-			txtPersonId.setDisable(true);
-			
 			personId = Long.parseLong(txtPersonId.getText());
 			continueWorkflow();
 		});
 		
+		if(personId != null) txtPersonId.setText(String.valueOf(personId));
 		txtPersonId.requestFocus();
 	}
 	

@@ -83,7 +83,7 @@ public interface WorkflowTask extends AppLogger
 		{
 			Map<String, Object> payload = new HashMap<>();
 			payload.put(Workflow.KEY_WORKFLOW_TASK_NEGATIVE_RESPONSE,
-			            TaskResponse.failure(CoreErrorCodes.C002_00027.getCode(),
+			            TaskResponse.failure(CoreErrorCodes.C002_00023.getCode(),
 			                                 new String[]{"Null response from the task: " + getClass().getName()}));
 			throw new Signal(SignalType.RESET_WORKFLOW_STEP, payload);
 		}

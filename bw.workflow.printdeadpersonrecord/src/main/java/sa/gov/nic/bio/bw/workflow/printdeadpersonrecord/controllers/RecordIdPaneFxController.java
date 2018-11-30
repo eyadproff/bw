@@ -5,13 +5,10 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TextField;
-import sa.gov.nic.bio.bw.core.Context;
 import sa.gov.nic.bio.bw.core.controllers.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.core.utils.FxmlFile;
 import sa.gov.nic.bio.bw.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.core.workflow.Output;
-
-import java.util.HashMap;
 
 @FxmlFile("recordId.fxml")
 public class RecordIdPaneFxController extends WizardStepFxControllerBase
@@ -30,12 +27,8 @@ public class RecordIdPaneFxController extends WizardStepFxControllerBase
 		btnNext.disableProperty().bind(txtRecordId.textProperty().isEmpty().or(txtRecordId.disabledProperty()));
 		btnNext.setOnAction(actionEvent ->
 		{
-		    hideNotification();
-			txtRecordId.setDisable(true);
-			piProgress.setVisible(true);
-			
-			recordId = Long.parseLong(txtRecordId.getText());
-			if(!isDetached()) Context.getWorkflowManager().submitUserTask(new HashMap<>());
+		    recordId = Long.parseLong(txtRecordId.getText());
+			continueWorkflow();
 		});
 		
 		if(recordId != null) txtRecordId.setText(String.valueOf(recordId));

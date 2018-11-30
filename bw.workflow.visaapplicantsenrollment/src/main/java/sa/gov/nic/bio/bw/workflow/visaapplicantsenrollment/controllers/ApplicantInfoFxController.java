@@ -112,8 +112,6 @@ public class ApplicantInfoFxController extends WizardStepFxControllerBase
 	@Override
 	protected void onAttachedToScene()
 	{
-		btnNext.setOnAction(event -> goNext());
-		
 		UserSession userSession = Context.getUserSession();
 		
 		@SuppressWarnings("unchecked")
@@ -683,7 +681,7 @@ public class ApplicantInfoFxController extends WizardStepFxControllerBase
 				        else
 				        {
 				            dialogStage.close();
-				            String errorCode = VisaApplicantsEnrollmentErrorCodes.C010_00003.getCode();
+				            String errorCode = VisaApplicantsEnrollmentErrorCodes.C010_00002.getCode();
 				            String[] errorDetails = {"failed to scan the passport!",
 				                    "taskResponse errorCode = " + taskResponse.getErrorCode()};
 				            Context.getCoreFxController().showErrorDialog(errorCode, taskResponse.getException(),
@@ -719,7 +717,7 @@ public class ApplicantInfoFxController extends WizardStepFxControllerBase
 				        else
 				        {
 				            dialogStage.close();
-				            String errorCode = VisaApplicantsEnrollmentErrorCodes.C010_00004.getCode();
+				            String errorCode = VisaApplicantsEnrollmentErrorCodes.C010_00003.getCode();
 				            String[] errorDetails = {"failed to scan the passport!"};
 				            Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails);
 				        }

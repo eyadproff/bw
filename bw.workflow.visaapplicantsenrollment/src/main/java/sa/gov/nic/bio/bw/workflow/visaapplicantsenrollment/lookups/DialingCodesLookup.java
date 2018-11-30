@@ -54,7 +54,7 @@ public class DialingCodesLookup implements Callable<TaskResponse<?>>, AppLogger
 			}
 			catch(Exception e)
 			{
-				String errorCode = VisaApplicantsEnrollmentErrorCodes.C010_00002.getCode();
+				String errorCode = VisaApplicantsEnrollmentErrorCodes.C010_00001.getCode();
 				String[] errorDetails = {"failed to read the dialing codes from the file!"};
 				return TaskResponse.failure(errorCode, e, errorDetails);
 			}

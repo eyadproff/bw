@@ -10,13 +10,6 @@ import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.beans.ConvictedReport
 public interface ConvictedReportAPI
 {
 	@FormUrlEncoded
-	@POST("services-gateway-biooperation/api/xafis/general-file-number/v2")
-	Call<Long> generateGeneralFileNumber(@Header("Workflow-Code") Integer workflowId,
-	                                     @Header("Workflow-Tcn") Long workflowTcn,
-	                                     @Field("personId") Long personId,
-	                                     @Field("bioId") Long bioId);
-	
-	@FormUrlEncoded
 	@POST("services-gateway-biooperation/api/xafis/report/v1")
 	Call<ConvictedReportResponse> submitConvictedReport(@Header("Workflow-Code") Integer workflowId,
 	                                                    @Header("Workflow-Tcn") Long workflowTcn,

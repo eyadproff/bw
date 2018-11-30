@@ -25,27 +25,28 @@ import sa.gov.nic.bio.bw.core.utils.DialogUtils;
 import sa.gov.nic.bio.bw.core.utils.FxmlFile;
 import sa.gov.nic.bio.bw.core.utils.GuiLanguage;
 import sa.gov.nic.bio.bw.core.utils.GuiUtils;
+import sa.gov.nic.bio.bw.workflow.commons.beans.ConvictedReport;
+import sa.gov.nic.bio.bw.workflow.commons.beans.Country;
+import sa.gov.nic.bio.bw.workflow.commons.beans.CrimeCode;
+import sa.gov.nic.bio.bw.workflow.commons.beans.DocumentType;
+import sa.gov.nic.bio.bw.workflow.commons.beans.Finger;
+import sa.gov.nic.bio.bw.workflow.commons.beans.JudgementInfo;
+import sa.gov.nic.bio.bw.workflow.commons.beans.PersonType;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.CountriesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.DocumentTypesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.PersonTypesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.PrintReportTask;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.SaveReportAsPdfTask;
 import sa.gov.nic.bio.bw.workflow.commons.ui.ImageViewPane;
-import sa.gov.nic.bio.bw.workflow.commons.beans.Country;
-import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.beans.CrimeType;
-import sa.gov.nic.bio.bw.workflow.commons.beans.DocumentType;
-import sa.gov.nic.bio.bw.workflow.commons.beans.Finger;
-import sa.gov.nic.bio.bw.workflow.commons.beans.PersonType;
 import sa.gov.nic.bio.bw.workflow.convictedreportinquiry.utils.ConvictedReportInquiryErrorCodes;
+import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.beans.CrimeType;
 import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.lookups.CrimeTypesLookup;
 import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.tasks.BuildConvictedReportTask;
-import sa.gov.nic.bio.bw.workflow.commons.beans.ConvictedReport;
-import sa.gov.nic.bio.bw.workflow.commons.beans.CrimeCode;
-import sa.gov.nic.bio.bw.workflow.commons.beans.JudgementInfo;
 
+import java.awt.Desktop;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.OutputStream;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
@@ -59,12 +60,12 @@ public class ShowReportDialogFxController extends FxControllerBase
 	@FXML private Label lblReportNumber;
 	@FXML private Label lblEnrollerId;
 	@FXML private Label lblEnrollmentTime;
+	@FXML private Label lblCivilBiometricsId;
+	@FXML private Label lblCriminalBiometricsId;
 	@FXML private Label lblFirstName;
 	@FXML private Label lblFatherName;
 	@FXML private Label lblGrandfatherName;
 	@FXML private Label lblFamilyName;
-	@FXML private Label lblBiometricsId;
-	@FXML private Label lblGeneralFileNumber;
 	@FXML private Label lblGender;
 	@FXML private Label lblNationality;
 	@FXML private Label lblOccupation;
@@ -82,10 +83,11 @@ public class ShowReportDialogFxController extends FxControllerBase
 	@FXML private Label lblCrimeClassification4;
 	@FXML private Label lblCrimeClassification5;
 	@FXML private Label lblJudgmentIssuer;
-	@FXML private Label lblPoliceFileNumber;
 	@FXML private Label lblJudgmentNumber;
-	@FXML private Label lblArrestDate;
 	@FXML private Label lblJudgmentDate;
+	@FXML private Label lblCaseFileNumber;
+	@FXML private Label lblPrisonerNumber;
+	@FXML private Label lblArrestDate;
 	@FXML private Label lblTazeerLashes;
 	@FXML private Label lblHadLashes;
 	@FXML private Label lblFine;
@@ -126,7 +128,7 @@ public class ShowReportDialogFxController extends FxControllerBase
 	private AtomicReference<JasperPrint> jasperPrint = new AtomicReference<>();
 	
 	private ConvictedReport convictedReport;
-	private Map<Integer, String> fingerprintImages;
+	private Map<Integer, String> fingerprintBase64Images;
 	
 	@Override
 	protected void initialize()
@@ -173,7 +175,7 @@ public class ShowReportDialogFxController extends FxControllerBase
 		}
 		
 		long enrollmentTimeLong = convictedReport.getReportDate();
-		lblEnrollmentTime.setText(AppUtils.formatHijriGregorianDateTime(enrollmentTimeLong * 1000));
+		lblEnrollmentTime.setText(AppUtils.formatHijriGregorianDateTime(enrollmentTimeLong));
 		
 		String facePhotoBase64 = convictedReport.getSubjFace();
 		GuiUtils.attachFacePhotoBase64(ivPersonPhoto, facePhotoBase64, true,
@@ -184,15 +186,16 @@ public class ShowReportDialogFxController extends FxControllerBase
 		lblGrandfatherName.setText(convictedReport.getSubjtName().getGrandfatherName());
 		lblFamilyName.setText(convictedReport.getSubjtName().getFamilyName());
 		
-		Long biometricsId = convictedReport.getSubjBioId();
-		if(biometricsId != null) lblBiometricsId.setText(AppUtils.localizeNumbers(String.valueOf(biometricsId)));
+		Long civilBiometricsId = convictedReport.getSubjBioId();
+		if(civilBiometricsId != null)
+				lblCivilBiometricsId.setText(AppUtils.localizeNumbers(String.valueOf(civilBiometricsId)));
 		
-		Long generalFileNumber = convictedReport.getGeneralFileNumber();
-		if(generalFileNumber != null)
-						lblGeneralFileNumber.setText(AppUtils.localizeNumbers(String.valueOf(generalFileNumber)));
+		Long criminalBiometricsId = convictedReport.getGeneralFileNumber();
+		if(criminalBiometricsId != null)
+				lblCriminalBiometricsId.setText(AppUtils.localizeNumbers(String.valueOf(criminalBiometricsId)));
 		
 		lblGender.setText("F".equals(convictedReport.getSubjGender()) ? resources.getString("label.female") :
-				                                                        resources.getString("label.male"));
+				                  resources.getString("label.male"));
 		
 		@SuppressWarnings("unchecked")
 		List<Country> countries = (List<Country>) Context.getUserSession().getAttribute(CountriesLookup.KEY);
@@ -225,14 +228,14 @@ public class ShowReportDialogFxController extends FxControllerBase
 		
 		Long subjBirthDate = convictedReport.getSubjBirthDate();
 		if(subjBirthDate != null)
-						lblBirthDate.setText(AppUtils.formatHijriGregorianDate(subjBirthDate * 1000));
+			lblBirthDate.setText(AppUtils.formatHijriGregorianDate(subjBirthDate));
 		
 		Long samisId = convictedReport.getSubjSamisId();
 		if(samisId != null) lblPersonId.setText(AppUtils.localizeNumbers(String.valueOf(samisId)));
 		
 		@SuppressWarnings("unchecked")
 		List<PersonType> personTypes = (List<PersonType>)
-														Context.getUserSession().getAttribute(PersonTypesLookup.KEY);
+				Context.getUserSession().getAttribute(PersonTypesLookup.KEY);
 		
 		Integer subjSamisType = convictedReport.getSubjSamisType();
 		if(subjSamisType != null)
@@ -252,7 +255,7 @@ public class ShowReportDialogFxController extends FxControllerBase
 			{
 				boolean arabic = Context.getGuiLanguage() == GuiLanguage.ARABIC;
 				lblPersonType.setText(AppUtils.localizeNumbers(arabic ? personType.getDescriptionAR() :
-						                                                 personType.getDescriptionEN()));
+						                                               personType.getDescriptionEN()));
 			}
 		}
 		
@@ -261,7 +264,7 @@ public class ShowReportDialogFxController extends FxControllerBase
 		
 		@SuppressWarnings("unchecked")
 		List<DocumentType> documentTypes = (List<DocumentType>)
-														Context.getUserSession().getAttribute(DocumentTypesLookup.KEY);
+				Context.getUserSession().getAttribute(DocumentTypesLookup.KEY);
 		
 		Integer subjDocType = convictedReport.getSubjDocType();
 		if(subjDocType != null)
@@ -282,11 +285,11 @@ public class ShowReportDialogFxController extends FxControllerBase
 		
 		Long subjDocIssDate = convictedReport.getSubjDocIssDate();
 		if(subjDocIssDate != null) lblDocumentIssuanceDate.setText(
-												AppUtils.formatHijriGregorianDate(subjDocIssDate * 1000));
+				AppUtils.formatHijriGregorianDate(subjDocIssDate));
 		
 		Long subjDocExpDate = convictedReport.getSubjDocExpDate();
 		if(subjDocExpDate != null) lblDocumentExpiryDate.setText(
-												AppUtils.formatHijriGregorianDate(subjDocExpDate * 1000));
+				AppUtils.formatHijriGregorianDate(subjDocExpDate));
 		
 		JudgementInfo judgementInfo = convictedReport.getSubjJudgementInfo();
 		
@@ -296,9 +299,9 @@ public class ShowReportDialogFxController extends FxControllerBase
 			List<CrimeType> crimeTypes = (List<CrimeType>) Context.getUserSession().getAttribute(CrimeTypesLookup.KEY);
 			
 			Map<Integer, String> crimeEventTitles = crimeTypes.stream().collect(
-									Collectors.toMap(CrimeType::getEventCode, CrimeType::getEventDesc, (k1, k2) -> k1));
+					Collectors.toMap(CrimeType::getEventCode, CrimeType::getEventDesc, (k1, k2) -> k1));
 			Map<Integer, String> crimeClassTitles = crimeTypes.stream().collect(
-									Collectors.toMap(CrimeType::getClassCode, CrimeType::getClassDesc, (k1, k2) -> k1));
+					Collectors.toMap(CrimeType::getClassCode, CrimeType::getClassDesc, (k1, k2) -> k1));
 			
 			int counter = 0;
 			List<CrimeCode> crimeCodes = convictedReport.getCrimeCodes();
@@ -345,15 +348,18 @@ public class ShowReportDialogFxController extends FxControllerBase
 			
 			lblJudgmentIssuer.setText(AppUtils.localizeNumbers(judgementInfo.getJudgIssuer()));
 			
-			String policeFileNum = judgementInfo.getPoliceFileNum();
-			if(policeFileNum != null) lblPoliceFileNumber.setText(AppUtils.localizeNumbers(policeFileNum));
+			String caseFileNumber = judgementInfo.getPoliceFileNum();
+			if(caseFileNumber != null) lblCaseFileNumber.setText(AppUtils.localizeNumbers(caseFileNumber));
 			lblJudgmentNumber.setText(AppUtils.localizeNumbers(judgementInfo.getJudgNum()));
+			
+			String prisonerNumber = judgementInfo.getPrisonerNumber();
+			if(prisonerNumber != null) lblPrisonerNumber.setText(AppUtils.localizeNumbers(prisonerNumber));
 			
 			Long arrestDate = judgementInfo.getArrestDate();
 			if(arrestDate != null) lblArrestDate.setText(
-													AppUtils.formatHijriGregorianDate(arrestDate * 1000));
+					AppUtils.formatHijriGregorianDate(arrestDate));
 			
-			lblJudgmentDate.setText(AppUtils.formatHijriGregorianDate(judgementInfo.getJudgDate() * 1000));
+			lblJudgmentDate.setText(AppUtils.formatHijriGregorianDate(judgementInfo.getJudgDate()));
 			lblTazeerLashes.setText(AppUtils.localizeNumbers(String.valueOf(judgementInfo.getJudgTazeerLashesCount())));
 			lblHadLashes.setText(AppUtils.localizeNumbers(String.valueOf(judgementInfo.getJudgHadLashesCount())));
 			lblFine.setText(AppUtils.localizeNumbers(String.valueOf(judgementInfo.getJudgFine())));
@@ -380,7 +386,7 @@ public class ShowReportDialogFxController extends FxControllerBase
 		
 		List<Finger> subjFingers = convictedReport.getSubjFingers();
 		Map<Integer, String> fingerprintBase64Images = subjFingers.stream()
-														.collect(Collectors.toMap(Finger::getType, Finger::getImage));
+				.collect(Collectors.toMap(Finger::getType, Finger::getImage));
 		GuiUtils.attachFingerprintImages(fingerprintBase64Images, ivRightThumb, ivRightIndex, ivRightMiddle,
 		                                 ivRightRing, ivRightLittle, ivLeftThumb, ivLeftIndex, ivLeftMiddle,
 		                                 ivLeftRing, ivLeftLittle);
@@ -390,7 +396,7 @@ public class ShowReportDialogFxController extends FxControllerBase
 	                                                    Map<Integer, String> fingerprintImages)
 	{
 		this.convictedReport = convictedReport;
-		this.fingerprintImages = fingerprintImages;
+		this.fingerprintBase64Images = fingerprintImages;
 	}
 	
 	public void show()
@@ -407,8 +413,7 @@ public class ShowReportDialogFxController extends FxControllerBase
 		
 		if(jasperPrint.get() == null)
 		{
-			BuildConvictedReportTask buildConvictedReportTask = new BuildConvictedReportTask(convictedReport,
-			                                                                                 fingerprintImages);
+			BuildConvictedReportTask buildConvictedReportTask = new BuildConvictedReportTask(convictedReport, fingerprintBase64Images);
 			buildConvictedReportTask.setOnSucceeded(event ->
 			{
 			    JasperPrint value = buildConvictedReportTask.getValue();
@@ -423,7 +428,7 @@ public class ShowReportDialogFxController extends FxControllerBase
 			
 			    Throwable exception = buildConvictedReportTask.getException();
 			
-			    String errorCode = ConvictedReportInquiryErrorCodes.C014_00003.getCode();
+			    String errorCode = ConvictedReportInquiryErrorCodes.C014_00002.getCode();
 			    String[] errorDetails = {"failed while building the convicted report!"};
 			    Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails);
 			});
@@ -446,14 +451,14 @@ public class ShowReportDialogFxController extends FxControllerBase
 			if(jasperPrint.get() == null)
 			{
 				BuildConvictedReportTask buildConvictedReportTask = new BuildConvictedReportTask(convictedReport,
-				                                                                                 fingerprintImages);
+			                                                                                 fingerprintBase64Images);
 				buildConvictedReportTask.setOnSucceeded(event ->
 				{
 				    JasperPrint value = buildConvictedReportTask.getValue();
 				    jasperPrint.set(value);
 				    try
 				    {
-				        saveConvictedReportAsPDF(value, new FileOutputStream(selectedFile));
+				        saveConvictedReportAsPDF(value, selectedFile);
 				    }
 				    catch(Exception e)
 				    {
@@ -461,7 +466,7 @@ public class ShowReportDialogFxController extends FxControllerBase
 				        GuiUtils.showNode(btnPrintReport, true);
 				        GuiUtils.showNode(btnSaveReportAsPDF, true);
 				
-				        String errorCode = ConvictedReportInquiryErrorCodes.C014_00004.getCode();
+				        String errorCode = ConvictedReportInquiryErrorCodes.C014_00003.getCode();
 				        String[] errorDetails = {"failed while saving the convicted report as PDF!"};
 				        Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails);
 				    }
@@ -474,7 +479,7 @@ public class ShowReportDialogFxController extends FxControllerBase
 				
 				    Throwable exception = buildConvictedReportTask.getException();
 				
-				    String errorCode = ConvictedReportInquiryErrorCodes.C014_00005.getCode();
+				    String errorCode = ConvictedReportInquiryErrorCodes.C014_00004.getCode();
 				    String[] errorDetails = {"failed while building the convicted report!"};
 				    Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails);
 				});
@@ -484,7 +489,7 @@ public class ShowReportDialogFxController extends FxControllerBase
 			{
 				try
 				{
-					saveConvictedReportAsPDF(jasperPrint.get(), new FileOutputStream(selectedFile));
+					saveConvictedReportAsPDF(jasperPrint.get(), selectedFile);
 				}
 				catch(Exception e)
 				{
@@ -492,7 +497,7 @@ public class ShowReportDialogFxController extends FxControllerBase
 					GuiUtils.showNode(btnPrintReport, true);
 					GuiUtils.showNode(btnSaveReportAsPDF, true);
 					
-					String errorCode = ConvictedReportInquiryErrorCodes.C014_00006.getCode();
+					String errorCode = ConvictedReportInquiryErrorCodes.C014_00005.getCode();
 					String[] errorDetails = {"failed while saving the convicted report as PDF!"};
 					Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails);
 				}
@@ -517,16 +522,17 @@ public class ShowReportDialogFxController extends FxControllerBase
 		
 		    Throwable exception = printReportTask.getException();
 		
-		    String errorCode = ConvictedReportInquiryErrorCodes.C014_00007.getCode();
+		    String errorCode = ConvictedReportInquiryErrorCodes.C014_00006.getCode();
 		    String[] errorDetails = {"failed while printing the convicted report!"};
 		    Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails);
 		});
 		Context.getExecutorService().submit(printReportTask);
 	}
 	
-	private void saveConvictedReportAsPDF(JasperPrint jasperPrint, OutputStream pdfOutputStream)
+	private void saveConvictedReportAsPDF(JasperPrint jasperPrint, File selectedFile) throws FileNotFoundException
 	{
-		SaveReportAsPdfTask printReportTaskAsPdfTask = new SaveReportAsPdfTask(jasperPrint, pdfOutputStream);
+		SaveReportAsPdfTask printReportTaskAsPdfTask = new SaveReportAsPdfTask(jasperPrint,
+		                                                                       new FileOutputStream(selectedFile));
 		printReportTaskAsPdfTask.setOnSucceeded(event ->
 		{
 		    GuiUtils.showNode(piProgress, false);
@@ -539,6 +545,15 @@ public class ShowReportDialogFxController extends FxControllerBase
 			boolean rtl = Context.getGuiLanguage().getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT;
 			Stage stage = (Stage) dialog.getDialogPane().getScene().getWindow();
 			
+			try
+			{
+				Desktop.getDesktop().open(selectedFile);
+			}
+			catch(Exception e)
+			{
+				LOGGER.warning("Failed to open the PDF file (" + selectedFile.getAbsolutePath() + ")!");
+			}
+			
 			DialogUtils.showInformationDialog(stage, Context.getCoreFxController(), title, null, contentText,
 			                                  buttonText, rtl);
 		});
@@ -550,7 +565,7 @@ public class ShowReportDialogFxController extends FxControllerBase
 		
 		    Throwable exception = printReportTaskAsPdfTask.getException();
 		
-		    String errorCode = ConvictedReportInquiryErrorCodes.C014_00008.getCode();
+		    String errorCode = ConvictedReportInquiryErrorCodes.C014_00007.getCode();
 		    String[] errorDetails = {"failed while saving the convicted report as PDF!"};
 		    Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails);
 		});

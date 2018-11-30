@@ -645,6 +645,9 @@ public class GuiUtils implements AppLogger
 		dialogTitleMap.put(FingerPosition.RIGHT_THUMB.getPosition(),
 		                   resourceBundle.getString("label.fingers.thumb") + " (" +
 				                   resourceBundle.getString("label.rightHand") + ")");
+		dialogTitleMap.put(FingerPosition.RIGHT_THUMB_SLAP.getPosition(),
+		                   resourceBundle.getString("label.fingers.thumb") + " (" +
+				                   resourceBundle.getString("label.rightHand") + ")");
 		dialogTitleMap.put(FingerPosition.RIGHT_INDEX.getPosition(),
 		                   resourceBundle.getString("label.fingers.index") + " (" +
 				                   resourceBundle.getString("label.rightHand") + ")");
@@ -658,6 +661,9 @@ public class GuiUtils implements AppLogger
 		                   resourceBundle.getString("label.fingers.little") + " (" +
 				                   resourceBundle.getString("label.rightHand") + ")");
 		dialogTitleMap.put(FingerPosition.LEFT_THUMB.getPosition(),
+		                   resourceBundle.getString("label.fingers.thumb") + " (" +
+				                   resourceBundle.getString("label.leftHand") + ")");
+		dialogTitleMap.put(FingerPosition.LEFT_THUMB_SLAP.getPosition(),
 		                   resourceBundle.getString("label.fingers.thumb") + " (" +
 				                   resourceBundle.getString("label.leftHand") + ")");
 		dialogTitleMap.put(FingerPosition.LEFT_INDEX.getPosition(),
@@ -676,11 +682,13 @@ public class GuiUtils implements AppLogger
 		Map<Integer, ImageView> imageViewMap = new HashMap<>();
 		
 		imageViewMap.put(FingerPosition.RIGHT_THUMB.getPosition(), ivRightThumb);
+		imageViewMap.put(FingerPosition.RIGHT_THUMB_SLAP.getPosition(), ivRightThumb);
 		imageViewMap.put(FingerPosition.RIGHT_INDEX.getPosition(), ivRightIndex);
 		imageViewMap.put(FingerPosition.RIGHT_MIDDLE.getPosition(), ivRightMiddle);
 		imageViewMap.put(FingerPosition.RIGHT_RING.getPosition(), ivRightRing);
 		imageViewMap.put(FingerPosition.RIGHT_LITTLE.getPosition(), ivRightLittle);
 		imageViewMap.put(FingerPosition.LEFT_THUMB.getPosition(), ivLeftThumb);
+		imageViewMap.put(FingerPosition.LEFT_THUMB_SLAP.getPosition(), ivLeftThumb);
 		imageViewMap.put(FingerPosition.LEFT_INDEX.getPosition(), ivLeftIndex);
 		imageViewMap.put(FingerPosition.LEFT_MIDDLE.getPosition(), ivLeftMiddle);
 		imageViewMap.put(FingerPosition.LEFT_RING.getPosition(), ivLeftRing);
@@ -688,7 +696,7 @@ public class GuiUtils implements AppLogger
 		
 		fingerprintBase64Images.forEach((position, fingerprintImage) ->
 		{
-		    ImageView imageView = imageViewMap.get(position);
+			ImageView imageView = imageViewMap.get(position);
 		    String dialogTitle = dialogTitleMap.get(position);
 		
 		    byte[] bytes = Base64.getDecoder().decode(fingerprintImage);

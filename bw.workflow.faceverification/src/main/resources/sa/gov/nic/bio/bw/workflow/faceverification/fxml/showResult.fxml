@@ -87,7 +87,7 @@
                 <Insets bottom="10"/>
             </padding>
             <Button fx:id="btnCompareWithUploadedImage" text="%button.compareWithUploadedImage" onAction="#onCompareWithUploadedImageButtonClicked" visible="false" managed="false"/>
-            <Button fx:id="btnStartOver" text="%button.startOver"/>
+            <Button fx:id="btnStartOver" text="%button.startOver" onAction="#onStartOverButtonClicked"/>
         </HBox>
     </bottom>
 </BorderPane>

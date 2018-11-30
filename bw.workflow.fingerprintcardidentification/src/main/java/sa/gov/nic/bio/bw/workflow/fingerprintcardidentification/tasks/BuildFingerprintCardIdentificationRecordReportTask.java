@@ -107,7 +107,7 @@ public class BuildFingerprintCardIdentificationRecordReportTask extends Task<Jas
 		params.put(PARAMETER_INQUIRER_ID, inquirerId);
 		
 		params.put(PARAMETER_INQUIRY_TIME, AppUtils.formatHijriGregorianDateTime(
-							LocalDateTime.now().atZone(AppConstants.SAUDI_ZONE).toEpochSecond() * 1000));
+							LocalDateTime.now().atZone(AppConstants.SAUDI_ZONE).toEpochSecond()));
 		
 		return JasperFillManager.fillReport(jasperReport, params);
 	}

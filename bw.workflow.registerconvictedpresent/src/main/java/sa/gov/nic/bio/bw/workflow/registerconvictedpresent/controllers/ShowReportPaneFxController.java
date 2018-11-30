@@ -12,16 +12,17 @@ import sa.gov.nic.bio.bw.core.controllers.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.core.utils.FxmlFile;
 import sa.gov.nic.bio.bw.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.core.workflow.Input;
+import sa.gov.nic.bio.bw.workflow.commons.beans.ConvictedReport;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.PrintReportTask;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.SaveReportAsPdfTask;
-import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.tasks.BuildConvictedReportTask;
 import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.beans.ConvictedReportResponse;
+import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.tasks.BuildConvictedReportTask;
 import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.utils.RegisterConvictedPresentErrorCodes;
-import sa.gov.nic.bio.bw.workflow.commons.beans.ConvictedReport;
 
+import java.awt.Desktop;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.OutputStream;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -90,7 +91,7 @@ public class ShowReportPaneFxController extends WizardStepFxControllerBase
 			
 			    Throwable exception = buildConvictedReportTask.getException();
 			
-			    String errorCode = RegisterConvictedPresentErrorCodes.C007_00004.getCode();
+			    String errorCode = RegisterConvictedPresentErrorCodes.C007_00001.getCode();
 			    String[] errorDetails = {"failed while building the convicted report!"};
 			    Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails);
 			});
@@ -122,7 +123,7 @@ public class ShowReportPaneFxController extends WizardStepFxControllerBase
 				    jasperPrint.set(value);
 					try
 					{
-						saveConvictedReportAsPDF(value, new FileOutputStream(selectedFile));
+						saveConvictedReportAsPDF(value, selectedFile);
 					}
 					catch(Exception e)
 					{
@@ -131,7 +132,7 @@ public class ShowReportPaneFxController extends WizardStepFxControllerBase
 						GuiUtils.showNode(btnPrintReport, true);
 						GuiUtils.showNode(btnSaveReportAsPDF, true);
 						
-						String errorCode = RegisterConvictedPresentErrorCodes.C007_00005.getCode();
+						String errorCode = RegisterConvictedPresentErrorCodes.C007_00002.getCode();
 						String[] errorDetails = {"failed while saving the convicted report as PDF!"};
 						Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails);
 					}
@@ -145,7 +146,7 @@ public class ShowReportPaneFxController extends WizardStepFxControllerBase
 				    
 				    Throwable exception = buildConvictedReportTask.getException();
 				    
-				    String errorCode = RegisterConvictedPresentErrorCodes.C007_00006.getCode();
+				    String errorCode = RegisterConvictedPresentErrorCodes.C007_00003.getCode();
 				    String[] errorDetails = {"failed while building the convicted report!"};
 				    Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails);
 				});
@@ -155,7 +156,7 @@ public class ShowReportPaneFxController extends WizardStepFxControllerBase
 			{
 				try
 				{
-					saveConvictedReportAsPDF(jasperPrint.get(), new FileOutputStream(selectedFile));
+					saveConvictedReportAsPDF(jasperPrint.get(), selectedFile);
 				}
 				catch(Exception e)
 				{
@@ -164,7 +165,7 @@ public class ShowReportPaneFxController extends WizardStepFxControllerBase
 					GuiUtils.showNode(btnPrintReport, true);
 					GuiUtils.showNode(btnSaveReportAsPDF, true);
 					
-					String errorCode = RegisterConvictedPresentErrorCodes.C007_00007.getCode();
+					String errorCode = RegisterConvictedPresentErrorCodes.C007_00004.getCode();
 					String[] errorDetails = {"failed while saving the convicted report as PDF!"};
 					Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails);
 				}
@@ -191,16 +192,17 @@ public class ShowReportPaneFxController extends WizardStepFxControllerBase
 		
 		    Throwable exception = printReportTask.getException();
 		    
-		    String errorCode = RegisterConvictedPresentErrorCodes.C007_00008.getCode();
+		    String errorCode = RegisterConvictedPresentErrorCodes.C007_00005.getCode();
 		    String[] errorDetails = {"failed while printing the convicted report!"};
 		    Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails);
 		});
 		Context.getExecutorService().submit(printReportTask);
 	}
 	
-	private void saveConvictedReportAsPDF(JasperPrint jasperPrint, OutputStream pdfOutputStream)
+	private void saveConvictedReportAsPDF(JasperPrint jasperPrint, File selectedFile) throws FileNotFoundException
 	{
-		SaveReportAsPdfTask printReportTaskAsPdfTask = new SaveReportAsPdfTask(jasperPrint, pdfOutputStream);
+		SaveReportAsPdfTask printReportTaskAsPdfTask = new SaveReportAsPdfTask(jasperPrint,
+		                                                                       new FileOutputStream(selectedFile));
 		printReportTaskAsPdfTask.setOnSucceeded(event ->
 		{
 		    GuiUtils.showNode(piProgress, false);
@@ -209,6 +211,15 @@ public class ShowReportPaneFxController extends WizardStepFxControllerBase
 		    GuiUtils.showNode(btnSaveReportAsPDF, true);
 		    
 		    showSuccessNotification(resources.getString("printConvictedPresent.savingAsPDF.success.message"));
+		    
+			try
+			{
+				Desktop.getDesktop().open(selectedFile);
+			}
+			catch(Exception e)
+			{
+				LOGGER.warning("Failed to open the PDF file (" + selectedFile.getAbsolutePath() + ")!");
+			}
 		});
 		printReportTaskAsPdfTask.setOnFailed(event ->
 		{
@@ -219,7 +230,7 @@ public class ShowReportPaneFxController extends WizardStepFxControllerBase
 		
 		    Throwable exception = printReportTaskAsPdfTask.getException();
 		
-		    String errorCode = RegisterConvictedPresentErrorCodes.C007_00009.getCode();
+		    String errorCode = RegisterConvictedPresentErrorCodes.C007_00006.getCode();
 		    String[] errorDetails = {"failed while saving the convicted report as PDF!"};
 		    Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails);
 		});

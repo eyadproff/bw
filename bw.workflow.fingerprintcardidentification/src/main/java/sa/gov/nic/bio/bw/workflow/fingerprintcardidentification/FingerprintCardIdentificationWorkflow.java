@@ -7,22 +7,31 @@ import sa.gov.nic.bio.bw.core.workflow.AssociatedMenu;
 import sa.gov.nic.bio.bw.core.workflow.Signal;
 import sa.gov.nic.bio.bw.core.workflow.WithLookups;
 import sa.gov.nic.bio.bw.core.workflow.WizardWorkflowBase;
+import sa.gov.nic.bio.bw.workflow.commons.beans.ConvictedReport;
+import sa.gov.nic.bio.bw.workflow.commons.beans.PersonInfo;
 import sa.gov.nic.bio.bw.workflow.commons.controllers.InquiryByFingerprintsPaneFxController;
 import sa.gov.nic.bio.bw.workflow.commons.controllers.ShowingFingerprintsPaneFxController;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.CountriesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.DocumentTypesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.PersonTypesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.ConvertFingerprintBase64ImagesToWsqWorkflowTask;
-import sa.gov.nic.bio.bw.workflow.commons.tasks.ConvertFingerprintImagesToBase64WorkflowTask;
+import sa.gov.nic.bio.bw.workflow.commons.tasks.ConvictedReportInquiryWorkflowTask;
+import sa.gov.nic.bio.bw.workflow.commons.tasks.ConvictedReportToPersonInfoConverter;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.FingerprintInquiryStatusCheckerWorkflowTask;
+import sa.gov.nic.bio.bw.workflow.commons.tasks.FingerprintInquiryStatusCheckerWorkflowTask.Status;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.FingerprintInquiryWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.FingerprintsWsqToFingerConverter;
-import sa.gov.nic.bio.bw.workflow.fingerprintcardidentification.controllers.InquiryResultPaneFxController;
+import sa.gov.nic.bio.bw.workflow.commons.tasks.GetPersonInfoByIdWorkflowTask;
+import sa.gov.nic.bio.bw.workflow.fingerprintcardidentification.controllers.ExtendedInquiryByFingerprintsResultPaneFxController;
 import sa.gov.nic.bio.bw.workflow.fingerprintcardidentification.controllers.ScanFingerprintCardPaneFxController;
 import sa.gov.nic.bio.bw.workflow.fingerprintcardidentification.controllers.SpecifyFingerprintCoordinatesPaneFxController;
 
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 @AssociatedMenu(workflowId = 1005, menuId = "menu.query.fingerprintCardIdentification", menuTitle = "menu.title", menuOrder = 5,
 				devices = Device.BIO_UTILITIES)
@@ -34,6 +43,9 @@ import java.util.ResourceBundle;
 		@Step(iconId = "database", title = "wizard.inquiryResult")})
 public class FingerprintCardIdentificationWorkflow extends WizardWorkflowBase
 {
+	private static final String FIELD_CIVIL_PERSON_INFO_MAP = "CIVIL_PERSON_INFO_MAP";
+	private static final String FIELD_CRIMINAL_PERSON_INFO_MAP = "CRIMINAL_PERSON_INFO_MAP";
+	
 	@Override
 	public ResourceBundle getStringsResourceBundle(Locale locale)
 	{
@@ -76,8 +88,7 @@ public class FingerprintCardIdentificationWorkflow extends WizardWorkflowBase
 			}
 			case 3:
 			{
-				passData(FingerprintInquiryStatusCheckerWorkflowTask.class,
-				         InquiryByFingerprintsPaneFxController.class,
+				passData(FingerprintInquiryStatusCheckerWorkflowTask.class, InquiryByFingerprintsPaneFxController.class,
 				         "status");
 				
 				renderUiAndWaitForUserInput(InquiryByFingerprintsPaneFxController.class);
@@ -91,11 +102,12 @@ public class FingerprintCardIdentificationWorkflow extends WizardWorkflowBase
 					         "fingerprintBase64Images");
 					executeWorkflowTask(ConvertFingerprintBase64ImagesToWsqWorkflowTask.class);
 					
-					passData(ConvertFingerprintBase64ImagesToWsqWorkflowTask.class, "fingerprintWsqImages",
-					         FingerprintInquiryWorkflowTask.class, "fingerprints",
-					         new FingerprintsWsqToFingerConverter());
-					passData(SpecifyFingerprintCoordinatesPaneFxController.class, FingerprintInquiryWorkflowTask.class,
-					         "missingFingerprints");
+					passData(ConvertFingerprintBase64ImagesToWsqWorkflowTask.class,
+					         "fingerprintWsqImages", FingerprintInquiryWorkflowTask.class,
+					         "fingerprints", new FingerprintsWsqToFingerConverter());
+					passData(SpecifyFingerprintCoordinatesPaneFxController.class,
+					         FingerprintInquiryWorkflowTask.class, "missingFingerprints");
+					
 					executeWorkflowTask(FingerprintInquiryWorkflowTask.class);
 				}
 				
@@ -103,19 +115,70 @@ public class FingerprintCardIdentificationWorkflow extends WizardWorkflowBase
 				         "inquiryId");
 				executeWorkflowTask(FingerprintInquiryStatusCheckerWorkflowTask.class);
 				
+				Status status = getData(FingerprintInquiryStatusCheckerWorkflowTask.class, "status");
+				if(status == Status.HIT)
+				{
+					Long civilBiometricsId = getData(FingerprintInquiryStatusCheckerWorkflowTask.class,
+					                                 "civilBiometricsId");
+					Long criminalBiometricsId = getData(FingerprintInquiryStatusCheckerWorkflowTask.class,
+					                                    "criminalBiometricsId");
+					if(civilBiometricsId != null)
+					{
+						List<Long> civilPersonIds = getData(FingerprintInquiryStatusCheckerWorkflowTask.class,
+						                                    "civilPersonIds");
+						if(!civilPersonIds.isEmpty())
+						{
+							// LinkedHashMap is ordered
+							Map<Long, PersonInfo> civilPersonInfoMap = new LinkedHashMap<>();
+							
+							for(Long civilPersonId : civilPersonIds)
+							{
+								setData(GetPersonInfoByIdWorkflowTask.class, "personId", civilPersonId);
+								setData(GetPersonInfoByIdWorkflowTask.class,
+								        "returnNullResultInCaseNotFound", Boolean.TRUE);
+								executeWorkflowTask(GetPersonInfoByIdWorkflowTask.class);
+								civilPersonInfoMap.put(civilPersonId, getData(GetPersonInfoByIdWorkflowTask.class,
+								                                              "personInfo"));
+							}
+							
+							setData(getClass(), FIELD_CIVIL_PERSON_INFO_MAP, civilPersonInfoMap);
+						}
+					}
+					
+					if(criminalBiometricsId != null)
+					{
+						setData(ConvictedReportInquiryWorkflowTask.class, "criminalBiometricsId",
+						        criminalBiometricsId);
+						setData(ConvictedReportInquiryWorkflowTask.class,
+						        "returnNullResultInCaseNotFound", Boolean.TRUE);
+						executeWorkflowTask(ConvictedReportInquiryWorkflowTask.class);
+						List<ConvictedReport> convictedReports = getData(ConvictedReportInquiryWorkflowTask.class,
+						                                                 "convictedReports");
+						ConvictedReportToPersonInfoConverter converter = new ConvictedReportToPersonInfoConverter();
+						Map<Long, PersonInfo> criminalPersonInfoMap;
+						if(convictedReports != null) criminalPersonInfoMap = convictedReports.stream().collect(
+								Collectors.toMap(ConvictedReport::getReportNumber, converter::convert,
+								                 (k1, k2) -> k1, LinkedHashMap::new));
+						else criminalPersonInfoMap = new LinkedHashMap<>();
+						setData(getClass(), FIELD_CRIMINAL_PERSON_INFO_MAP, criminalPersonInfoMap);
+					}
+				}
+				
 				break;
 			}
 			case 4:
 			{
-				passData(FingerprintInquiryStatusCheckerWorkflowTask.class, InquiryResultPaneFxController.class,
-				         "status", "personId", "civilBiometricsId", "criminalBiometricsId",
-				         "personInfo");
-				passData(SpecifyFingerprintCoordinatesPaneFxController.class, InquiryResultPaneFxController.class,
-				         "fingerprintImages");
-				passData(ConvertFingerprintImagesToBase64WorkflowTask.class, InquiryResultPaneFxController.class,
+				passData(getClass(), FIELD_CIVIL_PERSON_INFO_MAP,
+				         ExtendedInquiryByFingerprintsResultPaneFxController.class, "civilPersonInfoMap");
+				passData(getClass(), FIELD_CRIMINAL_PERSON_INFO_MAP,
+				         ExtendedInquiryByFingerprintsResultPaneFxController.class, "criminalPersonInfoMap");
+				passData(FingerprintInquiryStatusCheckerWorkflowTask.class,
+				         ExtendedInquiryByFingerprintsResultPaneFxController.class,
+				         "status", "civilBiometricsId", "criminalBiometricsId");
+				passData(SpecifyFingerprintCoordinatesPaneFxController.class,
+				         ExtendedInquiryByFingerprintsResultPaneFxController.class,
 				         "fingerprintBase64Images");
-				
-				renderUiAndWaitForUserInput(InquiryResultPaneFxController.class);
+				renderUiAndWaitForUserInput(ExtendedInquiryByFingerprintsResultPaneFxController.class);
 				
 				break;
 			}

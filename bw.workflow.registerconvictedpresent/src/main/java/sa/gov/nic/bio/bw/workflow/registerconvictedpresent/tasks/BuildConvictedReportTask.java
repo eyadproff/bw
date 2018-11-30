@@ -169,9 +169,9 @@ public class BuildConvictedReportTask extends Task<JasperPrint>
 		params.put(PARAMETER_GENDER, "F".equals(convictedReport.getSubjGender()) ? "أنثى" : "ذكر");
 		
 		Long subjBioId = convictedReport.getSubjBioId();
-		if(subjBioId != null) params.put(PARAMETER_CIVIL_BIOMETRICS_ID, AppUtils.localizeNumbers(String.valueOf(subjBioId),
-		                                                                                         Locales.SAUDI_AR_LOCALE,
-		                                                                                         true));
+		if(subjBioId != null) params.put(PARAMETER_CIVIL_BIOMETRICS_ID,
+		                                 AppUtils.localizeNumbers(String.valueOf(subjBioId), Locales.SAUDI_AR_LOCALE,
+		                                                          true));
 		
 		Long subjSamisId = convictedReport.getSubjSamisId();
 		if(subjSamisId != null) params.put(PARAMETER_SAMIS_ID, AppUtils.localizeNumbers(String.valueOf(subjSamisId),

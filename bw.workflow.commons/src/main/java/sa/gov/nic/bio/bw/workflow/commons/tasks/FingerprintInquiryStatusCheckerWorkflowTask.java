@@ -60,7 +60,7 @@ public class FingerprintInquiryStatusCheckerWorkflowTask implements WorkflowTask
 		}
 		else
 		{
-			String errorCode = CommonsErrorCodes.C008_00020.getCode();
+			String errorCode = CommonsErrorCodes.C008_00016.getCode();
 			String[] errorDetails = {"The returned status for the fingerprint inquiry is unknown (" +
 					result.getStatus() + ")!"};
 			resetWorkflowStepIfNegativeOrNullTaskResponse(TaskResponse.failure(errorCode, null, errorDetails));

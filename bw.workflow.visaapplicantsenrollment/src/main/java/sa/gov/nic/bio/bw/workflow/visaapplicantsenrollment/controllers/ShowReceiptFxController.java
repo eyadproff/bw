@@ -89,7 +89,7 @@ public class ShowReceiptFxController extends WizardStepFxControllerBase
 		
 		    Throwable exception = generatingBarcodeTask.getException();
 		
-		    String errorCode = VisaApplicantsEnrollmentErrorCodes.C010_00005.getCode();
+		    String errorCode = VisaApplicantsEnrollmentErrorCodes.C010_00004.getCode();
 		    String[] errorDetails = {"failed to generate the barcode for the number " + sRegistrationId};
 		    reportNegativeTaskResponse(errorCode, exception, errorDetails);
 		});
@@ -124,7 +124,7 @@ public class ShowReceiptFxController extends WizardStepFxControllerBase
 			
 			    Throwable exception = buildForeignEnrollmentReceiptTask.getException();
 			
-			    String errorCode = VisaApplicantsEnrollmentErrorCodes.C010_00006.getCode();
+			    String errorCode = VisaApplicantsEnrollmentErrorCodes.C010_00005.getCode();
 			    String[] errorDetails = {"failed while building the receipt!"};
 			    Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails);
 			});
@@ -165,7 +165,7 @@ public class ShowReceiptFxController extends WizardStepFxControllerBase
 				        GuiUtils.showNode(btnPrintReceipt, true);
 				        GuiUtils.showNode(btnSaveReceiptAsPDF, true);
 				
-				        String errorCode = VisaApplicantsEnrollmentErrorCodes.C010_00007.getCode();
+				        String errorCode = VisaApplicantsEnrollmentErrorCodes.C010_00006.getCode();
 				        String[] errorDetails = {"failed while saving the receipt as PDF!"};
 				        Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails);
 				    }
@@ -179,7 +179,7 @@ public class ShowReceiptFxController extends WizardStepFxControllerBase
 				
 				    Throwable exception = buildForeignEnrollmentReceiptTask.getException();
 				
-				    String errorCode = VisaApplicantsEnrollmentErrorCodes.C010_00008.getCode();
+				    String errorCode = VisaApplicantsEnrollmentErrorCodes.C010_00007.getCode();
 				    String[] errorDetails = {"failed while building the receipt!"};
 				    Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails);
 				});
@@ -198,7 +198,7 @@ public class ShowReceiptFxController extends WizardStepFxControllerBase
 					GuiUtils.showNode(btnPrintReceipt, true);
 					GuiUtils.showNode(btnSaveReceiptAsPDF, true);
 					
-					String errorCode = VisaApplicantsEnrollmentErrorCodes.C010_00009.getCode();
+					String errorCode = VisaApplicantsEnrollmentErrorCodes.C010_00008.getCode();
 					String[] errorDetails = {"failed while saving the receipt as PDF!"};
 					Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails);
 				}
@@ -225,7 +225,7 @@ public class ShowReceiptFxController extends WizardStepFxControllerBase
 		
 		    Throwable exception = printReportTask.getException();
 		
-		    String errorCode = VisaApplicantsEnrollmentErrorCodes.C010_00010.getCode();
+		    String errorCode = VisaApplicantsEnrollmentErrorCodes.C010_00009.getCode();
 		    String[] errorDetails = {"failed while printing the receipt!"};
 		    Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails);
 		});
@@ -253,7 +253,7 @@ public class ShowReceiptFxController extends WizardStepFxControllerBase
 		
 		    Throwable exception = printReportTaskAsPdfTask.getException();
 		
-		    String errorCode = VisaApplicantsEnrollmentErrorCodes.C010_00011.getCode();
+		    String errorCode = VisaApplicantsEnrollmentErrorCodes.C010_00010.getCode();
 		    String[] errorDetails = {"failed while saving the receipt as PDF!"};
 		    Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails);
 		});

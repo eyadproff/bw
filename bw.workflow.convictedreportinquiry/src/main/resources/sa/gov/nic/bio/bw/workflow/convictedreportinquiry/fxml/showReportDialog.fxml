@@ -62,24 +62,18 @@
                                             <TitledPane text="%label.personInfo" collapsible="false" focusTraversable="false">
                                                 <VBox alignment="CENTER">
                                                     <GridPane alignment="CENTER" hgap="10.0" vgap="3.0">
-                                                        <columnConstraints>
-                                                            <ColumnConstraints prefWidth="120.0"/>
-                                                            <ColumnConstraints/>
-                                                            <ColumnConstraints prefWidth="100.0"/>
-                                                            <ColumnConstraints/>
-                                                        </columnConstraints>
-                                                        <Label text="%label.firstName" GridPane.rowIndex="0" GridPane.columnIndex="0" styleClass="bold-label"/>
-                                                        <Label fx:id="lblFirstName" GridPane.rowIndex="0" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
-                                                        <Label text="%label.fatherName" GridPane.rowIndex="1" GridPane.columnIndex="0" styleClass="bold-label"/>
-                                                        <Label fx:id="lblFatherName" GridPane.rowIndex="1" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
-                                                        <Label text="%label.grandfatherName" GridPane.rowIndex="2" GridPane.columnIndex="0" styleClass="bold-label"/>
-                                                        <Label fx:id="lblGrandfatherName" GridPane.rowIndex="2" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
-                                                        <Label text="%label.familyName" GridPane.rowIndex="3" GridPane.columnIndex="0" styleClass="bold-label"/>
-                                                        <Label fx:id="lblFamilyName" GridPane.rowIndex="3" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
-                                                        <Label text="%label.civilBiometricsId" GridPane.rowIndex="4" GridPane.columnIndex="0" styleClass="bold-label"/>
-                                                        <Label fx:id="lblBiometricsId" GridPane.rowIndex="4" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
-                                                        <Label text="%label.criminalBiometricsId" GridPane.rowIndex="5" GridPane.columnIndex="0" styleClass="bold-label"/>
-                                                        <Label fx:id="lblGeneralFileNumber" GridPane.rowIndex="5" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
+                                                        <Label text="%label.civilBiometricsId" GridPane.rowIndex="0" GridPane.columnIndex="0" styleClass="bold-label"/>
+                                                        <Label fx:id="lblCivilBiometricsId" GridPane.rowIndex="0" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
+                                                        <Label text="%label.criminalBiometricsId" GridPane.rowIndex="1" GridPane.columnIndex="0" styleClass="bold-label"/>
+                                                        <Label fx:id="lblCriminalBiometricsId" GridPane.rowIndex="1" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
+                                                        <Label text="%label.firstName" GridPane.rowIndex="2" GridPane.columnIndex="0" styleClass="bold-label"/>
+                                                        <Label fx:id="lblFirstName" GridPane.rowIndex="2" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
+                                                        <Label text="%label.fatherName" GridPane.rowIndex="3" GridPane.columnIndex="0" styleClass="bold-label"/>
+                                                        <Label fx:id="lblFatherName" GridPane.rowIndex="3" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
+                                                        <Label text="%label.grandfatherName" GridPane.rowIndex="4" GridPane.columnIndex="0" styleClass="bold-label"/>
+                                                        <Label fx:id="lblGrandfatherName" GridPane.rowIndex="4" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
+                                                        <Label text="%label.familyName" GridPane.rowIndex="5" GridPane.columnIndex="0" styleClass="bold-label"/>
+                                                        <Label fx:id="lblFamilyName" GridPane.rowIndex="5" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
                                                         <Label text="%label.gender" GridPane.rowIndex="6" GridPane.columnIndex="0" styleClass="bold-label"/>
                                                         <Label fx:id="lblGender" GridPane.rowIndex="6" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
                                                         <Label text="%label.nationality" GridPane.rowIndex="7" GridPane.columnIndex="0" styleClass="bold-label"/>
@@ -108,10 +102,6 @@
                                             <TitledPane text="%label.judgementDetails" collapsible="false" focusTraversable="false">
                                                 <VBox alignment="CENTER">
                                                     <GridPane alignment="CENTER" hgap="10.0" vgap="3.0">
-                                                        <columnConstraints>
-                                                            <ColumnConstraints prefWidth="120.0"/>
-                                                            <ColumnConstraints/>
-                                                        </columnConstraints>
                                                         <Label text="%label.crimeClassification" GridPane.rowIndex="0" GridPane.columnIndex="0" styleClass="bold-label" GridPane.columnSpan="2"/>
                                                         <Label fx:id="lblCrimeClassification1" GridPane.rowIndex="1" GridPane.columnIndex="0" GridPane.hgrow="ALWAYS" GridPane.columnSpan="2"/>
                                                         <Label fx:id="lblCrimeClassification2" GridPane.rowIndex="2" GridPane.columnIndex="0" GridPane.hgrow="ALWAYS" GridPane.columnSpan="2" managed="false" visible="false"/>
@@ -124,23 +114,22 @@
                                                         </Label>
                                                         <Label text="%label.judgmentIssuer" GridPane.rowIndex="6" GridPane.columnIndex="0" styleClass="bold-label"/>
                                                         <Label fx:id="lblJudgmentIssuer" GridPane.rowIndex="6" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
-                                                        <Label text="%label.caseFileNumber" GridPane.rowIndex="7" GridPane.columnIndex="0" styleClass="bold-label"/>
-                                                        <Label fx:id="lblPoliceFileNumber" GridPane.rowIndex="7" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
-                                                        <Label text="%label.judgmentNumber" GridPane.rowIndex="8" GridPane.columnIndex="0" styleClass="bold-label"/>
-                                                        <Label fx:id="lblJudgmentNumber" GridPane.rowIndex="8" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
-                                                        <Label text="%label.arrestDate" GridPane.rowIndex="9" GridPane.columnIndex="0" styleClass="bold-label"/>
-                                                        <Label fx:id="lblArrestDate" GridPane.rowIndex="9" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
-                                                        <Label text="%label.judgmentDate" GridPane.rowIndex="10" GridPane.columnIndex="0" styleClass="bold-label"/>
-                                                        <Label fx:id="lblJudgmentDate" GridPane.rowIndex="10" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
+                                                        <Label text="%label.judgmentNumber" GridPane.rowIndex="7" GridPane.columnIndex="0" styleClass="bold-label"/>
+                                                        <Label fx:id="lblJudgmentNumber" GridPane.rowIndex="7" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
+                                                        <Label text="%label.judgmentDate" GridPane.rowIndex="8" GridPane.columnIndex="0" styleClass="bold-label"/>
+                                                        <Label fx:id="lblJudgmentDate" GridPane.rowIndex="8" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
+                                                        <Label text="%label.caseFileNumber" GridPane.rowIndex="9" GridPane.columnIndex="0" styleClass="bold-label"/>
+                                                        <Label fx:id="lblCaseFileNumber" GridPane.rowIndex="9" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
+                                                        <Label text="%label.prisonerNumber" GridPane.rowIndex="10" GridPane.columnIndex="0" styleClass="bold-label"/>
+                                                        <Label fx:id="lblPrisonerNumber" GridPane.rowIndex="10" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
+                                                        <Label text="%label.arrestDate" GridPane.rowIndex="11" GridPane.columnIndex="0" styleClass="bold-label"/>
+                                                        <Label fx:id="lblArrestDate" GridPane.rowIndex="11" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
                                                     </GridPane>
                                                 </VBox>
                                             </TitledPane>
                                             <TitledPane text="%label.punishmentDetails" collapsible="false" focusTraversable="false">
                                                 <VBox alignment="CENTER_LEFT">
                                                     <GridPane alignment="CENTER_LEFT" hgap="5.0">
-                                                        <columnConstraints>
-                                                            <ColumnConstraints prefWidth="70.0"/>
-                                                        </columnConstraints>
                                                         <Label text="%label.tazeerLashing" GridPane.rowIndex="0" GridPane.columnIndex="0" styleClass="bold-label">
                                                             <GridPane.margin>
                                                                 <Insets bottom="5.0"/>
@@ -319,17 +308,17 @@
                                                         </Label>
                                                         <Label text="%label.other" GridPane.rowIndex="7" GridPane.columnIndex="0" styleClass="bold-label"/>
                                                         <Label fx:id="lblOther" GridPane.rowIndex="7" GridPane.columnIndex="1" GridPane.columnSpan="6" GridPane.hgrow="ALWAYS" wrapText="true"/>
-                                                        <CheckBox fx:id="cbFinalDeportation" text="%label.finalDeportation" disable="true" GridPane.rowIndex="8" GridPane.columnIndex="0" GridPane.columnSpan="4" GridPane.hgrow="ALWAYS" styleClass="bold-label">
+                                                        <CheckBox fx:id="cbFinalDeportation" text="%label.finalDeportation" disable="true" GridPane.rowIndex="8" GridPane.columnIndex="0" GridPane.columnSpan="4" GridPane.hgrow="ALWAYS" styleClass="bold-label, fakely-enabled">
                                                             <GridPane.margin>
                                                                 <Insets bottom="5.0" top="10.0"/>
                                                             </GridPane.margin>
                                                         </CheckBox>
-                                                        <CheckBox fx:id="cbLibel" text="%label.libel" disable="true" GridPane.rowIndex="9" GridPane.columnIndex="0" GridPane.columnSpan="4" GridPane.hgrow="ALWAYS" styleClass="bold-label">
+                                                        <CheckBox fx:id="cbLibel" text="%label.libel" disable="true" GridPane.rowIndex="9" GridPane.columnIndex="0" GridPane.columnSpan="4" GridPane.hgrow="ALWAYS" styleClass="bold-label, fakely-enabled">
                                                             <GridPane.margin>
                                                                 <Insets bottom="5.0"/>
                                                             </GridPane.margin>
                                                         </CheckBox>
-                                                        <CheckBox fx:id="cbCovenant" text="%label.covenant" disable="true" GridPane.rowIndex="10" GridPane.columnIndex="0" GridPane.columnSpan="4" GridPane.hgrow="ALWAYS" styleClass="bold-label">
+                                                        <CheckBox fx:id="cbCovenant" text="%label.covenant" disable="true" GridPane.rowIndex="10" GridPane.columnIndex="0" GridPane.columnSpan="4" GridPane.hgrow="ALWAYS" styleClass="bold-label, fakely-enabled">
                                                             <GridPane.margin>
                                                                 <Insets bottom="5.0"/>
                                                             </GridPane.margin>
@@ -496,5 +485,4 @@
             </content>
         </DialogPane>
     </dialogPane>
-
 </Dialog>

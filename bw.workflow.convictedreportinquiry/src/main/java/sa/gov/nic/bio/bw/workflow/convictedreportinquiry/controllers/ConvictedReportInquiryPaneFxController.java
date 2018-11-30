@@ -40,7 +40,7 @@ import java.util.Map;
 public class ConvictedReportInquiryPaneFxController extends BodyFxControllerBase
 {
 	@Input private List<Pair<ConvictedReport, Map<Integer, String>>> convictedReports;
-	@Output private Long generalFileNumber;
+	@Output private Long criminalBiometricsId;
 	
 	@FXML private TableView<Pair<ConvictedReport, Map<Integer, String>>> tvConvictedReports;
 	@FXML private TableColumn<Pair<ConvictedReport, Map<Integer, String>>, Pair<ConvictedReport, Map<Integer, String>>>
@@ -54,18 +54,17 @@ public class ConvictedReportInquiryPaneFxController extends BodyFxControllerBase
 	@FXML private BorderPane paneConvictedReports;
 	@FXML private ProgressIndicator piLookup;
 	@FXML private ProgressIndicator piInquiry;
-	@FXML private TextField txtGeneralFileNumber;
+	@FXML private TextField txtCriminalBiometricsId;
 	@FXML private Button btnInquiry;
 	@FXML private Button btnShowReport;
 	
-	@SuppressWarnings({"unchecked", "deprecation"})
 	@Override
 	protected void onAttachedToScene()
 	{
-		GuiUtils.applyValidatorToTextField(txtGeneralFileNumber, "\\d*", "[^\\d]",
+		GuiUtils.applyValidatorToTextField(txtCriminalBiometricsId, "\\d*", "[^\\d]",
 		                                   10);
 		
-		btnInquiry.disableProperty().bind(txtGeneralFileNumber.textProperty().isEmpty()
+		btnInquiry.disableProperty().bind(txtCriminalBiometricsId.textProperty().isEmpty()
 				                                                                    .or(piInquiry.visibleProperty()));
 		btnShowReport.disableProperty().bind(Bindings.size(tvConvictedReports.getSelectionModel().getSelectedItems())
 			                                                                                    .isEqualTo(0));
@@ -141,8 +140,7 @@ public class ConvictedReportInquiryPaneFxController extends BodyFxControllerBase
 		    ConvictedReport convictedReport = param.getValue().getKey();
 		
 			@SuppressWarnings("unchecked")
-			List<Country> countries = (List<Country>)
-														Context.getUserSession().getAttribute(CountriesLookup.KEY);
+			List<Country> countries = (List<Country>) Context.getUserSession().getAttribute(CountriesLookup.KEY);
 			
 			Integer nationalityCode = convictedReport.getSubjNationalityCode();
 			
@@ -183,7 +181,7 @@ public class ConvictedReportInquiryPaneFxController extends BodyFxControllerBase
 			boolean rtl = Context.getGuiLanguage().getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT;
 		    ConvictedReport convictedReport = param.getValue().getKey();
 			return new SimpleStringProperty(
-							AppUtils.formatHijriDateSimple(convictedReport.getReportDate() * 1000, rtl));
+							AppUtils.formatHijriDateSimple(convictedReport.getReportDate(), rtl));
 		});
 		
 		DevicesRunnerGadgetPaneFxController deviceManagerGadgetPaneController =
@@ -193,6 +191,8 @@ public class ConvictedReportInquiryPaneFxController extends BodyFxControllerBase
 		{
 			deviceManagerGadgetPaneController.runAndConnectDevicesRunner();
 		}
+		
+		txtCriminalBiometricsId.requestFocus();
 	}
 	
 	@Override
@@ -204,13 +204,14 @@ public class ConvictedReportInquiryPaneFxController extends BodyFxControllerBase
 		{
 			tvConvictedReports.getItems().setAll(convictedReports);
 			tvConvictedReports.requestFocus();
+			tvConvictedReports.getSelectionModel().select(0);
 		}
 	}
 	
 	@Override
 	public void onShowingProgress(boolean bShow)
 	{
-		txtGeneralFileNumber.setDisable(bShow);
+		txtCriminalBiometricsId.setDisable(bShow);
 		tvConvictedReports.setDisable(bShow);
 		
 		GuiUtils.showNode(btnInquiry, !bShow);
@@ -222,8 +223,8 @@ public class ConvictedReportInquiryPaneFxController extends BodyFxControllerBase
 	{
 		tvConvictedReports.getItems().clear();
 		
-		String sGeneralFileNumber = txtGeneralFileNumber.getText();
-		generalFileNumber = Long.parseLong(sGeneralFileNumber);
+		String sGeneralFileNumber = txtCriminalBiometricsId.getText();
+		criminalBiometricsId = Long.parseLong(sGeneralFileNumber);
 		
 		continueWorkflow();
 	}
@@ -249,7 +250,7 @@ public class ConvictedReportInquiryPaneFxController extends BodyFxControllerBase
 		}
 		catch(Exception e)
 		{
-			String errorCode = ConvictedReportInquiryErrorCodes.C014_00002.getCode();
+			String errorCode = ConvictedReportInquiryErrorCodes.C014_00001.getCode();
 			String[] errorDetails = {"Failed to load (" + ShowReportDialogFxController.class.getName() + ")!"};
 			Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails);
 		}

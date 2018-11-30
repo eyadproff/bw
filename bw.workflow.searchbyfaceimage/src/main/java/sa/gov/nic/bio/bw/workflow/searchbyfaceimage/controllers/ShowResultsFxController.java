@@ -68,8 +68,6 @@ public class ShowResultsFxController extends WizardStepFxControllerBase
 	@Override
 	protected void onAttachedToScene()
 	{
-		btnStartOver.setOnAction(event -> startOver());
-		
 		imagePane.maxWidthProperty().bind(Context.getCoreFxController().getBodyPane().widthProperty());
 		imagePane.maxHeightProperty().bind(Context.getCoreFxController().getBodyPane().heightProperty());
 		ivCenterImage.fitWidthProperty().bind(imagePane.widthProperty().divide(1.8));

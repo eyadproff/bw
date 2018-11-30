@@ -32,13 +32,13 @@ import java.util.function.Consumer;
 @FxmlFile("inquiryByFingerprintsResult.fxml")
 public class InquiryByFingerprintsResultPaneFxController extends WizardStepFxControllerBase
 {
-	@Input private Boolean hideRegisterUnknownButton;
-	@Input private Status status;
-	@Input private Long civilBiometricsId;
-	@Input private Long criminalBiometricsId;
-	@Input private Map<Long, PersonInfo> civilPersonInfoMap;
-	@Input private Map<Long, PersonInfo> criminalPersonInfoMap;
-	@Output private NormalizedPersonInfo normalizedPersonInfo;
+	@Input protected Boolean hideRegisterUnknownButton;
+	@Input protected Status status;
+	@Input protected Long civilBiometricsId;
+	@Input protected Long criminalBiometricsId;
+	@Input protected Map<Long, PersonInfo> civilPersonInfoMap;
+	@Input protected Map<Long, PersonInfo> criminalPersonInfoMap;
+	@Output protected NormalizedPersonInfo normalizedPersonInfo;
 	
 	@FXML private ScrollPane infoPane;
 	@FXML private ImageViewPane paneImageView;
@@ -94,18 +94,20 @@ public class InquiryByFingerprintsResultPaneFxController extends WizardStepFxCon
 		{
 			GuiUtils.showNode(paneFingerprintsHitResults, true);
 			GuiUtils.showNode(infoPane, true);
-			GuiUtils.showNode(btnConfirmPersonInformation, true);
+			if(btnConfirmPersonInformation != null) GuiUtils.showNode(btnConfirmPersonInformation, true);
 			
 			if(!tvCivilPersonIds.getItems().isEmpty()) tvCivilPersonIds.getSelectionModel().select(0);
 			else if(!tvReportNumbers.getItems().isEmpty()) tvReportNumbers.getSelectionModel().select(0);
+			else populatePersonInfo(null);
 			
-			btnConfirmPersonInformation.requestFocus();
+			if(btnConfirmPersonInformation != null) btnConfirmPersonInformation.requestFocus();
 		}
 		else
 		{
 			GuiUtils.showNode(paneNoHitMessage, true);
-			GuiUtils.showNode(btnRegisterUnknownPerson, hideRegisterUnknownButton == null
-															|| !hideRegisterUnknownButton);
+			if(btnRegisterUnknownPerson != null)
+						GuiUtils.showNode(btnRegisterUnknownPerson, hideRegisterUnknownButton == null
+																	|| !hideRegisterUnknownButton);
 			
 			btnStartOver.requestFocus();
 		}
@@ -157,7 +159,7 @@ public class InquiryByFingerprintsResultPaneFxController extends WizardStepFxCon
 		GuiUtils.setLabelText(lblDocumentExpiryDate, normalizedPersonInfo.getDocumentExpiryDate()).orElse(consumer);
 		
 		infoPane.autosize();
-		btnConfirmPersonInformation.requestFocus();
+		if(btnConfirmPersonInformation != null) btnConfirmPersonInformation.requestFocus();
 	}
 	
 	private void initSection(TableView<Long> tvSection, TableView<Long> tvOther,

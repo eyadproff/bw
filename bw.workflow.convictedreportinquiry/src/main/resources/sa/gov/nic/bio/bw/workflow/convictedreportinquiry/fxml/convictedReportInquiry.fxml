@@ -29,7 +29,7 @@
                                     <Insets top="3.0"/>
                                 </padding>
                             </Label>
-                            <TextField fx:id="txtGeneralFileNumber" onAction="#onInquiryButtonClicked"/>
+                            <TextField fx:id="txtCriminalBiometricsId" onAction="#onInquiryButtonClicked"/>
                             <Button fx:id="btnInquiry" text="%button.inquiry" onAction="#onInquiryButtonClicked"/>
                             <ProgressIndicator fx:id="piInquiry" prefHeight="25.0" prefWidth="25.0" managed="false" visible="false"/>
                         </HBox>

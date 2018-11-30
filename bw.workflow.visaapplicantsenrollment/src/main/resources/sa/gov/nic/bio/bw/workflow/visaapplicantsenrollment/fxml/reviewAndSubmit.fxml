@@ -237,7 +237,7 @@
                 <Insets bottom="10"/>
             </padding>
             <ProgressIndicator fx:id="piProgress" prefHeight="25.0" prefWidth="25.0" managed="false" visible="false"/>
-            <Button fx:id="btnPrevious" text="%button.previous"/>
+            <Button fx:id="btnPrevious" text="%button.previous" onAction="#onPreviousButtonClicked"/>
             <Button fx:id="btnSubmit" text="%button.submit" onAction="#onSubmitButtonClicked"/>
         </HBox>
     </bottom>

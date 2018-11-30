@@ -35,7 +35,7 @@
             <padding>
                 <Insets bottom="10"/>
             </padding>
-            <Button fx:id="btnStartOver" text="%button.startOver" managed="false" visible="false"/>
+            <Button fx:id="btnStartOver" text="%button.startOver" managed="false" visible="false" onAction="#onStartOverButtonClicked"/>
             <Button fx:id="btnRetry" text="%button.retry" managed="false" visible="false" onAction="#onRetryButtonClicked"/>
         </HBox>
     </bottom>

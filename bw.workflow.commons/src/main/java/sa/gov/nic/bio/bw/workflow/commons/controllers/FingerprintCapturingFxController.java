@@ -195,8 +195,6 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 												Context.getCoreFxController().getDeviceManagerGadgetPaneController();
 		deviceManagerGadgetPaneController.setNextFingerprintDeviceType(FingerprintDeviceType.SLAP);
 		
-		btnPrevious.setOnAction(event -> goPrevious());
-		btnNext.setOnAction(event -> goNext());
 		btnNext.disableProperty().bind(ivCompleted.visibleProperty().not());
 		
 		paneControlsInnerContainer.minHeightProperty().bind(Bindings.createDoubleBinding(() ->

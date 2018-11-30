@@ -34,7 +34,7 @@
             <padding>
                 <Insets bottom="10"/>
             </padding>
-            <Button fx:id="btnNext" text="%button.next"/>
+            <Button fx:id="btnNext" text="%button.next" onAction="#onNextButtonClicked"/>
         </HBox>
     </bottom>
 </BorderPane>

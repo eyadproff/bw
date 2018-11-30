@@ -95,7 +95,6 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 	@Override
 	protected void onAttachedToScene()
 	{
-		btnPrevious.setOnAction(actionEvent -> goPrevious());
 		paneImageView.maxWidthProperty().bind(paneImage.widthProperty());
 		
 		mobileNumber = dialingCode.getDialingCode() + "-" + mobileNumber;

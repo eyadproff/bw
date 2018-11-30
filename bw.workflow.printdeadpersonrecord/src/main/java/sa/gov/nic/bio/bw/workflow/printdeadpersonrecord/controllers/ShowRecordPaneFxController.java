@@ -5,33 +5,36 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import net.sf.jasperreports.engine.JasperPrint;
 import sa.gov.nic.bio.bw.core.Context;
+import sa.gov.nic.bio.bw.core.beans.Gender;
 import sa.gov.nic.bio.bw.core.beans.UserInfo;
 import sa.gov.nic.bio.bw.core.controllers.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.core.utils.FxmlFile;
 import sa.gov.nic.bio.bw.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.core.workflow.Input;
+import sa.gov.nic.bio.bw.workflow.commons.beans.Country;
+import sa.gov.nic.bio.bw.workflow.commons.beans.DocumentType;
+import sa.gov.nic.bio.bw.workflow.commons.beans.NormalizedPersonInfo;
+import sa.gov.nic.bio.bw.workflow.commons.beans.PersonInfo;
+import sa.gov.nic.bio.bw.workflow.commons.beans.PersonType;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.PrintReportTask;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.SaveReportAsPdfTask;
 import sa.gov.nic.bio.bw.workflow.commons.ui.ImageViewPane;
-import sa.gov.nic.bio.bw.workflow.commons.beans.NormalizedPersonInfo;
-import sa.gov.nic.bio.bw.workflow.commons.beans.PersonInfo;
+import sa.gov.nic.bio.bw.workflow.printdeadpersonrecord.beans.DeadPersonRecord;
 import sa.gov.nic.bio.bw.workflow.printdeadpersonrecord.beans.DeadPersonRecordReport;
 import sa.gov.nic.bio.bw.workflow.printdeadpersonrecord.tasks.BuildDeadPersonRecordReportTask;
 import sa.gov.nic.bio.bw.workflow.printdeadpersonrecord.utils.PrintDeadPersonRecordPresentErrorCodes;
-import sa.gov.nic.bio.bw.workflow.printdeadpersonrecord.beans.DeadPersonRecord;
 
-import java.io.ByteArrayInputStream;
+import java.awt.Desktop;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.OutputStream;
-import java.util.Base64;
+import java.time.LocalDate;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -91,7 +94,7 @@ public class ShowRecordPaneFxController extends WizardStepFxControllerBase
 								resources.getString("fileChooser.saveRecordAsPDF.types"), "*.pdf");
 		fileChooser.getExtensionFilters().addAll(extFilterPDF);
 		
-		populateData(recordId, deadPersonRecord, personInfo, fingerprintBase64Images);
+		populateData();
 	}
 	
 	@FXML
@@ -123,7 +126,7 @@ public class ShowRecordPaneFxController extends WizardStepFxControllerBase
 			
 			    Throwable exception = buildDeadPersonRecordReportTask.getException();
 			
-			    String errorCode = PrintDeadPersonRecordPresentErrorCodes.C012_00003.getCode();
+			    String errorCode = PrintDeadPersonRecordPresentErrorCodes.C012_00001.getCode();
 			    String[] errorDetails = {"failed while building the dead person record report!"};
 			    Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails);
 			});
@@ -155,7 +158,7 @@ public class ShowRecordPaneFxController extends WizardStepFxControllerBase
 				    jasperPrint.set(value);
 				    try
 				    {
-				        saveDeadPersonRecordReportAsPDF(value, new FileOutputStream(selectedFile));
+				        saveDeadPersonRecordReportAsPDF(value, selectedFile);
 				    }
 				    catch(Exception e)
 				    {
@@ -164,7 +167,7 @@ public class ShowRecordPaneFxController extends WizardStepFxControllerBase
 				        GuiUtils.showNode(btnPrintRecord, true);
 				        GuiUtils.showNode(btnSaveRecordAsPDF, true);
 				
-				        String errorCode = PrintDeadPersonRecordPresentErrorCodes.C012_00004.getCode();
+				        String errorCode = PrintDeadPersonRecordPresentErrorCodes.C012_00002.getCode();
 				        String[] errorDetails = {"failed while saving the dead person record report as PDF!"};
 				        Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails);
 				    }
@@ -178,7 +181,7 @@ public class ShowRecordPaneFxController extends WizardStepFxControllerBase
 				
 				    Throwable exception = buildDeadPersonRecordReportTask.getException();
 				
-				    String errorCode = PrintDeadPersonRecordPresentErrorCodes.C012_00005.getCode();
+				    String errorCode = PrintDeadPersonRecordPresentErrorCodes.C012_00003.getCode();
 				    String[] errorDetails = {"failed while building the dead person record report!"};
 				    Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails);
 				});
@@ -188,7 +191,7 @@ public class ShowRecordPaneFxController extends WizardStepFxControllerBase
 			{
 				try
 				{
-					saveDeadPersonRecordReportAsPDF(jasperPrint.get(), new FileOutputStream(selectedFile));
+					saveDeadPersonRecordReportAsPDF(jasperPrint.get(), selectedFile);
 				}
 				catch(Exception e)
 				{
@@ -197,7 +200,7 @@ public class ShowRecordPaneFxController extends WizardStepFxControllerBase
 					GuiUtils.showNode(btnPrintRecord, true);
 					GuiUtils.showNode(btnSaveRecordAsPDF, true);
 					
-					String errorCode = PrintDeadPersonRecordPresentErrorCodes.C012_00006.getCode();
+					String errorCode = PrintDeadPersonRecordPresentErrorCodes.C012_00004.getCode();
 					String[] errorDetails = {"failed while saving the dead person record report as PDF!"};
 					Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails);
 				}
@@ -205,38 +208,37 @@ public class ShowRecordPaneFxController extends WizardStepFxControllerBase
 		}
 	}
 	
-	private void populateData(Long recordIdLong, DeadPersonRecord deadPersonRecord,
-	                          PersonInfo personInfo, Map<Integer, String> fingerprintsImages)
+	private void populateData()
 	{
 		NormalizedPersonInfo normalizedPersonInfo = new NormalizedPersonInfo(personInfo);
 		
-		//lblPersonId.setText(normalizedPersonInfo.getPersonIdLabel());
-		//lblFirstName.setText(normalizedPersonInfo.getFirstNameLabel());
-		//lblFatherName.setText(normalizedPersonInfo.getFatherNameLabel());
-		//lblGrandfatherName.setText(normalizedPersonInfo.getGrandfatherNameLabel());
-		//lblFamilyName.setText(normalizedPersonInfo.getFamilyNameLabel());
-		//lblGender.setText(normalizedPersonInfo.getGenderLabel());
-		//lblNationality.setText(normalizedPersonInfo.getNationalityLabel());
-		//lblOccupation.setText(normalizedPersonInfo.getOccupationLabel());
-		//lblBirthPlace.setText(normalizedPersonInfo.getBirthPlaceLabel());
-		//lblBirthDate.setText(normalizedPersonInfo.getBirthDateLabel());
-		//lblPersonType.setText(normalizedPersonInfo.getPersonTypeLabel());
-		//lblDocumentId.setText(normalizedPersonInfo.getDocumentIdLabel());
-		//lblDocumentType.setText(normalizedPersonInfo.getDocumentTypeLabel());
-		//lblDocumentIssuanceDate.setText(normalizedPersonInfo.getDocumentIssuanceDateLabel());
-		//lblDocumentExpiryDate.setText(normalizedPersonInfo.getDocumentExpiryDateLabel());
+		GuiUtils.attachFacePhotoBase64(ivPersonPhoto, normalizedPersonInfo.getFacePhotoBase64(), true,
+		                               normalizedPersonInfo.getGender());
+		GuiUtils.setLabelText(lblFirstName, normalizedPersonInfo.getFirstNameLabel());
+		GuiUtils.setLabelText(lblFatherName, normalizedPersonInfo.getFatherNameLabel());
+		GuiUtils.setLabelText(lblGrandfatherName, normalizedPersonInfo.getGrandfatherNameLabel());
+		GuiUtils.setLabelText(lblFamilyName, normalizedPersonInfo.getFamilyNameLabel());
+		GuiUtils.setLabelText(lblGender, normalizedPersonInfo.getGender());
+		GuiUtils.setLabelText(lblNationality, normalizedPersonInfo.getNationality());
+		GuiUtils.setLabelText(lblOccupation, normalizedPersonInfo.getOccupation());
+		GuiUtils.setLabelText(lblBirthPlace, normalizedPersonInfo.getBirthPlace());
+		GuiUtils.setLabelText(lblBirthDate, normalizedPersonInfo.getBirthDate());
+		GuiUtils.setLabelText(lblPersonId, normalizedPersonInfo.getPersonId());
+		GuiUtils.setLabelText(lblPersonType, normalizedPersonInfo.getPersonType());
+		GuiUtils.setLabelText(lblDocumentId, normalizedPersonInfo.getDocumentId());
+		GuiUtils.setLabelText(lblDocumentType, normalizedPersonInfo.getDocumentType());
+		GuiUtils.setLabelText(lblDocumentIssuanceDate, normalizedPersonInfo.getDocumentIssuanceDate());
+		GuiUtils.setLabelText(lblDocumentExpiryDate, normalizedPersonInfo.getDocumentExpiryDate());
 		
-		String recordId = null;
+		String sRecordId = null;
 		String enrollerId = null;
 		String enrollmentTime = null;
 		
-		if(recordIdLong != null)
+		if(recordId != null)
 		{
-			recordId = AppUtils.localizeNumbers(String.valueOf(recordIdLong));
-			lblRecordId.setText(recordId);
+			sRecordId = AppUtils.localizeNumbers(String.valueOf(recordId));
+			lblRecordId.setText(sRecordId);
 		}
-		
-		
 		
 		UserInfo userInfo = (UserInfo) Context.getUserSession().getAttribute("userInfo");
 		String inquirerId = AppUtils.localizeNumbers(String.valueOf(userInfo.getOperatorId()));
@@ -251,41 +253,44 @@ public class ShowRecordPaneFxController extends WizardStepFxControllerBase
 		Long enrollmentTimeLong = deadPersonRecord.getEnrollmentDate();
 		if(enrollmentTimeLong != null)
 		{
-			enrollmentTime = AppUtils.formatHijriGregorianDateTime(enrollmentTimeLong * 1000);
+			enrollmentTime = AppUtils.formatHijriGregorianDateTime(enrollmentTimeLong);
 			lblEnrollmentTime.setText(enrollmentTime);
 		}
 		
 		String facePhotoBase64 = deadPersonRecord.getSubjFace();
-		if(facePhotoBase64 != null)
-		{
-			byte[] bytes = Base64.getDecoder().decode(facePhotoBase64);
-			ivPersonPhoto.setImage(new Image(new ByteArrayInputStream(bytes)));
-			GuiUtils.attachImageDialog(Context.getCoreFxController(), ivPersonPhoto,
-			                           resources.getString("label.deadPersonPhoto"),
-			                           resources.getString("label.contextMenu.showImage"), false);
-		}
+		Gender gender = normalizedPersonInfo.getGender();
+		Country nationality = normalizedPersonInfo.getNationality();
+		LocalDate birthDate = normalizedPersonInfo.getBirthDate();
+		Long personId = normalizedPersonInfo.getPersonId();
+		PersonType personType = normalizedPersonInfo.getPersonType();
+		String documentId = normalizedPersonInfo.getDocumentId();
+		DocumentType documentType = normalizedPersonInfo.getDocumentType();
+		LocalDate documentIssuanceDate = normalizedPersonInfo.getDocumentIssuanceDate();
+		LocalDate documentExpiryDate = normalizedPersonInfo.getDocumentExpiryDate();
+		
+		deadPersonRecordReport = new DeadPersonRecordReport(sRecordId, enrollerId, inquirerId, enrollmentTime,
+		                  facePhotoBase64, normalizedPersonInfo.getFirstName(),
+		                  normalizedPersonInfo.getFatherName(),
+		                  normalizedPersonInfo.getGrandfatherName(),
+		                  normalizedPersonInfo.getFamilyName(),
+		                  gender != null ? gender.toString() : null,
+		                  nationality != null ? nationality.getArabicText() : null,
+		                  normalizedPersonInfo.getOccupation(),
+		                  normalizedPersonInfo.getBirthPlace(),
+		                  birthDate != null ? AppUtils.formatHijriGregorianDate(birthDate) : null,
+		                  personId != null ? AppUtils.localizeNumbers(String.valueOf(personId)) : null,
+		                  personType != null ? personType.getArabicText() : null,
+		                  documentId != null ? AppUtils.localizeNumbers(documentId) : null,
+		                  documentType != null ? documentType.getArabicText() : null,
+		                  documentIssuanceDate != null ? AppUtils.formatHijriGregorianDate(documentIssuanceDate) : null,
+		                  documentExpiryDate != null ? AppUtils.formatHijriGregorianDate(documentExpiryDate) : null,
+		                  fingerprintBase64Images);
+		
+		GuiUtils.attachFacePhotoBase64(ivPersonPhoto, facePhotoBase64, true, gender);
 		
 		GuiUtils.attachFingerprintImages(fingerprintBase64Images, ivRightThumb, ivRightIndex, ivRightMiddle,
 		                                 ivRightRing, ivRightLittle, ivLeftThumb, ivLeftIndex, ivLeftMiddle,
 		                                 ivLeftRing, ivLeftLittle);
-		
-		//deadPersonRecordReport = new DeadPersonRecordReport(recordId, enrollerId, inquirerId, enrollmentTime,
-		//                                                    facePhotoBase64, normalizedPersonInfo.getFirstName(),
-		//                                                    normalizedPersonInfo.getFatherName(),
-		//                                                    normalizedPersonInfo.getGrandfatherName(),
-		//                                                    normalizedPersonInfo.getFamilyName(),
-		//                                                    normalizedPersonInfo.getGenderLabel(),
-		//                                                    normalizedPersonInfo.getNationalityLabel(),
-		//                                                    normalizedPersonInfo.getOccupation(),
-		//                                                    normalizedPersonInfo.getBirthPlace(),
-		//                                                    normalizedPersonInfo.getBirthDateLabel(),
-		//                                                    normalizedPersonInfo.getPersonIdLabel(),
-		//                                                    normalizedPersonInfo.getPersonTypeLabel(),
-		//                                                    normalizedPersonInfo.getDocumentId(),
-		//		                                            normalizedPersonInfo.getDocumentTypeLabel(),
-		//		                                            normalizedPersonInfo.getDocumentIssuanceDateLabel(),
-		//		                                            normalizedPersonInfo.getDocumentExpiryDateLabel(),
-		//                                                    fingerprintsImages);
 	}
 	
 	private void printDeadPersonRecordReport(JasperPrint jasperPrint)
@@ -307,16 +312,18 @@ public class ShowRecordPaneFxController extends WizardStepFxControllerBase
 		
 		    Throwable exception = printReportTask.getException();
 		
-		    String errorCode = PrintDeadPersonRecordPresentErrorCodes.C012_00007.getCode();
+		    String errorCode = PrintDeadPersonRecordPresentErrorCodes.C012_00005.getCode();
 		    String[] errorDetails = {"failed while printing the dead person record report!"};
 		    Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails);
 		});
 		Context.getExecutorService().submit(printReportTask);
 	}
 	
-	private void saveDeadPersonRecordReportAsPDF(JasperPrint jasperPrint, OutputStream pdfOutputStream)
+	private void saveDeadPersonRecordReportAsPDF(JasperPrint jasperPrint, File selectedFile)
+																						throws FileNotFoundException
 	{
-		SaveReportAsPdfTask printReportTaskAsPdfTask = new SaveReportAsPdfTask(jasperPrint, pdfOutputStream);
+		SaveReportAsPdfTask printReportTaskAsPdfTask = new SaveReportAsPdfTask(jasperPrint,
+		                                                                       new FileOutputStream(selectedFile));
 		printReportTaskAsPdfTask.setOnSucceeded(event ->
 		{
 		    GuiUtils.showNode(piProgress, false);
@@ -325,6 +332,14 @@ public class ShowRecordPaneFxController extends WizardStepFxControllerBase
 		    GuiUtils.showNode(btnSaveRecordAsPDF, true);
 		
 		    showSuccessNotification(resources.getString("printDeadPersonRecord.savingAsPDF.success.message"));
+			try
+			{
+				Desktop.getDesktop().open(selectedFile);
+			}
+			catch(Exception e)
+			{
+				LOGGER.warning("Failed to open the PDF file (" + selectedFile.getAbsolutePath() + ")!");
+			}
 		});
 		printReportTaskAsPdfTask.setOnFailed(event ->
 		{
@@ -335,7 +350,7 @@ public class ShowRecordPaneFxController extends WizardStepFxControllerBase
 		
 		    Throwable exception = printReportTaskAsPdfTask.getException();
 		
-		    String errorCode = PrintDeadPersonRecordPresentErrorCodes.C012_00008.getCode();
+		    String errorCode = PrintDeadPersonRecordPresentErrorCodes.C012_00006.getCode();
 		    String[] errorDetails = {"failed while saving the dead person record report as PDF!"};
 		    Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails);
 		});

@@ -88,14 +88,12 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 	@Output private ConvictedReport convictedReport;
 	
 	@FXML private VBox paneImage;
-	@FXML private ImageViewPane paneImageView;
-	@FXML private ImageView ivPersonPhoto;
+	@FXML private Label lblCivilBiometricsId;
+	@FXML private Label lblCriminalBiometricsId;
 	@FXML private Label lblFirstName;
 	@FXML private Label lblFatherName;
 	@FXML private Label lblGrandfatherName;
 	@FXML private Label lblFamilyName;
-	@FXML private Label lblCivilBiometricsId;
-	@FXML private Label lblCriminalBiometricsId;
 	@FXML private Label lblGender;
 	@FXML private Label lblNationality;
 	@FXML private Label lblOccupation;
@@ -137,6 +135,8 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 	@FXML private CheckBox cbFinalDeportation;
 	@FXML private CheckBox cbLibel;
 	@FXML private CheckBox cbCovenant;
+	@FXML private ImageViewPane paneImageView;
+	@FXML private ImageView ivPersonPhoto;
 	@FXML private ImageView ivRightThumb;
 	@FXML private ImageView ivRightIndex;
 	@FXML private ImageView ivRightMiddle;
@@ -155,7 +155,6 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 	@Override
 	protected void onAttachedToScene()
 	{
-		btnPrevious.setOnAction(actionEvent -> goPrevious());
 		paneImageView.maxWidthProperty().bind(paneImage.widthProperty());
 		
 		@SuppressWarnings("unchecked")
@@ -177,7 +176,6 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 		GuiUtils.setLabelText(lblGender, gender);
 		GuiUtils.setLabelText(lblNationality, nationality);
 		GuiUtils.setLabelText(lblOccupation, occupation);
-		GuiUtils.setLabelText(lblBirthPlace, birthPlace);
 		GuiUtils.setLabelText(lblBirthPlace, birthPlace);
 		GuiUtils.setLabelText(lblBirthDate, birthDate);
 		GuiUtils.setLabelText(lblPersonId, personId);

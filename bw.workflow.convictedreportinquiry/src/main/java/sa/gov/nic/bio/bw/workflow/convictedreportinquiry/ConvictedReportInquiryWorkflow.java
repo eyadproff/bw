@@ -62,11 +62,11 @@ public class ConvictedReportInquiryWorkflow extends SinglePageWorkflowBase
 			
 			executeWorkflowTask(ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask.class);
 			
-			Map<Integer, String> fingerprintImages =
+			Map<Integer, String> fingerprintBase64Images =
 									getData(ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask.class,
-									        "fingerprintImages");
+									        "fingerprintBase64Images");
 			
-			convictedReportPairs.add(new Pair<>(convictedReport, fingerprintImages));
+			convictedReportPairs.add(new Pair<>(convictedReport, fingerprintBase64Images));
 		}
 		
 		setData(ConvictedReportInquiryPaneFxController.class, "convictedReports", convictedReportPairs);

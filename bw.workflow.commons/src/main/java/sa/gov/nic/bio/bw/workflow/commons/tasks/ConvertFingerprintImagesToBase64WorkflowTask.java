@@ -33,7 +33,7 @@ public class ConvertFingerprintImagesToBase64WorkflowTask implements WorkflowTas
 			}
 			catch(IOException e)
 			{
-				String errorCode = CommonsErrorCodes.C008_00033.getCode();
+				String errorCode = CommonsErrorCodes.C008_00028.getCode();
 				String[] errorDetails = {"failed to convert images to base64 string!"};
 				resetWorkflowStepIfNegativeOrNullTaskResponse(TaskResponse.failure(errorCode, e, errorDetails));
 			}

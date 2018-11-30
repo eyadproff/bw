@@ -120,9 +120,6 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 	@Override
 	protected void onAttachedToScene()
 	{
-		btnPrevious.setOnAction(event -> goPrevious());
-		btnNext.setOnAction(event -> goNext());
-		
 		ivCameraLivePreviewPlaceholder.visibleProperty().bind(ivCameraLivePreview.imageProperty().isNull().and(
 				piCameraLivePreview.visibleProperty().not()));
 		ivCapturedImagePlaceholder.visibleProperty().bind(ivCapturedImage.imageProperty().isNull().and(
@@ -146,7 +143,7 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 					if(url != null) face3DGroup = FXMLLoader.load(url, resources);
 					else
 					{
-						String errorCode = CommonsErrorCodes.C008_00021.getCode();
+						String errorCode = CommonsErrorCodes.C008_00017.getCode();
 						String[] errorDetails = {"failed to load the face 3D fxml (" + FXML_3D_FACE + ")!"};
 						Context.getCoreFxController().showErrorDialog(errorCode, null, errorDetails);
 						
@@ -326,7 +323,7 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 		}
 		catch(IOException e)
 		{
-			String errorCode = CommonsErrorCodes.C008_00022.getCode();
+			String errorCode = CommonsErrorCodes.C008_00018.getCode();
 			String[] errorDetails = {"failed to encode the face image as Base64!"};
 			Context.getCoreFxController().showErrorDialog(errorCode, null, errorDetails);
 		}

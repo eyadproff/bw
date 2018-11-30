@@ -293,7 +293,7 @@ public class DevicesRunnerGadgetPaneFxController extends RegionFxControllerBase
 		    {
 		        LOGGER.severe("failed to connect to the devices runner!");
 		
-		        String errorCode = CoreErrorCodes.C002_00017.getCode();
+		        String errorCode = CoreErrorCodes.C002_00014.getCode();
 		        String[] errorDetails = {"failed to connect to the devices runner!"};
 		        Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails);
 		    }
@@ -342,7 +342,7 @@ public class DevicesRunnerGadgetPaneFxController extends RegionFxControllerBase
 		    {
 		        LOGGER.severe("failed to reconnect to the devices runner!");
 		
-		        String errorCode = CoreErrorCodes.C002_00018.getCode();
+		        String errorCode = CoreErrorCodes.C002_00015.getCode();
 		        String[] errorDetails = {"failed to connect to the devices runner!"};
 		        Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails);
 		    }
@@ -428,7 +428,7 @@ public class DevicesRunnerGadgetPaneFxController extends RegionFxControllerBase
 			{
 				LOGGER.severe("failed to shutdown the devices runner!");
 				
-				String errorCode = CoreErrorCodes.C002_00019.getCode();
+				String errorCode = CoreErrorCodes.C002_00016.getCode();
 				String[] errorDetails = {"failed to shutdown the devices runner!"};
 				Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails);
 			}
@@ -486,7 +486,7 @@ public class DevicesRunnerGadgetPaneFxController extends RegionFxControllerBase
 		        {
 			        cancelCommand.cancel();
 			
-			        String errorCode = CoreErrorCodes.C002_00032.getCode();
+			        String errorCode = CoreErrorCodes.C002_00017.getCode();
 			        String guiErrorMessage = Context.getErrorsBundle().getString(errorCode);
 			        String logErrorMessage = Context.getErrorsBundle().getString(errorCode + ".internal");
 			        
@@ -528,7 +528,7 @@ public class DevicesRunnerGadgetPaneFxController extends RegionFxControllerBase
 		    {
 		        LOGGER.severe("failed to initialize the fingerprint scanner!");
 		
-		        String errorCode = CoreErrorCodes.C002_00020.getCode();
+		        String errorCode = CoreErrorCodes.C002_00018.getCode();
 		        String[] errorDetails = {"failed to initialize the fingerprint scanner!"};
 		        Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails);
 		    }
@@ -615,7 +615,7 @@ public class DevicesRunnerGadgetPaneFxController extends RegionFxControllerBase
 			{
 				LOGGER.severe("failed to initialize the camera!");
 				
-				String errorCode = CoreErrorCodes.C002_00021.getCode();
+				String errorCode = CoreErrorCodes.C002_00019.getCode();
 				String[] errorDetails = {"failed to initialize the camera!"};
 				Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails);
 			}
@@ -703,7 +703,7 @@ public class DevicesRunnerGadgetPaneFxController extends RegionFxControllerBase
 		    {
 		        LOGGER.severe("failed to initialize the passport scanner!");
 		
-		        String errorCode = CoreErrorCodes.C002_00022.getCode();
+		        String errorCode = CoreErrorCodes.C002_00020.getCode();
 		        String[] errorDetails = {"failed to initialize the passport scanner!"};
 		        Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails);
 		    }

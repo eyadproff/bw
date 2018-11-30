@@ -47,6 +47,7 @@ import java.time.chrono.HijrahDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
 import java.util.Locale;
@@ -651,5 +652,14 @@ public final class AppUtils implements AppLogger
 	public static String bytesToBase64(byte[] bytes)
 	{
 		return Base64.getEncoder().encodeToString(bytes);
+	}
+	
+	public static List<Field> getAllFields(List<Field> fields, Class<?> type)
+	{
+		fields.addAll(Arrays.asList(type.getDeclaredFields()));
+		
+		if(type.getSuperclass() != null) getAllFields(fields, type.getSuperclass());
+		
+		return fields;
 	}
 }

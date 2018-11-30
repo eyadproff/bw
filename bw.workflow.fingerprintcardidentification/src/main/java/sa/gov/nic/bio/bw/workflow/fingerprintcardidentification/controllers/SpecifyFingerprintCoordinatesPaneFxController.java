@@ -265,16 +265,12 @@ public class SpecifyFingerprintCoordinatesPaneFxController extends WizardStepFxC
 				}
 				catch(IOException e)
 				{
-					String errorCode = FingerprintCardIdentificationErrorCodes.C013_00010.getCode();
+					String errorCode = FingerprintCardIdentificationErrorCodes.C013_00007.getCode();
 					String[] errorDetails = {"failed to convert the image to base64 encoding!"};
 					Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails);
 				}
 			}
-			else
-			{
-				fingerprintBase64Images.put(i + 1, null);
-				missingFingerprints.add(i + 1);
-			}
+			else missingFingerprints.add(i + 1);
 			
 			fingerprintsDimensions.put(i + 1, new Dimension(rectangles[i].getBoundsInParent().getWidth(),
 			                                                rectangles[i].getBoundsInParent().getHeight()));

@@ -412,8 +412,8 @@
             <padding>
                 <Insets bottom="10"/>
             </padding>
-            <Button fx:id="btnPrevious" text="%button.previous" visible="false" managed="false"/>
-            <Button fx:id="btnNext" text="%button.next"/>
+            <Button fx:id="btnPrevious" text="%button.previous" visible="false" managed="false" onAction="#onPreviousButtonClicked"/>
+            <Button fx:id="btnNext" text="%button.next" onAction="#onNextButtonClicked"/>
         </HBox>
     </bottom>
 </BorderPane>

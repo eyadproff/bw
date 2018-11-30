@@ -41,7 +41,7 @@ public class ConvertFingerprintBase64ImagesToWsqWorkflowTask implements Workflow
 				return;
 			}
 			
-			String errorCode = CommonsErrorCodes.C008_00030.getCode();
+			String errorCode = CommonsErrorCodes.C008_00026.getCode();
 			String[] errorDetails = {"Failed to call the service for converting to WSQ!"};
 			resetWorkflowStepIfNegativeOrNullTaskResponse(TaskResponse.failure(errorCode, e, errorDetails));
 			return;
@@ -55,7 +55,7 @@ public class ConvertFingerprintBase64ImagesToWsqWorkflowTask implements Workflow
 		}
 		else
 		{
-			String errorCode = CommonsErrorCodes.C008_00031.getCode();
+			String errorCode = CommonsErrorCodes.C008_00027.getCode();
 			String[] errorDetails = {"ConvertedFingerprintWsqResponse.FailureCodes.UNKNOWN (" +
 																						result.getReturnCode() + ")"};
 			resetWorkflowStepIfNegativeOrNullTaskResponse(TaskResponse.failure(errorCode, errorDetails));

@@ -123,7 +123,7 @@ public class CoreFxController extends FxControllerBase implements IdleMonitorReg
 		
 		Thread.setDefaultUncaughtExceptionHandler((thread, throwable) ->
 		{
-			String errorCode = CoreErrorCodes.C002_00016.getCode();
+			String errorCode = CoreErrorCodes.C002_00001.getCode();
 			String[] errorDetails = {"Uncaught exception!"};
 			showErrorDialog(errorCode, throwable, errorDetails);
 		});
@@ -263,7 +263,7 @@ public class CoreFxController extends FxControllerBase implements IdleMonitorReg
 			}
 			catch(Exception e)
 			{
-				String errorCode = CoreErrorCodes.C002_00001.getCode();
+				String errorCode = CoreErrorCodes.C002_00002.getCode();
 				String[] errorDetails = {"Failed to render the UI! controllerClass = " + controllerClass.getName()};
 				showErrorDialog(errorCode, e, errorDetails);
 			}
@@ -284,7 +284,7 @@ public class CoreFxController extends FxControllerBase implements IdleMonitorReg
 		FxmlFile fxmlFile = controllerClass.getAnnotation(FxmlFile.class);
 		if(fxmlFile == null)
 		{
-			String errorCode = CoreErrorCodes.C002_00031.getCode();
+			String errorCode = CoreErrorCodes.C002_00003.getCode();
 			String[] errorDetails = {"\"@FxmlFile\" is not set!", "controllerClass = " + controllerClass};
 			showErrorDialog(errorCode, null, errorDetails);
 			return null;
@@ -295,7 +295,7 @@ public class CoreFxController extends FxControllerBase implements IdleMonitorReg
 		URL fxmlUrl = controllerClass.getResource("/" + parentPackageName + "/fxml/" + fxmlFile.value());
 		if(fxmlUrl == null)
 		{
-			String errorCode = CoreErrorCodes.C002_00002.getCode();
+			String errorCode = CoreErrorCodes.C002_00004.getCode();
 			String[] errorDetails = {"\"fxmlUrl\" is null!", "controllerClass = " + controllerClass};
 			showErrorDialog(errorCode, null, errorDetails);
 			return null;
@@ -312,7 +312,7 @@ public class CoreFxController extends FxControllerBase implements IdleMonitorReg
 		}
 		catch(IOException e)
 		{
-			String errorCode = CoreErrorCodes.C002_00004.getCode();
+			String errorCode = CoreErrorCodes.C002_00005.getCode();
 			String[] errorDetails = {"Failed to load FXML correctly!", "controllerClass = " + controllerClass};
 			showErrorDialog(errorCode, e, errorDetails);
 			return null;
@@ -449,7 +449,7 @@ public class CoreFxController extends FxControllerBase implements IdleMonitorReg
 		}
 		catch(MissingResourceException e)
 		{
-			String errorCode = CoreErrorCodes.C002_00007.getCode();
+			String errorCode = CoreErrorCodes.C002_00006.getCode();
 			String[] errorDetails = {"Core \"stringsBundle\" resource bundle is missing!"};
 			showErrorDialog(errorCode, e, errorDetails);
 			return;
@@ -458,7 +458,7 @@ public class CoreFxController extends FxControllerBase implements IdleMonitorReg
 		URL fxmlUrl = AppUtils.getCoreFxmlFileAsResource();
 		if(fxmlUrl == null)
 		{
-			String errorCode = CoreErrorCodes.C002_00009.getCode();
+			String errorCode = CoreErrorCodes.C002_00007.getCode();
 			String[] errorDetails = {"Core \"fxmlUrl\" is null!"};
 			showErrorDialog(errorCode, null, errorDetails);
 			return;
@@ -479,7 +479,7 @@ public class CoreFxController extends FxControllerBase implements IdleMonitorReg
 		}
 		catch(IOException e)
 		{
-			String errorCode = CoreErrorCodes.C002_00010.getCode();
+			String errorCode = CoreErrorCodes.C002_00008.getCode();
 			String[] errorDetails = {"Failed to load core FXML correctly!"};
 			showErrorDialog(errorCode, e, errorDetails);
 			return;

@@ -41,9 +41,6 @@ public class UploadImageFileFxController extends WizardStepFxControllerBase
 	@Override
 	protected void onAttachedToScene()
 	{
-		btnPrevious.setOnAction(event -> goPrevious());
-		btnNext.setOnAction(event -> goNext());
-		
 		fileChooser.setTitle(resources.getString("fileChooser.selectImage.title"));
 		FileChooser.ExtensionFilter extFilterJPG = new FileChooser.ExtensionFilter(
 									resources.getString("fileChooser.selectImage.types"), "*.jpg");

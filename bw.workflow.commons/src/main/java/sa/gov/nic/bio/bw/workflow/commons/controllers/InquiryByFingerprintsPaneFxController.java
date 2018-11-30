@@ -35,7 +35,6 @@ public class InquiryByFingerprintsPaneFxController extends WizardStepFxControlle
 	@Override
 	protected void onAttachedToScene()
 	{
-		btnStartOver.setOnAction(actionEvent -> startOver());
 		btnCancel.setOnAction(actionEvent ->
 		{
 		    GuiUtils.showNode(lblProgress, false);

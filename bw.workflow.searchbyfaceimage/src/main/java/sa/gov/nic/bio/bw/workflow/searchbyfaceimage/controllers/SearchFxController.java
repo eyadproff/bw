@@ -20,7 +20,6 @@ public class SearchFxController extends WizardStepFxControllerBase
 	@Override
 	protected void onAttachedToScene()
 	{
-		btnStartOver.setOnAction(event -> startOver());
 		continueWorkflow();
 	}
 	

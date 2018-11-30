@@ -66,9 +66,6 @@ public class PunishmentDetailsPaneFxController extends WizardStepFxControllerBas
 	@Override
 	protected void onAttachedToScene()
 	{
-		btnPrevious.setOnAction(actionEvent -> goPrevious());
-		btnNext.setOnAction(actionEvent -> goNext());
-		
 		GuiUtils.applyValidatorToTextField(spnTazeerLashes.getEditor(), "\\d*", "[^\\d]",
 		                                   9);
 		GuiUtils.applyValidatorToTextField(spnHadLashes.getEditor(), "\\d*", "[^\\d]",

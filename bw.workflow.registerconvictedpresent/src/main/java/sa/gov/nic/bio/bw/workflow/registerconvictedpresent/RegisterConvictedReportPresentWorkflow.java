@@ -8,6 +8,7 @@ import sa.gov.nic.bio.bw.core.workflow.AssociatedMenu;
 import sa.gov.nic.bio.bw.core.workflow.Signal;
 import sa.gov.nic.bio.bw.core.workflow.WithLookups;
 import sa.gov.nic.bio.bw.core.workflow.WizardWorkflowBase;
+import sa.gov.nic.bio.bw.workflow.commons.beans.ConvictedReport;
 import sa.gov.nic.bio.bw.workflow.commons.beans.PersonInfo;
 import sa.gov.nic.bio.bw.workflow.commons.controllers.FaceCapturingFxController;
 import sa.gov.nic.bio.bw.workflow.commons.controllers.FingerprintCapturingFxController;
@@ -16,6 +17,8 @@ import sa.gov.nic.bio.bw.workflow.commons.controllers.InquiryByFingerprintsResul
 import sa.gov.nic.bio.bw.workflow.commons.lookups.CountriesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.DocumentTypesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.PersonTypesLookup;
+import sa.gov.nic.bio.bw.workflow.commons.tasks.ConvictedReportInquiryWorkflowTask;
+import sa.gov.nic.bio.bw.workflow.commons.tasks.ConvictedReportToPersonInfoConverter;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.FingerprintInquiryStatusCheckerWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.FingerprintInquiryStatusCheckerWorkflowTask.Status;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.FingerprintInquiryWorkflowTask;
@@ -31,9 +34,12 @@ import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.lookups.BiometricsExc
 import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.lookups.CrimeTypesLookup;
 import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.tasks.SubmittingConvictedReportWorkflowTask;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 @AssociatedMenu(workflowId = 1008, menuId = "menu.register.registerConvictedPresent", menuTitle = "menu.title", menuOrder = 2,
 				devices = {Device.FINGERPRINT_SCANNER, Device.CAMERA})
@@ -51,6 +57,9 @@ import java.util.ResourceBundle;
 		@Step(iconId = "file_pdf_alt", title = "wizard.showReport")})
 public class RegisterConvictedReportPresentWorkflow extends WizardWorkflowBase
 {
+	private static final String FIELD_CIVIL_PERSON_INFO_MAP = "CIVIL_PERSON_INFO_MAP";
+	private static final String FIELD_CRIMINAL_PERSON_INFO_MAP = "CRIMINAL_PERSON_INFO_MAP";
+	
 	@Override
 	public ResourceBundle getStringsResourceBundle(Locale locale)
 	{
@@ -134,16 +143,39 @@ public class RegisterConvictedReportPresentWorkflow extends WizardWorkflowBase
 						                                    "civilPersonIds");
 						if(!civilPersonIds.isEmpty())
 						{
-							setData(GetPersonInfoByIdWorkflowTask.class, "personId", civilPersonIds.get(0));
-							executeWorkflowTask(GetPersonInfoByIdWorkflowTask.class);
+							// LinkedHashMap is ordered
+							Map<Long, PersonInfo> civilPersonInfoMap = new LinkedHashMap<>();
+							
+							for(Long civilPersonId : civilPersonIds)
+							{
+								setData(GetPersonInfoByIdWorkflowTask.class, "personId", civilPersonId);
+								setData(GetPersonInfoByIdWorkflowTask.class,
+								        "returnNullResultInCaseNotFound", Boolean.TRUE);
+								executeWorkflowTask(GetPersonInfoByIdWorkflowTask.class);
+								civilPersonInfoMap.put(civilPersonId, getData(GetPersonInfoByIdWorkflowTask.class,
+								                                              "personInfo"));
+							}
+							
+							setData(getClass(), FIELD_CIVIL_PERSON_INFO_MAP, civilPersonInfoMap);
 						}
 					}
-					else if(criminalBiometricsId != null)
+					
+					if(criminalBiometricsId != null)
 					{
-						//setData(GetPersonInfoByCriminalBiometricsIdWorkflowTask.class,
-						//        "criminalBiometricsId",
-						//        criminalBiometricsId);
-						//executeWorkflowTask(GetPersonInfoByCriminalBiometricsIdWorkflowTask.class);
+						setData(ConvictedReportInquiryWorkflowTask.class, "criminalBiometricsId",
+						        criminalBiometricsId);
+						setData(ConvictedReportInquiryWorkflowTask.class,
+						        "returnNullResultInCaseNotFound", Boolean.TRUE);
+						executeWorkflowTask(ConvictedReportInquiryWorkflowTask.class);
+						List<ConvictedReport> convictedReports = getData(ConvictedReportInquiryWorkflowTask.class,
+						                                                 "convictedReports");
+						ConvictedReportToPersonInfoConverter converter = new ConvictedReportToPersonInfoConverter();
+						Map<Long, PersonInfo> criminalPersonInfoMap;
+						if(convictedReports != null) criminalPersonInfoMap = convictedReports.stream().collect(
+								Collectors.toMap(ConvictedReport::getReportNumber, converter::convert,
+								                 (k1, k2) -> k1, LinkedHashMap::new));
+						else criminalPersonInfoMap = new LinkedHashMap<>();
+						setData(getClass(), FIELD_CRIMINAL_PERSON_INFO_MAP, criminalPersonInfoMap);
 					}
 				}
 				
@@ -151,13 +183,13 @@ public class RegisterConvictedReportPresentWorkflow extends WizardWorkflowBase
 			}
 			case 3:
 			{
-				PersonInfo personInfo = getData(GetPersonInfoByIdWorkflowTask.class, "personInfo");
-				//if(personInfo == null) personInfo = getData(GetPersonInfoByCriminalBiometricsIdWorkflowTask.class, "personInfo");
-				
-				setData(InquiryByFingerprintsResultPaneFxController.class, "personInfo", personInfo);
+				passData(getClass(), FIELD_CIVIL_PERSON_INFO_MAP, InquiryByFingerprintsResultPaneFxController.class,
+				         "civilPersonInfoMap");
+				passData(getClass(), FIELD_CRIMINAL_PERSON_INFO_MAP, InquiryByFingerprintsResultPaneFxController.class,
+				         "criminalPersonInfoMap");
 				passData(FingerprintInquiryStatusCheckerWorkflowTask.class,
 				         InquiryByFingerprintsResultPaneFxController.class,
-				         "status", "civilBiometricsId", "criminalBiometricsId", "civilPersonIds");
+				         "status", "civilBiometricsId", "criminalBiometricsId");
 				renderUiAndWaitForUserInput(InquiryByFingerprintsResultPaneFxController.class);
 				break;
 			}

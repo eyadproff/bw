@@ -66,7 +66,7 @@ public class HomeWorkflow extends SinglePageWorkflowBase
 						}
 						catch(Exception e)
 						{
-							String errorCode = HomeErrorCodes.C004_00003.getCode();
+							String errorCode = HomeErrorCodes.C004_00001.getCode();
 							String[] errorDetails = {"Failed to load the menu workflow class!",
 													 "menuWorkflowClass = " +
 													(menuWorkflowClass == null ? null : menuWorkflowClass.getName())};
@@ -87,7 +87,7 @@ public class HomeWorkflow extends SinglePageWorkflowBase
 						}
 						catch(Throwable t)
 						{
-							String errorCode = HomeErrorCodes.C004_00004.getCode();
+							String errorCode = HomeErrorCodes.C004_00002.getCode();
 							String[] errorDetails = {"The subWorkflow throws uncaught exception!",
 													 "subWorkflow type = " + subWorkflow.getClass().getName()};
 							Context.getCoreFxController().showErrorDialog(errorCode, t, errorDetails);
@@ -95,7 +95,7 @@ public class HomeWorkflow extends SinglePageWorkflowBase
 						}
 						
 						// shouldn't reach here
-						String errorCode = HomeErrorCodes.C004_00005.getCode();
+						String errorCode = HomeErrorCodes.C004_00003.getCode();
 						String[] errorDetails = {"The subWorkflow returns normally without a signal!",
 															"subWorkflow type = " + subWorkflow.getClass().getName()};
 						

@@ -15,6 +15,7 @@ import java.util.List;
 public class ConvictedReportInquiryWorkflowTask implements WorkflowTask
 {
 	@Input(alwaysRequired = true) private long criminalBiometricsId;
+	@Input private Boolean returnNullResultInCaseNotFound;
 	@Output private List<ConvictedReport> convictedReports;
 	
 	@Override
@@ -24,6 +25,12 @@ public class ConvictedReportInquiryWorkflowTask implements WorkflowTask
 		Call<List<ConvictedReport>> call = api.inquireConvictedReportByGeneralFileNumber(workflowId, workflowTcn,
 		                                                                                 criminalBiometricsId);
 		TaskResponse<List<ConvictedReport>> taskResponse = Context.getWebserviceManager().executeApi(call);
+		
+		
+		boolean notFound = !taskResponse.isSuccess() && "B003-0015".equals(taskResponse.getErrorCode());
+		
+		if(returnNullResultInCaseNotFound != null && returnNullResultInCaseNotFound && notFound) return;
+		
 		resetWorkflowStepIfNegativeOrNullTaskResponse(taskResponse);
 		convictedReports = taskResponse.getResult();
 	}
