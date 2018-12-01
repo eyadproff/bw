@@ -12,25 +12,38 @@
         <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se"/>
 
         <!-- List of jars -->
-        <jar href="jnlp-jars/bcl-2018.08.1.jar"/>
-        <jar href="jnlp-jars/bcl-utils-2018.04.1.jar"/>
-        <jar href="jnlp-jars/gson-2.8.2.jar"/>
+        <jar href="jnlp-jars/bcl-2018.11.1.jar"/>
+        <jar href="jnlp-jars/bcl-utils-2018.11.1.jar"/>
+        <jar href="jnlp-jars/gson-2.8.5.jar"/>
 
         <!-- Enable jars compressing -->
         <property name="jnlp.packEnabled" value="true"/>
 
         <!-- BCL properties -->
-        <property name="jnlp.bcl.jreVersion" value="jre8u152-32bit"/>
+        <property name="jnlp.bcl.jreVersion" value="jre11.0.1-32bit"/>
         <property name="jnlp.bcl.appId" value="bw"/>
-        <property name="jnlp.bcl.mainClass" value="sa.gov.nic.bio.bw.client.AppEntryPoint"/>
+        <property name="jnlp.bcl.mainClass" value="sa.gov.nic.bio.bw.AppLauncher"/>
         <property name="jnlp.bcl.shared" value="false"/>
+        <property name="jnlp.bcl.usesModules" value="true"/>
 
         <!-- Optional properties. Add "jnlp.noPrefix" as a prefix to remove it when bypassing it to the application
              i.e. The key "jnlp.noPrefix.-Djavafx.preloader" will be bypassed as "-Djavafx.preloader" -->
-        <property name="jnlp.noPrefix.-Djava.ext.dirs=" value='C:/bio/java/jre8u152-32bit/lib/ext;C:/bio/user-apps/${user.name}/bw/resources/extensions'/>
-        <property name="jnlp.noPrefix.-Djava.locale.providers=" value='SPI,CLDR,JRE,HOST,'/>
-        <property name="jnlp.noPrefix.-Djavafx.preloader=" value='sa.gov.nic.bio.bw.client.preloader.AppPreloader'/>
+        <property name="jnlp.noPrefix.-Djavafx.preloader=" value='sa.gov.nic.bio.bw.preloader.AppPreloader'/>
         <property name="jnlp.noPrefix.-Xmx" value='1024m'/>
+        <property name="jnlp.noPrefix.--add-modules=" value='ALL-MODULE-PATH'/>
+        <property name="jnlp.noPrefix.--add-opens javafx.base/com.sun.javafx.runtime=" value='controlsfx'/>
+        <property name="jnlp.noPrefix.--add-opens javafx.graphics/com.sun.javafx.css=" value='controlsfx'/>
+        <property name="jnlp.noPrefix.--add-opens javafx.graphics/com.sun.javafx.scene=" value='controlsfx'/>
+        <property name="jnlp.noPrefix.--add-opens javafx.graphics/com.sun.javafx.scene.traversal=" value='controlsfx'/>
+        <property name="jnlp.noPrefix.--add-opens javafx.controls/com.sun.javafx.scene.control=" value='controlsfx'/>
+        <property name="jnlp.noPrefix.--add-opens javafx.controls/com.sun.javafx.scene.control.behavior=" value='controlsfx'/>
+        <property name="jnlp.noPrefix.--add-opens javafx.controls/javafx.scene.control.skin=" value='controlsfx'/>
+        <property name="jnlp.noPrefix.--add-opens javafx.graphics/javafx.scene=" value='controlsfx'/>
+        <property name="jnlp.noPrefix.--add-opens java.base/java.util=" value='org.apache.commons.lang3'/>
+        <property name="jnlp.noPrefix.--add-opens java.base/java.time.chrono=" value='bw.core'/>
+        <property name="--add-modules" value='javafx.controls'/>
+        <property name="jnlp.noPrefix.-Djava.library.path="
+                  value='"C:/bio/java/jre11-32bit/bin;C:/bio/user-apps/${user.name}/bw/resources"'/>
     </resources>
     <application-desc main-class="sa.gov.nic.bio.bcl.ClientLauncher"/>
 </jnlp>

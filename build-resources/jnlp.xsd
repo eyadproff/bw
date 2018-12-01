@@ -1043,12 +1043,12 @@ Note that spelling should be Descriptor, not Discriptor.
         <xs:attribute name="java-vm-args" type="xs:string"/>
         <!--
         The initial-heap-size attribute of the java element specifies the initial
-        size of the object heap.
+        size of the item heap.
         -->
         <xs:attribute name="initial-heap-size" type="memorySizeType"/>
         <!--
         The max-heap-size attribute of the java element specifies the preferred
-        maximum size of the object heap.
+        maximum size of the item heap.
         -->
         <xs:attribute name="max-heap-size" type="memorySizeType"/>
     </xs:complexType>

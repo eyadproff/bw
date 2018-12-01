@@ -1,5 +1,3 @@
-import org.apache.tools.ant.filters.ReplaceTokens
-
 buildscript {
     repositories {
         flatDir {
@@ -13,120 +11,131 @@ buildscript {
     }
 }
 
-project.version = '2018.09.4'
-group = 'sa.gov.nic.bio'
+allprojects {
+    group = 'sa.gov.nic.bio'
+    version = '2018.12.1'
+}
 
-apply plugin: 'java'
-apply plugin: 'application'
+subprojects {
+    apply plugin: 'java'
+
+    sourceCompatibility = 11
+    targetCompatibility = 11
+
+    tasks.withType(JavaCompile) {
+        options.encoding = 'UTF-8'
+    }
+
+    repositories {
+        flatDir {
+            dirs "../libs/compile"
+            dirs "../libs/test"
+        }
+    }
+
+    dependencies {
+        // JavaFX
+        implementation name: "javafx.base-12.0.0"
+        implementation name: "javafx.controls-12.0.0"
+        implementation name: "javafx.fxml-12.0.0"
+        implementation name: "javafx.graphics-12.0.0"
+        implementation name: "javafx.swing-12.0.0"
+
+        // JavaFX extension library
+        implementation name: "controlsfx-9.0.0"
+
+        // BCL-Utils and Biokit library
+        implementation name: "bio.commons-2018.11.1"
+        implementation name: "bcl-utils-2018.11.1"
+        implementation name: "biokit-library-2018.11.1"
+
+        // JUnit
+        testImplementation name : "junit-platform-commons-1.2.0"
+        testImplementation name : "junit-platform-console-1.2.0"
+        testImplementation name : "junit-platform-console-standalone-1.2.0"
+        testImplementation name : "junit-platform-engine-1.2.0"
+        testImplementation name : "junit-platform-gradle-plugin-1.2.0"
+        testImplementation name : "junit-platform-launcher-1.2.0"
+        testImplementation name : "junit-platform-runner-1.2.0"
+        testImplementation name : "junit-platform-suite-api-1.2.0"
+        testImplementation name : "junit-platform-surefire-provider-1.2.0"
+        testImplementation name : "junit-jupiter-api-5.2.0"
+        testImplementation name : "junit-jupiter-engine-5.2.0"
+        testImplementation name : "junit-jupiter-params-5.2.0"
+        testImplementation name : "junit-jupiter-migrationsupport-5.2.0"
+        testImplementation name : "junit-vintage-engine-5.2.0"
+        testImplementation name : "apiguardian-api-1.0.0"
+        testImplementation name : "opentest4j-1.1.0"
+    }
+
+    sourceSets {
+        main.output.resourcesDir = main.java.outputDir
+    }
+
+    jar {
+        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    }
+
+    afterEvaluate {
+
+        compileJava {
+            inputs.property("moduleName", moduleName)
+            doFirst {
+                options.compilerArgs = [
+                        '-Xlint:unchecked',
+                        '-Xlint:deprecation',
+                        '--module-path', classpath.asPath,
+                        '--patch-module', "$moduleName=" + files(sourceSets.main.resources.srcDirs).asPath,
+                ]
+                classpath = files()
+            }
+        }
+
+        compileTestJava {
+            inputs.property("moduleName", moduleName)
+            doFirst {
+                options.compilerArgs = [
+                        '-Xlint:unchecked',
+                        '-Xlint:deprecation',
+                        '--module-path', classpath.asPath,
+                        '--add-modules', 'junit',
+                        '--add-reads', "$moduleName=junit",
+                        '--patch-module', "$moduleName=" + files(sourceSets.test.java.srcDirs).asPath,
+                ]
+                classpath = files()
+            }
+        }
+
+        test {
+            inputs.property("moduleName", moduleName)
+            doFirst {
+                jvmArgs = [
+                        '--module-path', classpath.asPath,
+                        '--add-modules', 'ALL-MODULE-PATH',
+                        '--add-reads', "$moduleName=junit",
+                        '--patch-module', "$moduleName=" + files(sourceSets.test.java.outputDir).asPath,
+                ]
+                classpath = files()
+            }
+        }
+    }
+}
+
+apply plugin: 'base'
 apply plugin: "org.hidetake.ssh"
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
-
-tasks.withType(JavaCompile) {
-    options.encoding = 'UTF-8'
-}
-
-mainClassName = 'sa.gov.nic.bio.bw.client.AppEntryPoint'
-applicationDefaultJvmArgs = ['-Djava.ext.dirs=C:\\Program Files\\Java\\jdk1.8.0_152\\jre\\lib\\ext;build\\extensions',
-                             '-Djava.locale.providers=SPI,CLDR,JRE,HOST',
-                             '-Djavafx.preloader=sa.gov.nic.bio.bw.client.preloader.AppPreloader']
-
-repositories {
-    flatDir {
-        dirs "libs/compile"
-        dirs "libs/provided"
+task collectDependencies(type: Copy, group: 'web-start') {
+    from(subprojects.collect { it.tasks.withType(Jar) }) {
+        exclude 'javafx.scenicview-*.jar'
     }
-}
-
-dependencies {
-    // BCL-Utils and Biokit library
-    implementation name: "bcl-utils-2018.04.1"
-    implementation name: "biokit-library-2018.08.2"
-
-    // font to support arabic in jasper reports
-    implementation name: "custom-report-font-1.0.0"
-
-    // JavaFX extension library
-    implementation name: "controlsfx-8.40.14"
-    
-    // Retrofit HTTP client
-    implementation name: "retrofit-2.4.0"
-    implementation name: "okhttp-3.11.0"
-    implementation name: "okio-1.15.0"
-    implementation name: "converter-gson-2.4.0"
-    implementation name: "gson-2.8.5"
-
-    // Tomcat websocket client
-    implementation name: "javax.websocket-api-1.1"
-    implementation name: "tomcat-websocket-8.5.33"
-    implementation name: "tomcat-util-8.5.33"
-    implementation name: "tomcat-juli-8.5.33"
-    implementation name: "tomcat-api-8.5.33"
-
-    // Jasper reports
-    implementation name: "jasperreports-6.5.1"
-    implementation name: "jasper-compiler-jdt-5.5.23" // javac
-    implementation name: "commons-logging-1.2"
-    implementation name: "commons-digester-2.1"
-    implementation name: "commons-collections-3.2.2"
-    implementation name: "commons-beanutils-1.9.3"
-    implementation name: "itext-4.2.1"
-
-    // Barbecue barcode generator
-    implementation name: "barbecue-1.5-beta1"
-
-    // JUnit
-    testImplementation name : "junit-platform-commons-1.2.0"
-    testImplementation name : "junit-platform-console-1.2.0"
-    testImplementation name : "junit-platform-console-standalone-1.2.0"
-    testImplementation name : "junit-platform-engine-1.2.0"
-    testImplementation name : "junit-platform-gradle-plugin-1.2.0"
-    testImplementation name : "junit-platform-launcher-1.2.0"
-    testImplementation name : "junit-platform-runner-1.2.0"
-    testImplementation name : "junit-platform-suite-api-1.2.0"
-    testImplementation name : "junit-platform-surefire-provider-1.2.0"
-    testImplementation name : "junit-jupiter-api-5.2.0"
-    testImplementation name : "junit-jupiter-engine-5.2.0"
-    testImplementation name : "junit-jupiter-params-5.2.0"
-    testImplementation name : "junit-jupiter-migrationsupport-5.2.0"
-    testImplementation name : "junit-vintage-engine-5.2.0"
-    testImplementation name : "apiguardian-api-1.0.0"
-    testImplementation name : "opentest4j-1.1.0"
-}
-
-processResources {
-    filesMatching('**/config.properties') {
-        def env = System.getenv('build-environemnt')
-        println 'build-environment = ' + env
-
-        filter(ReplaceTokens, tokens:['APP_VERSION': project.version])
-
-        /*if(env == 'INT') filter(ReplaceTokens, tokens:['APP_VERSION': project.version + '-SNAPSHOT' + new Date().format('yyyyMMddHHmmss')])
-        else if(env == 'PROD') filter(ReplaceTokens, tokens:['APP_VERSION': project.version])
-        else *//*(DEV)*//* filter(ReplaceTokens, tokens:['APP_VERSION': project.version + '-DEV'])*/
+    from(subprojects.collect { it.sourceSets.main.runtimeClasspath }) {
+        exclude 'sa/**'
+        exclude 'org/**'
+        exclude 'module-info.class'
+        exclude 'javafx.scenicview-*.jar'
     }
-}
-
-jar {
-    manifest {
-        attributes('Implementation-Title': project.name,
-                'Implementation-Version': project.version,
-                'Implementation-Vendor': 'NIC',
-                'Application-Name': 'Biometrics Workstation',
-                'Built-By': 'Biometrics Team',
-                'JavaFX-Preloader-Class': 'sa.gov.nic.bio.bw.client.preloader.AppPreloader',
-                'JavaFX-Application-Class': 'sa.gov.nic.bio.bw.client.AppEntryPoint',
-                'Main-Class': 'sa.gov.nic.bio.bw.client.AppEntryPoint',
-                'Class-Path': configurations.runtimeClasspath.files.collect { it.getName() }.join(' '))
-    }
-}
-
-task collectDependencies(type: Copy) {
-    from configurations.runtimeClasspath.files
     into 'build/libs'
 }
-collectDependencies.dependsOn(jar)
 
 task packageWebStart(group: 'web-start') {
     doLast {
@@ -142,33 +151,32 @@ task packageWebStart(group: 'web-start') {
         // copy jar files
         copy {
             from 'build/libs'
-            into "build/web-start/classpath-jars"
+            into "build/web-start/modulepath-jars"
         }
 
         // compress the jars
-        fileTree(dir: 'build/web-start/classpath-jars', include: '**/*.jar', excludes: ['bw-client-*.jar', 'controlsfx-*.jar']).visit { FileVisitDetails details ->
-            String fileName = details.file.name
-            exec {
-                workingDir 'build/web-start/classpath-jars'
-                commandLine 'pack200', fileName + ".pack.gz", fileName
-            }
-        }
+        fileTree(dir: 'build/web-start/modulepath-jars', include: '**/*.jar', excludes: ['bw.*.jar', 'controlsfx-*.jar', 'javafx.*.jar']).visit
+                { FileVisitDetails details ->
+                    String fileName = details.file.name
+                    exec {
+                        workingDir 'build/web-start/modulepath-jars'
+                        commandLine 'pack200', fileName + ".pack.gz", fileName
+                    }
+                }
 
         // delete the un-compressed jars
-        fileTree(dir: 'build/web-start/classpath-jars', include: '**/*.jar', excludes: ['bw-client-*.jar', 'controlsfx-*.jar']).visit { FileVisitDetails details ->
+        fileTree(dir: 'build/web-start/modulepath-jars', include: '**/*.jar', excludes: ['bw.*.jar', 'controlsfx-*.jar', 'javafx.*.jar']).visit { FileVisitDetails details ->
             details.file.delete()
         }
 
-        // copy the extensions folder
+        // copy javafx DLLs
         copy {
-            from 'build/extensions'
-            into "build/web-start/resources/extensions"
+            from 'build-resources/javafx-dlls/32-bit'
+            into "build/web-start/resources"
         }
     }
 }
 packageWebStart.dependsOn(collectDependencies)
-run.dependsOn(collectDependencies)
-
 
 remotes {
     webServer {
@@ -228,23 +236,3 @@ task deploy_int(group: 'web-start') {
         }
     }
 }
-
-task packageExtensions(type: Jar) {
-    delete fileTree('build/extensions').include('**/*')
-    from("build/classes/java/main") {
-        include '/sa/gov/nic/bio/bw/client/core/utils/ArabicCalendarDataProvider.class'
-    }
-
-    from("build/resources/main") {
-        include 'META-INF/**'
-    }
-
-
-    destinationDir file('build/extensions')
-    baseName 'arabic-calendar-data-provider'
-    version '1.0'
-    extension 'jar'
-}
-packageExtensions.dependsOn(build)
-run.dependsOn(packageExtensions)
-packageWebStart.dependsOn(packageExtensions)

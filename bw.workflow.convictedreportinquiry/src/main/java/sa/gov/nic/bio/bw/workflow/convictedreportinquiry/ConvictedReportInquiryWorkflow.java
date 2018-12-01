@@ -1,0 +1,76 @@
+package sa.gov.nic.bio.bw.workflow.convictedreportinquiry;
+
+import javafx.util.Pair;
+import sa.gov.nic.bio.bw.core.utils.Device;
+import sa.gov.nic.bio.bw.core.workflow.AssociatedMenu;
+import sa.gov.nic.bio.bw.core.workflow.Signal;
+import sa.gov.nic.bio.bw.core.workflow.SinglePageWorkflowBase;
+import sa.gov.nic.bio.bw.core.workflow.WithLookups;
+import sa.gov.nic.bio.bw.workflow.commons.lookups.CountriesLookup;
+import sa.gov.nic.bio.bw.workflow.commons.lookups.DocumentTypesLookup;
+import sa.gov.nic.bio.bw.workflow.commons.lookups.PersonTypesLookup;
+import sa.gov.nic.bio.bw.workflow.commons.tasks.ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask;
+import sa.gov.nic.bio.bw.workflow.convictedreportinquiry.controllers.ConvictedReportInquiryPaneFxController;
+import sa.gov.nic.bio.bw.workflow.commons.tasks.ConvictedReportInquiryWorkflowTask;
+import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.lookups.CrimeTypesLookup;
+import sa.gov.nic.bio.bw.workflow.commons.beans.ConvictedReport;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.ResourceBundle;
+
+@AssociatedMenu(workflowId = 1003, menuId = "menu.query.convictedReportInquiry", menuTitle = "menu.title", menuOrder = 6,
+				devices = Device.BIO_UTILITIES)
+@WithLookups({PersonTypesLookup.class, DocumentTypesLookup.class, CountriesLookup.class, CrimeTypesLookup.class})
+public class ConvictedReportInquiryWorkflow extends SinglePageWorkflowBase
+{
+	@Override
+	public ResourceBundle getStringsResourceBundle(Locale locale)
+	{
+		return ResourceBundle.getBundle(getClass().getPackageName() + ".bundles.strings", locale);
+	}
+	
+	@Override
+	public ResourceBundle getErrorsResourceBundle(Locale locale)
+	{
+		return ResourceBundle.getBundle(getClass().getPackageName() + ".bundles.errors", locale);
+	}
+	
+	@Override
+	public void onStep() throws InterruptedException, Signal
+	{
+		renderUiAndWaitForUserInput(ConvictedReportInquiryPaneFxController.class);
+		
+		passData(ConvictedReportInquiryPaneFxController.class, ConvictedReportInquiryWorkflowTask.class,
+		         "criminalBiometricsId");
+		
+		executeWorkflowTask(ConvictedReportInquiryWorkflowTask.class);
+		
+		List<ConvictedReport> convictedReports = getData(ConvictedReportInquiryWorkflowTask.class,
+		                                                 "convictedReports");
+		
+		List<Pair<ConvictedReport, Map<Integer, String>>> convictedReportPairs = new ArrayList<>();
+		
+		for(ConvictedReport convictedReport : convictedReports)
+		{
+			System.out.println("convictedReport.getSubjFingers() = " + convictedReport.getSubjFingers());
+			
+			setData(ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask.class,
+			        "fingerprints", convictedReport.getSubjFingers());
+			setData(ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask.class,
+			        "missingFingerprints", convictedReport.getSubjMissingFingers());
+			
+			executeWorkflowTask(ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask.class);
+			
+			Map<Integer, String> fingerprintBase64Images =
+									getData(ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask.class,
+									        "fingerprintBase64Images");
+			
+			convictedReportPairs.add(new Pair<>(convictedReport, fingerprintBase64Images));
+		}
+		
+		setData(ConvictedReportInquiryPaneFxController.class, "convictedReports", convictedReportPairs);
+	}
+}

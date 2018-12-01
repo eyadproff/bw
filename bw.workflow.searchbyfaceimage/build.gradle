@@ -1,0 +1,5 @@
+project.ext.moduleName = 'bw.workflow.searchbyfaceimage'
+
+dependencies {
+    implementation project(':bw.workflow.commons')
+}

@@ -1,0 +1,17 @@
+project.ext.moduleName = 'bw.lib.jasperreports'
+
+apply plugin: 'java-library'
+
+dependencies {
+    // Jasper reports
+    api name: "jasperreports-6.5.1"
+    implementation name: "jasper-compiler-jdt-5.5.23" // javac
+    implementation name: "commons-logging-1.2"
+    implementation name: "commons-digester-2.1"
+    implementation name: "commons-collections-3.2.2"
+    implementation name: "commons-beanutils-1.9.3"
+    implementation name: "itext-4.2.1"
+
+    // font to support arabic in jasper reports
+    implementation name: "custom-report-font-1.0.0"
+}

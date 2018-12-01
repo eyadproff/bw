@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.ProgressIndicator?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.StackPane?>
+<?import org.controlsfx.control.NotificationPane?>
+<?import javafx.scene.layout.VBox?>
+
+<?import javafx.scene.control.ScrollPane?>
+<StackPane xmlns="http://javafx.com/javafx/11" xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="sa.gov.nic.bio.bw.core.controllers.CoreFxController"
+           styleClass="root-pane" stylesheets="@../css/style.css">
+    <BorderPane>
+        <top>
+            <fx:include fx:id="headerPane" source="header.fxml" styleClass="header" visible="false" managed="false"/>
+        </top>
+        <left>
+            <VBox fx:id="sidePane">
+                <fx:include fx:id="menuPane" source="menu.fxml" styleClass="nav" visible="false" managed="false" VBox.vgrow="ALWAYS" minHeight="150.0"/>
+                <fx:include fx:id="devicesRunnerGadgetPane" source="devicesRunnerGadget.fxml" visible="false" managed="false" VBox.vgrow="NEVER"/>
+            </VBox>
+        </left>
+        <center>
+            <NotificationPane fx:id="idleNotifier">
+                <graphic>
+                    <ImageView>
+                        <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/icon_warning_32px.png"/>
+                    </ImageView>
+                </graphic>
+                <content>
+                    <NotificationPane fx:id="notificationPane">
+                        <content>
+                            <StackPane>
+                                <VBox minWidth="0.0" minHeight="430.0">
+                                    <VBox fx:id="wizardPaneContainer"/>
+                                    <BorderPane fx:id="bodyPane" VBox.vgrow="ALWAYS">
+                                        <center>
+                                            <!-- default place holder -->
+                                            <ProgressIndicator maxHeight="25.0" maxWidth="25.0"/>
+                                        </center>
+                                    </BorderPane>
+                                </VBox>
+                                <ProgressIndicator fx:id="piWizardTransition" visible="false" maxHeight="25.0" maxWidth="25.0"/>
+                                <StackPane fx:id="menuTransitionOverlayPane" styleClass="background-overlay-white" visible="false">
+                                    <ProgressIndicator maxHeight="25.0" maxWidth="25.0"/>
+                                </StackPane>
+                            </StackPane>
+                        </content>
+                    </NotificationPane>
+                </content>
+            </NotificationPane>
+        </center>
+        <bottom>
+            <fx:include fx:id="footerPane" source="footer.fxml" styleClass="footer"/>
+        </bottom>
+    </BorderPane>
+    <StackPane fx:id="stageOverlayPane" styleClass="background-overlay" visible="false"/>
+</StackPane>
+
+<!-- NOTE:
+    We need the IDs headerPane and footerPane in menuOrder to be
+    able to inject headerPaneController and footerPaneController
+-->
