@@ -12,7 +12,12 @@ public enum Gender
 	@Override
 	public String toString()
 	{
-		ResourceBundle resourceBundle = AppUtils.getCoreStringsResourceBundle(Locale.getDefault());
+		return toString(Locale.getDefault());
+	}
+	
+	public String toString(Locale locale)
+	{
+		ResourceBundle resourceBundle = AppUtils.getCoreStringsResourceBundle(locale);
 		
 		switch(this)
 		{

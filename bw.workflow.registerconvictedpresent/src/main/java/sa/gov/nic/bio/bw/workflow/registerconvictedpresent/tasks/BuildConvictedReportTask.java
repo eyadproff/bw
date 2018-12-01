@@ -7,22 +7,23 @@ import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import sa.gov.nic.bio.bw.commons.resources.images.CommonImages;
 import sa.gov.nic.bio.bw.core.Context;
+import sa.gov.nic.bio.bw.core.beans.Gender;
 import sa.gov.nic.bio.bw.core.beans.Name;
 import sa.gov.nic.bio.bw.core.beans.UserInfo;
 import sa.gov.nic.bio.bw.core.utils.AppConstants.Locales;
 import sa.gov.nic.bio.bw.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.core.utils.GuiLanguage;
+import sa.gov.nic.bio.bw.workflow.commons.beans.ConvictedReport;
+import sa.gov.nic.bio.bw.workflow.commons.beans.Country;
+import sa.gov.nic.bio.bw.workflow.commons.beans.CrimeCode;
+import sa.gov.nic.bio.bw.workflow.commons.beans.DocumentType;
+import sa.gov.nic.bio.bw.workflow.commons.beans.JudgementInfo;
+import sa.gov.nic.bio.bw.workflow.commons.beans.PersonType;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.CountriesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.DocumentTypesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.PersonTypesLookup;
-import sa.gov.nic.bio.bw.workflow.commons.beans.Country;
 import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.beans.CrimeType;
-import sa.gov.nic.bio.bw.workflow.commons.beans.DocumentType;
-import sa.gov.nic.bio.bw.workflow.commons.beans.PersonType;
 import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.lookups.CrimeTypesLookup;
-import sa.gov.nic.bio.bw.workflow.commons.beans.ConvictedReport;
-import sa.gov.nic.bio.bw.workflow.commons.beans.CrimeCode;
-import sa.gov.nic.bio.bw.workflow.commons.beans.JudgementInfo;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -162,11 +163,15 @@ public class BuildConvictedReportTask extends Task<JasperPrint>
 		}
 		
 		if(countryBean != null) params.put(PARAMETER_NATIONALITY, countryBean.getDescriptionAR());
+		else params.put(PARAMETER_NATIONALITY, AppUtils.getCoreStringsResourceBundle(Locales.SAUDI_AR_LOCALE)
+																		.getString("combobox.unknownNationality"));
 		
 		params.put(PARAMETER_OCCUPATION, AppUtils.localizeNumbers(convictedReport.getSubjOccupation(),
 		                                                          Locales.SAUDI_AR_LOCALE,
 		                                                          true));
-		params.put(PARAMETER_GENDER, "F".equals(convictedReport.getSubjGender()) ? "أنثى" : "ذكر");
+		String subjGender = convictedReport.getSubjGender();
+		if(subjGender != null) params.put(PARAMETER_GENDER, "F".equals(subjGender) ?
+				Gender.FEMALE.toString(Locales.SAUDI_AR_LOCALE) : Gender.FEMALE.toString(Locales.SAUDI_EN_LOCALE));
 		
 		Long subjBioId = convictedReport.getSubjBioId();
 		if(subjBioId != null) params.put(PARAMETER_CIVIL_BIOMETRICS_ID,

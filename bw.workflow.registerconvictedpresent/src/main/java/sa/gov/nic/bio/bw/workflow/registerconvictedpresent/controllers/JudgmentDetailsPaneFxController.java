@@ -286,9 +286,7 @@ public class JudgmentDetailsPaneFxController extends WizardStepFxControllerBase
 																		rdoJudgmentDateUseGregorian.setSelected(true);
 		
 		if(caseFileNumber != null && !caseFileNumber.isEmpty()) txtCaseFileNumber.setText(caseFileNumber);
-		
-		if(prisonerNumber != null) txtPrisonerNumber.setText(AppUtils.localizeNumbers(String.valueOf(prisonerNumber)));
-		
+		if(prisonerNumber != null) txtPrisonerNumber.setText(String.valueOf(prisonerNumber));
 		if(arrestDate != null) dpArrestDate.setValue(arrestDate);
 		
 		rdoArrestDateUseHijri.setSelected(true);
