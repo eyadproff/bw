@@ -43,6 +43,7 @@ public class NormalizedPersonInfo extends JavaBean
 		if(personInfo == null) return;
 		
 		facePhotoBase64 = personInfo.getFace();
+		if(facePhotoBase64 != null && facePhotoBase64.strip().isBlank()) facePhotoBase64 = null;
 		
 		Name name = personInfo.getName();
 		
@@ -83,7 +84,9 @@ public class NormalizedPersonInfo extends JavaBean
 		PersonIdInfo identityInfo = personInfo.getIdentityInfo();
 		
 		occupation = identityInfo != null ? identityInfo.getOccupation() : null;
+		if(occupation != null && occupation.strip().isBlank()) occupation = null;
 		birthPlace = personInfo.getBirthPlace();
+		if(birthPlace != null && birthPlace.strip().isBlank()) birthPlace = null;
 		
 		Date date = personInfo.getBirthDate();
 		if(date != null && date.getTime() > AppConstants.SAMIS_DB_DATE_NOT_SET_VALUE)
@@ -91,7 +94,8 @@ public class NormalizedPersonInfo extends JavaBean
 			birthDate = date.toInstant().atZone(AppConstants.SAUDI_ZONE).toLocalDate();
 		}
 		
-		personId = identityInfo != null ? Long.valueOf(identityInfo.getIdNumber()) : null;
+		personId = identityInfo != null ?
+					(identityInfo.getIdNumber() != null ? Long.valueOf(identityInfo.getIdNumber()) : null) : null;
 		
 		@SuppressWarnings("unchecked")
 		List<PersonType> personTypes = (List<PersonType>) Context.getUserSession().getAttribute(PersonTypesLookup.KEY);

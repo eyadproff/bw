@@ -40,7 +40,7 @@ public class JudgmentDetailsPaneFxController extends WizardStepFxControllerBase
 	@Output private LocalDate judgmentDate;
 	@Output private Boolean judgmentDateUseHijri;
 	@Output private String caseFileNumber;
-	@Output private String prisonerNumber;
+	@Output private Long prisonerNumber;
 	@Output private LocalDate arrestDate;
 	@Output private Boolean arrestDateUseHijri;
 	@Output private List<CrimeCode> crimes;
@@ -182,9 +182,10 @@ public class JudgmentDetailsPaneFxController extends WizardStepFxControllerBase
 		GuiUtils.makeComboBoxOpenableByPressingEnter(cboCrimeClass5);
 		
 		GuiUtils.applyValidatorToTextField(txtCaseFileNumber, null, null, 20);
-		GuiUtils.applyValidatorToTextField(txtPrisonerNumber, null, null, 20);
 		GuiUtils.applyValidatorToTextField(txtJudgmentNumber, null, null, 20);
 		GuiUtils.applyValidatorToTextField(txtJudgmentIssuer, null, null, 30);
+		GuiUtils.applyValidatorToTextField(txtPrisonerNumber, "\\d*", "[^\\d]",
+		                                   12);
 		
 		cboCrimePaneMap.put(1, paneCrime2);
 		cboCrimePaneMap.put(2, paneCrime3);
@@ -286,7 +287,7 @@ public class JudgmentDetailsPaneFxController extends WizardStepFxControllerBase
 		
 		if(caseFileNumber != null && !caseFileNumber.isEmpty()) txtCaseFileNumber.setText(caseFileNumber);
 		
-		if(prisonerNumber != null && !prisonerNumber.isEmpty()) txtPrisonerNumber.setText(prisonerNumber);
+		if(prisonerNumber != null) txtPrisonerNumber.setText(AppUtils.localizeNumbers(String.valueOf(prisonerNumber)));
 		
 		if(arrestDate != null) dpArrestDate.setValue(arrestDate);
 		
@@ -348,7 +349,7 @@ public class JudgmentDetailsPaneFxController extends WizardStepFxControllerBase
 		else this.caseFileNumber = null;
 		
 		var prisonerNumber = txtPrisonerNumber.getText();
-		if(!prisonerNumber.isBlank()) this.prisonerNumber = prisonerNumber;
+		if(!prisonerNumber.isBlank()) this.prisonerNumber = Long.parseLong(prisonerNumber);
 		else this.prisonerNumber = null;
 		
 		this.arrestDate = dpArrestDate.getValue();

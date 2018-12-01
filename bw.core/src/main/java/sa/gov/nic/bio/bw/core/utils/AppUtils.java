@@ -577,10 +577,9 @@ public final class AppUtils implements AppLogger
 		ByteArrayOutputStream byteOutput = new ByteArrayOutputStream();
 		BufferedImage bufferedImage = SwingFXUtils.fromFXImage(image, null);
 		
-		// convert to greyscale
 		int w = bufferedImage.getWidth();
 		int h = bufferedImage.getHeight();
-		BufferedImage newImage = new BufferedImage(w, h, BufferedImage.TYPE_BYTE_GRAY);
+		BufferedImage newImage = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
 		int[] rgb = bufferedImage.getRGB(0, 0, w, h, null, 0, w);
 		newImage.setRGB(0, 0, w, h, rgb, 0, w);
 		
@@ -652,6 +651,11 @@ public final class AppUtils implements AppLogger
 	public static String bytesToBase64(byte[] bytes)
 	{
 		return Base64.getEncoder().encodeToString(bytes);
+	}
+	
+	public static byte[] base64ToBytes(String base64)
+	{
+		return Base64.getDecoder().decode(base64);
 	}
 	
 	public static List<Field> getAllFields(List<Field> fields, Class<?> type)

@@ -248,10 +248,11 @@ public class BuildConvictedReportTask extends Task<JasperPrint>
 		                                                                                Locales.SAUDI_AR_LOCALE,
 	                                                                                    true));
 		
-		String prisonerNumber = judgementInfo.getPrisonerNumber();
-		if(prisonerNumber != null) params.put(PARAMETER_PRISONER_NUMBER, AppUtils.localizeNumbers(prisonerNumber,
-                                                                                        Locales.SAUDI_AR_LOCALE,
-                                                                                        true));
+		Long prisonerNumber = judgementInfo.getPrisonerNumber();
+		if(prisonerNumber != null) params.put(PARAMETER_PRISONER_NUMBER, AppUtils.localizeNumbers(
+																						String.valueOf(prisonerNumber),
+		                                                                                Locales.SAUDI_AR_LOCALE,
+		                                                                                true));
 		
 		Long arrestDate = judgementInfo.getArrestDate();
 		if(arrestDate != null) params.put(PARAMETER_ARREST_DATE,

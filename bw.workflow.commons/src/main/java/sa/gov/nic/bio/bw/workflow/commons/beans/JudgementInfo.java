@@ -27,7 +27,7 @@ public class JudgementInfo extends JavaBean
 	private boolean covenant;
 	private boolean libel;
 	private String policeFileNum;
-	private String prisonerNumber;
+	private Long prisonerNumber;
 	private Long arrestDate;
 	
 	public JudgementInfo(String judgIssuer, long judgDate, String judgNum, int judgTazeerLashesCount,
@@ -35,7 +35,7 @@ public class JudgementInfo extends JavaBean
 	                     int jailDayCount, int trvlBanDayCount, int trvlBanMonthCount, int trvlBanYearCount,
 	                     int deportDayCount, int deportMonthCount, int deportYearCount, int exileDayCount,
 	                     int exileMonthCount, int exileYearCount, boolean finalDeport, boolean covenant, boolean libel,
-	                     String policeFileNum, String prisonerNumber, Long arrestDate)
+	                     String policeFileNum, Long prisonerNumber, Long arrestDate)
 	{
 		this.judgIssuer = judgIssuer;
 		this.judgDate = judgDate;
@@ -133,8 +133,8 @@ public class JudgementInfo extends JavaBean
 	public String getPoliceFileNum(){return policeFileNum;}
 	public void setPoliceFileNum(String policeFileNum){this.policeFileNum = policeFileNum;}
 	
-	public String getPrisonerNumber(){return prisonerNumber;}
-	public void setPrisonerNumber(String prisonerNumber){this.prisonerNumber = prisonerNumber;}
+	public Long getPrisonerNumber(){return prisonerNumber;}
+	public void setPrisonerNumber(Long prisonerNumber){this.prisonerNumber = prisonerNumber;}
 	
 	public Long getArrestDate(){return arrestDate;}
 	public void setArrestDate(Long arrestDate){this.arrestDate = arrestDate;}

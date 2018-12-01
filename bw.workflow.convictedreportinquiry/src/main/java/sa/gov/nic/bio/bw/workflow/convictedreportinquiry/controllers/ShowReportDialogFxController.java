@@ -29,7 +29,6 @@ import sa.gov.nic.bio.bw.workflow.commons.beans.ConvictedReport;
 import sa.gov.nic.bio.bw.workflow.commons.beans.Country;
 import sa.gov.nic.bio.bw.workflow.commons.beans.CrimeCode;
 import sa.gov.nic.bio.bw.workflow.commons.beans.DocumentType;
-import sa.gov.nic.bio.bw.workflow.commons.beans.Finger;
 import sa.gov.nic.bio.bw.workflow.commons.beans.JudgementInfo;
 import sa.gov.nic.bio.bw.workflow.commons.beans.PersonType;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.CountriesLookup;
@@ -352,8 +351,9 @@ public class ShowReportDialogFxController extends FxControllerBase
 			if(caseFileNumber != null) lblCaseFileNumber.setText(AppUtils.localizeNumbers(caseFileNumber));
 			lblJudgmentNumber.setText(AppUtils.localizeNumbers(judgementInfo.getJudgNum()));
 			
-			String prisonerNumber = judgementInfo.getPrisonerNumber();
-			if(prisonerNumber != null) lblPrisonerNumber.setText(AppUtils.localizeNumbers(prisonerNumber));
+			Long prisonerNumber = judgementInfo.getPrisonerNumber();
+			if(prisonerNumber != null) lblPrisonerNumber.setText(AppUtils.localizeNumbers(
+																					String.valueOf(prisonerNumber)));
 			
 			Long arrestDate = judgementInfo.getArrestDate();
 			if(arrestDate != null) lblArrestDate.setText(
@@ -384,19 +384,16 @@ public class ShowReportDialogFxController extends FxControllerBase
 				lblOther.setText(AppUtils.localizeNumbers(judgOthers));
 		}
 		
-		List<Finger> subjFingers = convictedReport.getSubjFingers();
-		Map<Integer, String> fingerprintBase64Images = subjFingers.stream()
-				.collect(Collectors.toMap(Finger::getType, Finger::getImage));
 		GuiUtils.attachFingerprintImages(fingerprintBase64Images, ivRightThumb, ivRightIndex, ivRightMiddle,
 		                                 ivRightRing, ivRightLittle, ivLeftThumb, ivLeftIndex, ivLeftMiddle,
 		                                 ivLeftRing, ivLeftLittle);
 	}
 	
 	public void setConvictedReportWithFingerprintImages(ConvictedReport convictedReport,
-	                                                    Map<Integer, String> fingerprintImages)
+	                                                    Map<Integer, String> fingerprintBase64Images)
 	{
 		this.convictedReport = convictedReport;
-		this.fingerprintBase64Images = fingerprintImages;
+		this.fingerprintBase64Images = fingerprintBase64Images;
 	}
 	
 	public void show()
@@ -413,7 +410,8 @@ public class ShowReportDialogFxController extends FxControllerBase
 		
 		if(jasperPrint.get() == null)
 		{
-			BuildConvictedReportTask buildConvictedReportTask = new BuildConvictedReportTask(convictedReport, fingerprintBase64Images);
+			BuildConvictedReportTask buildConvictedReportTask = new BuildConvictedReportTask(convictedReport,
+			                                                                                 fingerprintBase64Images);
 			buildConvictedReportTask.setOnSucceeded(event ->
 			{
 			    JasperPrint value = buildConvictedReportTask.getValue();

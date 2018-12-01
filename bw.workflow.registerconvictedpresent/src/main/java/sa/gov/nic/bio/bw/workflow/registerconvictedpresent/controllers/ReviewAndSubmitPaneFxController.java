@@ -60,7 +60,7 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 	@Input(alwaysRequired = true) private String judgmentNumber;
 	@Input(alwaysRequired = true) private LocalDate judgmentDate;
 	@Input private String caseFileNumber;
-	@Input private String prisonerNumber;
+	@Input private Long prisonerNumber;
 	@Input private LocalDate arrestDate;
 	@Input private List<CrimeCode> crimes;
 	@Input private Integer tazeerLashes;

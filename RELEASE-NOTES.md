@@ -11,7 +11,7 @@ VERSION SCHEMA: vYYYY.MM.#SEQ
 
 ---
 
-## v2018.11.1
+## v2018.12.1
 
 - ENH: Improve the wizard slider to support unlimited number of items.
 - ENH: Improve lookups across the workflows.

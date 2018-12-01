@@ -43,9 +43,12 @@ import sa.gov.nic.bio.bw.workflow.commons.ui.FourStateTitledPane;
 import sa.gov.nic.bio.bw.workflow.commons.utils.CommonsErrorCodes;
 import sa.gov.nic.bio.commons.TaskResponse;
 
+import java.awt.Desktop;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Base64;
 import java.util.Map;
 import java.util.concurrent.CancellationException;
@@ -109,7 +112,6 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 	private PerspectiveCamera perspectiveCamera = new PerspectiveCamera();
 	private boolean cameraInitializedAtLeastOnce = false;
 	private boolean captureInProgress = false;
-	private int acceptedBadQualityFaceMinRetires = Integer.MAX_VALUE;
 	private int successfulCroppedCapturingCount = 0;
 	
 	private Translate pivotBase = new Translate(0.0, 0.0, -1.0);
@@ -181,10 +183,10 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 			btnNext.disableProperty().bind(ivCapturedImage.imageProperty().isNull().and(
 					ivCroppedImage.imageProperty().isNull()));
 		}
-		else if(acceptBadQualityFace != null && acceptBadQualityFace)
+		else if(acceptBadQualityFace != null && acceptBadQualityFaceMinRetries != null && acceptBadQualityFace)
 		{
 			btnNext.setDisable(!ivSuccessIcao.isVisible() &&
-					                   successfulCroppedCapturingCount < acceptedBadQualityFaceMinRetires);
+					                   successfulCroppedCapturingCount < acceptBadQualityFaceMinRetries);
 		}
 		else // accept good quality face only
 		{
@@ -320,6 +322,10 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 		{
 			if(facePhoto != null) facePhotoBase64 = AppUtils.imageToBase64(facePhoto);
 			else facePhotoBase64 = null;
+			
+			Path path = Path.of("C:/test/file.png");
+			Files.write(path, AppUtils.base64ToBytes(facePhotoBase64));
+			Desktop.getDesktop().open(path.toFile());
 		}
 		catch(IOException e)
 		{
@@ -784,10 +790,10 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 					    }
 				    }
 				
-				    if(acceptBadQualityFace != null && acceptBadQualityFace)
+				    if(acceptBadQualityFace != null && acceptBadQualityFaceMinRetries != null && acceptBadQualityFace)
 				    {
 					    btnNext.setDisable(ivErrorIcao.isVisible() || (!icaoSuccess &&
-					                       successfulCroppedCapturingCount < acceptedBadQualityFaceMinRetires));
+					                       successfulCroppedCapturingCount < acceptBadQualityFaceMinRetries));
 				    }
 			    }
 			    else

@@ -7,6 +7,8 @@ import sa.gov.nic.bio.bw.core.workflow.Output;
 import sa.gov.nic.bio.bw.core.workflow.Signal;
 import sa.gov.nic.bio.bw.core.workflow.WorkflowTask;
 import sa.gov.nic.bio.bw.workflow.commons.beans.ConvictedReport;
+import sa.gov.nic.bio.bw.workflow.commons.beans.Finger;
+import sa.gov.nic.bio.bw.workflow.commons.utils.CommonsErrorCodes;
 import sa.gov.nic.bio.bw.workflow.commons.webservice.ConvictedReportInquiryAPI;
 import sa.gov.nic.bio.commons.TaskResponse;
 
@@ -33,5 +35,23 @@ public class ConvictedReportInquiryWorkflowTask implements WorkflowTask
 		
 		resetWorkflowStepIfNegativeOrNullTaskResponse(taskResponse);
 		convictedReports = taskResponse.getResult();
+		
+		if(returnNullResultInCaseNotFound != null && returnNullResultInCaseNotFound) return;
+		
+		// check if the fingerprints are available, otherwise reset the workflow
+		for(ConvictedReport convictedReport : convictedReports)
+		{
+			List<Finger> subjFingers = convictedReport.getSubjFingers();
+			List<Integer> subjMissingFingers = convictedReport.getSubjMissingFingers();
+			
+			if(subjFingers == null || subjMissingFingers == null)
+			{
+				String errorCode = CommonsErrorCodes.C008_00029.getCode();
+				String[] errorDetails = {"subjFingers == null ? " + (subjFingers == null),
+										 "subjMissingFingers == null ? " + (subjMissingFingers == null)};
+				resetWorkflowStepIfNegativeOrNullTaskResponse(TaskResponse.failure(errorCode, null,
+				                                                                   errorDetails));
+			}
+		}
 	}
 }

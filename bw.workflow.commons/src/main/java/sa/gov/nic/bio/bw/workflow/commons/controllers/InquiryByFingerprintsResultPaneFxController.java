@@ -1,5 +1,6 @@
 package sa.gov.nic.bio.bw.workflow.commons.controllers;
 
+import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.event.ActionEvent;
@@ -78,17 +79,21 @@ public class InquiryByFingerprintsResultPaneFxController extends WizardStepFxCon
 	@FXML private Button btnRegisterUnknownPerson;
 	@FXML private Button btnConfirmPersonInformation;
 	
+	private Long[] selectedCivilPersonId = new Long[1];
+	private Long[] selectedReportNumber = new Long[1];
+	
 	@Override
 	protected void onAttachedToScene()
 	{
 		paneImageView.maxWidthProperty().bind(paneImage.widthProperty());
 		
 		initSection(tvCivilPersonIds, tvReportNumbers, tcPersonIdSequence, tcPersonId, civilBiometricsId,
-		            lblCivilBiometricsId, civilPersonInfoMap, paneCivilFingerprintsHit, paneCivilFingerprintsNoHit);
+		            lblCivilBiometricsId, civilPersonInfoMap, paneCivilFingerprintsHit, paneCivilFingerprintsNoHit,
+		            selectedCivilPersonId, selectedReportNumber);
 		
 		initSection(tvReportNumbers, tvCivilPersonIds, tcReportNumberSequence, tcReportNumber, criminalBiometricsId,
 		            lblCriminalBiometricsId, criminalPersonInfoMap, paneCriminalFingerprintsHit,
-		            paneCriminalFingerprintsNoHit);
+		            paneCriminalFingerprintsNoHit, selectedReportNumber, selectedCivilPersonId);
 		
 		if(status == Status.HIT)
 		{
@@ -165,7 +170,8 @@ public class InquiryByFingerprintsResultPaneFxController extends WizardStepFxCon
 	private void initSection(TableView<Long> tvSection, TableView<Long> tvOther,
 	                                TableColumn<Long, Long> tcSequence, TableColumn<Long, String> tcLong,
 	                                Long biometricsId, Label lblBiometricsId, Map<Long, PersonInfo> personInfoMap,
-	                                Pane paneFingerprintsHit, Pane paneFingerprintsNoHit)
+	                                Pane paneFingerprintsHit, Pane paneFingerprintsNoHit, Long[] sectionSelectedItem,
+	                                Long[] otherSelectedItem)
 	{
 		GuiUtils.initSequenceTableColumn(tcSequence);
 		tcSequence.setCellValueFactory(p -> new ReadOnlyObjectWrapper<>(p.getValue()));
@@ -183,9 +189,20 @@ public class InquiryByFingerprintsResultPaneFxController extends WizardStepFxCon
 			{
 				tvSection.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) ->
 				{
-					tvOther.getSelectionModel().clearSelection();
-					if(newValue != null) populatePersonInfo(personInfoMap.get(newValue));
-					tvSection.requestFocus();
+					if(sectionSelectedItem[0] != null && sectionSelectedItem[0].equals(newValue)) return;
+					
+					sectionSelectedItem[0] = newValue;
+					otherSelectedItem[0] = null;
+					
+					if(newValue != null)
+					{
+						populatePersonInfo(personInfoMap.get(newValue));
+						Platform.runLater(() ->
+						{
+						    tvOther.getSelectionModel().clearSelection();
+						    tvSection.getSelectionModel().select(newValue);
+						});
+					}
 				});
 				
 				Set<Long> civilPersonIds = personInfoMap.keySet();

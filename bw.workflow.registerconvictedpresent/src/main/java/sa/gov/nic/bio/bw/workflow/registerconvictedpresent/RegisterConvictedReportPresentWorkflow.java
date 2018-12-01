@@ -87,7 +87,7 @@ public class RegisterConvictedReportPresentWorkflow extends WizardWorkflowBase
 				setData(FingerprintCapturingFxController.class, "hidePreviousButton", Boolean.TRUE);
 				setData(FingerprintCapturingFxController.class, "acceptBadQualityFingerprint",
 				        acceptBadQualityFingerprint);
-				setData(FingerprintCapturingFxController.class, "acceptedBadQualityFingerprintMinRetires",
+				setData(FingerprintCapturingFxController.class, "acceptBadQualityFingerprintMinRetires",
 				        acceptBadQualityFingerprintMinRetries);
 		
 				renderUiAndWaitForUserInput(FingerprintCapturingFxController.class);
@@ -212,6 +212,8 @@ public class RegisterConvictedReportPresentWorkflow extends WizardWorkflowBase
 			}
 			case 7:
 			{
+				passData(JudgmentDetailsPaneFxController.class, ShareInformationPaneFxController.class,
+				         "crimes");
 				renderUiAndWaitForUserInput(ShareInformationPaneFxController.class);
 				break;
 			}

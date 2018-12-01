@@ -1757,7 +1757,8 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 			GuiUtils.showNode(btnStartFingerprintCapturing, true);
 			
 			// in case we have no duplicates and we can accept bad quality fingerprints, we will save this attempt
-			if(noDuplicates[0] && acceptBadQualityFingerprint)
+			if(noDuplicates[0] && acceptBadQualityFingerprint != null && acceptBadQualityFingerprintMinRetires != null
+																						&& acceptBadQualityFingerprint)
 			{
 				currentSlapAttempts.add(fingerprints);
 				
