@@ -22,7 +22,7 @@ public class ConvictedReportToPersonInfoConverter implements Converter<Convicted
 		String personType = subjSamisType != null ? String.valueOf(subjSamisType) : null;
 		Integer nationality = convictedReport.getSubjNationalityCode();
 		String subjGender = convictedReport.getSubjGender();
-		Integer gender = subjGender != null ? ("F".equals(subjGender) ? 1 : 2) : null;
+		Integer gender = subjGender != null ? ("M".equals(subjGender) ? 1 : 2) : null;
 		String idNumber = convictedReport.getSubjDocId();
 		Integer idType = convictedReport.getSubjDocType();
 		Long subjDocIssDate = convictedReport.getSubjDocIssDate();
