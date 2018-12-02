@@ -43,12 +43,9 @@ import sa.gov.nic.bio.bw.workflow.commons.ui.FourStateTitledPane;
 import sa.gov.nic.bio.bw.workflow.commons.utils.CommonsErrorCodes;
 import sa.gov.nic.bio.commons.TaskResponse;
 
-import java.awt.Desktop;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.Base64;
 import java.util.Map;
 import java.util.concurrent.CancellationException;
@@ -322,10 +319,6 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 		{
 			if(facePhoto != null) facePhotoBase64 = AppUtils.imageToBase64(facePhoto);
 			else facePhotoBase64 = null;
-			
-			Path path = Path.of("C:/test/file.png");
-			Files.write(path, AppUtils.base64ToBytes(facePhotoBase64));
-			Desktop.getDesktop().open(path.toFile());
 		}
 		catch(IOException e)
 		{
