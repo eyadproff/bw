@@ -42,6 +42,7 @@ import sa.gov.nic.bio.biokit.fingerprint.beans.FingerprintStopPreviewResponse;
 import sa.gov.nic.bio.biokit.websocket.beans.DMFingerData;
 import sa.gov.nic.bio.bw.commons.resources.images.CommonImages;
 import sa.gov.nic.bio.bw.core.Context;
+import sa.gov.nic.bio.bw.core.beans.FingerCoordinate;
 import sa.gov.nic.bio.bw.core.beans.Fingerprint;
 import sa.gov.nic.bio.bw.core.beans.FingerprintQualityThreshold;
 import sa.gov.nic.bio.bw.core.beans.UserSession;
@@ -55,15 +56,13 @@ import sa.gov.nic.bio.bw.core.utils.FxmlFile;
 import sa.gov.nic.bio.bw.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.core.workflow.Input;
 import sa.gov.nic.bio.bw.core.workflow.Output;
+import sa.gov.nic.bio.bw.workflow.commons.beans.Finger;
 import sa.gov.nic.bio.bw.workflow.commons.beans.FingerprintUiComponents;
 import sa.gov.nic.bio.bw.workflow.commons.ui.AutoScalingStackPane;
 import sa.gov.nic.bio.bw.workflow.commons.ui.FourStateTitledPane;
 import sa.gov.nic.bio.bw.workflow.commons.utils.CommonsErrorCodes;
-import sa.gov.nic.bio.bw.workflow.commons.beans.Finger;
-import sa.gov.nic.bio.bw.workflow.commons.beans.FingerCoordinate;
 import sa.gov.nic.bio.commons.TaskResponse;
 
-import java.awt.Point;
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.Base64;
@@ -774,15 +773,7 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 		    }
 		
 		    String roundingBox = fingerData.getRoundingBox();
-		    roundingBox = roundingBox.substring("Rect{".length() + 1, roundingBox.length() - 2);
-		    String[] parts = roundingBox.split("[(,\\]\\[\\s]+");
-		
-		    Point topLeft = new Point(Integer.parseInt(parts[0]), Integer.parseInt(parts[1]));
-		    Point topRight = new Point(Integer.parseInt(parts[2]), Integer.parseInt(parts[3]));
-		    Point bottomLeft = new Point(Integer.parseInt(parts[4]), Integer.parseInt(parts[5]));
-		    Point bottomRight = new Point(Integer.parseInt(parts[6]), Integer.parseInt(parts[7]));
-		    FingerCoordinate fingerCoordinate = new FingerCoordinate(topLeft, topRight, bottomLeft,
-		                                                             bottomRight);
+		    FingerCoordinate fingerCoordinate = AppUtils.constructFingerCoordinates(roundingBox);
 		
 		    fingerprintBase64Images.put(position, fingerData.getFinger());
 		    segmentedFingerprints.add(new Finger(position, fingerData.getFingerWsqImage(), null));

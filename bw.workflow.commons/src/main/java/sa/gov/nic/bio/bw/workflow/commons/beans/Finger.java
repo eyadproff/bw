@@ -1,5 +1,6 @@
 package sa.gov.nic.bio.bw.workflow.commons.beans;
 
+import sa.gov.nic.bio.bw.core.beans.FingerCoordinate;
 import sa.gov.nic.bio.bw.core.beans.JavaBean;
 
 import java.util.List;

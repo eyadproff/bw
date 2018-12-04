@@ -55,8 +55,6 @@ public class ConvictedReportInquiryWorkflow extends SinglePageWorkflowBase
 		
 		for(ConvictedReport convictedReport : convictedReports)
 		{
-			System.out.println("convictedReport.getSubjFingers() = " + convictedReport.getSubjFingers());
-			
 			setData(ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask.class,
 			        "fingerprints", convictedReport.getSubjFingers());
 			setData(ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask.class,

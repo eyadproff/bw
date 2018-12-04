@@ -1,4 +1,4 @@
-package sa.gov.nic.bio.bw.workflow.commons.beans;
+package sa.gov.nic.bio.bw.core.beans;
 
 import sa.gov.nic.bio.bw.core.beans.JavaBean;
 

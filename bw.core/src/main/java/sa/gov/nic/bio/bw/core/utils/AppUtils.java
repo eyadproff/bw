@@ -9,11 +9,13 @@ import javafx.scene.image.Image;
 import org.controlsfx.glyphfont.FontAwesome;
 import org.controlsfx.glyphfont.Glyph;
 import org.scenicview.ScenicView;
+import sa.gov.nic.bio.bw.core.beans.FingerCoordinate;
 import sa.gov.nic.bio.bw.core.beans.Name;
 import sa.gov.nic.bio.bw.core.beans.NicHijriCalendarData;
 import sa.gov.nic.bio.bw.core.interfaces.AppLogger;
 
 import javax.imageio.ImageIO;
+import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -665,5 +667,17 @@ public final class AppUtils implements AppLogger
 		if(type.getSuperclass() != null) getAllFields(fields, type.getSuperclass());
 		
 		return fields;
+	}
+	
+	public static FingerCoordinate constructFingerCoordinates(String roundingBox)
+	{
+		roundingBox = roundingBox.substring("Rect{".length() + 1, roundingBox.length() - 2);
+		String[] parts = roundingBox.split("[(,\\]\\[\\s]+");
+		
+		Point topLeft = new Point(Integer.parseInt(parts[0]), Integer.parseInt(parts[1]));
+		Point topRight = new Point(Integer.parseInt(parts[2]), Integer.parseInt(parts[3]));
+		Point bottomLeft = new Point(Integer.parseInt(parts[4]), Integer.parseInt(parts[5]));
+		Point bottomRight = new Point(Integer.parseInt(parts[6]), Integer.parseInt(parts[7]));
+		return new FingerCoordinate(topLeft, topRight, bottomLeft, bottomRight);
 	}
 }

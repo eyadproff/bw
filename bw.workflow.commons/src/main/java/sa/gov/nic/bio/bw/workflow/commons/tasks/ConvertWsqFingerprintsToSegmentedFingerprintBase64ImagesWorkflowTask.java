@@ -5,13 +5,15 @@ import sa.gov.nic.bio.biokit.fingerprint.beans.ConvertedFingerprintImagesRespons
 import sa.gov.nic.bio.biokit.fingerprint.beans.SegmentFingerprintsResponse;
 import sa.gov.nic.bio.biokit.websocket.beans.DMFingerData;
 import sa.gov.nic.bio.bw.core.Context;
+import sa.gov.nic.bio.bw.core.beans.FingerCoordinate;
 import sa.gov.nic.bio.bw.core.biokit.FingerPosition;
+import sa.gov.nic.bio.bw.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.core.workflow.Input;
 import sa.gov.nic.bio.bw.core.workflow.Output;
 import sa.gov.nic.bio.bw.core.workflow.Signal;
 import sa.gov.nic.bio.bw.core.workflow.WorkflowTask;
-import sa.gov.nic.bio.bw.workflow.commons.utils.CommonsErrorCodes;
 import sa.gov.nic.bio.bw.workflow.commons.beans.Finger;
+import sa.gov.nic.bio.bw.workflow.commons.utils.CommonsErrorCodes;
 import sa.gov.nic.bio.commons.TaskResponse;
 
 import java.util.ArrayList;
@@ -111,8 +113,17 @@ public class ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTas
 				if(result.getReturnCode() == SegmentFingerprintsResponse.SuccessCodes.SUCCESS)
 				{
 					List<DMFingerData> fingerData = result.getFingerData();
-					fingerData.forEach(dmFingerData -> fingerprintImages.put(dmFingerData.getPosition(),
-					                                                         dmFingerData.getFinger()));
+					List<FingerCoordinate> fingerCoordinates = new ArrayList<>();
+					
+					fingerData.forEach(dmFingerData ->
+					{
+						fingerprintImages.put(dmFingerData.getPosition(), dmFingerData.getFinger());
+						String roundingBox = dmFingerData.getRoundingBox();
+						FingerCoordinate fingerCoordinate = AppUtils.constructFingerCoordinates(roundingBox);
+						fingerCoordinates.add(fingerCoordinate);
+					});
+					
+					finger.setFingerCoordinates(fingerCoordinates);
 				}
 				else if(result.getReturnCode() == SegmentFingerprintsResponse.FailureCodes.SEGMENTATION_FAILED)
 				{
