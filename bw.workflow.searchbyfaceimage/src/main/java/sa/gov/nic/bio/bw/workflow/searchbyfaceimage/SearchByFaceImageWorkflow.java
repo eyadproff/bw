@@ -96,7 +96,7 @@ public class SearchByFaceImageWorkflow extends WizardWorkflowBase
 			case 4:
 			{
 				passData(ConfirmImageFxController.class, ShowResultsFxController.class,
-				         "facePhoto");
+				         "facePhotoBase64");
 				passData(SearchByFacePhotoWorkflowTask.class, ShowResultsFxController.class,
 				         "candidates");
 				

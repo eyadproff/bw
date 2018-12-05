@@ -21,7 +21,7 @@ public class FingerprintInquiryWorkflowTask implements WorkflowTask
 	@Output private Integer inquiryId;
 	
 	@Override
-	public void execute(Integer workflowId, Long workflowTcn) throws Signal, InterruptedException
+	public void execute(Integer workflowId, Long workflowTcn) throws Signal
 	{
 		FingerprintInquiryAPI fingerprintInquiryAPI =
 				Context.getWebserviceManager().getApi(FingerprintInquiryAPI.class);

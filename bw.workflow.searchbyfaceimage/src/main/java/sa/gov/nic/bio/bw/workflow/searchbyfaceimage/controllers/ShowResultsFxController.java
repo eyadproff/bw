@@ -45,7 +45,7 @@ import java.util.List;
 @FxmlFile("showResults.fxml")
 public class ShowResultsFxController extends WizardStepFxControllerBase
 {
-	@Input(alwaysRequired = true) private Image facePhoto;
+	@Input(alwaysRequired = true) private String facePhotoBase64;
 	@Input(alwaysRequired = true) private List<Candidate> candidates;
 	
 	@FXML private SplitPane splitPane;
@@ -64,6 +64,8 @@ public class ShowResultsFxController extends WizardStepFxControllerBase
 	@FXML private HBox hbCandidatesContainer;
 	@FXML private HBox hbCandidatesImages;
 	@FXML private Button btnStartOver;
+	
+	private Image facePhoto;
 	
 	@Override
 	protected void onAttachedToScene()
@@ -114,6 +116,7 @@ public class ShowResultsFxController extends WizardStepFxControllerBase
 		spCandidates.prefHeightProperty().bind(imagePane.heightProperty().divide(5));
 		splitPane.getStyleClass().remove("hidden-divider"); // show the divider
 		
+		facePhoto = AppUtils.imageFromBase64(facePhotoBase64);
 		ImageView imageView = new ImageView();
 		imageView.setImage(facePhoto);
 		imageView.setPreserveRatio(true);

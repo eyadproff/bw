@@ -89,11 +89,7 @@ public abstract class WorkflowBase implements Workflow, AppLogger
 			String errorCode = CoreErrorCodes.C002_00025.getCode();
 			String[] errorDetails = {"Failure upon saving the workflow output! workflow = " +
 							(currentBodyFxController != null ? currentBodyFxController.getClass().getName() : null)};
-			Map<String, Object> payload = new HashMap<>();
-			payload.put(Workflow.KEY_ERROR_CODE, errorCode);
-			payload.put(Workflow.KEY_EXCEPTION, e);
-			payload.put(Workflow.KEY_ERROR_DETAILS, errorDetails);
-			throw new Signal(SignalType.INVALID_STATE, payload);
+			Workflow.throwInvalidStateSignal(errorCode, errorDetails, e);
 		}
 	}
 	
@@ -164,11 +160,7 @@ public abstract class WorkflowBase implements Workflow, AppLogger
 			String errorCode = CoreErrorCodes.C002_00026.getCode();
 			String[] errorDetails = {"Failure upon executing the workflow task! task = " +
 																	(taskClass != null ? taskClass.getName() : null)};
-			Map<String, Object> payload = new HashMap<>();
-			payload.put(Workflow.KEY_ERROR_CODE, errorCode);
-			payload.put(Workflow.KEY_EXCEPTION, e);
-			payload.put(Workflow.KEY_ERROR_DETAILS, errorDetails);
-			throw new Signal(SignalType.INVALID_STATE, payload);
+			Workflow.throwInvalidStateSignal(errorCode, errorDetails, e);
 		}
 	}
 }

@@ -29,7 +29,7 @@ public class FingerprintInquiryStatusCheckerWorkflowTask implements WorkflowTask
 	@Output private List<Long> civilPersonIds;
 	
 	@Override
-	public void execute(Integer workflowId, Long workflowTcn) throws Signal, InterruptedException
+	public void execute(Integer workflowId, Long workflowTcn) throws Signal
 	{
 		FingerprintInquiryAPI fingerprintInquiryAPI =
 				Context.getWebserviceManager().getApi(FingerprintInquiryAPI.class);

@@ -17,7 +17,7 @@ public class MenuRolesLookupWorkflowTask implements WorkflowTask
 	@Output private Map<String, Set<String>> menusRoles;
 	
 	@Override
-	public void execute(Integer workflowId, Long workflowTcn) throws Signal, InterruptedException
+	public void execute(Integer workflowId, Long workflowTcn) throws Signal
 	{
 		LookupAPI lookupAPI = Context.getWebserviceManager().getApi(LookupAPI.class);
 		Call<Map<String, Set<String>>> apiCall = lookupAPI.lookupMenuRoles(AppConstants.APP_CODE);

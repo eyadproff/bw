@@ -348,7 +348,7 @@ public class RegisterConvictedReportNotPresentWorkflow extends WizardWorkflowBas
 			}
 			case 10:
 			{
-				NormalizedPersonInfo normalizedPersonInfo = getData(ShowingPersonInfoFxController.class,
+				NormalizedPersonInfo normalizedPersonInfo = getData(InquiryByFingerprintsResultPaneFxController.class,
 				                                                    "normalizedPersonInfo");
 				
 				setData(ReviewAndSubmitPaneFxController.class, "facePhotoBase64",
@@ -393,7 +393,7 @@ public class RegisterConvictedReportNotPresentWorkflow extends WizardWorkflowBas
 				else if(fingerprintsSource == Source.SCANNING_FINGERPRINTS_CARD)
 				{
 					passData(SpecifyFingerprintCoordinatesPaneFxController.class,
-					         ShowingFingerprintsPaneFxController.class,
+					         ReviewAndSubmitPaneFxController.class,
 					         "fingerprintBase64Images");
 					passData(ConvertFingerprintBase64ImagesToWsqWorkflowTask.class,
 					         "fingerprintWsqImages", ReviewAndSubmitPaneFxController.class,

@@ -18,7 +18,7 @@ public class VisaApplicantsWorkflowTask implements WorkflowTask
 	@Output private VisaApplicantEnrollmentResponse visaApplicantEnrollmentResponse;
 	
 	@Override
-	public void execute(Integer workflowId, Long workflowTcn) throws Signal, InterruptedException
+	public void execute(Integer workflowId, Long workflowTcn) throws Signal
 	{
 		VisaApplicantsEnrollmentAPI visaApplicantsEnrollmentAPI =
 											Context.getWebserviceManager().getApi(VisaApplicantsEnrollmentAPI.class);
