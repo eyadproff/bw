@@ -1,6 +1,8 @@
 package sa.gov.nic.bio.bw.workflow.fingerprintcardidentification.controllers;
 
 import javafx.application.Platform;
+import javafx.concurrent.Task;
+import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.geometry.NodeOrientation;
@@ -10,6 +12,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.ProgressIndicator;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
@@ -30,12 +33,12 @@ import sa.gov.nic.bio.bw.core.workflow.Output;
 import sa.gov.nic.bio.bw.workflow.fingerprintcardidentification.gui.SelectionOverlay;
 import sa.gov.nic.bio.bw.workflow.fingerprintcardidentification.utils.FingerprintCardIdentificationErrorCodes;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 @FxmlFile("specifyFingerprintCoordinates.fxml")
 public class SpecifyFingerprintCoordinatesPaneFxController extends WizardStepFxControllerBase
@@ -52,6 +55,7 @@ public class SpecifyFingerprintCoordinatesPaneFxController extends WizardStepFxC
 													  {0.200, 0.500, 0.160, 0.117}};
 	
 	private static final double TITLED_PANE_TITLE_HEIGHT = 25.0;
+	
 	private static class Point
 	{
 		private double x;
@@ -87,6 +91,7 @@ public class SpecifyFingerprintCoordinatesPaneFxController extends WizardStepFxC
 	@FXML private ImageView ivFingerprintCardImage;
 	@FXML private ImageView ivFingerprintImageAfterCropping;
 	@FXML private ImageView ivFingerprintImageAfterCroppingPlaceHolder;
+	@FXML private ProgressIndicator piProgress;
 	@FXML private Button btnPrevious;
 	@FXML private Button btnNext;
 	
@@ -249,39 +254,58 @@ public class SpecifyFingerprintCoordinatesPaneFxController extends WizardStepFxC
 	}
 	
 	@Override
-	protected void onGoingNext(Map<String, Object> uiDataMap)
+	protected void onNextButtonClicked(ActionEvent actionEvent)
 	{
-		boolean rtl = Context.getGuiLanguage().getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT;
+		GuiUtils.showNode(btnPrevious, false);
+		GuiUtils.showNode(btnNext, false);
+		GuiUtils.showNode(piProgress, true);
 		
-		for(int i = 0; i < rectangles.length; i++)
+		Task<Void> task = new Task<>()
 		{
-			if(Boolean.FALSE.equals(rectangles[i].getUserData())) // not skipped
+			@Override
+			protected Void call() throws Exception
 			{
-				Image image = GuiUtils.extractImageByRectangleBounds(ivFingerprintCardImage, rectangles[i], rtl,
-				                                                     TITLED_PANE_TITLE_HEIGHT);
-				try
+				boolean rtl = Context.getGuiLanguage().getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT;
+				
+				for(int i = 0; i < rectangles.length; i++)
 				{
-					fingerprintBase64Images.put(i + 1, AppUtils.imageToBase64(image));
+					if(Boolean.FALSE.equals(rectangles[i].getUserData())) // not skipped
+					{
+						Image image = GuiUtils.extractImageByRectangleBounds(ivFingerprintCardImage, rectangles[i], rtl,
+						                                                     TITLED_PANE_TITLE_HEIGHT);
+						fingerprintBase64Images.put(i + 1, AppUtils.imageToBase64(image));
+					}
+					else missingFingerprints.add(i + 1);
+					
+					fingerprintsDimensions.put(i + 1, new Dimension(rectangles[i].getBoundsInParent().getWidth(),
+					                                                rectangles[i].getBoundsInParent().getHeight()));
+					fingerprintsCoordinates.put((i + 1), new Point(rectangles[i].getBoundsInParent().getMinX(),
+					                                               rectangles[i].getBoundsInParent().getMinY()));
 				}
-				catch(IOException e)
-				{
-					String errorCode = FingerprintCardIdentificationErrorCodes.C013_00007.getCode();
-					String[] errorDetails = {"failed to convert the image to base64 encoding!"};
-					Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails);
-				}
+				
+				imagesViewDimension = new Dimension(ivFingerprintCardImage.getBoundsInParent().getWidth(),
+				                                    ivFingerprintCardImage.getBoundsInParent().getHeight());
+				imagesViewCoordinates = new Point(ivFingerprintCardImage.getBoundsInParent().getMinX(),
+				                                  ivFingerprintCardImage.getBoundsInParent().getMinY());
+				
+				return null;
 			}
-			else missingFingerprints.add(i + 1);
+		};
+		task.setOnSucceeded(event -> goNext());
+		task.setOnFailed(event ->
+		{
+			GuiUtils.showNode(piProgress, false);
+			GuiUtils.showNode(btnPrevious, true);
+			GuiUtils.showNode(btnNext, true);
 			
-			fingerprintsDimensions.put(i + 1, new Dimension(rectangles[i].getBoundsInParent().getWidth(),
-			                                                rectangles[i].getBoundsInParent().getHeight()));
-			fingerprintsCoordinates.put((i + 1), new Point(rectangles[i].getBoundsInParent().getMinX(),
-			                                               rectangles[i].getBoundsInParent().getMinY()));
-		}
+		    Throwable exception = task.getException();
+		    if(exception instanceof ExecutionException) exception = exception.getCause();
 		
-		imagesViewDimension = new Dimension(ivFingerprintCardImage.getBoundsInParent().getWidth(),
-                                            ivFingerprintCardImage.getBoundsInParent().getHeight());
-		imagesViewCoordinates = new Point(ivFingerprintCardImage.getBoundsInParent().getMinX(),
-		                                  ivFingerprintCardImage.getBoundsInParent().getMinY());
+		    String errorCode = FingerprintCardIdentificationErrorCodes.C013_00007.getCode();
+		    String[] errorDetails = {"failed to convert the image to base64 encoding!"};
+		    Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails);
+		});
+		Context.getExecutorService().submit(task);
 	}
 	
 	private Void updatePreviewImage(Rectangle rectangle, boolean rtl)

@@ -16,7 +16,7 @@ public class CancelLatentWorkflowTask implements WorkflowTask
 	@Output private Boolean success;
 	
 	@Override
-	public void execute(Integer workflowId, Long workflowTcn) throws Signal, InterruptedException
+	public void execute(Integer workflowId, Long workflowTcn) throws Signal
 	{
 		CancelLatentAPI cancelLatentAPI = Context.getWebserviceManager().getApi(CancelLatentAPI.class);
 		Call<Boolean> apiCall = cancelLatentAPI.cancelLatent(workflowId, workflowTcn, personId, latentId);

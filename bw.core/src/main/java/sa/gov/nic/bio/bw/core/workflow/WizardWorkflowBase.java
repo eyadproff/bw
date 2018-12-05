@@ -68,12 +68,9 @@ public abstract class WizardWorkflowBase extends WorkflowBase implements Resourc
 			catch(Exception e)
 			{
 				String errorCode = CoreErrorCodes.C002_00020.getCode();
-				String errorMessage = "Failed during calling lookups of the workflow (" + getClass().getName() + ")!";
-				Map<String, Object> payload = new HashMap<>();
-				payload.put(KEY_ERROR_CODE, errorCode);
-				payload.put(KEY_EXCEPTION, e);
-				payload.put(KEY_ERROR_DETAILS, new String[]{errorMessage});
-				throw new Signal(SignalType.INVALID_STATE, payload);
+				String[] errorDetails = {"Failed during calling lookups of the workflow (" + getClass().getName() +
+																												")!"};
+				Workflow.throwInvalidStateSignal(errorCode, errorDetails, e);
 			}
 		}
 		
@@ -121,10 +118,7 @@ public abstract class WizardWorkflowBase extends WorkflowBase implements Resourc
 					String errorCode = CoreErrorCodes.C002_00021.getCode();
 					String[] errorDetails = {"The workflow (" + getClass().getName() +
 													") has no renderUiAndWaitForUserInput() at step (" + step + ")!"};
-					Map<String, Object> payload = new HashMap<>();
-					payload.put(KEY_ERROR_CODE, errorCode);
-					payload.put(KEY_ERROR_DETAILS, errorDetails);
-					throw new Signal(SignalType.INVALID_STATE, payload);
+					Workflow.throwInvalidStateSignal(errorCode, errorDetails);
 				}
 				else renderedAtLeastOnceInTheStep = false;
 			}
@@ -174,7 +168,7 @@ public abstract class WizardWorkflowBase extends WorkflowBase implements Resourc
 				String errorCode = CoreErrorCodes.C002_00022.getCode();
 				String[] errorDetails = {"An error occurs in the workflow (" + getClass().getName() + ") at step (" +
 										 step + ")!"};
-				Context.getCoreFxController().showErrorDialog(errorCode, t, errorDetails);
+				Workflow.throwInvalidStateSignal(errorCode, errorDetails, t);
 			}
 		}
 	}

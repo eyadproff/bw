@@ -11,6 +11,13 @@ VERSION SCHEMA: vYYYY.MM.#SEQ
 
 ---
 
+## v2018.12.2
+
+- FIX: Fix Search-By-Image workflow.
+- FIX: Fix Convicted-Report-For-Not-Present-Person workflow.
+
+---
+
 ## v2018.12.1
 
 - ENH: Improve the wizard slider to support unlimited number of items.

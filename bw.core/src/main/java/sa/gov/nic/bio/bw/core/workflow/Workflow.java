@@ -125,10 +125,7 @@ public interface Workflow extends AppLogger
 							String errorCode = CoreErrorCodes.C002_00024.getCode();
 							String[] errorDetails = {"The value of the alwaysRequired input (" + fieldName +
 																										") is null!"};
-							Map<String, Object> payload = new HashMap<>();
-							payload.put(KEY_ERROR_CODE, errorCode);
-							payload.put(KEY_ERROR_DETAILS, errorDetails);
-							throw new Signal(SignalType.INVALID_STATE, payload);
+							Workflow.throwInvalidStateSignal(errorCode, errorDetails);
 						}
 					}
 				}
@@ -165,5 +162,19 @@ public interface Workflow extends AppLogger
 				uiInputData.put(fieldName, value);
 			}
 		}
+	}
+	
+	static void throwInvalidStateSignal(String errorCode, String[] errorDetails, Throwable throwable) throws Signal
+	{
+		Map<String, Object> payload = new HashMap<>();
+		payload.put(KEY_ERROR_CODE, errorCode);
+		payload.put(KEY_ERROR_DETAILS, errorDetails);
+		payload.put(KEY_EXCEPTION, throwable);
+		throw new Signal(SignalType.INVALID_STATE, payload);
+	}
+	
+	static void throwInvalidStateSignal(String errorCode, String[] errorDetails) throws Signal
+	{
+		throwInvalidStateSignal(errorCode, errorDetails, null);
 	}
 }

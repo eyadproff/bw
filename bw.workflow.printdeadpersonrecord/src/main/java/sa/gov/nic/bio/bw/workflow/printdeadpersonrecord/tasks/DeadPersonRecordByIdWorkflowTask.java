@@ -16,7 +16,7 @@ public class DeadPersonRecordByIdWorkflowTask implements WorkflowTask
 	@Output private DeadPersonRecord deadPersonRecord;
 	
 	@Override
-	public void execute(Integer workflowId, Long workflowTcn) throws Signal, InterruptedException
+	public void execute(Integer workflowId, Long workflowTcn) throws Signal
 	{
 		DeadPersonRecordById deadPersonRecordById = Context.getWebserviceManager().getApi(DeadPersonRecordById.class);
 		Call<DeadPersonRecord> apiCall = deadPersonRecordById.getDeadPersonRecordById(workflowId, workflowTcn,
