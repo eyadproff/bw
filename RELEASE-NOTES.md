@@ -11,6 +11,12 @@ VERSION SCHEMA: vYYYY.MM.#SEQ
 
 ---
 
+## v2018.12.3
+
+- FIX: Assign SAMIS ID to PersonID instead of idNumber.
+
+---
+
 ## v2018.12.2
 
 - FIX: Fix Search-By-Image workflow.
