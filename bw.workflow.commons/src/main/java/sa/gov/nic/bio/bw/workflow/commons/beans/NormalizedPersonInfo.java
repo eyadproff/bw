@@ -94,8 +94,7 @@ public class NormalizedPersonInfo extends JavaBean
 			birthDate = date.toInstant().atZone(AppConstants.SAUDI_ZONE).toLocalDate();
 		}
 		
-		personId = identityInfo != null ?
-					(identityInfo.getIdNumber() != null ? Long.valueOf(identityInfo.getIdNumber()) : null) : null;
+		personId = personInfo.getSamisId();
 		
 		@SuppressWarnings("unchecked")
 		List<PersonType> personTypes = (List<PersonType>) Context.getUserSession().getAttribute(PersonTypesLookup.KEY);
