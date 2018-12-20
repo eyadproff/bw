@@ -18,7 +18,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 
-public class ExtractingDataFromNistFileWorkflowTask implements WorkflowTask
+public class ExtractingDataFromNistFileWorkflowTask extends WorkflowTask
 {
 	@Input(alwaysRequired = true) private String nistFilePath;
 	
@@ -27,7 +27,7 @@ public class ExtractingDataFromNistFileWorkflowTask implements WorkflowTask
 	@Output private List<Integer> missingFingerprints;
 	
 	@Override
-	public void execute(Integer workflowId, Long workflowTcn) throws Signal
+	public void execute() throws Signal
 	{
 		byte[] bytes;
 		try

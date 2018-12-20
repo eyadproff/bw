@@ -10,13 +10,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-public class ConvertFingerprintBase64ImagesToImagesWorkflowTask implements WorkflowTask
+public class ConvertFingerprintBase64ImagesToImagesWorkflowTask extends WorkflowTask
 {
 	@Input(alwaysRequired = true) private Map<Integer, String> fingerprintBase64Images;
 	@Output private Map<Integer, Image> fingerprintImages;
 	
 	@Override
-	public void execute(Integer workflowId, Long workflowTcn)
+	public void execute()
 	{
 		fingerprintImages = new HashMap<>();
 		

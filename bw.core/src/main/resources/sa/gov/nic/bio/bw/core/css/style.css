@@ -315,3 +315,7 @@
 .table-view-with-disabled-selection .table-row-cell:odd:filled:selected {
     -fx-background: -fx-control-inner-background-alt ;
 }
+
+.disable-tooltip {
+    -fx-tooltip-visible: false;
+}

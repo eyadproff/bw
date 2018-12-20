@@ -13,12 +13,12 @@ import java.util.Base64;
 import java.util.Locale;
 import java.util.logging.Level;
 
-public class PrepareHomeBeanWorkflowTask implements WorkflowTask
+public class PrepareHomeBeanWorkflowTask extends WorkflowTask
 {
 	@Input(alwaysRequired = true) private UserInfo userInfo;
 	
 	@Override
-	public void execute(Integer workflowId, Long workflowTcn)
+	public void execute()
 	{
 		Context.getUserSession().setAttribute("userInfo", userInfo);
 		

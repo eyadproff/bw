@@ -10,15 +10,17 @@ import sa.gov.nic.bio.bw.workflow.commons.beans.PersonInfo;
 import sa.gov.nic.bio.bw.workflow.commons.webservice.PersonInfoByIdAPI;
 import sa.gov.nic.bio.commons.TaskResponse;
 
-public class GetPersonInfoByIdWorkflowTask implements WorkflowTask
+public class GetPersonInfoByIdWorkflowTask extends WorkflowTask
 {
 	@Input(alwaysRequired = true) private long personId;
 	@Input private Boolean returnNullResultInCaseNotFound;
 	@Output private PersonInfo personInfo;
 	
 	@Override
-	public void execute(Integer workflowId, Long workflowTcn) throws Signal
+	public void execute() throws Signal
 	{
+		System.out.println("workflowId = " + workflowId);
+		
 		PersonInfoByIdAPI personInfoByIdAPI = Context.getWebserviceManager().getApi(PersonInfoByIdAPI.class);
 		Call<PersonInfo> apiCall = personInfoByIdAPI.getPersonInfoById(workflowId, workflowTcn, personId, 0);
 		TaskResponse<PersonInfo> taskResponse = Context.getWebserviceManager().executeApi(apiCall);

@@ -13,7 +13,7 @@ import sa.gov.nic.bio.commons.TaskResponse;
 
 import java.util.List;
 
-public class FingerprintInquiryStatusCheckerWorkflowTask implements WorkflowTask
+public class FingerprintInquiryStatusCheckerWorkflowTask extends WorkflowTask
 {
 	public enum Status
 	{
@@ -29,7 +29,7 @@ public class FingerprintInquiryStatusCheckerWorkflowTask implements WorkflowTask
 	@Output private List<Long> civilPersonIds;
 	
 	@Override
-	public void execute(Integer workflowId, Long workflowTcn) throws Signal
+	public void execute() throws Signal
 	{
 		FingerprintInquiryAPI fingerprintInquiryAPI =
 				Context.getWebserviceManager().getApi(FingerprintInquiryAPI.class);

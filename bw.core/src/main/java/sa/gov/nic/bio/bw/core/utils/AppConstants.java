@@ -39,4 +39,6 @@ public interface AppConstants
                                                                                KeyCombination.ALT_DOWN);
 	
 	long SAMIS_DB_DATE_NOT_SET_VALUE = -62135780400000L;
+	int TABLE_PAGINATION_PAGES_PER_ITERATION = 10;
+	int TABLE_PAGINATION_RECORDS_PER_PAGE = 10;
 }

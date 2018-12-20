@@ -12,13 +12,13 @@ import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.beans.ConvictedReport
 import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.webservice.ConvictedReportAPI;
 import sa.gov.nic.bio.commons.TaskResponse;
 
-public class SubmittingConvictedReportWorkflowTask implements WorkflowTask
+public class SubmittingConvictedReportWorkflowTask extends WorkflowTask
 {
 	@Input(alwaysRequired = true) private ConvictedReport convictedReport;
 	@Output private ConvictedReportResponse convictedReportResponse;
 	
 	@Override
-	public void execute(Integer workflowId, Long workflowTcn) throws Signal
+	public void execute() throws Signal
 	{
 		ConvictedReportAPI convictedReportAPI = Context.getWebserviceManager().getApi(ConvictedReportAPI.class);
 		String convictedReportJson = AppUtils.toJson(convictedReport);

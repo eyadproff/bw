@@ -10,7 +10,7 @@ import sa.gov.nic.bio.bw.workflow.cancelcriminal.controllers.CancelCriminalPaneF
 import sa.gov.nic.bio.bw.workflow.cancelcriminal.webservice.CancelCriminalAPI;
 import sa.gov.nic.bio.commons.TaskResponse;
 
-public class CancelCriminalWorkflowTask implements WorkflowTask
+public class CancelCriminalWorkflowTask extends WorkflowTask
 {
 	@Input(alwaysRequired = true) private CancelCriminalMethod cancelCriminalMethod;
 	@Input(alwaysRequired = true) private long criminalId;
@@ -20,7 +20,7 @@ public class CancelCriminalWorkflowTask implements WorkflowTask
 	@Output private Boolean success;
 	
 	@Override
-	public void execute(Integer workflowId, Long workflowTcn) throws Signal
+	public void execute() throws Signal
 	{
 		CancelCriminalAPI cancelCriminalAPI = Context.getWebserviceManager().getApi(CancelCriminalAPI.class);
 		Call<Boolean> apiCall;

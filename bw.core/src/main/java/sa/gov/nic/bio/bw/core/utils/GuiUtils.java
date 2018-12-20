@@ -7,8 +7,11 @@ import javafx.animation.PauseTransition;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.beans.Observable;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.concurrent.Task;
@@ -28,6 +31,7 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.Pagination;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TableCell;
@@ -35,6 +39,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.control.skin.ComboBoxListViewSkin;
 import javafx.scene.effect.GaussianBlur;
 import javafx.scene.image.Image;
@@ -45,6 +50,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.TextAlignment;
@@ -867,5 +873,60 @@ public class GuiUtils implements AppLogger
 				};
 			}
 		});
+	}
+	
+	public static void localizePagination(Pagination pagination)
+	{
+		pagination.lookupAll(".number-button").forEach(node ->
+		{
+		    if(node instanceof ToggleButton)
+		    {
+		        ToggleButton toggleButton = (ToggleButton) node;
+		        toggleButton.setText(AppUtils.localizeNumbers(toggleButton.getText()));
+		    }
+		});
+		
+		Node labelNode = pagination.lookup(".page-information");
+		if(labelNode instanceof Label)
+		{
+			Label label = (Label) labelNode;
+			
+			StringProperty stringProperty = new SimpleStringProperty(label.getText());
+			stringProperty.addListener((observable, oldValue, newValue) -> label.setText(newValue));
+			
+			Consumer<String> localizer = text ->
+			{
+				boolean rtl = Context.getGuiLanguage().getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT;
+				if(rtl) text = text.replace('/', '\\');
+				stringProperty.setValue(AppUtils.localizeNumbers(text, Locale.getDefault(),
+				                                                 false));
+			};
+			localizer.accept(label.getText());
+			label.textProperty().addListener((observable, oldValue, newValue) ->
+			{
+				if(!newValue.equals(stringProperty.get())) // label's text was changed directly
+				{
+					stringProperty.setValue(newValue);
+					localizer.accept(newValue);
+				}
+			});
+		}
+		
+		Node controlBoxNode = pagination.lookup(".control-box");
+		if(controlBoxNode instanceof Pane)
+		{
+			Pane controlBox = (Pane) controlBoxNode;
+			controlBox.getChildren().addListener((ListChangeListener<? super Node>) change ->
+			{
+				while(change.next()) change.getAddedSubList().forEach(node ->
+				{
+				    if(node instanceof ToggleButton)
+				    {
+				        ToggleButton toggleButton = (ToggleButton) node;
+				        toggleButton.setText(AppUtils.localizeNumbers(toggleButton.getText()));
+				    }
+				});
+			});
+		}
 	}
 }

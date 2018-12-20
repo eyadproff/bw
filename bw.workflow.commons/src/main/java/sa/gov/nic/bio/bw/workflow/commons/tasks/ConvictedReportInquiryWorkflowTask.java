@@ -14,14 +14,14 @@ import sa.gov.nic.bio.commons.TaskResponse;
 
 import java.util.List;
 
-public class ConvictedReportInquiryWorkflowTask implements WorkflowTask
+public class ConvictedReportInquiryWorkflowTask extends WorkflowTask
 {
 	@Input(alwaysRequired = true) private long criminalBiometricsId;
 	@Input private Boolean returnNullResultInCaseNotFound;
 	@Output private List<ConvictedReport> convictedReports;
 	
 	@Override
-	public void execute(Integer workflowId, Long workflowTcn) throws Signal
+	public void execute() throws Signal
 	{
 		ConvictedReportInquiryAPI api = Context.getWebserviceManager().getApi(ConvictedReportInquiryAPI.class);
 		Call<List<ConvictedReport>> call = api.inquireConvictedReportByGeneralFileNumber(workflowId, workflowTcn,

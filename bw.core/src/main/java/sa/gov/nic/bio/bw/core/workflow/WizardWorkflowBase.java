@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.concurrent.Callable;
 
-public abstract class WizardWorkflowBase extends WorkflowBase implements ResourceBundleProvider
+public abstract class WizardWorkflowBase extends WorkflowBase implements ResourceBundleProvider, DataConveyor
 {
 	public static final String KEY_WORKFLOW_DIRECTION = "WORKFLOW_DIRECTION";
 	public static final String VALUE_WORKFLOW_DIRECTION_BACKWARD = "WORKFLOW_DIRECTION_BACKWARD";
@@ -182,44 +182,10 @@ public abstract class WizardWorkflowBase extends WorkflowBase implements Resourc
 		if(isLeaving()) throw new Signal(SignalType.WIZARD_NAVIGATION, null);
 	}
 	
-	@SuppressWarnings("unchecked")
-	protected <T> T getData(Class<?> outputClass, String outputName)
+	@Override
+	public Map<String, Object> getDataMap()
 	{
-		return (T) uiInputData.get(outputClass.getName() + "#" + outputName);
-	}
-	
-	protected void passData(Class<?> outputClass, Class<?> inputClass, String... inputOutputNames)
-	{
-		for(String inputOutputName : inputOutputNames) passData(outputClass, inputClass, inputOutputName);
-	}
-	
-	protected void passData(Class<?> outputClass, Class<?> inputClass, String inputOutputName)
-	{
-		passData(outputClass, inputOutputName, inputClass, inputOutputName, null);
-	}
-	
-	protected void passData(Class<?> outputClass, String outputName, Class<?> inputClass, String inputName)
-	{
-		passData(outputClass, outputName, inputClass, inputName, null);
-	}
-	
-	@SuppressWarnings("unchecked")
-	protected <T1, T2> void passData(Class<?> outputClass, String outputName, Class<?> inputClass, String inputName,
-                                     Converter<T1, T2> converter)
-	{
-		Object value = uiInputData.get(outputClass.getName() + "#" + outputName);
-		if(converter != null) value = converter.convert((T1) value);
-		setData(inputClass, inputName, value);
-	}
-	
-	protected void setData(Class<?> inputClass, String inputName, Object value)
-	{
-		uiInputData.put(inputClass.getName() + "#" + inputName, value);
-	}
-	
-	protected void removeData(Class<?> inputClass, String inputName)
-	{
-		uiInputData.remove(inputClass.getName() + "#" + inputName);
+		return uiInputData;
 	}
 	
 	private boolean isGoingBackward()

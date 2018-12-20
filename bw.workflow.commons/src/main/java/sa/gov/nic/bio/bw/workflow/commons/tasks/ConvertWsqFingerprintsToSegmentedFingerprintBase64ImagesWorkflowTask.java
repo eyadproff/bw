@@ -25,14 +25,14 @@ import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public class ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask implements WorkflowTask
+public class ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask extends WorkflowTask
 {
 	@Input(alwaysRequired = true) private List<Finger> fingerprints;
 	@Input(alwaysRequired = true) private List<Integer> missingFingerprints;
 	@Output private Map<Integer, String> fingerprintBase64Images;
 	
 	@Override
-	public void execute(Integer workflowId, Long workflowTcn) throws Signal
+	public void execute() throws Signal
 	{
 		List<Integer> availableFingerprints = IntStream.rangeClosed(1, 10).boxed().collect(Collectors.toList());
 		availableFingerprints.removeAll(missingFingerprints);
