@@ -256,6 +256,8 @@ public class DevicesRunnerGadgetPaneFxController extends RegionFxControllerBase
 					   Context.getRuntimeEnvironment() == RuntimeEnvironment.DEV)
 								serverUrl = AppConstants.DEV_SERVER_URL;
 					
+					if(serverUrl.startsWith("http")) serverUrl = serverUrl.substring(serverUrl.indexOf("://") + 3);
+					
 					BclUtils.launchAppByBCL(serverUrl, bioKitManager.getBclId(),
 					                        bioKitManager.getWebsocketPort(), checkEveryMilliSeconds, cancelCommand);
 				}

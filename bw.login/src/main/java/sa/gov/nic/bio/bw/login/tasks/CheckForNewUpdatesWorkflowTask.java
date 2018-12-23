@@ -22,6 +22,7 @@ public class CheckForNewUpdatesWorkflowTask extends WorkflowTask
 		{
 			String serverUrl = Context.getServerUrl();
 			if(Context.getRuntimeEnvironment() == RuntimeEnvironment.DEV) serverUrl = AppConstants.DEV_SERVER_URL;
+			if(serverUrl.startsWith("http")) serverUrl = serverUrl.substring(serverUrl.indexOf("://") + 3);
 			
 			boolean newUpdates = BclUtils.checkForAppUpdates(serverUrl, "bw", false, json ->
 			{
