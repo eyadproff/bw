@@ -76,7 +76,17 @@ public abstract class WorkflowBase implements Workflow, AppLogger
 																			.renderForm(controllerClass, uiInputData);
 		renderedAtLeastOnceInTheStep = true;
 		
-		Map<String, Object> uiDataMap = Context.getWorkflowManager().getUserTasks().take();
+		Map<String, Object> uiDataMap;
+		
+		try
+		{
+			uiDataMap = Context.getWorkflowManager().getUserTasks().take();
+		}
+		catch(InterruptedException e)
+		{
+			return;
+		}
+		
 		if(interruptionSignal != null) throwInterruptionSignal();
 		
 		SignalType signalType = (SignalType) uiDataMap.get(KEY_SIGNAL_TYPE);

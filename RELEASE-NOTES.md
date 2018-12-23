@@ -11,6 +11,12 @@ VERSION SCHEMA: vYYYY.MM.#SEQ
 
 ---
 
+## v2018.12.5
+
+- NEW: Add an option to restart the application on exit.
+
+---
+
 ## v2018.12.4
 
 - NEW: Add the ability to change the server URL at runtime on DEV and LOCAL environments.
