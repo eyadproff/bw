@@ -24,10 +24,9 @@ public class ConvictedReportInquiryWorkflowTask extends WorkflowTask
 	public void execute() throws Signal
 	{
 		ConvictedReportInquiryAPI api = Context.getWebserviceManager().getApi(ConvictedReportInquiryAPI.class);
-		Call<List<ConvictedReport>> call = api.inquireConvictedReportByGeneralFileNumber(workflowId, workflowTcn,
-		                                                                                 criminalBiometricsId);
+		Call<List<ConvictedReport>> call = api.inquireConvictedReportsByGeneralFileNumber(workflowId, workflowTcn,
+		                                                                                  criminalBiometricsId);
 		TaskResponse<List<ConvictedReport>> taskResponse = Context.getWebserviceManager().executeApi(call);
-		
 		
 		boolean notFound = !taskResponse.isSuccess() && "B003-0015".equals(taskResponse.getErrorCode());
 		

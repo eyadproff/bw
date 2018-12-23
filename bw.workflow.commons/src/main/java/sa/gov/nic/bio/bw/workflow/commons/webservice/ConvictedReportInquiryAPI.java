@@ -13,11 +13,16 @@ import java.util.List;
 
 public interface ConvictedReportInquiryAPI
 {
-	@GET("services-gateway-biooperation/api/xafis/report/v1")
-	Call<List<ConvictedReport>> inquireConvictedReportByGeneralFileNumber(
+	@GET("services-gateway-biooperation/api/criminal/reports/v1")
+	Call<List<ConvictedReport>> inquireConvictedReportsByGeneralFileNumber(
 																	  @Header("Workflow-Code") Integer workflowId,
 	                                                                  @Header("Workflow-Tcn") Long workflowTcn,
-                                                                      @Query("general-number") long generalFileNumber);
+                                                                      @Query("general-number") Long generalFileNumber);
+	
+	@GET("services-gateway-biooperation/api/criminal/report/v1")
+	Call<ConvictedReport> inquireConvictedReportByReportNumber(@Header("Workflow-Code") Integer workflowId,
+	                                                           @Header("Workflow-Tcn") Long workflowTcn,
+	                                                           @Query("report-number") Long reportNumber);
 	
 	@GET("services-gateway-biooperation/api/criminal/info/dis/{general-file-number}/v1")
 	Call<List<DisCriminalReport>> inquireConvictedReportFromDisByGeneralFileNumber(

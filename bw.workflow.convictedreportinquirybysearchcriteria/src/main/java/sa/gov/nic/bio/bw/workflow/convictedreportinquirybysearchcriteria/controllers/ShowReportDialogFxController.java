@@ -21,7 +21,6 @@ import net.sf.jasperreports.engine.JasperPrint;
 import sa.gov.nic.bio.bw.core.Context;
 import sa.gov.nic.bio.bw.core.beans.Gender;
 import sa.gov.nic.bio.bw.core.beans.Name;
-import sa.gov.nic.bio.bw.core.biokit.FingerPosition;
 import sa.gov.nic.bio.bw.core.controllers.BodyFxControllerBase;
 import sa.gov.nic.bio.bw.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.core.utils.DialogUtils;
@@ -39,7 +38,7 @@ import sa.gov.nic.bio.bw.workflow.commons.lookups.CountriesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.DocumentTypesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.PersonTypesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask;
-import sa.gov.nic.bio.bw.workflow.commons.tasks.ConvictedReportInquiryWorkflowTask;
+import sa.gov.nic.bio.bw.workflow.commons.tasks.ConvictedReportInquiryByReportNumberWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.PrintReportTask;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.SaveReportAsPdfTask;
 import sa.gov.nic.bio.bw.workflow.commons.ui.ImageViewPane;
@@ -56,7 +55,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 @FxmlFile("showReportDialog.fxml")
 public class ShowReportDialogFxController extends BodyFxControllerBase
@@ -157,24 +155,20 @@ public class ShowReportDialogFxController extends BodyFxControllerBase
 		
 		dialog.setOnShown(event ->
 		{
-			setData(ConvictedReportInquiryWorkflowTask.class, "reportNumber", reportNumber);
-			boolean success = executeUiTask(ConvictedReportInquiryWorkflowTask.class, new SuccessHandler()
+			setData(ConvictedReportInquiryByReportNumberWorkflowTask.class, "reportNumber", reportNumber);
+			boolean success = executeUiTask(ConvictedReportInquiryByReportNumberWorkflowTask.class, new SuccessHandler()
 			{
 				@Override
 				protected void onSuccess()
 				{
 					convictedReport = getData("convictedReport");
 					List<Finger> subjFingers = convictedReport.getSubjFingers();
-					List<Integer> missingFingerprints = IntStream.range(FingerPosition.RIGHT_THUMB.getPosition(),
-					                                                    FingerPosition.LEFT_LITTLE.getPosition() + 1)
-							.boxed().collect(Collectors.toList());
-					
-					subjFingers.forEach(fingerprint -> missingFingerprints.remove((Integer) fingerprint.getType()));
+					List<Integer> subjMissingFingers = convictedReport.getSubjMissingFingers();
 					
 					setData(ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask.class,
 					        "fingerprints", subjFingers);
 					setData(ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask.class,
-					        "missingFingerprints", missingFingerprints);
+					        "missingFingerprints", subjMissingFingers);
 					
 					boolean success = executeUiTask(
 						ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask.class, new SuccessHandler()
