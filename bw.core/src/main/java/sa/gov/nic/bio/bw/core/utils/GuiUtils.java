@@ -645,7 +645,7 @@ public class GuiUtils implements AppLogger
 	{
 		if(fingerprintBase64Images == null) return;
 		
-		ResourceBundle resourceBundle = AppUtils.getCoreStringsResourceBundle(Locale.getDefault());
+		ResourceBundle resourceBundle = AppUtils.getCoreStringsResourceBundle();
 		Map<Integer, String> dialogTitleMap = new HashMap<>();
 		
 		dialogTitleMap.put(FingerPosition.RIGHT_THUMB.getPosition(),
@@ -746,7 +746,7 @@ public class GuiUtils implements AppLogger
 			
 			byte[] bytes = Base64.getDecoder().decode(facePhotoBase64);
 			imageView.setImage(new Image(new ByteArrayInputStream(bytes)));
-			ResourceBundle resourceBundle = AppUtils.getCoreStringsResourceBundle(Locale.getDefault());
+			ResourceBundle resourceBundle = AppUtils.getCoreStringsResourceBundle();
 			attachImageDialog(Context.getCoreFxController(), imageView,
 			                           resourceBundle.getString("label.personPhoto"),
 			                           resourceBundle.getString("label.contextMenu.showImage"),

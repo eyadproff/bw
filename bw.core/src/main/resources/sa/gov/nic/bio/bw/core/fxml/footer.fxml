@@ -6,6 +6,7 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 <AnchorPane xmlns="http://javafx.com/javafx/11" xmlns:fx="http://javafx.com/fxml/1"
             fx:id="rootPane" fx:controller="sa.gov.nic.bio.bw.core.controllers.FooterPaneFxController">
     <HBox alignment="CENTER" spacing="7.0" AnchorPane.topAnchor="0.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
@@ -15,5 +16,8 @@
         <Label text="%label.developedBy" styleClass="credit-text"/>
     </HBox>
     <CheckBox fx:id="chbMockTasks" text="%checkbox.mockTasks" AnchorPane.leftAnchor="0.0" AnchorPane.bottomAnchor="0.0" focusTraversable="false" visible="false"/>
-    <Label fx:id="lblScenicViewShortcut" text="%label.scenicViewShortcut" AnchorPane.rightAnchor="0.0" AnchorPane.bottomAnchor="0.0" visible="false" managed="false"/>
+    <VBox AnchorPane.rightAnchor="0.0" AnchorPane.bottomAnchor="0.0">
+        <Label fx:id="lblChangeServerShortcut" text="%label.changeServerShortcut" styleClass="smaller-font" visible="false" managed="false"/>
+        <Label fx:id="lblScenicViewShortcut" text="%label.scenicViewShortcut" styleClass="smaller-font" visible="false" managed="false"/>
+    </VBox>
 </AnchorPane>

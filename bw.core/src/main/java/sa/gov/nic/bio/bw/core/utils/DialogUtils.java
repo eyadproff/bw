@@ -97,10 +97,13 @@ public class DialogUtils
 	}
 	
 	public static String showChoiceDialog(Window ownerWindow, IdleMonitorRegisterer idleMonitorRegisterer,
-	                                      String title, String headerText, String[] choices,
+	                                      String title, String headerText, String[] choices, String selectedChoice,
 	                                      String buttonConfirmText, boolean alwaysOnTop, boolean rtl)
 	{
-		ChoiceDialog<String> choiceDialog = new ChoiceDialog<>(choices[0], choices);
+		if(selectedChoice == null) selectedChoice = choices[0];
+		
+		
+		ChoiceDialog<String> choiceDialog = new ChoiceDialog<>(selectedChoice, choices);
 		choiceDialog.initOwner(ownerWindow);
 		choiceDialog.initStyle(StageStyle.UTILITY);
 		Scene scene = choiceDialog.getDialogPane().getScene();

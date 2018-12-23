@@ -29,7 +29,7 @@ public interface AppConstants
 	String LOGS_FOLDER_PATH = "C:/bio/user-apps/" + System.getProperty("user.name") + "/bw/logs";
 	String TEMP_FOLDER_PATH = "C:/bio/user-apps/" + System.getProperty("user.name") + "/bw/temp";
 	String DEV_SERVER_URL = "10.0.73.80:8080"; // TODO: TEMP
-	KeyCombination SCENIC_VIEW_KEY_COMBINATION = new KeyCodeCombination(KeyCode.S,
+	KeyCombination SCENIC_VIEW_KEY_COMBINATION = new KeyCodeCombination(KeyCode.D,
 	                                                                    KeyCombination.CONTROL_DOWN,
 	                                                                    KeyCombination.SHIFT_DOWN,
 	                                                                    KeyCombination.ALT_DOWN);
@@ -37,6 +37,10 @@ public interface AppConstants
                                                                                KeyCombination.CONTROL_DOWN,
                                                                                KeyCombination.SHIFT_DOWN,
                                                                                KeyCombination.ALT_DOWN);
+	KeyCombination CHANGING_SERVER_KEY_COMBINATION = new KeyCodeCombination(KeyCode.S,
+	                                                                        KeyCombination.CONTROL_DOWN,
+	                                                                        KeyCombination.SHIFT_DOWN,
+	                                                                        KeyCombination.ALT_DOWN);
 	
 	long SAMIS_DB_DATE_NOT_SET_VALUE = -62135780400000L;
 	int TABLE_PAGINATION_PAGES_PER_ITERATION = 10;

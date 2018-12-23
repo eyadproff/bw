@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import okhttp3.HttpUrl;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -52,10 +53,12 @@ import java.util.logging.Level;
 
 public class WebserviceManager implements AppLogger
 {
+	public static final String PROTOCOL = "https";
 	private static final String SSL_CERTIFICATE_FILE_PATH =
 														"/sa/gov/nic/bio/bw/core/config/bio-middleware-certificate.pem";
-	private static final String PROTOCOL = "https";
-	private Retrofit retrofit;
+	private OkHttpClient okHttpClient;
+	private Gson gson;
+	private volatile Retrofit retrofit;
 	private ScheduledFuture<?> scheduledRefreshTokenFuture;
 	private Map<Class<?>, Object> apiCache = new HashMap<>();
 	
@@ -136,31 +139,44 @@ public class WebserviceManager implements AppLogger
 		SSLContext sslContext = SSLContext.getInstance("TLS");
 		sslContext.init(null, tmf.getTrustManagers(), new SecureRandom());
 		
-		OkHttpClient okHttpClient = new OkHttpClient.Builder()
-													.readTimeout(readTimeoutSeconds, TimeUnit.SECONDS)
-													.connectTimeout(connectTimeoutSeconds, TimeUnit.SECONDS)
-													.addInterceptor(tokenInterceptor)
-													.sslSocketFactory(sslContext.getSocketFactory(), customTm)
-													.build();
+		okHttpClient = new OkHttpClient.Builder()
+									   .readTimeout(readTimeoutSeconds, TimeUnit.SECONDS)
+									   .connectTimeout(connectTimeoutSeconds, TimeUnit.SECONDS)
+									   .addInterceptor(tokenInterceptor)
+									   .sslSocketFactory(sslContext.getSocketFactory(), customTm)
+									   .build();
 		
-		Gson gson = new GsonBuilder().registerTypeAdapter(LocalDate.class, new LocalDateTypeAdapter())
-									 .registerTypeAdapter(ZonedDateTime.class, new ZonedDateTimeTypeAdapter())
-									 .registerTypeAdapter(Date.class, new DateTypeAdapter())
-									 .registerTypeAdapter(String.class, new NormalizedStringTypeAdapter())
-									 .create();
-		
-		String httpProtocol = PROTOCOL;
-		if(baseUrl.equals(AppConstants.DEV_SERVER_URL)) httpProtocol = "http";
+		gson = new GsonBuilder().registerTypeAdapter(LocalDate.class, new LocalDateTypeAdapter())
+								.registerTypeAdapter(ZonedDateTime.class, new ZonedDateTimeTypeAdapter())
+								.registerTypeAdapter(Date.class, new DateTypeAdapter())
+								.registerTypeAdapter(String.class, new NormalizedStringTypeAdapter())
+								.create();
 		
 		retrofit = new Retrofit.Builder()
-							   .baseUrl(httpProtocol + "://" + baseUrl)
+							   .baseUrl(baseUrl)
 							   .addConverterFactory(GsonConverterFactory.create(gson))
 							   .client(okHttpClient)
 							   .build();
 	}
 	
+	public synchronized String getServerBaseUrl()
+	{
+		HttpUrl httpUrl = retrofit.baseUrl();
+		return "http" + (httpUrl.isHttps() ? "s" : "") + "://" + httpUrl.host() + ":" + httpUrl.port();
+	}
+	
+	public synchronized void changeServerBaseUrl(String baseUrl)
+	{
+		apiCache.clear();
+		retrofit = new Retrofit.Builder()
+				               .baseUrl(baseUrl)
+				               .addConverterFactory(GsonConverterFactory.create(gson))
+				               .client(okHttpClient)
+				               .build();
+	}
+	
 	@SuppressWarnings("unchecked")
-	public <T> T getApi(Class<T> apiClass)
+	public synchronized <T> T getApi(Class<T> apiClass)
 	{
 		T api = (T) apiCache.get(apiClass);
 		if(api == null)
@@ -295,5 +311,10 @@ public class WebserviceManager implements AppLogger
 	public void cancelRefreshTokenScheduler()
 	{
 		if(scheduledRefreshTokenFuture != null) scheduledRefreshTokenFuture.cancel(true);
+	}
+	
+	private void createNewRetrofitInstance(String baseUrl)
+	{
+	
 	}
 }

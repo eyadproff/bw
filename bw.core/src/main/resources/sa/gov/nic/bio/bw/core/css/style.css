@@ -273,6 +273,10 @@
     -fx-font-size: 11;
 }
 
+.smaller-font {
+    -fx-font-size: 9;
+}
+
 .small-radio-button > .radio {
     -fx-padding: 3.5;
 }

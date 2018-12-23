@@ -28,7 +28,7 @@ public abstract class WorkflowTask implements AppLogger
 		//		MockTaskDialogFxController captureFingerprintDialogFxController =
 		//				DialogUtils.buildCustomDialogByFxml(Context.getCoreFxController().getStage(),
 		//				                                    MockTaskDialogFxController.class,
-		//				                                    AppUtils.getCoreStringsResourceBundle(Locale.getDefault()),
+		//				                                    AppUtils.getCoreStringsResourceBundle(),
 		//				                                    false);
 		//
 		//		List<TaskInput<?>> taskInputs = new ArrayList<>();

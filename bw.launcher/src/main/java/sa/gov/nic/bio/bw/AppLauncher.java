@@ -157,11 +157,14 @@ public class AppLauncher extends Application implements AppLogger
 		    notifyPreloader(PreloaderNotification.failure(null, errorCode, errorDetails));
 		    return;
 	    }
-	
-	    String[] urls = configManager.getProperty("dev.webservice.urls").split("[,\\s]+");
-	
+	    
+	    boolean httpProtocolIncluded = false;
+	    
 	    if(runtimeEnvironment == RuntimeEnvironment.LOCAL || runtimeEnvironment == RuntimeEnvironment.DEV)
 	    {
+		    httpProtocolIncluded = true;
+		    String[] urls = configManager.getProperty("dev.webservice.urls").split("[,\\s]+");
+	    	
 		    CountDownLatch latch = new CountDownLatch(1);
 		    String[] userChoice = new String[1];
 		
@@ -172,7 +175,7 @@ public class AppLauncher extends Application implements AppLogger
 			    String buttonText = stringsBundle.getString("dialog.choice.selectServer.button");
 			
 			    userChoice[0] = DialogUtils.showChoiceDialog(null, null, dialogTitle,
-		                                         headerText, urls, buttonText, true,
+		                                         headerText, urls, null, buttonText, true,
                                                 guiLanguage.getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT);
 			    latch.countDown();
 		    });
@@ -202,6 +205,8 @@ public class AppLauncher extends Application implements AppLogger
 		    notifyPreloader(PreloaderNotification.failure(null, errorCode, errorDetails));
 		    return;
 	    }
+	    
+	    if(!httpProtocolIncluded) serverUrl = WebserviceManager.PROTOCOL + "://" + serverUrl;
 	
 	    LOGGER.info("serverUrl = " + serverUrl);
 	
@@ -628,6 +633,11 @@ public class AppLauncher extends Application implements AppLogger
 		    else if(AppConstants.SHOWING_MOCK_TASKS_KEY_COMBINATION.match(event))
 		    {
 			    coreFxController.showMockTasksCheckBox();
+			    event.consume();
+		    }
+		    else if(AppConstants.CHANGING_SERVER_KEY_COMBINATION.match(event))
+		    {
+			    AppUtils.showChangeServerDialog();
 			    event.consume();
 		    }
 	    });
