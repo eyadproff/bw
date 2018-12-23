@@ -86,6 +86,7 @@ import java.time.chrono.IsoChronology;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
 import java.util.Base64;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -96,6 +97,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.logging.Level;
 
@@ -519,6 +521,47 @@ public class GuiUtils implements AppLogger
 	{
 		datePicker.setChronology(HijrahChronology.INSTANCE);
 		
+		Function<String, LocalDate> textToLocalDateFunction = text ->
+		{
+			if(text != null && !text.isEmpty())
+			{
+				// support "/", "\" and "-" as date separators
+				text = text.replace("\\", "/");
+				text = text.replace("-", "/");
+				
+				// if the input is 8 characters long, we will add the separators
+				if(text.length() == 8 && !text.contains("/"))
+				{
+					text = text.substring(0, 2) + "/" + text.substring(2, 4) + "/" + text.substring(4, 8);
+				}
+				// if the input is 6 characters long, we will consider day and month are both single digits
+				// and then add the separators
+				else if(text.length() == 6 && !text.contains("/"))
+				{
+					text = text.substring(0, 1) + "/" + text.substring(1, 2) + "/" + text.substring(2, 6);
+				}
+				
+				Chronology chronology = rdoUseHijri.isSelected() ?
+						HijrahChronology.INSTANCE : IsoChronology.INSTANCE;
+				
+				try
+				{
+					TemporalAccessor temporalAccessor = dateFormatterForParsing.withChronology(chronology).parse(text);
+					LocalDate date = IsoChronology.INSTANCE.date(temporalAccessor);
+					
+					if(dateValidator != null && !dateValidator.test(date)) return null;
+					else return date;
+				}
+				catch(DateTimeException e)
+				{
+					LOGGER.fine("failed to convert the date (" + text + ") to " + chronology.getId());
+				}
+				
+				return null;
+			}
+			else return null;
+		};
+		
 		Callback<DatePicker, DateCell> dayCellFactory = dp -> new DateCell()
 		{
 			@Override
@@ -533,13 +576,12 @@ public class GuiUtils implements AppLogger
 			}
 		};
 		
-		StringConverter<LocalDate> converter = new StringConverter<LocalDate>()
+		StringConverter<LocalDate> converter = new StringConverter<>()
 		{
 			@Override
 			public String toString(LocalDate date)
 			{
 				Chronology chronology = rdoUseHijri.isSelected() ? HijrahChronology.INSTANCE : IsoChronology.INSTANCE;
-				
 				if(date != null) return dateFormatterForFormatting.withChronology(chronology).format(date);
 				else return "";
 			}
@@ -547,46 +589,8 @@ public class GuiUtils implements AppLogger
 			@Override
 			public LocalDate fromString(String string)
 			{
-				if(string != null && !string.isEmpty())
-				{
-					// support "/", "\" and "-" as date separators
-					string = string.replace("\\", "/");
-					string = string.replace("-", "/");
-					
-					// if the input is 8 characters long, we will add the separators
-					if(string.length() == 8 && !string.contains("/"))
-					{
-						string = string.substring(0, 2) + "/" + string.substring(2, 4) + "/" + string.substring(4, 8);
-					}
-					// if the input is 6 characters long, we will consider day and month are both single digits
-					// and then add the separators
-					else if(string.length() == 6 && !string.contains("/"))
-					{
-						string = string.substring(0, 1) + "/" + string.substring(1, 2) + "/" + string.substring(2, 6);
-					}
-					
-					Chronology chronology = rdoUseHijri.isSelected() ?
-															HijrahChronology.INSTANCE : IsoChronology.INSTANCE;
-					
-					try
-					{
-						TemporalAccessor temporalAccessor = dateFormatterForParsing.withChronology(chronology)
-																				   .parse(string);
-						
-						LocalDate date = IsoChronology.INSTANCE.date(temporalAccessor);
-						
-						if(dateValidator != null && !dateValidator.test(date)) return null;
-						else return date;
-					}
-					catch(DateTimeException e)
-					{
-						LOGGER.log(Level.FINE, "failed to convert the date (" + string + ") to "
-																							+ chronology.getId(), e);
-					}
-					
-					return null;
-				}
-				else return null;
+				datePicker.getStyleClass().removeAll(Collections.singleton("not-valid-value"));
+				return textToLocalDateFunction.apply(string);
 			}
 		};
 		
@@ -599,6 +603,38 @@ public class GuiUtils implements AppLogger
 			LocalDate date = datePicker.getValue();
 			datePicker.setValue(null);
 			datePicker.setValue(date);
+		});
+		
+		datePicker.getEditor().textProperty().addListener((observable, oldValue, newValue) ->
+		{
+			if(newValue.isEmpty())
+			{
+				datePicker.getStyleClass().removeAll(Collections.singleton("not-valid-value"));
+				datePicker.setValue(null);
+				return;
+			}
+			
+			LocalDate localDate = textToLocalDateFunction.apply(newValue);
+			if(localDate != null)
+			{
+				datePicker.getStyleClass().removeAll(Collections.singleton("not-valid-value"));
+				datePicker.setValue(localDate);
+			}
+			else datePicker.getStyleClass().add("not-valid-value");
+		});
+		
+		// on losing focus, set to the old value
+		datePicker.getEditor().focusedProperty().addListener((observable, oldValue, newValue) ->
+		{
+			if(!newValue)
+			{
+				LocalDate oldLocalDate = datePicker.getValue();
+				datePicker.getEditor().clear();
+				datePicker.setValue(null);
+				datePicker.setValue(oldLocalDate);
+			}
+			
+			datePicker.getStyleClass().removeAll(Collections.singleton("not-valid-value"));
 		});
 	}
 	

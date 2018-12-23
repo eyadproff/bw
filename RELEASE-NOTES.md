@@ -16,6 +16,7 @@ VERSION SCHEMA: vYYYY.MM.#SEQ
 - NEW: Add the ability to change the server URL at runtime on DEV and LOCAL environments.
 - ENH: Change shortcuts for opening ScenicView to CTRL+SHIFT+ALT+D and assign CTRL+SHIFT+ALT+S to change the server URL.
 - NEW: Add Convicted-Report-Inquiry-By-Search-Criteria workflow.
+- ENH: Enhance the DatePicker UX.
 
 ---
 

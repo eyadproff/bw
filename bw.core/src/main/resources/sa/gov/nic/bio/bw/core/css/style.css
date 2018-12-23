@@ -323,3 +323,8 @@
 .disable-tooltip {
     -fx-tooltip-visible: false;
 }
+
+.not-valid-value {
+    -fx-focus-color: #c01500;
+    -fx-faint-focus-color: #ffe7de;
+}
