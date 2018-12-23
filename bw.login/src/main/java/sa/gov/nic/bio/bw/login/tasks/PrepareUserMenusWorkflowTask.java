@@ -13,13 +13,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class PrepareUserMenusWorkflowTask implements WorkflowTask
+public class PrepareUserMenusWorkflowTask extends WorkflowTask
 {
 	@Input(alwaysRequired = true) private Map<String, Set<String>> menusRoles;
 	@Input(alwaysRequired = true) private List<String> userRoles;
 	
 	@Override
-	public void execute(Integer workflowId, Long workflowTcn)
+	public void execute()
 	{
 		List<MenuItem> menus = new ArrayList<>();
 		for(MenuItem menuItem : Context.getSubMenus())

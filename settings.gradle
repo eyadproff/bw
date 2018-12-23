@@ -17,3 +17,5 @@ include 'bw.workflow.searchbyfaceimage'
 include 'bw.workflow.printdeadpersonrecord'
 include 'bw.workflow.registerconvictednotpresent'
 include 'bw.workflow.visaapplicantsenrollment'
+include 'bw.workflow.convictedreportinquirybysearchcriteria'
+

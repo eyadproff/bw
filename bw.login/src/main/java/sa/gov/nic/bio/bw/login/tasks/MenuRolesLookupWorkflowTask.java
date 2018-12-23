@@ -12,12 +12,12 @@ import sa.gov.nic.bio.commons.TaskResponse;
 import java.util.Map;
 import java.util.Set;
 
-public class MenuRolesLookupWorkflowTask implements WorkflowTask
+public class MenuRolesLookupWorkflowTask extends WorkflowTask
 {
 	@Output private Map<String, Set<String>> menusRoles;
 	
 	@Override
-	public void execute(Integer workflowId, Long workflowTcn) throws Signal
+	public void execute() throws Signal
 	{
 		LookupAPI lookupAPI = Context.getWebserviceManager().getApi(LookupAPI.class);
 		Call<Map<String, Set<String>>> apiCall = lookupAPI.lookupMenuRoles(AppConstants.APP_CODE);

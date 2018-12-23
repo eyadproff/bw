@@ -14,13 +14,13 @@ import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
-public class ConvertFingerprintBase64ImagesToWsqWorkflowTask implements WorkflowTask
+public class ConvertFingerprintBase64ImagesToWsqWorkflowTask extends WorkflowTask
 {
 	@Input(alwaysRequired = true) private Map<Integer, String> fingerprintBase64Images;
 	@Output private Map<Integer, String> fingerprintWsqImages;
 	
 	@Override
-	public void execute(Integer workflowId, Long workflowTcn) throws Signal
+	public void execute() throws Signal
 	{
 		Future<TaskResponse<ConvertedFingerprintWsqResponse>>
 										 serviceResponseFuture = Context.getBioKitManager()

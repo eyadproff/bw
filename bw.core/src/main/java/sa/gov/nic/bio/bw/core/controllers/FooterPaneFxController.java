@@ -16,6 +16,7 @@ import sa.gov.nic.bio.bw.core.utils.RuntimeEnvironment;
 public class FooterPaneFxController extends RegionFxControllerBase
 {
 	@FXML private CheckBox chbMockTasks;
+	@FXML private Label lblChangeServerShortcut;
 	@FXML private Label lblScenicViewShortcut;
 	
 	@Override
@@ -24,11 +25,15 @@ public class FooterPaneFxController extends RegionFxControllerBase
 		if(Context.getRuntimeEnvironment() == RuntimeEnvironment.LOCAL ||
 		   Context.getRuntimeEnvironment() == RuntimeEnvironment.DEV)
 		{
+			lblChangeServerShortcut.setText(lblChangeServerShortcut.getText() + " " +
+			                                AppConstants.CHANGING_SERVER_KEY_COMBINATION.getDisplayText());
+			GuiUtils.showNode(lblChangeServerShortcut, true);
 			chbMockTasks.setVisible(true);
 		}
 		
 		if(Context.getRuntimeEnvironment() == RuntimeEnvironment.LOCAL)
 		{
+			
 			lblScenicViewShortcut.setText(lblScenicViewShortcut.getText() + " " +
 			                              AppConstants.SCENIC_VIEW_KEY_COMBINATION.getDisplayText());
 			GuiUtils.showNode(lblScenicViewShortcut, true);

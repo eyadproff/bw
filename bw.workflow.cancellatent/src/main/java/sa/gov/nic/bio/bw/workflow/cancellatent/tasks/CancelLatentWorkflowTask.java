@@ -9,14 +9,14 @@ import sa.gov.nic.bio.bw.core.workflow.WorkflowTask;
 import sa.gov.nic.bio.bw.workflow.cancellatent.webservice.CancelLatentAPI;
 import sa.gov.nic.bio.commons.TaskResponse;
 
-public class CancelLatentWorkflowTask implements WorkflowTask
+public class CancelLatentWorkflowTask extends WorkflowTask
 {
 	@Input(alwaysRequired = true) private long personId;
 	@Input(alwaysRequired = true) private String latentId;
 	@Output private Boolean success;
 	
 	@Override
-	public void execute(Integer workflowId, Long workflowTcn) throws Signal
+	public void execute() throws Signal
 	{
 		CancelLatentAPI cancelLatentAPI = Context.getWebserviceManager().getApi(CancelLatentAPI.class);
 		Call<Boolean> apiCall = cancelLatentAPI.cancelLatent(workflowId, workflowTcn, personId, latentId);

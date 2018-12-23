@@ -3,16 +3,21 @@ package sa.gov.nic.bio.bw.core.utils;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
+import javafx.geometry.NodeOrientation;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import org.controlsfx.glyphfont.FontAwesome;
 import org.controlsfx.glyphfont.Glyph;
 import org.scenicview.ScenicView;
+import sa.gov.nic.bio.bw.core.Context;
 import sa.gov.nic.bio.bw.core.beans.FingerCoordinate;
 import sa.gov.nic.bio.bw.core.beans.Name;
 import sa.gov.nic.bio.bw.core.beans.NicHijriCalendarData;
+import sa.gov.nic.bio.bw.core.controllers.CoreFxController;
 import sa.gov.nic.bio.bw.core.interfaces.AppLogger;
+import sa.gov.nic.bio.bw.core.webservice.WebserviceManager;
 
 import javax.imageio.ImageIO;
 import java.awt.Point;
@@ -92,9 +97,19 @@ public final class AppUtils implements AppLogger
 		return AppUtils.class.getResourceAsStream(LOGGING_CONFIG_FILE);
 	}
 	
+	public static ResourceBundle getCoreStringsResourceBundle()
+	{
+		return getCoreStringsResourceBundle(Locale.getDefault());
+	}
+	
 	public static ResourceBundle getCoreStringsResourceBundle(Locale locale)
 	{
 		return ResourceBundle.getBundle(RB_STRINGS_FILE, locale);
+	}
+	
+	public static ResourceBundle getCoreErrorsResourceBundle()
+	{
+		return getCoreErrorsResourceBundle(Locale.getDefault());
 	}
 	
 	public static ResourceBundle getCoreErrorsResourceBundle(Locale locale)
@@ -679,5 +694,39 @@ public final class AppUtils implements AppLogger
 		Point bottomLeft = new Point(Integer.parseInt(parts[4]), Integer.parseInt(parts[5]));
 		Point bottomRight = new Point(Integer.parseInt(parts[6]), Integer.parseInt(parts[7]));
 		return new FingerCoordinate(topLeft, topRight, bottomLeft, bottomRight);
+	}
+	
+	public static void showChangeServerDialog()
+	{
+		RuntimeEnvironment runtimeEnvironment = Context.getRuntimeEnvironment();
+		if(runtimeEnvironment == RuntimeEnvironment.LOCAL || runtimeEnvironment == RuntimeEnvironment.DEV)
+		{
+			WebserviceManager webserviceManager = Context.getWebserviceManager();
+			String oldBaseUrl = webserviceManager.getServerBaseUrl();
+			
+			String[] urls = Context.getConfigManager().getProperty("dev.webservice.urls").split("[,\\s]+");
+			String[] userChoice = new String[1];
+			
+			Platform.runLater(() ->
+			{
+			    String dialogTitle = getCoreStringsResourceBundle().getString("dialog.choice.title");
+			    String headerText = getCoreStringsResourceBundle().getString(
+			    		                                                "dialog.choice.selectServer.headerText");
+			    String buttonText = getCoreStringsResourceBundle().getString("dialog.choice.selectServer.button");
+			
+			    CoreFxController coreFxController = Context.getCoreFxController();
+			    userChoice[0] = DialogUtils.showChoiceDialog(coreFxController.getStage(), coreFxController, dialogTitle,
+			                                                 headerText, urls, oldBaseUrl, buttonText,
+			                                                 false,
+			                                                 Context.getGuiLanguage().getNodeOrientation() ==
+				                                                                        NodeOrientation.RIGHT_TO_LEFT);
+				String baseUrl = userChoice[0];
+				if(baseUrl != null)
+				{
+					webserviceManager.changeServerBaseUrl(baseUrl);
+					LOGGER.info("change the server base URL from (" + oldBaseUrl + ") to (" + baseUrl + ")");
+				}
+			});
+		}
 	}
 }

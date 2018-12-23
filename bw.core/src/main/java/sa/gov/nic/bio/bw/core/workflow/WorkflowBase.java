@@ -66,6 +66,12 @@ public abstract class WorkflowBase implements Workflow, AppLogger
 	{
 		if(interruptionSignal != null) throwInterruptionSignal();
 		
+		AssociatedMenu annotation = getClass().getAnnotation(AssociatedMenu.class);
+		Integer workflowId = annotation != null ? annotation.workflowId() : null;
+		
+		if(workflowId != null) uiInputData.put(controllerClass.getName() + "#workflowId", workflowId);
+		if(tcn != null) uiInputData.put(controllerClass.getName() + "#workflowTcn", tcn);
+		
 		BodyFxControllerBase currentBodyFxController = Context.getWorkflowManager().getFormRenderer()
 																			.renderForm(controllerClass, uiInputData);
 		renderedAtLeastOnceInTheStep = true;
@@ -108,10 +114,13 @@ public abstract class WorkflowBase implements Workflow, AppLogger
 		
 		try
 		{
+			if(workflowId != null) uiInputData.put(taskClass.getName() + "#workflowId", workflowId);
+			if(tcn != null) uiInputData.put(taskClass.getName() + "#workflowTcn", tcn);
+			
 			WorkflowTask workflowTask = taskClass.getConstructor().newInstance();
 			Workflow.loadWorkflowInputs(workflowTask, uiInputData, false, false);
 			
-			Signal[] thrownSignal = new Signal[1];
+			Throwable[] thrownException = new Throwable[1];
 			Thread[] taskThread = new Thread[1];
 			
 			future = Context.getExecutorService().submit(() ->
@@ -123,12 +132,11 @@ public abstract class WorkflowBase implements Workflow, AppLogger
 					if(interruptionSignal != null) throwInterruptionSignal();
 					
 					if(Context.getCoreFxController().isMockTasksEnabled()) workflowTask.mockExecute();
-					else if(workflowId != null) workflowTask.execute(workflowId, tcn);
-					else workflowTask.execute(null, null);
+					else workflowTask.execute();
 				}
-				catch(Signal signal)
+				catch(Throwable e)
 				{
-					thrownSignal[0] = signal;
+					thrownException[0] = e;
 				}
 				
 				return null;
@@ -149,7 +157,7 @@ public abstract class WorkflowBase implements Workflow, AppLogger
 				if(interruptionSignal != null) throwInterruptionSignal();
 			}
 			
-			if(thrownSignal[0] != null) throw thrownSignal[0];
+			if(thrownException[0] != null) throw thrownException[0];
 			
 			Workflow.saveWorkflowOutputs(workflowTask, uiInputData);
 		}
@@ -158,7 +166,7 @@ public abstract class WorkflowBase implements Workflow, AppLogger
 			if(e instanceof Signal) throw (Signal) e;
 			
 			String errorCode = CoreErrorCodes.C002_00026.getCode();
-			String[] errorDetails = {"Failure upon executing the workflow task! task = " +
+			String[] errorDetails = {"Failure upon executing workflow task! task = " +
 																	(taskClass != null ? taskClass.getName() : null)};
 			Workflow.throwInvalidStateSignal(errorCode, errorDetails, e);
 		}

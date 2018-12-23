@@ -7,13 +7,16 @@ import sa.gov.nic.bio.commons.TaskResponse;
 import java.util.HashMap;
 import java.util.Map;
 
-public interface WorkflowTask extends AppLogger
+public abstract class WorkflowTask implements AppLogger
 {
-	void execute(Integer workflowId, Long workflowTcn) throws Signal, InterruptedException;
+	@Input protected Integer workflowId;
+	@Input protected Long workflowTcn;
 	
-	default void mockExecute() throws Signal, InterruptedException
+	public abstract void execute() throws Throwable;
+	
+	public void mockExecute() throws Throwable
 	{
-		execute(null, null);
+		execute();
 		
 		
 		//CountDownLatch latch = new CountDownLatch(1);
@@ -25,7 +28,7 @@ public interface WorkflowTask extends AppLogger
 		//		MockTaskDialogFxController captureFingerprintDialogFxController =
 		//				DialogUtils.buildCustomDialogByFxml(Context.getCoreFxController().getStage(),
 		//				                                    MockTaskDialogFxController.class,
-		//				                                    AppUtils.getCoreStringsResourceBundle(Locale.getDefault()),
+		//				                                    AppUtils.getCoreStringsResourceBundle(),
 		//				                                    false);
 		//
 		//		List<TaskInput<?>> taskInputs = new ArrayList<>();
@@ -70,7 +73,7 @@ public interface WorkflowTask extends AppLogger
 		//}
 	}
 	
-	default <T> void resetWorkflowStepIfNegativeOrNullTaskResponse(TaskResponse<T> taskResponse) throws Signal
+	protected <T> void resetWorkflowStepIfNegativeOrNullTaskResponse(TaskResponse<T> taskResponse) throws Signal
 	{
 		if(!taskResponse.isSuccess())
 		{

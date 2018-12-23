@@ -12,13 +12,13 @@ import sa.gov.nic.bio.bw.workflow.visaapplicantsenrollment.beans.VisaApplicantIn
 import sa.gov.nic.bio.bw.workflow.visaapplicantsenrollment.webservice.VisaApplicantsEnrollmentAPI;
 import sa.gov.nic.bio.commons.TaskResponse;
 
-public class VisaApplicantsWorkflowTask implements WorkflowTask
+public class VisaApplicantsWorkflowTask extends WorkflowTask
 {
 	@Input(alwaysRequired = true) private VisaApplicantInfo visaApplicantInfo;
 	@Output private VisaApplicantEnrollmentResponse visaApplicantEnrollmentResponse;
 	
 	@Override
-	public void execute(Integer workflowId, Long workflowTcn) throws Signal
+	public void execute() throws Signal
 	{
 		VisaApplicantsEnrollmentAPI visaApplicantsEnrollmentAPI =
 											Context.getWebserviceManager().getApi(VisaApplicantsEnrollmentAPI.class);

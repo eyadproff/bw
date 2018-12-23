@@ -7,8 +7,11 @@ import javafx.animation.PauseTransition;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.beans.Observable;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.concurrent.Task;
@@ -28,6 +31,7 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.Pagination;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TableCell;
@@ -35,6 +39,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.control.skin.ComboBoxListViewSkin;
 import javafx.scene.effect.GaussianBlur;
 import javafx.scene.image.Image;
@@ -45,6 +50,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.TextAlignment;
@@ -80,6 +86,7 @@ import java.time.chrono.IsoChronology;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
 import java.util.Base64;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -90,6 +97,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.logging.Level;
 
@@ -513,6 +521,47 @@ public class GuiUtils implements AppLogger
 	{
 		datePicker.setChronology(HijrahChronology.INSTANCE);
 		
+		Function<String, LocalDate> textToLocalDateFunction = text ->
+		{
+			if(text != null && !text.isEmpty())
+			{
+				// support "/", "\" and "-" as date separators
+				text = text.replace("\\", "/");
+				text = text.replace("-", "/");
+				
+				// if the input is 8 characters long, we will add the separators
+				if(text.length() == 8 && !text.contains("/"))
+				{
+					text = text.substring(0, 2) + "/" + text.substring(2, 4) + "/" + text.substring(4, 8);
+				}
+				// if the input is 6 characters long, we will consider day and month are both single digits
+				// and then add the separators
+				else if(text.length() == 6 && !text.contains("/"))
+				{
+					text = text.substring(0, 1) + "/" + text.substring(1, 2) + "/" + text.substring(2, 6);
+				}
+				
+				Chronology chronology = rdoUseHijri.isSelected() ?
+						HijrahChronology.INSTANCE : IsoChronology.INSTANCE;
+				
+				try
+				{
+					TemporalAccessor temporalAccessor = dateFormatterForParsing.withChronology(chronology).parse(text);
+					LocalDate date = IsoChronology.INSTANCE.date(temporalAccessor);
+					
+					if(dateValidator != null && !dateValidator.test(date)) return null;
+					else return date;
+				}
+				catch(DateTimeException e)
+				{
+					LOGGER.fine("failed to convert the date (" + text + ") to " + chronology.getId());
+				}
+				
+				return null;
+			}
+			else return null;
+		};
+		
 		Callback<DatePicker, DateCell> dayCellFactory = dp -> new DateCell()
 		{
 			@Override
@@ -527,13 +576,12 @@ public class GuiUtils implements AppLogger
 			}
 		};
 		
-		StringConverter<LocalDate> converter = new StringConverter<LocalDate>()
+		StringConverter<LocalDate> converter = new StringConverter<>()
 		{
 			@Override
 			public String toString(LocalDate date)
 			{
 				Chronology chronology = rdoUseHijri.isSelected() ? HijrahChronology.INSTANCE : IsoChronology.INSTANCE;
-				
 				if(date != null) return dateFormatterForFormatting.withChronology(chronology).format(date);
 				else return "";
 			}
@@ -541,46 +589,8 @@ public class GuiUtils implements AppLogger
 			@Override
 			public LocalDate fromString(String string)
 			{
-				if(string != null && !string.isEmpty())
-				{
-					// support "/", "\" and "-" as date separators
-					string = string.replace("\\", "/");
-					string = string.replace("-", "/");
-					
-					// if the input is 8 characters long, we will add the separators
-					if(string.length() == 8 && !string.contains("/"))
-					{
-						string = string.substring(0, 2) + "/" + string.substring(2, 4) + "/" + string.substring(4, 8);
-					}
-					// if the input is 6 characters long, we will consider day and month are both single digits
-					// and then add the separators
-					else if(string.length() == 6 && !string.contains("/"))
-					{
-						string = string.substring(0, 1) + "/" + string.substring(1, 2) + "/" + string.substring(2, 6);
-					}
-					
-					Chronology chronology = rdoUseHijri.isSelected() ?
-															HijrahChronology.INSTANCE : IsoChronology.INSTANCE;
-					
-					try
-					{
-						TemporalAccessor temporalAccessor = dateFormatterForParsing.withChronology(chronology)
-																				   .parse(string);
-						
-						LocalDate date = IsoChronology.INSTANCE.date(temporalAccessor);
-						
-						if(dateValidator != null && !dateValidator.test(date)) return null;
-						else return date;
-					}
-					catch(DateTimeException e)
-					{
-						LOGGER.log(Level.FINE, "failed to convert the date (" + string + ") to "
-																							+ chronology.getId(), e);
-					}
-					
-					return null;
-				}
-				else return null;
+				datePicker.getStyleClass().removeAll(Collections.singleton("not-valid-value"));
+				return textToLocalDateFunction.apply(string);
 			}
 		};
 		
@@ -593,6 +603,38 @@ public class GuiUtils implements AppLogger
 			LocalDate date = datePicker.getValue();
 			datePicker.setValue(null);
 			datePicker.setValue(date);
+		});
+		
+		datePicker.getEditor().textProperty().addListener((observable, oldValue, newValue) ->
+		{
+			if(newValue.isEmpty())
+			{
+				datePicker.getStyleClass().removeAll(Collections.singleton("not-valid-value"));
+				datePicker.setValue(null);
+				return;
+			}
+			
+			LocalDate localDate = textToLocalDateFunction.apply(newValue);
+			if(localDate != null)
+			{
+				datePicker.getStyleClass().removeAll(Collections.singleton("not-valid-value"));
+				datePicker.setValue(localDate);
+			}
+			else datePicker.getStyleClass().add("not-valid-value");
+		});
+		
+		// on losing focus, set to the old value
+		datePicker.getEditor().focusedProperty().addListener((observable, oldValue, newValue) ->
+		{
+			if(!newValue)
+			{
+				LocalDate oldLocalDate = datePicker.getValue();
+				datePicker.getEditor().clear();
+				datePicker.setValue(null);
+				datePicker.setValue(oldLocalDate);
+			}
+			
+			datePicker.getStyleClass().removeAll(Collections.singleton("not-valid-value"));
 		});
 	}
 	
@@ -639,7 +681,7 @@ public class GuiUtils implements AppLogger
 	{
 		if(fingerprintBase64Images == null) return;
 		
-		ResourceBundle resourceBundle = AppUtils.getCoreStringsResourceBundle(Locale.getDefault());
+		ResourceBundle resourceBundle = AppUtils.getCoreStringsResourceBundle();
 		Map<Integer, String> dialogTitleMap = new HashMap<>();
 		
 		dialogTitleMap.put(FingerPosition.RIGHT_THUMB.getPosition(),
@@ -740,7 +782,7 @@ public class GuiUtils implements AppLogger
 			
 			byte[] bytes = Base64.getDecoder().decode(facePhotoBase64);
 			imageView.setImage(new Image(new ByteArrayInputStream(bytes)));
-			ResourceBundle resourceBundle = AppUtils.getCoreStringsResourceBundle(Locale.getDefault());
+			ResourceBundle resourceBundle = AppUtils.getCoreStringsResourceBundle();
 			attachImageDialog(Context.getCoreFxController(), imageView,
 			                           resourceBundle.getString("label.personPhoto"),
 			                           resourceBundle.getString("label.contextMenu.showImage"),
@@ -867,5 +909,60 @@ public class GuiUtils implements AppLogger
 				};
 			}
 		});
+	}
+	
+	public static void localizePagination(Pagination pagination)
+	{
+		pagination.lookupAll(".number-button").forEach(node ->
+		{
+		    if(node instanceof ToggleButton)
+		    {
+		        ToggleButton toggleButton = (ToggleButton) node;
+		        toggleButton.setText(AppUtils.localizeNumbers(toggleButton.getText()));
+		    }
+		});
+		
+		Node labelNode = pagination.lookup(".page-information");
+		if(labelNode instanceof Label)
+		{
+			Label label = (Label) labelNode;
+			
+			StringProperty stringProperty = new SimpleStringProperty(label.getText());
+			stringProperty.addListener((observable, oldValue, newValue) -> label.setText(newValue));
+			
+			Consumer<String> localizer = text ->
+			{
+				boolean rtl = Context.getGuiLanguage().getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT;
+				if(rtl) text = text.replace('/', '\\');
+				stringProperty.setValue(AppUtils.localizeNumbers(text, Locale.getDefault(),
+				                                                 false));
+			};
+			localizer.accept(label.getText());
+			label.textProperty().addListener((observable, oldValue, newValue) ->
+			{
+				if(!newValue.equals(stringProperty.get())) // label's text was changed directly
+				{
+					stringProperty.setValue(newValue);
+					localizer.accept(newValue);
+				}
+			});
+		}
+		
+		Node controlBoxNode = pagination.lookup(".control-box");
+		if(controlBoxNode instanceof Pane)
+		{
+			Pane controlBox = (Pane) controlBoxNode;
+			controlBox.getChildren().addListener((ListChangeListener<? super Node>) change ->
+			{
+				while(change.next()) change.getAddedSubList().forEach(node ->
+				{
+				    if(node instanceof ToggleButton)
+				    {
+				        ToggleButton toggleButton = (ToggleButton) node;
+				        toggleButton.setText(AppUtils.localizeNumbers(toggleButton.getText()));
+				    }
+				});
+			});
+		}
 	}
 }

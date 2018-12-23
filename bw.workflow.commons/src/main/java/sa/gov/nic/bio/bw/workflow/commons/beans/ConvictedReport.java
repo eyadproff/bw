@@ -7,8 +7,9 @@ import java.util.List;
 
 public class ConvictedReport extends JavaBean
 {
-	private long reportNumber;
-	private long reportDate;
+	private Integer sequence; // used in TableView
+	private Long reportNumber;
+	private Long reportDate;
 	private Long generalFileNumber;
 	private Name subjtName;
 	private Integer subjNationalityCode;
@@ -30,7 +31,9 @@ public class ConvictedReport extends JavaBean
 	private String operatorId;
 	private List<CrimeCode> crimeCodes;
 	
-	public ConvictedReport(long reportNumber, long reportDate, Long generalFileNumber, Name subjtName,
+	public ConvictedReport(){}
+	
+	public ConvictedReport(Long reportNumber, Long reportDate, Long generalFileNumber, Name subjtName,
 	                       Integer subjNationalityCode, String subjOccupation, String subjGender,
 	                       Long subjBirthDate, String subjBirthPlace, Long subjSamisId, Integer subjSamisType,
 	                       Long subjBioId, String subjDocId, Integer subjDocType, Long subjDocIssDate,
@@ -62,11 +65,14 @@ public class ConvictedReport extends JavaBean
 		this.crimeCodes = crimeCodes;
 	}
 	
-	public long getReportNumber(){return reportNumber;}
-	public void setReportNumber(long reportNumber){this.reportNumber = reportNumber;}
+	public Integer getSequence(){return sequence;}
+	public void setSequence(Integer sequence){this.sequence = sequence;}
 	
-	public long getReportDate(){return reportDate;}
-	public void setReportDate(long reportDate){this.reportDate = reportDate;}
+	public Long getReportNumber(){return reportNumber;}
+	public void setReportNumber(Long reportNumber){this.reportNumber = reportNumber;}
+	
+	public Long getReportDate(){return reportDate;}
+	public void setReportDate(Long reportDate){this.reportDate = reportDate;}
 	
 	public Long getGeneralFileNumber(){return generalFileNumber;}
 	public void setGeneralFileNumber(Long generalFileNumber){this.generalFileNumber = generalFileNumber;}

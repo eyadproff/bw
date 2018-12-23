@@ -1,0 +1,7 @@
+project.ext.moduleName = 'bw.workflow.convictedreportinquirybysearchcriteria'
+
+dependencies {
+    implementation project(':bw.workflow.commons')
+    implementation project(':bw.workflow.registerconvictedpresent')
+    implementation project(':bw.lib.jasperreports')
+}

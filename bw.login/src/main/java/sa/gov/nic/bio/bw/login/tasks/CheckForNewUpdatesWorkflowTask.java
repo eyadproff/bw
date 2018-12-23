@@ -13,10 +13,10 @@ import sa.gov.nic.bio.commons.TaskResponse;
 import java.util.Map;
 import java.util.logging.Level;
 
-public class CheckForNewUpdatesWorkflowTask implements WorkflowTask
+public class CheckForNewUpdatesWorkflowTask extends WorkflowTask
 {
 	@Override
-	public void execute(Integer workflowId, Long workflowTcn) throws Signal
+	public void execute() throws Signal
 	{
 		if(Context.getRuntimeEnvironment() != RuntimeEnvironment.LOCAL) // if not local, check for updates
 		{

@@ -10,13 +10,13 @@ import sa.gov.nic.bio.bw.workflow.printdeadpersonrecord.beans.DeadPersonRecord;
 import sa.gov.nic.bio.bw.workflow.printdeadpersonrecord.webservice.DeadPersonRecordById;
 import sa.gov.nic.bio.commons.TaskResponse;
 
-public class DeadPersonRecordByIdWorkflowTask implements WorkflowTask
+public class DeadPersonRecordByIdWorkflowTask extends WorkflowTask
 {
 	@Input(alwaysRequired = true) private long recordId;
 	@Output private DeadPersonRecord deadPersonRecord;
 	
 	@Override
-	public void execute(Integer workflowId, Long workflowTcn) throws Signal
+	public void execute() throws Signal
 	{
 		DeadPersonRecordById deadPersonRecordById = Context.getWebserviceManager().getApi(DeadPersonRecordById.class);
 		Call<DeadPersonRecord> apiCall = deadPersonRecordById.getDeadPersonRecordById(workflowId, workflowTcn,

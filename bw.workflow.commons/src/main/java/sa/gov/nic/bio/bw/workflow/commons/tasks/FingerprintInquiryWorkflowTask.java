@@ -14,14 +14,14 @@ import sa.gov.nic.bio.commons.TaskResponse;
 
 import java.util.List;
 
-public class FingerprintInquiryWorkflowTask implements WorkflowTask
+public class FingerprintInquiryWorkflowTask extends WorkflowTask
 {
 	@Input(alwaysRequired = true) private List<Finger> fingerprints;
 	@Input(alwaysRequired = true) private List<Integer> missingFingerprints;
 	@Output private Integer inquiryId;
 	
 	@Override
-	public void execute(Integer workflowId, Long workflowTcn) throws Signal
+	public void execute() throws Signal
 	{
 		FingerprintInquiryAPI fingerprintInquiryAPI =
 				Context.getWebserviceManager().getApi(FingerprintInquiryAPI.class);
