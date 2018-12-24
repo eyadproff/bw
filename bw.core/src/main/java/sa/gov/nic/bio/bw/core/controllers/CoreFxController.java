@@ -346,7 +346,7 @@ public class CoreFxController extends FxControllerBase implements IdleMonitorReg
 	public void setWizardPane(WizardPane wizardPane)
 	{
 		this.wizardPane = wizardPane;
-		Platform.runLater(() -> wizardPaneContainer.getChildren().add(wizardPane));
+		Platform.runLater(() -> wizardPaneContainer.getChildren().setAll(wizardPane));
 	}
 	
 	public void clearWizardBar()

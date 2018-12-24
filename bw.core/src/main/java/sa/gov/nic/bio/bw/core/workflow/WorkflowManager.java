@@ -50,7 +50,7 @@ public class WorkflowManager implements AppLogger
 			try
 			{
 				coreWorkflow = new CoreWorkflow();
-				coreWorkflow.onProcess();
+				coreWorkflow.onProcess(null);
 				
 				LOGGER.info("The core workflow is finished.");
 			}

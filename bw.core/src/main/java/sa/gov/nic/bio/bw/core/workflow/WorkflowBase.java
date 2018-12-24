@@ -33,6 +33,8 @@ public abstract class WorkflowBase implements Workflow, AppLogger
 		throw temp;
 	}
 	
+	Signal getInterruptionSignal(){return interruptionSignal;}
+	
 	/**
 	 * Submit a user task to the workflow.
 	 *
@@ -84,6 +86,7 @@ public abstract class WorkflowBase implements Workflow, AppLogger
 		}
 		catch(InterruptedException e)
 		{
+			if(interruptionSignal != null) throwInterruptionSignal();
 			return;
 		}
 		

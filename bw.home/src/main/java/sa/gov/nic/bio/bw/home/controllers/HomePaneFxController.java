@@ -16,8 +16,9 @@ import sa.gov.nic.bio.bw.core.controllers.DevicesRunnerGadgetPaneFxController;
 import sa.gov.nic.bio.bw.core.utils.Device;
 import sa.gov.nic.bio.bw.core.utils.FxmlFile;
 import sa.gov.nic.bio.bw.core.utils.GuiUtils;
-import sa.gov.nic.bio.bw.workflow.commons.beans.HomeBean;
+import sa.gov.nic.bio.bw.core.workflow.Input;
 import sa.gov.nic.bio.bw.home.utils.HomeErrorCodes;
+import sa.gov.nic.bio.bw.workflow.commons.beans.HomeBean;
 
 import java.util.List;
 import java.util.Map;
@@ -26,6 +27,9 @@ import java.util.Set;
 @FxmlFile("home.fxml")
 public class HomePaneFxController extends BodyFxControllerBase
 {
+	@Input private boolean showErrorOnHome;
+	
+	@FXML private Pane paneErrorState;
 	@FXML private Pane paneLoginBox;
 	@FXML private Label lblPlaceholder;
 	@FXML private Label lblLoginTimeText;
@@ -44,78 +48,86 @@ public class HomePaneFxController extends BodyFxControllerBase
 	@Override
 	protected void onAttachedToScene()
 	{
-		Context.getCoreFxController().getFooterPaneController().hideRegion();
-		Context.getCoreFxController().getHeaderPaneController().showRegion();
-		Context.getCoreFxController().getMenuPaneController().showRegion();
-		Context.getCoreFxController().getDeviceManagerGadgetPaneController().showRegion();
-		Context.getCoreFxController().startIdleMonitor();
-		
-		UserSession userSession = Context.getUserSession();
-		HomeBean homeBean = (HomeBean) userSession.getAttribute("homeBean");
-		
-		Image facePhoto = homeBean.getFacePhoto();
-		if(facePhoto != null) Context.getCoreFxController().getHeaderPaneController().setAvatarImage(facePhoto);
-		
-		@SuppressWarnings("unchecked")
-		List<MenuItem> menus = (List<MenuItem>) Context.getUserSession().getAttribute("menus");
-		Map<String, MenuItem> topMenus = Context.getTopMenus();
-		Context.getCoreFxController().getMenuPaneController().setMenus(menus, topMenus);
-		
-		@SuppressWarnings("unchecked")
-		Set<Device> devices = (Set<Device>) Context.getUserSession().getAttribute("devices");
-		Context.getCoreFxController().getDeviceManagerGadgetPaneController().showDeviceControls(devices);
-		
-		if(menus.isEmpty())
+		if(showErrorOnHome)
 		{
-			String errorCode = HomeErrorCodes.N004_00001.getCode();
-			reportNegativeTaskResponse(errorCode, null, null);
+			GuiUtils.showNode(lblPlaceholder, false);
+			GuiUtils.showNode(paneErrorState, true);
 		}
 		else
 		{
-			DevicesRunnerGadgetPaneFxController deviceManagerGadgetPaneController =
-					Context.getCoreFxController().getDeviceManagerGadgetPaneController();
-			if(!deviceManagerGadgetPaneController.isDevicesRunnerRunning())
+			Context.getCoreFxController().getFooterPaneController().hideRegion();
+			Context.getCoreFxController().getHeaderPaneController().showRegion();
+			Context.getCoreFxController().getMenuPaneController().showRegion();
+			Context.getCoreFxController().getDeviceManagerGadgetPaneController().showRegion();
+			Context.getCoreFxController().startIdleMonitor();
+			
+			UserSession userSession = Context.getUserSession();
+			HomeBean homeBean = (HomeBean) userSession.getAttribute("homeBean");
+			
+			Image facePhoto = homeBean.getFacePhoto();
+			if(facePhoto != null) Context.getCoreFxController().getHeaderPaneController().setAvatarImage(facePhoto);
+			
+			@SuppressWarnings("unchecked")
+			List<MenuItem> menus = (List<MenuItem>) Context.getUserSession().getAttribute("menus");
+			Map<String, MenuItem> topMenus = Context.getTopMenus();
+			Context.getCoreFxController().getMenuPaneController().setMenus(menus, topMenus);
+			
+			@SuppressWarnings("unchecked")
+			Set<Device> devices = (Set<Device>) Context.getUserSession().getAttribute("devices");
+			Context.getCoreFxController().getDeviceManagerGadgetPaneController().showDeviceControls(devices);
+			
+			if(menus.isEmpty())
 			{
-				Task<Boolean> task = new Task<>()
-				{
-					@Override
-					protected Boolean call()
-					{
-						return BclUtils.isLocalhostPortListening(Context.getBioKitManager().getWebsocketPort());
-					}
-				};
-				task.setOnSucceeded(event ->
-				{
-				    Boolean listening = task.getValue();
-				
-				    if(listening != null && listening)
-				    {
-				        deviceManagerGadgetPaneController.runAndConnectDevicesRunner();
-				    }
-				});
-				Context.getExecutorService().submit(task);
+				String errorCode = HomeErrorCodes.N004_00001.getCode();
+				reportNegativeTaskResponse(errorCode, null, null);
 			}
+			else
+			{
+				DevicesRunnerGadgetPaneFxController deviceManagerGadgetPaneController =
+						Context.getCoreFxController().getDeviceManagerGadgetPaneController();
+				if(!deviceManagerGadgetPaneController.isDevicesRunnerRunning())
+				{
+					Task<Boolean> task = new Task<>()
+					{
+						@Override
+						protected Boolean call()
+						{
+							return BclUtils.isLocalhostPortListening(Context.getBioKitManager().getWebsocketPort());
+						}
+					};
+					task.setOnSucceeded(event ->
+					{
+					    Boolean listening = task.getValue();
+					
+					    if(listening != null && listening)
+					    {
+					        deviceManagerGadgetPaneController.runAndConnectDevicesRunner();
+					    }
+					});
+					Context.getExecutorService().submit(task);
+				}
+			}
+			
+			// The following causes ui lagging (progress indicator) at first login if we take it out of runLater()
+			Platform.runLater(() ->
+			{
+			    Context.getCoreFxController().getHeaderPaneController().setUsername(homeBean.getUsername());
+			    Context.getCoreFxController().getHeaderPaneController().setOperatorName(homeBean.getOperatorName());
+			    Context.getCoreFxController().getHeaderPaneController().setLocation(homeBean.getLocation());
+				
+				setLabelsText(homeBean.getsLoginTime(), lblLoginTimeText, lblLoginTime);
+				setLabelsText(homeBean.getsLastLogonTime(), lblLastSuccessLoginText, lblLastSuccessLogin);
+				setLabelsText(homeBean.getsLastFailedLoginTime(), lblLastFailedLoginText, lblLastFailedLogin);
+				setLabelsText(homeBean.getsFailedLoginCount(), lblFailedLoginCountText, lblFailedLoginCount);
+				setLabelsText(homeBean.getsLastPasswordChangeTime(), lblLastPasswordChangeTimeText,
+				              lblLastPasswordChangeTime);
+				setLabelsText(homeBean.getsPasswordExpirationTime(), lblPasswordExpirationTimeText,
+				              lblPasswordExpirationTime);
+				
+				GuiUtils.showNode(lblPlaceholder, false);
+				GuiUtils.showNode(paneLoginBox, true);
+			});
 		}
-		
-		// The following causes ui lagging (progress indicator) at first login if we take it out of Platform.runLater()
-		Platform.runLater(() ->
-		{
-		    Context.getCoreFxController().getHeaderPaneController().setUsername(homeBean.getUsername());
-		    Context.getCoreFxController().getHeaderPaneController().setOperatorName(homeBean.getOperatorName());
-		    Context.getCoreFxController().getHeaderPaneController().setLocation(homeBean.getLocation());
-		
-		    setLabelsText(homeBean.getsLoginTime(), lblLoginTimeText, lblLoginTime);
-		    setLabelsText(homeBean.getsLastLogonTime(), lblLastSuccessLoginText, lblLastSuccessLogin);
-		    setLabelsText(homeBean.getsLastFailedLoginTime(), lblLastFailedLoginText, lblLastFailedLogin);
-		    setLabelsText(homeBean.getsFailedLoginCount(), lblFailedLoginCountText, lblFailedLoginCount);
-		    setLabelsText(homeBean.getsLastPasswordChangeTime(), lblLastPasswordChangeTimeText,
-		                  lblLastPasswordChangeTime);
-		    setLabelsText(homeBean.getsPasswordExpirationTime(), lblPasswordExpirationTimeText,
-		                  lblPasswordExpirationTime);
-		
-		    GuiUtils.showNode(lblPlaceholder, false);
-		    GuiUtils.showNode(paneLoginBox, true);
-		});
 	}
 	
 	private static void setLabelsText(String text, Label textLabel, Label valueLabel)
