@@ -17,6 +17,7 @@ VERSION SCHEMA: vYYYY.MM.#SEQ
 - FIX: Prevent adding more than one wizard pane in rare cases.
 - FIX: Prevent blocking the application navigation in case one the of the lookups takes long time.
 - ENH: In case of invalid state in workflows, navigate the user to the home page and set error label.
+- ENH: Upgrade ScenicView.
 
 ---
 
