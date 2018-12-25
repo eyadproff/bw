@@ -24,7 +24,7 @@ public interface ConvictedReportInquiryAPI
 	                                                           @Header("Workflow-Tcn") Long workflowTcn,
 	                                                           @Query("report-number") Long reportNumber);
 	
-	@GET("services-gateway-biooperation/api/criminal/info/dis/{general-file-number}/v1")
+	@GET("services-gateway-demographic/api/criminal/info/{general-file-number}/v2")
 	Call<List<DisCriminalReport>> inquireConvictedReportFromDisByGeneralFileNumber(
 																@Header("Workflow-Code") Integer workflowId,
 																@Header("Workflow-Tcn") Long workflowTcn,

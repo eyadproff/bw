@@ -3,18 +3,25 @@ package sa.gov.nic.bio.bw.workflow.commons.controllers;
 import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import sa.gov.nic.bio.bw.core.Context;
 import sa.gov.nic.bio.bw.core.beans.Gender;
+import sa.gov.nic.bio.bw.core.beans.SelectableItem;
 import sa.gov.nic.bio.bw.core.controllers.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.core.utils.FxmlFile;
@@ -38,7 +45,8 @@ public class InquiryByFingerprintsResultPaneFxController extends WizardStepFxCon
 	@Input protected Long civilBiometricsId;
 	@Input protected Long criminalBiometricsId;
 	@Input protected Map<Long, PersonInfo> civilPersonInfoMap;
-	@Input protected Map<Long, PersonInfo> criminalPersonInfoMap;
+	@Input protected Map<Integer, PersonInfo> oldCriminalPersonInfoMap;
+	@Input protected Map<Long, PersonInfo> newCriminalPersonInfoMap;
 	@Output protected NormalizedPersonInfo normalizedPersonInfo;
 	
 	@FXML private ScrollPane infoPane;
@@ -51,12 +59,20 @@ public class InquiryByFingerprintsResultPaneFxController extends WizardStepFxCon
 	@FXML private Pane paneCriminalFingerprintsNoHit;
 	@FXML private Pane paneCriminalFingerprintsHit;
 	@FXML private Pane paneNoHitMessage;
+	@FXML private TabPane tabPaneCriminal;
+	@FXML private Tab tabOldSystem;
+	@FXML private Tab tabNewSystem;
 	@FXML private TableView<Long> tvCivilPersonIds;
-	@FXML private TableView<Long>  tvReportNumbers;
+	@FXML private TableView<SelectableItem<Integer>> tvDisRecords;
+	@FXML private TableView<SelectableItem<Long>> tvReportNumbers;
+	@FXML private TableColumn<Long, Long> tcCivilSelection;
 	@FXML private TableColumn<Long, Long> tcPersonIdSequence;
 	@FXML private TableColumn<Long, String> tcPersonId;
-	@FXML private TableColumn<Long, Long> tcReportNumberSequence;
-	@FXML private TableColumn<Long, String> tcReportNumber;
+	@FXML private TableColumn<SelectableItem<Integer>, SelectableItem<Integer>> tcOldCriminalSelection;
+	@FXML private TableColumn<SelectableItem<Integer>, String> tcDisRecordSequence;
+	@FXML private TableColumn<SelectableItem<Long>, SelectableItem<Long>> tcNewCriminalSelection;
+	@FXML private TableColumn<SelectableItem<Long>, SelectableItem<Long>> tcReportNumberSequence;
+	@FXML private TableColumn<SelectableItem<Long>, String> tcReportNumber;
 	@FXML private ImageView ivPersonPhoto;
 	@FXML private Label lblFirstName;
 	@FXML private Label lblFatherName;
@@ -79,21 +95,194 @@ public class InquiryByFingerprintsResultPaneFxController extends WizardStepFxCon
 	@FXML private Button btnRegisterUnknownPerson;
 	@FXML private Button btnConfirmPersonInformation;
 	
-	private Long[] selectedCivilPersonId = new Long[1];
-	private Long[] selectedReportNumber = new Long[1];
-	
 	@Override
 	protected void onAttachedToScene()
 	{
 		paneImageView.maxWidthProperty().bind(paneImage.widthProperty());
 		
-		initSection(tvCivilPersonIds, tvReportNumbers, tcPersonIdSequence, tcPersonId, civilBiometricsId,
-		            lblCivilBiometricsId, civilPersonInfoMap, paneCivilFingerprintsHit, paneCivilFingerprintsNoHit,
-		            selectedCivilPersonId, selectedReportNumber);
+		boolean civilHit = status == Status.HIT && civilBiometricsId != null;
+		boolean criminalHit = status == Status.HIT && criminalBiometricsId != null;
 		
-		initSection(tvReportNumbers, tvCivilPersonIds, tcReportNumberSequence, tcReportNumber, criminalBiometricsId,
-		            lblCriminalBiometricsId, criminalPersonInfoMap, paneCriminalFingerprintsHit,
-		            paneCriminalFingerprintsNoHit, selectedReportNumber, selectedCivilPersonId);
+		tcCivilSelection.setCellFactory(tc -> new TableCell<>()
+		{
+			@Override
+			public void updateItem(Long item, boolean empty)
+			{
+				super.updateItem(item, empty);
+				
+				TableRow tableRow = getTableRow();
+				
+				if(tableRow != null && tableRow.getIndex() == 0)
+				{
+					CheckBox checkBox = new CheckBox();
+					checkBox.setSelected(true);
+					checkBox.setDisable(true);
+					setGraphic(checkBox);
+				}
+				else setGraphic(null);
+			}
+		});
+		tcOldCriminalSelection.setCellFactory(tc -> new TableCell<>()
+		{
+			@Override
+			public void updateItem(SelectableItem<Integer> item, boolean empty)
+			{
+				super.updateItem(item, empty);
+				
+				TableRow tableRow = getTableRow();
+				if(tableRow != null && item != null)
+				{
+					if(!civilHit)
+					{
+						CheckBox checkBox = new CheckBox();
+						checkBox.setSelected(item.isSelected());
+						checkBox.setDisable(true);
+						setGraphic(checkBox);
+					}
+					else setGraphic(null);
+				}
+				else setGraphic(null);
+			}
+		});
+		tcNewCriminalSelection.setCellFactory(tc -> new TableCell<>()
+		{
+			@Override
+			public void updateItem(SelectableItem<Long> item, boolean empty)
+			{
+				super.updateItem(item, empty);
+				
+				TableRow tableRow = getTableRow();
+				if(tableRow != null && item != null)
+				{
+					if(!civilHit)
+					{
+						CheckBox checkBox = new CheckBox();
+						checkBox.setSelected(item.isSelected());
+						checkBox.setDisable(true);
+						setGraphic(checkBox);
+					}
+					else setGraphic(null);
+				}
+				else setGraphic(null);
+			}
+		});
+		
+		tcCivilSelection.setCellValueFactory(p -> new ReadOnlyObjectWrapper<>(p.getValue()));
+		tcOldCriminalSelection.setCellValueFactory(p -> new ReadOnlyObjectWrapper<>(p.getValue()));
+		tcNewCriminalSelection.setCellValueFactory(p -> new ReadOnlyObjectWrapper<>(p.getValue()));
+		
+		tvDisRecords.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) ->
+		{
+			if(oldValue != null) oldValue.setSelected(false);
+			if(newValue != null) newValue.setSelected(true);
+			tvDisRecords.refresh();
+		});
+		tvReportNumbers.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) ->
+		{
+		    if(oldValue != null) oldValue.setSelected(false);
+		    if(newValue != null) newValue.setSelected(true);
+			tvReportNumbers.refresh();
+		});
+		
+		GuiUtils.initSequenceTableColumn(tcPersonIdSequence);
+		GuiUtils.initSequenceTableColumn(tcReportNumberSequence);
+		
+		tcPersonIdSequence.setCellValueFactory(p -> new ReadOnlyObjectWrapper<>(p.getValue()));
+		tcReportNumberSequence.setCellValueFactory(p -> new ReadOnlyObjectWrapper<>(p.getValue()));
+		
+		tcPersonId.setCellValueFactory(param -> new SimpleStringProperty(AppUtils.localizeNumbers(
+																		String.valueOf(param.getValue()))));
+		tcDisRecordSequence.setCellValueFactory(param -> new SimpleStringProperty(AppUtils.localizeNumbers(
+																		String.valueOf(param.getValue().getItem()))));
+		tcReportNumber.setCellValueFactory(param -> new SimpleStringProperty(AppUtils.localizeNumbers(
+																		String.valueOf(param.getValue().getItem()))));
+		
+		if(civilHit)
+		{
+			GuiUtils.showNode(paneCivilFingerprintsHit, true);
+			GuiUtils.showNode(tvCivilPersonIds, true);
+			
+			lblCivilBiometricsId.setText(AppUtils.localizeNumbers(String.valueOf(civilBiometricsId)));
+			
+			if(civilPersonInfoMap != null)
+			{
+				tvCivilPersonIds.getSelectionModel().selectedItemProperty().addListener((observable, oldValue,
+				                                                                         newValue) ->
+				{
+				    if(newValue != null)
+				    {
+				        populatePersonInfo(civilPersonInfoMap.get(newValue));
+				        Platform.runLater(() ->
+				        {
+				            tvReportNumbers.getSelectionModel().clearSelection();
+				            tvDisRecords.getSelectionModel().clearSelection();
+				            tvCivilPersonIds.getSelectionModel().select(newValue);
+				        });
+				    }
+				});
+				
+				Set<Long> civilPersonIds = civilPersonInfoMap.keySet();
+				tvCivilPersonIds.getItems().setAll(civilPersonIds);
+			}
+		}
+		else GuiUtils.showNode(paneCivilFingerprintsNoHit, true);
+		
+		if(criminalHit)
+		{
+			GuiUtils.showNode(paneCriminalFingerprintsHit, true);
+			GuiUtils.showNode(tabPaneCriminal, true);
+			
+			lblCriminalBiometricsId.setText(AppUtils.localizeNumbers(String.valueOf(criminalBiometricsId)));
+			
+			if(oldCriminalPersonInfoMap != null)
+			{
+				tvDisRecords.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) ->
+				{
+				    if(newValue != null)
+				    {
+				        populatePersonInfo(oldCriminalPersonInfoMap.get(newValue.getItem()));
+				        Platform.runLater(() ->
+				        {
+					        tvCivilPersonIds.getSelectionModel().clearSelection();
+					        tvReportNumbers.getSelectionModel().clearSelection();
+				            tvDisRecords.getSelectionModel().select(newValue);
+				        });
+				    }
+				});
+				
+				tvDisRecords.getItems().clear();
+				Set<Integer> disRecordSequences = oldCriminalPersonInfoMap.keySet();
+				for(Integer disRecordSequence : disRecordSequences)
+				{
+					tvDisRecords.getItems().add(new SelectableItem<>(disRecordSequence, false));
+				}
+			}
+			
+			if(newCriminalPersonInfoMap != null)
+			{
+				tvReportNumbers.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) ->
+				{
+				    if(newValue != null)
+				    {
+				        populatePersonInfo(newCriminalPersonInfoMap.get(newValue.getItem()));
+				        Platform.runLater(() ->
+				        {
+				            tvCivilPersonIds.getSelectionModel().clearSelection();
+					        tvDisRecords.getSelectionModel().clearSelection();
+				            tvReportNumbers.getSelectionModel().select(newValue);
+				        });
+				    }
+				});
+				
+				tvReportNumbers.getItems().clear();
+				Set<Long> reportNumbers = newCriminalPersonInfoMap.keySet();
+				for(Long reportNumber : reportNumbers)
+				{
+					tvReportNumbers.getItems().add(new SelectableItem<>(reportNumber, false));
+				}
+			}
+		}
+		else GuiUtils.showNode(paneCriminalFingerprintsNoHit, true);
 		
 		if(status == Status.HIT)
 		{
@@ -101,8 +290,22 @@ public class InquiryByFingerprintsResultPaneFxController extends WizardStepFxCon
 			GuiUtils.showNode(infoPane, true);
 			if(btnConfirmPersonInformation != null) GuiUtils.showNode(btnConfirmPersonInformation, true);
 			
-			if(!tvCivilPersonIds.getItems().isEmpty()) tvCivilPersonIds.getSelectionModel().select(0);
-			else if(!tvReportNumbers.getItems().isEmpty()) tvReportNumbers.getSelectionModel().select(0);
+			if(!tvCivilPersonIds.getItems().isEmpty())
+			{
+				tvCivilPersonIds.getSelectionModel().select(0);
+				if(!tvDisRecords.getItems().isEmpty()) tabPaneCriminal.getSelectionModel().select(tabOldSystem);
+				else tabPaneCriminal.getSelectionModel().select(tabNewSystem);
+			}
+			else if(!tvReportNumbers.getItems().isEmpty())
+			{
+				tabPaneCriminal.getSelectionModel().select(tabNewSystem);
+				tvReportNumbers.getSelectionModel().select(0);
+			}
+			else if(!tvDisRecords.getItems().isEmpty())
+			{
+				tabPaneCriminal.getSelectionModel().select(tabOldSystem);
+				tvDisRecords.getSelectionModel().select(0);
+			}
 			else populatePersonInfo(null);
 			
 			if(btnConfirmPersonInformation != null) btnConfirmPersonInformation.requestFocus();
@@ -115,6 +318,18 @@ public class InquiryByFingerprintsResultPaneFxController extends WizardStepFxCon
 																	|| !hideRegisterUnknownButton);
 			
 			btnStartOver.requestFocus();
+		}
+	}
+	
+	@Override
+	protected void onGoingNext(Map<String, Object> uiDataMap)
+	{
+		boolean civilHit = paneCivilFingerprintsHit.isVisible();
+		
+		if(civilHit)
+		{
+			ObservableList<Long> personIds = tvCivilPersonIds.getItems();
+			normalizedPersonInfo = new NormalizedPersonInfo(civilPersonInfoMap.get(personIds.get(0)));
 		}
 	}
 	
@@ -165,51 +380,6 @@ public class InquiryByFingerprintsResultPaneFxController extends WizardStepFxCon
 		
 		infoPane.autosize();
 		if(btnConfirmPersonInformation != null) btnConfirmPersonInformation.requestFocus();
-	}
-	
-	private void initSection(TableView<Long> tvSection, TableView<Long> tvOther,
-	                                TableColumn<Long, Long> tcSequence, TableColumn<Long, String> tcLong,
-	                                Long biometricsId, Label lblBiometricsId, Map<Long, PersonInfo> personInfoMap,
-	                                Pane paneFingerprintsHit, Pane paneFingerprintsNoHit, Long[] sectionSelectedItem,
-	                                Long[] otherSelectedItem)
-	{
-		GuiUtils.initSequenceTableColumn(tcSequence);
-		tcSequence.setCellValueFactory(p -> new ReadOnlyObjectWrapper<>(p.getValue()));
-		tcLong.setCellValueFactory(param -> new SimpleStringProperty(AppUtils.localizeNumbers(
-				String.valueOf(param.getValue()))));
-		
-		if(status == Status.HIT && biometricsId != null)
-		{
-			GuiUtils.showNode(paneFingerprintsHit, true);
-			GuiUtils.showNode(tvSection, true);
-			
-			lblBiometricsId.setText(AppUtils.localizeNumbers(String.valueOf(biometricsId)));
-			
-			if(personInfoMap != null)
-			{
-				tvSection.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) ->
-				{
-					if(sectionSelectedItem[0] != null && sectionSelectedItem[0].equals(newValue)) return;
-					
-					sectionSelectedItem[0] = newValue;
-					otherSelectedItem[0] = null;
-					
-					if(newValue != null)
-					{
-						populatePersonInfo(personInfoMap.get(newValue));
-						Platform.runLater(() ->
-						{
-						    tvOther.getSelectionModel().clearSelection();
-						    tvSection.getSelectionModel().select(newValue);
-						});
-					}
-				});
-				
-				Set<Long> civilPersonIds = personInfoMap.keySet();
-				tvSection.getItems().setAll(civilPersonIds);
-			}
-		}
-		else GuiUtils.showNode(paneFingerprintsNoHit, true);
 	}
 	
 	private static void fillLabelTextWithBlack(Label... labels)

@@ -15,7 +15,7 @@ import sa.gov.nic.bio.bw.workflow.commons.lookups.CountriesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.DocumentTypesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.PersonTypesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.ConvertFingerprintBase64ImagesToWsqWorkflowTask;
-import sa.gov.nic.bio.bw.workflow.commons.tasks.ConvictedReportInquiryWorkflowTask;
+import sa.gov.nic.bio.bw.workflow.commons.tasks.ConvictedReportInquiryByGeneralFileNumberWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.ConvictedReportToPersonInfoConverter;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.FingerprintInquiryStatusCheckerWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.FingerprintInquiryStatusCheckerWorkflowTask.Status;
@@ -147,12 +147,12 @@ public class FingerprintCardIdentificationWorkflow extends WizardWorkflowBase
 					
 					if(criminalBiometricsId != null)
 					{
-						setData(ConvictedReportInquiryWorkflowTask.class, "criminalBiometricsId",
+						setData(ConvictedReportInquiryByGeneralFileNumberWorkflowTask.class, "criminalBiometricsId",
 						        criminalBiometricsId);
-						setData(ConvictedReportInquiryWorkflowTask.class,
+						setData(ConvictedReportInquiryByGeneralFileNumberWorkflowTask.class,
 						        "returnNullResultInCaseNotFound", Boolean.TRUE);
-						executeWorkflowTask(ConvictedReportInquiryWorkflowTask.class);
-						List<ConvictedReport> convictedReports = getData(ConvictedReportInquiryWorkflowTask.class,
+						executeWorkflowTask(ConvictedReportInquiryByGeneralFileNumberWorkflowTask.class);
+						List<ConvictedReport> convictedReports = getData(ConvictedReportInquiryByGeneralFileNumberWorkflowTask.class,
 						                                                 "convictedReports");
 						ConvictedReportToPersonInfoConverter converter = new ConvictedReportToPersonInfoConverter();
 						Map<Long, PersonInfo> criminalPersonInfoMap;

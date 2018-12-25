@@ -35,6 +35,7 @@ import java.net.URL;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class DialogUtils
 {
@@ -171,9 +172,24 @@ public class DialogUtils
 		Button btnCancel = (Button) alert.getDialogPane().lookupButton(buttonTypeCancel);
 		
 		btnConfirm.setDefaultButton(false);
+		
+		final int INITIAL = 0;
+		final int PRESSED = 1;
+		final int RELEASED = 2;
+		
+		AtomicInteger enterKeyState = new AtomicInteger(INITIAL);
+		
+		btnConfirm.setOnKeyPressed(event ->
+		{
+		    if(event.getCode() == KeyCode.ENTER) enterKeyState.set(PRESSED);
+		});
 		btnConfirm.setOnKeyReleased(event ->
 		{
-			if(event.getCode() == KeyCode.ENTER) alert.setResult(buttonTypeConfirm);
+		    if(event.getCode() == KeyCode.ENTER && enterKeyState.get() != INITIAL)
+		    {
+		        if(enterKeyState.get() == PRESSED) alert.setResult(buttonTypeConfirm);
+		        enterKeyState.set(RELEASED);
+		    }
 		});
 		
 		btnCancel.setOnKeyReleased(event ->

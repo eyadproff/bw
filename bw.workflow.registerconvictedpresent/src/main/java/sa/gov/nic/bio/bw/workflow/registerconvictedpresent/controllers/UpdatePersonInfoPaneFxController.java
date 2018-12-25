@@ -37,6 +37,7 @@ import java.util.function.Predicate;
 @FxmlFile("updatePersonInfo.fxml")
 public class UpdatePersonInfoPaneFxController extends WizardStepFxControllerBase
 {
+	@Input private Boolean civilHit;
 	@Input private NormalizedPersonInfo normalizedPersonInfo;
 	@Output private String firstName;
 	@Output private String fatherName;
@@ -179,11 +180,13 @@ public class UpdatePersonInfoPaneFxController extends WizardStepFxControllerBase
 		
 		if(normalizedPersonInfo != null)
 		{
+			boolean disable = civilHit == null || !civilHit;
+			
 			String firstName = normalizedPersonInfo.getFirstName();
 			if(firstName != null)
 			{
 				txtFirstName.setText(firstName);
-				txtFirstName.setDisable(true);
+				txtFirstName.setDisable(disable);
 			}
 			else if(this.firstName != null) txtFirstName.setText(this.firstName);
 			else focusedNode = txtFirstName;
@@ -192,7 +195,7 @@ public class UpdatePersonInfoPaneFxController extends WizardStepFxControllerBase
 			if(fatherName != null)
 			{
 				txtFatherName.setText(fatherName);
-				txtFatherName.setDisable(true);
+				txtFatherName.setDisable(disable);
 			}
 			else if(this.fatherName != null) txtFatherName.setText(this.fatherName);
 			else if(focusedNode == null) focusedNode = txtFatherName;
@@ -201,7 +204,7 @@ public class UpdatePersonInfoPaneFxController extends WizardStepFxControllerBase
 			if(grandfatherName != null)
 			{
 				txtGrandfatherName.setText(grandfatherName);
-				txtGrandfatherName.setDisable(true);
+				txtGrandfatherName.setDisable(disable);
 			}
 			else if(this.grandfatherName != null) txtGrandfatherName.setText(this.grandfatherName);
 			else if(focusedNode == null) focusedNode = txtGrandfatherName;
@@ -210,7 +213,7 @@ public class UpdatePersonInfoPaneFxController extends WizardStepFxControllerBase
 			if(familyName != null)
 			{
 				txtFamilyName.setText(familyName);
-				txtFamilyName.setDisable(true);
+				txtFamilyName.setDisable(disable);
 			}
 			else if(this.familyName != null) txtFamilyName.setText(this.familyName);
 			else if(focusedNode == null) focusedNode = txtFamilyName;
@@ -219,7 +222,7 @@ public class UpdatePersonInfoPaneFxController extends WizardStepFxControllerBase
 			if(gender != null)
 			{
 				boolean selected = GuiUtils.selectComboBoxItem(cboGender, gender);
-				if(selected) cboGender.setDisable(true);
+				if(selected) cboGender.setDisable(disable);
 			}
 			else if(this.gender != null) GuiUtils.selectComboBoxItem(cboGender, this.gender);
 			else if(focusedNode == null) focusedNode = cboGender;
@@ -228,7 +231,7 @@ public class UpdatePersonInfoPaneFxController extends WizardStepFxControllerBase
 			if(nationality != null)
 			{
 				boolean selected = GuiUtils.selectComboBoxItem(cboNationality, nationality);
-				if(selected) cboNationality.setDisable(true);
+				if(selected) cboNationality.setDisable(disable);
 			}
 			else if(this.nationality != null) GuiUtils.selectComboBoxItem(cboNationality, this.nationality);
 			else cboNationality.getSelectionModel().select(0);
@@ -237,7 +240,7 @@ public class UpdatePersonInfoPaneFxController extends WizardStepFxControllerBase
 			if(occupation != null)
 			{
 				txtOccupation.setText(occupation);
-				txtOccupation.setDisable(true);
+				txtOccupation.setDisable(disable);
 			}
 			else if(this.occupation != null) txtOccupation.setText(this.occupation);
 			
@@ -245,7 +248,7 @@ public class UpdatePersonInfoPaneFxController extends WizardStepFxControllerBase
 			if(birthPlace != null)
 			{
 				txtBirthPlace.setText(birthPlace);
-				txtBirthPlace.setDisable(true);
+				txtBirthPlace.setDisable(disable);
 			}
 			else if(this.birthPlace != null) txtBirthPlace.setText(this.birthPlace);
 			
@@ -253,7 +256,7 @@ public class UpdatePersonInfoPaneFxController extends WizardStepFxControllerBase
 			if(birthDate != null)
 			{
 				dpBirthDate.setValue(birthDate);
-				dpBirthDate.setDisable(true);
+				dpBirthDate.setDisable(disable);
 			}
 			else if(this.birthDate != null) dpBirthDate.setValue(this.birthDate);
 			
@@ -264,14 +267,14 @@ public class UpdatePersonInfoPaneFxController extends WizardStepFxControllerBase
 			if(personId != null)
 			{
 				txtPersonId.setText(String.valueOf(personId));
-				txtPersonId.setDisable(true);
+				txtPersonId.setDisable(disable);
 			}
 			
 			PersonType personType = normalizedPersonInfo.getPersonType();
 			if(personType != null)
 			{
 				boolean selected = GuiUtils.selectComboBoxItem(cboPersonType, personType);
-				if(selected) cboPersonType.setDisable(true);
+				if(selected) cboPersonType.setDisable(disable);
 			}
 			else if(this.personType != null) GuiUtils.selectComboBoxItem(cboPersonType, this.personType);
 			
@@ -279,14 +282,14 @@ public class UpdatePersonInfoPaneFxController extends WizardStepFxControllerBase
 			if(documentId != null)
 			{
 				txtDocumentId.setText(documentId);
-				txtDocumentId.setDisable(true);
+				txtDocumentId.setDisable(disable);
 			}
 			
 			DocumentType documentType = normalizedPersonInfo.getDocumentType();
 			if(documentType != null)
 			{
 				boolean selected = GuiUtils.selectComboBoxItem(cboDocumentType, documentType);
-				if(selected) cboDocumentType.setDisable(true);
+				if(selected) cboDocumentType.setDisable(disable);
 			}
 			else if(this.documentType != null) GuiUtils.selectComboBoxItem(cboDocumentType, this.documentType);
 			
@@ -294,7 +297,7 @@ public class UpdatePersonInfoPaneFxController extends WizardStepFxControllerBase
 			if(documentIssuanceDate != null)
 			{
 				dpDocumentIssuanceDate.setValue(documentIssuanceDate);
-				dpDocumentIssuanceDate.setDisable(true);
+				dpDocumentIssuanceDate.setDisable(disable);
 			}
 			else if(this.documentIssuanceDate != null) dpDocumentIssuanceDate.setValue(this.documentIssuanceDate);
 			
@@ -306,7 +309,7 @@ public class UpdatePersonInfoPaneFxController extends WizardStepFxControllerBase
 			if(documentExpiryDate != null)
 			{
 				dpDocumentExpiryDate.setValue(documentExpiryDate);
-				dpDocumentExpiryDate.setDisable(true);
+				dpDocumentExpiryDate.setDisable(disable);
 			}
 			else if(this.documentExpiryDate != null) dpDocumentExpiryDate.setValue(this.documentExpiryDate);
 			
