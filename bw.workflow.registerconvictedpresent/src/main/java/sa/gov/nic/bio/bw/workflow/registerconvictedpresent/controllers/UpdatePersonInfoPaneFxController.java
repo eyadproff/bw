@@ -180,7 +180,7 @@ public class UpdatePersonInfoPaneFxController extends WizardStepFxControllerBase
 		
 		if(normalizedPersonInfo != null)
 		{
-			boolean disable = civilHit == null || !civilHit;
+			boolean disable = civilHit != null && civilHit;
 			
 			String firstName = normalizedPersonInfo.getFirstName();
 			if(firstName != null)

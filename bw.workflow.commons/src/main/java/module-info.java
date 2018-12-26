@@ -8,6 +8,7 @@ module bw.workflow.commons
 	requires java.desktop;
 	requires biokit.library;
 	requires bio.commons;
+	requires org.apache.commons.lang3;
 	
 	opens sa.gov.nic.bio.bw.workflow.commons.images;
 	opens sa.gov.nic.bio.bw.workflow.commons.fxml to bw.core;

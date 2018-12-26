@@ -29,7 +29,6 @@ public class ConvictedReportInquiryFromDisWorkflowTask extends WorkflowTask
 		
 		
 		boolean notFound = !taskResponse.isSuccess() && "B004-00012".equals(taskResponse.getErrorCode());
-		
 		if(returnNullResultInCaseNotFound != null && returnNullResultInCaseNotFound && notFound) return;
 		
 		resetWorkflowStepIfNegativeOrNullTaskResponse(taskResponse);

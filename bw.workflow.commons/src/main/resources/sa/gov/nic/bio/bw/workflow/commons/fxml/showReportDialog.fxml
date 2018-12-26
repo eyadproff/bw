@@ -19,7 +19,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import sa.gov.nic.bio.bw.workflow.commons.ui.ImageViewPane?>
 <Dialog xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:id="dialog" title="%dialog.showConvictedReportDetails.title"
-        fx:controller="sa.gov.nic.bio.bw.workflow.convictedreportinquirybysearchcriteria.controllers.ShowReportDialogFxController">
+        fx:controller="sa.gov.nic.bio.bw.workflow.commons.controllers.ShowReportDialogFxController">
     <dialogPane>
         <DialogPane prefWidth="750.0" prefHeight="450.0" stylesheets="@/sa/gov/nic/bio/bw/core/css/style.css,@../css/style.css">
             <content>

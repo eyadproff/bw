@@ -48,4 +48,10 @@ public interface ConvictedReportInquiryAPI
 																@Query("family-name") String familyName,
 																@Query("page-start") Integer pageStart,
 																@Query("page-end") Integer pageEnd);
+	
+	@GET("services-gateway-demographic/api/criminal/identity/info/{general-file-number}/v1")
+	Call<List<ConvictedReport>> getBasicConvictedReportsByGeneralFileNumber(
+																@Header("Workflow-Code") Integer workflowId,
+	                                                            @Header("Workflow-Tcn") Long workflowTcn,
+                                                                @Path("general-file-number") Long generalFileNumber);
 }

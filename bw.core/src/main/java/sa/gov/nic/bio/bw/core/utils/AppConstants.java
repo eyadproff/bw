@@ -16,9 +16,9 @@ public interface AppConstants
 		Locale SAUDI_EN_LOCALE = new Locale("en", "SA");
 	}
 	
-	// lowest resolution we support is 800x600, subtract from that the windows task bar 40px
-	double STAGE_WIDTH = 800.0;
-	double STAGE_HEIGHT = 560.0;
+	// lowest resolution we support is 1024x768, subtract from that the windows task bar 40px
+	double STAGE_WIDTH = 1024.0;
+	double STAGE_HEIGHT = 768.0 - 40.0;
 	
 	String APP_CODE = "BW";
 	Class<?> PREF_NODE_CLASS = AppConstants.class;

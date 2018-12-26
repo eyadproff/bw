@@ -19,6 +19,7 @@ VERSION SCHEMA: vYYYY.MM.#SEQ
 - ENH: In case of invalid state in workflows, navigate the user to the home page and set error label.
 - ENH: Upgrade ScenicView.
 - CHN: Update the fingerprint inquiry results to include records from DIS.
+- CHN: Change the minimum application resolution from 800x600 to 1024x768.
 
 ---
 

@@ -1,10 +1,10 @@
-package sa.gov.nic.bio.bw.workflow.registerconvictedpresent.lookups;
+package sa.gov.nic.bio.bw.workflow.commons.lookups;
 
 import retrofit2.Call;
 import sa.gov.nic.bio.bw.core.Context;
 import sa.gov.nic.bio.bw.core.interfaces.AppLogger;
-import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.beans.BiometricsExchangeCrimeType;
-import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.webservice.LookupAPI;
+import sa.gov.nic.bio.bw.workflow.commons.beans.BiometricsExchangeCrimeType;
+import sa.gov.nic.bio.bw.workflow.commons.webservice.LookupAPI;
 import sa.gov.nic.bio.commons.TaskResponse;
 
 import java.util.List;

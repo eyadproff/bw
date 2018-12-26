@@ -1,4 +1,4 @@
-package sa.gov.nic.bio.bw.workflow.registerconvictedpresent.tasks;
+package sa.gov.nic.bio.bw.workflow.commons.tasks;
 
 import javafx.concurrent.Task;
 import net.sf.jasperreports.engine.JasperCompileManager;
@@ -16,14 +16,14 @@ import sa.gov.nic.bio.bw.core.utils.GuiLanguage;
 import sa.gov.nic.bio.bw.workflow.commons.beans.ConvictedReport;
 import sa.gov.nic.bio.bw.workflow.commons.beans.Country;
 import sa.gov.nic.bio.bw.workflow.commons.beans.CrimeCode;
+import sa.gov.nic.bio.bw.workflow.commons.beans.CrimeType;
 import sa.gov.nic.bio.bw.workflow.commons.beans.DocumentType;
 import sa.gov.nic.bio.bw.workflow.commons.beans.JudgementInfo;
 import sa.gov.nic.bio.bw.workflow.commons.beans.PersonType;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.CountriesLookup;
+import sa.gov.nic.bio.bw.workflow.commons.lookups.CrimeTypesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.DocumentTypesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.PersonTypesLookup;
-import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.beans.CrimeType;
-import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.lookups.CrimeTypesLookup;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -85,8 +85,8 @@ public class BuildConvictedReportTask extends Task<JasperPrint>
 	private static final String PARAMETER_IS_DEPORTATION_FINAL = "IS_DEPORTATION_FINAL";
 	private static final String PARAMETER_LOGO = "LOGO";
 	
-	private static final String REPORT_TEMPLATE_FILE = "/sa/gov/nic/bio/bw/workflow/registerconvictedpresent" +
-													   "/reports/convicted_record.jrxml";
+	private static final String REPORT_TEMPLATE_FILE = "/sa/gov/nic/bio/bw/workflow/commons/reports/" +
+													   "convicted_record.jrxml";
 	
 	private ConvictedReport convictedReport;
 	private Map<Integer, String> fingerprintBase64Images;

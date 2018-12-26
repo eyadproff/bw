@@ -32,6 +32,7 @@ import sa.gov.nic.bio.bw.core.Context;
 import sa.gov.nic.bio.bw.core.interfaces.IdleMonitorRegisterer;
 
 import java.net.URL;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.concurrent.Future;
@@ -377,8 +378,8 @@ public class DialogUtils
 		return stage;
 	}
 	
-	public static <T> T buildCustomDialogByFxml(Stage ownerStage, Class<?> controllerClass,
-	                                            ResourceBundle resourceBundle, boolean resizable) throws Exception
+	public static <T> T buildCustomDialogByFxml(Stage ownerStage, Class<?> controllerClass, boolean resizable)
+																									throws Exception
 	{
 		boolean rtl = Context.getGuiLanguage().getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT;
 		FxmlFile fxmlFile = controllerClass.getAnnotation(FxmlFile.class);
@@ -386,6 +387,9 @@ public class DialogUtils
 		String parentPackageName = packageName.substring(0, packageName.lastIndexOf('/'));
 		URL fxmlUrl = controllerClass.getResource("/" + parentPackageName + "/fxml/" + fxmlFile.value());
 		
+		ResourceBundle resourceBundle = Context.getModuleResourceBundleProviders()
+											   .get(controllerClass.getModule().getName())
+											   .getStringsResourceBundle(Locale.getDefault());
 		FXMLLoader loader = new FXMLLoader(fxmlUrl, resourceBundle);
 		Dialog<ButtonType> dialog = loader.load();
 		

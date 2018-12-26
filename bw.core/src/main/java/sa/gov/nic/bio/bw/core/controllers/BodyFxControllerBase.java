@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.logging.Level;
 
 /**
  * A base class for any JavaFX controller that will be associated with the body region.
@@ -245,12 +246,20 @@ public abstract class BodyFxControllerBase extends RegionFxControllerBase implem
 		if(errorCode.startsWith("B") || errorCode.startsWith("N")) // business error
 		{
 			// no exceptions/errorDetails in case of business error
-
-			String guiErrorMessage = Context.getErrorsBundle().getString(errorCode);
-			String logErrorMessage = Context.getErrorsBundle().getString(errorCode + ".internal");
 			
-			LOGGER.info(logErrorMessage);
-			showWarningNotification(guiErrorMessage);
+			try
+			{
+				String guiErrorMessage = Context.getErrorsBundle().getString(errorCode);
+				String logErrorMessage = Context.getErrorsBundle().getString(errorCode + ".internal");
+				
+				LOGGER.info(logErrorMessage);
+				showWarningNotification(guiErrorMessage);
+			}
+			catch(Exception e)
+			{
+				LOGGER.log(Level.WARNING, errorCode, e);
+				showWarningNotification(errorCode + ":");
+			}
 		}
 		else // client error, server error, or unknown error
 		{

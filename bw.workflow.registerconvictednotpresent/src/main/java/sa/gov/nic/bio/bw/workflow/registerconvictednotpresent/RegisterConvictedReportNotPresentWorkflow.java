@@ -20,7 +20,7 @@ import sa.gov.nic.bio.bw.workflow.commons.lookups.DocumentTypesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.PersonTypesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.ConvertFingerprintBase64ImagesToWsqWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask;
-import sa.gov.nic.bio.bw.workflow.commons.tasks.ConvictedReportInquiryByGeneralFileNumberWorkflowTask;
+import sa.gov.nic.bio.bw.workflow.commons.tasks.BasicConvictedReportInquiryByGeneralFileNumberWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.ConvictedReportInquiryFromDisWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.ConvictedReportToPersonInfoConverter;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.DisCriminalReportToPersonInfoConverter;
@@ -44,9 +44,9 @@ import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.controllers.ReviewAnd
 import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.controllers.ShareInformationPaneFxController;
 import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.controllers.ShowReportPaneFxController;
 import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.controllers.UpdatePersonInfoPaneFxController;
-import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.lookups.BiometricsExchangeCrimeTypesLookup;
-import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.lookups.BiometricsExchangePartiesLookup;
-import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.lookups.CrimeTypesLookup;
+import sa.gov.nic.bio.bw.workflow.commons.lookups.BiometricsExchangeCrimeTypesLookup;
+import sa.gov.nic.bio.bw.workflow.commons.lookups.BiometricsExchangePartiesLookup;
+import sa.gov.nic.bio.bw.workflow.commons.lookups.CrimeTypesLookup;
 import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.tasks.SubmittingConvictedReportWorkflowTask;
 
 import java.util.LinkedHashMap;
@@ -310,11 +310,13 @@ public class RegisterConvictedReportNotPresentWorkflow extends WizardWorkflowBas
 						else oldCriminalPersonInfoMap = new LinkedHashMap<>();
 						setData(getClass(), FIELD_OLD_CRIMINAL_PERSON_INFO_MAP, oldCriminalPersonInfoMap);
 						
-						setData(ConvictedReportInquiryByGeneralFileNumberWorkflowTask.class,
+						setData(BasicConvictedReportInquiryByGeneralFileNumberWorkflowTask.class,
 						        "criminalBiometricsId", criminalBiometricsId);
-						executeWorkflowTask(ConvictedReportInquiryByGeneralFileNumberWorkflowTask.class);
+						setData(BasicConvictedReportInquiryByGeneralFileNumberWorkflowTask.class,
+						        "returnNullResultInCaseNotFound", Boolean.TRUE);
+						executeWorkflowTask(BasicConvictedReportInquiryByGeneralFileNumberWorkflowTask.class);
 						List<ConvictedReport> convictedReports =
-								getData(ConvictedReportInquiryByGeneralFileNumberWorkflowTask.class,
+								getData(BasicConvictedReportInquiryByGeneralFileNumberWorkflowTask.class,
 								        "convictedReports");
 						ConvictedReportToPersonInfoConverter converter2 = new ConvictedReportToPersonInfoConverter();
 						Map<Long, PersonInfo> newCriminalPersonInfoMap;

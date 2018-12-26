@@ -42,6 +42,7 @@ import sa.gov.nic.bio.bw.core.workflow.Input;
 import sa.gov.nic.bio.bw.core.workflow.Output;
 import sa.gov.nic.bio.bw.workflow.commons.beans.ConvictedReport;
 import sa.gov.nic.bio.bw.workflow.commons.beans.Country;
+import sa.gov.nic.bio.bw.workflow.commons.controllers.ShowReportDialogFxController;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.CountriesLookup;
 import sa.gov.nic.bio.bw.workflow.convictedreportinquirybysearchcriteria.utils.ConvictedReportInquiryErrorCodes;
 
@@ -406,8 +407,7 @@ public class ConvictedReportInquiryPaneFxController extends BodyFxControllerBase
 		try
 		{
 			ShowReportDialogFxController controller = DialogUtils.buildCustomDialogByFxml(
-					Context.getCoreFxController().getStage(), ShowReportDialogFxController.class, resources,
-					true);
+					Context.getCoreFxController().getStage(), ShowReportDialogFxController.class, true);
 			
 			if(controller != null)
 			{

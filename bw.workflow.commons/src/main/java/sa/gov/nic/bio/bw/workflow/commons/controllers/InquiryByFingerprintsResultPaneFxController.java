@@ -1,10 +1,12 @@
 package sa.gov.nic.bio.bw.workflow.commons.controllers;
 
 import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
@@ -17,6 +19,10 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import sa.gov.nic.bio.bw.core.Context;
@@ -24,6 +30,7 @@ import sa.gov.nic.bio.bw.core.beans.Gender;
 import sa.gov.nic.bio.bw.core.beans.SelectableItem;
 import sa.gov.nic.bio.bw.core.controllers.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.core.utils.AppUtils;
+import sa.gov.nic.bio.bw.core.utils.DialogUtils;
 import sa.gov.nic.bio.bw.core.utils.FxmlFile;
 import sa.gov.nic.bio.bw.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.core.workflow.Input;
@@ -32,6 +39,7 @@ import sa.gov.nic.bio.bw.workflow.commons.beans.NormalizedPersonInfo;
 import sa.gov.nic.bio.bw.workflow.commons.beans.PersonInfo;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.FingerprintInquiryStatusCheckerWorkflowTask.Status;
 import sa.gov.nic.bio.bw.workflow.commons.ui.ImageViewPane;
+import sa.gov.nic.bio.bw.workflow.commons.utils.CommonsErrorCodes;
 
 import java.util.Map;
 import java.util.Set;
@@ -91,6 +99,7 @@ public class InquiryByFingerprintsResultPaneFxController extends WizardStepFxCon
 	@FXML private Label lblDocumentExpiryDate;
 	@FXML private Label lblCivilBiometricsId;
 	@FXML private Label lblCriminalBiometricsId;
+	@FXML private Button btnShowReport;
 	@FXML private Button btnStartOver;
 	@FXML private Button btnRegisterUnknownPerson;
 	@FXML private Button btnConfirmPersonInformation;
@@ -319,6 +328,24 @@ public class InquiryByFingerprintsResultPaneFxController extends WizardStepFxCon
 			
 			btnStartOver.requestFocus();
 		}
+		
+		btnShowReport.disableProperty().bind(Bindings.size(tvReportNumbers.getSelectionModel()
+				                                                          .getSelectedItems()).isEqualTo(0));
+		
+		EventHandler<? super KeyEvent> keyReleasedEventHandler = keyEvent ->
+		{
+			if(keyEvent.getCode() == KeyCode.ENTER) btnShowReport.fire();
+		};
+		EventHandler<? super MouseEvent> mouseEventHandler = mouseEvent ->
+		{
+			if(mouseEvent.getButton().equals(MouseButton.PRIMARY) && mouseEvent.getClickCount() == 2)
+			{
+				btnShowReport.fire();
+			}
+		};
+		
+		tvReportNumbers.setOnKeyReleased(keyReleasedEventHandler);
+		tvReportNumbers.setOnMouseClicked(mouseEventHandler);
 	}
 	
 	@Override
@@ -385,5 +412,33 @@ public class InquiryByFingerprintsResultPaneFxController extends WizardStepFxCon
 	private static void fillLabelTextWithBlack(Label... labels)
 	{
 		for(Label label : labels) label.setTextFill(Color.BLACK);
+	}
+	
+	@FXML
+	private void onShowReportButtonClicked(ActionEvent actionEvent)
+	{
+		hideNotification();
+		
+		try
+		{
+			ShowReportDialogFxController controller = DialogUtils.buildCustomDialogByFxml(
+					Context.getCoreFxController().getStage(), ShowReportDialogFxController.class, true);
+		
+			if(controller != null)
+			{
+				SelectableItem<Long> selectedItem = tvReportNumbers.getSelectionModel().getSelectedItem();
+				if(selectedItem != null)
+				{
+					controller.setReportNumber(selectedItem.getItem());
+					controller.show();
+				}
+			}
+		}
+		catch(Exception e)
+		{
+			String errorCode = CommonsErrorCodes.C008_00037.getCode();
+			String[] errorDetails = {"Failed to load (" + ShowReportDialogFxController.class.getName() + ")!"};
+			Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails);
+		}
 	}
 }

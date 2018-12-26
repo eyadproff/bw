@@ -1,4 +1,4 @@
-package sa.gov.nic.bio.bw.workflow.convictedreportinquirybysearchcriteria.controllers;
+package sa.gov.nic.bio.bw.workflow.commons.controllers;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -30,22 +30,22 @@ import sa.gov.nic.bio.bw.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.workflow.commons.beans.ConvictedReport;
 import sa.gov.nic.bio.bw.workflow.commons.beans.Country;
 import sa.gov.nic.bio.bw.workflow.commons.beans.CrimeCode;
+import sa.gov.nic.bio.bw.workflow.commons.beans.CrimeType;
 import sa.gov.nic.bio.bw.workflow.commons.beans.DocumentType;
 import sa.gov.nic.bio.bw.workflow.commons.beans.Finger;
 import sa.gov.nic.bio.bw.workflow.commons.beans.JudgementInfo;
 import sa.gov.nic.bio.bw.workflow.commons.beans.PersonType;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.CountriesLookup;
+import sa.gov.nic.bio.bw.workflow.commons.lookups.CrimeTypesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.DocumentTypesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.PersonTypesLookup;
+import sa.gov.nic.bio.bw.workflow.commons.tasks.BuildConvictedReportTask;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.ConvictedReportInquiryByReportNumberWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.PrintReportTask;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.SaveReportAsPdfTask;
 import sa.gov.nic.bio.bw.workflow.commons.ui.ImageViewPane;
-import sa.gov.nic.bio.bw.workflow.convictedreportinquirybysearchcriteria.utils.ConvictedReportInquiryErrorCodes;
-import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.beans.CrimeType;
-import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.lookups.CrimeTypesLookup;
-import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.tasks.BuildConvictedReportTask;
+import sa.gov.nic.bio.bw.workflow.commons.utils.CommonsErrorCodes;
 
 import java.awt.Desktop;
 import java.io.File;
@@ -184,7 +184,7 @@ public class ShowReportDialogFxController extends BodyFxControllerBase
 					    GuiUtils.showNode(paneLoadingInProgress, false);
 					    GuiUtils.showNode(paneLoadingError, true);
 					
-					    String errorCode = ConvictedReportInquiryErrorCodes.C014_00002.getCode();
+					    String errorCode = CommonsErrorCodes.C008_00029.getCode();
 					    String[] errorDetails = {"failed to load the fingerprints!"};
 					    Context.getCoreFxController().showErrorDialog(errorCode, throwable, errorDetails);
 					});
@@ -200,7 +200,7 @@ public class ShowReportDialogFxController extends BodyFxControllerBase
 			    GuiUtils.showNode(paneLoadingInProgress, false);
 			    GuiUtils.showNode(paneLoadingError, true);
 			
-			    String errorCode = ConvictedReportInquiryErrorCodes.C014_00003.getCode();
+			    String errorCode = CommonsErrorCodes.C008_00030.getCode();
 			    String[] errorDetails = {"failed to load the convicted report!"};
 			    Context.getCoreFxController().showErrorDialog(errorCode, throwable, errorDetails);
 			});
@@ -474,12 +474,12 @@ public class ShowReportDialogFxController extends BodyFxControllerBase
 		GuiUtils.showNode(paneReport, true);
 	}
 	
-	void setReportNumber(Long reportNumber)
+	public void setReportNumber(Long reportNumber)
 	{
 		this.reportNumber = reportNumber;
 	}
 	
-	void show()
+	public void show()
 	{
 		dialog.show();
 	}
@@ -509,7 +509,7 @@ public class ShowReportDialogFxController extends BodyFxControllerBase
 			
 			    Throwable exception = buildConvictedReportTask.getException();
 			
-			    String errorCode = ConvictedReportInquiryErrorCodes.C014_00004.getCode();
+			    String errorCode = CommonsErrorCodes.C008_00031.getCode();
 			    String[] errorDetails = {"failed while building the convicted report!"};
 			    Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails);
 			});
@@ -547,7 +547,7 @@ public class ShowReportDialogFxController extends BodyFxControllerBase
 				        GuiUtils.showNode(btnPrintReport, true);
 				        GuiUtils.showNode(btnSaveReportAsPDF, true);
 				
-				        String errorCode = ConvictedReportInquiryErrorCodes.C014_00005.getCode();
+				        String errorCode = CommonsErrorCodes.C008_00032.getCode();
 				        String[] errorDetails = {"failed while saving the convicted report as PDF!"};
 				        Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails);
 				    }
@@ -560,7 +560,7 @@ public class ShowReportDialogFxController extends BodyFxControllerBase
 				
 				    Throwable exception = buildConvictedReportTask.getException();
 				
-				    String errorCode = ConvictedReportInquiryErrorCodes.C014_00006.getCode();
+				    String errorCode = CommonsErrorCodes.C008_00033.getCode();
 				    String[] errorDetails = {"failed while building the convicted report!"};
 				    Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails);
 				});
@@ -578,7 +578,7 @@ public class ShowReportDialogFxController extends BodyFxControllerBase
 					GuiUtils.showNode(btnPrintReport, true);
 					GuiUtils.showNode(btnSaveReportAsPDF, true);
 					
-					String errorCode = ConvictedReportInquiryErrorCodes.C014_00007.getCode();
+					String errorCode = CommonsErrorCodes.C008_00034.getCode();
 					String[] errorDetails = {"failed while saving the convicted report as PDF!"};
 					Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails);
 				}
@@ -603,7 +603,7 @@ public class ShowReportDialogFxController extends BodyFxControllerBase
 		
 		    Throwable exception = printReportTask.getException();
 		
-		    String errorCode = ConvictedReportInquiryErrorCodes.C014_00008.getCode();
+		    String errorCode = CommonsErrorCodes.C008_00035.getCode();
 		    String[] errorDetails = {"failed while printing the convicted report!"};
 		    Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails);
 		});
@@ -620,9 +620,9 @@ public class ShowReportDialogFxController extends BodyFxControllerBase
 		    GuiUtils.showNode(btnPrintReport, true);
 		    GuiUtils.showNode(btnSaveReportAsPDF, true);
 			
-			String title = resources.getString("printConvictedPresent.savingAsPDF.success.title");
-			String contentText = resources.getString("printConvictedPresent.savingAsPDF.success.message");
-			String buttonText = resources.getString("printConvictedPresent.savingAsPDF.success.button");
+			String title = resources.getString("showConvictedReport.savingAsPDF.success.title");
+			String contentText = resources.getString("showConvictedReport.savingAsPDF.success.message");
+			String buttonText = resources.getString("showConvictedReport.savingAsPDF.success.button");
 			boolean rtl = Context.getGuiLanguage().getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT;
 			Stage stage = (Stage) dialog.getDialogPane().getScene().getWindow();
 			
@@ -646,7 +646,7 @@ public class ShowReportDialogFxController extends BodyFxControllerBase
 		
 		    Throwable exception = printReportTaskAsPdfTask.getException();
 		
-		    String errorCode = ConvictedReportInquiryErrorCodes.C014_00009.getCode();
+		    String errorCode = CommonsErrorCodes.C008_00036.getCode();
 		    String[] errorDetails = {"failed while saving the convicted report as PDF!"};
 		    Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails);
 		});

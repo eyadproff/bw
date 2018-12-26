@@ -1,4 +1,4 @@
-package sa.gov.nic.bio.bw.workflow.convictedreportinquirybysearchcriteria.tasks;
+package sa.gov.nic.bio.bw.workflow.commons.tasks;
 
 import retrofit2.Call;
 import sa.gov.nic.bio.bw.core.Context;

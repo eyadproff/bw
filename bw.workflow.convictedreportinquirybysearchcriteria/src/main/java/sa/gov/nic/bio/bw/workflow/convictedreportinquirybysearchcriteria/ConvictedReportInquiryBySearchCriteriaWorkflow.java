@@ -9,8 +9,8 @@ import sa.gov.nic.bio.bw.workflow.commons.lookups.CountriesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.DocumentTypesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.PersonTypesLookup;
 import sa.gov.nic.bio.bw.workflow.convictedreportinquirybysearchcriteria.controllers.ConvictedReportInquiryPaneFxController;
-import sa.gov.nic.bio.bw.workflow.convictedreportinquirybysearchcriteria.tasks.ConvictedReportInquiryBySearchCriteriaWorkflowTask;
-import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.lookups.CrimeTypesLookup;
+import sa.gov.nic.bio.bw.workflow.commons.tasks.ConvictedReportInquiryBySearchCriteriaWorkflowTask;
+import sa.gov.nic.bio.bw.workflow.commons.lookups.CrimeTypesLookup;
 
 import java.util.Locale;
 import java.util.ResourceBundle;
