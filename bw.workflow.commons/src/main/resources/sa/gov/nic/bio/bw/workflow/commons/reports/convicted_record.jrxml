@@ -134,11 +134,11 @@
 				</graphicElement>
 			</rectangle>
 			<staticText>
-				<reportElement x="483" y="139" width="62" height="15" uuid="13ce2962-f1c4-4332-a8f2-4747a99f9994"/>
+				<reportElement x="467" y="139" width="78" height="15" uuid="13ce2962-f1c4-4332-a8f2-4747a99f9994"/>
 				<textElement>
 					<font fontName="CustomFont" size="11" isBold="true"/>
 				</textElement>
-				<text><![CDATA[رقم الملف العام:]]></text>
+				<text><![CDATA[رقم السمات الجنائي:]]></text>
 			</staticText>
 			<rectangle>
 				<reportElement x="180" y="155" width="366" height="20" uuid="9e8726d0-dba0-4aea-9828-a5800322ed06"/>
@@ -158,7 +158,7 @@
 				<imageExpression><![CDATA[$P{FACE_IMAGE}]]></imageExpression>
 			</image>
 			<textField evaluationTime="Report" isBlankWhenNull="true">
-				<reportElement key="" x="180" y="140" width="299" height="15" uuid="94645d11-1691-4e37-b166-a17f26e9b52b"/>
+				<reportElement key="" x="180" y="140" width="282" height="15" uuid="94645d11-1691-4e37-b166-a17f26e9b52b"/>
 				<textElement textAlignment="Right">
 					<font fontName="CustomFont" isBold="false"/>
 				</textElement>
@@ -195,6 +195,16 @@
 				<reportElement x="227" y="3" width="76" height="68" uuid="678e04c7-dea5-4f5a-843a-6c1cf4fda04c"/>
 				<imageExpression><![CDATA[$P{LOGO}]]></imageExpression>
 			</image>
+			<staticText>
+				<reportElement x="373" y="65" width="175" height="22" uuid="abff976d-6b05-45ca-96e2-2d8f13c58b83"/>
+				<textElement textAlignment="Right">
+					<font fontName="CustomFont" size="13" isBold="true"/>
+				</textElement>
+				<text><![CDATA[تطوير مركز التميز لنظم السمات الحيوية]]></text>
+			</staticText>
+			<line>
+				<reportElement x="379" y="61" width="171" height="1" uuid="92b666d9-f9b2-4b05-a807-4443ef75d926"/>
+			</line>
 		</band>
 	</title>
 	<pageHeader>

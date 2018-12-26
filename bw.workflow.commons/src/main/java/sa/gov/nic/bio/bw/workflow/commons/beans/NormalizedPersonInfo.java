@@ -104,7 +104,8 @@ public class NormalizedPersonInfo extends JavaBean
 		{
 			for(PersonType type : personTypes)
 			{
-				if(personTypeString.equals(type.getIfrPersonType()))
+				if(personTypeString.equals(type.getIfrPersonType()) ||
+				   personTypeString.equals(String.valueOf(type.getCode())))
 				{
 					personType = type;
 					break;

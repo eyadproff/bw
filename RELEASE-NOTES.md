@@ -22,6 +22,7 @@ VERSION SCHEMA: vYYYY.MM.#SEQ
 - CHN: Change the minimum application resolution from 800x600 to 1024x768.
 - NEW: Add Fingerprints-Inquiry workflow.
 - FIX: Fix a bug in ConvictedReportToPersonInfoConverter where identityInfo is not set.
+- CHN: Add Semat copyrights in convicted report.
 
 ---
 
