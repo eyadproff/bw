@@ -1,6 +1,0 @@
-project.ext.moduleName = 'bw.workflow.fingerprintcardidentification'
-
-dependencies {
-    implementation project(':bw.workflow.commons')
-    implementation project(':bw.lib.jasperreports')
-}

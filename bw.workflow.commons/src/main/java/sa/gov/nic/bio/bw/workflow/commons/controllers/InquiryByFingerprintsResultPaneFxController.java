@@ -49,6 +49,7 @@ import java.util.function.Consumer;
 public class InquiryByFingerprintsResultPaneFxController extends WizardStepFxControllerBase
 {
 	@Input protected Boolean hideRegisterUnknownButton;
+	@Input protected Boolean hideConfirmationButton;
 	@Input protected Status status;
 	@Input protected Long civilBiometricsId;
 	@Input protected Long criminalBiometricsId;
@@ -107,6 +108,12 @@ public class InquiryByFingerprintsResultPaneFxController extends WizardStepFxCon
 	@Override
 	protected void onAttachedToScene()
 	{
+		if(hideConfirmationButton != null && hideConfirmationButton)
+		{
+			btnConfirmPersonInformation.setDisable(true);
+			GuiUtils.showNode(btnConfirmPersonInformation, false);
+		}
+		
 		paneImageView.maxWidthProperty().bind(paneImage.widthProperty());
 		
 		boolean civilHit = status == Status.HIT && civilBiometricsId != null;
@@ -297,7 +304,6 @@ public class InquiryByFingerprintsResultPaneFxController extends WizardStepFxCon
 		{
 			GuiUtils.showNode(paneFingerprintsHitResults, true);
 			GuiUtils.showNode(infoPane, true);
-			if(btnConfirmPersonInformation != null) GuiUtils.showNode(btnConfirmPersonInformation, true);
 			
 			if(!tvCivilPersonIds.getItems().isEmpty())
 			{
@@ -317,7 +323,8 @@ public class InquiryByFingerprintsResultPaneFxController extends WizardStepFxCon
 			}
 			else populatePersonInfo(null);
 			
-			if(btnConfirmPersonInformation != null) btnConfirmPersonInformation.requestFocus();
+			if(!btnConfirmPersonInformation.isDisabled()) btnConfirmPersonInformation.requestFocus();
+			else btnStartOver.requestFocus();
 		}
 		else
 		{
