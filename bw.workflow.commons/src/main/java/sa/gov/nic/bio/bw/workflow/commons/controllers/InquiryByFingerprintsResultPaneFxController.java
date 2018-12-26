@@ -15,7 +15,6 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TableCell;
-import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.image.ImageView;
@@ -39,6 +38,7 @@ import sa.gov.nic.bio.bw.workflow.commons.beans.NormalizedPersonInfo;
 import sa.gov.nic.bio.bw.workflow.commons.beans.PersonInfo;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.FingerprintInquiryStatusCheckerWorkflowTask.Status;
 import sa.gov.nic.bio.bw.workflow.commons.ui.ImageViewPane;
+import sa.gov.nic.bio.bw.workflow.commons.ui.PTableColumn;
 import sa.gov.nic.bio.bw.workflow.commons.utils.CommonsErrorCodes;
 
 import java.util.Map;
@@ -74,14 +74,14 @@ public class InquiryByFingerprintsResultPaneFxController extends WizardStepFxCon
 	@FXML private TableView<Long> tvCivilPersonIds;
 	@FXML private TableView<SelectableItem<Integer>> tvDisRecords;
 	@FXML private TableView<SelectableItem<Long>> tvReportNumbers;
-	@FXML private TableColumn<Long, Long> tcCivilSelection;
-	@FXML private TableColumn<Long, Long> tcPersonIdSequence;
-	@FXML private TableColumn<Long, String> tcPersonId;
-	@FXML private TableColumn<SelectableItem<Integer>, SelectableItem<Integer>> tcOldCriminalSelection;
-	@FXML private TableColumn<SelectableItem<Integer>, String> tcDisRecordSequence;
-	@FXML private TableColumn<SelectableItem<Long>, SelectableItem<Long>> tcNewCriminalSelection;
-	@FXML private TableColumn<SelectableItem<Long>, SelectableItem<Long>> tcReportNumberSequence;
-	@FXML private TableColumn<SelectableItem<Long>, String> tcReportNumber;
+	@FXML private PTableColumn<Long, Long> tcCivilSelection;
+	@FXML private PTableColumn<Long, Long> tcPersonIdSequence;
+	@FXML private PTableColumn<Long, String> tcPersonId;
+	@FXML private PTableColumn<SelectableItem<Integer>, SelectableItem<Integer>> tcOldCriminalSelection;
+	@FXML private PTableColumn<SelectableItem<Integer>, String> tcDisRecordSequence;
+	@FXML private PTableColumn<SelectableItem<Long>, SelectableItem<Long>> tcNewCriminalSelection;
+	@FXML private PTableColumn<SelectableItem<Long>, SelectableItem<Long>> tcReportNumberSequence;
+	@FXML private PTableColumn<SelectableItem<Long>, String> tcReportNumber;
 	@FXML private ImageView ivPersonPhoto;
 	@FXML private Label lblFirstName;
 	@FXML private Label lblFatherName;
@@ -108,10 +108,20 @@ public class InquiryByFingerprintsResultPaneFxController extends WizardStepFxCon
 	@Override
 	protected void onAttachedToScene()
 	{
-		if(hideConfirmationButton != null && hideConfirmationButton)
+		boolean hideConfirmationButton = this.hideConfirmationButton != null && this.hideConfirmationButton;
+		if(hideConfirmationButton)
 		{
 			btnConfirmPersonInformation.setDisable(true);
 			GuiUtils.showNode(btnConfirmPersonInformation, false);
+			tvCivilPersonIds.getColumns().remove(tcCivilSelection);
+			tvDisRecords.getColumns().remove(tcOldCriminalSelection);
+			tvReportNumbers.getColumns().remove(tcNewCriminalSelection);
+			
+			tcPersonId.setPercentageWidth(tcPersonId.getPercentageWidth() + tcCivilSelection.getPercentageWidth());
+			tcDisRecordSequence.setPercentageWidth(tcDisRecordSequence.getPercentageWidth() +
+			                                       tcOldCriminalSelection.getPercentageWidth());
+			tcReportNumber.setPercentageWidth(tcReportNumber.getPercentageWidth() +
+			                                  tcNewCriminalSelection.getPercentageWidth());
 		}
 		
 		paneImageView.maxWidthProperty().bind(paneImage.widthProperty());
@@ -128,7 +138,7 @@ public class InquiryByFingerprintsResultPaneFxController extends WizardStepFxCon
 				
 				TableRow tableRow = getTableRow();
 				
-				if(tableRow != null && tableRow.getIndex() == 0)
+				if(!hideConfirmationButton && tableRow != null && tableRow.getIndex() == 0)
 				{
 					CheckBox checkBox = new CheckBox();
 					checkBox.setSelected(true);
@@ -148,7 +158,7 @@ public class InquiryByFingerprintsResultPaneFxController extends WizardStepFxCon
 				TableRow tableRow = getTableRow();
 				if(tableRow != null && item != null)
 				{
-					if(!civilHit)
+					if(!hideConfirmationButton && !civilHit)
 					{
 						CheckBox checkBox = new CheckBox();
 						checkBox.setSelected(item.isSelected());
@@ -170,7 +180,7 @@ public class InquiryByFingerprintsResultPaneFxController extends WizardStepFxCon
 				TableRow tableRow = getTableRow();
 				if(tableRow != null && item != null)
 				{
-					if(!civilHit)
+					if(!hideConfirmationButton && !civilHit)
 					{
 						CheckBox checkBox = new CheckBox();
 						checkBox.setSelected(item.isSelected());
