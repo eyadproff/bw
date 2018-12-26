@@ -19,9 +19,12 @@ run {
                 "--add-opens=javafx.controls/javafx.scene.control.skin=controlsfx",
                 "--add-opens=javafx.graphics/javafx.scene=controlsfx",
                 "--add-opens=java.base/java.util=org.apache.commons.lang3",
+                "--add-opens=java.base/java.lang=org.apache.commons.lang3",
+                "--add-opens=java.base/java.time=org.apache.commons.lang3",
                 "--add-opens=java.base/java.time.chrono=bw.core",
                 "--add-opens=javafx.controls/javafx.scene.control.skin=bw.core",
-                '-Djava.library.path=../build-resources/javafx-dlls/64-bit',
+                "--add-opens=javafx.controls/com.sun.javafx.scene.control=org.scenicview.scenicview",
+                '-Djava.library.path=../build-resources/javafx-dlls/64-bit;../build-resources/javafx-dlls/64-bit-extra',
                 '-Djavafx.preloader=sa.gov.nic.bio.bw.preloader.AppPreloader',
                 '--module', "$moduleName/$mainClassName"
         ]

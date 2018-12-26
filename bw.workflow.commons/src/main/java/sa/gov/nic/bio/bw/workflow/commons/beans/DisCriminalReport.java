@@ -7,6 +7,7 @@ import java.util.List;
 
 public class DisCriminalReport extends JavaBean
 {
+	private Integer sequenceNumber;
 	private Long generalFileNumber;
 	private Name subjtName;
 	private Integer subjNationalityCode;
@@ -24,6 +25,9 @@ public class DisCriminalReport extends JavaBean
 	private List<CrimeCode> disCrimeCodes;
 	private DisClearanceInfo disClearanceInfo;
 	private DisJudgementInfo disJudgementInfo;
+	
+	public Integer getSequenceNumber(){return sequenceNumber;}
+	public void setSequenceNumber(Integer sequenceNumber){this.sequenceNumber = sequenceNumber;}
 	
 	public Long getGeneralFileNumber(){return generalFileNumber;}
 	public void setGeneralFileNumber(Long generalFileNumber){this.generalFileNumber = generalFileNumber;}

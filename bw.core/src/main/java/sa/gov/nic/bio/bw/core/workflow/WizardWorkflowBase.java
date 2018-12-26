@@ -16,6 +16,9 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.concurrent.Callable;
+import java.util.concurrent.CancellationException;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 public abstract class WizardWorkflowBase extends WorkflowBase implements ResourceBundleProvider, DataConveyor
 {
@@ -27,11 +30,25 @@ public abstract class WizardWorkflowBase extends WorkflowBase implements Resourc
 	private final Map<Class<? extends Callable<TaskResponse<?>>>,
 											Callable<TaskResponse<?>>> lookupInstancesCache = new HashMap<>();
 	
+	private Future<? extends TaskResponse<?>> future;
+	protected Map<String, String> configurations;
+	
 	public abstract void onStep(int step) throws InterruptedException, Signal;
+	
+	@Override
+	public void interrupt(Signal interruptionSignal)
+	{
+		super.interrupt(interruptionSignal);
+		
+		if(future != null) future.cancel(true);
+	}
 		
 	@Override
-	public void onProcess() throws Signal
+	public void onProcess(Map<String, String> configurations) throws Signal
 	{
+		this.configurations = configurations;
+		Context.getWorkflowManager().getUserTasks().clear();
+		
 		ResourceBundle stringsBundle = Context.getModuleResourceBundleProviders().get(getClass().getModule().getName())
 																		.getStringsResourceBundle(Locale.getDefault());
 		
@@ -54,7 +71,38 @@ public abstract class WizardWorkflowBase extends WorkflowBase implements Resourc
 							lookupInstancesCache.put(lookupClass, instance);
 						}
 						
-						TaskResponse<?> taskResponse = instance.call();
+						Thread[] taskThread = new Thread[1];
+						Callable<TaskResponse<?>> finalInstance = instance;
+						future = Context.getExecutorService().submit(() ->
+						{
+							taskThread[0] = Thread.currentThread();
+							return finalInstance.call();
+						});
+						
+						TaskResponse<?> taskResponse;
+						try
+						{
+							taskResponse = future.get();
+						}
+						catch(ExecutionException e)
+						{
+							throw e.getCause();
+						}
+						catch(CancellationException e)
+						{
+							LOGGER.info("The lookup task (" + lookupClass.getSimpleName() + ") is cancelled!");
+							taskThread[0].interrupt();
+							if(getInterruptionSignal() != null) throwInterruptionSignal();
+							return;
+						}
+						catch(InterruptedException e)
+						{
+							if(getInterruptionSignal() != null) throwInterruptionSignal();
+							return;
+						}
+						
+						if(getInterruptionSignal() != null) throwInterruptionSignal();
+						
 						if(!taskResponse.isSuccess())
 						{
 							uiInputData.put(KEY_WORKFLOW_TASK_NEGATIVE_RESPONSE, taskResponse);
@@ -65,8 +113,10 @@ public abstract class WizardWorkflowBase extends WorkflowBase implements Resourc
 					break;
 				}
 			}
-			catch(Exception e)
+			catch(Throwable e)
 			{
+				if(e instanceof Signal) throw (Signal) e;
+				
 				String errorCode = CoreErrorCodes.C002_00020.getCode();
 				String[] errorDetails = {"Failed during calling lookups of the workflow (" + getClass().getName() +
 																												")!"};

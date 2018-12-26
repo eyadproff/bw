@@ -9,6 +9,7 @@ import sa.gov.nic.bio.bw.core.workflow.Signal;
 import sa.gov.nic.bio.bw.core.workflow.WithLookups;
 import sa.gov.nic.bio.bw.core.workflow.WizardWorkflowBase;
 import sa.gov.nic.bio.bw.workflow.commons.beans.ConvictedReport;
+import sa.gov.nic.bio.bw.workflow.commons.beans.DisCriminalReport;
 import sa.gov.nic.bio.bw.workflow.commons.beans.PersonInfo;
 import sa.gov.nic.bio.bw.workflow.commons.controllers.FaceCapturingFxController;
 import sa.gov.nic.bio.bw.workflow.commons.controllers.FingerprintCapturingFxController;
@@ -17,8 +18,10 @@ import sa.gov.nic.bio.bw.workflow.commons.controllers.InquiryByFingerprintsResul
 import sa.gov.nic.bio.bw.workflow.commons.lookups.CountriesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.DocumentTypesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.PersonTypesLookup;
-import sa.gov.nic.bio.bw.workflow.commons.tasks.ConvictedReportInquiryWorkflowTask;
+import sa.gov.nic.bio.bw.workflow.commons.tasks.BasicConvictedReportInquiryByGeneralFileNumberWorkflowTask;
+import sa.gov.nic.bio.bw.workflow.commons.tasks.ConvictedReportInquiryFromDisWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.ConvictedReportToPersonInfoConverter;
+import sa.gov.nic.bio.bw.workflow.commons.tasks.DisCriminalReportToPersonInfoConverter;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.FingerprintInquiryStatusCheckerWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.FingerprintInquiryStatusCheckerWorkflowTask.Status;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.FingerprintInquiryWorkflowTask;
@@ -29,9 +32,9 @@ import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.controllers.ReviewAnd
 import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.controllers.ShareInformationPaneFxController;
 import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.controllers.ShowReportPaneFxController;
 import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.controllers.UpdatePersonInfoPaneFxController;
-import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.lookups.BiometricsExchangeCrimeTypesLookup;
-import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.lookups.BiometricsExchangePartiesLookup;
-import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.lookups.CrimeTypesLookup;
+import sa.gov.nic.bio.bw.workflow.commons.lookups.BiometricsExchangeCrimeTypesLookup;
+import sa.gov.nic.bio.bw.workflow.commons.lookups.BiometricsExchangePartiesLookup;
+import sa.gov.nic.bio.bw.workflow.commons.lookups.CrimeTypesLookup;
 import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.tasks.SubmittingConvictedReportWorkflowTask;
 
 import java.util.LinkedHashMap;
@@ -57,8 +60,10 @@ import java.util.stream.Collectors;
 		@Step(iconId = "file_pdf_alt", title = "wizard.showReport")})
 public class RegisterConvictedReportPresentWorkflow extends WizardWorkflowBase
 {
+	private static final String FIELD_CIVIL_HIT = "CIVIL_HIT";
 	private static final String FIELD_CIVIL_PERSON_INFO_MAP = "CIVIL_PERSON_INFO_MAP";
-	private static final String FIELD_CRIMINAL_PERSON_INFO_MAP = "CRIMINAL_PERSON_INFO_MAP";
+	private static final String FIELD_OLD_CRIMINAL_PERSON_INFO_MAP = "OLD_CRIMINAL_PERSON_INFO_MAP";
+	private static final String FIELD_NEW_CRIMINAL_PERSON_INFO_MAP = "NEW_CRIMINAL_PERSON_INFO_MAP";
 	
 	@Override
 	public ResourceBundle getStringsResourceBundle(Locale locale)
@@ -139,6 +144,7 @@ public class RegisterConvictedReportPresentWorkflow extends WizardWorkflowBase
 					                                    "criminalBiometricsId");
 					if(civilBiometricsId != null)
 					{
+						setData(getClass(), FIELD_CIVIL_HIT, Boolean.TRUE);
 						List<Long> civilPersonIds = getData(FingerprintInquiryStatusCheckerWorkflowTask.class,
 						                                    "civilPersonIds");
 						if(!civilPersonIds.isEmpty())
@@ -162,20 +168,37 @@ public class RegisterConvictedReportPresentWorkflow extends WizardWorkflowBase
 					
 					if(criminalBiometricsId != null)
 					{
-						setData(ConvictedReportInquiryWorkflowTask.class, "criminalBiometricsId",
-						        criminalBiometricsId);
-						setData(ConvictedReportInquiryWorkflowTask.class,
+						setData(ConvictedReportInquiryFromDisWorkflowTask.class,
+						        "criminalBiometricsId", criminalBiometricsId);
+						setData(ConvictedReportInquiryFromDisWorkflowTask.class,
 						        "returnNullResultInCaseNotFound", Boolean.TRUE);
-						executeWorkflowTask(ConvictedReportInquiryWorkflowTask.class);
-						List<ConvictedReport> convictedReports = getData(ConvictedReportInquiryWorkflowTask.class,
-						                                                 "convictedReports");
-						ConvictedReportToPersonInfoConverter converter = new ConvictedReportToPersonInfoConverter();
-						Map<Long, PersonInfo> criminalPersonInfoMap;
-						if(convictedReports != null) criminalPersonInfoMap = convictedReports.stream().collect(
-								Collectors.toMap(ConvictedReport::getReportNumber, converter::convert,
+						executeWorkflowTask(ConvictedReportInquiryFromDisWorkflowTask.class);
+						List<DisCriminalReport> disCriminalReports =
+								getData(ConvictedReportInquiryFromDisWorkflowTask.class,
+								        "disCriminalReports");
+						DisCriminalReportToPersonInfoConverter converter = new DisCriminalReportToPersonInfoConverter();
+						Map<Integer, PersonInfo> oldCriminalPersonInfoMap;
+						if(disCriminalReports != null) oldCriminalPersonInfoMap = disCriminalReports.stream().collect(
+								Collectors.toMap(DisCriminalReport::getSequenceNumber, converter::convert,
 								                 (k1, k2) -> k1, LinkedHashMap::new));
-						else criminalPersonInfoMap = new LinkedHashMap<>();
-						setData(getClass(), FIELD_CRIMINAL_PERSON_INFO_MAP, criminalPersonInfoMap);
+						else oldCriminalPersonInfoMap = new LinkedHashMap<>();
+						setData(getClass(), FIELD_OLD_CRIMINAL_PERSON_INFO_MAP, oldCriminalPersonInfoMap);
+						
+						setData(BasicConvictedReportInquiryByGeneralFileNumberWorkflowTask.class,
+						        "criminalBiometricsId", criminalBiometricsId);
+						setData(BasicConvictedReportInquiryByGeneralFileNumberWorkflowTask.class,
+						        "returnNullResultInCaseNotFound", Boolean.TRUE);
+						executeWorkflowTask(BasicConvictedReportInquiryByGeneralFileNumberWorkflowTask.class);
+						List<ConvictedReport> convictedReports =
+								getData(BasicConvictedReportInquiryByGeneralFileNumberWorkflowTask.class,
+								        "convictedReports");
+						ConvictedReportToPersonInfoConverter converter2 = new ConvictedReportToPersonInfoConverter();
+						Map<Long, PersonInfo> newCriminalPersonInfoMap;
+						if(convictedReports != null) newCriminalPersonInfoMap = convictedReports.stream().collect(
+								Collectors.toMap(ConvictedReport::getReportNumber, converter2::convert,
+								                 (k1, k2) -> k1, LinkedHashMap::new));
+						else newCriminalPersonInfoMap = new LinkedHashMap<>();
+						setData(getClass(), FIELD_NEW_CRIMINAL_PERSON_INFO_MAP, newCriminalPersonInfoMap);
 					}
 				}
 				
@@ -185,8 +208,10 @@ public class RegisterConvictedReportPresentWorkflow extends WizardWorkflowBase
 			{
 				passData(getClass(), FIELD_CIVIL_PERSON_INFO_MAP, InquiryByFingerprintsResultPaneFxController.class,
 				         "civilPersonInfoMap");
-				passData(getClass(), FIELD_CRIMINAL_PERSON_INFO_MAP, InquiryByFingerprintsResultPaneFxController.class,
-				         "criminalPersonInfoMap");
+				passData(getClass(), FIELD_OLD_CRIMINAL_PERSON_INFO_MAP,
+				         InquiryByFingerprintsResultPaneFxController.class, "oldCriminalPersonInfoMap");
+				passData(getClass(), FIELD_NEW_CRIMINAL_PERSON_INFO_MAP,
+				         InquiryByFingerprintsResultPaneFxController.class, "newCriminalPersonInfoMap");
 				passData(FingerprintInquiryStatusCheckerWorkflowTask.class,
 				         InquiryByFingerprintsResultPaneFxController.class,
 				         "status", "civilBiometricsId", "criminalBiometricsId");
@@ -195,6 +220,7 @@ public class RegisterConvictedReportPresentWorkflow extends WizardWorkflowBase
 			}
 			case 4:
 			{
+				passData(getClass(), FIELD_CIVIL_HIT, UpdatePersonInfoPaneFxController.class, "civilHit");
 				passData(InquiryByFingerprintsResultPaneFxController.class, UpdatePersonInfoPaneFxController.class,
 				         "normalizedPersonInfo");
 				renderUiAndWaitForUserInput(UpdatePersonInfoPaneFxController.class);

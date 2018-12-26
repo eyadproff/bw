@@ -2,6 +2,8 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.StackPane?>
@@ -9,14 +11,19 @@
 <StackPane xmlns="http://javafx.com/javafx/11" xmlns:fx="http://javafx.com/fxml/1"
            fx:controller="sa.gov.nic.bio.bw.home.controllers.HomePaneFxController"
            stylesheets="@../css/style.css">
-    <VBox alignment="CENTER">
-        <HBox alignment="CENTER">
+    <HBox alignment="CENTER">
+        <VBox alignment="CENTER">
             <padding>
                 <Insets topRightBottomLeft="10.0"/>
             </padding>
             <Label fx:id="lblPlaceholder" text="%label.loading"/>
-            <GridPane fx:id="paneLoginBox" alignment="CENTER" hgap="20.0" styleClass="formBox" managed="false"
-                      visible="false">
+            <VBox fx:id="paneErrorState" alignment="CENTER" spacing="5.0" managed="false" visible="false">
+                <ImageView>
+                    <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/icon_error_32px.png"/>
+                </ImageView>
+                <Label text="%label.appInErrorState"/>
+            </VBox>
+            <GridPane fx:id="paneLoginBox" alignment="CENTER" hgap="20.0" styleClass="formBox" managed="false" visible="false">
                 <padding>
                     <Insets topRightBottomLeft="20.0"/>
                 </padding>
@@ -73,6 +80,6 @@
                     </padding>
                 </Label>
             </GridPane>
-        </HBox>
-    </VBox>
+        </VBox>
+    </HBox>
 </StackPane>

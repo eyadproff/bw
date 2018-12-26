@@ -41,7 +41,11 @@ public class HomeWorkflow extends SinglePageWorkflowBase
 		{
 			try
 			{
-				renderUiAndWaitForUserInput(HomePaneFxController.class); // render home page on first load only
+				boolean showErrorOnHome = false;
+				if(configurations != null) showErrorOnHome = "true".equals(configurations.get("showErrorOnHome"));
+				
+				setData(HomePaneFxController.class, "showErrorOnHome", showErrorOnHome);
+				renderUiAndWaitForUserInput(HomePaneFxController.class);
 			}
 			catch(Signal signal)
 			{
@@ -77,7 +81,7 @@ public class HomeWorkflow extends SinglePageWorkflowBase
 						
 						try
 						{
-							subWorkflow.onProcess();
+							subWorkflow.onProcess(null);
 						}
 						catch(Signal subWorkflowSignal)
 						{

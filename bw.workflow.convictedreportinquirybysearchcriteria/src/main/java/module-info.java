@@ -7,7 +7,6 @@ module bw.workflow.convictedreportinquirybydata
 	requires bio.commons;
 	
 	opens sa.gov.nic.bio.bw.workflow.convictedreportinquirybysearchcriteria to bw.core;
-	opens sa.gov.nic.bio.bw.workflow.convictedreportinquirybysearchcriteria.tasks to bw.core;
 	opens sa.gov.nic.bio.bw.workflow.convictedreportinquirybysearchcriteria.fxml to bw.core;
 	opens sa.gov.nic.bio.bw.workflow.convictedreportinquirybysearchcriteria.controllers to javafx.fxml, bw.core;
 }

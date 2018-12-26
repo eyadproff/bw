@@ -19,8 +19,6 @@ public class GetPersonInfoByIdWorkflowTask extends WorkflowTask
 	@Override
 	public void execute() throws Signal
 	{
-		System.out.println("workflowId = " + workflowId);
-		
 		PersonInfoByIdAPI personInfoByIdAPI = Context.getWebserviceManager().getApi(PersonInfoByIdAPI.class);
 		Call<PersonInfo> apiCall = personInfoByIdAPI.getPersonInfoById(workflowId, workflowTcn, personId, 0);
 		TaskResponse<PersonInfo> taskResponse = Context.getWebserviceManager().executeApi(apiCall);

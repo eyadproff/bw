@@ -24,7 +24,7 @@ public interface ConvictedReportInquiryAPI
 	                                                           @Header("Workflow-Tcn") Long workflowTcn,
 	                                                           @Query("report-number") Long reportNumber);
 	
-	@GET("services-gateway-biooperation/api/criminal/info/dis/{general-file-number}/v1")
+	@GET("services-gateway-demographic/api/criminal/info/{general-file-number}/v2")
 	Call<List<DisCriminalReport>> inquireConvictedReportFromDisByGeneralFileNumber(
 																@Header("Workflow-Code") Integer workflowId,
 																@Header("Workflow-Tcn") Long workflowTcn,
@@ -48,4 +48,10 @@ public interface ConvictedReportInquiryAPI
 																@Query("family-name") String familyName,
 																@Query("page-start") Integer pageStart,
 																@Query("page-end") Integer pageEnd);
+	
+	@GET("services-gateway-demographic/api/criminal/identity/info/{general-file-number}/v1")
+	Call<List<ConvictedReport>> getBasicConvictedReportsByGeneralFileNumber(
+																@Header("Workflow-Code") Integer workflowId,
+	                                                            @Header("Workflow-Tcn") Long workflowTcn,
+                                                                @Path("general-file-number") Long generalFileNumber);
 }

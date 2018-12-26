@@ -33,6 +33,8 @@ public abstract class WorkflowBase implements Workflow, AppLogger
 		throw temp;
 	}
 	
+	Signal getInterruptionSignal(){return interruptionSignal;}
+	
 	/**
 	 * Submit a user task to the workflow.
 	 *
@@ -76,7 +78,18 @@ public abstract class WorkflowBase implements Workflow, AppLogger
 																			.renderForm(controllerClass, uiInputData);
 		renderedAtLeastOnceInTheStep = true;
 		
-		Map<String, Object> uiDataMap = Context.getWorkflowManager().getUserTasks().take();
+		Map<String, Object> uiDataMap;
+		
+		try
+		{
+			uiDataMap = Context.getWorkflowManager().getUserTasks().take();
+		}
+		catch(InterruptedException e)
+		{
+			if(interruptionSignal != null) throwInterruptionSignal();
+			return;
+		}
+		
 		if(interruptionSignal != null) throwInterruptionSignal();
 		
 		SignalType signalType = (SignalType) uiDataMap.get(KEY_SIGNAL_TYPE);

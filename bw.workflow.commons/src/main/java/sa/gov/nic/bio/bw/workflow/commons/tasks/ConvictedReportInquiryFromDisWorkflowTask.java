@@ -28,8 +28,7 @@ public class ConvictedReportInquiryFromDisWorkflowTask extends WorkflowTask
 		TaskResponse<List<DisCriminalReport>> taskResponse = Context.getWebserviceManager().executeApi(call);
 		
 		
-		boolean notFound = !taskResponse.isSuccess() && "B003-0015".equals(taskResponse.getErrorCode());
-		
+		boolean notFound = !taskResponse.isSuccess() && "B004-00012".equals(taskResponse.getErrorCode());
 		if(returnNullResultInCaseNotFound != null && returnNullResultInCaseNotFound && notFound) return;
 		
 		resetWorkflowStepIfNegativeOrNullTaskResponse(taskResponse);

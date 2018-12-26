@@ -18,6 +18,7 @@ import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TextArea;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
@@ -31,6 +32,7 @@ import sa.gov.nic.bio.bw.core.Context;
 import sa.gov.nic.bio.bw.core.interfaces.IdleMonitorRegisterer;
 
 import java.net.URL;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.concurrent.Future;
@@ -180,14 +182,14 @@ public class DialogUtils
 		
 		btnConfirm.setOnKeyPressed(event ->
 		{
-			if(event.getCode() == KeyCode.ENTER) enterKeyState.set(PRESSED);
+		    if(event.getCode() == KeyCode.ENTER) enterKeyState.set(PRESSED);
 		});
 		btnConfirm.setOnKeyReleased(event ->
 		{
-			if(event.getCode() == KeyCode.ENTER && enterKeyState.get() != INITIAL)
-			{
-				if(enterKeyState.get() == PRESSED) alert.setResult(buttonTypeConfirm);
-				enterKeyState.set(RELEASED);
+		    if(event.getCode() == KeyCode.ENTER && enterKeyState.get() != INITIAL)
+		    {
+		        if(enterKeyState.get() == PRESSED) alert.setResult(buttonTypeConfirm);
+		        enterKeyState.set(RELEASED);
 		    }
 		});
 		
@@ -201,6 +203,58 @@ public class DialogUtils
 		Optional<ButtonType> buttonType = alert.showAndWait();
 		if(idleMonitorRegisterer != null) idleMonitorRegisterer.unregisterStageForIdleMonitoring(stage);
 		return buttonType.isPresent() && buttonType.get() == buttonTypeConfirm;
+	}
+	
+	public static String showButtonChoicesDialog(Window ownerWindow, IdleMonitorRegisterer idleMonitorRegisterer,
+	                                            String title, String headerText, String contentText,
+	                                            String[] buttonTexts, boolean rtl)
+	{
+		Alert alert = new Alert(AlertType.CONFIRMATION);
+		alert.initOwner(ownerWindow);
+		Scene scene = alert.getDialogPane().getScene();
+		scene.setNodeOrientation(rtl ? NodeOrientation.RIGHT_TO_LEFT : NodeOrientation.LEFT_TO_RIGHT);
+		scene.addEventFilter(KeyEvent.KEY_PRESSED, event ->
+		{
+			if(AppConstants.SCENIC_VIEW_KEY_COMBINATION.match(event))
+			{
+				AppUtils.showScenicView(scene);
+				event.consume();
+			}
+		});
+		
+		Stage stage = (Stage) scene.getWindow();
+		alert.setTitle(title);
+		
+		if(headerText != null)
+		{
+			alert.setHeaderText(headerText);
+			alert.setContentText(contentText);
+		}
+		else alert.setHeaderText(contentText);
+		
+		String[] selectedOption = new String[1];
+		alert.getButtonTypes().clear();
+		for(String buttonText : buttonTexts)
+		{
+			ButtonType buttonType = new ButtonType(buttonText, ButtonType.CANCEL.getButtonData());
+			alert.getButtonTypes().add(buttonType);
+			
+			Button button = (Button) alert.getDialogPane().lookupButton(buttonType);
+			button.setOnKeyReleased(event ->
+			{
+			    if(event.getCode() == KeyCode.ENTER) selectedOption[0] = buttonText;
+			});
+			button.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> selectedOption[0] = buttonText);
+		}
+		
+		stage.setOnCloseRequest(event -> selectedOption[0] = null);
+		stage.sizeToScene();
+		
+		if(idleMonitorRegisterer != null) idleMonitorRegisterer.registerStageForIdleMonitoring(stage);
+		alert.showAndWait();
+		if(idleMonitorRegisterer != null) idleMonitorRegisterer.unregisterStageForIdleMonitoring(stage);
+		
+		return selectedOption[0];
 	}
 	
 	public static void showInformationDialog(Window ownerWindow, IdleMonitorRegisterer idleMonitorRegisterer,
@@ -324,8 +378,8 @@ public class DialogUtils
 		return stage;
 	}
 	
-	public static <T> T buildCustomDialogByFxml(Stage ownerStage, Class<?> controllerClass,
-	                                            ResourceBundle resourceBundle, boolean resizable) throws Exception
+	public static <T> T buildCustomDialogByFxml(Stage ownerStage, Class<?> controllerClass, boolean resizable)
+																									throws Exception
 	{
 		boolean rtl = Context.getGuiLanguage().getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT;
 		FxmlFile fxmlFile = controllerClass.getAnnotation(FxmlFile.class);
@@ -333,6 +387,9 @@ public class DialogUtils
 		String parentPackageName = packageName.substring(0, packageName.lastIndexOf('/'));
 		URL fxmlUrl = controllerClass.getResource("/" + parentPackageName + "/fxml/" + fxmlFile.value());
 		
+		ResourceBundle resourceBundle = Context.getModuleResourceBundleProviders()
+											   .get(controllerClass.getModule().getName())
+											   .getStringsResourceBundle(Locale.getDefault());
 		FXMLLoader loader = new FXMLLoader(fxmlUrl, resourceBundle);
 		Dialog<ButtonType> dialog = loader.load();
 		

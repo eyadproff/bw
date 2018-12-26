@@ -13,7 +13,7 @@ buildscript {
 
 allprojects {
     group = 'sa.gov.nic.bio'
-    version = '2018.12.4'
+    version = '2018.12.5'
 }
 
 subprojects {
@@ -35,11 +35,11 @@ subprojects {
 
     dependencies {
         // JavaFX
-        implementation name: "javafx.base-12.0.0"
-        implementation name: "javafx.controls-12.0.0"
-        implementation name: "javafx.fxml-12.0.0"
-        implementation name: "javafx.graphics-12.0.0"
-        implementation name: "javafx.swing-12.0.0"
+        implementation name: "javafx.base-11.0.1"
+        implementation name: "javafx.controls-11.0.1"
+        implementation name: "javafx.fxml-11.0.1"
+        implementation name: "javafx.graphics-11.0.1"
+        implementation name: "javafx.swing-11.0.1"
 
         // JavaFX extension library
         implementation name: "controlsfx-9.0.0"
@@ -126,13 +126,17 @@ apply plugin: "org.hidetake.ssh"
 
 task collectDependencies(type: Copy, group: 'web-start') {
     from(subprojects.collect { it.tasks.withType(Jar) }) {
-        exclude 'javafx.scenicview-*.jar'
+        exclude 'scenicview-*.jar'
+        exclude 'javafx.web-*.jar'
+        exclude 'javafx.media-*.jar'
     }
     from(subprojects.collect { it.sourceSets.main.runtimeClasspath }) {
         exclude 'sa/**'
         exclude 'org/**'
         exclude 'module-info.class'
-        exclude 'javafx.scenicview-*.jar'
+        exclude 'scenicview-*.jar'
+        exclude 'javafx.web-*.jar'
+        exclude 'javafx.media-*.jar'
     }
     into 'build/libs'
 }

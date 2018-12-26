@@ -39,6 +39,7 @@ public class ConvictedReportToPersonInfoConverter implements Converter<Convicted
 		identityInfo.setIdIssueDate(idIssueDate);
 		identityInfo.setIdExpirDate(idExpirDate);
 		identityInfo.setOccupation(occupation);
+		personInfo.setIdentityInfo(identityInfo);
 		
 		personInfo.setSamisId(samisId);
 		personInfo.setName(name);

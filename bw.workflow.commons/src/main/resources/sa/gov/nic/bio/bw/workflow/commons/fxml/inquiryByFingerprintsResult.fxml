@@ -4,7 +4,9 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TitledPane?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
@@ -46,8 +48,9 @@
                                     <Label text="%table.placeholder.noPersonIds"/>
                                 </placeholder>
                                 <columns>
+                                    <PTableColumn fx:id="tcCivilSelection" text="✓" reorderable="false" sortable="false" resizable="false" percentageWidth="0.15"/>
                                     <PTableColumn fx:id="tcPersonIdSequence" text="#" reorderable="false" sortable="false" resizable="false" percentageWidth="0.15"/>
-                                    <PTableColumn fx:id="tcPersonId" text="%table.column.personId" reorderable="false" sortable="false" resizable="false" percentageWidth="0.75"/>
+                                    <PTableColumn fx:id="tcPersonId" text="%table.column.personId" reorderable="false" sortable="false" resizable="false" percentageWidth="0.6"/>
                                 </columns>
                             </TableView>
                         </VBox>
@@ -69,15 +72,37 @@
                                     <Label fx:id="lblCriminalBiometricsId"/>
                                 </HBox>
                             </VBox>
-                            <TableView fx:id="tvReportNumbers" VBox.vgrow="ALWAYS" maxHeight="Infinity" managed="false" visible="false">
-                                <placeholder>
-                                    <Label text="%table.placeholder.noReportNumbers"/>
-                                </placeholder>
-                                <columns>
-                                    <PTableColumn fx:id="tcReportNumberSequence" text="#" reorderable="false" sortable="false" resizable="false" percentageWidth="0.15"/>
-                                    <PTableColumn fx:id="tcReportNumber" text="%table.column.reportNumber" reorderable="false" sortable="false" resizable="false" percentageWidth="0.75"/>
-                                </columns>
-                            </TableView>
+                            <TabPane fx:id="tabPaneCriminal" styleClass="floating" managed="false" visible="false">
+                                <Tab fx:id="tabOldSystem" text="%tab.oldSystem" closable="false">
+                                    <TableView fx:id="tvDisRecords" VBox.vgrow="ALWAYS" maxHeight="Infinity">
+                                        <placeholder>
+                                            <Label text="%table.placeholder.noRecords"/>
+                                        </placeholder>
+                                        <columns>
+                                            <PTableColumn fx:id="tcOldCriminalSelection" text="✓" reorderable="false" sortable="false" resizable="false" percentageWidth="0.15"/>
+                                            <PTableColumn fx:id="tcDisRecordSequence" text="#" reorderable="false" sortable="false" resizable="false" percentageWidth="0.75"/>
+                                        </columns>
+                                    </TableView>
+                                </Tab>
+                                <Tab fx:id="tabNewSystem" text="%tab.newSystem" closable="false">
+                                    <VBox alignment="CENTER" spacing="10.0">
+                                        <padding>
+                                            <Insets bottom="10.0"/>
+                                        </padding>
+                                        <TableView fx:id="tvReportNumbers" VBox.vgrow="ALWAYS" maxHeight="Infinity">
+                                            <placeholder>
+                                                <Label text="%table.placeholder.noReportNumbers"/>
+                                            </placeholder>
+                                            <columns>
+                                                <PTableColumn fx:id="tcNewCriminalSelection" text="✓" reorderable="false" sortable="false" resizable="false" percentageWidth="0.15"/>
+                                                <PTableColumn fx:id="tcReportNumberSequence" text="#" reorderable="false" sortable="false" resizable="false" percentageWidth="0.15"/>
+                                                <PTableColumn fx:id="tcReportNumber" text="%table.column.reportNumber" reorderable="false" sortable="false" resizable="false" percentageWidth="0.6"/>
+                                            </columns>
+                                        </TableView>
+                                        <Button fx:id="btnShowReport" text="%button.showReport" onAction="#onShowReportButtonClicked" disable="true"/>
+                                    </VBox>
+                                </Tab>
+                            </TabPane>
                         </VBox>
                     </TitledPane>
                 </VBox>

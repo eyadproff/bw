@@ -4,6 +4,7 @@ import sa.gov.nic.bio.bw.core.Context;
 import sa.gov.nic.bio.bw.core.tasks.LogoutTask;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
@@ -11,8 +12,10 @@ import java.util.stream.Collectors;
 
 public class CoreWorkflow extends WorkflowBase
 {
+	private boolean loggedIn = false;
+	
 	@Override
-	public void onProcess() throws InterruptedException
+	public void onProcess(Map<String, String> configurations) throws InterruptedException
 	{
 		ServiceLoader<Workflow> serviceLoader = ServiceLoader.load(Workflow.class);
 		List<Workflow> workflows = new ArrayList<>();
@@ -23,9 +26,11 @@ public class CoreWorkflow extends WorkflowBase
 		{
 			try
 			{
+				if(loggedIn) throw new Signal(SignalType.SUCCESS_LOGIN);
+				
 				Workflow loginWorkflow = workflowMap.get(KEY_WORKFLOW_LOGIN).get(0);
 				Context.getWorkflowManager().setCurrentWorkflow(loginWorkflow);
-				loginWorkflow.onProcess();
+				loginWorkflow.onProcess(null);
 			}
 			catch(Signal loginSignal)
 			{
@@ -36,11 +41,17 @@ public class CoreWorkflow extends WorkflowBase
 				{
 					case SUCCESS_LOGIN:
 					{
+						boolean showErrorOnHome = loggedIn;
+						loggedIn = true;
+						
+						Map<String, String> homeConfigurations = new HashMap<>();
+						homeConfigurations.put("showErrorOnHome", String.valueOf(showErrorOnHome));
+						
 						try
 						{
 							Workflow homeWorkflow = workflowMap.get(KEY_WORKFLOW_HOME).get(0);
 							Context.getWorkflowManager().setCurrentWorkflow(homeWorkflow);
-							homeWorkflow.onProcess();
+							homeWorkflow.onProcess(homeConfigurations);
 						}
 						catch(Signal homeSignal)
 						{
@@ -51,6 +62,7 @@ public class CoreWorkflow extends WorkflowBase
 							{
 								case LOGOUT:
 								{
+									loggedIn = false;
 									Context.getExecutorService().submit(new LogoutTask());
 									Context.getWorkflowManager().setCurrentWorkflow(null);
 									break;

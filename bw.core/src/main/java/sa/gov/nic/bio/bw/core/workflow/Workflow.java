@@ -40,7 +40,7 @@ public interface Workflow extends AppLogger
 	 * @throws InterruptedException thrown upon interrupting the caller thread
 	 * @throws Signal thrown to carry and propagate a message to a parent workflow
 	 */
-	void onProcess() throws InterruptedException, Signal;
+	void onProcess(Map<String, String> configurations) throws InterruptedException, Signal;
 	
 	/**
 	 * Submit a user task to the workflow.
@@ -122,6 +122,8 @@ public interface Workflow extends AppLogger
 					{
 						if(value == null)
 						{
+							Thread.dumpStack();
+							
 							String errorCode = CoreErrorCodes.C002_00024.getCode();
 							String[] errorDetails = {"The value of the alwaysRequired input (" + fieldName +
 																										") is null!"};

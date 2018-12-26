@@ -278,7 +278,7 @@ public class LoginPaneFxController extends BodyFxControllerBase implements Persi
 			{
 				CaptureFingerprintDialogFxController captureFingerprintDialogFxController =
 						DialogUtils.buildCustomDialogByFxml(Context.getCoreFxController().getStage(),
-						                                    CaptureFingerprintDialogFxController.class, resources,
+						                                    CaptureFingerprintDialogFxController.class,
 						                                    false);
 				
 				if(captureFingerprintDialogFxController != null)
@@ -317,8 +317,7 @@ public class LoginPaneFxController extends BodyFxControllerBase implements Persi
 		try
 		{
 			ChangePasswordDialogFxController controller = DialogUtils.buildCustomDialogByFxml(
-					Context.getCoreFxController().getStage(), ChangePasswordDialogFxController.class, resources,
-					false);
+					Context.getCoreFxController().getStage(), ChangePasswordDialogFxController.class, false);
 			
 			if(controller != null)
 			{
@@ -430,7 +429,7 @@ public class LoginPaneFxController extends BodyFxControllerBase implements Persi
 		try
 		{
 			ChangeFingerprintDialogFxController controller = DialogUtils.buildCustomDialogByFxml(
-					Context.getCoreFxController().getStage(), ChangeFingerprintDialogFxController.class, resources,
+					Context.getCoreFxController().getStage(), ChangeFingerprintDialogFxController.class,
 					false);
 			
 			if(controller != null)

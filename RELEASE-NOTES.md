@@ -11,6 +11,21 @@ VERSION SCHEMA: vYYYY.MM.#SEQ
 
 ---
 
+## v2018.12.5
+
+- NEW: Add an option to restart the application on exit.
+- FIX: Prevent adding more than one wizard pane in rare cases.
+- FIX: Prevent blocking the application navigation in case one the of the lookups takes long time.
+- ENH: In case of invalid state in workflows, navigate the user to the home page and set error label.
+- ENH: Upgrade ScenicView.
+- CHN: Update the fingerprint inquiry results to include records from DIS.
+- CHN: Change the minimum application resolution from 800x600 to 1024x768.
+- NEW: Add Fingerprints-Inquiry workflow.
+- FIX: Fix a bug in ConvictedReportToPersonInfoConverter where identityInfo is not set.
+- CHN: Add Semat copyrights in convicted report.
+
+---
+
 ## v2018.12.4
 
 - NEW: Add the ability to change the server URL at runtime on DEV and LOCAL environments.

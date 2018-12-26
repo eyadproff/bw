@@ -62,6 +62,7 @@ import javafx.util.Duration;
 import javafx.util.StringConverter;
 import org.controlsfx.control.PopOver;
 import org.controlsfx.control.PopOver.ArrowLocation;
+import sa.gov.nic.bio.bcl.utils.BclUtils;
 import sa.gov.nic.bio.bw.commons.resources.images.CommonImages;
 import sa.gov.nic.bio.bw.core.Context;
 import sa.gov.nic.bio.bw.core.beans.ComboBoxItem;
@@ -155,10 +156,20 @@ public class GuiUtils implements AppLogger
 		{
 			event.consume(); // prevent the stage from closing
 			
-			String message = coreFxController.getResourceBundle().getString("exit.confirm");
-			boolean confirmed = coreFxController.showConfirmationDialogAndWait(null, message);
+			String title = coreFxController.getResourceBundle().getString("dialog.choice.title");
+			String message = coreFxController.getResourceBundle().getString("dialog.exit.message");
+			String[] options =
+			{
+				coreFxController.getResourceBundle().getString("dialog.exit.choice.exitApplication"),
+				coreFxController.getResourceBundle().getString("dialog.exit.choice.restartApplication"),
+				coreFxController.getResourceBundle().getString("dialog.exit.choice.cancel")
+			};
 			
-			if(confirmed)
+			boolean rtl = Context.getGuiLanguage().getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT;
+			String selectedOption = DialogUtils.showButtonChoicesDialog(stage, coreFxController, title, null,
+			                                                            message, options, rtl);
+			
+			if(options[0].equals(selectedOption) || options[1].equals(selectedOption))
 			{
 				stage.close();
 				LOGGER.info("The main window is closed");
@@ -184,6 +195,27 @@ public class GuiUtils implements AppLogger
 				
 				Platform.exit();
 				LOGGER.info("The application is exited!");
+				
+				if(options[1].equals(selectedOption))
+				{
+					String serverUrl = Context.getServerUrl();
+					if(Context.getRuntimeEnvironment() == RuntimeEnvironment.LOCAL ||
+										Context.getRuntimeEnvironment() == RuntimeEnvironment.DEV)
+																serverUrl = AppConstants.DEV_SERVER_URL;
+					
+					if(serverUrl.startsWith("http")) serverUrl = serverUrl.substring(serverUrl.indexOf("://") + 3);
+					
+					try
+					{
+						BclUtils.launchAppByBCL(serverUrl, AppConstants.APP_CODE.toLowerCase(), -1,
+						                        -1, null);
+					}
+					catch(Exception e)
+					{
+						LOGGER.log(Level.WARNING, "Failed to launch BW on exit", e);
+					}
+				}
+				
 				System.exit(0); // last resort
 			}
 		};
