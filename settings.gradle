@@ -16,4 +16,4 @@ include 'bw.workflow.registerconvictednotpresent'
 include 'bw.workflow.visaapplicantsenrollment'
 include 'bw.workflow.convictedreportinquirybysearchcriteria'
 include 'bw.workflow.fingerprintsinquiry'
-
+include 'bw.workflow.deleteconvictedreport'

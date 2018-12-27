@@ -258,7 +258,7 @@ public abstract class BodyFxControllerBase extends RegionFxControllerBase implem
 			catch(Exception e)
 			{
 				LOGGER.log(Level.WARNING, errorCode, e);
-				showWarningNotification(errorCode + ":");
+				showWarningNotification(errorCode);
 			}
 		}
 		else // client error, server error, or unknown error

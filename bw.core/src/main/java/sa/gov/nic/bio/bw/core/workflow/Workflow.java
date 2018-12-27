@@ -122,8 +122,6 @@ public interface Workflow extends AppLogger
 					{
 						if(value == null)
 						{
-							Thread.dumpStack();
-							
 							String errorCode = CoreErrorCodes.C002_00024.getCode();
 							String[] errorDetails = {"The value of the alwaysRequired input (" + fieldName +
 																										") is null!"};

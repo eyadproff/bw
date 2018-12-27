@@ -11,6 +11,12 @@ VERSION SCHEMA: vYYYY.MM.#SEQ
 
 ---
 
+## v2018.12.6
+
+- NEW: Add Delete-Convicted-Report workflow.
+
+---
+
 ## v2018.12.5
 
 - NEW: Add an option to restart the application on exit.
