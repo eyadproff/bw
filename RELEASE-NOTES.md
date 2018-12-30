@@ -11,9 +11,15 @@ VERSION SCHEMA: vYYYY.MM.#SEQ
 
 ---
 
-## v2018.12.6
+## v2019.01.1
 
 - NEW: Add Delete-Convicted-Report workflow.
+
+---
+
+## v2018.12.6
+
+- FIX: Show confirmation button on register-convicted.
 
 ---
 
