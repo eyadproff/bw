@@ -124,6 +124,20 @@ public class ShowReportPaneFxController extends WizardStepFxControllerBase
 		populateData();
 	}
 	
+	@Override
+	public void onShowingProgress(boolean bShow)
+	{
+		GuiUtils.showNode(piDeletingReport, bShow);
+		GuiUtils.showNode(btnStartOver, !bShow);
+		GuiUtils.showNode(btnDeleteReport, !bShow);
+	}
+	
+	@Override
+	public void onReturnFromWorkflow(boolean successfulResponse)
+	{
+		if(successfulResponse) goNext();
+	}
+	
 	private void populateData()
 	{
 		Long reportNumber = convictedReport.getReportNumber();
@@ -332,8 +346,7 @@ public class ShowReportPaneFxController extends WizardStepFxControllerBase
 																					String.valueOf(prisonerNumber)));
 			
 			Long arrestDate = judgementInfo.getArrestDate();
-			if(arrestDate != null) lblArrestDate.setText(
-					AppUtils.formatHijriGregorianDate(arrestDate));
+			if(arrestDate != null) lblArrestDate.setText(AppUtils.formatHijriGregorianDate(arrestDate));
 			
 			lblJudgmentDate.setText(AppUtils.formatHijriGregorianDate(judgementInfo.getJudgDate()));
 			lblTazeerLashes.setText(AppUtils.localizeNumbers(String.valueOf(judgementInfo.getJudgTazeerLashesCount())));
@@ -371,7 +384,12 @@ public class ShowReportPaneFxController extends WizardStepFxControllerBase
 	@FXML
 	private void onDeleteReportButtonClicked(ActionEvent actionEvent)
 	{
-		// TODO: show confirmation message
+		String headerText = resources.getString("deleteConvictedReport.confirmation.header");
+		String contentText = String.format(resources.getString("deleteConvictedReport.confirmation.message"),
+               AppUtils.localizeNumbers(AppUtils.localizeNumbers(String.valueOf(convictedReport.getReportNumber()))));
+		boolean confirmed = Context.getCoreFxController().showConfirmationDialogAndWait(headerText, contentText);
+		if(!confirmed) return;
+		
 		continueWorkflow();
 	}
 }

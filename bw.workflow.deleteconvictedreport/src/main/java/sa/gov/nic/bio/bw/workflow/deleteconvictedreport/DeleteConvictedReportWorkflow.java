@@ -16,6 +16,8 @@ import sa.gov.nic.bio.bw.workflow.commons.tasks.ConvertWsqFingerprintsToSegmente
 import sa.gov.nic.bio.bw.workflow.commons.tasks.ConvictedReportInquiryByReportNumberWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.deleteconvictedreport.controllers.EnterReportNumberPaneFxController;
 import sa.gov.nic.bio.bw.workflow.deleteconvictedreport.controllers.ShowReportPaneFxController;
+import sa.gov.nic.bio.bw.workflow.deleteconvictedreport.controllers.ShowResultPaneFxController;
+import sa.gov.nic.bio.bw.workflow.deleteconvictedreport.tasks.DeleteConvictedReportWorkflowTask;
 
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -73,10 +75,21 @@ public class DeleteConvictedReportWorkflow extends WizardWorkflowBase
 				         ShowReportPaneFxController.class,
 				         "fingerprintBase64Images");
 				renderUiAndWaitForUserInput(ShowReportPaneFxController.class);
+				
+				ConvictedReport convictedReport = getData(ConvictedReportInquiryByReportNumberWorkflowTask.class,
+				                                          "convictedReport");
+				setData(DeleteConvictedReportWorkflowTask.class, "reportNumber",
+				        convictedReport.getReportNumber());
+				executeWorkflowTask(DeleteConvictedReportWorkflowTask.class);
+				
 				break;
 			}
-			case 3:
+			case 2:
 			{
+				ConvictedReport convictedReport = getData(ConvictedReportInquiryByReportNumberWorkflowTask.class,
+				                                          "convictedReport");
+				setData(ShowResultPaneFxController.class, "reportNumber", convictedReport.getReportNumber());
+				renderUiAndWaitForUserInput(ShowResultPaneFxController.class);
 				break;
 			}
 		}
