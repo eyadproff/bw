@@ -14,6 +14,7 @@ VERSION SCHEMA: vYYYY.MM.#SEQ
 ## v2019.01.1
 
 - NEW: Add Delete-Convicted-Report workflow.
+- NEW: Add Delete-Complete-Criminal-Record workflow.
 - NEW: Add WEBSERVICES-LIST.md.
 - CHN: Change the workflow fingerprintsinquiry to civilcriminalfingerprintsinquiry.
 

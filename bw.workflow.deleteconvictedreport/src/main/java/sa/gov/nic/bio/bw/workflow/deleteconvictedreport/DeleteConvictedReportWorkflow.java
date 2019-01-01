@@ -23,7 +23,7 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 @AssociatedMenu(workflowId = 1013, menuId = "menu.cancel.deleteConvictedReport",
-				menuTitle = "menu.title", menuOrder = 5, devices = Device.BIO_UTILITIES)
+				menuTitle = "menu.title", menuOrder = 3, devices = Device.BIO_UTILITIES)
 @WithLookups({PersonTypesLookup.class, DocumentTypesLookup.class, CountriesLookup.class, CrimeTypesLookup.class})
 @Wizard({@Step(iconId = "search", title = "wizard.enterReportNumber"),
 		 @Step(iconId = "th_list", title = "wizard.showReport"),
@@ -76,20 +76,18 @@ public class DeleteConvictedReportWorkflow extends WizardWorkflowBase
 				         "fingerprintBase64Images");
 				renderUiAndWaitForUserInput(ShowReportPaneFxController.class);
 				
-				ConvictedReport convictedReport = getData(ConvictedReportInquiryByReportNumberWorkflowTask.class,
-				                                          "convictedReport");
-				setData(DeleteConvictedReportWorkflowTask.class, "reportNumber",
-				        convictedReport.getReportNumber());
+				passData(EnterReportNumberPaneFxController.class, DeleteConvictedReportWorkflowTask.class,
+				         "reportNumber");
 				executeWorkflowTask(DeleteConvictedReportWorkflowTask.class);
 				
 				break;
 			}
 			case 2:
 			{
-				ConvictedReport convictedReport = getData(ConvictedReportInquiryByReportNumberWorkflowTask.class,
-				                                          "convictedReport");
-				setData(ShowResultPaneFxController.class, "reportNumber", convictedReport.getReportNumber());
+				passData(EnterReportNumberPaneFxController.class, ShowResultPaneFxController.class,
+				         "reportNumber");
 				renderUiAndWaitForUserInput(ShowResultPaneFxController.class);
+				
 				break;
 			}
 		}
