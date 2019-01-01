@@ -1,4 +1,4 @@
-package sa.gov.nic.bio.bw.workflow.registerconvictednotpresent;
+package sa.gov.nic.bio.bw.workflow.civilcriminalfingerprintsinquiry;
 
 import sa.gov.nic.bio.bw.core.utils.Device;
 import sa.gov.nic.bio.bw.core.wizard.Step;
@@ -9,7 +9,6 @@ import sa.gov.nic.bio.bw.core.workflow.WithLookups;
 import sa.gov.nic.bio.bw.core.workflow.WizardWorkflowBase;
 import sa.gov.nic.bio.bw.workflow.commons.beans.ConvictedReport;
 import sa.gov.nic.bio.bw.workflow.commons.beans.DisCriminalReport;
-import sa.gov.nic.bio.bw.workflow.commons.beans.NormalizedPersonInfo;
 import sa.gov.nic.bio.bw.workflow.commons.beans.PersonInfo;
 import sa.gov.nic.bio.bw.workflow.commons.controllers.InquiryByFingerprintsPaneFxController;
 import sa.gov.nic.bio.bw.workflow.commons.controllers.InquiryByFingerprintsResultPaneFxController;
@@ -41,13 +40,6 @@ import sa.gov.nic.bio.bw.workflow.civilcriminalfingerprintsinquiry.controllers.S
 import sa.gov.nic.bio.bw.workflow.civilcriminalfingerprintsinquiry.controllers.SpecifyFingerprintCoordinatesPaneFxController;
 import sa.gov.nic.bio.bw.workflow.civilcriminalfingerprintsinquiry.controllers.UploadNistFileFxController;
 import sa.gov.nic.bio.bw.workflow.civilcriminalfingerprintsinquiry.tasks.ExtractingDataFromNistFileWorkflowTask;
-import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.controllers.JudgmentDetailsPaneFxController;
-import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.controllers.PunishmentDetailsPaneFxController;
-import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.controllers.ReviewAndSubmitPaneFxController;
-import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.controllers.ShareInformationPaneFxController;
-import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.controllers.ShowReportPaneFxController;
-import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.controllers.UpdatePersonInfoPaneFxController;
-import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.tasks.SubmittingConvictedReportWorkflowTask;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -56,8 +48,8 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
-@AssociatedMenu(workflowId = 1007, menuId = "menu.register.registerConvictedNotPresent", menuTitle = "menu.title", menuOrder = 3,
-				devices = Device.BIO_UTILITIES)
+@AssociatedMenu(workflowId = 1012, menuId = "menu.query.civilcriminalfingerprintsinquiry", menuTitle = "menu.title",
+				menuOrder = 6, devices = Device.BIO_UTILITIES)
 @WithLookups({PersonTypesLookup.class, DocumentTypesLookup.class, CountriesLookup.class, CrimeTypesLookup.class,
 			  BiometricsExchangeCrimeTypesLookup.class, BiometricsExchangePartiesLookup.class})
 @Wizard({@Step(iconId = "question", title = "wizard.selectFingerprintsSource"),
@@ -65,14 +57,8 @@ import java.util.stream.Collectors;
 		@Step(iconId = "\\uf2b9", title = "wizard.showPersonInformation"),
 		@Step(iconId = "\\uf256", title = "wizard.showFingerprintsView"),
 		@Step(iconId = "search", title = "wizard.inquiryByFingerprints"),
-		@Step(iconId = "database", title = "wizard.showInquiryResult"),
-		@Step(iconId = "user", title = "wizard.updatePersonInformation"),
-		@Step(iconId = "gavel", title = "wizard.addJudgementDetails"),
-		@Step(iconId = "university", title = "wizard.addPunishmentDetails"),
-		@Step(iconId = "share_alt", title = "wizard.shareInformation"),
-		@Step(iconId = "th_list", title = "wizard.reviewAndSubmit"),
-		@Step(iconId = "file_pdf_alt", title = "wizard.showReport")})
-public class RegisterConvictedReportNotPresentWorkflow extends WizardWorkflowBase
+		@Step(iconId = "database", title = "wizard.showInquiryResult")})
+public class FingerprintsInquiryWorkflow extends WizardWorkflowBase
 {
 	private static final String FIELD_CIVIL_HIT = "CIVIL_HIT";
 	private static final String FIELD_CIVIL_PERSON_INFO_MAP = "CIVIL_PERSON_INFO_MAP";
@@ -340,141 +326,13 @@ public class RegisterConvictedReportNotPresentWorkflow extends WizardWorkflowBas
 				         InquiryByFingerprintsResultPaneFxController.class, "newCriminalPersonInfoMap");
 				setData(InquiryByFingerprintsResultPaneFxController.class, "hideRegisterUnknownButton",
 				        Boolean.TRUE);
+				setData(InquiryByFingerprintsResultPaneFxController.class, "hideConfirmationButton",
+				        Boolean.TRUE);
 				passData(FingerprintInquiryStatusCheckerWorkflowTask.class,
 				         InquiryByFingerprintsResultPaneFxController.class,
 				         "status", "civilBiometricsId", "criminalBiometricsId");
 				renderUiAndWaitForUserInput(InquiryByFingerprintsResultPaneFxController.class);
 				
-				break;
-			}
-			case 6:
-			{
-				passData(getClass(), FIELD_CIVIL_HIT, UpdatePersonInfoPaneFxController.class, "civilHit");
-				passData(InquiryByFingerprintsResultPaneFxController.class, UpdatePersonInfoPaneFxController.class,
-				         "normalizedPersonInfo");
-				renderUiAndWaitForUserInput(UpdatePersonInfoPaneFxController.class);
-				break;
-			}
-			case 7:
-			{
-				renderUiAndWaitForUserInput(JudgmentDetailsPaneFxController.class);
-				break;
-			}
-			case 8:
-			{
-				renderUiAndWaitForUserInput(PunishmentDetailsPaneFxController.class);
-				break;
-			}
-			case 9:
-			{
-				passData(JudgmentDetailsPaneFxController.class, ShareInformationPaneFxController.class,
-				         "crimes");
-				renderUiAndWaitForUserInput(ShareInformationPaneFxController.class);
-				break;
-			}
-			case 10:
-			{
-				NormalizedPersonInfo normalizedPersonInfo = getData(InquiryByFingerprintsResultPaneFxController.class,
-				                                                    "normalizedPersonInfo");
-				
-				setData(ReviewAndSubmitPaneFxController.class, "facePhotoBase64",
-				        normalizedPersonInfo.getFacePhotoBase64());
-				
-				passData(FingerprintInquiryStatusCheckerWorkflowTask.class, ReviewAndSubmitPaneFxController.class,
-				         "civilBiometricsId", "criminalBiometricsId");
-				
-				passData(UpdatePersonInfoPaneFxController.class, ReviewAndSubmitPaneFxController.class,
-				         "firstName", "fatherName" , "grandfatherName" , "familyName" , "gender"
-						, "nationality" , "occupation" , "birthPlace" , "birthDate" , "birthDateUseHijri" , "personId"
-						, "personType" , "documentId" , "documentType" , "documentIssuanceDate" , "documentExpiryDate");
-				
-				passData(JudgmentDetailsPaneFxController.class, ReviewAndSubmitPaneFxController.class,
-				         "judgmentIssuer" , "judgmentNumber", "judgmentDate", "judgmentDateUseHijri",
-				         "caseFileNumber", "prisonerNumber", "arrestDate", "arrestDateUseHijri");
-				
-				passData(PunishmentDetailsPaneFxController.class, ReviewAndSubmitPaneFxController.class,
-				         "tazeerLashes", "hadLashes", "fine", "jailYears", "jailMonths", "jailDays",
-				         "travelBanYears", "travelBanMonths", "travelBanDays", "exilingYears", "exilingMonths",
-				         "exilingDays", "deportationYears", "deportationMonths", "deportationDays", "finalDeportation",
-				         "libel", "covenant", "other");
-				
-				passData(ShareInformationPaneFxController.class, "crimesWithShares",
-				         ReviewAndSubmitPaneFxController.class, "crimes");
-				
-				Source fingerprintsSource = getData(FingerprintsSourceFxController.class,
-				                                    "fingerprintsSource");
-				
-				if(fingerprintsSource == Source.ENTERING_PERSON_ID)
-				{
-					passData(ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask.class,
-					         ReviewAndSubmitPaneFxController.class,
-					         "fingerprintBase64Images");
-					passData(FetchingFingerprintsWorkflowTask.class,
-					         ReviewAndSubmitPaneFxController.class,
-					         "fingerprints");
-					passData(FetchingMissingFingerprintsWorkflowTask.class,
-					         ReviewAndSubmitPaneFxController.class,
-					         "missingFingerprints");
-				}
-				else if(fingerprintsSource == Source.SCANNING_FINGERPRINTS_CARD)
-				{
-					passData(SpecifyFingerprintCoordinatesPaneFxController.class,
-					         ReviewAndSubmitPaneFxController.class,
-					         "fingerprintBase64Images");
-					passData(ConvertFingerprintBase64ImagesToWsqWorkflowTask.class,
-					         "fingerprintWsqImages", ReviewAndSubmitPaneFxController.class,
-					         "fingerprints", new FingerprintsWsqToFingerConverter());
-					passData(SpecifyFingerprintCoordinatesPaneFxController.class,
-					         ReviewAndSubmitPaneFxController.class, "missingFingerprints");
-				}
-				else if(fingerprintsSource == Source.UPLOADING_NIST_FILE)
-				{
-					passData(ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask.class,
-					         ReviewAndSubmitPaneFxController.class, "fingerprintBase64Images");
-					passData(ExtractingDataFromNistFileWorkflowTask.class, ReviewAndSubmitPaneFxController.class,
-					         "fingerprints");
-					passData(ExtractingDataFromNistFileWorkflowTask.class, ReviewAndSubmitPaneFxController.class,
-					         "missingFingerprints");
-				}
-				
-				renderUiAndWaitForUserInput(ReviewAndSubmitPaneFxController.class);
-				
-				passData(ReviewAndSubmitPaneFxController.class, SubmittingConvictedReportWorkflowTask.class,
-				         "convictedReport");
-				executeWorkflowTask(SubmittingConvictedReportWorkflowTask.class);
-				
-				break;
-			}
-			case 11:
-			{
-				passData(ReviewAndSubmitPaneFxController.class, ShowReportPaneFxController.class,
-				         "convictedReport");
-				passData(SubmittingConvictedReportWorkflowTask.class, ShowReportPaneFxController.class,
-				         "convictedReportResponse");
-				
-				Source fingerprintsSource = getData(FingerprintsSourceFxController.class,
-				                                    "fingerprintsSource");
-				
-				if(fingerprintsSource == Source.ENTERING_PERSON_ID)
-				{
-					passData(ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask.class,
-					         ShowReportPaneFxController.class,
-					         "fingerprintBase64Images");
-				}
-				else if(fingerprintsSource == Source.SCANNING_FINGERPRINTS_CARD)
-				{
-					passData(SpecifyFingerprintCoordinatesPaneFxController.class,
-					         ShowReportPaneFxController.class,
-					         "fingerprintBase64Images");
-				}
-				else if(fingerprintsSource == Source.UPLOADING_NIST_FILE)
-				{
-					passData(ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask.class,
-					         ShowReportPaneFxController.class,
-					         "fingerprintBase64Images");
-				}
-				
-				renderUiAndWaitForUserInput(ShowReportPaneFxController.class);
 				break;
 			}
 		}

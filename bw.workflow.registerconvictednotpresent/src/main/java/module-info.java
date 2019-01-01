@@ -2,7 +2,7 @@ module bw.workflow.registerconvictednotpresent
 {
 	requires bw.core;
 	requires bw.workflow.commons;
-	requires bw.workflow.fingerprintsinquiry;
+	requires bw.workflow.civilcriminalfingerprintsinquiry;
 	requires bw.workflow.registerconvictedpresent;
 	requires bio.commons;
 	

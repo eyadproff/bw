@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ProgressIndicator?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import sa.gov.nic.bio.bw.workflow.commons.ui.ImageViewPane?>
+<BorderPane xmlns="http://javafx.com/javafx/11" xmlns:fx="http://javafx.com/fxml/1"
+            fx:id="rootPane" stylesheets="@../css/style.css"
+            fx:controller="sa.gov.nic.bio.bw.workflow.civilcriminalfingerprintsinquiry.controllers.SpecifyFingerprintCoordinatesPaneFxController">
+    <center>
+        <VBox>
+            <padding>
+                <Insets top="5.0" bottom="5.0"/>
+            </padding>
+            <SplitPane dividerPositions="0.7" VBox.vgrow="ALWAYS">
+                <StackPane fx:id="spFingerprintCardImage">
+                    <TitledPane text="%label.fingerprintCardImage" maxHeight="Infinity" collapsible="false" focusTraversable="false">
+                        <ImageViewPane nodeOrientation="LEFT_TO_RIGHT">
+                            <imageView>
+                                <ImageView fx:id="ivFingerprintCardImage" preserveRatio="true"/>
+                            </imageView>
+                        </ImageViewPane>
+                    </TitledPane>
+                </StackPane>
+                <VBox>
+                    <TitledPane text="%label.fingerprintImageAfterCropping" maxHeight="Infinity" collapsible="false" VBox.vgrow="ALWAYS" focusTraversable="false">
+                        <StackPane>
+                            <ImageViewPane>
+                                <imageView>
+                                    <ImageView fx:id="ivFingerprintImageAfterCroppingPlaceHolder" preserveRatio="true">
+                                        <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/placeholder_image_square.png"/>
+                                    </ImageView>
+                                </imageView>
+                            </ImageViewPane>
+                            <ImageViewPane>
+                                <imageView>
+                                    <ImageView fx:id="ivFingerprintImageAfterCropping" preserveRatio="true" visible="false" managed="false"/>
+                                </imageView>
+                            </ImageViewPane>
+                        </StackPane>
+                    </TitledPane>
+                </VBox>
+            </SplitPane>
+        </VBox>
+    </center>
+    <bottom>
+        <HBox alignment="CENTER" spacing="10">
+            <padding>
+                <Insets bottom="10"/>
+            </padding>
+            <ProgressIndicator fx:id="piProgress" prefHeight="25.0" prefWidth="25.0" managed="false" visible="false"/>
+            <Button fx:id="btnPrevious" text="%button.previous" onAction="#onPreviousButtonClicked"/>
+            <Button fx:id="btnNext" text="%button.next" onAction="#onNextButtonClicked"/>
+        </HBox>
+    </bottom>
+</BorderPane>
