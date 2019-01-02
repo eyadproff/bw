@@ -17,6 +17,7 @@ VERSION SCHEMA: vYYYY.MM.#SEQ
 - NEW: Add Delete-Complete-Criminal-Record workflow.
 - NEW: Add WEBSERVICES-LIST.md.
 - CHN: Change the workflow fingerprintsinquiry to civilcriminalfingerprintsinquiry.
+- NEW: Add shortcut CTRL+SHIFT+ALT+A to open the application folder.
 
 ---
 

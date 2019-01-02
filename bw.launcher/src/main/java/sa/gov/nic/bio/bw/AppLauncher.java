@@ -640,6 +640,11 @@ public class AppLauncher extends Application implements AppLogger
 			    AppUtils.showChangeServerDialog();
 			    event.consume();
 		    }
+		    else if(AppConstants.OPEN_APP_FOLDER_KEY_COMBINATION.match(event))
+		    {
+			    AppUtils.openAppFolder();
+			    event.consume();
+		    }
 	    });
 	
 	    primaryStage.getIcons().setAll(appIcon);

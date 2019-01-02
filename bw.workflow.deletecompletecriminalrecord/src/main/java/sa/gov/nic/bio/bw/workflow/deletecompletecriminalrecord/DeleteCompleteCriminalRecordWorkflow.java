@@ -8,16 +8,22 @@ import sa.gov.nic.bio.bw.core.workflow.AssociatedMenu;
 import sa.gov.nic.bio.bw.core.workflow.Signal;
 import sa.gov.nic.bio.bw.core.workflow.WithLookups;
 import sa.gov.nic.bio.bw.core.workflow.WizardWorkflowBase;
+import sa.gov.nic.bio.bw.workflow.commons.beans.DisCriminalReport;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.CountriesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.CrimeTypesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.DocumentTypesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.PersonTypesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.ConvictedReportInquiryBySearchCriteriaWorkflowTask;
+import sa.gov.nic.bio.bw.workflow.commons.tasks.ConvictedReportInquiryFromDisWorkflowTask;
+import sa.gov.nic.bio.bw.workflow.commons.tasks.ResetWorkflowStepWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.deletecompletecriminalrecord.controllers.EnterCriminalBiometricsIdPaneFxController;
 import sa.gov.nic.bio.bw.workflow.deletecompletecriminalrecord.controllers.ShowReportsPaneFxController;
 import sa.gov.nic.bio.bw.workflow.deletecompletecriminalrecord.controllers.ShowResultPaneFxController;
 import sa.gov.nic.bio.bw.workflow.deletecompletecriminalrecord.tasks.DeleteCompleteCriminalRecordWorkflowTask;
+import sa.gov.nic.bio.bw.workflow.deletecompletecriminalrecord.utils.DeleteCompleteCriminalRecordErrorCodes;
+import sa.gov.nic.bio.commons.TaskResponse;
 
+import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -56,6 +62,28 @@ public class DeleteCompleteCriminalRecordWorkflow extends WizardWorkflowBase
 				        AppConstants.TABLE_PAGINATION_RECORDS_PER_PAGE);
 				setData(ConvictedReportInquiryBySearchCriteriaWorkflowTask.class, "pageIndex", 0);
 				executeWorkflowTask(ConvictedReportInquiryBySearchCriteriaWorkflowTask.class);
+				
+				Integer resultsTotalCount = getData(ConvictedReportInquiryBySearchCriteriaWorkflowTask.class,
+				                                    "resultsTotalCount");
+				if(resultsTotalCount == null || resultsTotalCount == 0)
+				{
+					// search in DIS
+					passData(EnterCriminalBiometricsIdPaneFxController.class,
+					         ConvictedReportInquiryFromDisWorkflowTask.class, "criminalBiometricsId");
+					setData(ConvictedReportInquiryFromDisWorkflowTask.class,
+					        "returnNullResultInCaseNotFound", Boolean.TRUE);
+					executeWorkflowTask(ConvictedReportInquiryFromDisWorkflowTask.class);
+					
+					List<DisCriminalReport> disCriminalReports = getData(
+									ConvictedReportInquiryFromDisWorkflowTask.class, "disCriminalReports");
+					
+					if(disCriminalReports == null) // criminalBiometricsId doesn't exist
+					{
+						setData(ResetWorkflowStepWorkflowTask.class, "taskResponse",
+						        TaskResponse.failure(DeleteCompleteCriminalRecordErrorCodes.N015_00001.getCode()));
+						executeWorkflowTask(ResetWorkflowStepWorkflowTask.class);
+					}
+				}
 				
 				break;
 			}
