@@ -22,18 +22,25 @@ import sa.gov.nic.bio.bw.core.utils.FxmlFile;
 import sa.gov.nic.bio.bw.core.utils.GuiUtils;
 
 import java.util.List;
+import java.util.Optional;
 
 @FxmlFile("mockTaskDialog.fxml")
 public class MockTaskDialogFxController extends FxControllerBase
 {
+	public enum TaskType
+	{
+		REAL,
+		MOCK
+	}
+	
 	@FXML private Dialog<ButtonType> dialog;
-	@FXML private TableView<TaskInput<?>> tvTaskInputs;
-	@FXML private TableView<TaskOutput<?>> tvTaskOutputs;
-	@FXML private TableView<TaskResult> tvTaskResults;
 	@FXML private TitledPane tpTaskInputs;
 	@FXML private TitledPane tpTaskOutputs;
 	@FXML private TitledPane tpTaskResults;
 	@FXML private TitledPane tpDetails;
+	@FXML private TableView<TaskInput<?>> tvTaskInputs;
+	@FXML private TableView<TaskOutput<?>> tvTaskOutputs;
+	@FXML private TableView<TaskResult> tvTaskResults;
 	@FXML private TableColumn<TaskInput<?>, TaskInput<?>> tcInputSequence;
 	@FXML private TableColumn<TaskInput<?>, String> tcInputName;
 	@FXML private TableColumn<TaskInput<?>, String> tvInputType;
@@ -63,7 +70,7 @@ public class MockTaskDialogFxController extends FxControllerBase
 			btnRunRealTask.translateXProperty().set(-distance);
 			
 			btnRunMockTask.disableProperty().bind(Bindings.size(tvTaskResults.getSelectionModel().getSelectedItems())
-					                                      .isEqualTo(0));
+					                                                                                .isEqualTo(0));
 			
 			String yes = resources.getString("label.yes");
 			String no = resources.getString("label.no");
@@ -97,9 +104,16 @@ public class MockTaskDialogFxController extends FxControllerBase
 		}));
 	}
 	
-	public void showDialogAndWait()
+	public int showDialogAndWait()
 	{
-		dialog.showAndWait();
+		Optional<ButtonType> buttonTypeOptional = dialog.showAndWait();
+		
+		if(buttonTypeOptional.isPresent() && buttonTypeOptional.get() == btRunMockTask)
+		{
+			return tvTaskResults.getSelectionModel().getSelectedIndex();
+		}
+		
+		return -1;
 	}
 	
 	public void setTaskName(String taskName)
@@ -111,6 +125,5 @@ public class MockTaskDialogFxController extends FxControllerBase
 	public void setTaskInputs(List<TaskInput<?>> taskInputs)
 	{
 		tvTaskInputs.getItems().setAll(taskInputs);
-		GuiUtils.autoFitTableViewColumns(tvTaskInputs);
 	}
 }
