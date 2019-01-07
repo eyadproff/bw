@@ -7,6 +7,13 @@ import sa.gov.nic.bio.bw.core.workflow.AssociatedMenu;
 import sa.gov.nic.bio.bw.core.workflow.Signal;
 import sa.gov.nic.bio.bw.core.workflow.WithLookups;
 import sa.gov.nic.bio.bw.core.workflow.WizardWorkflowBase;
+import sa.gov.nic.bio.bw.workflow.civilcriminalfingerprintsinquiry.controllers.FingerprintsSourceFxController;
+import sa.gov.nic.bio.bw.workflow.civilcriminalfingerprintsinquiry.controllers.FingerprintsSourceFxController.Source;
+import sa.gov.nic.bio.bw.workflow.civilcriminalfingerprintsinquiry.controllers.PersonIdPaneFxController;
+import sa.gov.nic.bio.bw.workflow.civilcriminalfingerprintsinquiry.controllers.ScanFingerprintCardPaneFxController;
+import sa.gov.nic.bio.bw.workflow.civilcriminalfingerprintsinquiry.controllers.SpecifyFingerprintCoordinatesPaneFxController;
+import sa.gov.nic.bio.bw.workflow.civilcriminalfingerprintsinquiry.controllers.UploadNistFileFxController;
+import sa.gov.nic.bio.bw.workflow.civilcriminalfingerprintsinquiry.tasks.ExtractingDataFromNistFileWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.commons.beans.ConvictedReport;
 import sa.gov.nic.bio.bw.workflow.commons.beans.DisCriminalReport;
 import sa.gov.nic.bio.bw.workflow.commons.beans.NormalizedPersonInfo;
@@ -34,15 +41,10 @@ import sa.gov.nic.bio.bw.workflow.commons.tasks.FingerprintInquiryStatusCheckerW
 import sa.gov.nic.bio.bw.workflow.commons.tasks.FingerprintInquiryWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.FingerprintsWsqToFingerConverter;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.GetPersonInfoByIdWorkflowTask;
-import sa.gov.nic.bio.bw.workflow.civilcriminalfingerprintsinquiry.controllers.FingerprintsSourceFxController;
-import sa.gov.nic.bio.bw.workflow.civilcriminalfingerprintsinquiry.controllers.FingerprintsSourceFxController.Source;
-import sa.gov.nic.bio.bw.workflow.civilcriminalfingerprintsinquiry.controllers.PersonIdPaneFxController;
-import sa.gov.nic.bio.bw.workflow.civilcriminalfingerprintsinquiry.controllers.ScanFingerprintCardPaneFxController;
-import sa.gov.nic.bio.bw.workflow.civilcriminalfingerprintsinquiry.controllers.SpecifyFingerprintCoordinatesPaneFxController;
-import sa.gov.nic.bio.bw.workflow.civilcriminalfingerprintsinquiry.controllers.UploadNistFileFxController;
-import sa.gov.nic.bio.bw.workflow.civilcriminalfingerprintsinquiry.tasks.ExtractingDataFromNistFileWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.controllers.JudgmentDetailsPaneFxController;
 import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.controllers.PunishmentDetailsPaneFxController;
+import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.controllers.RegisteringConvictedReportPaneFxController;
+import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.controllers.RegisteringConvictedReportPaneFxController.Request;
 import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.controllers.ReviewAndSubmitPaneFxController;
 import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.controllers.ShareInformationPaneFxController;
 import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.controllers.ShowReportPaneFxController;
@@ -71,6 +73,7 @@ import java.util.stream.Collectors;
 		@Step(iconId = "university", title = "wizard.addPunishmentDetails"),
 		@Step(iconId = "share_alt", title = "wizard.shareInformation"),
 		@Step(iconId = "th_list", title = "wizard.reviewAndSubmit"),
+		@Step(iconId = "save", title = "wizard.registerReport"),
 		@Step(iconId = "file_pdf_alt", title = "wizard.showReport")})
 public class RegisterConvictedReportNotPresentWorkflow extends WizardWorkflowBase
 {
@@ -367,6 +370,9 @@ public class RegisterConvictedReportNotPresentWorkflow extends WizardWorkflowBas
 			}
 			case 9:
 			{
+				passData(UpdatePersonInfoPaneFxController.class, ShareInformationPaneFxController.class,
+				         "firstName", "familyName" , "gender", "nationality", "birthDate",
+				         "documentId", "documentType", "documentIssuanceDate", "documentExpiryDate");
 				passData(JudgmentDetailsPaneFxController.class, ShareInformationPaneFxController.class,
 				         "crimes");
 				renderUiAndWaitForUserInput(ShareInformationPaneFxController.class);
@@ -384,9 +390,9 @@ public class RegisterConvictedReportNotPresentWorkflow extends WizardWorkflowBas
 				         "civilBiometricsId", "criminalBiometricsId");
 				
 				passData(UpdatePersonInfoPaneFxController.class, ReviewAndSubmitPaneFxController.class,
-				         "firstName", "fatherName" , "grandfatherName" , "familyName" , "gender"
-						, "nationality" , "occupation" , "birthPlace" , "birthDate" , "birthDateUseHijri" , "personId"
-						, "personType" , "documentId" , "documentType" , "documentIssuanceDate" , "documentExpiryDate");
+				         "firstName", "fatherName", "grandfatherName", "familyName", "gender",
+				         "nationality", "occupation", "birthPlace", "birthDate", "birthDateUseHijri", "personId",
+				         "personType", "documentId", "documentType", "documentIssuanceDate", "documentExpiryDate");
 				
 				passData(JudgmentDetailsPaneFxController.class, ReviewAndSubmitPaneFxController.class,
 				         "judgmentIssuer" , "judgmentNumber", "judgmentDate", "judgmentDateUseHijri",
@@ -439,13 +445,37 @@ public class RegisterConvictedReportNotPresentWorkflow extends WizardWorkflowBas
 				
 				renderUiAndWaitForUserInput(ReviewAndSubmitPaneFxController.class);
 				
-				passData(ReviewAndSubmitPaneFxController.class, SubmittingConvictedReportWorkflowTask.class,
-				         "convictedReport");
-				executeWorkflowTask(SubmittingConvictedReportWorkflowTask.class);
-				
 				break;
 			}
 			case 11:
+			{
+				setData(RegisteringConvictedReportPaneFxController.class, "registerFingerprints",
+				        Boolean.FALSE);
+				renderUiAndWaitForUserInput(RegisteringConvictedReportPaneFxController.class);
+				
+				Request request = getData(RegisteringConvictedReportPaneFxController.class, "request");
+				if(request == Request.GENERATING_NEW_CRIMINAL_BIOMETRICS_ID)
+				{
+				
+				}
+				else if(request == Request.SUBMITTING_FINGERPRINTS)
+				{
+				
+				}
+				else if(request == Request.CHECKING_FINGERPRINTS)
+				{
+				
+				}
+				else if(request == Request.SUBMITTING_CONVICTED_REPORT)
+				{
+					passData(ReviewAndSubmitPaneFxController.class, SubmittingConvictedReportWorkflowTask.class,
+					         "convictedReport");
+					executeWorkflowTask(SubmittingConvictedReportWorkflowTask.class);
+				}
+				
+				break;
+			}
+			case 12:
 			{
 				passData(ReviewAndSubmitPaneFxController.class, ShowReportPaneFxController.class,
 				         "convictedReport");

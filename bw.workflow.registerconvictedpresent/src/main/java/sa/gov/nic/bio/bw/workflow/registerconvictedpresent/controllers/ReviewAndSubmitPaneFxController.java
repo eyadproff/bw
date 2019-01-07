@@ -267,12 +267,6 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 		GuiUtils.showNode(btnSubmit, !bShow);
 	}
 	
-	@Override
-	public void onReturnFromWorkflow(boolean successfulResponse)
-	{
-		if(successfulResponse) goNext();
-	}
-	
 	@FXML
 	private void onSubmitButtonClicked(ActionEvent actionEvent)
 	{
@@ -316,7 +310,7 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 			                                      AppUtils.localizeNumbers(String.valueOf(userInfo.getOperatorId())),
 			                                      crimes);
 			
-			continueWorkflow();
+			goNext();
 		}
 	}
 }

@@ -170,7 +170,7 @@ public class GuiUtils implements AppLogger
 			
 			if(options[0].equals(selectedOption) || options[1].equals(selectedOption))
 			{
-				stage.close();
+				stage.hide();
 				LOGGER.info("The main window is closed");
 				
 				Future<?> future = Context.getExecutorService().submit(logoutTask);

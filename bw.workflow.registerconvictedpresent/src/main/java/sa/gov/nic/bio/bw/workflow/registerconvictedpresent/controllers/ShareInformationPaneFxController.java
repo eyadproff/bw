@@ -11,20 +11,25 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TitledPane;
 import sa.gov.nic.bio.bw.core.Context;
+import sa.gov.nic.bio.bw.core.beans.Gender;
 import sa.gov.nic.bio.bw.core.controllers.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.core.utils.FxmlFile;
+import sa.gov.nic.bio.bw.core.utils.GuiLanguage;
 import sa.gov.nic.bio.bw.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.core.workflow.Input;
 import sa.gov.nic.bio.bw.core.workflow.Output;
 import sa.gov.nic.bio.bw.workflow.commons.beans.BiometricsExchangeCrimeType;
 import sa.gov.nic.bio.bw.workflow.commons.beans.BiometricsExchangeDecision;
 import sa.gov.nic.bio.bw.workflow.commons.beans.BiometricsExchangeParty;
+import sa.gov.nic.bio.bw.workflow.commons.beans.Country;
 import sa.gov.nic.bio.bw.workflow.commons.beans.CrimeCode;
 import sa.gov.nic.bio.bw.workflow.commons.beans.CrimeType;
+import sa.gov.nic.bio.bw.workflow.commons.beans.DocumentType;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.BiometricsExchangeCrimeTypesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.BiometricsExchangePartiesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.CrimeTypesLookup;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -34,14 +39,25 @@ import java.util.stream.Collectors;
 @FxmlFile("shareInformation.fxml")
 public class ShareInformationPaneFxController extends WizardStepFxControllerBase
 {
+	@Input private String firstName;
+	@Input private String familyName;
+	@Input private Gender gender;
+	@Input private Country nationality;
+	@Input private LocalDate birthDate;
+	@Input private String documentId;
+	@Input private DocumentType documentType;
+	@Input private LocalDate documentIssuanceDate;
+	@Input private LocalDate documentExpiryDate;
 	@Input(alwaysRequired = true) private List<CrimeCode> crimes;
 	@Output private List<CrimeCode> crimesWithShares;
 	
+	@FXML private TitledPane tpRequirements;
 	@FXML private TitledPane tpCrimeClassification1;
 	@FXML private TitledPane tpCrimeClassification2;
 	@FXML private TitledPane tpCrimeClassification3;
 	@FXML private TitledPane tpCrimeClassification4;
 	@FXML private TitledPane tpCrimeClassification5;
+	@FXML private Label lblRequirements;
 	@FXML private Label lblCrimeClassification1;
 	@FXML private Label lblCrimeClassification2;
 	@FXML private Label lblCrimeClassification3;
@@ -79,6 +95,29 @@ public class ShareInformationPaneFxController extends WizardStepFxControllerBase
 	@Override
 	protected void onAttachedToScene()
 	{
+		List<String> missingFields = new ArrayList<>();
+		if(firstName == null) missingFields.add(resources.getString("label.firstName.plain"));
+		if(familyName == null) missingFields.add(resources.getString("label.familyName.plain"));
+		if(gender == null) missingFields.add(resources.getString("label.gender.plain"));
+		if(nationality == null) missingFields.add(resources.getString("label.nationality.plain"));
+		if(birthDate == null) missingFields.add(resources.getString("label.birthDate.plain"));
+		if(documentId == null) missingFields.add(resources.getString("label.documentId.plain"));
+		if(documentType == null) missingFields.add(resources.getString("label.documentType.plain"));
+		if(documentIssuanceDate == null) missingFields.add(
+														resources.getString("label.documentIssuanceDate.plain"));
+		if(documentExpiryDate == null) missingFields.add(resources.getString("label.documentExpiryDate.plain"));
+		
+		boolean disableSharing = !missingFields.isEmpty();
+		
+		if(disableSharing)
+		{
+			boolean arabic = Context.getGuiLanguage() == GuiLanguage.ARABIC;
+			String requirements = missingFields.stream().collect(Collectors.joining(arabic ? "، " : ", "));
+			
+			GuiUtils.showNode(tpRequirements, true);
+			lblRequirements.setText(requirements);
+		}
+		
 		List<CrimeCode> crimesToAddSystemDecisions;
 		
 		if(crimesWithShares != null)
@@ -125,7 +164,8 @@ public class ShareInformationPaneFxController extends WizardStepFxControllerBase
 				}
 				
 				boolean systemDecision = getSystemDecision(biometricsExchangeCrimeTypes, partyCode, crimeCode);
-				criminalBioExchange.add(new BiometricsExchangeDecision(partyCode, systemDecision, systemDecision));
+				criminalBioExchange.add(new BiometricsExchangeDecision(partyCode, systemDecision,
+			                                                       !disableSharing && systemDecision));
 			}
 		}
 		
@@ -150,23 +190,23 @@ public class ShareInformationPaneFxController extends WizardStepFxControllerBase
 			{
 				case 0: fillData(tpCrimeClassification1, lblCrimeClassification1, tvBiometricsExchangeDecision1,
 				                 tcSequence1, tcPartyName1, tcSystemDecision1, tcOperatorDecision1, crimeCode,
-				                 crimeEventTitles, crimeClassTitles, biometricsExchangePartiesMap);
+				                 crimeEventTitles, crimeClassTitles, biometricsExchangePartiesMap, disableSharing);
 				break;
 				case 1: fillData(tpCrimeClassification2, lblCrimeClassification2, tvBiometricsExchangeDecision2,
 				                 tcSequence2, tcPartyName2, tcSystemDecision2, tcOperatorDecision2, crimeCode,
-				                 crimeEventTitles, crimeClassTitles, biometricsExchangePartiesMap);
+				                 crimeEventTitles, crimeClassTitles, biometricsExchangePartiesMap, disableSharing);
 				break;
 				case 2: fillData(tpCrimeClassification3, lblCrimeClassification3, tvBiometricsExchangeDecision3,
 				                 tcSequence3, tcPartyName3, tcSystemDecision3, tcOperatorDecision3, crimeCode,
-				                 crimeEventTitles, crimeClassTitles, biometricsExchangePartiesMap);
+				                 crimeEventTitles, crimeClassTitles, biometricsExchangePartiesMap, disableSharing);
 				break;
 				case 3: fillData(tpCrimeClassification4, lblCrimeClassification4, tvBiometricsExchangeDecision4,
 				                 tcSequence4, tcPartyName4, tcSystemDecision4, tcOperatorDecision4, crimeCode,
-				                 crimeEventTitles, crimeClassTitles, biometricsExchangePartiesMap);
+				                 crimeEventTitles, crimeClassTitles, biometricsExchangePartiesMap, disableSharing);
 				break;
 				case 4: fillData(tpCrimeClassification5, lblCrimeClassification5, tvBiometricsExchangeDecision5,
 				                 tcSequence5, tcPartyName5, tcSystemDecision5, tcOperatorDecision5, crimeCode,
-				                 crimeEventTitles, crimeClassTitles, biometricsExchangePartiesMap);
+				                 crimeEventTitles, crimeClassTitles, biometricsExchangePartiesMap, disableSharing);
 				break;
 			}
 		}
@@ -213,7 +253,8 @@ public class ShareInformationPaneFxController extends WizardStepFxControllerBase
 	                             TableColumn<BiometricsExchangeDecision, CheckBox> tcOperatorDecision,
 	                             CrimeCode crimeCode, Map<Integer, String> crimeEventTitles,
 	                             Map<Integer, String> crimeClassTitles,
-	                             Map<Integer, BiometricsExchangeParty> biometricsExchangePartiesMap)
+	                             Map<Integer, BiometricsExchangeParty> biometricsExchangePartiesMap,
+	                             boolean disableSharing)
 	{
 		GuiUtils.showNode(tpCrimeClassification, true);
 		lblCrimeClassification.setText(crimeEventTitles.get(crimeCode.getCrimeEvent()) + ": " +
@@ -242,9 +283,14 @@ public class ShareInformationPaneFxController extends WizardStepFxControllerBase
 		{
 		    BiometricsExchangeDecision biometricsExchangeDecision = param.getValue();
 		    CheckBox checkBox = new CheckBox();
-		    checkBox.setSelected(biometricsExchangeDecision.getOperatorDecision());
-			checkBox.selectedProperty().addListener((observable, oldValue, newValue) ->
-		                                        biometricsExchangeDecision.setOperatorDecision(newValue));
+		    if(disableSharing) checkBox.setDisable(true);
+		    else
+		    {
+			    checkBox.setSelected(biometricsExchangeDecision.getOperatorDecision());
+			    checkBox.selectedProperty().addListener((observable, oldValue, newValue) ->
+				                                            biometricsExchangeDecision.setOperatorDecision(newValue));
+		    }
+		    
 		    return new SimpleObjectProperty<>(checkBox);
 		});
 		

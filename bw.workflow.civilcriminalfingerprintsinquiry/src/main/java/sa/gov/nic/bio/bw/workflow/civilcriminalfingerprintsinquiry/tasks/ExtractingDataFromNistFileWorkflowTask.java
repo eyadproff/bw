@@ -7,11 +7,11 @@ import sa.gov.nic.bio.bw.core.workflow.Input;
 import sa.gov.nic.bio.bw.core.workflow.Output;
 import sa.gov.nic.bio.bw.core.workflow.Signal;
 import sa.gov.nic.bio.bw.core.workflow.WorkflowTask;
-import sa.gov.nic.bio.bw.workflow.commons.beans.Finger;
-import sa.gov.nic.bio.bw.workflow.commons.beans.PersonInfo;
 import sa.gov.nic.bio.bw.workflow.civilcriminalfingerprintsinquiry.beans.CriminalNistFile;
 import sa.gov.nic.bio.bw.workflow.civilcriminalfingerprintsinquiry.utils.FingerprintsInquiryErrorCodes;
 import sa.gov.nic.bio.bw.workflow.civilcriminalfingerprintsinquiry.webservice.NistFileAPI;
+import sa.gov.nic.bio.bw.workflow.commons.beans.Finger;
+import sa.gov.nic.bio.bw.workflow.commons.beans.PersonInfo;
 import sa.gov.nic.bio.commons.TaskResponse;
 
 import java.nio.file.Files;

@@ -18,6 +18,8 @@ VERSION SCHEMA: vYYYY.MM.#SEQ
 - NEW: Add WEBSERVICES-LIST.md.
 - CHN: Change the workflow fingerprintsinquiry to civilcriminalfingerprintsinquiry.
 - NEW: Add shortcut CTRL+SHIFT+ALT+A to open the application folder.
+- CHN: Add new step for submitting convicted reports.
+- CHN: Add requirement warning before sharing convicted information.
 
 ---
 
