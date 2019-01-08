@@ -6,6 +6,7 @@ import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.POST;
+import retrofit2.http.Query;
 import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.beans.CriminalFingerprintsRegistrationResponse;
 
 public interface CriminalFingerprintsAPI
@@ -27,5 +28,5 @@ public interface CriminalFingerprintsAPI
 	@GET("services-gateway-biooperation/api/criminal/fingers/registration/status/v1")
 	Call<Void> checkCriminalFingerprintsStatus(@Header("Workflow-Code") Integer workflowId,
                                                @Header("Workflow-Tcn") Long workflowTcn,
-	                                           @Field("tcn") Long tcn);
+	                                           @Query("tcn") Long tcn);
 }
