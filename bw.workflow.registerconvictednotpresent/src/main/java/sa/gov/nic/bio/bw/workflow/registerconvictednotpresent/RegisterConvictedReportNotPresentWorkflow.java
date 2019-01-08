@@ -386,8 +386,9 @@ public class RegisterConvictedReportNotPresentWorkflow extends WizardWorkflowBas
 				NormalizedPersonInfo normalizedPersonInfo = getData(InquiryByFingerprintsResultPaneFxController.class,
 				                                                    "normalizedPersonInfo");
 				
-				setData(ReviewAndSubmitPaneFxController.class, "facePhotoBase64",
-				        normalizedPersonInfo.getFacePhotoBase64());
+				if(normalizedPersonInfo != null) setData(ReviewAndSubmitPaneFxController.class,
+				                                         "facePhotoBase64",
+				                                         normalizedPersonInfo.getFacePhotoBase64());
 				
 				passData(FingerprintInquiryStatusCheckerWorkflowTask.class, ReviewAndSubmitPaneFxController.class,
 				         "civilBiometricsId", "criminalBiometricsId");
