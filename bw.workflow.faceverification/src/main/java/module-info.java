@@ -11,4 +11,6 @@ module bw.workflow.faceverification
 	opens sa.gov.nic.bio.bw.workflow.faceverification.tasks to bw.core;
 	opens sa.gov.nic.bio.bw.workflow.faceverification.controllers to javafx.fxml, bw.core;
 	opens sa.gov.nic.bio.bw.workflow.faceverification.beans to org.apache.commons.lang3;
+	exports sa.gov.nic.bio.bw.workflow.faceverification.controllers;
+	exports sa.gov.nic.bio.bw.workflow.faceverification.beans;
 }

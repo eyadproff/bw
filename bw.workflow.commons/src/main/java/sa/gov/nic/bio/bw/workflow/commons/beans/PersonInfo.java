@@ -4,6 +4,7 @@ import sa.gov.nic.bio.bw.core.beans.JavaBean;
 import sa.gov.nic.bio.bw.core.beans.Name;
 
 import java.util.Date;
+import java.util.List;
 
 public class PersonInfo extends JavaBean
 {
@@ -19,6 +20,7 @@ public class PersonInfo extends JavaBean
 	private PersonIdInfo identityInfo;
 	private String face;
 	private Boolean isOut;
+	private List<WantedInfo> wantedInfos;
 	
 	public Long getSamisId(){return samisId;}
 	public void setSamisId(Long samisId){this.samisId = samisId;}
@@ -55,4 +57,7 @@ public class PersonInfo extends JavaBean
 	
 	public Boolean isOut(){return isOut;}
 	public void setIsOut(Boolean isOut){this.isOut = isOut;}
+	
+	public List<WantedInfo> getWantedInfos(){return wantedInfos;}
+	public void setWantedInfos(List<WantedInfo> wantedInfos){this.wantedInfos = wantedInfos;}
 }

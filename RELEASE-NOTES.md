@@ -11,7 +11,7 @@ VERSION SCHEMA: vYYYY.MM.#SEQ
 
 ---
 
-## v2019.01.1
+## v2019.01.2
 
 - NEW: Add Delete-Convicted-Report workflow.
 - NEW: Add Delete-Complete-Criminal-Record workflow.
@@ -20,6 +20,12 @@ VERSION SCHEMA: vYYYY.MM.#SEQ
 - NEW: Add shortcut CTRL+SHIFT+ALT+A to open the application folder.
 - CHN: Add new step for submitting convicted reports.
 - CHN: Add requirement warning before sharing convicted information.
+
+---
+
+## v2019.01.1
+
+- ADD: Add Security-Clearance-Face-Verification.
 
 ---
 

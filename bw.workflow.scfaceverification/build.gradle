@@ -1,0 +1,7 @@
+project.ext.moduleName = 'bw.workflow.scfaceverification'
+
+dependencies {
+    implementation project(':bw.workflow.commons')
+    implementation project(':bw.workflow.faceverification')
+    implementation project(':bw.workflow.searchbyfaceimage')
+}
