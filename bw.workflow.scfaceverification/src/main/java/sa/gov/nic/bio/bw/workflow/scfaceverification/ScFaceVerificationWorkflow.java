@@ -11,8 +11,8 @@ import sa.gov.nic.bio.bw.workflow.commons.controllers.FaceCapturingFxController;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.CountriesLookup;
 import sa.gov.nic.bio.bw.workflow.faceverification.controllers.MatchingFxController;
 import sa.gov.nic.bio.bw.workflow.faceverification.controllers.PersonIdPaneFxController;
-import sa.gov.nic.bio.bw.workflow.faceverification.controllers.ShowResultFxController;
-import sa.gov.nic.bio.bw.workflow.faceverification.tasks.ScFaceVerificationWorkflowTask;
+import sa.gov.nic.bio.bw.workflow.scfaceverification.controllers.ShowResultFxController;
+import sa.gov.nic.bio.bw.workflow.scfaceverification.tasks.ScFaceVerificationWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.searchbyfaceimage.controllers.ConfirmImageFxController;
 import sa.gov.nic.bio.bw.workflow.searchbyfaceimage.controllers.ImageSourceFxController;
 import sa.gov.nic.bio.bw.workflow.searchbyfaceimage.controllers.ImageSourceFxController.Source;
@@ -21,7 +21,8 @@ import sa.gov.nic.bio.bw.workflow.searchbyfaceimage.controllers.UploadImageFileF
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-@AssociatedMenu(workflowId = 1004, menuId = "menu.query.faceVerification", menuTitle = "menu.title", menuOrder = 2, devices = Device.CAMERA)
+@AssociatedMenu(workflowId = 1015, menuId = "menu.securityClearance.faceVerification", menuTitle = "menu.title",
+				menuOrder = 1, devices = Device.CAMERA)
 @WithLookups(CountriesLookup.class)
 @Wizard({@Step(iconId = "\\uf2bb", title = "wizard.personId"),
 		@Step(iconId = "question", title = "wizard.imageSource"),

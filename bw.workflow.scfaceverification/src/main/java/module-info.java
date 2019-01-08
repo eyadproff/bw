@@ -11,5 +11,4 @@ module bw.workflow.scfaceverification
 	opens sa.gov.nic.bio.bw.workflow.scfaceverification.fxml to bw.core;
 	opens sa.gov.nic.bio.bw.workflow.scfaceverification.tasks to bw.core;
 	opens sa.gov.nic.bio.bw.workflow.scfaceverification.controllers to javafx.fxml, bw.core;
-	opens sa.gov.nic.bio.bw.workflow.scfaceverification.beans to org.apache.commons.lang3;
 }
