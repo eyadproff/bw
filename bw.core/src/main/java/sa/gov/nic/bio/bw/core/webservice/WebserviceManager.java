@@ -214,14 +214,14 @@ public class WebserviceManager implements AppLogger
 		
 		int httpCode = response.code();
 		
-		if(httpCode == 200)
+		if(httpCode == 200 || httpCode == 202)
 		{
 			T resultBean = response.body();
 			
 			LOGGER.info("webservice = \"" + apiUrl + "\", responseCode = " + httpCode);
 			LOGGER.fine("resultBean = " + resultBean);
 			
-			return TaskResponse.success(resultBean);
+			return TaskResponse.success(resultBean, httpCode);
 		}
 		else if(httpCode == 400 || httpCode == 401 || httpCode == 403 || httpCode == 404 || httpCode == 500)
 		{
@@ -232,7 +232,7 @@ public class WebserviceManager implements AppLogger
 			{
 				errorCode = CoreErrorCodes.C002_00011.getCode();
 				String[] errorDetails = {"\"errorBody\" is null!", "apiUrl = " + apiUrl, "httpCode = " + httpCode};
-				return TaskResponse.failure(errorCode, null, errorDetails);
+				return TaskResponse.failure(httpCode, errorCode, null, errorDetails);
 			}
 			
 			try
@@ -247,20 +247,20 @@ public class WebserviceManager implements AppLogger
 				errorCode = CoreErrorCodes.C002_00012.getCode();
 				String[] errorDetails = {"failed to extract the error code from the error body!", "apiUrl = " + apiUrl,
 										 "httpCode = " + httpCode};
-				return TaskResponse.failure(errorCode, null, errorDetails);
+				return TaskResponse.failure(httpCode, errorCode, null, errorDetails);
 			}
 			
 			LOGGER.info("webservice = \"" + request.url() + "\", responseCode = " + httpCode +
 					    ", errorCode = " + errorCode);
 			
 			String[] errorDetails = {"apiUrl = " + apiUrl, "httpCode = " + httpCode};
-			return TaskResponse.failure(errorCode, null, errorDetails);
+			return TaskResponse.failure(httpCode, errorCode, null, errorDetails);
 		}
 		else // we don't support other HTTP codes
 		{
 			String errorCode = CoreErrorCodes.C002_00013.getCode();
 			String[] errorDetails = {"Unsupported HTTP code!", "apiUrl = " + apiUrl, "httpCode = " + httpCode};
-			return TaskResponse.failure(errorCode, null, errorDetails);
+			return TaskResponse.failure(httpCode, errorCode, null, errorDetails);
 		}
 	}
 	

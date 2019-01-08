@@ -21,6 +21,7 @@ run {
                 "--add-opens=java.base/java.util=org.apache.commons.lang3",
                 "--add-opens=java.base/java.lang=org.apache.commons.lang3",
                 "--add-opens=java.base/java.time=org.apache.commons.lang3",
+                "--add-opens=java.desktop/java.awt=org.apache.commons.lang3",
                 "--add-opens=java.base/java.time.chrono=bw.core",
                 "--add-opens=javafx.controls/javafx.scene.control.skin=bw.core",
                 "--add-opens=javafx.controls/com.sun.javafx.scene.control=org.scenicview.scenicview",

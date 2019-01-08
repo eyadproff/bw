@@ -18,42 +18,42 @@
         <VBox alignment="CENTER">
             <HBox alignment="CENTER">
                 <GridPane vgap="5.0" hgap="5.0">
-                    <StackPane managed="false" visible="false" GridPane.columnIndex="0" GridPane.rowIndex="0">
-                        <ProgressIndicator fx:id="piGeneratingNewCriminalBiometricsId" maxWidth="25.0" maxHeight="25.0" managed="false" visible="false"/>
-                        <ImageView fx:id="ivGeneratingNewCriminalBiometricsIdSuccess" managed="false" visible="false">
+                    <StackPane fx:id="paneGeneratingNewCriminalBiometricsIdStatus" managed="false" visible="false" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                        <ProgressIndicator fx:id="piGeneratingNewCriminalBiometricsId" maxWidth="20.0" maxHeight="20.0" visible="false"/>
+                        <ImageView fx:id="ivGeneratingNewCriminalBiometricsIdSuccess" visible="false">
                             <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/icon_success_16px.png"/>
                         </ImageView>
-                        <ImageView fx:id="ivGeneratingNewCriminalBiometricsIdFailure" managed="false" visible="false">
+                        <ImageView fx:id="ivGeneratingNewCriminalBiometricsIdFailure" visible="false">
                             <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/icon_error_16px.png"/>
                         </ImageView>
                     </StackPane>
                     <Label fx:id="lblGeneratingNewCriminalBiometricsId" text="%label.generatingNewCriminalBiometricsId" managed="false" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
-                    <StackPane managed="false" visible="false" GridPane.columnIndex="0" GridPane.rowIndex="1">
-                        <ProgressIndicator fx:id="piSubmittingFingerprints" managed="false" visible="false" maxWidth="25.0" maxHeight="25.0"/>
-                        <ImageView fx:id="ivSubmittingFingerprintsSuccess" managed="false" visible="false">
+                    <StackPane fx:id="paneSubmittingFingerprintsStatus" managed="false" visible="false" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                        <ProgressIndicator fx:id="piSubmittingFingerprints" visible="false" maxWidth="20.0" maxHeight="20.0"/>
+                        <ImageView fx:id="ivSubmittingFingerprintsSuccess" visible="false">
                             <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/icon_success_16px.png"/>
                         </ImageView>
-                        <ImageView fx:id="ivSubmittingFingerprintsFailure" managed="false" visible="false">
+                        <ImageView fx:id="ivSubmittingFingerprintsFailure" visible="false">
                             <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/icon_error_16px.png"/>
                         </ImageView>
                     </StackPane>
                     <Label fx:id="lblSubmittingFingerprints" text="%label.submittingFingerprints" managed="false" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
-                    <StackPane managed="false" visible="false" GridPane.columnIndex="0" GridPane.rowIndex="2">
-                        <ProgressIndicator fx:id="piCheckingFingerprints" maxWidth="25.0" maxHeight="25.0" managed="false" visible="false"/>
-                        <ImageView fx:id="ivCheckingFingerprintsSuccess" managed="false" visible="false">
+                    <StackPane fx:id="paneCheckingFingerprintsStatus" managed="false" visible="false" GridPane.columnIndex="0" GridPane.rowIndex="2">
+                        <ProgressIndicator fx:id="piCheckingFingerprints" maxWidth="20.0" maxHeight="20.0" visible="false"/>
+                        <ImageView fx:id="ivCheckingFingerprintsSuccess" visible="false">
                             <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/icon_success_16px.png"/>
                         </ImageView>
-                        <ImageView fx:id="ivCheckingFingerprintsFailure" managed="false" visible="false">
+                        <ImageView fx:id="ivCheckingFingerprintsFailure" visible="false">
                             <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/icon_error_16px.png"/>
                         </ImageView>
                     </StackPane>
                     <Label fx:id="lblCheckingFingerprints" text="%label.checkingFingerprints" managed="false" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
-                    <StackPane GridPane.columnIndex="0" GridPane.rowIndex="3">
-                        <ProgressIndicator fx:id="piSubmittingConvictedReport" maxWidth="25.0" maxHeight="25.0" managed="false" visible="false"/>
-                        <ImageView fx:id="ivSubmittingConvictedReportSuccess" managed="false" visible="false">
+                    <StackPane fx:id="paneSubmittingConvictedReportStatus" GridPane.columnIndex="0" GridPane.rowIndex="3">
+                        <ProgressIndicator fx:id="piSubmittingConvictedReport" maxWidth="20.0" maxHeight="20.0" visible="false"/>
+                        <ImageView fx:id="ivSubmittingConvictedReportSuccess" visible="false">
                             <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/icon_success_16px.png"/>
                         </ImageView>
-                        <ImageView fx:id="ivSubmittingConvictedReportFailure" managed="false" visible="false">
+                        <ImageView fx:id="ivSubmittingConvictedReportFailure" visible="false">
                             <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/icon_error_16px.png"/>
                         </ImageView>
                     </StackPane>
@@ -67,8 +67,8 @@
             <padding>
                 <Insets bottom="10"/>
             </padding>
-            <Button fx:id="btnStartOver" text="%button.startOver" managed="false" visible="false" onAction="#onStartOverButtonClicked"/>
-            <Button fx:id="btnRetry" text="%button.retry" managed="false" visible="false" onAction="#onRetryButtonClicked"/>
+            <Button fx:id="btnStartOver" text="%button.startOver" visible="false" onAction="#onStartOverButtonClicked"/>
+            <Button fx:id="btnRetry" text="%button.retry" visible="false" onAction="#onRetryButtonClicked"/>
         </HBox>
     </bottom>
 </BorderPane>

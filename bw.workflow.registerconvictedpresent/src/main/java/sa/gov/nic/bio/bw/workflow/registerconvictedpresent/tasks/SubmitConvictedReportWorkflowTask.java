@@ -12,7 +12,7 @@ import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.beans.ConvictedReport
 import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.webservice.ConvictedReportAPI;
 import sa.gov.nic.bio.commons.TaskResponse;
 
-public class SubmittingConvictedReportWorkflowTask extends WorkflowTask
+public class SubmitConvictedReportWorkflowTask extends WorkflowTask
 {
 	@Input(alwaysRequired = true) private ConvictedReport convictedReport;
 	@Output private ConvictedReportResponse convictedReportResponse;
