@@ -178,7 +178,7 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 		if(acceptAnyCapturedImage != null && acceptAnyCapturedImage)
 		{
 			btnNext.disableProperty().bind(ivCapturedImage.imageProperty().isNull().and(
-					ivCroppedImage.imageProperty().isNull()));
+										   ivCroppedImage.imageProperty().isNull()));
 		}
 		else if(acceptBadQualityFace != null && acceptBadQualityFaceMinRetries != null && acceptBadQualityFace)
 		{

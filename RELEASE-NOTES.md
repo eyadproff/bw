@@ -11,6 +11,12 @@ VERSION SCHEMA: vYYYY.MM.#SEQ
 
 ---
 
+## v2019.01.1
+
+- ADD: Add Security-Clearance-Face-Verification.
+
+---
+
 ## v2018.12.6
 
 - FIX: Show confirmation button on register-convicted.
