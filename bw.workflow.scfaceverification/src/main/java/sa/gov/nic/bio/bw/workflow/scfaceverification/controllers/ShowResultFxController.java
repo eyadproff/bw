@@ -1,5 +1,7 @@
 package sa.gov.nic.bio.bw.workflow.scfaceverification.controllers;
 
+import javafx.beans.property.ReadOnlyObjectWrapper;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -23,11 +25,23 @@ import sa.gov.nic.bio.bw.workflow.commons.beans.WantedInfo;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.CountriesLookup;
 import sa.gov.nic.bio.bw.workflow.faceverification.beans.FaceMatchingResponse;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @FxmlFile("showResult.fxml")
 public class ShowResultFxController extends WizardStepFxControllerBase
 {
+	// TODO: temp
+	private static final Map<String, String> WantedActionsMap = new HashMap<>();
+	static
+	{
+		WantedActionsMap.put("1", "يقبض عليه");
+		WantedActionsMap.put("2", "إيقاف خدمات");
+		WantedActionsMap.put("3", "يبلغ بالمراجعة");
+		WantedActionsMap.put("4", "منع سفر");
+	}
+	
 	@Input(alwaysRequired = true) private Long personId;
 	@Input(alwaysRequired = true) private Image facePhoto;
 	@Input(alwaysRequired = true) private FaceMatchingResponse faceMatchingResponse;
@@ -36,10 +50,10 @@ public class ShowResultFxController extends WizardStepFxControllerBase
 	@FXML private Pane notMatchedPane;
 	@FXML private Pane infoPane;
 	@FXML private Pane wantedPane;
-	@FXML private TableView tvWantedActions;
-	@FXML private TableColumn tcSequence;
-	@FXML private TableColumn tcIssuer;
-	@FXML private TableColumn tcAction;
+	@FXML private TableView<WantedInfo> tvWantedActions;
+	@FXML private TableColumn<WantedInfo, WantedInfo> tcSequence;
+	@FXML private TableColumn<WantedInfo, String> tcIssuer;
+	@FXML private TableColumn<WantedInfo, String> tcAction;
 	@FXML private Label lblNotMatched;
 	@FXML private Label lblPersonId;
 	@FXML private Label lblFirstName;
@@ -165,6 +179,26 @@ public class ShowResultFxController extends WizardStepFxControllerBase
 			{
 				lblSecurityClearance.setText(resources.getString("label.wanted"));
 				lblSecurityClearance.setTextFill(Color.RED);
+				
+				GuiUtils.initSequenceTableColumn(tcSequence);
+				tcSequence.setCellValueFactory(p -> new ReadOnlyObjectWrapper<>(p.getValue()));
+				
+				tcIssuer.setCellValueFactory(param ->
+				{
+				    String issuer = param.getValue().getSource();
+				    return new SimpleStringProperty(issuer);
+				});
+				
+				tcAction.setCellValueFactory(param ->
+				{
+				    String action = param.getValue().getAction();
+					String actionText = WantedActionsMap.get(action);
+				    if(actionText != null) return new SimpleStringProperty(actionText);
+				    else return new SimpleStringProperty(action);
+				});
+				
+				tvWantedActions.getItems().setAll(wantedInfos);
+				
 				GuiUtils.showNode(wantedPane, true);
 			}
 			else

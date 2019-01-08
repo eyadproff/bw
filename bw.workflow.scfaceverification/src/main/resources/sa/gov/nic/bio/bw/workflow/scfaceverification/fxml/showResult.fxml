@@ -70,15 +70,15 @@
                     </HBox>
                 </VBox>
             </VBox>
-            <VBox fx:id="wantedPane" alignment="CENTER" spacing="15.0" managed="false" visible="false">
-                <TableView fx:id="tvWantedActions" prefHeight="250.0" maxHeight="Infinity" VBox.vgrow="ALWAYS">
+            <VBox fx:id="wantedPane" alignment="CENTER" spacing="15.0" maxHeight="300.0" managed="false" visible="false">
+                <TableView fx:id="tvWantedActions" prefWidth="400.0">
                     <placeholder>
                         <Label text="%table.placeholder"/>
                     </placeholder>
                     <columns>
-                        <PTableColumn fx:id="tcSequence" text="#" reorderable="false" sortable="false" percentageWidth="0.04"/>
-                        <PTableColumn fx:id="tcIssuer" text="%table.column.issuer" reorderable="false" sortable="false" percentageWidth="0.45"/>
-                        <PTableColumn fx:id="tcAction" text="%table.column.action" reorderable="false" sortable="false" percentageWidth="0.45"/>
+                        <PTableColumn fx:id="tcSequence" text="#" reorderable="false" sortable="false" percentageWidth="0.06"/>
+                        <PTableColumn fx:id="tcIssuer" text="%table.column.issuer" reorderable="false" sortable="false" percentageWidth="0.6"/>
+                        <PTableColumn fx:id="tcAction" text="%table.column.action" reorderable="false" sortable="false" percentageWidth="0.3"/>
                     </columns>
                 </TableView>
             </VBox>
