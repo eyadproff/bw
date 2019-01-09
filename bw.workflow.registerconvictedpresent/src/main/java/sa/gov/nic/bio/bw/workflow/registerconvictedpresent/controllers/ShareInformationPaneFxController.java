@@ -10,6 +10,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TitledPane;
+import javafx.scene.layout.Pane;
 import sa.gov.nic.bio.bw.core.Context;
 import sa.gov.nic.bio.bw.core.beans.Gender;
 import sa.gov.nic.bio.bw.core.controllers.WizardStepFxControllerBase;
@@ -58,6 +59,8 @@ public class ShareInformationPaneFxController extends WizardStepFxControllerBase
 	@FXML private TitledPane tpCrimeClassification3;
 	@FXML private TitledPane tpCrimeClassification4;
 	@FXML private TitledPane tpCrimeClassification5;
+	@FXML private Pane paneRequirements;
+	@FXML private Pane paneNotIsoNationality;
 	@FXML private Label lblRequirements;
 	@FXML private Label lblNotIsoNationality;
 	@FXML private Label lblCrimeClassification1;
@@ -139,19 +142,20 @@ public class ShareInformationPaneFxController extends WizardStepFxControllerBase
 		
 		if(disableSharing)
 		{
+			GuiUtils.showNode(tpRequirements, true);
 			boolean arabic = Context.getGuiLanguage() == GuiLanguage.ARABIC;
 			
 			if(!missingFields.isEmpty())
 			{
 				String requirements = missingFields.stream().collect(Collectors.joining(arabic ? "، " : ", "));
 				
-				GuiUtils.showNode(tpRequirements, true);
+				GuiUtils.showNode(paneRequirements, true);
 				lblRequirements.setText(requirements);
 			}
 			
 			if(!isoNationality)
 			{
-				GuiUtils.showNode(lblNotIsoNationality, true);
+				GuiUtils.showNode(paneNotIsoNationality, true);
 				lblNotIsoNationality.setText(String.format(resources.getString("label.notIsoNationality"),
                                                 arabic ? nationality.getArabicText() : nationality.getEnglishText()));
 			}
