@@ -20,6 +20,7 @@ VERSION SCHEMA: vYYYY.MM.#SEQ
 - NEW: Add shortcut CTRL+SHIFT+ALT+A to open the application folder.
 - CHN: Add new step for submitting convicted reports.
 - CHN: Add requirement warning before sharing convicted information.
+- ENH: Update bio-commons to v2019.01.2.
 
 ---
 
