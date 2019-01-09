@@ -40,6 +40,8 @@
         <property name="jnlp.noPrefix.--add-opens javafx.controls/javafx.scene.control.skin=" value='controlsfx'/>
         <property name="jnlp.noPrefix.--add-opens javafx.graphics/javafx.scene=" value='controlsfx'/>
         <property name="jnlp.noPrefix.--add-opens java.base/java.util=" value='org.apache.commons.lang3'/>
+        <property name="jnlp.noPrefix.--add-opens java.base/java.lang=" value='org.apache.commons.lang3'/>
+        <property name="jnlp.noPrefix.--add-opens java.base/java.time=" value='org.apache.commons.lang3'/>
         <property name="jnlp.noPrefix.--add-opens java.desktop/java.awt=" value='org.apache.commons.lang3'/>
         <property name="jnlp.noPrefix.--add-opens java.base/java.time.chrono=" value='bw.core'/>
         <property name="--add-modules" value='javafx.controls'/>
