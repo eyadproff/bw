@@ -11,6 +11,12 @@ VERSION SCHEMA: vYYYY.MM.#SEQ
 
 ---
 
+## v2019.01.2
+
+- ADD: Remove Upload-Image step from Security-Clearance-Face-Verification workflow.
+
+---
+
 ## v2019.01.1
 
 - ADD: Add Security-Clearance-Face-Verification.
