@@ -11,7 +11,7 @@ VERSION SCHEMA: vYYYY.MM.#SEQ
 
 ---
 
-## v2019.01.2
+## v2019.01.3
 
 - NEW: Add Delete-Convicted-Report workflow.
 - NEW: Add Delete-Complete-Criminal-Record workflow.
@@ -21,6 +21,12 @@ VERSION SCHEMA: vYYYY.MM.#SEQ
 - CHN: Add new step for submitting convicted reports.
 - CHN: Add requirement warning before sharing convicted information.
 - ENH: Update bio-commons to v2019.01.2.
+
+---
+
+## v2019.01.2
+
+- ADD: Remove Upload-Image step from Security-Clearance-Face-Verification workflow.
 
 ---
 
