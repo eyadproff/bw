@@ -90,6 +90,16 @@ public abstract class WorkflowTask implements AppLogger
 		}
 	}
 	
+	protected <T> void resetWorkflowStepIfNegativeTaskResponse(TaskResponse<T> taskResponse) throws Signal
+	{
+		if(!taskResponse.isSuccess())
+		{
+			Map<String, Object> payload = new HashMap<>();
+			payload.put(Workflow.KEY_WORKFLOW_TASK_NEGATIVE_RESPONSE, taskResponse);
+			throw new Signal(SignalType.RESET_WORKFLOW_STEP, payload);
+		}
+	}
+	
 	protected <T> void resetWorkflowStepIfNegativeOrNullTaskResponse(TaskResponse<T> taskResponse) throws Signal
 	{
 		if(!taskResponse.isSuccess())

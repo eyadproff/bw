@@ -26,7 +26,7 @@ public class CriminalFingerprintsStatusCheckerWorkflowTask extends WorkflowTask
 		CriminalFingerprintsAPI api = Context.getWebserviceManager().getApi(CriminalFingerprintsAPI.class);
 		Call<Void> apiCall = api.checkCriminalFingerprintsStatus(workflowId, workflowTcn, tcn);
 		TaskResponse<Void> taskResponse = Context.getWebserviceManager().executeApi(apiCall);
-		resetWorkflowStepIfNegativeOrNullTaskResponse(taskResponse);
+		resetWorkflowStepIfNegativeTaskResponse(taskResponse);
 		
 		Integer httpCode = taskResponse.getHttpCode();
 		if(httpCode == 200) status = Status.SUCCESS;
