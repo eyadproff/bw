@@ -11,20 +11,25 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TitledPane;
 import sa.gov.nic.bio.bw.core.Context;
+import sa.gov.nic.bio.bw.core.beans.Gender;
 import sa.gov.nic.bio.bw.core.controllers.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.core.utils.FxmlFile;
+import sa.gov.nic.bio.bw.core.utils.GuiLanguage;
 import sa.gov.nic.bio.bw.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.core.workflow.Input;
 import sa.gov.nic.bio.bw.core.workflow.Output;
 import sa.gov.nic.bio.bw.workflow.commons.beans.BiometricsExchangeCrimeType;
 import sa.gov.nic.bio.bw.workflow.commons.beans.BiometricsExchangeDecision;
 import sa.gov.nic.bio.bw.workflow.commons.beans.BiometricsExchangeParty;
+import sa.gov.nic.bio.bw.workflow.commons.beans.Country;
 import sa.gov.nic.bio.bw.workflow.commons.beans.CrimeCode;
 import sa.gov.nic.bio.bw.workflow.commons.beans.CrimeType;
+import sa.gov.nic.bio.bw.workflow.commons.beans.DocumentType;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.BiometricsExchangeCrimeTypesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.BiometricsExchangePartiesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.CrimeTypesLookup;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -34,14 +39,26 @@ import java.util.stream.Collectors;
 @FxmlFile("shareInformation.fxml")
 public class ShareInformationPaneFxController extends WizardStepFxControllerBase
 {
+	@Input private String firstName;
+	@Input private String familyName;
+	@Input private Gender gender;
+	@Input private Country nationality;
+	@Input private LocalDate birthDate;
+	@Input private String documentId;
+	@Input private DocumentType documentType;
+	@Input private LocalDate documentIssuanceDate;
+	@Input private LocalDate documentExpiryDate;
+	@Input private LocalDate judgmentDate;
 	@Input(alwaysRequired = true) private List<CrimeCode> crimes;
 	@Output private List<CrimeCode> crimesWithShares;
 	
+	@FXML private TitledPane tpRequirements;
 	@FXML private TitledPane tpCrimeClassification1;
 	@FXML private TitledPane tpCrimeClassification2;
 	@FXML private TitledPane tpCrimeClassification3;
 	@FXML private TitledPane tpCrimeClassification4;
 	@FXML private TitledPane tpCrimeClassification5;
+	@FXML private Label lblRequirements;
 	@FXML private Label lblCrimeClassification1;
 	@FXML private Label lblCrimeClassification2;
 	@FXML private Label lblCrimeClassification3;
@@ -101,6 +118,50 @@ public class ShareInformationPaneFxController extends WizardStepFxControllerBase
 			crimesToAddSystemDecisions = crimesWithShares;
 		}
 		
+		List<String> missingFields = new ArrayList<>();
+		if(firstName == null) missingFields.add(resources.getString("label.firstName.plain"));
+		if(familyName == null) missingFields.add(resources.getString("label.familyName.plain"));
+		if(gender == null) missingFields.add(resources.getString("label.gender.plain"));
+		if(nationality == null) missingFields.add(resources.getString("label.nationality.plain"));
+		if(birthDate == null) missingFields.add(resources.getString("label.birthDate.plain"));
+		if(documentId == null) missingFields.add(resources.getString("label.documentId.plain"));
+		if(documentType == null) missingFields.add(resources.getString("label.documentType.plain"));
+		if(documentIssuanceDate == null) missingFields.add(
+														resources.getString("label.documentIssuanceDate.plain"));
+		if(documentExpiryDate == null) missingFields.add(resources.getString("label.documentExpiryDate.plain"));
+		if(judgmentDate == null) missingFields.add(resources.getString("label.judgmentDate.plain"));
+		
+		boolean disableSharing = !missingFields.isEmpty();
+		
+		if(disableSharing)
+		{
+			boolean arabic = Context.getGuiLanguage() == GuiLanguage.ARABIC;
+			String requirements = missingFields.stream().collect(Collectors.joining(arabic ? "، " : ", "));
+			
+			GuiUtils.showNode(tpRequirements, true);
+			lblRequirements.setText(requirements);
+			
+			// make all decision false, because of missing fields
+			for(CrimeCode crimesWithShare : crimesWithShares)
+			{
+				if(crimesWithShare != null)
+				{
+					List<BiometricsExchangeDecision> criminalBioExchange = crimesWithShare.getCriminalBioExchange();
+					if(criminalBioExchange != null)
+					{
+						for(BiometricsExchangeDecision biometricsExchangeDecision : criminalBioExchange)
+						{
+							if(biometricsExchangeDecision != null)
+							{
+								biometricsExchangeDecision.setSystemDecision(false);
+								biometricsExchangeDecision.setOperatorDecision(false);
+							}
+						}
+					}
+				}
+			}
+		}
+		
 		@SuppressWarnings("unchecked")
 		List<BiometricsExchangeParty> biometricsExchangeParties =
 				(List<BiometricsExchangeParty>) Context.getUserSession().getAttribute(
@@ -113,19 +174,25 @@ public class ShareInformationPaneFxController extends WizardStepFxControllerBase
 		
 		for(CrimeCode crimeCode : crimesToAddSystemDecisions)
 		{
+			List<BiometricsExchangeDecision> criminalBioExchange = crimeCode.getCriminalBioExchange();
+			if(criminalBioExchange == null)
+			{
+				criminalBioExchange = new ArrayList<>();
+				crimeCode.setCriminalBioExchange(criminalBioExchange);
+			}
+			
 			for(BiometricsExchangeParty biometricsExchangeParty : biometricsExchangeParties)
 			{
 				Integer partyCode = biometricsExchangeParty.getOrgPartyCode();
 				
-				List<BiometricsExchangeDecision> criminalBioExchange = crimeCode.getCriminalBioExchange();
-				if(criminalBioExchange == null)
-				{
-					criminalBioExchange = new ArrayList<>();
-					crimeCode.setCriminalBioExchange(criminalBioExchange);
-				}
-				
-				boolean systemDecision = getSystemDecision(biometricsExchangeCrimeTypes, partyCode, crimeCode);
-				criminalBioExchange.add(new BiometricsExchangeDecision(partyCode, systemDecision, systemDecision));
+				BiometricsExchangeCrimeType biometricsExchangeCrimeType =
+								getBiometricsExchangeCrimeType(biometricsExchangeCrimeTypes, partyCode, crimeCode);
+				boolean systemDecision = biometricsExchangeCrimeType != null;
+				criminalBioExchange.add(new BiometricsExchangeDecision(partyCode,
+	                                                       !disableSharing && systemDecision,
+			                                               !disableSharing && systemDecision,
+                                                           biometricsExchangeCrimeType != null ?
+	                                                       biometricsExchangeCrimeType.getOrgPartyCrimeCode() : null));
 			}
 		}
 		
@@ -150,23 +217,23 @@ public class ShareInformationPaneFxController extends WizardStepFxControllerBase
 			{
 				case 0: fillData(tpCrimeClassification1, lblCrimeClassification1, tvBiometricsExchangeDecision1,
 				                 tcSequence1, tcPartyName1, tcSystemDecision1, tcOperatorDecision1, crimeCode,
-				                 crimeEventTitles, crimeClassTitles, biometricsExchangePartiesMap);
+				                 crimeEventTitles, crimeClassTitles, biometricsExchangePartiesMap, disableSharing);
 				break;
 				case 1: fillData(tpCrimeClassification2, lblCrimeClassification2, tvBiometricsExchangeDecision2,
 				                 tcSequence2, tcPartyName2, tcSystemDecision2, tcOperatorDecision2, crimeCode,
-				                 crimeEventTitles, crimeClassTitles, biometricsExchangePartiesMap);
+				                 crimeEventTitles, crimeClassTitles, biometricsExchangePartiesMap, disableSharing);
 				break;
 				case 2: fillData(tpCrimeClassification3, lblCrimeClassification3, tvBiometricsExchangeDecision3,
 				                 tcSequence3, tcPartyName3, tcSystemDecision3, tcOperatorDecision3, crimeCode,
-				                 crimeEventTitles, crimeClassTitles, biometricsExchangePartiesMap);
+				                 crimeEventTitles, crimeClassTitles, biometricsExchangePartiesMap, disableSharing);
 				break;
 				case 3: fillData(tpCrimeClassification4, lblCrimeClassification4, tvBiometricsExchangeDecision4,
 				                 tcSequence4, tcPartyName4, tcSystemDecision4, tcOperatorDecision4, crimeCode,
-				                 crimeEventTitles, crimeClassTitles, biometricsExchangePartiesMap);
+				                 crimeEventTitles, crimeClassTitles, biometricsExchangePartiesMap, disableSharing);
 				break;
 				case 4: fillData(tpCrimeClassification5, lblCrimeClassification5, tvBiometricsExchangeDecision5,
 				                 tcSequence5, tcPartyName5, tcSystemDecision5, tcOperatorDecision5, crimeCode,
-				                 crimeEventTitles, crimeClassTitles, biometricsExchangePartiesMap);
+				                 crimeEventTitles, crimeClassTitles, biometricsExchangePartiesMap, disableSharing);
 				break;
 			}
 		}
@@ -186,23 +253,24 @@ public class ShareInformationPaneFxController extends WizardStepFxControllerBase
 			   crime1.getCrimeClass() == crime2.getCrimeClass();
 	}
 	
-	private static boolean getSystemDecision(List<BiometricsExchangeCrimeType> biometricsExchangeCrimeTypes,
+	private static BiometricsExchangeCrimeType getBiometricsExchangeCrimeType(
+											 List<BiometricsExchangeCrimeType> biometricsExchangeCrimeTypes,
 	                                         Integer partyCode, CrimeCode crime)
 	{
 		for(BiometricsExchangeCrimeType biometricsExchangeCrimeType : biometricsExchangeCrimeTypes)
 		{
 			if(biometricsExchangeCrimeType == null ||
-				!biometricsExchangeCrimeType.getOrgPartyCode().equals(partyCode))
+					!biometricsExchangeCrimeType.getOrgPartyCode().equals(partyCode))
 			{
 				continue;
 			}
 			
 			CrimeCode crimeCode = new CrimeCode(biometricsExchangeCrimeType.getCrimeEventCode(),
 			                                    biometricsExchangeCrimeType.getCrimeClassCode());
-			if(equalCrimes(crimeCode, crime)) return true;
+			if(equalCrimes(crimeCode, crime)) return biometricsExchangeCrimeType;
 		}
 		
-		return false;
+		return null;
 	}
 	
 	private static void fillData(TitledPane tpCrimeClassification, Label lblCrimeClassification,
@@ -213,7 +281,8 @@ public class ShareInformationPaneFxController extends WizardStepFxControllerBase
 	                             TableColumn<BiometricsExchangeDecision, CheckBox> tcOperatorDecision,
 	                             CrimeCode crimeCode, Map<Integer, String> crimeEventTitles,
 	                             Map<Integer, String> crimeClassTitles,
-	                             Map<Integer, BiometricsExchangeParty> biometricsExchangePartiesMap)
+	                             Map<Integer, BiometricsExchangeParty> biometricsExchangePartiesMap,
+	                             boolean disableSharing)
 	{
 		GuiUtils.showNode(tpCrimeClassification, true);
 		lblCrimeClassification.setText(crimeEventTitles.get(crimeCode.getCrimeEvent()) + ": " +
@@ -242,9 +311,14 @@ public class ShareInformationPaneFxController extends WizardStepFxControllerBase
 		{
 		    BiometricsExchangeDecision biometricsExchangeDecision = param.getValue();
 		    CheckBox checkBox = new CheckBox();
-		    checkBox.setSelected(biometricsExchangeDecision.getOperatorDecision());
-			checkBox.selectedProperty().addListener((observable, oldValue, newValue) ->
-		                                        biometricsExchangeDecision.setOperatorDecision(newValue));
+		    if(disableSharing || !biometricsExchangeDecision.getSystemDecision()) checkBox.setDisable(true);
+		    else
+		    {
+			    checkBox.setSelected(true);
+			    checkBox.selectedProperty().addListener((observable, oldValue, newValue) ->
+				                                            biometricsExchangeDecision.setOperatorDecision(newValue));
+		    }
+		    
 		    return new SimpleObjectProperty<>(checkBox);
 		});
 		

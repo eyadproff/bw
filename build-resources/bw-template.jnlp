@@ -12,7 +12,7 @@
         <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se"/>
 
         <!-- List of jars -->
-        <jar href="jnlp-jars/bcl-2018.11.1.jar"/>
+        <jar href="jnlp-jars/bcl-2019.01.1.jar"/>
         <jar href="jnlp-jars/bcl-utils-2018.11.1.jar"/>
         <jar href="jnlp-jars/gson-2.8.5.jar"/>
 
@@ -40,6 +40,9 @@
         <property name="jnlp.noPrefix.--add-opens javafx.controls/javafx.scene.control.skin=" value='controlsfx'/>
         <property name="jnlp.noPrefix.--add-opens javafx.graphics/javafx.scene=" value='controlsfx'/>
         <property name="jnlp.noPrefix.--add-opens java.base/java.util=" value='org.apache.commons.lang3'/>
+        <property name="jnlp.noPrefix.--add-opens java.base/java.lang=" value='org.apache.commons.lang3'/>
+        <property name="jnlp.noPrefix.--add-opens java.base/java.time=" value='org.apache.commons.lang3'/>
+        <property name="jnlp.noPrefix.--add-opens java.desktop/java.awt=" value='org.apache.commons.lang3'/>
         <property name="jnlp.noPrefix.--add-opens java.base/java.time.chrono=" value='bw.core'/>
         <property name="--add-modules" value='javafx.controls'/>
         <property name="jnlp.noPrefix.-Djava.library.path="

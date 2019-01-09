@@ -37,7 +37,6 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
-import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.skin.ComboBoxListViewSkin;
@@ -171,7 +170,7 @@ public class GuiUtils implements AppLogger
 			
 			if(options[0].equals(selectedOption) || options[1].equals(selectedOption))
 			{
-				stage.close();
+				stage.hide();
 				LOGGER.info("The main window is closed");
 				
 				Future<?> future = Context.getExecutorService().submit(logoutTask);
@@ -878,42 +877,6 @@ public class GuiUtils implements AppLogger
 			return new OrElse<>(null, false);
 		}
 		else return new OrElse<>(checkBox, true);
-	}
-	
-	public static void autoFitTableViewColumns(TableView<?> tableView)
-	{
-		try
-		{
-			//Class<?> clazz = Class.forName("javafx.scene.control.skin.TableSkinUtils");
-			//Method resizeColumnToFitContentMethod = clazz.getMethod("resizeColumnToFitContent",
-			//                                                        TableViewSkinBase.class,
-			//                                                        TableColumnBase.class, int.class);
-			//resizeColumnToFitContentMethod.setAccessible(true);
-			//ObservableList<? extends TableColumn<?, ?>> columns = tableView.getColumns();
-			//TableColumnHeader header = (TableColumnHeader) tableView.lookup("TableColumnHeader");
-			//System.out.println("header = " + header);
-			//
-			//Method getTableSkinMethod = TableColumnHeader.class.getDeclaredMethod("getTableSkin");
-			//getTableSkinMethod.setAccessible(true);
-			//
-			//TableViewSkinBase<?, ?, ?, ?, ?> skin = (TableViewSkinBase<?, ?, ?, ?, ?>) getTableSkinMethod.invoke(header);
-			//for(TableColumn<?, ?> column : columns)
-			//{
-			//	column.get
-			//	try
-			//	{
-			//		resizeColumnToFitContentMethod.invoke(null, skin, column, -1);
-			//	}
-			//	catch(InvocationTargetException e)
-			//	{
-			//		e.printStackTrace();
-			//	}
-			//}
-		}
-		catch(Throwable t)
-		{
-			t.printStackTrace();
-		}
 	}
 	
 	public static <T> void initSequenceTableColumn(TableColumn<T, T> tableColumn)

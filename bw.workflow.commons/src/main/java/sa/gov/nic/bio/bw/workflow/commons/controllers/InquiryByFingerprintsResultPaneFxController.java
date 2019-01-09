@@ -338,6 +338,7 @@ public class InquiryByFingerprintsResultPaneFxController extends WizardStepFxCon
 		}
 		else
 		{
+			GuiUtils.showNode(btnConfirmPersonInformation, false);
 			GuiUtils.showNode(paneNoHitMessage, true);
 			if(btnRegisterUnknownPerson != null)
 						GuiUtils.showNode(btnRegisterUnknownPerson, hideRegisterUnknownButton == null

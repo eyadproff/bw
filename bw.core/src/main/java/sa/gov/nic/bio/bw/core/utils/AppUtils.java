@@ -20,10 +20,12 @@ import sa.gov.nic.bio.bw.core.interfaces.AppLogger;
 import sa.gov.nic.bio.bw.core.webservice.WebserviceManager;
 
 import javax.imageio.ImageIO;
+import java.awt.Desktop;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
@@ -727,6 +729,18 @@ public final class AppUtils implements AppLogger
 					LOGGER.info("change the server base URL from (" + oldBaseUrl + ") to (" + baseUrl + ")");
 				}
 			});
+		}
+	}
+	
+	public static void openAppFolder()
+	{
+		try
+		{
+			Desktop.getDesktop().open(new File(AppConstants.APP_FOLDER_PATH));
+		}
+		catch(Exception e)
+		{
+			LOGGER.warning("Failed to open the app folder (" + AppConstants.APP_FOLDER_PATH + ")");
 		}
 	}
 }

@@ -11,6 +11,19 @@ VERSION SCHEMA: vYYYY.MM.#SEQ
 
 ---
 
+## v2019.01.3
+
+- NEW: Add Delete-Convicted-Report workflow.
+- NEW: Add Delete-Complete-Criminal-Record workflow.
+- NEW: Add WEBSERVICES-LIST.md.
+- CHN: Change the workflow fingerprintsinquiry to civilcriminalfingerprintsinquiry.
+- NEW: Add shortcut CTRL+SHIFT+ALT+A to open the application folder.
+- CHN: Add new step for submitting convicted reports.
+- CHN: Add requirement warning before sharing convicted information.
+- ENH: Update bio-commons to v2019.01.2.
+
+---
+
 ## v2019.01.2
 
 - ADD: Remove Upload-Image step from Security-Clearance-Face-Verification workflow.

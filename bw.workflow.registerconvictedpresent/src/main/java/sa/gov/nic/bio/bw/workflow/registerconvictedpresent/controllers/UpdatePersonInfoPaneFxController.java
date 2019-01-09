@@ -284,6 +284,7 @@ public class UpdatePersonInfoPaneFxController extends WizardStepFxControllerBase
 				txtDocumentId.setText(documentId);
 				txtDocumentId.setDisable(disable);
 			}
+			else if(this.documentId != null) txtDocumentId.setText(this.documentId);
 			
 			DocumentType documentType = normalizedPersonInfo.getDocumentType();
 			if(documentType != null)

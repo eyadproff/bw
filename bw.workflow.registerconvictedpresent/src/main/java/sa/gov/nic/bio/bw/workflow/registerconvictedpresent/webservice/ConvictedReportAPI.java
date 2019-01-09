@@ -14,4 +14,10 @@ public interface ConvictedReportAPI
 	Call<ConvictedReportResponse> submitConvictedReport(@Header("Workflow-Code") Integer workflowId,
 	                                                    @Header("Workflow-Tcn") Long workflowTcn,
 	                                                    @Field("convicted-report") String convictedReport);
+	
+	@FormUrlEncoded
+	@POST("services-gateway-biooperation/api/gcc/criminal/exchange/v1")
+	Call<Void> exchangeConvictedReport(@Header("Workflow-Code") Integer workflowId,
+	                                   @Header("Workflow-Tcn") Long workflowTcn,
+	                                   @Field("convicted-report") String convictedReport);
 }

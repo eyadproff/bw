@@ -1,4 +1,4 @@
-module bw.workflow.convictedreportinquirybydata
+module bw.workflow.convictedreportinquirybysearchcriteria
 {
 	requires bw.core;
 	requires bw.workflow.registerconvictedpresent;

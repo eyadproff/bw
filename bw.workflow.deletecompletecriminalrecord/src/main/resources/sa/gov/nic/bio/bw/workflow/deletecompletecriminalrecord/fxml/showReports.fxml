@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Pagination?>
+<?import javafx.scene.control.ProgressIndicator?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import sa.gov.nic.bio.bw.workflow.commons.ui.PTableColumn?>
+<BorderPane xmlns="http://javafx.com/javafx/11" xmlns:fx="http://javafx.com/fxml/1"
+            fx:id="rootPane" stylesheets="@../css/style.css"
+            fx:controller="sa.gov.nic.bio.bw.workflow.deletecompletecriminalrecord.controllers.ShowReportsPaneFxController">
+    <fx:define>
+        <ToggleGroup fx:id="toggleGroup1"/>
+        <ToggleGroup fx:id="toggleGroup2"/>
+    </fx:define>
+    <center>
+        <VBox alignment="CENTER">
+            <padding>
+                <Insets top="10.0" bottom="10.0"/>
+            </padding>
+            <TitledPane fx:id="tpSearchResults" text="%label.searchResults" collapsible="false" maxHeight="Infinity" VBox.vgrow="ALWAYS" focusTraversable="false">
+                <VBox>
+                    <Pagination fx:id="pagination" pageCount="1" styleClass="disable-tooltip" VBox.vgrow="ALWAYS" maxHeight="Infinity" minHeight="160.0">
+                        <fx:define>
+                            <VBox fx:id="paneTable">
+                                <TableView fx:id="tvConvictedReports" prefHeight="250.0" maxHeight="Infinity" VBox.vgrow="ALWAYS">
+                                    <placeholder>
+                                        <StackPane>
+                                            <Label fx:id="lblConvictedReportsPlaceHolder" text="%table.placeholder"/>
+                                            <ProgressIndicator fx:id="piConvictedReportsPlaceHolder" maxHeight="25.0" maxWidth="25.0" visible="false"/>
+                                        </StackPane>
+                                    </placeholder>
+                                    <columns>
+                                        <PTableColumn fx:id="tcSequence" text="#" reorderable="false" sortable="false" percentageWidth="0.04"/>
+                                        <PTableColumn fx:id="tcName" text="%table.column.name" reorderable="false" sortable="false" percentageWidth="0.25"/>
+                                        <PTableColumn fx:id="tcPersonId" text="%table.column.personId" reorderable="false" sortable="false" percentageWidth="0.13"/>
+                                        <PTableColumn fx:id="tcDocumentId" text="%table.column.documentId" reorderable="false" sortable="false" percentageWidth="0.13"/>
+                                        <PTableColumn fx:id="tcNationality" text="%table.column.nationality" reorderable="false" sortable="false" percentageWidth="0.18"/>
+                                        <PTableColumn fx:id="tcGender" text="%table.column.gender" reorderable="false" sortable="false" percentageWidth="0.09"/>
+                                        <PTableColumn fx:id="tcRegistrationDate" text="%table.column.registrationDate" reorderable="false" sortable="false" percentageWidth="0.14"/>
+                                    </columns>
+                                </TableView>
+                            </VBox>
+                        </fx:define>
+                    </Pagination>
+                </VBox>
+            </TitledPane>
+        </VBox>
+    </center>
+    <bottom>
+        <HBox alignment="CENTER" spacing="10">
+            <padding>
+                <Insets bottom="10"/>
+            </padding>
+            <ProgressIndicator fx:id="piDeletingCompleteCriminalRecord" prefHeight="25.0" prefWidth="25.0" managed="false" visible="false"/>
+            <Button fx:id="btnStartOver" text="%button.startOver" onAction="#onStartOverButtonClicked"/>
+            <Button fx:id="btnShowSelectedReport" text="%button.showSelectedReport" onAction="#onShowReportButtonClicked"/>
+            <Button fx:id="btnDeleteReport" text="%button.deleteCompleteCriminalRecord" onAction="#onDeleteReportButtonClicked"/>
+        </HBox>
+    </bottom>
+</BorderPane>

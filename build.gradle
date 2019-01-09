@@ -13,7 +13,7 @@ buildscript {
 
 allprojects {
     group = 'sa.gov.nic.bio'
-    version = '2019.01.2'
+    version = '2019.01.3'
 }
 
 subprojects {
@@ -45,7 +45,7 @@ subprojects {
         implementation name: "controlsfx-9.0.0"
 
         // BCL-Utils and Biokit library
-        implementation name: "bio.commons-2018.11.1"
+        implementation name: "bio.commons-2019.01.2"
         implementation name: "bcl-utils-2018.11.1"
         implementation name: "biokit-library-2018.11.1"
 

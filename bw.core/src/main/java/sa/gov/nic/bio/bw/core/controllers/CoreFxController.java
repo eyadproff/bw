@@ -500,6 +500,11 @@ public class CoreFxController extends FxControllerBase implements IdleMonitorReg
 				AppUtils.showScenicView(scene);
 				event.consume();
 			}
+			else if(AppConstants.OPEN_APP_FOLDER_KEY_COMBINATION.match(event))
+			{
+				AppUtils.openAppFolder();
+				event.consume();
+			}
 			else if(AppConstants.CHANGING_SERVER_KEY_COMBINATION.match(event))
 			{
 				AppUtils.showChangeServerDialog();

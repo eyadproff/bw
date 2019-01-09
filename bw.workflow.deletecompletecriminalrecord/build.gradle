@@ -1,0 +1,5 @@
+project.ext.moduleName = 'bw.workflow.deletecompletecriminalrecord'
+
+dependencies {
+    implementation project(':bw.workflow.commons')
+}

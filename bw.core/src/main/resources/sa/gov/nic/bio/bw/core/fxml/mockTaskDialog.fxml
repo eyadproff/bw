@@ -20,7 +20,7 @@
         fx:id="dialog" title="%dialog.mockTask.title"
         fx:controller="sa.gov.nic.bio.bw.core.controllers.MockTaskDialogFxController">
     <dialogPane>
-        <DialogPane prefWidth="600.0" prefHeight="450.0" headerText="%dialog.mockTask.header" stylesheets="@../css/style.css">
+        <DialogPane prefWidth="900.0" prefHeight="450.0" headerText="%dialog.mockTask.header" stylesheets="@../css/style.css">
             <graphic>
                 <ImageView>
                     <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/icon_xo.png"/>

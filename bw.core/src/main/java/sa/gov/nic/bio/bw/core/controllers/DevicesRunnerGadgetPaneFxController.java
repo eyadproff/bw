@@ -236,7 +236,7 @@ public class DevicesRunnerGadgetPaneFxController extends RegionFxControllerBase
 	
 	private void runAndConnectDevicesRunner(CancelCommand cancelCommand, Stage dialogStage)
 	{
-		Task<Void> runTask = new Task<Void>()
+		Task<Void> runTask = new Task<>()
 		{
 			@Override
 			protected Void call() throws Exception
