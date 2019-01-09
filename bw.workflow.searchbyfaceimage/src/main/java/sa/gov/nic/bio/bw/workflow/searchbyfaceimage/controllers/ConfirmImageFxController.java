@@ -29,7 +29,7 @@ public class ConfirmImageFxController extends WizardStepFxControllerBase
 	@FXML private ImageView ivFinalImage;
 	@FXML private Label lblPersonId;
 	@FXML private Button btnPrevious;
-	@FXML private Button btnSearch;
+	@FXML private Button btnConfirmImage;
 	
 	@Override
 	protected void onAttachedToScene()
@@ -72,7 +72,7 @@ public class ConfirmImageFxController extends WizardStepFxControllerBase
 			String errorCode = SearchByFaceImageErrorCodes.C005_00001.getCode();
 			String[] errorDetails = {"Failed to convert image to Base64-encoded representation!"};
 			Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails);
-			btnSearch.setDisable(true);
+			btnConfirmImage.setDisable(true);
 		}
 		
 		Platform.runLater(() ->

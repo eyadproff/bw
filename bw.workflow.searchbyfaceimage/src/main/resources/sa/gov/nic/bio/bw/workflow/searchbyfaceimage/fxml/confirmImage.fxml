@@ -34,7 +34,7 @@
                 <Insets bottom="10"/>
             </padding>
             <Button fx:id="btnPrevious" text="%button.previous" onAction="#onPreviousButtonClicked"/>
-            <Button fx:id="btnSearch" text="%button.searchByImage" onAction="#onNextButtonClicked"/>
+            <Button fx:id="btnConfirmImage" text="%button.confirmImage" onAction="#onNextButtonClicked"/>
         </HBox>
     </bottom>
 </BorderPane>
