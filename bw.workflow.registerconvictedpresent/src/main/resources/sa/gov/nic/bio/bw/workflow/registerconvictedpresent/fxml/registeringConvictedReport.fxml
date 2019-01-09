@@ -58,6 +58,16 @@
                         </ImageView>
                     </StackPane>
                     <Label fx:id="lblSubmittingConvictedReport" text="%label.submittingConvictedReport" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+                    <StackPane fx:id="paneExchangingConvictedReportStatus" managed="false" visible="false" GridPane.columnIndex="0" GridPane.rowIndex="4">
+                        <ProgressIndicator fx:id="piExchangingConvictedReport" maxWidth="20.0" maxHeight="20.0" visible="false"/>
+                        <ImageView fx:id="ivExchangingConvictedReportSuccess" visible="false">
+                            <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/icon_success_16px.png"/>
+                        </ImageView>
+                        <ImageView fx:id="ivExchangingConvictedReportFailure" visible="false">
+                            <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/icon_error_16px.png"/>
+                        </ImageView>
+                    </StackPane>
+                    <Label fx:id="lblExchangingConvictedReport" text="%label.exchangingConvictedReport" managed="false" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="4"/>
                 </GridPane>
             </HBox>
         </VBox>

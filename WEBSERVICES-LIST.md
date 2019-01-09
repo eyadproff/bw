@@ -67,6 +67,10 @@
         - services-gateway-biooperation/api/fingerprint/inquiry/status/v2
         - services-gateway-demographic/api/criminal/info/{general-file-number}/v2
         - services-gateway-demographic/api/criminal/identity/info/{general-file-number}/v1
+        - services-gateway-biooperation/api/criminal/criminal-id/generation/v1
+        - services-gateway-biooperation/api/criminal/fingers/registration/v1
+        - services-gateway-biooperation/api/criminal/fingers/registration/status/v1
+        - services-gateway-biooperation/api/gcc/criminal/exchange/v1
         - services-gateway-biooperation/api/xafis/report/v1
     
     menu.register.registerConvictedPresent:
@@ -81,6 +85,10 @@
         - services-gateway-biooperation/api/fingerprint/inquiry/status/v2
         - services-gateway-demographic/api/criminal/info/{general-file-number}/v2
         - services-gateway-demographic/api/criminal/identity/info/{general-file-number}/v1
+        - services-gateway-biooperation/api/criminal/criminal-id/generation/v1
+        - services-gateway-biooperation/api/criminal/fingers/registration/v1
+        - services-gateway-biooperation/api/criminal/fingers/registration/status/v1
+        - services-gateway-biooperation/api/gcc/criminal/exchange/v1
         - services-gateway-biooperation/api/xafis/report/v1
     
     menu.securityClearance.faceVerification:

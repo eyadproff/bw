@@ -7,6 +7,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import sa.gov.nic.bio.bw.core.Context;
 import sa.gov.nic.bio.bw.core.controllers.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.core.utils.FxmlFile;
@@ -20,24 +21,30 @@ public class RegisteringConvictedReportPaneFxController extends WizardStepFxCont
 {
 	public enum Request
 	{
-		GENERATING_NEW_CRIMINAL_BIOMETRICS_ID,
-		SUBMITTING_FINGERPRINTS,
-		CHECKING_FINGERPRINTS,
-		SUBMITTING_CONVICTED_REPORT
+		GENERATE_NEW_CRIMINAL_BIOMETRICS_ID,
+		SUBMIT_FINGERPRINTS,
+		CHECK_FINGERPRINTS,
+		SUBMIT_CONVICTED_REPORT,
+		EXCHANGE_CONVICTED_REPORT
 	}
 	
 	@Input private Boolean registerFingerprints;
+	@Input private Boolean exchangeConvictedReport;
 	@Input private Status criminalFingerprintsRegistrationStatus;
 	@Output	private Request request;
+	
+	private boolean disableRetryButtonForever = false;
 	
 	@FXML private Pane paneGeneratingNewCriminalBiometricsIdStatus;
 	@FXML private Pane paneSubmittingFingerprintsStatus;
 	@FXML private Pane paneCheckingFingerprintsStatus;
 	@FXML private Pane paneSubmittingConvictedReportStatus;
+	@FXML private StackPane paneExchangingConvictedReportStatus;
 	@FXML private ProgressIndicator piGeneratingNewCriminalBiometricsId;
 	@FXML private ProgressIndicator piSubmittingFingerprints;
 	@FXML private ProgressIndicator piCheckingFingerprints;
 	@FXML private ProgressIndicator piSubmittingConvictedReport;
+	@FXML private ProgressIndicator piExchangingConvictedReport;
 	@FXML private ImageView ivGeneratingNewCriminalBiometricsIdSuccess;
 	@FXML private ImageView ivGeneratingNewCriminalBiometricsIdFailure;
 	@FXML private ImageView ivSubmittingFingerprintsSuccess;
@@ -46,10 +53,13 @@ public class RegisteringConvictedReportPaneFxController extends WizardStepFxCont
 	@FXML private ImageView ivCheckingFingerprintsFailure;
 	@FXML private ImageView ivSubmittingConvictedReportSuccess;
 	@FXML private ImageView ivSubmittingConvictedReportFailure;
+	@FXML private ImageView ivExchangingConvictedReportSuccess;
+	@FXML private ImageView ivExchangingConvictedReportFailure;
 	@FXML private Label lblGeneratingNewCriminalBiometricsId;
 	@FXML private Label lblSubmittingFingerprints;
 	@FXML private Label lblCheckingFingerprints;
 	@FXML private Label lblSubmittingConvictedReport;
+	@FXML private Label lblExchangingConvictedReport;
 	@FXML private Button btnRetry;
 	@FXML private Button btnStartOver;
 	
@@ -65,12 +75,18 @@ public class RegisteringConvictedReportPaneFxController extends WizardStepFxCont
 			GuiUtils.showNode(paneSubmittingFingerprintsStatus, true);
 			GuiUtils.showNode(paneCheckingFingerprintsStatus, true);
 			piGeneratingNewCriminalBiometricsId.setVisible(true);
-			request = Request.GENERATING_NEW_CRIMINAL_BIOMETRICS_ID;
+			request = Request.GENERATE_NEW_CRIMINAL_BIOMETRICS_ID;
 		}
 		else
 		{
 			piSubmittingConvictedReport.setVisible(true);
-			request = Request.SUBMITTING_CONVICTED_REPORT;
+			request = Request.SUBMIT_CONVICTED_REPORT;
+		}
+		
+		if(exchangeConvictedReport != null && exchangeConvictedReport)
+		{
+			GuiUtils.showNode(lblExchangingConvictedReport, true);
+			GuiUtils.showNode(paneExchangingConvictedReportStatus, true);
 		}
 		
 		continueWorkflow();
@@ -79,14 +95,14 @@ public class RegisteringConvictedReportPaneFxController extends WizardStepFxCont
 	@Override
 	public void onReturnFromWorkflow(boolean successfulResponse)
 	{
-		if(request == Request.GENERATING_NEW_CRIMINAL_BIOMETRICS_ID)
+		if(request == Request.GENERATE_NEW_CRIMINAL_BIOMETRICS_ID)
 		{
 			if(successfulResponse)
 			{
 				piGeneratingNewCriminalBiometricsId.setVisible(false);
 				ivGeneratingNewCriminalBiometricsIdSuccess.setVisible(true);
 				
-				request = Request.SUBMITTING_FINGERPRINTS;
+				request = Request.SUBMIT_FINGERPRINTS;
 				continueWorkflow();
 			}
 			else
@@ -94,17 +110,17 @@ public class RegisteringConvictedReportPaneFxController extends WizardStepFxCont
 				piGeneratingNewCriminalBiometricsId.setVisible(false);
 				ivGeneratingNewCriminalBiometricsIdFailure.setVisible(true);
 				btnStartOver.setVisible(true);
-				btnRetry.setVisible(true);
+				btnRetry.setVisible(!disableRetryButtonForever);
 			}
 		}
-		else if(request == Request.SUBMITTING_FINGERPRINTS)
+		else if(request == Request.SUBMIT_FINGERPRINTS)
 		{
 			if(successfulResponse)
 			{
 				piSubmittingFingerprints.setVisible(false);
 				ivSubmittingFingerprintsSuccess.setVisible(true);
 				
-				request = Request.CHECKING_FINGERPRINTS;
+				request = Request.CHECK_FINGERPRINTS;
 				continueWorkflow();
 			}
 			else
@@ -112,10 +128,10 @@ public class RegisteringConvictedReportPaneFxController extends WizardStepFxCont
 				piSubmittingFingerprints.setVisible(false);
 				ivSubmittingFingerprintsFailure.setVisible(true);
 				btnStartOver.setVisible(true);
-				btnRetry.setVisible(true);
+				btnRetry.setVisible(!disableRetryButtonForever);
 			}
 		}
-		else if(request == Request.CHECKING_FINGERPRINTS)
+		else if(request == Request.CHECK_FINGERPRINTS)
 		{
 			if(successfulResponse)
 			{
@@ -137,7 +153,7 @@ public class RegisteringConvictedReportPaneFxController extends WizardStepFxCont
 					piCheckingFingerprints.setVisible(false);
 					ivCheckingFingerprintsSuccess.setVisible(true);
 					
-					request = Request.SUBMITTING_CONVICTED_REPORT;
+					request = Request.SUBMIT_CONVICTED_REPORT;
 				}
 				
 				continueWorkflow();
@@ -147,49 +163,80 @@ public class RegisteringConvictedReportPaneFxController extends WizardStepFxCont
 				piCheckingFingerprints.setVisible(false);
 				ivCheckingFingerprintsFailure.setVisible(true);
 				btnStartOver.setVisible(true);
-				btnRetry.setVisible(true);
+				btnRetry.setVisible(!disableRetryButtonForever);
 			}
 		}
-		else if(request == Request.SUBMITTING_CONVICTED_REPORT)
+		else if(request == Request.SUBMIT_CONVICTED_REPORT)
 		{
 			if(successfulResponse)
 			{
 				piSubmittingConvictedReport.setVisible(false);
 				ivSubmittingConvictedReportSuccess.setVisible(true);
-				goNext();
+				
+				if(exchangeConvictedReport != null && exchangeConvictedReport) continueWorkflow();
+				else goNext();
 			}
 			else
 			{
 				piSubmittingConvictedReport.setVisible(false);
 				ivSubmittingConvictedReportFailure.setVisible(true);
 				btnStartOver.setVisible(true);
-				btnRetry.setVisible(true);
+				btnRetry.setVisible(!disableRetryButtonForever);
 			}
 		}
+		else if(request == Request.EXCHANGE_CONVICTED_REPORT)
+		{
+			if(successfulResponse)
+			{
+				piExchangingConvictedReport.setVisible(false);
+				ivExchangingConvictedReportSuccess.setVisible(true);
+				goNext();
+			}
+			else
+			{
+				piExchangingConvictedReport.setVisible(false);
+				ivExchangingConvictedReportFailure.setVisible(true);
+				btnStartOver.setVisible(true);
+				btnRetry.setVisible(!disableRetryButtonForever);
+			}
+		}
+	}
+	
+	@Override
+	protected void reportNegativeTaskResponse(String errorCode, Throwable exception, String[] errorDetails)
+	{
+		if("B003-0042".equals(errorCode)) disableRetryButtonForever = true;
+		
+		super.reportNegativeTaskResponse(errorCode, exception, errorDetails);
 	}
 	
 	@FXML
 	private void onRetryButtonClicked(ActionEvent actionEvent)
 	{
-		if(request == Request.GENERATING_NEW_CRIMINAL_BIOMETRICS_ID)
+		if(request == Request.GENERATE_NEW_CRIMINAL_BIOMETRICS_ID)
 		{
 			ivGeneratingNewCriminalBiometricsIdFailure.setVisible(false);
 			piGeneratingNewCriminalBiometricsId.setVisible(true);
 		}
-		else if(request == Request.SUBMITTING_FINGERPRINTS)
+		else if(request == Request.SUBMIT_FINGERPRINTS)
 		{
 			ivSubmittingFingerprintsFailure.setVisible(false);
 			piSubmittingFingerprints.setVisible(true);
 		}
-		else if(request == Request.CHECKING_FINGERPRINTS)
+		else if(request == Request.CHECK_FINGERPRINTS)
 		{
 			ivCheckingFingerprintsFailure.setVisible(false);
 			piCheckingFingerprints.setVisible(true);
 		}
-		else if(request == Request.SUBMITTING_CONVICTED_REPORT)
+		else if(request == Request.SUBMIT_CONVICTED_REPORT)
 		{
 			ivSubmittingConvictedReportFailure.setVisible(false);
 			piSubmittingConvictedReport.setVisible(true);
+		}
+		else if(request == Request.EXCHANGE_CONVICTED_REPORT)
+		{
+			ivExchangingConvictedReportFailure.setVisible(false);
+			piExchangingConvictedReport.setVisible(true);
 		}
 		
 		btnStartOver.setVisible(false);
