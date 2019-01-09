@@ -380,7 +380,7 @@ public class RegisterConvictedReportNotPresentWorkflow extends WizardWorkflowBas
 				         "firstName", "familyName" , "gender", "nationality", "birthDate",
 				         "documentId", "documentType", "documentIssuanceDate", "documentExpiryDate");
 				passData(JudgmentDetailsPaneFxController.class, ShareInformationPaneFxController.class,
-				         "crimes");
+				         "crimes", "judgmentDate");
 				renderUiAndWaitForUserInput(ShareInformationPaneFxController.class);
 				break;
 			}

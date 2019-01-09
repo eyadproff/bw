@@ -48,6 +48,7 @@ public class ShareInformationPaneFxController extends WizardStepFxControllerBase
 	@Input private DocumentType documentType;
 	@Input private LocalDate documentIssuanceDate;
 	@Input private LocalDate documentExpiryDate;
+	@Input private LocalDate judgmentDate;
 	@Input(alwaysRequired = true) private List<CrimeCode> crimes;
 	@Output private List<CrimeCode> crimesWithShares;
 	
@@ -126,8 +127,9 @@ public class ShareInformationPaneFxController extends WizardStepFxControllerBase
 		if(documentId == null) missingFields.add(resources.getString("label.documentId.plain"));
 		if(documentType == null) missingFields.add(resources.getString("label.documentType.plain"));
 		if(documentIssuanceDate == null) missingFields.add(
-				resources.getString("label.documentIssuanceDate.plain"));
+														resources.getString("label.documentIssuanceDate.plain"));
 		if(documentExpiryDate == null) missingFields.add(resources.getString("label.documentExpiryDate.plain"));
+		if(judgmentDate == null) missingFields.add(resources.getString("label.judgmentDate.plain"));
 		
 		boolean disableSharing = !missingFields.isEmpty();
 		

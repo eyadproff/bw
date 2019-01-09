@@ -19,7 +19,7 @@
             <HBox alignment="CENTER">
                 <GridPane vgap="5.0" hgap="5.0">
                     <StackPane fx:id="paneGeneratingNewCriminalBiometricsIdStatus" managed="false" visible="false" GridPane.columnIndex="0" GridPane.rowIndex="0">
-                        <ProgressIndicator fx:id="piGeneratingNewCriminalBiometricsId" maxWidth="20.0" maxHeight="20.0" visible="false"/>
+                        <ProgressIndicator fx:id="piGeneratingNewCriminalBiometricsId" maxWidth="22.0" maxHeight="22.0" visible="false"/>
                         <ImageView fx:id="ivGeneratingNewCriminalBiometricsIdSuccess" visible="false">
                             <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/icon_success_16px.png"/>
                         </ImageView>
@@ -29,7 +29,7 @@
                     </StackPane>
                     <Label fx:id="lblGeneratingNewCriminalBiometricsId" text="%label.generatingNewCriminalBiometricsId" managed="false" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
                     <StackPane fx:id="paneSubmittingFingerprintsStatus" managed="false" visible="false" GridPane.columnIndex="0" GridPane.rowIndex="1">
-                        <ProgressIndicator fx:id="piSubmittingFingerprints" visible="false" maxWidth="20.0" maxHeight="20.0"/>
+                        <ProgressIndicator fx:id="piSubmittingFingerprints" visible="false" maxWidth="22.0" maxHeight="22.0"/>
                         <ImageView fx:id="ivSubmittingFingerprintsSuccess" visible="false">
                             <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/icon_success_16px.png"/>
                         </ImageView>
@@ -39,7 +39,7 @@
                     </StackPane>
                     <Label fx:id="lblSubmittingFingerprints" text="%label.submittingFingerprints" managed="false" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
                     <StackPane fx:id="paneCheckingFingerprintsStatus" managed="false" visible="false" GridPane.columnIndex="0" GridPane.rowIndex="2">
-                        <ProgressIndicator fx:id="piCheckingFingerprints" maxWidth="20.0" maxHeight="20.0" visible="false"/>
+                        <ProgressIndicator fx:id="piCheckingFingerprints" maxWidth="22.0" maxHeight="22.0" visible="false"/>
                         <ImageView fx:id="ivCheckingFingerprintsSuccess" visible="false">
                             <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/icon_success_16px.png"/>
                         </ImageView>
@@ -49,7 +49,7 @@
                     </StackPane>
                     <Label fx:id="lblCheckingFingerprints" text="%label.checkingFingerprints" managed="false" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
                     <StackPane fx:id="paneSubmittingConvictedReportStatus" GridPane.columnIndex="0" GridPane.rowIndex="3">
-                        <ProgressIndicator fx:id="piSubmittingConvictedReport" maxWidth="20.0" maxHeight="20.0" visible="false"/>
+                        <ProgressIndicator fx:id="piSubmittingConvictedReport" maxWidth="22.0" maxHeight="22.0" visible="false"/>
                         <ImageView fx:id="ivSubmittingConvictedReportSuccess" visible="false">
                             <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/icon_success_16px.png"/>
                         </ImageView>
@@ -59,7 +59,7 @@
                     </StackPane>
                     <Label fx:id="lblSubmittingConvictedReport" text="%label.submittingConvictedReport" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
                     <StackPane fx:id="paneExchangingConvictedReportStatus" managed="false" visible="false" GridPane.columnIndex="0" GridPane.rowIndex="4">
-                        <ProgressIndicator fx:id="piExchangingConvictedReport" maxWidth="20.0" maxHeight="20.0" visible="false"/>
+                        <ProgressIndicator fx:id="piExchangingConvictedReport" maxWidth="22.0" maxHeight="22.0" visible="false"/>
                         <ImageView fx:id="ivExchangingConvictedReportSuccess" visible="false">
                             <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/icon_success_16px.png"/>
                         </ImageView>
