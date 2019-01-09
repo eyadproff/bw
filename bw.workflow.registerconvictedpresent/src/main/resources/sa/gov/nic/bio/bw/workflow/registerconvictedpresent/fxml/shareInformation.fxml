@@ -34,11 +34,11 @@
                                         <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/icon_warning_32px.png"/>
                                     </ImageView>
                                 </VBox>
-                                <VBox fx:id="paneRequirements" managed="false" visible="false">
+                                <VBox fx:id="paneRequirements" alignment="CENTER" managed="false" visible="false">
                                     <Label text="%label.requirementsMessage" styleClass="bold-label"/>
                                     <Label fx:id="lblRequirements"/>
                                 </VBox>
-                                <VBox fx:id="paneNotIsoNationality" managed="false" visible="false">
+                                <VBox fx:id="paneNotIsoNationality" alignment="CENTER" managed="false" visible="false">
                                     <Label fx:id="lblNotIsoNationality" styleClass="bold-label"/>
                                 </VBox>
                             </VBox>
