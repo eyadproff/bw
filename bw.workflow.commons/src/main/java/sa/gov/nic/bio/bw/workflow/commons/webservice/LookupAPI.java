@@ -22,7 +22,7 @@ public interface LookupAPI
 	@GET("services-gateway-lookups/api/application/nationality/all/v1")
 	Call<List<Country>> lookupCountries();
 	
-	@GET("services-gateway-lookups/api/application/crime-type/v1")
+	@GET("services-gateway-lookups/api/application/crime-types/v1")
 	Call<List<CrimeType>> lookupCrimeTypes();
 	
 	@GET("services-gateway-lookups/api/bio-exchange/parties/v1")

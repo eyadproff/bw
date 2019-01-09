@@ -173,7 +173,11 @@ public class RegisteringConvictedReportPaneFxController extends WizardStepFxCont
 				piSubmittingConvictedReport.setVisible(false);
 				ivSubmittingConvictedReportSuccess.setVisible(true);
 				
-				if(exchangeConvictedReport != null && exchangeConvictedReport) continueWorkflow();
+				if(exchangeConvictedReport != null && exchangeConvictedReport)
+				{
+					request = Request.EXCHANGE_CONVICTED_REPORT;
+					continueWorkflow();
+				}
 				else goNext();
 			}
 			else

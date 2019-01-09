@@ -95,29 +95,6 @@ public class ShareInformationPaneFxController extends WizardStepFxControllerBase
 	@Override
 	protected void onAttachedToScene()
 	{
-		List<String> missingFields = new ArrayList<>();
-		if(firstName == null) missingFields.add(resources.getString("label.firstName.plain"));
-		if(familyName == null) missingFields.add(resources.getString("label.familyName.plain"));
-		if(gender == null) missingFields.add(resources.getString("label.gender.plain"));
-		if(nationality == null) missingFields.add(resources.getString("label.nationality.plain"));
-		if(birthDate == null) missingFields.add(resources.getString("label.birthDate.plain"));
-		if(documentId == null) missingFields.add(resources.getString("label.documentId.plain"));
-		if(documentType == null) missingFields.add(resources.getString("label.documentType.plain"));
-		if(documentIssuanceDate == null) missingFields.add(
-														resources.getString("label.documentIssuanceDate.plain"));
-		if(documentExpiryDate == null) missingFields.add(resources.getString("label.documentExpiryDate.plain"));
-		
-		boolean disableSharing = !missingFields.isEmpty();
-		
-		if(disableSharing)
-		{
-			boolean arabic = Context.getGuiLanguage() == GuiLanguage.ARABIC;
-			String requirements = missingFields.stream().collect(Collectors.joining(arabic ? "، " : ", "));
-			
-			GuiUtils.showNode(tpRequirements, true);
-			lblRequirements.setText(requirements);
-		}
-		
 		List<CrimeCode> crimesToAddSystemDecisions;
 		
 		if(crimesWithShares != null)
@@ -140,6 +117,49 @@ public class ShareInformationPaneFxController extends WizardStepFxControllerBase
 			crimesToAddSystemDecisions = crimesWithShares;
 		}
 		
+		List<String> missingFields = new ArrayList<>();
+		if(firstName == null) missingFields.add(resources.getString("label.firstName.plain"));
+		if(familyName == null) missingFields.add(resources.getString("label.familyName.plain"));
+		if(gender == null) missingFields.add(resources.getString("label.gender.plain"));
+		if(nationality == null) missingFields.add(resources.getString("label.nationality.plain"));
+		if(birthDate == null) missingFields.add(resources.getString("label.birthDate.plain"));
+		if(documentId == null) missingFields.add(resources.getString("label.documentId.plain"));
+		if(documentType == null) missingFields.add(resources.getString("label.documentType.plain"));
+		if(documentIssuanceDate == null) missingFields.add(
+				resources.getString("label.documentIssuanceDate.plain"));
+		if(documentExpiryDate == null) missingFields.add(resources.getString("label.documentExpiryDate.plain"));
+		
+		boolean disableSharing = !missingFields.isEmpty();
+		
+		if(disableSharing)
+		{
+			boolean arabic = Context.getGuiLanguage() == GuiLanguage.ARABIC;
+			String requirements = missingFields.stream().collect(Collectors.joining(arabic ? "، " : ", "));
+			
+			GuiUtils.showNode(tpRequirements, true);
+			lblRequirements.setText(requirements);
+			
+			// make all decision false, because of missing fields
+			for(CrimeCode crimesWithShare : crimesWithShares)
+			{
+				if(crimesWithShare != null)
+				{
+					List<BiometricsExchangeDecision> criminalBioExchange = crimesWithShare.getCriminalBioExchange();
+					if(criminalBioExchange != null)
+					{
+						for(BiometricsExchangeDecision biometricsExchangeDecision : criminalBioExchange)
+						{
+							if(biometricsExchangeDecision != null)
+							{
+								biometricsExchangeDecision.setSystemDecision(false);
+								biometricsExchangeDecision.setOperatorDecision(false);
+							}
+						}
+					}
+				}
+			}
+		}
+		
 		@SuppressWarnings("unchecked")
 		List<BiometricsExchangeParty> biometricsExchangeParties =
 				(List<BiometricsExchangeParty>) Context.getUserSession().getAttribute(
@@ -152,20 +172,25 @@ public class ShareInformationPaneFxController extends WizardStepFxControllerBase
 		
 		for(CrimeCode crimeCode : crimesToAddSystemDecisions)
 		{
+			List<BiometricsExchangeDecision> criminalBioExchange = crimeCode.getCriminalBioExchange();
+			if(criminalBioExchange == null)
+			{
+				criminalBioExchange = new ArrayList<>();
+				crimeCode.setCriminalBioExchange(criminalBioExchange);
+			}
+			
 			for(BiometricsExchangeParty biometricsExchangeParty : biometricsExchangeParties)
 			{
 				Integer partyCode = biometricsExchangeParty.getOrgPartyCode();
 				
-				List<BiometricsExchangeDecision> criminalBioExchange = crimeCode.getCriminalBioExchange();
-				if(criminalBioExchange == null)
-				{
-					criminalBioExchange = new ArrayList<>();
-					crimeCode.setCriminalBioExchange(criminalBioExchange);
-				}
-				
-				boolean systemDecision = getSystemDecision(biometricsExchangeCrimeTypes, partyCode, crimeCode);
-				criminalBioExchange.add(new BiometricsExchangeDecision(partyCode, systemDecision,
-			                                                       !disableSharing && systemDecision));
+				BiometricsExchangeCrimeType biometricsExchangeCrimeType =
+								getBiometricsExchangeCrimeType(biometricsExchangeCrimeTypes, partyCode, crimeCode);
+				boolean systemDecision = biometricsExchangeCrimeType != null;
+				criminalBioExchange.add(new BiometricsExchangeDecision(partyCode,
+	                                                       !disableSharing && systemDecision,
+			                                               !disableSharing && systemDecision,
+                                                           biometricsExchangeCrimeType != null ?
+	                                                       biometricsExchangeCrimeType.getOrgPartyCrimeCode() : null));
 			}
 		}
 		
@@ -226,23 +251,24 @@ public class ShareInformationPaneFxController extends WizardStepFxControllerBase
 			   crime1.getCrimeClass() == crime2.getCrimeClass();
 	}
 	
-	private static boolean getSystemDecision(List<BiometricsExchangeCrimeType> biometricsExchangeCrimeTypes,
+	private static BiometricsExchangeCrimeType getBiometricsExchangeCrimeType(
+											 List<BiometricsExchangeCrimeType> biometricsExchangeCrimeTypes,
 	                                         Integer partyCode, CrimeCode crime)
 	{
 		for(BiometricsExchangeCrimeType biometricsExchangeCrimeType : biometricsExchangeCrimeTypes)
 		{
 			if(biometricsExchangeCrimeType == null ||
-				!biometricsExchangeCrimeType.getOrgPartyCode().equals(partyCode))
+					!biometricsExchangeCrimeType.getOrgPartyCode().equals(partyCode))
 			{
 				continue;
 			}
 			
 			CrimeCode crimeCode = new CrimeCode(biometricsExchangeCrimeType.getCrimeEventCode(),
 			                                    biometricsExchangeCrimeType.getCrimeClassCode());
-			if(equalCrimes(crimeCode, crime)) return true;
+			if(equalCrimes(crimeCode, crime)) return biometricsExchangeCrimeType;
 		}
 		
-		return false;
+		return null;
 	}
 	
 	private static void fillData(TitledPane tpCrimeClassification, Label lblCrimeClassification,
@@ -283,10 +309,10 @@ public class ShareInformationPaneFxController extends WizardStepFxControllerBase
 		{
 		    BiometricsExchangeDecision biometricsExchangeDecision = param.getValue();
 		    CheckBox checkBox = new CheckBox();
-		    if(disableSharing) checkBox.setDisable(true);
+		    if(disableSharing || !biometricsExchangeDecision.getSystemDecision()) checkBox.setDisable(true);
 		    else
 		    {
-			    checkBox.setSelected(biometricsExchangeDecision.getOperatorDecision());
+			    checkBox.setSelected(true);
 			    checkBox.selectedProperty().addListener((observable, oldValue, newValue) ->
 				                                            biometricsExchangeDecision.setOperatorDecision(newValue));
 		    }
