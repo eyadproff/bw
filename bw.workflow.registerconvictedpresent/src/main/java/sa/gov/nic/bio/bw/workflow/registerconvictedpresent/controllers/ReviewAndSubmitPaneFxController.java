@@ -295,8 +295,8 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 			UserInfo userInfo = (UserInfo) Context.getUserSession().getAttribute("userInfo");
 			
 			convictedReport = new ConvictedReport(0L, 0L, criminalBiometricsId, name,
-			                                      nationality.getCode(), occupation,
-			                                      gender.name().substring(0, 1), // "M" or "F"
+			                                      nationality.getCode(), nationality.getMofaNationalityCode(),
+			                                      occupation, gender.name().substring(0, 1), // "M" or "F"
 			                                      birthDate == null ? null :
 					                                      AppUtils.gregorianDateToSeconds(birthDate), birthPlace,
 			                                      personId, personType == null ? null : personType.getCode(),

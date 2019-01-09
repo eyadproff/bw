@@ -36,6 +36,7 @@
                                     <Label text="%label.requirementsMessage" styleClass="bold-label"/>
                                 </VBox>
                                 <Label fx:id="lblRequirements"/>
+                                <Label fx:id="lblNotIsoNationality"/>
                             </VBox>
                         </TitledPane>
                         <TitledPane fx:id="tpCrimeClassification1" focusTraversable="false" collapsible="false" maxHeight="Infinity" VBox.vgrow="ALWAYS">

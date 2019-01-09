@@ -13,6 +13,7 @@ public class ConvictedReport extends JavaBean
 	private Long generalFileNumber;
 	private Name subjtName;
 	private Integer subjNationalityCode;
+	private String subjNationalityIsoCode;
 	private String subjOccupation;
 	private String subjGender; //'M' or 'F'
 	private Long subjBirthDate;
@@ -34,17 +35,18 @@ public class ConvictedReport extends JavaBean
 	public ConvictedReport(){}
 	
 	public ConvictedReport(Long reportNumber, Long reportDate, Long generalFileNumber, Name subjtName,
-	                       Integer subjNationalityCode, String subjOccupation, String subjGender,
-	                       Long subjBirthDate, String subjBirthPlace, Long subjSamisId, Integer subjSamisType,
-	                       Long subjBioId, String subjDocId, Integer subjDocType, Long subjDocIssDate,
-	                       Long subjDocExpDate, JudgementInfo subjJudgementInfo, List<Finger> subjFingers,
-	                       List<Integer> subjMissingFingers, String subjFace, String operatorId,
-	                       List<CrimeCode> crimeCodes)
+	                       Integer subjNationalityCode, String subjNationalityIsoCode, String subjOccupation,
+	                       String subjGender, Long subjBirthDate, String subjBirthPlace, Long subjSamisId,
+	                       Integer subjSamisType, Long subjBioId, String subjDocId, Integer subjDocType,
+	                       Long subjDocIssDate, Long subjDocExpDate, JudgementInfo subjJudgementInfo,
+	                       List<Finger> subjFingers, List<Integer> subjMissingFingers, String subjFace,
+	                       String operatorId, List<CrimeCode> crimeCodes)
 	{
 		this.reportNumber = reportNumber;
 		this.reportDate = reportDate;
 		this.generalFileNumber = generalFileNumber;
 		this.subjtName = subjtName;
+		this.subjNationalityIsoCode = subjNationalityIsoCode;
 		this.subjNationalityCode = subjNationalityCode;
 		this.subjOccupation = subjOccupation;
 		this.subjGender = subjGender;
@@ -82,6 +84,10 @@ public class ConvictedReport extends JavaBean
 	
 	public Integer getSubjNationalityCode(){return subjNationalityCode;}
 	public void setSubjNationalityCode(Integer subjNationalityCode){this.subjNationalityCode = subjNationalityCode;}
+	
+	public String getSubjNationalityIsoCode(){return subjNationalityIsoCode;}
+	public void setSubjNationalityIsoCode(String subjNationalityIsoCode)
+																{this.subjNationalityIsoCode = subjNationalityIsoCode;}
 	
 	public String getSubjOccupation(){return subjOccupation;}
 	public void setSubjOccupation(String subjOccupation){this.subjOccupation = subjOccupation;}

@@ -59,6 +59,7 @@ public class ShareInformationPaneFxController extends WizardStepFxControllerBase
 	@FXML private TitledPane tpCrimeClassification4;
 	@FXML private TitledPane tpCrimeClassification5;
 	@FXML private Label lblRequirements;
+	@FXML private Label lblNotIsoNationality;
 	@FXML private Label lblCrimeClassification1;
 	@FXML private Label lblCrimeClassification2;
 	@FXML private Label lblCrimeClassification3;
@@ -131,15 +132,29 @@ public class ShareInformationPaneFxController extends WizardStepFxControllerBase
 		if(documentExpiryDate == null) missingFields.add(resources.getString("label.documentExpiryDate.plain"));
 		if(judgmentDate == null) missingFields.add(resources.getString("label.judgmentDate.plain"));
 		
-		boolean disableSharing = !missingFields.isEmpty();
+		boolean isoNationality = nationality != null && nationality.getMofaNationalityCode() != null &&
+								 nationality.getMofaNationalityCode().length() == 3;
+		
+		boolean disableSharing = !missingFields.isEmpty() || !isoNationality;
 		
 		if(disableSharing)
 		{
 			boolean arabic = Context.getGuiLanguage() == GuiLanguage.ARABIC;
-			String requirements = missingFields.stream().collect(Collectors.joining(arabic ? "، " : ", "));
 			
-			GuiUtils.showNode(tpRequirements, true);
-			lblRequirements.setText(requirements);
+			if(!missingFields.isEmpty())
+			{
+				String requirements = missingFields.stream().collect(Collectors.joining(arabic ? "، " : ", "));
+				
+				GuiUtils.showNode(tpRequirements, true);
+				lblRequirements.setText(requirements);
+			}
+			
+			if(!isoNationality)
+			{
+				GuiUtils.showNode(lblNotIsoNationality, true);
+				lblNotIsoNationality.setText(String.format(resources.getString("label.notIsoNationality"),
+                                                arabic ? nationality.getArabicText() : nationality.getEnglishText()));
+			}
 			
 			// make all decision false, because of missing fields
 			for(CrimeCode crimesWithShare : crimesWithShares)
