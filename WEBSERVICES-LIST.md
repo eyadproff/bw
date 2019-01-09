@@ -29,7 +29,7 @@
         - services-gateway-lookups/api/application/nationality/all/v1
         - services-gateway-biooperation/api/face/verify/v1
     
-    menu.query.fingerprintsInquiry:
+    menu.query.civilcriminalfingerprintsinquiry:
         - services-gateway-lookups/api/application/person-type/v1
         - services-gateway-lookups/api/application/id-types/v1
         - services-gateway-lookups/api/application/nationality/all/v1
@@ -82,6 +82,10 @@
         - services-gateway-demographic/api/criminal/info/{general-file-number}/v2
         - services-gateway-demographic/api/criminal/identity/info/{general-file-number}/v1
         - services-gateway-biooperation/api/xafis/report/v1
+    
+    menu.securityClearance.faceVerification:
+        - services-gateway-lookups/api/application/nationality/all/v1
+        - services-gateway-biooperation/api/face/verify/wanted/v1
     
     menu.query.searchByFaceImage:
         - services-gateway-biooperation/api/face/search/v1
