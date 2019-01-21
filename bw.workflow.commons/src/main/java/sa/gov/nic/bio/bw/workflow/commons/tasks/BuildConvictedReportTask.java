@@ -63,7 +63,8 @@ public class BuildConvictedReportTask extends Task<JasperPrint>
 	private static final String PARAMETER_JUDGMENT_ISSUER = "JUDGMENT_ISSUER";
 	private static final String PARAMETER_JUDGMENT_DATE = "JUDGMENT_DATE";
 	private static final String PARAMETER_JUDGMENT_NUMBER = "JUDGMENT_NUMBER";
-	private static final String PARAMETER_OPERATOR_ID = "OPERATOR_ID";
+	private static final String REGISTRANT_OPERATOR_ID = "REGISTRANT_OPERATOR_ID";
+	private static final String INQUIRER_OPERATOR_ID = "INQUIRER_OPERATOR_ID";
 	private static final String PARAMETER_JAIL_YEARS = "JAIL_YEARS";
 	private static final String PARAMETER_JAIL_MONTHS = "JAIL_MONTHS";
 	private static final String PARAMETER_JAIL_DAYS = "JAIL_DAYS";
@@ -275,8 +276,9 @@ public class BuildConvictedReportTask extends Task<JasperPrint>
 		List<CrimeCode> crimeCodes = convictedReport.getCrimeCodes();
 		for(CrimeCode crimeCode : crimeCodes)
 		{
-			String criminalClass = crimeEventTitles.get(crimeCode.getCrimeEvent()) +
-								   ": " + crimeClassTitles.get(crimeCode.getCrimeClass());
+			//String criminalClass = crimeEventTitles.get(crimeCode.getCrimeEvent()) +
+			//					   ": " + crimeClassTitles.get(crimeCode.getCrimeClass());
+			String criminalClass = crimeClassTitles.get(crimeCode.getCrimeClass()); // as requested
 			
 			switch(counter++)
 			{
@@ -316,9 +318,12 @@ public class BuildConvictedReportTask extends Task<JasperPrint>
 		params.put(PARAMETER_JUDGMENT_NUMBER,
 		           AppUtils.localizeNumbers(judgementInfo.getJudgNum(), Locales.SAUDI_AR_LOCALE,
 		                                    true));
+		params.put(REGISTRANT_OPERATOR_ID,
+		           AppUtils.localizeNumbers(String.valueOf(convictedReport.getOperatorId()), Locales.SAUDI_AR_LOCALE,
+		                                    true));
 		
 		UserInfo userInfo = (UserInfo) Context.getUserSession().getAttribute("userInfo");
-		params.put(PARAMETER_OPERATOR_ID,
+		params.put(INQUIRER_OPERATOR_ID,
 		           AppUtils.localizeNumbers(String.valueOf(userInfo.getOperatorId()), Locales.SAUDI_AR_LOCALE,
 		                                    true));
 		

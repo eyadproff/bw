@@ -142,6 +142,8 @@ public class MenuPaneFxController extends RegionFxControllerBase
 		// move the arrow position to the other side
 		for(TitledPane pane : accordion.getPanes())
 		{
+			pane.setWrapText(false);
+			
 			Pane arrow = (Pane) pane.lookup(".arrow");
 			Text labeledText = (Text) pane.lookup(".title > .text");
 			Glyph glyphFont = (Glyph) pane.lookup(".glyph-font");
