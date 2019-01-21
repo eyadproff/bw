@@ -14,6 +14,8 @@ VERSION SCHEMA: vYYYY.MM.#SEQ
 ## v2019.01.4
 
 - CHN: Add REGISTRANT_OPERATOR_ID and INQUIRER_OPERATOR_ID to the convicted report.
+- CHN: Remove CrimeEvent from the convicted report.
+- NEW: Add "Clear fields" button in Convicted-Report-Inquiry-By-Search-Criteria workflow.
 
 ---
 

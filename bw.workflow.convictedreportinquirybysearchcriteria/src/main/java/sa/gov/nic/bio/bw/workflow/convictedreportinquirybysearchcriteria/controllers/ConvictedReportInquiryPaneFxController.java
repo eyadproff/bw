@@ -109,6 +109,7 @@ public class ConvictedReportInquiryPaneFxController extends BodyFxControllerBase
 	@FXML private Label lblConvictedReportsPlaceHolder;
 	@FXML private ProgressIndicator piConvictedReportsPlaceHolder;
 	@FXML private Button btnInquiry;
+	@FXML private Button btnClearFields;
 	@FXML private Button btnShowReport;
 	
 	private Node paginationControlBox;
@@ -397,6 +398,23 @@ public class ConvictedReportInquiryPaneFxController extends BodyFxControllerBase
 		
 		newQuery = true;
 		continueWorkflow();
+	}
+	
+	@FXML
+	private void onClearFieldsButtonClicked(ActionEvent actionEvent)
+	{
+		txtCriminalBiometricsId.clear();
+		txtReportNumber.clear();
+		txtPersonId.clear();
+		txtDocumentId.clear();
+		txtFirstName.clear();
+		txtFatherName.clear();
+		txtGrandfatherName.clear();
+		txtFamilyName.clear();
+		txtJudgmentNumber.clear();
+		txtPrisonerNumber.clear();
+		dpJudgmentDateFrom.setValue(null);
+		dpJudgmentDateTo.setValue(null);
 	}
 	
 	@FXML

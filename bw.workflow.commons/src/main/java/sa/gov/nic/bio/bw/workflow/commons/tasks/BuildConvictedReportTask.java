@@ -276,8 +276,9 @@ public class BuildConvictedReportTask extends Task<JasperPrint>
 		List<CrimeCode> crimeCodes = convictedReport.getCrimeCodes();
 		for(CrimeCode crimeCode : crimeCodes)
 		{
-			String criminalClass = crimeEventTitles.get(crimeCode.getCrimeEvent()) +
-								   ": " + crimeClassTitles.get(crimeCode.getCrimeClass());
+			//String criminalClass = crimeEventTitles.get(crimeCode.getCrimeEvent()) +
+			//					   ": " + crimeClassTitles.get(crimeCode.getCrimeClass());
+			String criminalClass = crimeClassTitles.get(crimeCode.getCrimeClass()); // as requested
 			
 			switch(counter++)
 			{
