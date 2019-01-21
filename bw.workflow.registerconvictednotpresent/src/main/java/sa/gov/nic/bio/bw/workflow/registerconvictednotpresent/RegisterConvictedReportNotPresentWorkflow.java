@@ -74,7 +74,6 @@ import java.util.stream.Collectors;
 		@Step(iconId = "\\uf256", title = "wizard.showFingerprintsView"),
 		@Step(iconId = "search", title = "wizard.inquiryByFingerprints"),
 		@Step(iconId = "database", title = "wizard.showInquiryResult"),
-		@Step(iconId = "camera", title = "wizard.updatePersonPhoto"),
 		@Step(iconId = "user", title = "wizard.updatePersonInformation"),
 		@Step(iconId = "gavel", title = "wizard.addJudgementDetails"),
 		@Step(iconId = "university", title = "wizard.addPunishmentDetails"),
