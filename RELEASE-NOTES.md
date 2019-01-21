@@ -18,6 +18,7 @@ VERSION SCHEMA: vYYYY.MM.#SEQ
 - NEW: Add "Clear fields" button in Convicted-Report-Inquiry-By-Search-Criteria workflow.
 - NEW: Add "Clear fields" button in Convicted-Report-Inquiry-By-Search-Criteria workflow.
 - ENH: Upgrade gradle to 5.1.1.
+- FIX: Disable wrapping top menu titles.
 
 ---
 
