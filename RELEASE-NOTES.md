@@ -16,6 +16,8 @@ VERSION SCHEMA: vYYYY.MM.#SEQ
 - CHN: Add REGISTRANT_OPERATOR_ID and INQUIRER_OPERATOR_ID to the convicted report.
 - CHN: Remove CrimeEvent from the convicted report.
 - NEW: Add "Clear fields" button in Convicted-Report-Inquiry-By-Search-Criteria workflow.
+- NEW: Add "Clear fields" button in Convicted-Report-Inquiry-By-Search-Criteria workflow.
+- ENH: Upgrade gradle to 5.1.1.
 
 ---
 
