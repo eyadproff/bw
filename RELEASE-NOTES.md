@@ -11,6 +11,12 @@ VERSION SCHEMA: vYYYY.MM.#SEQ
 
 ---
 
+## v2019.01.4
+
+- CHN: Add REGISTRANT_OPERATOR_ID and INQUIRER_OPERATOR_ID to the convicted report.
+
+---
+
 ## v2019.01.3
 
 - NEW: Add Delete-Convicted-Report workflow.

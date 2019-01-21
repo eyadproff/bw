@@ -47,7 +47,6 @@
 	<parameter name="JUDGMENT_ISSUER" class="java.lang.String"/>
 	<parameter name="JUDGMENT_DATE" class="java.lang.String"/>
 	<parameter name="JUDGMENT_NUMBER" class="java.lang.String"/>
-	<parameter name="OPERATOR_ID" class="java.lang.String"/>
 	<parameter name="JAIL_YEARS" class="java.lang.String"/>
 	<parameter name="JAIL_MONTHS" class="java.lang.String"/>
 	<parameter name="JAIL_DAYS" class="java.lang.String"/>
@@ -78,6 +77,8 @@
 	<parameter name="SAMIS_ID_TYPE" class="java.lang.String"/>
 	<parameter name="CIVIL_BIOMETRICS_ID" class="java.lang.String"/>
 	<parameter name="PRISONER_NUMBER" class="java.lang.String"/>
+	<parameter name="REGISTRANT_OPERATOR_ID" class="java.lang.String"/>
+	<parameter name="INQUIRER_OPERATOR_ID" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
@@ -208,7 +209,7 @@
 		</band>
 	</title>
 	<pageHeader>
-		<band height="601">
+		<band height="605">
 			<rectangle>
 				<reportElement x="192" y="151" width="183" height="27" uuid="98a8a06e-6bc1-44f0-afaa-d91de18bcad4">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
@@ -1581,11 +1582,11 @@
 				<textFieldExpression><![CDATA[$P{JUDGMENT_NUMBER}]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report" isBlankWhenNull="true">
-				<reportElement key="" x="233" y="585" width="240" height="15" uuid="5adb409e-5c7e-4ff6-b823-142db329a0ce"/>
+				<reportElement key="" x="283" y="585" width="190" height="15" uuid="5adb409e-5c7e-4ff6-b823-142db329a0ce"/>
 				<textElement textAlignment="Right">
 					<font fontName="CustomFont" isBold="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{OPERATOR_ID}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{REGISTRANT_OPERATOR_ID}]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report" isBlankWhenNull="true">
 				<reportElement key="" x="475" y="267" width="29" height="15" uuid="2309f379-d97b-460d-9149-a58c05007e09"/>
@@ -1936,6 +1937,22 @@
 				</textElement>
 				<text><![CDATA[جهة إصدار الحكم:]]></text>
 			</staticText>
+			<staticText>
+				<reportElement key="" x="198" y="584" width="76" height="15" uuid="3194e7e8-16a3-43fd-a3b7-b5a9818deb67">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Right">
+					<font fontName="CustomFont" size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[رقم هوية المستعلم:]]></text>
+			</staticText>
+			<textField evaluationTime="Report" isBlankWhenNull="true">
+				<reportElement key="" x="12" y="585" width="190" height="15" uuid="586f7f46-9252-45ce-8d95-fae9b6ed44e7"/>
+				<textElement textAlignment="Right">
+					<font fontName="CustomFont" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{INQUIRER_OPERATOR_ID}]]></textFieldExpression>
+			</textField>
 		</band>
 	</pageHeader>
 </jasperReport>
