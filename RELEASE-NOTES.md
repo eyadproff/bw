@@ -11,6 +11,13 @@ VERSION SCHEMA: vYYYY.MM.#SEQ
 
 ---
 
+## v2019.01.5
+
+- ENH: Enhance information exchange page.
+- FIX: Fix the regression in RegisteringConvictedReportPaneFxController.
+
+---
+
 ## v2019.01.4
 
 - CHN: Add REGISTRANT_OPERATOR_ID and INQUIRER_OPERATOR_ID to the convicted report.

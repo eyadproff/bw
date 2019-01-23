@@ -1,5 +1,6 @@
 package sa.gov.nic.bio.bw.workflow.registerconvictedpresent.controllers;
 
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -97,17 +98,17 @@ public class RegisteringConvictedReportPaneFxController extends WizardStepFxCont
 	{
 		if(request == Request.GENERATE_NEW_CRIMINAL_BIOMETRICS_ID)
 		{
+			piGeneratingNewCriminalBiometricsId.setVisible(false);
+			
 			if(successfulResponse)
 			{
-				piGeneratingNewCriminalBiometricsId.setVisible(false);
 				ivGeneratingNewCriminalBiometricsIdSuccess.setVisible(true);
-				
 				request = Request.SUBMIT_FINGERPRINTS;
+				piSubmittingFingerprints.setVisible(true);
 				continueWorkflow();
 			}
 			else
 			{
-				piGeneratingNewCriminalBiometricsId.setVisible(false);
 				ivGeneratingNewCriminalBiometricsIdFailure.setVisible(true);
 				btnStartOver.setVisible(true);
 				btnRetry.setVisible(!disableRetryButtonForever);
@@ -115,17 +116,17 @@ public class RegisteringConvictedReportPaneFxController extends WizardStepFxCont
 		}
 		else if(request == Request.SUBMIT_FINGERPRINTS)
 		{
+			piSubmittingFingerprints.setVisible(false);
+			
 			if(successfulResponse)
 			{
-				piSubmittingFingerprints.setVisible(false);
 				ivSubmittingFingerprintsSuccess.setVisible(true);
-				
 				request = Request.CHECK_FINGERPRINTS;
+				piCheckingFingerprints.setVisible(true);
 				continueWorkflow();
 			}
 			else
 			{
-				piSubmittingFingerprints.setVisible(false);
 				ivSubmittingFingerprintsFailure.setVisible(true);
 				btnStartOver.setVisible(true);
 				btnRetry.setVisible(!disableRetryButtonForever);
@@ -137,26 +138,31 @@ public class RegisteringConvictedReportPaneFxController extends WizardStepFxCont
 			{
 				if(criminalFingerprintsRegistrationStatus == Status.PENDING)
 				{
-					try
+					Context.getExecutorService().submit(() ->
 					{
-						int seconds = Integer.parseInt(Context.getConfigManager().getProperty(
-																"registerConvictedReport.inquiry.checkEverySeconds"));
-						Thread.sleep(seconds * 1000);
-					}
-					catch(InterruptedException e)
-					{
-						e.printStackTrace();
-					}
+						try
+						{
+							int seconds = Integer.parseInt(Context.getConfigManager().getProperty(
+									"registerConvictedReport.inquiry.checkEverySeconds"));
+							Thread.sleep(seconds * 1000);
+						}
+						catch(InterruptedException e)
+						{
+							e.printStackTrace();
+						}
+						
+						Platform.runLater(this::continueWorkflow);
+					});
+					
 				}
 				else if(criminalFingerprintsRegistrationStatus == Status.SUCCESS)
 				{
 					piCheckingFingerprints.setVisible(false);
 					ivCheckingFingerprintsSuccess.setVisible(true);
-					
 					request = Request.SUBMIT_CONVICTED_REPORT;
+					piSubmittingConvictedReport.setVisible(true);
+					continueWorkflow();
 				}
-				
-				continueWorkflow();
 			}
 			else
 			{
@@ -168,21 +174,22 @@ public class RegisteringConvictedReportPaneFxController extends WizardStepFxCont
 		}
 		else if(request == Request.SUBMIT_CONVICTED_REPORT)
 		{
+			piSubmittingConvictedReport.setVisible(false);
+			
 			if(successfulResponse)
 			{
-				piSubmittingConvictedReport.setVisible(false);
 				ivSubmittingConvictedReportSuccess.setVisible(true);
 				
 				if(exchangeConvictedReport != null && exchangeConvictedReport)
 				{
 					request = Request.EXCHANGE_CONVICTED_REPORT;
+					piExchangingConvictedReport.setVisible(true);
 					continueWorkflow();
 				}
 				else goNext();
 			}
 			else
 			{
-				piSubmittingConvictedReport.setVisible(false);
 				ivSubmittingConvictedReportFailure.setVisible(true);
 				btnStartOver.setVisible(true);
 				btnRetry.setVisible(!disableRetryButtonForever);
@@ -190,15 +197,15 @@ public class RegisteringConvictedReportPaneFxController extends WizardStepFxCont
 		}
 		else if(request == Request.EXCHANGE_CONVICTED_REPORT)
 		{
+			piExchangingConvictedReport.setVisible(false);
+			
 			if(successfulResponse)
 			{
-				piExchangingConvictedReport.setVisible(false);
 				ivExchangingConvictedReportSuccess.setVisible(true);
 				goNext();
 			}
 			else
 			{
-				piExchangingConvictedReport.setVisible(false);
 				ivExchangingConvictedReportFailure.setVisible(true);
 				btnStartOver.setVisible(true);
 				btnRetry.setVisible(!disableRetryButtonForever);
@@ -209,7 +216,7 @@ public class RegisteringConvictedReportPaneFxController extends WizardStepFxCont
 	@Override
 	protected void reportNegativeTaskResponse(String errorCode, Throwable exception, String[] errorDetails)
 	{
-		if("B003-0042".equals(errorCode)) disableRetryButtonForever = true;
+		if("B003-0042".equals(errorCode) || "B003-0044".equals(errorCode)) disableRetryButtonForever = true;
 		
 		super.reportNegativeTaskResponse(errorCode, exception, errorDetails);
 	}

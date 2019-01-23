@@ -31,6 +31,7 @@ import sa.gov.nic.bio.bw.workflow.commons.tasks.FingerprintInquiryStatusCheckerW
 import sa.gov.nic.bio.bw.workflow.commons.tasks.FingerprintInquiryStatusCheckerWorkflowTask.Status;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.FingerprintInquiryWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.GetPersonInfoByIdWorkflowTask;
+import sa.gov.nic.bio.bw.workflow.commons.tasks.SegmentWsqFingerprintsWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.controllers.JudgmentDetailsPaneFxController;
 import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.controllers.PunishmentDetailsPaneFxController;
 import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.controllers.RegisteringConvictedReportPaneFxController;
@@ -247,6 +248,8 @@ public class RegisterConvictedReportPresentWorkflow extends WizardWorkflowBase
 			}
 			case 7:
 			{
+				passData(FaceCapturingFxController.class, ShareInformationPaneFxController.class,
+				         "facePhotoBase64");
 				passData(UpdatePersonInfoPaneFxController.class, ShareInformationPaneFxController.class,
 				         "firstName", "familyName" , "gender", "nationality", "birthDate",
 				         "documentId", "documentType", "documentIssuanceDate", "documentExpiryDate");
@@ -297,26 +300,23 @@ public class RegisterConvictedReportPresentWorkflow extends WizardWorkflowBase
 				ConvictedReport convictedReport = getData(ReviewAndSubmitPaneFxController.class,
 				                                          "convictedReport");
 				boolean sharable = false;
-				if(convictedReport != null)
+				List<CrimeCode> crimeCodes = convictedReport.getCrimeCodes();
+				if(crimeCodes != null)
 				{
-					List<CrimeCode> crimeCodes = convictedReport.getCrimeCodes();
-					if(crimeCodes != null)
+					outerLoop: for(CrimeCode crimeCode : crimeCodes)
 					{
-						outerLoop: for(CrimeCode crimeCode : crimeCodes)
+						if(crimeCode == null) continue;
+						List<BiometricsExchangeDecision> criminalBioExchange = crimeCode.getCriminalBioExchange();
+						if(criminalBioExchange != null)
 						{
-							if(crimeCode == null) continue;
-							List<BiometricsExchangeDecision> criminalBioExchange = crimeCode.getCriminalBioExchange();
-							if(criminalBioExchange != null)
+							for(BiometricsExchangeDecision biometricsExchangeDecision : criminalBioExchange)
 							{
-								for(BiometricsExchangeDecision biometricsExchangeDecision : criminalBioExchange)
+								if(biometricsExchangeDecision == null) continue;
+								boolean operatorDecision = biometricsExchangeDecision.getOperatorDecision();
+								if(operatorDecision)
 								{
-									if(biometricsExchangeDecision == null) continue;
-									boolean operatorDecision = biometricsExchangeDecision.getOperatorDecision();
-									if(operatorDecision)
-									{
-										sharable = true;
-										break outerLoop;
-									}
+									sharable = true;
+									break outerLoop;
 								}
 							}
 						}
@@ -363,7 +363,7 @@ public class RegisterConvictedReportPresentWorkflow extends WizardWorkflowBase
 					{
 						criminalBiometricsId = getData(GenerateNewCriminalBiometricsIdWorkflowTask.class,
 						                               "criminalBiometricsId");
-						if(convictedReport != null) convictedReport.setGeneralFileNumber(criminalBiometricsId);
+						convictedReport.setGeneralFileNumber(criminalBiometricsId);
 					}
 					
 					setData(SubmitConvictedReportWorkflowTask.class, "convictedReport", convictedReport);
@@ -371,6 +371,12 @@ public class RegisterConvictedReportPresentWorkflow extends WizardWorkflowBase
 				}
 				else if(request == Request.EXCHANGE_CONVICTED_REPORT)
 				{
+					setData(SegmentWsqFingerprintsWorkflowTask.class,
+					        "fingerprints", convictedReport.getSubjFingers());
+					setData(SegmentWsqFingerprintsWorkflowTask.class,
+					        "missingFingerprints", convictedReport.getSubjMissingFingers());
+					executeWorkflowTask(SegmentWsqFingerprintsWorkflowTask.class);
+					
 					setData(ExchangeConvictedReportWorkflowTask.class, "convictedReport", convictedReport);
 					executeWorkflowTask(ExchangeConvictedReportWorkflowTask.class);
 				}

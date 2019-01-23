@@ -41,9 +41,12 @@
                                 <VBox fx:id="paneNotIsoNationality" alignment="CENTER" managed="false" visible="false">
                                     <Label fx:id="lblNotIsoNationality" styleClass="bold-label"/>
                                 </VBox>
+                                <VBox fx:id="paneCitizenWarning" alignment="CENTER" managed="false" visible="false">
+                                    <Label text="%label.citizenWarning" styleClass="bold-label"/>
+                                </VBox>
                             </VBox>
                         </TitledPane>
-                        <TitledPane fx:id="tpCrimeClassification1" focusTraversable="false" collapsible="false" maxHeight="Infinity" VBox.vgrow="ALWAYS">
+                        <TitledPane fx:id="tpCrimeClassification1" focusTraversable="false" collapsible="false" managed="false" visible="false" maxHeight="Infinity" VBox.vgrow="ALWAYS">
                             <VBox spacing="10.0">
                                 <padding>
                                     <Insets topRightBottomLeft="10.0"/>
