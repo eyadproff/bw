@@ -21,6 +21,8 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.NodeOrientation;
 import javafx.scene.Node;
+import javafx.scene.Scene;
+import javafx.scene.SnapshotParameters;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
@@ -55,6 +57,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 import javafx.stage.WindowEvent;
 import javafx.util.Callback;
 import javafx.util.Duration;
@@ -72,10 +75,13 @@ import sa.gov.nic.bio.bw.core.controllers.CoreFxController;
 import sa.gov.nic.bio.bw.core.interfaces.AppLogger;
 import sa.gov.nic.bio.bw.core.interfaces.LocalizedText;
 
+import javax.imageio.ImageIO;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.time.DateTimeException;
@@ -85,6 +91,7 @@ import java.time.chrono.HijrahChronology;
 import java.time.chrono.IsoChronology;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Collections;
 import java.util.HashMap;
@@ -958,6 +965,33 @@ public class GuiUtils implements AppLogger
 				    }
 				});
 			});
+		}
+	}
+	
+	public static List<BufferedImage> takeScreenshotsOfAllWindows()
+	{
+		List<BufferedImage> screenshots = new ArrayList<>();
+		
+		ObservableList<Window> windows = Stage.getWindows();
+		for(Window window : windows)
+		{
+			Scene scene = window.getScene();
+			SnapshotParameters param = new SnapshotParameters();
+			WritableImage snapshot = scene.getRoot().snapshot(param, null);
+			BufferedImage bufferedImage = SwingFXUtils.fromFXImage(snapshot, null);
+			screenshots.add(bufferedImage);
+		}
+		
+		return screenshots;
+	}
+	
+	public static String bufferedImageToBase64(BufferedImage bufferedImage) throws IOException
+	{
+		try(ByteArrayOutputStream baos = new ByteArrayOutputStream())
+		{
+			ImageIO.write(bufferedImage, "png", baos);
+			byte[] bytes = baos.toByteArray();
+			return Base64.getEncoder().encodeToString(bytes);
 		}
 	}
 }

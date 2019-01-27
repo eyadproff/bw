@@ -11,12 +11,18 @@ import javafx.scene.image.Image;
 import org.controlsfx.glyphfont.FontAwesome;
 import org.controlsfx.glyphfont.Glyph;
 import org.scenicview.ScenicView;
+import retrofit2.Call;
 import sa.gov.nic.bio.bw.core.Context;
+import sa.gov.nic.bio.bw.core.beans.ClientErrorLog;
 import sa.gov.nic.bio.bw.core.beans.FingerCoordinate;
 import sa.gov.nic.bio.bw.core.beans.Name;
 import sa.gov.nic.bio.bw.core.beans.NicHijriCalendarData;
+import sa.gov.nic.bio.bw.core.beans.RefreshTokenBean;
+import sa.gov.nic.bio.bw.core.beans.UserInfo;
+import sa.gov.nic.bio.bw.core.beans.UserSession;
 import sa.gov.nic.bio.bw.core.controllers.CoreFxController;
 import sa.gov.nic.bio.bw.core.interfaces.AppLogger;
+import sa.gov.nic.bio.bw.core.webservice.ClientErrorReportingAPI;
 import sa.gov.nic.bio.bw.core.webservice.WebserviceManager;
 
 import javax.imageio.ImageIO;
@@ -28,6 +34,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.lang.module.ModuleReference;
 import java.lang.reflect.Constructor;
@@ -742,5 +750,92 @@ public final class AppUtils implements AppLogger
 		{
 			LOGGER.warning("Failed to open the app folder (" + AppConstants.APP_FOLDER_PATH + ")");
 		}
+	}
+	
+	public static String stacktraceToString(Throwable throwable)
+	{
+		if(throwable == null) return null;
+		
+		StringWriter sw = new StringWriter();
+		PrintWriter pw = new PrintWriter(sw);
+		throwable.printStackTrace(pw);
+		return sw.toString();
+	}
+	
+	public static void reportClientError(List<BufferedImage> screenshots, String errorCode, String errorDetails,
+	                                     String stacktrace, Integer workflowId, Long workflowTcn)
+	{
+		ClientErrorLog clientErrorLog = new ClientErrorLog();
+		
+		clientErrorLog.setErrorCode(errorCode);
+		clientErrorLog.setErrorDetails(errorDetails);
+		clientErrorLog.setStacktrace(stacktrace);
+		
+		if(screenshots != null)
+		{
+			if(screenshots.size() >= 1)
+			{
+				try
+				{
+					String screenshot1Base64 = GuiUtils.bufferedImageToBase64(screenshots.get(0));
+					clientErrorLog.setScreenshot1Base64(screenshot1Base64);
+				}
+				catch(IOException e)
+				{
+					LOGGER.log(Level.WARNING, "Failed to encode the screenshot1 to Base64!", e);
+				}
+			}
+			if(screenshots.size() >= 2)
+			{
+				try
+				{
+					String screenshot2Base64 = GuiUtils.bufferedImageToBase64(screenshots.get(1));
+					clientErrorLog.setScreenshot2Base64(screenshot2Base64);
+				}
+				catch(IOException e)
+				{
+					LOGGER.log(Level.WARNING, "Failed to encode the screenshot2 to Base64!", e);
+				}
+			}
+			if(screenshots.size() >= 3)
+			{
+				try
+				{
+					String screenshot3Base64 = GuiUtils.bufferedImageToBase64(screenshots.get(2));
+					clientErrorLog.setScreenshot3Base64(screenshot3Base64);
+				}
+				catch(IOException e)
+				{
+					LOGGER.log(Level.WARNING, "Failed to encode the screenshot3 to Base64!", e);
+				}
+			}
+		}
+		
+		clientErrorLog.setClientAppCode(AppConstants.APP_CODE);
+		String appVersion = Context.getAppVersion();
+		String os = System.getProperty("os.name");
+		clientErrorLog.setClientVersion(appVersion);
+		clientErrorLog.setClientOS(os);
+		
+		UserSession userSession = Context.getUserSession();
+		if(userSession != null)
+		{
+			UserInfo userInfo = (UserInfo) userSession.getAttribute("userInfo");
+			
+			if(userInfo != null)
+			{
+				clientErrorLog.setNicLocation(userInfo.getLocationId());
+				clientErrorLog.setOperatorId(String.valueOf(userInfo.getOperatorId()));
+				clientErrorLog.setOperatorUsername(userInfo.getUserName());
+			}
+		}
+		
+		if(workflowId != null) clientErrorLog.setClientWorkflowCode(Long.valueOf(workflowId));
+		if(workflowTcn != null) clientErrorLog.setClientWorkflowTcn(workflowTcn);
+		
+		WebserviceManager webserviceManager = Context.getWebserviceManager();
+		ClientErrorReportingAPI api = webserviceManager.getApi(ClientErrorReportingAPI.class);
+		Call<RefreshTokenBean> call = api.refreshToken(toJson(clientErrorLog));
+		webserviceManager.executeApi(call); // ignore response
 	}
 }

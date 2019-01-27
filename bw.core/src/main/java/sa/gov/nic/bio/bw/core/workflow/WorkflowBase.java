@@ -26,6 +26,14 @@ public abstract class WorkflowBase implements Workflow, AppLogger
 	Map<String, Object> uiInputData = new HashMap<>();
 	boolean renderedAtLeastOnceInTheStep = false;
 	
+	public Integer getWorkflowId()
+	{
+		AssociatedMenu annotation = getClass().getAnnotation(AssociatedMenu.class);
+		return annotation != null ? annotation.workflowId() : null;
+	}
+	
+	public Long getWorkflowTcn(){return tcn;}
+	
 	protected void throwInterruptionSignal() throws Signal
 	{
 		Signal temp = interruptionSignal;
@@ -68,8 +76,7 @@ public abstract class WorkflowBase implements Workflow, AppLogger
 	{
 		if(interruptionSignal != null) throwInterruptionSignal();
 		
-		AssociatedMenu annotation = getClass().getAnnotation(AssociatedMenu.class);
-		Integer workflowId = annotation != null ? annotation.workflowId() : null;
+		Integer workflowId = getWorkflowId();
 		
 		if(workflowId != null) uiInputData.put(controllerClass.getName() + "#workflowId", workflowId);
 		if(tcn != null) uiInputData.put(controllerClass.getName() + "#workflowTcn", tcn);
@@ -122,8 +129,7 @@ public abstract class WorkflowBase implements Workflow, AppLogger
 	
 	public void executeWorkflowTask(Class<? extends WorkflowTask> taskClass) throws Signal
 	{
-		AssociatedMenu annotation = getClass().getAnnotation(AssociatedMenu.class);
-		Integer workflowId = annotation != null ? annotation.workflowId() : null;
+		Integer workflowId = getWorkflowId();
 		
 		try
 		{

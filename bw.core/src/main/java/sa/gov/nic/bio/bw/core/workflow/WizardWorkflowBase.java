@@ -145,9 +145,7 @@ public abstract class WizardWorkflowBase extends WorkflowBase implements Resourc
 		}
 		else Context.getCoreFxController().clearWizardBar();
 		
-		AssociatedMenu annotation = getClass().getAnnotation(AssociatedMenu.class);
-		Integer workflowId = annotation != null ? annotation.workflowId() : null;
-		
+		Integer workflowId = getWorkflowId();
 		if(workflowId != null)
 		{
 			tcn = AppUtils.getRandom18DigitsNumber();
