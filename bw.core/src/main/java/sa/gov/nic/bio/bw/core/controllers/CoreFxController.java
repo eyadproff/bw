@@ -20,6 +20,7 @@ import sa.gov.nic.bio.bw.core.Context;
 import sa.gov.nic.bio.bw.core.beans.StateBundle;
 import sa.gov.nic.bio.bw.core.interfaces.IdleMonitorRegisterer;
 import sa.gov.nic.bio.bw.core.interfaces.PersistableEntity;
+import sa.gov.nic.bio.bw.core.tasks.LogoutTask;
 import sa.gov.nic.bio.bw.core.utils.AppConstants;
 import sa.gov.nic.bio.bw.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.core.utils.CombinedResourceBundle;
@@ -29,22 +30,26 @@ import sa.gov.nic.bio.bw.core.utils.FxmlFile;
 import sa.gov.nic.bio.bw.core.utils.GuiLanguage;
 import sa.gov.nic.bio.bw.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.core.utils.IdleMonitor;
-import sa.gov.nic.bio.bw.core.tasks.LogoutTask;
 import sa.gov.nic.bio.bw.core.wizard.WizardPane;
 import sa.gov.nic.bio.bw.core.workflow.ResourceBundleProvider;
 import sa.gov.nic.bio.bw.core.workflow.Signal;
 import sa.gov.nic.bio.bw.core.workflow.SignalType;
 import sa.gov.nic.bio.bw.core.workflow.Workflow;
+import sa.gov.nic.bio.bw.core.workflow.WorkflowBase;
+import sa.gov.nic.bio.bw.core.workflow.WorkflowManager;
 import sa.gov.nic.bio.commons.TaskResponse;
 
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
 import java.util.prefs.Preferences;
 
 /**
@@ -392,8 +397,39 @@ public class CoreFxController extends FxControllerBase implements IdleMonitorReg
 	
 	public void showErrorDialog(String errorCode, Throwable throwable, String[] errorDetails)
 	{
+		WorkflowManager workflowManager = Context.getWorkflowManager();
+		WorkflowBase currentWorkflow = (WorkflowBase) workflowManager.getCurrentWorkflow();
+		
+		Integer workflowId = null;
+		Long workflowTcn = null;
+		
+		if(currentWorkflow != null)
+		{
+			workflowId = currentWorkflow.getWorkflowId();
+			workflowTcn = currentWorkflow.getWorkflowTcn();
+		}
+		
+		Integer finalWorkflowId = workflowId;
+		Long finalWorkflowTcn = workflowTcn;
 		Platform.runLater(() ->
 		{
+			List<BufferedImage> screenshots = GuiUtils.takeScreenshotsOfAllWindows();
+			Context.getExecutorService().submit(() ->
+			{
+				try
+				{
+					
+					
+					AppUtils.reportClientError(screenshots, errorCode, errorDetails != null ?
+										Arrays.toString(errorDetails) : null, AppUtils.stacktraceToString(throwable),
+			                            finalWorkflowId, finalWorkflowTcn);
+				}
+				catch(Throwable t)
+				{
+					LOGGER.log(Level.WARNING, "Failed to report the client error to the server!", t);
+				}
+			});
+			
 			String title = resources.getString("dialog.error.title");
 			String headerText = resources.getString("dialog.error.header");
 			String buttonOkText = resources.getString("dialog.error.buttons.ok");

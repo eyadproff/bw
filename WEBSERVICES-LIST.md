@@ -9,6 +9,9 @@
         - services-gateway-lookups/api/application/menu-roles/v1
         - services-gateway-identity/api/token/refresh/v1
         - services-gateway-identity/api/logout/v1
+        
+    bw.coreServices:
+        - services-gateway-demographic/api/activity/client/error/v1
     
     menu.cancel.cancelCriminal:
         - services-gateway-lookups/api/application/person-type/v1

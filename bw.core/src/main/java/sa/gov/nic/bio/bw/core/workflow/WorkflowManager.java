@@ -23,6 +23,7 @@ public class WorkflowManager implements AppLogger
 	private Workflow currentWorkflow;
 	
 	public void setCurrentWorkflow(Workflow currentWorkflow){this.currentWorkflow = currentWorkflow;}
+	public Workflow getCurrentWorkflow(){return currentWorkflow;}
 	
 	public void setFormRenderer(FormRenderer formRenderer)
 	{

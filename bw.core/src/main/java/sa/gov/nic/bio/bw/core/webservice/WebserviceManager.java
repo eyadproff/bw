@@ -213,12 +213,12 @@ public class WebserviceManager implements AppLogger
 		}
 		
 		int httpCode = response.code();
+		LOGGER.info("webservice = \"" + apiUrl + "\", responseCode = " + httpCode);
 		
 		if(httpCode == 200 || httpCode == 202)
 		{
 			T resultBean = response.body();
 			
-			LOGGER.info("webservice = \"" + apiUrl + "\", responseCode = " + httpCode);
 			LOGGER.fine("resultBean = " + resultBean);
 			
 			return TaskResponse.success(resultBean, httpCode);

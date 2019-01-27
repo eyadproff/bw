@@ -11,6 +11,12 @@ VERSION SCHEMA: vYYYY.MM.#SEQ
 
 ---
 
+## v2019.01.6
+
+- NEW: Report client error to the server.
+
+---
+
 ## v2019.01.5
 
 - ENH: Enhance information exchange page.
