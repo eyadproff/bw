@@ -17,6 +17,7 @@ import sa.gov.nic.bio.bw.workflow.civilcriminalfingerprintsinquiry.tasks.Extract
 import sa.gov.nic.bio.bw.workflow.commons.beans.BiometricsExchangeDecision;
 import sa.gov.nic.bio.bw.workflow.commons.beans.ConvictedReport;
 import sa.gov.nic.bio.bw.workflow.commons.beans.CrimeCode;
+import sa.gov.nic.bio.bw.workflow.commons.beans.DeporteeInfo;
 import sa.gov.nic.bio.bw.workflow.commons.beans.DisCriminalReport;
 import sa.gov.nic.bio.bw.workflow.commons.beans.NormalizedPersonInfo;
 import sa.gov.nic.bio.bw.workflow.commons.beans.PersonInfo;
@@ -35,6 +36,7 @@ import sa.gov.nic.bio.bw.workflow.commons.tasks.ConvertFingerprintBase64ImagesTo
 import sa.gov.nic.bio.bw.workflow.commons.tasks.ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.ConvictedReportInquiryFromDisWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.ConvictedReportToPersonInfoConverter;
+import sa.gov.nic.bio.bw.workflow.commons.tasks.DeporteeInfoToPersonInfoConverter;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.DisCriminalReportToPersonInfoConverter;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.FetchingFingerprintsWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.FetchingMissingFingerprintsWorkflowTask;
@@ -42,6 +44,7 @@ import sa.gov.nic.bio.bw.workflow.commons.tasks.FingerprintInquiryStatusCheckerW
 import sa.gov.nic.bio.bw.workflow.commons.tasks.FingerprintInquiryStatusCheckerWorkflowTask.Status;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.FingerprintInquiryWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.FingerprintsWsqToFingerConverter;
+import sa.gov.nic.bio.bw.workflow.commons.tasks.GetDeporteeInfoByIdWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.GetPersonInfoByIdWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.SegmentWsqFingerprintsWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.controllers.JudgmentDetailsPaneFxController;
@@ -290,12 +293,32 @@ public class RegisterConvictedReportNotPresentWorkflow extends WizardWorkflowBas
 							
 							for(Long civilPersonId : civilPersonIds)
 							{
-								setData(GetPersonInfoByIdWorkflowTask.class, "personId", civilPersonId);
-								setData(GetPersonInfoByIdWorkflowTask.class,
-								        "returnNullResultInCaseNotFound", Boolean.TRUE);
-								executeWorkflowTask(GetPersonInfoByIdWorkflowTask.class);
-								civilPersonInfoMap.put(civilPersonId, getData(GetPersonInfoByIdWorkflowTask.class,
-								                                              "personInfo"));
+								if(civilPersonId == null) continue;
+								
+								PersonInfo personInfo;
+								
+								String sCivilPersonId = String.valueOf(civilPersonId);
+								if(sCivilPersonId.length() == 10 && sCivilPersonId.startsWith("9"))
+								{
+									setData(GetDeporteeInfoByIdWorkflowTask.class, "deporteeId",
+									        civilPersonId);
+									setData(GetDeporteeInfoByIdWorkflowTask.class,
+									        "returnNullResultInCaseNotFound", Boolean.TRUE);
+									executeWorkflowTask(GetDeporteeInfoByIdWorkflowTask.class);
+									DeporteeInfo deporteeInfo = getData(GetDeporteeInfoByIdWorkflowTask.class,
+									                                    "deporteeInfo");
+									personInfo = new DeporteeInfoToPersonInfoConverter().convert(deporteeInfo);
+								}
+								else
+								{
+									setData(GetPersonInfoByIdWorkflowTask.class, "personId", civilPersonId);
+									setData(GetPersonInfoByIdWorkflowTask.class,
+									        "returnNullResultInCaseNotFound", Boolean.TRUE);
+									executeWorkflowTask(GetPersonInfoByIdWorkflowTask.class);
+									personInfo = getData(GetPersonInfoByIdWorkflowTask.class, "personInfo");
+								}
+								
+								civilPersonInfoMap.put(civilPersonId, personInfo);
 							}
 							
 							setData(getClass(), FIELD_CIVIL_PERSON_INFO_MAP, civilPersonInfoMap);

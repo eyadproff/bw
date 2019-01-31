@@ -13,6 +13,8 @@ public class DisCriminalReportToPersonInfoConverter implements Converter<DisCrim
 	@Override
 	public PersonInfo convert(DisCriminalReport disCriminalReport)
 	{
+		if(disCriminalReport == null) return null;
+		
 		Long samisId = disCriminalReport.getSubjSamisId();
 		Name name = disCriminalReport.getSubjtName();
 		Long subjBirthDate = disCriminalReport.getSubjBirthDate();
@@ -28,8 +30,10 @@ public class DisCriminalReportToPersonInfoConverter implements Converter<DisCrim
 		Long subjDocIssDate = disCriminalReport.getSubjDocIssDate();
 		Date idIssueDate = subjDocIssDate != null ? new Date(subjDocIssDate * 1000L) : null;
 		String occupation = disCriminalReport.getSubjOccupation();
-		PersonIdInfo identityInfo = new PersonIdInfo();
+		
 		PersonInfo personInfo = new PersonInfo();
+		PersonIdInfo identityInfo = new PersonIdInfo();
+		personInfo.setIdentityInfo(identityInfo);
 		
 		identityInfo.setIdNumber(idNumber);
 		identityInfo.setIdType(idType);

@@ -4,6 +4,7 @@ import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Query;
+import sa.gov.nic.bio.bw.workflow.commons.beans.DeporteeInfo;
 import sa.gov.nic.bio.bw.workflow.commons.beans.PersonInfo;
 
 public interface PersonInfoByIdAPI
@@ -13,4 +14,9 @@ public interface PersonInfoByIdAPI
 	                                   @Header("Workflow-Tcn") Long workflowTcn,
 	                                   @Query("person-id") long personId,
 	                                   @Query("person-type") int personType);
+	
+	@GET("services-gateway-demographic/api/person/deportee/info/v1")
+	Call<DeporteeInfo> getDeporteeInfoById(@Header("Workflow-Code") Integer workflowId,
+	                                       @Header("Workflow-Tcn") Long workflowTcn,
+	                                       @Query("deportee-id") long deporteeId);
 }

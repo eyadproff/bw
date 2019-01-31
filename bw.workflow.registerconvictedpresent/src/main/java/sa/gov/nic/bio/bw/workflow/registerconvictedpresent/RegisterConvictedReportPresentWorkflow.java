@@ -11,6 +11,7 @@ import sa.gov.nic.bio.bw.core.workflow.WizardWorkflowBase;
 import sa.gov.nic.bio.bw.workflow.commons.beans.BiometricsExchangeDecision;
 import sa.gov.nic.bio.bw.workflow.commons.beans.ConvictedReport;
 import sa.gov.nic.bio.bw.workflow.commons.beans.CrimeCode;
+import sa.gov.nic.bio.bw.workflow.commons.beans.DeporteeInfo;
 import sa.gov.nic.bio.bw.workflow.commons.beans.DisCriminalReport;
 import sa.gov.nic.bio.bw.workflow.commons.beans.PersonInfo;
 import sa.gov.nic.bio.bw.workflow.commons.controllers.FaceCapturingFxController;
@@ -26,10 +27,12 @@ import sa.gov.nic.bio.bw.workflow.commons.lookups.PersonTypesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.BasicConvictedReportInquiryByGeneralFileNumberWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.ConvictedReportInquiryFromDisWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.ConvictedReportToPersonInfoConverter;
+import sa.gov.nic.bio.bw.workflow.commons.tasks.DeporteeInfoToPersonInfoConverter;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.DisCriminalReportToPersonInfoConverter;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.FingerprintInquiryStatusCheckerWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.FingerprintInquiryStatusCheckerWorkflowTask.Status;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.FingerprintInquiryWorkflowTask;
+import sa.gov.nic.bio.bw.workflow.commons.tasks.GetDeporteeInfoByIdWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.GetPersonInfoByIdWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.SegmentWsqFingerprintsWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.controllers.JudgmentDetailsPaneFxController;
@@ -164,12 +167,32 @@ public class RegisterConvictedReportPresentWorkflow extends WizardWorkflowBase
 							
 							for(Long civilPersonId : civilPersonIds)
 							{
-								setData(GetPersonInfoByIdWorkflowTask.class, "personId", civilPersonId);
-								setData(GetPersonInfoByIdWorkflowTask.class,
-								        "returnNullResultInCaseNotFound", Boolean.TRUE);
-								executeWorkflowTask(GetPersonInfoByIdWorkflowTask.class);
-								civilPersonInfoMap.put(civilPersonId, getData(GetPersonInfoByIdWorkflowTask.class,
-								                                              "personInfo"));
+								if(civilPersonId == null) continue;
+								
+								PersonInfo personInfo;
+								
+								String sCivilPersonId = String.valueOf(civilPersonId);
+								if(sCivilPersonId.length() == 10 && sCivilPersonId.startsWith("9"))
+								{
+									setData(GetDeporteeInfoByIdWorkflowTask.class, "deporteeId",
+									        civilPersonId);
+									setData(GetDeporteeInfoByIdWorkflowTask.class,
+									        "returnNullResultInCaseNotFound", Boolean.TRUE);
+									executeWorkflowTask(GetDeporteeInfoByIdWorkflowTask.class);
+									DeporteeInfo deporteeInfo = getData(GetDeporteeInfoByIdWorkflowTask.class,
+									                                    "deporteeInfo");
+									personInfo = new DeporteeInfoToPersonInfoConverter().convert(deporteeInfo);
+								}
+								else
+								{
+									setData(GetPersonInfoByIdWorkflowTask.class, "personId", civilPersonId);
+									setData(GetPersonInfoByIdWorkflowTask.class,
+									        "returnNullResultInCaseNotFound", Boolean.TRUE);
+									executeWorkflowTask(GetPersonInfoByIdWorkflowTask.class);
+									personInfo = getData(GetPersonInfoByIdWorkflowTask.class, "personInfo");
+								}
+								
+								civilPersonInfoMap.put(civilPersonId, personInfo);
 							}
 							
 							setData(getClass(), FIELD_CIVIL_PERSON_INFO_MAP, civilPersonInfoMap);

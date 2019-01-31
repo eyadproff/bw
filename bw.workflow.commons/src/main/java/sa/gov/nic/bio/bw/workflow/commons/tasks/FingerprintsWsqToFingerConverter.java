@@ -13,6 +13,8 @@ public class FingerprintsWsqToFingerConverter implements Converter<Map<Integer, 
 	@Override
 	public List<Finger> convert(Map<Integer, String> data)
 	{
+		if(data == null) return null;
+		
 		List<Finger> fingerprints = new ArrayList<>();
 		for(Entry<Integer, String> entry : data.entrySet())
 		{

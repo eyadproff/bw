@@ -15,6 +15,7 @@ VERSION SCHEMA: vYYYY.MM.#SEQ
 
 - ENH: Add URL in error details upon webservice timeout.
 - CHN: Remove path-params from all URLs.
+- NEW: Integrate with deportee webservice for getting his information on fingerprints inquiry.
 
 ---
 

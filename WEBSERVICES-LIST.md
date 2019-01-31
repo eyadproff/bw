@@ -45,6 +45,7 @@
         - services-gateway-biooperation/api/xafis/nist/extraction/v1
         - services-gateway-biooperation/api/fingerprint/inquiry/v1
         - services-gateway-biooperation/api/fingerprint/inquiry/status/v2
+        - services-gateway-demographic/api/person/deportee/info/v1
         - services-gateway-demographic/api/criminal/info/{general-file-number}/v2
         - services-gateway-demographic/api/criminal/identity/info/{general-file-number}/v1
     
@@ -68,6 +69,7 @@
         - services-gateway-biooperation/api/xafis/nist/extraction/v1
         - services-gateway-biooperation/api/fingerprint/inquiry/v1
         - services-gateway-biooperation/api/fingerprint/inquiry/status/v2
+        - services-gateway-demographic/api/person/deportee/info/v1
         - services-gateway-demographic/api/criminal/info/{general-file-number}/v2
         - services-gateway-demographic/api/criminal/identity/info/{general-file-number}/v1
         - services-gateway-biooperation/api/criminal/criminal-id/generation/v1
@@ -86,6 +88,7 @@
         - services-gateway-demographic/api/person/info/v1
         - services-gateway-biooperation/api/fingerprint/inquiry/v1
         - services-gateway-biooperation/api/fingerprint/inquiry/status/v2
+        - services-gateway-demographic/api/person/deportee/info/v1
         - services-gateway-demographic/api/criminal/info/{general-file-number}/v2
         - services-gateway-demographic/api/criminal/identity/info/{general-file-number}/v1
         - services-gateway-biooperation/api/criminal/criminal-id/generation/v1
