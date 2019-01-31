@@ -202,13 +202,13 @@ public class WebserviceManager implements AppLogger
 		catch(SocketTimeoutException e)
 		{
 			String errorCode = CoreErrorCodes.C002_00009.getCode();
-			String[] errorDetails = {"webservice timeout!"};
+			String[] errorDetails = {"webservice timeout: " + apiUrl};
 			return TaskResponse.failure(errorCode, e, errorDetails);
 		}
 		catch(IOException e)
 		{
 			String errorCode = CoreErrorCodes.C002_00010.getCode();
-			String[] errorDetails = {"webservice IOException!"};
+			String[] errorDetails = {"webservice IOException: " + apiUrl};
 			return TaskResponse.failure(errorCode, e, errorDetails);
 		}
 		

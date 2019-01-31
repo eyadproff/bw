@@ -11,6 +11,13 @@ VERSION SCHEMA: vYYYY.MM.#SEQ
 
 ---
 
+## v2019.01.7
+
+- ENH: Add URL in error details upon webservice timeout.
+- CHN: Remove path-params from all URLs.
+
+---
+
 ## v2019.01.6
 
 - NEW: Report client error to the server.

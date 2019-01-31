@@ -3,7 +3,6 @@ package sa.gov.nic.bio.bw.workflow.commons.webservice;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
-import retrofit2.http.Path;
 import retrofit2.http.Query;
 import sa.gov.nic.bio.bw.workflow.commons.beans.ConvictedReport;
 import sa.gov.nic.bio.bw.workflow.commons.beans.DisCriminalReport;
@@ -13,22 +12,16 @@ import java.util.List;
 
 public interface ConvictedReportInquiryAPI
 {
-	@GET("services-gateway-biooperation/api/criminal/reports/v1")
-	Call<List<ConvictedReport>> inquireConvictedReportsByGeneralFileNumber(
-																	  @Header("Workflow-Code") Integer workflowId,
-	                                                                  @Header("Workflow-Tcn") Long workflowTcn,
-                                                                      @Query("general-number") Long generalFileNumber);
-	
 	@GET("services-gateway-biooperation/api/criminal/report/v1")
 	Call<ConvictedReport> inquireConvictedReportByReportNumber(@Header("Workflow-Code") Integer workflowId,
 	                                                           @Header("Workflow-Tcn") Long workflowTcn,
 	                                                           @Query("report-number") Long reportNumber);
 	
-	@GET("services-gateway-demographic/api/criminal/info/{general-file-number}/v2")
+	@GET("services-gateway-demographic/api/criminal/info/v2")
 	Call<List<DisCriminalReport>> inquireConvictedReportFromDisByGeneralFileNumber(
 																@Header("Workflow-Code") Integer workflowId,
 																@Header("Workflow-Tcn") Long workflowTcn,
-																@Path("general-file-number") long generalFileNumber);
+																@Query("general-file-number") long generalFileNumber);
 	
 	@GET("services-gateway-demographic/api/criminal/info/basic/custom/v1")
 	Call<SearchQueryResult<ConvictedReport>> inquireConvictedReportBySearchCriteria(
@@ -49,9 +42,9 @@ public interface ConvictedReportInquiryAPI
 																@Query("page-start") Integer pageStart,
 																@Query("page-end") Integer pageEnd);
 	
-	@GET("services-gateway-demographic/api/criminal/identity/info/{general-file-number}/v1")
+	@GET("services-gateway-demographic/api/criminal/identity/info/v1")
 	Call<List<ConvictedReport>> getBasicConvictedReportsByGeneralFileNumber(
 																@Header("Workflow-Code") Integer workflowId,
 	                                                            @Header("Workflow-Tcn") Long workflowTcn,
-                                                                @Path("general-file-number") Long generalFileNumber);
+                                                                @Query("general-file-number") Long generalFileNumber);
 }
