@@ -26,11 +26,7 @@ public class CountriesLookup implements Callable<TaskResponse<?>>, AppLogger
 			Call<List<Country>> call = api.lookupCountries();
 			TaskResponse<List<Country>> taskResponse = Context.getWebserviceManager().executeApi(call);
 			
-			if(taskResponse.isSuccess())
-			{
-				countries = taskResponse.getResult();
-				countries.removeIf(nationalityBean -> nationalityBean.getMofaNationalityCode().trim().isEmpty());
-			}
+			if(taskResponse.isSuccess()) countries = taskResponse.getResult();
 			else return taskResponse;
 			
 			Context.getUserSession().setAttribute(KEY, countries);

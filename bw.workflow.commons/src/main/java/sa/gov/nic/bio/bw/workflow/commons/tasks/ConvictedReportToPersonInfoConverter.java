@@ -13,6 +13,8 @@ public class ConvictedReportToPersonInfoConverter implements Converter<Convicted
 	@Override
 	public PersonInfo convert(ConvictedReport convictedReport)
 	{
+		if(convictedReport == null) return null;
+		
 		Long samisId = convictedReport.getSubjSamisId();
 		Name name = convictedReport.getSubjtName();
 		Long subjBirthDate = convictedReport.getSubjBirthDate();
@@ -30,16 +32,18 @@ public class ConvictedReportToPersonInfoConverter implements Converter<Convicted
 		Long subjDocExpDate = convictedReport.getSubjDocExpDate();
 		Date idExpirDate = subjDocExpDate != null ? new Date(subjDocExpDate * 1000L) : null;
 		String occupation = convictedReport.getSubjOccupation();
-		PersonIdInfo identityInfo = new PersonIdInfo();
 		String face = convictedReport.getSubjFace();
+		
 		PersonInfo personInfo = new PersonInfo();
+		PersonIdInfo identityInfo = new PersonIdInfo();
+		personInfo.setIdentityInfo(identityInfo);
 		
 		identityInfo.setIdNumber(idNumber);
 		identityInfo.setIdType(idType);
 		identityInfo.setIdIssueDate(idIssueDate);
 		identityInfo.setIdExpirDate(idExpirDate);
 		identityInfo.setOccupation(occupation);
-		personInfo.setIdentityInfo(identityInfo);
+		
 		
 		personInfo.setSamisId(samisId);
 		personInfo.setName(name);

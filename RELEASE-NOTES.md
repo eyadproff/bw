@@ -11,6 +11,15 @@ VERSION SCHEMA: vYYYY.MM.#SEQ
 
 ---
 
+## v2019.01.7
+
+- ENH: Add URL in error details upon webservice timeout.
+- CHN: Remove path-params from all URLs.
+- NEW: Integrate with deportee webservice for getting his information on fingerprints inquiry.
+- CHN: Include nationalities without MOFA code.
+
+---
+
 ## v2019.01.6
 
 - NEW: Report client error to the server.
