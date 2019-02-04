@@ -11,6 +11,13 @@ VERSION SCHEMA: vYYYY.MM.#SEQ
 
 ---
 
+## v2019.02.1
+
+- FIX: Crime codes were not being sent if not sharable.
+- FIX: Nationalities without MOFA code had suffix ().
+
+---
+
 ## v2019.01.7
 
 - ENH: Add URL in error details upon webservice timeout.

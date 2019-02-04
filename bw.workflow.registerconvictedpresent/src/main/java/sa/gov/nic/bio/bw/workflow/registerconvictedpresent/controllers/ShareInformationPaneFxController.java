@@ -146,11 +146,11 @@ public class ShareInformationPaneFxController extends WizardStepFxControllerBase
 			
 			if(citizen) GuiUtils.showNode(paneCitizenWarning, true);
 			
-			crimesWithShares = new ArrayList<>();
+			crimesWithShares = crimes;
+			crimesWithShares.forEach(crimeCode -> crimeCode.setCriminalBioExchange(new ArrayList<>()));
 			btnNext.requestFocus();
 			return;
 		}
-		
 		
 		@SuppressWarnings("unchecked")
 		List<BiometricsExchangeParty> biometricsExchangeParties =
