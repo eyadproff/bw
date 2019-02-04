@@ -253,7 +253,9 @@ public class ApplicantInfoFxController extends WizardStepFxControllerBase
 			if(Context.getGuiLanguage() == GuiLanguage.ARABIC) text = country.getDescriptionAR();
 			else text = country.getDescriptionEN();
 			
-			String resultText = text.trim() + " (" + country.getMofaNationalityCode() + ")";
+			String mofaCode = country.getMofaNationalityCode();
+			String resultText = mofaCode != null && !mofaCode.trim().isEmpty() ? text.trim() + " (" + mofaCode + ")"
+																			   : text.trim();
 			item.setText(resultText);
 		};
 		
