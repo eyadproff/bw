@@ -1,6 +1,7 @@
 ---
 name: New feature request
-about: Suggest an idea for this project
+about: Suggest an idea for this project or submit a feature requested by the business
+  owner
 title: ''
 labels: new feature
 assignees: ''
