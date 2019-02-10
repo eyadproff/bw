@@ -11,6 +11,12 @@ VERSION SCHEMA: vYYYY.MM.#SEQ
 
 ---
 
+## v2019.02.2
+
+
+
+---
+
 ## v2019.02.1
 
 - FIX: Crime codes were not being sent if not sharable.
