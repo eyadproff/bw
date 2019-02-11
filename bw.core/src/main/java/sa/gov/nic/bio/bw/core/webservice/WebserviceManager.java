@@ -4,10 +4,12 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import okhttp3.FormBody;
 import okhttp3.HttpUrl;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Response;
@@ -32,7 +34,10 @@ import javax.net.ssl.TrustManagerFactory;
 import javax.net.ssl.X509TrustManager;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Field;
 import java.net.SocketTimeoutException;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.security.KeyManagementException;
 import java.security.KeyStore;
 import java.security.SecureRandom;
@@ -46,6 +51,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
@@ -193,6 +199,61 @@ public class WebserviceManager implements AppLogger
 	{
 		Request request = apiCall.request();
 		String apiUrl = request.url().toString();
+		String httpRequestMethod = request.method();
+		RequestBody requestBody = request.body();
+		String httpRequestBody = null;
+		
+		if(requestBody instanceof FormBody)
+		{
+			FormBody formBody = (FormBody) requestBody;
+			
+			try
+			{
+				Field encodedNamesField = FormBody.class.getDeclaredField("encodedNames");
+				Field encodedValuesField = FormBody.class.getDeclaredField("encodedValues");
+				
+				encodedNamesField.setAccessible(true);
+				encodedValuesField.setAccessible(true);
+				
+				@SuppressWarnings("unchecked")
+				List<String> encodedNames = (List<String>) encodedNamesField.get(formBody);
+				
+				@SuppressWarnings("unchecked")
+				List<String> encodedValues = (List<String>) encodedValuesField.get(formBody);
+				
+				if(encodedNames != null && encodedValues != null)
+				{
+					int size = encodedNames.size() > encodedValues.size() ? encodedNames.size() : encodedValues.size();
+					
+					StringBuilder sb = new StringBuilder("[\n");
+					
+					for(int i = 0; i < size; i++)
+					{
+						String key = null;
+						String value = null;
+						
+						if(i < encodedNames.size()) key = URLDecoder.decode(encodedNames.get(i),
+						                                                    StandardCharsets.UTF_8);
+						if(i < encodedValues.size()) value = URLDecoder.decode(encodedValues.get(i),
+						                                                       StandardCharsets.UTF_8);
+						
+						sb.append("  ");
+						sb.append(key);
+						sb.append("=");
+						sb.append(value);
+						sb.append("\n");
+					}
+					
+					sb.append("]");
+					
+					httpRequestBody = sb.toString();
+				}
+			}
+			catch(Throwable t)
+			{
+				t.printStackTrace();
+			}
+		}
 		
 		Response<T> response;
 		try
@@ -202,28 +263,32 @@ public class WebserviceManager implements AppLogger
 		catch(SocketTimeoutException e)
 		{
 			String errorCode = CoreErrorCodes.C002_00009.getCode();
-			String[] errorDetails = {"webservice timeout: " + apiUrl};
+			String[] errorDetails = {"Webservice timeout: " + apiUrl};
 			return TaskResponse.failure(errorCode, e, errorDetails);
 		}
 		catch(IOException e)
 		{
 			String errorCode = CoreErrorCodes.C002_00010.getCode();
-			String[] errorDetails = {"webservice IOException: " + apiUrl};
+			String[] errorDetails = {"Webservice IOException: " + apiUrl};
 			return TaskResponse.failure(errorCode, e, errorDetails);
 		}
 		
-		int httpCode = response.code();
-		LOGGER.info("webservice = \"" + apiUrl + "\", responseCode = " + httpCode);
+		int httpResponseCode = response.code();
+		LOGGER.info("httpRequestMethod = " + httpRequestMethod);
+		LOGGER.info("apiUrl = " + apiUrl);
+		LOGGER.fine("httpRequestBody = " + httpRequestBody);
+		LOGGER.info("httpResponseCode = " + httpResponseCode);
 		
-		if(httpCode == 200 || httpCode == 202)
+		if(httpResponseCode == 200 || httpResponseCode == 202)
 		{
 			T resultBean = response.body();
 			
 			LOGGER.fine("resultBean = " + resultBean);
 			
-			return TaskResponse.success(resultBean, httpCode);
+			return TaskResponse.success(resultBean, httpResponseCode);
 		}
-		else if(httpCode == 400 || httpCode == 401 || httpCode == 403 || httpCode == 404 || httpCode == 500)
+		else if(httpResponseCode == 400 || httpResponseCode == 401 || httpResponseCode == 403 ||
+				httpResponseCode == 404 || httpResponseCode == 500)
 		{
 			String errorCode;
 			ResponseBody errorBody = response.errorBody();
@@ -231,8 +296,9 @@ public class WebserviceManager implements AppLogger
 			if(errorBody == null)
 			{
 				errorCode = CoreErrorCodes.C002_00011.getCode();
-				String[] errorDetails = {"\"errorBody\" is null!", "apiUrl = " + apiUrl, "httpCode = " + httpCode};
-				return TaskResponse.failure(httpCode, errorCode, null, errorDetails);
+				String[] errorDetails = {"\"errorBody\" is null!", "apiUrl = " + apiUrl,
+										 "httpResponseCode = " + httpResponseCode};
+				return TaskResponse.failure(httpResponseCode, errorCode, null, errorDetails);
 			}
 			
 			try
@@ -246,21 +312,20 @@ public class WebserviceManager implements AppLogger
 			{
 				errorCode = CoreErrorCodes.C002_00012.getCode();
 				String[] errorDetails = {"failed to extract the error code from the error body!", "apiUrl = " + apiUrl,
-										 "httpCode = " + httpCode};
-				return TaskResponse.failure(httpCode, errorCode, null, errorDetails);
+										 "httpResponseCode = " + httpResponseCode};
+				return TaskResponse.failure(httpResponseCode, errorCode, null, errorDetails);
 			}
 			
-			LOGGER.info("webservice = \"" + request.url() + "\", responseCode = " + httpCode +
-					    ", errorCode = " + errorCode);
+			LOGGER.info("errorCode = " + errorCode);
 			
-			String[] errorDetails = {"apiUrl = " + apiUrl, "httpCode = " + httpCode};
-			return TaskResponse.failure(httpCode, errorCode, null, errorDetails);
+			String[] errorDetails = {"apiUrl = " + apiUrl, "httpResponseCode = " + httpResponseCode};
+			return TaskResponse.failure(httpResponseCode, errorCode, null, errorDetails);
 		}
 		else // we don't support other HTTP codes
 		{
 			String errorCode = CoreErrorCodes.C002_00013.getCode();
-			String[] errorDetails = {"Unsupported HTTP code!", "apiUrl = " + apiUrl, "httpCode = " + httpCode};
-			return TaskResponse.failure(httpCode, errorCode, null, errorDetails);
+			String[] errorDetails = {"Unsupported HTTP code!", "apiUrl = " + apiUrl, "httpResponseCode = " + httpResponseCode};
+			return TaskResponse.failure(httpResponseCode, errorCode, null, errorDetails);
 		}
 	}
 	

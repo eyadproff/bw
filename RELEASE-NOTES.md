@@ -13,7 +13,8 @@ VERSION SCHEMA: vYYYY.MM.#SEQ
 
 ## v2019.02.2
 
-
+- ENH: Upgrading biokit-library to v2019.02.1.
+- ENH: Print HTTP method and HTTP request body on the console.
 
 ---
 
