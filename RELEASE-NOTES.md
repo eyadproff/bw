@@ -11,6 +11,12 @@ VERSION SCHEMA: vYYYY.MM.#SEQ
 
 ---
 
+## v2019.02.2
+
+- CHN: Add semat-ssl-certificate to the embedded keystore.
+
+---
+
 ## v2019.02.1
 
 - FIX: Crime codes were not being sent if not sharable.
