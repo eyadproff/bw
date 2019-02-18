@@ -1,8 +1,11 @@
 package sa.gov.nic.bio.bw.workflow.registerconvictedpresent.controllers;
 
 import javafx.beans.binding.BooleanBinding;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
@@ -10,24 +13,32 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.stage.FileChooser;
 import javafx.util.StringConverter;
+import sa.gov.nic.bio.bw.commons.resources.images.CommonImages;
 import sa.gov.nic.bio.bw.core.Context;
 import sa.gov.nic.bio.bw.core.beans.ComboBoxItem;
+import sa.gov.nic.bio.bw.core.beans.Gender;
 import sa.gov.nic.bio.bw.core.controllers.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.core.utils.FxmlFile;
 import sa.gov.nic.bio.bw.core.utils.GuiLanguage;
 import sa.gov.nic.bio.bw.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.core.workflow.Input;
 import sa.gov.nic.bio.bw.core.workflow.Output;
-import sa.gov.nic.bio.bw.core.beans.Gender;
-import sa.gov.nic.bio.bw.workflow.commons.lookups.CountriesLookup;
-import sa.gov.nic.bio.bw.workflow.commons.lookups.DocumentTypesLookup;
-import sa.gov.nic.bio.bw.workflow.commons.lookups.PersonTypesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.beans.Country;
 import sa.gov.nic.bio.bw.workflow.commons.beans.DocumentType;
 import sa.gov.nic.bio.bw.workflow.commons.beans.NormalizedPersonInfo;
 import sa.gov.nic.bio.bw.workflow.commons.beans.PersonType;
+import sa.gov.nic.bio.bw.workflow.commons.lookups.CountriesLookup;
+import sa.gov.nic.bio.bw.workflow.commons.lookups.DocumentTypesLookup;
+import sa.gov.nic.bio.bw.workflow.commons.lookups.PersonTypesLookup;
+import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.utils.RegisterConvictedPresentErrorCodes;
 
+import java.io.File;
+import java.nio.file.Files;
+import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +50,7 @@ public class UpdatePersonInfoPaneFxController extends WizardStepFxControllerBase
 {
 	@Input private Boolean civilHit;
 	@Input private NormalizedPersonInfo normalizedPersonInfo;
+	@Output private String facePhotoBase64;
 	@Output private String firstName;
 	@Output private String fatherName;
 	@Output private String grandfatherName;
@@ -58,6 +70,7 @@ public class UpdatePersonInfoPaneFxController extends WizardStepFxControllerBase
 	@Output private LocalDate documentExpiryDate;
 	@Output private Boolean documentExpiryDateUseHijri;
 	
+	@FXML private ImageView ivPersonPhoto;
 	@FXML private TextField txtFirstName;
 	@FXML private TextField txtFatherName;
 	@FXML private TextField txtGrandfatherName;
@@ -79,14 +92,25 @@ public class UpdatePersonInfoPaneFxController extends WizardStepFxControllerBase
 	@FXML private DatePicker dpBirthDate;
 	@FXML private DatePicker dpDocumentIssuanceDate;
 	@FXML private DatePicker dpDocumentExpiryDate;
+	@FXML private Button btnUploadNewPhoto;
+	@FXML private Button btnClearPhoto;
 	@FXML private Button btnStartOver;
 	@FXML private Button btnNext;
 	
 	private static final Predicate<LocalDate> birthDateValidator = localDate -> !localDate.isAfter(LocalDate.now());
 	
+	private BooleanProperty disablePhotoEditing = new SimpleBooleanProperty(true);
+	private BooleanProperty photoLoaded = new SimpleBooleanProperty(false);
+	private FileChooser fileChooser = new FileChooser();
+	
 	@Override
 	protected void onAttachedToScene()
 	{
+		fileChooser.setTitle(resources.getString("fileChooser.selectImage.title"));
+		FileChooser.ExtensionFilter extFilterJPG = new FileChooser.ExtensionFilter(
+									resources.getString("fileChooser.selectImage.types"), "*.jpg");
+		fileChooser.getExtensionFilters().addAll(extFilterJPG);
+		
 		@SuppressWarnings("unchecked")
 		List<Country> countries = (List<Country>) Context.getUserSession().getAttribute(CountriesLookup.KEY);
 		
@@ -177,11 +201,30 @@ public class UpdatePersonInfoPaneFxController extends WizardStepFxControllerBase
 		    item.setText(resultText);
 		});
 		
+		btnClearPhoto.disableProperty().bind(photoLoaded.not().or(disablePhotoEditing));
+		btnUploadNewPhoto.disableProperty().bind(disablePhotoEditing);
+		
 		Node focusedNode = null;
 		
 		if(normalizedPersonInfo != null)
 		{
 			boolean disable = civilHit != null && civilHit;
+			
+			String facePhotoBase64 = normalizedPersonInfo.getFacePhotoBase64();
+			Gender gender = normalizedPersonInfo.getGender();
+			
+			if(facePhotoBase64 != null)
+			{
+				GuiUtils.attachFacePhotoBase64(ivPersonPhoto, facePhotoBase64, true, gender);
+				photoLoaded.setValue(true);
+			}
+			else if(this.facePhotoBase64 != null)
+			{
+				GuiUtils.attachFacePhotoBase64(ivPersonPhoto, this.facePhotoBase64, true, gender);
+				photoLoaded.setValue(true);
+			}
+			
+			if(!disable || facePhotoBase64 == null) disablePhotoEditing.setValue(false);
 			
 			String firstName = normalizedPersonInfo.getFirstName();
 			if(firstName != null)
@@ -219,7 +262,6 @@ public class UpdatePersonInfoPaneFxController extends WizardStepFxControllerBase
 			else if(this.familyName != null) txtFamilyName.setText(this.familyName);
 			else if(focusedNode == null) focusedNode = txtFamilyName;
 			
-			Gender gender = normalizedPersonInfo.getGender();
 			if(gender != null)
 			{
 				boolean selected = GuiUtils.selectComboBoxItem(cboGender, gender);
@@ -390,5 +432,129 @@ public class UpdatePersonInfoPaneFxController extends WizardStepFxControllerBase
 		
 		this.documentExpiryDate = dpDocumentExpiryDate.getValue();
 		this.documentExpiryDateUseHijri = rdoDocumentExpiryDateUseHijri.isSelected();
+	}
+	
+	@FXML
+	private void onUploadNewPhotoButtonClicked(ActionEvent actionEvent)
+	{
+		hideNotification();
+		File selectedFile = fileChooser.showOpenDialog(Context.getCoreFxController().getStage());
+		
+		if(selectedFile != null)
+		{
+			try
+			{
+				long fileSizeBytes = Files.size(selectedFile.toPath());
+				double fileSizeKB = fileSizeBytes / 1024.0;
+				String maxFileSizeKbProperty =
+									Context.getConfigManager().getProperty("config.uploadFaceImage.fileMaxSizeKB");
+				
+				double maxFileSizeKb = Double.parseDouble(maxFileSizeKbProperty);
+				if(fileSizeKB > maxFileSizeKb)
+				{
+					DecimalFormat df = new DecimalFormat("#.00"); // 2 decimal places
+					showWarningNotification(String.format(resources.getString(
+											"selectNewFaceImage.fileChooser.exceedMaxFileSize"),
+					                                      df.format(fileSizeKB), df.format(maxFileSizeKb)));
+					return;
+				}
+			}
+			catch(Exception e)
+			{
+				String errorCode = RegisterConvictedPresentErrorCodes.C007_00007.getCode();
+				String[] errorDetails = {"Failed to retrieve the file size (" + selectedFile.getAbsolutePath() + ")!"};
+				Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails);
+			}
+			
+			Image image = new Image("file:///" + selectedFile.getAbsolutePath());
+			
+			//try
+			//{
+//
+			//	CaptureFingerprintDialogFxController captureFingerprintDialogFxController =
+			//			DialogUtils.buildCustomDialogByFxml(Context.getCoreFxController().getStage(),
+			//			                                    CaptureFingerprintDialogFxController.class,
+			//			                                    false);
+			//
+			//	if(captureFingerprintDialogFxController != null)
+			//	{
+			//		captureFingerprintDialogFxController.setFingerPosition(currentFingerPosition);
+			//		captureFingerprintDialogFxController.showDialogAndWait();
+			//
+			//		fingerprint = captureFingerprintDialogFxController.getResult();
+			//
+			//		if(fingerprint != null)
+			//		{
+			//			loginMethod = LoginMethod.USERNAME_AND_FINGERPRINT;
+			//			username = txtUsernameLoginByFingerprint.getText().trim();
+			//			password = txtPassword.getText().trim();
+			//			fingerPosition =  currentFingerPosition.getPosition();
+			//			continueWorkflow();
+			//		}
+			//		else captureFingerprintDialogFxController.stopCapturingFingerprint();
+			//	}
+			//}
+			//catch(Exception e)
+			//{
+			//	String errorCode = LoginErrorCodes.C003_00009.getCode();
+			//	String[] errorDetails =
+			//			{"Failed to load (" + CaptureFingerprintDialogFxController.class.getName() + ")!"};
+			//	Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails);
+			//}
+			//
+			//Task<BufferedImage> task = new Task<>()
+			//{
+			//	@Override
+			//	protected BufferedImage call()
+			//	{
+			//		return SwingFXUtils.fromFXImage(image, null); // test if the file is really an image
+			//	}
+			//};
+			//task.setOnSucceeded(event ->
+			//                    {
+			//	                    try
+			//	                    {
+			//		                    BufferedImage value = task.getValue();
+			//
+			//		                    if(value != null)
+			//		                    {
+			//			                    ivUploadedImage.setImage(image);
+			//			                    imageSelected = true;
+			//			                    btnNext.setDisable(false);
+			//			                    btnSelectImage.setText(resources.getString("button.selectNewImage"));
+			//
+			//			                    GuiUtils.attachImageDialog(Context.getCoreFxController(), ivUploadedImage,
+			//			                                               resources.getString("label.uploadedImage"),
+			//			                                               resources.getString("label.contextMenu.showImage"), false);
+			//		                    }
+			//		                    else showWarningNotification(resources.getString(
+			//				                    "selectNewFaceImage.fileChooser.notImageFile"));
+			//	                    }
+			//	                    catch(Exception e)
+			//	                    {
+			//		                    String errorCode = SearchByFaceImageErrorCodes.C005_00003.getCode();
+			//		                    String[] errorDetails = {"Failed to load the image (" + selectedFile.getAbsolutePath() + ")!"};
+			//		                    Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails);
+			//	                    }
+			//                    });
+			//task.setOnFailed(event ->
+			//                 {
+			//	                 String errorCode = SearchByFaceImageErrorCodes.C005_00004.getCode();
+			//	                 String[] errorDetails = {"Failed to convert the selected file into an image (" +
+			//			                 selectedFile.getAbsolutePath() + ")!"};
+			//	                 Context.getCoreFxController().showErrorDialog(errorCode, task.getException(), errorDetails);
+			//                 });
+			//
+			//Context.getExecutorService().submit(task);
+		}
+	}
+	
+	@FXML
+	private void onClearPhotoButtonClicked(ActionEvent actionEvent)
+	{
+		Image image = new Image(CommonImages.PLACEHOLDER_AVATAR.getAsInputStream());
+		ivPersonPhoto.setImage(image);
+		photoLoaded.setValue(false);
+		facePhotoBase64 = null;
 	}
 }
