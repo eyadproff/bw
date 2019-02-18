@@ -97,7 +97,7 @@ public class WebserviceManager implements AppLogger
 		
 		Certificate certificate = cf.generateCertificate(cert);
 		cert.close();
-		Certificate certificate2 = cf.generateCertificate(cert);
+		Certificate certificate2 = cf.generateCertificate(cert2);
 		cert2.close();
 		
 		KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
