@@ -8,14 +8,17 @@ assignees: ''
 
 ---
 
-**Is your feature request related to a problem? Please describe.**
-A clear and concise description of what the problem is. Ex. I'm always frustrated when [...]
+**Summary of Request**
+A clear and concise description of what the feature requested.
 
-**Describe the solution you'd like**
-A clear and concise description of what you want to happen.
+**Business Problem/Improvement**
+Describe the business problem this feature request is intended to address. How will this impact or improve the business operations?
 
-**Describe alternatives you've considered**
-A clear and concise description of any alternative solutions or features you've considered.
+**Current Process**
+How do you currently address this issue? What actions do you take?
 
-**Additional context**
-Add any other context or screenshots about the feature request here.
+**To-Be Process**
+Provide details of feature requested. Include actions, workflow or other specific requirements.
+
+**Acceptance Criteria**
+Specify the acceptance criteria that the feature must meet for acceptance into a production release (e.g., Field must be editable, System prompts an alert message when ..., etc.)
