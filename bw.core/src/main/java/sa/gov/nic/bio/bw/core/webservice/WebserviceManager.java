@@ -62,6 +62,8 @@ public class WebserviceManager implements AppLogger
 	public static final String PROTOCOL = "https";
 	private static final String SSL_CERTIFICATE_FILE_PATH =
 														"/sa/gov/nic/bio/bw/core/config/bio-middleware-certificate.pem";
+	private static final String SSL_CERTIFICATE2_FILE_PATH =
+														"/sa/gov/nic/bio/bw/core/config/semat-ssl-certificate.pem";
 	private OkHttpClient okHttpClient;
 	private Gson gson;
 	private volatile Retrofit retrofit;
@@ -97,13 +99,17 @@ public class WebserviceManager implements AppLogger
 		
 		CertificateFactory cf = CertificateFactory.getInstance("X.509");
 		InputStream cert = getClass().getResourceAsStream(SSL_CERTIFICATE_FILE_PATH);
+		InputStream cert2 = getClass().getResourceAsStream(SSL_CERTIFICATE2_FILE_PATH);
 		
 		Certificate certificate = cf.generateCertificate(cert);
 		cert.close();
+		Certificate certificate2 = cf.generateCertificate(cert2);
+		cert2.close();
 		
 		KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
 		keyStore.load(null, null);
 		keyStore.setCertificateEntry("bio-middleware-certificate", certificate);
+		keyStore.setCertificateEntry("semat-ssl-certificate", certificate2);
 		
 		TrustManagerFactory tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
 		tmf.init(keyStore);

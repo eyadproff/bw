@@ -11,10 +11,16 @@ VERSION SCHEMA: vYYYY.MM.#SEQ
 
 ---
 
-## v2019.02.2
+## v2019.02.3
 
 - ENH: Upgrading biokit-library to v2019.02.1.
 - ENH: Print HTTP method and HTTP request body on the console.
+
+---
+
+## v2019.02.2
+
+- CHN: Add semat-ssl-certificate to the embedded keystore.
 
 ---
 
