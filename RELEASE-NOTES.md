@@ -13,8 +13,9 @@ VERSION SCHEMA: vYYYY.MM.#SEQ
 
 ## v2019.02.3
 
-- ENH: Upgrading biokit-library to v2019.02.1.
+- ENH: Upgrading biokit-library to v2019.02.2.
 - ENH: Print HTTP method and HTTP request body on the console.
+- NEW: Add capturing fingerprints via fingerprint scanner as fingerprints source of civilcriminalfingerprintsinquiry workflow.
 
 ---
 

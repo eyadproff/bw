@@ -21,36 +21,40 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.TextAlignment;
 import javafx.util.Duration;
+import sa.gov.nic.bio.bw.core.interfaces.AppLogger;
 import sa.gov.nic.bio.bw.core.utils.GuiUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class WizardPane extends BorderPane
+public class WizardPane extends BorderPane implements AppLogger
 {
 	private static final String FXML_WIZARD = "/sa/gov/nic/bio/bw/core/fxml/wizard.fxml";
 	
 	@FXML private Pane stepsIndicatorPane;
 	@FXML private ScrollPane stepsIndicatorScrollPane;
 	
-	private ListProperty<WizardStep> steps;
+	private ListProperty<WizardStep> currentSteps;
+	private WizardStep[] originalSteps;
 	private List<WizardStepIndicator> indicators = new ArrayList<>();
 	private int currentStep = 0;
 	
 	public WizardPane(WizardStep[] steps)
 	{
+		originalSteps = steps;
+		
 		loadFxml();
-		this.steps = new SimpleListProperty<>(this.steps, "steps",
-	                                                    FXCollections.observableArrayList(WizardStep.extractor()));
-		setSteps(FXCollections.observableArrayList(steps));
+		this.currentSteps = new SimpleListProperty<>(this.currentSteps, "currentSteps",
+		                                             FXCollections.observableArrayList(WizardStep.extractor()));
+		setCurrentSteps(FXCollections.observableArrayList(steps));
 	}
 	
-	public void setSteps(ObservableList<WizardStep> value)
+	public void setCurrentSteps(ObservableList<WizardStep> value)
 	{
-		this.steps.get().setAll(value); drawStepsIndicators(true);
+		this.currentSteps.get().setAll(value); drawStepsIndicators(true);
 	}
-	public ObservableList<WizardStep> getSteps(){return this.steps.get();}
+	public ObservableList<WizardStep> getCurrentSteps(){return this.currentSteps.get();}
 	
 	private void loadFxml()
 	{
@@ -70,9 +74,9 @@ public class WizardPane extends BorderPane
 	
 	public int getStepIndexByTitle(String title)
 	{
-		for(int i = 0; i < steps.size(); i++)
+		for(int i = 0; i < currentSteps.size(); i++)
 		{
-			if(steps.get(i).getTitle().equals(title)) return i;
+			if(currentSteps.get(i).getTitle().equals(title)) return i;
 		}
 		
 		return -1;
@@ -80,10 +84,57 @@ public class WizardPane extends BorderPane
 	
 	public void updateStep(int stepIndex, String title, String iconId)
 	{
-		WizardStep wizardStep = steps.get(stepIndex);
+		WizardStep wizardStep = currentSteps.get(stepIndex);
 		wizardStep.setTitle(title);
 		wizardStep.setIconId(iconId);
 		
+		drawStepsIndicators(false);
+		
+		for(int i = 0; i < indicators.size(); i++)
+		{
+			WizardStepIndicator indicator = indicators.get(i);
+			
+			if(i <= currentStep) indicator.setVisited(true);
+			if(i == currentStep)
+			{
+				indicator.setSelected(true);
+				break;
+			}
+		}
+	}
+	
+	public void addStep(int stepIndex, String title, String iconId)
+	{
+		WizardStep wizardStep = new WizardStep(iconId, title);
+		wizardStep.setTitle(title);
+		wizardStep.setIconId(iconId);
+		if(stepIndex <= currentStep) wizardStep.setWizardStepState(WizardStepState.DONE);
+		
+		currentSteps.add(stepIndex, wizardStep);
+		drawStepsIndicators(false);
+		
+		for(int i = 0; i < indicators.size(); i++)
+		{
+			WizardStepIndicator indicator = indicators.get(i);
+			
+			if(i <= currentStep) indicator.setVisited(true);
+			if(i == currentStep)
+			{
+				indicator.setSelected(true);
+				break;
+			}
+		}
+	}
+	
+	public void removeStep(int stepIndex)
+	{
+		if(stepIndex == currentStep)
+		{
+			LOGGER.warning("Cannot remove the current wizard step!");
+			return;
+		}
+		
+		currentSteps.remove(stepIndex);
 		drawStepsIndicators(false);
 		
 		for(int i = 0; i < indicators.size(); i++)
@@ -108,7 +159,7 @@ public class WizardPane extends BorderPane
 		gridPane.setPadding(new Insets(10.0, 0.0, 0.0, 0.0));
 		stepsIndicatorPane.getChildren().setAll(gridPane);
 		
-		ObservableList<WizardStep> wizardSteps = getSteps();
+		ObservableList<WizardStep> wizardSteps = getCurrentSteps();
 		indicators.clear();
 		
 		for(int i = 0; i < wizardSteps.size(); i++)
@@ -208,6 +259,8 @@ public class WizardPane extends BorderPane
 	
 	public void startOver()
 	{
+		setCurrentSteps(FXCollections.observableArrayList(originalSteps));
+		
 		currentStep = 0;
 		
 		for(int i = 0; i < indicators.size(); i++)

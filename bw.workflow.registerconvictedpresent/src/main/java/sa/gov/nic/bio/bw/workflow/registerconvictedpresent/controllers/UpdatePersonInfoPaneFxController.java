@@ -22,6 +22,8 @@ import sa.gov.nic.bio.bw.core.Context;
 import sa.gov.nic.bio.bw.core.beans.ComboBoxItem;
 import sa.gov.nic.bio.bw.core.beans.Gender;
 import sa.gov.nic.bio.bw.core.controllers.WizardStepFxControllerBase;
+import sa.gov.nic.bio.bw.core.utils.AppUtils;
+import sa.gov.nic.bio.bw.core.utils.DialogUtils;
 import sa.gov.nic.bio.bw.core.utils.FxmlFile;
 import sa.gov.nic.bio.bw.core.utils.GuiLanguage;
 import sa.gov.nic.bio.bw.core.utils.GuiUtils;
@@ -37,6 +39,7 @@ import sa.gov.nic.bio.bw.workflow.commons.lookups.PersonTypesLookup;
 import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.utils.RegisterConvictedPresentErrorCodes;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
@@ -467,85 +470,115 @@ public class UpdatePersonInfoPaneFxController extends WizardStepFxControllerBase
 			}
 			
 			Image image = new Image("file:///" + selectedFile.getAbsolutePath());
+			String photoBase64 = null;
+			try
+			{
+				photoBase64 = AppUtils.imageToBase64(image);
+			}
+			catch(IOException e)
+			{
+				e.printStackTrace();
+			}
 			
-			//try
-			//{
+			PhotoQualityCheckDialogFxController photoQualityCheckDialogFxController = null;
+			try
+			{
+				photoQualityCheckDialogFxController = DialogUtils.buildCustomDialogByFxml(
+																		Context.getCoreFxController().getStage(),
+	                                                                    PhotoQualityCheckDialogFxController.class,
+																		false);
+			}
+			catch(Exception e)
+			{
+				e.printStackTrace();
+			}
+			
+			if(photoQualityCheckDialogFxController != null)
+			{
+				photoQualityCheckDialogFxController.setPhotoBase64(photoBase64);
+				photoQualityCheckDialogFxController.showDialogAndWait();
+			}
+						
+						
+						
+						                                    //try
+						                                    //{
 //
-			//	CaptureFingerprintDialogFxController captureFingerprintDialogFxController =
-			//			DialogUtils.buildCustomDialogByFxml(Context.getCoreFxController().getStage(),
-			//			                                    CaptureFingerprintDialogFxController.class,
-			//			                                    false);
-			//
-			//	if(captureFingerprintDialogFxController != null)
-			//	{
-			//		captureFingerprintDialogFxController.setFingerPosition(currentFingerPosition);
-			//		captureFingerprintDialogFxController.showDialogAndWait();
-			//
-			//		fingerprint = captureFingerprintDialogFxController.getResult();
-			//
-			//		if(fingerprint != null)
-			//		{
-			//			loginMethod = LoginMethod.USERNAME_AND_FINGERPRINT;
-			//			username = txtUsernameLoginByFingerprint.getText().trim();
-			//			password = txtPassword.getText().trim();
-			//			fingerPosition =  currentFingerPosition.getPosition();
-			//			continueWorkflow();
-			//		}
-			//		else captureFingerprintDialogFxController.stopCapturingFingerprint();
-			//	}
-			//}
-			//catch(Exception e)
-			//{
-			//	String errorCode = LoginErrorCodes.C003_00009.getCode();
-			//	String[] errorDetails =
-			//			{"Failed to load (" + CaptureFingerprintDialogFxController.class.getName() + ")!"};
-			//	Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails);
-			//}
-			//
-			//Task<BufferedImage> task = new Task<>()
-			//{
-			//	@Override
-			//	protected BufferedImage call()
-			//	{
-			//		return SwingFXUtils.fromFXImage(image, null); // test if the file is really an image
-			//	}
-			//};
-			//task.setOnSucceeded(event ->
-			//                    {
-			//	                    try
-			//	                    {
-			//		                    BufferedImage value = task.getValue();
-			//
-			//		                    if(value != null)
-			//		                    {
-			//			                    ivUploadedImage.setImage(image);
-			//			                    imageSelected = true;
-			//			                    btnNext.setDisable(false);
-			//			                    btnSelectImage.setText(resources.getString("button.selectNewImage"));
-			//
-			//			                    GuiUtils.attachImageDialog(Context.getCoreFxController(), ivUploadedImage,
-			//			                                               resources.getString("label.uploadedImage"),
-			//			                                               resources.getString("label.contextMenu.showImage"), false);
-			//		                    }
-			//		                    else showWarningNotification(resources.getString(
-			//				                    "selectNewFaceImage.fileChooser.notImageFile"));
-			//	                    }
-			//	                    catch(Exception e)
-			//	                    {
-			//		                    String errorCode = SearchByFaceImageErrorCodes.C005_00003.getCode();
-			//		                    String[] errorDetails = {"Failed to load the image (" + selectedFile.getAbsolutePath() + ")!"};
-			//		                    Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails);
-			//	                    }
-			//                    });
-			//task.setOnFailed(event ->
-			//                 {
-			//	                 String errorCode = SearchByFaceImageErrorCodes.C005_00004.getCode();
-			//	                 String[] errorDetails = {"Failed to convert the selected file into an image (" +
-			//			                 selectedFile.getAbsolutePath() + ")!"};
-			//	                 Context.getCoreFxController().showErrorDialog(errorCode, task.getException(), errorDetails);
-			//                 });
-			//
-			//Context.getExecutorService().submit(task);
+						                                    //	CaptureFingerprintDialogFxController captureFingerprintDialogFxController =
+						                                    //			DialogUtils.buildCustomDialogByFxml(Context.getCoreFxController().getStage(),
+						                                    //			                                    CaptureFingerprintDialogFxController.class,
+						                                    //			                                    false);
+						                                    //
+						                                    //	if(captureFingerprintDialogFxController != null)
+						                                    //	{
+						                                    //		captureFingerprintDialogFxController.setFingerPosition(currentFingerPosition);
+						                                    //		captureFingerprintDialogFxController.showDialogAndWait();
+						                                    //
+						                                    //		fingerprint = captureFingerprintDialogFxController.getResult();
+						                                    //
+						                                    //		if(fingerprint != null)
+						                                    //		{
+						                                    //			loginMethod = LoginMethod.USERNAME_AND_FINGERPRINT;
+						                                    //			username = txtUsernameLoginByFingerprint.getText().trim();
+						                                    //			password = txtPassword.getText().trim();
+						                                    //			fingerPosition =  currentFingerPosition.getPosition();
+						                                    //			continueWorkflow();
+						                                    //		}
+						                                    //		else captureFingerprintDialogFxController.stopCapturingFingerprint();
+						                                    //	}
+						                                    //}
+						                                    //catch(Exception e)
+						                                    //{
+						                                    //	String errorCode = LoginErrorCodes.C003_00009.getCode();
+						                                    //	String[] errorDetails =
+						                                    //			{"Failed to load (" + CaptureFingerprintDialogFxController.class.getName() + ")!"};
+						                                    //	Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails);
+						                                    //}
+						                                    //
+						                                    //Task<BufferedImage> task = new Task<>()
+						                                    //{
+						                                    //	@Override
+						                                    //	protected BufferedImage call()
+						                                    //	{
+						                                    //		return SwingFXUtils.fromFXImage(image, null); // test if the file is really an image
+						                                    //	}
+						                                    //};
+						                                    //task.setOnSucceeded(event ->
+						                                    //                    {
+						                                    //	                    try
+						                                    //	                    {
+						                                    //		                    BufferedImage value = task.getValue();
+						                                    //
+						                                    //		                    if(value != null)
+						                                    //		                    {
+						                                    //			                    ivUploadedImage.setImage(image);
+						                                    //			                    imageSelected = true;
+						                                    //			                    btnNext.setDisable(false);
+						                                    //			                    btnSelectImage.setText(resources.getString("button.selectNewImage"));
+						                                    //
+						                                    //			                    GuiUtils.attachImageDialog(Context.getCoreFxController(), ivUploadedImage,
+						                                    //			                                               resources.getString("label.uploadedImage"),
+						                                    //			                                               resources.getString("label.contextMenu.showImage"), false);
+						                                    //		                    }
+						                                    //		                    else showWarningNotification(resources.getString(
+						                                    //				                    "selectNewFaceImage.fileChooser.notImageFile"));
+						                                    //	                    }
+						                                    //	                    catch(Exception e)
+						                                    //	                    {
+						                                    //		                    String errorCode = SearchByFaceImageErrorCodes.C005_00003.getCode();
+						                                    //		                    String[] errorDetails = {"Failed to load the image (" + selectedFile.getAbsolutePath() + ")!"};
+						                                    //		                    Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails);
+						                                    //	                    }
+						                                    //                    });
+						                                    //task.setOnFailed(event ->
+						                                    //                 {
+						                                    //	                 String errorCode = SearchByFaceImageErrorCodes.C005_00004.getCode();
+						                                    //	                 String[] errorDetails = {"Failed to convert the selected file into an image (" +
+						                                    //			                 selectedFile.getAbsolutePath() + ")!"};
+						                                    //	                 Context.getCoreFxController().showErrorDialog(errorCode, task.getException(), errorDetails);
+						                                    //                 });
+						                                    //
+						                                    //Context.getExecutorService().submit(task);
 		}
 	}
 	

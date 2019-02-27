@@ -10,6 +10,8 @@ import sa.gov.nic.bio.bw.core.Context;
 import sa.gov.nic.bio.bw.core.controllers.DevicesRunnerGadgetPaneFxController;
 import sa.gov.nic.bio.bw.core.controllers.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.core.utils.FxmlFile;
+import sa.gov.nic.bio.bw.core.utils.GuiUtils;
+import sa.gov.nic.bio.bw.core.workflow.Input;
 import sa.gov.nic.bio.bw.core.workflow.Output;
 
 import java.util.Map;
@@ -19,94 +21,39 @@ public class FingerprintsSourceFxController extends WizardStepFxControllerBase
 {
 	public enum Source
 	{
+		CAPTURING_FINGERPRINTS_VIA_FINGERPRINT_SCANNER,
 		ENTERING_PERSON_ID,
 		SCANNING_FINGERPRINTS_CARD,
 		UPLOADING_NIST_FILE
 	}
 	
+	@Input private Boolean showLiveScanOption;
 	@Output private Source fingerprintsSource;
 	
+	@FXML private RadioButton rbByCapturingFingerprintsViaScanner;
 	@FXML private RadioButton rbByEnteringPersonId;
 	@FXML private RadioButton rbByScanningFingerprintsCard;
 	@FXML private RadioButton rbByUploadingNistFile;
 	@FXML private Button btnNext;
 	
+	private boolean minusOneStep = false;
+	
 	@Override
 	protected void onAttachedToScene()
 	{
-		// go next on pressing ENTER on the radio buttons
-		EventHandler<KeyEvent> eventHandler = event ->
+		if(showLiveScanOption != null && showLiveScanOption)
 		{
-			if(event.getCode() == KeyCode.ENTER)
-			{
-				btnNext.fire();
-				event.consume();
-			}
-		};
+			GuiUtils.showNode(rbByCapturingFingerprintsViaScanner, true);
+			rbByCapturingFingerprintsViaScanner.setDisable(false);
+		}
 		
-		rbByEnteringPersonId.addEventHandler(KeyEvent.KEY_PRESSED, eventHandler);
-		rbByScanningFingerprintsCard.addEventHandler(KeyEvent.KEY_PRESSED, eventHandler);
-		rbByUploadingNistFile.addEventHandler(KeyEvent.KEY_PRESSED, eventHandler);
-		
-		String enterPersonIdTitle = resources.getString("wizard.enterPersonId");
-		String scanFingerprintCardTitle = resources.getString("wizard.scanFingerprintCard");
-		String uploadNistFileTitle = resources.getString("wizard.uploadNistFile");
-		String showPersonInformationTitle = resources.getString("wizard.showPersonInformation");
-		String specifyFingerprintCoordinatesTitle = resources.getString("wizard.specifyFingerprintCoordinates");
-		
-		int secondStepIndex = Context.getCoreFxController().getWizardPane().getStepIndexByTitle(enterPersonIdTitle);
-		if(secondStepIndex < 0) secondStepIndex = Context.getCoreFxController().getWizardPane()
-																   .getStepIndexByTitle(scanFingerprintCardTitle);
-		if(secondStepIndex < 0) secondStepIndex = Context.getCoreFxController().getWizardPane()
-																		.getStepIndexByTitle(uploadNistFileTitle);
-		
-		final int finalSecondStepIndex = secondStepIndex;
-		
-		int thirdStepIndex = Context.getCoreFxController().getWizardPane()
-																	.getStepIndexByTitle(showPersonInformationTitle);
-		if(thirdStepIndex < 0) thirdStepIndex = Context.getCoreFxController().getWizardPane()
-															.getStepIndexByTitle(specifyFingerprintCoordinatesTitle);
-		
-		final int finalThirdStepIndex = thirdStepIndex;
-		
-		rbByEnteringPersonId.selectedProperty().addListener((observable, oldValue, newValue) ->
+		if(fingerprintsSource == Source.CAPTURING_FINGERPRINTS_VIA_FINGERPRINT_SCANNER)
 		{
-			if(newValue)
-			{
-				Context.getCoreFxController().getWizardPane().updateStep(finalSecondStepIndex, enterPersonIdTitle,
-				                                                         "\\uf2bb");
-				Context.getCoreFxController().getWizardPane().updateStep(finalThirdStepIndex,
-				                                                         showPersonInformationTitle,
-				                                                         "\\uf2b9");
-				Context.getCoreFxController().getWizardPane().updateStep(finalThirdStepIndex,
-				                                                         showPersonInformationTitle,
-				                                                         "\\uf2b9");
-			}
-		});
-		rbByScanningFingerprintsCard.selectedProperty().addListener((observable, oldValue, newValue) ->
-		{
-		    if(newValue)
-		    {
-		        Context.getCoreFxController().getWizardPane().updateStep(finalSecondStepIndex, scanFingerprintCardTitle,
-		                                                                 "file");
-		        Context.getCoreFxController().getWizardPane().updateStep(finalThirdStepIndex,
-		                                                                 specifyFingerprintCoordinatesTitle,
-		                                                                 "\\uf247");
-		    }
-		});
-		rbByUploadingNistFile.selectedProperty().addListener((observable, oldValue, newValue) ->
-		{
-		    if(newValue)
-		    {
-		        Context.getCoreFxController().getWizardPane().updateStep(finalSecondStepIndex, uploadNistFileTitle,
-		                                                                 "upload");
-		        Context.getCoreFxController().getWizardPane().updateStep(finalThirdStepIndex,
-		                                                                 showPersonInformationTitle,
-		                                                                 "\\uf2b9");
-		    }
-		});
-		
-		if(fingerprintsSource == Source.SCANNING_FINGERPRINTS_CARD)
+			minusOneStep = true;
+			rbByCapturingFingerprintsViaScanner.setSelected(true);
+			rbByCapturingFingerprintsViaScanner.requestFocus();
+		}
+		else if(fingerprintsSource == Source.SCANNING_FINGERPRINTS_CARD)
 		{
 			rbByScanningFingerprintsCard.setSelected(true);
 			rbByScanningFingerprintsCard.requestFocus();
@@ -121,6 +68,110 @@ public class FingerprintsSourceFxController extends WizardStepFxControllerBase
 			rbByEnteringPersonId.setSelected(true);
 			rbByEnteringPersonId.requestFocus();
 		}
+		
+		// go next on pressing ENTER on the radio buttons
+		EventHandler<KeyEvent> eventHandler = event ->
+		{
+			if(event.getCode() == KeyCode.ENTER)
+			{
+				btnNext.fire();
+				event.consume();
+			}
+		};
+		
+		rbByCapturingFingerprintsViaScanner.addEventHandler(KeyEvent.KEY_PRESSED, eventHandler);
+		rbByEnteringPersonId.addEventHandler(KeyEvent.KEY_PRESSED, eventHandler);
+		rbByScanningFingerprintsCard.addEventHandler(KeyEvent.KEY_PRESSED, eventHandler);
+		rbByUploadingNistFile.addEventHandler(KeyEvent.KEY_PRESSED, eventHandler);
+		
+		String fingerprintCapturingTitle = resources.getString("wizard.fingerprintCapturing");
+		String enterPersonIdTitle = resources.getString("wizard.enterPersonId");
+		String scanFingerprintCardTitle = resources.getString("wizard.scanFingerprintCard");
+		String uploadNistFileTitle = resources.getString("wizard.uploadNistFile");
+		String showPersonInformationTitle = resources.getString("wizard.showPersonInformation");
+		String specifyFingerprintCoordinatesTitle = resources.getString("wizard.specifyFingerprintCoordinates");
+		
+		rbByCapturingFingerprintsViaScanner.selectedProperty().addListener((observable, oldValue, newValue) ->
+		{
+		    if(newValue)
+		    {
+		        Context.getCoreFxController().getWizardPane().updateStep(1, fingerprintCapturingTitle,
+		                                                                 "\\uf256");
+		
+		        if(!minusOneStep)
+		        {
+		            Context.getCoreFxController().getWizardPane().removeStep(2);
+		            minusOneStep = true;
+		        }
+		    }
+		});
+		
+		rbByEnteringPersonId.selectedProperty().addListener((observable, oldValue, newValue) ->
+		{
+			if(newValue)
+			{
+				Context.getCoreFxController().getWizardPane().updateStep(1, enterPersonIdTitle,
+				                                                         "\\uf2bb");
+				
+				if(minusOneStep)
+				{
+					Context.getCoreFxController().getWizardPane().addStep(2,
+					                                                         showPersonInformationTitle,
+					                                                         "\\uf2b9");
+					minusOneStep = false;
+				}
+				else
+				{
+					Context.getCoreFxController().getWizardPane().updateStep(2,
+					                                                         showPersonInformationTitle,
+					                                                         "\\uf2b9");
+				}
+			}
+		});
+		rbByScanningFingerprintsCard.selectedProperty().addListener((observable, oldValue, newValue) ->
+		{
+		    if(newValue)
+		    {
+			    Context.getCoreFxController().getWizardPane().updateStep(1, scanFingerprintCardTitle,
+			                                                             "file");
+		    	
+			    if(minusOneStep)
+			    {
+				    Context.getCoreFxController().getWizardPane().addStep(2,
+				                                                          specifyFingerprintCoordinatesTitle,
+				                                                          "\\uf247");
+				    minusOneStep = false;
+			    }
+			    else
+			    {
+				    Context.getCoreFxController().getWizardPane().updateStep(2,
+				                                                             specifyFingerprintCoordinatesTitle,
+				                                                             "\\uf247");
+			    }
+		    }
+		});
+		rbByUploadingNistFile.selectedProperty().addListener((observable, oldValue, newValue) ->
+		{
+		    if(newValue)
+		    {
+		        Context.getCoreFxController().getWizardPane().updateStep(1, uploadNistFileTitle,
+		                                                                 "upload");
+			
+			    if(minusOneStep)
+			    {
+				    Context.getCoreFxController().getWizardPane().addStep(2,
+				                                                          showPersonInformationTitle,
+				                                                          "\\uf2b9");
+				    minusOneStep = false;
+			    }
+			    else
+			    {
+				    Context.getCoreFxController().getWizardPane().updateStep(2,
+				                                                             showPersonInformationTitle,
+				                                                             "\\uf2b9");
+			    }
+		    }
+		});
 		
 		DevicesRunnerGadgetPaneFxController deviceManagerGadgetPaneController =
 												Context.getCoreFxController().getDeviceManagerGadgetPaneController();
@@ -137,5 +188,7 @@ public class FingerprintsSourceFxController extends WizardStepFxControllerBase
 		if(rbByEnteringPersonId.isSelected()) fingerprintsSource = Source.ENTERING_PERSON_ID;
 		else if(rbByScanningFingerprintsCard.isSelected()) fingerprintsSource = Source.SCANNING_FINGERPRINTS_CARD;
 		else if(rbByUploadingNistFile.isSelected()) fingerprintsSource = Source.UPLOADING_NIST_FILE;
+		else if(rbByCapturingFingerprintsViaScanner.isSelected()) fingerprintsSource =
+																Source.CAPTURING_FINGERPRINTS_VIA_FINGERPRINT_SCANNER;
 	}
 }

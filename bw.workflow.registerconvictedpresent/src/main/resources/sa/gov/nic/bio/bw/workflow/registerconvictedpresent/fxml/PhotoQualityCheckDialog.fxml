@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Dialog?>
+<?import javafx.scene.control.DialogPane?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressIndicator?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import sa.gov.nic.bio.bw.workflow.commons.ui.AutoScalingStackPane?>
+<?import sa.gov.nic.bio.bw.workflow.commons.ui.FourStateTitledPane?>
+<?import sa.gov.nic.bio.bw.workflow.commons.ui.ImageViewPane?>
+<Dialog xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:id="dialog" title="%dialog.photoQualityCheckDetails.title"
+        fx:controller="sa.gov.nic.bio.bw.workflow.registerconvictedpresent.controllers.PhotoQualityCheckDialogFxController">
+    <dialogPane>
+        <DialogPane prefWidth="750.0" prefHeight="450.0" stylesheets="@/sa/gov/nic/bio/bw/core/css/style.css,@../css/style.css">
+            <content>
+                <BorderPane>
+                    <center>
+                        <SplitPane styleClass="white-background" orientation="VERTICAL" dividerPositions="0.5" VBox.vgrow="ALWAYS">
+                            <padding>
+                                <Insets top="10.0" bottom="10.0"/>
+                            </padding>
+                            <TitledPane text="%label.icaoStandardChecklist" maxHeight="Infinity" collapsible="false" HBox.hgrow="ALWAYS" focusTraversable="false">
+                                <GridPane>
+                                    <VBox GridPane.rowIndex="0" GridPane.columnIndex="0" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS">
+                                        <padding>
+                                            <Insets topRightBottomLeft="10"/>
+                                        </padding>
+                                        <TitledPane text="%label.checklistResult" maxHeight="Infinity" minWidth="170.0" minHeight="90.0" collapsible="false" VBox.vgrow="ALWAYS" focusTraversable="false">
+                                            <padding>
+                                                <Insets topRightBottomLeft="0.0"/>
+                                            </padding>
+                                            <VBox alignment="CENTER" spacing="5.0">
+                                                <padding>
+                                                    <Insets topRightBottomLeft="5.0"/>
+                                                </padding>
+                                                <ProgressIndicator fx:id="piIcao" maxHeight="25.0" maxWidth="25.0" visible="false" managed="false"/>
+                                                <ImageView fx:id="ivSuccessIcao" visible="false" managed="false">
+                                                    <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/icon_success_16px.png"/>
+                                                </ImageView>
+                                                <ImageView fx:id="ivWarningIcao" visible="false" managed="false">
+                                                    <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/icon_warning_16px.png"/>
+                                                </ImageView>
+                                                <ImageView fx:id="ivErrorIcao" visible="false" managed="false">
+                                                    <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/icon_error_16px.png"/>
+                                                </ImageView>
+                                                <Label fx:id="lblIcaoMessage" wrapText="true" alignment="CENTER" textAlignment="CENTER" visible="false" managed="false"/>
+                                            </VBox>
+                                        </TitledPane>
+                                    </VBox>
+                                    <AutoScalingStackPane fx:id="subScenePane" GridPane.rowIndex="0" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS" visible="false" managed="false"/>
+                                </GridPane>
+                            </TitledPane>
+                            <SplitPane dividerPositions="0.35,0.7">
+                                <FourStateTitledPane fx:id="tpUploadedImage" text="%label.uploadedImage" maxHeight="Infinity" collapsible="false" HBox.hgrow="ALWAYS" focusTraversable="false">
+                                    <StackPane>
+                                        <ImageViewPane>
+                                            <imageView>
+                                                <ImageView fx:id="ivUploadedImagePlaceholder" preserveRatio="true">
+                                                    <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/placeholder_image.png"/>
+                                                </ImageView>
+                                            </imageView>
+                                        </ImageViewPane>
+                                        <ImageViewPane>
+                                            <imageView>
+                                                <ImageView fx:id="ivUploadedImage" preserveRatio="true"/>
+                                            </imageView>
+                                        </ImageViewPane>
+                                        <ProgressIndicator fx:id="piUploadedImage" maxHeight="25.0" maxWidth="25.0" managed="false" visible="false"/>
+                                    </StackPane>
+                                </FourStateTitledPane>
+                                <FourStateTitledPane fx:id="tpCroppedImage" text="%label.croppedImage" maxHeight="Infinity" collapsible="false" HBox.hgrow="ALWAYS" focusTraversable="false">
+                                    <StackPane>
+                                        <ImageViewPane>
+                                            <imageView>
+                                                <ImageView fx:id="ivCroppedImagePlaceholder" preserveRatio="true">
+                                                    <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/placeholder_image.png"/>
+                                                </ImageView>
+                                            </imageView>
+                                        </ImageViewPane>
+                                        <ImageViewPane>
+                                            <imageView>
+                                                <ImageView fx:id="ivCroppedImage" preserveRatio="true"/>
+                                            </imageView>
+                                        </ImageViewPane>
+                                        <ProgressIndicator fx:id="piCroppedImage" maxHeight="25.0" maxWidth="25.0" managed="false" visible="false"/>
+                                    </StackPane>
+                                </FourStateTitledPane>
+                            </SplitPane>
+                        </SplitPane>
+                    </center>
+                    <bottom>
+                        <HBox fx:id="buttonPane" alignment="CENTER" spacing="10" HBox.hgrow="ALWAYS">
+                            <Button fx:id="btnCancel" text="%button.cancel" onAction="#onCancelButtonClicked"/>
+                        </HBox>
+                    </bottom>
+                </BorderPane>
+            </content>
+        </DialogPane>
+    </dialogPane>
+</Dialog>

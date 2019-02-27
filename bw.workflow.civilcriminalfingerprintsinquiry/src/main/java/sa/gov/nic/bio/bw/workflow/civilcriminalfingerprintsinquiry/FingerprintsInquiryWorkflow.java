@@ -18,6 +18,7 @@ import sa.gov.nic.bio.bw.workflow.commons.beans.ConvictedReport;
 import sa.gov.nic.bio.bw.workflow.commons.beans.DeporteeInfo;
 import sa.gov.nic.bio.bw.workflow.commons.beans.DisCriminalReport;
 import sa.gov.nic.bio.bw.workflow.commons.beans.PersonInfo;
+import sa.gov.nic.bio.bw.workflow.commons.controllers.FingerprintCapturingFxController;
 import sa.gov.nic.bio.bw.workflow.commons.controllers.InquiryByFingerprintsPaneFxController;
 import sa.gov.nic.bio.bw.workflow.commons.controllers.InquiryByFingerprintsResultPaneFxController;
 import sa.gov.nic.bio.bw.workflow.commons.controllers.ShowingFingerprintsPaneFxController;
@@ -87,6 +88,7 @@ public class FingerprintsInquiryWorkflow extends WizardWorkflowBase
 		{
 			case 0:
 			{
+				setData(FingerprintsSourceFxController.class, "showLiveScanOption", Boolean.TRUE);
 				renderUiAndWaitForUserInput(FingerprintsSourceFxController.class);
 				break;
 			}
@@ -140,6 +142,16 @@ public class FingerprintsInquiryWorkflow extends WizardWorkflowBase
 					         ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask.class,
 					         "missingFingerprints");
 					executeWorkflowTask(ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask.class);
+				}
+				else if(fingerprintsSource == Source.CAPTURING_FINGERPRINTS_VIA_FINGERPRINT_SCANNER)
+				{
+					incrementNSteps(1); // to skip step #2 on going next
+					
+					setData(FingerprintCapturingFxController.class, "acceptBadQualityFingerprint",
+					        Boolean.TRUE);
+					setData(FingerprintCapturingFxController.class, "acceptBadQualityFingerprintMinRetires",
+					        0);
+					renderUiAndWaitForUserInput(FingerprintCapturingFxController.class);
 				}
 				
 				break;
@@ -196,6 +208,13 @@ public class FingerprintsInquiryWorkflow extends WizardWorkflowBase
 					         ShowingFingerprintsPaneFxController.class,
 					         "fingerprintBase64Images");
 				}
+				else if(fingerprintsSource == Source.CAPTURING_FINGERPRINTS_VIA_FINGERPRINT_SCANNER)
+				{
+					incrementNSteps(-1); // to skip step #2 on going previous
+					passData(FingerprintCapturingFxController.class,
+					         ShowingFingerprintsPaneFxController.class,
+					         "fingerprintBase64Images");
+				}
 				
 				renderUiAndWaitForUserInput(ShowingFingerprintsPaneFxController.class);
 				
@@ -240,6 +259,13 @@ public class FingerprintsInquiryWorkflow extends WizardWorkflowBase
 						passData(ExtractingDataFromNistFileWorkflowTask.class, FingerprintInquiryWorkflowTask.class,
 						         "fingerprints");
 						passData(ExtractingDataFromNistFileWorkflowTask.class, FingerprintInquiryWorkflowTask.class,
+						         "missingFingerprints");
+					}
+					else if(fingerprintsSource == Source.CAPTURING_FINGERPRINTS_VIA_FINGERPRINT_SCANNER)
+					{
+						passData(FingerprintCapturingFxController.class, "slapFingerprints",
+						         FingerprintInquiryWorkflowTask.class, "fingerprints");
+						passData(FingerprintCapturingFxController.class, FingerprintInquiryWorkflowTask.class,
 						         "missingFingerprints");
 					}
 					

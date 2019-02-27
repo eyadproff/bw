@@ -30,8 +30,9 @@ public abstract class WizardWorkflowBase extends WorkflowBase implements Resourc
 	private final Map<Class<? extends Callable<TaskResponse<?>>>,
 											Callable<TaskResponse<?>>> lookupInstancesCache = new HashMap<>();
 	
-	private Future<? extends TaskResponse<?>> future;
 	protected Map<String, String> configurations;
+	private Future<? extends TaskResponse<?>> future;
+	private int skippedSteps = 0;
 	
 	public abstract void onStep(int step) throws InterruptedException, Signal;
 	
@@ -159,6 +160,7 @@ public abstract class WizardWorkflowBase extends WorkflowBase implements Resourc
 		{
 			try
 			{
+				skippedSteps = 0;
 				onStep(step);
 				
 				if(!renderedAtLeastOnceInTheStep)
@@ -185,12 +187,16 @@ public abstract class WizardWorkflowBase extends WorkflowBase implements Resourc
 					{
 						if(isGoingBackward())
 						{
+							if(skippedSteps < 0) step += skippedSteps;
+							
 							uiInputData.remove(KEY_WORKFLOW_DIRECTION);
 							Context.getCoreFxController().moveWizardBackward();
 							step--;
 						}
 						else if(isGoingForward())
 						{
+							if(skippedSteps > 0) step += skippedSteps;
+							
 							uiInputData.remove(KEY_WORKFLOW_DIRECTION);
 							Context.getCoreFxController().moveWizardForward();
 							step++;
@@ -210,6 +216,8 @@ public abstract class WizardWorkflowBase extends WorkflowBase implements Resourc
 						}
 					}
 				}
+				
+				skippedSteps = 0;
 			}
 			catch(Throwable t)
 			{
@@ -257,5 +265,10 @@ public abstract class WizardWorkflowBase extends WorkflowBase implements Resourc
 	protected boolean isLeaving()
 	{
 		return isGoingBackward() || isGoingForward() || isStartingOver();
+	}
+	
+	protected void incrementNSteps(int steps)
+	{
+		skippedSteps = steps;
 	}
 }
