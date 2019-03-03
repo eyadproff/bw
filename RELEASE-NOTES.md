@@ -19,6 +19,7 @@ VERSION SCHEMA: vYYYY.MM.#SEQ
 - FIX: CheckForNewUpdatesWorkflowTask NullPointerException.
 - FIX: CancelCriminalWorkflow NumberFormatException.
 - CHN: Add the ability to upload face photo in convicted-report workflows.
+- CHN: Enable registering unknown criminal in case of no hit.
 
 ---
 
