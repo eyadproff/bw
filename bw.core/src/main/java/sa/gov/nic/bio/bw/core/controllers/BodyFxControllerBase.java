@@ -10,6 +10,7 @@ import sa.gov.nic.bio.bw.core.Context;
 import sa.gov.nic.bio.bw.core.interfaces.NotificationController;
 import sa.gov.nic.bio.bw.core.interfaces.WorkflowUserTaskController;
 import sa.gov.nic.bio.bw.core.utils.CoreErrorCodes;
+import sa.gov.nic.bio.bw.core.utils.ThrowableAsException;
 import sa.gov.nic.bio.bw.core.workflow.DataConveyor;
 import sa.gov.nic.bio.bw.core.workflow.Input;
 import sa.gov.nic.bio.bw.core.workflow.Signal;
@@ -74,7 +75,7 @@ public abstract class BodyFxControllerBase extends RegionFxControllerBase implem
 	}
 	
 	public boolean executeUiTask(Class<? extends WorkflowTask> taskClass, SuccessHandler successHandler,
-	                          FailureHandler failureHandler)
+	                             FailureHandler failureHandler)
 	{
 		try
 		{
@@ -102,7 +103,7 @@ public abstract class BodyFxControllerBase extends RegionFxControllerBase implem
 					}
 					catch(Throwable e)
 					{
-						throw new Exception(e);
+						throw new ThrowableAsException(e);
 					}
 					
 					return null;
@@ -126,6 +127,8 @@ public abstract class BodyFxControllerBase extends RegionFxControllerBase implem
 			{
 			    Throwable exception = task.getException();
 			    if(exception instanceof ExecutionException) exception = exception.getCause();
+			    if(exception instanceof ThrowableAsException) exception =
+			                                            ((ThrowableAsException) exception).getWrappedThrowable();
 			    failureHandler.onFailure(exception);
 			});
 			Context.getExecutorService().submit(task);
@@ -241,7 +244,7 @@ public abstract class BodyFxControllerBase extends RegionFxControllerBase implem
 	protected void onDetachingFromScene(){}
 	
 	
-	protected void reportNegativeTaskResponse(String errorCode, Throwable exception, String[] errorDetails)
+	public void reportNegativeTaskResponse(String errorCode, Throwable exception, String[] errorDetails)
 	{
 		if(errorCode.startsWith("B") || errorCode.startsWith("N")) // business error
 		{

@@ -11,13 +11,14 @@ VERSION SCHEMA: vYYYY.MM.#SEQ
 
 ---
 
-## v2019.02.3
+## v2019.03.1
 
-- ENH: Upgrading biokit-library to v2019.02.2.
+- ENH: Upgrading biokit-library to v2019.03.1.
 - ENH: Print HTTP method and HTTP request body on the console.
 - NEW: Add capturing fingerprints via fingerprint scanner as fingerprints source of civilcriminalfingerprintsinquiry workflow.
 - FIX: CheckForNewUpdatesWorkflowTask NullPointerException.
 - FIX: CancelCriminalWorkflow NumberFormatException.
+- CHN: Add the ability to upload face photo in convicted-report workflows.
 
 ---
 

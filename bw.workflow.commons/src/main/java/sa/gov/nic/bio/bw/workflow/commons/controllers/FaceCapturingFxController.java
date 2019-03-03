@@ -30,6 +30,7 @@ import sa.gov.nic.bio.biokit.exceptions.TimeoutException;
 import sa.gov.nic.bio.biokit.face.FaceStopPreviewResponse;
 import sa.gov.nic.bio.biokit.face.beans.CaptureFaceResponse;
 import sa.gov.nic.bio.biokit.face.beans.FaceStartPreviewResponse;
+import sa.gov.nic.bio.bw.commons.resources.fxml.CommonFXML;
 import sa.gov.nic.bio.bw.core.Context;
 import sa.gov.nic.bio.bw.core.controllers.DevicesRunnerGadgetPaneFxController;
 import sa.gov.nic.bio.bw.core.controllers.WizardStepFxControllerBase;
@@ -55,8 +56,6 @@ import java.util.concurrent.Future;
 @FxmlFile("faceCapturing.fxml")
 public class FaceCapturingFxController extends WizardStepFxControllerBase
 {
-	private static final String FXML_3D_FACE = "/sa/gov/nic/bio/bw/workflow/commons/fxml/face3DModel.fxml";
-	
 	@Input private Boolean acceptAnyCapturedImage;
 	@Input private Boolean acceptBadQualityFace;
 	@Input private Integer acceptBadQualityFaceMinRetries;
@@ -138,12 +137,12 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 				Group face3DGroup;
 				try
 				{
-					URL url = getClass().getResource(FXML_3D_FACE);
+					URL url = CommonFXML.FACE_3D_MODEL.getAsUrl();
 					if(url != null) face3DGroup = FXMLLoader.load(url, resources);
 					else
 					{
 						String errorCode = CommonsErrorCodes.C008_00017.getCode();
-						String[] errorDetails = {"failed to load the face 3D fxml (" + FXML_3D_FACE + ")!"};
+						String[] errorDetails = {"failed to load the face 3D model fxml!"};
 						Context.getCoreFxController().showErrorDialog(errorCode, null, errorDetails);
 						
 						return;

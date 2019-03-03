@@ -802,10 +802,30 @@ public class GuiUtils implements AppLogger
 		imageView.setEffect(new GaussianBlur(radius));
 	}
 	
-	public static void attachFacePhotoBase64(ImageView imageView, String facePhotoBase64, boolean blur,
-	                                         Gender subjectGender)
+	public static Image attachFacePhotoBase64(ImageView imageView, String facePhotoBase64)
 	{
-		if(facePhotoBase64 != null)
+		return attachFacePhotoBase64(imageView, facePhotoBase64, false, null);
+	}
+	
+	public static Image attachFacePhoto(ImageView imageView, Image facePhoto)
+	{
+		return attachFacePhoto(imageView, facePhoto, false, null);
+	}
+	
+	public static Image attachFacePhotoBase64(ImageView imageView, String facePhotoBase64, boolean blur,
+	                                          Gender subjectGender)
+	{
+		Image facePhoto;
+		
+		if(facePhotoBase64 != null) facePhoto = AppUtils.imageFromBase64(facePhotoBase64);
+		else facePhoto = null;
+		
+		return attachFacePhoto(imageView, facePhoto, blur, subjectGender);
+	}
+	
+	public static Image attachFacePhoto(ImageView imageView, Image facePhoto, boolean blur, Gender subjectGender)
+	{
+		if(facePhoto != null)
 		{
 			UserInfo userInfo = (UserInfo) Context.getUserSession().getAttribute("userInfo");
 			boolean maleOperator = userInfo != null && userInfo.getGender() > 0 &&
@@ -818,8 +838,7 @@ public class GuiUtils implements AppLogger
 			String maleSeeFemaleRole = Context.getConfigManager().getProperty("face.roles.maleSeeFemale");
 			boolean authorized = userRoles.contains(maleSeeFemaleRole);
 			
-			byte[] bytes = Base64.getDecoder().decode(facePhotoBase64);
-			imageView.setImage(new Image(new ByteArrayInputStream(bytes)));
+			imageView.setImage(facePhoto);
 			ResourceBundle resourceBundle = AppUtils.getCoreStringsResourceBundle();
 			attachImageDialog(Context.getCoreFxController(), imageView,
 			                           resourceBundle.getString("label.personPhoto"),
@@ -828,11 +847,14 @@ public class GuiUtils implements AppLogger
 			
 			imageView.setEffect(null);
 			if(blur && !authorized) blurImageView(imageView);
+			return facePhoto;
 		}
-		else detachFacePhotoBase64(imageView);
+		else detachFacePhoto(imageView);
+		
+		return null;
 	}
 	
-	public static void detachFacePhotoBase64(ImageView imageView)
+	public static void detachFacePhoto(ImageView imageView)
 	{
 		imageView.setImage(new Image(CommonImages.PLACEHOLDER_AVATAR.getAsInputStream()));
 		imageView.setOnMouseClicked(null);

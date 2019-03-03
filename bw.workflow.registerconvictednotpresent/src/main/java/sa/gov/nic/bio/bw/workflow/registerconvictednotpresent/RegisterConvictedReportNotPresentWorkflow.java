@@ -19,7 +19,6 @@ import sa.gov.nic.bio.bw.workflow.commons.beans.ConvictedReport;
 import sa.gov.nic.bio.bw.workflow.commons.beans.CrimeCode;
 import sa.gov.nic.bio.bw.workflow.commons.beans.DeporteeInfo;
 import sa.gov.nic.bio.bw.workflow.commons.beans.DisCriminalReport;
-import sa.gov.nic.bio.bw.workflow.commons.beans.NormalizedPersonInfo;
 import sa.gov.nic.bio.bw.workflow.commons.beans.PersonInfo;
 import sa.gov.nic.bio.bw.workflow.commons.controllers.InquiryByFingerprintsPaneFxController;
 import sa.gov.nic.bio.bw.workflow.commons.controllers.InquiryByFingerprintsResultPaneFxController;
@@ -371,8 +370,6 @@ public class RegisterConvictedReportNotPresentWorkflow extends WizardWorkflowBas
 				         InquiryByFingerprintsResultPaneFxController.class, "oldCriminalPersonInfoMap");
 				passData(getClass(), FIELD_NEW_CRIMINAL_PERSON_INFO_MAP,
 				         InquiryByFingerprintsResultPaneFxController.class, "newCriminalPersonInfoMap");
-				setData(InquiryByFingerprintsResultPaneFxController.class, "hideRegisterUnknownButton",
-				        Boolean.TRUE);
 				passData(FingerprintInquiryStatusCheckerWorkflowTask.class,
 				         InquiryByFingerprintsResultPaneFxController.class,
 				         "status", "civilBiometricsId", "criminalBiometricsId");
@@ -400,16 +397,9 @@ public class RegisterConvictedReportNotPresentWorkflow extends WizardWorkflowBas
 			}
 			case 9:
 			{
-				NormalizedPersonInfo normalizedPersonInfo = getData(InquiryByFingerprintsResultPaneFxController.class,
-				                                                    "normalizedPersonInfo");
-				
-				if(normalizedPersonInfo != null) setData(ShareInformationPaneFxController.class,
-				                                         "facePhotoBase64",
-				                                         normalizedPersonInfo.getFacePhotoBase64());
-				
 				passData(UpdatePersonInfoPaneFxController.class, ShareInformationPaneFxController.class,
-				         "firstName", "familyName" , "gender", "nationality", "birthDate",
-				         "documentId", "documentType", "documentIssuanceDate", "documentExpiryDate");
+				         "facePhotoBase64", "firstName", "familyName", "gender", "nationality",
+				         "birthDate", "documentId", "documentType", "documentIssuanceDate", "documentExpiryDate");
 				passData(JudgmentDetailsPaneFxController.class, ShareInformationPaneFxController.class,
 				         "crimes", "judgmentDate");
 				renderUiAndWaitForUserInput(ShareInformationPaneFxController.class);
@@ -417,20 +407,14 @@ public class RegisterConvictedReportNotPresentWorkflow extends WizardWorkflowBas
 			}
 			case 10:
 			{
-				NormalizedPersonInfo normalizedPersonInfo = getData(InquiryByFingerprintsResultPaneFxController.class,
-				                                                    "normalizedPersonInfo");
-				
-				if(normalizedPersonInfo != null) setData(ReviewAndSubmitPaneFxController.class,
-				                                         "facePhotoBase64",
-				                                         normalizedPersonInfo.getFacePhotoBase64());
-				
 				passData(FingerprintInquiryStatusCheckerWorkflowTask.class, ReviewAndSubmitPaneFxController.class,
 				         "civilBiometricsId", "criminalBiometricsId");
 				
 				passData(UpdatePersonInfoPaneFxController.class, ReviewAndSubmitPaneFxController.class,
-				         "firstName", "fatherName", "grandfatherName", "familyName", "gender",
-				         "nationality", "occupation", "birthPlace", "birthDate", "birthDateUseHijri", "personId",
-				         "personType", "documentId", "documentType", "documentIssuanceDate", "documentExpiryDate");
+				         "facePhotoBase64", "firstName", "fatherName", "grandfatherName",
+				         "familyName", "gender", "nationality", "occupation", "birthPlace", "birthDate",
+				         "birthDateUseHijri", "personId", "personType", "documentId", "documentType",
+				         "documentIssuanceDate", "documentExpiryDate");
 				
 				passData(JudgmentDetailsPaneFxController.class, ReviewAndSubmitPaneFxController.class,
 				         "judgmentIssuer" , "judgmentNumber", "judgmentDate", "judgmentDateUseHijri",

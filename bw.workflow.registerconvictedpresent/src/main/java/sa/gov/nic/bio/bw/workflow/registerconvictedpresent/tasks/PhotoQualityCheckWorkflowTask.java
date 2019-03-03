@@ -7,6 +7,7 @@ import sa.gov.nic.bio.bw.core.workflow.Input;
 import sa.gov.nic.bio.bw.core.workflow.Output;
 import sa.gov.nic.bio.bw.core.workflow.Signal;
 import sa.gov.nic.bio.bw.core.workflow.WorkflowTask;
+import sa.gov.nic.bio.bw.workflow.commons.utils.CommonsErrorCodes;
 import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.utils.RegisterConvictedPresentErrorCodes;
 import sa.gov.nic.bio.commons.TaskResponse;
 
@@ -33,12 +34,12 @@ public class PhotoQualityCheckWorkflowTask extends WorkflowTask
 		{
 			if(e instanceof ExecutionException && e.getCause() instanceof NotConnectedException)
 			{
-				String errorCode = RegisterConvictedPresentErrorCodes.C007_00008.getCode();
+				String errorCode = CommonsErrorCodes.N008_00001.getCode();
 				resetWorkflowStepIfNegativeOrNullTaskResponse(TaskResponse.failure(errorCode));
 				return;
 			}
 			
-			String errorCode = RegisterConvictedPresentErrorCodes.C007_00009.getCode();
+			String errorCode = RegisterConvictedPresentErrorCodes.C007_00008.getCode();
 			String[] errorDetails = {"Failed to call the service for photo quality check!"};
 			resetWorkflowStepIfNegativeOrNullTaskResponse(TaskResponse.failure(errorCode, e, errorDetails));
 			return;

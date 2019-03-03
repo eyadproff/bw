@@ -214,7 +214,7 @@ public class RegisteringConvictedReportPaneFxController extends WizardStepFxCont
 	}
 	
 	@Override
-	protected void reportNegativeTaskResponse(String errorCode, Throwable exception, String[] errorDetails)
+	public void reportNegativeTaskResponse(String errorCode, Throwable exception, String[] errorDetails)
 	{
 		if("B003-0042".equals(errorCode) || "B003-0044".equals(errorCode)) disableRetryButtonForever = true;
 		
