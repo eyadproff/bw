@@ -13,7 +13,7 @@ VERSION SCHEMA: vYYYY.MM.#SEQ
 
 ## v2019.03.2
 
-- ENH: Add a small button beside some labels to copy its content.
+- ENH: Add a small button besides some labels to be able to copy the text.
 
 ---
 
