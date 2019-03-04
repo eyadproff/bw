@@ -15,6 +15,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
+<?import sa.gov.nic.bio.bw.workflow.commons.ui.CopiableLabel?>
 <?import sa.gov.nic.bio.bw.workflow.commons.ui.ImageViewPane?>
 <BorderPane xmlns="http://javafx.com/javafx/11" xmlns:fx="http://javafx.com/fxml/1"
             fx:id="rootPane" stylesheets="@../css/style.css"
@@ -35,11 +36,11 @@
                                 <VBox alignment="CENTER">
                                     <GridPane alignment="CENTER" hgap="10.0" vgap="3.0">
                                         <Label text="%label.reportNumber" GridPane.rowIndex="0" GridPane.columnIndex="0" styleClass="bold-label"/>
-                                        <Label fx:id="lblReportNumber" GridPane.rowIndex="0" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
+                                        <CopiableLabel fx:id="lblReportNumber" GridPane.rowIndex="0" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
                                         <Label text="%label.enrollerId" GridPane.rowIndex="1" GridPane.columnIndex="0" styleClass="bold-label"/>
-                                        <Label fx:id="lblEnrollerId" GridPane.rowIndex="1" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
+                                        <CopiableLabel fx:id="lblEnrollerId" GridPane.rowIndex="1" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
                                         <Label text="%label.enrollmentTime" GridPane.rowIndex="2" GridPane.columnIndex="0" styleClass="bold-label"/>
-                                        <Label fx:id="lblEnrollmentTime" GridPane.rowIndex="2" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
+                                        <CopiableLabel fx:id="lblEnrollmentTime" GridPane.rowIndex="2" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
                                     </GridPane>
                                 </VBox>
                             </TitledPane>
@@ -58,39 +59,39 @@
                                 <VBox alignment="CENTER">
                                     <GridPane alignment="CENTER" hgap="10.0" vgap="3.0">
                                         <Label text="%label.civilBiometricsId" GridPane.rowIndex="0" GridPane.columnIndex="0" styleClass="bold-label"/>
-                                        <Label fx:id="lblCivilBiometricsId" GridPane.rowIndex="0" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
+                                        <CopiableLabel fx:id="lblCivilBiometricsId" GridPane.rowIndex="0" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
                                         <Label text="%label.criminalBiometricsId" GridPane.rowIndex="1" GridPane.columnIndex="0" styleClass="bold-label"/>
-                                        <Label fx:id="lblCriminalBiometricsId" GridPane.rowIndex="1" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
+                                        <CopiableLabel fx:id="lblCriminalBiometricsId" GridPane.rowIndex="1" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
                                         <Label text="%label.firstName" GridPane.rowIndex="2" GridPane.columnIndex="0" styleClass="bold-label"/>
-                                        <Label fx:id="lblFirstName" GridPane.rowIndex="2" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
+                                        <CopiableLabel fx:id="lblFirstName" GridPane.rowIndex="2" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
                                         <Label text="%label.fatherName" GridPane.rowIndex="3" GridPane.columnIndex="0" styleClass="bold-label"/>
-                                        <Label fx:id="lblFatherName" GridPane.rowIndex="3" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
+                                        <CopiableLabel fx:id="lblFatherName" GridPane.rowIndex="3" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
                                         <Label text="%label.grandfatherName" GridPane.rowIndex="4" GridPane.columnIndex="0" styleClass="bold-label"/>
-                                        <Label fx:id="lblGrandfatherName" GridPane.rowIndex="4" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
+                                        <CopiableLabel fx:id="lblGrandfatherName" GridPane.rowIndex="4" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
                                         <Label text="%label.familyName" GridPane.rowIndex="5" GridPane.columnIndex="0" styleClass="bold-label"/>
-                                        <Label fx:id="lblFamilyName" GridPane.rowIndex="5" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
+                                        <CopiableLabel fx:id="lblFamilyName" GridPane.rowIndex="5" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
                                         <Label text="%label.gender" GridPane.rowIndex="6" GridPane.columnIndex="0" styleClass="bold-label"/>
-                                        <Label fx:id="lblGender" GridPane.rowIndex="6" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
+                                        <CopiableLabel fx:id="lblGender" GridPane.rowIndex="6" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
                                         <Label text="%label.nationality" GridPane.rowIndex="7" GridPane.columnIndex="0" styleClass="bold-label"/>
-                                        <Label fx:id="lblNationality" GridPane.rowIndex="7" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
+                                        <CopiableLabel fx:id="lblNationality" GridPane.rowIndex="7" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
                                         <Label text="%label.occupation" GridPane.rowIndex="8" GridPane.columnIndex="0" styleClass="bold-label"/>
-                                        <Label fx:id="lblOccupation" wrapText="true" GridPane.rowIndex="8" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
+                                        <CopiableLabel fx:id="lblOccupation" wrapText="true" GridPane.rowIndex="8" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
                                         <Label text="%label.birthPlace" GridPane.rowIndex="9" GridPane.columnIndex="0" styleClass="bold-label"/>
-                                        <Label fx:id="lblBirthPlace" GridPane.rowIndex="9" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
+                                        <CopiableLabel fx:id="lblBirthPlace" GridPane.rowIndex="9" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
                                         <Label text="%label.birthDate" GridPane.rowIndex="10" GridPane.columnIndex="0" styleClass="bold-label"/>
-                                        <Label fx:id="lblBirthDate" GridPane.rowIndex="10" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
+                                        <CopiableLabel fx:id="lblBirthDate" GridPane.rowIndex="10" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
                                         <Label text="%label.personId" GridPane.rowIndex="11" GridPane.columnIndex="0" styleClass="bold-label"/>
-                                        <Label fx:id="lblPersonId" GridPane.rowIndex="11" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
+                                        <CopiableLabel fx:id="lblPersonId" GridPane.rowIndex="11" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
                                         <Label text="%label.personType" GridPane.rowIndex="12" GridPane.columnIndex="0" styleClass="bold-label"/>
-                                        <Label fx:id="lblPersonType" GridPane.rowIndex="12" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
+                                        <CopiableLabel fx:id="lblPersonType" GridPane.rowIndex="12" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
                                         <Label text="%label.documentId" GridPane.rowIndex="13" GridPane.columnIndex="0" styleClass="bold-label"/>
-                                        <Label fx:id="lblDocumentId" GridPane.rowIndex="13" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
+                                        <CopiableLabel fx:id="lblDocumentId" GridPane.rowIndex="13" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
                                         <Label text="%label.documentType" GridPane.rowIndex="14" GridPane.columnIndex="0" styleClass="bold-label"/>
-                                        <Label fx:id="lblDocumentType" GridPane.rowIndex="14" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
+                                        <CopiableLabel fx:id="lblDocumentType" GridPane.rowIndex="14" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
                                         <Label text="%label.documentIssuanceDate" GridPane.rowIndex="15" GridPane.columnIndex="0" styleClass="bold-label"/>
-                                        <Label fx:id="lblDocumentIssuanceDate" GridPane.rowIndex="15" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
+                                        <CopiableLabel fx:id="lblDocumentIssuanceDate" GridPane.rowIndex="15" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
                                         <Label text="%label.documentExpiryDate" GridPane.rowIndex="16" GridPane.columnIndex="0" styleClass="bold-label"/>
-                                        <Label fx:id="lblDocumentExpiryDate" GridPane.rowIndex="16" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
+                                        <CopiableLabel fx:id="lblDocumentExpiryDate" GridPane.rowIndex="16" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
                                     </GridPane>
                                 </VBox>
                             </TitledPane>
@@ -98,27 +99,27 @@
                                 <VBox alignment="CENTER">
                                     <GridPane alignment="CENTER" hgap="10.0" vgap="3.0">
                                         <Label text="%label.crimeClassification" GridPane.rowIndex="0" GridPane.columnIndex="0" styleClass="bold-label" GridPane.columnSpan="2"/>
-                                        <Label fx:id="lblCrimeClassification1" GridPane.rowIndex="1" GridPane.columnIndex="0" GridPane.hgrow="ALWAYS" GridPane.columnSpan="2"/>
-                                        <Label fx:id="lblCrimeClassification2" GridPane.rowIndex="2" GridPane.columnIndex="0" GridPane.hgrow="ALWAYS" GridPane.columnSpan="2" managed="false" visible="false"/>
-                                        <Label fx:id="lblCrimeClassification3" GridPane.rowIndex="3" GridPane.columnIndex="0" GridPane.hgrow="ALWAYS" GridPane.columnSpan="2" managed="false" visible="false"/>
-                                        <Label fx:id="lblCrimeClassification4" GridPane.rowIndex="4" GridPane.columnIndex="0" GridPane.hgrow="ALWAYS" GridPane.columnSpan="2" managed="false" visible="false"/>
-                                        <Label fx:id="lblCrimeClassification5" GridPane.rowIndex="5" GridPane.columnIndex="0" GridPane.hgrow="ALWAYS" GridPane.columnSpan="2" managed="false" visible="false">
+                                        <CopiableLabel fx:id="lblCrimeClassification1" GridPane.rowIndex="1" GridPane.columnIndex="0" GridPane.hgrow="ALWAYS" GridPane.columnSpan="2"/>
+                                        <CopiableLabel fx:id="lblCrimeClassification2" GridPane.rowIndex="2" GridPane.columnIndex="0" GridPane.hgrow="ALWAYS" GridPane.columnSpan="2" managed="false" visible="false"/>
+                                        <CopiableLabel fx:id="lblCrimeClassification3" GridPane.rowIndex="3" GridPane.columnIndex="0" GridPane.hgrow="ALWAYS" GridPane.columnSpan="2" managed="false" visible="false"/>
+                                        <CopiableLabel fx:id="lblCrimeClassification4" GridPane.rowIndex="4" GridPane.columnIndex="0" GridPane.hgrow="ALWAYS" GridPane.columnSpan="2" managed="false" visible="false"/>
+                                        <CopiableLabel fx:id="lblCrimeClassification5" GridPane.rowIndex="5" GridPane.columnIndex="0" GridPane.hgrow="ALWAYS" GridPane.columnSpan="2" managed="false" visible="false">
                                             <GridPane.margin>
                                                 <Insets bottom="20.0"/>
                                             </GridPane.margin>
-                                        </Label>
+                                        </CopiableLabel>
                                         <Label text="%label.judgmentIssuer" GridPane.rowIndex="6" GridPane.columnIndex="0" styleClass="bold-label"/>
-                                        <Label fx:id="lblJudgmentIssuer" GridPane.rowIndex="6" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
+                                        <CopiableLabel fx:id="lblJudgmentIssuer" GridPane.rowIndex="6" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
                                         <Label text="%label.judgmentNumber" GridPane.rowIndex="7" GridPane.columnIndex="0" styleClass="bold-label"/>
-                                        <Label fx:id="lblJudgmentNumber" GridPane.rowIndex="7" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
+                                        <CopiableLabel fx:id="lblJudgmentNumber" GridPane.rowIndex="7" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
                                         <Label text="%label.judgmentDate" GridPane.rowIndex="8" GridPane.columnIndex="0" styleClass="bold-label"/>
-                                        <Label fx:id="lblJudgmentDate" GridPane.rowIndex="8" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
+                                        <CopiableLabel fx:id="lblJudgmentDate" GridPane.rowIndex="8" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
                                         <Label text="%label.caseFileNumber" GridPane.rowIndex="9" GridPane.columnIndex="0" styleClass="bold-label"/>
-                                        <Label fx:id="lblCaseFileNumber" GridPane.rowIndex="9" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
+                                        <CopiableLabel fx:id="lblCaseFileNumber" GridPane.rowIndex="9" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
                                         <Label text="%label.prisonerNumber" GridPane.rowIndex="10" GridPane.columnIndex="0" styleClass="bold-label"/>
-                                        <Label fx:id="lblPrisonerNumber" GridPane.rowIndex="10" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
+                                        <CopiableLabel fx:id="lblPrisonerNumber" GridPane.rowIndex="10" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
                                         <Label text="%label.arrestDate" GridPane.rowIndex="11" GridPane.columnIndex="0" styleClass="bold-label"/>
-                                        <Label fx:id="lblArrestDate" GridPane.rowIndex="11" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
+                                        <CopiableLabel fx:id="lblArrestDate" GridPane.rowIndex="11" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
                                     </GridPane>
                                 </VBox>
                             </TitledPane>
@@ -134,7 +135,7 @@
                                             <GridPane.margin>
                                                 <Insets bottom="5.0"/>
                                             </GridPane.margin>
-                                            <Label fx:id="lblTazeerLashes"/>
+                                            <CopiableLabel fx:id="lblTazeerLashes"/>
                                             <Label text="%label.lashes"/>
                                         </HBox>
                                         <Label text="%label.HadLashing" GridPane.rowIndex="1" GridPane.columnIndex="0" styleClass="bold-label">
@@ -146,7 +147,7 @@
                                             <GridPane.margin>
                                                 <Insets bottom="5.0"/>
                                             </GridPane.margin>
-                                            <Label fx:id="lblHadLashes"/>
+                                            <CopiableLabel fx:id="lblHadLashes"/>
                                             <Label text="%label.lashes"/>
                                         </HBox>
                                         <Label text="%label.fine" GridPane.rowIndex="2" GridPane.columnIndex="0" styleClass="bold-label">
@@ -158,7 +159,7 @@
                                             <GridPane.margin>
                                                 <Insets bottom="5.0"/>
                                             </GridPane.margin>
-                                            <Label fx:id="lblFine"/>
+                                            <CopiableLabel fx:id="lblFine"/>
                                             <Label text="%label.riyals"/>
                                         </HBox>
                                         <Label text="%label.jail" GridPane.rowIndex="3" GridPane.columnIndex="0" styleClass="bold-label">
@@ -166,31 +167,31 @@
                                                 <Insets bottom="5.0"/>
                                             </GridPane.margin>
                                         </Label>
-                                        <Label fx:id="lblJailYears" GridPane.rowIndex="3" GridPane.columnIndex="1">
+                                        <CopiableLabel fx:id="lblJailYears" GridPane.rowIndex="3" GridPane.columnIndex="1">
                                             <GridPane.margin>
                                                 <Insets bottom="5.0"/>
                                             </GridPane.margin>
-                                        </Label>
+                                        </CopiableLabel>
                                         <Label text="%label.years" GridPane.rowIndex="3" GridPane.columnIndex="2">
                                             <GridPane.margin>
                                                 <Insets bottom="5.0"/>
                                             </GridPane.margin>
                                         </Label>
-                                        <Label fx:id="lblJailMonths" GridPane.rowIndex="3" GridPane.columnIndex="3">
+                                        <CopiableLabel fx:id="lblJailMonths" GridPane.rowIndex="3" GridPane.columnIndex="3">
                                             <GridPane.margin>
                                                 <Insets bottom="5.0"/>
                                             </GridPane.margin>
-                                        </Label>
+                                        </CopiableLabel>
                                         <Label text="%label.months" GridPane.rowIndex="3" GridPane.columnIndex="4">
                                             <GridPane.margin>
                                                 <Insets bottom="5.0"/>
                                             </GridPane.margin>
                                         </Label>
-                                        <Label fx:id="lblJailDays" GridPane.rowIndex="3" GridPane.columnIndex="5">
+                                        <CopiableLabel fx:id="lblJailDays" GridPane.rowIndex="3" GridPane.columnIndex="5">
                                             <GridPane.margin>
                                                 <Insets bottom="5.0"/>
                                             </GridPane.margin>
-                                        </Label>
+                                        </CopiableLabel>
                                         <Label text="%label.days" GridPane.rowIndex="3" GridPane.columnIndex="6">
                                             <GridPane.margin>
                                                 <Insets bottom="5.0"/>
@@ -201,31 +202,31 @@
                                                 <Insets bottom="5.0"/>
                                             </GridPane.margin>
                                         </Label>
-                                        <Label fx:id="lblTravelBanYears" GridPane.rowIndex="4" GridPane.columnIndex="1">
+                                        <CopiableLabel fx:id="lblTravelBanYears" GridPane.rowIndex="4" GridPane.columnIndex="1">
                                             <GridPane.margin>
                                                 <Insets bottom="5.0"/>
                                             </GridPane.margin>
-                                        </Label>
+                                        </CopiableLabel>
                                         <Label text="%label.years" GridPane.rowIndex="4" GridPane.columnIndex="2">
                                             <GridPane.margin>
                                                 <Insets bottom="5.0"/>
                                             </GridPane.margin>
                                         </Label>
-                                        <Label fx:id="lblTravelBanMonths" GridPane.rowIndex="4" GridPane.columnIndex="3">
+                                        <CopiableLabel fx:id="lblTravelBanMonths" GridPane.rowIndex="4" GridPane.columnIndex="3">
                                             <GridPane.margin>
                                                 <Insets bottom="5.0"/>
                                             </GridPane.margin>
-                                        </Label>
+                                        </CopiableLabel>
                                         <Label text="%label.months" GridPane.rowIndex="4" GridPane.columnIndex="4">
                                             <GridPane.margin>
                                                 <Insets bottom="5.0"/>
                                             </GridPane.margin>
                                         </Label>
-                                        <Label fx:id="lblTravelBanDays" GridPane.rowIndex="4" GridPane.columnIndex="5">
+                                        <CopiableLabel fx:id="lblTravelBanDays" GridPane.rowIndex="4" GridPane.columnIndex="5">
                                             <GridPane.margin>
                                                 <Insets bottom="5.0"/>
                                             </GridPane.margin>
-                                        </Label>
+                                        </CopiableLabel>
                                         <Label text="%label.days" GridPane.rowIndex="4" GridPane.columnIndex="6">
                                             <GridPane.margin>
                                                 <Insets bottom="5.0"/>
@@ -236,31 +237,31 @@
                                                 <Insets bottom="5.0"/>
                                             </GridPane.margin>
                                         </Label>
-                                        <Label fx:id="lblExilingYears" GridPane.rowIndex="5" GridPane.columnIndex="1">
+                                        <CopiableLabel fx:id="lblExilingYears" GridPane.rowIndex="5" GridPane.columnIndex="1">
                                             <GridPane.margin>
                                                 <Insets bottom="5.0"/>
                                             </GridPane.margin>
-                                        </Label>
+                                        </CopiableLabel>
                                         <Label text="%label.years" GridPane.rowIndex="5" GridPane.columnIndex="2">
                                             <GridPane.margin>
                                                 <Insets bottom="5.0"/>
                                             </GridPane.margin>
                                         </Label>
-                                        <Label fx:id="lblExilingMonths" GridPane.rowIndex="5" GridPane.columnIndex="3">
+                                        <CopiableLabel fx:id="lblExilingMonths" GridPane.rowIndex="5" GridPane.columnIndex="3">
                                             <GridPane.margin>
                                                 <Insets bottom="5.0"/>
                                             </GridPane.margin>
-                                        </Label>
+                                        </CopiableLabel>
                                         <Label text="%label.months" GridPane.rowIndex="5" GridPane.columnIndex="4">
                                             <GridPane.margin>
                                                 <Insets bottom="5.0"/>
                                             </GridPane.margin>
                                         </Label>
-                                        <Label fx:id="lblExilingDays" GridPane.rowIndex="5" GridPane.columnIndex="5">
+                                        <CopiableLabel fx:id="lblExilingDays" GridPane.rowIndex="5" GridPane.columnIndex="5">
                                             <GridPane.margin>
                                                 <Insets bottom="5.0"/>
                                             </GridPane.margin>
-                                        </Label>
+                                        </CopiableLabel>
                                         <Label text="%label.days" GridPane.rowIndex="5" GridPane.columnIndex="6">
                                             <GridPane.margin>
                                                 <Insets bottom="5.0"/>
@@ -271,38 +272,38 @@
                                                 <Insets bottom="5.0"/>
                                             </GridPane.margin>
                                         </Label>
-                                        <Label fx:id="lblDeportationYears" GridPane.rowIndex="6" GridPane.columnIndex="1">
+                                        <CopiableLabel fx:id="lblDeportationYears" GridPane.rowIndex="6" GridPane.columnIndex="1">
                                             <GridPane.margin>
                                                 <Insets bottom="5.0"/>
                                             </GridPane.margin>
-                                        </Label>
+                                        </CopiableLabel>
                                         <Label text="%label.years" GridPane.rowIndex="6" GridPane.columnIndex="2">
                                             <GridPane.margin>
                                                 <Insets bottom="5.0"/>
                                             </GridPane.margin>
                                         </Label>
-                                        <Label fx:id="lblDeportationMonths" GridPane.rowIndex="6" GridPane.columnIndex="3">
+                                        <CopiableLabel fx:id="lblDeportationMonths" GridPane.rowIndex="6" GridPane.columnIndex="3">
                                             <GridPane.margin>
                                                 <Insets bottom="5.0"/>
                                             </GridPane.margin>
-                                        </Label>
+                                        </CopiableLabel>
                                         <Label text="%label.months" GridPane.rowIndex="6" GridPane.columnIndex="4">
                                             <GridPane.margin>
                                                 <Insets bottom="5.0"/>
                                             </GridPane.margin>
                                         </Label>
-                                        <Label fx:id="lblDeportationDays" GridPane.rowIndex="6" GridPane.columnIndex="5">
+                                        <CopiableLabel fx:id="lblDeportationDays" GridPane.rowIndex="6" GridPane.columnIndex="5">
                                             <GridPane.margin>
                                                 <Insets bottom="5.0"/>
                                             </GridPane.margin>
-                                        </Label>
+                                        </CopiableLabel>
                                         <Label text="%label.days" GridPane.rowIndex="6" GridPane.columnIndex="6">
                                             <GridPane.margin>
                                                 <Insets bottom="5.0"/>
                                             </GridPane.margin>
                                         </Label>
                                         <Label text="%label.other" GridPane.rowIndex="7" GridPane.columnIndex="0" styleClass="bold-label"/>
-                                        <Label fx:id="lblOther" GridPane.rowIndex="7" GridPane.columnIndex="1" GridPane.columnSpan="6" GridPane.hgrow="ALWAYS" wrapText="true"/>
+                                        <CopiableLabel fx:id="lblOther" GridPane.rowIndex="7" GridPane.columnIndex="1" GridPane.columnSpan="6" GridPane.hgrow="ALWAYS" wrapText="true"/>
                                         <CheckBox fx:id="cbFinalDeportation" text="%label.finalDeportation" disable="true" GridPane.rowIndex="8" GridPane.columnIndex="0" GridPane.columnSpan="4" GridPane.hgrow="ALWAYS" styleClass="bold-label, fakely-enabled">
                                             <GridPane.margin>
                                                 <Insets bottom="5.0" top="10.0"/>

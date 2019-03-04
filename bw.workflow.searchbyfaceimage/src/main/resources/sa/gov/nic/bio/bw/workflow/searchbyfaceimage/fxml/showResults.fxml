@@ -11,6 +11,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
+<?import sa.gov.nic.bio.bw.workflow.commons.ui.CopiableLabel?>
 <?import sa.gov.nic.bio.bw.workflow.searchbyfaceimage.ui.ToggleTitledPane?>
 <BorderPane xmlns="http://javafx.com/javafx/11" xmlns:fx="http://javafx.com/fxml/1"
             fx:id="rootPane" stylesheets="@../css/style.css"
@@ -31,27 +32,27 @@
                         <VBox fx:id="detailsPane" spacing="5" managed="false" visible="false">
                             <HBox spacing="5">
                                 <Label text="%label.bioId" styleClass="bold-text"/>
-                                <Label fx:id="lblBioId" text="%label.notAvailable"/>
+                                <CopiableLabel fx:id="lblBioId" text="%label.notAvailable"/>
                             </HBox>
                             <HBox spacing="5">
                                 <Label text="%label.score" styleClass="bold-text"/>
-                                <Label fx:id="lblScore" text="%label.notAvailable"/>
+                                <CopiableLabel fx:id="lblScore" text="%label.notAvailable"/>
                             </HBox>
                             <HBox spacing="5">
                                 <Label text="%label.personId" styleClass="bold-text"/>
-                                <Label fx:id="lblPersonId" text="%label.notAvailable"/>
+                                <CopiableLabel fx:id="lblPersonId" text="%label.notAvailable"/>
                             </HBox>
                             <HBox spacing="5">
                                 <Label text="%label.firstName" styleClass="bold-text"/>
-                                <Label fx:id="lblFirstName" text="%label.notAvailable"/>
+                                <CopiableLabel fx:id="lblFirstName" text="%label.notAvailable"/>
                             </HBox>
                             <HBox spacing="5">
                                 <Label text="%label.fatherName" styleClass="bold-text"/>
-                                <Label fx:id="lblFatherName" text="%label.notAvailable"/>
+                                <CopiableLabel fx:id="lblFatherName" text="%label.notAvailable"/>
                             </HBox>
                             <HBox spacing="5">
                                 <Label text="%label.familyName" styleClass="bold-text"/>
-                                <Label fx:id="lblFamilyName" text="%label.notAvailable"/>
+                                <CopiableLabel fx:id="lblFamilyName" text="%label.notAvailable"/>
                             </HBox>
                         </VBox>
                     </HBox>

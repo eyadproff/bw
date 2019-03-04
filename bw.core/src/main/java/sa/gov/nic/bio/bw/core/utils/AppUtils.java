@@ -8,6 +8,8 @@ import javafx.embed.swing.SwingFXUtils;
 import javafx.geometry.NodeOrientation;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
+import javafx.scene.input.Clipboard;
+import javafx.scene.input.ClipboardContent;
 import org.controlsfx.glyphfont.FontAwesome;
 import org.controlsfx.glyphfont.Glyph;
 import org.scenicview.ScenicView;
@@ -837,5 +839,12 @@ public final class AppUtils implements AppLogger
 		ClientErrorReportingAPI api = webserviceManager.getApi(ClientErrorReportingAPI.class);
 		Call<RefreshTokenBean> call = api.refreshToken(toJson(clientErrorLog));
 		webserviceManager.executeApi(call); // ignore response
+	}
+	
+	public static void copyToClipboard(String text)
+	{
+		ClipboardContent content = new ClipboardContent();
+		content.putString(text);
+		Clipboard.getSystemClipboard().setContent(content);
 	}
 }

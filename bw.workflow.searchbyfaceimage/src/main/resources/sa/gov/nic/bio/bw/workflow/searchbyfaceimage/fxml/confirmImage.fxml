@@ -8,6 +8,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
+<?import sa.gov.nic.bio.bw.workflow.commons.ui.CopiableLabel?>
 <BorderPane xmlns="http://javafx.com/javafx/11" xmlns:fx="http://javafx.com/fxml/1"
             fx:id="rootPane" stylesheets="@../css/style.css"
             fx:controller="sa.gov.nic.bio.bw.workflow.searchbyfaceimage.controllers.ConfirmImageFxController">
@@ -24,7 +25,7 @@
             </HBox>
             <HBox fx:id="personIdPane" spacing="5.0" alignment="CENTER" visible="false" managed="false">
                 <Label text="%label.personId"/>
-                <Label fx:id="lblPersonId"/>
+                <CopiableLabel fx:id="lblPersonId"/>
             </HBox>
         </VBox>
     </center>
