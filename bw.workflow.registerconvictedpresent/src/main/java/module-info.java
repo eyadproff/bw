@@ -4,6 +4,7 @@ module bw.workflow.registerconvictedpresent
 	requires bw.workflow.commons;
 	requires jasperreports;
 	requires bio.commons;
+	requires biokit.library;
 	
 	opens sa.gov.nic.bio.bw.workflow.registerconvictedpresent to bw.core;
 	opens sa.gov.nic.bio.bw.workflow.registerconvictedpresent.fxml to bw.core;

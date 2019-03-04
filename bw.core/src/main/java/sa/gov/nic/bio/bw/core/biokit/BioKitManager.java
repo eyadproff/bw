@@ -8,6 +8,7 @@ import sa.gov.nic.bio.biokit.exceptions.AlreadyConnectedException;
 import sa.gov.nic.bio.biokit.exceptions.ConnectionException;
 import sa.gov.nic.bio.biokit.exceptions.NotConnectedException;
 import sa.gov.nic.bio.biokit.face.FaceService;
+import sa.gov.nic.bio.biokit.face.FaceUtilitiesService;
 import sa.gov.nic.bio.biokit.fingerprint.FingerprintService;
 import sa.gov.nic.bio.biokit.fingerprint.FingerprintUtilitiesService;
 import sa.gov.nic.bio.biokit.passport.PassportScannerService;
@@ -26,6 +27,7 @@ public class BioKitManager
 	private WebsocketClient websocketClient;
 	private FaceService faceService;
 	private FingerprintService fingerprintService;
+	private FaceUtilitiesService faceUtilitiesService;
 	private FingerprintUtilitiesService fingerprintUtilitiesService;
 	private PassportScannerService passportScannerService;
 	private ScannerService scannerService;
@@ -45,6 +47,7 @@ public class BioKitManager
 		
 		faceService = DeviceServiceFactory.getFaceService(websocketClient);
 		fingerprintService = DeviceServiceFactory.getFingerprintService(websocketClient);
+		faceUtilitiesService = DeviceUtilitiesServiceFactory.getFaceUtilitiesService(websocketClient);
 		fingerprintUtilitiesService = DeviceUtilitiesServiceFactory.getFingerprintUtilitiesService(websocketClient);
 		passportScannerService = DeviceServiceFactory.getPassportScannerService(websocketClient);
 		scannerService = DeviceServiceFactory.getScannerService(websocketClient);
@@ -75,6 +78,7 @@ public class BioKitManager
 	public int getWebsocketPort(){return websocketPort;}
 	public FaceService getFaceService(){return faceService;}
 	public FingerprintService getFingerprintService(){return fingerprintService;}
+	public FaceUtilitiesService getFaceUtilitiesService(){return faceUtilitiesService;}
 	public FingerprintUtilitiesService getFingerprintUtilitiesService(){return fingerprintUtilitiesService;}
 	public PassportScannerService getPassportScannerService(){return passportScannerService;}
 	public ScannerService getScannerService(){return scannerService;}

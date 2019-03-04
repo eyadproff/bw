@@ -84,7 +84,7 @@ public class HeaderPaneFxController extends RegionFxControllerBase
 			                           resources.getString("label.operatorPhoto"),
 			                           resources.getString("label.contextMenu.showImage"), false);
 		}
-		else GuiUtils.detachFacePhotoBase64(ivAvatar);
+		else GuiUtils.detachFacePhoto(ivAvatar);
 	}
 	
 	@FXML

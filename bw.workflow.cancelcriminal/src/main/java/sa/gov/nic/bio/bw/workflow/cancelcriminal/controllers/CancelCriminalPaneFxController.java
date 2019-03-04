@@ -176,6 +176,8 @@ public class CancelCriminalPaneFxController extends BodyFxControllerBase
 	@FXML
 	private void onCancelCriminalButtonClicked(ActionEvent actionEvent)
 	{
+		if(btnCancelCriminal.isDisabled()) return;
+		
 		String headerText = resources.getString("cancelCriminal.confirmation.header");
 		
 		if(tabByPersonId.isSelected())

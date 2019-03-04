@@ -1,8 +1,11 @@
 package sa.gov.nic.bio.bw.workflow.registerconvictedpresent.controllers;
 
 import javafx.beans.binding.BooleanBinding;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
@@ -10,24 +13,34 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.stage.FileChooser;
 import javafx.util.StringConverter;
 import sa.gov.nic.bio.bw.core.Context;
 import sa.gov.nic.bio.bw.core.beans.ComboBoxItem;
+import sa.gov.nic.bio.bw.core.beans.Gender;
 import sa.gov.nic.bio.bw.core.controllers.WizardStepFxControllerBase;
+import sa.gov.nic.bio.bw.core.utils.AppUtils;
+import sa.gov.nic.bio.bw.core.utils.DialogUtils;
 import sa.gov.nic.bio.bw.core.utils.FxmlFile;
 import sa.gov.nic.bio.bw.core.utils.GuiLanguage;
 import sa.gov.nic.bio.bw.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.core.workflow.Input;
 import sa.gov.nic.bio.bw.core.workflow.Output;
-import sa.gov.nic.bio.bw.core.beans.Gender;
-import sa.gov.nic.bio.bw.workflow.commons.lookups.CountriesLookup;
-import sa.gov.nic.bio.bw.workflow.commons.lookups.DocumentTypesLookup;
-import sa.gov.nic.bio.bw.workflow.commons.lookups.PersonTypesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.beans.Country;
 import sa.gov.nic.bio.bw.workflow.commons.beans.DocumentType;
 import sa.gov.nic.bio.bw.workflow.commons.beans.NormalizedPersonInfo;
 import sa.gov.nic.bio.bw.workflow.commons.beans.PersonType;
+import sa.gov.nic.bio.bw.workflow.commons.lookups.CountriesLookup;
+import sa.gov.nic.bio.bw.workflow.commons.lookups.DocumentTypesLookup;
+import sa.gov.nic.bio.bw.workflow.commons.lookups.PersonTypesLookup;
+import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.utils.RegisterConvictedPresentErrorCodes;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,8 +50,10 @@ import java.util.function.Predicate;
 @FxmlFile("updatePersonInfo.fxml")
 public class UpdatePersonInfoPaneFxController extends WizardStepFxControllerBase
 {
+	@Input private String cameraFacePhotoBase64;
 	@Input private Boolean civilHit;
 	@Input private NormalizedPersonInfo normalizedPersonInfo;
+	@Output private String facePhotoBase64;
 	@Output private String firstName;
 	@Output private String fatherName;
 	@Output private String grandfatherName;
@@ -58,6 +73,7 @@ public class UpdatePersonInfoPaneFxController extends WizardStepFxControllerBase
 	@Output private LocalDate documentExpiryDate;
 	@Output private Boolean documentExpiryDateUseHijri;
 	
+	@FXML private ImageView ivPersonPhoto;
 	@FXML private TextField txtFirstName;
 	@FXML private TextField txtFatherName;
 	@FXML private TextField txtGrandfatherName;
@@ -79,14 +95,25 @@ public class UpdatePersonInfoPaneFxController extends WizardStepFxControllerBase
 	@FXML private DatePicker dpBirthDate;
 	@FXML private DatePicker dpDocumentIssuanceDate;
 	@FXML private DatePicker dpDocumentExpiryDate;
+	@FXML private Button btnUploadNewPhoto;
+	@FXML private Button btnClearPhoto;
 	@FXML private Button btnStartOver;
 	@FXML private Button btnNext;
 	
 	private static final Predicate<LocalDate> birthDateValidator = localDate -> !localDate.isAfter(LocalDate.now());
 	
+	private BooleanProperty disablePhotoEditing = new SimpleBooleanProperty(true);
+	private BooleanProperty photoLoaded = new SimpleBooleanProperty(false);
+	private FileChooser fileChooser = new FileChooser();
+	
 	@Override
 	protected void onAttachedToScene()
 	{
+		fileChooser.setTitle(resources.getString("fileChooser.selectImage.title"));
+		FileChooser.ExtensionFilter extFilterJPG = new FileChooser.ExtensionFilter(
+									resources.getString("fileChooser.selectImage.types"), "*.jpg");
+		fileChooser.getExtensionFilters().addAll(extFilterJPG);
+		
 		@SuppressWarnings("unchecked")
 		List<Country> countries = (List<Country>) Context.getUserSession().getAttribute(CountriesLookup.KEY);
 		
@@ -177,149 +204,195 @@ public class UpdatePersonInfoPaneFxController extends WizardStepFxControllerBase
 		    item.setText(resultText);
 		});
 		
+		btnClearPhoto.disableProperty().bind(photoLoaded.not().or(disablePhotoEditing));
+		btnUploadNewPhoto.disableProperty().bind(disablePhotoEditing);
+		
 		Node focusedNode = null;
 		
-		if(normalizedPersonInfo != null)
+		String facePhotoBase64 = null;
+		Gender gender = null;
+		String firstName = null;
+		String fatherName = null;
+		String grandfatherName = null;
+		String familyName = null;
+		Country nationality = null;
+		String occupation = null;
+		String birthPlace = null;
+		LocalDate birthDate = null;
+		Long personId = null;
+		PersonType personType = null;
+		String documentId = null;
+		DocumentType documentType = null;
+		LocalDate documentIssuanceDate = null;
+		LocalDate documentExpiryDate = null;
+		
+		if(isFirstLoad() && normalizedPersonInfo != null)
 		{
-			boolean disable = civilHit != null && civilHit;
-			
-			String firstName = normalizedPersonInfo.getFirstName();
-			if(firstName != null)
-			{
-				txtFirstName.setText(firstName);
-				txtFirstName.setDisable(disable);
-			}
-			else if(this.firstName != null) txtFirstName.setText(this.firstName);
-			else focusedNode = txtFirstName;
-			
-			String fatherName = normalizedPersonInfo.getFatherName();
-			if(fatherName != null)
-			{
-				txtFatherName.setText(fatherName);
-				txtFatherName.setDisable(disable);
-			}
-			else if(this.fatherName != null) txtFatherName.setText(this.fatherName);
-			else if(focusedNode == null) focusedNode = txtFatherName;
-			
-			String grandfatherName = normalizedPersonInfo.getGrandfatherName();
-			if(grandfatherName != null)
-			{
-				txtGrandfatherName.setText(grandfatherName);
-				txtGrandfatherName.setDisable(disable);
-			}
-			else if(this.grandfatherName != null) txtGrandfatherName.setText(this.grandfatherName);
-			else if(focusedNode == null) focusedNode = txtGrandfatherName;
-			
-			String familyName = normalizedPersonInfo.getFamilyName();
-			if(familyName != null)
-			{
-				txtFamilyName.setText(familyName);
-				txtFamilyName.setDisable(disable);
-			}
-			else if(this.familyName != null) txtFamilyName.setText(this.familyName);
-			else if(focusedNode == null) focusedNode = txtFamilyName;
-			
-			Gender gender = normalizedPersonInfo.getGender();
-			if(gender != null)
-			{
-				boolean selected = GuiUtils.selectComboBoxItem(cboGender, gender);
-				if(selected) cboGender.setDisable(disable);
-			}
-			else if(this.gender != null) GuiUtils.selectComboBoxItem(cboGender, this.gender);
-			else if(focusedNode == null) focusedNode = cboGender;
-			
-			Country nationality = normalizedPersonInfo.getNationality();
-			if(nationality != null)
-			{
-				boolean selected = GuiUtils.selectComboBoxItem(cboNationality, nationality);
-				if(selected) cboNationality.setDisable(disable);
-			}
-			else if(this.nationality != null) GuiUtils.selectComboBoxItem(cboNationality, this.nationality);
-			else cboNationality.getSelectionModel().select(0);
-			
-			String occupation = normalizedPersonInfo.getOccupation();
-			if(occupation != null)
-			{
-				txtOccupation.setText(occupation);
-				txtOccupation.setDisable(disable);
-			}
-			else if(this.occupation != null) txtOccupation.setText(this.occupation);
-			
-			String birthPlace = normalizedPersonInfo.getBirthPlace();
-			if(birthPlace != null)
-			{
-				txtBirthPlace.setText(birthPlace);
-				txtBirthPlace.setDisable(disable);
-			}
-			else if(this.birthPlace != null) txtBirthPlace.setText(this.birthPlace);
-			
-			LocalDate birthDate = normalizedPersonInfo.getBirthDate();
-			if(birthDate != null)
-			{
-				dpBirthDate.setValue(birthDate);
-				dpBirthDate.setDisable(disable);
-			}
-			else if(this.birthDate != null) dpBirthDate.setValue(this.birthDate);
-			
-			rdoBirthDateUseHijri.setSelected(true);
-			if(this.birthDateUseHijri != null && !this.birthDateUseHijri) rdoBirthDateUseGregorian.setSelected(true);
-			
-			Long personId = normalizedPersonInfo.getPersonId();
-			if(personId != null)
-			{
-				txtPersonId.setText(String.valueOf(personId));
-				txtPersonId.setDisable(disable);
-			}
-			
-			PersonType personType = normalizedPersonInfo.getPersonType();
-			if(personType != null)
-			{
-				boolean selected = GuiUtils.selectComboBoxItem(cboPersonType, personType);
-				if(selected) cboPersonType.setDisable(disable);
-			}
-			else if(this.personType != null) GuiUtils.selectComboBoxItem(cboPersonType, this.personType);
-			
-			String documentId = normalizedPersonInfo.getDocumentId();
-			if(documentId != null)
-			{
-				txtDocumentId.setText(documentId);
-				txtDocumentId.setDisable(disable);
-			}
-			else if(this.documentId != null) txtDocumentId.setText(this.documentId);
-			
-			DocumentType documentType = normalizedPersonInfo.getDocumentType();
-			if(documentType != null)
-			{
-				boolean selected = GuiUtils.selectComboBoxItem(cboDocumentType, documentType);
-				if(selected) cboDocumentType.setDisable(disable);
-			}
-			else if(this.documentType != null) GuiUtils.selectComboBoxItem(cboDocumentType, this.documentType);
-			
-			LocalDate documentIssuanceDate = normalizedPersonInfo.getDocumentIssuanceDate();
-			if(documentIssuanceDate != null)
-			{
-				dpDocumentIssuanceDate.setValue(documentIssuanceDate);
-				dpDocumentIssuanceDate.setDisable(disable);
-			}
-			else if(this.documentIssuanceDate != null) dpDocumentIssuanceDate.setValue(this.documentIssuanceDate);
-			
-			rdoDocumentIssuanceDateUseHijri.setSelected(true);
-			if(this.documentIssuanceDateUseHijri != null && !this.documentIssuanceDateUseHijri)
-				rdoDocumentIssuanceDateUseGregorian.setSelected(true);
-			
-			LocalDate documentExpiryDate = normalizedPersonInfo.getDocumentExpiryDate();
-			if(documentExpiryDate != null)
-			{
-				dpDocumentExpiryDate.setValue(documentExpiryDate);
-				dpDocumentExpiryDate.setDisable(disable);
-			}
-			else if(this.documentExpiryDate != null) dpDocumentExpiryDate.setValue(this.documentExpiryDate);
-			
-			rdoDocumentExpiryDateUseHijri.setSelected(true);
-			if(this.documentExpiryDateUseHijri != null && !this.documentExpiryDateUseHijri)
-				rdoDocumentExpiryDateUseGregorian.setSelected(true);
-			
+			facePhotoBase64 = normalizedPersonInfo.getFacePhotoBase64();
+			gender = normalizedPersonInfo.getGender();
+			firstName = normalizedPersonInfo.getFirstName();
+			fatherName = normalizedPersonInfo.getFatherName();
+			grandfatherName = normalizedPersonInfo.getGrandfatherName();
+			familyName = normalizedPersonInfo.getFamilyName();
+			nationality = normalizedPersonInfo.getNationality();
+			occupation = normalizedPersonInfo.getOccupation();
+			birthPlace = normalizedPersonInfo.getBirthPlace();
+			birthDate = normalizedPersonInfo.getBirthDate();
+			personId = normalizedPersonInfo.getPersonId();
+			personType = normalizedPersonInfo.getPersonType();
+			documentId = normalizedPersonInfo.getDocumentId();
+			documentType = normalizedPersonInfo.getDocumentType();
+			documentIssuanceDate = normalizedPersonInfo.getDocumentIssuanceDate();
+			documentExpiryDate = normalizedPersonInfo.getDocumentExpiryDate();
 		}
+		
+		boolean disable = (civilHit != null && civilHit) || cameraFacePhotoBase64 != null;
+		
+		if(cameraFacePhotoBase64 != null)
+		{
+			this.facePhotoBase64 = cameraFacePhotoBase64;
+			GuiUtils.attachFacePhotoBase64(ivPersonPhoto, cameraFacePhotoBase64, true, gender != null ?
+																								gender : this.gender);
+			photoLoaded.setValue(true);
+		}
+		else if(isFirstLoad())
+		{
+			if(facePhotoBase64 != null)
+			{
+				this.facePhotoBase64 = facePhotoBase64;
+				GuiUtils.attachFacePhotoBase64(ivPersonPhoto, facePhotoBase64, true, gender);
+				photoLoaded.setValue(true);
+			}
+		}
+		else if(this.facePhotoBase64 != null)
+		{
+			GuiUtils.attachFacePhotoBase64(ivPersonPhoto, this.facePhotoBase64, true, this.gender);
+			photoLoaded.setValue(true);
+		}
+		
+		if(!disable || !photoLoaded.get()) disablePhotoEditing.setValue(false);
+		
+		if(firstName != null)
+		{
+			txtFirstName.setText(firstName);
+			txtFirstName.setDisable(disable);
+		}
+		else if(this.firstName != null) txtFirstName.setText(this.firstName);
+		else focusedNode = txtFirstName;
+		
+		
+		if(fatherName != null)
+		{
+			txtFatherName.setText(fatherName);
+			txtFatherName.setDisable(disable);
+		}
+		else if(this.fatherName != null) txtFatherName.setText(this.fatherName);
+		else if(focusedNode == null) focusedNode = txtFatherName;
+		
+		if(grandfatherName != null)
+		{
+			txtGrandfatherName.setText(grandfatherName);
+			txtGrandfatherName.setDisable(disable);
+		}
+		else if(this.grandfatherName != null) txtGrandfatherName.setText(this.grandfatherName);
+		else if(focusedNode == null) focusedNode = txtGrandfatherName;
+		
+		if(familyName != null)
+		{
+			txtFamilyName.setText(familyName);
+			txtFamilyName.setDisable(disable);
+		}
+		else if(this.familyName != null) txtFamilyName.setText(this.familyName);
+		else if(focusedNode == null) focusedNode = txtFamilyName;
+		
+		if(gender != null)
+		{
+			boolean selected = GuiUtils.selectComboBoxItem(cboGender, gender);
+			if(selected) cboGender.setDisable(disable);
+		}
+		else if(this.gender != null) GuiUtils.selectComboBoxItem(cboGender, this.gender);
+		else if(focusedNode == null) focusedNode = cboGender;
+		
+		if(nationality != null)
+		{
+			boolean selected = GuiUtils.selectComboBoxItem(cboNationality, nationality);
+			if(selected) cboNationality.setDisable(disable);
+		}
+		else if(this.nationality != null) GuiUtils.selectComboBoxItem(cboNationality, this.nationality);
+		else cboNationality.getSelectionModel().select(0);
+		
+		if(occupation != null)
+		{
+			txtOccupation.setText(occupation);
+			txtOccupation.setDisable(disable);
+		}
+		else if(this.occupation != null) txtOccupation.setText(this.occupation);
+		
+		if(birthPlace != null)
+		{
+			txtBirthPlace.setText(birthPlace);
+			txtBirthPlace.setDisable(disable);
+		}
+		else if(this.birthPlace != null) txtBirthPlace.setText(this.birthPlace);
+		
+		if(birthDate != null)
+		{
+			dpBirthDate.setValue(birthDate);
+			dpBirthDate.setDisable(disable);
+		}
+		else if(this.birthDate != null) dpBirthDate.setValue(this.birthDate);
+		
+		rdoBirthDateUseHijri.setSelected(true);
+		if(this.birthDateUseHijri != null && !this.birthDateUseHijri) rdoBirthDateUseGregorian.setSelected(true);
+		
+		if(personId != null)
+		{
+			txtPersonId.setText(String.valueOf(personId));
+			txtPersonId.setDisable(disable);
+		}
+		
+		if(personType != null)
+		{
+			boolean selected = GuiUtils.selectComboBoxItem(cboPersonType, personType);
+			if(selected) cboPersonType.setDisable(disable);
+		}
+		else if(this.personType != null) GuiUtils.selectComboBoxItem(cboPersonType, this.personType);
+		
+		if(documentId != null)
+		{
+			txtDocumentId.setText(documentId);
+			txtDocumentId.setDisable(disable);
+		}
+		else if(this.documentId != null) txtDocumentId.setText(this.documentId);
+		
+		if(documentType != null)
+		{
+			boolean selected = GuiUtils.selectComboBoxItem(cboDocumentType, documentType);
+			if(selected) cboDocumentType.setDisable(disable);
+		}
+		else if(this.documentType != null) GuiUtils.selectComboBoxItem(cboDocumentType, this.documentType);
+		
+		if(documentIssuanceDate != null)
+		{
+			dpDocumentIssuanceDate.setValue(documentIssuanceDate);
+			dpDocumentIssuanceDate.setDisable(disable);
+		}
+		else if(this.documentIssuanceDate != null) dpDocumentIssuanceDate.setValue(this.documentIssuanceDate);
+		
+		rdoDocumentIssuanceDateUseHijri.setSelected(true);
+		if(this.documentIssuanceDateUseHijri != null && !this.documentIssuanceDateUseHijri)
+			rdoDocumentIssuanceDateUseGregorian.setSelected(true);
+		
+		if(documentExpiryDate != null)
+		{
+			dpDocumentExpiryDate.setValue(documentExpiryDate);
+			dpDocumentExpiryDate.setDisable(disable);
+		}
+		else if(this.documentExpiryDate != null) dpDocumentExpiryDate.setValue(this.documentExpiryDate);
+		
+		rdoDocumentExpiryDateUseHijri.setSelected(true);
+		if(this.documentExpiryDateUseHijri != null && !this.documentExpiryDateUseHijri)
+			rdoDocumentExpiryDateUseGregorian.setSelected(true);
 		
 		if(focusedNode != null) focusedNode.requestFocus();
 		else btnNext.requestFocus();
@@ -390,5 +463,93 @@ public class UpdatePersonInfoPaneFxController extends WizardStepFxControllerBase
 		
 		this.documentExpiryDate = dpDocumentExpiryDate.getValue();
 		this.documentExpiryDateUseHijri = rdoDocumentExpiryDateUseHijri.isSelected();
+	}
+	
+	@FXML
+	private void onUploadNewPhotoButtonClicked(ActionEvent actionEvent)
+	{
+		hideNotification();
+		File selectedFile = fileChooser.showOpenDialog(Context.getCoreFxController().getStage());
+		
+		if(selectedFile != null)
+		{
+			try
+			{
+				long fileSizeBytes = Files.size(selectedFile.toPath());
+				double fileSizeKB = fileSizeBytes / 1024.0;
+				String maxFileSizeKbProperty =
+									Context.getConfigManager().getProperty("config.uploadFaceImage.fileMaxSizeKB");
+				
+				double maxFileSizeKb = Double.parseDouble(maxFileSizeKbProperty);
+				if(fileSizeKB > maxFileSizeKb)
+				{
+					DecimalFormat df = new DecimalFormat("#.00"); // 2 decimal places
+					showWarningNotification(String.format(resources.getString(
+											"selectNewFaceImage.fileChooser.exceedMaxFileSize"),
+					                                      df.format(fileSizeKB), df.format(maxFileSizeKb)));
+					return;
+				}
+			}
+			catch(Exception e)
+			{
+				String errorCode = RegisterConvictedPresentErrorCodes.C007_00007.getCode();
+				String[] errorDetails = {"Failed to retrieve the file size (" + selectedFile.getAbsolutePath() + ")!"};
+				Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails);
+			}
+			
+			Image photoImage = new Image("file:///" + selectedFile.getAbsolutePath());
+			
+			PhotoQualityCheckDialogFxController photoQualityCheckDialogFxController = null;
+			try
+			{
+				photoQualityCheckDialogFxController = DialogUtils.buildCustomDialogByFxml(
+																		Context.getCoreFxController().getStage(),
+	                                                                    PhotoQualityCheckDialogFxController.class,
+																		false);
+			}
+			catch(Exception e)
+			{
+				String errorCode = RegisterConvictedPresentErrorCodes.C007_00012.getCode();
+				String[] errorDetails = {"Failed to load (" + PhotoQualityCheckDialogFxController.class.getName() +
+										")!"};
+				Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails);
+				return;
+			}
+			
+			if(photoQualityCheckDialogFxController != null)
+			{
+				photoQualityCheckDialogFxController.setHostController(this);
+				photoQualityCheckDialogFxController.setInputPhotoImage(photoImage);
+				photoQualityCheckDialogFxController.showDialogAndWait();
+				Image outputPhotoImage = photoQualityCheckDialogFxController.getOutputPhotoImage();
+				
+				if(outputPhotoImage != null)
+				{
+					try
+					{
+						facePhotoBase64 = AppUtils.imageToBase64(outputPhotoImage);
+					}
+					catch(IOException e)
+					{
+						String errorCode = RegisterConvictedPresentErrorCodes.C007_00013.getCode();
+						String[] errorDetails = {"Failed to convert the face photo to base64!"};
+						Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails);
+						return;
+					}
+					
+					ivPersonPhoto.setImage(outputPhotoImage);
+					photoLoaded.setValue(true);
+					showSuccessNotification(resources.getString("label.icao.success"));
+				}
+			}
+		}
+	}
+	
+	@FXML
+	private void onClearPhotoButtonClicked(ActionEvent actionEvent)
+	{
+		GuiUtils.detachFacePhoto(ivPersonPhoto);
+		photoLoaded.setValue(false);
+		facePhotoBase64 = null;
 	}
 }

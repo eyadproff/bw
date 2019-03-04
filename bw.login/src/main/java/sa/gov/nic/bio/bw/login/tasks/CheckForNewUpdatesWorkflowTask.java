@@ -24,7 +24,7 @@ public class CheckForNewUpdatesWorkflowTask extends WorkflowTask
 			if(Context.getRuntimeEnvironment() == RuntimeEnvironment.DEV) serverUrl = AppConstants.DEV_SERVER_URL;
 			if(serverUrl.startsWith("http")) serverUrl = serverUrl.substring(serverUrl.indexOf("://") + 3);
 			
-			boolean newUpdates = BclUtils.checkForAppUpdates(serverUrl, "bw", false, json ->
+			Boolean newUpdates = BclUtils.checkForAppUpdates(serverUrl, "bw", false, json ->
 			{
 			    try
 			    {
@@ -39,6 +39,12 @@ public class CheckForNewUpdatesWorkflowTask extends WorkflowTask
 			
 			    return null;
 			});
+			
+			if(newUpdates == null)
+			{
+				LOGGER.warning("newUpdates = null");
+				return;
+			}
 			
 			if(newUpdates) resetWorkflowStepIfNegativeOrNullTaskResponse(
 														TaskResponse.failure(LoginErrorCodes.N003_00001.getCode()));

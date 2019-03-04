@@ -4,6 +4,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import sa.gov.nic.bio.bw.core.Context;
 import sa.gov.nic.bio.bw.core.interfaces.NavigableController;
+import sa.gov.nic.bio.bw.core.workflow.Output;
 import sa.gov.nic.bio.bw.core.workflow.WizardWorkflowBase;
 
 import java.util.HashMap;
@@ -11,9 +12,14 @@ import java.util.Map;
 
 public abstract class WizardStepFxControllerBase extends BodyFxControllerBase implements NavigableController
 {
+	@Output
+	protected Object state;
+	
 	@Override
 	public void goNext()
 	{
+		state = new Object();
+		
 		hideNotification();
 		Context.getCoreFxController().showWizardTransitionProgressIndicator(true);
 		Map<String, Object> uiDataMap = new HashMap<>();
@@ -25,6 +31,8 @@ public abstract class WizardStepFxControllerBase extends BodyFxControllerBase im
 	@Override
 	public void goPrevious()
 	{
+		state = new Object();
+		
 		hideNotification();
 		Context.getCoreFxController().showWizardTransitionProgressIndicator(true);
 		Map<String, Object> uiDataMap = new HashMap<>();
@@ -36,6 +44,8 @@ public abstract class WizardStepFxControllerBase extends BodyFxControllerBase im
 	@Override
 	public void startOver()
 	{
+		state = null;
+		
 		hideNotification();
 		Context.getCoreFxController().showWizardTransitionProgressIndicator(true);
 		Map<String, Object> uiDataMap = new HashMap<>();
@@ -69,5 +79,10 @@ public abstract class WizardStepFxControllerBase extends BodyFxControllerBase im
 		boolean confirmed = Context.getCoreFxController().showConfirmationDialogAndWait(headerText, contentText);
 		
 		if(confirmed) startOver();
+	}
+	
+	public boolean isFirstLoad()
+	{
+		return state == null;
 	}
 }

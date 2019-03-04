@@ -256,6 +256,8 @@ public class RegisterConvictedReportPresentWorkflow extends WizardWorkflowBase
 				passData(getClass(), FIELD_CIVIL_HIT, UpdatePersonInfoPaneFxController.class, "civilHit");
 				passData(InquiryByFingerprintsResultPaneFxController.class, UpdatePersonInfoPaneFxController.class,
 				         "normalizedPersonInfo");
+				passData(FaceCapturingFxController.class, "facePhotoBase64",
+				         UpdatePersonInfoPaneFxController.class, "cameraFacePhotoBase64");
 				renderUiAndWaitForUserInput(UpdatePersonInfoPaneFxController.class);
 				break;
 			}
@@ -271,11 +273,9 @@ public class RegisterConvictedReportPresentWorkflow extends WizardWorkflowBase
 			}
 			case 7:
 			{
-				passData(FaceCapturingFxController.class, ShareInformationPaneFxController.class,
-				         "facePhotoBase64");
 				passData(UpdatePersonInfoPaneFxController.class, ShareInformationPaneFxController.class,
-				         "firstName", "familyName" , "gender", "nationality", "birthDate",
-				         "documentId", "documentType", "documentIssuanceDate", "documentExpiryDate");
+				         "facePhotoBase64", "firstName", "familyName", "gender", "nationality",
+				         "birthDate", "documentId", "documentType", "documentIssuanceDate", "documentExpiryDate");
 				passData(JudgmentDetailsPaneFxController.class, ShareInformationPaneFxController.class,
 				         "crimes", "judgmentDate");
 				renderUiAndWaitForUserInput(ShareInformationPaneFxController.class);
@@ -283,16 +283,14 @@ public class RegisterConvictedReportPresentWorkflow extends WizardWorkflowBase
 			}
 			case 8:
 			{
-				passData(FaceCapturingFxController.class, ReviewAndSubmitPaneFxController.class,
-				         "facePhotoBase64");
-				
 				passData(FingerprintInquiryStatusCheckerWorkflowTask.class, ReviewAndSubmitPaneFxController.class,
 				         "civilBiometricsId", "criminalBiometricsId");
 				
 				passData(UpdatePersonInfoPaneFxController.class, ReviewAndSubmitPaneFxController.class,
-				         "firstName", "fatherName", "grandfatherName", "familyName", "gender",
-				         "nationality", "occupation", "birthPlace", "birthDate", "birthDateUseHijri", "personId",
-				         "personType", "documentId", "documentType", "documentIssuanceDate", "documentExpiryDate");
+				         "facePhotoBase64", "firstName", "fatherName", "grandfatherName",
+				         "familyName", "gender", "nationality", "occupation", "birthPlace", "birthDate",
+				         "birthDateUseHijri", "personId", "personType", "documentId", "documentType",
+				         "documentIssuanceDate", "documentExpiryDate");
 				
 				passData(JudgmentDetailsPaneFxController.class, ReviewAndSubmitPaneFxController.class,
 				         "judgmentIssuer" , "judgmentNumber", "judgmentDate", "judgmentDateUseHijri",
