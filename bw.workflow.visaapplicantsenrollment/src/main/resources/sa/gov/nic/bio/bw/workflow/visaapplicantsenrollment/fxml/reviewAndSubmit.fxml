@@ -14,6 +14,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
+<?import sa.gov.nic.bio.bw.workflow.commons.ui.CopiableLabel?>
 <?import sa.gov.nic.bio.bw.workflow.commons.ui.ImageViewPane?>
 <BorderPane xmlns="http://javafx.com/javafx/11" xmlns:fx="http://javafx.com/fxml/1"
             fx:id="rootPane" stylesheets="@../css/style.css"
@@ -51,35 +52,35 @@
                                             <ColumnConstraints/>
                                         </columnConstraints>
                                         <Label text="%label.firstName" GridPane.rowIndex="0" GridPane.columnIndex="0" styleClass="bold-label"/>
-                                        <Label fx:id="lblFirstName" GridPane.rowIndex="0" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
+                                        <CopiableLabel fx:id="lblFirstName" GridPane.rowIndex="0" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
                                         <Label text="%label.secondName" GridPane.rowIndex="0" GridPane.columnIndex="2" styleClass="bold-label"/>
-                                        <Label fx:id="lblSecondName" GridPane.rowIndex="0" GridPane.columnIndex="3" GridPane.hgrow="ALWAYS"/>
+                                        <CopiableLabel fx:id="lblSecondName" GridPane.rowIndex="0" GridPane.columnIndex="3" GridPane.hgrow="ALWAYS"/>
                                         <Label text="%label.otherName" GridPane.rowIndex="1" GridPane.columnIndex="0" styleClass="bold-label"/>
-                                        <Label fx:id="lblOtherName" GridPane.rowIndex="1" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
+                                        <CopiableLabel fx:id="lblOtherName" GridPane.rowIndex="1" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
                                         <Label text="%label.familyName" GridPane.rowIndex="1" GridPane.columnIndex="2" styleClass="bold-label"/>
-                                        <Label fx:id="lblFamilyName" GridPane.rowIndex="1" GridPane.columnIndex="3" GridPane.hgrow="ALWAYS"/>
+                                        <CopiableLabel fx:id="lblFamilyName" GridPane.rowIndex="1" GridPane.columnIndex="3" GridPane.hgrow="ALWAYS"/>
                                         <Label text="%label.nationality" GridPane.rowIndex="2" GridPane.columnIndex="0" styleClass="bold-label"/>
-                                        <Label fx:id="lblNationality" GridPane.rowIndex="2" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
+                                        <CopiableLabel fx:id="lblNationality" GridPane.rowIndex="2" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
                                         <Label text="%label.gender" GridPane.rowIndex="2" GridPane.columnIndex="2" styleClass="bold-label"/>
-                                        <Label fx:id="lblGender" GridPane.rowIndex="2" GridPane.columnIndex="3" GridPane.hgrow="ALWAYS"/>
+                                        <CopiableLabel fx:id="lblGender" GridPane.rowIndex="2" GridPane.columnIndex="3" GridPane.hgrow="ALWAYS"/>
                                         <Label text="%label.birthPlace" GridPane.rowIndex="3" GridPane.columnIndex="0" styleClass="bold-label"/>
-                                        <Label fx:id="lblBirthPlace" GridPane.rowIndex="3" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
+                                        <CopiableLabel fx:id="lblBirthPlace" GridPane.rowIndex="3" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
                                         <Label text="%label.birthDate" GridPane.rowIndex="3" GridPane.columnIndex="2" styleClass="bold-label"/>
-                                        <Label fx:id="lblBirthDate" GridPane.rowIndex="3" GridPane.columnIndex="3" GridPane.hgrow="ALWAYS"/>
+                                        <CopiableLabel fx:id="lblBirthDate" GridPane.rowIndex="3" GridPane.columnIndex="3" GridPane.hgrow="ALWAYS"/>
                                         <Label text="%label.visaType" GridPane.rowIndex="4" GridPane.columnIndex="0" styleClass="bold-label"/>
-                                        <Label fx:id="lblVisaType" GridPane.rowIndex="4" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
+                                        <CopiableLabel fx:id="lblVisaType" GridPane.rowIndex="4" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
                                         <Label text="%label.passportNumber" GridPane.rowIndex="4" GridPane.columnIndex="2" styleClass="bold-label"/>
-                                        <Label fx:id="lblPassportNumber" GridPane.rowIndex="4" GridPane.columnIndex="3" GridPane.hgrow="ALWAYS"/>
+                                        <CopiableLabel fx:id="lblPassportNumber" GridPane.rowIndex="4" GridPane.columnIndex="3" GridPane.hgrow="ALWAYS"/>
                                         <Label text="%label.issueDate" GridPane.rowIndex="5" GridPane.columnIndex="0" styleClass="bold-label"/>
-                                        <Label fx:id="lblIssueDate" GridPane.rowIndex="5" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
+                                        <CopiableLabel fx:id="lblIssueDate" GridPane.rowIndex="5" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
                                         <Label text="%label.expirationDate" GridPane.rowIndex="5" GridPane.columnIndex="2" styleClass="bold-label"/>
-                                        <Label fx:id="lblExpirationDate" GridPane.rowIndex="5" GridPane.columnIndex="3" GridPane.hgrow="ALWAYS"/>
+                                        <CopiableLabel fx:id="lblExpirationDate" GridPane.rowIndex="5" GridPane.columnIndex="3" GridPane.hgrow="ALWAYS"/>
                                         <Label text="%label.issuanceCountry" GridPane.rowIndex="6" GridPane.columnIndex="0" styleClass="bold-label"/>
-                                        <Label fx:id="lblIssuanceCountry" GridPane.rowIndex="6" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
+                                        <CopiableLabel fx:id="lblIssuanceCountry" GridPane.rowIndex="6" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
                                         <Label text="%label.passportType" GridPane.rowIndex="6" GridPane.columnIndex="2" styleClass="bold-label"/>
-                                        <Label fx:id="lblPassportType" GridPane.rowIndex="6" GridPane.columnIndex="3" GridPane.hgrow="ALWAYS"/>
+                                        <CopiableLabel fx:id="lblPassportType" GridPane.rowIndex="6" GridPane.columnIndex="3" GridPane.hgrow="ALWAYS"/>
                                         <Label text="%label.mobileNumber" GridPane.rowIndex="7" GridPane.columnIndex="0" styleClass="bold-label"/>
-                                        <Label fx:id="lblMobileNumber" GridPane.rowIndex="7" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
+                                        <CopiableLabel fx:id="lblMobileNumber" GridPane.rowIndex="7" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
                                     </GridPane>
                                 </VBox>
                             </TitledPane>

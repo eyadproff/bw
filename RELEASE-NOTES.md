@@ -11,6 +11,12 @@ VERSION SCHEMA: vYYYY.MM.#SEQ
 
 ---
 
+## v2019.03.2
+
+- ENH: Add a small button besides some labels to be able to copy the text.
+
+---
+
 ## v2019.03.1
 
 - ENH: Upgrading biokit-library to v2019.03.1.

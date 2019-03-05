@@ -9,6 +9,7 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import sa.gov.nic.bio.bw.workflow.commons.ui.CopiableLabel?>
 <?import sa.gov.nic.bio.bw.workflow.commons.ui.PTableColumn?>
 <BorderPane xmlns="http://javafx.com/javafx/11" xmlns:fx="http://javafx.com/fxml/1"
             fx:id="rootPane" stylesheets="@../css/style.css"
@@ -53,7 +54,7 @@
                                 </padding>
                                 <VBox spacing="5.0">
                                     <Label text="%label.firstCrimeClassification" styleClass="bold-label"/>
-                                    <Label fx:id="lblCrimeClassification1"/>
+                                    <CopiableLabel fx:id="lblCrimeClassification1"/>
                                 </VBox>
                                 <TableView fx:id="tvBiometricsExchangeDecision1" minHeight="100.0" maxHeight="Infinity" VBox.vgrow="ALWAYS" focusTraversable="false" styleClass="table-view-with-no-h-scroll, table-view-with-disabled-selection">
                                     <placeholder>
@@ -75,7 +76,7 @@
                                 </padding>
                                 <VBox spacing="5.0">
                                     <Label text="%label.secondCrimeClassification" styleClass="bold-label"/>
-                                    <Label fx:id="lblCrimeClassification2"/>
+                                    <CopiableLabel fx:id="lblCrimeClassification2"/>
                                 </VBox>
                                 <TableView fx:id="tvBiometricsExchangeDecision2" minHeight="100.0" maxHeight="Infinity" VBox.vgrow="ALWAYS" focusTraversable="false" styleClass="table-view-with-no-h-scroll, table-view-with-disabled-selection">
                                     <placeholder>
@@ -97,7 +98,7 @@
                                 </padding>
                                 <VBox spacing="5.0">
                                     <Label text="%label.thirdCrimeClassification" styleClass="bold-label"/>
-                                    <Label fx:id="lblCrimeClassification3"/>
+                                    <CopiableLabel fx:id="lblCrimeClassification3"/>
                                 </VBox>
                                 <TableView fx:id="tvBiometricsExchangeDecision3" minHeight="100.0" maxHeight="Infinity" VBox.vgrow="ALWAYS" focusTraversable="false" styleClass="table-view-with-no-h-scroll, table-view-with-disabled-selection">
                                     <placeholder>
@@ -119,7 +120,7 @@
                                 </padding>
                                 <VBox spacing="5.0">
                                     <Label text="%label.fourthCrimeClassification" styleClass="bold-label"/>
-                                    <Label fx:id="lblCrimeClassification4"/>
+                                    <CopiableLabel fx:id="lblCrimeClassification4"/>
                                 </VBox>
                                 <TableView fx:id="tvBiometricsExchangeDecision4" minHeight="100.0" maxHeight="Infinity" VBox.vgrow="ALWAYS" focusTraversable="false" styleClass="table-view-with-no-h-scroll, table-view-with-disabled-selection">
                                     <placeholder>
@@ -141,7 +142,7 @@
                                 </padding>
                                 <VBox spacing="5.0">
                                     <Label text="%label.fifthCrimeClassification" styleClass="bold-label"/>
-                                    <Label fx:id="lblCrimeClassification5"/>
+                                    <CopiableLabel fx:id="lblCrimeClassification5"/>
                                 </VBox>
                                 <TableView fx:id="tvBiometricsExchangeDecision5" minHeight="100.0" maxHeight="Infinity" VBox.vgrow="ALWAYS" focusTraversable="false" styleClass="table-view-with-no-h-scroll, table-view-with-disabled-selection">
                                     <placeholder>
