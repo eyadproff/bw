@@ -4,6 +4,7 @@ module bw.workflow.deleteconvictedreport
 	requires bw.workflow.commons;
 	requires bio.commons;
 	
+	opens sa.gov.nic.bio.bw.workflow.deleteconvictedreport.bundles;
 	opens sa.gov.nic.bio.bw.workflow.deleteconvictedreport to bw.core;
 	opens sa.gov.nic.bio.bw.workflow.deleteconvictedreport.fxml to bw.core;
 	opens sa.gov.nic.bio.bw.workflow.deleteconvictedreport.tasks to bw.core;

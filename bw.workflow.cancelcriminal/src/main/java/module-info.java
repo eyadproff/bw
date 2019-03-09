@@ -4,6 +4,7 @@ module bw.workflow.cancelcriminal
 	requires bw.workflow.commons;
 	requires bio.commons;
 	
+	opens sa.gov.nic.bio.bw.workflow.cancelcriminal.bundles;
 	opens sa.gov.nic.bio.bw.workflow.cancelcriminal to bw.core;
 	opens sa.gov.nic.bio.bw.workflow.cancelcriminal.fxml to bw.core;
 	opens sa.gov.nic.bio.bw.workflow.cancelcriminal.tasks to bw.core;

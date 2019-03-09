@@ -3,7 +3,6 @@ package sa.gov.nic.bio.bw.login;
 import sa.gov.nic.bio.bw.core.workflow.Signal;
 import sa.gov.nic.bio.bw.core.workflow.SignalType;
 import sa.gov.nic.bio.bw.core.workflow.SinglePageWorkflowBase;
-import sa.gov.nic.bio.bw.workflow.commons.beans.LoginBean;
 import sa.gov.nic.bio.bw.login.controllers.LoginPaneFxController;
 import sa.gov.nic.bio.bw.login.controllers.LoginPaneFxController.LoginMethod;
 import sa.gov.nic.bio.bw.login.tasks.CheckForNewUpdatesWorkflowTask;
@@ -14,10 +13,9 @@ import sa.gov.nic.bio.bw.login.tasks.PrepareHomeBeanWorkflowTask;
 import sa.gov.nic.bio.bw.login.tasks.PrepareUserMenusWorkflowTask;
 import sa.gov.nic.bio.bw.login.tasks.ScheduleRefreshTokenWorkflowTask;
 import sa.gov.nic.bio.bw.login.tasks.UserSessionCreationWorkflowTask;
+import sa.gov.nic.bio.bw.workflow.commons.beans.LoginBean;
 
 import java.util.Arrays;
-import java.util.Locale;
-import java.util.ResourceBundle;
 
 /**
  * The login workflow.
@@ -30,18 +28,6 @@ public class LoginWorkflow extends SinglePageWorkflowBase
 	public String getId()
 	{
 		return KEY_WORKFLOW_LOGIN;
-	}
-	
-	@Override
-	public ResourceBundle getStringsResourceBundle(Locale locale)
-	{
-		return ResourceBundle.getBundle(getClass().getPackageName() + ".bundles.strings", locale);
-	}
-	
-	@Override
-	public ResourceBundle getErrorsResourceBundle(Locale locale)
-	{
-		return ResourceBundle.getBundle(getClass().getPackageName() + ".bundles.errors", locale);
 	}
 	
 	@Override

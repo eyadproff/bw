@@ -62,13 +62,11 @@ import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.tasks.SubmitCriminalF
 
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
-import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
-@AssociatedMenu(workflowId = 1007, menuId = "menu.register.registerConvictedNotPresent", menuTitle = "menu.title", menuOrder = 3,
-				devices = Device.BIO_UTILITIES)
+@AssociatedMenu(workflowId = 1007, menuId = "menu.register.registerConvictedNotPresent", menuTitle = "menu.title",
+				menuOrder = 3, devices = Device.BIO_UTILITIES)
 @WithLookups({PersonTypesLookup.class, DocumentTypesLookup.class, CountriesLookup.class, CrimeTypesLookup.class,
 			  BiometricsExchangeCrimeTypesLookup.class, BiometricsExchangePartiesLookup.class})
 @Wizard({@Step(iconId = "question", title = "wizard.selectFingerprintsSource"),
@@ -90,18 +88,6 @@ public class RegisterConvictedReportNotPresentWorkflow extends WizardWorkflowBas
 	private static final String FIELD_CIVIL_PERSON_INFO_MAP = "CIVIL_PERSON_INFO_MAP";
 	private static final String FIELD_OLD_CRIMINAL_PERSON_INFO_MAP = "OLD_CRIMINAL_PERSON_INFO_MAP";
 	private static final String FIELD_NEW_CRIMINAL_PERSON_INFO_MAP = "NEW_CRIMINAL_PERSON_INFO_MAP";
-	
-	@Override
-	public ResourceBundle getStringsResourceBundle(Locale locale)
-	{
-		return ResourceBundle.getBundle(getClass().getPackageName() + ".bundles.strings", locale);
-	}
-	
-	@Override
-	public ResourceBundle getErrorsResourceBundle(Locale locale)
-	{
-		return ResourceBundle.getBundle(getClass().getPackageName() + ".bundles.errors", locale);
-	}
 	
 	@Override
 	public void onStep(int step) throws InterruptedException, Signal

@@ -110,9 +110,8 @@ public class ChangePasswordDialogFxController extends FxControllerBase
 							{
 								// no exceptions/errorDetails in case of business error
 								
-								String guiErrorMessage = Context.getErrorsBundle().getString(errorCode);
-								String logErrorMessage = Context.getErrorsBundle()
-																.getString(errorCode + ".internal");
+								String guiErrorMessage = resources.getString(errorCode);
+								String logErrorMessage = resources.getString(errorCode + ".internal");
 								
 								LOGGER.info(logErrorMessage);
 								showWarningMessage(guiErrorMessage);

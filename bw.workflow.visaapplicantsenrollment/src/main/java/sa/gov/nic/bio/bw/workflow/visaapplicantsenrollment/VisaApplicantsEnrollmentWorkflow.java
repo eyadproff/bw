@@ -19,9 +19,6 @@ import sa.gov.nic.bio.bw.workflow.visaapplicantsenrollment.lookups.PassportTypes
 import sa.gov.nic.bio.bw.workflow.visaapplicantsenrollment.lookups.VisaTypesLookup;
 import sa.gov.nic.bio.bw.workflow.visaapplicantsenrollment.tasks.VisaApplicantsWorkflowTask;
 
-import java.util.Locale;
-import java.util.ResourceBundle;
-
 @AssociatedMenu(workflowId = 1010, menuId = "menu.register.visaApplicantsEnrollment", menuTitle = "menu.title", menuOrder = 4,
 				devices = {Device.FINGERPRINT_SCANNER, Device.CAMERA, Device.PASSPORT_SCANNER})
 @WithLookups({CountriesLookup.class, VisaTypesLookup.class, PassportTypesLookup.class, DialingCodesLookup.class})
@@ -32,18 +29,6 @@ import java.util.ResourceBundle;
 		@Step(iconId = "file_pdf_alt", title = "wizard.showReceipt")})
 public class VisaApplicantsEnrollmentWorkflow extends WizardWorkflowBase
 {
-	@Override
-	public ResourceBundle getStringsResourceBundle(Locale locale)
-	{
-		return ResourceBundle.getBundle(getClass().getPackageName() + ".bundles.strings", locale);
-	}
-	
-	@Override
-	public ResourceBundle getErrorsResourceBundle(Locale locale)
-	{
-		return ResourceBundle.getBundle(getClass().getPackageName() + ".bundles.errors", locale);
-	}
-	
 	@Override
 	public void onStep(int step) throws InterruptedException, Signal
 	{

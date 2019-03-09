@@ -8,7 +8,6 @@
 <?import org.controlsfx.control.NotificationPane?>
 <?import javafx.scene.layout.VBox?>
 
-<?import javafx.scene.control.ScrollPane?>
 <StackPane xmlns="http://javafx.com/javafx/11" xmlns:fx="http://javafx.com/fxml/1"
            fx:controller="sa.gov.nic.bio.bw.core.controllers.CoreFxController"
            styleClass="root-pane" stylesheets="@../css/style.css">

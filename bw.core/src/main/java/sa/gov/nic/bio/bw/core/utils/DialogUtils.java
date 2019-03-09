@@ -32,9 +32,7 @@ import sa.gov.nic.bio.bw.core.Context;
 import sa.gov.nic.bio.bw.core.interfaces.IdleMonitorRegisterer;
 
 import java.net.URL;
-import java.util.Locale;
 import java.util.Optional;
-import java.util.ResourceBundle;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -387,9 +385,10 @@ public class DialogUtils
 		String parentPackageName = packageName.substring(0, packageName.lastIndexOf('/'));
 		URL fxmlUrl = controllerClass.getResource("/" + parentPackageName + "/fxml/" + fxmlFile.value());
 		
-		ResourceBundle resourceBundle = Context.getModuleResourceBundleProviders()
-											   .get(controllerClass.getModule().getName())
-											   .getStringsResourceBundle(Locale.getDefault());
+		String moduleName = controllerClass.getModule().getName();
+		CombinedResourceBundle resourceBundle = Context.getStringsResourceBundle();
+		resourceBundle.setCurrentResourceBundleProviderModule(moduleName);
+		
 		FXMLLoader loader = new FXMLLoader(fxmlUrl, resourceBundle);
 		Dialog<ButtonType> dialog = loader.load();
 		

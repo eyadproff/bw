@@ -5,19 +5,22 @@ import sa.gov.nic.bio.bw.core.workflow.ResourceBundleProvider;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
+
+/*
+ * DO NOT DELETE THIS CLASS, IT WILL BE PICKED UP BY THE CLASS SCANNER.
+ */
 public class CommonsResourceBundleProvider implements ResourceBundleProvider
 {
 	@Override
-	public ResourceBundle getStringsResourceBundle(Locale locale)
+	public ResourceBundle getResourceBundle(Locale locale)
 	{
 		return ResourceBundle.getBundle(getClass().getPackageName().substring(0,
                                       getClass().getPackageName().lastIndexOf('.')) + ".bundles.strings", locale);
 	}
 	
 	@Override
-	public ResourceBundle getErrorsResourceBundle(Locale locale)
+	public int getPriority()
 	{
-		return ResourceBundle.getBundle(getClass().getPackageName().substring(0,
-                                      getClass().getPackageName().lastIndexOf('.')) + ".bundles.errors", locale);
+		return 4;
 	}
 }

@@ -19,9 +19,6 @@ import sa.gov.nic.bio.bw.workflow.deleteconvictedreport.controllers.ShowReportPa
 import sa.gov.nic.bio.bw.workflow.deleteconvictedreport.controllers.ShowResultPaneFxController;
 import sa.gov.nic.bio.bw.workflow.deleteconvictedreport.tasks.DeleteConvictedReportWorkflowTask;
 
-import java.util.Locale;
-import java.util.ResourceBundle;
-
 @AssociatedMenu(workflowId = 1013, menuId = "menu.cancel.deleteConvictedReport",
 				menuTitle = "menu.title", menuOrder = 3, devices = Device.BIO_UTILITIES)
 @WithLookups({PersonTypesLookup.class, DocumentTypesLookup.class, CountriesLookup.class, CrimeTypesLookup.class})
@@ -30,18 +27,6 @@ import java.util.ResourceBundle;
 		 @Step(iconId = "chain_broken", title = "wizard.result")})
 public class DeleteConvictedReportWorkflow extends WizardWorkflowBase
 {
-	@Override
-	public ResourceBundle getStringsResourceBundle(Locale locale)
-	{
-		return ResourceBundle.getBundle(getClass().getPackageName() + ".bundles.strings", locale);
-	}
-	
-	@Override
-	public ResourceBundle getErrorsResourceBundle(Locale locale)
-	{
-		return ResourceBundle.getBundle(getClass().getPackageName() + ".bundles.errors", locale);
-	}
-	
 	@Override
 	public void onStep(int step) throws InterruptedException, Signal
 	{

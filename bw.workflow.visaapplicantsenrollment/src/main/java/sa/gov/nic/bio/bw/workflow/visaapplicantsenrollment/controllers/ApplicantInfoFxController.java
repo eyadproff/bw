@@ -739,8 +739,8 @@ public class ApplicantInfoFxController extends WizardStepFxControllerBase
 		{
 			String errorCode = VisaApplicantsEnrollmentErrorCodes.N010_00001.getCode();
 			
-			String guiErrorMessage = Context.getErrorsBundle().getString(errorCode);
-			String logErrorMessage = Context.getErrorsBundle().getString(errorCode + ".internal");
+			String guiErrorMessage = resources.getString(errorCode);
+			String logErrorMessage = resources.getString(errorCode + ".internal");
 			
 			LOGGER.info(logErrorMessage);
 			showWarningNotification(guiErrorMessage);

@@ -6,5 +6,6 @@ module bw.workflow.registerconvictednotpresent
 	requires bw.workflow.registerconvictedpresent;
 	requires bio.commons;
 	
+	opens sa.gov.nic.bio.bw.workflow.registerconvictednotpresent.bundles;
 	opens sa.gov.nic.bio.bw.workflow.registerconvictednotpresent to bw.core;
 }

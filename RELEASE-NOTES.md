@@ -11,6 +11,12 @@ VERSION SCHEMA: vYYYY.MM.#SEQ
 
 ---
 
+## v2019.03.3
+
+- ENH: Combine strings and errors in single resource bundle.
+
+---
+
 ## v2019.03.2
 
 - ENH: Add a small button besides some labels to be able to copy the text.

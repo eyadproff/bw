@@ -18,10 +18,12 @@ import sa.gov.nic.bio.biokit.websocket.beans.Message;
 import sa.gov.nic.bio.bw.commons.resources.images.CommonImages;
 import sa.gov.nic.bio.bw.core.Context;
 import sa.gov.nic.bio.bw.core.beans.MenuItem;
+import sa.gov.nic.bio.bw.core.beans.NicHijriCalendarData;
 import sa.gov.nic.bio.bw.core.beans.UserSession;
 import sa.gov.nic.bio.bw.core.biokit.BioKitManager;
 import sa.gov.nic.bio.bw.core.controllers.CoreFxController;
 import sa.gov.nic.bio.bw.core.interfaces.AppLogger;
+import sa.gov.nic.bio.bw.core.tasks.LogoutTask;
 import sa.gov.nic.bio.bw.core.utils.AppConstants;
 import sa.gov.nic.bio.bw.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.core.utils.CombinedResourceBundle;
@@ -29,17 +31,15 @@ import sa.gov.nic.bio.bw.core.utils.ConfigManager;
 import sa.gov.nic.bio.bw.core.utils.DialogUtils;
 import sa.gov.nic.bio.bw.core.utils.GuiLanguage;
 import sa.gov.nic.bio.bw.core.utils.GuiUtils;
-import sa.gov.nic.bio.bw.preloader.beans.PreloaderNotification;
 import sa.gov.nic.bio.bw.core.utils.RuntimeEnvironment;
-import sa.gov.nic.bio.bw.core.tasks.LogoutTask;
 import sa.gov.nic.bio.bw.core.webservice.LookupAPI;
-import sa.gov.nic.bio.bw.core.beans.NicHijriCalendarData;
 import sa.gov.nic.bio.bw.core.webservice.WebserviceManager;
 import sa.gov.nic.bio.bw.core.workflow.AssociatedMenu;
 import sa.gov.nic.bio.bw.core.workflow.CoreWorkflow;
 import sa.gov.nic.bio.bw.core.workflow.ResourceBundleProvider;
 import sa.gov.nic.bio.bw.core.workflow.Workflow;
 import sa.gov.nic.bio.bw.core.workflow.WorkflowManager;
+import sa.gov.nic.bio.bw.preloader.beans.PreloaderNotification;
 import sa.gov.nic.bio.bw.utils.StartupErrorCodes;
 import sa.gov.nic.bio.commons.TaskResponse;
 
@@ -492,7 +492,7 @@ public class AppLauncher extends Application implements AppLogger
 			    }
 			    catch(Exception e)
 			    {
-				    e.printStackTrace();
+				    LOGGER.log(Level.WARNING, "Failed to instantiate the class (" + appClass + ")", e);
 			    }
 		    }
 	    }
@@ -501,21 +501,21 @@ public class AppLauncher extends Application implements AppLogger
 	    moduleResourceBundleProviders.put(CoreWorkflow.class.getModule().getName(), new ResourceBundleProvider()
 	    {
 		    @Override
-		    public ResourceBundle getStringsResourceBundle(Locale locale)
+		    public ResourceBundle getResourceBundle(Locale locale)
 		    {
-			    return AppUtils.getCoreStringsResourceBundle(locale);
+			    return AppUtils.getCoreStringsResourceBundle();
 		    }
 		
 		    @Override
-		    public ResourceBundle getErrorsResourceBundle(Locale locale)
+		    public int getPriority()
 		    {
-			    return AppUtils.getCoreErrorsResourceBundle(locale);
+			    return 1;
 		    }
 	    });
 	
-	    CombinedResourceBundle errorsBundle = new CombinedResourceBundle(moduleResourceBundleProviders.values(),
-	                                                                     guiLanguage.getLocale());
-	    errorsBundle.load();
+	    CombinedResourceBundle stringsResourceBundle = new CombinedResourceBundle(moduleResourceBundleProviders,
+	                                                                              guiLanguage.getLocale());
+	    stringsResourceBundle.load();
 	
 	    for(Entry<Class<? extends Workflow>, AssociatedMenu> workflowMenuClass : workflowMenuClasses.entrySet())
 	    {
@@ -548,8 +548,8 @@ public class AppLauncher extends Application implements AppLogger
 	    }
 	
 	    Context.attach(runtimeEnvironment, configManager, workflowManager, webserviceManager, bioKitManager,
-	                   executorService, scheduledExecutorService, errorsBundle, new UserSession(), serverUrl, topMenus,
-	                   subMenus, moduleResourceBundleProviders);
+	                   executorService, scheduledExecutorService, stringsResourceBundle, new UserSession(), serverUrl,
+	                   topMenus, subMenus);
 	
 	    Call<NicHijriCalendarData> apiCall2 = lookupAPI.lookupNicHijriCalendarData();
 	    TaskResponse<NicHijriCalendarData> webTaskResponse2 = webserviceManager.executeApi(apiCall2);

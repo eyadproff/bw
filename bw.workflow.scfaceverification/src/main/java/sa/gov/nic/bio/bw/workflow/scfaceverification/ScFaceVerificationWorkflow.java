@@ -29,18 +29,6 @@ import java.util.ResourceBundle;
 public class ScFaceVerificationWorkflow extends WizardWorkflowBase
 {
 	@Override
-	public ResourceBundle getStringsResourceBundle(Locale locale)
-	{
-		return ResourceBundle.getBundle(getClass().getPackageName() + ".bundles.strings", locale);
-	}
-	
-	@Override
-	public ResourceBundle getErrorsResourceBundle(Locale locale)
-	{
-		return ResourceBundle.getBundle(getClass().getPackageName() + ".bundles.errors", locale);
-	}
-	
-	@Override
 	public void onStep(int step) throws InterruptedException, Signal
 	{
 		switch(step)

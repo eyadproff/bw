@@ -11,10 +11,11 @@ module bw.workflow.commons
 	requires org.apache.commons.lang3;
 	
 	opens sa.gov.nic.bio.bw.workflow.commons.images;
-	opens sa.gov.nic.bio.bw.workflow.commons.fxml to bw.core;
-	opens sa.gov.nic.bio.bw.workflow.commons.tasks to bw.core;
-	opens sa.gov.nic.bio.bw.workflow.commons.controllers to javafx.fxml, bw.core;
-	opens sa.gov.nic.bio.bw.workflow.commons.beans to org.apache.commons.lang3;
+	opens sa.gov.nic.bio.bw.workflow.commons.fxml;
+	opens sa.gov.nic.bio.bw.workflow.commons.bundles;
+	opens sa.gov.nic.bio.bw.workflow.commons.tasks;
+	opens sa.gov.nic.bio.bw.workflow.commons.controllers;
+	opens sa.gov.nic.bio.bw.workflow.commons.beans;
 	exports sa.gov.nic.bio.bw.workflow.commons.lookups;
 	exports sa.gov.nic.bio.bw.workflow.commons.webservice;
 	exports sa.gov.nic.bio.bw.workflow.commons.controllers;

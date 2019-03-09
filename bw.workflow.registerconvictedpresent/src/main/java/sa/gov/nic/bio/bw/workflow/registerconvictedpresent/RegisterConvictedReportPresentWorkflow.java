@@ -51,9 +51,7 @@ import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.tasks.SubmitCriminalF
 
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
-import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
 @AssociatedMenu(workflowId = 1008, menuId = "menu.register.registerConvictedPresent", menuTitle = "menu.title", menuOrder = 2,
@@ -77,18 +75,6 @@ public class RegisterConvictedReportPresentWorkflow extends WizardWorkflowBase
 	private static final String FIELD_CIVIL_PERSON_INFO_MAP = "CIVIL_PERSON_INFO_MAP";
 	private static final String FIELD_OLD_CRIMINAL_PERSON_INFO_MAP = "OLD_CRIMINAL_PERSON_INFO_MAP";
 	private static final String FIELD_NEW_CRIMINAL_PERSON_INFO_MAP = "NEW_CRIMINAL_PERSON_INFO_MAP";
-	
-	@Override
-	public ResourceBundle getStringsResourceBundle(Locale locale)
-	{
-		return ResourceBundle.getBundle(getClass().getPackageName() + ".bundles.strings", locale);
-	}
-	
-	@Override
-	public ResourceBundle getErrorsResourceBundle(Locale locale)
-	{
-		return ResourceBundle.getBundle(getClass().getPackageName() + ".bundles.errors", locale);
-	}
 	
 	@Override
 	public void onStep(int step) throws InterruptedException, Signal

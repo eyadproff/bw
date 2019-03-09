@@ -252,8 +252,8 @@ public abstract class BodyFxControllerBase extends RegionFxControllerBase implem
 			
 			try
 			{
-				String guiErrorMessage = Context.getErrorsBundle().getString(errorCode);
-				String logErrorMessage = Context.getErrorsBundle().getString(errorCode + ".internal");
+				String guiErrorMessage = resources.getString(errorCode);
+				String logErrorMessage = resources.getString(errorCode + ".internal");
 				
 				LOGGER.info(logErrorMessage);
 				showWarningNotification(guiErrorMessage);
