@@ -10,7 +10,6 @@ module bw.workflow.commons
 	requires bio.commons;
 	requires org.apache.commons.lang3;
 	
-	opens sa.gov.nic.bio.bw.workflow.commons.images;
 	opens sa.gov.nic.bio.bw.workflow.commons.fxml;
 	opens sa.gov.nic.bio.bw.workflow.commons.bundles;
 	opens sa.gov.nic.bio.bw.workflow.commons.tasks;

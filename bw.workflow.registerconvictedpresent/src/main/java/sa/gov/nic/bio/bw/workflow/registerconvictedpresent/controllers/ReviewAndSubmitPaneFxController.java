@@ -90,6 +90,8 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 	@Override
 	protected void onAttachedToScene()
 	{
+		
+		
 		Name name = new Name(firstName, fatherName, grandfatherName, familyName, null,
 		                     null, null, null);
 		
@@ -106,7 +108,7 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 		
 		UserInfo userInfo = (UserInfo) Context.getUserSession().getAttribute("userInfo");
 		
-		convictedReport = new ConvictedReport(0L, 0L, criminalBiometricsId, name,
+		convictedReport = new ConvictedReport(null, null, criminalBiometricsId, name,
 		                                      nationality.getCode(), nationality.getMofaNationalityCode(),
 		                                      occupation, gender.name().substring(0, 1), // "M" or "F"
 		                                      birthDate == null ? null :
@@ -122,6 +124,7 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 		                                      AppUtils.localizeNumbers(String.valueOf(userInfo.getOperatorId())),
 		                                      crimes);
 		
+		convictedReportNestedPaneController.setWillBeGeneratedTextOnCriminalBiometricsId();
 		convictedReportNestedPaneController.populateConvictedReportData(convictedReport, fingerprintBase64Images);
 	}
 	

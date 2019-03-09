@@ -67,8 +67,6 @@ public class CombinedResourceBundle extends ResourceBundle implements AppLogger
 			
 			try
 			{
-				System.out.println("currentResourceBundleProviderModule = " + currentResourceBundleProviderModule);
-				System.out.println("key = " + key);
 				return bundle.getString(key);
 			}
 			catch(MissingResourceException e)

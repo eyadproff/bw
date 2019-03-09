@@ -6,6 +6,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TitledPane;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import sa.gov.nic.bio.bw.core.Context;
 import sa.gov.nic.bio.bw.core.beans.Gender;
 import sa.gov.nic.bio.bw.core.beans.Name;
@@ -110,9 +111,16 @@ public class ConvictedReportNestedFxController extends BodyFxControllerBase
 		cbCovenant.setStyle("-fx-opacity: 1");
 	}
 	
+	public void setWillBeGeneratedTextOnCriminalBiometricsId()
+	{
+		lblCriminalBiometricsId.setText(resources.getString("label.willBeGenerated"));
+	}
+	
 	public void populateConvictedReportData(ConvictedReport convictedReport,
 	                                        Map<Integer, String> fingerprintBase64Images)
 	{
+		if(convictedReport == null) return;
+		
 		Long reportNumber = convictedReport.getReportNumber();
 		if(reportNumber != null) lblReportNumber.setText(AppUtils.localizeNumbers(String.valueOf(reportNumber)));
 		
@@ -126,7 +134,7 @@ public class ConvictedReportNestedFxController extends BodyFxControllerBase
 		if(enrollmentTimeLong != null) lblEnrollmentTime.setText(
 															AppUtils.formatHijriGregorianDateTime(enrollmentTimeLong));
 		
-		if(reportNumber != null || sEnrollerId != null || enrollmentTimeLong != null)
+		if(reportNumber != null || enrollmentTimeLong != null)
 		{
 			GuiUtils.showNode(tpEnrollmentDetails, true);
 		}
@@ -150,8 +158,8 @@ public class ConvictedReportNestedFxController extends BodyFxControllerBase
 				lblCivilBiometricsId.setText(AppUtils.localizeNumbers(String.valueOf(civilBiometricsId)));
 		
 		Long criminalBiometricsId = convictedReport.getGeneralFileNumber();
-		if(criminalBiometricsId != null)
-				lblCriminalBiometricsId.setText(AppUtils.localizeNumbers(String.valueOf(criminalBiometricsId)));
+		GuiUtils.setLabelText(lblCriminalBiometricsId, criminalBiometricsId)
+				.orElse(label -> label.setTextFill(Color.RED));
 		
 		if(subjGender != null)
 		{

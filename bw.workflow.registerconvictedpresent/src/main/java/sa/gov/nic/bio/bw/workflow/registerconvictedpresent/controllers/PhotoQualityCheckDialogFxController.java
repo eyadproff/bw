@@ -50,7 +50,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Map;
 
-@FxmlFile("PhotoQualityCheckDialog.fxml")
+@FxmlFile("photoQualityCheckDialog.fxml")
 public class PhotoQualityCheckDialogFxController extends BodyFxControllerBase
 {
 	@FXML private Pane buttonPane;
@@ -78,9 +78,6 @@ public class PhotoQualityCheckDialogFxController extends BodyFxControllerBase
 	private PerspectiveCamera perspectiveCamera = new PerspectiveCamera();
 	
 	private Translate pivotBase = new Translate(0.0, 0.0, -1.0);
-	private Rotate xRotateBase = new Rotate(0.0, Rotate.X_AXIS);
-	private Rotate yRotateBase = new Rotate(0.0, Rotate.Y_AXIS);
-	private Rotate zRotateBase = new Rotate(0.0, Rotate.Z_AXIS);
 	
 	public void setHostController(BodyFxControllerBase hostController){this.hostController = hostController;}
 	public void setInputPhotoImage(Image inputPhotoImage){this.inputPhotoImage = inputPhotoImage;}
