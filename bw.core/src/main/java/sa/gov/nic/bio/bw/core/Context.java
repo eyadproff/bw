@@ -72,9 +72,6 @@ public class Context
 	public static BioKitManager getBioKitManager(){return INSTANCE.bioKitManager;}
 	public static ExecutorService getExecutorService(){return INSTANCE.executorService;}
 	public static ScheduledExecutorService getScheduledExecutorService(){return INSTANCE.scheduledExecutorService;}
-	
-	public static void seStringsResourceBundle(CombinedResourceBundle stringResourceBundle)
-																{INSTANCE.stringResourceBundle = stringResourceBundle;}
 	public static CombinedResourceBundle getStringsResourceBundle(){return INSTANCE.stringResourceBundle;}
 	
 	public static void setUserSession(UserSession userSession){INSTANCE.userSession = userSession;}

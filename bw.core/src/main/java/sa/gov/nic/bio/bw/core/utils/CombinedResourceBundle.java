@@ -16,8 +16,8 @@ import java.util.ResourceBundle;
 
 public class CombinedResourceBundle extends ResourceBundle implements AppLogger
 {
-	private final Map<String, ResourceBundleProvider> moduleResourceBundleProviders;
-	private final Locale locale;
+	private Map<String, ResourceBundleProvider> moduleResourceBundleProviders;
+	private Locale locale;
 	private Map<String, String> combinedResources = new HashMap<>();
 	private String currentResourceBundleProviderModule;
 	
@@ -40,6 +40,13 @@ public class CombinedResourceBundle extends ResourceBundle implements AppLogger
 			ArrayList<String> keysList = Collections.list(keysEnumeration);
 			keysList.forEach(key -> combinedResources.putIfAbsent(key, bundle.getString(key)));
 		});
+	}
+	
+	public void reload(Locale locale)
+	{
+		this.locale = locale;
+		combinedResources.clear();
+		load();
 	}
 	
 	public void setCurrentResourceBundleProviderModule(String currentResourceBundleProviderModule)

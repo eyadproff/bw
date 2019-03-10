@@ -15,7 +15,8 @@ import sa.gov.nic.bio.bw.workflow.searchbyfaceimage.controllers.ShowResultsFxCon
 import sa.gov.nic.bio.bw.workflow.searchbyfaceimage.controllers.UploadImageFileFxController;
 import sa.gov.nic.bio.bw.workflow.searchbyfaceimage.tasks.SearchByFacePhotoWorkflowTask;
 
-@AssociatedMenu(workflowId = 1009, menuId = "menu.query.searchByFaceImage", menuTitle = "menu.title", menuOrder = 1, devices = Device.CAMERA)
+@AssociatedMenu(workflowId = 1009, menuId = "menu.query.searchByFaceImage", menuTitle = "menu.title", menuOrder = 1,
+				devices = Device.CAMERA)
 @Wizard({@Step(iconId = "question", title = "wizard.imageSource"),
 		@Step(iconId = "upload", title = "wizard.uploadImage"),
 		@Step(iconId = "unlock", title = "wizard.confirm"),

@@ -559,6 +559,7 @@ public class CoreFxController extends FxControllerBase implements IdleMonitorReg
 		newCoreFxController.currentBodyController = currentBodyController; // to get its class info only
 		String moduleName = currentBodyController.getClass().getModule().getName();
 		newCoreFxController.currentBodyResourceBundle = Context.getStringsResourceBundle();
+		newCoreFxController.currentBodyResourceBundle.reload(toLanguage.getLocale());
 		newCoreFxController.currentBodyResourceBundle.setCurrentResourceBundleProviderModule(moduleName);
 		newCoreFxController.registerStage(newStage);
 		Context.getWorkflowManager().setFormRenderer(newCoreFxController::renderBodyForm);
