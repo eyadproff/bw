@@ -14,6 +14,8 @@ VERSION SCHEMA: vYYYY.MM.#SEQ
 ## v2019.03.3
 
 - ENH: Combine strings and errors in single resource bundle.
+- ENH: Update JavaFX to 12.
+- ENH: Update ScenicView to 11.0.2.
 
 ---
 

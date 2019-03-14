@@ -22,9 +22,9 @@ dependencies {
     // For Reflection Builders (Java Beans)
     api name: "commons-lang3-3.8.1"
 
-    implementation name: "scenicview-25-12-2018"
-    implementation name: "javafx.web-11.0.1"
-    implementation name: "javafx.media-11.0.1"
+    implementation name: "scenicview-11.0.2"
+    implementation name: "javafx.web-12.0.0"
+    implementation name: "javafx.media-12.0.0"
 
     api project(':bw.commons.resources')
     runtimeOnly project(':bw.login')
