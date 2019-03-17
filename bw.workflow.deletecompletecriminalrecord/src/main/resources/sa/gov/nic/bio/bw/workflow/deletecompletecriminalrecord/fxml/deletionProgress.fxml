@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressIndicator?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<BorderPane xmlns="http://javafx.com/javafx/11" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="sa.gov.nic.bio.bw.workflow.deletecompletecriminalrecord.controllers.DeletionProgressPaneFxController"
+            fx:id="rootPane" stylesheets="@../css/style.css">
+    <center>
+        <VBox alignment="CENTER">
+            <HBox alignment="CENTER">
+                <GridPane vgap="5.0" hgap="5.0">
+                    <StackPane fx:id="paneDeletingCriminalFingerprints" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                        <ProgressIndicator fx:id="piDeletingCriminalFingerprints" maxWidth="20.0" maxHeight="20.0"/>
+                        <ImageView fx:id="ivDeletingCriminalFingerprintsSuccess" visible="false">
+                            <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/icon_success_16px.png"/>
+                        </ImageView>
+                        <ImageView fx:id="ivDeletingCriminalFingerprintsFailure" visible="false">
+                            <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/icon_error_16px.png"/>
+                        </ImageView>
+                    </StackPane>
+                    <Label fx:id="lblDeletingCriminalFingerprints" text="%label.deletingCriminalFingerprints" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+                    <StackPane fx:id="paneCheckingCriminalFingerprintsDeletionStatus" managed="false" visible="false" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                        <ProgressIndicator fx:id="piCheckingCriminalFingerprintsDeletionStatus" visible="false" maxWidth="20.0" maxHeight="20.0"/>
+                        <ImageView fx:id="ivCheckingCriminalFingerprintsDeletionStatusSuccess" visible="false">
+                            <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/icon_success_16px.png"/>
+                        </ImageView>
+                        <ImageView fx:id="ivCheckingCriminalFingerprintsDeletionStatusFailure" visible="false">
+                            <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/icon_error_16px.png"/>
+                        </ImageView>
+                    </StackPane>
+                    <Label fx:id="lblCheckingCriminalFingerprintsDeletionStatus" text="%label.checkingCriminalFingerprintsDeletionStatus" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                    <StackPane fx:id="paneDeletingConvictedReports" managed="false" visible="false" GridPane.columnIndex="0" GridPane.rowIndex="2">
+                        <ProgressIndicator fx:id="piDeletingConvictedReports" maxWidth="20.0" maxHeight="20.0" visible="false"/>
+                        <ImageView fx:id="ivDeletingConvictedReportsSuccess" visible="false">
+                            <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/icon_success_16px.png"/>
+                        </ImageView>
+                        <ImageView fx:id="ivDeletingConvictedReportsFailure" visible="false">
+                            <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/icon_error_16px.png"/>
+                        </ImageView>
+                    </StackPane>
+                    <Label fx:id="lblDeletingConvictedReports" text="%label.deletingConvictedReports" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+                </GridPane>
+            </HBox>
+        </VBox>
+    </center>
+    <bottom>
+        <HBox alignment="CENTER" spacing="10">
+            <padding>
+                <Insets bottom="10"/>
+            </padding>
+            <Button fx:id="btnStartOver" text="%button.startOver" visible="false" onAction="#onStartOverButtonClicked"/>
+            <Button fx:id="btnRetry" text="%button.retry" visible="false" onAction="#onRetryButtonClicked"/>
+        </HBox>
+    </bottom>
+</BorderPane>
