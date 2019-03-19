@@ -68,7 +68,7 @@
                 <Insets bottom="10"/>
             </padding>
             <Button fx:id="btnStartOver" text="%button.startOver" onAction="#onStartOverButtonClicked"/>
-            <Button fx:id="btnShowSelectedReport" text="%button.showSelectedReport" onAction="#onShowReportButtonClicked"/>
+            <Button fx:id="btnShowSelectedReport" text="%button.showSelectedReport" onAction="#onShowReportButtonClicked" disable="true"/>
             <Button fx:id="btnDeleteReport" text="%button.deleteCompleteCriminalRecord" onAction="#onDeleteReportButtonClicked"/>
         </HBox>
     </bottom>

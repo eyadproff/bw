@@ -13,11 +13,10 @@ import sa.gov.nic.bio.bw.workflow.commons.lookups.CrimeTypesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.DocumentTypesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.PersonTypesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.ConvictedReportInquiryBySearchCriteriaWorkflowTask;
-import sa.gov.nic.bio.bw.workflow.deletecompletecriminalrecord.controllers.DeletionProgressPaneFxController;
-import sa.gov.nic.bio.bw.workflow.deletecompletecriminalrecord.controllers.DeletionProgressPaneFxController.Request;
 import sa.gov.nic.bio.bw.workflow.deletecompletecriminalrecord.controllers.EnterCriminalBiometricsIdPaneFxController;
 import sa.gov.nic.bio.bw.workflow.deletecompletecriminalrecord.controllers.ShowReportsPaneFxController;
 import sa.gov.nic.bio.bw.workflow.deletecompletecriminalrecord.controllers.ShowResultPaneFxController;
+import sa.gov.nic.bio.bw.workflow.deletecompletecriminalrecord.controllers.ShowResultPaneFxController.Request;
 import sa.gov.nic.bio.bw.workflow.deletecompletecriminalrecord.tasks.CriminalFingerprintsDeletionStatusCheckerWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.deletecompletecriminalrecord.tasks.DeleteConvictedReportsWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.deletecompletecriminalrecord.tasks.SubmitCriminalFingerprintsDeletionWorkflowTask;
@@ -27,7 +26,6 @@ import sa.gov.nic.bio.bw.workflow.deletecompletecriminalrecord.tasks.SubmitCrimi
 @WithLookups({PersonTypesLookup.class, DocumentTypesLookup.class, CountriesLookup.class, CrimeTypesLookup.class})
 @Wizard({@Step(iconId = "search", title = "wizard.enterCriminalBiometricsId"),
 		 @Step(iconId = "th_list", title = "wizard.showReports"),
-		 @Step(iconId = "scissors", title = "wizard.deletionProgress"),
 		 @Step(iconId = "chain_broken", title = "wizard.result")})
 public class DeleteCompleteCriminalRecordWorkflow extends WizardWorkflowBase
 {
@@ -71,15 +69,21 @@ public class DeleteCompleteCriminalRecordWorkflow extends WizardWorkflowBase
 			}
 			case 2:
 			{
-				renderUiAndWaitForUserInput(DeletionProgressPaneFxController.class);
+				passData(ConvictedReportInquiryBySearchCriteriaWorkflowTask.class, ShowResultPaneFxController.class,
+				         "resultsTotalCount");
+				passData(EnterCriminalBiometricsIdPaneFxController.class, ShowResultPaneFxController.class,
+				         "criminalBiometricsId");
+				renderUiAndWaitForUserInput(ShowResultPaneFxController.class);
 				
-				Request request = getData(DeletionProgressPaneFxController.class, "request");
+				Request request = getData(ShowResultPaneFxController.class, "request");
 				if(request == Request.DELETE_CRIMINAL_FINGERPRINTS)
 				{
 					passData(EnterCriminalBiometricsIdPaneFxController.class,
 					         SubmitCriminalFingerprintsDeletionWorkflowTask.class,
 					         "criminalBiometricsId");
 					executeWorkflowTask(SubmitCriminalFingerprintsDeletionWorkflowTask.class);
+					passData(SubmitCriminalFingerprintsDeletionWorkflowTask.class,
+					         ShowResultPaneFxController.class, "noFingerprintsFound");
 				}
 				else if(request == Request.CHECK_CRIMINAL_FINGERPRINTS_DELETION)
 				{
@@ -88,7 +92,7 @@ public class DeleteCompleteCriminalRecordWorkflow extends WizardWorkflowBase
 					executeWorkflowTask(CriminalFingerprintsDeletionStatusCheckerWorkflowTask.class);
 					
 					passData(CriminalFingerprintsDeletionStatusCheckerWorkflowTask.class, "status",
-					         DeletionProgressPaneFxController.class,
+					         ShowResultPaneFxController.class,
 					         "criminalFingerprintsRegistrationStatus");
 				}
 				else if(request == Request.DELETE_CONVICTED_REPORTS)
@@ -97,14 +101,6 @@ public class DeleteCompleteCriminalRecordWorkflow extends WizardWorkflowBase
 					         DeleteConvictedReportsWorkflowTask.class, "criminalBiometricsId");
 					executeWorkflowTask(DeleteConvictedReportsWorkflowTask.class);
 				}
-				
-				break;
-			}
-			case 3:
-			{
-				passData(EnterCriminalBiometricsIdPaneFxController.class, ShowResultPaneFxController.class,
-				         "criminalBiometricsId");
-				renderUiAndWaitForUserInput(ShowResultPaneFxController.class);
 				
 				break;
 			}

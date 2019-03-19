@@ -14,6 +14,7 @@ public class SubmitCriminalFingerprintsDeletionWorkflowTask extends WorkflowTask
 {
 	@Input(alwaysRequired = true) private Long criminalBiometricsId;
 	@Output private Long tcn;
+	@Output private Boolean noFingerprintsFound;
 	
 	@Override
 	public void execute() throws Signal
@@ -23,7 +24,12 @@ public class SubmitCriminalFingerprintsDeletionWorkflowTask extends WorkflowTask
 		                                                                                    criminalBiometricsId);
 		TaskResponse<CriminalFingerprintsDeletionResponse> taskResponse = Context.getWebserviceManager()
 																				 .executeApi(apiCall);
-		resetWorkflowStepIfNegativeOrNullTaskResponse(taskResponse);
-		tcn = taskResponse.getResult().getTcn();
+		
+		if(!taskResponse.isSuccess() && "B003-0051".equals(taskResponse.getErrorCode())) noFingerprintsFound = true;
+		else
+		{
+			resetWorkflowStepIfNegativeOrNullTaskResponse(taskResponse);
+			tcn = taskResponse.getResult().getTcn();
+		}
 	}
 }

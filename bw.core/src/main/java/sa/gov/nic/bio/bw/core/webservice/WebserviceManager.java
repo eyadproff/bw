@@ -280,8 +280,10 @@ public class WebserviceManager implements AppLogger
 		}
 		
 		int httpResponseCode = response.code();
+		ResponseBody responseBody = response.raw().body();
 		LOGGER.info("httpRequestMethod = " + httpRequestMethod);
 		LOGGER.info("apiUrl = " + apiUrl);
+		LOGGER.fine("payload = " + responseBody);
 		LOGGER.fine("httpRequestBody = " + httpRequestBody);
 		LOGGER.info("httpResponseCode = " + httpResponseCode);
 		
