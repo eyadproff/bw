@@ -11,6 +11,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
@@ -151,10 +152,14 @@ public class WebserviceManager implements AppLogger
 		SSLContext sslContext = SSLContext.getInstance("TLS");
 		sslContext.init(null, tmf.getTrustManagers(), new SecureRandom());
 		
+		HttpLoggingInterceptor httpLoggingInterceptor = new HttpLoggingInterceptor(LOGGER::fine);
+		httpLoggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+		
 		okHttpClient = new OkHttpClient.Builder()
 									   .readTimeout(readTimeoutSeconds, TimeUnit.SECONDS)
 									   .connectTimeout(connectTimeoutSeconds, TimeUnit.SECONDS)
 									   .addInterceptor(tokenInterceptor)
+									   .addInterceptor(httpLoggingInterceptor)
 									   .sslSocketFactory(sslContext.getSocketFactory(), customTm)
 									   .build();
 		
@@ -283,7 +288,6 @@ public class WebserviceManager implements AppLogger
 		ResponseBody responseBody = response.raw().body();
 		LOGGER.info("httpRequestMethod = " + httpRequestMethod);
 		LOGGER.info("apiUrl = " + apiUrl);
-		LOGGER.fine("payload = " + responseBody);
 		LOGGER.fine("httpRequestBody = " + httpRequestBody);
 		LOGGER.info("httpResponseCode = " + httpResponseCode);
 		
