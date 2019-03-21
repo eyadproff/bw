@@ -70,7 +70,7 @@ public class ShowResultPaneFxController extends WizardStepFxControllerBase
 		{
 			if(successfulResponse)
 			{
-				if(noFingerprintsFound)
+				if(noFingerprintsFound != null && noFingerprintsFound)
 				{
 					lblDeletingCriminalFingerprints.setText(resources.getString("label.noFingerprintsFound"));
 					piDeletingCriminalFingerprints.setVisible(false);
@@ -99,7 +99,7 @@ public class ShowResultPaneFxController extends WizardStepFxControllerBase
 			else
 			{
 				piDeletingCriminalFingerprints.setVisible(false);
-				lblDeletingCriminalFingerprints.setText(resources.getString("label.noFingerprintsFound"));
+				lblDeletingCriminalFingerprints.setText(resources.getString("label.fingerprintsDeletionFailed"));
 				ivDeletingCriminalFingerprintsFailure.setVisible(true);
 				btnStartOver.setVisible(true);
 				btnRetry.setVisible(true);
