@@ -19,6 +19,7 @@ public class CriminalFingerprintsDeletionStatusCheckerWorkflowTask extends Workf
 	
 	@Input(alwaysRequired = true) private Long tcn;
 	@Output private Status status;
+	@Output private Boolean noFingerprintsFound;
 	
 	@Override
 	public void execute() throws Signal
@@ -26,10 +27,15 @@ public class CriminalFingerprintsDeletionStatusCheckerWorkflowTask extends Workf
 		CriminalRecordDeletionAPI api = Context.getWebserviceManager().getApi(CriminalRecordDeletionAPI.class);
 		Call<Void> apiCall = api.checkCriminalFingerprintsDeletionStatus(workflowId, workflowTcn, tcn);
 		TaskResponse<Void> taskResponse = Context.getWebserviceManager().executeApi(apiCall);
-		resetWorkflowStepIfNegativeTaskResponse(taskResponse);
 		
-		Integer httpCode = taskResponse.getHttpCode();
-		if(httpCode == 200) status = Status.SUCCESS;
-		else if(httpCode == 202) status = Status.PENDING;
+		if(!taskResponse.isSuccess() && "B003-0057".equals(taskResponse.getErrorCode())) noFingerprintsFound = true;
+		else
+		{
+			resetWorkflowStepIfNegativeTaskResponse(taskResponse);
+			
+			Integer httpCode = taskResponse.getHttpCode();
+			if(httpCode == 200) status = Status.SUCCESS;
+			else if(httpCode == 202) status = Status.PENDING;
+		}
 	}
 }

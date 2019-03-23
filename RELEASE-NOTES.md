@@ -11,6 +11,12 @@ VERSION SCHEMA: vYYYY.MM.#SEQ
 
 ---
 
+## v2019.03.4
+
+- FIX: Fix Delete-Complete-Criminal-Record workflow logic.
+
+---
+
 ## v2019.03.3
 
 - ENH: Combine strings and errors in single resource bundle.

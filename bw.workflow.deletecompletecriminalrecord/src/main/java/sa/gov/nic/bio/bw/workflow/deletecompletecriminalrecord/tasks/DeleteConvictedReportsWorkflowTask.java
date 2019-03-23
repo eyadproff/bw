@@ -19,6 +19,6 @@ public class DeleteConvictedReportsWorkflowTask extends WorkflowTask
 		Call<Void> apiCall = api.deleteConvictedReportsByCriminalBiometricsId(workflowId, workflowTcn,
 		                                                                      criminalBiometricsId);
 		TaskResponse<Void> taskResponse = Context.getWebserviceManager().executeApi(apiCall);
-		resetWorkflowStepIfNegativeOrNullTaskResponse(taskResponse);
+		resetWorkflowStepIfNegativeTaskResponse(taskResponse);
 	}
 }
