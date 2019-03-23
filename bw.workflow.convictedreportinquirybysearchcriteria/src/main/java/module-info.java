@@ -6,6 +6,7 @@ module bw.workflow.convictedreportinquirybysearchcriteria
 	requires jasperreports;
 	requires bio.commons;
 	
+	opens sa.gov.nic.bio.bw.workflow.convictedreportinquirybysearchcriteria.bundles;
 	opens sa.gov.nic.bio.bw.workflow.convictedreportinquirybysearchcriteria to bw.core;
 	opens sa.gov.nic.bio.bw.workflow.convictedreportinquirybysearchcriteria.fxml to bw.core;
 	opens sa.gov.nic.bio.bw.workflow.convictedreportinquirybysearchcriteria.controllers to javafx.fxml, bw.core;

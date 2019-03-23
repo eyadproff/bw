@@ -7,6 +7,7 @@ module bw.workflow.scfaceverification
 	requires bio.commons;
 	requires bw.workflow.faceverification;
 	
+	opens sa.gov.nic.bio.bw.workflow.scfaceverification.bundles;
 	opens sa.gov.nic.bio.bw.workflow.scfaceverification to bw.core;
 	opens sa.gov.nic.bio.bw.workflow.scfaceverification.fxml to bw.core;
 	opens sa.gov.nic.bio.bw.workflow.scfaceverification.tasks to bw.core;

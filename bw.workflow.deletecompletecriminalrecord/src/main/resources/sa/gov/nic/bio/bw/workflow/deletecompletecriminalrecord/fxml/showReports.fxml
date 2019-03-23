@@ -8,6 +8,8 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TitledPane?>
 <?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.StackPane?>
@@ -26,7 +28,7 @@
                 <Insets top="10.0" bottom="10.0"/>
             </padding>
             <TitledPane fx:id="tpSearchResults" text="%label.searchResults" collapsible="false" maxHeight="Infinity" VBox.vgrow="ALWAYS" focusTraversable="false">
-                <VBox>
+                <VBox spacing="10.0">
                     <Pagination fx:id="pagination" pageCount="1" styleClass="disable-tooltip" VBox.vgrow="ALWAYS" maxHeight="Infinity" minHeight="160.0">
                         <fx:define>
                             <VBox fx:id="paneTable">
@@ -50,6 +52,12 @@
                             </VBox>
                         </fx:define>
                     </Pagination>
+                    <HBox alignment="CENTER_LEFT" spacing="5.0">
+                        <ImageView>
+                            <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/icon_warning_16px.png"/>
+                        </ImageView>
+                        <Label text="%label.disNote"/>
+                    </HBox>
                 </VBox>
             </TitledPane>
         </VBox>
@@ -59,9 +67,8 @@
             <padding>
                 <Insets bottom="10"/>
             </padding>
-            <ProgressIndicator fx:id="piDeletingCompleteCriminalRecord" prefHeight="25.0" prefWidth="25.0" managed="false" visible="false"/>
             <Button fx:id="btnStartOver" text="%button.startOver" onAction="#onStartOverButtonClicked"/>
-            <Button fx:id="btnShowSelectedReport" text="%button.showSelectedReport" onAction="#onShowReportButtonClicked"/>
+            <Button fx:id="btnShowSelectedReport" text="%button.showSelectedReport" onAction="#onShowReportButtonClicked" disable="true"/>
             <Button fx:id="btnDeleteReport" text="%button.deleteCompleteCriminalRecord" onAction="#onDeleteReportButtonClicked"/>
         </HBox>
     </bottom>

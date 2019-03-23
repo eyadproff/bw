@@ -15,10 +15,8 @@ import sa.gov.nic.bio.bw.workflow.searchbyfaceimage.controllers.ShowResultsFxCon
 import sa.gov.nic.bio.bw.workflow.searchbyfaceimage.controllers.UploadImageFileFxController;
 import sa.gov.nic.bio.bw.workflow.searchbyfaceimage.tasks.SearchByFacePhotoWorkflowTask;
 
-import java.util.Locale;
-import java.util.ResourceBundle;
-
-@AssociatedMenu(workflowId = 1009, menuId = "menu.query.searchByFaceImage", menuTitle = "menu.title", menuOrder = 1, devices = Device.CAMERA)
+@AssociatedMenu(workflowId = 1009, menuId = "menu.query.searchByFaceImage", menuTitle = "menu.title", menuOrder = 1,
+				devices = Device.CAMERA)
 @Wizard({@Step(iconId = "question", title = "wizard.imageSource"),
 		@Step(iconId = "upload", title = "wizard.uploadImage"),
 		@Step(iconId = "unlock", title = "wizard.confirm"),
@@ -26,18 +24,6 @@ import java.util.ResourceBundle;
 		@Step(iconId = "users", title = "wizard.showResults")})
 public class SearchByFaceImageWorkflow extends WizardWorkflowBase
 {
-	@Override
-	public ResourceBundle getStringsResourceBundle(Locale locale)
-	{
-		return ResourceBundle.getBundle(getClass().getPackageName() + ".bundles.strings", locale);
-	}
-	
-	@Override
-	public ResourceBundle getErrorsResourceBundle(Locale locale)
-	{
-		return ResourceBundle.getBundle(getClass().getPackageName() + ".bundles.errors", locale);
-	}
-	
 	@Override
 	public void onStep(int step) throws InterruptedException, Signal
 	{

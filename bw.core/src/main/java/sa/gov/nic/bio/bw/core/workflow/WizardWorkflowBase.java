@@ -4,6 +4,7 @@ import sa.gov.nic.bio.bw.core.Context;
 import sa.gov.nic.bio.bw.core.controllers.BodyFxControllerBase;
 import sa.gov.nic.bio.bw.core.controllers.LookupFxController;
 import sa.gov.nic.bio.bw.core.utils.AppUtils;
+import sa.gov.nic.bio.bw.core.utils.CombinedResourceBundle;
 import sa.gov.nic.bio.bw.core.utils.CoreErrorCodes;
 import sa.gov.nic.bio.bw.core.wizard.Step;
 import sa.gov.nic.bio.bw.core.wizard.Wizard;
@@ -43,15 +44,22 @@ public abstract class WizardWorkflowBase extends WorkflowBase implements Resourc
 		
 		if(future != null) future.cancel(true);
 	}
-		
+	
+	@Override
+	public ResourceBundle getResourceBundle(Locale locale)
+	{
+		return ResourceBundle.getBundle(getClass().getPackageName() + ".bundles.strings", locale);
+	}
+	
 	@Override
 	public void onProcess(Map<String, String> configurations) throws Signal
 	{
 		this.configurations = configurations;
 		Context.getWorkflowManager().getUserTasks().clear();
 		
-		ResourceBundle stringsBundle = Context.getModuleResourceBundleProviders().get(getClass().getModule().getName())
-																		.getStringsResourceBundle(Locale.getDefault());
+		String moduleName = getClass().getModule().getName();
+		CombinedResourceBundle resourceBundle = Context.getStringsResourceBundle();
+		resourceBundle.setCurrentResourceBundleProviderModule(moduleName);
 		
 		WithLookups withLookups = getClass().getAnnotation(WithLookups.class);
 		if(withLookups != null)
@@ -137,7 +145,7 @@ public abstract class WizardWorkflowBase extends WorkflowBase implements Resourc
 				String iconId = step.iconId();
 				String title = step.title();
 				
-				WizardStep wizardStep = new WizardStep(iconId, stringsBundle.getString(title));
+				WizardStep wizardStep = new WizardStep(iconId, resourceBundle.getString(title));
 				wizardSteps[i] = wizardStep;
 			}
 			

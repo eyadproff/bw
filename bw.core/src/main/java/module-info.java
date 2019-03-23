@@ -23,6 +23,7 @@ module bw.core
 	requires biokit.library;
 	requires bcl.utils;
 	requires bio.commons;
+	requires okhttp3.logging;
 	
 	exports sa.gov.nic.bio.bw.core.workflow;
 	exports sa.gov.nic.bio.bw.core;

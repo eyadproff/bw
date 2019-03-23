@@ -2,4 +2,4 @@
 .gradle
 build
 /out
-bw.launcher/scenicView.properties
+/bw.launcher/scenicView.properties

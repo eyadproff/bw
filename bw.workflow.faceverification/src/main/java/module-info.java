@@ -6,6 +6,7 @@ module bw.workflow.faceverification
 	requires bw.workflow.searchbyfaceimage;
 	requires bio.commons;
 	
+	opens sa.gov.nic.bio.bw.workflow.faceverification.bundles;
 	opens sa.gov.nic.bio.bw.workflow.faceverification to bw.core;
 	opens sa.gov.nic.bio.bw.workflow.faceverification.fxml to bw.core;
 	opens sa.gov.nic.bio.bw.workflow.faceverification.tasks to bw.core;

@@ -20,18 +20,7 @@
     
     menu.cancel.cancelLatent:
         - services-gateway-biooperation/api/latent/delink/v1
-    
-    menu.query.convictedReportInquiryBySearchCriteria:
-        - services-gateway-lookups/api/application/person-type/v1
-        - services-gateway-lookups/api/application/id-types/v1
-        - services-gateway-lookups/api/application/nationality/all/v1
-        - services-gateway-lookups/api/application/crime-types/v1
-        - services-gateway-demographic/api/criminal/info/basic/custom/v1
-    
-    menu.query.faceVerification:
-        - services-gateway-lookups/api/application/nationality/all/v1
-        - services-gateway-biooperation/api/face/verify/v1
-    
+        
     menu.query.civilcriminalfingerprintsinquiry:
         - services-gateway-lookups/api/application/person-type/v1
         - services-gateway-lookups/api/application/id-types/v1
@@ -48,6 +37,36 @@
         - services-gateway-demographic/api/person/deportee/info/v1
         - services-gateway-demographic/api/criminal/info/{general-file-number}/v2
         - services-gateway-demographic/api/criminal/identity/info/{general-file-number}/v1
+    
+    menu.query.convictedReportInquiryBySearchCriteria:
+        - services-gateway-lookups/api/application/person-type/v1
+        - services-gateway-lookups/api/application/id-types/v1
+        - services-gateway-lookups/api/application/nationality/all/v1
+        - services-gateway-lookups/api/application/crime-types/v1
+        - services-gateway-demographic/api/criminal/info/basic/custom/v1
+    
+    menu.cancel.deleteCompleteCriminalRecord:
+        - services-gateway-lookups/api/application/person-type/v1
+        - services-gateway-lookups/api/application/id-types/v1
+        - services-gateway-lookups/api/application/nationality/all/v1
+        - services-gateway-lookups/api/application/crime-types/v1
+        - services-gateway-demographic/api/criminal/info/basic/custom/v1
+        - services-gateway-biooperation/api/criminal/report/v1
+        - services-gateway-biooperation/api/criminal/fingers/deletion/v1
+        - services-gateway-biooperation/api/criminal/fingers/deletion/status/v1
+        - services-gateway-biooperation/api/criminal/reports/deletion/v1
+    
+    menu.cancel.deleteConvictedReport:
+        - services-gateway-lookups/api/application/person-type/v1
+        - services-gateway-lookups/api/application/id-types/v1
+        - services-gateway-lookups/api/application/nationality/all/v1
+        - services-gateway-lookups/api/application/crime-types/v1
+        - services-gateway-biooperation/api/criminal/report/v1
+        - services-gateway-biooperation/api/criminal/report/deletion/v1
+    
+    menu.query.faceVerification:
+        - services-gateway-lookups/api/application/nationality/all/v1
+        - services-gateway-biooperation/api/face/verify/v1
     
     menu.query.printDeadPersonRecord:
         - services-gateway-lookups/api/application/person-type/v1

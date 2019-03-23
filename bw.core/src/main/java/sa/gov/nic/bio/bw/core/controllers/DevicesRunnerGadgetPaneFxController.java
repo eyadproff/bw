@@ -489,8 +489,8 @@ public class DevicesRunnerGadgetPaneFxController extends RegionFxControllerBase
 			        cancelCommand.cancel();
 			
 			        String errorCode = CoreErrorCodes.C002_00017.getCode();
-			        String guiErrorMessage = Context.getErrorsBundle().getString(errorCode);
-			        String logErrorMessage = Context.getErrorsBundle().getString(errorCode + ".internal");
+			        String guiErrorMessage = resources.getString(errorCode);
+			        String logErrorMessage = resources.getString(errorCode + ".internal");
 			        
 			        LOGGER.severe(logErrorMessage);
 			        Context.getCoreFxController().getCurrentBodyController().showErrorNotification(guiErrorMessage);

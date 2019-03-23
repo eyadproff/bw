@@ -6,6 +6,7 @@ module bw.workflow.civilcriminalfingerprintsinquiry
 	requires biokit.library;
 	requires bio.commons;
 	
+	opens sa.gov.nic.bio.bw.workflow.civilcriminalfingerprintsinquiry.bundles;
 	opens sa.gov.nic.bio.bw.workflow.civilcriminalfingerprintsinquiry to bw.core;
 	opens sa.gov.nic.bio.bw.workflow.civilcriminalfingerprintsinquiry.fxml to bw.core;
 	opens sa.gov.nic.bio.bw.workflow.civilcriminalfingerprintsinquiry.controllers to javafx.fxml, bw.core;

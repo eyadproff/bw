@@ -6,6 +6,7 @@ module bw.workflow.registerconvictedpresent
 	requires bio.commons;
 	requires biokit.library;
 	
+	opens sa.gov.nic.bio.bw.workflow.registerconvictedpresent.bundles;
 	opens sa.gov.nic.bio.bw.workflow.registerconvictedpresent to bw.core;
 	opens sa.gov.nic.bio.bw.workflow.registerconvictedpresent.fxml to bw.core;
 	opens sa.gov.nic.bio.bw.workflow.registerconvictedpresent.tasks to bw.core;

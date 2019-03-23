@@ -11,6 +11,15 @@ VERSION SCHEMA: vYYYY.MM.#SEQ
 
 ---
 
+## v2019.03.3
+
+- ENH: Combine strings and errors in single resource bundle.
+- ENH: Update JavaFX to 12.
+- ENH: Update ScenicView to 11.0.2.
+- ENH: Complete Delete-Convicted-Report and Delete-Complete-Criminal-Record workflows.
+
+---
+
 ## v2019.03.2
 
 - ENH: Add a small button besides some labels to be able to copy the text.

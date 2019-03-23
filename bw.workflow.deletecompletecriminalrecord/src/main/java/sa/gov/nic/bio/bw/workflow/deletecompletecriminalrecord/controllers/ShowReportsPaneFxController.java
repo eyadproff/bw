@@ -48,7 +48,6 @@ public class ShowReportsPaneFxController extends WizardStepFxControllerBase
 	@Input private Long criminalBiometricsId;
 	@Output private Integer recordsPerPage;
 	@Output private Integer pageIndex;
-	@Output private Boolean deletionSubmission;
 	
 	@FXML private TitledPane tpSearchResults;
 	@FXML private Pane paneTable;
@@ -63,7 +62,6 @@ public class ShowReportsPaneFxController extends WizardStepFxControllerBase
 	@FXML private TableColumn<ConvictedReport, String> tcRegistrationDate;
 	@FXML private Label lblConvictedReportsPlaceHolder;
 	@FXML private ProgressIndicator piConvictedReportsPlaceHolder;
-	@FXML private ProgressIndicator piDeletingCompleteCriminalRecord;
 	@FXML private Button btnStartOver;
 	@FXML private Button btnDeleteReport;
 	@FXML private Button btnShowSelectedReport;
@@ -210,12 +208,8 @@ public class ShowReportsPaneFxController extends WizardStepFxControllerBase
 	{
 		if(successfulResponse)
 		{
-			if(deletionSubmission != null && deletionSubmission) goNext();
-			else
-			{
-				initPagination();
-				setTableData();
-			}
+			initPagination();
+			setTableData();
 		}
 	}
 	
@@ -224,18 +218,8 @@ public class ShowReportsPaneFxController extends WizardStepFxControllerBase
 	{
 		if(paginationControlBox != null) paginationControlBox.setDisable(bShow);
 		
-		if(deletionSubmission != null && deletionSubmission)
-		{
-			GuiUtils.showNode(btnStartOver, !bShow);
-			GuiUtils.showNode(btnShowSelectedReport, !bShow);
-			GuiUtils.showNode(btnDeleteReport, !bShow);
-			GuiUtils.showNode(piDeletingCompleteCriminalRecord, bShow);
-		}
-		else
-		{
-			piConvictedReportsPlaceHolder.setVisible(bShow);
-			lblConvictedReportsPlaceHolder.setVisible(!bShow);
-		}
+		piConvictedReportsPlaceHolder.setVisible(bShow);
+		lblConvictedReportsPlaceHolder.setVisible(!bShow);
 	}
 	
 	@FXML
@@ -303,7 +287,6 @@ public class ShowReportsPaneFxController extends WizardStepFxControllerBase
 			convictedReports = null;
 			tpSearchResults.setText(resources.getString("label.searchResults") + " (" +
 					                                                    AppUtils.localizeNumbers("0") + ")");
-			deletionSubmission = false;
 			continueWorkflow();
 		}
 		
@@ -320,7 +303,6 @@ public class ShowReportsPaneFxController extends WizardStepFxControllerBase
 		boolean confirmed = Context.getCoreFxController().showConfirmationDialogAndWait(headerText, contentText);
 		if(!confirmed) return;
 		
-		deletionSubmission = true;
-		continueWorkflow();
+		goNext();
 	}
 }

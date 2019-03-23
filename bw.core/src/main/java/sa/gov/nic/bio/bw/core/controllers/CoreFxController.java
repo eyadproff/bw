@@ -31,7 +31,6 @@ import sa.gov.nic.bio.bw.core.utils.GuiLanguage;
 import sa.gov.nic.bio.bw.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.core.utils.IdleMonitor;
 import sa.gov.nic.bio.bw.core.wizard.WizardPane;
-import sa.gov.nic.bio.bw.core.workflow.ResourceBundleProvider;
 import sa.gov.nic.bio.bw.core.workflow.Signal;
 import sa.gov.nic.bio.bw.core.workflow.SignalType;
 import sa.gov.nic.bio.bw.core.workflow.Workflow;
@@ -81,7 +80,7 @@ public class CoreFxController extends FxControllerBase implements IdleMonitorReg
 	private WizardPane wizardPane;
 	private IdleMonitor idleMonitor;
 	private BodyFxControllerBase currentBodyController;
-	private ResourceBundle currentBodyResourceBundle;
+	private CombinedResourceBundle currentBodyResourceBundle;
 	private boolean newMenuSelected;
 	private boolean languageChanged;
 	
@@ -248,10 +247,10 @@ public class CoreFxController extends FxControllerBase implements IdleMonitorReg
 						Platform.runLater(oldController::onDetachingFromScene);
 					}
 					
-					ResourceBundleProvider resourceBundleProvider = Context.getModuleResourceBundleProviders()
-																		   .get(controllerClass.getModule().getName());
+					String moduleName = controllerClass.getModule().getName();
+					currentBodyResourceBundle = Context.getStringsResourceBundle();
+					currentBodyResourceBundle.setCurrentResourceBundleProviderModule(moduleName);
 					
-					currentBodyResourceBundle = resourceBundleProvider.getStringsResourceBundle(Locale.getDefault());
 					final BodyFxControllerBase newController = renderNewBodyForm(currentBodyResourceBundle,
 					                                                             controllerClass);
 					if(newController != null) Workflow.loadWorkflowInputs(newController, uiInputData,
@@ -473,11 +472,6 @@ public class CoreFxController extends FxControllerBase implements IdleMonitorReg
 		Context.setGuiLanguage(toLanguage);
 		LOGGER.info("Switching the GUI language to " + toLanguage.name());
 		
-		CombinedResourceBundle errorsBundle = new CombinedResourceBundle(
-										Context.getModuleResourceBundleProviders().values(), toLanguage.getLocale());
-		errorsBundle.load();
-		Context.setErrorsBundle(errorsBundle);
-		
 		ResourceBundle stringsBundle;
 		try
 		{
@@ -562,11 +556,11 @@ public class CoreFxController extends FxControllerBase implements IdleMonitorReg
 		CoreFxController newCoreFxController = newRootPane.getController();
 		newStage.setOnCloseRequest(GuiUtils.createOnExitHandler(stage, newCoreFxController, new LogoutTask()));
 		
-		ResourceBundleProvider resourceBundleProvider = Context.getModuleResourceBundleProviders()
-														.get(currentBodyController.getClass().getModule().getName());
 		newCoreFxController.currentBodyController = currentBodyController; // to get its class info only
-		newCoreFxController.currentBodyResourceBundle =
-												resourceBundleProvider.getStringsResourceBundle(toLanguage.getLocale());
+		String moduleName = currentBodyController.getClass().getModule().getName();
+		newCoreFxController.currentBodyResourceBundle = Context.getStringsResourceBundle();
+		newCoreFxController.currentBodyResourceBundle.reload(toLanguage.getLocale());
+		newCoreFxController.currentBodyResourceBundle.setCurrentResourceBundleProviderModule(moduleName);
 		newCoreFxController.registerStage(newStage);
 		Context.getWorkflowManager().setFormRenderer(newCoreFxController::renderBodyForm);
 		newCoreFxController.languageChanged = true;

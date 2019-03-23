@@ -14,6 +14,7 @@ module bw.login
 	
 	provides sa.gov.nic.bio.bw.core.workflow.Workflow with sa.gov.nic.bio.bw.login.LoginWorkflow;
 	
+	opens sa.gov.nic.bio.bw.login.bundles;
 	opens sa.gov.nic.bio.bw.login to bw.core;
 	opens sa.gov.nic.bio.bw.login.fxml to bw.core;
 	opens sa.gov.nic.bio.bw.login.tasks to bw.core;

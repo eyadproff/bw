@@ -10,9 +10,7 @@ import sa.gov.nic.bio.bw.home.controllers.HomePaneFxController;
 import sa.gov.nic.bio.bw.home.utils.HomeErrorCodes;
 
 import java.lang.reflect.Constructor;
-import java.util.Locale;
 import java.util.Map;
-import java.util.ResourceBundle;
 
 public class HomeWorkflow extends SinglePageWorkflowBase
 {
@@ -20,18 +18,6 @@ public class HomeWorkflow extends SinglePageWorkflowBase
 	public String getId()
 	{
 		return KEY_WORKFLOW_HOME;
-	}
-	
-	@Override
-	public ResourceBundle getStringsResourceBundle(Locale locale)
-	{
-		return ResourceBundle.getBundle(getClass().getPackageName() + ".bundles.strings", locale);
-	}
-	
-	@Override
-	public ResourceBundle getErrorsResourceBundle(Locale locale)
-	{
-		return ResourceBundle.getBundle(getClass().getPackageName() + ".bundles.errors", locale);
 	}
 	
 	@Override

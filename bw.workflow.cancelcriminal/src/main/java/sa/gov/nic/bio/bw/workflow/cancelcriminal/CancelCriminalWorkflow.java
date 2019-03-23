@@ -8,25 +8,10 @@ import sa.gov.nic.bio.bw.workflow.cancelcriminal.controllers.CancelCriminalPaneF
 import sa.gov.nic.bio.bw.workflow.cancelcriminal.tasks.CancelCriminalWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.PersonTypesLookup;
 
-import java.util.Locale;
-import java.util.ResourceBundle;
-
 @AssociatedMenu(workflowId = 1000, menuId = "menu.cancel.cancelCriminal", menuTitle = "menu.title", menuOrder = 1)
 @WithLookups(PersonTypesLookup.class)
 public class CancelCriminalWorkflow extends SinglePageWorkflowBase
 {
-	@Override
-	public ResourceBundle getStringsResourceBundle(Locale locale)
-	{
-		return ResourceBundle.getBundle(getClass().getPackageName() + ".bundles.strings", locale);
-	}
-	
-	@Override
-	public ResourceBundle getErrorsResourceBundle(Locale locale)
-	{
-		return ResourceBundle.getBundle(getClass().getPackageName() + ".bundles.errors", locale);
-	}
-	
 	@Override
 	public void onStep() throws InterruptedException, Signal
 	{

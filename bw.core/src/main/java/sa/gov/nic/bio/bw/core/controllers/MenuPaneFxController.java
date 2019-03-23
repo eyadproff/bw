@@ -22,11 +22,11 @@ import org.controlsfx.glyphfont.Glyph;
 import sa.gov.nic.bio.bw.core.Context;
 import sa.gov.nic.bio.bw.core.beans.MenuItem;
 import sa.gov.nic.bio.bw.core.utils.AppUtils;
+import sa.gov.nic.bio.bw.core.utils.CombinedResourceBundle;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 
@@ -215,9 +215,9 @@ public class MenuPaneFxController extends RegionFxControllerBase
 	                Text labeledText = (Text) lookup(".text");
 	                labeledText.setWrappingWidth(MAX_MENU_WIDTH - 24.0);
 	
-	                ResourceBundle resourceBundle = Context.getModuleResourceBundleProviders()
-			                                                    .get(item.getWorkflowClass().getModule().getName())
-			                                                    .getStringsResourceBundle(Locale.getDefault());
+	                String moduleName = item.getWorkflowClass().getModule().getName();
+	                CombinedResourceBundle resourceBundle = Context.getStringsResourceBundle();
+	                resourceBundle.setCurrentResourceBundleProviderModule(moduleName);
 	                setText(resourceBundle.getString(item.getLabel()));
 
                     Font font = labeledText.getFont();

@@ -5,6 +5,9 @@ import java.util.ResourceBundle;
 
 public interface ResourceBundleProvider
 {
-	ResourceBundle getStringsResourceBundle(Locale locale);
-	ResourceBundle getErrorsResourceBundle(Locale locale);
+	ResourceBundle getResourceBundle(Locale locale);
+	default int getPriority()
+	{
+		return 5; // less = higher priority
+	}
 }

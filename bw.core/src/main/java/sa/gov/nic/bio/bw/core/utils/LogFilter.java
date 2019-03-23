@@ -9,6 +9,7 @@ public class LogFilter implements Filter
 	public boolean isLoggable(LogRecord record)
 	{
 		return record.getSourceClassName().startsWith("sa.gov.nic.bio") ||
-			   record.getSourceClassName().startsWith("java.util.Spliterators"); // for method references
+			   record.getSourceClassName().startsWith("java.util.Spliterators") || // for method references
+			   record.getSourceClassName().startsWith("okhttp3.logging.HttpLoggingInterceptor"); // for Retrofit logging
 	}
 }

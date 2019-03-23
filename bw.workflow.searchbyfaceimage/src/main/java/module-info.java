@@ -4,6 +4,7 @@ module bw.workflow.searchbyfaceimage
 	requires bw.workflow.commons;
 	requires bio.commons;
 	
+	opens sa.gov.nic.bio.bw.workflow.searchbyfaceimage.bundles;
 	opens sa.gov.nic.bio.bw.workflow.searchbyfaceimage to bw.core;
 	opens sa.gov.nic.bio.bw.workflow.searchbyfaceimage.fxml to bw.core;
 	opens sa.gov.nic.bio.bw.workflow.searchbyfaceimage.tasks to bw.core;
