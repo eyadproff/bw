@@ -328,3 +328,7 @@
     -fx-focus-color: #c01500;
     -fx-faint-focus-color: #ffe7de;
 }
+
+.required {
+    -fx-control-inner-background: #ffffc6;
+}

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ProgressIndicator?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<BorderPane xmlns="http://javafx.com/javafx/11" xmlns:fx="http://javafx.com/fxml/1"
+            fx:id="rootPane" stylesheets="@../css/style.css"
+            fx:controller="sa.gov.nic.bio.bw.workflow.registerconvictedpresent.controllers.ReviewAndSubmitPaneFxController">
+    <center>
+        <VBox alignment="CENTER">
+            <padding>
+                <Insets top="10.0" bottom="10.0"/>
+            </padding>
+            <ScrollPane VBox.vgrow="ALWAYS" fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER">
+                <BorderPane>
+                    <center>
+                        <fx:include fx:id="convictedReportNestedPane" source="/sa/gov/nic/bio/bw/workflow/commons/fxml/convictedReportNestedPane.fxml"/>
+                    </center>
+                </BorderPane>
+            </ScrollPane>
+        </VBox>
+    </center>
+    <bottom>
+        <HBox alignment="CENTER" spacing="10.0">
+            <padding>
+                <Insets bottom="10"/>
+            </padding>
+            <ProgressIndicator fx:id="piProgress" prefHeight="25.0" prefWidth="25.0" managed="false" visible="false"/>
+            <Button fx:id="btnPrevious" text="%button.previous" onAction="#onPreviousButtonClicked"/>
+            <Button fx:id="btnStartOver" text="%button.startOver" onAction="#onStartOverButtonClicked"/>
+            <Button fx:id="btnSubmit" text="%button.submit" onAction="#onSubmitButtonClicked"/>
+        </HBox>
+    </bottom>
+</BorderPane>

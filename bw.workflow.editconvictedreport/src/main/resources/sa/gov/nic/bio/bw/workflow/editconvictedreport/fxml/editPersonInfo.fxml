@@ -1,0 +1,387 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.collections.FXCollections?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import sa.gov.nic.bio.bw.core.beans.ComboBoxItem?>
+<?import sa.gov.nic.bio.bw.core.beans.Gender?>
+<?import org.controlsfx.glyphfont.Glyph?>
+<BorderPane xmlns="http://javafx.com/javafx/11" xmlns:fx="http://javafx.com/fxml/1"
+            fx:id="rootPane" stylesheets="@../css/style.css"
+            fx:controller="sa.gov.nic.bio.bw.workflow.editconvictedreport.controllers.EditPersonInfoPaneFxController">
+    <fx:define>
+        <Gender fx:id="maleGender" fx:value="MALE"/>
+        <Gender fx:id="femaleGender" fx:value="FEMALE"/>
+        <ToggleGroup fx:id="toggleGroup1"/>
+        <ToggleGroup fx:id="toggleGroup2"/>
+        <ToggleGroup fx:id="toggleGroup3"/>
+    </fx:define>
+    <center>
+        <BorderPane>
+            <center>
+                <VBox>
+                    <padding>
+                        <Insets top="10.0" bottom="10.0"/>
+                    </padding>
+                    <ScrollPane VBox.vgrow="ALWAYS" fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER">
+                        <GridPane fx:id="panePersonInfo" hgap="5.0">
+                            <padding>
+                                <Insets topRightBottomLeft="10.0"/>
+                            </padding>
+                            <Label text="%label.firstName" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                            <HBox spacing="5.0" alignment="CENTER_LEFT" GridPane.rowIndex="0" GridPane.columnIndex="1" GridPane.fillWidth="true">
+                                <TextField fx:id="txtFirstName" styleClass="required"/>
+                                <HBox fx:id="paneFirstNameReset" alignment="CENTER_LEFT" HBox.hgrow="ALWAYS" spacing="5.0" visible="false">
+                                    <Button fx:id="btnFirstNameReset" styleClass="small-button">
+                                        <graphic>
+                                            <Glyph fontFamily="FontAwesome" icon="undo"/>
+                                        </graphic>
+                                    </Button>
+                                    <Label fx:id="lblFirstNameOldValue" styleClass="old-value"/>
+                                    <Glyph fx:id="iconFirstNameArrow" fontFamily="FontAwesome"/>
+                                    <Label fx:id="lblFirstNameNewValue" text="${txtFirstName.text}" styleClass="new-value"/>
+                                </HBox>
+                            </HBox>
+                            <Label text="%label.fatherName" GridPane.rowIndex="1" GridPane.columnIndex="0">
+                                <GridPane.margin>
+                                    <Insets top="5.0"/>
+                                </GridPane.margin>
+                            </Label>
+                            <HBox spacing="5.0" alignment="CENTER_LEFT" GridPane.rowIndex="1" GridPane.columnIndex="1" GridPane.fillWidth="true">
+                                <GridPane.margin>
+                                    <Insets top="5.0"/>
+                                </GridPane.margin>
+                                <TextField fx:id="txtFatherName"/>
+                                <HBox fx:id="paneFatherNameReset" alignment="CENTER_LEFT" HBox.hgrow="ALWAYS" spacing="5.0" visible="false">
+                                    <Button fx:id="btnFatherNameReset" styleClass="small-button">
+                                        <graphic>
+                                            <Glyph fontFamily="FontAwesome" icon="undo"/>
+                                        </graphic>
+                                    </Button>
+                                    <Label fx:id="lblFatherNameOldValue" styleClass="old-value"/>
+                                    <Glyph fx:id="iconFatherNameArrow" fontFamily="FontAwesome"/>
+                                    <Label fx:id="lblFatherNameNewValue" text="${txtFatherName.text}" styleClass="new-value"/>
+                                </HBox>
+                            </HBox>
+                            <Label text="%label.grandfatherName" GridPane.rowIndex="2" GridPane.columnIndex="0">
+                                <GridPane.margin>
+                                    <Insets top="5.0"/>
+                                </GridPane.margin>
+                            </Label>
+                            <HBox spacing="5.0" alignment="CENTER_LEFT" GridPane.rowIndex="2" GridPane.columnIndex="1" GridPane.fillWidth="true">
+                                <GridPane.margin>
+                                    <Insets top="5.0"/>
+                                </GridPane.margin>
+                                <TextField fx:id="txtGrandfatherName"/>
+                                <HBox fx:id="paneGrandfatherNameReset" alignment="CENTER_LEFT" HBox.hgrow="ALWAYS" spacing="5.0" visible="false">
+                                    <Button fx:id="btnGrandfatherNameReset" styleClass="small-button">
+                                        <graphic>
+                                            <Glyph fontFamily="FontAwesome" icon="undo"/>
+                                        </graphic>
+                                    </Button>
+                                    <Label fx:id="lblGrandfatherNameOldValue" styleClass="old-value"/>
+                                    <Glyph fx:id="iconGrandfatherNameArrow" fontFamily="FontAwesome"/>
+                                    <Label fx:id="lblGrandfatherNameNewValue" text="${txtGrandfatherName.text}" styleClass="new-value"/>
+                                </HBox>
+                            </HBox>
+                            <Label text="%label.familyName" GridPane.rowIndex="3" GridPane.columnIndex="0">
+                                <GridPane.margin>
+                                    <Insets top="5.0"/>
+                                </GridPane.margin>
+                            </Label>
+                            <HBox spacing="5.0" alignment="CENTER_LEFT" GridPane.rowIndex="3" GridPane.columnIndex="1" GridPane.fillWidth="true">
+                                <GridPane.margin>
+                                    <Insets top="5.0"/>
+                                </GridPane.margin>
+                                <TextField fx:id="txtFamilyName" styleClass="required"/>
+                                <HBox fx:id="paneFamilyNameReset" alignment="CENTER_LEFT" HBox.hgrow="ALWAYS" spacing="5.0" visible="false">
+                                    <Button fx:id="btnFamilyNameReset" styleClass="small-button">
+                                        <graphic>
+                                            <Glyph fontFamily="FontAwesome" icon="undo"/>
+                                        </graphic>
+                                    </Button>
+                                    <Label fx:id="lblFamilyNameOldValue" styleClass="old-value"/>
+                                    <Glyph fx:id="iconFamilyNameArrow" fontFamily="FontAwesome"/>
+                                    <Label fx:id="lblFamilyNameNewValue" text="${txtFamilyName.text}" styleClass="new-value"/>
+                                </HBox>
+                            </HBox>
+                            <Label text="%label.gender" GridPane.rowIndex="4" GridPane.columnIndex="0">
+                                <GridPane.margin>
+                                    <Insets top="5.0"/>
+                                </GridPane.margin>
+                            </Label>
+                            <HBox spacing="5.0" alignment="CENTER_LEFT" GridPane.rowIndex="4" GridPane.columnIndex="1" GridPane.fillWidth="true">
+                                <GridPane.margin>
+                                    <Insets top="5.0"/>
+                                </GridPane.margin>
+                                <ComboBox fx:id="cboGender" styleClass="required">
+                                    <items>
+                                        <FXCollections fx:factory="observableArrayList">
+                                            <ComboBoxItem item="$maleGender" text="%label.male"/>
+                                            <ComboBoxItem item="$femaleGender" text="%label.female"/>
+                                        </FXCollections>
+                                    </items>
+                                </ComboBox>
+                                <HBox fx:id="paneGenderReset" alignment="CENTER_LEFT" HBox.hgrow="ALWAYS" spacing="5.0" visible="false">
+                                    <Button fx:id="btnGenderReset" styleClass="small-button">
+                                        <graphic>
+                                            <Glyph fontFamily="FontAwesome" icon="undo"/>
+                                        </graphic>
+                                    </Button>
+                                    <Label fx:id="lblGenderOldValue" styleClass="old-value"/>
+                                    <Glyph fx:id="iconGenderArrow" fontFamily="FontAwesome"/>
+                                    <Label fx:id="lblGenderNewValue" text="${cboGender.value}" styleClass="new-value"/>
+                                </HBox>
+                            </HBox>
+                            <Label text="%label.nationality" GridPane.rowIndex="5" GridPane.columnIndex="0">
+                                <GridPane.margin>
+                                    <Insets top="5.0"/>
+                                </GridPane.margin>
+                            </Label>
+                            <HBox spacing="5.0" alignment="CENTER_LEFT" GridPane.rowIndex="5" GridPane.columnIndex="1" GridPane.fillWidth="true">
+                                <GridPane.margin>
+                                    <Insets top="5.0"/>
+                                </GridPane.margin>
+                                <ComboBox fx:id="cboNationality" styleClass="required"/>
+                                <HBox fx:id="paneNationalityReset" alignment="CENTER_LEFT" HBox.hgrow="ALWAYS" spacing="5.0" visible="false">
+                                    <Button fx:id="btnNationalityReset" styleClass="small-button">
+                                        <graphic>
+                                            <Glyph fontFamily="FontAwesome" icon="undo"/>
+                                        </graphic>
+                                    </Button>
+                                    <Label fx:id="lblNationalityOldValue" styleClass="old-value"/>
+                                    <Glyph fx:id="iconNationalityArrow" fontFamily="FontAwesome"/>
+                                    <Label fx:id="lblNationalityNewValue" text="${cboNationality.value}" styleClass="new-value"/>
+                                </HBox>
+                            </HBox>
+                            <Label text="%label.occupation" GridPane.rowIndex="6" GridPane.columnIndex="0">
+                                <GridPane.margin>
+                                    <Insets top="5.0"/>
+                                </GridPane.margin>
+                            </Label>
+                            <HBox spacing="5.0" alignment="CENTER_LEFT" GridPane.rowIndex="6" GridPane.columnIndex="1" GridPane.fillWidth="true">
+                                <GridPane.margin>
+                                    <Insets top="5.0"/>
+                                </GridPane.margin>
+                                <TextField fx:id="txtOccupation"/>
+                                <HBox fx:id="paneOccupationReset" alignment="CENTER_LEFT" HBox.hgrow="ALWAYS" spacing="5.0" visible="false">
+                                    <Button fx:id="btnOccupationReset" styleClass="small-button">
+                                        <graphic>
+                                            <Glyph fontFamily="FontAwesome" icon="undo"/>
+                                        </graphic>
+                                    </Button>
+                                    <Label fx:id="lblOccupationOldValue" styleClass="old-value"/>
+                                    <Glyph fx:id="iconOccupationArrow" fontFamily="FontAwesome"/>
+                                    <Label fx:id="lblOccupationNewValue" text="${txtOccupation.text}" styleClass="new-value"/>
+                                </HBox>
+                            </HBox>
+                            <Label text="%label.birthPlace" GridPane.rowIndex="7" GridPane.columnIndex="0">
+                                <GridPane.margin>
+                                    <Insets top="5.0"/>
+                                </GridPane.margin>
+                            </Label>
+                            <HBox spacing="5.0" alignment="CENTER_LEFT" GridPane.rowIndex="7" GridPane.columnIndex="1" GridPane.fillWidth="true">
+                                <GridPane.margin>
+                                    <Insets top="5.0"/>
+                                </GridPane.margin>
+                                <TextField fx:id="txtBirthPlace"/>
+                                <HBox fx:id="paneBirthPlaceReset" alignment="CENTER_LEFT" HBox.hgrow="ALWAYS" spacing="5.0" visible="false">
+                                    <Button fx:id="btnBirthPlaceReset" styleClass="small-button">
+                                        <graphic>
+                                            <Glyph fontFamily="FontAwesome" icon="undo"/>
+                                        </graphic>
+                                    </Button>
+                                    <Label fx:id="lblBirthPlaceOldValue" styleClass="old-value"/>
+                                    <Glyph fx:id="iconBirthPlaceArrow" fontFamily="FontAwesome"/>
+                                    <Label fx:id="lblBirthPlaceNewValue" text="${txtBirthPlace.text}" styleClass="new-value"/>
+                                </HBox>
+                            </HBox>
+                            <Label text="%label.birthDate" GridPane.rowIndex="8" GridPane.columnIndex="0">
+                                <GridPane.margin>
+                                    <Insets top="5.0"/>
+                                </GridPane.margin>
+                            </Label>
+                            <HBox spacing="5.0" alignment="CENTER_LEFT" GridPane.rowIndex="8" GridPane.columnIndex="1" GridPane.fillWidth="true">
+                                <GridPane.margin>
+                                    <Insets top="5.0"/>
+                                </GridPane.margin>
+                                <DatePicker fx:id="dpBirthDate" promptText="dd/MM/yyyy"/>
+                                <HBox fx:id="paneBirthDateReset" alignment="CENTER_LEFT" HBox.hgrow="ALWAYS" spacing="5.0" visible="false">
+                                    <Button fx:id="btnBirthDateReset" styleClass="small-button">
+                                        <graphic>
+                                            <Glyph fontFamily="FontAwesome" icon="undo"/>
+                                        </graphic>
+                                    </Button>
+                                    <Label fx:id="lblBirthDateOldValue" styleClass="old-value"/>
+                                    <Glyph fx:id="iconBirthDateArrow" fontFamily="FontAwesome"/>
+                                    <Label fx:id="lblBirthDateNewValue" text="${dpBirthDate.editor.text}" styleClass="new-value"/>
+                                </HBox>
+                            </HBox>
+                            <HBox GridPane.rowIndex="9" GridPane.columnIndex="1" spacing="5.0">
+                                <Label text="%label.input" styleClass="small-font"/>
+                                <RadioButton fx:id="rdoBirthDateUseHijri" toggleGroup="$toggleGroup1" text="%radio.hijri" styleClass="small-font, small-radio-button" focusTraversable="false"/>
+                                <RadioButton fx:id="rdoBirthDateUseGregorian" toggleGroup="$toggleGroup1" text="%radio.gregorian" styleClass="small-font, small-radio-button" focusTraversable="false"/>
+                            </HBox>
+                            <Label text="%label.personId" GridPane.rowIndex="10" GridPane.columnIndex="0">
+                                <GridPane.margin>
+                                    <Insets top="5.0"/>
+                                </GridPane.margin>
+                            </Label>
+                            <HBox spacing="5.0" alignment="CENTER_LEFT" GridPane.rowIndex="10" GridPane.columnIndex="1" GridPane.fillWidth="true">
+                                <GridPane.margin>
+                                    <Insets top="5.0"/>
+                                </GridPane.margin>
+                                <TextField fx:id="txtPersonId"/>
+                                <HBox fx:id="panePersonIdReset" alignment="CENTER_LEFT" HBox.hgrow="ALWAYS" spacing="5.0" visible="false">
+                                    <Button fx:id="btnPersonIdReset" styleClass="small-button">
+                                        <graphic>
+                                            <Glyph fontFamily="FontAwesome" icon="undo"/>
+                                        </graphic>
+                                    </Button>
+                                    <Label fx:id="lblPersonIdOldValue" styleClass="old-value"/>
+                                    <Glyph fx:id="iconPersonIdArrow" fontFamily="FontAwesome"/>
+                                    <Label fx:id="lblPersonIdNewValue" text="${txtPersonId.text}" styleClass="new-value"/>
+                                </HBox>
+                            </HBox>
+                            <Label text="%label.personType" GridPane.rowIndex="11" GridPane.columnIndex="0">
+                                <GridPane.margin>
+                                    <Insets top="5.0"/>
+                                </GridPane.margin>
+                            </Label>
+                            <HBox spacing="5.0" alignment="CENTER_LEFT" GridPane.rowIndex="11" GridPane.columnIndex="1" GridPane.fillWidth="true">
+                                <GridPane.margin>
+                                    <Insets top="5.0"/>
+                                </GridPane.margin>
+                                <ComboBox fx:id="cboPersonType"/>
+                                <HBox fx:id="panePersonTypeReset" alignment="CENTER_LEFT" HBox.hgrow="ALWAYS" spacing="5.0" visible="false">
+                                    <Button fx:id="btnPersonTypeReset" styleClass="small-button">
+                                        <graphic>
+                                            <Glyph fontFamily="FontAwesome" icon="undo"/>
+                                        </graphic>
+                                    </Button>
+                                    <Label fx:id="lblPersonTypeOldValue" styleClass="old-value"/>
+                                    <Glyph fx:id="iconPersonTypeArrow" fontFamily="FontAwesome"/>
+                                    <Label fx:id="lblPersonTypeNewValue" text="${cboPersonType.value}" styleClass="new-value"/>
+                                </HBox>
+                            </HBox>
+                            <Label text="%label.documentId" GridPane.rowIndex="12" GridPane.columnIndex="0">
+                                <GridPane.margin>
+                                    <Insets top="5.0"/>
+                                </GridPane.margin>
+                            </Label>
+                            <HBox spacing="5.0" alignment="CENTER_LEFT" GridPane.rowIndex="12" GridPane.columnIndex="1" GridPane.fillWidth="true">
+                                <GridPane.margin>
+                                    <Insets top="5.0"/>
+                                </GridPane.margin>
+                                <TextField fx:id="txtDocumentId"/>
+                                <HBox fx:id="paneDocumentIdReset" alignment="CENTER_LEFT" HBox.hgrow="ALWAYS" spacing="5.0" visible="false">
+                                    <Button fx:id="btnDocumentIdReset" styleClass="small-button">
+                                        <graphic>
+                                            <Glyph fontFamily="FontAwesome" icon="undo"/>
+                                        </graphic>
+                                    </Button>
+                                    <Label fx:id="lblDocumentIdOldValue" styleClass="old-value"/>
+                                    <Glyph fx:id="iconDocumentIdArrow" fontFamily="FontAwesome"/>
+                                    <Label fx:id="lblDocumentIdNewValue" text="${txtDocumentId.text}" styleClass="new-value"/>
+                                </HBox>
+                            </HBox>
+                            <Label text="%label.documentType" GridPane.rowIndex="13" GridPane.columnIndex="0">
+                                <GridPane.margin>
+                                    <Insets top="5.0"/>
+                                </GridPane.margin>
+                            </Label>
+                            <HBox spacing="5.0" alignment="CENTER_LEFT" GridPane.rowIndex="13" GridPane.columnIndex="1" GridPane.fillWidth="true">
+                                <GridPane.margin>
+                                    <Insets top="5.0"/>
+                                </GridPane.margin>
+                                <ComboBox fx:id="cboDocumentType"/>
+                                <HBox fx:id="paneDocumentTypeReset" alignment="CENTER_LEFT" HBox.hgrow="ALWAYS" spacing="5.0" visible="false">
+                                    <Button fx:id="btnDocumentTypeReset" styleClass="small-button">
+                                        <graphic>
+                                            <Glyph fontFamily="FontAwesome" icon="undo"/>
+                                        </graphic>
+                                    </Button>
+                                    <Label fx:id="lblDocumentTypeOldValue" styleClass="old-value"/>
+                                    <Glyph fx:id="iconDocumentTypeArrow" fontFamily="FontAwesome"/>
+                                    <Label fx:id="lblDocumentTypeNewValue" text="${cboDocumentType.value}" styleClass="new-value"/>
+                                </HBox>
+                            </HBox>
+                            <Label text="%label.documentIssuanceDate" GridPane.rowIndex="14" GridPane.columnIndex="0">
+                                <GridPane.margin>
+                                    <Insets top="5.0"/>
+                                </GridPane.margin>
+                            </Label>
+                            <HBox spacing="5.0" alignment="CENTER_LEFT" GridPane.rowIndex="14" GridPane.columnIndex="1" GridPane.fillWidth="true">
+                                <GridPane.margin>
+                                    <Insets top="5.0"/>
+                                </GridPane.margin>
+                                <DatePicker fx:id="dpDocumentIssuanceDate" promptText="dd/MM/yyyy"/>
+                                <HBox fx:id="paneDocumentIssuanceDateReset" alignment="CENTER_LEFT" HBox.hgrow="ALWAYS" spacing="5.0" visible="false">
+                                    <Button fx:id="btnDocumentIssuanceDateReset" styleClass="small-button">
+                                        <graphic>
+                                            <Glyph fontFamily="FontAwesome" icon="undo"/>
+                                        </graphic>
+                                    </Button>
+                                    <Label fx:id="lblDocumentIssuanceDateOldValue" styleClass="old-value"/>
+                                    <Glyph fx:id="iconDocumentIssuanceDateArrow" fontFamily="FontAwesome"/>
+                                    <Label fx:id="lblDocumentIssuanceDateNewValue" text="${dpDocumentIssuanceDate.editor.text}" styleClass="new-value"/>
+                                </HBox>
+                            </HBox>
+                            <HBox GridPane.rowIndex="15" GridPane.columnIndex="1" spacing="5.0">
+                                <Label text="%label.input" styleClass="small-font"/>
+                                <RadioButton fx:id="rdoDocumentIssuanceDateUseHijri" toggleGroup="$toggleGroup2" text="%radio.hijri" styleClass="small-font, small-radio-button" focusTraversable="false"/>
+                                <RadioButton fx:id="rdoDocumentIssuanceDateUseGregorian" toggleGroup="$toggleGroup2" text="%radio.gregorian" styleClass="small-font, small-radio-button" focusTraversable="false"/>
+                            </HBox>
+                            <Label text="%label.documentExpiryDate" GridPane.rowIndex="16" GridPane.columnIndex="0">
+                                <GridPane.margin>
+                                    <Insets top="5.0"/>
+                                </GridPane.margin>
+                            </Label>
+                            <HBox spacing="5.0" alignment="CENTER_LEFT" GridPane.rowIndex="16" GridPane.columnIndex="1" GridPane.fillWidth="true">
+                                <GridPane.margin>
+                                    <Insets top="5.0"/>
+                                </GridPane.margin>
+                                <DatePicker fx:id="dpDocumentExpiryDate" promptText="dd/MM/yyyy"/>
+                                <HBox fx:id="paneDocumentExpiryDateReset" alignment="CENTER_LEFT" HBox.hgrow="ALWAYS" spacing="5.0" visible="false">
+                                    <Button fx:id="btnDocumentExpiryDateReset" styleClass="small-button">
+                                        <graphic>
+                                            <Glyph fontFamily="FontAwesome" icon="undo"/>
+                                        </graphic>
+                                    </Button>
+                                    <Label fx:id="lblDocumentExpiryDateOldValue" styleClass="old-value"/>
+                                    <Glyph fx:id="iconDocumentExpiryDateArrow" fontFamily="FontAwesome"/>
+                                    <Label fx:id="lblDocumentExpiryDateNewValue" text="${dpDocumentExpiryDate.editor.text}" styleClass="new-value"/>
+                                </HBox>
+                            </HBox>
+                            <HBox GridPane.rowIndex="17" GridPane.columnIndex="1" spacing="5.0">
+                                <Label text="%label.input" styleClass="small-font"/>
+                                <RadioButton fx:id="rdoDocumentExpiryDateUseHijri" toggleGroup="$toggleGroup3" text="%radio.hijri" styleClass="small-font, small-radio-button" focusTraversable="false"/>
+                                <RadioButton fx:id="rdoDocumentExpiryDateUseGregorian" toggleGroup="$toggleGroup3" text="%radio.gregorian" styleClass="small-font, small-radio-button" focusTraversable="false"/>
+                            </HBox>
+                        </GridPane>
+                    </ScrollPane>
+                </VBox>
+            </center>
+        </BorderPane>
+    </center>
+    <bottom>
+        <HBox alignment="CENTER" spacing="10">
+            <padding>
+                <Insets bottom="10"/>
+            </padding>
+            <Button fx:id="btnStartOver" text="%button.startOver" onAction="#onStartOverButtonClicked"/>
+            <Button fx:id="btnNext" text="%button.next" onAction="#onNextButtonClicked"/>
+        </HBox>
+    </bottom>
+</BorderPane>

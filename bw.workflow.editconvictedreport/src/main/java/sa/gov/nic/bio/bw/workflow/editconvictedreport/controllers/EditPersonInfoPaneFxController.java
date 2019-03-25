@@ -1,28 +1,26 @@
-package sa.gov.nic.bio.bw.workflow.registerconvictedpresent.controllers;
+package sa.gov.nic.bio.bw.workflow.editconvictedreport.controllers;
 
+import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.NodeOrientation;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.stage.FileChooser;
+import javafx.scene.layout.Pane;
 import javafx.util.StringConverter;
+import org.controlsfx.glyphfont.FontAwesome;
+import org.controlsfx.glyphfont.Glyph;
 import sa.gov.nic.bio.bw.core.Context;
 import sa.gov.nic.bio.bw.core.beans.ComboBoxItem;
 import sa.gov.nic.bio.bw.core.beans.Gender;
 import sa.gov.nic.bio.bw.core.controllers.WizardStepFxControllerBase;
-import sa.gov.nic.bio.bw.core.utils.AppUtils;
-import sa.gov.nic.bio.bw.core.utils.DialogUtils;
 import sa.gov.nic.bio.bw.core.utils.FxmlFile;
 import sa.gov.nic.bio.bw.core.utils.GuiLanguage;
 import sa.gov.nic.bio.bw.core.utils.GuiUtils;
@@ -35,25 +33,17 @@ import sa.gov.nic.bio.bw.workflow.commons.beans.PersonType;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.CountriesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.DocumentTypesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.PersonTypesLookup;
-import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.utils.RegisterConvictedPresentErrorCodes;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 
-@FxmlFile("updatePersonInfo.fxml")
-public class UpdatePersonInfoPaneFxController extends WizardStepFxControllerBase
+@FxmlFile("editPersonInfo.fxml")
+public class EditPersonInfoPaneFxController extends WizardStepFxControllerBase
 {
-	@Input private String cameraFacePhotoBase64;
-	@Input private Boolean civilHit;
-	@Input private NormalizedPersonInfo normalizedPersonInfo;
-	@Output private String facePhotoBase64;
+	@Input(alwaysRequired = true) private NormalizedPersonInfo normalizedPersonInfo;
 	@Output private String firstName;
 	@Output private String fatherName;
 	@Output private String grandfatherName;
@@ -73,7 +63,22 @@ public class UpdatePersonInfoPaneFxController extends WizardStepFxControllerBase
 	@Output private LocalDate documentExpiryDate;
 	@Output private Boolean documentExpiryDateUseHijri;
 	
-	@FXML private ImageView ivPersonPhoto;
+	@FXML private Pane panePersonInfo;
+	@FXML private Pane paneFirstNameReset;
+	@FXML private Pane paneFatherNameReset;
+	@FXML private Pane paneGrandfatherNameReset;
+	@FXML private Pane paneFamilyNameReset;
+	@FXML private Pane paneGenderReset;
+	@FXML private Pane paneNationalityReset;
+	@FXML private Pane paneOccupationReset;
+	@FXML private Pane paneBirthPlaceReset;
+	@FXML private Pane paneBirthDateReset;
+	@FXML private Pane panePersonIdReset;
+	@FXML private Pane panePersonTypeReset;
+	@FXML private Pane paneDocumentIdReset;
+	@FXML private Pane paneDocumentTypeReset;
+	@FXML private Pane paneDocumentIssuanceDateReset;
+	@FXML private Pane paneDocumentExpiryDateReset;
 	@FXML private TextField txtFirstName;
 	@FXML private TextField txtFatherName;
 	@FXML private TextField txtGrandfatherName;
@@ -95,25 +100,74 @@ public class UpdatePersonInfoPaneFxController extends WizardStepFxControllerBase
 	@FXML private DatePicker dpBirthDate;
 	@FXML private DatePicker dpDocumentIssuanceDate;
 	@FXML private DatePicker dpDocumentExpiryDate;
-	@FXML private Button btnUploadNewPhoto;
-	@FXML private Button btnClearPhoto;
+	@FXML private Label lblFirstNameOldValue;
+	@FXML private Label lblFirstNameNewValue;
+	@FXML private Label lblFatherNameOldValue;
+	@FXML private Label lblFatherNameNewValue;
+	@FXML private Label lblGrandfatherNameOldValue;
+	@FXML private Label lblGrandfatherNameNewValue;
+	@FXML private Label lblFamilyNameOldValue;
+	@FXML private Label lblFamilyNameNewValue;
+	@FXML private Label lblGenderOldValue;
+	@FXML private Label lblGenderNewValue;
+	@FXML private Label lblNationalityOldValue;
+	@FXML private Label lblNationalityNewValue;
+	@FXML private Label lblOccupationOldValue;
+	@FXML private Label lblOccupationNewValue;
+	@FXML private Label lblBirthPlaceOldValue;
+	@FXML private Label lblBirthPlaceNewValue;
+	@FXML private Label lblBirthDateOldValue;
+	@FXML private Label lblBirthDateNewValue;
+	@FXML private Label lblPersonIdOldValue;
+	@FXML private Label lblPersonIdNewValue;
+	@FXML private Label lblPersonTypeOldValue;
+	@FXML private Label lblPersonTypeNewValue;
+	@FXML private Label lblDocumentIdOldValue;
+	@FXML private Label lblDocumentIdNewValue;
+	@FXML private Label lblDocumentTypeOldValue;
+	@FXML private Label lblDocumentTypeNewValue;
+	@FXML private Label lblDocumentIssuanceDateOldValue;
+	@FXML private Label lblDocumentIssuanceDateNewValue;
+	@FXML private Label lblDocumentExpiryDateOldValue;
+	@FXML private Label lblDocumentExpiryDateNewValue;
+	@FXML private Glyph iconFirstNameArrow;
+	@FXML private Glyph iconFatherNameArrow;
+	@FXML private Glyph iconGrandfatherNameArrow;
+	@FXML private Glyph iconFamilyNameArrow;
+	@FXML private Glyph iconGenderArrow;
+	@FXML private Glyph iconNationalityArrow;
+	@FXML private Glyph iconOccupationArrow;
+	@FXML private Glyph iconBirthPlaceArrow;
+	@FXML private Glyph iconBirthDateArrow;
+	@FXML private Glyph iconPersonIdArrow;
+	@FXML private Glyph iconPersonTypeArrow;
+	@FXML private Glyph iconDocumentIdArrow;
+	@FXML private Glyph iconDocumentTypeArrow;
+	@FXML private Glyph iconDocumentIssuanceDateArrow;
+	@FXML private Glyph iconDocumentExpiryDateArrow;
+	@FXML private Button btnFirstNameReset;
+	@FXML private Button btnFatherNameReset;
+	@FXML private Button btnGrandfatherNameReset;
+	@FXML private Button btnFamilyNameReset;
+	@FXML private Button btnGenderReset;
+	@FXML private Button btnNationalityReset;
+	@FXML private Button btnOccupationReset;
+	@FXML private Button btnBirthPlaceReset;
+	@FXML private Button btnBirthDateReset;
+	@FXML private Button btnPersonIdReset;
+	@FXML private Button btnPersonTypeReset;
+	@FXML private Button btnDocumentIdReset;
+	@FXML private Button btnDocumentTypeReset;
+	@FXML private Button btnDocumentIssuanceDateReset;
+	@FXML private Button btnDocumentExpiryDateReset;
 	@FXML private Button btnStartOver;
 	@FXML private Button btnNext;
 	
 	private static final Predicate<LocalDate> birthDateValidator = localDate -> !localDate.isAfter(LocalDate.now());
 	
-	private BooleanProperty disablePhotoEditing = new SimpleBooleanProperty(true);
-	private BooleanProperty photoLoaded = new SimpleBooleanProperty(false);
-	private FileChooser fileChooser = new FileChooser();
-	
 	@Override
 	protected void onAttachedToScene()
 	{
-		fileChooser.setTitle(resources.getString("fileChooser.selectImage.title"));
-		FileChooser.ExtensionFilter extFilterJPG = new FileChooser.ExtensionFilter(
-									resources.getString("fileChooser.selectImage.types"), "*.jpg");
-		fileChooser.getExtensionFilters().addAll(extFilterJPG);
-		
 		@SuppressWarnings("unchecked")
 		List<Country> countries = (List<Country>) Context.getUserSession().getAttribute(CountriesLookup.KEY);
 		
@@ -125,8 +179,9 @@ public class UpdatePersonInfoPaneFxController extends WizardStepFxControllerBase
 														Context.getUserSession().getAttribute(DocumentTypesLookup.KEY);
 		
 		List<Country> countriesPlusUnknown = new ArrayList<>(countries);
-		String text = resources.getString("combobox.unknownNationality");
-		Country unknownNationality = new Country(0, null, text, text);
+		String unknownNationalityText = resources.getString("combobox.unknownNationality");
+		Country unknownNationality = new Country(0, null, unknownNationalityText,
+		                                         unknownNationalityText);
 		countriesPlusUnknown.add(0, unknownNationality);
 		
 		GuiUtils.addAutoCompletionSupportToComboBox(cboNationality, countriesPlusUnknown);
@@ -197,20 +252,15 @@ public class UpdatePersonInfoPaneFxController extends WizardStepFxControllerBase
 		    String s;
 		    if(Context.getGuiLanguage() == GuiLanguage.ARABIC) s = country.getDescriptionAR();
 		    else s = country.getDescriptionEN();
-			
-			if(s != null) s = s.trim();
+		    
+		    if(s != null) s = s.trim();
 			
 			String mofaCode = country.getMofaNationalityCode();
 			String resultText = mofaCode != null && !mofaCode.trim().isEmpty() ? s + " (" + mofaCode + ")" : s;
 		    item.setText(resultText);
 		});
 		
-		btnClearPhoto.disableProperty().bind(photoLoaded.not().or(disablePhotoEditing));
-		btnUploadNewPhoto.disableProperty().bind(disablePhotoEditing);
-		
 		Node focusedNode = null;
-		
-		String facePhotoBase64 = null;
 		Gender gender = null;
 		String firstName = null;
 		String fatherName = null;
@@ -227,9 +277,8 @@ public class UpdatePersonInfoPaneFxController extends WizardStepFxControllerBase
 		LocalDate documentIssuanceDate = null;
 		LocalDate documentExpiryDate = null;
 		
-		if(isFirstLoad() && normalizedPersonInfo != null)
+		if(isFirstLoad())
 		{
-			facePhotoBase64 = normalizedPersonInfo.getFacePhotoBase64();
 			gender = normalizedPersonInfo.getGender();
 			firstName = normalizedPersonInfo.getFirstName();
 			fatherName = normalizedPersonInfo.getFatherName();
@@ -247,31 +296,8 @@ public class UpdatePersonInfoPaneFxController extends WizardStepFxControllerBase
 			documentExpiryDate = normalizedPersonInfo.getDocumentExpiryDate();
 		}
 		
-		boolean disable = (civilHit != null && civilHit) || cameraFacePhotoBase64 != null;
-		
-		if(cameraFacePhotoBase64 != null)
-		{
-			this.facePhotoBase64 = cameraFacePhotoBase64;
-			GuiUtils.attachFacePhotoBase64(ivPersonPhoto, cameraFacePhotoBase64, true, gender != null ?
-																								gender : this.gender);
-			photoLoaded.setValue(true);
-		}
-		else if(isFirstLoad())
-		{
-			if(facePhotoBase64 != null)
-			{
-				this.facePhotoBase64 = facePhotoBase64;
-				GuiUtils.attachFacePhotoBase64(ivPersonPhoto, facePhotoBase64, true, gender);
-				photoLoaded.setValue(true);
-			}
-		}
-		else if(this.facePhotoBase64 != null)
-		{
-			GuiUtils.attachFacePhotoBase64(ivPersonPhoto, this.facePhotoBase64, true, this.gender);
-			photoLoaded.setValue(true);
-		}
-		
-		if(!disable || !photoLoaded.get()) disablePhotoEditing.setValue(false);
+		// TODO: disable if the user has no permission to edit person info
+		boolean disable = false;
 		
 		if(firstName != null)
 		{
@@ -397,6 +423,201 @@ public class UpdatePersonInfoPaneFxController extends WizardStepFxControllerBase
 		
 		if(focusedNode != null) focusedNode.requestFocus();
 		else btnNext.requestFocus();
+		
+		boolean rtl = Context.getGuiLanguage().getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT;
+		FontAwesome.Glyph arrowIcon = rtl ? FontAwesome.Glyph.LONG_ARROW_LEFT : FontAwesome.Glyph.LONG_ARROW_RIGHT;
+		iconFirstNameArrow.setIcon(arrowIcon);
+		iconFatherNameArrow.setIcon(arrowIcon);
+		iconGrandfatherNameArrow.setIcon(arrowIcon);
+		iconFamilyNameArrow.setIcon(arrowIcon);
+		iconGenderArrow.setIcon(arrowIcon);
+		iconNationalityArrow.setIcon(arrowIcon);
+		iconOccupationArrow.setIcon(arrowIcon);
+		iconBirthPlaceArrow.setIcon(arrowIcon);
+		iconBirthDateArrow.setIcon(arrowIcon);
+		iconPersonIdArrow.setIcon(arrowIcon);
+		iconPersonTypeArrow.setIcon(arrowIcon);
+		iconDocumentIdArrow.setIcon(arrowIcon);
+		iconDocumentTypeArrow.setIcon(arrowIcon);
+		iconDocumentIssuanceDateArrow.setIcon(arrowIcon);
+		iconDocumentExpiryDateArrow.setIcon(arrowIcon);
+		
+		paneFirstNameReset.visibleProperty().bind(
+			Bindings.notEqual(lblFirstNameOldValue.textProperty(), lblFirstNameNewValue.textProperty()));
+		paneFatherNameReset.visibleProperty().bind(
+			Bindings.notEqual(lblFatherNameOldValue.textProperty(), lblFatherNameNewValue.textProperty()));
+		paneGrandfatherNameReset.visibleProperty().bind(
+			Bindings.notEqual(lblGrandfatherNameOldValue.textProperty(), lblGrandfatherNameNewValue.textProperty()));
+		paneFamilyNameReset.visibleProperty().bind(
+			Bindings.notEqual(lblFamilyNameOldValue.textProperty(), lblFamilyNameNewValue.textProperty()));
+		paneGenderReset.visibleProperty().bind(
+			Bindings.notEqual(lblGenderOldValue.textProperty(), lblGenderNewValue.textProperty()));
+		paneNationalityReset.visibleProperty().bind(
+			Bindings.notEqual(lblNationalityOldValue.textProperty(), lblNationalityNewValue.textProperty()));
+		paneOccupationReset.visibleProperty().bind(
+			Bindings.notEqual(lblOccupationOldValue.textProperty(), lblOccupationNewValue.textProperty()));
+		paneBirthPlaceReset.visibleProperty().bind(
+			Bindings.notEqual(lblBirthPlaceOldValue.textProperty(), lblBirthPlaceNewValue.textProperty()));
+		paneBirthDateReset.visibleProperty().bind(
+			Bindings.notEqual(lblBirthDateOldValue.textProperty(), lblBirthDateNewValue.textProperty()));
+		panePersonIdReset.visibleProperty().bind(
+			Bindings.notEqual(lblPersonIdOldValue.textProperty(), lblPersonIdNewValue.textProperty()));
+		panePersonTypeReset.visibleProperty().bind(
+			Bindings.notEqual(lblPersonTypeOldValue.textProperty(), lblPersonTypeNewValue.textProperty()));
+		paneDocumentIdReset.visibleProperty().bind(
+			Bindings.notEqual(lblDocumentIdOldValue.textProperty(), lblDocumentIdNewValue.textProperty()));
+		paneDocumentTypeReset.visibleProperty().bind(
+			Bindings.notEqual(lblDocumentTypeOldValue.textProperty(), lblDocumentTypeNewValue.textProperty()));
+		paneDocumentIssuanceDateReset.visibleProperty().bind(
+			Bindings.notEqual(lblDocumentIssuanceDateOldValue.textProperty(),
+			                  lblDocumentIssuanceDateNewValue.textProperty()));
+		paneDocumentExpiryDateReset.visibleProperty().bind(
+			Bindings.notEqual(lblDocumentExpiryDateOldValue.textProperty(),
+			                  lblDocumentExpiryDateNewValue.textProperty()));
+		
+		Country oldNationality = normalizedPersonInfo.getNationality();
+		String oldNationalityText = "";
+		
+		if(oldNationality != null)
+		{
+			if(arabic) oldNationalityText = oldNationality.getDescriptionAR();
+			else oldNationalityText = oldNationality.getDescriptionEN();
+			
+			if(oldNationalityText != null) oldNationalityText = oldNationalityText.trim();
+			
+			String mofaCode = oldNationality.getMofaNationalityCode();
+			oldNationalityText = mofaCode != null && !mofaCode.trim().isEmpty() ?
+														oldNationalityText + " (" + mofaCode + ")" : oldNationalityText;
+		}
+		else oldNationalityText = unknownNationalityText;
+		
+		lblFirstNameOldValue.setText(normalizedPersonInfo.getFirstName() != null ?
+		                             normalizedPersonInfo.getFirstName() : "");
+		lblFatherNameOldValue.setText(normalizedPersonInfo.getFatherName() != null ?
+		                              normalizedPersonInfo.getFatherName() : "");
+		lblGrandfatherNameOldValue.setText(normalizedPersonInfo.getGrandfatherName() != null ?
+		                                   normalizedPersonInfo.getGrandfatherName() : "");
+		lblFamilyNameOldValue.setText(normalizedPersonInfo.getFamilyName() != null ?
+		                              normalizedPersonInfo.getFamilyName() : "");
+		lblGenderOldValue.setText(normalizedPersonInfo.getGender() != null ?
+		                          normalizedPersonInfo.getGender().toString() : "");
+		lblNationalityOldValue.setText(oldNationalityText);
+		lblOccupationOldValue.setText(normalizedPersonInfo.getOccupation() != null ?
+		                              normalizedPersonInfo.getOccupation() : "");
+		lblBirthPlaceOldValue.setText(normalizedPersonInfo.getBirthPlace() != null ?
+		                              normalizedPersonInfo.getBirthPlace() : "");
+		lblBirthDateOldValue.setText(GuiUtils.formatLocalDate(normalizedPersonInfo.getBirthDate(),
+		                                                      rdoBirthDateUseHijri.isSelected()));
+		lblPersonIdOldValue.setText(normalizedPersonInfo.getPersonId() != null ?
+		                            String.valueOf(normalizedPersonInfo.getPersonId()) : "");
+		lblPersonTypeOldValue.setText(normalizedPersonInfo.getPersonType() != null ?
+				                              (arabic ? normalizedPersonInfo.getPersonType().getArabicText() :
+						                                normalizedPersonInfo.getPersonType().getEnglishText()) : "");
+		lblDocumentIdOldValue.setText(normalizedPersonInfo.getDocumentId() != null ?
+		                              normalizedPersonInfo.getDocumentId() : "");
+		lblDocumentTypeOldValue.setText(normalizedPersonInfo.getDocumentType() != null ?
+				                              (arabic ? normalizedPersonInfo.getDocumentType().getArabicText() :
+						                                normalizedPersonInfo.getDocumentType().getEnglishText()) : "");
+		lblDocumentIssuanceDateOldValue.setText(GuiUtils.formatLocalDate(normalizedPersonInfo.getDocumentIssuanceDate(),
+		                                                                 rdoDocumentIssuanceDateUseHijri.isSelected()));
+		lblDocumentExpiryDateOldValue.setText(GuiUtils.formatLocalDate(normalizedPersonInfo.getDocumentExpiryDate(),
+		                                                               rdoDocumentExpiryDateUseHijri.isSelected()));
+		
+		btnFirstNameReset.setOnAction(actionEvent ->
+		{
+			txtFirstName.setText(normalizedPersonInfo.getFirstName() != null ?
+			                     normalizedPersonInfo.getFirstName() : "");
+			panePersonInfo.requestFocus();
+		});
+		btnFatherNameReset.setOnAction(actionEvent ->
+		{
+			txtFatherName.setText(normalizedPersonInfo.getFatherName() != null ?
+			                      normalizedPersonInfo.getFatherName() : "");
+			panePersonInfo.requestFocus();
+		});
+		btnGrandfatherNameReset.setOnAction(actionEvent ->
+		{
+			txtGrandfatherName.setText(normalizedPersonInfo.getGrandfatherName() != null ?
+			                           normalizedPersonInfo.getGrandfatherName() : "");
+			panePersonInfo.requestFocus();
+		});
+		btnFamilyNameReset.setOnAction(actionEvent ->
+		{
+			txtFamilyName.setText(normalizedPersonInfo.getFamilyName() != null ?
+			                      normalizedPersonInfo.getFamilyName() : "");
+			panePersonInfo.requestFocus();
+		});
+		btnGenderReset.setOnAction(actionEvent ->
+		{
+			GuiUtils.selectComboBoxItem(cboGender, normalizedPersonInfo.getGender());
+			panePersonInfo.requestFocus();
+		});
+		btnNationalityReset.setOnAction(actionEvent ->
+		{
+			GuiUtils.selectComboBoxItem(cboNationality, normalizedPersonInfo.getNationality());
+			panePersonInfo.requestFocus();
+		});
+		btnOccupationReset.setOnAction(actionEvent ->
+		{
+			txtOccupation.setText(normalizedPersonInfo.getOccupation() != null ?
+			                      normalizedPersonInfo.getOccupation() : "");
+			panePersonInfo.requestFocus();
+		});
+		btnBirthPlaceReset.setOnAction(actionEvent ->
+		{
+			txtBirthPlace.setText(normalizedPersonInfo.getBirthPlace() != null ?
+			                      normalizedPersonInfo.getBirthPlace() : "");
+			panePersonInfo.requestFocus();
+		});
+		btnBirthDateReset.setOnAction(actionEvent ->
+		{
+			dpBirthDate.setValue(normalizedPersonInfo.getBirthDate());
+			panePersonInfo.requestFocus();
+		});
+		btnPersonIdReset.setOnAction(actionEvent ->
+		{
+			txtPersonId.setText(normalizedPersonInfo.getPersonId() != null ?
+			                    String.valueOf(normalizedPersonInfo.getPersonId()) : "");
+			panePersonInfo.requestFocus();
+		});
+		btnPersonTypeReset.setOnAction(actionEvent ->
+		{
+			GuiUtils.selectComboBoxItem(cboPersonType, normalizedPersonInfo.getPersonType());
+			panePersonInfo.requestFocus();
+		});
+		btnDocumentIdReset.setOnAction(actionEvent ->
+		{
+			txtDocumentId.setText(normalizedPersonInfo.getDocumentId() != null ?
+			                      normalizedPersonInfo.getDocumentId() : "");
+			panePersonInfo.requestFocus();
+		});
+		btnDocumentTypeReset.setOnAction(actionEvent ->
+		{
+			GuiUtils.selectComboBoxItem(cboDocumentType, normalizedPersonInfo.getDocumentType());
+			panePersonInfo.requestFocus();
+		});
+		btnDocumentIssuanceDateReset.setOnAction(actionEvent ->
+		{
+			dpDocumentIssuanceDate.setValue(normalizedPersonInfo.getDocumentIssuanceDate());
+			panePersonInfo.requestFocus();
+		});
+		btnDocumentExpiryDateReset.setOnAction(actionEvent ->
+		{
+			dpDocumentExpiryDate.setValue(normalizedPersonInfo.getDocumentExpiryDate());
+			panePersonInfo.requestFocus();
+		});
+		
+		rdoBirthDateUseHijri.selectedProperty().addListener((observable, oldValue, newValue) ->
+                        lblBirthDateOldValue.setText(GuiUtils.formatLocalDate(normalizedPersonInfo.getBirthDate(),
+		                                                                      rdoBirthDateUseHijri.isSelected())));
+		rdoDocumentIssuanceDateUseHijri.selectedProperty().addListener((observable, oldValue, newValue) ->
+                        lblDocumentIssuanceDateOldValue.setText(GuiUtils.formatLocalDate(
+                        		                                        normalizedPersonInfo.getDocumentIssuanceDate(),
+				                                                        rdoDocumentIssuanceDateUseHijri.isSelected())));
+		rdoDocumentExpiryDateUseHijri.selectedProperty().addListener((observable, oldValue, newValue) ->
+		                lblDocumentIssuanceDateOldValue.setText(GuiUtils.formatLocalDate(
+		                		                                        normalizedPersonInfo.getDocumentExpiryDate(),
+                                                                        rdoDocumentExpiryDateUseHijri.isSelected())));
 	}
 	
 	@Override
@@ -464,93 +685,5 @@ public class UpdatePersonInfoPaneFxController extends WizardStepFxControllerBase
 		
 		this.documentExpiryDate = dpDocumentExpiryDate.getValue();
 		this.documentExpiryDateUseHijri = rdoDocumentExpiryDateUseHijri.isSelected();
-	}
-	
-	@FXML
-	private void onUploadNewPhotoButtonClicked(ActionEvent actionEvent)
-	{
-		hideNotification();
-		File selectedFile = fileChooser.showOpenDialog(Context.getCoreFxController().getStage());
-		
-		if(selectedFile != null)
-		{
-			try
-			{
-				long fileSizeBytes = Files.size(selectedFile.toPath());
-				double fileSizeKB = fileSizeBytes / 1024.0;
-				String maxFileSizeKbProperty =
-									Context.getConfigManager().getProperty("config.uploadFaceImage.fileMaxSizeKB");
-				
-				double maxFileSizeKb = Double.parseDouble(maxFileSizeKbProperty);
-				if(fileSizeKB > maxFileSizeKb)
-				{
-					DecimalFormat df = new DecimalFormat("#.00"); // 2 decimal places
-					showWarningNotification(String.format(resources.getString(
-											"selectNewFaceImage.fileChooser.exceedMaxFileSize"),
-					                                      df.format(fileSizeKB), df.format(maxFileSizeKb)));
-					return;
-				}
-			}
-			catch(Exception e)
-			{
-				String errorCode = RegisterConvictedPresentErrorCodes.C007_00007.getCode();
-				String[] errorDetails = {"Failed to retrieve the file size (" + selectedFile.getAbsolutePath() + ")!"};
-				Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails);
-			}
-			
-			Image photoImage = new Image("file:///" + selectedFile.getAbsolutePath());
-			
-			PhotoQualityCheckDialogFxController photoQualityCheckDialogFxController = null;
-			try
-			{
-				photoQualityCheckDialogFxController = DialogUtils.buildCustomDialogByFxml(
-																		Context.getCoreFxController().getStage(),
-	                                                                    PhotoQualityCheckDialogFxController.class,
-																		false);
-			}
-			catch(Exception e)
-			{
-				String errorCode = RegisterConvictedPresentErrorCodes.C007_00012.getCode();
-				String[] errorDetails = {"Failed to load (" + PhotoQualityCheckDialogFxController.class.getName() +
-										")!"};
-				Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails);
-				return;
-			}
-			
-			if(photoQualityCheckDialogFxController != null)
-			{
-				photoQualityCheckDialogFxController.setHostController(this);
-				photoQualityCheckDialogFxController.setInputPhotoImage(photoImage);
-				photoQualityCheckDialogFxController.showDialogAndWait();
-				Image outputPhotoImage = photoQualityCheckDialogFxController.getOutputPhotoImage();
-				
-				if(outputPhotoImage != null)
-				{
-					try
-					{
-						facePhotoBase64 = AppUtils.imageToBase64(outputPhotoImage);
-					}
-					catch(IOException e)
-					{
-						String errorCode = RegisterConvictedPresentErrorCodes.C007_00013.getCode();
-						String[] errorDetails = {"Failed to convert the face photo to base64!"};
-						Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails);
-						return;
-					}
-					
-					ivPersonPhoto.setImage(outputPhotoImage);
-					photoLoaded.setValue(true);
-					showSuccessNotification(resources.getString("label.icao.success"));
-				}
-			}
-		}
-	}
-	
-	@FXML
-	private void onClearPhotoButtonClicked(ActionEvent actionEvent)
-	{
-		GuiUtils.detachFacePhoto(ivPersonPhoto);
-		photoLoaded.setValue(false);
-		facePhotoBase64 = null;
 	}
 }
