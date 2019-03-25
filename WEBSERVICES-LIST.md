@@ -35,8 +35,9 @@
         - services-gateway-biooperation/api/fingerprint/inquiry/v1
         - services-gateway-biooperation/api/fingerprint/inquiry/status/v2
         - services-gateway-demographic/api/person/deportee/info/v1
-        - services-gateway-demographic/api/criminal/info/{general-file-number}/v2
-        - services-gateway-demographic/api/criminal/identity/info/{general-file-number}/v1
+        - services-gateway-demographic/api/criminal/info/v2
+        - services-gateway-demographic/api/criminal/identity/info/v1
+        - services-gateway-biooperation/api/criminal/report/v1
     
     menu.query.convictedReportInquiryBySearchCriteria:
         - services-gateway-lookups/api/application/person-type/v1
@@ -44,6 +45,7 @@
         - services-gateway-lookups/api/application/nationality/all/v1
         - services-gateway-lookups/api/application/crime-types/v1
         - services-gateway-demographic/api/criminal/info/basic/custom/v1
+        - services-gateway-biooperation/api/criminal/report/v1
     
     menu.cancel.deleteCompleteCriminalRecord:
         - services-gateway-lookups/api/application/person-type/v1
@@ -89,8 +91,9 @@
         - services-gateway-biooperation/api/fingerprint/inquiry/v1
         - services-gateway-biooperation/api/fingerprint/inquiry/status/v2
         - services-gateway-demographic/api/person/deportee/info/v1
-        - services-gateway-demographic/api/criminal/info/{general-file-number}/v2
-        - services-gateway-demographic/api/criminal/identity/info/{general-file-number}/v1
+        - services-gateway-demographic/api/criminal/info/v2
+        - services-gateway-demographic/api/criminal/identity/info/v1
+        - services-gateway-biooperation/api/criminal/report/v1
         - services-gateway-biooperation/api/criminal/criminal-id/generation/v1
         - services-gateway-biooperation/api/criminal/fingers/registration/v1
         - services-gateway-biooperation/api/criminal/fingers/registration/status/v1
@@ -108,8 +111,9 @@
         - services-gateway-biooperation/api/fingerprint/inquiry/v1
         - services-gateway-biooperation/api/fingerprint/inquiry/status/v2
         - services-gateway-demographic/api/person/deportee/info/v1
-        - services-gateway-demographic/api/criminal/info/{general-file-number}/v2
-        - services-gateway-demographic/api/criminal/identity/info/{general-file-number}/v1
+        - services-gateway-demographic/api/criminal/info/v2
+        - services-gateway-demographic/api/criminal/identity/info/v1
+        - services-gateway-biooperation/api/criminal/report/v1
         - services-gateway-biooperation/api/criminal/criminal-id/generation/v1
         - services-gateway-biooperation/api/criminal/fingers/registration/v1
         - services-gateway-biooperation/api/criminal/fingers/registration/status/v1

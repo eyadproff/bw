@@ -13,7 +13,7 @@ buildscript {
 
 allprojects {
     group = 'sa.gov.nic.bio'
-    version = '2019.03.3'
+    version = '2019.03.4'
 }
 
 subprojects {
@@ -159,7 +159,7 @@ task packageWebStart(group: 'web-start') {
         }
 
         // compress the jars
-        fileTree(dir: 'build/web-start/modulepath-jars', include: '**/*.jar', excludes: ['bw.*.jar', 'controlsfx-*.jar', 'javafx.*.jar']).visit
+        fileTree(dir: 'build/web-start/modulepath-jars', include: '**/*.jar', excludes: ['bw.*.jar', 'controlsfx-*.jar', 'javafx.*.jar', 'logging-interceptor-*.jar', 'okhttp-*.jar']).visit
                 { FileVisitDetails details ->
                     String fileName = details.file.name
                     exec {
@@ -169,7 +169,7 @@ task packageWebStart(group: 'web-start') {
                 }
 
         // delete the un-compressed jars
-        fileTree(dir: 'build/web-start/modulepath-jars', include: '**/*.jar', excludes: ['bw.*.jar', 'controlsfx-*.jar', 'javafx.*.jar']).visit { FileVisitDetails details ->
+        fileTree(dir: 'build/web-start/modulepath-jars', include: '**/*.jar', excludes: ['bw.*.jar', 'controlsfx-*.jar', 'javafx.*.jar', 'logging-interceptor-*.jar', 'okhttp-*.jar']).visit { FileVisitDetails details ->
             details.file.delete()
         }
 
