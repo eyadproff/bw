@@ -16,7 +16,12 @@ import sa.gov.nic.bio.bw.workflow.commons.lookups.PersonTypesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.ConvictedReportInquiryByReportNumberWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.ConvictedReportToPersonInfoConverter;
 import sa.gov.nic.bio.bw.workflow.deleteconvictedreport.controllers.EnterReportNumberPaneFxController;
+import sa.gov.nic.bio.bw.workflow.editconvictedreport.controllers.EditJudgmentDetailsPaneFxController;
 import sa.gov.nic.bio.bw.workflow.editconvictedreport.controllers.EditPersonInfoPaneFxController;
+import sa.gov.nic.bio.bw.workflow.editconvictedreport.controllers.EditPunishmentDetailsPaneFxController;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @AssociatedMenu(workflowId = 1016, menuId = "menu.edit.editConvictedReport",
 		menuTitle = "menu.title", menuOrder = 1, devices = Device.BIO_UTILITIES)
@@ -56,14 +61,28 @@ public class EditConvictedReportWorkflow extends WizardWorkflowBase
 			}
 			case 2:
 			{
+				ConvictedReport convictedReport = getData(ConvictedReportInquiryByReportNumberWorkflowTask.class,
+				                                          "convictedReport");
+				setData(EditJudgmentDetailsPaneFxController.class, "judgementInfo",
+				        convictedReport.getSubjJudgementInfo());
+				renderUiAndWaitForUserInput(EditJudgmentDetailsPaneFxController.class);
+				
 				break;
 			}
 			case 3:
 			{
+				ConvictedReport convictedReport = getData(ConvictedReportInquiryByReportNumberWorkflowTask.class,
+				                                          "convictedReport");
+				setData(EditPunishmentDetailsPaneFxController.class, "judgementInfo",
+				        convictedReport.getSubjJudgementInfo());
+				renderUiAndWaitForUserInput(EditPunishmentDetailsPaneFxController.class);
+				
 				break;
 			}
 			case 4:
 			{
+				
+				
 				break;
 			}
 			case 5:

@@ -12,13 +12,16 @@ import javafx.util.StringConverter;
 import sa.gov.nic.bio.bw.core.controllers.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.core.utils.FxmlFile;
 import sa.gov.nic.bio.bw.core.utils.GuiUtils;
+import sa.gov.nic.bio.bw.core.workflow.Input;
 import sa.gov.nic.bio.bw.core.workflow.Output;
+import sa.gov.nic.bio.bw.workflow.commons.beans.JudgementInfo;
 
 import java.util.Map;
 
 @FxmlFile("editPunishmentDetails.fxml")
 public class EditPunishmentDetailsPaneFxController extends WizardStepFxControllerBase
 {
+	@Input(alwaysRequired = true) private JudgementInfo judgementInfo;
 	@Output private Integer tazeerLashes;
 	@Output private Integer hadLashes;
 	@Output private Integer fine;
@@ -62,7 +65,6 @@ public class EditPunishmentDetailsPaneFxController extends WizardStepFxControlle
 	@FXML private Button btnStartOver;
 	@FXML private Button btnNext;
 	
-	@SuppressWarnings("unchecked")
 	@Override
 	protected void onAttachedToScene()
 	{

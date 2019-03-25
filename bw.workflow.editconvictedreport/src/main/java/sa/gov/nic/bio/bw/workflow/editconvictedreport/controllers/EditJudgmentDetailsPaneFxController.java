@@ -20,9 +20,11 @@ import sa.gov.nic.bio.bw.core.controllers.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.core.utils.FxmlFile;
 import sa.gov.nic.bio.bw.core.utils.GuiUtils;
+import sa.gov.nic.bio.bw.core.workflow.Input;
 import sa.gov.nic.bio.bw.core.workflow.Output;
 import sa.gov.nic.bio.bw.workflow.commons.beans.CrimeCode;
 import sa.gov.nic.bio.bw.workflow.commons.beans.CrimeType;
+import sa.gov.nic.bio.bw.workflow.commons.beans.JudgementInfo;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.CrimeTypesLookup;
 
 import java.time.LocalDate;
@@ -35,6 +37,7 @@ import java.util.stream.Collectors;
 @FxmlFile("editJudgmentDetails.fxml")
 public class EditJudgmentDetailsPaneFxController extends WizardStepFxControllerBase
 {
+	@Input(alwaysRequired = true) private JudgementInfo judgementInfo;
 	@Output private String judgmentIssuer;
 	@Output private String judgmentNumber;
 	@Output private LocalDate judgmentDate;
@@ -271,6 +274,18 @@ public class EditJudgmentDetailsPaneFxController extends WizardStepFxControllerB
 		initCrimeEventComboBox(cboCrimeEvent5, cboCrimeClass5, crimeEventTitles, crimeClassTitles);
 		
 		Node focusedNode = null;
+		String judgmentIssuer = null;
+		String judgmentNumber = null;
+		LocalDate judgmentDate = null;
+		Boolean judgmentDateUseHijri = null;
+		String caseFileNumber = null;
+		Long prisonerNumber = null;
+		LocalDate arrestDate = null;
+		Boolean arrestDateUseHijri = null;
+		List<CrimeCode> crimes = null;
+		
+		
+		
 		
 		if(judgmentIssuer != null && !judgmentIssuer.isEmpty()) txtJudgmentIssuer.setText(judgmentIssuer);
 		else focusedNode = txtJudgmentIssuer;
