@@ -554,6 +554,13 @@ public class GuiUtils implements AppLogger
 		});
 	}
 	
+	public static String formatLocalDate(LocalDate localDate, boolean useHijri)
+	{
+		Chronology chronology = useHijri ? HijrahChronology.INSTANCE : IsoChronology.INSTANCE;
+		if(localDate != null) return dateFormatterForFormatting.withChronology(chronology).format(localDate);
+		else return "";
+	}
+	
 	public static void initDatePicker(RadioButton rdoUseHijri, DatePicker datePicker,
 	                                  Predicate<LocalDate> dateValidator)
 	{
@@ -619,9 +626,7 @@ public class GuiUtils implements AppLogger
 			@Override
 			public String toString(LocalDate date)
 			{
-				Chronology chronology = rdoUseHijri.isSelected() ? HijrahChronology.INSTANCE : IsoChronology.INSTANCE;
-				if(date != null) return dateFormatterForFormatting.withChronology(chronology).format(date);
-				else return "";
+				return formatLocalDate(date, rdoUseHijri.isSelected());
 			}
 			
 			@Override
@@ -788,6 +793,12 @@ public class GuiUtils implements AppLogger
 	
 	public static <T> boolean selectComboBoxItem(ComboBox<ComboBoxItem<T>> comboBox, T item)
 	{
+		if(item == null)
+		{
+			comboBox.setValue(null);
+			return false;
+		}
+		
 		Optional<ComboBoxItem<T>> optional = comboBox.getItems()
 													 .stream()
 													 .filter(o -> o.getItem().equals(item))

@@ -15,6 +15,7 @@ import sa.gov.nic.bio.bw.core.utils.FxmlFile;
 import sa.gov.nic.bio.bw.core.workflow.Input;
 import sa.gov.nic.bio.bw.core.workflow.Output;
 import sa.gov.nic.bio.bw.workflow.deletecompletecriminalrecord.tasks.CriminalFingerprintsDeletionStatusCheckerWorkflowTask.Status;
+import sa.gov.nic.bio.bw.workflow.deletecompletecriminalrecord.utils.DeleteCompleteCriminalRecordErrorCodes;
 
 @FxmlFile("showResult.fxml")
 public class ShowResultPaneFxController extends WizardStepFxControllerBase
@@ -109,7 +110,25 @@ public class ShowResultPaneFxController extends WizardStepFxControllerBase
 		{
 			if(successfulResponse)
 			{
-				if(criminalFingerprintsDeletionStatus == Status.PENDING)
+				if(noFingerprintsFound != null && noFingerprintsFound)
+				{
+					lblDeletingCriminalFingerprints.setText(resources.getString("label.noFingerprintsFound"));
+					piDeletingCriminalFingerprints.setVisible(false);
+					ivDeletingCriminalFingerprintsWarning.setVisible(true);
+					
+					if(resultsTotalCount > 0)
+					{
+						request = Request.DELETE_CONVICTED_REPORTS;
+						continueWorkflow();
+					}
+					else
+					{
+						request = Request.DONE;
+						btnRetry.setManaged(false);
+						btnStartOver.setVisible(true);
+					}
+				}
+				else if(criminalFingerprintsDeletionStatus == Status.PENDING)
 				{
 					Context.getExecutorService().submit(() ->
 					{
@@ -147,6 +166,19 @@ public class ShowResultPaneFxController extends WizardStepFxControllerBase
 						btnRetry.setManaged(false);
 						btnStartOver.setVisible(true);
 					}
+				}
+				else
+				{
+					lblDeletingCriminalFingerprints.setText(
+													resources.getString("label.fingerprintsDeletionFailed"));
+					piDeletingCriminalFingerprints.setVisible(false);
+					ivDeletingCriminalFingerprintsFailure.setVisible(true);
+					btnStartOver.setVisible(true);
+					btnRetry.setVisible(true);
+					
+					String errorCode = DeleteCompleteCriminalRecordErrorCodes.C015_00002.getCode();
+					String[] errorDetails = {"got invalid status on checking for fingerprints deletion!"};
+					Context.getCoreFxController().showErrorDialog(errorCode, null, errorDetails);
 				}
 			}
 			else

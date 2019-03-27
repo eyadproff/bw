@@ -11,6 +11,7 @@ import sa.gov.nic.bio.bw.workflow.commons.lookups.DocumentTypesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.PersonTypesLookup;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -72,12 +73,22 @@ public class NormalizedPersonInfo extends JavaBean
 		List<Country> countries = (List<Country>) Context.getUserSession().getAttribute(CountriesLookup.KEY);
 		
 		Integer nationalityInteger = personInfo.getNationality();
-		if(nationalityInteger != null) for(Country country : countries)
+		if(nationalityInteger != null)
 		{
-			if(country.getCode() == nationalityInteger)
+			List<Country> countriesPlusUnknown = new ArrayList<>(countries);
+			String unknownNationalityText =
+								AppUtils.getCoreStringsResourceBundle().getString("combobox.unknownNationality");
+			Country unknownNationality = new Country(0, null, unknownNationalityText,
+			                                         unknownNationalityText);
+			countriesPlusUnknown.add(0, unknownNationality);
+			
+			for(Country country : countriesPlusUnknown)
 			{
-				nationality = country;
-				break;
+				if(country.getCode() == nationalityInteger)
+				{
+					nationality = country;
+					break;
+				}
 			}
 		}
 		

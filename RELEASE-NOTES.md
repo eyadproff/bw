@@ -11,6 +11,13 @@ VERSION SCHEMA: vYYYY.MM.#SEQ
 
 ---
 
+## v2019.03.5
+
+- FIX: Fix Delete-Complete-Criminal-Record workflow logic.
+- CHN: Send segmented and slap fingerprints when registering criminal fingerprints.
+
+---
+
 ## v2019.03.4
 
 - FIX: logging-interceptor-*.jar and okhttp-*.jar cannot be packed by java 6.

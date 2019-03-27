@@ -1,7 +1,5 @@
 package sa.gov.nic.bio.bw.core.beans;
 
-import sa.gov.nic.bio.bw.core.beans.JavaBean;
-
 import java.awt.Point;
 
 public class FingerCoordinate extends JavaBean
@@ -12,6 +10,17 @@ public class FingerCoordinate extends JavaBean
 	private Point bottomRight;
 	
 	public FingerCoordinate(){}
+	
+	public FingerCoordinate(FingerCoordinate fingerCoordinate)
+	{
+		if(fingerCoordinate != null)
+		{
+			if(fingerCoordinate.topLeft != null) this.topLeft = new Point(fingerCoordinate.topLeft);
+			if(fingerCoordinate.topRight != null) this.topRight = new Point(fingerCoordinate.topRight);
+			if(fingerCoordinate.bottomLeft != null) this.bottomLeft = new Point(fingerCoordinate.bottomLeft);
+			if(fingerCoordinate.bottomRight != null) this.bottomRight = new Point(fingerCoordinate.bottomRight);
+		}
+	}
 	
 	public FingerCoordinate(Point topLeft, Point topRight, Point bottomLeft, Point bottomRight)
 	{

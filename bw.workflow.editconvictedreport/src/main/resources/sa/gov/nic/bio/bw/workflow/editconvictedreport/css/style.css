@@ -1,0 +1,14 @@
+.small-button {
+    -fx-padding: 2px 4px 2px 4px;
+    -fx-font-size: 7px;
+}
+
+.old-value {
+    -fx-text-fill: red;
+    -fx-font-weight: bold;
+}
+
+.new-value {
+    -fx-text-fill: green;
+    -fx-font-weight: bold;
+}

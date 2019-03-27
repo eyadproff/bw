@@ -66,6 +66,15 @@
         - services-gateway-biooperation/api/criminal/report/v1
         - services-gateway-biooperation/api/criminal/report/deletion/v1
     
+    menu.edit.editConvictedReport:
+        - services-gateway-lookups/api/application/person-type/v1
+        - services-gateway-lookups/api/application/id-types/v1
+        - services-gateway-lookups/api/application/nationality/all/v1
+        - services-gateway-lookups/api/application/crime-types/v1
+        - services-gateway-biooperation/api/criminal/report/v1
+        - UPADTE_1_URL
+        - UPADTE_2_URL
+    
     menu.query.faceVerification:
         - services-gateway-lookups/api/application/nationality/all/v1
         - services-gateway-biooperation/api/face/verify/v1

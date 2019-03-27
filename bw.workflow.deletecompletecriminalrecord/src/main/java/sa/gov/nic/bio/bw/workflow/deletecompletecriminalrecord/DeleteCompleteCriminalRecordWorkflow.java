@@ -90,10 +90,11 @@ public class DeleteCompleteCriminalRecordWorkflow extends WizardWorkflowBase
 					passData(SubmitCriminalFingerprintsDeletionWorkflowTask.class,
 					         CriminalFingerprintsDeletionStatusCheckerWorkflowTask.class, "tcn");
 					executeWorkflowTask(CriminalFingerprintsDeletionStatusCheckerWorkflowTask.class);
-					
+					passData(CriminalFingerprintsDeletionStatusCheckerWorkflowTask.class,
+					         ShowResultPaneFxController.class, "noFingerprintsFound");
 					passData(CriminalFingerprintsDeletionStatusCheckerWorkflowTask.class, "status",
 					         ShowResultPaneFxController.class,
-					         "criminalFingerprintsRegistrationStatus");
+					         "criminalFingerprintsDeletionStatus");
 				}
 				else if(request == Request.DELETE_CONVICTED_REPORTS)
 				{

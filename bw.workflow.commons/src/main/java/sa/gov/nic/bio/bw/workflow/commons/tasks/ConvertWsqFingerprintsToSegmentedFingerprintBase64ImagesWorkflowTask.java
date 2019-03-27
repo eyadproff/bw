@@ -30,6 +30,7 @@ public class ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTas
 	@Input(alwaysRequired = true) private List<Finger> fingerprints;
 	@Input(alwaysRequired = true) private List<Integer> missingFingerprints;
 	@Output private Map<Integer, String> fingerprintBase64Images;
+	@Output private List<Finger> combinedFingerprints; // segmented + unsegmented
 	
 	@Override
 	public void execute() throws Signal
@@ -39,6 +40,7 @@ public class ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTas
 		
 		Map<Integer, String> fingerprintWsqMap = new HashMap<>();
 		Map<Integer, String> fingerprintImages = new HashMap<>();
+		combinedFingerprints = new ArrayList<>();
 		
 		for(Finger finger : fingerprints)
 		{
@@ -121,9 +123,14 @@ public class ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTas
 						String roundingBox = dmFingerData.getRoundingBox();
 						FingerCoordinate fingerCoordinate = AppUtils.constructFingerCoordinates(roundingBox);
 						fingerCoordinates.add(fingerCoordinate);
+						
+						Finger segmentedFinger = new Finger(dmFingerData.getPosition(),
+						                                    dmFingerData.getFinger(), null);
+						combinedFingerprints.add(segmentedFinger);
 					});
 					
 					finger.setFingerCoordinates(fingerCoordinates);
+					combinedFingerprints.add(new Finger(finger));
 				}
 				else if(result.getReturnCode() == SegmentFingerprintsResponse.FailureCodes.SEGMENTATION_FAILED)
 				{
@@ -153,10 +160,23 @@ public class ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTas
 			else
 			{
 				if(position == FingerPosition.RIGHT_THUMB_SLAP.getPosition())
-																position = FingerPosition.RIGHT_THUMB.getPosition();
+				{
+					position = FingerPosition.RIGHT_THUMB.getPosition();
+					
+					Finger segmentedRightThumb = new Finger(finger);
+					segmentedRightThumb.setType(position);
+					combinedFingerprints.add(segmentedRightThumb);
+				}
 				else if(position == FingerPosition.LEFT_THUMB_SLAP.getPosition())
-																position = FingerPosition.LEFT_THUMB.getPosition();
+				{
+					position = FingerPosition.LEFT_THUMB.getPosition();
+					
+					Finger segmentedLeftThumb = new Finger(finger);
+					segmentedLeftThumb.setType(position);
+					combinedFingerprints.add(segmentedLeftThumb);
+				}
 				
+				combinedFingerprints.add(new Finger(finger));
 				fingerprintWsqMap.put(position, finger.getImage());
 			}
 		}

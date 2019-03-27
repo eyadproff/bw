@@ -198,9 +198,10 @@ public class UpdatePersonInfoPaneFxController extends WizardStepFxControllerBase
 		    if(Context.getGuiLanguage() == GuiLanguage.ARABIC) s = country.getDescriptionAR();
 		    else s = country.getDescriptionEN();
 			
+			if(s != null) s = s.trim();
+			
 			String mofaCode = country.getMofaNationalityCode();
-			String resultText = mofaCode != null && !mofaCode.trim().isEmpty() ? s.trim() + " (" + mofaCode + ")"
-																			   : s.trim();
+			String resultText = mofaCode != null && !mofaCode.trim().isEmpty() ? s + " (" + mofaCode + ")" : s;
 		    item.setText(resultText);
 		});
 		

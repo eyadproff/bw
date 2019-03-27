@@ -86,6 +86,7 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 	@Output private Map<Integer, Fingerprint> capturedFingerprints;
 	@Output private List<Finger> segmentedFingerprints;
 	@Output private List<Finger> slapFingerprints;
+	@Output private List<Finger> combinedFingerprints; // segmented and unsegmented
 	@Output private Map<Integer, String> fingerprintBase64Images;
 	@Output private List<Integer> missingFingerprints;
 	
@@ -805,6 +806,10 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 		        collectedFingerprintsMap.put(slapPosition, finger);
 		    }
 		});
+		
+		combinedFingerprints = new ArrayList<>();
+		combinedFingerprints.addAll(slapFingerprints);
+		combinedFingerprints.addAll(segmentedFingerprints);
 		
 		LOGGER.fine(new Gson().toJson(slapFingerprints,
 		                                     TypeToken.getParameterized(List.class, Finger.class).getType()));

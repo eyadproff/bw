@@ -84,7 +84,6 @@ public final class AppUtils implements AppLogger
 	private static final String LOGGING_CONFIG_FILE = "/sa/gov/nic/bio/bw/core/config/logging.properties";
 	private static final String FXML_FILE = "/sa/gov/nic/bio/bw/core/fxml/core.fxml";
 	private static final String RB_STRINGS_FILE = "/sa/gov/nic/bio/bw/core/bundles/strings";
-	private static final String RB_ERRORS_FILE = "/sa/gov/nic/bio/bw/core/bundles/errors";
 	private static final String FONT_AWESOME_FILE = "/sa/gov/nic/bio/bw/core/fonts/fontawesome-webfont-4.7.0.2016.ttf";
 	private static final DateTimeFormatter DATE_TIME_FORMATTER =
 													DateTimeFormatter.ofPattern("hh:mm:ss a (Z) - EEEE dd MMMM yyyy G");
@@ -117,16 +116,6 @@ public final class AppUtils implements AppLogger
 	public static ResourceBundle getCoreStringsResourceBundle(Locale locale)
 	{
 		return ResourceBundle.getBundle(RB_STRINGS_FILE, locale);
-	}
-	
-	public static ResourceBundle getCoreErrorsResourceBundle()
-	{
-		return getCoreErrorsResourceBundle(Locale.getDefault());
-	}
-	
-	public static ResourceBundle getCoreErrorsResourceBundle(Locale locale)
-	{
-		return ResourceBundle.getBundle(RB_ERRORS_FILE, locale);
 	}
 	
 	public static URL getCoreFxmlFileAsResource()
