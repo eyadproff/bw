@@ -298,6 +298,9 @@ public class RegisterConvictedReportPresentWorkflow extends WizardWorkflowBase
 				         ReviewAndSubmitPaneFxController.class,
 				         "fingerprintBase64Images", "missingFingerprints");
 				
+				setData(ReviewAndSubmitPaneFxController.class, "fingerprintsSourceSystem",
+				        ConvictedReport.FingerprintsSource.LIVE_SCAN);
+				
 				renderUiAndWaitForUserInput(ReviewAndSubmitPaneFxController.class);
 				
 				break;

@@ -20,9 +20,6 @@ import sa.gov.nic.bio.bw.workflow.editconvictedreport.controllers.EditJudgmentDe
 import sa.gov.nic.bio.bw.workflow.editconvictedreport.controllers.EditPersonInfoPaneFxController;
 import sa.gov.nic.bio.bw.workflow.editconvictedreport.controllers.EditPunishmentDetailsPaneFxController;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @AssociatedMenu(workflowId = 1016, menuId = "menu.edit.editConvictedReport",
 		menuTitle = "menu.title", menuOrder = 1, devices = Device.BIO_UTILITIES)
 @WithLookups({PersonTypesLookup.class, DocumentTypesLookup.class, CountriesLookup.class, CrimeTypesLookup.class})

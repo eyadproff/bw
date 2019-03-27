@@ -7,6 +7,14 @@ import java.util.List;
 
 public class ConvictedReport extends JavaBean
 {
+	public interface FingerprintsSource
+	{
+		String LIVE_SCAN = "LIVE_SCAN";
+		String ARCHIVE_DB = "ARCHIVE_DB";
+		String CARD_SCAN = "CARD_SCAN";
+		String NIST_FILE = "NIST_FILE";
+	}
+	
 	private Integer sequence; // used in TableView
 	private Long reportNumber;
 	private Long reportDate;
@@ -31,6 +39,12 @@ public class ConvictedReport extends JavaBean
 	private String subjFace;
 	private String operatorId;
 	private List<CrimeCode> crimeCodes;
+	private Integer locationId;
+	private Long updaterId;
+	private Long rootReportNumber;
+	private Long prevReportNumber;
+	private String sourceSystem;
+	private Integer status;
 	
 	public ConvictedReport(){}
 	
@@ -40,14 +54,15 @@ public class ConvictedReport extends JavaBean
 	                       Integer subjSamisType, Long subjBioId, String subjDocId, Integer subjDocType,
 	                       Long subjDocIssDate, Long subjDocExpDate, JudgementInfo subjJudgementInfo,
 	                       List<Finger> subjFingers, List<Integer> subjMissingFingers, String subjFace,
-	                       String operatorId, List<CrimeCode> crimeCodes)
+	                       String operatorId, List<CrimeCode> crimeCodes, Integer locationId, Long updaterId,
+	                       Long rootReportNumber, Long prevReportNumber, String sourceSystem, Integer status)
 	{
 		this.reportNumber = reportNumber;
 		this.reportDate = reportDate;
 		this.generalFileNumber = generalFileNumber;
 		this.subjtName = subjtName;
-		this.subjNationalityIsoCode = subjNationalityIsoCode;
 		this.subjNationalityCode = subjNationalityCode;
+		this.subjNationalityIsoCode = subjNationalityIsoCode;
 		this.subjOccupation = subjOccupation;
 		this.subjGender = subjGender;
 		this.subjBirthDate = subjBirthDate;
@@ -65,6 +80,12 @@ public class ConvictedReport extends JavaBean
 		this.subjFace = subjFace;
 		this.operatorId = operatorId;
 		this.crimeCodes = crimeCodes;
+		this.locationId = locationId;
+		this.updaterId = updaterId;
+		this.rootReportNumber = rootReportNumber;
+		this.prevReportNumber = prevReportNumber;
+		this.sourceSystem = sourceSystem;
+		this.status = status;
 	}
 	
 	public Integer getSequence(){return sequence;}
@@ -139,4 +160,22 @@ public class ConvictedReport extends JavaBean
 	
 	public List<CrimeCode> getCrimeCodes(){return crimeCodes;}
 	public void setCrimeCodes(List<CrimeCode> crimeCodes){this.crimeCodes = crimeCodes;}
+	
+	public Integer getLocationId(){return locationId;}
+	public void setLocationId(Integer locationId){this.locationId = locationId;}
+	
+	public Long getUpdaterId(){return updaterId;}
+	public void setUpdaterId(Long updaterId){this.updaterId = updaterId;}
+	
+	public Long getRootReportNumber(){return rootReportNumber;}
+	public void setRootReportNumber(Long rootReportNumber){this.rootReportNumber = rootReportNumber;}
+	
+	public Long getPrevReportNumber(){return prevReportNumber;}
+	public void setPrevReportNumber(Long prevReportNumber){this.prevReportNumber = prevReportNumber;}
+	
+	public String getSourceSystem(){return sourceSystem;}
+	public void setSourceSystem(String sourceSystem){this.sourceSystem = sourceSystem;}
+	
+	public Integer getStatus(){return status;}
+	public void setStatus(Integer status){this.status = status;}
 }

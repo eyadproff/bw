@@ -78,6 +78,7 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 	@Input(alwaysRequired = true) private Map<Integer, String> fingerprintBase64Images;
 	@Input(alwaysRequired = true) private List<Finger> fingerprints;
 	@Input(alwaysRequired = true) private List<Integer> missingFingerprints;
+	@Input private String fingerprintsSourceSystem;
 	@Output private ConvictedReport convictedReport;
 	
 	@FXML private ConvictedReportNestedFxController convictedReportNestedPaneController;
@@ -122,7 +123,8 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 				                                      AppUtils.gregorianDateToSeconds(documentExpiryDate),
 		                                      judgementInfo, fingerprints, missingFingerprints, facePhotoBase64,
 		                                      AppUtils.localizeNumbers(String.valueOf(userInfo.getOperatorId())),
-		                                      crimes);
+		                                      crimes, null, null, null,
+		                                      null, fingerprintsSourceSystem, null);
 		
 		convictedReportNestedPaneController.setWillBeGeneratedTextOnCriminalBiometricsId();
 		convictedReportNestedPaneController.populateConvictedReportData(convictedReport, fingerprintBase64Images);

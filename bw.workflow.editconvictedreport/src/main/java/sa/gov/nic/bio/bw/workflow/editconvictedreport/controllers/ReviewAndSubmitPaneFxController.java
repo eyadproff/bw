@@ -108,21 +108,21 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 		
 		UserInfo userInfo = (UserInfo) Context.getUserSession().getAttribute("userInfo");
 		
-		convictedReport = new ConvictedReport(null, null, criminalBiometricsId, name,
-		                                      nationality.getCode(), nationality.getMofaNationalityCode(),
-		                                      occupation, gender.name().substring(0, 1), // "M" or "F"
-		                                      birthDate == null ? null :
-				                                      AppUtils.gregorianDateToSeconds(birthDate), birthPlace,
-		                                      personId, personType == null ? null : personType.getCode(),
-		                                      civilBiometricsId, documentId,
-		                                      documentType == null ? null : documentType.getCode(),
-		                                      documentIssuanceDate == null ? null :
-				                                      AppUtils.gregorianDateToSeconds(documentIssuanceDate),
-		                                      documentExpiryDate == null ? null :
-				                                      AppUtils.gregorianDateToSeconds(documentExpiryDate),
-		                                      judgementInfo, fingerprints, missingFingerprints, facePhotoBase64,
-		                                      AppUtils.localizeNumbers(String.valueOf(userInfo.getOperatorId())),
-		                                      crimes);
+		//convictedReport = new ConvictedReport(null, null, criminalBiometricsId, name,
+		//                                      nationality.getCode(), nationality.getMofaNationalityCode(),
+		//                                      occupation, gender.name().substring(0, 1), // "M" or "F"
+		//                                      birthDate == null ? null :
+		//		                                      AppUtils.gregorianDateToSeconds(birthDate), birthPlace,
+		//                                      personId, personType == null ? null : personType.getCode(),
+		//                                      civilBiometricsId, documentId,
+		//                                      documentType == null ? null : documentType.getCode(),
+		//                                      documentIssuanceDate == null ? null :
+		//		                                      AppUtils.gregorianDateToSeconds(documentIssuanceDate),
+		//                                      documentExpiryDate == null ? null :
+		//		                                      AppUtils.gregorianDateToSeconds(documentExpiryDate),
+		//                                      judgementInfo, fingerprints, missingFingerprints, facePhotoBase64,
+		//                                      AppUtils.localizeNumbers(String.valueOf(userInfo.getOperatorId())),
+		//                                      crimes);
 		
 		convictedReportNestedPaneController.setWillBeGeneratedTextOnCriminalBiometricsId();
 		convictedReportNestedPaneController.populateConvictedReportData(convictedReport, fingerprintBase64Images);

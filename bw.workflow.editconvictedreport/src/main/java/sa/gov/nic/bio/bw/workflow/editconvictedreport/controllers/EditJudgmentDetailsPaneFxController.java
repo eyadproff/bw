@@ -37,6 +37,7 @@ import java.util.stream.Collectors;
 @FxmlFile("editJudgmentDetails.fxml")
 public class EditJudgmentDetailsPaneFxController extends WizardStepFxControllerBase
 {
+	@Input(alwaysRequired = true) private List<CrimeCode> oldCrimes;
 	@Input(alwaysRequired = true) private JudgementInfo judgementInfo;
 	@Output private String judgmentIssuer;
 	@Output private String judgmentNumber;
@@ -46,7 +47,7 @@ public class EditJudgmentDetailsPaneFxController extends WizardStepFxControllerB
 	@Output private Long prisonerNumber;
 	@Output private LocalDate arrestDate;
 	@Output private Boolean arrestDateUseHijri;
-	@Output private List<CrimeCode> crimes;
+	@Output private List<CrimeCode> newCrimes;
 	
 	@FXML private Pane paneCrimeContainer;
 	@FXML private Pane paneCrime2;
@@ -277,23 +278,39 @@ public class EditJudgmentDetailsPaneFxController extends WizardStepFxControllerB
 		String judgmentIssuer = null;
 		String judgmentNumber = null;
 		LocalDate judgmentDate = null;
-		Boolean judgmentDateUseHijri = null;
 		String caseFileNumber = null;
 		Long prisonerNumber = null;
 		LocalDate arrestDate = null;
-		Boolean arrestDateUseHijri = null;
 		List<CrimeCode> crimes = null;
 		
+		if(isFirstLoad())
+		{
+			judgmentIssuer = judgementInfo.getJudgIssuer();
+			judgmentNumber = judgementInfo.getJudgNum();
+			//judgmentDate = judgementInfo.getJudgDate();
+			caseFileNumber = judgementInfo.getPoliceFileNum();
+			prisonerNumber = judgementInfo.getPrisonerNumber();
+			//arrestDate = judgementInfo.getArrestDate();
+		}
 		
-		
+		// TODO: I stopped here. I will continue after vacation.
 		
 		if(judgmentIssuer != null && !judgmentIssuer.isEmpty()) txtJudgmentIssuer.setText(judgmentIssuer);
+		else if(this.judgmentIssuer != null && !this.judgmentIssuer.isEmpty())
+		{
+			txtJudgmentIssuer.setText(this.judgmentIssuer);
+		}
 		else focusedNode = txtJudgmentIssuer;
 		
 		if(judgmentNumber != null && !judgmentNumber.isEmpty()) txtJudgmentNumber.setText(judgmentNumber);
+		else if(this.judgmentNumber != null && !this.judgmentNumber.isEmpty())
+		{
+			txtJudgmentNumber.setText(this.judgmentNumber);
+		}
 		else if(focusedNode == null) focusedNode = txtJudgmentNumber;
 		
 		if(judgmentDate != null) dpJudgmentDate.setValue(judgmentDate);
+		else if(this.judgmentDate != null) dpJudgmentDate.setValue(this.judgmentDate);
 		else if(focusedNode == null) focusedNode = dpJudgmentDate;
 		
 		rdoJudgmentDateUseHijri.setSelected(true);
@@ -368,17 +385,17 @@ public class EditJudgmentDetailsPaneFxController extends WizardStepFxControllerB
 		this.arrestDate = dpArrestDate.getValue();
 		this.arrestDateUseHijri = rdoArrestDateUseHijri.isSelected();
 		
-		crimes = new ArrayList<>();
-		crimes.add(new CrimeCode(cboCrimeEvent1.getValue().getItem(), cboCrimeClass1.getValue().getItem()));
-		
-		for(int i = 1; i <= 4; i++)
-		{
-			if(cboCrimePaneMap.get(i).isVisible())
-			{
-				crimes.add(new CrimeCode(cboCrimeEventMap.get(i).getValue().getItem(),
-				                         cboCrimeClassMap.get(i).getValue().getItem()));
-			}
-		}
+		//crimes = new ArrayList<>();
+		//crimes.add(new CrimeCode(cboCrimeEvent1.getValue().getItem(), cboCrimeClass1.getValue().getItem()));
+		//
+		//for(int i = 1; i <= 4; i++)
+		//{
+		//	if(cboCrimePaneMap.get(i).isVisible())
+		//	{
+		//		crimes.add(new CrimeCode(cboCrimeEventMap.get(i).getValue().getItem(),
+		//		                         cboCrimeClassMap.get(i).getValue().getItem()));
+		//	}
+		//}
 	}
 	
 	private void initCrimeEventComboBox(ComboBox<ComboBoxItem<Integer>> cboCrimeEvent,
