@@ -14,6 +14,7 @@ VERSION SCHEMA: vYYYY.MM.#SEQ
 ## v2019.03.5
 
 - FIX: Fix Delete-Complete-Criminal-Record workflow logic.
+- CHN: Send segmented and slap fingerprints when registering criminal fingerprints.
 
 ---
 

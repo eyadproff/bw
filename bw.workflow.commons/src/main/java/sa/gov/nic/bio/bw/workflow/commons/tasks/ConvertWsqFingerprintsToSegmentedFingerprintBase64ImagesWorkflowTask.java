@@ -125,7 +125,7 @@ public class ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTas
 						fingerCoordinates.add(fingerCoordinate);
 						
 						Finger segmentedFinger = new Finger(dmFingerData.getPosition(),
-						                                    dmFingerData.getFingerWsqImage(), null);
+						                                    dmFingerData.getFinger(), null);
 						combinedFingerprints.add(segmentedFinger);
 					});
 					
