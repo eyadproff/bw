@@ -3,6 +3,7 @@ package sa.gov.nic.bio.bw.workflow.commons.beans;
 import sa.gov.nic.bio.bw.core.beans.FingerCoordinate;
 import sa.gov.nic.bio.bw.core.beans.JavaBean;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Finger extends JavaBean
@@ -17,6 +18,26 @@ public class Finger extends JavaBean
 		this.type = type;
 		this.image = image;
 		this.fingerCoordinates = fingerCoordinates;
+	}
+	
+	public Finger(Finger finger)
+	{
+		if(finger != null)
+		{
+			this.type = finger.type;
+			this.image = finger.image;
+			this.presence = finger.presence;
+			
+			if(finger.fingerCoordinates != null)
+			{
+				this.fingerCoordinates = new ArrayList<>();
+				
+				for(FingerCoordinate fingerCoordinate : finger.fingerCoordinates)
+				{
+					this.fingerCoordinates.add(new FingerCoordinate(fingerCoordinate));
+				}
+			}
+		}
 	}
 	
 	public int getType(){return type;}

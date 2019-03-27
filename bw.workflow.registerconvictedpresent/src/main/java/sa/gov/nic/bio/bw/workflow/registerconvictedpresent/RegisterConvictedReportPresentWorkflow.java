@@ -351,7 +351,7 @@ public class RegisterConvictedReportPresentWorkflow extends WizardWorkflowBase
 				{
 					passData(GenerateNewCriminalBiometricsIdWorkflowTask.class,
 					         SubmitCriminalFingerprintsWorkflowTask.class, "criminalBiometricsId");
-					passData(FingerprintCapturingFxController.class, "slapFingerprints",
+					passData(FingerprintCapturingFxController.class, "combinedFingerprints",
 					         SubmitCriminalFingerprintsWorkflowTask.class, "fingerprints");
 					passData(FingerprintCapturingFxController.class, SubmitCriminalFingerprintsWorkflowTask.class,
 					         "missingFingerprints");

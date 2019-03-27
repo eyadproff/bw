@@ -513,7 +513,8 @@ public class RegisterConvictedReportNotPresentWorkflow extends WizardWorkflowBas
 					
 					if(fingerprintsSource == Source.ENTERING_PERSON_ID)
 					{
-						passData(FetchingFingerprintsWorkflowTask.class,
+						passData(ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask.class,
+						         "combinedFingerprints",
 						         SubmitCriminalFingerprintsWorkflowTask.class,
 						         "fingerprints");
 						passData(FetchingMissingFingerprintsWorkflowTask.class,
