@@ -158,21 +158,6 @@ task packageWebStart(group: 'web-start') {
             into "build/web-start/modulepath-jars"
         }
 
-        // compress the jars
-        fileTree(dir: 'build/web-start/modulepath-jars', include: '**/*.jar', excludes: ['bw.*.jar', 'controlsfx-*.jar', 'javafx.*.jar', 'logging-interceptor-*.jar', 'okhttp-*.jar']).visit
-                { FileVisitDetails details ->
-                    String fileName = details.file.name
-                    exec {
-                        workingDir 'build/web-start/modulepath-jars'
-                        commandLine 'pack200', fileName + ".pack.gz", fileName
-                    }
-                }
-
-        // delete the un-compressed jars
-        fileTree(dir: 'build/web-start/modulepath-jars', include: '**/*.jar', excludes: ['bw.*.jar', 'controlsfx-*.jar', 'javafx.*.jar', 'logging-interceptor-*.jar', 'okhttp-*.jar']).visit { FileVisitDetails details ->
-            details.file.delete()
-        }
-
         // copy javafx DLLs
         copy {
             from 'build-resources/javafx-dlls/32-bit'
