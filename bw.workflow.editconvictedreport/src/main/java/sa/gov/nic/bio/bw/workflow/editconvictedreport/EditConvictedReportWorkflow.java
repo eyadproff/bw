@@ -62,6 +62,8 @@ public class EditConvictedReportWorkflow extends WizardWorkflowBase
 				                                          "convictedReport");
 				setData(EditJudgmentDetailsPaneFxController.class, "judgementInfo",
 				        convictedReport.getSubjJudgementInfo());
+				setData(EditJudgmentDetailsPaneFxController.class, "oldCrimes",
+				        convictedReport.getCrimeCodes());
 				renderUiAndWaitForUserInput(EditJudgmentDetailsPaneFxController.class);
 				
 				break;
