@@ -124,7 +124,8 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 		                                      judgementInfo, fingerprints, missingFingerprints, facePhotoBase64,
 		                                      AppUtils.localizeNumbers(String.valueOf(userInfo.getOperatorId())),
 		                                      crimes, null, null, null,
-		                                      null, fingerprintsSourceSystem, null);
+		                                      null, fingerprintsSourceSystem,
+		                                      ConvictedReport.Status.ACTIVE);
 		
 		convictedReportNestedPaneController.setWillBeGeneratedTextOnCriminalBiometricsId();
 		convictedReportNestedPaneController.populateConvictedReportData(convictedReport, fingerprintBase64Images);

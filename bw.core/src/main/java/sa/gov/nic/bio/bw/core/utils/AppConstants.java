@@ -47,7 +47,8 @@ public interface AppConstants
 	                                                                        KeyCombination.SHIFT_DOWN,
 	                                                                        KeyCombination.ALT_DOWN);
 	
-	long SAMIS_DB_DATE_NOT_SET_VALUE = -62135780400000L;
+	// some columns in SAMIS DB use 01-01-0001, 04-04-0004, or so instead of null
+	long SAMIS_DB_DATE_EPOCH_MS_NOT_SET_VALUE = -60000000000000L; // Monday, September 3, 0068 1:20:00 PM
 	int TABLE_PAGINATION_PAGES_PER_ITERATION = 10;
 	int TABLE_PAGINATION_RECORDS_PER_PAGE = 10;
 }

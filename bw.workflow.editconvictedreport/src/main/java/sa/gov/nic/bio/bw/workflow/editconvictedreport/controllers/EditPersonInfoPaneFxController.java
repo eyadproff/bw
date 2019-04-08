@@ -615,7 +615,7 @@ public class EditPersonInfoPaneFxController extends WizardStepFxControllerBase
                         		                                        normalizedPersonInfo.getDocumentIssuanceDate(),
 				                                                        rdoDocumentIssuanceDateUseHijri.isSelected())));
 		rdoDocumentExpiryDateUseHijri.selectedProperty().addListener((observable, oldValue, newValue) ->
-		                lblDocumentIssuanceDateOldValue.setText(GuiUtils.formatLocalDate(
+		                lblDocumentExpiryDateOldValue.setText(GuiUtils.formatLocalDate(
 		                		                                        normalizedPersonInfo.getDocumentExpiryDate(),
                                                                         rdoDocumentExpiryDateUseHijri.isSelected())));
 	}

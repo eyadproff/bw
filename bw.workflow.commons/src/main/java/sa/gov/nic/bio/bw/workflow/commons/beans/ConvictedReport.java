@@ -15,6 +15,13 @@ public class ConvictedReport extends JavaBean
 		String NIST_FILE = "NIST_FILE";
 	}
 	
+	public interface Status
+	{
+		Integer ACTIVE = 0;
+		Integer UPDATED = 1;
+		Integer DELETED = 2;
+	}
+	
 	private Integer sequence; // used in TableView
 	private Long reportNumber;
 	private Long reportDate;

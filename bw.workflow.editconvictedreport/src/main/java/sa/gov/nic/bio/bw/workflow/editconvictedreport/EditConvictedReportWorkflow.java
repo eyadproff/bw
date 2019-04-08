@@ -43,6 +43,8 @@ public class EditConvictedReportWorkflow extends WizardWorkflowBase
 				         ConvictedReportInquiryByReportNumberWorkflowTask.class,
 				         "reportNumber");
 				executeWorkflowTask(ConvictedReportInquiryByReportNumberWorkflowTask.class);
+				passData(ConvictedReportInquiryByReportNumberWorkflowTask.class,
+				         EnterReportNumberPaneFxController.class, "convictedReport");
 				break;
 			}
 			case 1:

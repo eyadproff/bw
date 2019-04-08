@@ -5,7 +5,7 @@ import sa.gov.nic.bio.bw.core.beans.JavaBean;
 public class JudgementInfo extends JavaBean
 {
 	private String judgIssuer;
-	private long judgDate;
+	private Long judgDate;
 	private String judgNum;
 	private int judgTazeerLashesCount;
 	private int judgHadLashesCount;
@@ -30,7 +30,7 @@ public class JudgementInfo extends JavaBean
 	private Long prisonerNumber;
 	private Long arrestDate;
 	
-	public JudgementInfo(String judgIssuer, long judgDate, String judgNum, int judgTazeerLashesCount,
+	public JudgementInfo(String judgIssuer, Long judgDate, String judgNum, int judgTazeerLashesCount,
 	                     int judgHadLashesCount, int judgFine, String judgOthers, int jailYearCount, int jailMonthCount,
 	                     int jailDayCount, int trvlBanDayCount, int trvlBanMonthCount, int trvlBanYearCount,
 	                     int deportDayCount, int deportMonthCount, int deportYearCount, int exileDayCount,
@@ -67,8 +67,8 @@ public class JudgementInfo extends JavaBean
 	public String getJudgIssuer(){return judgIssuer;}
 	public void setJudgIssuer(String judgIssuer){this.judgIssuer = judgIssuer;}
 	
-	public long getJudgDate(){return judgDate;}
-	public void setJudgDate(long judgDate){this.judgDate = judgDate;}
+	public Long getJudgDate(){return judgDate;}
+	public void setJudgDate(Long judgDate){this.judgDate = judgDate;}
 	
 	public String getJudgNum(){return judgNum;}
 	public void setJudgNum(String judgNum){this.judgNum = judgNum;}

@@ -1,14 +1,17 @@
 package sa.gov.nic.bio.bw.workflow.editconvictedreport.controllers;
 
+import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
+import javafx.geometry.NodeOrientation;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
@@ -49,11 +52,22 @@ public class EditJudgmentDetailsPaneFxController extends WizardStepFxControllerB
 	@Output private Boolean arrestDateUseHijri;
 	@Output private List<CrimeCode> newCrimes;
 	
+	@FXML private Pane paneJudgmentDetails;
 	@FXML private Pane paneCrimeContainer;
 	@FXML private Pane paneCrime2;
 	@FXML private Pane paneCrime3;
 	@FXML private Pane paneCrime4;
 	@FXML private Pane paneCrime5;
+	@FXML private Pane paneJudgmentIssuerReset;
+	@FXML private Pane paneJudgmentNumberReset;
+	@FXML private Pane paneJudgmentDateReset;
+	@FXML private Pane paneCaseFileNumberReset;
+	@FXML private Pane panePrisonerNumberReset;
+	@FXML private Pane paneArrestDateReset;
+	@FXML private TextField txtJudgmentIssuer;
+	@FXML private TextField txtJudgmentNumber;
+	@FXML private TextField txtCaseFileNumber;
+	@FXML private TextField txtPrisonerNumber;
 	@FXML private ComboBox<ComboBoxItem<Integer>> cboCrimeEvent1;
 	@FXML private ComboBox<ComboBoxItem<Integer>> cboCrimeClass1;
 	@FXML private ComboBox<ComboBoxItem<Integer>> cboCrimeEvent2;
@@ -64,16 +78,36 @@ public class EditJudgmentDetailsPaneFxController extends WizardStepFxControllerB
 	@FXML private ComboBox<ComboBoxItem<Integer>> cboCrimeClass4;
 	@FXML private ComboBox<ComboBoxItem<Integer>> cboCrimeEvent5;
 	@FXML private ComboBox<ComboBoxItem<Integer>> cboCrimeClass5;
-	@FXML private TextField txtJudgmentIssuer;
-	@FXML private TextField txtJudgmentNumber;
-	@FXML private TextField txtCaseFileNumber;
-	@FXML private TextField txtPrisonerNumber;
-	@FXML private DatePicker dpArrestDate;
-	@FXML private DatePicker dpJudgmentDate;
 	@FXML private RadioButton rdoArrestDateUseHijri;
 	@FXML private RadioButton rdoArrestDateUseGregorian;
 	@FXML private RadioButton rdoJudgmentDateUseHijri;
 	@FXML private RadioButton rdoJudgmentDateUseGregorian;
+	@FXML private DatePicker dpArrestDate;
+	@FXML private DatePicker dpJudgmentDate;
+	@FXML private Label lblJudgmentIssuerOldValue;
+	@FXML private Label lblJudgmentIssuerNewValue;
+	@FXML private Label lblJudgmentNumberOldValue;
+	@FXML private Label lblJudgmentNumberNewValue;
+	@FXML private Label lblJudgmentDateOldValue;
+	@FXML private Label lblJudgmentDateNewValue;
+	@FXML private Label lblCaseFileNumberOldValue;
+	@FXML private Label lblCaseFileNumberNewValue;
+	@FXML private Label lblPrisonerNumberOldValue;
+	@FXML private Label lblPrisonerNumberNewValue;
+	@FXML private Label lblArrestDateOldValue;
+	@FXML private Label lblArrestDateNewValue;
+	@FXML private Glyph iconJudgmentIssuerArrow;
+	@FXML private Glyph iconJudgmentNumberArrow;
+	@FXML private Glyph iconJudgmentDateArrow;
+	@FXML private Glyph iconCaseFileNumberArrow;
+	@FXML private Glyph iconPrisonerNumberArrow;
+	@FXML private Glyph iconArrestDateArrow;
+	@FXML private Button btnJudgmentIssuerReset;
+	@FXML private Button btnJudgmentNumberReset;
+	@FXML private Button btnJudgmentDateReset;
+	@FXML private Button btnCaseFileNumberReset;
+	@FXML private Button btnPrisonerNumberReset;
+	@FXML private Button btnArrestDateReset;
 	@FXML private Button btnHidePaneCrime2;
 	@FXML private Button btnHidePaneCrime3;
 	@FXML private Button btnHidePaneCrime4;
@@ -287,26 +321,21 @@ public class EditJudgmentDetailsPaneFxController extends WizardStepFxControllerB
 		{
 			judgmentIssuer = judgementInfo.getJudgIssuer();
 			judgmentNumber = judgementInfo.getJudgNum();
-			//judgmentDate = judgementInfo.getJudgDate();
+			Long judgmentDateLong = judgementInfo.getJudgDate();
+			if(judgmentDateLong != null) judgmentDate = AppUtils.secondsToGregorianDate(judgmentDateLong);
 			caseFileNumber = judgementInfo.getPoliceFileNum();
 			prisonerNumber = judgementInfo.getPrisonerNumber();
-			//arrestDate = judgementInfo.getArrestDate();
+			Long arrestDateLong = judgementInfo.getArrestDate();
+			if(arrestDateLong != null) arrestDate = AppUtils.secondsToGregorianDate(arrestDateLong);
+			crimes = oldCrimes;
 		}
 		
-		// TODO: I stopped here. I will continue after vacation.
-		
-		if(judgmentIssuer != null && !judgmentIssuer.isEmpty()) txtJudgmentIssuer.setText(judgmentIssuer);
-		else if(this.judgmentIssuer != null && !this.judgmentIssuer.isEmpty())
-		{
-			txtJudgmentIssuer.setText(this.judgmentIssuer);
-		}
+		if(judgmentIssuer != null) txtJudgmentIssuer.setText(judgmentIssuer);
+		else if(this.judgmentIssuer != null) txtJudgmentIssuer.setText(this.judgmentIssuer);
 		else focusedNode = txtJudgmentIssuer;
 		
-		if(judgmentNumber != null && !judgmentNumber.isEmpty()) txtJudgmentNumber.setText(judgmentNumber);
-		else if(this.judgmentNumber != null && !this.judgmentNumber.isEmpty())
-		{
-			txtJudgmentNumber.setText(this.judgmentNumber);
-		}
+		if(judgmentNumber != null) txtJudgmentNumber.setText(judgmentNumber);
+		else if(this.judgmentNumber != null) txtJudgmentNumber.setText(this.judgmentNumber);
 		else if(focusedNode == null) focusedNode = txtJudgmentNumber;
 		
 		if(judgmentDate != null) dpJudgmentDate.setValue(judgmentDate);
@@ -317,34 +346,38 @@ public class EditJudgmentDetailsPaneFxController extends WizardStepFxControllerB
 		if(this.judgmentDateUseHijri != null && !this.judgmentDateUseHijri)
 																		rdoJudgmentDateUseGregorian.setSelected(true);
 		
-		if(caseFileNumber != null && !caseFileNumber.isEmpty()) txtCaseFileNumber.setText(caseFileNumber);
+		if(caseFileNumber != null) txtCaseFileNumber.setText(caseFileNumber);
+		else if(this.caseFileNumber != null) txtCaseFileNumber.setText(this.caseFileNumber);
+		
 		if(prisonerNumber != null) txtPrisonerNumber.setText(String.valueOf(prisonerNumber));
+		else if(this.prisonerNumber != null) txtPrisonerNumber.setText(String.valueOf(this.prisonerNumber));
+		
 		if(arrestDate != null) dpArrestDate.setValue(arrestDate);
+		else if(this.arrestDate != null) dpArrestDate.setValue(this.arrestDate);
 		
 		rdoArrestDateUseHijri.setSelected(true);
 		if(this.arrestDateUseHijri != null && !this.arrestDateUseHijri) rdoArrestDateUseGregorian.setSelected(true);
 		
-		if(crimes != null)
+		if(crimes == null) crimes = newCrimes;
+		
+		for(int i = 0; i < crimes.size(); i++)
 		{
-			for(int i = 0; i < crimes.size(); i++)
+			CrimeCode crimeCode = crimes.get(i);
+			
+			if(crimeCode != null)
 			{
-				CrimeCode crimeCode = crimes.get(i);
+				if(i > 0) GuiUtils.showNode(cboCrimePaneMap.get(i), true);
 				
-				if(crimeCode != null)
-				{
-					if(i > 0) GuiUtils.showNode(cboCrimePaneMap.get(i), true);
-					
-					cboCrimeEventMap.get(i).getItems()
-							.stream()
-							.filter(item -> item.getItem().equals(crimeCode.getCrimeEvent()))
-							.findFirst()
-							.ifPresent(cboCrimeEventMap.get(i)::setValue);
-					cboCrimeClassMap.get(i).getItems()
-							.stream()
-							.filter(item -> item.getItem().equals(crimeCode.getCrimeClass()))
-							.findFirst()
-							.ifPresent(cboCrimeClassMap.get(i)::setValue);
-				}
+				cboCrimeEventMap.get(i).getItems()
+						.stream()
+						.filter(item -> item.getItem().equals(crimeCode.getCrimeEvent()))
+						.findFirst()
+						.ifPresent(cboCrimeEventMap.get(i)::setValue);
+				cboCrimeClassMap.get(i).getItems()
+						.stream()
+						.filter(item -> item.getItem().equals(crimeCode.getCrimeClass()))
+						.findFirst()
+						.ifPresent(cboCrimeClassMap.get(i)::setValue);
 			}
 		}
 		
@@ -352,6 +385,84 @@ public class EditJudgmentDetailsPaneFxController extends WizardStepFxControllerB
 		
 		if(focusedNode != null) focusedNode.requestFocus();
 		else btnNext.requestFocus();
+		
+		boolean rtl = Context.getGuiLanguage().getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT;
+		FontAwesome.Glyph arrowIcon = rtl ? FontAwesome.Glyph.LONG_ARROW_LEFT : FontAwesome.Glyph.LONG_ARROW_RIGHT;
+		iconJudgmentIssuerArrow.setIcon(arrowIcon);
+		iconJudgmentNumberArrow.setIcon(arrowIcon);
+		iconJudgmentDateArrow.setIcon(arrowIcon);
+		iconCaseFileNumberArrow.setIcon(arrowIcon);
+		iconPrisonerNumberArrow.setIcon(arrowIcon);
+		iconArrestDateArrow.setIcon(arrowIcon);
+		
+		paneJudgmentIssuerReset.visibleProperty().bind(
+				Bindings.notEqual(lblJudgmentIssuerOldValue.textProperty(), lblJudgmentIssuerNewValue.textProperty()));
+		paneJudgmentNumberReset.visibleProperty().bind(
+				Bindings.notEqual(lblJudgmentNumberOldValue.textProperty(), lblJudgmentNumberNewValue.textProperty()));
+		paneJudgmentDateReset.visibleProperty().bind(
+				Bindings.notEqual(lblJudgmentDateOldValue.textProperty(), lblJudgmentDateNewValue.textProperty()));
+		paneCaseFileNumberReset.visibleProperty().bind(
+				Bindings.notEqual(lblCaseFileNumberOldValue.textProperty(), lblCaseFileNumberNewValue.textProperty()));
+		panePrisonerNumberReset.visibleProperty().bind(
+				Bindings.notEqual(lblPrisonerNumberOldValue.textProperty(), lblPrisonerNumberNewValue.textProperty()));
+		paneArrestDateReset.visibleProperty().bind(
+				Bindings.notEqual(lblArrestDateOldValue.textProperty(), lblArrestDateNewValue.textProperty()));
+		
+		lblJudgmentIssuerOldValue.setText(judgementInfo.getJudgIssuer() != null ? judgementInfo.getJudgIssuer() : "");
+		lblJudgmentNumberOldValue.setText(judgementInfo.getJudgNum() != null ? judgementInfo.getJudgNum() : "");
+		lblJudgmentDateOldValue.setText(judgementInfo.getJudgDate() != null ?
+                                GuiUtils.formatLocalDate(AppUtils.secondsToGregorianDate(judgementInfo.getJudgDate()),
+                                                         rdoJudgmentDateUseHijri.isSelected()) : "");
+		lblCaseFileNumberOldValue.setText(judgementInfo.getPoliceFileNum() != null ?
+		                                  judgementInfo.getPoliceFileNum() : "");
+		lblPrisonerNumberOldValue.setText(judgementInfo.getPrisonerNumber() != null ?
+				                          String.valueOf(judgementInfo.getPrisonerNumber()) : "");
+		lblArrestDateOldValue.setText(judgementInfo.getArrestDate() != null ?
+                                GuiUtils.formatLocalDate(AppUtils.secondsToGregorianDate(judgementInfo.getArrestDate()),
+                                                         rdoArrestDateUseHijri.isSelected()) : "");
+		
+		btnJudgmentIssuerReset.setOnAction(actionEvent ->
+		{
+		    txtJudgmentIssuer.setText(judgementInfo.getJudgIssuer() != null ? judgementInfo.getJudgIssuer() : "");
+			paneJudgmentDetails.requestFocus();
+		});
+		btnJudgmentNumberReset.setOnAction(actionEvent ->
+		{
+			txtJudgmentNumber.setText(judgementInfo.getJudgNum() != null ? judgementInfo.getJudgNum() : "");
+			paneJudgmentDetails.requestFocus();
+		});
+		btnJudgmentDateReset.setOnAction(actionEvent ->
+		{
+			dpJudgmentDate.setValue(judgementInfo.getJudgDate() != null ?
+			                        AppUtils.secondsToGregorianDate(judgementInfo.getJudgDate()) : null);
+			paneJudgmentDetails.requestFocus();
+		});
+		btnCaseFileNumberReset.setOnAction(actionEvent ->
+		{
+			txtCaseFileNumber.setText(judgementInfo.getPoliceFileNum() != null ? judgementInfo.getPoliceFileNum() : "");
+			paneJudgmentDetails.requestFocus();
+		});
+		btnPrisonerNumberReset.setOnAction(actionEvent ->
+		{
+			txtPrisonerNumber.setText(judgementInfo.getPrisonerNumber() != null ?
+			                          String.valueOf(judgementInfo.getPrisonerNumber()) : "");
+			paneJudgmentDetails.requestFocus();
+		});
+		btnArrestDateReset.setOnAction(actionEvent ->
+		{
+			dpArrestDate.setValue(judgementInfo.getArrestDate() != null ?
+		                          AppUtils.secondsToGregorianDate(judgementInfo.getArrestDate()) : null);
+			paneJudgmentDetails.requestFocus();
+		});
+		
+		rdoJudgmentDateUseHijri.selectedProperty().addListener((observable, oldValue, newValue) ->
+                                lblJudgmentDateOldValue.setText(judgementInfo.getJudgDate() != null ?
+                                GuiUtils.formatLocalDate(AppUtils.secondsToGregorianDate(judgementInfo.getJudgDate()),
+                                                                         rdoJudgmentDateUseHijri.isSelected()) : ""));
+		rdoArrestDateUseHijri.selectedProperty().addListener((observable, oldValue, newValue) ->
+                               lblArrestDateOldValue.setText(judgementInfo.getArrestDate() != null ?
+						       GuiUtils.formatLocalDate(AppUtils.secondsToGregorianDate(judgementInfo.getArrestDate()),
+                                                                            rdoArrestDateUseHijri.isSelected()) : ""));
 	}
 	
 	@Override
@@ -385,17 +496,17 @@ public class EditJudgmentDetailsPaneFxController extends WizardStepFxControllerB
 		this.arrestDate = dpArrestDate.getValue();
 		this.arrestDateUseHijri = rdoArrestDateUseHijri.isSelected();
 		
-		//crimes = new ArrayList<>();
-		//crimes.add(new CrimeCode(cboCrimeEvent1.getValue().getItem(), cboCrimeClass1.getValue().getItem()));
-		//
-		//for(int i = 1; i <= 4; i++)
-		//{
-		//	if(cboCrimePaneMap.get(i).isVisible())
-		//	{
-		//		crimes.add(new CrimeCode(cboCrimeEventMap.get(i).getValue().getItem(),
-		//		                         cboCrimeClassMap.get(i).getValue().getItem()));
-		//	}
-		//}
+		newCrimes = new ArrayList<>();
+		newCrimes.add(new CrimeCode(cboCrimeEvent1.getValue().getItem(), cboCrimeClass1.getValue().getItem()));
+		
+		for(int i = 1; i <= 4; i++)
+		{
+			if(cboCrimePaneMap.get(i).isVisible())
+			{
+				newCrimes.add(new CrimeCode(cboCrimeEventMap.get(i).getValue().getItem(),
+				                            cboCrimeClassMap.get(i).getValue().getItem()));
+			}
+		}
 	}
 	
 	private void initCrimeEventComboBox(ComboBox<ComboBoxItem<Integer>> cboCrimeEvent,
