@@ -210,6 +210,36 @@
                             <Button fx:id="btnAddMore" text="%label.addMore"/>
                         </HBox>
                     </VBox>
+                    <HBox fx:id="paneCrimeDiffContainer" alignment="CENTER_LEFT" spacing="5.0" GridPane.rowIndex="9" GridPane.columnIndex="1" visible="false">
+                        <GridPane.margin>
+                            <Insets top="5.0"/>
+                        </GridPane.margin>
+                        <HBox alignment="CENTER_LEFT" spacing="10.0">
+                            <VBox fx:id="paneOldCrimes" alignment="CENTER_LEFT" spacing="5.0" styleClass="old-value-border">
+                                <padding>
+                                    <Insets topRightBottomLeft="10.0"/>
+                                </padding>
+                            </VBox>
+                            <VBox alignment="CENTER" spacing="5.0">
+                                <Button fx:id="btnCrimesReset" styleClass="small-button">
+                                    <graphic>
+                                        <Glyph fontFamily="FontAwesome" icon="undo"/>
+                                    </graphic>
+                                </Button>
+                                <Glyph fx:id="iconCrimeDiff" wrapText="true" fontFamily="FontAwesome"/>
+                            </VBox>
+                            <VBox fx:id="paneNewCrimes" alignment="CENTER_LEFT" spacing="5.0" styleClass="new-value-border">
+                                <padding>
+                                    <Insets topRightBottomLeft="10.0"/>
+                                </padding>
+                                <Label fx:id="lblCrime1NewValue" wrapText="true" styleClass="new-value"/>
+                                <Label fx:id="lblCrime2NewValue" wrapText="true" styleClass="new-value" visible="false"/>
+                                <Label fx:id="lblCrime3NewValue" wrapText="true" styleClass="new-value" visible="false"/>
+                                <Label fx:id="lblCrime4NewValue" wrapText="true" styleClass="new-value" visible="false"/>
+                                <Label fx:id="lblCrime5NewValue" wrapText="true" styleClass="new-value" visible="false"/>
+                            </VBox>
+                        </HBox>
+                    </HBox>
                 </GridPane>
             </ScrollPane>
         </VBox>

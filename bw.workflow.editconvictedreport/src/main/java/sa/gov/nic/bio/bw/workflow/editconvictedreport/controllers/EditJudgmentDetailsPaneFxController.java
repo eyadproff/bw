@@ -64,6 +64,9 @@ public class EditJudgmentDetailsPaneFxController extends WizardStepFxControllerB
 	@FXML private Pane paneCaseFileNumberReset;
 	@FXML private Pane panePrisonerNumberReset;
 	@FXML private Pane paneArrestDateReset;
+	@FXML private Pane paneCrimeDiffContainer;
+	@FXML private Pane paneOldCrimes;
+	@FXML private Pane paneNewCrimes;
 	@FXML private TextField txtJudgmentIssuer;
 	@FXML private TextField txtJudgmentNumber;
 	@FXML private TextField txtCaseFileNumber;
@@ -96,12 +99,18 @@ public class EditJudgmentDetailsPaneFxController extends WizardStepFxControllerB
 	@FXML private Label lblPrisonerNumberNewValue;
 	@FXML private Label lblArrestDateOldValue;
 	@FXML private Label lblArrestDateNewValue;
+	@FXML private Label lblCrime1NewValue;
+	@FXML private Label lblCrime2NewValue;
+	@FXML private Label lblCrime3NewValue;
+	@FXML private Label lblCrime4NewValue;
+	@FXML private Label lblCrime5NewValue;
 	@FXML private Glyph iconJudgmentIssuerArrow;
 	@FXML private Glyph iconJudgmentNumberArrow;
 	@FXML private Glyph iconJudgmentDateArrow;
 	@FXML private Glyph iconCaseFileNumberArrow;
 	@FXML private Glyph iconPrisonerNumberArrow;
 	@FXML private Glyph iconArrestDateArrow;
+	@FXML private Glyph iconCrimeDiff;
 	@FXML private Button btnJudgmentIssuerReset;
 	@FXML private Button btnJudgmentNumberReset;
 	@FXML private Button btnJudgmentDateReset;
@@ -112,6 +121,7 @@ public class EditJudgmentDetailsPaneFxController extends WizardStepFxControllerB
 	@FXML private Button btnHidePaneCrime3;
 	@FXML private Button btnHidePaneCrime4;
 	@FXML private Button btnHidePaneCrime5;
+	@FXML private Button btnCrimesReset;
 	@FXML private Button btnAddMore;
 	@FXML private Button btnPrevious;
 	@FXML private Button btnStartOver;
@@ -381,10 +391,41 @@ public class EditJudgmentDetailsPaneFxController extends WizardStepFxControllerB
 			}
 		}
 		
+		if(newCrimes == null)
+		{
+			newCrimes = new ArrayList<>();
+			updateNewCrimes();
+		}
+		
 		checkForCrimeDuplicates.run();
 		
 		if(focusedNode != null) focusedNode.requestFocus();
 		else btnNext.requestFocus();
+		
+		lblCrime1NewValue.textProperty().bind(Bindings.createStringBinding(() -> cboCrimeEvent1.getValue().getText() +
+																		" - " + cboCrimeClass1.getValue().getText(),
+                                                    cboCrimeEvent1.valueProperty(), cboCrimeClass1.valueProperty()));
+		lblCrime2NewValue.textProperty().bind(Bindings.createStringBinding(() -> cboCrimeEvent2.getValue().getText() +
+	                                                                    " - " + cboCrimeClass2.getValue().getText(),
+                                                    cboCrimeEvent2.valueProperty(), cboCrimeClass2.valueProperty()));
+		lblCrime3NewValue.textProperty().bind(Bindings.createStringBinding(() -> cboCrimeEvent3.getValue().getText() +
+	                                                                    " - " + cboCrimeClass3.getValue().getText(),
+                                                    cboCrimeEvent3.valueProperty(), cboCrimeClass3.valueProperty()));
+		lblCrime4NewValue.textProperty().bind(Bindings.createStringBinding(() -> cboCrimeEvent4.getValue().getText() +
+	                                                                    " - " + cboCrimeClass4.getValue().getText(),
+                                                    cboCrimeEvent4.valueProperty(), cboCrimeClass4.valueProperty()));
+		lblCrime5NewValue.textProperty().bind(Bindings.createStringBinding(() -> cboCrimeEvent5.getValue().getText() +
+	                                                                    " - " + cboCrimeClass5.getValue().getText(),
+                                                    cboCrimeEvent5.valueProperty(), cboCrimeClass5.valueProperty()));
+		
+		lblCrime2NewValue.visibleProperty().bind(paneCrime2.visibleProperty());
+		lblCrime2NewValue.managedProperty().bind(paneCrime2.managedProperty());
+		lblCrime3NewValue.visibleProperty().bind(paneCrime3.visibleProperty());
+		lblCrime3NewValue.managedProperty().bind(paneCrime3.managedProperty());
+		lblCrime4NewValue.visibleProperty().bind(paneCrime4.visibleProperty());
+		lblCrime4NewValue.managedProperty().bind(paneCrime4.managedProperty());
+		lblCrime5NewValue.visibleProperty().bind(paneCrime5.visibleProperty());
+		lblCrime5NewValue.managedProperty().bind(paneCrime5.managedProperty());
 		
 		boolean rtl = Context.getGuiLanguage().getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT;
 		FontAwesome.Glyph arrowIcon = rtl ? FontAwesome.Glyph.LONG_ARROW_LEFT : FontAwesome.Glyph.LONG_ARROW_RIGHT;
@@ -394,6 +435,7 @@ public class EditJudgmentDetailsPaneFxController extends WizardStepFxControllerB
 		iconCaseFileNumberArrow.setIcon(arrowIcon);
 		iconPrisonerNumberArrow.setIcon(arrowIcon);
 		iconArrestDateArrow.setIcon(arrowIcon);
+		iconCrimeDiff.setIcon(arrowIcon);
 		
 		paneJudgmentIssuerReset.visibleProperty().bind(
 				Bindings.notEqual(lblJudgmentIssuerOldValue.textProperty(), lblJudgmentIssuerNewValue.textProperty()));
@@ -408,6 +450,19 @@ public class EditJudgmentDetailsPaneFxController extends WizardStepFxControllerB
 		paneArrestDateReset.visibleProperty().bind(
 				Bindings.notEqual(lblArrestDateOldValue.textProperty(), lblArrestDateNewValue.textProperty()));
 		
+		BooleanBinding crimesChangingBinding = Bindings.createBooleanBinding(() ->
+		{
+			updateNewCrimes();
+			return !sameCrimes(oldCrimes, newCrimes);
+		}, cboCrimeClass1.valueProperty(), cboCrimeClass2.valueProperty(), cboCrimeClass3.valueProperty(),
+           cboCrimeClass4.valueProperty(), cboCrimeClass5.valueProperty(), cboCrimeEvent1.valueProperty(),
+           cboCrimeEvent2.valueProperty(), cboCrimeEvent3.valueProperty(), cboCrimeEvent4.valueProperty(),
+           cboCrimeEvent5.valueProperty(), btnAddMore.armedProperty(), btnHidePaneCrime2.armedProperty(),
+           btnHidePaneCrime3.armedProperty(), btnHidePaneCrime4.armedProperty(),
+           btnHidePaneCrime5.armedProperty(), btnCrimesReset.armedProperty());
+		
+		paneCrimeDiffContainer.visibleProperty().bind(crimesChangingBinding);
+		
 		lblJudgmentIssuerOldValue.setText(judgementInfo.getJudgIssuer() != null ? judgementInfo.getJudgIssuer() : "");
 		lblJudgmentNumberOldValue.setText(judgementInfo.getJudgNum() != null ? judgementInfo.getJudgNum() : "");
 		lblJudgmentDateOldValue.setText(judgementInfo.getJudgDate() != null ?
@@ -420,6 +475,15 @@ public class EditJudgmentDetailsPaneFxController extends WizardStepFxControllerB
 		lblArrestDateOldValue.setText(judgementInfo.getArrestDate() != null ?
                                 GuiUtils.formatLocalDate(AppUtils.secondsToGregorianDate(judgementInfo.getArrestDate()),
                                                          rdoArrestDateUseHijri.isSelected()) : "");
+		
+		for(CrimeCode oldCrime : oldCrimes)
+		{
+			String crimeEvent = crimeEventTitles.get(oldCrime.getCrimeEvent());
+			String crimeClass = crimeClassTitles.get(oldCrime.getCrimeClass());
+			Label label = new Label(crimeEvent + " - " + crimeClass);
+			label.getStyleClass().add("old-value");
+			paneOldCrimes.getChildren().add(label);
+		}
 		
 		btnJudgmentIssuerReset.setOnAction(actionEvent ->
 		{
@@ -452,6 +516,35 @@ public class EditJudgmentDetailsPaneFxController extends WizardStepFxControllerB
 		{
 			dpArrestDate.setValue(judgementInfo.getArrestDate() != null ?
 		                          AppUtils.secondsToGregorianDate(judgementInfo.getArrestDate()) : null);
+			paneJudgmentDetails.requestFocus();
+		});
+		btnCrimesReset.setOnAction(actionEvent ->
+		{
+			GuiUtils.showNode(paneCrime2, false);
+			GuiUtils.showNode(paneCrime3, false);
+			GuiUtils.showNode(paneCrime4, false);
+			GuiUtils.showNode(paneCrime5, false);
+			
+			for(int i = 0; i < oldCrimes.size(); i++)
+			{
+				CrimeCode crimeCode = oldCrimes.get(i);
+				
+				if(crimeCode != null)
+				{
+					if(i > 0) GuiUtils.showNode(cboCrimePaneMap.get(i), true);
+					
+					cboCrimeEventMap.get(i).getItems()
+							.stream()
+							.filter(item -> item.getItem().equals(crimeCode.getCrimeEvent()))
+							.findFirst()
+							.ifPresent(cboCrimeEventMap.get(i)::setValue);
+					cboCrimeClassMap.get(i).getItems()
+							.stream()
+							.filter(item -> item.getItem().equals(crimeCode.getCrimeClass()))
+							.findFirst()
+							.ifPresent(cboCrimeClassMap.get(i)::setValue);
+				}
+			}
 			paneJudgmentDetails.requestFocus();
 		});
 		
@@ -495,18 +588,6 @@ public class EditJudgmentDetailsPaneFxController extends WizardStepFxControllerB
 		
 		this.arrestDate = dpArrestDate.getValue();
 		this.arrestDateUseHijri = rdoArrestDateUseHijri.isSelected();
-		
-		newCrimes = new ArrayList<>();
-		newCrimes.add(new CrimeCode(cboCrimeEvent1.getValue().getItem(), cboCrimeClass1.getValue().getItem()));
-		
-		for(int i = 1; i <= 4; i++)
-		{
-			if(cboCrimePaneMap.get(i).isVisible())
-			{
-				newCrimes.add(new CrimeCode(cboCrimeEventMap.get(i).getValue().getItem(),
-				                            cboCrimeClassMap.get(i).getValue().getItem()));
-			}
-		}
 	}
 	
 	private void initCrimeEventComboBox(ComboBox<ComboBoxItem<Integer>> cboCrimeEvent,
@@ -533,5 +614,36 @@ public class EditJudgmentDetailsPaneFxController extends WizardStepFxControllerB
 		
 		});
 		cboCrimeEvent.getSelectionModel().selectFirst();
+	}
+	
+	private void updateNewCrimes()
+	{
+		newCrimes.clear();
+		newCrimes.add(new CrimeCode(cboCrimeEvent1.getValue().getItem(), cboCrimeClass1.getValue().getItem()));
+		
+		for(int i = 1; i <= 4; i++)
+		{
+			if(cboCrimePaneMap.get(i).isVisible())
+			{
+				newCrimes.add(new CrimeCode(cboCrimeEventMap.get(i).getValue().getItem(),
+				                            cboCrimeClassMap.get(i).getValue().getItem()));
+			}
+		}
+	}
+	
+	private static boolean sameCrimes(List<CrimeCode> crimeCodes1, List<CrimeCode> crimeCodes2)
+	{
+		if(crimeCodes1 == null || crimeCodes2 == null) return false;
+		if(crimeCodes1.size() != crimeCodes2.size()) return false;
+		
+		for(int i = 0; i < crimeCodes1.size(); i++)
+		{
+			CrimeCode crimeCode1 = crimeCodes1.get(i);
+			CrimeCode crimeCode2 = crimeCodes2.get(i);
+			if(crimeCode1.getCrimeEvent() != crimeCode2.getCrimeEvent()) return false;
+			if(crimeCode1.getCrimeClass() != crimeCode2.getCrimeClass()) return false;
+		}
+		
+		return true;
 	}
 }
