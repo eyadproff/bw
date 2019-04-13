@@ -11,6 +11,12 @@ VERSION SCHEMA: vYYYY.MM.#SEQ
 
 ---
 
+## v2019.04.1
+
+- ENH: Unify the transition overlay for menu transition and wizard transition.
+
+---
+
 ## v2019.03.5
 
 - FIX: Fix Delete-Complete-Criminal-Record workflow logic.

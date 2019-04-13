@@ -11,212 +11,377 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import org.controlsfx.glyphfont.Glyph?>
 <BorderPane xmlns="http://javafx.com/javafx/11" xmlns:fx="http://javafx.com/fxml/1"
             fx:id="rootPane" stylesheets="@../css/style.css"
             fx:controller="sa.gov.nic.bio.bw.workflow.editconvictedreport.controllers.EditPunishmentDetailsPaneFxController">
     <center>
         <VBox alignment="CENTER">
             <padding>
-                <Insets top="10.0" bottom="10.0"/>
+                <Insets top="15.0" bottom="10.0"/>
             </padding>
             <ScrollPane VBox.vgrow="ALWAYS" fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER">
-                <GridPane hgap="5.0">
+                <GridPane fx:id="panePunishmentDetails" hgap="5.0">
                     <padding>
                         <Insets topRightBottomLeft="10.0"/>
                     </padding>
-                    <Label text="%label.tazeerLashing" GridPane.rowIndex="0" GridPane.columnIndex="0">
-                        <GridPane.margin>
-                            <Insets bottom="5.0"/>
-                        </GridPane.margin>
-                    </Label>
-                    <HBox spacing="5.0" GridPane.rowIndex="0" GridPane.columnIndex="1" GridPane.columnSpan="6">
-                        <GridPane.margin>
-                            <Insets bottom="5.0"/>
-                        </GridPane.margin>
+                    <Label text="%label.tazeerLashing" wrapText="true" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                    <HBox spacing="5.0" GridPane.rowIndex="0" GridPane.columnIndex="1">
                         <Spinner fx:id="spnTazeerLashes" min="0" max="999999999" editable="true" prefWidth="130.0"/>
                         <Label text="%label.lashes"/>
+                        <HBox fx:id="paneTazeerLashesReset" alignment="CENTER_LEFT" HBox.hgrow="ALWAYS" spacing="5.0" visible="false">
+                            <Button fx:id="btnTazeerLashesReset" styleClass="small-button">
+                                <graphic>
+                                    <Glyph fontFamily="FontAwesome" icon="undo"/>
+                                </graphic>
+                            </Button>
+                            <Label fx:id="lblTazeerLashesOldValue" wrapText="true" styleClass="old-value"/>
+                            <Glyph fx:id="iconTazeerLashesArrow" wrapText="true" fontFamily="FontAwesome"/>
+                            <Label fx:id="lblTazeerLashesNewValue" wrapText="true" text="${spnTazeerLashes.editor.text}" styleClass="new-value"/>
+                        </HBox>
                     </HBox>
-                    <Label text="%label.HadLashing" GridPane.rowIndex="1" GridPane.columnIndex="0">
+                    <Label text="%label.HadLashing" wrapText="true" GridPane.rowIndex="1" GridPane.columnIndex="0">
                         <GridPane.margin>
-                            <Insets bottom="5.0"/>
+                            <Insets top="5.0"/>
                         </GridPane.margin>
                     </Label>
-                    <HBox spacing="5.0" GridPane.rowIndex="1" GridPane.columnIndex="1" GridPane.columnSpan="6">
+                    <HBox spacing="5.0" GridPane.rowIndex="1" GridPane.columnIndex="1">
                         <GridPane.margin>
-                            <Insets bottom="5.0"/>
+                            <Insets top="5.0"/>
                         </GridPane.margin>
                         <Spinner fx:id="spnHadLashes" min="0" max="999999999" editable="true" prefWidth="130.0"/>
                         <Label text="%label.lashes"/>
+                        <HBox fx:id="paneHadLashesReset" alignment="CENTER_LEFT" HBox.hgrow="ALWAYS" spacing="5.0" visible="false">
+                            <Button fx:id="btnHadLashesReset" styleClass="small-button">
+                                <graphic>
+                                    <Glyph fontFamily="FontAwesome" icon="undo"/>
+                                </graphic>
+                            </Button>
+                            <Label fx:id="lblHadLashesOldValue" wrapText="true" styleClass="old-value"/>
+                            <Glyph fx:id="iconHadLashesArrow" wrapText="true" fontFamily="FontAwesome"/>
+                            <Label fx:id="lblHadLashesNewValue" wrapText="true" text="${spnHadLashes.editor.text}" styleClass="new-value"/>
+                        </HBox>
                     </HBox>
-                    <Label text="%label.fine" GridPane.rowIndex="2" GridPane.columnIndex="0">
+                    <Label text="%label.fine" wrapText="true" GridPane.rowIndex="2" GridPane.columnIndex="0">
                         <GridPane.margin>
-                            <Insets bottom="5.0"/>
+                            <Insets top="5.0"/>
                         </GridPane.margin>
                     </Label>
-                    <HBox spacing="5.0" GridPane.rowIndex="2" GridPane.columnIndex="1" GridPane.columnSpan="6">
+                    <HBox spacing="5.0" GridPane.rowIndex="2" GridPane.columnIndex="1">
                         <GridPane.margin>
-                            <Insets bottom="5.0"/>
+                            <Insets top="5.0"/>
                         </GridPane.margin>
                         <Spinner fx:id="spnFine" min="0" max="999999999" editable="true" prefWidth="130.0"/>
                         <Label text="%label.riyals"/>
+                        <HBox fx:id="paneFineReset" alignment="CENTER_LEFT" HBox.hgrow="ALWAYS" spacing="5.0" visible="false">
+                            <Button fx:id="btnFineReset" styleClass="small-button">
+                                <graphic>
+                                    <Glyph fontFamily="FontAwesome" icon="undo"/>
+                                </graphic>
+                            </Button>
+                            <Label fx:id="lblFineOldValue" wrapText="true" styleClass="old-value"/>
+                            <Glyph fx:id="iconFineArrow" wrapText="true" fontFamily="FontAwesome"/>
+                            <Label fx:id="lblFineNewValue" wrapText="true" text="${spnFine.editor.text}" styleClass="new-value"/>
+                        </HBox>
                     </HBox>
-                    <Label text="%label.jail" GridPane.rowIndex="3" GridPane.columnIndex="0">
+                    <Label text="%label.jail" wrapText="true" GridPane.rowIndex="3" GridPane.columnIndex="0">
                         <GridPane.margin>
-                            <Insets bottom="5.0"/>
+                            <Insets top="15.0"/>
                         </GridPane.margin>
                     </Label>
-                    <Spinner fx:id="spnJailYears" min="0" max="99" editable="true" prefWidth="130.0" GridPane.rowIndex="3" GridPane.columnIndex="1">
+                    <HBox spacing="5.0" GridPane.rowIndex="3" GridPane.columnIndex="1">
                         <GridPane.margin>
-                            <Insets bottom="5.0"/>
+                            <Insets top="15.0"/>
                         </GridPane.margin>
-                    </Spinner>
-                    <Label text="%label.years" GridPane.rowIndex="3" GridPane.columnIndex="2">
+                        <Spinner fx:id="spnJailYears" min="0" max="99" editable="true" prefWidth="130.0"/>
+                        <Label text="%label.years"/>
+                        <HBox fx:id="paneJailYearsReset" alignment="CENTER_LEFT" HBox.hgrow="ALWAYS" spacing="5.0" visible="false">
+                            <Button fx:id="btnJailYearsReset" styleClass="small-button">
+                                <graphic>
+                                    <Glyph fontFamily="FontAwesome" icon="undo"/>
+                                </graphic>
+                            </Button>
+                            <Label fx:id="lblJailYearsOldValue" wrapText="true" styleClass="old-value"/>
+                            <Glyph fx:id="iconJailYearsArrow" wrapText="true" fontFamily="FontAwesome"/>
+                            <Label fx:id="lblJailYearsNewValue" wrapText="true" text="${spnJailYears.editor.text}" styleClass="new-value"/>
+                        </HBox>
+                    </HBox>
+                    <HBox spacing="5.0" GridPane.rowIndex="4" GridPane.columnIndex="1">
                         <GridPane.margin>
-                            <Insets bottom="5.0"/>
+                            <Insets top="5.0"/>
                         </GridPane.margin>
-                    </Label>
-                    <Spinner fx:id="spnJailMonths" min="0" max="99" editable="true" prefWidth="130.0" GridPane.rowIndex="3" GridPane.columnIndex="3">
+                        <Spinner fx:id="spnJailMonths" min="0" max="99" editable="true" prefWidth="130.0"/>
+                        <Label text="%label.months"/>
+                        <HBox fx:id="paneJailMonthsReset" alignment="CENTER_LEFT" HBox.hgrow="ALWAYS" spacing="5.0" visible="false">
+                            <Button fx:id="btnJailMonthsReset" styleClass="small-button">
+                                <graphic>
+                                    <Glyph fontFamily="FontAwesome" icon="undo"/>
+                                </graphic>
+                            </Button>
+                            <Label fx:id="lblJailMonthsOldValue" wrapText="true" styleClass="old-value"/>
+                            <Glyph fx:id="iconJailMonthsArrow" wrapText="true" fontFamily="FontAwesome"/>
+                            <Label fx:id="lblJailMonthsNewValue" wrapText="true" text="${spnJailMonths.editor.text}" styleClass="new-value"/>
+                        </HBox>
+                    </HBox>
+                    <HBox spacing="5.0" GridPane.rowIndex="5" GridPane.columnIndex="1">
                         <GridPane.margin>
-                            <Insets bottom="5.0"/>
+                            <Insets top="5.0"/>
                         </GridPane.margin>
-                    </Spinner>
-                    <Label text="%label.months" GridPane.rowIndex="3" GridPane.columnIndex="4">
+                        <Spinner fx:id="spnJailDays" min="0" max="99" editable="true" prefWidth="130.0"/>
+                        <Label text="%label.days"/>
+                        <HBox fx:id="paneJailDaysReset" alignment="CENTER_LEFT" HBox.hgrow="ALWAYS" spacing="5.0" visible="false">
+                            <Button fx:id="btnJailDaysReset" styleClass="small-button">
+                                <graphic>
+                                    <Glyph fontFamily="FontAwesome" icon="undo"/>
+                                </graphic>
+                            </Button>
+                            <Label fx:id="lblJailDaysOldValue" wrapText="true" styleClass="old-value"/>
+                            <Glyph fx:id="iconJailDaysArrow" wrapText="true" fontFamily="FontAwesome"/>
+                            <Label fx:id="lblJailDaysNewValue" wrapText="true" text="${spnJailDays.editor.text}" styleClass="new-value"/>
+                        </HBox>
+                    </HBox>
+                    <Label text="%label.travelBan" wrapText="true" GridPane.rowIndex="6" GridPane.columnIndex="0">
                         <GridPane.margin>
-                            <Insets bottom="5.0"/>
-                        </GridPane.margin>
-                    </Label>
-                    <Spinner fx:id="spnJailDays" min="0" max="99" editable="true" prefWidth="130.0" GridPane.rowIndex="3" GridPane.columnIndex="5">
-                        <GridPane.margin>
-                            <Insets bottom="5.0"/>
-                        </GridPane.margin>
-                    </Spinner>
-                    <Label text="%label.days" GridPane.rowIndex="3" GridPane.columnIndex="6">
-                        <GridPane.margin>
-                            <Insets bottom="5.0"/>
-                        </GridPane.margin>
-                    </Label>
-                    <Label text="%label.travelBan" GridPane.rowIndex="4" GridPane.columnIndex="0">
-                        <GridPane.margin>
-                            <Insets bottom="5.0"/>
-                        </GridPane.margin>
-                    </Label>
-                    <Spinner fx:id="spnTravelBanYears" min="0" max="99" editable="true" prefWidth="130.0" GridPane.rowIndex="4" GridPane.columnIndex="1">
-                        <GridPane.margin>
-                            <Insets bottom="5.0"/>
-                        </GridPane.margin>
-                    </Spinner>
-                    <Label text="%label.years" GridPane.rowIndex="4" GridPane.columnIndex="2">
-                        <GridPane.margin>
-                            <Insets bottom="5.0"/>
-                        </GridPane.margin>
-                    </Label>
-                    <Spinner fx:id="spnTravelBanMonths" min="0" max="99" editable="true" prefWidth="130.0" GridPane.rowIndex="4" GridPane.columnIndex="3">
-                        <GridPane.margin>
-                            <Insets bottom="5.0"/>
-                        </GridPane.margin>
-                    </Spinner>
-                    <Label text="%label.months" GridPane.rowIndex="4" GridPane.columnIndex="4">
-                        <GridPane.margin>
-                            <Insets bottom="5.0"/>
-                        </GridPane.margin>
-                    </Label>
-                    <Spinner fx:id="spnTravelBanDays" min="0" max="99" editable="true" prefWidth="130.0" GridPane.rowIndex="4" GridPane.columnIndex="5">
-                        <GridPane.margin>
-                            <Insets bottom="5.0"/>
-                        </GridPane.margin>
-                    </Spinner>
-                    <Label text="%label.days" GridPane.rowIndex="4" GridPane.columnIndex="6">
-                        <GridPane.margin>
-                            <Insets bottom="5.0"/>
+                            <Insets top="15.0"/>
                         </GridPane.margin>
                     </Label>
-                    <Label text="%label.exiling" GridPane.rowIndex="5" GridPane.columnIndex="0">
+                    <HBox spacing="5.0" GridPane.rowIndex="6" GridPane.columnIndex="1">
                         <GridPane.margin>
-                            <Insets bottom="5.0"/>
+                            <Insets top="15.0"/>
+                        </GridPane.margin>
+                        <Spinner fx:id="spnTravelBanYears" min="0" max="99" editable="true" prefWidth="130.0"/>
+                        <Label text="%label.years"/>
+                        <HBox fx:id="paneTravelBanYearsReset" alignment="CENTER_LEFT" HBox.hgrow="ALWAYS" spacing="5.0" visible="false">
+                            <Button fx:id="btnTravelBanYearsReset" styleClass="small-button">
+                                <graphic>
+                                    <Glyph fontFamily="FontAwesome" icon="undo"/>
+                                </graphic>
+                            </Button>
+                            <Label fx:id="lblTravelBanYearsOldValue" wrapText="true" styleClass="old-value"/>
+                            <Glyph fx:id="iconTravelBanYearsArrow" wrapText="true" fontFamily="FontAwesome"/>
+                            <Label fx:id="lblTravelBanYearsNewValue" wrapText="true" text="${spnTravelBanYears.editor.text}" styleClass="new-value"/>
+                        </HBox>
+                    </HBox>
+                    <HBox spacing="5.0" GridPane.rowIndex="7" GridPane.columnIndex="1">
+                        <GridPane.margin>
+                            <Insets top="5.0"/>
+                        </GridPane.margin>
+                        <Spinner fx:id="spnTravelBanMonths" min="0" max="99" editable="true" prefWidth="130.0"/>
+                        <Label text="%label.months"/>
+                        <HBox fx:id="paneTravelBanMonthsReset" alignment="CENTER_LEFT" HBox.hgrow="ALWAYS" spacing="5.0" visible="false">
+                            <Button fx:id="btnTravelBanMonthsReset" styleClass="small-button">
+                                <graphic>
+                                    <Glyph fontFamily="FontAwesome" icon="undo"/>
+                                </graphic>
+                            </Button>
+                            <Label fx:id="lblTravelBanMonthsOldValue" wrapText="true" styleClass="old-value"/>
+                            <Glyph fx:id="iconTravelBanMonthsArrow" wrapText="true" fontFamily="FontAwesome"/>
+                            <Label fx:id="lblTravelBanMonthsNewValue" wrapText="true" text="${spnTravelBanMonths.editor.text}" styleClass="new-value"/>
+                        </HBox>
+                    </HBox>
+                    <HBox spacing="5.0" GridPane.rowIndex="8" GridPane.columnIndex="1">
+                        <GridPane.margin>
+                            <Insets top="5.0"/>
+                        </GridPane.margin>
+                        <Spinner fx:id="spnTravelBanDays" min="0" max="99" editable="true" prefWidth="130.0"/>
+                        <Label text="%label.days"/>
+                        <HBox fx:id="paneTravelBanDaysReset" alignment="CENTER_LEFT" HBox.hgrow="ALWAYS" spacing="5.0" visible="false">
+                            <Button fx:id="btnTravelBanDaysReset" styleClass="small-button">
+                                <graphic>
+                                    <Glyph fontFamily="FontAwesome" icon="undo"/>
+                                </graphic>
+                            </Button>
+                            <Label fx:id="lblTravelBanDaysOldValue" wrapText="true" styleClass="old-value"/>
+                            <Glyph fx:id="iconTravelBanDaysArrow" wrapText="true" fontFamily="FontAwesome"/>
+                            <Label fx:id="lblTravelBanDaysNewValue" wrapText="true" text="${spnTravelBanDays.editor.text}" styleClass="new-value"/>
+                        </HBox>
+                    </HBox>
+                    <Label text="%label.exiling" wrapText="true" GridPane.rowIndex="9" GridPane.columnIndex="0">
+                        <GridPane.margin>
+                            <Insets top="15.0"/>
                         </GridPane.margin>
                     </Label>
-                    <Spinner fx:id="spnExilingYears" min="0" max="99" editable="true" prefWidth="130.0" GridPane.rowIndex="5" GridPane.columnIndex="1">
+                    <HBox spacing="5.0" GridPane.rowIndex="9" GridPane.columnIndex="1">
                         <GridPane.margin>
-                            <Insets bottom="5.0"/>
+                            <Insets top="15.0"/>
                         </GridPane.margin>
-                    </Spinner>
-                    <Label text="%label.years" GridPane.rowIndex="5" GridPane.columnIndex="2">
+                        <Spinner fx:id="spnExilingYears" min="0" max="99" editable="true" prefWidth="130.0"/>
+                        <Label text="%label.years"/>
+                        <HBox fx:id="paneExilingYearsReset" alignment="CENTER_LEFT" HBox.hgrow="ALWAYS" spacing="5.0" visible="false">
+                            <Button fx:id="btnExilingYearsReset" styleClass="small-button">
+                                <graphic>
+                                    <Glyph fontFamily="FontAwesome" icon="undo"/>
+                                </graphic>
+                            </Button>
+                            <Label fx:id="lblExilingYearsOldValue" wrapText="true" styleClass="old-value"/>
+                            <Glyph fx:id="iconExilingYearsArrow" wrapText="true" fontFamily="FontAwesome"/>
+                            <Label fx:id="lblExilingYearsNewValue" wrapText="true" text="${spnExilingYears.editor.text}" styleClass="new-value"/>
+                        </HBox>
+                    </HBox>
+                    <HBox spacing="5.0" GridPane.rowIndex="10" GridPane.columnIndex="1">
                         <GridPane.margin>
-                            <Insets bottom="5.0"/>
+                            <Insets top="5.0"/>
                         </GridPane.margin>
-                    </Label>
-                    <Spinner fx:id="spnExilingMonths" min="0" max="99" editable="true" prefWidth="130.0" GridPane.rowIndex="5" GridPane.columnIndex="3">
+                        <Spinner fx:id="spnExilingMonths" min="0" max="99" editable="true" prefWidth="130.0"/>
+                        <Label text="%label.months"/>
+                        <HBox fx:id="paneExilingMonthsReset" alignment="CENTER_LEFT" HBox.hgrow="ALWAYS" spacing="5.0" visible="false">
+                            <Button fx:id="btnExilingMonthsReset" styleClass="small-button">
+                                <graphic>
+                                    <Glyph fontFamily="FontAwesome" icon="undo"/>
+                                </graphic>
+                            </Button>
+                            <Label fx:id="lblExilingMonthsOldValue" wrapText="true" styleClass="old-value"/>
+                            <Glyph fx:id="iconExilingMonthsArrow" wrapText="true" fontFamily="FontAwesome"/>
+                            <Label fx:id="lblExilingMonthsNewValue" wrapText="true" text="${spnExilingMonths.editor.text}" styleClass="new-value"/>
+                        </HBox>
+                    </HBox>
+                    <HBox spacing="5.0" GridPane.rowIndex="11" GridPane.columnIndex="1">
                         <GridPane.margin>
-                            <Insets bottom="5.0"/>
+                            <Insets top="5.0"/>
                         </GridPane.margin>
-                    </Spinner>
-                    <Label text="%label.months" GridPane.rowIndex="5" GridPane.columnIndex="4">
+                        <Spinner fx:id="spnExilingDays" min="0" max="99" editable="true" prefWidth="130.0"/>
+                        <Label text="%label.days"/>
+                        <HBox fx:id="paneExilingDaysReset" alignment="CENTER_LEFT" HBox.hgrow="ALWAYS" spacing="5.0" visible="false">
+                            <Button fx:id="btnExilingDaysReset" styleClass="small-button">
+                                <graphic>
+                                    <Glyph fontFamily="FontAwesome" icon="undo"/>
+                                </graphic>
+                            </Button>
+                            <Label fx:id="lblExilingDaysOldValue" wrapText="true" styleClass="old-value"/>
+                            <Glyph fx:id="iconExilingDaysArrow" wrapText="true" fontFamily="FontAwesome"/>
+                            <Label fx:id="lblExilingDaysNewValue" wrapText="true" text="${spnExilingDays.editor.text}" styleClass="new-value"/>
+                        </HBox>
+                    </HBox>
+                    <Label text="%label.deportation" wrapText="true" GridPane.rowIndex="12" GridPane.columnIndex="0">
                         <GridPane.margin>
-                            <Insets bottom="5.0"/>
-                        </GridPane.margin>
-                    </Label>
-                    <Spinner fx:id="spnExilingDays" min="0" max="99" editable="true" prefWidth="130.0" GridPane.rowIndex="5" GridPane.columnIndex="5">
-                        <GridPane.margin>
-                            <Insets bottom="5.0"/>
-                        </GridPane.margin>
-                    </Spinner>
-                    <Label text="%label.days" GridPane.rowIndex="5" GridPane.columnIndex="6">
-                        <GridPane.margin>
-                            <Insets bottom="5.0"/>
-                        </GridPane.margin>
-                    </Label>
-                    <Label text="%label.deportation" GridPane.rowIndex="6" GridPane.columnIndex="0">
-                        <GridPane.margin>
-                            <Insets bottom="5.0"/>
-                        </GridPane.margin>
-                    </Label>
-                    <Spinner fx:id="spnDeportationYears" min="0" max="99" editable="true" prefWidth="130.0" GridPane.rowIndex="6" GridPane.columnIndex="1">
-                        <GridPane.margin>
-                            <Insets bottom="5.0"/>
-                        </GridPane.margin>
-                    </Spinner>
-                    <Label text="%label.years" GridPane.rowIndex="6" GridPane.columnIndex="2">
-                        <GridPane.margin>
-                            <Insets bottom="5.0"/>
-                        </GridPane.margin>
-                    </Label>
-                    <Spinner fx:id="spnDeportationMonths" min="0" max="99" editable="true" prefWidth="130.0" GridPane.rowIndex="6" GridPane.columnIndex="3">
-                        <GridPane.margin>
-                            <Insets bottom="5.0"/>
-                        </GridPane.margin>
-                    </Spinner>
-                    <Label text="%label.months" GridPane.rowIndex="6" GridPane.columnIndex="4">
-                        <GridPane.margin>
-                            <Insets bottom="5.0"/>
-                        </GridPane.margin>
-                    </Label>
-                    <Spinner fx:id="spnDeportationDays" min="0" max="99" editable="true" prefWidth="130.0" GridPane.rowIndex="6" GridPane.columnIndex="5">
-                        <GridPane.margin>
-                            <Insets bottom="5.0"/>
-                        </GridPane.margin>
-                    </Spinner>
-                    <Label text="%label.days" GridPane.rowIndex="6" GridPane.columnIndex="6">
-                        <GridPane.margin>
-                            <Insets bottom="5.0"/>
+                            <Insets top="15.0"/>
                         </GridPane.margin>
                     </Label>
-                    <CheckBox fx:id="cbFinalDeportation" text="%label.finalDeportation" GridPane.rowIndex="7" GridPane.columnIndex="0" GridPane.columnSpan="4">
+                    <HBox spacing="5.0" GridPane.rowIndex="12" GridPane.columnIndex="1">
                         <GridPane.margin>
-                            <Insets bottom="5.0"/>
+                            <Insets top="15.0"/>
+                        </GridPane.margin>
+                        <Spinner fx:id="spnDeportationYears" min="0" max="99" editable="true" prefWidth="130.0"/>
+                        <Label text="%label.years"/>
+                        <HBox fx:id="paneDeportationYearsReset" alignment="CENTER_LEFT" HBox.hgrow="ALWAYS" spacing="5.0" visible="false">
+                            <Button fx:id="btnDeportationYearsReset" styleClass="small-button">
+                                <graphic>
+                                    <Glyph fontFamily="FontAwesome" icon="undo"/>
+                                </graphic>
+                            </Button>
+                            <Label fx:id="lblDeportationYearsOldValue" wrapText="true" styleClass="old-value"/>
+                            <Glyph fx:id="iconDeportationYearsArrow" wrapText="true" fontFamily="FontAwesome"/>
+                            <Label fx:id="lblDeportationYearsNewValue" wrapText="true" text="${spnDeportationYears.editor.text}" styleClass="new-value"/>
+                        </HBox>
+                    </HBox>
+                    <HBox spacing="5.0" GridPane.rowIndex="13" GridPane.columnIndex="1">
+                        <GridPane.margin>
+                            <Insets top="5.0"/>
+                        </GridPane.margin>
+                        <Spinner fx:id="spnDeportationMonths" min="0" max="99" editable="true" prefWidth="130.0"/>
+                        <Label text="%label.months"/>
+                        <HBox fx:id="paneDeportationMonthsReset" alignment="CENTER_LEFT" HBox.hgrow="ALWAYS" spacing="5.0" visible="false">
+                            <Button fx:id="btnDeportationMonthsReset" styleClass="small-button">
+                                <graphic>
+                                    <Glyph fontFamily="FontAwesome" icon="undo"/>
+                                </graphic>
+                            </Button>
+                            <Label fx:id="lblDeportationMonthsOldValue" wrapText="true" styleClass="old-value"/>
+                            <Glyph fx:id="iconDeportationMonthsArrow" wrapText="true" fontFamily="FontAwesome"/>
+                            <Label fx:id="lblDeportationMonthsNewValue" wrapText="true" text="${spnDeportationMonths.editor.text}" styleClass="new-value"/>
+                        </HBox>
+                    </HBox>
+                    <HBox spacing="5.0" GridPane.rowIndex="14" GridPane.columnIndex="1">
+                        <GridPane.margin>
+                            <Insets top="5.0"/>
+                        </GridPane.margin>
+                        <Spinner fx:id="spnDeportationDays" min="0" max="99" editable="true" prefWidth="130.0"/>
+                        <Label text="%label.days"/>
+                        <HBox fx:id="paneDeportationDaysReset" alignment="CENTER_LEFT" HBox.hgrow="ALWAYS" spacing="5.0" visible="false">
+                            <Button fx:id="btnDeportationDaysReset" styleClass="small-button">
+                                <graphic>
+                                    <Glyph fontFamily="FontAwesome" icon="undo"/>
+                                </graphic>
+                            </Button>
+                            <Label fx:id="lblDeportationDaysOldValue" wrapText="true" styleClass="old-value"/>
+                            <Glyph fx:id="iconDeportationDaysArrow" wrapText="true" fontFamily="FontAwesome"/>
+                            <Label fx:id="lblDeportationDaysNewValue" wrapText="true" text="${spnDeportationDays.editor.text}" styleClass="new-value"/>
+                        </HBox>
+                    </HBox>
+                    <CheckBox fx:id="cbFinalDeportation" wrapText="true" text="%label.finalDeportation" GridPane.rowIndex="15" GridPane.columnIndex="0">
+                        <GridPane.margin>
+                            <Insets top="15.0"/>
                         </GridPane.margin>
                     </CheckBox>
-                    <CheckBox fx:id="cbLibel" text="%label.libel" GridPane.rowIndex="8" GridPane.columnIndex="0" GridPane.columnSpan="4">
+                    <HBox fx:id="paneFinalDeportationReset" alignment="CENTER_LEFT" HBox.hgrow="ALWAYS" spacing="5.0" visible="false" GridPane.rowIndex="15" GridPane.columnIndex="1">
                         <GridPane.margin>
-                            <Insets bottom="5.0"/>
+                            <Insets top="15.0"/>
+                        </GridPane.margin>
+                        <Button fx:id="btnFinalDeportationReset" styleClass="small-button">
+                            <graphic>
+                                <Glyph fontFamily="FontAwesome" icon="undo"/>
+                            </graphic>
+                        </Button>
+                        <CheckBox fx:id="cbFinalDeportationOldValue" disable="true"/>
+                        <Glyph fx:id="iconFinalDeportationArrow" wrapText="true" fontFamily="FontAwesome"/>
+                        <CheckBox fx:id="cbFinalDeportationNewValue" disable="true" selected="${cbFinalDeportation.selected}"/>
+                    </HBox>
+                    <CheckBox fx:id="cbLibel" wrapText="true" text="%label.libel" GridPane.rowIndex="16" GridPane.columnIndex="0">
+                        <GridPane.margin>
+                            <Insets top="5.0"/>
                         </GridPane.margin>
                     </CheckBox>
-                    <CheckBox fx:id="cbCovenant" text="%label.covenant" GridPane.rowIndex="9" GridPane.columnIndex="0" GridPane.columnSpan="4">
+                    <HBox fx:id="paneLibelReset" alignment="CENTER_LEFT" HBox.hgrow="ALWAYS" spacing="5.0" visible="false" GridPane.rowIndex="16" GridPane.columnIndex="1">
                         <GridPane.margin>
-                            <Insets bottom="5.0"/>
+                            <Insets top="5.0"/>
+                        </GridPane.margin>
+                        <Button fx:id="btnLibelReset" styleClass="small-button">
+                            <graphic>
+                                <Glyph fontFamily="FontAwesome" icon="undo"/>
+                            </graphic>
+                        </Button>
+                        <CheckBox fx:id="cbLibelOldValue" disable="true"/>
+                        <Glyph fx:id="iconLibelArrow" wrapText="true" fontFamily="FontAwesome"/>
+                        <CheckBox fx:id="cbLibelNewValue" disable="true" selected="${cbLibel.selected}"/>
+                    </HBox>
+                    <CheckBox fx:id="cbCovenant" wrapText="true" text="%label.covenant" GridPane.rowIndex="17" GridPane.columnIndex="0">
+                        <GridPane.margin>
+                            <Insets top="5.0"/>
                         </GridPane.margin>
                     </CheckBox>
-                    <Label text="%label.other" GridPane.rowIndex="10" GridPane.columnIndex="0"/>
-                    <TextField fx:id="txtOther" GridPane.rowIndex="10" GridPane.columnIndex="1" GridPane.columnSpan="6"/>
+                    <HBox fx:id="paneCovenantReset" alignment="CENTER_LEFT" HBox.hgrow="ALWAYS" spacing="5.0" visible="false" GridPane.rowIndex="17" GridPane.columnIndex="1">
+                        <GridPane.margin>
+                            <Insets top="5.0"/>
+                        </GridPane.margin>
+                        <Button fx:id="btnCovenantReset" styleClass="small-button">
+                            <graphic>
+                                <Glyph fontFamily="FontAwesome" icon="undo"/>
+                            </graphic>
+                        </Button>
+                        <CheckBox fx:id="cbCovenantOldValue" disable="true"/>
+                        <Glyph fx:id="iconCovenantArrow" wrapText="true" fontFamily="FontAwesome"/>
+                        <CheckBox fx:id="cbCovenantNewValue" disable="true" selected="${cbCovenant.selected}"/>
+                    </HBox>
+                    <Label text="%label.other" wrapText="true" GridPane.rowIndex="18" GridPane.columnIndex="0">
+                        <GridPane.margin>
+                            <Insets top="15.0"/>
+                        </GridPane.margin>
+                    </Label>
+                    <TextField fx:id="txtOther" GridPane.rowIndex="18" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.fillWidth="true">
+                        <GridPane.margin>
+                            <Insets top="15.0"/>
+                        </GridPane.margin>
+                    </TextField>
+                    <HBox fx:id="paneOtherReset" alignment="CENTER_LEFT" HBox.hgrow="ALWAYS" spacing="5.0" visible="false" GridPane.rowIndex="19" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.fillWidth="true">
+                        <Button fx:id="btnOtherReset" styleClass="small-button">
+                            <graphic>
+                                <Glyph fontFamily="FontAwesome" icon="undo"/>
+                            </graphic>
+                        </Button>
+                        <Label fx:id="lblOtherOldValue" wrapText="true" styleClass="old-value"/>
+                        <Glyph fx:id="iconOtherArrow" wrapText="true" fontFamily="FontAwesome"/>
+                        <Label fx:id="lblOtherNewValue" wrapText="true" text="${txtOther.text}" styleClass="new-value"/>
+                    </HBox>
                 </GridPane>
             </ScrollPane>
         </VBox>
