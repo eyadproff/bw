@@ -2,7 +2,7 @@ module bw.workflow.visaapplicantsenrollment
 {
 	requires bw.core;
 	requires bw.workflow.commons;
-	requires jasperreports;
+	requires bw.lib.jasperreports;
 	requires biokit.library;
 	requires barbecue;
 	requires bio.commons;

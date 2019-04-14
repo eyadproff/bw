@@ -11,6 +11,7 @@ import javafx.scene.layout.Pane;
 import sa.gov.nic.bio.bw.core.Context;
 import sa.gov.nic.bio.bw.core.beans.Gender;
 import sa.gov.nic.bio.bw.core.controllers.WizardStepFxControllerBase;
+import sa.gov.nic.bio.bw.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.core.utils.FxmlFile;
 import sa.gov.nic.bio.bw.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.core.workflow.Input;
@@ -18,19 +19,27 @@ import sa.gov.nic.bio.bw.core.workflow.Output;
 import sa.gov.nic.bio.bw.workflow.commons.beans.ConvictedReport;
 import sa.gov.nic.bio.bw.workflow.commons.beans.Country;
 import sa.gov.nic.bio.bw.workflow.commons.beans.CrimeCode;
+import sa.gov.nic.bio.bw.workflow.commons.beans.CrimeType;
 import sa.gov.nic.bio.bw.workflow.commons.beans.DocumentType;
 import sa.gov.nic.bio.bw.workflow.commons.beans.PersonType;
+import sa.gov.nic.bio.bw.workflow.commons.lookups.CrimeTypesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.ui.ImageViewPane;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @FxmlFile("reviewAndSubmit.fxml")
 public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 {
+	@Input private Long oldReportNumber;
+	@Input private String oldEnrollerId;
+	@Input private Long oldEnrollmentTime;
 	@Input private String facePhotoBase64;
 	@Input private Map<Integer, String> fingerprintBase64Images;
+	@Input private Long civilBiometricsId;
+	@Input private Long criminalBiometricsId;
 	@Input private String firstNameOldValue;
 	@Input private String firstNameNewValue;
 	@Input private String fatherNameOldValue;
@@ -188,10 +197,115 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 	{
 		paneImageView.maxWidthProperty().bind(paneImage.widthProperty());
 		
-		// make the checkboxes look like they are enabled
-		cbFinalDeportation.setStyle("-fx-opacity: 1");
-		cbLibel.setStyle("-fx-opacity: 1");
-		cbCovenant.setStyle("-fx-opacity: 1");
+		GuiUtils.setLabelText(lblReportNumber, oldReportNumber);
+		GuiUtils.setLabelText(lblEnrollerId, oldEnrollerId);
+		
+		if(oldEnrollmentTime != null)
+		{
+			String sDate = AppUtils.formatHijriGregorianDateTime(oldEnrollmentTime);
+			GuiUtils.setLabelText(lblEnrollmentTime, sDate);
+		}
+		
+		GuiUtils.attachFacePhotoBase64(ivPersonPhoto, facePhotoBase64, true, genderNewValue);
+		if(fingerprintBase64Images != null)
+		{
+			GuiUtils.attachFingerprintImages(fingerprintBase64Images, ivRightThumb, ivRightIndex, ivRightMiddle,
+			                                 ivRightRing, ivRightLittle, ivLeftThumb, ivLeftIndex, ivLeftMiddle,
+			                                 ivLeftRing, ivLeftLittle);
+		}
+		
+		GuiUtils.setLabelText(lblCivilBiometricsId, civilBiometricsId);
+		GuiUtils.setLabelText(lblCriminalBiometricsId, criminalBiometricsId);
+		GuiUtils.setLabelText(lblFirstName, firstNameNewValue);
+		GuiUtils.setLabelText(lblFatherName, fatherNameNewValue);
+		GuiUtils.setLabelText(lblGrandfatherName, grandfatherNameNewValue);
+		GuiUtils.setLabelText(lblFamilyName, familyNameNewValue);
+		GuiUtils.setLabelText(lblGender, genderNewValue);
+		GuiUtils.setLabelText(lblNationality, nationalityNewValue);
+		GuiUtils.setLabelText(lblOccupation, occupationNewValue);
+		GuiUtils.setLabelText(lblBirthPlace, birthPlaceNewValue);
+		GuiUtils.setLabelText(lblBirthDate, birthDateNewValue);
+		GuiUtils.setLabelText(lblPersonId, personIdNewValue);
+		GuiUtils.setLabelText(lblPersonType, personTypeNewValue);
+		GuiUtils.setLabelText(lblDocumentId, documentIdNewValue);
+		GuiUtils.setLabelText(lblDocumentType, documentTypeNewValue);
+		GuiUtils.setLabelText(lblDocumentIssuanceDate, documentIssuanceDateNewValue);
+		GuiUtils.setLabelText(lblDocumentExpiryDate, documentExpiryDateNewValue);
+		GuiUtils.setLabelText(lblJudgmentIssuer, judgmentIssuerNewValue);
+		GuiUtils.setLabelText(lblJudgmentNumber, judgmentNumberNewValue);
+		GuiUtils.setLabelText(lblJudgmentDate, judgmentDateNewValue);
+		GuiUtils.setLabelText(lblCaseFileNumber, caseFileNumberNewValue);
+		GuiUtils.setLabelText(lblPrisonerNumber, prisonerNumberNewValue);
+		GuiUtils.setLabelText(lblArrestDate, arrestDateNewValue);
+		GuiUtils.setLabelText(lblTazeerLashes, tazeerLashesNewValue);
+		GuiUtils.setLabelText(lblHadLashes, hadLashesNewValue);
+		GuiUtils.setLabelText(lblFine, fineNewValue);
+		GuiUtils.setLabelText(lblJailYears, jailYearsNewValue);
+		GuiUtils.setLabelText(lblJailMonths, jailMonthsNewValue);
+		GuiUtils.setLabelText(lblJailDays, jailDaysNewValue);
+		GuiUtils.setLabelText(lblTravelBanYears, travelBanYearsNewValue);
+		GuiUtils.setLabelText(lblTravelBanMonths, travelBanMonthsNewValue);
+		GuiUtils.setLabelText(lblTravelBanDays, travelBanDaysNewValue);
+		GuiUtils.setLabelText(lblExilingYears, exilingYearsNewValue);
+		GuiUtils.setLabelText(lblExilingMonths, exilingMonthsNewValue);
+		GuiUtils.setLabelText(lblExilingDays, exilingDaysNewValue);
+		GuiUtils.setLabelText(lblDeportationYears, deportationYearsNewValue);
+		GuiUtils.setLabelText(lblDeportationMonths, deportationMonthsNewValue);
+		GuiUtils.setLabelText(lblDeportationDays, deportationDaysNewValue);
+		GuiUtils.setLabelText(lblOther, otherNewValue);
+		GuiUtils.setCheckBoxSelection(cbFinalDeportation, finalDeportationNewValue);
+		GuiUtils.setCheckBoxSelection(cbLibel, libelNewValue);
+		GuiUtils.setCheckBoxSelection(cbCovenant, covenantNewValue);
+		
+		@SuppressWarnings("unchecked")
+		List<CrimeType> crimeTypes = (List<CrimeType>) Context.getUserSession().getAttribute(CrimeTypesLookup.KEY);
+		
+		Map<Integer, String> crimeEventTitles = crimeTypes.stream().collect(
+				Collectors.toMap(CrimeType::getEventCode, CrimeType::getEventDesc, (k1, k2) -> k1));
+		Map<Integer, String> crimeClassTitles = crimeTypes.stream().collect(
+				Collectors.toMap(CrimeType::getClassCode, CrimeType::getClassDesc, (k1, k2) -> k1));
+		
+		int counter = 0;
+		for(CrimeCode crimeCode : newCrimes)
+		{
+			switch(counter++)
+			{
+				case 0:
+				{
+					lblCrimeClassification1.setText(crimeEventTitles.get(crimeCode.getCrimeEvent()) + ": " +
+							                                crimeClassTitles.get(crimeCode.getCrimeClass()));
+					break;
+				}
+				case 1:
+				{
+					GuiUtils.showNode(lblCrimeClassification2, true);
+					lblCrimeClassification2.setText(crimeEventTitles.get(crimeCode.getCrimeEvent()) + ": " +
+							                                crimeClassTitles.get(crimeCode.getCrimeClass()));
+					break;
+				}
+				case 2:
+				{
+					GuiUtils.showNode(lblCrimeClassification3, true);
+					lblCrimeClassification3.setText(crimeEventTitles.get(crimeCode.getCrimeEvent()) + ": " +
+							                                crimeClassTitles.get(crimeCode.getCrimeClass()));
+					break;
+				}
+				case 3:
+				{
+					GuiUtils.showNode(lblCrimeClassification4, true);
+					lblCrimeClassification4.setText(crimeEventTitles.get(crimeCode.getCrimeEvent()) + ": " +
+							                                crimeClassTitles.get(crimeCode.getCrimeClass()));
+					break;
+				}
+				case 4:
+				{
+					GuiUtils.showNode(lblCrimeClassification5, true);
+					lblCrimeClassification5.setText(crimeEventTitles.get(crimeCode.getCrimeEvent()) + ": " +
+							                                crimeClassTitles.get(crimeCode.getCrimeClass()));
+					break;
+				}
+			}
+		}
 	}
 	
 	@Override

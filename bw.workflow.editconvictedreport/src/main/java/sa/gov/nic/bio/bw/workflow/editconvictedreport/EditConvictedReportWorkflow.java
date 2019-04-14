@@ -98,8 +98,18 @@ public class EditConvictedReportWorkflow extends WizardWorkflowBase
 			{
 				ConvictedReport convictedReport = getData(ConvictedReportInquiryByReportNumberWorkflowTask.class,
 				                                          "convictedReport");
+				setData(ReviewAndSubmitPaneFxController.class, "oldReportNumber",
+				        convictedReport.getReportNumber());
+				setData(ReviewAndSubmitPaneFxController.class, "oldEnrollerId",
+				        convictedReport.getOperatorId());
+				setData(ReviewAndSubmitPaneFxController.class, "oldEnrollmentTime",
+				        convictedReport.getReportDate());
 				setData(ReviewAndSubmitPaneFxController.class, "facePhotoBase64",
 				        convictedReport.getSubjFace());
+				setData(ReviewAndSubmitPaneFxController.class, "civilBiometricsId",
+				        convictedReport.getSubjBioId());
+				setData(ReviewAndSubmitPaneFxController.class, "criminalBiometricsId",
+				        convictedReport.getGeneralFileNumber());
 				passData(ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask.class,
 				         ReviewAndSubmitPaneFxController.class, "fingerprintBase64Images");
 				passData(EditPersonInfoPaneFxController.class, ReviewAndSubmitPaneFxController.class,
@@ -117,7 +127,7 @@ public class EditConvictedReportWorkflow extends WizardWorkflowBase
 				         "caseFileNumberOldValue", "caseFileNumberNewValue", "prisonerNumberOldValue",
 				         "prisonerNumberNewValue", "arrestDateOldValue", "arrestDateNewValue", "oldCrimes",
 				         "newCrimes");
-				passData(EditJudgmentDetailsPaneFxController.class, ReviewAndSubmitPaneFxController.class,
+				passData(EditPunishmentDetailsPaneFxController.class, ReviewAndSubmitPaneFxController.class,
 				         "tazeerLashesOldValue", "tazeerLashesNewValue", "hadLashesOldValue",
 				         "hadLashesNewValue", "fineOldValue", "fineNewValue", "jailYearsOldValue", "jailYearsNewValue",
 				         "jailMonthsOldValue", "jailMonthsNewValue", "jailDaysOldValue", "jailDaysNewValue",

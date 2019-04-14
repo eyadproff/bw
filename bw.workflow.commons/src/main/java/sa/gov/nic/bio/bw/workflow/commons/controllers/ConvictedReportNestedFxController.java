@@ -104,11 +104,6 @@ public class ConvictedReportNestedFxController extends BodyFxControllerBase
 	protected void onAttachedToScene()
 	{
 		paneImageView.maxWidthProperty().bind(paneImage.widthProperty());
-		
-		// make the checkboxes look like they are enabled
-		cbFinalDeportation.setStyle("-fx-opacity: 1");
-		cbLibel.setStyle("-fx-opacity: 1");
-		cbCovenant.setStyle("-fx-opacity: 1");
 	}
 	
 	public void setWillBeGeneratedTextOnCriminalBiometricsId()

@@ -32,7 +32,7 @@
                             <padding>
                                 <Insets topRightBottomLeft="10.0"/>
                             </padding>
-                            <TitledPane text="%label.enrollmentDetails" collapsible="false" focusTraversable="false" managed="false" visible="false">
+                            <TitledPane text="%label.oldConvictedReportDetails" collapsible="false" focusTraversable="false">
                                 <VBox alignment="CENTER">
                                     <GridPane alignment="CENTER" hgap="10.0" vgap="3.0">
                                         <Label text="%label.reportNumber" GridPane.rowIndex="0" GridPane.columnIndex="0" styleClass="bold-label"/>
