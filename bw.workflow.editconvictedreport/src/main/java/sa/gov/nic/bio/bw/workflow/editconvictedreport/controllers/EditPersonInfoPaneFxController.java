@@ -44,23 +44,38 @@ import java.util.function.Predicate;
 public class EditPersonInfoPaneFxController extends WizardStepFxControllerBase
 {
 	@Input(alwaysRequired = true) private NormalizedPersonInfo normalizedPersonInfo;
-	@Output private String firstName;
-	@Output private String fatherName;
-	@Output private String grandfatherName;
-	@Output private String familyName;
-	@Output private Gender gender;
-	@Output private Country nationality;
-	@Output private String occupation;
-	@Output private String birthPlace;
-	@Output private LocalDate birthDate;
+	@Output private String firstNameOldValue;
+	@Output private String firstNameNewValue;
+	@Output private String fatherNameOldValue;
+	@Output private String fatherNameNewValue;
+	@Output private String grandfatherNameOldValue;
+	@Output private String grandfatherNameNewValue;
+	@Output private String familyNameOldValue;
+	@Output private String familyNameNewValue;
+	@Output private Gender genderOldValue;
+	@Output private Gender genderNewValue;
+	@Output private Country nationalityOldValue;
+	@Output private Country nationalityNewValue;
+	@Output private String occupationOldValue;
+	@Output private String occupationNewValue;
+	@Output private String birthPlaceOldValue;
+	@Output private String birthPlaceNewValue;
+	@Output private LocalDate birthDateOldValue;
+	@Output private LocalDate birthDateNewValue;
 	@Output private Boolean birthDateUseHijri;
-	@Output private Long personId;
-	@Output private PersonType personType;
-	@Output private String documentId;
-	@Output private DocumentType documentType;
-	@Output private LocalDate documentIssuanceDate;
+	@Output private Long personIdOldValue;
+	@Output private Long personIdNewValue;
+	@Output private PersonType personTypeOldValue;
+	@Output private PersonType personTypeNewValue;
+	@Output private String documentIdOldValue;
+	@Output private String documentIdNewValue;
+	@Output private DocumentType documentTypeOldValue;
+	@Output private DocumentType documentTypeNewValue;
+	@Output private LocalDate documentIssuanceDateOldValue;
+	@Output private LocalDate documentIssuanceDateNewValue;
 	@Output private Boolean documentIssuanceDateUseHijri;
-	@Output private LocalDate documentExpiryDate;
+	@Output private LocalDate documentExpiryDateOldValue;
+	@Output private LocalDate documentExpiryDateNewValue;
 	@Output private Boolean documentExpiryDateUseHijri;
 	
 	@FXML private Pane panePersonInfo;
@@ -260,12 +275,28 @@ public class EditPersonInfoPaneFxController extends WizardStepFxControllerBase
 		    item.setText(resultText);
 		});
 		
+		firstNameOldValue = normalizedPersonInfo.getFirstName();
+		fatherNameOldValue = normalizedPersonInfo.getFatherName();
+		grandfatherNameOldValue = normalizedPersonInfo.getGrandfatherName();
+		familyNameOldValue = normalizedPersonInfo.getFamilyName();
+		genderOldValue = normalizedPersonInfo.getGender();
+		nationalityOldValue = normalizedPersonInfo.getNationality();
+		occupationOldValue = normalizedPersonInfo.getOccupation();
+		birthPlaceOldValue = normalizedPersonInfo.getBirthPlace();
+		birthDateOldValue = normalizedPersonInfo.getBirthDate();
+		personIdOldValue = normalizedPersonInfo.getPersonId();
+		personTypeOldValue = normalizedPersonInfo.getPersonType();
+		documentIdOldValue = normalizedPersonInfo.getDocumentId();
+		documentTypeOldValue = normalizedPersonInfo.getDocumentType();
+		documentIssuanceDateOldValue = normalizedPersonInfo.getDocumentIssuanceDate();
+		documentExpiryDateOldValue = normalizedPersonInfo.getDocumentExpiryDate();
+		
 		Node focusedNode = null;
-		Gender gender = null;
 		String firstName = null;
 		String fatherName = null;
 		String grandfatherName = null;
 		String familyName = null;
+		Gender gender = null;
 		Country nationality = null;
 		String occupation = null;
 		String birthPlace = null;
@@ -279,21 +310,21 @@ public class EditPersonInfoPaneFxController extends WizardStepFxControllerBase
 		
 		if(isFirstLoad())
 		{
-			gender = normalizedPersonInfo.getGender();
-			firstName = normalizedPersonInfo.getFirstName();
-			fatherName = normalizedPersonInfo.getFatherName();
-			grandfatherName = normalizedPersonInfo.getGrandfatherName();
-			familyName = normalizedPersonInfo.getFamilyName();
-			nationality = normalizedPersonInfo.getNationality();
-			occupation = normalizedPersonInfo.getOccupation();
-			birthPlace = normalizedPersonInfo.getBirthPlace();
-			birthDate = normalizedPersonInfo.getBirthDate();
-			personId = normalizedPersonInfo.getPersonId();
-			personType = normalizedPersonInfo.getPersonType();
-			documentId = normalizedPersonInfo.getDocumentId();
-			documentType = normalizedPersonInfo.getDocumentType();
-			documentIssuanceDate = normalizedPersonInfo.getDocumentIssuanceDate();
-			documentExpiryDate = normalizedPersonInfo.getDocumentExpiryDate();
+			firstName = firstNameOldValue;
+			fatherName = fatherNameOldValue;
+			grandfatherName = grandfatherNameOldValue;
+			familyName = familyNameOldValue;
+			gender = genderOldValue;
+			nationality = nationalityOldValue;
+			occupation = occupationOldValue;
+			birthPlace = birthPlaceOldValue;
+			birthDate = birthDateOldValue;
+			personId = personIdOldValue;
+			personType = personTypeOldValue;
+			documentId = documentIdOldValue;
+			documentType = documentTypeOldValue;
+			documentIssuanceDate = documentIssuanceDateOldValue;
+			documentExpiryDate = documentExpiryDateOldValue;
 		}
 		
 		// TODO: disable if the user has no permission to edit person info
@@ -304,7 +335,7 @@ public class EditPersonInfoPaneFxController extends WizardStepFxControllerBase
 			txtFirstName.setText(firstName);
 			txtFirstName.setDisable(disable);
 		}
-		else if(this.firstName != null) txtFirstName.setText(this.firstName);
+		else if(this.firstNameNewValue != null) txtFirstName.setText(this.firstNameNewValue);
 		else focusedNode = txtFirstName;
 		
 		
@@ -313,7 +344,7 @@ public class EditPersonInfoPaneFxController extends WizardStepFxControllerBase
 			txtFatherName.setText(fatherName);
 			txtFatherName.setDisable(disable);
 		}
-		else if(this.fatherName != null) txtFatherName.setText(this.fatherName);
+		else if(this.fatherNameNewValue != null) txtFatherName.setText(this.fatherNameNewValue);
 		else if(focusedNode == null) focusedNode = txtFatherName;
 		
 		if(grandfatherName != null)
@@ -321,7 +352,7 @@ public class EditPersonInfoPaneFxController extends WizardStepFxControllerBase
 			txtGrandfatherName.setText(grandfatherName);
 			txtGrandfatherName.setDisable(disable);
 		}
-		else if(this.grandfatherName != null) txtGrandfatherName.setText(this.grandfatherName);
+		else if(this.grandfatherNameNewValue != null) txtGrandfatherName.setText(this.grandfatherNameNewValue);
 		else if(focusedNode == null) focusedNode = txtGrandfatherName;
 		
 		if(familyName != null)
@@ -329,7 +360,7 @@ public class EditPersonInfoPaneFxController extends WizardStepFxControllerBase
 			txtFamilyName.setText(familyName);
 			txtFamilyName.setDisable(disable);
 		}
-		else if(this.familyName != null) txtFamilyName.setText(this.familyName);
+		else if(this.familyNameNewValue != null) txtFamilyName.setText(this.familyNameNewValue);
 		else if(focusedNode == null) focusedNode = txtFamilyName;
 		
 		if(gender != null)
@@ -337,7 +368,7 @@ public class EditPersonInfoPaneFxController extends WizardStepFxControllerBase
 			boolean selected = GuiUtils.selectComboBoxItem(cboGender, gender);
 			if(selected) cboGender.setDisable(disable);
 		}
-		else if(this.gender != null) GuiUtils.selectComboBoxItem(cboGender, this.gender);
+		else if(this.genderNewValue != null) GuiUtils.selectComboBoxItem(cboGender, this.genderNewValue);
 		else if(focusedNode == null) focusedNode = cboGender;
 		
 		if(nationality != null)
@@ -345,7 +376,7 @@ public class EditPersonInfoPaneFxController extends WizardStepFxControllerBase
 			boolean selected = GuiUtils.selectComboBoxItem(cboNationality, nationality);
 			if(selected) cboNationality.setDisable(disable);
 		}
-		else if(this.nationality != null) GuiUtils.selectComboBoxItem(cboNationality, this.nationality);
+		else if(this.nationalityNewValue != null) GuiUtils.selectComboBoxItem(cboNationality, this.nationalityNewValue);
 		else cboNationality.getSelectionModel().select(0);
 		
 		if(occupation != null)
@@ -353,21 +384,21 @@ public class EditPersonInfoPaneFxController extends WizardStepFxControllerBase
 			txtOccupation.setText(occupation);
 			txtOccupation.setDisable(disable);
 		}
-		else if(this.occupation != null) txtOccupation.setText(this.occupation);
+		else if(this.occupationNewValue != null) txtOccupation.setText(this.occupationNewValue);
 		
 		if(birthPlace != null)
 		{
 			txtBirthPlace.setText(birthPlace);
 			txtBirthPlace.setDisable(disable);
 		}
-		else if(this.birthPlace != null) txtBirthPlace.setText(this.birthPlace);
+		else if(this.birthPlaceNewValue != null) txtBirthPlace.setText(this.birthPlaceNewValue);
 		
 		if(birthDate != null)
 		{
 			dpBirthDate.setValue(birthDate);
 			dpBirthDate.setDisable(disable);
 		}
-		else if(this.birthDate != null) dpBirthDate.setValue(this.birthDate);
+		else if(this.birthDateNewValue != null) dpBirthDate.setValue(this.birthDateNewValue);
 		
 		rdoBirthDateUseHijri.setSelected(true);
 		if(this.birthDateUseHijri != null && !this.birthDateUseHijri) rdoBirthDateUseGregorian.setSelected(true);
@@ -383,28 +414,30 @@ public class EditPersonInfoPaneFxController extends WizardStepFxControllerBase
 			boolean selected = GuiUtils.selectComboBoxItem(cboPersonType, personType);
 			if(selected) cboPersonType.setDisable(disable);
 		}
-		else if(this.personType != null) GuiUtils.selectComboBoxItem(cboPersonType, this.personType);
+		else if(this.personTypeNewValue != null) GuiUtils.selectComboBoxItem(cboPersonType, this.personTypeNewValue);
 		
 		if(documentId != null)
 		{
 			txtDocumentId.setText(documentId);
 			txtDocumentId.setDisable(disable);
 		}
-		else if(this.documentId != null) txtDocumentId.setText(this.documentId);
+		else if(this.documentIdNewValue != null) txtDocumentId.setText(this.documentIdNewValue);
 		
 		if(documentType != null)
 		{
 			boolean selected = GuiUtils.selectComboBoxItem(cboDocumentType, documentType);
 			if(selected) cboDocumentType.setDisable(disable);
 		}
-		else if(this.documentType != null) GuiUtils.selectComboBoxItem(cboDocumentType, this.documentType);
+		else if(this.documentTypeNewValue != null) GuiUtils.selectComboBoxItem(cboDocumentType,
+		                                                                       this.documentTypeNewValue);
 		
 		if(documentIssuanceDate != null)
 		{
 			dpDocumentIssuanceDate.setValue(documentIssuanceDate);
 			dpDocumentIssuanceDate.setDisable(disable);
 		}
-		else if(this.documentIssuanceDate != null) dpDocumentIssuanceDate.setValue(this.documentIssuanceDate);
+		else if(this.documentIssuanceDateNewValue != null) dpDocumentIssuanceDate.setValue(
+																					this.documentIssuanceDateNewValue);
 		
 		rdoDocumentIssuanceDateUseHijri.setSelected(true);
 		if(this.documentIssuanceDateUseHijri != null && !this.documentIssuanceDateUseHijri)
@@ -415,7 +448,7 @@ public class EditPersonInfoPaneFxController extends WizardStepFxControllerBase
 			dpDocumentExpiryDate.setValue(documentExpiryDate);
 			dpDocumentExpiryDate.setDisable(disable);
 		}
-		else if(this.documentExpiryDate != null) dpDocumentExpiryDate.setValue(this.documentExpiryDate);
+		else if(this.documentExpiryDateNewValue != null) dpDocumentExpiryDate.setValue(this.documentExpiryDateNewValue);
 		
 		rdoDocumentExpiryDateUseHijri.setSelected(true);
 		if(this.documentExpiryDateUseHijri != null && !this.documentExpiryDateUseHijri)
@@ -630,60 +663,60 @@ public class EditPersonInfoPaneFxController extends WizardStepFxControllerBase
 	public void onGoingNext(Map<String, Object> uiDataMap)
 	{
 		var firstName = txtFirstName.getText();
-		if(!firstName.isBlank()) this.firstName = firstName;
-		else this.firstName = null;
+		if(!firstName.isBlank()) this.firstNameNewValue = firstName;
+		else this.firstNameNewValue = null;
 		
 		var fatherName = txtFatherName.getText();
-		if(!fatherName.isBlank()) this.fatherName = fatherName;
-		else this.fatherName = null;
+		if(!fatherName.isBlank()) this.fatherNameNewValue = fatherName;
+		else this.fatherNameNewValue = null;
 		
 		var grandfatherName = txtGrandfatherName.getText();
-		if(!grandfatherName.isBlank()) this.grandfatherName = grandfatherName;
-		else this.grandfatherName = null;
+		if(!grandfatherName.isBlank()) this.grandfatherNameNewValue = grandfatherName;
+		else this.grandfatherNameNewValue = null;
 		
 		var familyName = txtFamilyName.getText();
-		if(!familyName.isBlank()) this.familyName = familyName;
-		else this.familyName = null;
+		if(!familyName.isBlank()) this.familyNameNewValue = familyName;
+		else this.familyNameNewValue = null;
 		
 		var genderItem = cboGender.getValue();
-		if(genderItem != null) this.gender = genderItem.getItem();
-		else this.gender = null;
+		if(genderItem != null) this.genderNewValue = genderItem.getItem();
+		else this.genderNewValue = null;
 		
 		var nationalityItem = cboNationality.getValue();
-		if(nationalityItem != null) this.nationality = nationalityItem.getItem();
-		else this.nationality = null;
+		if(nationalityItem != null) this.nationalityNewValue = nationalityItem.getItem();
+		else this.nationalityNewValue = null;
 		
 		var occupation = txtOccupation.getText();
-		if(!occupation.isBlank()) this.occupation = occupation;
-		else this.occupation = null;
+		if(!occupation.isBlank()) this.occupationNewValue = occupation;
+		else this.occupationNewValue = null;
 		
 		var birthPlace = txtBirthPlace.getText();
-		if(!birthPlace.isBlank()) this.birthPlace = birthPlace;
-		else this.birthPlace = null;
+		if(!birthPlace.isBlank()) this.birthPlaceNewValue = birthPlace;
+		else this.birthPlaceNewValue = null;
 		
-		this.birthDate = dpBirthDate.getValue();
+		this.birthDateNewValue = dpBirthDate.getValue();
 		this.birthDateUseHijri = rdoBirthDateUseHijri.isSelected();
 		
 		var sPersonId = txtPersonId.getText();
-		if(!sPersonId.isBlank()) this.personId = Long.parseLong(sPersonId);
-		else this.personId = null;
+		if(!sPersonId.isBlank()) this.personIdNewValue = Long.parseLong(sPersonId);
+		else this.personIdNewValue = null;
 		
 		var personTypeItem = cboPersonType.getValue();
-		if(personTypeItem != null) this.personType = personTypeItem.getItem();
-		else this.personType = null;
+		if(personTypeItem != null) this.personTypeNewValue = personTypeItem.getItem();
+		else this.personTypeNewValue = null;
 		
 		var documentId = txtDocumentId.getText();
-		if(!documentId.isBlank()) this.documentId = documentId;
-		else this.documentId = null;
+		if(!documentId.isBlank()) this.documentIdNewValue = documentId;
+		else this.documentIdNewValue = null;
 		
 		var documentTypeItem = cboDocumentType.getValue();
-		if(documentTypeItem != null) this.documentType = documentTypeItem.getItem();
-		else this.documentType = null;
+		if(documentTypeItem != null) this.documentTypeNewValue = documentTypeItem.getItem();
+		else this.documentTypeNewValue = null;
 		
-		this.documentIssuanceDate = dpDocumentIssuanceDate.getValue();
+		this.documentIssuanceDateNewValue = dpDocumentIssuanceDate.getValue();
 		this.documentIssuanceDateUseHijri = rdoDocumentIssuanceDateUseHijri.isSelected();
 		
-		this.documentExpiryDate = dpDocumentExpiryDate.getValue();
+		this.documentExpiryDateNewValue = dpDocumentExpiryDate.getValue();
 		this.documentExpiryDateUseHijri = rdoDocumentExpiryDateUseHijri.isSelected();
 	}
 }

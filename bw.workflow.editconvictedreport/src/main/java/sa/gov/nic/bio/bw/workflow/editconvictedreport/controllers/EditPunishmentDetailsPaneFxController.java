@@ -29,25 +29,44 @@ import java.util.Map;
 public class EditPunishmentDetailsPaneFxController extends WizardStepFxControllerBase
 {
 	@Input(alwaysRequired = true) private JudgementInfo judgementInfo;
-	@Output private Integer tazeerLashes;
-	@Output private Integer hadLashes;
-	@Output private Integer fine;
-	@Output private Integer jailYears;
-	@Output private Integer jailMonths;
-	@Output private Integer jailDays;
-	@Output private Integer travelBanYears;
-	@Output private Integer travelBanMonths;
-	@Output private Integer travelBanDays;
-	@Output private Integer exilingYears;
-	@Output private Integer exilingMonths;
-	@Output private Integer exilingDays;
-	@Output private Integer deportationYears;
-	@Output private Integer deportationMonths;
-	@Output private Integer deportationDays;
-	@Output private Boolean finalDeportation;
-	@Output private Boolean libel;
-	@Output private Boolean covenant;
-	@Output private String other;
+	@Output private Integer tazeerLashesOldValue;
+	@Output private Integer tazeerLashesNewValue;
+	@Output private Integer hadLashesOldValue;
+	@Output private Integer hadLashesNewValue;
+	@Output private Integer fineOldValue;
+	@Output private Integer fineNewValue;
+	@Output private Integer jailYearsOldValue;
+	@Output private Integer jailYearsNewValue;
+	@Output private Integer jailMonthsOldValue;
+	@Output private Integer jailMonthsNewValue;
+	@Output private Integer jailDaysOldValue;
+	@Output private Integer jailDaysNewValue;
+	@Output private Integer travelBanYearsOldValue;
+	@Output private Integer travelBanYearsNewValue;
+	@Output private Integer travelBanMonthsOldValue;
+	@Output private Integer travelBanMonthsNewValue;
+	@Output private Integer travelBanDaysOldValue;
+	@Output private Integer travelBanDaysNewValue;
+	@Output private Integer exilingYearsOldValue;
+	@Output private Integer exilingYearsNewValue;
+	@Output private Integer exilingMonthsOldValue;
+	@Output private Integer exilingMonthsNewValue;
+	@Output private Integer exilingDaysOldValue;
+	@Output private Integer exilingDaysNewValue;
+	@Output private Integer deportationYearsOldValue;
+	@Output private Integer deportationYearsNewValue;
+	@Output private Integer deportationMonthsOldValue;
+	@Output private Integer deportationMonthsNewValue;
+	@Output private Integer deportationDaysOldValue;
+	@Output private Integer deportationDaysNewValue;
+	@Output private Boolean finalDeportationOldValue;
+	@Output private Boolean finalDeportationNewValue;
+	@Output private Boolean libelOldValue;
+	@Output private Boolean libelNewValue;
+	@Output private Boolean covenantOldValue;
+	@Output private Boolean covenantNewValue;
+	@Output private String otherOldValue;
+	@Output private String otherNewValue;
 	
 	@FXML private Spinner<Integer> spnTazeerLashes;
 	@FXML private Spinner<Integer> spnHadLashes;
@@ -301,6 +320,26 @@ public class EditPunishmentDetailsPaneFxController extends WizardStepFxControlle
                            .and(spnDeportationDaysBinding).and(cbFinalDeportationBinding).and(cbLibelBinding)
                            .and(cbCovenantBinding).and(txtOtherBinding));
 		
+		tazeerLashesOldValue = judgementInfo.getJudgTazeerLashesCount();
+		hadLashesOldValue = judgementInfo.getJudgHadLashesCount();
+		fineOldValue = judgementInfo.getJudgFine();
+		jailYearsOldValue = judgementInfo.getJailYearCount();
+		jailMonthsOldValue = judgementInfo.getJailMonthCount();
+		jailDaysOldValue = judgementInfo.getJailDayCount();
+		travelBanYearsOldValue = judgementInfo.getTrvlBanYearCount();
+		travelBanMonthsOldValue = judgementInfo.getTrvlBanMonthCount();
+		travelBanDaysOldValue = judgementInfo.getTrvlBanDayCount();
+		exilingYearsOldValue = judgementInfo.getExileYearCount();
+		exilingMonthsOldValue = judgementInfo.getExileMonthCount();
+		exilingDaysOldValue = judgementInfo.getExileDayCount();
+		deportationYearsOldValue = judgementInfo.getDeportYearCount();
+		deportationMonthsOldValue = judgementInfo.getDeportMonthCount();
+		deportationDaysOldValue = judgementInfo.getDeportDayCount();
+		finalDeportationOldValue = judgementInfo.isFinalDeport();
+		libelOldValue = judgementInfo.isLibel();
+		covenantOldValue = judgementInfo.isCovenant();
+		otherOldValue = judgementInfo.getJudgOthers();
+		
 		Integer tazeerLashes = null;
 		Integer hadLashes = null;
 		Integer fine = null;
@@ -323,71 +362,80 @@ public class EditPunishmentDetailsPaneFxController extends WizardStepFxControlle
 		
 		if(isFirstLoad())
 		{
-			tazeerLashes = judgementInfo.getJudgTazeerLashesCount();
-			hadLashes = judgementInfo.getJudgHadLashesCount();
-			fine = judgementInfo.getJudgFine();
-			jailYears = judgementInfo.getJailYearCount();
-			jailMonths = judgementInfo.getJailMonthCount();
-			jailDays = judgementInfo.getJailDayCount();
-			travelBanYears = judgementInfo.getTrvlBanYearCount();
-			travelBanMonths = judgementInfo.getTrvlBanMonthCount();
-			travelBanDays = judgementInfo.getTrvlBanDayCount();
-			exilingYears = judgementInfo.getExileYearCount();
-			exilingMonths = judgementInfo.getExileMonthCount();
-			exilingDays = judgementInfo.getExileDayCount();
-			deportationYears = judgementInfo.getDeportYearCount();
-			deportationMonths = judgementInfo.getDeportMonthCount();
-			deportationDays = judgementInfo.getDeportDayCount();
-			finalDeportation = judgementInfo.isFinalDeport();
-			libel = judgementInfo.isLibel();
-			covenant = judgementInfo.isCovenant();
-			other = judgementInfo.getJudgOthers();
+			tazeerLashes = tazeerLashesOldValue;
+			hadLashes = hadLashesOldValue;
+			fine = fineOldValue;
+			jailYears = jailYearsOldValue;
+			jailMonths = jailMonthsOldValue;
+			jailDays = jailDaysOldValue;
+			travelBanYears = travelBanYearsOldValue;
+			travelBanMonths = travelBanMonthsOldValue;
+			travelBanDays = travelBanDaysOldValue;
+			exilingYears = exilingYearsOldValue;
+			exilingMonths = exilingMonthsOldValue;
+			exilingDays = exilingDaysOldValue;
+			deportationYears = deportationYearsOldValue;
+			deportationMonths = deportationMonthsOldValue;
+			deportationDays = deportationDaysOldValue;
+			finalDeportation = finalDeportationOldValue;
+			libel = libelOldValue;
+			covenant = covenantOldValue;
+			other = otherOldValue;
 		}
 		
 		if(tazeerLashes != null) spnTazeerLashes.getValueFactory().setValue(tazeerLashes);
-		else if(this.tazeerLashes != null) spnTazeerLashes.getValueFactory().setValue(this.tazeerLashes);
+		else if(this.tazeerLashesNewValue != null) spnTazeerLashes.getValueFactory().setValue(
+																							this.tazeerLashesNewValue);
 		
 		if(hadLashes != null) spnHadLashes.getValueFactory().setValue(hadLashes);
-		else if(this.hadLashes != null) spnHadLashes.getValueFactory().setValue(this.hadLashes);
+		else if(this.hadLashesNewValue != null) spnHadLashes.getValueFactory().setValue(this.hadLashesNewValue);
 		
 		if(fine != null) spnFine.getValueFactory().setValue(fine);
-		else if(this.fine != null) spnFine.getValueFactory().setValue(this.fine);
+		else if(this.fineNewValue != null) spnFine.getValueFactory().setValue(this.fineNewValue);
 		
 		if(jailYears != null) spnJailYears.getValueFactory().setValue(jailYears);
-		else if(this.jailYears != null) spnJailYears.getValueFactory().setValue(this.jailYears);
+		else if(this.jailYearsNewValue != null) spnJailYears.getValueFactory().setValue(this.jailYearsNewValue);
 		
 		if(jailMonths != null) spnJailMonths.getValueFactory().setValue(jailMonths);
-		else if(this.jailMonths != null) spnJailMonths.getValueFactory().setValue(this.jailMonths);
+		else if(this.jailMonthsNewValue != null) spnJailMonths.getValueFactory().setValue(this.jailMonthsNewValue);
 		
 		if(jailDays != null) spnJailDays.getValueFactory().setValue(jailDays);
-		else if(this.jailDays != null) spnJailDays.getValueFactory().setValue(this.jailDays);
+		else if(this.jailDaysNewValue != null) spnJailDays.getValueFactory().setValue(this.jailDaysNewValue);
 		
 		if(travelBanYears != null) spnTravelBanYears.getValueFactory().setValue(travelBanYears);
-		else if(this.travelBanYears != null) spnTravelBanYears.getValueFactory().setValue(this.travelBanYears);
+		else if(this.travelBanYearsNewValue != null) spnTravelBanYears.getValueFactory().setValue(
+																						this.travelBanYearsNewValue);
 		
 		if(travelBanMonths != null) spnTravelBanMonths.getValueFactory().setValue(travelBanMonths);
-		else if(this.travelBanMonths != null) spnTravelBanMonths.getValueFactory().setValue(this.travelBanMonths);
+		else if(this.travelBanMonthsNewValue != null) spnTravelBanMonths.getValueFactory().setValue(
+																						this.travelBanMonthsNewValue);
 		
 		if(travelBanDays != null) spnTravelBanDays.getValueFactory().setValue(travelBanDays);
-		else if(this.travelBanDays != null) spnTravelBanDays.getValueFactory().setValue(this.travelBanDays);
+		else if(this.travelBanDaysNewValue != null) spnTravelBanDays.getValueFactory().setValue(
+																						this.travelBanDaysNewValue);
 		
 		if(exilingYears != null) spnExilingYears.getValueFactory().setValue(exilingYears);
-		else if(this.exilingYears != null) spnExilingYears.getValueFactory().setValue(this.exilingYears);
+		else if(this.exilingYearsNewValue != null) spnExilingYears.getValueFactory().setValue(
+																						this.exilingYearsNewValue);
 		
 		if(exilingMonths != null) spnExilingMonths.getValueFactory().setValue(exilingMonths);
-		else if(this.exilingMonths != null) spnExilingMonths.getValueFactory().setValue(this.exilingMonths);
+		else if(this.exilingMonthsNewValue != null) spnExilingMonths.getValueFactory().setValue(
+																						this.exilingMonthsNewValue);
 		
 		if(exilingDays != null) spnExilingDays.getValueFactory().setValue(exilingDays);
-		else if(this.exilingDays != null) spnExilingDays.getValueFactory().setValue(this.exilingDays);
+		else if(this.exilingDaysNewValue != null) spnExilingDays.getValueFactory().setValue(this.exilingDaysNewValue);
 		
 		if(deportationYears != null) spnDeportationYears.getValueFactory().setValue(deportationYears);
-		else if(this.deportationYears != null) spnDeportationYears.getValueFactory().setValue(this.deportationYears);
+		else if(this.deportationYearsNewValue != null) spnDeportationYears.getValueFactory().setValue(
+																						this.deportationYearsNewValue);
 		
 		if(deportationMonths != null) spnDeportationMonths.getValueFactory().setValue(deportationMonths);
-		else if(this.deportationMonths != null) spnDeportationMonths.getValueFactory().setValue(this.deportationMonths);
+		else if(this.deportationMonthsNewValue != null) spnDeportationMonths.getValueFactory().setValue(
+																						this.deportationMonthsNewValue);
 		
 		if(deportationDays != null) spnDeportationDays.getValueFactory().setValue(deportationDays);
-		else if(this.deportationDays != null) spnDeportationDays.getValueFactory().setValue(this.deportationDays);
+		else if(this.deportationDaysNewValue != null) spnDeportationDays.getValueFactory().setValue(
+																						this.deportationDaysNewValue);
 		
 		cbFinalDeportation.setSelected(finalDeportation != null && finalDeportation);
 		cbLibel.setSelected(libel != null && libel);
@@ -587,27 +635,27 @@ public class EditPunishmentDetailsPaneFxController extends WizardStepFxControlle
 	@Override
 	public void onGoingNext(Map<String, Object> uiDataMap)
 	{
-		tazeerLashes = spnTazeerLashes.getValue();
-		hadLashes = spnHadLashes.getValue();
-		fine = spnFine.getValue();
-		jailYears = spnJailYears.getValue();
-		jailMonths = spnJailMonths.getValue();
-		jailDays = spnJailDays.getValue();
-		travelBanYears = spnTravelBanYears.getValue();
-		travelBanMonths = spnTravelBanMonths.getValue();
-		travelBanDays = spnTravelBanDays.getValue();
-		exilingYears = spnExilingYears.getValue();
-		exilingMonths = spnExilingMonths.getValue();
-		exilingDays = spnExilingDays.getValue();
-		deportationYears = spnDeportationYears.getValue();
-		deportationMonths = spnDeportationMonths.getValue();
-		deportationDays = spnDeportationDays.getValue();
-		finalDeportation = cbFinalDeportation.isSelected();
-		libel = cbLibel.isSelected();
-		covenant = cbCovenant.isSelected();
+		tazeerLashesNewValue = spnTazeerLashes.getValue();
+		hadLashesNewValue = spnHadLashes.getValue();
+		fineNewValue = spnFine.getValue();
+		jailYearsNewValue = spnJailYears.getValue();
+		jailMonthsNewValue = spnJailMonths.getValue();
+		jailDaysNewValue = spnJailDays.getValue();
+		travelBanYearsNewValue = spnTravelBanYears.getValue();
+		travelBanMonthsNewValue = spnTravelBanMonths.getValue();
+		travelBanDaysNewValue = spnTravelBanDays.getValue();
+		exilingYearsNewValue = spnExilingYears.getValue();
+		exilingMonthsNewValue = spnExilingMonths.getValue();
+		exilingDaysNewValue = spnExilingDays.getValue();
+		deportationYearsNewValue = spnDeportationYears.getValue();
+		deportationMonthsNewValue = spnDeportationMonths.getValue();
+		deportationDaysNewValue = spnDeportationDays.getValue();
+		finalDeportationNewValue = cbFinalDeportation.isSelected();
+		libelNewValue = cbLibel.isSelected();
+		covenantNewValue = cbCovenant.isSelected();
 		
 		var other = txtOther.getText();
-		if(!other.isBlank()) this.other = other;
-		else this.other = null;
+		if(!other.isBlank()) this.otherNewValue = other;
+		else this.otherNewValue = null;
 	}
 }

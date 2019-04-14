@@ -24,3 +24,7 @@
     -fx-border-style: dashed;
     -fx-border-width: 2px;
 }
+
+.titled-pane > .title {
+    -fx-alignment: center;
+}

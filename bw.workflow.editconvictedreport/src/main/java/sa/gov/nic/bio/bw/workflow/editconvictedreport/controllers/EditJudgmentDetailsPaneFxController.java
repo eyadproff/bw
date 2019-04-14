@@ -42,13 +42,19 @@ public class EditJudgmentDetailsPaneFxController extends WizardStepFxControllerB
 {
 	@Input(alwaysRequired = true) private List<CrimeCode> oldCrimes;
 	@Input(alwaysRequired = true) private JudgementInfo judgementInfo;
-	@Output private String judgmentIssuer;
-	@Output private String judgmentNumber;
-	@Output private LocalDate judgmentDate;
+	@Output private String judgmentIssuerOldValue;
+	@Output private String judgmentIssuerNewValue;
+	@Output private String judgmentNumberOldValue;
+	@Output private String judgmentNumberNewValue;
+	@Output private LocalDate judgmentDateOldValue;
+	@Output private LocalDate judgmentDateNewValue;
 	@Output private Boolean judgmentDateUseHijri;
-	@Output private String caseFileNumber;
-	@Output private Long prisonerNumber;
-	@Output private LocalDate arrestDate;
+	@Output private String caseFileNumberOldValue;
+	@Output private String caseFileNumberNewValue;
+	@Output private Long prisonerNumberOldValue;
+	@Output private Long prisonerNumberNewValue;
+	@Output private LocalDate arrestDateOldValue;
+	@Output private LocalDate arrestDateNewValue;
 	@Output private Boolean arrestDateUseHijri;
 	@Output private List<CrimeCode> newCrimes;
 	
@@ -318,6 +324,15 @@ public class EditJudgmentDetailsPaneFxController extends WizardStepFxControllerB
 		initCrimeEventComboBox(cboCrimeEvent4, cboCrimeClass4, crimeEventTitles, crimeClassTitles);
 		initCrimeEventComboBox(cboCrimeEvent5, cboCrimeClass5, crimeEventTitles, crimeClassTitles);
 		
+		judgmentIssuerOldValue = judgementInfo.getJudgIssuer();
+		judgmentNumberOldValue = judgementInfo.getJudgNum();
+		Long judgmentDateLong = judgementInfo.getJudgDate();
+		if(judgmentDateLong != null) judgmentDateOldValue = AppUtils.secondsToGregorianDate(judgmentDateLong);
+		caseFileNumberOldValue = judgementInfo.getPoliceFileNum();
+		prisonerNumberOldValue = judgementInfo.getPrisonerNumber();
+		Long arrestDateLong = judgementInfo.getArrestDate();
+		if(arrestDateLong != null) arrestDateOldValue = AppUtils.secondsToGregorianDate(arrestDateLong);
+		
 		Node focusedNode = null;
 		String judgmentIssuer = null;
 		String judgmentNumber = null;
@@ -329,27 +344,25 @@ public class EditJudgmentDetailsPaneFxController extends WizardStepFxControllerB
 		
 		if(isFirstLoad())
 		{
-			judgmentIssuer = judgementInfo.getJudgIssuer();
-			judgmentNumber = judgementInfo.getJudgNum();
-			Long judgmentDateLong = judgementInfo.getJudgDate();
-			if(judgmentDateLong != null) judgmentDate = AppUtils.secondsToGregorianDate(judgmentDateLong);
-			caseFileNumber = judgementInfo.getPoliceFileNum();
-			prisonerNumber = judgementInfo.getPrisonerNumber();
-			Long arrestDateLong = judgementInfo.getArrestDate();
-			if(arrestDateLong != null) arrestDate = AppUtils.secondsToGregorianDate(arrestDateLong);
+			judgmentIssuer = judgmentIssuerOldValue;
+			judgmentNumber = judgmentNumberOldValue;
+			judgmentDate = judgmentDateOldValue;
+			caseFileNumber = caseFileNumberOldValue;
+			prisonerNumber = prisonerNumberOldValue;
+			arrestDate = arrestDateOldValue;
 			crimes = oldCrimes;
 		}
 		
 		if(judgmentIssuer != null) txtJudgmentIssuer.setText(judgmentIssuer);
-		else if(this.judgmentIssuer != null) txtJudgmentIssuer.setText(this.judgmentIssuer);
+		else if(this.judgmentIssuerNewValue != null) txtJudgmentIssuer.setText(this.judgmentIssuerNewValue);
 		else focusedNode = txtJudgmentIssuer;
 		
 		if(judgmentNumber != null) txtJudgmentNumber.setText(judgmentNumber);
-		else if(this.judgmentNumber != null) txtJudgmentNumber.setText(this.judgmentNumber);
+		else if(this.judgmentNumberNewValue != null) txtJudgmentNumber.setText(this.judgmentNumberNewValue);
 		else if(focusedNode == null) focusedNode = txtJudgmentNumber;
 		
 		if(judgmentDate != null) dpJudgmentDate.setValue(judgmentDate);
-		else if(this.judgmentDate != null) dpJudgmentDate.setValue(this.judgmentDate);
+		else if(this.judgmentDateNewValue != null) dpJudgmentDate.setValue(this.judgmentDateNewValue);
 		else if(focusedNode == null) focusedNode = dpJudgmentDate;
 		
 		rdoJudgmentDateUseHijri.setSelected(true);
@@ -357,13 +370,14 @@ public class EditJudgmentDetailsPaneFxController extends WizardStepFxControllerB
 																		rdoJudgmentDateUseGregorian.setSelected(true);
 		
 		if(caseFileNumber != null) txtCaseFileNumber.setText(caseFileNumber);
-		else if(this.caseFileNumber != null) txtCaseFileNumber.setText(this.caseFileNumber);
+		else if(this.caseFileNumberNewValue != null) txtCaseFileNumber.setText(this.caseFileNumberNewValue);
 		
 		if(prisonerNumber != null) txtPrisonerNumber.setText(String.valueOf(prisonerNumber));
-		else if(this.prisonerNumber != null) txtPrisonerNumber.setText(String.valueOf(this.prisonerNumber));
+		else if(this.prisonerNumberNewValue != null) txtPrisonerNumber.setText(String.valueOf(
+																						this.prisonerNumberNewValue));
 		
 		if(arrestDate != null) dpArrestDate.setValue(arrestDate);
-		else if(this.arrestDate != null) dpArrestDate.setValue(this.arrestDate);
+		else if(this.arrestDateNewValue != null) dpArrestDate.setValue(this.arrestDateNewValue);
 		
 		rdoArrestDateUseHijri.setSelected(true);
 		if(this.arrestDateUseHijri != null && !this.arrestDateUseHijri) rdoArrestDateUseGregorian.setSelected(true);
@@ -568,25 +582,25 @@ public class EditJudgmentDetailsPaneFxController extends WizardStepFxControllerB
 	public void onGoingNext(Map<String, Object> uiDataMap)
 	{
 		var judgmentIssuer = txtJudgmentIssuer.getText();
-		if(!judgmentIssuer.isBlank()) this.judgmentIssuer = judgmentIssuer;
-		else this.judgmentIssuer = null;
+		if(!judgmentIssuer.isBlank()) this.judgmentIssuerNewValue = judgmentIssuer;
+		else this.judgmentIssuerNewValue = null;
 		
 		var judgmentNumber = txtJudgmentNumber.getText();
-		if(!judgmentNumber.isBlank()) this.judgmentNumber = judgmentNumber;
-		else this.judgmentNumber = null;
+		if(!judgmentNumber.isBlank()) this.judgmentNumberNewValue = judgmentNumber;
+		else this.judgmentNumberNewValue = null;
 		
-		this.judgmentDate = dpJudgmentDate.getValue();
+		this.judgmentDateNewValue = dpJudgmentDate.getValue();
 		this.judgmentDateUseHijri = rdoJudgmentDateUseHijri.isSelected();
 		
 		var caseFileNumber = txtCaseFileNumber.getText();
-		if(!caseFileNumber.isBlank()) this.caseFileNumber = caseFileNumber;
-		else this.caseFileNumber = null;
+		if(!caseFileNumber.isBlank()) this.caseFileNumberNewValue = caseFileNumber;
+		else this.caseFileNumberNewValue = null;
 		
 		var prisonerNumber = txtPrisonerNumber.getText();
-		if(!prisonerNumber.isBlank()) this.prisonerNumber = Long.parseLong(prisonerNumber);
-		else this.prisonerNumber = null;
+		if(!prisonerNumber.isBlank()) this.prisonerNumberNewValue = Long.parseLong(prisonerNumber);
+		else this.prisonerNumberNewValue = null;
 		
-		this.arrestDate = dpArrestDate.getValue();
+		this.arrestDateNewValue = dpArrestDate.getValue();
 		this.arrestDateUseHijri = rdoArrestDateUseHijri.isSelected();
 	}
 	
