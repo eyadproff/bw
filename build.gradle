@@ -40,9 +40,11 @@ subprojects {
         implementation name: "javafx.fxml-12.0.0"
         implementation name: "javafx.graphics-12.0.0"
         implementation name: "javafx.swing-12.0.0"
+        compileOnly name: "javafx.media-12.0.0"
+        compileOnly name: "javafx.web-12.0.0"
 
         // JavaFX extension library
-        implementation name: "controlsfx-9.0.0"
+        implementation name: "controlsfx-11.0.0"
 
         // BCL-Utils and Biokit library
         implementation name: "bio.commons-2019.01.2"

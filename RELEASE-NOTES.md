@@ -14,6 +14,7 @@ VERSION SCHEMA: vYYYY.MM.#SEQ
 ## v2019.04.1
 
 - ENH: Unify the transition overlay for menu transition and wizard transition.
+- ENH: Upgrade controlsfx library from 9.0.0 to 11.0.0.
 
 ---
 

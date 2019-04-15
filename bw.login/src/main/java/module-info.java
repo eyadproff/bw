@@ -5,7 +5,7 @@ module bw.login
 	requires javafx.graphics;
 	requires javafx.fxml;
 	requires javafx.controls;
-	requires controlsfx;
+	requires org.controlsfx.controls;
 	requires biokit.library;
 	requires java.prefs;
 	requires bw.workflow.commons;

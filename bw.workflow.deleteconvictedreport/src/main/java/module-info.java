@@ -10,5 +10,5 @@ module bw.workflow.deleteconvictedreport
 	opens sa.gov.nic.bio.bw.workflow.deleteconvictedreport.tasks to bw.core;
 	opens sa.gov.nic.bio.bw.workflow.deleteconvictedreport.controllers to javafx.fxml, bw.core;
 	
-	exports sa.gov.nic.bio.bw.workflow.deleteconvictedreport.controllers to bw.workflow.editconvictedreport;
+	exports sa.gov.nic.bio.bw.workflow.deleteconvictedreport.controllers;
 }
