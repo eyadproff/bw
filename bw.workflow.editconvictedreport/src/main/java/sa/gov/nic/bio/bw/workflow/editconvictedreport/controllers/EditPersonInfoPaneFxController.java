@@ -345,7 +345,6 @@ public class EditPersonInfoPaneFxController extends WizardStepFxControllerBase
 			txtFatherName.setDisable(disable);
 		}
 		else if(this.fatherNameNewValue != null) txtFatherName.setText(this.fatherNameNewValue);
-		else if(focusedNode == null) focusedNode = txtFatherName;
 		
 		if(grandfatherName != null)
 		{
@@ -353,7 +352,6 @@ public class EditPersonInfoPaneFxController extends WizardStepFxControllerBase
 			txtGrandfatherName.setDisable(disable);
 		}
 		else if(this.grandfatherNameNewValue != null) txtGrandfatherName.setText(this.grandfatherNameNewValue);
-		else if(focusedNode == null) focusedNode = txtGrandfatherName;
 		
 		if(familyName != null)
 		{
@@ -408,6 +406,7 @@ public class EditPersonInfoPaneFxController extends WizardStepFxControllerBase
 			txtPersonId.setText(String.valueOf(personId));
 			txtPersonId.setDisable(disable);
 		}
+		else if(this.personIdNewValue != null) txtPersonId.setText(String.valueOf(this.personIdNewValue));
 		
 		if(personType != null)
 		{

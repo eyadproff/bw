@@ -442,6 +442,7 @@ public class EditPunishmentDetailsPaneFxController extends WizardStepFxControlle
 		cbCovenant.setSelected(covenant != null && covenant);
 		
 		if(other != null) txtOther.setText(other);
+		else if(this.otherNewValue != null) txtOther.setText(this.otherNewValue);
 		
 		if(btnNext.isDisabled()) spnTazeerLashes.requestFocus();
 		else btnNext.requestFocus();

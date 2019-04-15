@@ -120,7 +120,8 @@ public class EditConvictedReportWorkflow extends WizardWorkflowBase
 				         "birthPlaceOldValue", "birthPlaceNewValue", "birthDateOldValue", "birthDateNewValue",
 				         "personIdOldValue", "personIdNewValue", "personTypeOldValue", "personTypeNewValue",
 				         "documentIdOldValue", "documentIdNewValue", "documentTypeOldValue", "documentTypeNewValue",
-				         "documentIssuanceDateOldValue", "documentExpiryDateOldValue", "documentExpiryDateNewValue");
+				         "documentIssuanceDateOldValue", "documentIssuanceDateNewValue", "documentExpiryDateOldValue",
+				         "documentExpiryDateNewValue");
 				passData(EditJudgmentDetailsPaneFxController.class, ReviewAndSubmitPaneFxController.class,
 				         "judgmentIssuerOldValue", "judgmentIssuerNewValue", "judgmentNumberOldValue",
 				         "judgmentNumberNewValue", "judgmentDateOldValue", "judgmentDateNewValue",

@@ -1,13 +1,17 @@
 package sa.gov.nic.bio.bw.workflow.editconvictedreport.controllers;
 
+import javafx.beans.binding.Bindings;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.NodeOrientation;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
+import org.controlsfx.glyphfont.FontAwesome;
+import org.controlsfx.glyphfont.Glyph;
 import sa.gov.nic.bio.bw.core.Context;
 import sa.gov.nic.bio.bw.core.beans.Gender;
 import sa.gov.nic.bio.bw.core.controllers.WizardStepFxControllerBase;
@@ -125,6 +129,49 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 	@Output private ConvictedReport convictedReport;
 	
 	@FXML private Pane paneImage;
+	@FXML private Pane paneFirstName;
+	@FXML private Pane paneFatherName;
+	@FXML private Pane paneGrandfatherName;
+	@FXML private Pane paneFamilyName;
+	@FXML private Pane paneGender;
+	@FXML private Pane paneNationality;
+	@FXML private Pane paneOccupation;
+	@FXML private Pane paneBirthPlace;
+	@FXML private Pane paneBirthDate;
+	@FXML private Pane panePersonId;
+	@FXML private Pane panePersonType;
+	@FXML private Pane paneDocumentId;
+	@FXML private Pane paneDocumentType;
+	@FXML private Pane paneDocumentIssuanceDate;
+	@FXML private Pane paneDocumentExpiryDate;
+	@FXML private Pane paneCrimeDiffContainer;
+	@FXML private Pane paneOldCrimes;
+	@FXML private Pane paneNewCrimes;
+	@FXML private Pane paneJudgmentIssuer;
+	@FXML private Pane paneJudgmentNumber;
+	@FXML private Pane paneJudgmentDate;
+	@FXML private Pane paneCaseFileNumber;
+	@FXML private Pane panePrisonerNumber;
+	@FXML private Pane paneArrestDate;
+	@FXML private Pane paneTazeerLashes;
+	@FXML private Pane paneHadLashes;
+	@FXML private Pane paneFine;
+	@FXML private Pane paneJailYears;
+	@FXML private Pane paneJailMonths;
+	@FXML private Pane paneJailDays;
+	@FXML private Pane paneTravelBanYears;
+	@FXML private Pane paneTravelBanMonths;
+	@FXML private Pane paneTravelBanDays;
+	@FXML private Pane paneExilingYears;
+	@FXML private Pane paneExilingMonths;
+	@FXML private Pane paneExilingDays;
+	@FXML private Pane paneDeportationYears;
+	@FXML private Pane paneDeportationMonths;
+	@FXML private Pane paneDeportationDays;
+	@FXML private Pane paneOther;
+	@FXML private Pane paneFinalDeportation;
+	@FXML private Pane paneLibel;
+	@FXML private Pane paneCovenant;
 	@FXML private Label lblReportNumber;
 	@FXML private Label lblEnrollerId;
 	@FXML private Label lblEnrollmentTime;
@@ -172,9 +219,140 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 	@FXML private Label lblDeportationMonths;
 	@FXML private Label lblDeportationDays;
 	@FXML private Label lblOther;
+	@FXML private Label lblFirstNameOldValue;
+	@FXML private Label lblFirstNameNewValue;
+	@FXML private Label lblFatherNameOldValue;
+	@FXML private Label lblFatherNameNewValue;
+	@FXML private Label lblGrandfatherNameOldValue;
+	@FXML private Label lblGrandfatherNameNewValue;
+	@FXML private Label lblFamilyNameOldValue;
+	@FXML private Label lblFamilyNameNewValue;
+	@FXML private Label lblGenderOldValue;
+	@FXML private Label lblGenderNewValue;
+	@FXML private Label lblNationalityOldValue;
+	@FXML private Label lblNationalityNewValue;
+	@FXML private Label lblOccupationOldValue;
+	@FXML private Label lblOccupationNewValue;
+	@FXML private Label lblBirthPlaceOldValue;
+	@FXML private Label lblBirthPlaceNewValue;
+	@FXML private Label lblBirthDateOldValue;
+	@FXML private Label lblBirthDateNewValue;
+	@FXML private Label lblPersonIdOldValue;
+	@FXML private Label lblPersonIdNewValue;
+	@FXML private Label lblPersonTypeOldValue;
+	@FXML private Label lblPersonTypeNewValue;
+	@FXML private Label lblDocumentIdOldValue;
+	@FXML private Label lblDocumentIdNewValue;
+	@FXML private Label lblDocumentTypeOldValue;
+	@FXML private Label lblDocumentTypeNewValue;
+	@FXML private Label lblDocumentIssuanceDateOldValue;
+	@FXML private Label lblDocumentIssuanceDateNewValue;
+	@FXML private Label lblDocumentExpiryDateOldValue;
+	@FXML private Label lblDocumentExpiryDateNewValue;
+	@FXML private Label lblCrime1OldValue;
+	@FXML private Label lblCrime2OldValue;
+	@FXML private Label lblCrime3OldValue;
+	@FXML private Label lblCrime4OldValue;
+	@FXML private Label lblCrime5OldValue;
+	@FXML private Label lblCrime1NewValue;
+	@FXML private Label lblCrime2NewValue;
+	@FXML private Label lblCrime3NewValue;
+	@FXML private Label lblCrime4NewValue;
+	@FXML private Label lblCrime5NewValue;
+	@FXML private Label lblJudgmentIssuerOldValue;
+	@FXML private Label lblJudgmentIssuerNewValue;
+	@FXML private Label lblJudgmentNumberOldValue;
+	@FXML private Label lblJudgmentNumberNewValue;
+	@FXML private Label lblJudgmentDateOldValue;
+	@FXML private Label lblJudgmentDateNewValue;
+	@FXML private Label lblCaseFileNumberOldValue;
+	@FXML private Label lblCaseFileNumberNewValue;
+	@FXML private Label lblPrisonerNumberOldValue;
+	@FXML private Label lblPrisonerNumberNewValue;
+	@FXML private Label lblArrestDateOldValue;
+	@FXML private Label lblArrestDateNewValue;
+	@FXML private Label lblTazeerLashesOldValue;
+	@FXML private Label lblTazeerLashesNewValue;
+	@FXML private Label lblHadLashesOldValue;
+	@FXML private Label lblHadLashesNewValue;
+	@FXML private Label lblFineOldValue;
+	@FXML private Label lblFineNewValue;
+	@FXML private Label lblJailYearsOldValue;
+	@FXML private Label lblJailYearsNewValue;
+	@FXML private Label lblJailMonthsOldValue;
+	@FXML private Label lblJailMonthsNewValue;
+	@FXML private Label lblJailDaysOldValue;
+	@FXML private Label lblJailDaysNewValue;
+	@FXML private Label lblTravelBanYearsOldValue;
+	@FXML private Label lblTravelBanYearsNewValue;
+	@FXML private Label lblTravelBanMonthsOldValue;
+	@FXML private Label lblTravelBanMonthsNewValue;
+	@FXML private Label lblTravelBanDaysOldValue;
+	@FXML private Label lblTravelBanDaysNewValue;
+	@FXML private Label lblExilingYearsOldValue;
+	@FXML private Label lblExilingYearsNewValue;
+	@FXML private Label lblExilingMonthsOldValue;
+	@FXML private Label lblExilingMonthsNewValue;
+	@FXML private Label lblExilingDaysOldValue;
+	@FXML private Label lblExilingDaysNewValue;
+	@FXML private Label lblDeportationYearsOldValue;
+	@FXML private Label lblDeportationYearsNewValue;
+	@FXML private Label lblDeportationMonthsOldValue;
+	@FXML private Label lblDeportationMonthsNewValue;
+	@FXML private Label lblDeportationDaysOldValue;
+	@FXML private Label lblDeportationDaysNewValue;
+	@FXML private Label lblOtherOldValue;
+	@FXML private Label lblOtherNewValue;
 	@FXML private CheckBox cbFinalDeportation;
 	@FXML private CheckBox cbLibel;
 	@FXML private CheckBox cbCovenant;
+	@FXML private CheckBox cbFinalDeportationOldValue;
+	@FXML private CheckBox cbFinalDeportationNewValue;
+	@FXML private CheckBox cbLibelOldValue;
+	@FXML private CheckBox cbLibelNewValue;
+	@FXML private CheckBox cbCovenantOldValue;
+	@FXML private CheckBox cbCovenantNewValue;
+	@FXML private Glyph iconFirstNameArrow;
+	@FXML private Glyph iconFatherNameArrow;
+	@FXML private Glyph iconGrandfatherNameArrow;
+	@FXML private Glyph iconFamilyNameArrow;
+	@FXML private Glyph iconGenderArrow;
+	@FXML private Glyph iconNationalityArrow;
+	@FXML private Glyph iconOccupationArrow;
+	@FXML private Glyph iconBirthPlaceArrow;
+	@FXML private Glyph iconBirthDateArrow;
+	@FXML private Glyph iconPersonIdArrow;
+	@FXML private Glyph iconPersonTypeArrow;
+	@FXML private Glyph iconDocumentIdArrow;
+	@FXML private Glyph iconDocumentTypeArrow;
+	@FXML private Glyph iconDocumentIssuanceDateArrow;
+	@FXML private Glyph iconDocumentExpiryDateArrow;
+	@FXML private Glyph iconCrimeDiff;
+	@FXML private Glyph iconJudgmentIssuerArrow;
+	@FXML private Glyph iconJudgmentNumberArrow;
+	@FXML private Glyph iconJudgmentDateArrow;
+	@FXML private Glyph iconCaseFileNumberArrow;
+	@FXML private Glyph iconPrisonerNumberArrow;
+	@FXML private Glyph iconArrestDateArrow;
+	@FXML private Glyph iconTazeerLashesArrow;
+	@FXML private Glyph iconHadLashesArrow;
+	@FXML private Glyph iconFineArrow;
+	@FXML private Glyph iconJailYearsArrow;
+	@FXML private Glyph iconJailMonthsArrow;
+	@FXML private Glyph iconJailDaysArrow;
+	@FXML private Glyph iconTravelBanYearsArrow;
+	@FXML private Glyph iconTravelBanMonthsArrow;
+	@FXML private Glyph iconTravelBanDaysArrow;
+	@FXML private Glyph iconExilingYearsArrow;
+	@FXML private Glyph iconExilingMonthsArrow;
+	@FXML private Glyph iconExilingDaysArrow;
+	@FXML private Glyph iconDeportationYearsArrow;
+	@FXML private Glyph iconDeportationMonthsArrow;
+	@FXML private Glyph iconDeportationDaysArrow;
+	@FXML private Glyph iconOtherArrow;
+	@FXML private Glyph iconFinalDeportationArrow;
+	@FXML private Glyph iconLibelArrow;
+	@FXML private Glyph iconCovenantArrow;
 	@FXML private ImageViewPane paneImageView;
 	@FXML private ImageView ivPersonPhoto;
 	@FXML private ImageView ivRightThumb;
@@ -257,6 +435,181 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 		GuiUtils.setCheckBoxSelection(cbLibel, libelNewValue);
 		GuiUtils.setCheckBoxSelection(cbCovenant, covenantNewValue);
 		
+		GuiUtils.setLabelText(lblFirstNameOldValue, firstNameOldValue);
+		GuiUtils.setLabelText(lblFatherNameOldValue, fatherNameOldValue);
+		GuiUtils.setLabelText(lblGrandfatherNameOldValue, grandfatherNameOldValue);
+		GuiUtils.setLabelText(lblFamilyNameOldValue, familyNameOldValue);
+		GuiUtils.setLabelText(lblGenderOldValue, genderOldValue);
+		GuiUtils.setLabelText(lblNationalityOldValue, nationalityOldValue);
+		GuiUtils.setLabelText(lblOccupationOldValue, occupationOldValue);
+		GuiUtils.setLabelText(lblBirthPlaceOldValue, birthPlaceOldValue);
+		GuiUtils.setLabelText(lblBirthDateOldValue, birthDateOldValue);
+		GuiUtils.setLabelText(lblPersonIdOldValue, personIdOldValue);
+		GuiUtils.setLabelText(lblPersonTypeOldValue, personTypeOldValue);
+		GuiUtils.setLabelText(lblDocumentIdOldValue, documentIdOldValue);
+		GuiUtils.setLabelText(lblDocumentTypeOldValue, documentTypeOldValue);
+		GuiUtils.setLabelText(lblDocumentIssuanceDateOldValue, documentIssuanceDateOldValue);
+		GuiUtils.setLabelText(lblDocumentExpiryDateOldValue, documentExpiryDateOldValue);
+		GuiUtils.setLabelText(lblJudgmentIssuerOldValue, judgmentIssuerOldValue);
+		GuiUtils.setLabelText(lblJudgmentNumberOldValue, judgmentNumberOldValue);
+		GuiUtils.setLabelText(lblJudgmentDateOldValue, judgmentDateOldValue);
+		GuiUtils.setLabelText(lblCaseFileNumberOldValue, caseFileNumberOldValue);
+		GuiUtils.setLabelText(lblPrisonerNumberOldValue, prisonerNumberOldValue);
+		GuiUtils.setLabelText(lblArrestDateOldValue, arrestDateOldValue);
+		GuiUtils.setLabelText(lblTazeerLashesOldValue, tazeerLashesOldValue);
+		GuiUtils.setLabelText(lblHadLashesOldValue, hadLashesOldValue);
+		GuiUtils.setLabelText(lblFineOldValue, fineOldValue);
+		GuiUtils.setLabelText(lblJailYearsOldValue, jailYearsOldValue);
+		GuiUtils.setLabelText(lblJailMonthsOldValue, jailMonthsOldValue);
+		GuiUtils.setLabelText(lblJailDaysOldValue, jailDaysOldValue);
+		GuiUtils.setLabelText(lblTravelBanYearsOldValue, travelBanYearsOldValue);
+		GuiUtils.setLabelText(lblTravelBanMonthsOldValue, travelBanMonthsOldValue);
+		GuiUtils.setLabelText(lblTravelBanDaysOldValue, travelBanDaysOldValue);
+		GuiUtils.setLabelText(lblExilingYearsOldValue, exilingYearsOldValue);
+		GuiUtils.setLabelText(lblExilingMonthsOldValue, exilingMonthsOldValue);
+		GuiUtils.setLabelText(lblExilingDaysOldValue, exilingDaysOldValue);
+		GuiUtils.setLabelText(lblDeportationYearsOldValue, deportationYearsOldValue);
+		GuiUtils.setLabelText(lblDeportationMonthsOldValue, deportationMonthsOldValue);
+		GuiUtils.setLabelText(lblDeportationDaysOldValue, deportationDaysOldValue);
+		GuiUtils.setLabelText(lblOtherOldValue, otherOldValue);
+		GuiUtils.setCheckBoxSelection(cbFinalDeportationOldValue, finalDeportationOldValue);
+		GuiUtils.setCheckBoxSelection(cbLibelOldValue, libelOldValue);
+		GuiUtils.setCheckBoxSelection(cbCovenantOldValue, covenantOldValue);
+		
+		boolean rtl = Context.getGuiLanguage().getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT;
+		FontAwesome.Glyph arrowIcon = rtl ? FontAwesome.Glyph.LONG_ARROW_LEFT : FontAwesome.Glyph.LONG_ARROW_RIGHT;
+		iconFirstNameArrow.setIcon(arrowIcon);
+		iconFatherNameArrow.setIcon(arrowIcon);
+		iconGrandfatherNameArrow.setIcon(arrowIcon);
+		iconFamilyNameArrow.setIcon(arrowIcon);
+		iconGenderArrow.setIcon(arrowIcon);
+		iconNationalityArrow.setIcon(arrowIcon);
+		iconOccupationArrow.setIcon(arrowIcon);
+		iconBirthPlaceArrow.setIcon(arrowIcon);
+		iconBirthDateArrow.setIcon(arrowIcon);
+		iconPersonIdArrow.setIcon(arrowIcon);
+		iconPersonTypeArrow.setIcon(arrowIcon);
+		iconDocumentIdArrow.setIcon(arrowIcon);
+		iconDocumentTypeArrow.setIcon(arrowIcon);
+		iconDocumentIssuanceDateArrow.setIcon(arrowIcon);
+		iconDocumentExpiryDateArrow.setIcon(arrowIcon);
+		iconCrimeDiff.setIcon(arrowIcon);
+		iconJudgmentIssuerArrow.setIcon(arrowIcon);
+		iconJudgmentNumberArrow.setIcon(arrowIcon);
+		iconJudgmentDateArrow.setIcon(arrowIcon);
+		iconCaseFileNumberArrow.setIcon(arrowIcon);
+		iconPrisonerNumberArrow.setIcon(arrowIcon);
+		iconArrestDateArrow.setIcon(arrowIcon);
+		iconTazeerLashesArrow.setIcon(arrowIcon);
+		iconHadLashesArrow.setIcon(arrowIcon);
+		iconFineArrow.setIcon(arrowIcon);
+		iconJailYearsArrow.setIcon(arrowIcon);
+		iconJailMonthsArrow.setIcon(arrowIcon);
+		iconJailDaysArrow.setIcon(arrowIcon);
+		iconTravelBanYearsArrow.setIcon(arrowIcon);
+		iconTravelBanMonthsArrow.setIcon(arrowIcon);
+		iconTravelBanDaysArrow.setIcon(arrowIcon);
+		iconExilingYearsArrow.setIcon(arrowIcon);
+		iconExilingMonthsArrow.setIcon(arrowIcon);
+		iconExilingDaysArrow.setIcon(arrowIcon);
+		iconDeportationYearsArrow.setIcon(arrowIcon);
+		iconDeportationMonthsArrow.setIcon(arrowIcon);
+		iconDeportationDaysArrow.setIcon(arrowIcon);
+		iconOtherArrow.setIcon(arrowIcon);
+		iconFinalDeportationArrow.setIcon(arrowIcon);
+		iconLibelArrow.setIcon(arrowIcon);
+		iconCovenantArrow.setIcon(arrowIcon);
+		
+		paneFirstName.visibleProperty().bind(
+				Bindings.notEqual(lblFirstNameOldValue.textProperty(), lblFirstNameNewValue.textProperty()));
+		paneFatherName.visibleProperty().bind(
+				Bindings.notEqual(lblFatherNameOldValue.textProperty(), lblFatherNameNewValue.textProperty()));
+		paneGrandfatherName.visibleProperty().bind(
+				Bindings.notEqual(lblGrandfatherNameOldValue.textProperty(), lblGrandfatherNameNewValue.textProperty()));
+		paneFamilyName.visibleProperty().bind(
+				Bindings.notEqual(lblFamilyNameOldValue.textProperty(), lblFamilyNameNewValue.textProperty()));
+		paneGender.visibleProperty().bind(
+				Bindings.notEqual(lblGenderOldValue.textProperty(), lblGenderNewValue.textProperty()));
+		paneNationality.visibleProperty().bind(
+				Bindings.notEqual(lblNationalityOldValue.textProperty(), lblNationalityNewValue.textProperty()));
+		paneOccupation.visibleProperty().bind(
+				Bindings.notEqual(lblOccupationOldValue.textProperty(), lblOccupationNewValue.textProperty()));
+		paneBirthPlace.visibleProperty().bind(
+				Bindings.notEqual(lblBirthPlaceOldValue.textProperty(), lblBirthPlaceNewValue.textProperty()));
+		paneBirthDate.visibleProperty().bind(
+				Bindings.notEqual(lblBirthDateOldValue.textProperty(), lblBirthDateNewValue.textProperty()));
+		panePersonId.visibleProperty().bind(
+				Bindings.notEqual(lblPersonIdOldValue.textProperty(), lblPersonIdNewValue.textProperty()));
+		panePersonType.visibleProperty().bind(
+				Bindings.notEqual(lblPersonTypeOldValue.textProperty(), lblPersonTypeNewValue.textProperty()));
+		paneDocumentId.visibleProperty().bind(
+				Bindings.notEqual(lblDocumentIdOldValue.textProperty(), lblDocumentIdNewValue.textProperty()));
+		paneDocumentType.visibleProperty().bind(
+				Bindings.notEqual(lblDocumentTypeOldValue.textProperty(), lblDocumentTypeNewValue.textProperty()));
+		paneDocumentIssuanceDate.visibleProperty().bind(
+				Bindings.notEqual(lblDocumentIssuanceDateOldValue.textProperty(),
+				                  lblDocumentIssuanceDateNewValue.textProperty()));
+		paneDocumentExpiryDate.visibleProperty().bind(
+				Bindings.notEqual(lblDocumentExpiryDateOldValue.textProperty(),
+				                  lblDocumentExpiryDateNewValue.textProperty()));
+		paneJudgmentIssuer.visibleProperty().bind(
+				Bindings.notEqual(lblJudgmentIssuerOldValue.textProperty(), lblJudgmentIssuerNewValue.textProperty()));
+		paneJudgmentNumber.visibleProperty().bind(
+				Bindings.notEqual(lblJudgmentNumberOldValue.textProperty(), lblJudgmentNumberNewValue.textProperty()));
+		paneJudgmentDate.visibleProperty().bind(
+				Bindings.notEqual(lblJudgmentDateOldValue.textProperty(), lblJudgmentDateNewValue.textProperty()));
+		paneCaseFileNumber.visibleProperty().bind(
+				Bindings.notEqual(lblCaseFileNumberOldValue.textProperty(), lblCaseFileNumberNewValue.textProperty()));
+		panePrisonerNumber.visibleProperty().bind(
+				Bindings.notEqual(lblPrisonerNumberOldValue.textProperty(), lblPrisonerNumberNewValue.textProperty()));
+		paneArrestDate.visibleProperty().bind(
+				Bindings.notEqual(lblArrestDateOldValue.textProperty(), lblArrestDateNewValue.textProperty()));
+		paneTazeerLashes.visibleProperty().bind(
+				Bindings.notEqual(lblTazeerLashesOldValue.textProperty(), lblTazeerLashesNewValue.textProperty()));
+		paneHadLashes.visibleProperty().bind(
+				Bindings.notEqual(lblHadLashesOldValue.textProperty(), lblHadLashesNewValue.textProperty()));
+		paneFine.visibleProperty().bind(
+				Bindings.notEqual(lblFineOldValue.textProperty(), lblFineNewValue.textProperty()));
+		paneJailYears.visibleProperty().bind(
+				Bindings.notEqual(lblJailYearsOldValue.textProperty(), lblJailYearsNewValue.textProperty()));
+		paneJailMonths.visibleProperty().bind(
+				Bindings.notEqual(lblJailMonthsOldValue.textProperty(), lblJailMonthsNewValue.textProperty()));
+		paneJailDays.visibleProperty().bind(
+				Bindings.notEqual(lblJailDaysOldValue.textProperty(), lblJailDaysNewValue.textProperty()));
+		paneTravelBanYears.visibleProperty().bind(
+				Bindings.notEqual(lblTravelBanYearsOldValue.textProperty(), lblTravelBanYearsNewValue.textProperty()));
+		paneTravelBanMonths.visibleProperty().bind(
+				Bindings.notEqual(lblTravelBanMonthsOldValue.textProperty(),
+				                  lblTravelBanMonthsNewValue.textProperty()));
+		paneTravelBanDays.visibleProperty().bind(
+				Bindings.notEqual(lblTravelBanDaysOldValue.textProperty(), lblTravelBanDaysNewValue.textProperty()));
+		paneExilingYears.visibleProperty().bind(
+				Bindings.notEqual(lblExilingYearsOldValue.textProperty(), lblExilingYearsNewValue.textProperty()));
+		paneExilingMonths.visibleProperty().bind(
+				Bindings.notEqual(lblExilingMonthsOldValue.textProperty(), lblExilingMonthsNewValue.textProperty()));
+		paneExilingDays.visibleProperty().bind(
+				Bindings.notEqual(lblExilingDaysOldValue.textProperty(), lblExilingDaysNewValue.textProperty()));
+		paneDeportationYears.visibleProperty().bind(
+				Bindings.notEqual(lblDeportationYearsOldValue.textProperty(),
+				                  lblDeportationYearsNewValue.textProperty()));
+		paneDeportationMonths.visibleProperty().bind(
+				Bindings.notEqual(lblDeportationMonthsOldValue.textProperty(),
+				                  lblDeportationMonthsNewValue.textProperty()));
+		paneDeportationDays.visibleProperty().bind(
+				Bindings.notEqual(lblDeportationDaysOldValue.textProperty(),
+				                  lblDeportationDaysNewValue.textProperty()));
+		paneOther.visibleProperty().bind(
+				Bindings.notEqual(lblOtherOldValue.textProperty(), lblOtherNewValue.textProperty()));
+		paneOther.managedProperty().bind(
+				Bindings.notEqual(lblOtherOldValue.textProperty(), lblOtherNewValue.textProperty()));
+		paneFinalDeportation.visibleProperty().bind(
+				Bindings.notEqual(cbFinalDeportationOldValue.selectedProperty(),
+				                  cbFinalDeportationNewValue.selectedProperty()));
+		paneLibel.visibleProperty().bind(
+				Bindings.notEqual(cbLibelOldValue.selectedProperty(), cbLibelNewValue.selectedProperty()));
+		paneCovenant.visibleProperty().bind(
+				Bindings.notEqual(cbCovenantOldValue.selectedProperty(), cbCovenantNewValue.selectedProperty()));
+		
 		@SuppressWarnings("unchecked")
 		List<CrimeType> crimeTypes = (List<CrimeType>) Context.getUserSession().getAttribute(CrimeTypesLookup.KEY);
 		
@@ -306,6 +659,50 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 				}
 			}
 		}
+		
+		counter = 0;
+		for(CrimeCode crimeCode : oldCrimes)
+		{
+			switch(counter++)
+			{
+				case 0:
+				{
+					lblCrime1OldValue.setText(crimeEventTitles.get(crimeCode.getCrimeEvent()) + ": " +
+							                                crimeClassTitles.get(crimeCode.getCrimeClass()));
+					break;
+				}
+				case 1:
+				{
+					GuiUtils.showNode(lblCrime2OldValue, true);
+					lblCrime2OldValue.setText(crimeEventTitles.get(crimeCode.getCrimeEvent()) + ": " +
+							                                crimeClassTitles.get(crimeCode.getCrimeClass()));
+					break;
+				}
+				case 2:
+				{
+					GuiUtils.showNode(lblCrime3OldValue, true);
+					lblCrime3OldValue.setText(crimeEventTitles.get(crimeCode.getCrimeEvent()) + ": " +
+							                                crimeClassTitles.get(crimeCode.getCrimeClass()));
+					break;
+				}
+				case 3:
+				{
+					GuiUtils.showNode(lblCrime4OldValue, true);
+					lblCrime4OldValue.setText(crimeEventTitles.get(crimeCode.getCrimeEvent()) + ": " +
+							                                crimeClassTitles.get(crimeCode.getCrimeClass()));
+					break;
+				}
+				case 4:
+				{
+					GuiUtils.showNode(lblCrime5OldValue, true);
+					lblCrime5OldValue.setText(crimeEventTitles.get(crimeCode.getCrimeEvent()) + ": " +
+							                                crimeClassTitles.get(crimeCode.getCrimeClass()));
+					break;
+				}
+			}
+		}
+		
+		GuiUtils.showNode(paneCrimeDiffContainer, !sameCrimes(oldCrimes, newCrimes));
 	}
 	
 	@Override
@@ -327,5 +724,21 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 		boolean confirmed = Context.getCoreFxController().showConfirmationDialogAndWait(headerText, contentText);
 		
 		if(confirmed) goNext();
+	}
+	
+	private static boolean sameCrimes(List<CrimeCode> crimeCodes1, List<CrimeCode> crimeCodes2)
+	{
+		if(crimeCodes1 == null || crimeCodes2 == null) return false;
+		if(crimeCodes1.size() != crimeCodes2.size()) return false;
+		
+		for(int i = 0; i < crimeCodes1.size(); i++)
+		{
+			CrimeCode crimeCode1 = crimeCodes1.get(i);
+			CrimeCode crimeCode2 = crimeCodes2.get(i);
+			if(crimeCode1.getCrimeEvent() != crimeCode2.getCrimeEvent()) return false;
+			if(crimeCode1.getCrimeClass() != crimeCode2.getCrimeClass()) return false;
+		}
+		
+		return true;
 	}
 }
