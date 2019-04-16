@@ -22,6 +22,7 @@ import sa.gov.nic.bio.bw.workflow.editconvictedreport.controllers.EditPersonInfo
 import sa.gov.nic.bio.bw.workflow.editconvictedreport.controllers.EditPunishmentDetailsPaneFxController;
 import sa.gov.nic.bio.bw.workflow.editconvictedreport.controllers.ReviewAndSubmitPaneFxController;
 import sa.gov.nic.bio.bw.workflow.editconvictedreport.controllers.ShowResultPaneFxController;
+import sa.gov.nic.bio.bw.workflow.editconvictedreport.tasks.EditConvictedReportWithoutConvictedReportWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.editconvictedreport.tasks.EditFullConvictedReportWorkflowTask;
 
 @AssociatedMenu(workflowId = 1016, menuId = "menu.edit.editConvictedReport", menuTitle = "menu.title", menuOrder = 1,
@@ -98,8 +99,10 @@ public class EditConvictedReportWorkflow extends WizardWorkflowBase
 			}
 			case 4:
 			{
+				Boolean fullEditor = getData(EditPersonInfoPaneFxController.class, "fullEditor");
 				ConvictedReport convictedReport = getData(ConvictedReportInquiryByReportNumberWorkflowTask.class,
 				                                          "convictedReport");
+				setData(ReviewAndSubmitPaneFxController.class, "fullEditor", fullEditor);
 				setData(ReviewAndSubmitPaneFxController.class, "oldReportNumber",
 				        convictedReport.getReportNumber());
 				setData(ReviewAndSubmitPaneFxController.class, "oldEnrollerId",
@@ -142,11 +145,23 @@ public class EditConvictedReportWorkflow extends WizardWorkflowBase
 				         "deportationMonthsNewValue", "deportationDaysOldValue", "deportationDaysNewValue",
 				         "finalDeportationOldValue", "finalDeportationNewValue", "libelOldValue", "libelNewValue",
 				         "covenantOldValue", "covenantNewValue", "otherOldValue", "otherNewValue");
+				passData(EditPersonInfoPaneFxController.class, ReviewAndSubmitPaneFxController.class,
+				         "fullEditor");
 				renderUiAndWaitForUserInput(ReviewAndSubmitPaneFxController.class);
 				
-				passData(ReviewAndSubmitPaneFxController.class, EditFullConvictedReportWorkflowTask.class,
-				         "convictedReport");
-				executeWorkflowTask(EditFullConvictedReportWorkflowTask.class);
+				if(fullEditor != null && fullEditor)
+				{
+					passData(ReviewAndSubmitPaneFxController.class, EditFullConvictedReportWorkflowTask.class,
+					         "convictedReport");
+					executeWorkflowTask(EditFullConvictedReportWorkflowTask.class);
+				}
+				else
+				{
+					passData(ReviewAndSubmitPaneFxController.class,
+					         EditConvictedReportWithoutConvictedReportWorkflowTask.class,
+					         "convictedReport");
+					executeWorkflowTask(EditConvictedReportWithoutConvictedReportWorkflowTask.class);
+				}
 				
 				break;
 			}
@@ -156,8 +171,6 @@ public class EditConvictedReportWorkflow extends WizardWorkflowBase
 				                                          "convictedReport");
 				setData(ShowResultPaneFxController.class, "oldReportNumber",
 				        convictedReport.getReportNumber());
-				passData(EditFullConvictedReportWorkflowTask.class, ShowResultPaneFxController.class,
-				         "oldReportNumber");
 				passData(EditFullConvictedReportWorkflowTask.class, ShowResultPaneFxController.class,
 				         "newReportNumber");
 				renderUiAndWaitForUserInput(ShowResultPaneFxController.class);

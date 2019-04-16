@@ -45,6 +45,7 @@ import java.util.function.Predicate;
 public class EditPersonInfoPaneFxController extends WizardStepFxControllerBase
 {
 	@Input(alwaysRequired = true) private NormalizedPersonInfo normalizedPersonInfo;
+	@Output private Boolean fullEditor;
 	@Output private String firstNameOldValue;
 	@Output private String firstNameNewValue;
 	@Output private String fatherNameOldValue;
@@ -334,6 +335,7 @@ public class EditPersonInfoPaneFxController extends WizardStepFxControllerBase
 		String fullEditorRole = Context.getConfigManager().getProperty("editConvictedReport.fullEditorRole");
 		boolean authorized = userRoles.contains(fullEditorRole);
 		
+		fullEditor = authorized;
 		boolean disable = !authorized;
 		if(disable) GuiUtils.showNode(paneNoEditPermission, true);
 		

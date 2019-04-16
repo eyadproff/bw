@@ -39,6 +39,7 @@ import java.util.stream.Collectors;
 @FxmlFile("reviewAndSubmit.fxml")
 public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 {
+	@Input private Boolean fullEditor;
 	@Input private Long oldReportNumber;
 	@Input private String oldEnrollerId;
 	@Input private Long oldEnrollmentTime;
@@ -752,23 +753,37 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 						caseFileNumberNewValue, prisonerNumberNewValue,
                         arrestDateNewValue != null ? AppUtils.gregorianDateToSeconds(arrestDateNewValue) : null);
 		
-		convictedReport = new ConvictedReport(oldReportNumber, null, criminalBiometricsId, name,
-		                                      nationalityNewValue.getCode(),
-		                                      nationalityNewValue.getMofaNationalityCode(), occupationNewValue,
-		                                      genderNewValue.name().substring(0, 1), // "M" or "F"
-		                                      birthDateNewValue != null ?
-		                                            AppUtils.gregorianDateToSeconds(birthDateNewValue) : null,
-		                                      birthPlaceNewValue, personIdNewValue,
-		                                      personTypeNewValue != null ? personTypeNewValue.getCode() : null,
-		                                      null, documentIdNewValue,
-		                                      documentTypeNewValue != null ? documentTypeNewValue.getCode() : null,
-		                                      documentIssuanceDateNewValue != null ?
-			                                      AppUtils.gregorianDateToSeconds(documentIssuanceDateNewValue) : null,
-		                                      documentExpiryDateNewValue != null ?
-			                                      AppUtils.gregorianDateToSeconds(documentExpiryDateNewValue) : null,
-		                                      judgementInfo, null, null, null,
-		                                      null, newCrimes, null, null,
-		                                      null, null, null, null);
+		if(fullEditor != null && fullEditor)
+		{
+			convictedReport = new ConvictedReport(oldReportNumber, null, null, name,
+			                              nationalityNewValue.getCode(),
+			                              nationalityNewValue.getMofaNationalityCode(), occupationNewValue,
+			                              genderNewValue.name().substring(0, 1), // "M" or "F"
+			                              birthDateNewValue != null ?
+					                              AppUtils.gregorianDateToSeconds(birthDateNewValue) : null,
+			                              birthPlaceNewValue, personIdNewValue,
+			                              personTypeNewValue != null ? personTypeNewValue.getCode() : null,
+			                              null, documentIdNewValue,
+			                              documentTypeNewValue != null ? documentTypeNewValue.getCode() : null,
+			                              documentIssuanceDateNewValue != null ?
+					                              AppUtils.gregorianDateToSeconds(documentIssuanceDateNewValue) : null,
+			                              documentExpiryDateNewValue != null ?
+					                              AppUtils.gregorianDateToSeconds(documentExpiryDateNewValue) : null,
+			                              judgementInfo, null, null, null,
+			                              null, newCrimes, null, null,
+			                              null, null, null, null);
+		}
+		else
+		{
+			convictedReport = new ConvictedReport(oldReportNumber, null, null, null,
+			                                      null, null, null,
+			                                      null, null, null, null,
+			                                      null, null, null, null,
+			                                      null, null, judgementInfo, null,
+			                                      null, null, null, newCrimes,
+			                                      null, null, null,
+			                                      null, null, null);
+		}
 	}
 	
 	@Override

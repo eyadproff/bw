@@ -20,7 +20,7 @@
                 </ImageView>
                 <Label text="%label.successEditConvictedReport"/>
             </VBox>
-            <HBox alignment="CENTER" spacing="5.0">
+            <VBox alignment="CENTER" spacing="5.0">
                 <HBox alignment="CENTER" spacing="5.0">
                     <Label text="%label.oldReportNumber"/>
                     <TextField fx:id="txtOldReportNumber" editable="false" prefColumnCount="10" focusTraversable="false"/>
@@ -29,7 +29,7 @@
                     <Label text="%label.newReportNumber"/>
                     <TextField fx:id="txtNewReportNumber" editable="false" prefColumnCount="10" focusTraversable="false"/>
                 </HBox>
-            </HBox>
+            </VBox>
         </VBox>
     </center>
     <bottom>
