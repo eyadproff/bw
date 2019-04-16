@@ -10,13 +10,15 @@
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import org.controlsfx.glyphfont.Glyph?>
 <?import sa.gov.nic.bio.bw.core.beans.ComboBoxItem?>
 <?import sa.gov.nic.bio.bw.core.beans.Gender?>
-<?import org.controlsfx.glyphfont.Glyph?>
 <BorderPane xmlns="http://javafx.com/javafx/11" xmlns:fx="http://javafx.com/fxml/1"
             fx:id="rootPane" stylesheets="@../css/style.css"
             fx:controller="sa.gov.nic.bio.bw.workflow.editconvictedreport.controllers.EditPersonInfoPaneFxController">
@@ -34,6 +36,15 @@
                     <padding>
                         <Insets top="10.0" bottom="10.0"/>
                     </padding>
+                    <HBox fx:id="paneNoEditPermission" alignment="CENTER" spacing="5.0" styleClass="bold-label" managed="false" visible="false">
+                        <padding>
+                            <Insets top="10.0" bottom="10.0"/>
+                        </padding>
+                        <ImageView>
+                            <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/icon_warning_16px.png"/>
+                        </ImageView>
+                        <Label text="%label.noEditPermissionMessage" wrapText="true" alignment="CENTER" textAlignment="CENTER"/>
+                    </HBox>
                     <ScrollPane VBox.vgrow="ALWAYS" fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER">
                         <GridPane fx:id="panePersonInfo" hgap="5.0">
                             <padding>

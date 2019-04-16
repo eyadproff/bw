@@ -13,6 +13,7 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.util.StringConverter;
 import org.controlsfx.glyphfont.FontAwesome;
@@ -78,6 +79,7 @@ public class EditPersonInfoPaneFxController extends WizardStepFxControllerBase
 	@Output private LocalDate documentExpiryDateNewValue;
 	@Output private Boolean documentExpiryDateUseHijri;
 	
+	@FXML private HBox paneNoEditPermission;
 	@FXML private Pane panePersonInfo;
 	@FXML private Pane paneFirstNameReset;
 	@FXML private Pane paneFatherNameReset;
@@ -327,114 +329,76 @@ public class EditPersonInfoPaneFxController extends WizardStepFxControllerBase
 			documentExpiryDate = documentExpiryDateOldValue;
 		}
 		
-		// TODO: disable if the user has no permission to edit person info
-		boolean disable = false;
+		@SuppressWarnings("unchecked")
+		List<String> userRoles = (List<String>) Context.getUserSession().getAttribute("userRoles");
+		String fullEditorRole = Context.getConfigManager().getProperty("editConvictedReport.fullEditorRole");
+		boolean authorized = userRoles.contains(fullEditorRole);
 		
-		if(firstName != null)
-		{
-			txtFirstName.setText(firstName);
-			txtFirstName.setDisable(disable);
-		}
+		boolean disable = !authorized;
+		if(disable) GuiUtils.showNode(paneNoEditPermission, true);
+		
+		txtFirstName.setDisable(disable);
+		if(firstName != null) txtFirstName.setText(firstName);
 		else if(this.firstNameNewValue != null) txtFirstName.setText(this.firstNameNewValue);
 		else focusedNode = txtFirstName;
 		
-		
-		if(fatherName != null)
-		{
-			txtFatherName.setText(fatherName);
-			txtFatherName.setDisable(disable);
-		}
+		txtFatherName.setDisable(disable);
+		if(fatherName != null) txtFatherName.setText(fatherName);
 		else if(this.fatherNameNewValue != null) txtFatherName.setText(this.fatherNameNewValue);
 		
-		if(grandfatherName != null)
-		{
-			txtGrandfatherName.setText(grandfatherName);
-			txtGrandfatherName.setDisable(disable);
-		}
+		txtGrandfatherName.setDisable(disable);
+		if(grandfatherName != null) txtGrandfatherName.setText(grandfatherName);
 		else if(this.grandfatherNameNewValue != null) txtGrandfatherName.setText(this.grandfatherNameNewValue);
 		
-		if(familyName != null)
-		{
-			txtFamilyName.setText(familyName);
-			txtFamilyName.setDisable(disable);
-		}
+		txtFamilyName.setDisable(disable);
+		if(familyName != null) txtFamilyName.setText(familyName);
 		else if(this.familyNameNewValue != null) txtFamilyName.setText(this.familyNameNewValue);
 		else if(focusedNode == null) focusedNode = txtFamilyName;
 		
-		if(gender != null)
-		{
-			boolean selected = GuiUtils.selectComboBoxItem(cboGender, gender);
-			if(selected) cboGender.setDisable(disable);
-		}
+		cboGender.setDisable(disable);
+		if(gender != null) GuiUtils.selectComboBoxItem(cboGender, gender);
 		else if(this.genderNewValue != null) GuiUtils.selectComboBoxItem(cboGender, this.genderNewValue);
 		else if(focusedNode == null) focusedNode = cboGender;
 		
-		if(nationality != null)
-		{
-			boolean selected = GuiUtils.selectComboBoxItem(cboNationality, nationality);
-			if(selected) cboNationality.setDisable(disable);
-		}
+		cboNationality.setDisable(disable);
+		if(nationality != null) GuiUtils.selectComboBoxItem(cboNationality, nationality);
 		else if(this.nationalityNewValue != null) GuiUtils.selectComboBoxItem(cboNationality, this.nationalityNewValue);
 		else cboNationality.getSelectionModel().select(0);
 		
-		if(occupation != null)
-		{
-			txtOccupation.setText(occupation);
-			txtOccupation.setDisable(disable);
-		}
+		txtOccupation.setDisable(disable);
+		if(occupation != null) txtOccupation.setText(occupation);
 		else if(this.occupationNewValue != null) txtOccupation.setText(this.occupationNewValue);
 		
-		if(birthPlace != null)
-		{
-			txtBirthPlace.setText(birthPlace);
-			txtBirthPlace.setDisable(disable);
-		}
+		txtBirthPlace.setDisable(disable);
+		if(birthPlace != null) txtBirthPlace.setText(birthPlace);
 		else if(this.birthPlaceNewValue != null) txtBirthPlace.setText(this.birthPlaceNewValue);
 		
-		if(birthDate != null)
-		{
-			dpBirthDate.setValue(birthDate);
-			dpBirthDate.setDisable(disable);
-		}
+		dpBirthDate.setDisable(disable);
+		if(birthDate != null) dpBirthDate.setValue(birthDate);
 		else if(this.birthDateNewValue != null) dpBirthDate.setValue(this.birthDateNewValue);
 		
 		rdoBirthDateUseHijri.setSelected(true);
 		if(this.birthDateUseHijri != null && !this.birthDateUseHijri) rdoBirthDateUseGregorian.setSelected(true);
 		
-		if(personId != null)
-		{
-			txtPersonId.setText(String.valueOf(personId));
-			txtPersonId.setDisable(disable);
-		}
+		txtPersonId.setDisable(disable);
+		if(personId != null) txtPersonId.setText(String.valueOf(personId));
 		else if(this.personIdNewValue != null) txtPersonId.setText(String.valueOf(this.personIdNewValue));
 		
-		if(personType != null)
-		{
-			boolean selected = GuiUtils.selectComboBoxItem(cboPersonType, personType);
-			if(selected) cboPersonType.setDisable(disable);
-		}
+		cboPersonType.setDisable(disable);
+		if(personType != null) GuiUtils.selectComboBoxItem(cboPersonType, personType);
 		else if(this.personTypeNewValue != null) GuiUtils.selectComboBoxItem(cboPersonType, this.personTypeNewValue);
 		
-		if(documentId != null)
-		{
-			txtDocumentId.setText(documentId);
-			txtDocumentId.setDisable(disable);
-		}
+		txtDocumentId.setDisable(disable);
+		if(documentId != null) txtDocumentId.setText(documentId);
 		else if(this.documentIdNewValue != null) txtDocumentId.setText(this.documentIdNewValue);
 		
-		if(documentType != null)
-		{
-			boolean selected = GuiUtils.selectComboBoxItem(cboDocumentType, documentType);
-			if(selected) cboDocumentType.setDisable(disable);
-		}
+		cboDocumentType.setDisable(disable);
+		if(documentType != null) GuiUtils.selectComboBoxItem(cboDocumentType, documentType);
 		else if(this.documentTypeNewValue != null) GuiUtils.selectComboBoxItem(cboDocumentType,
 		                                                                       this.documentTypeNewValue);
 		
-		if(documentIssuanceDate != null)
-		{
-			dpDocumentIssuanceDate.setValue(documentIssuanceDate);
-			dpDocumentIssuanceDate.setDisable(disable);
-		}
+		dpDocumentIssuanceDate.setDisable(disable);
+		if(documentIssuanceDate != null) dpDocumentIssuanceDate.setValue(documentIssuanceDate);
 		else if(this.documentIssuanceDateNewValue != null) dpDocumentIssuanceDate.setValue(
 																					this.documentIssuanceDateNewValue);
 		
@@ -442,11 +406,8 @@ public class EditPersonInfoPaneFxController extends WizardStepFxControllerBase
 		if(this.documentIssuanceDateUseHijri != null && !this.documentIssuanceDateUseHijri)
 			rdoDocumentIssuanceDateUseGregorian.setSelected(true);
 		
-		if(documentExpiryDate != null)
-		{
-			dpDocumentExpiryDate.setValue(documentExpiryDate);
-			dpDocumentExpiryDate.setDisable(disable);
-		}
+		dpDocumentExpiryDate.setDisable(disable);
+		if(documentExpiryDate != null) dpDocumentExpiryDate.setValue(documentExpiryDate);
 		else if(this.documentExpiryDateNewValue != null) dpDocumentExpiryDate.setValue(this.documentExpiryDateNewValue);
 		
 		rdoDocumentExpiryDateUseHijri.setSelected(true);
