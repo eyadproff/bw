@@ -14,6 +14,7 @@ import org.controlsfx.glyphfont.FontAwesome;
 import org.controlsfx.glyphfont.Glyph;
 import sa.gov.nic.bio.bw.core.Context;
 import sa.gov.nic.bio.bw.core.beans.Gender;
+import sa.gov.nic.bio.bw.core.beans.Name;
 import sa.gov.nic.bio.bw.core.controllers.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.core.utils.FxmlFile;
@@ -25,6 +26,7 @@ import sa.gov.nic.bio.bw.workflow.commons.beans.Country;
 import sa.gov.nic.bio.bw.workflow.commons.beans.CrimeCode;
 import sa.gov.nic.bio.bw.workflow.commons.beans.CrimeType;
 import sa.gov.nic.bio.bw.workflow.commons.beans.DocumentType;
+import sa.gov.nic.bio.bw.workflow.commons.beans.JudgementInfo;
 import sa.gov.nic.bio.bw.workflow.commons.beans.PersonType;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.CrimeTypesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.ui.ImageViewPane;
@@ -128,6 +130,7 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 	@Input private String otherNewValue;
 	@Output private ConvictedReport convictedReport;
 	
+	@FXML private Pane paneNoDiffMessage;
 	@FXML private Pane paneImage;
 	@FXML private Pane paneFirstName;
 	@FXML private Pane paneFatherName;
@@ -538,6 +541,8 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 				Bindings.notEqual(lblBirthPlaceOldValue.textProperty(), lblBirthPlaceNewValue.textProperty()));
 		paneBirthDate.visibleProperty().bind(
 				Bindings.notEqual(lblBirthDateOldValue.textProperty(), lblBirthDateNewValue.textProperty()));
+		paneBirthDate.managedProperty().bind(
+				Bindings.notEqual(lblBirthDateOldValue.textProperty(), lblBirthDateNewValue.textProperty()));
 		panePersonId.visibleProperty().bind(
 				Bindings.notEqual(lblPersonIdOldValue.textProperty(), lblPersonIdNewValue.textProperty()));
 		panePersonType.visibleProperty().bind(
@@ -549,7 +554,13 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 		paneDocumentIssuanceDate.visibleProperty().bind(
 				Bindings.notEqual(lblDocumentIssuanceDateOldValue.textProperty(),
 				                  lblDocumentIssuanceDateNewValue.textProperty()));
+		paneDocumentIssuanceDate.managedProperty().bind(
+				Bindings.notEqual(lblDocumentIssuanceDateOldValue.textProperty(),
+				                  lblDocumentIssuanceDateNewValue.textProperty()));
 		paneDocumentExpiryDate.visibleProperty().bind(
+				Bindings.notEqual(lblDocumentExpiryDateOldValue.textProperty(),
+				                  lblDocumentExpiryDateNewValue.textProperty()));
+		paneDocumentExpiryDate.managedProperty().bind(
 				Bindings.notEqual(lblDocumentExpiryDateOldValue.textProperty(),
 				                  lblDocumentExpiryDateNewValue.textProperty()));
 		paneJudgmentIssuer.visibleProperty().bind(
@@ -558,11 +569,15 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 				Bindings.notEqual(lblJudgmentNumberOldValue.textProperty(), lblJudgmentNumberNewValue.textProperty()));
 		paneJudgmentDate.visibleProperty().bind(
 				Bindings.notEqual(lblJudgmentDateOldValue.textProperty(), lblJudgmentDateNewValue.textProperty()));
+		paneJudgmentDate.managedProperty().bind(
+				Bindings.notEqual(lblJudgmentDateOldValue.textProperty(), lblJudgmentDateNewValue.textProperty()));
 		paneCaseFileNumber.visibleProperty().bind(
 				Bindings.notEqual(lblCaseFileNumberOldValue.textProperty(), lblCaseFileNumberNewValue.textProperty()));
 		panePrisonerNumber.visibleProperty().bind(
 				Bindings.notEqual(lblPrisonerNumberOldValue.textProperty(), lblPrisonerNumberNewValue.textProperty()));
 		paneArrestDate.visibleProperty().bind(
+				Bindings.notEqual(lblArrestDateOldValue.textProperty(), lblArrestDateNewValue.textProperty()));
+		paneArrestDate.managedProperty().bind(
 				Bindings.notEqual(lblArrestDateOldValue.textProperty(), lblArrestDateNewValue.textProperty()));
 		paneTazeerLashes.visibleProperty().bind(
 				Bindings.notEqual(lblTazeerLashesOldValue.textProperty(), lblTazeerLashesNewValue.textProperty()));
@@ -703,6 +718,63 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 		}
 		
 		GuiUtils.showNode(paneCrimeDiffContainer, !sameCrimes(oldCrimes, newCrimes));
+		
+		boolean noDiff = !paneFirstName.isVisible() && !paneFatherName.isVisible() &&
+				!paneGrandfatherName.isVisible() && !paneFamilyName.isVisible() && !paneGender.isVisible() &&
+				!paneNationality.isVisible() && !paneOccupation.isVisible() && !paneBirthPlace.isVisible() &&
+				!paneBirthDate.isVisible() && !panePersonId.isVisible() && !panePersonType.isVisible() &&
+				!paneDocumentId.isVisible() && !paneDocumentType.isVisible() && !paneDocumentIssuanceDate.isVisible() &&
+				!paneDocumentExpiryDate.isVisible() && !paneCrimeDiffContainer.isVisible() &&
+				!paneJudgmentIssuer.isVisible() && !paneJudgmentNumber.isVisible() && !paneJudgmentDate.isVisible() &&
+				!paneCaseFileNumber.isVisible() && !panePrisonerNumber.isVisible() && !paneArrestDate.isVisible() &&
+				!paneTazeerLashes.isVisible() && !paneHadLashes.isVisible() && !paneFine.isVisible() &&
+				!paneJailYears.isVisible() && !paneJailMonths.isVisible() && !paneJailDays.isVisible() &&
+				!paneTravelBanYears.isVisible() && !paneTravelBanMonths.isVisible() && !paneTravelBanDays.isVisible() &&
+				!paneExilingYears.isVisible() && !paneExilingMonths.isVisible() && !paneExilingDays.isVisible() &&
+				!paneDeportationYears.isVisible() && !paneDeportationMonths.isVisible() &&
+				!paneDeportationDays.isVisible() && !paneOther.isVisible() && !paneFinalDeportation.isVisible() &&
+				!paneLibel.isVisible() && !paneCovenant.isVisible();
+		
+		btnSubmit.setDisable(noDiff);
+		GuiUtils.showNode(paneNoDiffMessage, noDiff);
+		
+		Name name = new Name(firstNameNewValue, fatherNameNewValue, grandfatherNameNewValue, familyNameNewValue,
+		                     null, null, null,
+		                     null);
+		
+		JudgementInfo judgementInfo = new JudgementInfo(judgmentIssuerNewValue,
+                        judgmentDateNewValue != null ? AppUtils.gregorianDateToSeconds(judgmentDateNewValue) : null,
+                        judgmentNumberNewValue, tazeerLashesNewValue, hadLashesNewValue, fineNewValue, otherNewValue,
+                        jailYearsNewValue, jailMonthsNewValue, jailDaysNewValue, travelBanDaysNewValue,
+                        travelBanMonthsNewValue, travelBanYearsNewValue, deportationDaysNewValue,
+                        deportationMonthsNewValue, deportationYearsNewValue, exilingDaysNewValue, exilingMonthsNewValue,
+                        exilingYearsNewValue, finalDeportationNewValue, covenantNewValue, libelNewValue,
+						caseFileNumberNewValue, prisonerNumberNewValue,
+                        arrestDateNewValue != null ? AppUtils.gregorianDateToSeconds(arrestDateNewValue) : null);
+		
+		convictedReport = new ConvictedReport(oldReportNumber, null, criminalBiometricsId, name,
+		                                      nationalityNewValue.getCode(),
+		                                      nationalityNewValue.getMofaNationalityCode(), occupationNewValue,
+		                                      genderNewValue.name().substring(0, 1), // "M" or "F"
+		                                      birthDateNewValue != null ?
+		                                            AppUtils.gregorianDateToSeconds(birthDateNewValue) : null,
+		                                      birthPlaceNewValue, personIdNewValue,
+		                                      personTypeNewValue != null ? personTypeNewValue.getCode() : null,
+		                                      null, documentIdNewValue,
+		                                      documentTypeNewValue != null ? documentTypeNewValue.getCode() : null,
+		                                      documentIssuanceDateNewValue != null ?
+			                                      AppUtils.gregorianDateToSeconds(documentIssuanceDateNewValue) : null,
+		                                      documentExpiryDateNewValue != null ?
+			                                      AppUtils.gregorianDateToSeconds(documentExpiryDateNewValue) : null,
+		                                      judgementInfo, null, null, null,
+		                                      null, newCrimes, null, null,
+		                                      null, null, null, null);
+	}
+	
+	@Override
+	public void onReturnFromWorkflow(boolean successfulResponse)
+	{
+		if(successfulResponse) goNext();
 	}
 	
 	@Override
@@ -717,13 +789,11 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 	@FXML
 	private void onSubmitButtonClicked(ActionEvent actionEvent)
 	{
-		String headerText =
-					resources.getString("printConvictedPresent.submittingConvictedReport.confirmation.header");
-		String contentText =
-					resources.getString("printConvictedPresent.submittingConvictedReport.confirmation.message");
+		String headerText = resources.getString("editingConvictedReport.confirmation.header");
+		String contentText = resources.getString("editingConvictedReport.confirmation.message");
 		boolean confirmed = Context.getCoreFxController().showConfirmationDialogAndWait(headerText, contentText);
 		
-		if(confirmed) goNext();
+		if(confirmed) continueWorkflow();
 	}
 	
 	private static boolean sameCrimes(List<CrimeCode> crimeCodes1, List<CrimeCode> crimeCodes2)

@@ -33,6 +33,15 @@
                             <padding>
                                 <Insets topRightBottomLeft="10.0"/>
                             </padding>
+                            <HBox fx:id="paneNoDiffMessage" alignment="CENTER" spacing="5.0" styleClass="bold-label" managed="false" visible="false">
+                                <padding>
+                                    <Insets top="10.0" bottom="10.0"/>
+                                </padding>
+                                <ImageView>
+                                    <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/icon_warning_16px.png"/>
+                                </ImageView>
+                                <Label text="%label.noDiffMessage" wrapText="true" alignment="CENTER" textAlignment="CENTER"/>
+                            </HBox>
                             <TitledPane text="%label.oldConvictedReportDetails" collapsible="false" focusTraversable="false">
                                 <VBox alignment="CENTER_LEFT">
                                     <GridPane alignment="CENTER_LEFT" hgap="10.0" vgap="3.0">
@@ -58,11 +67,19 @@
                             </TitledPane>
                             <TitledPane text="%label.personInfo" collapsible="false" focusTraversable="false">
                                 <VBox alignment="CENTER_LEFT">
-                                    <GridPane alignment="CENTER_LEFT" hgap="10.0" vgap="3.0">
+                                    <GridPane alignment="CENTER_LEFT" hgap="10.0" vgap="3.0" VBox.vgrow="ALWAYS">
+                                        <columnConstraints>
+                                            <ColumnConstraints minWidth="110.0" halignment="LEFT"/>
+                                            <ColumnConstraints minWidth="650.0" halignment="LEFT"/>
+                                        </columnConstraints>
                                         <Label text="%label.civilBiometricsId" wrapText="true" GridPane.rowIndex="0" GridPane.columnIndex="0" styleClass="bold-label"/>
-                                        <CopiableLabel fx:id="lblCivilBiometricsId" wrapText="true" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+                                        <HBox alignment="CENTER_LEFT" spacing="10.0" GridPane.rowIndex="0" GridPane.columnIndex="1">
+                                            <CopiableLabel fx:id="lblCivilBiometricsId" wrapText="true"/>
+                                        </HBox>
                                         <Label text="%label.criminalBiometricsId" wrapText="true" GridPane.rowIndex="1" GridPane.columnIndex="0" styleClass="bold-label"/>
-                                        <CopiableLabel fx:id="lblCriminalBiometricsId" wrapText="true" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+                                        <HBox alignment="CENTER_LEFT" spacing="10.0" GridPane.rowIndex="1" GridPane.columnIndex="1">
+                                            <CopiableLabel fx:id="lblCriminalBiometricsId" wrapText="true"/>
+                                        </HBox>
                                         <Label text="%label.firstName" wrapText="true" GridPane.rowIndex="2" GridPane.columnIndex="0" styleClass="bold-label"/>
                                         <HBox alignment="CENTER_LEFT" spacing="10.0" GridPane.rowIndex="2" GridPane.columnIndex="1">
                                             <CopiableLabel fx:id="lblFirstName" wrapText="true"/>
@@ -137,15 +154,15 @@
                                         </HBox>
                                         <Label text="%label.birthDate" wrapText="true" GridPane.rowIndex="10" GridPane.columnIndex="0" styleClass="bold-label"/>
                                         <HBox alignment="CENTER_LEFT" spacing="10.0" GridPane.rowIndex="10" GridPane.columnIndex="1">
-                                            <CopiableLabel fx:id="lblBirthDate" wrapText="true"/>
-                                            <HBox fx:id="paneBirthDate" alignment="CENTER_LEFT" HBox.hgrow="ALWAYS" spacing="5.0" visible="false">
-                                                <Label fx:id="lblBirthDateOldValue" wrapText="true" styleClass="old-value"/>
-                                                <Glyph fx:id="iconBirthDateArrow" wrapText="true" fontFamily="FontAwesome"/>
-                                                <Label fx:id="lblBirthDateNewValue" wrapText="true" text="${lblBirthDate.text}" styleClass="new-value"/>
-                                            </HBox>
+                                            <CopiableLabel fx:id="lblBirthDate" wrapText="true" HBox.hgrow="ALWAYS"/>
                                         </HBox>
-                                        <Label text="%label.personId" wrapText="true" GridPane.rowIndex="11" GridPane.columnIndex="0" styleClass="bold-label"/>
-                                        <HBox alignment="CENTER_LEFT" spacing="10.0" GridPane.rowIndex="11" GridPane.columnIndex="1">
+                                        <HBox fx:id="paneBirthDate" alignment="CENTER_LEFT" spacing="5.0" managed="false" visible="false" GridPane.rowIndex="11" GridPane.columnIndex="1">
+                                            <Label fx:id="lblBirthDateOldValue" wrapText="true" styleClass="old-value"/>
+                                            <Glyph fx:id="iconBirthDateArrow" wrapText="true" fontFamily="FontAwesome"/>
+                                            <Label fx:id="lblBirthDateNewValue" wrapText="true" text="${lblBirthDate.text}" styleClass="new-value"/>
+                                        </HBox>
+                                        <Label text="%label.personId" wrapText="true" GridPane.rowIndex="12" GridPane.columnIndex="0" styleClass="bold-label"/>
+                                        <HBox alignment="CENTER_LEFT" spacing="10.0" GridPane.rowIndex="12" GridPane.columnIndex="1">
                                             <CopiableLabel fx:id="lblPersonId" wrapText="true"/>
                                             <HBox fx:id="panePersonId" alignment="CENTER_LEFT" HBox.hgrow="ALWAYS" spacing="5.0" visible="false">
                                                 <Label fx:id="lblPersonIdOldValue" wrapText="true" styleClass="old-value"/>
@@ -153,8 +170,8 @@
                                                 <Label fx:id="lblPersonIdNewValue" wrapText="true" text="${lblPersonId.text}" styleClass="new-value"/>
                                             </HBox>
                                         </HBox>
-                                        <Label text="%label.personType" wrapText="true" GridPane.rowIndex="12" GridPane.columnIndex="0" styleClass="bold-label"/>
-                                        <HBox alignment="CENTER_LEFT" spacing="10.0" GridPane.rowIndex="12" GridPane.columnIndex="1">
+                                        <Label text="%label.personType" wrapText="true" GridPane.rowIndex="13" GridPane.columnIndex="0" styleClass="bold-label"/>
+                                        <HBox alignment="CENTER_LEFT" spacing="10.0" GridPane.rowIndex="13" GridPane.columnIndex="1">
                                             <CopiableLabel fx:id="lblPersonType" wrapText="true"/>
                                             <HBox fx:id="panePersonType" alignment="CENTER_LEFT" HBox.hgrow="ALWAYS" spacing="5.0" visible="false">
                                                 <Label fx:id="lblPersonTypeOldValue" wrapText="true" styleClass="old-value"/>
@@ -162,8 +179,8 @@
                                                 <Label fx:id="lblPersonTypeNewValue" wrapText="true" text="${lblPersonType.text}" styleClass="new-value"/>
                                             </HBox>
                                         </HBox>
-                                        <Label text="%label.documentId" wrapText="true" GridPane.rowIndex="13" GridPane.columnIndex="0" styleClass="bold-label"/>
-                                        <HBox alignment="CENTER_LEFT" spacing="10.0" GridPane.rowIndex="13" GridPane.columnIndex="1">
+                                        <Label text="%label.documentId" wrapText="true" GridPane.rowIndex="14" GridPane.columnIndex="0" styleClass="bold-label"/>
+                                        <HBox alignment="CENTER_LEFT" spacing="10.0" GridPane.rowIndex="14" GridPane.columnIndex="1">
                                             <CopiableLabel fx:id="lblDocumentId" wrapText="true"/>
                                             <HBox fx:id="paneDocumentId" alignment="CENTER_LEFT" HBox.hgrow="ALWAYS" spacing="5.0" visible="false">
                                                 <Label fx:id="lblDocumentIdOldValue" wrapText="true" styleClass="old-value"/>
@@ -171,8 +188,8 @@
                                                 <Label fx:id="lblDocumentIdNewValue" wrapText="true" text="${lblDocumentId.text}" styleClass="new-value"/>
                                             </HBox>
                                         </HBox>
-                                        <Label text="%label.documentType" wrapText="true" GridPane.rowIndex="14" GridPane.columnIndex="0" styleClass="bold-label"/>
-                                        <HBox alignment="CENTER_LEFT" spacing="10.0" GridPane.rowIndex="14" GridPane.columnIndex="1">
+                                        <Label text="%label.documentType" wrapText="true" GridPane.rowIndex="15" GridPane.columnIndex="0" styleClass="bold-label"/>
+                                        <HBox alignment="CENTER_LEFT" spacing="10.0" GridPane.rowIndex="15" GridPane.columnIndex="1">
                                             <CopiableLabel fx:id="lblDocumentType" wrapText="true"/>
                                             <HBox fx:id="paneDocumentType" alignment="CENTER_LEFT" HBox.hgrow="ALWAYS" spacing="5.0" visible="false">
                                                 <Label fx:id="lblDocumentTypeOldValue" wrapText="true" styleClass="old-value"/>
@@ -180,31 +197,35 @@
                                                 <Label fx:id="lblDocumentTypeNewValue" wrapText="true" text="${lblDocumentType.text}" styleClass="new-value"/>
                                             </HBox>
                                         </HBox>
-                                        <Label text="%label.documentIssuanceDate" wrapText="true" GridPane.rowIndex="15" GridPane.columnIndex="0" styleClass="bold-label"/>
-                                        <HBox alignment="CENTER_LEFT" spacing="10.0" GridPane.rowIndex="15" GridPane.columnIndex="1">
-                                            <CopiableLabel fx:id="lblDocumentIssuanceDate" wrapText="true"/>
-                                            <HBox fx:id="paneDocumentIssuanceDate" alignment="CENTER_LEFT" HBox.hgrow="ALWAYS" spacing="5.0" visible="false">
-                                                <Label fx:id="lblDocumentIssuanceDateOldValue" wrapText="true" styleClass="old-value"/>
-                                                <Glyph fx:id="iconDocumentIssuanceDateArrow" wrapText="true" fontFamily="FontAwesome"/>
-                                                <Label fx:id="lblDocumentIssuanceDateNewValue" wrapText="true" text="${lblDocumentIssuanceDate.text}" styleClass="new-value"/>
-                                            </HBox>
-                                        </HBox>
-                                        <Label text="%label.documentExpiryDate" wrapText="true" GridPane.rowIndex="16" GridPane.columnIndex="0" styleClass="bold-label"/>
+                                        <Label text="%label.documentIssuanceDate" wrapText="true" GridPane.rowIndex="16" GridPane.columnIndex="0" styleClass="bold-label"/>
                                         <HBox alignment="CENTER_LEFT" spacing="10.0" GridPane.rowIndex="16" GridPane.columnIndex="1">
+                                            <CopiableLabel fx:id="lblDocumentIssuanceDate" wrapText="true"/>
+                                        </HBox>
+                                        <HBox fx:id="paneDocumentIssuanceDate" alignment="CENTER_LEFT" HBox.hgrow="ALWAYS" spacing="5.0" managed="false" visible="false" GridPane.rowIndex="17" GridPane.columnIndex="1">
+                                            <Label fx:id="lblDocumentIssuanceDateOldValue" wrapText="true" styleClass="old-value"/>
+                                            <Glyph fx:id="iconDocumentIssuanceDateArrow" wrapText="true" fontFamily="FontAwesome"/>
+                                            <Label fx:id="lblDocumentIssuanceDateNewValue" wrapText="true" text="${lblDocumentIssuanceDate.text}" styleClass="new-value"/>
+                                        </HBox>
+                                        <Label text="%label.documentExpiryDate" wrapText="true" GridPane.rowIndex="18" GridPane.columnIndex="0" styleClass="bold-label"/>
+                                        <HBox alignment="CENTER_LEFT" spacing="10.0" GridPane.rowIndex="18" GridPane.columnIndex="1">
                                             <CopiableLabel fx:id="lblDocumentExpiryDate" wrapText="true"/>
-                                            <HBox fx:id="paneDocumentExpiryDate" alignment="CENTER_LEFT" HBox.hgrow="ALWAYS" spacing="5.0" visible="false">
-                                                <Label fx:id="lblDocumentExpiryDateOldValue" wrapText="true" styleClass="old-value"/>
-                                                <Glyph fx:id="iconDocumentExpiryDateArrow" wrapText="true" fontFamily="FontAwesome"/>
-                                                <Label fx:id="lblDocumentExpiryDateNewValue" wrapText="true" text="${lblDocumentExpiryDate.text}" styleClass="new-value"/>
-                                            </HBox>
+                                        </HBox>
+                                        <HBox fx:id="paneDocumentExpiryDate" alignment="CENTER_LEFT" HBox.hgrow="ALWAYS" spacing="5.0" managed="false" visible="false" GridPane.rowIndex="19" GridPane.columnIndex="1">
+                                            <Label fx:id="lblDocumentExpiryDateOldValue" wrapText="true" styleClass="old-value"/>
+                                            <Glyph fx:id="iconDocumentExpiryDateArrow" wrapText="true" fontFamily="FontAwesome"/>
+                                            <Label fx:id="lblDocumentExpiryDateNewValue" wrapText="true" text="${lblDocumentExpiryDate.text}" styleClass="new-value"/>
                                         </HBox>
                                     </GridPane>
                                 </VBox>
                             </TitledPane>
                             <TitledPane text="%label.judgementDetails" collapsible="false" focusTraversable="false">
-                                <VBox alignment="CENTER">
-                                    <GridPane alignment="CENTER" hgap="10.0" vgap="3.0">
-                                        <Label text="%label.crimeClassification" wrapText="true" GridPane.rowIndex="0" GridPane.columnIndex="0" styleClass="bold-label" GridPane.columnSpan="2"/>
+                                <VBox alignment="CENTER_LEFT">
+                                    <GridPane alignment="CENTER_LEFT" hgap="10.0" vgap="3.0">
+                                        <columnConstraints>
+                                            <ColumnConstraints minWidth="110.0" halignment="LEFT"/>
+                                            <ColumnConstraints minWidth="650.0" halignment="LEFT"/>
+                                        </columnConstraints>
+                                        <Label text="%label.crimeClassification" wrapText="true" GridPane.rowIndex="0" GridPane.columnIndex="0" styleClass="bold-label"/>
                                         <CopiableLabel fx:id="lblCrimeClassification1" wrapText="true" GridPane.rowIndex="1" GridPane.columnIndex="0" GridPane.columnSpan="2"/>
                                         <CopiableLabel fx:id="lblCrimeClassification2" wrapText="true" GridPane.rowIndex="2" GridPane.columnIndex="0" GridPane.columnSpan="2" managed="false" visible="false"/>
                                         <CopiableLabel fx:id="lblCrimeClassification3" wrapText="true" GridPane.rowIndex="3" GridPane.columnIndex="0" GridPane.columnSpan="2" managed="false" visible="false"/>
@@ -265,14 +286,14 @@
                                         <Label text="%label.judgmentDate" wrapText="true" GridPane.rowIndex="9" GridPane.columnIndex="0" styleClass="bold-label"/>
                                         <HBox alignment="CENTER_LEFT" spacing="10.0" GridPane.rowIndex="9" GridPane.columnIndex="1">
                                             <CopiableLabel fx:id="lblJudgmentDate" wrapText="true"/>
-                                            <HBox fx:id="paneJudgmentDate" alignment="CENTER_LEFT" HBox.hgrow="ALWAYS" spacing="5.0" visible="false">
-                                                <Label fx:id="lblJudgmentDateOldValue" wrapText="true" styleClass="old-value"/>
-                                                <Glyph fx:id="iconJudgmentDateArrow" wrapText="true" fontFamily="FontAwesome"/>
-                                                <Label fx:id="lblJudgmentDateNewValue" wrapText="true" text="${lblJudgmentDate.text}" styleClass="new-value"/>
-                                            </HBox>
                                         </HBox>
-                                        <Label text="%label.caseFileNumber" wrapText="true" GridPane.rowIndex="10" GridPane.columnIndex="0" styleClass="bold-label"/>
-                                        <HBox alignment="CENTER_LEFT" spacing="10.0" GridPane.rowIndex="10" GridPane.columnIndex="1">
+                                        <HBox fx:id="paneJudgmentDate" alignment="CENTER_LEFT" HBox.hgrow="ALWAYS" spacing="5.0" managed="false" visible="false" GridPane.rowIndex="10" GridPane.columnIndex="1">
+                                            <Label fx:id="lblJudgmentDateOldValue" wrapText="true" styleClass="old-value"/>
+                                            <Glyph fx:id="iconJudgmentDateArrow" wrapText="true" fontFamily="FontAwesome"/>
+                                            <Label fx:id="lblJudgmentDateNewValue" wrapText="true" text="${lblJudgmentDate.text}" styleClass="new-value"/>
+                                        </HBox>
+                                        <Label text="%label.caseFileNumber" wrapText="true" GridPane.rowIndex="11" GridPane.columnIndex="0" styleClass="bold-label"/>
+                                        <HBox alignment="CENTER_LEFT" spacing="10.0" GridPane.rowIndex="11" GridPane.columnIndex="1">
                                             <CopiableLabel fx:id="lblCaseFileNumber" wrapText="true"/>
                                             <HBox fx:id="paneCaseFileNumber" alignment="CENTER_LEFT" HBox.hgrow="ALWAYS" spacing="5.0" visible="false">
                                                 <Label fx:id="lblCaseFileNumberOldValue" wrapText="true" styleClass="old-value"/>
@@ -280,8 +301,8 @@
                                                 <Label fx:id="lblCaseFileNumberNewValue" wrapText="true" text="${lblCaseFileNumber.text}" styleClass="new-value"/>
                                             </HBox>
                                         </HBox>
-                                        <Label text="%label.prisonerNumber" wrapText="true" GridPane.rowIndex="11" GridPane.columnIndex="0" styleClass="bold-label"/>
-                                        <HBox alignment="CENTER_LEFT" spacing="10.0" GridPane.rowIndex="11" GridPane.columnIndex="1">
+                                        <Label text="%label.prisonerNumber" wrapText="true" GridPane.rowIndex="12" GridPane.columnIndex="0" styleClass="bold-label"/>
+                                        <HBox alignment="CENTER_LEFT" spacing="10.0" GridPane.rowIndex="12" GridPane.columnIndex="1">
                                             <CopiableLabel fx:id="lblPrisonerNumber" wrapText="true"/>
                                             <HBox fx:id="panePrisonerNumber" alignment="CENTER_LEFT" HBox.hgrow="ALWAYS" spacing="5.0" visible="false">
                                                 <Label fx:id="lblPrisonerNumberOldValue" wrapText="true" styleClass="old-value"/>
@@ -289,14 +310,14 @@
                                                 <Label fx:id="lblPrisonerNumberNewValue" wrapText="true" text="${lblPrisonerNumber.text}" styleClass="new-value"/>
                                             </HBox>
                                         </HBox>
-                                        <Label text="%label.arrestDate" wrapText="true" GridPane.rowIndex="12" GridPane.columnIndex="0" styleClass="bold-label"/>
-                                        <HBox alignment="CENTER_LEFT" spacing="10.0" GridPane.rowIndex="12" GridPane.columnIndex="1">
+                                        <Label text="%label.arrestDate" wrapText="true" GridPane.rowIndex="13" GridPane.columnIndex="0" styleClass="bold-label"/>
+                                        <HBox alignment="CENTER_LEFT" spacing="10.0" GridPane.rowIndex="13" GridPane.columnIndex="1">
                                             <CopiableLabel fx:id="lblArrestDate" wrapText="true"/>
-                                            <HBox fx:id="paneArrestDate" alignment="CENTER_LEFT" HBox.hgrow="ALWAYS" spacing="5.0" visible="false">
-                                                <Label fx:id="lblArrestDateOldValue" wrapText="true" styleClass="old-value"/>
-                                                <Glyph fx:id="iconArrestDateArrow" wrapText="true" fontFamily="FontAwesome"/>
-                                                <Label fx:id="lblArrestDateNewValue" wrapText="true" text="${lblArrestDate.text}" styleClass="new-value"/>
-                                            </HBox>
+                                        </HBox>
+                                        <HBox fx:id="paneArrestDate" alignment="CENTER_LEFT" HBox.hgrow="ALWAYS" spacing="5.0" managed="false" visible="false" GridPane.rowIndex="14" GridPane.columnIndex="1">
+                                            <Label fx:id="lblArrestDateOldValue" wrapText="true" styleClass="old-value"/>
+                                            <Glyph fx:id="iconArrestDateArrow" wrapText="true" fontFamily="FontAwesome"/>
+                                            <Label fx:id="lblArrestDateNewValue" wrapText="true" text="${lblArrestDate.text}" styleClass="new-value"/>
                                         </HBox>
                                     </GridPane>
                                 </VBox>
@@ -304,6 +325,10 @@
                             <TitledPane text="%label.punishmentDetails" collapsible="false" focusTraversable="false">
                                 <VBox alignment="CENTER_LEFT">
                                     <GridPane alignment="CENTER_LEFT" hgap="5.0">
+                                        <columnConstraints>
+                                            <ColumnConstraints minWidth="110.0" halignment="LEFT"/>
+                                            <ColumnConstraints minWidth="650.0" halignment="LEFT"/>
+                                        </columnConstraints>
                                         <Label text="%label.tazeerLashing" wrapText="true" GridPane.rowIndex="0" GridPane.columnIndex="0" styleClass="bold-label">
                                             <GridPane.margin>
                                                 <Insets bottom="5.0"/>
@@ -756,7 +781,7 @@
             <ProgressIndicator fx:id="piProgress" prefHeight="25.0" prefWidth="25.0" managed="false" visible="false"/>
             <Button fx:id="btnPrevious" text="%button.previous" onAction="#onPreviousButtonClicked"/>
             <Button fx:id="btnStartOver" text="%button.startOver" onAction="#onStartOverButtonClicked"/>
-            <Button fx:id="btnSubmit" text="%button.submit" onAction="#onSubmitButtonClicked"/>
+            <Button fx:id="btnSubmit" text="%button.submit" onAction="#onSubmitButtonClicked" disable="true"/>
         </HBox>
     </bottom>
 </BorderPane>
