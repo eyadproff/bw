@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            xmlns="http://javafx.com/javafx"
+            fx:controller="sa.gov.nic.bio.bw.workflow.biometricsexception.controllers.BiometricsExceptionTypeFXController"
+            prefHeight="400.0" prefWidth="600.0">
+    <fx:define>
+        <ToggleGroup fx:id="toggleGroup"/>
+    </fx:define>
+
+    <center>
+        <VBox alignment="CENTER">
+            <HBox alignment="CENTER">
+                <GridPane alignment="CENTER" vgap="5" hgap="20" prefHeight="75.0" prefWidth="375.0"
+                          styleClass="formBox">
+                    <padding>
+                        <Insets top="20" right="20" bottom="20" left="20"/>
+                    </padding>
+                    <Label text="%label.biometricsExceptionType" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+                    <RadioButton fx:id="rbFingerPrints" text="%label.fingerPrints" toggleGroup="$toggleGroup"
+                                 GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+                    <RadioButton fx:id="rbFaceImage" text="%label.faceImage" toggleGroup="$toggleGroup"
+                                 GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                </GridPane>
+            </HBox>
+        </VBox>
+    </center>
+    <bottom>
+        <HBox alignment="CENTER" spacing="10">
+            <padding>
+                <Insets bottom="10"/>
+            </padding>
+            <Button fx:id="btnPrevious" text="%button.previous" onAction="#onPreviousButtonClicked"/>
+            <Button fx:id="btnNext" text="%button.next" onAction="#onNextButtonClicked"/>
+        </HBox>
+    </bottom>
+</BorderPane>
