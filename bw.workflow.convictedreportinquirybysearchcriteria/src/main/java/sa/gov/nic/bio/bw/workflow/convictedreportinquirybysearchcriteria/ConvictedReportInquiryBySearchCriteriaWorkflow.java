@@ -25,8 +25,8 @@ public class ConvictedReportInquiryBySearchCriteriaWorkflow extends SinglePageWo
 		passData(ConvictedReportInquiryPaneFxController.class, ConvictedReportInquiryBySearchCriteriaWorkflowTask.class,
 		         "recordsPerPage", "reportNumber", "criminalBiometricsId", "location", "personId",
 		         "documentId", "firstName", "fatherName", "grandfatherName", "familyName", "judgementNumber",
-		         "prisonerNumber", "judgmentDateFrom", "judgmentDateTo", "showOldReports", "showDeletedReports",
-		         "recordsPerPage", "pageIndex");
+		         "prisonerNumber", "operatorId", "judgmentDateFrom", "judgmentDateTo", "showOldReports",
+		         "showDeletedReports", "recordsPerPage", "pageIndex");
 		
 		executeWorkflowTask(ConvictedReportInquiryBySearchCriteriaWorkflowTask.class);
 		

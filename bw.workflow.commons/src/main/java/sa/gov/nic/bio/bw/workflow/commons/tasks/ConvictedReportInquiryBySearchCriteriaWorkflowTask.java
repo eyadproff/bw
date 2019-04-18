@@ -26,6 +26,7 @@ public class ConvictedReportInquiryBySearchCriteriaWorkflowTask extends Workflow
 	@Input private String familyName;
 	@Input private String judgementNumber;
 	@Input private Long prisonerNumber;
+	@Input private Long operatorId;
 	@Input private Long judgmentDateFrom;
 	@Input private Long judgmentDateTo;
 	@Input private Long rootReportNumber;
@@ -47,8 +48,9 @@ public class ConvictedReportInquiryBySearchCriteriaWorkflowTask extends Workflow
 				api.inquireConvictedReportBySearchCriteria(workflowId, workflowTcn, reportNumber, criminalBiometricsId,
 				                                           location, judgementNumber, personId, prisonerNumber,
 				                                           documentId, judgmentDateFrom, judgmentDateTo, firstName,
-				                                           fatherName, grandfatherName, familyName, rootReportNumber,
-				                                           showOldReports, showDeletedReports, start, end);
+				                                           fatherName, grandfatherName, familyName, operatorId,
+				                                           rootReportNumber, showOldReports, showDeletedReports, start,
+				                                           end);
 		TaskResponse<SearchQueryResult<ConvictedReport>> taskResponse = Context.getWebserviceManager().executeApi(call);
 		
 		resetWorkflowStepIfNegativeOrNullTaskResponse(taskResponse);

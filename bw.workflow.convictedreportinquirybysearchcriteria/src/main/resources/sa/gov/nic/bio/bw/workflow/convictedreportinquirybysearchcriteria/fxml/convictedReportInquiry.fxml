@@ -90,12 +90,14 @@
                                     </padding>
                                 </CheckBox>
                                 <TextField fx:id="txtPrisonerNumber" GridPane.columnIndex="3" GridPane.rowIndex="4" onAction="#onInquiryButtonClicked"/>
-                                <CheckBox fx:id="cbJudgmentDate" text="%label.judgmentDate" GridPane.columnIndex="0" GridPane.rowIndex="5" disable="true">
+                                <CheckBox fx:id="cbOperatorId" text="%label.operatorId" GridPane.columnIndex="0" GridPane.rowIndex="5" disable="true"/>
+                                <TextField fx:id="txtOperatorId" GridPane.columnIndex="1" GridPane.rowIndex="5" onAction="#onInquiryButtonClicked"/>
+                                <CheckBox fx:id="cbJudgmentDate" text="%label.judgmentDate" GridPane.columnIndex="0" GridPane.rowIndex="6" disable="true">
                                     <padding>
                                         <Insets top="4.0"/>
                                     </padding>
                                 </CheckBox>
-                                <HBox GridPane.columnIndex="0" GridPane.rowIndex="6" GridPane.columnSpan="4" GridPane.rowSpan="2" spacing="5.0">
+                                <HBox GridPane.columnIndex="0" GridPane.rowIndex="7" GridPane.columnSpan="4" GridPane.rowSpan="2" spacing="5.0">
                                     <padding>
                                         <Insets top="5.0"/>
                                     </padding>

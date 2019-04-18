@@ -167,12 +167,24 @@ public class EditConvictedReportWorkflow extends WizardWorkflowBase
 			}
 			case 5:
 			{
+				Boolean fullEditor = getData(EditPersonInfoPaneFxController.class, "fullEditor");
 				ConvictedReport convictedReport = getData(ConvictedReportInquiryByReportNumberWorkflowTask.class,
 				                                          "convictedReport");
 				setData(ShowResultPaneFxController.class, "oldReportNumber",
 				        convictedReport.getReportNumber());
-				passData(EditFullConvictedReportWorkflowTask.class, ShowResultPaneFxController.class,
-				         "newReportNumber");
+				
+				if(fullEditor != null && fullEditor)
+				{
+					passData(EditFullConvictedReportWorkflowTask.class, ShowResultPaneFxController.class,
+					         "newReportNumber");
+				}
+				else
+				{
+					passData(EditConvictedReportWithoutConvictedReportWorkflowTask.class,
+					         ShowResultPaneFxController.class,
+					         "newReportNumber");
+				}
+				
 				renderUiAndWaitForUserInput(ShowResultPaneFxController.class);
 				break;
 			}

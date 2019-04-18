@@ -40,6 +40,7 @@ public interface ConvictedReportInquiryAPI
 																@Query("father-name") String fatherName,
 																@Query("grand-father-name") String gFatherName,
 																@Query("family-name") String familyName,
+																@Query("operator-id") Long operatorId,
 																@Query("root-report-number") Long rootReportNumber,
 																@Query("updated") Boolean updated,
 																@Query("deleted") Boolean deleted,
