@@ -388,7 +388,7 @@ public class ConvictedReportInquiryPaneFxController extends BodyFxControllerBase
 			deviceManagerGadgetPaneController.runAndConnectDevicesRunner();
 		}
 		
-		txtCriminalBiometricsId.requestFocus();
+		txtReportNumber.requestFocus();
 	}
 	
 	@Override

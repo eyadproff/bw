@@ -47,7 +47,7 @@ public class ConvictedReport extends JavaBean
 	private String operatorId;
 	private List<CrimeCode> crimeCodes;
 	private Integer locationId;
-	private Long updaterId;
+	private Long deleterId;
 	private Long rootReportNumber;
 	private Long prevReportNumber;
 	private String sourceSystem;
@@ -61,7 +61,7 @@ public class ConvictedReport extends JavaBean
 	                       Integer subjSamisType, Long subjBioId, String subjDocId, Integer subjDocType,
 	                       Long subjDocIssDate, Long subjDocExpDate, JudgementInfo subjJudgementInfo,
 	                       List<Finger> subjFingers, List<Integer> subjMissingFingers, String subjFace,
-	                       String operatorId, List<CrimeCode> crimeCodes, Integer locationId, Long updaterId,
+	                       String operatorId, List<CrimeCode> crimeCodes, Integer locationId, Long deleterId,
 	                       Long rootReportNumber, Long prevReportNumber, String sourceSystem, Integer status)
 	{
 		this.reportNumber = reportNumber;
@@ -88,7 +88,7 @@ public class ConvictedReport extends JavaBean
 		this.operatorId = operatorId;
 		this.crimeCodes = crimeCodes;
 		this.locationId = locationId;
-		this.updaterId = updaterId;
+		this.deleterId = deleterId;
 		this.rootReportNumber = rootReportNumber;
 		this.prevReportNumber = prevReportNumber;
 		this.sourceSystem = sourceSystem;
@@ -171,8 +171,8 @@ public class ConvictedReport extends JavaBean
 	public Integer getLocationId(){return locationId;}
 	public void setLocationId(Integer locationId){this.locationId = locationId;}
 	
-	public Long getUpdaterId(){return updaterId;}
-	public void setUpdaterId(Long updaterId){this.updaterId = updaterId;}
+	public Long getDeleterId(){return deleterId;}
+	public void setDeleterId(Long deleterId){this.deleterId = deleterId;}
 	
 	public Long getRootReportNumber(){return rootReportNumber;}
 	public void setRootReportNumber(Long rootReportNumber){this.rootReportNumber = rootReportNumber;}

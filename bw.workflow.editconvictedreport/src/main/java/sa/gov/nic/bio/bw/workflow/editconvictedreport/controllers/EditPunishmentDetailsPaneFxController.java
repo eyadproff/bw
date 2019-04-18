@@ -437,9 +437,14 @@ public class EditPunishmentDetailsPaneFxController extends WizardStepFxControlle
 		else if(this.deportationDaysNewValue != null) spnDeportationDays.getValueFactory().setValue(
 																						this.deportationDaysNewValue);
 		
-		cbFinalDeportation.setSelected(finalDeportation != null && finalDeportation);
-		cbLibel.setSelected(libel != null && libel);
-		cbCovenant.setSelected(covenant != null && covenant);
+		if(finalDeportation != null) cbFinalDeportation.setSelected(finalDeportation);
+		else if(this.finalDeportationNewValue != null) cbFinalDeportation.setSelected(this.finalDeportationNewValue);
+		
+		if(libel != null) cbLibel.setSelected(libel);
+		else if(this.libelNewValue != null) cbLibel.setSelected(this.libelNewValue);
+		
+		if(covenant != null) cbCovenant.setSelected(covenant);
+		else if(this.covenantNewValue != null) cbCovenant.setSelected(this.covenantNewValue);
 		
 		if(other != null) txtOther.setText(other);
 		else if(this.otherNewValue != null) txtOther.setText(this.otherNewValue);

@@ -15,7 +15,7 @@ public interface EditConvictedReportAPI
 	                                   @Field("criminal-report") String convictedReportJson);
 	
 	@FormUrlEncoded
-	@POST("/services-gateway-demographic/api/criminal-system/update/crime-detail/v1")
+	@POST("/services-gateway-demographic/api/criminal-system/update/crime-Judgment/v1")
 	Call<Long> editConvictedReportWithoutPersonInfo(@Header("Workflow-Code") Integer workflowId,
 	                                                @Header("Workflow-Tcn") Long workflowTcn,
 	                                                @Field("criminal-report") String convictedReportJson);

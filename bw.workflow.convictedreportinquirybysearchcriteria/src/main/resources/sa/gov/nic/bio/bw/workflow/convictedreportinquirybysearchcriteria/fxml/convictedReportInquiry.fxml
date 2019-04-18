@@ -15,9 +15,11 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.VBox?>
-<?import sa.gov.nic.bio.bw.workflow.commons.ui.PTableColumn?>
+<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Rectangle?>
+<?import sa.gov.nic.bio.bw.workflow.commons.ui.PTableColumn?>
 <BorderPane xmlns="http://javafx.com/javafx/11" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="sa.gov.nic.bio.bw.workflow.convictedreportinquirybysearchcriteria.controllers.ConvictedReportInquiryPaneFxController"
             fx:id="rootPane" stylesheets="@../css/style.css">
@@ -125,8 +127,8 @@
                     </ScrollPane>
                     <StackPane>
                         <VBox alignment="CENTER_LEFT" spacing="5.0" pickOnBounds="false">
-                            <CheckBox fx:id="cbShowOldReports" text="%label.showOldReports"/>
-                            <CheckBox fx:id="cbShowDeletedReports" text="%label.showDeletedReports"/>
+                            <CheckBox fx:id="cbShowOldReports" text="%label.showOldReports" selected="true" disable="true"/>
+                            <CheckBox fx:id="cbShowDeletedReports" text="%label.showDeletedReports" selected="true" disable="true"/>
                         </VBox>
                         <HBox alignment="CENTER" spacing="5.0" pickOnBounds="false">
                             <Button fx:id="btnInquiry" text="%button.inquiry" onAction="#onInquiryButtonClicked"/>
@@ -136,7 +138,19 @@
                 </VBox>
             </TitledPane>
             <TitledPane fx:id="tpSearchResults" text="%label.searchResults" collapsible="false" maxHeight="Infinity" VBox.vgrow="ALWAYS" focusTraversable="false">
-                <VBox>
+                <StackPane>
+                    <VBox alignment="BOTTOM_LEFT">
+                        <Label text="%label.oldReports">
+                            <graphic>
+                                <Region styleClass="old-record-legend"/>
+                            </graphic>
+                        </Label>
+                        <Label text="%label.deletedReports">
+                            <graphic>
+                                <Region styleClass="deleted-record-legend"/>
+                            </graphic>
+                        </Label>
+                    </VBox>
                     <Pagination fx:id="pagination" pageCount="1" styleClass="disable-tooltip" VBox.vgrow="ALWAYS" maxHeight="Infinity" minHeight="160.0">
                         <fx:define>
                             <VBox fx:id="paneTable">
@@ -160,7 +174,7 @@
                             </VBox>
                         </fx:define>
                     </Pagination>
-                </VBox>
+                </StackPane>
             </TitledPane>
         </VBox>
     </center>
