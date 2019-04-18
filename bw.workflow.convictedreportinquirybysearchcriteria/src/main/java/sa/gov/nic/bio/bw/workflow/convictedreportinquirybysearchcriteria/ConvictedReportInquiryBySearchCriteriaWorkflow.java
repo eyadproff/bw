@@ -6,14 +6,11 @@ import sa.gov.nic.bio.bw.core.workflow.Signal;
 import sa.gov.nic.bio.bw.core.workflow.SinglePageWorkflowBase;
 import sa.gov.nic.bio.bw.core.workflow.WithLookups;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.CountriesLookup;
+import sa.gov.nic.bio.bw.workflow.commons.lookups.CrimeTypesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.DocumentTypesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.PersonTypesLookup;
-import sa.gov.nic.bio.bw.workflow.convictedreportinquirybysearchcriteria.controllers.ConvictedReportInquiryPaneFxController;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.ConvictedReportInquiryBySearchCriteriaWorkflowTask;
-import sa.gov.nic.bio.bw.workflow.commons.lookups.CrimeTypesLookup;
-
-import java.util.Locale;
-import java.util.ResourceBundle;
+import sa.gov.nic.bio.bw.workflow.convictedreportinquirybysearchcriteria.controllers.ConvictedReportInquiryPaneFxController;
 
 @AssociatedMenu(workflowId = 1011, menuId = "menu.query.convictedReportInquiryBySearchCriteria",
 				menuTitle = "menu.title", menuOrder = 5, devices = Device.BIO_UTILITIES)
@@ -26,9 +23,10 @@ public class ConvictedReportInquiryBySearchCriteriaWorkflow extends SinglePageWo
 		renderUiAndWaitForUserInput(ConvictedReportInquiryPaneFxController.class);
 		
 		passData(ConvictedReportInquiryPaneFxController.class, ConvictedReportInquiryBySearchCriteriaWorkflowTask.class,
-		        "recordsPerPage", "criminalBiometricsId", "reportNumber", "personId", "documentId",
-		         "firstName", "fatherName", "grandfatherName", "familyName", "judgementNumber", "prisonerNumber",
-		         "judgmentDateFrom", "judgmentDateTo", "recordsPerPage", "pageIndex");
+		         "recordsPerPage", "reportNumber", "criminalBiometricsId", "location", "personId",
+		         "documentId", "firstName", "fatherName", "grandfatherName", "familyName", "judgementNumber",
+		         "prisonerNumber", "judgmentDateFrom", "judgmentDateTo", "showOldReports", "showDeletedReports",
+		         "recordsPerPage", "pageIndex");
 		
 		executeWorkflowTask(ConvictedReportInquiryBySearchCriteriaWorkflowTask.class);
 		

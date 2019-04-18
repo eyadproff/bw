@@ -17,6 +17,7 @@ VERSION SCHEMA: vYYYY.MM.#SEQ
 - ENH: Upgrade controlsfx library from 9.0.0 to 11.0.0.
 - NEW: Add Edit-Convicted-Report workflow.
 - CHN: Add 2 more options as fingerprints source: byCivilBiometricsId and byCriminalBiometricsId.
+- CHN: Add more criteria in search-convicted-report-by-search-criteria workflow.
 
 ---
 

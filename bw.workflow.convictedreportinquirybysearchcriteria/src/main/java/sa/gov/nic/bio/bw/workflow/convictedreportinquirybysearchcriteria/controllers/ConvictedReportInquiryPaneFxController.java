@@ -53,8 +53,9 @@ public class ConvictedReportInquiryPaneFxController extends BodyFxControllerBase
 {
 	@Input private Integer resultsTotalCount;
 	@Input private List<ConvictedReport> convictedReports;
-	@Output private Long criminalBiometricsId;
 	@Output private Long reportNumber;
+	@Output private Long criminalBiometricsId;
+	@Output private Long location;
 	@Output private Long personId;
 	@Output private String documentId;
 	@Output private String firstName;
@@ -65,13 +66,15 @@ public class ConvictedReportInquiryPaneFxController extends BodyFxControllerBase
 	@Output private Long prisonerNumber;
 	@Output private Long judgmentDateFrom;
 	@Output private Long judgmentDateTo;
+	@Output private Boolean showOldReports;
+	@Output private Boolean showDeletedReports;
 	@Output private Integer recordsPerPage;
 	@Output private Integer pageIndex;
 	
 	@FXML private TitledPane tpSearchResults;
 	@FXML private Pane paneTable;
 	@FXML private CheckBox cbCriminalBiometricsId;
-	@FXML private CheckBox cbReportNumber;
+	@FXML private CheckBox cbLocation;
 	@FXML private CheckBox cbPersonId;
 	@FXML private CheckBox cbDocumentId;
 	@FXML private CheckBox cbFirstName;
@@ -81,7 +84,10 @@ public class ConvictedReportInquiryPaneFxController extends BodyFxControllerBase
 	@FXML private CheckBox cbJudgmentNumber;
 	@FXML private CheckBox cbPrisonerNumber;
 	@FXML private CheckBox cbJudgmentDate;
+	@FXML private CheckBox cbShowOldReports;
+	@FXML private CheckBox cbShowDeletedReports;
 	@FXML private TextField txtCriminalBiometricsId;
+	@FXML private TextField txtLocation;
 	@FXML private TextField txtReportNumber;
 	@FXML private TextField txtPersonId;
 	@FXML private TextField txtDocumentId;
@@ -93,6 +99,8 @@ public class ConvictedReportInquiryPaneFxController extends BodyFxControllerBase
 	@FXML private TextField txtPrisonerNumber;
 	@FXML private DatePicker dpJudgmentDateFrom;
 	@FXML private DatePicker dpJudgmentDateTo;
+	@FXML private RadioButton rdoReportNumber;
+	@FXML private RadioButton rdoOtherSearchCriteria;
 	@FXML private RadioButton rdoJudgmentDateFromUseHijri;
 	@FXML private RadioButton rdoJudgmentDateFromGregorian;
 	@FXML private RadioButton rdoJudgmentDateToUseHijri;
@@ -120,8 +128,43 @@ public class ConvictedReportInquiryPaneFxController extends BodyFxControllerBase
 	@Override
 	protected void onAttachedToScene()
 	{
+		txtReportNumber.disableProperty().bind(rdoReportNumber.selectedProperty().not());
+		rdoOtherSearchCriteria.selectedProperty().addListener((observable, oldValue, newValue) ->
+		{
+			cbCriminalBiometricsId.setDisable(!newValue);
+			cbLocation.setDisable(!newValue);
+			cbPersonId.setDisable(!newValue);
+			cbDocumentId.setDisable(!newValue);
+			cbFirstName.setDisable(!newValue);
+			cbFatherName.setDisable(!newValue);
+			cbGrandfatherName.setDisable(!newValue);
+			cbFamilyName.setDisable(!newValue);
+			cbJudgmentNumber.setDisable(!newValue);
+			cbPrisonerNumber.setDisable(!newValue);
+			cbJudgmentDate.setDisable(!newValue);
+			cbShowOldReports.setDisable(!newValue);
+			cbShowDeletedReports.setDisable(!newValue);
+			
+			if(!newValue) // !selected
+			{
+				cbCriminalBiometricsId.setSelected(false);
+				cbLocation.setSelected(false);
+				cbPersonId.setSelected(false);
+				cbDocumentId.setSelected(false);
+				cbFirstName.setSelected(false);
+				cbFatherName.setSelected(false);
+				cbGrandfatherName.setSelected(false);
+				cbFamilyName.setSelected(false);
+				cbJudgmentNumber.setSelected(false);
+				cbPrisonerNumber.setSelected(false);
+				cbJudgmentDate.setSelected(false);
+				cbShowOldReports.setSelected(true);
+				cbShowDeletedReports.setSelected(true);
+			}
+		});
+		
 		txtCriminalBiometricsId.disableProperty().bind(cbCriminalBiometricsId.selectedProperty().not());
-		txtReportNumber.disableProperty().bind(cbReportNumber.selectedProperty().not());
+		txtLocation.disableProperty().bind(cbLocation.selectedProperty().not());
 		txtPersonId.disableProperty().bind(cbPersonId.selectedProperty().not());
 		txtDocumentId.disableProperty().bind(cbDocumentId.selectedProperty().not());
 		txtFirstName.disableProperty().bind(cbFirstName.selectedProperty().not());
@@ -133,8 +176,9 @@ public class ConvictedReportInquiryPaneFxController extends BodyFxControllerBase
 		dpJudgmentDateFrom.disableProperty().bind(cbJudgmentDate.selectedProperty().not());
 		dpJudgmentDateTo.disableProperty().bind(cbJudgmentDate.selectedProperty().not());
 		
-		BooleanBinding criminalBiometricsIdBinding = createTextFieldNotCompleteBooleanBinding(txtCriminalBiometricsId);
 		BooleanBinding reportNumberBinding = createTextFieldNotCompleteBooleanBinding(txtReportNumber);
+		BooleanBinding criminalBiometricsIdBinding = createTextFieldNotCompleteBooleanBinding(txtCriminalBiometricsId);
+		BooleanBinding locationBinding = createTextFieldNotCompleteBooleanBinding(txtLocation);
 		BooleanBinding personIdBinding = createTextFieldNotCompleteBooleanBinding(txtPersonId);
 		BooleanBinding documentIdBinding = createTextFieldNotCompleteBooleanBinding(txtDocumentId);
 		BooleanBinding firstNameBinding = createTextFieldNotCompleteBooleanBinding(txtFirstName);
@@ -145,18 +189,19 @@ public class ConvictedReportInquiryPaneFxController extends BodyFxControllerBase
 		BooleanBinding prisonerNumberBinding = createTextFieldNotCompleteBooleanBinding(txtPrisonerNumber);
 		BooleanBinding judgmentDateFromBinding = createDatePickerNotCompleteBooleanBinding(dpJudgmentDateFrom);
 		BooleanBinding judgmentDateToBinding = createDatePickerNotCompleteBooleanBinding(dpJudgmentDateTo);
-		BooleanBinding allDisabled = txtCriminalBiometricsId.disableProperty().and(txtReportNumber.disableProperty())
+		BooleanBinding allDisabled = txtCriminalBiometricsId.disableProperty().and(txtLocation.disableProperty())
 									.and(txtPersonId.disableProperty()).and(txtDocumentId.disableProperty())
 									.and(txtFirstName.disableProperty()).and(txtFatherName.disableProperty())
 									.and(txtGrandfatherName.disableProperty()).and(txtFamilyName.disableProperty())
 									.and(txtJudgmentNumber.disableProperty()).and(txtPrisonerNumber.disableProperty())
 									.and(dpJudgmentDateFrom.disableProperty()).and(dpJudgmentDateTo.disableProperty());
 		
-		btnInquiry.disableProperty().bind(criminalBiometricsIdBinding.or(reportNumberBinding).or(personIdBinding)
-	                                .or(documentIdBinding).or(firstNameBinding).or(fatherNameBinding)
-	                                .or(grandfatherNameBinding).or(familyNameBinding).or(judgmentNumberBinding)
-                                    .or(prisonerNumberBinding).or(judgmentDateFromBinding).or(judgmentDateToBinding)
-                                    .or(allDisabled).or(disableInquiryButtonProperty));
+		btnInquiry.disableProperty().bind(rdoReportNumber.selectedProperty().and(reportNumberBinding)
+                      .or(rdoOtherSearchCriteria.selectedProperty().and(criminalBiometricsIdBinding.or(locationBinding)
+                      .or(personIdBinding).or(documentIdBinding).or(firstNameBinding).or(fatherNameBinding)
+                      .or(grandfatherNameBinding).or(familyNameBinding).or(judgmentNumberBinding)
+                      .or(prisonerNumberBinding).or(judgmentDateFromBinding).or(judgmentDateToBinding).or(allDisabled)))
+                      .or(disableInquiryButtonProperty));
 		
 		GuiUtils.initDatePicker(rdoJudgmentDateFromUseHijri, dpJudgmentDateFrom, null);
 		GuiUtils.initDatePicker(rdoJudgmentDateToUseHijri, dpJudgmentDateTo, null);
@@ -178,6 +223,8 @@ public class ConvictedReportInquiryPaneFxController extends BodyFxControllerBase
 		});
 		
 		GuiUtils.applyValidatorToTextField(txtCriminalBiometricsId, "\\d*", "[^\\d]",
+		                                   10);
+		GuiUtils.applyValidatorToTextField(txtLocation, "\\d*", "[^\\d]",
 		                                   10);
 		GuiUtils.applyValidatorToTextField(txtReportNumber, "\\d*", "[^\\d]",
 		                                   18);
@@ -358,8 +405,9 @@ public class ConvictedReportInquiryPaneFxController extends BodyFxControllerBase
 	{
 		if(btnInquiry.isDisabled() || !btnInquiry.isVisible()) return;
 		
-		criminalBiometricsId = null;
 		reportNumber = null;
+		criminalBiometricsId = null;
+		location = null;
 		personId = null;
 		documentId = null;
 		firstName = null;
@@ -370,22 +418,31 @@ public class ConvictedReportInquiryPaneFxController extends BodyFxControllerBase
 		prisonerNumber = null;
 		judgmentDateFrom = null;
 		judgmentDateTo = null;
+		showOldReports = cbShowOldReports.isSelected();
+		showDeletedReports = cbShowDeletedReports.isSelected();
 		
-		if(!txtCriminalBiometricsId.isDisabled()) criminalBiometricsId =
-																Long.parseLong(txtCriminalBiometricsId.getText());
-		if(!txtReportNumber.isDisabled()) reportNumber = Long.parseLong(txtReportNumber.getText());
-		if(!txtPersonId.isDisabled()) personId = Long.parseLong(txtPersonId.getText());
-		if(!txtDocumentId.isDisabled()) documentId = txtDocumentId.getText();
-		if(!txtFirstName.isDisabled()) firstName = txtFirstName.getText();
-		if(!txtFatherName.isDisabled()) fatherName = txtFatherName.getText();
-		if(!txtGrandfatherName.isDisabled()) grandfatherName = txtGrandfatherName.getText();
-		if(!txtFamilyName.isDisabled()) familyName = txtFamilyName.getText();
-		if(!txtJudgmentNumber.isDisabled()) judgementNumber = txtJudgmentNumber.getText();
-		if(!txtPrisonerNumber.isDisabled()) prisonerNumber = Long.parseLong(txtPrisonerNumber.getText());
-		if(!dpJudgmentDateFrom.isDisabled()) judgmentDateFrom =
+		if(rdoReportNumber.isSelected())
+		{
+			if(!txtReportNumber.isDisabled()) reportNumber = Long.parseLong(txtReportNumber.getText());
+		}
+		else
+		{
+			if(!txtCriminalBiometricsId.isDisabled()) criminalBiometricsId =
+														Long.parseLong(txtCriminalBiometricsId.getText());
+			if(!txtLocation.isDisabled()) location = Long.parseLong(txtLocation.getText());
+			if(!txtPersonId.isDisabled()) personId = Long.parseLong(txtPersonId.getText());
+			if(!txtDocumentId.isDisabled()) documentId = txtDocumentId.getText();
+			if(!txtFirstName.isDisabled()) firstName = txtFirstName.getText();
+			if(!txtFatherName.isDisabled()) fatherName = txtFatherName.getText();
+			if(!txtGrandfatherName.isDisabled()) grandfatherName = txtGrandfatherName.getText();
+			if(!txtFamilyName.isDisabled()) familyName = txtFamilyName.getText();
+			if(!txtJudgmentNumber.isDisabled()) judgementNumber = txtJudgmentNumber.getText();
+			if(!txtPrisonerNumber.isDisabled()) prisonerNumber = Long.parseLong(txtPrisonerNumber.getText());
+			if(!dpJudgmentDateFrom.isDisabled()) judgmentDateFrom =
 														AppUtils.gregorianDateToSeconds(dpJudgmentDateFrom.getValue());
-		if(!dpJudgmentDateTo.isDisabled()) judgmentDateTo =
+			if(!dpJudgmentDateTo.isDisabled()) judgmentDateTo =
 														AppUtils.gregorianDateToSeconds(dpJudgmentDateTo.getValue());
+		}
 		
 		pagination.setPageCount(1);
 		tvConvictedReports.getItems().clear();
@@ -403,8 +460,9 @@ public class ConvictedReportInquiryPaneFxController extends BodyFxControllerBase
 	@FXML
 	private void onClearFieldsButtonClicked(ActionEvent actionEvent)
 	{
-		txtCriminalBiometricsId.clear();
 		txtReportNumber.clear();
+		txtCriminalBiometricsId.clear();
+		txtLocation.clear();
 		txtPersonId.clear();
 		txtDocumentId.clear();
 		txtFirstName.clear();
