@@ -15,8 +15,18 @@ public interface FingerprintsAPI
 	                                                      @Header("Workflow-Tcn") Long workflowTcn,
 	                                                      @Query("bio-id") long civilBiometricsId);
 	
+	@GET("services-gateway-biooperation/api/fingerprint/available/v2")
+	Call<List<Integer>> getFingerprintsAvailabilityByCivilBiometricsId(@Header("Workflow-Code") Integer workflowId,
+	                                                                   @Header("Workflow-Tcn") Long workflowTcn,
+	                                                                   @Query("bio-id") long civilBiometricsId);
+	
 	@GET("services-gateway-biooperation/api/fingerprint/images/v2") // TODO
 	Call<List<Finger>> getFingerprintsByCriminalBiometricsId(@Header("Workflow-Code") Integer workflowId,
 	                                                         @Header("Workflow-Tcn") Long workflowTcn,
 	                                                         @Query("bio-id") long criminalBiometricsId);
+	
+	@GET("services-gateway-biooperation/api/fingerprint/available/v2") // TODO
+	Call<List<Integer>> getFingerprintsAvailabilityByCriminalBiometricsId(@Header("Workflow-Code") Integer workflowId,
+	                                                                      @Header("Workflow-Tcn") Long workflowTcn,
+	                                                                      @Query("bio-id") long criminalBiometricsId);
 }

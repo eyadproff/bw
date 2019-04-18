@@ -1,3 +1,15 @@
 .titled-pane > .title {
     -fx-alignment: center;
 }
+
+.active-record {
+    -fx-background-color: white;
+}
+
+.old-record {
+    -fx-background-color: #fff7ab;
+}
+
+.deleted-record {
+    -fx-background-color: #ff9285;
+}

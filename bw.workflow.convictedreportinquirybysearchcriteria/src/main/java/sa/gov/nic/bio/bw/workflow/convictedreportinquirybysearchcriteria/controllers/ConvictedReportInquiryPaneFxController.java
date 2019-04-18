@@ -18,7 +18,9 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Pagination;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.RadioButton;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
@@ -261,6 +263,43 @@ public class ConvictedReportInquiryPaneFxController extends BodyFxControllerBase
 			ConvictedReport convictedReport = param.getValue();
 			int sequence = convictedReport.getSequence();
 			return new SimpleStringProperty(AppUtils.localizeNumbers(String.valueOf(sequence)));
+		});
+		tcSequence.setCellFactory(column -> new TableCell<>()
+		{
+			@Override
+			protected void updateItem(String item, boolean empty)
+			{
+				super.updateItem(item, empty);
+				
+				setText(empty ? "" : getItem());
+				setGraphic(null);
+				
+				TableRow<ConvictedReport> currentRow = getTableRow();
+				
+				ConvictedReport convictedReport = currentRow.getItem();
+				
+				currentRow.getStyleClass().remove("active-record");
+				currentRow.getStyleClass().remove("old-record");
+				currentRow.getStyleClass().remove("deleted-record");
+				
+				if(!isEmpty() && convictedReport != null)
+				{
+					if(ConvictedReport.Status.ACTIVE.equals(convictedReport.getStatus()))
+					{
+						currentRow.getStyleClass().add("active-record");
+					}
+					else if(ConvictedReport.Status.UPDATED.equals(convictedReport.getStatus()))
+					{
+						currentRow.getStyleClass().add("old-record");
+					}
+					else
+					{
+						currentRow.getStyleClass().add("deleted-record");
+					}
+				}
+				
+				currentRow.applyCss();
+			}
 		});
 		
 		tcName.setCellValueFactory(param ->

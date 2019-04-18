@@ -16,6 +16,8 @@ import sa.gov.nic.bio.bw.workflow.civilcriminalfingerprintsinquiry.controllers.S
 import sa.gov.nic.bio.bw.workflow.civilcriminalfingerprintsinquiry.controllers.SpecifyFingerprintCoordinatesPaneFxController;
 import sa.gov.nic.bio.bw.workflow.civilcriminalfingerprintsinquiry.controllers.UploadNistFileFxController;
 import sa.gov.nic.bio.bw.workflow.civilcriminalfingerprintsinquiry.tasks.ExtractingDataFromNistFileWorkflowTask;
+import sa.gov.nic.bio.bw.workflow.civilcriminalfingerprintsinquiry.tasks.RetrieveFingerprintsAvailabilityByCivilBiometricIdWorkflowTask;
+import sa.gov.nic.bio.bw.workflow.civilcriminalfingerprintsinquiry.tasks.RetrieveFingerprintsAvailabilityByCriminalBiometricIdWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.civilcriminalfingerprintsinquiry.tasks.RetrieveFingerprintsByCivilBiometricIdWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.civilcriminalfingerprintsinquiry.tasks.RetrieveFingerprintsByCriminalBiometricIdWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.commons.beans.ConvictedReport;
@@ -122,13 +124,17 @@ public class FingerprintsInquiryWorkflow extends WizardWorkflowBase
 					passData(CivilBiometricsIdPaneFxController.class,
 					         RetrieveFingerprintsByCivilBiometricIdWorkflowTask.class,
 					         "civilBiometricsId");
-					
 					executeWorkflowTask(RetrieveFingerprintsByCivilBiometricIdWorkflowTask.class);
+					
+					passData(CivilBiometricsIdPaneFxController.class,
+					         RetrieveFingerprintsAvailabilityByCivilBiometricIdWorkflowTask.class,
+					         "civilBiometricsId");
+					executeWorkflowTask(RetrieveFingerprintsAvailabilityByCivilBiometricIdWorkflowTask.class);
 					
 					passData(RetrieveFingerprintsByCivilBiometricIdWorkflowTask.class,
 					         ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask.class,
 					         "fingerprints");
-					passData(RetrieveFingerprintsByCivilBiometricIdWorkflowTask.class,
+					passData(RetrieveFingerprintsAvailabilityByCivilBiometricIdWorkflowTask.class,
 					         ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask.class,
 					         "missingFingerprints");
 					executeWorkflowTask(ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask.class);
@@ -142,13 +148,17 @@ public class FingerprintsInquiryWorkflow extends WizardWorkflowBase
 					passData(CriminalBiometricsIdPaneFxController.class,
 					         RetrieveFingerprintsByCriminalBiometricIdWorkflowTask.class,
 					         "criminalBiometricsId");
-					
 					executeWorkflowTask(RetrieveFingerprintsByCriminalBiometricIdWorkflowTask.class);
+					
+					passData(CriminalBiometricsIdPaneFxController.class,
+					         RetrieveFingerprintsAvailabilityByCriminalBiometricIdWorkflowTask.class,
+					         "criminalBiometricsId");
+					executeWorkflowTask(RetrieveFingerprintsAvailabilityByCriminalBiometricIdWorkflowTask.class);
 					
 					passData(RetrieveFingerprintsByCriminalBiometricIdWorkflowTask.class,
 					         ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask.class,
 					         "fingerprints");
-					passData(RetrieveFingerprintsByCriminalBiometricIdWorkflowTask.class,
+					passData(RetrieveFingerprintsAvailabilityByCriminalBiometricIdWorkflowTask.class,
 					         ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask.class,
 					         "missingFingerprints");
 					executeWorkflowTask(ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask.class);
@@ -290,7 +300,7 @@ public class FingerprintsInquiryWorkflow extends WizardWorkflowBase
 						passData(RetrieveFingerprintsByCivilBiometricIdWorkflowTask.class,
 						         FingerprintInquiryWorkflowTask.class,
 						         "fingerprints");
-						passData(RetrieveFingerprintsByCivilBiometricIdWorkflowTask.class,
+						passData(RetrieveFingerprintsAvailabilityByCivilBiometricIdWorkflowTask.class,
 						         FingerprintInquiryWorkflowTask.class,
 						         "missingFingerprints");
 					}
@@ -299,7 +309,7 @@ public class FingerprintsInquiryWorkflow extends WizardWorkflowBase
 						passData(RetrieveFingerprintsByCriminalBiometricIdWorkflowTask.class,
 						         FingerprintInquiryWorkflowTask.class,
 						         "fingerprints");
-						passData(RetrieveFingerprintsByCriminalBiometricIdWorkflowTask.class,
+						passData(RetrieveFingerprintsAvailabilityByCriminalBiometricIdWorkflowTask.class,
 						         FingerprintInquiryWorkflowTask.class,
 						         "missingFingerprints");
 					}
