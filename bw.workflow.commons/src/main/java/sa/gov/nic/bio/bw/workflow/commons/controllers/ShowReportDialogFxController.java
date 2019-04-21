@@ -101,8 +101,12 @@ public class ShowReportDialogFxController extends BodyFxControllerBase
 		        {
 			        convictedReport = getData("convictedReport");
 			
-			        setData(ConvictedReportInquiryBySearchCriteriaWorkflowTask.class, "rootReportNumber",
-			                convictedReport.getRootReportNumber());
+			        Long rootReportNumber = convictedReport.getRootReportNumber();
+			        boolean rootReport = rootReportNumber == null || rootReportNumber.equals(0L);
+			        
+			        setData(ConvictedReportInquiryBySearchCriteriaWorkflowTask.class,
+			                "rootReportNumber", rootReport ? convictedReport.getReportNumber() :
+					                                                   convictedReport.getRootReportNumber());
 			        setData(ConvictedReportInquiryBySearchCriteriaWorkflowTask.class,
 			                "showOldReports", true);
 			        setData(ConvictedReportInquiryBySearchCriteriaWorkflowTask.class,
@@ -119,6 +123,7 @@ public class ShowReportDialogFxController extends BodyFxControllerBase
 				        protected void onSuccess()
 				        {
 					        List<ConvictedReport> convictedReports = getData("convictedReports");
+					        if(rootReport) convictedReports.add(convictedReport);
 					        convictedReports.sort(Comparator.comparingLong(ConvictedReport::getReportDate));
 					
 					        if(!convictedReports.isEmpty())
@@ -183,39 +188,7 @@ public class ShowReportDialogFxController extends BodyFxControllerBase
 					            List<Finger> subjFingers = convictedReport.getSubjFingers();
 						        List<Integer> subjMissingFingers = convictedReport.getSubjMissingFingers();
 						
-						        setData(ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask.class,
-						                "fingerprints", subjFingers);
-						        setData(ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask.class,
-						                "missingFingerprints", subjMissingFingers);
-						
-						        boolean success = executeUiTask(
-						        		ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask.class,
-								        new SuccessHandler()
-						        {
-							        @Override
-							        protected void onSuccess()
-							        {
-								        fingerprintBase64Images = getData("fingerprintBase64Images");
-								        GuiUtils.showNode(paneReportHistory, true);
-								        populateData();
-								        tvReportHistory.requestFocus();
-							        }
-						        }, throwable ->
-								{
-							        GuiUtils.showNode(paneLoadingInProgress, false);
-							        GuiUtils.showNode(paneLoadingError, true);
-							
-							        String errorCode = CommonsErrorCodes.C008_00029.getCode();
-							        String[] errorDetails = {"failed to load the fingerprints for report number ( " +
-									                                                                reportNumber + ")"};
-							        Context.getCoreFxController().showErrorDialog(errorCode, throwable, errorDetails);
-						        });
-						
-						        if(!success)
-						        {
-							        GuiUtils.showNode(paneLoadingInProgress, false);
-							        GuiUtils.showNode(paneLoadingError, true);
-						        }
+						        segmentFingerprints();
 					        }
 					        else
 					        {
@@ -223,8 +196,8 @@ public class ShowReportDialogFxController extends BodyFxControllerBase
 						        GuiUtils.showNode(paneLoadingError, true);
 						
 						        String errorCode = CommonsErrorCodes.C008_00039.getCode();
-						        String[] errorDetails = {"the returned report is empty! Report number is (" +
-								                                                                    reportNumber + ")"};
+						        String[] errorDetails = {"the returned list is empty for root report number" +
+								                                   " ( " + convictedReport.getRootReportNumber() + ")"};
 						        Context.getCoreFxController().showErrorDialog(errorCode, null, errorDetails);
 					        }
 				        }
@@ -274,6 +247,45 @@ public class ShowReportDialogFxController extends BodyFxControllerBase
 	        stage.setMinWidth(stage.getWidth());
 	        stage.setMinHeight(stage.getHeight());
         });
+	}
+	
+	private void segmentFingerprints()
+	{
+		List<Finger> subjFingers = convictedReport.getSubjFingers();
+		List<Integer> subjMissingFingers = convictedReport.getSubjMissingFingers();
+		
+		setData(ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask.class,
+		        "fingerprints", subjFingers);
+		setData(ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask.class,
+		        "missingFingerprints", subjMissingFingers);
+		
+		boolean success = executeUiTask(ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask.class,
+																									new SuccessHandler()
+		{
+			@Override
+			protected void onSuccess()
+			{
+				fingerprintBase64Images = getData("fingerprintBase64Images");
+				GuiUtils.showNode(paneReportHistory, true);
+				populateData();
+				tvReportHistory.requestFocus();
+			}
+		}, throwable ->
+		{
+			GuiUtils.showNode(paneLoadingInProgress, false);
+			GuiUtils.showNode(paneLoadingError, true);
+			
+			String errorCode = CommonsErrorCodes.C008_00029.getCode();
+			String[] errorDetails = {"failed to load the fingerprints for report number ( " +
+					reportNumber + ")"};
+			Context.getCoreFxController().showErrorDialog(errorCode, throwable, errorDetails);
+		});
+		
+		if(!success)
+		{
+			GuiUtils.showNode(paneLoadingInProgress, false);
+			GuiUtils.showNode(paneLoadingError, true);
+		}
 	}
 	
 	private void populateData()
