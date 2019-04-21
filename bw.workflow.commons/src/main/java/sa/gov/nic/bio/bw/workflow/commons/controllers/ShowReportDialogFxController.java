@@ -149,7 +149,13 @@ public class ShowReportDialogFxController extends BodyFxControllerBase
 							        }
 						        }, throwable ->
 						        {
-						        
+							        GuiUtils.showNode(paneLoadingInProgress, false);
+							        GuiUtils.showNode(paneLoadingError, true);
+							
+							        String errorCode = CommonsErrorCodes.C008_00040.getCode();
+							        String[] errorDetails = {"failed to load the root convicted report! Report number" +
+								                                                        " (" + rootReportNumber + ")"};
+							        Context.getCoreFxController().showErrorDialog(errorCode, throwable, errorDetails);
 						        });
 						
 						        if(!success)
@@ -164,8 +170,8 @@ public class ShowReportDialogFxController extends BodyFxControllerBase
 				        GuiUtils.showNode(paneLoadingInProgress, false);
 				        GuiUtils.showNode(paneLoadingError, true);
 				
-				        String errorCode = CommonsErrorCodes.C008_00040.getCode();
-				        String[] errorDetails = {"failed to load the convicted report! Report number is (" +
+				        String errorCode = CommonsErrorCodes.C008_00041.getCode();
+				        String[] errorDetails = {"failed to load the convicted report! Report number (" +
 						                                                                            reportNumber + ")"};
 				        Context.getCoreFxController().showErrorDialog(errorCode, throwable, errorDetails);
 			        });
