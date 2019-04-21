@@ -123,82 +123,40 @@ public class ShowReportDialogFxController extends BodyFxControllerBase
 				        protected void onSuccess()
 				        {
 					        List<ConvictedReport> convictedReports = getData("convictedReports");
-					        if(rootReport) convictedReports.add(convictedReport);
-					        convictedReports.sort(Comparator.comparingLong(ConvictedReport::getReportDate));
-					
-					        if(!convictedReports.isEmpty())
+					        if(rootReport)
 					        {
-						        tvReportHistory.getItems().addAll(convictedReports);
-						        for(ConvictedReport convictedReport : convictedReports)
-						        {
-							        if(reportNumber.equals(convictedReport.getReportNumber()))
-							        {
-								        tvReportHistory.getSelectionModel().select(convictedReport);
-							        	break;
-							        }
-						        }
-						        
-						        tvReportHistory.getSelectionModel().selectedItemProperty().addListener(
-						        		                                            (observable, oldValue, newValue) ->
-						        {
-							        if(newValue == null) return; // un-select action
-							
-							        btnPrintReport.setDisable(true);
-							        btnSaveReportAsPDF.setDisable(true);
-							        tvReportHistory.setDisable(true);
-							        GuiUtils.showNode(lblWatermarkOldVersion, false);
-							        GuiUtils.showNode(lblWatermarkDeletedReport, false);
-							        GuiUtils.showNode(paneReport, false);
-							        GuiUtils.showNode(paneLoadingInProgress, true);
-							
-							        setData(ConvictedReportInquiryByReportNumberWorkflowTask.class,
-							                "reportNumber", newValue.getReportNumber());
-							        boolean success = executeUiTask(
-							        		ConvictedReportInquiryByReportNumberWorkflowTask.class, new SuccessHandler()
-							        {
-								        @Override
-								        protected void onSuccess()
-								        {
-								            convictedReport = getData("convictedReport");
-								            populateData();
-								            tvReportHistory.setDisable(false);
-									        tvReportHistory.requestFocus();
-								        }
-							        }, throwable ->
-							        {
-								        tvReportHistory.setDisable(false);
-								        GuiUtils.showNode(paneLoadingInProgress, false);
-								        GuiUtils.showNode(paneLoadingError, true);
-								
-								        String errorCode = CommonsErrorCodes.C008_00038.getCode();
-								        String[] errorDetails = {"failed to retrieve the convicted report by report " +
-                                                                        "number (" + newValue.getReportNumber() + ")"};
-								        Context.getCoreFxController().showErrorDialog(errorCode, throwable,
-								                                                      errorDetails);
-							        });
-							
-							        if(!success)
-							        {
-								        GuiUtils.showNode(paneLoadingInProgress, false);
-								        GuiUtils.showNode(paneLoadingError, true);
-								        tvReportHistory.setDisable(false);
-							        }
-						        });
-					            
-					            List<Finger> subjFingers = convictedReport.getSubjFingers();
-						        List<Integer> subjMissingFingers = convictedReport.getSubjMissingFingers();
-						
-						        segmentFingerprints();
+					        	convictedReports.add(convictedReport);
+						        convictedReports.sort(Comparator.comparingLong(ConvictedReport::getReportDate));
+						        handleConvictedReport(convictedReports);
 					        }
 					        else
 					        {
-						        GuiUtils.showNode(paneLoadingInProgress, false);
-						        GuiUtils.showNode(paneLoadingError, true);
+						        setData(ConvictedReportInquiryByReportNumberWorkflowTask.class,
+						                "reportNumber", rootReportNumber);
 						
-						        String errorCode = CommonsErrorCodes.C008_00039.getCode();
-						        String[] errorDetails = {"the returned list is empty for root report number" +
-								                                   " ( " + convictedReport.getRootReportNumber() + ")"};
-						        Context.getCoreFxController().showErrorDialog(errorCode, null, errorDetails);
+						        boolean success = executeUiTask(ConvictedReportInquiryByReportNumberWorkflowTask.class,
+						                                        new SuccessHandler()
+						        {
+							        @Override
+							        protected void onSuccess()
+							        {
+								        List<ConvictedReport> rootConvictedReport =
+										                                        getData("convictedReport");
+								
+								        convictedReports.addAll(rootConvictedReport);
+								        convictedReports.sort(Comparator.comparingLong(ConvictedReport::getReportDate));
+								        handleConvictedReport(convictedReports);
+							        }
+						        }, throwable ->
+						        {
+						        
+						        });
+						
+						        if(!success)
+						        {
+							        GuiUtils.showNode(paneLoadingInProgress, false);
+							        GuiUtils.showNode(paneLoadingError, true);
+						        }
 					        }
 				        }
 			        }, throwable ->
@@ -247,6 +205,80 @@ public class ShowReportDialogFxController extends BodyFxControllerBase
 	        stage.setMinWidth(stage.getWidth());
 	        stage.setMinHeight(stage.getHeight());
         });
+	}
+	
+	private void handleConvictedReport(List<ConvictedReport> convictedReports)
+	{
+		if(!convictedReports.isEmpty())
+		{
+			tvReportHistory.getItems().addAll(convictedReports);
+			for(ConvictedReport convictedReport : convictedReports)
+			{
+				if(reportNumber.equals(convictedReport.getReportNumber()))
+				{
+					tvReportHistory.getSelectionModel().select(convictedReport);
+					break;
+				}
+			}
+			
+			tvReportHistory.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) ->
+			{
+				if(newValue == null) return; // un-select action
+				
+				btnPrintReport.setDisable(true);
+				btnSaveReportAsPDF.setDisable(true);
+				tvReportHistory.setDisable(true);
+				GuiUtils.showNode(lblWatermarkOldVersion, false);
+				GuiUtils.showNode(lblWatermarkDeletedReport, false);
+				GuiUtils.showNode(paneReport, false);
+				GuiUtils.showNode(paneLoadingInProgress, true);
+				
+				setData(ConvictedReportInquiryByReportNumberWorkflowTask.class,
+				        "reportNumber", newValue.getReportNumber());
+				boolean success = executeUiTask(ConvictedReportInquiryByReportNumberWorkflowTask.class,
+				                                new SuccessHandler()
+				{
+					@Override
+					protected void onSuccess()
+					{
+						convictedReport = getData("convictedReport");
+						populateData();
+						tvReportHistory.setDisable(false);
+						tvReportHistory.requestFocus();
+					}
+				}, throwable ->
+				{
+					tvReportHistory.setDisable(false);
+					GuiUtils.showNode(paneLoadingInProgress, false);
+					GuiUtils.showNode(paneLoadingError, true);
+					
+					String errorCode = CommonsErrorCodes.C008_00038.getCode();
+					String[] errorDetails = {"failed to retrieve the convicted report by report " +
+							"number (" + newValue.getReportNumber() + ")"};
+					Context.getCoreFxController().showErrorDialog(errorCode, throwable,
+					                                              errorDetails);
+				});
+				
+				if(!success)
+				{
+					GuiUtils.showNode(paneLoadingInProgress, false);
+					GuiUtils.showNode(paneLoadingError, true);
+					tvReportHistory.setDisable(false);
+				}
+			});
+			
+			segmentFingerprints();
+		}
+		else
+		{
+			GuiUtils.showNode(paneLoadingInProgress, false);
+			GuiUtils.showNode(paneLoadingError, true);
+			
+			String errorCode = CommonsErrorCodes.C008_00039.getCode();
+			String[] errorDetails = {"the returned list is empty for root report number" +
+					" ( " + convictedReport.getRootReportNumber() + ")"};
+			Context.getCoreFxController().showErrorDialog(errorCode, null, errorDetails);
+		}
 	}
 	
 	private void segmentFingerprints()
