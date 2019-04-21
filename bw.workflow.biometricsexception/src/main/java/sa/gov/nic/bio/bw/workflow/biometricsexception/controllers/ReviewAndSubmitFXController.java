@@ -7,9 +7,16 @@ import javafx.scene.layout.VBox;
 import javafx.scene.shape.SVGPath;
 import sa.gov.nic.bio.bw.core.controllers.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.core.utils.FxmlFile;
+import sa.gov.nic.bio.bw.core.workflow.Input;
+import sa.gov.nic.bio.bw.workflow.biometricsexception.beans.Fingerprint;
+import sa.gov.nic.bio.bw.workflow.biometricsexception.beans.PersonFingerprints;
 
 @FxmlFile("reviewAndSubmit.fxml")
 public class ReviewAndSubmitFXController extends WizardStepFxControllerBase {
+
+    @Input
+    private PersonFingerprints personfingerprints;
+
     @FXML
     private Label PersonID, PersonName;
 
@@ -60,7 +67,7 @@ public class ReviewAndSubmitFXController extends WizardStepFxControllerBase {
     @FXML
     private Label RThumbCouse, RThumbStatus;
     @FXML
-    private Label RIndexCouse, RIndexStstus;
+    private Label RIndexCouse, RIndexStatus;
     @FXML
     private Label RMiddleCouse, RMiddleStatus;
     @FXML
@@ -71,7 +78,7 @@ public class ReviewAndSubmitFXController extends WizardStepFxControllerBase {
     @FXML
     private Label LThumbCouse, LThumbStatus;
     @FXML
-    private Label LIndexCouse, LIndexStstus;
+    private Label LIndexCouse, LIndexStatus;
     @FXML
     private Label LMiddleCouse, LMiddleStatus;
     @FXML
@@ -79,27 +86,89 @@ public class ReviewAndSubmitFXController extends WizardStepFxControllerBase {
     @FXML
     private Label LLittleCouse, LLittleStatus;
 
+    @FXML
+    private Label RightMExist, LeftMExist;
+
     @Override
     protected void onAttachedToScene() {
 
-        VRightThumb.setManaged(true);
-        VRightThumb.setVisible(true);
 
-        VLeftThumb.setManaged(true);
-        VLeftThumb.setVisible(true);
+        checkMissingfingers();
 
-        svgRightThumb.setManaged(true);
-        svgRightThumb.setVisible(true);
+    }
 
-        svgLeftThumb.setManaged(true);
-        svgLeftThumb.setVisible(true);
+    private void checkMissingfingers() {
+        int right = 0;
+        int left = 0;
+        if (personfingerprints.getRThumb().isMissOrNot()) {
+            right++;
+            displayMissingFinger(personfingerprints.getRThumb(), VRightThumb, svgRightThumb, RThumbCouse, RThumbStatus);
+        }
+        if (personfingerprints.getRIndex().isMissOrNot()) {
+            right++;
 
-        RThumbCouse.setText("حرق");
-        RThumbStatus.setText("مؤقت");
+            displayMissingFinger(personfingerprints.getRIndex(), VRightIndexFinger, svgRightIndex, RIndexCouse, RIndexStatus);
+        }
+        if (personfingerprints.getRMiddle().isMissOrNot()) {
+            right++;
+            displayMissingFinger(personfingerprints.getRMiddle(), VRightMiddleFinger, svgRightMiddle, RMiddleCouse, RMiddleStatus);
+        }
+        if (personfingerprints.getRRing().isMissOrNot()) {
+            right++;
+            displayMissingFinger(personfingerprints.getRRing(), VRightRingFinger, svgRightRing, RRingCouse, RRingStatus);
+        }
+        if (personfingerprints.getRLittle().isMissOrNot()) {
+            right++;
+            displayMissingFinger(personfingerprints.getRLittle(), VRightLittleFinger, svgRightLittle, RLittleCouse, RLittleStatus);
+        }
 
-        LThumbCouse.setText("حرق");
-        LThumbStatus.setText("دائم");
+        if (personfingerprints.getLThumb().isMissOrNot()) {
+            left++;
+            displayMissingFinger(personfingerprints.getLThumb(), VLeftThumb, svgLeftThumb, LThumbCouse, LThumbStatus);
+        }
+        if (personfingerprints.getLIndex().isMissOrNot()) {
+            left++;
+            displayMissingFinger(personfingerprints.getLIndex(), VLeftIndexFinger, svgLeftIndex, LIndexCouse, LIndexStatus);
+        }
+        if (personfingerprints.getLMiddle().isMissOrNot()) {
+            left++;
+            displayMissingFinger(personfingerprints.getLMiddle(), VLeftMiddleFinger, svgLeftMiddle, LMiddleCouse, LMiddleStatus);
+        }
+        if (personfingerprints.getLRing().isMissOrNot()) {
+            left++;
+            displayMissingFinger(personfingerprints.getLRing(), VLeftRingFinger, svgLeftRing, LRingCouse, LRingStatus);
+        }
+        if (personfingerprints.getLLittle().isMissOrNot()) {
+            left++;
+            displayMissingFinger(personfingerprints.getLLittle(), VLeftLittleFinger, svgLeftLittle, LLittleCouse, LLittleStatus);
+        }
+        if (right == 0) {
+            RightMExist.setVisible(true);
+            RightMExist.setManaged(true);
+
+        }
+        if (left == 0) {
+            LeftMExist.setVisible(true);
+            LeftMExist.setManaged(true);
+        }
 
 
     }
+
+    private void displayMissingFinger(Fingerprint finger, VBox vbox, SVGPath svg, Label Couse, Label Status) {
+        vbox.setVisible(true);
+        vbox.setManaged(true);
+
+        svg.setVisible(true);
+        svg.setManaged(true);
+
+        Couse.setText(finger.getCouse());
+
+        if (finger.getStatus() == 0)
+            Status.setText(resources.getString("Permanent"));
+        else
+            Status.setText(resources.getString("Temporary"));
+
+    }
+
 }

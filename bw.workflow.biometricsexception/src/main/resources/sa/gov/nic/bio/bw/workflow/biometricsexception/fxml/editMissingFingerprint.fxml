@@ -165,19 +165,13 @@
                                                                             contentDisplay="RIGHT"
                                                                             mnemonicParsing="false"
                                                                             nodeOrientation="RIGHT_TO_LEFT"
-                                                                            text="%Couse">
-                                                                    <items>
-                                                                        <MenuItem mnemonicParsing="false"
-                                                                                  text="Action 1"/>
-                                                                        <MenuItem mnemonicParsing="false"
-                                                                                  text="Action 2"/>
-                                                                    </items>
-                                                                </MenuButton>
+                                                                            text="%Couse"/>
                                                                 <VBox fx:id="VOtherRThumb" visible="false">
                                                                     <children>
                                                                         <Label contentDisplay="CENTER" prefHeight="20.0"
                                                                                prefWidth="80.0" text="%Status"/>
-                                                                        <RadioButton contentDisplay="CENTER"
+                                                                        <RadioButton toggleGroup="$TGRThumb"
+                                                                                     contentDisplay="CENTER"
                                                                                      mnemonicParsing="false"
                                                                                      prefHeight="27.0" prefWidth="97.0"
                                                                                      text="%Permanent">
@@ -185,7 +179,8 @@
                                                                                 <Insets left="10.0" right="10.0"/>
                                                                             </VBox.margin>
                                                                         </RadioButton>
-                                                                        <RadioButton mnemonicParsing="false"
+                                                                        <RadioButton toggleGroup="$TGRThumb"
+                                                                                     mnemonicParsing="false"
                                                                                      prefHeight="27.0" prefWidth="98.0"
                                                                                      text="%Temporary">
                                                                             <opaqueInsets>
@@ -228,19 +223,13 @@
                                                                             contentDisplay="RIGHT"
                                                                             mnemonicParsing="false"
                                                                             nodeOrientation="RIGHT_TO_LEFT"
-                                                                            text="%Couse">
-                                                                    <items>
-                                                                        <MenuItem mnemonicParsing="false"
-                                                                                  text="Action 1"/>
-                                                                        <MenuItem mnemonicParsing="false"
-                                                                                  text="Action 2"/>
-                                                                    </items>
-                                                                </MenuButton>
+                                                                            text="%Couse"/>
                                                                 <VBox fx:id="VOtherRIndex" visible="false">
                                                                     <children>
                                                                         <Label contentDisplay="CENTER" prefHeight="20.0"
                                                                                prefWidth="80.0" text="%Status"/>
-                                                                        <RadioButton contentDisplay="CENTER"
+                                                                        <RadioButton toggleGroup="$TGRIndex"
+                                                                                     contentDisplay="CENTER"
                                                                                      mnemonicParsing="false"
                                                                                      prefHeight="27.0" prefWidth="97.0"
                                                                                      text="%Permanent">
@@ -248,7 +237,8 @@
                                                                                 <Insets left="10.0" right="10.0"/>
                                                                             </VBox.margin>
                                                                         </RadioButton>
-                                                                        <RadioButton mnemonicParsing="false"
+                                                                        <RadioButton toggleGroup="$TGRIndex"
+                                                                                     mnemonicParsing="false"
                                                                                      prefHeight="27.0" prefWidth="98.0"
                                                                                      text="%Temporary">
                                                                             <opaqueInsets>
@@ -291,19 +281,13 @@
                                                                             contentDisplay="RIGHT"
                                                                             mnemonicParsing="false"
                                                                             nodeOrientation="RIGHT_TO_LEFT"
-                                                                            text="%Couse">
-                                                                    <items>
-                                                                        <MenuItem mnemonicParsing="false"
-                                                                                  text="Action 1"/>
-                                                                        <MenuItem mnemonicParsing="false"
-                                                                                  text="Action 2"/>
-                                                                    </items>
-                                                                </MenuButton>
+                                                                            text="%Couse"/>
                                                                 <VBox fx:id="VOtherRMiddle" visible="false">
                                                                     <children>
                                                                         <Label contentDisplay="CENTER" prefHeight="20.0"
                                                                                prefWidth="80.0" text="%Status"/>
-                                                                        <RadioButton contentDisplay="CENTER"
+                                                                        <RadioButton toggleGroup="$TGRMiddle"
+                                                                                     contentDisplay="CENTER"
                                                                                      mnemonicParsing="false"
                                                                                      prefHeight="27.0" prefWidth="97.0"
                                                                                      text="%Permanent">
@@ -311,7 +295,8 @@
                                                                                 <Insets left="10.0" right="10.0"/>
                                                                             </VBox.margin>
                                                                         </RadioButton>
-                                                                        <RadioButton mnemonicParsing="false"
+                                                                        <RadioButton toggleGroup="$TGRMiddle"
+                                                                                     mnemonicParsing="false"
                                                                                      prefHeight="27.0" prefWidth="98.0"
                                                                                      text="%Temporary">
                                                                             <opaqueInsets>
@@ -354,19 +339,13 @@
                                                                             contentDisplay="RIGHT"
                                                                             mnemonicParsing="false"
                                                                             nodeOrientation="RIGHT_TO_LEFT"
-                                                                            text="%Couse">
-                                                                    <items>
-                                                                        <MenuItem mnemonicParsing="false"
-                                                                                  text="Action 1"/>
-                                                                        <MenuItem mnemonicParsing="false"
-                                                                                  text="Action 2"/>
-                                                                    </items>
-                                                                </MenuButton>
+                                                                            text="%Couse"/>
                                                                 <VBox fx:id="VOtherRRing" visible="false">
                                                                     <children>
                                                                         <Label contentDisplay="CENTER" prefHeight="20.0"
                                                                                prefWidth="80.0" text="%Status"/>
-                                                                        <RadioButton contentDisplay="CENTER"
+                                                                        <RadioButton toggleGroup="$TGRRing"
+                                                                                     contentDisplay="CENTER"
                                                                                      mnemonicParsing="false"
                                                                                      prefHeight="27.0" prefWidth="97.0"
                                                                                      text="%Permanent">
@@ -374,7 +353,8 @@
                                                                                 <Insets left="10.0" right="10.0"/>
                                                                             </VBox.margin>
                                                                         </RadioButton>
-                                                                        <RadioButton mnemonicParsing="false"
+                                                                        <RadioButton toggleGroup="$TGRRing"
+                                                                                     mnemonicParsing="false"
                                                                                      prefHeight="27.0" prefWidth="98.0"
                                                                                      text="%Temporary">
                                                                             <opaqueInsets>
@@ -417,19 +397,13 @@
                                                                             contentDisplay="RIGHT"
                                                                             mnemonicParsing="false"
                                                                             nodeOrientation="RIGHT_TO_LEFT"
-                                                                            text="%Couse">
-                                                                    <items>
-                                                                        <MenuItem mnemonicParsing="false"
-                                                                                  text="Action 1"/>
-                                                                        <MenuItem mnemonicParsing="false"
-                                                                                  text="Action 2"/>
-                                                                    </items>
-                                                                </MenuButton>
+                                                                            text="%Couse"/>
                                                                 <VBox fx:id="VOtherRLittle" visible="false">
                                                                     <children>
                                                                         <Label contentDisplay="CENTER" prefHeight="20.0"
                                                                                prefWidth="80.0" text="%Status"/>
-                                                                        <RadioButton contentDisplay="CENTER"
+                                                                        <RadioButton toggleGroup="$TGRLittle"
+                                                                                     contentDisplay="CENTER"
                                                                                      mnemonicParsing="false"
                                                                                      prefHeight="27.0" prefWidth="97.0"
                                                                                      text="%Permanent">
@@ -437,7 +411,8 @@
                                                                                 <Insets left="10.0" right="10.0"/>
                                                                             </VBox.margin>
                                                                         </RadioButton>
-                                                                        <RadioButton mnemonicParsing="false"
+                                                                        <RadioButton toggleGroup="$TGRLittle"
+                                                                                     mnemonicParsing="false"
                                                                                      prefHeight="27.0" prefWidth="98.0"
                                                                                      text="%Temporary">
                                                                             <opaqueInsets>
@@ -498,19 +473,13 @@
                                                                             contentDisplay="RIGHT"
                                                                             mnemonicParsing="false"
                                                                             nodeOrientation="RIGHT_TO_LEFT"
-                                                                            text="%Couse">
-                                                                    <items>
-                                                                        <MenuItem mnemonicParsing="false"
-                                                                                  text="Action 1"/>
-                                                                        <MenuItem mnemonicParsing="false"
-                                                                                  text="Action 2"/>
-                                                                    </items>
-                                                                </MenuButton>
+                                                                            text="%Couse"/>
                                                                 <VBox fx:id="VOtherLThumb" visible="false">
                                                                     <children>
                                                                         <Label contentDisplay="CENTER" prefHeight="20.0"
                                                                                prefWidth="80.0" text="%Status"/>
-                                                                        <RadioButton contentDisplay="CENTER"
+                                                                        <RadioButton toggleGroup="$TGLThumb"
+                                                                                     contentDisplay="CENTER"
                                                                                      mnemonicParsing="false"
                                                                                      prefHeight="27.0" prefWidth="97.0"
                                                                                      text="%Permanent">
@@ -518,7 +487,8 @@
                                                                                 <Insets left="10.0" right="10.0"/>
                                                                             </VBox.margin>
                                                                         </RadioButton>
-                                                                        <RadioButton mnemonicParsing="false"
+                                                                        <RadioButton toggleGroup="$TGLThumb"
+                                                                                     mnemonicParsing="false"
                                                                                      prefHeight="27.0" prefWidth="98.0"
                                                                                      text="%Temporary">
                                                                             <opaqueInsets>
@@ -561,19 +531,13 @@
                                                                             contentDisplay="RIGHT"
                                                                             mnemonicParsing="false"
                                                                             nodeOrientation="RIGHT_TO_LEFT"
-                                                                            text="%Couse">
-                                                                    <items>
-                                                                        <MenuItem mnemonicParsing="false"
-                                                                                  text="Action 1"/>
-                                                                        <MenuItem mnemonicParsing="false"
-                                                                                  text="Action 2"/>
-                                                                    </items>
-                                                                </MenuButton>
+                                                                            text="%Couse"/>
                                                                 <VBox fx:id="VOtherLIndex" visible="false">
                                                                     <children>
                                                                         <Label contentDisplay="CENTER" prefHeight="20.0"
                                                                                prefWidth="80.0" text="%Status"/>
-                                                                        <RadioButton contentDisplay="CENTER"
+                                                                        <RadioButton toggleGroup="$TGLIndex"
+                                                                                     contentDisplay="CENTER"
                                                                                      mnemonicParsing="false"
                                                                                      prefHeight="27.0" prefWidth="97.0"
                                                                                      text="%Permanent">
@@ -581,7 +545,8 @@
                                                                                 <Insets left="10.0" right="10.0"/>
                                                                             </VBox.margin>
                                                                         </RadioButton>
-                                                                        <RadioButton mnemonicParsing="false"
+                                                                        <RadioButton toggleGroup="$TGLIndex"
+                                                                                     mnemonicParsing="false"
                                                                                      prefHeight="27.0" prefWidth="98.0"
                                                                                      text="%Temporary">
                                                                             <opaqueInsets>
@@ -624,19 +589,13 @@
                                                                             contentDisplay="RIGHT"
                                                                             mnemonicParsing="false"
                                                                             nodeOrientation="RIGHT_TO_LEFT"
-                                                                            text="%Couse">
-                                                                    <items>
-                                                                        <MenuItem mnemonicParsing="false"
-                                                                                  text="Action 1"/>
-                                                                        <MenuItem mnemonicParsing="false"
-                                                                                  text="Action 2"/>
-                                                                    </items>
-                                                                </MenuButton>
+                                                                            text="%Couse"/>
                                                                 <VBox fx:id="VOtherLMiddle" visible="false">
                                                                     <children>
                                                                         <Label contentDisplay="CENTER" prefHeight="20.0"
                                                                                prefWidth="80.0" text="%Status"/>
-                                                                        <RadioButton contentDisplay="CENTER"
+                                                                        <RadioButton toggleGroup="$TGLMiddle"
+                                                                                     contentDisplay="CENTER"
                                                                                      mnemonicParsing="false"
                                                                                      prefHeight="27.0" prefWidth="97.0"
                                                                                      text="%Permanent">
@@ -644,7 +603,8 @@
                                                                                 <Insets left="10.0" right="10.0"/>
                                                                             </VBox.margin>
                                                                         </RadioButton>
-                                                                        <RadioButton mnemonicParsing="false"
+                                                                        <RadioButton toggleGroup="$TGLMiddle"
+                                                                                     mnemonicParsing="false"
                                                                                      prefHeight="27.0" prefWidth="98.0"
                                                                                      text="%Temporary">
                                                                             <opaqueInsets>
@@ -687,19 +647,13 @@
                                                                             contentDisplay="RIGHT"
                                                                             mnemonicParsing="false"
                                                                             nodeOrientation="RIGHT_TO_LEFT"
-                                                                            text="%Couse">
-                                                                    <items>
-                                                                        <MenuItem mnemonicParsing="false"
-                                                                                  text="Action 1"/>
-                                                                        <MenuItem mnemonicParsing="false"
-                                                                                  text="Action 2"/>
-                                                                    </items>
-                                                                </MenuButton>
+                                                                            text="%Couse"/>
                                                                 <VBox fx:id="VOtherLRing" visible="false">
                                                                     <children>
                                                                         <Label contentDisplay="CENTER" prefHeight="20.0"
                                                                                prefWidth="80.0" text="%Status"/>
-                                                                        <RadioButton contentDisplay="CENTER"
+                                                                        <RadioButton toggleGroup="$TGLRing"
+                                                                                     contentDisplay="CENTER"
                                                                                      mnemonicParsing="false"
                                                                                      prefHeight="27.0" prefWidth="97.0"
                                                                                      text="%Permanent">
@@ -707,7 +661,8 @@
                                                                                 <Insets left="10.0" right="10.0"/>
                                                                             </VBox.margin>
                                                                         </RadioButton>
-                                                                        <RadioButton mnemonicParsing="false"
+                                                                        <RadioButton toggleGroup="$TGLRing"
+                                                                                     mnemonicParsing="false"
                                                                                      prefHeight="27.0" prefWidth="98.0"
                                                                                      text="%Temporary">
                                                                             <opaqueInsets>
@@ -750,19 +705,13 @@
                                                                             contentDisplay="RIGHT"
                                                                             mnemonicParsing="false"
                                                                             nodeOrientation="RIGHT_TO_LEFT"
-                                                                            text="%Couse">
-                                                                    <items>
-                                                                        <MenuItem mnemonicParsing="false"
-                                                                                  text="Action 1"/>
-                                                                        <MenuItem mnemonicParsing="false"
-                                                                                  text="Action 2"/>
-                                                                    </items>
-                                                                </MenuButton>
+                                                                            text="%Couse"/>
                                                                 <VBox fx:id="VOtherLLittle" visible="false">
                                                                     <children>
                                                                         <Label contentDisplay="CENTER" prefHeight="20.0"
                                                                                prefWidth="80.0" text="%Status"/>
-                                                                        <RadioButton contentDisplay="CENTER"
+                                                                        <RadioButton toggleGroup="$TGLLittle"
+                                                                                     contentDisplay="CENTER"
                                                                                      mnemonicParsing="false"
                                                                                      prefHeight="27.0" prefWidth="97.0"
                                                                                      text="%Permanent">
@@ -770,7 +719,8 @@
                                                                                 <Insets left="10.0" right="10.0"/>
                                                                             </VBox.margin>
                                                                         </RadioButton>
-                                                                        <RadioButton mnemonicParsing="false"
+                                                                        <RadioButton toggleGroup="$TGLLittle"
+                                                                                     mnemonicParsing="false"
                                                                                      prefHeight="27.0" prefWidth="98.0"
                                                                                      text="%Temporary">
                                                                             <opaqueInsets>

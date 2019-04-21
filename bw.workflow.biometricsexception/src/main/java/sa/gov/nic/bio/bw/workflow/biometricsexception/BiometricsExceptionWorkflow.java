@@ -59,6 +59,7 @@ public class BiometricsExceptionWorkflow extends WizardWorkflowBase {
                 break;
             }
             case 4: {
+                passData(EditMissingFingerprintFXController.class, ReviewAndSubmitFXController.class, "personfingerprints");
                 renderUiAndWaitForUserInput(ReviewAndSubmitFXController.class);
                 break;
             }
