@@ -140,10 +140,9 @@ public class ShowReportDialogFxController extends BodyFxControllerBase
 							        @Override
 							        protected void onSuccess()
 							        {
-								        List<ConvictedReport> rootConvictedReport =
-										                                        getData("convictedReport");
+								        ConvictedReport rootConvictedReport = getData("convictedReport");
 								
-								        convictedReports.addAll(rootConvictedReport);
+								        convictedReports.add(rootConvictedReport);
 								        convictedReports.sort(Comparator.comparingLong(ConvictedReport::getReportDate));
 								        handleConvictedReport(convictedReports);
 							        }
