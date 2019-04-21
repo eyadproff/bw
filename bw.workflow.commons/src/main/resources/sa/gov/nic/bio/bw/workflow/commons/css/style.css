@@ -93,3 +93,10 @@
     -fx-border-width: 1px;
     -fx-border-style: dashed;
 }
+
+.watermark {
+    -fx-font-size: 80px;
+    -fx-font-weight: bolder;
+    -fx-text-fill: #00000033;
+    -fx-rotate: 30;
+}

@@ -2,29 +2,47 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.Dialog?>
 <?import javafx.scene.control.DialogPane?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ProgressIndicator?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TitledPane?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
-<?import sa.gov.nic.bio.bw.workflow.commons.ui.CopiableLabel?>
-<?import sa.gov.nic.bio.bw.workflow.commons.ui.ImageViewPane?>
+<?import sa.gov.nic.bio.bw.workflow.commons.ui.PTableColumn?>
 <Dialog xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:id="dialog" title="%dialog.showConvictedReportDetails.title"
         fx:controller="sa.gov.nic.bio.bw.workflow.commons.controllers.ShowReportDialogFxController">
     <dialogPane>
         <DialogPane prefWidth="750.0" prefHeight="450.0" stylesheets="@/sa/gov/nic/bio/bw/core/css/style.css,@../css/style.css">
             <content>
                 <BorderPane>
+                    <left>
+                        <VBox fx:id="paneReportHistory" managed="false" visible="false">
+                            <padding>
+                                <Insets top="5.0"/>
+                            </padding>
+                            <TitledPane text="%label.reportHistory" collapsible="false" focusTraversable="false" maxWidth="150.0" VBox.vgrow="ALWAYS" maxHeight="Infinity">
+                                <TableView fx:id="tvReportHistory" maxHeight="Infinity">
+                                    <columnResizePolicy>
+                                        <TableView fx:constant="UNCONSTRAINED_RESIZE_POLICY"/>
+                                    </columnResizePolicy>
+                                    <placeholder>
+                                        <Label text="%table.placeholder.noReportNumbers"/>
+                                    </placeholder>
+                                    <columns>
+                                        <PTableColumn fx:id="tcReportSequence" text="#" reorderable="false" percentageWidth="0.2"/>
+                                        <PTableColumn fx:id="tcReportNumber" text="%table.column.reportNumber" reorderable="false" percentageWidth="0.79"/>
+                                    </columns>
+                                </TableView>
+                            </TitledPane>
+                        </VBox>
+                    </left>
                     <center>
                         <VBox alignment="CENTER">
                             <padding>
@@ -40,13 +58,17 @@
                                 </ImageView>
                                 <Label text="%label.failedToLoadReport"/>
                             </VBox>
-                            <ScrollPane fx:id="paneReport" VBox.vgrow="ALWAYS" fitToHeight="true" fitToWidth="true" managed="false" visible="false" hbarPolicy="NEVER">
-                                <BorderPane>
-                                    <center>
-                                        <fx:include fx:id="convictedReportNestedPane" source="convictedReportNestedPane.fxml"/>
-                                    </center>
-                                </BorderPane>
-                            </ScrollPane>
+                            <StackPane>
+                                <ScrollPane fx:id="paneReport" VBox.vgrow="ALWAYS" fitToHeight="true" fitToWidth="true" managed="false" visible="false" hbarPolicy="NEVER">
+                                    <BorderPane>
+                                        <center>
+                                            <fx:include fx:id="convictedReportNestedPane" source="convictedReportNestedPane.fxml"/>
+                                        </center>
+                                    </BorderPane>
+                                </ScrollPane>
+                                <Label fx:id="lblWatermarkOldVersion" text="%label.oldVersion" styleClass="watermark" managed="false" visible="false" mouseTransparent="true"/>
+                                <Label fx:id="lblWatermarkDeletedReport" text="%label.deletedReport" styleClass="watermark" managed="false" visible="false" mouseTransparent="true"/>
+                            </StackPane>
                         </VBox>
                     </center>
                     <bottom>

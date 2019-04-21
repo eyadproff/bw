@@ -570,6 +570,11 @@ public class EditJudgmentDetailsPaneFxController extends WizardStepFxControllerB
                                lblArrestDateOldValue.setText(judgementInfo.getArrestDate() != null ?
 						       GuiUtils.formatLocalDate(AppUtils.secondsToGregorianDate(judgementInfo.getArrestDate()),
                                                                             rdoArrestDateUseHijri.isSelected()) : ""));
+		
+		if(paneCrime2.isVisible()) visibleCrimeTypesCount++;
+		if(paneCrime3.isVisible()) visibleCrimeTypesCount++;
+		if(paneCrime4.isVisible()) visibleCrimeTypesCount++;
+		if(paneCrime5.isVisible()) visibleCrimeTypesCount++;
 	}
 	
 	@Override

@@ -40,6 +40,7 @@ public class ConvictedReportNestedFxController extends BodyFxControllerBase
 	@FXML private Label lblReportNumber;
 	@FXML private Label lblEnrollerId;
 	@FXML private Label lblEnrollmentTime;
+	@FXML private Label lblReportStatus;
 	@FXML private Label lblCivilBiometricsId;
 	@FXML private Label lblCriminalBiometricsId;
 	@FXML private Label lblFirstName;
@@ -128,6 +129,21 @@ public class ConvictedReportNestedFxController extends BodyFxControllerBase
 		Long enrollmentTimeLong = convictedReport.getReportDate();
 		if(enrollmentTimeLong != null) lblEnrollmentTime.setText(
 															AppUtils.formatHijriGregorianDateTime(enrollmentTimeLong));
+		
+		Integer status = convictedReport.getStatus();
+		
+		if(ConvictedReport.Status.ACTIVE.equals(status))
+		{
+			lblReportStatus.setText(resources.getString("label.active"));
+		}
+		else if(ConvictedReport.Status.UPDATED.equals(status))
+		{
+			lblReportStatus.setText(resources.getString("label.updated"));
+		}
+		else if(ConvictedReport.Status.DELETED.equals(status))
+		{
+			lblReportStatus.setText(resources.getString("label.deleted"));
+		}
 		
 		if(reportNumber != null || enrollmentTimeLong != null)
 		{
