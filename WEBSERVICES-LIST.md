@@ -31,6 +31,9 @@
         - services-gateway-demographic/api/person/info/v1
         - services-gateway-biooperation/api/fingerprint/images/v1
         - services-gateway-biooperation/api/fingerprint/available/v1
+        - services-gateway-biooperation/api/fingerprint/images/v2
+        - services-gateway-biooperation/api/fingerprint/available/v2
+        - services-gateway-biooperation/api/criminal/fingerprint/images/v1
         - services-gateway-biooperation/api/xafis/nist/extraction/v1
         - services-gateway-biooperation/api/fingerprint/inquiry/v1
         - services-gateway-biooperation/api/fingerprint/inquiry/status/v2
@@ -72,8 +75,8 @@
         - services-gateway-lookups/api/application/nationality/all/v1
         - services-gateway-lookups/api/application/crime-types/v1
         - services-gateway-biooperation/api/criminal/report/v1
-        - UPADTE_1_URL
-        - UPADTE_2_URL
+        - services-gateway-demographic/api/criminal-system/update/full-report/v1
+        - services-gateway-demographic/api/criminal-system/update/crime-Judgment/v1
     
     menu.query.faceVerification:
         - services-gateway-lookups/api/application/nationality/all/v1
@@ -96,6 +99,9 @@
         - services-gateway-demographic/api/person/info/v1
         - services-gateway-biooperation/api/fingerprint/images/v1
         - services-gateway-biooperation/api/fingerprint/available/v1
+        - services-gateway-biooperation/api/fingerprint/images/v2
+        - services-gateway-biooperation/api/fingerprint/available/v2
+        - services-gateway-biooperation/api/criminal/fingerprint/images/v1
         - services-gateway-biooperation/api/xafis/nist/extraction/v1
         - services-gateway-biooperation/api/fingerprint/inquiry/v1
         - services-gateway-biooperation/api/fingerprint/inquiry/status/v2
