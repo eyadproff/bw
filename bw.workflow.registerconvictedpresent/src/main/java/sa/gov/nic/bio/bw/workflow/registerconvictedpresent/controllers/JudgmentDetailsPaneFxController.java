@@ -320,6 +320,11 @@ public class JudgmentDetailsPaneFxController extends WizardStepFxControllerBase
 		
 		if(focusedNode != null) focusedNode.requestFocus();
 		else btnNext.requestFocus();
+		
+		if(paneCrime2.isVisible()) visibleCrimeTypesCount++;
+		if(paneCrime3.isVisible()) visibleCrimeTypesCount++;
+		if(paneCrime4.isVisible()) visibleCrimeTypesCount++;
+		if(paneCrime5.isVisible()) visibleCrimeTypesCount++;
 	}
 	
 	@Override

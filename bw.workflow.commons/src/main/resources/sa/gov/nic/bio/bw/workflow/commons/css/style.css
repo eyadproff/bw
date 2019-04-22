@@ -95,7 +95,7 @@
 }
 
 .watermark {
-    -fx-font-size: 80px;
+    -fx-font-size: 75px;
     -fx-font-weight: bolder;
     -fx-text-fill: #00000033;
     -fx-rotate: 30;

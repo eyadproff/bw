@@ -816,12 +816,18 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 		if(crimeCodes1 == null || crimeCodes2 == null) return false;
 		if(crimeCodes1.size() != crimeCodes2.size()) return false;
 		
-		for(int i = 0; i < crimeCodes1.size(); i++)
+		outer: for(int i = 0; i < crimeCodes1.size(); i++)
 		{
-			CrimeCode crimeCode1 = crimeCodes1.get(i);
-			CrimeCode crimeCode2 = crimeCodes2.get(i);
-			if(crimeCode1.getCrimeEvent() != crimeCode2.getCrimeEvent()) return false;
-			if(crimeCode1.getCrimeClass() != crimeCode2.getCrimeClass()) return false;
+			for(int j = 0; j < crimeCodes1.size(); j++)
+			{
+				CrimeCode crimeCode1 = crimeCodes1.get(i);
+				CrimeCode crimeCode2 = crimeCodes2.get(j);
+				
+				if(crimeCode1.getCrimeEvent() == crimeCode2.getCrimeEvent() &&
+				   crimeCode1.getCrimeClass() == crimeCode2.getCrimeClass()) continue outer;
+			}
+			
+			return false;
 		}
 		
 		return true;
