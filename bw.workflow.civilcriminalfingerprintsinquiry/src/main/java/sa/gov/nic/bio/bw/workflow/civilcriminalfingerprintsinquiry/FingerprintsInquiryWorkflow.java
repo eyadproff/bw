@@ -17,7 +17,6 @@ import sa.gov.nic.bio.bw.workflow.civilcriminalfingerprintsinquiry.controllers.S
 import sa.gov.nic.bio.bw.workflow.civilcriminalfingerprintsinquiry.controllers.UploadNistFileFxController;
 import sa.gov.nic.bio.bw.workflow.civilcriminalfingerprintsinquiry.tasks.ExtractingDataFromNistFileWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.civilcriminalfingerprintsinquiry.tasks.RetrieveFingerprintsAvailabilityByCivilBiometricIdWorkflowTask;
-import sa.gov.nic.bio.bw.workflow.civilcriminalfingerprintsinquiry.tasks.RetrieveFingerprintsAvailabilityByCriminalBiometricIdWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.civilcriminalfingerprintsinquiry.tasks.RetrieveFingerprintsByCivilBiometricIdWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.civilcriminalfingerprintsinquiry.tasks.RetrieveFingerprintsByCriminalBiometricIdWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.commons.beans.ConvictedReport;
@@ -150,15 +149,10 @@ public class FingerprintsInquiryWorkflow extends WizardWorkflowBase
 					         "criminalBiometricsId");
 					executeWorkflowTask(RetrieveFingerprintsByCriminalBiometricIdWorkflowTask.class);
 					
-					passData(CriminalBiometricsIdPaneFxController.class,
-					         RetrieveFingerprintsAvailabilityByCriminalBiometricIdWorkflowTask.class,
-					         "criminalBiometricsId");
-					executeWorkflowTask(RetrieveFingerprintsAvailabilityByCriminalBiometricIdWorkflowTask.class);
-					
 					passData(RetrieveFingerprintsByCriminalBiometricIdWorkflowTask.class,
 					         ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask.class,
 					         "fingerprints");
-					passData(RetrieveFingerprintsAvailabilityByCriminalBiometricIdWorkflowTask.class,
+					passData(RetrieveFingerprintsByCriminalBiometricIdWorkflowTask.class,
 					         ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask.class,
 					         "missingFingerprints");
 					executeWorkflowTask(ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask.class);
@@ -236,14 +230,14 @@ public class FingerprintsInquiryWorkflow extends WizardWorkflowBase
 					         ShowingFingerprintsPaneFxController.class,
 					         "fingerprintBase64Images");
 				}
-				if(fingerprintsSource == Source.ENTERING_CIVIL_BIOMETRICS_ID)
+				else if(fingerprintsSource == Source.ENTERING_CIVIL_BIOMETRICS_ID)
 				{
 					incrementNSteps(-1); // to skip step #2 on going previous
 					passData(ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask.class,
 					         ShowingFingerprintsPaneFxController.class,
 					         "fingerprintBase64Images");
 				}
-				if(fingerprintsSource == Source.ENTERING_CRIMINAL_BIOMETRICS_ID)
+				else if(fingerprintsSource == Source.ENTERING_CRIMINAL_BIOMETRICS_ID)
 				{
 					incrementNSteps(-1); // to skip step #2 on going previous
 					passData(ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask.class,
@@ -309,7 +303,7 @@ public class FingerprintsInquiryWorkflow extends WizardWorkflowBase
 						passData(RetrieveFingerprintsByCriminalBiometricIdWorkflowTask.class,
 						         FingerprintInquiryWorkflowTask.class,
 						         "fingerprints");
-						passData(RetrieveFingerprintsAvailabilityByCriminalBiometricIdWorkflowTask.class,
+						passData(RetrieveFingerprintsByCriminalBiometricIdWorkflowTask.class,
 						         FingerprintInquiryWorkflowTask.class,
 						         "missingFingerprints");
 					}
