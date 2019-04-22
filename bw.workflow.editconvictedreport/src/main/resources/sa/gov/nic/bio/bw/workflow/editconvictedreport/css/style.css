@@ -12,3 +12,19 @@
     -fx-text-fill: green;
     -fx-font-weight: bold;
 }
+
+.old-value-border {
+    -fx-border-color: red;
+    -fx-border-style: dashed;
+    -fx-border-width: 2px;
+}
+
+.new-value-border {
+    -fx-border-color: green;
+    -fx-border-style: dashed;
+    -fx-border-width: 2px;
+}
+
+.titled-pane > .title {
+    -fx-alignment: center;
+}

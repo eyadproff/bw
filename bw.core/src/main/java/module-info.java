@@ -14,7 +14,7 @@ module bw.core
 	requires transitive javafx.graphics;
 	requires transitive javafx.swing;
 	requires transitive bw.commons.resources;
-	requires transitive controlsfx;
+	requires transitive org.controlsfx.controls;
 	requires transitive retrofit2;
 	requires retrofit2.converter.gson;
 	requires org.apache.commons.lang3;

@@ -21,7 +21,7 @@ public abstract class WizardStepFxControllerBase extends BodyFxControllerBase im
 		state = new Object();
 		
 		hideNotification();
-		Context.getCoreFxController().showWizardTransitionProgressIndicator(true);
+		Context.getCoreFxController().showTransitionOverlay(true);
 		Map<String, Object> uiDataMap = new HashMap<>();
 		uiDataMap.put(WizardWorkflowBase.KEY_WORKFLOW_DIRECTION, WizardWorkflowBase.VALUE_WORKFLOW_DIRECTION_FORWARD);
 		onGoingNext(uiDataMap);
@@ -34,7 +34,7 @@ public abstract class WizardStepFxControllerBase extends BodyFxControllerBase im
 		state = new Object();
 		
 		hideNotification();
-		Context.getCoreFxController().showWizardTransitionProgressIndicator(true);
+		Context.getCoreFxController().showTransitionOverlay(true);
 		Map<String, Object> uiDataMap = new HashMap<>();
 		uiDataMap.put(WizardWorkflowBase.KEY_WORKFLOW_DIRECTION, WizardWorkflowBase.VALUE_WORKFLOW_DIRECTION_BACKWARD);
 		onGoingPrevious(uiDataMap);
@@ -47,7 +47,7 @@ public abstract class WizardStepFxControllerBase extends BodyFxControllerBase im
 		state = null;
 		
 		hideNotification();
-		Context.getCoreFxController().showWizardTransitionProgressIndicator(true);
+		Context.getCoreFxController().showTransitionOverlay(true);
 		Map<String, Object> uiDataMap = new HashMap<>();
 		uiDataMap.put(WizardWorkflowBase.KEY_WORKFLOW_DIRECTION,
 		              WizardWorkflowBase.VALUE_WORKFLOW_DIRECTION_START_OVER);

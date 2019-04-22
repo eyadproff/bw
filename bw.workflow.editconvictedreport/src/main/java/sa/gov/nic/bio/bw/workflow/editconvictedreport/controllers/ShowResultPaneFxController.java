@@ -10,15 +10,18 @@ import sa.gov.nic.bio.bw.core.workflow.Input;
 @FxmlFile("showResult.fxml")
 public class ShowResultPaneFxController extends WizardStepFxControllerBase
 {
-	@Input(alwaysRequired = true) private long reportNumber;
+	@Input(alwaysRequired = true) private long oldReportNumber;
+	@Input(alwaysRequired = true) private long newReportNumber;
 	
-	@FXML private TextField txtReportNumber;
+	@FXML private TextField txtOldReportNumber;
+	@FXML private TextField txtNewReportNumber;
 	@FXML private Button btnStartOver;
 	
 	@Override
 	protected void onAttachedToScene()
 	{
-		txtReportNumber.setText(String.valueOf(reportNumber));
+		txtOldReportNumber.setText(String.valueOf(oldReportNumber));
+		txtNewReportNumber.setText(String.valueOf(newReportNumber));
 		btnStartOver.requestFocus();
 	}
 }

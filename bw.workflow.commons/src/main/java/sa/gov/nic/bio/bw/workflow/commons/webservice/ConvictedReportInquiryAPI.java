@@ -27,8 +27,9 @@ public interface ConvictedReportInquiryAPI
 	Call<SearchQueryResult<ConvictedReport>> inquireConvictedReportBySearchCriteria(
 																@Header("Workflow-Code") Integer workflowId,
 																@Header("Workflow-Tcn") Long workflowTcn,
-																@Query("general-file-number") Long generalFileNumber,
 																@Query("report-number") Long reportNumber,
+																@Query("general-file-number") Long generalFileNumber,
+																@Query("location") Long location,
 																@Query("judgement-number") String judgementNumber,
 																@Query("samis-id") Long samisId,
 																@Query("prisoner-number") Long prisonerNumber,
@@ -39,6 +40,10 @@ public interface ConvictedReportInquiryAPI
 																@Query("father-name") String fatherName,
 																@Query("grand-father-name") String gFatherName,
 																@Query("family-name") String familyName,
+																@Query("operator-id") Long operatorId,
+																@Query("root-report-number") Long rootReportNumber,
+																@Query("updated") Boolean updated,
+																@Query("deleted") Boolean deleted,
 																@Query("page-start") Integer pageStart,
 																@Query("page-end") Integer pageEnd);
 	

@@ -41,8 +41,7 @@
                                         </center>
                                     </BorderPane>
                                 </VBox>
-                                <ProgressIndicator fx:id="piWizardTransition" visible="false" maxHeight="25.0" maxWidth="25.0"/>
-                                <StackPane fx:id="menuTransitionOverlayPane" styleClass="background-overlay-white" visible="false">
+                                <StackPane fx:id="paneTransitionOverlay" styleClass="background-overlay-light" visible="false">
                                     <ProgressIndicator maxHeight="25.0" maxWidth="25.0"/>
                                 </StackPane>
                             </StackPane>
@@ -55,7 +54,7 @@
             <fx:include fx:id="footerPane" source="footer.fxml" styleClass="footer"/>
         </bottom>
     </BorderPane>
-    <StackPane fx:id="stageOverlayPane" styleClass="background-overlay" visible="false"/>
+    <StackPane fx:id="paneStageOverlay" styleClass="background-overlay" visible="false"/>
 </StackPane>
 
 <!-- NOTE:

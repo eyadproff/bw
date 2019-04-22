@@ -13,15 +13,20 @@ import sa.gov.nic.bio.bw.workflow.commons.lookups.CountriesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.CrimeTypesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.DocumentTypesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.PersonTypesLookup;
+import sa.gov.nic.bio.bw.workflow.commons.tasks.ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.ConvictedReportInquiryByReportNumberWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.ConvictedReportToPersonInfoConverter;
 import sa.gov.nic.bio.bw.workflow.deleteconvictedreport.controllers.EnterReportNumberPaneFxController;
 import sa.gov.nic.bio.bw.workflow.editconvictedreport.controllers.EditJudgmentDetailsPaneFxController;
 import sa.gov.nic.bio.bw.workflow.editconvictedreport.controllers.EditPersonInfoPaneFxController;
 import sa.gov.nic.bio.bw.workflow.editconvictedreport.controllers.EditPunishmentDetailsPaneFxController;
+import sa.gov.nic.bio.bw.workflow.editconvictedreport.controllers.ReviewAndSubmitPaneFxController;
+import sa.gov.nic.bio.bw.workflow.editconvictedreport.controllers.ShowResultPaneFxController;
+import sa.gov.nic.bio.bw.workflow.editconvictedreport.tasks.EditConvictedReportWithoutConvictedReportWorkflowTask;
+import sa.gov.nic.bio.bw.workflow.editconvictedreport.tasks.EditFullConvictedReportWorkflowTask;
 
-@AssociatedMenu(workflowId = 1016, menuId = "menu.edit.editConvictedReport",
-		menuTitle = "menu.title", menuOrder = 1, devices = Device.BIO_UTILITIES)
+@AssociatedMenu(workflowId = 1016, menuId = "menu.edit.editConvictedReport", menuTitle = "menu.title", menuOrder = 1,
+				devices = Device.BIO_UTILITIES)
 @WithLookups({PersonTypesLookup.class, DocumentTypesLookup.class, CountriesLookup.class, CrimeTypesLookup.class})
 @Wizard({@Step(iconId = "search", title = "wizard.enterReportNumber"),
 		@Step(iconId = "user", title = "wizard.editPersonInfo"),
@@ -43,6 +48,20 @@ public class EditConvictedReportWorkflow extends WizardWorkflowBase
 				         ConvictedReportInquiryByReportNumberWorkflowTask.class,
 				         "reportNumber");
 				executeWorkflowTask(ConvictedReportInquiryByReportNumberWorkflowTask.class);
+				passData(ConvictedReportInquiryByReportNumberWorkflowTask.class,
+				         EnterReportNumberPaneFxController.class, "convictedReport");
+				
+				ConvictedReport convictedReport = getData(ConvictedReportInquiryByReportNumberWorkflowTask.class,
+				                                          "convictedReport");
+				if(convictedReport != null && ConvictedReport.Status.ACTIVE.equals(convictedReport.getStatus()))
+				{
+					setData(ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask.class,
+					         "fingerprints", convictedReport.getSubjFingers());
+					setData(ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask.class,
+					         "missingFingerprints", convictedReport.getSubjMissingFingers());
+					executeWorkflowTask(ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask.class);
+				}
+				
 				break;
 			}
 			case 1:
@@ -62,6 +81,8 @@ public class EditConvictedReportWorkflow extends WizardWorkflowBase
 				                                          "convictedReport");
 				setData(EditJudgmentDetailsPaneFxController.class, "judgementInfo",
 				        convictedReport.getSubjJudgementInfo());
+				setData(EditJudgmentDetailsPaneFxController.class, "oldCrimes",
+				        convictedReport.getCrimeCodes());
 				renderUiAndWaitForUserInput(EditJudgmentDetailsPaneFxController.class);
 				
 				break;
@@ -78,12 +99,93 @@ public class EditConvictedReportWorkflow extends WizardWorkflowBase
 			}
 			case 4:
 			{
+				Boolean fullEditor = getData(EditPersonInfoPaneFxController.class, "fullEditor");
+				ConvictedReport convictedReport = getData(ConvictedReportInquiryByReportNumberWorkflowTask.class,
+				                                          "convictedReport");
+				setData(ReviewAndSubmitPaneFxController.class, "fullEditor", fullEditor);
+				setData(ReviewAndSubmitPaneFxController.class, "oldReportNumber",
+				        convictedReport.getReportNumber());
+				setData(ReviewAndSubmitPaneFxController.class, "oldEnrollerId",
+				        convictedReport.getOperatorId());
+				setData(ReviewAndSubmitPaneFxController.class, "oldEnrollmentTime",
+				        convictedReport.getReportDate());
+				setData(ReviewAndSubmitPaneFxController.class, "facePhotoBase64",
+				        convictedReport.getSubjFace());
+				setData(ReviewAndSubmitPaneFxController.class, "civilBiometricsId",
+				        convictedReport.getSubjBioId());
+				setData(ReviewAndSubmitPaneFxController.class, "criminalBiometricsId",
+				        convictedReport.getGeneralFileNumber());
+				passData(ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask.class,
+				         ReviewAndSubmitPaneFxController.class, "fingerprintBase64Images");
+				passData(EditPersonInfoPaneFxController.class, ReviewAndSubmitPaneFxController.class,
+				         "firstNameOldValue", "firstNameNewValue", "fatherNameOldValue",
+				         "fatherNameNewValue", "grandfatherNameOldValue", "grandfatherNameNewValue",
+				         "familyNameOldValue", "familyNameNewValue", "genderOldValue", "genderNewValue",
+				         "nationalityOldValue", "nationalityNewValue", "occupationOldValue", "occupationNewValue",
+				         "birthPlaceOldValue", "birthPlaceNewValue", "birthDateOldValue", "birthDateNewValue",
+				         "personIdOldValue", "personIdNewValue", "personTypeOldValue", "personTypeNewValue",
+				         "documentIdOldValue", "documentIdNewValue", "documentTypeOldValue", "documentTypeNewValue",
+				         "documentIssuanceDateOldValue", "documentIssuanceDateNewValue", "documentExpiryDateOldValue",
+				         "documentExpiryDateNewValue");
+				passData(EditJudgmentDetailsPaneFxController.class, ReviewAndSubmitPaneFxController.class,
+				         "judgmentIssuerOldValue", "judgmentIssuerNewValue", "judgmentNumberOldValue",
+				         "judgmentNumberNewValue", "judgmentDateOldValue", "judgmentDateNewValue",
+				         "caseFileNumberOldValue", "caseFileNumberNewValue", "prisonerNumberOldValue",
+				         "prisonerNumberNewValue", "arrestDateOldValue", "arrestDateNewValue", "oldCrimes",
+				         "newCrimes");
+				passData(EditPunishmentDetailsPaneFxController.class, ReviewAndSubmitPaneFxController.class,
+				         "tazeerLashesOldValue", "tazeerLashesNewValue", "hadLashesOldValue",
+				         "hadLashesNewValue", "fineOldValue", "fineNewValue", "jailYearsOldValue", "jailYearsNewValue",
+				         "jailMonthsOldValue", "jailMonthsNewValue", "jailDaysOldValue", "jailDaysNewValue",
+				         "travelBanYearsOldValue", "travelBanYearsNewValue", "travelBanMonthsOldValue",
+				         "travelBanMonthsNewValue", "travelBanDaysOldValue", "travelBanDaysNewValue",
+				         "exilingYearsOldValue", "exilingYearsNewValue", "exilingMonthsOldValue",
+				         "exilingMonthsNewValue", "exilingDaysOldValue", "exilingDaysNewValue",
+				         "deportationYearsOldValue", "deportationYearsNewValue", "deportationMonthsOldValue",
+				         "deportationMonthsNewValue", "deportationDaysOldValue", "deportationDaysNewValue",
+				         "finalDeportationOldValue", "finalDeportationNewValue", "libelOldValue", "libelNewValue",
+				         "covenantOldValue", "covenantNewValue", "otherOldValue", "otherNewValue");
+				passData(EditPersonInfoPaneFxController.class, ReviewAndSubmitPaneFxController.class,
+				         "fullEditor");
+				renderUiAndWaitForUserInput(ReviewAndSubmitPaneFxController.class);
 				
+				if(fullEditor != null && fullEditor)
+				{
+					passData(ReviewAndSubmitPaneFxController.class, EditFullConvictedReportWorkflowTask.class,
+					         "convictedReport");
+					executeWorkflowTask(EditFullConvictedReportWorkflowTask.class);
+				}
+				else
+				{
+					passData(ReviewAndSubmitPaneFxController.class,
+					         EditConvictedReportWithoutConvictedReportWorkflowTask.class,
+					         "convictedReport");
+					executeWorkflowTask(EditConvictedReportWithoutConvictedReportWorkflowTask.class);
+				}
 				
 				break;
 			}
 			case 5:
 			{
+				Boolean fullEditor = getData(EditPersonInfoPaneFxController.class, "fullEditor");
+				ConvictedReport convictedReport = getData(ConvictedReportInquiryByReportNumberWorkflowTask.class,
+				                                          "convictedReport");
+				setData(ShowResultPaneFxController.class, "oldReportNumber",
+				        convictedReport.getReportNumber());
+				
+				if(fullEditor != null && fullEditor)
+				{
+					passData(EditFullConvictedReportWorkflowTask.class, ShowResultPaneFxController.class,
+					         "newReportNumber");
+				}
+				else
+				{
+					passData(EditConvictedReportWithoutConvictedReportWorkflowTask.class,
+					         ShowResultPaneFxController.class,
+					         "newReportNumber");
+				}
+				
+				renderUiAndWaitForUserInput(ShowResultPaneFxController.class);
 				break;
 			}
 		}
