@@ -14,6 +14,7 @@ VERSION SCHEMA: vYYYY.MM.#SEQ
 ## v2019.04.2
 
 - CHN: Disable updating personId when editing convicted report.
+- FIX: when navigating between convicted reports history, if the new value is null it will not override the old field value.
 
 ---
 
