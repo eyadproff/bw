@@ -11,6 +11,12 @@ VERSION SCHEMA: vYYYY.MM.#SEQ
 
 ---
 
+## v2019.04.2
+
+- CHN: Disable updating personId when editing convicted report.
+
+---
+
 ## v2019.04.1
 
 - ENH: Unify the transition overlay for menu transition and wizard transition.
