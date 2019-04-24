@@ -17,7 +17,7 @@ import java.util.Map;
 public class BiometricsExceptionTypeFXController extends WizardStepFxControllerBase {
 
     @Output
-    private Type imageSource;
+    private Type exceptionType;
     @FXML
     private RadioButton rbFingerPrints;
     @FXML
@@ -62,7 +62,7 @@ public class BiometricsExceptionTypeFXController extends WizardStepFxControllerB
         // if (hidePreviousButton != null) GuiUtils.showNode(btnPrevious, !hidePreviousButton);
 
         // load the old state, if exists
-        if (Type.FACEIMAGE.equals(imageSource)) {
+        if (Type.FACE.equals(exceptionType)) {
             rbFaceImage.setSelected(true);
             rbFaceImage.requestFocus();
         } else {
@@ -78,13 +78,13 @@ public class BiometricsExceptionTypeFXController extends WizardStepFxControllerB
 
     @Override
     public void onGoingNext(Map<String, Object> uiDataMap) {
-        if (rbFaceImage.isSelected()) imageSource = Type.FACEIMAGE;
-        else imageSource = Type.FINGERPRINTS;
+        if (rbFaceImage.isSelected()) exceptionType = Type.FACE;
+        else exceptionType = Type.FINGERPRINTS;
     }
 
     public enum Type {
         FINGERPRINTS,
-        FACEIMAGE
+        FACE
 
     }
 }

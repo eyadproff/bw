@@ -160,7 +160,7 @@
                                                 <Label text="%Thumb"/>
                                                 <HBox prefHeight="20.0" prefWidth="230.0" spacing="15.0">
                                                     <children>
-                                                        <Label text="%CouseText"/>
+                                                        <Label text="%CauseText"/>
                                                         <Label fx:id="LThumbCouse"/>
                                                     </children>
                                                 </HBox>
@@ -183,7 +183,7 @@
                                                 <Label text="%IndexFinger"/>
                                                 <HBox prefHeight="20.0" prefWidth="230.0" spacing="15.0">
                                                     <children>
-                                                        <Label text="%CouseText"/>
+                                                        <Label text="%CauseText"/>
                                                         <Label fx:id="LIndexCouse"/>
                                                     </children>
                                                 </HBox>
@@ -209,7 +209,7 @@
                                                 <Label text="%MiddleFinger"/>
                                                 <HBox prefHeight="20.0" prefWidth="230.0" spacing="15.0">
                                                     <children>
-                                                        <Label text="%CouseText"/>
+                                                        <Label text="%CauseText"/>
                                                         <Label fx:id="LMiddleCouse"/>
                                                     </children>
                                                 </HBox>
@@ -235,7 +235,7 @@
                                                 <Label text="%RingFinger"/>
                                                 <HBox prefHeight="20.0" prefWidth="230.0" spacing="15.0">
                                                     <children>
-                                                        <Label text="%CouseText"/>
+                                                        <Label text="%CauseText"/>
                                                         <Label fx:id="LRingCouse"/>
                                                     </children>
                                                 </HBox>
@@ -261,7 +261,7 @@
                                                 <Label text="%LittleFinger"/>
                                                 <HBox prefHeight="20.0" prefWidth="230.0" spacing="15.0">
                                                     <children>
-                                                        <Label text="%CouseText"/>
+                                                        <Label text="%CauseText"/>
                                                         <Label fx:id="LLittleCouse"/>
                                                     </children>
                                                 </HBox>
@@ -314,7 +314,7 @@
                                                 <Label text="%Thumb"/>
                                                 <HBox prefHeight="20.0" prefWidth="230.0" spacing="15.0">
                                                     <children>
-                                                        <Label text="%CouseText"/>
+                                                        <Label text="%CauseText"/>
                                                         <Label fx:id="RThumbCouse"/>
                                                     </children>
                                                 </HBox>
@@ -337,7 +337,7 @@
                                                 <Label text="%IndexFinger"/>
                                                 <HBox prefHeight="20.0" prefWidth="230.0" spacing="15.0">
                                                     <children>
-                                                        <Label text="%CouseText"/>
+                                                        <Label text="%CauseText"/>
                                                         <Label fx:id="RIndexCouse"/>
                                                     </children>
                                                 </HBox>
@@ -363,7 +363,7 @@
                                                 <Label text="%MiddleFinger"/>
                                                 <HBox prefHeight="20.0" prefWidth="230.0" spacing="15.0">
                                                     <children>
-                                                        <Label text="%CouseText"/>
+                                                        <Label text="%CauseText"/>
                                                         <Label fx:id="RMiddleCouse"/>
                                                     </children>
                                                 </HBox>
@@ -389,7 +389,7 @@
                                                 <Label text="%RingFinger"/>
                                                 <HBox prefHeight="20.0" prefWidth="230.0" spacing="15.0">
                                                     <children>
-                                                        <Label text="%CouseText"/>
+                                                        <Label text="%CauseText"/>
                                                         <Label fx:id="RRingCouse"/>
                                                     </children>
                                                 </HBox>
@@ -415,7 +415,7 @@
                                                 <Label text="%LittleFinger"/>
                                                 <HBox prefHeight="20.0" prefWidth="230.0" spacing="15.0">
                                                     <children>
-                                                        <Label text="%CouseText"/>
+                                                        <Label text="%CauseText"/>
                                                         <Label fx:id="RLittleCouse"/>
                                                     </children>
                                                 </HBox>

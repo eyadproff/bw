@@ -165,7 +165,7 @@
                                                                             contentDisplay="RIGHT"
                                                                             mnemonicParsing="false"
                                                                             nodeOrientation="RIGHT_TO_LEFT"
-                                                                            text="%Couse"/>
+                                                                            text="%Cause"/>
                                                                 <VBox fx:id="VOtherRThumb" visible="false">
                                                                     <children>
                                                                         <Label contentDisplay="CENTER" prefHeight="20.0"
@@ -194,7 +194,7 @@
                                                                                    maxHeight="-Infinity"
                                                                                    maxWidth="-Infinity"
                                                                                    prefHeight="22.0" prefWidth="121.0"
-                                                                                   promptText="%Couse"
+                                                                                   promptText="%Cause"
                                                                                    VBox.vgrow="ALWAYS">
                                                                             <VBox.margin>
                                                                                 <Insets top="5.0"/>
@@ -223,7 +223,7 @@
                                                                             contentDisplay="RIGHT"
                                                                             mnemonicParsing="false"
                                                                             nodeOrientation="RIGHT_TO_LEFT"
-                                                                            text="%Couse"/>
+                                                                            text="%Cause"/>
                                                                 <VBox fx:id="VOtherRIndex" visible="false">
                                                                     <children>
                                                                         <Label contentDisplay="CENTER" prefHeight="20.0"
@@ -252,7 +252,7 @@
                                                                                    maxHeight="-Infinity"
                                                                                    maxWidth="-Infinity"
                                                                                    prefHeight="22.0" prefWidth="121.0"
-                                                                                   promptText="%Couse"
+                                                                                   promptText="%Cause"
                                                                                    VBox.vgrow="ALWAYS">
                                                                             <VBox.margin>
                                                                                 <Insets top="5.0"/>
@@ -281,7 +281,7 @@
                                                                             contentDisplay="RIGHT"
                                                                             mnemonicParsing="false"
                                                                             nodeOrientation="RIGHT_TO_LEFT"
-                                                                            text="%Couse"/>
+                                                                            text="%Cause"/>
                                                                 <VBox fx:id="VOtherRMiddle" visible="false">
                                                                     <children>
                                                                         <Label contentDisplay="CENTER" prefHeight="20.0"
@@ -310,7 +310,7 @@
                                                                                    maxHeight="-Infinity"
                                                                                    maxWidth="-Infinity"
                                                                                    prefHeight="22.0" prefWidth="121.0"
-                                                                                   promptText="%Couse"
+                                                                                   promptText="%Cause"
                                                                                    VBox.vgrow="ALWAYS">
                                                                             <VBox.margin>
                                                                                 <Insets top="5.0"/>
@@ -339,7 +339,7 @@
                                                                             contentDisplay="RIGHT"
                                                                             mnemonicParsing="false"
                                                                             nodeOrientation="RIGHT_TO_LEFT"
-                                                                            text="%Couse"/>
+                                                                            text="%Cause"/>
                                                                 <VBox fx:id="VOtherRRing" visible="false">
                                                                     <children>
                                                                         <Label contentDisplay="CENTER" prefHeight="20.0"
@@ -368,7 +368,7 @@
                                                                                    maxHeight="-Infinity"
                                                                                    maxWidth="-Infinity"
                                                                                    prefHeight="22.0" prefWidth="121.0"
-                                                                                   promptText="%Couse"
+                                                                                   promptText="%Cause"
                                                                                    VBox.vgrow="ALWAYS">
                                                                             <VBox.margin>
                                                                                 <Insets top="5.0"/>
@@ -397,7 +397,7 @@
                                                                             contentDisplay="RIGHT"
                                                                             mnemonicParsing="false"
                                                                             nodeOrientation="RIGHT_TO_LEFT"
-                                                                            text="%Couse"/>
+                                                                            text="%Cause"/>
                                                                 <VBox fx:id="VOtherRLittle" visible="false">
                                                                     <children>
                                                                         <Label contentDisplay="CENTER" prefHeight="20.0"
@@ -426,7 +426,7 @@
                                                                                    maxHeight="-Infinity"
                                                                                    maxWidth="-Infinity"
                                                                                    prefHeight="22.0" prefWidth="121.0"
-                                                                                   promptText="%Couse"
+                                                                                   promptText="%Cause"
                                                                                    VBox.vgrow="ALWAYS">
                                                                             <VBox.margin>
                                                                                 <Insets top="5.0"/>
@@ -473,7 +473,7 @@
                                                                             contentDisplay="RIGHT"
                                                                             mnemonicParsing="false"
                                                                             nodeOrientation="RIGHT_TO_LEFT"
-                                                                            text="%Couse"/>
+                                                                            text="%Cause"/>
                                                                 <VBox fx:id="VOtherLThumb" visible="false">
                                                                     <children>
                                                                         <Label contentDisplay="CENTER" prefHeight="20.0"
@@ -502,7 +502,7 @@
                                                                                    maxHeight="-Infinity"
                                                                                    maxWidth="-Infinity"
                                                                                    prefHeight="22.0" prefWidth="121.0"
-                                                                                   promptText="%Couse"
+                                                                                   promptText="%Cause"
                                                                                    VBox.vgrow="ALWAYS">
                                                                             <VBox.margin>
                                                                                 <Insets top="5.0"/>
@@ -531,7 +531,7 @@
                                                                             contentDisplay="RIGHT"
                                                                             mnemonicParsing="false"
                                                                             nodeOrientation="RIGHT_TO_LEFT"
-                                                                            text="%Couse"/>
+                                                                            text="%Cause"/>
                                                                 <VBox fx:id="VOtherLIndex" visible="false">
                                                                     <children>
                                                                         <Label contentDisplay="CENTER" prefHeight="20.0"
@@ -560,7 +560,7 @@
                                                                                    maxHeight="-Infinity"
                                                                                    maxWidth="-Infinity"
                                                                                    prefHeight="22.0" prefWidth="121.0"
-                                                                                   promptText="%Couse"
+                                                                                   promptText="%Cause"
                                                                                    VBox.vgrow="ALWAYS">
                                                                             <VBox.margin>
                                                                                 <Insets top="5.0"/>
@@ -589,7 +589,7 @@
                                                                             contentDisplay="RIGHT"
                                                                             mnemonicParsing="false"
                                                                             nodeOrientation="RIGHT_TO_LEFT"
-                                                                            text="%Couse"/>
+                                                                            text="%Cause"/>
                                                                 <VBox fx:id="VOtherLMiddle" visible="false">
                                                                     <children>
                                                                         <Label contentDisplay="CENTER" prefHeight="20.0"
@@ -618,7 +618,7 @@
                                                                                    maxHeight="-Infinity"
                                                                                    maxWidth="-Infinity"
                                                                                    prefHeight="22.0" prefWidth="121.0"
-                                                                                   promptText="%Couse"
+                                                                                   promptText="%Cause"
                                                                                    VBox.vgrow="ALWAYS">
                                                                             <VBox.margin>
                                                                                 <Insets top="5.0"/>
@@ -647,7 +647,7 @@
                                                                             contentDisplay="RIGHT"
                                                                             mnemonicParsing="false"
                                                                             nodeOrientation="RIGHT_TO_LEFT"
-                                                                            text="%Couse"/>
+                                                                            text="%Cause"/>
                                                                 <VBox fx:id="VOtherLRing" visible="false">
                                                                     <children>
                                                                         <Label contentDisplay="CENTER" prefHeight="20.0"
@@ -676,7 +676,7 @@
                                                                                    maxHeight="-Infinity"
                                                                                    maxWidth="-Infinity"
                                                                                    prefHeight="22.0" prefWidth="121.0"
-                                                                                   promptText="%Couse"
+                                                                                   promptText="%Cause"
                                                                                    VBox.vgrow="ALWAYS">
                                                                             <VBox.margin>
                                                                                 <Insets top="5.0"/>
@@ -705,7 +705,7 @@
                                                                             contentDisplay="RIGHT"
                                                                             mnemonicParsing="false"
                                                                             nodeOrientation="RIGHT_TO_LEFT"
-                                                                            text="%Couse"/>
+                                                                            text="%Cause"/>
                                                                 <VBox fx:id="VOtherLLittle" visible="false">
                                                                     <children>
                                                                         <Label contentDisplay="CENTER" prefHeight="20.0"
@@ -734,7 +734,7 @@
                                                                                    maxHeight="-Infinity"
                                                                                    maxWidth="-Infinity"
                                                                                    prefHeight="22.0" prefWidth="121.0"
-                                                                                   promptText="%Couse"
+                                                                                   promptText="%Cause"
                                                                                    VBox.vgrow="ALWAYS">
                                                                             <VBox.margin>
                                                                                 <Insets top="5.0"/>

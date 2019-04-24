@@ -1,5 +1,6 @@
 package sa.gov.nic.bio.bw.workflow.biometricsexception.controllers;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
@@ -8,8 +9,6 @@ import sa.gov.nic.bio.bw.core.utils.FxmlFile;
 import sa.gov.nic.bio.bw.core.workflow.Output;
 import sa.gov.nic.bio.bw.workflow.biometricsexception.beans.Fingerprint;
 import sa.gov.nic.bio.bw.workflow.biometricsexception.beans.PersonFingerprints;
-
-import java.util.Map;
 
 @FxmlFile("editMissingFingerprint.fxml")
 public class EditMissingFingerprintFXController extends WizardStepFxControllerBase {
@@ -136,7 +135,7 @@ public class EditMissingFingerprintFXController extends WizardStepFxControllerBa
 
     private void AddItemsToMenu(MenuButton menu, VBox VOther) {
         MenuItem item = new MenuItem();
-        item.setText("Other");
+        item.setText(resources.getString("Other"));
         item.setOnAction(e -> OnActionMenuItemOtherCouse(item.getText(), menu, VOther));
         menu.getItems().add(item);
 
@@ -164,62 +163,15 @@ public class EditMissingFingerprintFXController extends WizardStepFxControllerBa
 
     }
 
-    @Override
-    protected void onGoingNext(Map<String, Object> uiDataMap) {
-
-        personfingerprints = PerF;
-        personfingerprints.setRThumb(new Fingerprint());
-        personfingerprints.setRIndex(new Fingerprint());
-        personfingerprints.setRMiddle(new Fingerprint());
-        personfingerprints.setRRing(new Fingerprint());
-        personfingerprints.setRLittle(new Fingerprint());
-
-        personfingerprints.setLThumb(new Fingerprint());
-        personfingerprints.setLIndex(new Fingerprint());
-        personfingerprints.setLMiddle(new Fingerprint());
-        personfingerprints.setLRing(new Fingerprint());
-        personfingerprints.setLLittle(new Fingerprint());
-
-
-        if (chbRightThumb.isSelected())
-            addMFToPersonFPs(personfingerprints.getRThumb(), MenuRThumb, TGRThumb, CouseTRThumb);
-        if (chbRightIndex.isSelected())
-            addMFToPersonFPs(personfingerprints.getRIndex(), MenuRIndex, TGRIndex, CouseTRIndex);
-        if (chbRightMiddle.isSelected())
-            addMFToPersonFPs(personfingerprints.getRMiddle(), MenuRMiddle, TGRMiddle, CouseTRMiddle);
-        if (chbRightRing.isSelected())
-            addMFToPersonFPs(personfingerprints.getRRing(), MenuRRing, TGRRing, CouseTRRing);
-        if (chbRightLittle.isSelected())
-            addMFToPersonFPs(personfingerprints.getRLittle(), MenuRLittle, TGRLittle, CouseTRLittle);
-
-        if (chbLeftThumb.isSelected())
-            addMFToPersonFPs(personfingerprints.getLThumb(), MenuLThumb, TGLThumb, CouseTLThumb);
-        if (chbLeftIndex.isSelected())
-            addMFToPersonFPs(personfingerprints.getLIndex(), MenuLIndex, TGLIndex, CouseTLIndex);
-        if (chbLeftMiddle.isSelected())
-            addMFToPersonFPs(personfingerprints.getLMiddle(), MenuLMiddle, TGLMiddle, CouseTLMiddle);
-        if (chbLeftRing.isSelected())
-            addMFToPersonFPs(personfingerprints.getLRing(), MenuLRing, TGLRing, CouseTLRing);
-        if (chbLeftLittle.isSelected())
-            addMFToPersonFPs(personfingerprints.getLLittle(), MenuLLittle, TGLLittle, CouseTLLittle);
-
-
-    }
-
-    @Override
-    protected void onGoingPrevious(Map<String, Object> uiDataMap) {
-        onGoingNext(uiDataMap);
-
-    }
 
     private void addMFToPersonFPs(Fingerprint finger, MenuButton Couse, ToggleGroup TG, TextField CouseOther) {
         finger.setMissOrNot(true);
-        if (!Couse.getText().equals("Other")) {
+        if (!Couse.getText().equals(resources.getString("Other"))) {
             finger.setCouse(Couse.getText());
             finger.setStatus(1);
         } else {
             finger.setCouse(CouseOther.getText());
-            if (((RadioButton) TG.getSelectedToggle()).getText().equals("Temporary") || ((RadioButton) TG.getSelectedToggle()).getText().equals("مؤقته"))
+            if (((RadioButton) TG.getSelectedToggle()).getText().equals(resources.getString("Temporary")) )
                 finger.setStatus(1);
             else
                 finger.setStatus(0);
@@ -258,7 +210,7 @@ public class EditMissingFingerprintFXController extends WizardStepFxControllerBa
         if (finger.getCouse().equals("جرح")) {
             Couse.setText(finger.getCouse());
         } else {
-            Couse.setText("Other");
+            Couse.setText(resources.getString("Other"));
             VOther.setVisible(true);
             if (finger.getStatus() == 0)
                 TG.getToggles().get(0).setSelected(true);
@@ -268,5 +220,97 @@ public class EditMissingFingerprintFXController extends WizardStepFxControllerBa
             CouseOther.setText(finger.getCouse());
         }
 
+    }
+
+    private boolean isEmpty(MenuButton menu, ToggleGroup TG, TextField Couse) {
+        if (menu.getText().equals(resources.getString("Cause"))) {
+            showWarningNotification(resources.getString("SelectCause"));
+            return true;
+        } else if (menu.getText().equals(resources.getString("Other"))) {
+
+            if (TG.getSelectedToggle() == null) {
+                showWarningNotification(resources.getString("SelectStatus"));
+                return true;
+
+            }
+            if (Couse.getText().trim().isEmpty()) {
+                showWarningNotification(resources.getString("WriteCause"));
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    protected void onNextButtonClicked(ActionEvent actionEvent) {
+        personfingerprints = PerF;
+        personfingerprints.setRThumb(new Fingerprint());
+        personfingerprints.setRIndex(new Fingerprint());
+        personfingerprints.setRMiddle(new Fingerprint());
+        personfingerprints.setRRing(new Fingerprint());
+        personfingerprints.setRLittle(new Fingerprint());
+
+        personfingerprints.setLThumb(new Fingerprint());
+        personfingerprints.setLIndex(new Fingerprint());
+        personfingerprints.setLMiddle(new Fingerprint());
+        personfingerprints.setLRing(new Fingerprint());
+        personfingerprints.setLLittle(new Fingerprint());
+
+
+        if (chbRightThumb.isSelected()) {
+            if (isEmpty(MenuRThumb, TGRThumb, CouseTRThumb))
+                return;
+
+            addMFToPersonFPs(personfingerprints.getRThumb(), MenuRThumb, TGRThumb, CouseTRThumb);
+        }
+        if (chbRightIndex.isSelected()) {
+            if (isEmpty(MenuRIndex, TGRIndex, CouseTRIndex))
+                return;
+            addMFToPersonFPs(personfingerprints.getRIndex(), MenuRIndex, TGRIndex, CouseTRIndex);
+        }
+        if (chbRightMiddle.isSelected()) {
+            if (isEmpty(MenuRMiddle, TGRMiddle, CouseTRMiddle))
+                return;
+            addMFToPersonFPs(personfingerprints.getRMiddle(), MenuRMiddle, TGRMiddle, CouseTRMiddle);
+        }
+        if (chbRightRing.isSelected()) {
+            if (isEmpty(MenuRRing, TGRRing, CouseTRRing))
+                return;
+            addMFToPersonFPs(personfingerprints.getRRing(), MenuRRing, TGRRing, CouseTRRing);
+        }
+        if (chbRightLittle.isSelected()) {
+            if (isEmpty(MenuRLittle, TGRLittle, CouseTRLittle))
+                return;
+            addMFToPersonFPs(personfingerprints.getRLittle(), MenuRLittle, TGRLittle, CouseTRLittle);
+        }
+
+
+        if (chbLeftThumb.isSelected()) {
+            if (isEmpty(MenuLThumb, TGLThumb, CouseTLThumb))
+                return;
+            addMFToPersonFPs(personfingerprints.getLThumb(), MenuLThumb, TGLThumb, CouseTLThumb);
+        }
+        if (chbLeftIndex.isSelected()) {
+            if (isEmpty(MenuLIndex, TGLIndex, CouseTLIndex))
+                return;
+            addMFToPersonFPs(personfingerprints.getLIndex(), MenuLIndex, TGLIndex, CouseTLIndex);
+        }
+        if (chbLeftMiddle.isSelected()) {
+            if (isEmpty(MenuLMiddle, TGLMiddle, CouseTLMiddle))
+                return;
+            addMFToPersonFPs(personfingerprints.getLMiddle(), MenuLMiddle, TGLMiddle, CouseTLMiddle);
+        }
+        if (chbLeftRing.isSelected()) {
+            if (isEmpty(MenuLRing, TGLRing, CouseTLRing))
+                return;
+            addMFToPersonFPs(personfingerprints.getLRing(), MenuLRing, TGLRing, CouseTLRing);
+        }
+        if (chbLeftLittle.isSelected()) {
+            if (isEmpty(MenuLLittle, TGLLittle, CouseTLLittle))
+                return;
+            addMFToPersonFPs(personfingerprints.getLLittle(), MenuLLittle, TGLLittle, CouseTLLittle);
+        }
+
+        super.onNextButtonClicked(actionEvent);
     }
 }

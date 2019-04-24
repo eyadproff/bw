@@ -6,6 +6,7 @@ import sa.gov.nic.bio.bw.core.workflow.AssociatedMenu;
 import sa.gov.nic.bio.bw.core.workflow.Signal;
 import sa.gov.nic.bio.bw.core.workflow.WizardWorkflowBase;
 import sa.gov.nic.bio.bw.workflow.biometricsexception.controllers.*;
+import sa.gov.nic.bio.bw.workflow.biometricsexception.controllers.BiometricsExceptionTypeFXController.Type;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.GetPersonInfoByIdWorkflowTask;
 
 //import sa.gov.nic.bio.bw.workflow.commons.controllers.ShowingPersonInfoFxController;
@@ -55,7 +56,11 @@ public class BiometricsExceptionWorkflow extends WizardWorkflowBase {
                 break;
             }
             case 3: {
-                renderUiAndWaitForUserInput(EditMissingFingerprintFXController.class);
+                Type type = getData(BiometricsExceptionTypeFXController.class, "exceptionType");
+                if (Type.FINGERPRINTS.equals(type))
+                    renderUiAndWaitForUserInput(EditMissingFingerprintFXController.class);
+                else
+                    renderUiAndWaitForUserInput(FaceExceptionFXController.class);
                 break;
             }
             case 4: {
