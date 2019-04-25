@@ -11,6 +11,12 @@ VERSION SCHEMA: vYYYY.MM.#SEQ
 
 ---
 
+## v2019.04.3
+
+- FIX: Disable update-personId-info on Convicted-Report-Registration on going back.
+
+---
+
 ## v2019.04.2
 
 - CHN: Disable updating personId when editing convicted report.

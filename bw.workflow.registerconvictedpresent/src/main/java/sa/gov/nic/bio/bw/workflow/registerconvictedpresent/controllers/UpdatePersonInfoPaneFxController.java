@@ -227,7 +227,7 @@ public class UpdatePersonInfoPaneFxController extends WizardStepFxControllerBase
 		LocalDate documentIssuanceDate = null;
 		LocalDate documentExpiryDate = null;
 		
-		if(isFirstLoad() && normalizedPersonInfo != null)
+		if(normalizedPersonInfo != null)
 		{
 			facePhotoBase64 = normalizedPersonInfo.getFacePhotoBase64();
 			gender = normalizedPersonInfo.getGender();
@@ -288,7 +288,6 @@ public class UpdatePersonInfoPaneFxController extends WizardStepFxControllerBase
 			txtFatherName.setDisable(disable);
 		}
 		else if(this.fatherName != null) txtFatherName.setText(this.fatherName);
-		else if(focusedNode == null) focusedNode = txtFatherName;
 		
 		if(grandfatherName != null)
 		{
@@ -296,7 +295,6 @@ public class UpdatePersonInfoPaneFxController extends WizardStepFxControllerBase
 			txtGrandfatherName.setDisable(disable);
 		}
 		else if(this.grandfatherName != null) txtGrandfatherName.setText(this.grandfatherName);
-		else if(focusedNode == null) focusedNode = txtGrandfatherName;
 		
 		if(familyName != null)
 		{
@@ -351,6 +349,7 @@ public class UpdatePersonInfoPaneFxController extends WizardStepFxControllerBase
 			txtPersonId.setText(String.valueOf(personId));
 			txtPersonId.setDisable(disable);
 		}
+		else txtPersonId.setText(String.valueOf(this.personId));
 		
 		if(personType != null)
 		{
