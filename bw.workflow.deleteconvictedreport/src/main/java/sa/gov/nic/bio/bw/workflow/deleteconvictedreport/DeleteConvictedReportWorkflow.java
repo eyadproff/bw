@@ -8,6 +8,7 @@ import sa.gov.nic.bio.bw.core.workflow.Signal;
 import sa.gov.nic.bio.bw.core.workflow.WithLookups;
 import sa.gov.nic.bio.bw.core.workflow.WizardWorkflowBase;
 import sa.gov.nic.bio.bw.workflow.commons.beans.ConvictedReport;
+import sa.gov.nic.bio.bw.workflow.commons.beans.ConvictedReport.Status;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.CountriesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.CrimeTypesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.DocumentTypesLookup;
@@ -39,15 +40,20 @@ public class DeleteConvictedReportWorkflow extends WizardWorkflowBase
 				         ConvictedReportInquiryByReportNumberWorkflowTask.class,
 				         "reportNumber");
 				executeWorkflowTask(ConvictedReportInquiryByReportNumberWorkflowTask.class);
+				passData(ConvictedReportInquiryByReportNumberWorkflowTask.class,
+				         EnterReportNumberPaneFxController.class, "convictedReport");
 				
 				ConvictedReport convictedReport = getData(ConvictedReportInquiryByReportNumberWorkflowTask.class,
 				                                          "convictedReport");
 				
-				setData(ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask.class,
-				        "fingerprints", convictedReport.getSubjFingers());
-				setData(ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask.class,
-				        "missingFingerprints", convictedReport.getSubjMissingFingers());
-				executeWorkflowTask(ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask.class);
+				if(convictedReport.getStatus().equals(Status.ACTIVE))
+				{
+					setData(ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask.class,
+					        "fingerprints", convictedReport.getSubjFingers());
+					setData(ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask.class,
+					        "missingFingerprints", convictedReport.getSubjMissingFingers());
+					executeWorkflowTask(ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask.class);
+				}
 				
 				break;
 			}

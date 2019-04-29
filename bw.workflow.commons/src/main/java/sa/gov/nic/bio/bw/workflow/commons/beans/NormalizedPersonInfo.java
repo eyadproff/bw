@@ -100,7 +100,7 @@ public class NormalizedPersonInfo extends JavaBean
 		if(birthPlace != null && birthPlace.strip().isBlank()) birthPlace = null;
 		
 		Date date = personInfo.getBirthDate();
-		if(date != null && date.getTime() > AppConstants.SAMIS_DB_DATE_NOT_SET_VALUE)
+		if(date != null && date.getTime() > AppConstants.SAMIS_DB_DATE_EPOCH_MS_NOT_SET_VALUE)
 		{
 			birthDate = date.toInstant().atZone(AppConstants.SAUDI_ZONE).toLocalDate();
 		}
@@ -144,13 +144,13 @@ public class NormalizedPersonInfo extends JavaBean
 		}
 		
 		date = identityInfo != null ? identityInfo.getIdIssueDate() : null;
-		if(date != null && date.getTime() > AppConstants.SAMIS_DB_DATE_NOT_SET_VALUE)
+		if(date != null && date.getTime() > AppConstants.SAMIS_DB_DATE_EPOCH_MS_NOT_SET_VALUE)
 		{
 			documentIssuanceDate = date.toInstant().atZone(AppConstants.SAUDI_ZONE).toLocalDate();
 		}
 		
 		date = identityInfo != null ? identityInfo.getIdExpirDate() : null;
-		if(date != null && date.getTime() > AppConstants.SAMIS_DB_DATE_NOT_SET_VALUE)
+		if(date != null && date.getTime() > AppConstants.SAMIS_DB_DATE_EPOCH_MS_NOT_SET_VALUE)
 		{
 			documentExpiryDate = date.toInstant().atZone(AppConstants.SAUDI_ZONE).toLocalDate();
 		}

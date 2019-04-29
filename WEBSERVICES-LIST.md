@@ -31,12 +31,16 @@
         - services-gateway-demographic/api/person/info/v1
         - services-gateway-biooperation/api/fingerprint/images/v1
         - services-gateway-biooperation/api/fingerprint/available/v1
+        - services-gateway-biooperation/api/fingerprint/images/v2
+        - services-gateway-biooperation/api/fingerprint/available/v2
+        - services-gateway-biooperation/api/criminal/fingerprint/images/v1
         - services-gateway-biooperation/api/xafis/nist/extraction/v1
         - services-gateway-biooperation/api/fingerprint/inquiry/v1
         - services-gateway-biooperation/api/fingerprint/inquiry/status/v2
         - services-gateway-demographic/api/person/deportee/info/v1
         - services-gateway-demographic/api/criminal/info/v2
         - services-gateway-demographic/api/criminal/identity/info/v1
+        - services-gateway-demographic/api/criminal/info/basic/custom/v1
         - services-gateway-biooperation/api/criminal/report/v1
     
     menu.query.convictedReportInquiryBySearchCriteria:
@@ -72,8 +76,8 @@
         - services-gateway-lookups/api/application/nationality/all/v1
         - services-gateway-lookups/api/application/crime-types/v1
         - services-gateway-biooperation/api/criminal/report/v1
-        - UPADTE_1_URL
-        - UPADTE_2_URL
+        - services-gateway-demographic/api/criminal-system/update/full-report/v1
+        - services-gateway-demographic/api/criminal-system/update/crime-Judgment/v1
     
     menu.query.faceVerification:
         - services-gateway-lookups/api/application/nationality/all/v1
@@ -96,6 +100,9 @@
         - services-gateway-demographic/api/person/info/v1
         - services-gateway-biooperation/api/fingerprint/images/v1
         - services-gateway-biooperation/api/fingerprint/available/v1
+        - services-gateway-biooperation/api/fingerprint/images/v2
+        - services-gateway-biooperation/api/fingerprint/available/v2
+        - services-gateway-biooperation/api/criminal/fingerprint/images/v1
         - services-gateway-biooperation/api/xafis/nist/extraction/v1
         - services-gateway-biooperation/api/fingerprint/inquiry/v1
         - services-gateway-biooperation/api/fingerprint/inquiry/status/v2
@@ -108,6 +115,8 @@
         - services-gateway-biooperation/api/criminal/fingers/registration/status/v1
         - services-gateway-biooperation/api/xafis/report/v1
         - services-gateway-biooperation/api/gcc/criminal/exchange/v1
+        - services-gateway-demographic/api/criminal/info/basic/custom/v1
+        - services-gateway-biooperation/api/criminal/report/v1
     
     menu.register.registerConvictedPresent:
         - services-gateway-lookups/api/application/person-type/v1
@@ -128,6 +137,8 @@
         - services-gateway-biooperation/api/criminal/fingers/registration/status/v1
         - services-gateway-biooperation/api/xafis/report/v1
         - services-gateway-biooperation/api/gcc/criminal/exchange/v1
+        - services-gateway-demographic/api/criminal/info/basic/custom/v1
+        - services-gateway-biooperation/api/criminal/report/v1
     
     menu.securityClearance.faceVerification:
         - services-gateway-lookups/api/application/nationality/all/v1

@@ -13,7 +13,7 @@ buildscript {
 
 allprojects {
     group = 'sa.gov.nic.bio'
-    version = '2019.03.5'
+    version = '2019.04.3'
 }
 
 subprojects {
@@ -40,9 +40,11 @@ subprojects {
         implementation name: "javafx.fxml-12.0.0"
         implementation name: "javafx.graphics-12.0.0"
         implementation name: "javafx.swing-12.0.0"
+        compileOnly name: "javafx.media-12.0.0"
+        compileOnly name: "javafx.web-12.0.0"
 
         // JavaFX extension library
-        implementation name: "controlsfx-9.0.0"
+        implementation name: "controlsfx-11.0.0"
 
         // BCL-Utils and Biokit library
         implementation name: "bio.commons-2019.01.2"
@@ -156,21 +158,6 @@ task packageWebStart(group: 'web-start') {
         copy {
             from 'build/libs'
             into "build/web-start/modulepath-jars"
-        }
-
-        // compress the jars
-        fileTree(dir: 'build/web-start/modulepath-jars', include: '**/*.jar', excludes: ['bw.*.jar', 'controlsfx-*.jar', 'javafx.*.jar', 'logging-interceptor-*.jar', 'okhttp-*.jar']).visit
-                { FileVisitDetails details ->
-                    String fileName = details.file.name
-                    exec {
-                        workingDir 'build/web-start/modulepath-jars'
-                        commandLine 'pack200', fileName + ".pack.gz", fileName
-                    }
-                }
-
-        // delete the un-compressed jars
-        fileTree(dir: 'build/web-start/modulepath-jars', include: '**/*.jar', excludes: ['bw.*.jar', 'controlsfx-*.jar', 'javafx.*.jar', 'logging-interceptor-*.jar', 'okhttp-*.jar']).visit { FileVisitDetails details ->
-            details.file.delete()
         }
 
         // copy javafx DLLs

@@ -8,11 +8,9 @@ import javafx.geometry.NodeOrientation;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.ProgressIndicator;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 import org.controlsfx.control.NotificationPane;
@@ -64,9 +62,8 @@ public class CoreFxController extends FxControllerBase implements IdleMonitorReg
 	@FXML private Pane footerPane;
 	@FXML private Pane sidePane;
 	
-	@FXML private StackPane stageOverlayPane;
-	@FXML private StackPane menuTransitionOverlayPane;
-	@FXML private ProgressIndicator piWizardTransition;
+	@FXML private Pane paneStageOverlay;
+	@FXML private Pane paneTransitionOverlay;
 	@FXML private HeaderPaneFxController headerPaneController;
 	@FXML private FooterPaneFxController footerPaneController;
 	@FXML private MenuPaneFxController menuPaneController;
@@ -156,7 +153,7 @@ public class CoreFxController extends FxControllerBase implements IdleMonitorReg
 		GuiUtils.showNode(devicesRunnerGadgetPane, false);
 		GuiUtils.showNode(footerPane, true);
 		clearWizardBar();
-		showMenuTransitionProgressIndicator(true);
+		showTransitionOverlay(true);
 		menuPaneController.emptyMenus();
 		
 		final BodyFxControllerBase controller = currentBodyController;
@@ -172,7 +169,7 @@ public class CoreFxController extends FxControllerBase implements IdleMonitorReg
 	public void goToMenu(Class<?> menuWorkflowClass)
 	{
 		clearWizardBar();
-		showMenuTransitionProgressIndicator(true);
+		showTransitionOverlay(true);
 		
 		final BodyFxControllerBase controller = currentBodyController;
 		if(controller != null)
@@ -260,7 +257,14 @@ public class CoreFxController extends FxControllerBase implements IdleMonitorReg
 					
 					Platform.runLater(() ->
 					{
-					    if(newController != null && !newController.isDetached()) newController.onAttachedToScene();
+						try
+						{
+							if(newController != null && !newController.isDetached()) newController.onAttachedToScene();
+						}
+						finally
+						{
+							showTransitionOverlay(false);
+						}
 					});
 					
 				}
@@ -329,22 +333,15 @@ public class CoreFxController extends FxControllerBase implements IdleMonitorReg
 			bodyPane.setCenter(loadedPane);
 			bodyPane.applyCss();
 			bodyPane.layout();
-			showMenuTransitionProgressIndicator(false);
-			showWizardTransitionProgressIndicator(false);
 		});
 		
 		return bodyFxController;
 	}
 	
-	public void showWizardTransitionProgressIndicator(boolean bShow)
+	public void showTransitionOverlay(boolean bShow)
 	{
-		piWizardTransition.setVisible(bShow);
+		paneTransitionOverlay.setVisible(bShow);
 		if(bShow) bodyPane.setCenter(null);
-	}
-	
-	private void showMenuTransitionProgressIndicator(boolean bShow)
-	{
-		menuTransitionOverlayPane.setVisible(bShow);
 	}
 	
 	public void setWizardPane(WizardPane wizardPane)
@@ -733,13 +730,13 @@ public class CoreFxController extends FxControllerBase implements IdleMonitorReg
 		    String buttonText = resources.getString("dialog.idle.buttons.goToLogin");
 		    boolean rtl = Context.getGuiLanguage().getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT;
 		
-		    stageOverlayPane.setVisible(true);
+		    paneStageOverlay.setVisible(true);
 			
 			// make sure the stage is not iconified, otherwise the dialog will be invisible
 			stage.setIconified(false);
 		    DialogUtils.showWarningDialog(stage, this, title, null,
 		                                  contentText, buttonText, rtl);
-		    stageOverlayPane.setVisible(false);
+		    paneStageOverlay.setVisible(false);
 		    clearWizardBar();
 			
 			// close all opened dialogs (except the primary one)

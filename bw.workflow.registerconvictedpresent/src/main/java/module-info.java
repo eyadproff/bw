@@ -2,7 +2,7 @@ module bw.workflow.registerconvictedpresent
 {
 	requires bw.core;
 	requires bw.workflow.commons;
-	requires jasperreports;
+	requires bw.lib.jasperreports;
 	requires bio.commons;
 	requires biokit.library;
 	

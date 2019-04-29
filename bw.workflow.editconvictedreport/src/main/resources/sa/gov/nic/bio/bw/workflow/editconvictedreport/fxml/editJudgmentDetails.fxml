@@ -13,6 +13,7 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import org.controlsfx.glyphfont.Glyph?>
 <BorderPane xmlns="http://javafx.com/javafx/11" xmlns:fx="http://javafx.com/fxml/1"
             fx:id="rootPane" stylesheets="@../css/style.css"
             fx:controller="sa.gov.nic.bio.bw.workflow.editconvictedreport.controllers.EditJudgmentDetailsPaneFxController">
@@ -27,84 +28,148 @@
                 <Insets top="10.0" bottom="10.0"/>
             </padding>
             <ScrollPane VBox.vgrow="ALWAYS" fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER">
-                <GridPane hgap="5.0">
+                <GridPane fx:id="paneJudgmentDetails" hgap="5.0">
                     <padding>
                         <Insets topRightBottomLeft="10.0"/>
                     </padding>
-                    <Label text="%label.judgmentIssuer" GridPane.rowIndex="0" GridPane.columnIndex="0">
+                    <Label text="%label.judgmentIssuer" wrapText="true" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                    <HBox spacing="5.0" alignment="CENTER_LEFT" GridPane.rowIndex="0" GridPane.columnIndex="1" GridPane.fillWidth="true">
+                        <TextField fx:id="txtJudgmentIssuer" prefColumnCount="25" styleClass="required" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+                        <HBox fx:id="paneJudgmentIssuerReset" alignment="CENTER_LEFT" HBox.hgrow="ALWAYS" spacing="5.0" visible="false">
+                            <Button fx:id="btnJudgmentIssuerReset" styleClass="small-button">
+                                <graphic>
+                                    <Glyph fontFamily="FontAwesome" icon="undo"/>
+                                </graphic>
+                            </Button>
+                            <Label fx:id="lblJudgmentIssuerOldValue" wrapText="true" styleClass="old-value"/>
+                            <Glyph fx:id="iconJudgmentIssuerArrow" wrapText="true" fontFamily="FontAwesome"/>
+                            <Label fx:id="lblJudgmentIssuerNewValue" wrapText="true" text="${txtJudgmentIssuer.text}" styleClass="new-value"/>
+                        </HBox>
+                    </HBox>
+                    <Label text="%label.judgmentNumber" wrapText="true" GridPane.rowIndex="1" GridPane.columnIndex="0">
                         <GridPane.margin>
-                            <Insets bottom="5.0"/>
+                            <Insets top="5.0"/>
                         </GridPane.margin>
                     </Label>
-                    <TextField fx:id="txtJudgmentIssuer" styleClass="required" GridPane.rowIndex="0" GridPane.columnIndex="1">
+                    <HBox spacing="5.0" alignment="CENTER_LEFT" GridPane.rowIndex="1" GridPane.columnIndex="1" GridPane.fillWidth="true">
                         <GridPane.margin>
-                            <Insets bottom="5.0"/>
+                            <Insets top="5.0"/>
                         </GridPane.margin>
-                    </TextField>
-                    <Label text="%label.judgmentNumber" GridPane.rowIndex="1" GridPane.columnIndex="0">
+                        <TextField fx:id="txtJudgmentNumber" styleClass="required" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+                        <HBox fx:id="paneJudgmentNumberReset" alignment="CENTER_LEFT" HBox.hgrow="ALWAYS" spacing="5.0" visible="false">
+                            <Button fx:id="btnJudgmentNumberReset" styleClass="small-button">
+                                <graphic>
+                                    <Glyph fontFamily="FontAwesome" icon="undo"/>
+                                </graphic>
+                            </Button>
+                            <Label fx:id="lblJudgmentNumberOldValue" wrapText="true" styleClass="old-value"/>
+                            <Glyph fx:id="iconJudgmentNumberArrow" wrapText="true" fontFamily="FontAwesome"/>
+                            <Label fx:id="lblJudgmentNumberNewValue" wrapText="true" text="${txtJudgmentNumber.text}" styleClass="new-value"/>
+                        </HBox>
+                    </HBox>
+                    <Label text="%label.judgmentDate" wrapText="true" GridPane.rowIndex="2" GridPane.columnIndex="0">
                         <GridPane.margin>
-                            <Insets bottom="5.0"/>
+                            <Insets top="5.0"/>
                         </GridPane.margin>
                     </Label>
-                    <TextField fx:id="txtJudgmentNumber" styleClass="required" GridPane.rowIndex="1" GridPane.columnIndex="1">
+                    <HBox spacing="5.0" alignment="CENTER_LEFT" GridPane.rowIndex="2" GridPane.columnIndex="1" GridPane.fillWidth="true">
                         <GridPane.margin>
-                            <Insets bottom="5.0"/>
+                            <Insets top="5.0"/>
                         </GridPane.margin>
-                    </TextField>
-                    <Label text="%label.judgmentDate" GridPane.rowIndex="2" GridPane.columnIndex="0">
-                        <GridPane.margin>
-                            <Insets bottom="5.0"/>
-                        </GridPane.margin>
-                    </Label>
-                    <DatePicker fx:id="dpJudgmentDate" styleClass="required" promptText="dd/MM/yyyy" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+                        <DatePicker fx:id="dpJudgmentDate" promptText="dd/MM/yyyy" styleClass="required"/>
+                        <HBox fx:id="paneJudgmentDateReset" alignment="CENTER_LEFT" HBox.hgrow="ALWAYS" spacing="5.0" visible="false">
+                            <Button fx:id="btnJudgmentDateReset" styleClass="small-button">
+                                <graphic>
+                                    <Glyph fontFamily="FontAwesome" icon="undo"/>
+                                </graphic>
+                            </Button>
+                            <Label fx:id="lblJudgmentDateOldValue" wrapText="true" styleClass="old-value"/>
+                            <Glyph fx:id="iconJudgmentDateArrow" wrapText="true" fontFamily="FontAwesome"/>
+                            <Label fx:id="lblJudgmentDateNewValue" wrapText="true" text="${dpJudgmentDate.editor.text}" styleClass="new-value"/>
+                        </HBox>
+                    </HBox>
                     <HBox GridPane.rowIndex="3" GridPane.columnIndex="1" spacing="5.0">
-                        <GridPane.margin>
-                            <Insets bottom="5.0"/>
-                        </GridPane.margin>
                         <Label text="%label.input" styleClass="small-font"/>
                         <RadioButton fx:id="rdoJudgmentDateUseHijri" toggleGroup="$toggleGroup2" text="%radio.hijri" styleClass="small-font, small-radio-button" focusTraversable="false"/>
                         <RadioButton fx:id="rdoJudgmentDateUseGregorian" toggleGroup="$toggleGroup2" text="%radio.gregorian" styleClass="small-font, small-radio-button" focusTraversable="false"/>
                     </HBox>
-                    <Label text="%label.caseFileNumber" GridPane.rowIndex="4" GridPane.columnIndex="0">
+                    <Label text="%label.caseFileNumber" wrapText="true" GridPane.rowIndex="4" GridPane.columnIndex="0">
                         <GridPane.margin>
-                            <Insets bottom="5.0"/>
+                            <Insets top="5.0"/>
                         </GridPane.margin>
                     </Label>
-                    <TextField fx:id="txtCaseFileNumber" GridPane.rowIndex="4" GridPane.columnIndex="1">
+                    <HBox spacing="5.0" alignment="CENTER_LEFT" GridPane.rowIndex="4" GridPane.columnIndex="1" GridPane.fillWidth="true">
                         <GridPane.margin>
-                            <Insets bottom="5.0"/>
+                            <Insets top="5.0"/>
                         </GridPane.margin>
-                    </TextField>
-                    <Label text="%label.prisonerNumber" GridPane.rowIndex="5" GridPane.columnIndex="0">
+                        <TextField fx:id="txtCaseFileNumber" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+                        <HBox fx:id="paneCaseFileNumberReset" alignment="CENTER_LEFT" HBox.hgrow="ALWAYS" spacing="5.0" visible="false">
+                            <Button fx:id="btnCaseFileNumberReset" styleClass="small-button">
+                                <graphic>
+                                    <Glyph fontFamily="FontAwesome" icon="undo"/>
+                                </graphic>
+                            </Button>
+                            <Label fx:id="lblCaseFileNumberOldValue" wrapText="true" styleClass="old-value"/>
+                            <Glyph fx:id="iconCaseFileNumberArrow" wrapText="true" fontFamily="FontAwesome"/>
+                            <Label fx:id="lblCaseFileNumberNewValue" wrapText="true" text="${txtCaseFileNumber.text}" styleClass="new-value"/>
+                        </HBox>
+                    </HBox>
+                    <Label text="%label.prisonerNumber" wrapText="true" GridPane.rowIndex="5" GridPane.columnIndex="0">
                         <GridPane.margin>
-                            <Insets bottom="5.0"/>
+                            <Insets top="5.0"/>
                         </GridPane.margin>
                     </Label>
-                    <TextField fx:id="txtPrisonerNumber" GridPane.rowIndex="5" GridPane.columnIndex="1">
+                    <HBox spacing="5.0" alignment="CENTER_LEFT" GridPane.rowIndex="5" GridPane.columnIndex="1" GridPane.fillWidth="true">
                         <GridPane.margin>
-                            <Insets bottom="5.0"/>
+                            <Insets top="5.0"/>
                         </GridPane.margin>
-                    </TextField>
-                    <Label text="%label.arrestDate" GridPane.rowIndex="6" GridPane.columnIndex="0">
+                        <TextField fx:id="txtPrisonerNumber" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+                        <HBox fx:id="panePrisonerNumberReset" alignment="CENTER_LEFT" HBox.hgrow="ALWAYS" spacing="5.0" visible="false">
+                            <Button fx:id="btnPrisonerNumberReset" styleClass="small-button">
+                                <graphic>
+                                    <Glyph fontFamily="FontAwesome" icon="undo"/>
+                                </graphic>
+                            </Button>
+                            <Label fx:id="lblPrisonerNumberOldValue" wrapText="true" styleClass="old-value"/>
+                            <Glyph fx:id="iconPrisonerNumberArrow" wrapText="true" fontFamily="FontAwesome"/>
+                            <Label fx:id="lblPrisonerNumberNewValue" wrapText="true" text="${txtPrisonerNumber.text}" styleClass="new-value"/>
+                        </HBox>
+                    </HBox>
+                    <Label text="%label.arrestDate" wrapText="true" GridPane.rowIndex="6" GridPane.columnIndex="0">
                         <GridPane.margin>
-                            <Insets bottom="5.0"/>
+                            <Insets top="5.0"/>
                         </GridPane.margin>
                     </Label>
-                    <DatePicker fx:id="dpArrestDate" promptText="dd/MM/yyyy" GridPane.rowIndex="6" GridPane.columnIndex="1">
+                    <HBox spacing="5.0" alignment="CENTER_LEFT" GridPane.rowIndex="6" GridPane.columnIndex="1" GridPane.fillWidth="true">
                         <GridPane.margin>
-                            <Insets/>
+                            <Insets top="5.0"/>
                         </GridPane.margin>
-                    </DatePicker>
+                        <DatePicker fx:id="dpArrestDate" promptText="dd/MM/yyyy"/>
+                        <HBox fx:id="paneArrestDateReset" alignment="CENTER_LEFT" HBox.hgrow="ALWAYS" spacing="5.0" visible="false">
+                            <Button fx:id="btnArrestDateReset" styleClass="small-button">
+                                <graphic>
+                                    <Glyph fontFamily="FontAwesome" icon="undo"/>
+                                </graphic>
+                            </Button>
+                            <Label fx:id="lblArrestDateOldValue" wrapText="true" styleClass="old-value"/>
+                            <Glyph fx:id="iconArrestDateArrow" wrapText="true" fontFamily="FontAwesome"/>
+                            <Label fx:id="lblArrestDateNewValue" wrapText="true" text="${dpArrestDate.editor.text}" styleClass="new-value"/>
+                        </HBox>
+                    </HBox>
                     <HBox GridPane.rowIndex="7" GridPane.columnIndex="1" spacing="5.0">
-                        <GridPane.margin>
-                            <Insets bottom="5.0"/>
-                        </GridPane.margin>
                         <Label text="%label.input" styleClass="small-font"/>
                         <RadioButton fx:id="rdoArrestDateUseHijri" toggleGroup="$toggleGroup1" text="%radio.hijri" styleClass="small-font, small-radio-button" focusTraversable="false"/>
                         <RadioButton fx:id="rdoArrestDateUseGregorian" toggleGroup="$toggleGroup1" text="%radio.gregorian" styleClass="small-font, small-radio-button" focusTraversable="false"/>
                     </HBox>
-                    <Label text="%label.crimeClassification" GridPane.rowIndex="8" GridPane.columnIndex="0" alignment="TOP_LEFT" GridPane.valignment="TOP"/>
+                    <Label text="%label.crimeClassification" wrapText="true" GridPane.rowIndex="8" GridPane.columnIndex="0" alignment="TOP_LEFT" GridPane.valignment="TOP">
+                        <GridPane.margin>
+                            <Insets top="5.0"/>
+                        </GridPane.margin>
+                    </Label>
                     <VBox fx:id="paneCrimeContainer" alignment="CENTER" spacing="5.0" GridPane.rowIndex="8" GridPane.columnIndex="1">
+                        <GridPane.margin>
+                            <Insets top="5.0"/>
+                        </GridPane.margin>
                         <HBox spacing="5.0">
                             <ComboBox fx:id="cboCrimeEvent1" styleClass="required" minWidth="173" maxWidth="173"/>
                             <ComboBox fx:id="cboCrimeClass1" styleClass="required" minWidth="223" maxWidth="223"/>
@@ -145,6 +210,36 @@
                             <Button fx:id="btnAddMore" text="%label.addMore"/>
                         </HBox>
                     </VBox>
+                    <HBox fx:id="paneCrimeDiffContainer" alignment="CENTER_LEFT" spacing="5.0" GridPane.rowIndex="9" GridPane.columnIndex="1" visible="false">
+                        <GridPane.margin>
+                            <Insets top="5.0"/>
+                        </GridPane.margin>
+                        <HBox alignment="CENTER_LEFT" spacing="10.0">
+                            <VBox fx:id="paneOldCrimes" alignment="CENTER_LEFT" spacing="5.0" styleClass="old-value-border">
+                                <padding>
+                                    <Insets topRightBottomLeft="10.0"/>
+                                </padding>
+                            </VBox>
+                            <VBox alignment="CENTER" spacing="5.0">
+                                <Button fx:id="btnCrimesReset" styleClass="small-button">
+                                    <graphic>
+                                        <Glyph fontFamily="FontAwesome" icon="undo"/>
+                                    </graphic>
+                                </Button>
+                                <Glyph fx:id="iconCrimeDiff" wrapText="true" fontFamily="FontAwesome"/>
+                            </VBox>
+                            <VBox fx:id="paneNewCrimes" alignment="CENTER_LEFT" spacing="5.0" styleClass="new-value-border">
+                                <padding>
+                                    <Insets topRightBottomLeft="10.0"/>
+                                </padding>
+                                <Label fx:id="lblCrime1NewValue" wrapText="true" styleClass="new-value"/>
+                                <Label fx:id="lblCrime2NewValue" wrapText="true" styleClass="new-value" visible="false"/>
+                                <Label fx:id="lblCrime3NewValue" wrapText="true" styleClass="new-value" visible="false"/>
+                                <Label fx:id="lblCrime4NewValue" wrapText="true" styleClass="new-value" visible="false"/>
+                                <Label fx:id="lblCrime5NewValue" wrapText="true" styleClass="new-value" visible="false"/>
+                            </VBox>
+                        </HBox>
+                    </HBox>
                 </GridPane>
             </ScrollPane>
         </VBox>

@@ -40,6 +40,7 @@ public class ConvictedReportNestedFxController extends BodyFxControllerBase
 	@FXML private Label lblReportNumber;
 	@FXML private Label lblEnrollerId;
 	@FXML private Label lblEnrollmentTime;
+	@FXML private Label lblReportStatus;
 	@FXML private Label lblCivilBiometricsId;
 	@FXML private Label lblCriminalBiometricsId;
 	@FXML private Label lblFirstName;
@@ -104,11 +105,6 @@ public class ConvictedReportNestedFxController extends BodyFxControllerBase
 	protected void onAttachedToScene()
 	{
 		paneImageView.maxWidthProperty().bind(paneImage.widthProperty());
-		
-		// make the checkboxes look like they are enabled
-		cbFinalDeportation.setStyle("-fx-opacity: 1");
-		cbLibel.setStyle("-fx-opacity: 1");
-		cbCovenant.setStyle("-fx-opacity: 1");
 	}
 	
 	public void setWillBeGeneratedTextOnCriminalBiometricsId()
@@ -134,6 +130,21 @@ public class ConvictedReportNestedFxController extends BodyFxControllerBase
 		if(enrollmentTimeLong != null) lblEnrollmentTime.setText(
 															AppUtils.formatHijriGregorianDateTime(enrollmentTimeLong));
 		
+		Integer status = convictedReport.getStatus();
+		
+		if(ConvictedReport.Status.ACTIVE.equals(status))
+		{
+			lblReportStatus.setText(resources.getString("label.active"));
+		}
+		else if(ConvictedReport.Status.UPDATED.equals(status))
+		{
+			lblReportStatus.setText(resources.getString("label.updated"));
+		}
+		else if(ConvictedReport.Status.DELETED.equals(status))
+		{
+			lblReportStatus.setText(resources.getString("label.deleted"));
+		}
+		
 		if(reportNumber != null || enrollmentTimeLong != null)
 		{
 			GuiUtils.showNode(tpEnrollmentDetails, true);
@@ -152,10 +163,18 @@ public class ConvictedReportNestedFxController extends BodyFxControllerBase
 			lblGrandfatherName.setText(subjtName.getGrandfatherName());
 			lblFamilyName.setText(subjtName.getFamilyName());
 		}
+		else
+		{
+			lblFirstName.setText("");
+			lblFatherName.setText("");
+			lblGrandfatherName.setText("");
+			lblFamilyName.setText("");
+		}
 		
 		Long civilBiometricsId = convictedReport.getSubjBioId();
 		if(civilBiometricsId != null)
 				lblCivilBiometricsId.setText(AppUtils.localizeNumbers(String.valueOf(civilBiometricsId)));
+		else lblCivilBiometricsId.setText("");
 		
 		Long criminalBiometricsId = convictedReport.getGeneralFileNumber();
 		GuiUtils.setLabelText(lblCriminalBiometricsId, criminalBiometricsId)
@@ -166,6 +185,7 @@ public class ConvictedReportNestedFxController extends BodyFxControllerBase
 			lblGender.setText("F".equals(subjGender) ? resources.getString("label.female") :
 					                  resources.getString("label.male"));
 		}
+		else lblGender.setText("");
 		
 		Integer subjNationalityCode = convictedReport.getSubjNationalityCode();
 		
@@ -192,21 +212,26 @@ public class ConvictedReportNestedFxController extends BodyFxControllerBase
 			}
 			else lblNationality.setText(resources.getString("combobox.unknownNationality"));
 		}
+		else lblNationality.setText("");
 		
 		String subjOccupation = convictedReport.getSubjOccupation();
 		if(subjOccupation != null && !subjOccupation.trim().isEmpty())
 			lblOccupation.setText(AppUtils.localizeNumbers(subjOccupation));
+		else lblOccupation.setText("");
 		
 		String subjBirthPlace = convictedReport.getSubjBirthPlace();
 		if(subjBirthPlace != null && !subjBirthPlace.trim().isEmpty())
 			lblBirthPlace.setText(AppUtils.localizeNumbers(subjBirthPlace));
+		else lblBirthPlace.setText("");
 		
 		Long subjBirthDate = convictedReport.getSubjBirthDate();
 		if(subjBirthDate != null)
 			lblBirthDate.setText(AppUtils.formatHijriGregorianDate(subjBirthDate));
+		else lblBirthDate.setText("");
 		
 		Long samisId = convictedReport.getSubjSamisId();
 		if(samisId != null) lblPersonId.setText(AppUtils.localizeNumbers(String.valueOf(samisId)));
+		else lblPersonId.setText("");
 		
 		@SuppressWarnings("unchecked")
 		List<PersonType> personTypes = (List<PersonType>)
@@ -233,9 +258,11 @@ public class ConvictedReportNestedFxController extends BodyFxControllerBase
 						                                               personType.getDescriptionEN()));
 			}
 		}
+		else lblPersonType.setText("");
 		
 		String subjDocId = convictedReport.getSubjDocId();
 		if(subjDocId != null && !subjDocId.trim().isEmpty()) lblDocumentId.setText(AppUtils.localizeNumbers(subjDocId));
+		else lblDocumentId.setText("");
 		
 		@SuppressWarnings("unchecked")
 		List<DocumentType> documentTypes = (List<DocumentType>)
@@ -257,16 +284,42 @@ public class ConvictedReportNestedFxController extends BodyFxControllerBase
 			
 			if(documentType != null) lblDocumentType.setText(AppUtils.localizeNumbers(documentType.getDesc()));
 		}
+		else lblDocumentType.setText("");
 		
 		Long subjDocIssDate = convictedReport.getSubjDocIssDate();
-		if(subjDocIssDate != null) lblDocumentIssuanceDate.setText(
-				AppUtils.formatHijriGregorianDate(subjDocIssDate));
+		if(subjDocIssDate != null) lblDocumentIssuanceDate.setText(AppUtils.formatHijriGregorianDate(subjDocIssDate));
+		else lblDocumentIssuanceDate.setText("");
 		
 		Long subjDocExpDate = convictedReport.getSubjDocExpDate();
-		if(subjDocExpDate != null) lblDocumentExpiryDate.setText(
-				AppUtils.formatHijriGregorianDate(subjDocExpDate));
+		if(subjDocExpDate != null) lblDocumentExpiryDate.setText(AppUtils.formatHijriGregorianDate(subjDocExpDate));
+		else lblDocumentExpiryDate.setText("");
 		
 		JudgementInfo judgementInfo = convictedReport.getSubjJudgementInfo();
+		
+		lblJudgmentIssuer.setText("");
+		lblJudgmentNumber.setText("");
+		lblPrisonerNumber.setText("");
+		lblArrestDate.setText("");
+		lblJudgmentDate.setText("");
+		lblTazeerLashes.setText("");
+		lblHadLashes.setText("");
+		lblFine.setText("");
+		lblJailYears.setText("");
+		lblJailMonths.setText("");
+		lblJailDays.setText("");
+		lblTravelBanYears.setText("");
+		lblTravelBanMonths.setText("");
+		lblTravelBanDays.setText("");
+		lblExilingYears.setText("");
+		lblExilingMonths.setText("");
+		lblExilingDays.setText("");
+		lblDeportationYears.setText("");
+		lblDeportationMonths.setText("");
+		lblDeportationDays.setText("");
+		cbFinalDeportation.setSelected(false);
+		cbLibel.setSelected(false);
+		cbCovenant.setSelected(false);
+		lblOther.setText("");
 		
 		if(judgementInfo != null)
 		{

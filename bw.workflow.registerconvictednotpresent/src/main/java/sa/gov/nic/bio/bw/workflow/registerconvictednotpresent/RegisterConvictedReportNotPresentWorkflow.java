@@ -7,6 +7,8 @@ import sa.gov.nic.bio.bw.core.workflow.AssociatedMenu;
 import sa.gov.nic.bio.bw.core.workflow.Signal;
 import sa.gov.nic.bio.bw.core.workflow.WithLookups;
 import sa.gov.nic.bio.bw.core.workflow.WizardWorkflowBase;
+import sa.gov.nic.bio.bw.workflow.civilcriminalfingerprintsinquiry.controllers.CivilBiometricsIdPaneFxController;
+import sa.gov.nic.bio.bw.workflow.civilcriminalfingerprintsinquiry.controllers.CriminalBiometricsIdPaneFxController;
 import sa.gov.nic.bio.bw.workflow.civilcriminalfingerprintsinquiry.controllers.FingerprintsSourceFxController;
 import sa.gov.nic.bio.bw.workflow.civilcriminalfingerprintsinquiry.controllers.FingerprintsSourceFxController.Source;
 import sa.gov.nic.bio.bw.workflow.civilcriminalfingerprintsinquiry.controllers.PersonIdPaneFxController;
@@ -14,6 +16,9 @@ import sa.gov.nic.bio.bw.workflow.civilcriminalfingerprintsinquiry.controllers.S
 import sa.gov.nic.bio.bw.workflow.civilcriminalfingerprintsinquiry.controllers.SpecifyFingerprintCoordinatesPaneFxController;
 import sa.gov.nic.bio.bw.workflow.civilcriminalfingerprintsinquiry.controllers.UploadNistFileFxController;
 import sa.gov.nic.bio.bw.workflow.civilcriminalfingerprintsinquiry.tasks.ExtractingDataFromNistFileWorkflowTask;
+import sa.gov.nic.bio.bw.workflow.civilcriminalfingerprintsinquiry.tasks.RetrieveFingerprintsAvailabilityByCivilBiometricIdWorkflowTask;
+import sa.gov.nic.bio.bw.workflow.civilcriminalfingerprintsinquiry.tasks.RetrieveFingerprintsByCivilBiometricIdWorkflowTask;
+import sa.gov.nic.bio.bw.workflow.civilcriminalfingerprintsinquiry.tasks.RetrieveFingerprintsByCriminalBiometricIdWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.commons.beans.BiometricsExchangeDecision;
 import sa.gov.nic.bio.bw.workflow.commons.beans.ConvictedReport;
 import sa.gov.nic.bio.bw.workflow.commons.beans.CrimeCode;
@@ -130,6 +135,49 @@ public class RegisterConvictedReportNotPresentWorkflow extends WizardWorkflowBas
 					         "missingFingerprints");
 					executeWorkflowTask(ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask.class);
 				}
+				else if(fingerprintsSource == Source.ENTERING_CIVIL_BIOMETRICS_ID)
+				{
+					incrementNSteps(1); // to skip step #2 on going next
+					
+					renderUiAndWaitForUserInput(CivilBiometricsIdPaneFxController.class);
+					
+					passData(CivilBiometricsIdPaneFxController.class,
+					         RetrieveFingerprintsByCivilBiometricIdWorkflowTask.class,
+					         "civilBiometricsId");
+					executeWorkflowTask(RetrieveFingerprintsByCivilBiometricIdWorkflowTask.class);
+					
+					passData(CivilBiometricsIdPaneFxController.class,
+					         RetrieveFingerprintsAvailabilityByCivilBiometricIdWorkflowTask.class,
+					         "civilBiometricsId");
+					executeWorkflowTask(RetrieveFingerprintsAvailabilityByCivilBiometricIdWorkflowTask.class);
+					
+					passData(RetrieveFingerprintsByCivilBiometricIdWorkflowTask.class,
+					         ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask.class,
+					         "fingerprints");
+					passData(RetrieveFingerprintsAvailabilityByCivilBiometricIdWorkflowTask.class,
+					         ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask.class,
+					         "missingFingerprints");
+					executeWorkflowTask(ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask.class);
+				}
+				else if(fingerprintsSource == Source.ENTERING_CRIMINAL_BIOMETRICS_ID)
+				{
+					incrementNSteps(1); // to skip step #2 on going next
+					
+					renderUiAndWaitForUserInput(CriminalBiometricsIdPaneFxController.class);
+					
+					passData(CriminalBiometricsIdPaneFxController.class,
+					         RetrieveFingerprintsByCriminalBiometricIdWorkflowTask.class,
+					         "criminalBiometricsId");
+					executeWorkflowTask(RetrieveFingerprintsByCriminalBiometricIdWorkflowTask.class);
+					
+					passData(RetrieveFingerprintsByCriminalBiometricIdWorkflowTask.class,
+					         ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask.class,
+					         "fingerprints");
+					passData(RetrieveFingerprintsByCriminalBiometricIdWorkflowTask.class,
+					         ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask.class,
+					         "missingFingerprints");
+					executeWorkflowTask(ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask.class);
+				}
 				else if(fingerprintsSource == Source.SCANNING_FINGERPRINTS_CARD)
 				{
 					renderUiAndWaitForUserInput(ScanFingerprintCardPaneFxController.class);
@@ -193,6 +241,20 @@ public class RegisterConvictedReportNotPresentWorkflow extends WizardWorkflowBas
 					         ShowingFingerprintsPaneFxController.class,
 					         "fingerprintBase64Images");
 				}
+				else if(fingerprintsSource == Source.ENTERING_CIVIL_BIOMETRICS_ID)
+				{
+					incrementNSteps(-1); // to skip step #2 on going previous
+					passData(ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask.class,
+					         ShowingFingerprintsPaneFxController.class,
+					         "fingerprintBase64Images");
+				}
+				else if(fingerprintsSource == Source.ENTERING_CRIMINAL_BIOMETRICS_ID)
+				{
+					incrementNSteps(-1); // to skip step #2 on going previous
+					passData(ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask.class,
+					         ShowingFingerprintsPaneFxController.class,
+					         "fingerprintBase64Images");
+				}
 				else if(fingerprintsSource == Source.SCANNING_FINGERPRINTS_CARD)
 				{
 					passData(SpecifyFingerprintCoordinatesPaneFxController.class,
@@ -229,6 +291,24 @@ public class RegisterConvictedReportNotPresentWorkflow extends WizardWorkflowBas
 						passData(FetchingFingerprintsWorkflowTask.class, FingerprintInquiryWorkflowTask.class,
 						         "fingerprints");
 						passData(FetchingMissingFingerprintsWorkflowTask.class, FingerprintInquiryWorkflowTask.class,
+						         "missingFingerprints");
+					}
+					else if(fingerprintsSource == Source.ENTERING_CIVIL_BIOMETRICS_ID)
+					{
+						passData(RetrieveFingerprintsByCivilBiometricIdWorkflowTask.class,
+						         FingerprintInquiryWorkflowTask.class,
+						         "fingerprints");
+						passData(RetrieveFingerprintsAvailabilityByCivilBiometricIdWorkflowTask.class,
+						         FingerprintInquiryWorkflowTask.class,
+						         "missingFingerprints");
+					}
+					else if(fingerprintsSource == Source.ENTERING_CRIMINAL_BIOMETRICS_ID)
+					{
+						passData(RetrieveFingerprintsByCriminalBiometricIdWorkflowTask.class,
+						         FingerprintInquiryWorkflowTask.class,
+						         "fingerprints");
+						passData(RetrieveFingerprintsByCriminalBiometricIdWorkflowTask.class,
+						         FingerprintInquiryWorkflowTask.class,
 						         "missingFingerprints");
 					}
 					else if(fingerprintsSource == Source.SCANNING_FINGERPRINTS_CARD)

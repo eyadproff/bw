@@ -21,19 +21,23 @@ public class FingerprintsSourceFxController extends WizardStepFxControllerBase
 {
 	public enum Source
 	{
-		CAPTURING_FINGERPRINTS_VIA_FINGERPRINT_SCANNER,
 		ENTERING_PERSON_ID,
+		ENTERING_CIVIL_BIOMETRICS_ID,
+		ENTERING_CRIMINAL_BIOMETRICS_ID,
 		SCANNING_FINGERPRINTS_CARD,
-		UPLOADING_NIST_FILE
+		UPLOADING_NIST_FILE,
+		CAPTURING_FINGERPRINTS_VIA_FINGERPRINT_SCANNER
 	}
 	
 	@Input private Boolean showLiveScanOption;
 	@Output private Source fingerprintsSource;
 	
-	@FXML private RadioButton rbByCapturingFingerprintsViaScanner;
+	@FXML private RadioButton rbByEnteringCivilBiometricsId;
+	@FXML private RadioButton rbByEnteringCriminalBiometricsId;
 	@FXML private RadioButton rbByEnteringPersonId;
 	@FXML private RadioButton rbByScanningFingerprintsCard;
 	@FXML private RadioButton rbByUploadingNistFile;
+	@FXML private RadioButton rbByCapturingFingerprintsViaScanner;
 	@FXML private Button btnNext;
 	
 	private boolean minusOneStep = false;
@@ -52,6 +56,18 @@ public class FingerprintsSourceFxController extends WizardStepFxControllerBase
 			minusOneStep = true;
 			rbByCapturingFingerprintsViaScanner.setSelected(true);
 			rbByCapturingFingerprintsViaScanner.requestFocus();
+		}
+		else if(fingerprintsSource == Source.ENTERING_CIVIL_BIOMETRICS_ID)
+		{
+			minusOneStep = true;
+			rbByEnteringCivilBiometricsId.setSelected(true);
+			rbByEnteringCivilBiometricsId.requestFocus();
+		}
+		else if(fingerprintsSource == Source.ENTERING_CRIMINAL_BIOMETRICS_ID)
+		{
+			minusOneStep = true;
+			rbByEnteringCriminalBiometricsId.setSelected(true);
+			rbByEnteringCriminalBiometricsId.requestFocus();
 		}
 		else if(fingerprintsSource == Source.SCANNING_FINGERPRINTS_CARD)
 		{
@@ -79,13 +95,17 @@ public class FingerprintsSourceFxController extends WizardStepFxControllerBase
 			}
 		};
 		
-		rbByCapturingFingerprintsViaScanner.addEventHandler(KeyEvent.KEY_PRESSED, eventHandler);
 		rbByEnteringPersonId.addEventHandler(KeyEvent.KEY_PRESSED, eventHandler);
+		rbByEnteringCivilBiometricsId.addEventHandler(KeyEvent.KEY_PRESSED, eventHandler);
+		rbByEnteringCriminalBiometricsId.addEventHandler(KeyEvent.KEY_PRESSED, eventHandler);
 		rbByScanningFingerprintsCard.addEventHandler(KeyEvent.KEY_PRESSED, eventHandler);
 		rbByUploadingNistFile.addEventHandler(KeyEvent.KEY_PRESSED, eventHandler);
+		rbByCapturingFingerprintsViaScanner.addEventHandler(KeyEvent.KEY_PRESSED, eventHandler);
 		
 		String fingerprintCapturingTitle = resources.getString("wizard.fingerprintCapturing");
 		String enterPersonIdTitle = resources.getString("wizard.enterPersonId");
+		String enterCivilBiometricsId = resources.getString("wizard.enterCivilBiometricsId");
+		String enterCriminalBiometricsId = resources.getString("wizard.enterCriminalBiometricsId");
 		String scanFingerprintCardTitle = resources.getString("wizard.scanFingerprintCard");
 		String uploadNistFileTitle = resources.getString("wizard.uploadNistFile");
 		String showPersonInformationTitle = resources.getString("wizard.showPersonInformation");
@@ -105,7 +125,6 @@ public class FingerprintsSourceFxController extends WizardStepFxControllerBase
 		        }
 		    }
 		});
-		
 		rbByEnteringPersonId.selectedProperty().addListener((observable, oldValue, newValue) ->
 		{
 			if(newValue)
@@ -127,6 +146,34 @@ public class FingerprintsSourceFxController extends WizardStepFxControllerBase
 					                                                         "\\uf2b9");
 				}
 			}
+		});
+		rbByEnteringCivilBiometricsId.selectedProperty().addListener((observable, oldValue, newValue) ->
+		{
+		    if(newValue)
+		    {
+		        Context.getCoreFxController().getWizardPane().updateStep(1, enterCivilBiometricsId,
+		                                                                 "\\uf2bb");
+		
+		        if(!minusOneStep)
+		        {
+		            Context.getCoreFxController().getWizardPane().removeStep(2);
+		            minusOneStep = true;
+		        }
+		    }
+		});
+		rbByEnteringCriminalBiometricsId.selectedProperty().addListener((observable, oldValue, newValue) ->
+		{
+		    if(newValue)
+		    {
+		        Context.getCoreFxController().getWizardPane().updateStep(1, enterCriminalBiometricsId,
+		                                                                 "\\uf2bb");
+		
+		        if(!minusOneStep)
+		        {
+		            Context.getCoreFxController().getWizardPane().removeStep(2);
+		            minusOneStep = true;
+		        }
+		    }
 		});
 		rbByScanningFingerprintsCard.selectedProperty().addListener((observable, oldValue, newValue) ->
 		{
@@ -186,6 +233,9 @@ public class FingerprintsSourceFxController extends WizardStepFxControllerBase
 	public void onGoingNext(Map<String, Object> uiDataMap)
 	{
 		if(rbByEnteringPersonId.isSelected()) fingerprintsSource = Source.ENTERING_PERSON_ID;
+		else if(rbByEnteringCivilBiometricsId.isSelected()) fingerprintsSource = Source.ENTERING_CIVIL_BIOMETRICS_ID;
+		else if(rbByEnteringCriminalBiometricsId.isSelected()) fingerprintsSource =
+																Source.ENTERING_CRIMINAL_BIOMETRICS_ID;
 		else if(rbByScanningFingerprintsCard.isSelected()) fingerprintsSource = Source.SCANNING_FINGERPRINTS_CARD;
 		else if(rbByUploadingNistFile.isSelected()) fingerprintsSource = Source.UPLOADING_NIST_FILE;
 		else if(rbByCapturingFingerprintsViaScanner.isSelected()) fingerprintsSource =

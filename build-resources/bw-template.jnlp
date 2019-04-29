@@ -31,20 +31,19 @@
         <property name="jnlp.noPrefix.-Djavafx.preloader=" value='sa.gov.nic.bio.bw.preloader.AppPreloader'/>
         <property name="jnlp.noPrefix.-Xmx" value='1024m'/>
         <property name="jnlp.noPrefix.--add-modules=" value='ALL-MODULE-PATH'/>
-        <property name="jnlp.noPrefix.--add-opens javafx.base/com.sun.javafx.runtime=" value='controlsfx'/>
-        <property name="jnlp.noPrefix.--add-opens javafx.graphics/com.sun.javafx.css=" value='controlsfx'/>
-        <property name="jnlp.noPrefix.--add-opens javafx.graphics/com.sun.javafx.scene=" value='controlsfx'/>
-        <property name="jnlp.noPrefix.--add-opens javafx.graphics/com.sun.javafx.scene.traversal=" value='controlsfx'/>
-        <property name="jnlp.noPrefix.--add-opens javafx.controls/com.sun.javafx.scene.control=" value='controlsfx'/>
-        <property name="jnlp.noPrefix.--add-opens javafx.controls/com.sun.javafx.scene.control.behavior=" value='controlsfx'/>
-        <property name="jnlp.noPrefix.--add-opens javafx.controls/javafx.scene.control.skin=" value='controlsfx'/>
-        <property name="jnlp.noPrefix.--add-opens javafx.graphics/javafx.scene=" value='controlsfx'/>
+        <property name="jnlp.noPrefix.--add-opens javafx.base/com.sun.javafx.runtime=" value='org.controlsfx.controls'/>
+        <property name="jnlp.noPrefix.--add-opens javafx.graphics/com.sun.javafx.css=" value='org.controlsfx.controls'/>
+        <property name="jnlp.noPrefix.--add-opens javafx.graphics/com.sun.javafx.scene=" value='org.controlsfx.controls'/>
+        <property name="jnlp.noPrefix.--add-opens javafx.graphics/com.sun.javafx.scene.traversal=" value='org.controlsfx.controls'/>
+        <property name="jnlp.noPrefix.--add-opens javafx.controls/com.sun.javafx.scene.control=" value='org.controlsfx.controls'/>
+        <property name="jnlp.noPrefix.--add-opens javafx.controls/com.sun.javafx.scene.control.behavior=" value='org.controlsfx.controls'/>
+        <property name="jnlp.noPrefix.--add-opens javafx.controls/javafx.scene.control.skin=" value='org.controlsfx.controls'/>
+        <property name="jnlp.noPrefix.--add-opens javafx.graphics/javafx.scene=" value='org.controlsfx.controls'/>
         <property name="jnlp.noPrefix.--add-opens java.base/java.util=" value='org.apache.commons.lang3'/>
         <property name="jnlp.noPrefix.--add-opens java.base/java.lang=" value='org.apache.commons.lang3'/>
         <property name="jnlp.noPrefix.--add-opens java.base/java.time=" value='org.apache.commons.lang3'/>
         <property name="jnlp.noPrefix.--add-opens java.desktop/java.awt=" value='org.apache.commons.lang3'/>
         <property name="jnlp.noPrefix.--add-opens java.base/java.time.chrono=" value='bw.core'/>
-        <property name="--add-modules" value='javafx.controls'/>
         <property name="jnlp.noPrefix.-Djava.library.path="
                   value='"C:/bio/java/jre11-32bit/bin;C:/bio/user-apps/${user.name}/bw/resources"'/>
     </resources>

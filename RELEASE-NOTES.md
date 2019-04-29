@@ -11,6 +11,30 @@ VERSION SCHEMA: vYYYY.MM.#SEQ
 
 ---
 
+## v2019.04.3
+
+- FIX: Disable update-personId-info on Convicted-Report-Registration on going back.
+
+---
+
+## v2019.04.2
+
+- CHN: Disable updating personId when editing convicted report.
+- FIX: when navigating between convicted reports history, if the new value is null it will not override the old field value.
+
+---
+
+## v2019.04.1
+
+- ENH: Unify the transition overlay for menu transition and wizard transition.
+- ENH: Upgrade controlsfx library from 9.0.0 to 11.0.0.
+- NEW: Add Edit-Convicted-Report workflow.
+- CHN: Add 2 more options as fingerprints source: byCivilBiometricsId and byCriminalBiometricsId.
+- CHN: Add more criteria in search-convicted-report-by-search-criteria workflow.
+- CHN: Add history of all previous copies in convicted-report-dialog.
+
+---
+
 ## v2019.03.5
 
 - FIX: Fix Delete-Complete-Criminal-Record workflow logic.

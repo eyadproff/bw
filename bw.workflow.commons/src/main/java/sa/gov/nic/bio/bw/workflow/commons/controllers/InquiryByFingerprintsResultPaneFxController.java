@@ -286,7 +286,8 @@ public class InquiryByFingerprintsResultPaneFxController extends WizardStepFxCon
 			
 			if(newCriminalPersonInfoMap != null)
 			{
-				tvReportNumbers.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) ->
+				tvReportNumbers.getSelectionModel().selectedItemProperty().addListener(
+																					(observable, oldValue, newValue) ->
 				{
 				    if(newValue != null)
 				    {

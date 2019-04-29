@@ -15,8 +15,9 @@ import java.util.List;
 
 public class ConvictedReportInquiryBySearchCriteriaWorkflowTask extends WorkflowTask
 {
-	@Input private Long criminalBiometricsId;
 	@Input private Long reportNumber;
+	@Input private Long criminalBiometricsId;
+	@Input private Long location;
 	@Input private Long personId;
 	@Input private String documentId;
 	@Input private String firstName;
@@ -25,8 +26,12 @@ public class ConvictedReportInquiryBySearchCriteriaWorkflowTask extends Workflow
 	@Input private String familyName;
 	@Input private String judgementNumber;
 	@Input private Long prisonerNumber;
+	@Input private Long operatorId;
 	@Input private Long judgmentDateFrom;
 	@Input private Long judgmentDateTo;
+	@Input private Long rootReportNumber;
+	@Input private Boolean showOldReports;
+	@Input private Boolean showDeletedReports;
 	@Input(alwaysRequired = true) private Integer recordsPerPage;
 	@Input(alwaysRequired = true) private Integer pageIndex;
 	@Output private List<ConvictedReport> convictedReports;
@@ -40,10 +45,12 @@ public class ConvictedReportInquiryBySearchCriteriaWorkflowTask extends Workflow
 		
 		ConvictedReportInquiryAPI api = Context.getWebserviceManager().getApi(ConvictedReportInquiryAPI.class);
 		Call<SearchQueryResult<ConvictedReport>> call =
-				api.inquireConvictedReportBySearchCriteria(workflowId, workflowTcn, criminalBiometricsId, reportNumber,
-				                                           judgementNumber, personId, prisonerNumber, documentId,
-				                                           judgmentDateFrom, judgmentDateTo, firstName, fatherName,
-				                                           grandfatherName, familyName, start, end);
+				api.inquireConvictedReportBySearchCriteria(workflowId, workflowTcn, reportNumber, criminalBiometricsId,
+				                                           location, judgementNumber, personId, prisonerNumber,
+				                                           documentId, judgmentDateFrom, judgmentDateTo, firstName,
+				                                           fatherName, grandfatherName, familyName, operatorId,
+				                                           rootReportNumber, showOldReports, showDeletedReports, start,
+				                                           end);
 		TaskResponse<SearchQueryResult<ConvictedReport>> taskResponse = Context.getWebserviceManager().executeApi(call);
 		
 		resetWorkflowStepIfNegativeOrNullTaskResponse(taskResponse);
