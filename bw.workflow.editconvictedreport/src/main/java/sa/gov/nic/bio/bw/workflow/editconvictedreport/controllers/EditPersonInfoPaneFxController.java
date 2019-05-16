@@ -233,8 +233,8 @@ public class EditPersonInfoPaneFxController extends WizardStepFxControllerBase
 		GuiUtils.applyValidatorToTextField(txtPersonId, "\\d*", "[^\\d]", 10);
 		GuiUtils.applyValidatorToTextField(txtDocumentId, null, null, 10);
 		
-		BooleanBinding txtFirstNameBinding = txtFirstName.textProperty().isEmpty();
-		BooleanBinding txtFamilyNameBinding = txtFamilyName.textProperty().isEmpty();
+		BooleanBinding txtFirstNameBinding = GuiUtils.textFieldBlankBinding(txtFirstName);
+		BooleanBinding txtFamilyNameBinding = GuiUtils.textFieldBlankBinding(txtFamilyName);
 		BooleanBinding cboGenderBinding = cboGender.valueProperty().isNull();
 		BooleanBinding cboNationalityBinding = cboNationality.valueProperty().isNull();
 		
@@ -625,19 +625,19 @@ public class EditPersonInfoPaneFxController extends WizardStepFxControllerBase
 	@Override
 	public void onGoingNext(Map<String, Object> uiDataMap)
 	{
-		var firstName = txtFirstName.getText();
+		var firstName = txtFirstName.getText().strip();
 		if(!firstName.isBlank()) this.firstNameNewValue = firstName;
 		else this.firstNameNewValue = null;
 		
-		var fatherName = txtFatherName.getText();
+		var fatherName = txtFatherName.getText().strip();
 		if(!fatherName.isBlank()) this.fatherNameNewValue = fatherName;
 		else this.fatherNameNewValue = null;
 		
-		var grandfatherName = txtGrandfatherName.getText();
+		var grandfatherName = txtGrandfatherName.getText().strip();
 		if(!grandfatherName.isBlank()) this.grandfatherNameNewValue = grandfatherName;
 		else this.grandfatherNameNewValue = null;
 		
-		var familyName = txtFamilyName.getText();
+		var familyName = txtFamilyName.getText().strip();
 		if(!familyName.isBlank()) this.familyNameNewValue = familyName;
 		else this.familyNameNewValue = null;
 		
@@ -649,18 +649,18 @@ public class EditPersonInfoPaneFxController extends WizardStepFxControllerBase
 		if(nationalityItem != null) this.nationalityNewValue = nationalityItem.getItem();
 		else this.nationalityNewValue = null;
 		
-		var occupation = txtOccupation.getText();
+		var occupation = txtOccupation.getText().strip();
 		if(!occupation.isBlank()) this.occupationNewValue = occupation;
 		else this.occupationNewValue = null;
 		
-		var birthPlace = txtBirthPlace.getText();
+		var birthPlace = txtBirthPlace.getText().strip();
 		if(!birthPlace.isBlank()) this.birthPlaceNewValue = birthPlace;
 		else this.birthPlaceNewValue = null;
 		
 		this.birthDateNewValue = dpBirthDate.getValue();
 		this.birthDateUseHijri = rdoBirthDateUseHijri.isSelected();
 		
-		var sPersonId = txtPersonId.getText();
+		var sPersonId = txtPersonId.getText().strip();
 		if(!sPersonId.isBlank()) this.personIdNewValue = Long.parseLong(sPersonId);
 		else this.personIdNewValue = null;
 		
@@ -668,7 +668,7 @@ public class EditPersonInfoPaneFxController extends WizardStepFxControllerBase
 		if(personTypeItem != null) this.personTypeNewValue = personTypeItem.getItem();
 		else this.personTypeNewValue = null;
 		
-		var documentId = txtDocumentId.getText();
+		var documentId = txtDocumentId.getText().strip();
 		if(!documentId.isBlank()) this.documentIdNewValue = documentId;
 		else this.documentIdNewValue = null;
 		

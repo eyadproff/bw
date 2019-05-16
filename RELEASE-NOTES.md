@@ -11,6 +11,13 @@ VERSION SCHEMA: vYYYY.MM.#SEQ
 
 ---
 
+## v2019.05.1
+
+- FIX: Using civil biometrics ID and criminal biometrics ID in register-convicted-report-for-non-present workflow is not complete.
+- FIX: Spaces are allowed in text fields and are not trimmed.
+
+---
+
 ## v2019.04.3
 
 - FIX: Disable update-personId-info on Convicted-Report-Registration on going back.

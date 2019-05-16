@@ -512,6 +512,34 @@ public class RegisterConvictedReportNotPresentWorkflow extends WizardWorkflowBas
 					setData(ReviewAndSubmitPaneFxController.class, "fingerprintsSourceSystem",
 					        ConvictedReport.FingerprintsSource.ARCHIVE_DB);
 				}
+				else if(fingerprintsSource == Source.ENTERING_CIVIL_BIOMETRICS_ID)
+				{
+					passData(ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask.class,
+					         ReviewAndSubmitPaneFxController.class,
+					         "fingerprintBase64Images");
+					passData(RetrieveFingerprintsByCivilBiometricIdWorkflowTask.class,
+					         ReviewAndSubmitPaneFxController.class,
+					         "fingerprints");
+					passData(RetrieveFingerprintsAvailabilityByCivilBiometricIdWorkflowTask.class,
+					         ReviewAndSubmitPaneFxController.class,
+					         "missingFingerprints");
+					setData(ReviewAndSubmitPaneFxController.class, "fingerprintsSourceSystem",
+					        ConvictedReport.FingerprintsSource.ARCHIVE_DB);
+				}
+				else if(fingerprintsSource == Source.ENTERING_CRIMINAL_BIOMETRICS_ID)
+				{
+					passData(ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask.class,
+					         ReviewAndSubmitPaneFxController.class,
+					         "fingerprintBase64Images");
+					passData(RetrieveFingerprintsByCriminalBiometricIdWorkflowTask.class,
+					         ReviewAndSubmitPaneFxController.class,
+					         "fingerprints");
+					passData(RetrieveFingerprintsByCriminalBiometricIdWorkflowTask.class,
+					         ReviewAndSubmitPaneFxController.class,
+					         "missingFingerprints");
+					setData(ReviewAndSubmitPaneFxController.class, "fingerprintsSourceSystem",
+					        ConvictedReport.FingerprintsSource.ARCHIVE_DB);
+				}
 				else if(fingerprintsSource == Source.SCANNING_FINGERPRINTS_CARD)
 				{
 					passData(SpecifyFingerprintCoordinatesPaneFxController.class,
@@ -601,6 +629,26 @@ public class RegisterConvictedReportNotPresentWorkflow extends WizardWorkflowBas
 						         SubmitCriminalFingerprintsWorkflowTask.class,
 						         "missingFingerprints");
 					}
+					else if(fingerprintsSource == Source.ENTERING_CIVIL_BIOMETRICS_ID)
+					{
+						passData(ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask.class,
+						         "combinedFingerprints",
+						         SubmitCriminalFingerprintsWorkflowTask.class,
+						         "fingerprints");
+						passData(RetrieveFingerprintsAvailabilityByCivilBiometricIdWorkflowTask.class,
+						         SubmitCriminalFingerprintsWorkflowTask.class,
+						         "missingFingerprints");
+					}
+					else if(fingerprintsSource == Source.ENTERING_CRIMINAL_BIOMETRICS_ID)
+					{
+						passData(ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask.class,
+						         "combinedFingerprints",
+						         SubmitCriminalFingerprintsWorkflowTask.class,
+						         "fingerprints");
+						passData(RetrieveFingerprintsByCriminalBiometricIdWorkflowTask.class,
+						         SubmitCriminalFingerprintsWorkflowTask.class,
+						         "missingFingerprints");
+					}
 					else if(fingerprintsSource == Source.SCANNING_FINGERPRINTS_CARD)
 					{
 						passData(ConvertFingerprintBase64ImagesToWsqWorkflowTask.class,
@@ -666,6 +714,18 @@ public class RegisterConvictedReportNotPresentWorkflow extends WizardWorkflowBas
 				                                    "fingerprintsSource");
 				
 				if(fingerprintsSource == Source.ENTERING_PERSON_ID)
+				{
+					passData(ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask.class,
+					         ShowReportPaneFxController.class,
+					         "fingerprintBase64Images");
+				}
+				else if(fingerprintsSource == Source.ENTERING_CIVIL_BIOMETRICS_ID)
+				{
+					passData(ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask.class,
+					         ShowReportPaneFxController.class,
+					         "fingerprintBase64Images");
+				}
+				else if(fingerprintsSource == Source.ENTERING_CRIMINAL_BIOMETRICS_ID)
 				{
 					passData(ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask.class,
 					         ShowReportPaneFxController.class,

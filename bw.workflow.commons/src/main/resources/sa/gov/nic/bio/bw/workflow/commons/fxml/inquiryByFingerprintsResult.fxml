@@ -33,15 +33,15 @@
                                 <ImageView>
                                     <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/icon_error_16px.png"/>
                                 </ImageView>
-                                <Label text="%label.noMatching"/>
+                                <Label text="%label.noMatching" wrapText="true"/>
                             </HBox>
                             <VBox fx:id="paneCivilFingerprintsHit" alignment="CENTER" spacing="5.0" managed="false" visible="false">
                                 <HBox alignment="CENTER_LEFT" spacing="5.0">
                                     <ImageView>
                                         <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/icon_success_16px.png"/>
                                     </ImageView>
-                                    <Label text="%label.civilBiometricsId" styleClass="bold-label"/>
-                                    <CopiableLabel fx:id="lblCivilBiometricsId"/>
+                                    <Label text="%label.civilBiometricsId" wrapText="true" styleClass="bold-label"/>
+                                    <CopiableLabel fx:id="lblCivilBiometricsId" wrapText="true"/>
                                 </HBox>
                             </VBox>
                             <TableView fx:id="tvCivilPersonIds" VBox.vgrow="ALWAYS" maxHeight="Infinity" managed="false" visible="false">
@@ -62,15 +62,15 @@
                                 <ImageView>
                                     <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/icon_error_16px.png"/>
                                 </ImageView>
-                                <Label text="%label.noMatching"/>
+                                <Label text="%label.noMatching" wrapText="true"/>
                             </HBox>
                             <VBox fx:id="paneCriminalFingerprintsHit" alignment="CENTER" spacing="5.0" managed="false" visible="false">
                                 <HBox alignment="CENTER_LEFT" spacing="5.0">
                                     <ImageView>
                                         <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/icon_success_16px.png"/>
                                     </ImageView>
-                                    <Label text="%label.criminalBiometricsId" styleClass="bold-label"/>
-                                    <CopiableLabel fx:id="lblCriminalBiometricsId"/>
+                                    <Label text="%label.criminalBiometricsId" wrapText="true" styleClass="bold-label"/>
+                                    <CopiableLabel fx:id="lblCriminalBiometricsId" wrapText="true"/>
                                 </HBox>
                             </VBox>
                             <TabPane fx:id="tabPaneCriminal" styleClass="floating" managed="false" visible="false">
