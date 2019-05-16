@@ -27,16 +27,19 @@
                             <children>
                                 <VBox alignment="CENTER_LEFT" prefHeight="304.0" prefWidth="147.0" spacing="20.0">
                                     <children>
-                                        <Label text="%label.personId">
+                                        <Label alignment="CENTER_RIGHT" prefHeight="18.0" prefWidth="130.0"
+                                               text="%label.Name">
                                             <font>
                                                 <Font name="System Bold" size="14.0"/>
                                             </font>
                                         </Label>
-                                        <Label text="%label.Name">
+                                        <Label alignment="CENTER_RIGHT" prefHeight="18.0" prefWidth="130.0"
+                                               text="%label.personId">
                                             <font>
                                                 <Font name="System Bold" size="14.0"/>
                                             </font>
                                         </Label>
+
                                     </children>
                                     <padding>
                                         <Insets left="10.0" right="10.0"/>
@@ -44,16 +47,18 @@
                                 </VBox>
                                 <VBox alignment="CENTER_LEFT" spacing="20.0">
                                     <children>
-                                        <Label fx:id="PersonID" prefHeight="18.0" prefWidth="138.0" text="9999876543">
+
+                                        <Label fx:id="PersonName" prefHeight="18.0" prefWidth="146.0">
                                             <font>
                                                 <Font size="12.0"/>
                                             </font>
                                         </Label>
-                                        <Label fx:id="PersonName" prefHeight="18.0" prefWidth="146.0" text="bader">
+                                        <Label fx:id="PersonID" prefHeight="18.0" prefWidth="138.0">
                                             <font>
                                                 <Font size="12.0"/>
                                             </font>
                                         </Label>
+
                                     </children>
                                 </VBox>
                             </children>

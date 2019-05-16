@@ -10,12 +10,15 @@ import sa.gov.nic.bio.bw.core.utils.FxmlFile;
 import sa.gov.nic.bio.bw.core.workflow.Input;
 import sa.gov.nic.bio.bw.workflow.biometricsexception.beans.Fingerprint;
 import sa.gov.nic.bio.bw.workflow.biometricsexception.beans.PersonFingerprints;
+import sa.gov.nic.bio.bw.workflow.commons.beans.PersonInfo;
 
 @FxmlFile("reviewAndSubmit.fxml")
 public class ReviewAndSubmitFXController extends WizardStepFxControllerBase {
 
     @Input
     private PersonFingerprints personfingerprints;
+    @Input
+    private PersonInfo personInfo;
 
     @FXML
     private Label PersonID, PersonName;
@@ -91,6 +94,8 @@ public class ReviewAndSubmitFXController extends WizardStepFxControllerBase {
 
     @Override
     protected void onAttachedToScene() {
+        PersonName.setText(personInfo.getName().toString());
+        PersonID.setText(personInfo.getSamisId().toString());
 
 
         checkMissingfingers();

@@ -47,8 +47,6 @@ public class BiometricsExceptionWorkflow extends WizardWorkflowBase {
                 renderUiAndWaitForUserInput(ShowingPersonInfoFxController.class);
 
                 break;
-
-
             }
             case 2: {
                 renderUiAndWaitForUserInput(BiometricsExceptionTypeFXController.class);
@@ -64,11 +62,20 @@ public class BiometricsExceptionWorkflow extends WizardWorkflowBase {
                 break;
             }
             case 4: {
-                passData(EditMissingFingerprintFXController.class, ReviewAndSubmitFXController.class, "personfingerprints");
-                renderUiAndWaitForUserInput(ReviewAndSubmitFXController.class);
+                Type type = getData(BiometricsExceptionTypeFXController.class, "exceptionType");
+                if (Type.FINGERPRINTS.equals(type)) {
+                    passData(GetPersonInfoByIdWorkflowTask.class, ReviewAndSubmitFXController.class, "personInfo");
+                    passData(EditMissingFingerprintFXController.class, ReviewAndSubmitFXController.class, "personfingerprints");
+                    renderUiAndWaitForUserInput(ReviewAndSubmitFXController.class);
+                } else {
+                    passData(GetPersonInfoByIdWorkflowTask.class, ReviewAndSubmitFaceExceptionFXController.class, "personInfo");
+                    passData(FaceExceptionFXController.class, ReviewAndSubmitFaceExceptionFXController.class, "Reason");
+                    renderUiAndWaitForUserInput(ReviewAndSubmitFaceExceptionFXController.class);
+                }
                 break;
             }
             case 5: {
+                setData(ShowResultFXController.class, "success", true);
 
                 renderUiAndWaitForUserInput(ShowResultFXController.class);
 

@@ -13,13 +13,26 @@
         <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
               nodeOrientation="LEFT_TO_RIGHT" prefHeight="345.0" prefWidth="826.0" BorderPane.alignment="CENTER">
             <children>
-                <VBox alignment="CENTER" layoutX="121.0" layoutY="37.0" maxHeight="-Infinity" maxWidth="-Infinity"
-                      minHeight="-Infinity" minWidth="-Infinity" prefHeight="271.0" prefWidth="601.0" spacing="5.0">
+                <VBox fx:id="VSuccess" alignment="CENTER" layoutX="121.0" layoutY="37.0" maxHeight="-Infinity"
+                      maxWidth="-Infinity"
+                      minHeight="-Infinity" minWidth="-Infinity" prefHeight="271.0" prefWidth="601.0" spacing="5.0"
+                      managed="false" visible="false">
                     <ImageView>
                         <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/icon_success_32px.png"/>
                     </ImageView>
                     <Label text="%label.success"/>
                 </VBox>
+
+                <VBox fx:id="VFailed" alignment="CENTER" layoutX="121.0" layoutY="37.0" maxHeight="-Infinity"
+                      maxWidth="-Infinity"
+                      minHeight="-Infinity" minWidth="-Infinity" prefHeight="271.0" prefWidth="601.0" spacing="5.0"
+                      managed="false" visible="false">
+                    <ImageView>
+                        <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/icon_error_32px.png"/>
+                    </ImageView>
+                    <Label text="%label.failed"/>
+                </VBox>
+
             </children>
         </Pane>
     </top>
