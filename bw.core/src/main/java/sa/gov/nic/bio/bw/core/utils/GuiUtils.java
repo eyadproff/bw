@@ -7,6 +7,8 @@ import javafx.animation.PauseTransition;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.beans.Observable;
+import javafx.beans.binding.Bindings;
+import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
@@ -1026,5 +1028,10 @@ public class GuiUtils implements AppLogger
 			byte[] bytes = baos.toByteArray();
 			return Base64.getEncoder().encodeToString(bytes);
 		}
+	}
+	
+	public static BooleanBinding textFieldBlankBinding(TextField textField)
+	{
+		return Bindings.createBooleanBinding(() -> textField.getText().strip().isBlank(), textField.textProperty());
 	}
 }
