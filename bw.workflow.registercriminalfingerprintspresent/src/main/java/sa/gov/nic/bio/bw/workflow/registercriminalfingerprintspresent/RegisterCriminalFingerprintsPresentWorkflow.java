@@ -10,10 +10,7 @@ import sa.gov.nic.bio.bw.core.workflow.WithLookups;
 import sa.gov.nic.bio.bw.core.workflow.WizardWorkflowBase;
 import sa.gov.nic.bio.bw.workflow.commons.controllers.FingerprintCapturingFxController;
 import sa.gov.nic.bio.bw.workflow.commons.controllers.InquiryByFingerprintsPaneFxController;
-import sa.gov.nic.bio.bw.workflow.commons.lookups.BiometricsExchangeCrimeTypesLookup;
-import sa.gov.nic.bio.bw.workflow.commons.lookups.BiometricsExchangePartiesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.CountriesLookup;
-import sa.gov.nic.bio.bw.workflow.commons.lookups.CrimeTypesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.DocumentTypesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.PersonTypesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.FingerprintInquiryStatusCheckerWorkflowTask;
@@ -26,9 +23,8 @@ import sa.gov.nic.bio.bw.workflow.registercriminalfingerprintspresent.controller
 import sa.gov.nic.bio.bw.workflow.registercriminalfingerprintspresent.controllers.RegisteringFingerprintsPaneFxController.Request;
 
 @AssociatedMenu(workflowId = 1018, menuId = "menu.register.registerCriminalFingerprintsPresent",
-				menuTitle = "menu.title", menuOrder = 4, devices = {Device.FINGERPRINT_SCANNER, Device.CAMERA})
-@WithLookups({PersonTypesLookup.class, DocumentTypesLookup.class, CountriesLookup.class, CrimeTypesLookup.class,
-			  BiometricsExchangeCrimeTypesLookup.class, BiometricsExchangePartiesLookup.class})
+				menuTitle = "menu.title", menuOrder = 4, devices = {Device.FINGERPRINT_SCANNER})
+@WithLookups({PersonTypesLookup.class, DocumentTypesLookup.class, CountriesLookup.class})
 @Wizard({@Step(iconId = "\\uf256", title = "wizard.fingerprintCapturing"),
 		@Step(iconId = "search", title = "wizard.inquiryByFingerprints"),
 		@Step(iconId = "database", title = "wizard.inquiryResult"),

@@ -4,7 +4,8 @@ public enum Device
 {
 	BIO_UTILITIES,
 	FINGERPRINT_SCANNER,
-	CAMERA, PASSPORT_SCANNER;
+	CAMERA,
+	PASSPORT_SCANNER;
 	
 	public static Device byName(String name)
 	{
