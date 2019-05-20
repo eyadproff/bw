@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.TextField?>
+<BorderPane xmlns="http://javafx.com/javafx/11" xmlns:fx="http://javafx.com/fxml/1"
+            fx:id="rootPane" stylesheets="@../css/style.css"
+            fx:controller="sa.gov.nic.bio.bw.workflow.registercriminalfingerprintspresent.controllers.InquiryByFingerprintsResultPaneFxController">
+    <center>
+        <VBox alignment="CENTER" spacing="5.0">
+            <VBox fx:id="panePass" alignment="CENTER" spacing="5.0" managed="false" visible="false">
+                <ImageView>
+                    <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/icon_success_32px.png"/>
+                </ImageView>
+                <Label text="%label.ableToRegisterCriminalFingerprints"/>
+            </VBox>
+            <VBox fx:id="paneNoPass" alignment="CENTER" spacing="5.0" managed="false" visible="false">
+                <ImageView>
+                    <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/icon_warning_32px.png"/>
+                </ImageView>
+                <Label text="%label.notAbleToRegisterCriminalFingerprints"/>
+                <HBox spacing="5.0" alignment="CENTER">
+                    <padding>
+                        <Insets top="10.0"/>
+                    </padding>
+                    <Label text="%label.criminalBiometricsId"/>
+                    <TextField fx:id="txtCriminalBiometricsId" editable="false" focusTraversable="false"/>
+                </HBox>
+            </VBox>
+        </VBox>
+    </center>
+    <bottom>
+        <HBox alignment="CENTER" spacing="10">
+            <padding>
+                <Insets bottom="10"/>
+            </padding>
+            <Button fx:id="btnStartOver" text="%button.startOver" onAction="#onStartOverButtonClicked"/>
+            <Button fx:id="btnRegisterFingerprints" text="%button.registerFingerprints" managed="false" visible="false" onAction="#onRegisterFingerprintsButtonClicked"/>
+        </HBox>
+    </bottom>
+</BorderPane>

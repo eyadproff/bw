@@ -19,8 +19,8 @@ import sa.gov.nic.bio.bw.workflow.visaapplicantsenrollment.lookups.PassportTypes
 import sa.gov.nic.bio.bw.workflow.visaapplicantsenrollment.lookups.VisaTypesLookup;
 import sa.gov.nic.bio.bw.workflow.visaapplicantsenrollment.tasks.VisaApplicantsWorkflowTask;
 
-@AssociatedMenu(workflowId = 1010, menuId = "menu.register.visaApplicantsEnrollment", menuTitle = "menu.title", menuOrder = 4,
-				devices = {Device.FINGERPRINT_SCANNER, Device.CAMERA, Device.PASSPORT_SCANNER})
+@AssociatedMenu(workflowId = 1010, menuId = "menu.register.visaApplicantsEnrollment", menuTitle = "menu.title",
+				menuOrder = 6, devices = {Device.FINGERPRINT_SCANNER, Device.CAMERA, Device.PASSPORT_SCANNER})
 @WithLookups({CountriesLookup.class, VisaTypesLookup.class, PassportTypesLookup.class, DialingCodesLookup.class})
 @Wizard({@Step(iconId = "\\uf2bb", title = "wizard.applicantInfo"),
 		@Step(iconId = "\\uf256", title = "wizard.fingerprintCapturing"),
