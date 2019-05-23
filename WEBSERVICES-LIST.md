@@ -61,6 +61,10 @@
         - services-gateway-biooperation/api/criminal/fingers/deletion/v1
         - services-gateway-biooperation/api/criminal/fingers/deletion/status/v1
         - services-gateway-biooperation/api/criminal/reports/deletion/v1
+        
+    menu.cancel.deleteCriminalFingerprints:
+        - services-gateway-biooperation/api/criminal/fingers/deletion/v1
+        - services-gateway-biooperation/api/criminal/fingers/deletion/status/v1
     
     menu.cancel.deleteConvictedReport:
         - services-gateway-lookups/api/application/person-type/v1
@@ -139,6 +143,30 @@
         - services-gateway-biooperation/api/gcc/criminal/exchange/v1
         - services-gateway-demographic/api/criminal/info/basic/custom/v1
         - services-gateway-biooperation/api/criminal/report/v1
+
+    menu.register.registerCriminalFingerprintsNotPresent:
+        - services-gateway-lookups/api/application/person-type/v1
+        - services-gateway-lookups/api/application/id-types/v1
+        - services-gateway-lookups/api/application/nationality/all/v1
+        - services-gateway-demographic/api/person/info/v1
+        - services-gateway-biooperation/api/fingerprint/images/v1
+        - services-gateway-biooperation/api/fingerprint/available/v1
+        - services-gateway-biooperation/api/fingerprint/images/v2
+        - services-gateway-biooperation/api/fingerprint/available/v2
+        - services-gateway-biooperation/api/criminal/fingerprint/images/v1
+        - services-gateway-biooperation/api/xafis/nist/extraction/v1
+        - services-gateway-biooperation/api/fingerprint/inquiry/v1
+        - services-gateway-biooperation/api/fingerprint/inquiry/status/v2
+        - services-gateway-biooperation/api/criminal/criminal-id/generation/v1
+        - services-gateway-biooperation/api/criminal/fingers/registration/v1
+        - services-gateway-biooperation/api/criminal/fingers/registration/status/v1
+    
+    menu.register.registerCriminalFingerprintsPresent:
+        - services-gateway-biooperation/api/fingerprint/inquiry/v1
+        - services-gateway-biooperation/api/fingerprint/inquiry/status/v2
+        - services-gateway-biooperation/api/criminal/criminal-id/generation/v1
+        - services-gateway-biooperation/api/criminal/fingers/registration/v1
+        - services-gateway-biooperation/api/criminal/fingers/registration/status/v1
     
     menu.securityClearance.faceVerification:
         - services-gateway-lookups/api/application/nationality/all/v1
