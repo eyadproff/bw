@@ -81,6 +81,7 @@ import java.util.stream.Collectors;
 public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 {
 	@Input private Boolean hidePreviousButton;
+	@Input private Boolean allow9MissingWithNoRole;
 	@Input private Boolean acceptBadQualityFingerprint;
 	@Input private Integer acceptBadQualityFingerprintMinRetires;
 	@Output private Map<Integer, Fingerprint> capturedFingerprints;
@@ -354,7 +355,8 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 				
 				int userSkipAbility = 0;
 				
-				for(int i = 10; i >= 1; i--)
+				if(allow9MissingWithNoRole != null && allow9MissingWithNoRole) userSkipAbility = 9;
+				else for(int i = 10; i >= 1; i--)
 				{
 					String skipNRole = Context.getConfigManager().getProperty(
 						String.format(AppConstants.Locales.SAUDI_EN_LOCALE, "fingerprint.roles.skip%02d", i));
@@ -398,7 +400,7 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 							resources.getString("fingerprint.skippingFingerprint.notAuthorized.noMore2");
 					else message = String.format(AppConstants.Locales.SAUDI_EN_LOCALE,
                             resources.getString("fingerprint.skippingFingerprint.notAuthorized.noMoreN"),
-                            totalSkipCount[0]);
+                            totalSkipCount[0] - 1);
 					
 					components.getCheckBox().setSelected(true);
 					showWarningNotification(message);

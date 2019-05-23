@@ -11,6 +11,13 @@ VERSION SCHEMA: vYYYY.MM.#SEQ
 
 ---
 
+## v2019.05.3
+
+- NEW: Add Delete-Criminal-Fingerprints workflow.
+- CHN: Allow skipping 9 fingerprints in criminal workflows without role.
+
+---
+
 ## v2019.05.2
 
 - NEW: Add Register-Criminal-Fingerprints-For-Present-Person workflow.
