@@ -16,7 +16,11 @@ public enum FingerPosition
 	LEFT_THUMB_SLAP(12),
 	RIGHT_SLAP(13),
 	LEFT_SLAP(14),
-	TWO_THUMBS(15);
+	TWO_THUMBS(15),
+	RIGHT_WRITERS_PALM(22),
+	LEFT_WRITERS_PALM(24),
+	RIGHT_LOWER_PALM(25),
+	LEFT_LOWER_PALM(27);
 	
 	private final int position;
 	
