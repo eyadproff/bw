@@ -209,8 +209,8 @@ public class JudgmentDetailsPaneFxController extends WizardStepFxControllerBase
 		btnHidePaneCrimeMap.put(3, btnHidePaneCrime4);
 		btnHidePaneCrimeMap.put(4, btnHidePaneCrime5);
 		
-		BooleanBinding txtJudgmentIssuerEmptyBinding = txtJudgmentIssuer.textProperty().isEmpty();
-		BooleanBinding txtJudgmentNumberEmptyBinding = txtJudgmentNumber.textProperty().isEmpty();
+		BooleanBinding txtJudgmentIssuerEmptyBinding = GuiUtils.textFieldBlankBinding(txtJudgmentIssuer);
+		BooleanBinding txtJudgmentNumberEmptyBinding = GuiUtils.textFieldBlankBinding(txtJudgmentNumber);
 		BooleanBinding dpJudgmentDateEmptyBinding = dpJudgmentDate.valueProperty().isNull();
 		
 		// prevent duplicates
@@ -336,22 +336,22 @@ public class JudgmentDetailsPaneFxController extends WizardStepFxControllerBase
 	@Override
 	public void onGoingNext(Map<String, Object> uiDataMap)
 	{
-		var judgmentIssuer = txtJudgmentIssuer.getText();
+		var judgmentIssuer = txtJudgmentIssuer.getText().strip();
 		if(!judgmentIssuer.isBlank()) this.judgmentIssuer = judgmentIssuer;
 		else this.judgmentIssuer = null;
 		
-		var judgmentNumber = txtJudgmentNumber.getText();
+		var judgmentNumber = txtJudgmentNumber.getText().strip();
 		if(!judgmentNumber.isBlank()) this.judgmentNumber = judgmentNumber;
 		else this.judgmentNumber = null;
 		
 		this.judgmentDate = dpJudgmentDate.getValue();
 		this.judgmentDateUseHijri = rdoJudgmentDateUseHijri.isSelected();
 		
-		var caseFileNumber = txtCaseFileNumber.getText();
+		var caseFileNumber = txtCaseFileNumber.getText().strip();
 		if(!caseFileNumber.isBlank()) this.caseFileNumber = caseFileNumber;
 		else this.caseFileNumber = null;
 		
-		var prisonerNumber = txtPrisonerNumber.getText();
+		var prisonerNumber = txtPrisonerNumber.getText().strip();
 		if(!prisonerNumber.isBlank()) this.prisonerNumber = Long.parseLong(prisonerNumber);
 		else this.prisonerNumber = null;
 		

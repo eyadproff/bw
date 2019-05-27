@@ -300,11 +300,13 @@ public class CoreFxController extends FxControllerBase implements IdleMonitorReg
 		
 		String packageName = controllerClass.getPackage().getName().replace('.', '/');
 		String parentPackageName = packageName.substring(0, packageName.lastIndexOf('/'));
-		URL fxmlUrl = controllerClass.getResource("/" + parentPackageName + "/fxml/" + fxmlFile.value());
+		String fxmlPath = "/" + parentPackageName + "/fxml/" + fxmlFile.value();
+		URL fxmlUrl = controllerClass.getResource(fxmlPath);
 		if(fxmlUrl == null)
 		{
 			String errorCode = CoreErrorCodes.C002_00004.getCode();
-			String[] errorDetails = {"\"fxmlUrl\" is null!", "controllerClass = " + controllerClass};
+			String[] errorDetails = {"\"fxmlUrl\" is null!", "controllerClass = " + controllerClass, "fxml path = " +
+									fxmlPath};
 			showErrorDialog(errorCode, null, errorDetails);
 			return null;
 		}

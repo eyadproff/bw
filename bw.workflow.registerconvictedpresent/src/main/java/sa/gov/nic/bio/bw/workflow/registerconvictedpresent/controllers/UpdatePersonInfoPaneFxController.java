@@ -160,8 +160,8 @@ public class UpdatePersonInfoPaneFxController extends WizardStepFxControllerBase
 		GuiUtils.applyValidatorToTextField(txtPersonId, "\\d*", "[^\\d]", 10);
 		GuiUtils.applyValidatorToTextField(txtDocumentId, null, null, 10);
 		
-		BooleanBinding txtFirstNameBinding = txtFirstName.textProperty().isEmpty();
-		BooleanBinding txtFamilyNameBinding = txtFamilyName.textProperty().isEmpty();
+		BooleanBinding txtFirstNameBinding = GuiUtils.textFieldBlankBinding(txtFirstName);
+		BooleanBinding txtFamilyNameBinding = GuiUtils.textFieldBlankBinding(txtFamilyName);
 		BooleanBinding cboGenderBinding = cboGender.valueProperty().isNull();
 		BooleanBinding cboNationalityBinding = cboNationality.valueProperty().isNull();
 		
@@ -349,7 +349,7 @@ public class UpdatePersonInfoPaneFxController extends WizardStepFxControllerBase
 			txtPersonId.setText(String.valueOf(personId));
 			txtPersonId.setDisable(disable);
 		}
-		else txtPersonId.setText(String.valueOf(this.personId));
+		else if(this.personId != null) txtPersonId.setText(String.valueOf(this.personId));
 		
 		if(personType != null)
 		{
@@ -407,19 +407,19 @@ public class UpdatePersonInfoPaneFxController extends WizardStepFxControllerBase
 	@Override
 	public void onGoingNext(Map<String, Object> uiDataMap)
 	{
-		var firstName = txtFirstName.getText();
+		var firstName = txtFirstName.getText().strip();
 		if(!firstName.isBlank()) this.firstName = firstName;
 		else this.firstName = null;
 		
-		var fatherName = txtFatherName.getText();
+		var fatherName = txtFatherName.getText().strip();
 		if(!fatherName.isBlank()) this.fatherName = fatherName;
 		else this.fatherName = null;
 		
-		var grandfatherName = txtGrandfatherName.getText();
+		var grandfatherName = txtGrandfatherName.getText().strip();
 		if(!grandfatherName.isBlank()) this.grandfatherName = grandfatherName;
 		else this.grandfatherName = null;
 		
-		var familyName = txtFamilyName.getText();
+		var familyName = txtFamilyName.getText().strip();
 		if(!familyName.isBlank()) this.familyName = familyName;
 		else this.familyName = null;
 		
@@ -431,18 +431,18 @@ public class UpdatePersonInfoPaneFxController extends WizardStepFxControllerBase
 		if(nationalityItem != null) this.nationality = nationalityItem.getItem();
 		else this.nationality = null;
 		
-		var occupation = txtOccupation.getText();
+		var occupation = txtOccupation.getText().strip();
 		if(!occupation.isBlank()) this.occupation = occupation;
 		else this.occupation = null;
 		
-		var birthPlace = txtBirthPlace.getText();
+		var birthPlace = txtBirthPlace.getText().strip();
 		if(!birthPlace.isBlank()) this.birthPlace = birthPlace;
 		else this.birthPlace = null;
 		
 		this.birthDate = dpBirthDate.getValue();
 		this.birthDateUseHijri = rdoBirthDateUseHijri.isSelected();
 		
-		var sPersonId = txtPersonId.getText();
+		var sPersonId = txtPersonId.getText().strip();
 		if(!sPersonId.isBlank()) this.personId = Long.parseLong(sPersonId);
 		else this.personId = null;
 		
@@ -450,7 +450,7 @@ public class UpdatePersonInfoPaneFxController extends WizardStepFxControllerBase
 		if(personTypeItem != null) this.personType = personTypeItem.getItem();
 		else this.personType = null;
 		
-		var documentId = txtDocumentId.getText();
+		var documentId = txtDocumentId.getText().strip();
 		if(!documentId.isBlank()) this.documentId = documentId;
 		else this.documentId = null;
 		

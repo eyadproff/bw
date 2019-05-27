@@ -20,5 +20,3 @@ include 'bw.workflow.scfaceverification'
 include 'bw.workflow.deleteconvictedreport'
 include 'bw.workflow.deletecompletecriminalrecord'
 include 'bw.workflow.editconvictedreport'
-include 'bw.workflow.biometricsexception'
-

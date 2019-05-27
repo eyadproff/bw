@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressIndicator?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<BorderPane xmlns="http://javafx.com/javafx/11" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="sa.gov.nic.bio.bw.workflow.registercriminalfingerprintspresent.controllers.RegisteringFingerprintsPaneFxController"
+            fx:id="rootPane" stylesheets="@../css/style.css">
+    <center>
+        <HBox alignment="CENTER">
+            <VBox alignment="CENTER">
+                <HBox spacing="5.0">
+                    <padding>
+                        <Insets bottom="10.0"/>
+                    </padding>
+                    <Label text="%label.criminalBiometricsId"/>
+                    <TextField fx:id="txtCriminalBiometricsId" editable="false" focusTraversable="false"/>
+                </HBox>
+                <GridPane vgap="5.0" hgap="5.0">
+                    <StackPane fx:id="paneGeneratingNewCriminalBiometricsIdStatus" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                        <ProgressIndicator fx:id="piGeneratingNewCriminalBiometricsId" maxWidth="20.0" maxHeight="20.0"/>
+                        <ImageView fx:id="ivGeneratingNewCriminalBiometricsIdSuccess" visible="false">
+                            <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/icon_success_16px.png"/>
+                        </ImageView>
+                        <ImageView fx:id="ivGeneratingNewCriminalBiometricsIdFailure" visible="false">
+                            <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/icon_error_16px.png"/>
+                        </ImageView>
+                    </StackPane>
+                    <Label fx:id="lblGeneratingNewCriminalBiometricsId" text="%label.generatingNewCriminalBiometricsId" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+                    <StackPane fx:id="paneSubmittingFingerprints" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                        <ProgressIndicator fx:id="piSubmittingFingerprints" visible="false" maxWidth="20.0" maxHeight="20.0"/>
+                        <ImageView fx:id="ivSubmittingFingerprintsSuccess" visible="false">
+                            <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/icon_success_16px.png"/>
+                        </ImageView>
+                        <ImageView fx:id="ivSubmittingFingerprintsFailure" visible="false">
+                            <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/icon_error_16px.png"/>
+                        </ImageView>
+                    </StackPane>
+                    <Label fx:id="lblSubmittingFingerprints" text="%label.submittingFingerprints" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                    <StackPane fx:id="paneCheckingFingerprintsStatus" GridPane.columnIndex="0" GridPane.rowIndex="2">
+                        <ProgressIndicator fx:id="piCheckingFingerprints" maxWidth="20.0" maxHeight="20.0" visible="false"/>
+                        <ImageView fx:id="ivCheckingFingerprintsSuccess" visible="false">
+                            <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/icon_success_16px.png"/>
+                        </ImageView>
+                        <ImageView fx:id="ivCheckingFingerprintsFailure" visible="false">
+                            <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/icon_error_16px.png"/>
+                        </ImageView>
+                    </StackPane>
+                    <Label fx:id="lblCheckingFingerprints" text="%label.checkingFingerprints" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+                </GridPane>
+            </VBox>
+        </HBox>
+    </center>
+    <bottom>
+        <HBox alignment="CENTER" spacing="10">
+            <padding>
+                <Insets bottom="10"/>
+            </padding>
+            <Button fx:id="btnStartOver" text="%button.startOver" visible="false" onAction="#onStartOverButtonClicked"/>
+            <Button fx:id="btnRetry" text="%button.retry" visible="false" onAction="#onRetryButtonClicked"/>
+        </HBox>
+    </bottom>
+</BorderPane>
