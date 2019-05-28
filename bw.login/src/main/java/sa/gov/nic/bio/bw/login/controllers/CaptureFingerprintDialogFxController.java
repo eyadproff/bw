@@ -129,7 +129,7 @@ public class CaptureFingerprintDialogFxController extends FxControllerBase
 						                                                    fingerPosition.getPosition(),
 						                                                    1, null,
 						                                                    true, true,
-						                                                    responseProcessor);
+						                                                    true, responseProcessor);
 				return future.get();
 			}
 		};

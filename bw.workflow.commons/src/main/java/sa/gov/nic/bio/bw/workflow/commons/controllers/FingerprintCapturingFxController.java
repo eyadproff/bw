@@ -930,7 +930,8 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 						.getFingerprintService().startPreviewAndAutoCapture(fingerprintDeviceName,
 						                                                    currentSlapPosition,
 						                                                    expectedFingersCount[0], missingFingers,
-						                                                    true, true, responseProcessor);
+						                                                    true, true, true,
+						                                                    responseProcessor);
 				return future.get();
 			}
 		};

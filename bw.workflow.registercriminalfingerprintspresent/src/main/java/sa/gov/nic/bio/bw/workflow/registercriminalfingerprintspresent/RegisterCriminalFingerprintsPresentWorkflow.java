@@ -11,6 +11,7 @@ import sa.gov.nic.bio.bw.workflow.commons.controllers.FingerprintCapturingFxCont
 import sa.gov.nic.bio.bw.workflow.commons.controllers.InquiryByFingerprintsPaneFxController;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.FingerprintInquiryStatusCheckerWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.FingerprintInquiryWorkflowTask;
+import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.controllers.PalmCapturingFxController;
 import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.tasks.CriminalFingerprintsStatusCheckerWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.tasks.GenerateNewCriminalBiometricsIdWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.tasks.SubmitCriminalFingerprintsWorkflowTask;
@@ -21,6 +22,7 @@ import sa.gov.nic.bio.bw.workflow.registercriminalfingerprintspresent.controller
 @AssociatedMenu(workflowId = 1018, menuId = "menu.register.registerCriminalFingerprintsPresent",
 				menuTitle = "menu.title", menuOrder = 4, devices = {Device.FINGERPRINT_SCANNER})
 @Wizard({@Step(iconId = "\\uf256", title = "wizard.fingerprintCapturing"),
+		@Step(iconId = "\\uf255", title = "wizard.palmCapturing"),
 		@Step(iconId = "search", title = "wizard.inquiryByFingerprints"),
 		@Step(iconId = "database", title = "wizard.inquiryResult"),
 		@Step(iconId = "save", title = "wizard.registerFingerprints")})
@@ -50,6 +52,11 @@ public class RegisterCriminalFingerprintsPresentWorkflow extends WizardWorkflowB
 			}
 			case 1:
 			{
+				renderUiAndWaitForUserInput(PalmCapturingFxController.class);
+				break;
+			}
+			case 2:
+			{
 				passData(FingerprintInquiryStatusCheckerWorkflowTask.class, InquiryByFingerprintsPaneFxController.class,
 				         "status");
 				
@@ -72,14 +79,14 @@ public class RegisterCriminalFingerprintsPresentWorkflow extends WizardWorkflowB
 				executeWorkflowTask(FingerprintInquiryStatusCheckerWorkflowTask.class);
 				break;
 			}
-			case 2:
+			case 3:
 			{
 				passData(FingerprintInquiryStatusCheckerWorkflowTask.class,
 				         InquiryByFingerprintsResultPaneFxController.class, "criminalBiometricsId");
 				renderUiAndWaitForUserInput(InquiryByFingerprintsResultPaneFxController.class);
 				break;
 			}
-			case 3:
+			case 4:
 			{
 				renderUiAndWaitForUserInput(RegisteringFingerprintsPaneFxController.class);
 				
@@ -96,6 +103,8 @@ public class RegisterCriminalFingerprintsPresentWorkflow extends WizardWorkflowB
 					         SubmitCriminalFingerprintsWorkflowTask.class, "criminalBiometricsId");
 					passData(FingerprintCapturingFxController.class, "combinedFingerprints",
 					         SubmitCriminalFingerprintsWorkflowTask.class, "fingerprints");
+					passData(PalmCapturingFxController.class, SubmitCriminalFingerprintsWorkflowTask.class,
+					         "palms");
 					passData(FingerprintCapturingFxController.class, SubmitCriminalFingerprintsWorkflowTask.class,
 					         "missingFingerprints");
 					executeWorkflowTask(SubmitCriminalFingerprintsWorkflowTask.class);

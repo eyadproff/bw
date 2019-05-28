@@ -49,7 +49,7 @@ subprojects {
         // BCL-Utils and Biokit library
         implementation name: "bio.commons-2019.01.2"
         implementation name: "bcl-utils-2018.11.1"
-        implementation name: "biokit-library-2019.03.1"
+        implementation name: "biokit-library-2019.05.1"
 
         // JUnit
         testImplementation name : "junit-platform-commons-1.2.0"

@@ -43,7 +43,7 @@
                                 <Label fx:id="lblStatus" wrapText="true" textAlignment="CENTER" managed="false" visible="false"/>
                                 <VBox alignment="CENTER" spacing="5.0">
                                     <Button fx:id="btnCancel" text="%button.cancel" managed="false" visible="false" wrapText="true" textAlignment="CENTER"/>
-                                    <Button fx:id="btnStartFingerprintCapturing" maxHeight="Infinity" text="%button.captureRightSlapFingerprints" managed="false" visible="false" wrapText="true" textAlignment="CENTER" onAction="#onStartFingerprintCapturingButtonClicked"/>
+                                    <Button fx:id="btnStartFingerprintCapturing" maxHeight="Infinity" text="%button.captureRightLowerPalmFingerprint" managed="false" visible="false" wrapText="true" textAlignment="CENTER" onAction="#onStartFingerprintCapturingButtonClicked"/>
                                     <Button fx:id="btnStopFingerprintCapturing" text="%button.stopFingerprintCapturing" managed="false" visible="false" wrapText="true" textAlignment="CENTER" onAction="#onStopFingerprintCapturingButtonClicked"/>
                                     <Button fx:id="btnStartOverFingerprintCapturing" text="%button.startOver" managed="false" visible="false" wrapText="true" textAlignment="CENTER" onAction="#onStartOverFingerprintCapturingButtonClicked"/>
                                 </VBox>
@@ -51,6 +51,13 @@
                         </ScrollPane>
                     </TitledPane>
                     <FourStateTitledPane fx:id="tpFingerprintDeviceLivePreview" text="%label.fingerprintDeviceLivePreview" maxHeight="Infinity" collapsible="false" focusTraversable="false">
+                        <graphic>
+                            <Button fx:id="btnLivePreviewLegend" focusTraversable="false">
+                                <padding>
+                                    <Insets top="1.0" bottom="3.0" right="5.0" left="5.0"/>
+                                </padding>
+                            </Button>
+                        </graphic>
                         <StackPane>
                             <ImageViewPane>
                                 <imageView>

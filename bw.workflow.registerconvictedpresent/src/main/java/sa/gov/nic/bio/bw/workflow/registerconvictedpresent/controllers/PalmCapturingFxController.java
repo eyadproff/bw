@@ -22,8 +22,6 @@ import javafx.scene.control.TitledPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.SVGPath;
 import org.controlsfx.control.PopOver;
@@ -35,12 +33,8 @@ import sa.gov.nic.bio.biokit.beans.LivePreviewingResponse;
 import sa.gov.nic.bio.biokit.exceptions.NotConnectedException;
 import sa.gov.nic.bio.biokit.exceptions.TimeoutException;
 import sa.gov.nic.bio.biokit.fingerprint.beans.CaptureFingerprintResponse;
-import sa.gov.nic.bio.biokit.fingerprint.beans.DuplicatedFingerprintsResponse;
 import sa.gov.nic.bio.biokit.fingerprint.beans.FingerprintStopPreviewResponse;
-import sa.gov.nic.bio.biokit.websocket.beans.DMFingerData;
-import sa.gov.nic.bio.bw.commons.resources.images.CommonImages;
 import sa.gov.nic.bio.bw.core.Context;
-import sa.gov.nic.bio.bw.core.beans.Fingerprint;
 import sa.gov.nic.bio.bw.core.biokit.FingerPosition;
 import sa.gov.nic.bio.bw.core.controllers.DevicesRunnerGadgetPaneFxController;
 import sa.gov.nic.bio.bw.core.controllers.WizardStepFxControllerBase;
@@ -54,6 +48,7 @@ import sa.gov.nic.bio.bw.workflow.commons.beans.Finger;
 import sa.gov.nic.bio.bw.workflow.commons.ui.AutoScalingStackPane;
 import sa.gov.nic.bio.bw.workflow.commons.ui.FourStateTitledPane;
 import sa.gov.nic.bio.bw.workflow.commons.utils.CommonsErrorCodes;
+import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.beans.PalmFingerprint;
 import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.beans.PalmUiComponents;
 import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.utils.RegisterConvictedPresentErrorCodes;
 import sa.gov.nic.bio.commons.TaskResponse;
@@ -68,13 +63,12 @@ import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.stream.Collectors;
 
 @FxmlFile("palmCapturing.fxml")
 public class PalmCapturingFxController extends WizardStepFxControllerBase
 {
 	@Input private Boolean hidePreviousButton;
-	@Output private Map<Integer, Fingerprint> capturedPalm;
+	@Output private Map<Integer, PalmFingerprint> capturedPalms;
 	@Output private List<Finger> palms;
 	@Output private Map<Integer, String> palmBase64Images;
 	
@@ -119,6 +113,7 @@ public class PalmCapturingFxController extends WizardStepFxControllerBase
 	@FXML private Button btnStartFingerprintCapturing;
 	@FXML private Button btnStopFingerprintCapturing;
 	@FXML private Button btnStartOverFingerprintCapturing;
+	@FXML private Button btnLivePreviewLegend;
 	@FXML private Button btnRightHandLegend;
 	@FXML private Button btnLeftHandLegend;
 	@FXML private Button btnPrevious;
@@ -130,6 +125,7 @@ public class PalmCapturingFxController extends WizardStepFxControllerBase
 	private boolean workflowStarted = false;
 	private boolean workflowUserTaskLoaded = false;
 	private AtomicBoolean stopCapturingIsInProgress = new AtomicBoolean();
+	private Map<Integer, Integer> palmOrderIndices = new HashMap<>();
 	
 	@Override
 	protected void onAttachedToScene()
@@ -147,10 +143,13 @@ public class PalmCapturingFxController extends WizardStepFxControllerBase
 		}, paneControlsOuterContainer.viewportBoundsProperty()));
 		
 		Glyph glyph = AppUtils.createFontAwesomeIcon(FontAwesome.Glyph.INFO_CIRCLE);
+		btnLivePreviewLegend.setGraphic(glyph);
+		glyph = AppUtils.createFontAwesomeIcon(FontAwesome.Glyph.INFO_CIRCLE);
 		btnRightHandLegend.setGraphic(glyph);
 		glyph = AppUtils.createFontAwesomeIcon(FontAwesome.Glyph.INFO_CIRCLE);
 		btnLeftHandLegend.setGraphic(glyph);
 		
+		attachLivePreviewLegendTooltip(btnLivePreviewLegend);
 		attachFingerprintLegendTooltip(btnRightHandLegend);
 		attachFingerprintLegendTooltip(btnLeftHandLegend);
 		
@@ -289,14 +288,9 @@ public class PalmCapturingFxController extends WizardStepFxControllerBase
 				// activate/deactivate the fingerprint based on whether it is skipped or not
 				palmUiComponentsMap.forEach((position, components) ->
 				{
-					if(components.getPalmPosition() == FingerPosition.RIGHT_LOWER_PALM)
-									components.getTitledPane().setActive(!cbRightLowerPalm.isSelected());
-					else if(components.getPalmPosition() == FingerPosition.RIGHT_WRITERS_PALM)
-									components.getTitledPane().setActive(!cbRightWritersPalm.isSelected());
-					else if(components.getPalmPosition() == FingerPosition.LEFT_LOWER_PALM)
-									components.getTitledPane().setActive(!cbLeftLowerPalm.isSelected());
-					else if(components.getPalmPosition() == FingerPosition.LEFT_WRITERS_PALM)
-									components.getTitledPane().setActive(!cbLeftWritersPalm.isSelected());
+				    if(components.getPalmPosition().getPosition() == currentPalmPosition)
+				        components.getTitledPane().setActive(true);
+				    else components.getTitledPane().setActive(false);
 				});
 			}
 		}
@@ -313,8 +307,14 @@ public class PalmCapturingFxController extends WizardStepFxControllerBase
 		
 		if(hidePreviousButton != null) GuiUtils.showNode(btnPrevious, !hidePreviousButton);
 		
+		palmOrderIndices.put(FingerPosition.RIGHT_LOWER_PALM.getPosition(), 0);
+		palmOrderIndices.put(FingerPosition.RIGHT_WRITERS_PALM.getPosition(), 1);
+		palmOrderIndices.put(FingerPosition.LEFT_LOWER_PALM.getPosition(), 2);
+		palmOrderIndices.put(FingerPosition.LEFT_WRITERS_PALM.getPosition(), 3);
+		palmOrderIndices.put(-1, 4);
+		
 		// load the persisted captured fingerprints, if any
-		if(capturedPalm != null && !capturedPalm.isEmpty())
+		if(capturedPalms != null && !capturedPalms.isEmpty())
 		{
 			workflowStarted = true;
 			
@@ -322,11 +322,13 @@ public class PalmCapturingFxController extends WizardStepFxControllerBase
 			palmUiComponentsMap.forEach((position, components) -> components.getCheckBox().setDisable(true));
 			int[] skippedFingersCount = {0};
 			
-			capturedPalm.forEach((position, fingerprint) ->
+			capturedPalms.forEach((position, fingerprint) ->
 			{
 			    PalmUiComponents components = palmUiComponentsMap.get(position);
-			    currentPalmPosition = Math.max(currentPalmPosition, components.getPalmPosition().getPosition());
-			
+				if(palmOrderIndices.get(components.getPalmPosition().getPosition()) >
+					    palmOrderIndices.get(currentPalmPosition))
+			    	currentPalmPosition = components.getPalmPosition().getPosition();
+			    
 			    if(fingerprint.isSkipped())
 			    {
 			        skippedFingersCount[0]++;
@@ -352,7 +354,7 @@ public class PalmCapturingFxController extends WizardStepFxControllerBase
 			else if(currentPalmPosition == FingerPosition.LEFT_WRITERS_PALM.getPosition())
 									currentPalmPosition = -1; // completed
 			
-			// update the controls based on the current slap position
+			// update the controls based on the current palm position
 			if(currentPalmPosition == FingerPosition.RIGHT_LOWER_PALM.getPosition())
 			{
 				btnStartFingerprintCapturing.setText(
@@ -384,7 +386,7 @@ public class PalmCapturingFxController extends WizardStepFxControllerBase
 				else lblStatus.setText(resources.getString("label.status.successfullyCapturedAllFingers"));
 			}
 		}
-		else capturedPalm = new HashMap<>();
+		else capturedPalms = new HashMap<>();
 		
 		// register a listener to the event of the devices-runner being running or not
 		deviceManagerGadgetPaneController.setDevicesRunnerRunningListener(running ->
@@ -407,7 +409,7 @@ public class PalmCapturingFxController extends WizardStepFxControllerBase
 		
 		    if(initialized)
 		    {
-		        if(currentPalmPosition > 0) GuiUtils.showNode(btnStartFingerprintCapturing, true);
+			    if(currentPalmPosition > 0) GuiUtils.showNode(btnStartFingerprintCapturing, true);
 		        GuiUtils.showNode(lblStatus, true);
 		        lblStatus.setText(resources.getString("label.status.fingerprintScannerInitializedSuccessfully"));
 		        activateFingerIndicatorsForNextCapturing(currentPalmPosition);
@@ -476,6 +478,27 @@ public class PalmCapturingFxController extends WizardStepFxControllerBase
 			Platform.runLater(btnStopFingerprintCapturing::fire);
 		}
 		
+		if(!capturedPalms.containsKey(FingerPosition.RIGHT_LOWER_PALM.getPosition()) &&
+			palmOrderIndices.get(FingerPosition.RIGHT_LOWER_PALM.getPosition()) <
+						palmOrderIndices.get(currentPalmPosition))
+			capturedPalms.put(FingerPosition.RIGHT_LOWER_PALM.getPosition(),
+			                  new PalmFingerprint(null, null, true));
+		if(!capturedPalms.containsKey(FingerPosition.RIGHT_WRITERS_PALM.getPosition()) &&
+				palmOrderIndices.get(FingerPosition.RIGHT_WRITERS_PALM.getPosition()) <
+						palmOrderIndices.get(currentPalmPosition))
+			capturedPalms.put(FingerPosition.RIGHT_WRITERS_PALM.getPosition(),
+			                  new PalmFingerprint(null, null, true));
+		if(!capturedPalms.containsKey(FingerPosition.LEFT_LOWER_PALM.getPosition()) &&
+				palmOrderIndices.get(FingerPosition.LEFT_LOWER_PALM.getPosition()) <
+						palmOrderIndices.get(currentPalmPosition))
+			capturedPalms.put(FingerPosition.LEFT_LOWER_PALM.getPosition(),
+			                  new PalmFingerprint(null, null, true));
+		if(!capturedPalms.containsKey(FingerPosition.LEFT_WRITERS_PALM.getPosition()) &&
+				palmOrderIndices.get(FingerPosition.LEFT_WRITERS_PALM.getPosition()) <
+						palmOrderIndices.get(currentPalmPosition))
+			capturedPalms.put(FingerPosition.LEFT_WRITERS_PALM.getPosition(),
+			                  new PalmFingerprint(null, null, true));
+		
 		prepareFingerprintsForBackend();
 	}
 	
@@ -484,13 +507,12 @@ public class PalmCapturingFxController extends WizardStepFxControllerBase
 		palms = new ArrayList<>();
 		palmBase64Images = new HashMap<>();
 		
-		capturedPalm.forEach((position, fingerprint) ->
+		capturedPalms.forEach((position, fingerprint) ->
 		{
-		    DMFingerData fingerData = fingerprint.getDmFingerData();
-		    if(fingerData == null) return; // skipped fingerprint
+		    if(fingerprint.isSkipped()) return;
 			
-		    palmBase64Images.put(position, fingerData.getFinger());
-			palms.add(new Finger(position, fingerData.getFingerWsqImage(), null));
+		    palmBase64Images.put(position, fingerprint.getPalmImage());
+			palms.add(new Finger(position, fingerprint.getPalmWsq(), null));
 		});
 		
 		LOGGER.fine(AppUtils.toJson(palms));
@@ -593,7 +615,7 @@ public class PalmCapturingFxController extends WizardStepFxControllerBase
 						.getFingerprintService().startPreviewAndAutoCapture(fingerprintDeviceName, currentPalmPosition,
 						                                                    1, new ArrayList<>(),
 						                                                    true, true,
-						                                                    responseProcessor);
+						                                                    false, responseProcessor);
 				return future.get();
 			}
 		};
@@ -619,43 +641,20 @@ public class PalmCapturingFxController extends WizardStepFxControllerBase
 			        
 			        tpFingerprintDeviceLivePreview.setCaptured(true);
 			
-			        // show the final slap image in place of the live preview image
+			        // show the final palm image in place of the live preview image
 			        byte[] bytes = Base64.getDecoder().decode(capturedImageBase64);
 			        ivFingerprintDeviceLivePreview.setImage(new Image(new ByteArrayInputStream(bytes)));
 			
 			        GuiUtils.attachImageDialog(Context.getCoreFxController(), ivFingerprintDeviceLivePreview,
 			                                   resources.getString("label.contextMenu.slapFingerprints"),
 			                                   resources.getString("label.contextMenu.showImage"), false);
-		        	
-			        /*if(result.isWrongSlap())
-			        {
-				        tpFingerprintDeviceLivePreview.setValid(false);
-				        
-				        if(currentPalmPosition == FingerPosition.RIGHT_SLAP.getPosition())
-				        {
-					        lblStatus.setText(resources.getString("label.status.notRightSlap"));
-					        btnStartFingerprintCapturing.setText(
-					        		        resources.getString("button.recaptureRightSlapFingerprints"));
-				        }
-				        else if(currentPalmPosition == FingerPosition.LEFT_SLAP.getPosition())
-				        {
-					        lblStatus.setText(resources.getString("label.status.notLeftSlap"));
-					        btnStartFingerprintCapturing.setText(
-					        		        resources.getString("button.recaptureLeftSlapFingerprints"));
-				        }
-				        
-				        GuiUtils.showNode(btnStartFingerprintCapturing, true);
-				        GuiUtils.showNode(btnAcceptCurrentSlap, true);
-				        GuiUtils.showNode(btnStartOverFingerprintCapturing, true);
-				        
-				        // save the captured fingerprints
-				        wrongSlapCapturedFingerprints = result;
-				
-				        GuiUtils.attachImageDialog(Context.getCoreFxController(), ivFingerprintDeviceLivePreview,
-				                                   resources.getString("label.contextMenu.slapFingerprints"),
-				                                   resources.getString("label.contextMenu.showImage"), false);
-			        }
-			        else*/ processCaptureFingerprintResponse(result);
+			
+			        tpFingerprintDeviceLivePreview.setValid(true);
+			
+			        String palmWsq = result.getCapturedWsq();
+			        String palmImage = result.getCapturedImage();
+			
+			        processPalmFingerprints(currentPalmPosition, palmWsq, palmImage);
 		        }
 		        // we skip FAILED_TO_CAPTURE_FINAL_IMAGE because it happens only when we send "stop" command
 		        else
@@ -815,168 +814,6 @@ public class PalmCapturingFxController extends WizardStepFxControllerBase
 		Context.getExecutorService().submit(capturingFingerprintTask);
 	}
 	
-	private void processCaptureFingerprintResponse(CaptureFingerprintResponse captureFingerprintResponse)
-	{
-		tpFingerprintDeviceLivePreview.setValid(true);
-		
-		String palmWsq = captureFingerprintResponse.getCapturedWsq();
-		String palmImage = captureFingerprintResponse.getCapturedImage();
-		
-		List<DMFingerData> fingerData = captureFingerprintResponse.getFingerData();
-		Task<TaskResponse<DuplicatedFingerprintsResponse>> findDuplicatesTask = new Task<>()
-		{
-			@Override
-			protected TaskResponse<DuplicatedFingerprintsResponse> call() throws Exception
-			{
-				Map<Integer, String> gallery = new HashMap<>();
-				Map<Integer, String> probes = new HashMap<>();
-				
-				int rightLowerPalmPosition = FingerPosition.RIGHT_LOWER_PALM.getPosition();
-				int rightWritersPalmPosition = FingerPosition.RIGHT_WRITERS_PALM.getPosition();
-				int leftLowerPalmPosition = FingerPosition.LEFT_LOWER_PALM.getPosition();
-				
-				if(currentPalmPosition == FingerPosition.RIGHT_WRITERS_PALM.getPosition())
-				{
-					if(capturedPalm.containsKey(rightLowerPalmPosition) &&
-					  !capturedPalm.get(rightLowerPalmPosition).isSkipped())
-								gallery.put(rightLowerPalmPosition,
-								            capturedPalm.get(rightLowerPalmPosition).getDmFingerData().getTemplate());
-					
-					fingerData.forEach(dmFingerData -> probes.put(dmFingerData.getPosition(),
-					                                              dmFingerData.getTemplate()));
-				}
-				else if(currentPalmPosition == FingerPosition.LEFT_LOWER_PALM.getPosition())
-				{
-					if(capturedPalm.containsKey(rightLowerPalmPosition) &&
-					  !capturedPalm.get(rightLowerPalmPosition).isSkipped())
-								gallery.put(rightLowerPalmPosition,
-						                    capturedPalm.get(rightLowerPalmPosition).getDmFingerData().getTemplate());
-					
-					if(capturedPalm.containsKey(rightWritersPalmPosition) &&
-					  !capturedPalm.get(rightWritersPalmPosition).isSkipped())
-								gallery.put(rightWritersPalmPosition,
-						                    capturedPalm.get(rightWritersPalmPosition).getDmFingerData().getTemplate());
-					
-					fingerData.forEach(dmFingerData -> probes.put(dmFingerData.getPosition(),
-					                                              dmFingerData.getTemplate()));
-				}
-				else if(currentPalmPosition == FingerPosition.LEFT_WRITERS_PALM.getPosition())
-				{
-					if(capturedPalm.containsKey(rightLowerPalmPosition) &&
-					  !capturedPalm.get(rightLowerPalmPosition).isSkipped())
-								gallery.put(rightLowerPalmPosition,
-						                    capturedPalm.get(rightLowerPalmPosition).getDmFingerData().getTemplate());
-					
-					if(capturedPalm.containsKey(rightWritersPalmPosition) &&
-					  !capturedPalm.get(rightWritersPalmPosition).isSkipped())
-								gallery.put(rightWritersPalmPosition,
-						                    capturedPalm.get(rightWritersPalmPosition).getDmFingerData().getTemplate());
-					
-					if(capturedPalm.containsKey(leftLowerPalmPosition) &&
-					  !capturedPalm.get(leftLowerPalmPosition).isSkipped())
-								gallery.put(leftLowerPalmPosition,
-						                    capturedPalm.get(leftLowerPalmPosition).getDmFingerData().getTemplate());
-					
-					fingerData.forEach(dmFingerData -> probes.put(dmFingerData.getPosition(),
-					                                              dmFingerData.getTemplate()));
-				}
-				
-				if(gallery.isEmpty()) return null;
-				else return Context.getBioKitManager().getFingerprintUtilitiesService()
-													  .findDuplicatedFingerprints(gallery, probes).get();
-			}
-		};
-		findDuplicatesTask.setOnSucceeded(e ->
-		{
-			GuiUtils.showNode(piFingerprintDeviceLivePreview, false);
-			GuiUtils.showNode(btnStartFingerprintCapturing, true);
-			
-			TaskResponse<DuplicatedFingerprintsResponse> taskResponse = findDuplicatesTask.getValue();
-			
-			List<Fingerprint> fingerprints = fingerData.stream()
-											   .map(dmFingerData -> new Fingerprint(dmFingerData, palmWsq, palmImage))
-											   .collect(Collectors.toList());
-			
-			if(taskResponse == null) // no duplicates
-			{
-				processPalmFingerprints(fingerprints, null);
-			}
-			else if(taskResponse.isSuccess())
-			{
-				DuplicatedFingerprintsResponse result = taskResponse.getResult();
-				
-				if(result.getReturnCode() == DuplicatedFingerprintsResponse.SuccessCodes.SUCCESS)
-				{
-					// it could be empty
-				    Map<Integer, Boolean> duplicatedFingers = result.getDuplicatedFingers();
-				    processPalmFingerprints(fingerprints, duplicatedFingers);
-				}
-				else
-				{
-					GuiUtils.showNode(btnStartOverFingerprintCapturing, true);
-					
-					palmUiComponentsMap.forEach((integer, components) ->
-						                                   GuiUtils.showNode(components.getSvgPath(), false));
-					
-					lblStatus.setText(String.format(
-							resources.getString("label.status.failedToFindDuplicatedFingerprintsWithErrorCode"),
-                            result.getReturnCode()));
-				}
-			}
-			else
-			{
-				GuiUtils.showNode(btnStartOverFingerprintCapturing, true);
-				
-				palmUiComponentsMap.forEach((integer, components) ->
-					                                        GuiUtils.showNode(components.getSvgPath(), false));
-				
-				lblStatus.setText(String.format(
-						resources.getString("label.status.failedToFindDuplicatedFingerprintsWithErrorCode"),
-						taskResponse.getErrorCode()));
-				
-				String errorCode = RegisterConvictedPresentErrorCodes.C007_00018.getCode();
-				String[] errorDetails = {"failed while finding duplicated fingerprints!"};
-				Context.getCoreFxController().showErrorDialog(errorCode, taskResponse.getException(), errorDetails);
-			}
-		});
-		findDuplicatesTask.setOnFailed(e ->
-		{
-			GuiUtils.showNode(piFingerprintDeviceLivePreview, false);
-			GuiUtils.showNode(btnStartFingerprintCapturing, true);
-			GuiUtils.showNode(btnStartOverFingerprintCapturing, true);
-			
-			palmUiComponentsMap.forEach((integer, components) ->
-					                                   GuiUtils.showNode(components.getSvgPath(), false));
-			
-			Throwable exception = findDuplicatesTask.getException();
-			
-			if(exception instanceof ExecutionException) exception = exception.getCause();
-			
-			if(exception instanceof TimeoutException)
-			{
-				lblStatus.setText(resources.getString("label.status.devicesRunnerReadTimeout"));
-			}
-			else if(exception instanceof NotConnectedException)
-			{
-				lblStatus.setText(resources.getString("label.status.disconnectedFromDevicesRunner"));
-			}
-			else if(exception instanceof CancellationException)
-			{
-				lblStatus.setText(resources.getString("label.status.findingDuplicatedFingerprintsCancelled"));
-			}
-			else
-			{
-				lblStatus.setText(resources.getString("label.status.failedToFindDuplicatedFingerprints"));
-				
-				String errorCode = RegisterConvictedPresentErrorCodes.C007_00019.getCode();
-				String[] errorDetails = {"failed while finding duplicated fingerprints!"};
-				Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails);
-			}
-		});
-		
-		Context.getExecutorService().submit(findDuplicatesTask);
-	}
-	
 	@FXML
 	private void onStopFingerprintCapturingButtonClicked(ActionEvent event)
 	{
@@ -992,7 +829,7 @@ public class PalmCapturingFxController extends WizardStepFxControllerBase
 																	.getFingerprintScannerDeviceName();
 		Future<TaskResponse<FingerprintStopPreviewResponse>> future = Context.getBioKitManager()
 									.getFingerprintService().cancelCapture(fingerprintDeviceName,
-															               FingerPosition.RIGHT_SLAP.getPosition());
+														               FingerPosition.RIGHT_LOWER_PALM.getPosition());
 		
 		Task<TaskResponse<FingerprintStopPreviewResponse>> task = new Task<>()
 		{
@@ -1115,49 +952,27 @@ public class PalmCapturingFxController extends WizardStepFxControllerBase
 				components.getTitledPane().setDuplicated(false);
 			});
 			
-			capturedPalm.clear();
-			currentPalmPosition = FingerPosition.RIGHT_SLAP.getPosition();
+			capturedPalms.clear();
+			currentPalmPosition = FingerPosition.RIGHT_LOWER_PALM.getPosition();
 			activateFingerIndicatorsForNextCapturing(currentPalmPosition);
-			renameCaptureFingerprintsButton(false);
+			btnStartFingerprintCapturing.setText(resources.getString("button.captureRightLowerPalmFingerprint"));
 		}
 	}
 	
-	private void processPalmFingerprints(List<Fingerprint> fingerprints, Map<Integer, Boolean> duplicatedFingers)
+	private void processPalmFingerprints(int position, String palmWsq, String palmImage)
 	{
-		boolean[] noDuplicates = {true};
-		showPalmFingerprints(fingerprints, duplicatedFingers, noDuplicates);
+		showPalmFingerprint(position, palmWsq, palmImage);
 		GuiUtils.showNode(btnStartOverFingerprintCapturing, true);
 		
-		if(noDuplicates[0])
+		if(currentPalmPosition == FingerPosition.RIGHT_LOWER_PALM.getPosition())
 		{
-			if(currentPalmPosition == FingerPosition.RIGHT_LOWER_PALM.getPosition())
+			lblStatus.setText(
+					resources.getString("label.status.successfullyCapturedRightLowerPalmFingerprint"));
+			GuiUtils.showNode(btnStartFingerprintCapturing, true);
+			
+			currentPalmPosition = FingerPosition.RIGHT_WRITERS_PALM.getPosition();
+			if(!cbRightWritersPalm.isSelected())
 			{
-				lblStatus.setText(
-						resources.getString("label.status.successfullyCapturedRightLowerPalmFingerprint"));
-				GuiUtils.showNode(btnStartFingerprintCapturing, true);
-				
-				currentPalmPosition = FingerPosition.RIGHT_WRITERS_PALM.getPosition();
-				if(!cbRightWritersPalm.isSelected())
-				{
-					currentPalmPosition = FingerPosition.LEFT_LOWER_PALM.getPosition();
-					if(!cbLeftLowerPalm.isSelected())
-					{
-						currentPalmPosition = FingerPosition.LEFT_WRITERS_PALM.getPosition();
-						if(!cbLeftWritersPalm.isSelected())
-						{
-							currentPalmPosition = -1;
-						}
-					}
-				}
-				
-				renameCaptureFingerprintsButton(false);
-			}
-			else if(currentPalmPosition == FingerPosition.RIGHT_WRITERS_PALM.getPosition())
-			{
-				lblStatus.setText(
-						resources.getString("label.status.successfullyCapturedRightWritersPalmFingerprint"));
-				GuiUtils.showNode(btnStartFingerprintCapturing, true);
-				
 				currentPalmPosition = FingerPosition.LEFT_LOWER_PALM.getPosition();
 				if(!cbLeftLowerPalm.isSelected())
 				{
@@ -1167,103 +982,102 @@ public class PalmCapturingFxController extends WizardStepFxControllerBase
 						currentPalmPosition = -1;
 					}
 				}
-				
-				renameCaptureFingerprintsButton(false);
 			}
-			else if(currentPalmPosition == FingerPosition.LEFT_LOWER_PALM.getPosition())
+		}
+		else if(currentPalmPosition == FingerPosition.RIGHT_WRITERS_PALM.getPosition())
+		{
+			lblStatus.setText(
+					resources.getString("label.status.successfullyCapturedRightWritersPalmFingerprint"));
+			GuiUtils.showNode(btnStartFingerprintCapturing, true);
+			
+			currentPalmPosition = FingerPosition.LEFT_LOWER_PALM.getPosition();
+			if(!cbLeftLowerPalm.isSelected())
 			{
-				lblStatus.setText(
-						resources.getString("label.status.successfullyCapturedLeftLowerPalmFingerprint"));
-				GuiUtils.showNode(btnStartFingerprintCapturing, true);
-				
 				currentPalmPosition = FingerPosition.LEFT_WRITERS_PALM.getPosition();
 				if(!cbLeftWritersPalm.isSelected())
 				{
 					currentPalmPosition = -1;
 				}
-				
-				renameCaptureFingerprintsButton(false);
-			}
-			else
-			{
-				currentPalmPosition = -1;
-				lblStatus.setText(resources.getString("label.status.successfullyCapturedAllFingers"));
-				GuiUtils.showNode(btnStartFingerprintCapturing, false);
-				GuiUtils.showNode(ivCompleted, true);
 			}
 		}
-		else
+		else if(currentPalmPosition == FingerPosition.LEFT_LOWER_PALM.getPosition())
 		{
-			lblStatus.setText(resources.getString("label.status.someFingerprintsAreDuplicated"));
-			renameCaptureFingerprintsButton(true);
+			lblStatus.setText(
+					resources.getString("label.status.successfullyCapturedLeftLowerPalmFingerprint"));
 			GuiUtils.showNode(btnStartFingerprintCapturing, true);
+			
+			currentPalmPosition = FingerPosition.LEFT_WRITERS_PALM.getPosition();
+			if(!cbLeftWritersPalm.isSelected())
+			{
+				currentPalmPosition = -1;
+			}
+		}
+		else currentPalmPosition = -1;
+		
+		if(currentPalmPosition == -1)
+		{
+			lblStatus.setText(resources.getString("label.status.successfullyCapturedAllFingers"));
+			GuiUtils.showNode(btnStartFingerprintCapturing, false);
+			GuiUtils.showNode(ivCompleted, true);
 		}
 		
 		activateFingerIndicatorsForNextCapturing(currentPalmPosition);
-	}
-	
-	private void showPalmFingerprints(List<Fingerprint> fingerprints, Map<Integer, Boolean> duplicatedFingers,
-	                                  boolean[] noDuplicates)
-	{
-		fingerprints.forEach(fingerprint ->
-		{
-			DMFingerData dmFingerData = fingerprint.getDmFingerData();
-			
-			PalmUiComponents components = palmUiComponentsMap.get(dmFingerData.getPosition());
-		 
-			boolean duplicated = false;
-		    if(duplicatedFingers != null)
-		    {
-			    Boolean b = duplicatedFingers.get(dmFingerData.getPosition());
-			    if(b != null && b)
-			    {
-				    duplicated = true;
-				    components.getTitledPane().setDuplicated(true);
-			    }
-		    }
 		
-			if(noDuplicates != null) noDuplicates[0] = noDuplicates[0] && !duplicated;
-			
-			fingerprint.setDuplicated(duplicated);
-			fingerprint.setSkipped(false);
-			
-			capturedPalm.put(dmFingerData.getPosition(), fingerprint);
-			showFingerprint(fingerprint, components.getImageView(), components.getTitledPane(),
-	                        components.getHandLabel(), components.getFingerLabel());
-		});
+		String buttonLabel = null;
+		
+		if(currentPalmPosition == FingerPosition.RIGHT_LOWER_PALM.getPosition())
+		{
+			buttonLabel = resources.getString("button.captureRightLowerPalmFingerprint");
+		}
+		else if(currentPalmPosition == FingerPosition.RIGHT_WRITERS_PALM.getPosition())
+		{
+			buttonLabel = resources.getString("button.captureRightWritersPalmFingerprint");
+		}
+		else if(currentPalmPosition == FingerPosition.LEFT_LOWER_PALM.getPosition())
+		{
+			buttonLabel = resources.getString("button.captureLeftLowerPalmFingerprint");
+		}
+		else if(currentPalmPosition == FingerPosition.LEFT_WRITERS_PALM.getPosition())
+		{
+			buttonLabel = resources.getString("button.captureLeftWritersPalmFingerprint");
+		}
+		
+		if(buttonLabel != null) btnStartFingerprintCapturing.setText(buttonLabel);
 	}
 	
-	private void showFingerprint(Fingerprint fingerprint, ImageView imageView, FourStateTitledPane titledPane,
+	private void showPalmFingerprint(int position, String palmWsq, String palmImage)
+	{
+		PalmFingerprint palmFingerprint = new PalmFingerprint(palmWsq, palmImage, false);
+		capturedPalms.put(position, palmFingerprint);
+		PalmUiComponents components = palmUiComponentsMap.get(position);
+		showFingerprint(palmFingerprint, components.getImageView(), components.getTitledPane(),
+		                components.getHandLabel(), components.getFingerLabel());
+	}
+	
+	private void showFingerprint(PalmFingerprint palmFingerprint, ImageView imageView, FourStateTitledPane titledPane,
 	                             String handLabel, String fingerLabel)
 	{
-		String fingerprintImageBase64 = fingerprint.getDmFingerData().getFinger();
+		String fingerprintImageBase64 = palmFingerprint.getPalmImage();
 		byte[] fingerprintImageBytes = Base64.getDecoder().decode(fingerprintImageBase64);
 		imageView.setImage(new Image(new ByteArrayInputStream(fingerprintImageBytes)));
 		
 		titledPane.setActive(true);
 		titledPane.setCaptured(true);
-		titledPane.setValid(!fingerprint.isDuplicated());
-		titledPane.setDuplicated(fingerprint.isDuplicated());
-		
-		StackPane titleRegion = (StackPane) titledPane.lookup(".title");
-		attachFingerprintResultTooltip(titleRegion, titledPane,
-		                               fingerprint.getDmFingerData().getNfiqQuality(),
-		                               fingerprint.getDmFingerData().getMinutiaeCount(),
-		                               fingerprint.getDmFingerData().getIntensity(),
-		                               fingerprint.isDuplicated());
+		titledPane.setValid(true);
+		titledPane.setDuplicated(false);
 		
 		String dialogTitle = fingerLabel + " (" + handLabel + ")";
 		GuiUtils.attachImageDialog(Context.getCoreFxController(), imageView, dialogTitle,
 		                           resources.getString("label.contextMenu.showImage"), false);
 	}
 	
-	private void activateFingerIndicatorsForNextCapturing(int slapPosition)
+	private void activateFingerIndicatorsForNextCapturing(int palmPosition)
 	{
 		palmUiComponentsMap.forEach((position, components) ->
 		{
-			boolean currentPalm = slapPosition == components.getPalmPosition().getPosition();
+			boolean currentPalm = palmPosition == components.getPalmPosition().getPosition();
 			
-			if(!capturedPalm.containsKey(position))
+			if(!capturedPalms.containsKey(position))
 			{
 				boolean selected = components.getCheckBox().isSelected();
 				components.getTitledPane().setActive(currentPalm && selected);
@@ -1271,98 +1085,39 @@ public class PalmCapturingFxController extends WizardStepFxControllerBase
 		});
 	}
 	
-	private void renameCaptureFingerprintsButton(boolean retry)
+	private void attachLivePreviewLegendTooltip(Node targetNode)
 	{
-		String buttonLabel = null;
+		TextField txtCapturingSlap = new TextField(resources.getString("label.slap.legend.captureInProgress"));
+		TextField txtAcceptedSlap = new TextField(resources.getString("label.slap.legend.acceptedSlap"));
 		
-		if(currentPalmPosition == FingerPosition.RIGHT_LOWER_PALM.getPosition())
+		txtCapturingSlap.setEditable(false);
+		txtAcceptedSlap.setEditable(false);
+		txtCapturingSlap.setFocusTraversable(false);
+		txtAcceptedSlap.setFocusTraversable(false);
+		txtCapturingSlap.getStyleClass().add("legend-blue");
+		txtAcceptedSlap.getStyleClass().add("legend-green");
+		
+		VBox vBox = new VBox(5.0, txtCapturingSlap, txtAcceptedSlap);
+		vBox.setPadding(new Insets(10.0));
+		
+		// hardcoded :(
+		if(Context.getGuiLanguage().getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT)
 		{
-			if(retry) buttonLabel = resources.getString("button.recaptureRightLowerPalmFingerprint");
-			else buttonLabel = resources.getString("button.captureRightLowerPalmFingerprint");
+			vBox.setPrefWidth(153.0);
 		}
-		else if(currentPalmPosition == FingerPosition.RIGHT_WRITERS_PALM.getPosition())
-		{
-			if(retry) buttonLabel = resources.getString("button.recaptureRightWritersPalmFingerprint");
-			else buttonLabel = resources.getString("button.captureRightWritersPalmFingerprint");
-		}
-		else if(currentPalmPosition == FingerPosition.LEFT_LOWER_PALM.getPosition())
-		{
-			if(retry) buttonLabel = resources.getString("button.recaptureLeftLowerPalmFingerprint");
-			else buttonLabel = resources.getString("button.captureLeftLowerPalmFingerprint");
-		}
-		else if(currentPalmPosition == FingerPosition.LEFT_WRITERS_PALM.getPosition())
-		{
-			if(retry) buttonLabel = resources.getString("button.recaptureLeftWritersPalmFingerprint");
-			else buttonLabel = resources.getString("button.captureLeftWritersPalmFingerprint");
-		}
+		else vBox.setPrefWidth(266.0);
 		
-		btnStartFingerprintCapturing.setText(buttonLabel);
-	}
-	
-	private void attachFingerprintResultTooltip(Node sourceNode, Node targetNode, int nfiq, int minutiaeCount,
-	                                            int imageIntensity, boolean duplicated)
-	{
-		GridPane gridPane = new GridPane();
-		gridPane.setPadding(new Insets(10.0));
-		gridPane.setVgap(5.0);
-		gridPane.setHgap(5.0);
+		BorderPane root = new BorderPane(vBox);
 		
-		Label lblNfiq = new Label(resources.getString("label.tooltip.nfiq"));
-		Label lblMinutiaeCount = new Label(resources.getString("label.tooltip.minutiaeCount"));
-		Label lblIntensity = new Label(resources.getString("label.tooltip.imageIntensity"));
-		Label lblDuplicatedFingerprint = new Label(resources.getString("label.tooltip.duplicatedFinger"));
-		
-		Image successImage = new Image(CommonImages.ICON_SUCCESS_16PX.getAsInputStream());
-		Image warningImage = new Image(CommonImages.ICON_WARNING_16PX.getAsInputStream());
-		Image errorImage = new Image(CommonImages.ICON_ERROR_16PX.getAsInputStream());
-		
-		lblNfiq.setGraphic(new ImageView(successImage));
-		lblMinutiaeCount.setGraphic(new ImageView(successImage));
-		lblIntensity.setGraphic(new ImageView(successImage));
-		lblDuplicatedFingerprint.setGraphic(new ImageView(duplicated ? errorImage : successImage));
-		
-		gridPane.add(lblNfiq, 0, 0);
-		gridPane.add(lblMinutiaeCount, 0, 1);
-		gridPane.add(lblIntensity, 0, 2);
-		gridPane.add(lblDuplicatedFingerprint, 0, 3);
-		
-		String sNfiq = AppUtils.localizeNumbers(String.valueOf(nfiq));
-		String sMinutiaeCount = AppUtils.localizeNumbers(String.valueOf(minutiaeCount));
-		String sIntensity = AppUtils.localizeNumbers(String.valueOf(imageIntensity)) + "%";
-		String sDuplicatedFingerprint = resources.getString(duplicated ? "label.tooltip.yes" : "label.tooltip.no");
-		
-		TextField txtNfiq = new TextField(sNfiq);
-		TextField txtMinutiaeCount = new TextField(sMinutiaeCount);
-		TextField txtIntensity = new TextField(sIntensity);
-		TextField txtDuplicatedFingerprint = new TextField(sDuplicatedFingerprint);
-		
-		txtNfiq.setFocusTraversable(false);
-		txtMinutiaeCount.setFocusTraversable(false);
-		txtIntensity.setFocusTraversable(false);
-		txtDuplicatedFingerprint.setFocusTraversable(false);
-		txtNfiq.setEditable(false);
-		txtMinutiaeCount.setEditable(false);
-		txtIntensity.setEditable(false);
-		txtDuplicatedFingerprint.setEditable(false);
-		txtNfiq.setPrefColumnCount(3);
-		txtMinutiaeCount.setPrefColumnCount(3);
-		txtIntensity.setPrefColumnCount(3);
-		txtDuplicatedFingerprint.setPrefColumnCount(3);
-		
-		gridPane.add(txtNfiq, 1, 0);
-		gridPane.add(txtMinutiaeCount, 1, 1);
-		gridPane.add(txtIntensity, 1, 2);
-		gridPane.add(txtDuplicatedFingerprint, 1, 3);
-		
-		PopOver popOver = new PopOver(gridPane);
+		PopOver popOver = new PopOver(root);
 		popOver.setDetachable(false);
 		popOver.setConsumeAutoHidingEvents(false);
 		popOver.setArrowLocation(ArrowLocation.BOTTOM_CENTER);
 		
-		sourceNode.setOnMouseClicked(mouseEvent ->
+		targetNode.setOnMouseClicked(event ->
 		{
-			if(popOver.isShowing()) popOver.hide();
-			else popOver.show(targetNode);
+		    if(popOver.isShowing()) popOver.hide();
+		    else popOver.show(targetNode);
 		});
 	}
 	
@@ -1370,35 +1125,23 @@ public class PalmCapturingFxController extends WizardStepFxControllerBase
 	{
 		TextField txtCapturingFingerprint = new TextField(
 										resources.getString("label.fingerprint.legend.captureInProgress"));
-		TextField txtDuplicatedFingerprint = new TextField(
-										resources.getString("label.fingerprint.legend.duplicatedFingerprint"));
-		TextField txtLowQualityFingerprint = new TextField(
-										resources.getString("label.fingerprint.legend.lowQualityFingerprint"));
-		TextField txtHighQualityFingerprint = new TextField(
-										resources.getString("label.fingerprint.legend.highQualityFingerprint"));
+		TextField txtAcceptedFingerprint = new TextField(
+										resources.getString("label.fingerprint.legend.acceptedFingerprint"));
 		TextField txtSkippedFingerprint = new TextField(
 										resources.getString("label.fingerprint.legend.skippedFingerprint"));
 		
 		txtCapturingFingerprint.setEditable(false);
-		txtDuplicatedFingerprint.setEditable(false);
-		txtLowQualityFingerprint.setEditable(false);
-		txtHighQualityFingerprint.setEditable(false);
+		txtAcceptedFingerprint.setEditable(false);
 		txtSkippedFingerprint.setEditable(false);
 		txtCapturingFingerprint.setFocusTraversable(false);
-		txtDuplicatedFingerprint.setFocusTraversable(false);
-		txtLowQualityFingerprint.setFocusTraversable(false);
-		txtHighQualityFingerprint.setFocusTraversable(false);
+		txtAcceptedFingerprint.setFocusTraversable(false);
 		txtSkippedFingerprint.setFocusTraversable(false);
 		txtCapturingFingerprint.getStyleClass().add("legend-blue");
-		txtDuplicatedFingerprint.getStyleClass().add("legend-red");
-		txtLowQualityFingerprint.getStyleClass().add("legend-yellow");
-		txtHighQualityFingerprint.getStyleClass().add("legend-green");
+		txtAcceptedFingerprint.getStyleClass().add("legend-green");
 		txtSkippedFingerprint.getStyleClass().add("legend-gray");
 		txtSkippedFingerprint.setDisable(true);
 		
-		VBox vBox = new VBox(5.0, txtCapturingFingerprint, txtDuplicatedFingerprint, txtLowQualityFingerprint,
-		                     txtHighQualityFingerprint, txtSkippedFingerprint);
-		vBox.getStylesheets().setAll("/sa/gov/nic/bio/bw/workflow/commons/css/style.css");
+		VBox vBox = new VBox(5.0, txtCapturingFingerprint, txtAcceptedFingerprint, txtSkippedFingerprint);
 		vBox.setPadding(new Insets(10.0));
 		
 		// hardcoded :(
