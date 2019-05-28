@@ -1,3 +1,9 @@
 .titled-pane > .title {
     -fx-alignment: center;
 }
+.menu-item:focused{
+     -fx-background-color : SteelBlue ;
+}
+.context-menu {
+     -fx-background-radius: 5px;
+}

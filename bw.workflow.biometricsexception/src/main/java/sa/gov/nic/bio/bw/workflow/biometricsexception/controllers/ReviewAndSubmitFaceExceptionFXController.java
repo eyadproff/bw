@@ -5,12 +5,13 @@ import javafx.scene.control.Label;
 import sa.gov.nic.bio.bw.core.controllers.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.core.utils.FxmlFile;
 import sa.gov.nic.bio.bw.core.workflow.Input;
+import sa.gov.nic.bio.bw.workflow.commons.beans.NormalizedPersonInfo;
 import sa.gov.nic.bio.bw.workflow.commons.beans.PersonInfo;
 
 @FxmlFile("reviewAndSubmitFaceException.fxml")
 public class ReviewAndSubmitFaceExceptionFXController extends WizardStepFxControllerBase {
     @Input
-    private PersonInfo personInfo;
+    private NormalizedPersonInfo normalizedPersonInfo;
     @Input
     private String Reason;
 
@@ -21,8 +22,8 @@ public class ReviewAndSubmitFaceExceptionFXController extends WizardStepFxContro
 
     @Override
     protected void onAttachedToScene() {
-        PersonName.setText(personInfo.getName().toString());
-        PersonID.setText(personInfo.getSamisId().toString());
+        PersonName.setText(normalizedPersonInfo.getFirstName() + " " + normalizedPersonInfo.getFatherName() + " " + normalizedPersonInfo.getFamilyName());
+        PersonID.setText(normalizedPersonInfo.getPersonId().toString());
 
         LblfaceExcReason.setText(Reason);
     }

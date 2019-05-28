@@ -4,7 +4,12 @@ import sa.gov.nic.bio.bw.core.wizard.Step;
 import sa.gov.nic.bio.bw.core.wizard.Wizard;
 import sa.gov.nic.bio.bw.core.workflow.AssociatedMenu;
 import sa.gov.nic.bio.bw.core.workflow.Signal;
+import sa.gov.nic.bio.bw.core.workflow.WithLookups;
 import sa.gov.nic.bio.bw.core.workflow.WizardWorkflowBase;
+import sa.gov.nic.bio.bw.workflow.commons.lookups.CountriesLookup;
+import sa.gov.nic.bio.bw.workflow.commons.lookups.CrimeTypesLookup;
+import sa.gov.nic.bio.bw.workflow.commons.lookups.DocumentTypesLookup;
+import sa.gov.nic.bio.bw.workflow.commons.lookups.PersonTypesLookup;
 import sa.gov.nic.bio.bw.workflow.biometricsexception.controllers.*;
 import sa.gov.nic.bio.bw.workflow.biometricsexception.controllers.BiometricsExceptionTypeFXController.Type;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.GetPersonInfoByIdWorkflowTask;
@@ -13,7 +18,7 @@ import sa.gov.nic.bio.bw.workflow.commons.tasks.GetPersonInfoByIdWorkflowTask;
 
 
 @AssociatedMenu(workflowId = 1017, menuId = "menu.edit.biometricsException", menuTitle = "menu.title", menuOrder = 2)
-
+@WithLookups({PersonTypesLookup.class, CountriesLookup.class})
 @Wizard({@Step(iconId = "\\uf2bb", title = "wizard.InquiryByPersonId"),
         @Step(iconId = "database", title = "wizard.inquiryResult"),
         @Step(iconId = "question", title = "wizard.biometricsExceptionType"),
@@ -34,7 +39,7 @@ public class BiometricsExceptionWorkflow extends WizardWorkflowBase {
                 passData(PersonIdPaneFxController.class, GetPersonInfoByIdWorkflowTask.class,
                         "personId");
 
-                setData(GetPersonInfoByIdWorkflowTask.class, "returnNullResultInCaseNotFound", true);
+                setData(GetPersonInfoByIdWorkflowTask.class, "returnNullResultInCaseNotFound", false);
 
                 executeWorkflowTask(GetPersonInfoByIdWorkflowTask.class);
 
@@ -64,11 +69,11 @@ public class BiometricsExceptionWorkflow extends WizardWorkflowBase {
             case 4: {
                 Type type = getData(BiometricsExceptionTypeFXController.class, "exceptionType");
                 if (Type.FINGERPRINTS.equals(type)) {
-                    passData(GetPersonInfoByIdWorkflowTask.class, ReviewAndSubmitFXController.class, "personInfo");
+                    passData(ShowingPersonInfoFxController.class, ReviewAndSubmitFXController.class, "normalizedPersonInfo");
                     passData(EditMissingFingerprintFXController.class, ReviewAndSubmitFXController.class, "personfingerprints");
                     renderUiAndWaitForUserInput(ReviewAndSubmitFXController.class);
                 } else {
-                    passData(GetPersonInfoByIdWorkflowTask.class, ReviewAndSubmitFaceExceptionFXController.class, "personInfo");
+                    passData(ShowingPersonInfoFxController.class, ReviewAndSubmitFaceExceptionFXController.class, "normalizedPersonInfo");
                     passData(FaceExceptionFXController.class, ReviewAndSubmitFaceExceptionFXController.class, "Reason");
                     renderUiAndWaitForUserInput(ReviewAndSubmitFaceExceptionFXController.class);
                 }

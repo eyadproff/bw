@@ -3,11 +3,17 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.MenuButton?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
+
 <BorderPane xmlns:fx="http://javafx.com/fxml/1" prefHeight="400.0" prefWidth="600.0"
-            xmlns="http://javafx.com/javafx/8.0.172-ea"
+            stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/8.0.172-ea"
             fx:controller="sa.gov.nic.bio.bw.workflow.biometricsexception.controllers.FaceExceptionFXController">
     <bottom>
         <HBox alignment="CENTER" spacing="10">
@@ -20,26 +26,45 @@
         </HBox>
     </bottom>
     <center>
-        <HBox maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="101.0" prefWidth="383.0"
+        <HBox maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="123.0" prefWidth="389.0"
               BorderPane.alignment="CENTER">
             <children>
-                <GridPane alignment="CENTER" hgap="5.0" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="84.0"
-                          prefWidth="363.0" styleClass="formBox" vgap="5">
+                <GridPane alignment="CENTER" hgap="5.0" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="113.0"
+                          prefWidth="394.0" styleClass="formBox">
                     <columnConstraints>
                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="142.0" minWidth="10.0" prefWidth="97.0"/>
                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="216.0" minWidth="10.0" prefWidth="206.0"/>
                     </columnConstraints>
                     <rowConstraints>
-                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                        <RowConstraints maxHeight="94.0" minHeight="10.0" prefHeight="66.0" vgrow="SOMETIMES"/>
+                        <RowConstraints maxHeight="58.0" minHeight="10.0" prefHeight="47.0" vgrow="SOMETIMES"/>
                     </rowConstraints>
                     <children>
-                        <Label maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="16.0" prefWidth="107.0"
+                        <Label maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="16.0" prefWidth="114.0"
                                text="%label.reason">
                             <font>
                                 <Font name="System Bold" size="13.0"/>
                             </font>
+                            <GridPane.margin>
+                                <Insets top="20.0"/>
+                            </GridPane.margin>
                         </Label>
-                        <TextField fx:id="TxtfaceExcReason" GridPane.columnIndex="1"/>
+                        <TextField fx:id="TxtfaceExcReason" prefHeight="22.0" prefWidth="202.0" promptText="%Cause"
+                                   visible="false" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                            <font>
+                                <Font size="12.0"/>
+                            </font>
+                        </TextField>
+                        <MenuButton fx:id="SelectCause" mnemonicParsing="false" prefHeight="22.0" prefWidth="220.0"
+                                    text="%Cause" GridPane.columnIndex="1">
+
+                            <GridPane.margin>
+                                <Insets top="20.0"/>
+                            </GridPane.margin>
+                            <font>
+                                <Font size="12.0"/>
+                            </font>
+                        </MenuButton>
                     </children>
                     <padding>
                         <Insets left="20.0" right="20.0"/>
