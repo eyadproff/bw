@@ -20,7 +20,9 @@ public enum FingerPosition
 	RIGHT_WRITERS_PALM(22),
 	LEFT_WRITERS_PALM(24),
 	RIGHT_LOWER_PALM(25),
-	LEFT_LOWER_PALM(27);
+	RIGHT_UPPER_PALM(26),
+	LEFT_LOWER_PALM(27),
+	LEFT_UPPER_PALM(28);
 	
 	private final int position;
 	

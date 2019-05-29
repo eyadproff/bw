@@ -11,6 +11,12 @@ VERSION SCHEMA: vYYYY.MM.#SEQ
 
 ---
 
+## v2019.05.4
+
+- NEW: Add Palm-Fingerprint-Capturing in criminal workflows.
+
+---
+
 ## v2019.05.3
 
 - NEW: Add Delete-Criminal-Fingerprints workflow.

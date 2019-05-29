@@ -85,30 +85,56 @@ public class PalmCapturingFxController extends WizardStepFxControllerBase
 	@FXML private ImageView ivFingerprintDeviceLivePreviewPlaceholder;
 	@FXML private ImageView ivLeftWritersPalmPlaceholder;
 	@FXML private ImageView ivLeftLowerPalmPlaceholder;
+	@FXML private ImageView ivLeftUpperPalmPlaceholder;
 	@FXML private ImageView ivRightWritersPalmPlaceholder;
 	@FXML private ImageView ivRightLowerPalmPlaceholder;
+	@FXML private ImageView ivRightUpperPalmPlaceholder;
 	@FXML private ImageView ivLeftWritersPalmSkip;
 	@FXML private ImageView ivLeftLowerPalmSkip;
+	@FXML private ImageView ivLeftUpperPalmSkip;
 	@FXML private ImageView ivRightWritersPalmSkip;
 	@FXML private ImageView ivRightLowerPalmSkip;
+	@FXML private ImageView ivRightUpperPalmSkip;
 	@FXML private ImageView ivFingerprintDeviceLivePreview;
 	@FXML private ImageView ivRightWritersPalm;
 	@FXML private ImageView ivRightLowerPalm;
+	@FXML private ImageView ivRightUpperPalm;
 	@FXML private ImageView ivLeftWritersPalm;
 	@FXML private ImageView ivLeftLowerPalm;
+	@FXML private ImageView ivLeftUpperPalm;
 	@FXML private SVGPath svgRightWritersPalm;
 	@FXML private SVGPath svgRightLowerPalm;
+	@FXML private SVGPath svgRightUpperPalm;
+	@FXML private SVGPath svgRightUpperPalmIndex;
+	@FXML private SVGPath svgRightUpperPalmMiddle;
+	@FXML private SVGPath svgRightUpperPalmRing;
+	@FXML private SVGPath svgRightUpperPalmLittle;
 	@FXML private SVGPath svgLeftWritersPalm;
 	@FXML private SVGPath svgLeftLowerPalm;
+	@FXML private SVGPath svgLeftUpperPalm;
+	@FXML private SVGPath svgLeftUpperPalmIndex;
+	@FXML private SVGPath svgLeftUpperPalmMiddle;
+	@FXML private SVGPath svgLeftUpperPalmRing;
+	@FXML private SVGPath svgLeftUpperPalmLittle;
 	@FXML private FourStateTitledPane tpFingerprintDeviceLivePreview;
 	@FXML private FourStateTitledPane tpRightWritersPalm;
 	@FXML private FourStateTitledPane tpRightLowerPalm;
+	@FXML private FourStateTitledPane tpRightUpperPalm;
 	@FXML private FourStateTitledPane tpLeftWritersPalm;
 	@FXML private FourStateTitledPane tpLeftLowerPalm;
+	@FXML private FourStateTitledPane tpLeftUpperPalm;
 	@FXML private CheckBox cbRightWritersPalm;
 	@FXML private CheckBox cbRightLowerPalm;
+	@FXML private CheckBox cbRightUpperPalmIndex;
+	@FXML private CheckBox cbRightUpperPalmMiddle;
+	@FXML private CheckBox cbRightUpperPalmRing;
+	@FXML private CheckBox cbRightUpperPalmLittle;
 	@FXML private CheckBox cbLeftWritersPalm;
 	@FXML private CheckBox cbLeftLowerPalm;
+	@FXML private CheckBox cbLeftUpperPalmIndex;
+	@FXML private CheckBox cbLeftUpperPalmMiddle;
+	@FXML private CheckBox cbLeftUpperPalmRing;
+	@FXML private CheckBox cbLeftUpperPalmLittle;
 	@FXML private Button btnCancel;
 	@FXML private Button btnStartFingerprintCapturing;
 	@FXML private Button btnStopFingerprintCapturing;
@@ -120,7 +146,7 @@ public class PalmCapturingFxController extends WizardStepFxControllerBase
 	@FXML private Button btnNext;
 	
 	private Map<Integer, PalmUiComponents> palmUiComponentsMap = new HashMap<>();
-	private int currentPalmPosition = FingerPosition.RIGHT_LOWER_PALM.getPosition();
+	private int currentPalmPosition = FingerPosition.RIGHT_UPPER_PALM.getPosition();
 	private boolean fingerprintDeviceInitializedAtLeastOnce = false;
 	private boolean workflowStarted = false;
 	private boolean workflowUserTaskLoaded = false;
@@ -160,18 +186,36 @@ public class PalmCapturingFxController extends WizardStepFxControllerBase
 		tpLeftHand.setNodeOrientation(reverse);
 		
 		// show the image placeholder if and only if there is no image and the checkbox is selected
+		ivRightUpperPalmPlaceholder.visibleProperty().bind(ivRightUpperPalm.imageProperty().isNull()
+				                                                   .and(cbRightUpperPalmIndex.selectedProperty().or(
+				                                                   		cbRightUpperPalmMiddle.selectedProperty()).or(
+		                                                                cbRightUpperPalmRing.selectedProperty()).or(
+                                                                        cbRightUpperPalmLittle.selectedProperty())));
 		ivRightLowerPalmPlaceholder.visibleProperty().bind(ivRightLowerPalm.imageProperty().isNull()
 			                                                            .and(cbRightLowerPalm.selectedProperty()));
 		ivRightWritersPalmPlaceholder.visibleProperty().bind(ivRightWritersPalm.imageProperty().isNull()
 				                                                        .and(cbRightWritersPalm.selectedProperty()));
+		ivLeftUpperPalmPlaceholder.visibleProperty().bind(ivLeftUpperPalm.imageProperty().isNull()
+				                                                   .and(cbLeftUpperPalmIndex.selectedProperty().or(
+						                                                cbLeftUpperPalmMiddle.selectedProperty()).or(
+						                                                cbLeftUpperPalmRing.selectedProperty()).or(
+						                                                cbLeftUpperPalmLittle.selectedProperty())));
 		ivLeftLowerPalmPlaceholder.visibleProperty().bind(ivLeftLowerPalm.imageProperty().isNull()
 			                                                            .and(cbLeftLowerPalm.selectedProperty()));
 		ivLeftWritersPalmPlaceholder.visibleProperty().bind(ivLeftWritersPalm.imageProperty().isNull()
 				                                                        .and(cbLeftWritersPalm.selectedProperty()));
 		
 		// show the skip icon if and only if the checkbox is not selected
+		ivRightUpperPalmSkip.visibleProperty().bind(cbRightUpperPalmIndex.selectedProperty().not().and(
+													cbRightUpperPalmMiddle.selectedProperty().not()).and(
+													cbRightUpperPalmRing.selectedProperty().not()).and(
+													cbRightUpperPalmLittle.selectedProperty().not()));
 		ivRightLowerPalmSkip.visibleProperty().bind(cbRightLowerPalm.selectedProperty().not());
 		ivRightWritersPalmSkip.visibleProperty().bind(cbRightWritersPalm.selectedProperty().not());
+		ivLeftUpperPalmSkip.visibleProperty().bind(cbLeftUpperPalmIndex.selectedProperty().not().and(
+												   cbLeftUpperPalmMiddle.selectedProperty().not()).and(
+												   cbLeftUpperPalmRing.selectedProperty().not()).and(
+												   cbLeftUpperPalmLittle.selectedProperty().not()));
 		ivLeftLowerPalmSkip.visibleProperty().bind(cbLeftLowerPalm.selectedProperty().not());
 		ivLeftWritersPalmSkip.visibleProperty().bind(cbLeftWritersPalm.selectedProperty().not());
 		
@@ -180,6 +224,11 @@ public class PalmCapturingFxController extends WizardStepFxControllerBase
                                                 .isNull().and(piFingerprintDeviceLivePreview.visibleProperty().not()));
 		
 		// accumulate all the fingerprint-related components in a map so that we can apply actions on them easily
+		palmUiComponentsMap.put(FingerPosition.RIGHT_UPPER_PALM.getPosition(),
+		                        new PalmUiComponents(FingerPosition.RIGHT_UPPER_PALM, ivRightUpperPalm,
+		                                             svgRightUpperPalm, tpRightUpperPalm, null,
+		                                             resources.getString("label.upperPalm"),
+		                                             resources.getString("label.rightHand")));
 		palmUiComponentsMap.put(FingerPosition.RIGHT_LOWER_PALM.getPosition(),
 		                        new PalmUiComponents(FingerPosition.RIGHT_LOWER_PALM, ivRightLowerPalm,
                                                      svgRightLowerPalm, tpRightLowerPalm, cbRightLowerPalm,
@@ -190,6 +239,11 @@ public class PalmCapturingFxController extends WizardStepFxControllerBase
 	                                                 svgRightWritersPalm, tpRightWritersPalm, cbRightWritersPalm,
                                                      resources.getString("label.writersPalm"),
                                                      resources.getString("label.rightHand")));
+		palmUiComponentsMap.put(FingerPosition.LEFT_UPPER_PALM.getPosition(),
+		                        new PalmUiComponents(FingerPosition.LEFT_UPPER_PALM, ivLeftUpperPalm,
+		                                             svgLeftUpperPalm, tpLeftUpperPalm, null,
+		                                             resources.getString("label.upperPalm"),
+		                                             resources.getString("label.leftHand")));
 		palmUiComponentsMap.put(FingerPosition.LEFT_LOWER_PALM.getPosition(),
 		                        new PalmUiComponents(FingerPosition.LEFT_LOWER_PALM, ivLeftLowerPalm,
                                                      svgLeftLowerPalm, tpLeftLowerPalm, cbLeftLowerPalm,
@@ -202,16 +256,51 @@ public class PalmCapturingFxController extends WizardStepFxControllerBase
 		                                             resources.getString("label.leftHand")));
 		
 		// disable the finger's titledPane whenever its checkbox is unselected
-		palmUiComponentsMap.forEach((position, components) ->
-               components.getTitledPane().disableProperty().bind(components.getCheckBox().selectedProperty().not()));
+		tpRightUpperPalm.disableProperty().bind(cbRightUpperPalmIndex.selectedProperty().not().and(
+												cbRightUpperPalmMiddle.selectedProperty().not()).and(
+												cbRightUpperPalmRing.selectedProperty().not()).and(
+												cbRightUpperPalmLittle.selectedProperty().not()));
+		tpRightLowerPalm.disableProperty().bind(cbRightLowerPalm.selectedProperty().not());
+		tpRightWritersPalm.disableProperty().bind(cbRightWritersPalm.selectedProperty().not());
+		tpLeftUpperPalm.disableProperty().bind(cbLeftUpperPalmIndex.selectedProperty().not().and(
+											   cbLeftUpperPalmMiddle.selectedProperty().not()).and(
+											   cbLeftUpperPalmRing.selectedProperty().not()).and(
+											   cbLeftUpperPalmLittle.selectedProperty().not()));
+		tpLeftLowerPalm.disableProperty().bind(cbLeftLowerPalm.selectedProperty().not());
+		tpLeftWritersPalm.disableProperty().bind(cbLeftWritersPalm.selectedProperty().not());
 		
 		// disable the finger's vector hand highlight whenever its checkbox is unselected
-		palmUiComponentsMap.forEach((position, components) ->
-               components.getSvgPath().disableProperty().bind(components.getCheckBox().selectedProperty().not()));
+		svgRightUpperPalm.disableProperty().bind(cbRightUpperPalmIndex.selectedProperty().not().and(
+												 cbRightUpperPalmMiddle.selectedProperty().not()).and(
+												 cbRightUpperPalmRing.selectedProperty().not()).and(
+												 cbRightUpperPalmLittle.selectedProperty().not()));
+		svgRightUpperPalmIndex.disableProperty().bind(cbRightUpperPalmIndex.selectedProperty().not());
+		svgRightUpperPalmMiddle.disableProperty().bind(cbRightUpperPalmMiddle.selectedProperty().not());
+		svgRightUpperPalmRing.disableProperty().bind(cbRightUpperPalmRing.selectedProperty().not());
+		svgRightUpperPalmLittle.disableProperty().bind(cbRightUpperPalmLittle.selectedProperty().not());
+		svgRightLowerPalm.disableProperty().bind(cbRightLowerPalm.selectedProperty().not());
+		svgRightWritersPalm.disableProperty().bind(cbRightWritersPalm.selectedProperty().not());
+		svgLeftUpperPalm.disableProperty().bind(cbLeftUpperPalmIndex.selectedProperty().not().and(
+												cbLeftUpperPalmMiddle.selectedProperty().not()).and(
+												cbLeftUpperPalmRing.selectedProperty().not()).and(
+												cbLeftUpperPalmLittle.selectedProperty().not()));
+		svgLeftUpperPalmIndex.disableProperty().bind(cbLeftUpperPalmIndex.selectedProperty().not());
+		svgLeftUpperPalmMiddle.disableProperty().bind(cbLeftUpperPalmMiddle.selectedProperty().not());
+		svgLeftUpperPalmRing.disableProperty().bind(cbLeftUpperPalmRing.selectedProperty().not());
+		svgLeftUpperPalmLittle.disableProperty().bind(cbLeftUpperPalmLittle.selectedProperty().not());
+		svgLeftLowerPalm.disableProperty().bind(cbLeftLowerPalm.selectedProperty().not());
+		svgLeftWritersPalm.disableProperty().bind(cbLeftWritersPalm.selectedProperty().not());
 		
 		class CustomEventHandler implements EventHandler<ActionEvent>
 		{
 			private PalmUiComponents components;
+			private String fingerLabel;
+			
+			private CustomEventHandler(PalmUiComponents components, String fingerLabel)
+			{
+				this.components = components;
+				this.fingerLabel = fingerLabel;
+			}
 			
 			private CustomEventHandler(PalmUiComponents components)
 			{
@@ -225,7 +314,12 @@ public class PalmCapturingFxController extends WizardStepFxControllerBase
 				if(checkBox.isSelected()) return;
 				
 				String headerText = resources.getString("fingerprint.skippingFingerprint.confirmation.header");
-				String contentText = String.format(
+				String contentText;
+				
+				if(fingerLabel != null) contentText = String.format(
+						resources.getString("fingerprint.skippingFingerprint.confirmation.message2"),
+						fingerLabel, components.getFingerLabel(), components.getHandLabel());
+				else contentText = String.format(
 						resources.getString("fingerprint.skippingFingerprint.confirmation.message"),
 						components.getFingerLabel(), components.getHandLabel());
 				
@@ -233,20 +327,44 @@ public class PalmCapturingFxController extends WizardStepFxControllerBase
 				                                                                                contentText);
 				if(!confirmed)
 				{
-					components.getCheckBox().setSelected(true);
+					checkBox.setSelected(true);
 					event.consume();
 				}
 			}
 		}
 		
+		cbRightUpperPalmIndex.setOnAction(new CustomEventHandler(palmUiComponentsMap.get(
+																	FingerPosition.RIGHT_UPPER_PALM.getPosition()),
+		                                                            resources.getString("label.fingers.index")));
+		cbRightUpperPalmMiddle.setOnAction(new CustomEventHandler(palmUiComponentsMap.get(
+																	FingerPosition.RIGHT_UPPER_PALM.getPosition()),
+		                                                            resources.getString("label.fingers.middle")));
+		cbRightUpperPalmRing.setOnAction(new CustomEventHandler(palmUiComponentsMap.get(
+																	FingerPosition.RIGHT_UPPER_PALM.getPosition()),
+	                                                                resources.getString("label.fingers.ring")));
+		cbRightUpperPalmLittle.setOnAction(new CustomEventHandler(palmUiComponentsMap.get(
+																	FingerPosition.RIGHT_UPPER_PALM.getPosition()),
+		                                                            resources.getString("label.fingers.little")));
 		cbRightLowerPalm.setOnAction(new CustomEventHandler(palmUiComponentsMap.get(
-																FingerPosition.RIGHT_LOWER_PALM.getPosition())));
+																	FingerPosition.RIGHT_LOWER_PALM.getPosition())));
 		cbRightWritersPalm.setOnAction(new CustomEventHandler(palmUiComponentsMap.get(
-																FingerPosition.RIGHT_WRITERS_PALM.getPosition())));
+																	FingerPosition.RIGHT_WRITERS_PALM.getPosition())));
+		cbLeftUpperPalmIndex.setOnAction(new CustomEventHandler(palmUiComponentsMap.get(
+																	FingerPosition.LEFT_UPPER_PALM.getPosition()),
+		                                                            resources.getString("label.fingers.index")));
+		cbLeftUpperPalmMiddle.setOnAction(new CustomEventHandler(palmUiComponentsMap.get(
+																	FingerPosition.LEFT_UPPER_PALM.getPosition()),
+		                                                            resources.getString("label.fingers.middle")));
+		cbLeftUpperPalmRing.setOnAction(new CustomEventHandler(palmUiComponentsMap.get(
+																	FingerPosition.LEFT_UPPER_PALM.getPosition()),
+		                                                            resources.getString("label.fingers.ring")));
+		cbLeftUpperPalmLittle.setOnAction(new CustomEventHandler(palmUiComponentsMap.get(
+																	FingerPosition.LEFT_UPPER_PALM.getPosition()),
+		                                                            resources.getString("label.fingers.little")));
 		cbLeftLowerPalm.setOnAction(new CustomEventHandler(palmUiComponentsMap.get(
-																FingerPosition.LEFT_LOWER_PALM.getPosition())));
+																	FingerPosition.LEFT_LOWER_PALM.getPosition())));
 		cbLeftWritersPalm.setOnAction(new CustomEventHandler(palmUiComponentsMap.get(
-																FingerPosition.LEFT_WRITERS_PALM.getPosition())));
+																	FingerPosition.LEFT_WRITERS_PALM.getPosition())));
 		
 		class CustomChangeListener implements ChangeListener<Boolean>
 		{
@@ -255,7 +373,14 @@ public class PalmCapturingFxController extends WizardStepFxControllerBase
 			{
 				if(!workflowUserTaskLoaded) return;
 				
-				if(cbRightLowerPalm.isSelected())
+				if(cbRightUpperPalmIndex.isSelected() || cbRightUpperPalmMiddle.isSelected() ||
+				   cbRightUpperPalmRing.isSelected() || cbRightUpperPalmLittle.isSelected())
+				{
+					btnStartFingerprintCapturing.setText(
+												resources.getString("button.captureRightUpperPalmFingerprint"));
+					currentPalmPosition = FingerPosition.RIGHT_UPPER_PALM.getPosition();
+				}
+				else if(cbRightLowerPalm.isSelected())
 				{
 					btnStartFingerprintCapturing.setText(
 												resources.getString("button.captureRightLowerPalmFingerprint"));
@@ -266,6 +391,13 @@ public class PalmCapturingFxController extends WizardStepFxControllerBase
 					btnStartFingerprintCapturing.setText(
 												resources.getString("button.captureRightWritersPalmFingerprint"));
 					currentPalmPosition = FingerPosition.RIGHT_WRITERS_PALM.getPosition();
+				}
+				else if(cbLeftUpperPalmIndex.isSelected() || cbLeftUpperPalmMiddle.isSelected() ||
+						cbLeftUpperPalmRing.isSelected() || cbLeftUpperPalmLittle.isSelected())
+				{
+					btnStartFingerprintCapturing.setText(
+							resources.getString("button.captureLeftUpperPalmFingerprint"));
+					currentPalmPosition = FingerPosition.LEFT_UPPER_PALM.getPosition();
 				}
 				else if(cbLeftLowerPalm.isSelected())
 				{
@@ -295,8 +427,16 @@ public class PalmCapturingFxController extends WizardStepFxControllerBase
 			}
 		}
 		
+		cbRightUpperPalmIndex.selectedProperty().addListener(new CustomChangeListener());
+		cbRightUpperPalmMiddle.selectedProperty().addListener(new CustomChangeListener());
+		cbRightUpperPalmRing.selectedProperty().addListener(new CustomChangeListener());
+		cbRightUpperPalmLittle.selectedProperty().addListener(new CustomChangeListener());
 		cbRightLowerPalm.selectedProperty().addListener(new CustomChangeListener());
 		cbRightWritersPalm.selectedProperty().addListener(new CustomChangeListener());
+		cbLeftUpperPalmIndex.selectedProperty().addListener(new CustomChangeListener());
+		cbLeftUpperPalmMiddle.selectedProperty().addListener(new CustomChangeListener());
+		cbLeftUpperPalmRing.selectedProperty().addListener(new CustomChangeListener());
+		cbLeftUpperPalmLittle.selectedProperty().addListener(new CustomChangeListener());
 		cbLeftLowerPalm.selectedProperty().addListener(new CustomChangeListener());
 		cbLeftWritersPalm.selectedProperty().addListener(new CustomChangeListener());
 		
@@ -307,11 +447,13 @@ public class PalmCapturingFxController extends WizardStepFxControllerBase
 		
 		if(hidePreviousButton != null) GuiUtils.showNode(btnPrevious, !hidePreviousButton);
 		
-		palmOrderIndices.put(FingerPosition.RIGHT_LOWER_PALM.getPosition(), 0);
-		palmOrderIndices.put(FingerPosition.RIGHT_WRITERS_PALM.getPosition(), 1);
-		palmOrderIndices.put(FingerPosition.LEFT_LOWER_PALM.getPosition(), 2);
-		palmOrderIndices.put(FingerPosition.LEFT_WRITERS_PALM.getPosition(), 3);
-		palmOrderIndices.put(-1, 4);
+		palmOrderIndices.put(FingerPosition.RIGHT_UPPER_PALM.getPosition(), 0);
+		palmOrderIndices.put(FingerPosition.RIGHT_LOWER_PALM.getPosition(), 1);
+		palmOrderIndices.put(FingerPosition.RIGHT_WRITERS_PALM.getPosition(), 2);
+		palmOrderIndices.put(FingerPosition.LEFT_UPPER_PALM.getPosition(), 3);
+		palmOrderIndices.put(FingerPosition.LEFT_LOWER_PALM.getPosition(), 4);
+		palmOrderIndices.put(FingerPosition.LEFT_WRITERS_PALM.getPosition(), 5);
+		palmOrderIndices.put(-1, 6);
 		
 		// load the persisted captured fingerprints, if any
 		if(capturedPalms != null && !capturedPalms.isEmpty())
@@ -319,20 +461,36 @@ public class PalmCapturingFxController extends WizardStepFxControllerBase
 			workflowStarted = true;
 			
 			// disable all the checkboxes
-			palmUiComponentsMap.forEach((position, components) -> components.getCheckBox().setDisable(true));
+			enableAllCheckboxes(false);
 			int[] skippedFingersCount = {0};
 			
 			capturedPalms.forEach((position, fingerprint) ->
 			{
 			    PalmUiComponents components = palmUiComponentsMap.get(position);
-				if(palmOrderIndices.get(components.getPalmPosition().getPosition()) >
-					    palmOrderIndices.get(currentPalmPosition))
-			    	currentPalmPosition = components.getPalmPosition().getPosition();
+				if(palmOrderIndices.get(position) > palmOrderIndices.get(currentPalmPosition))
+				{
+					currentPalmPosition = position;
+				}
 			    
 			    if(fingerprint.isSkipped())
 			    {
-			        skippedFingersCount[0]++;
-			        components.getCheckBox().setSelected(false);
+			        if(position == FingerPosition.RIGHT_UPPER_PALM.getPosition())
+			        {
+			        	cbRightUpperPalmIndex.setSelected(false);
+			        	cbRightUpperPalmMiddle.setSelected(false);
+			        	cbRightUpperPalmRing.setSelected(false);
+			        	cbRightUpperPalmLittle.setSelected(false);
+			        }
+			        else if(position == FingerPosition.LEFT_UPPER_PALM.getPosition())
+			        {
+				        cbLeftUpperPalmIndex.setSelected(false);
+				        cbLeftUpperPalmMiddle.setSelected(false);
+				        cbLeftUpperPalmRing.setSelected(false);
+				        cbLeftUpperPalmLittle.setSelected(false);
+			        }
+			        else components.getCheckBox().setSelected(false);
+				
+				    skippedFingersCount[0]++;
 			        return;
 			    }
 			
@@ -345,9 +503,13 @@ public class PalmCapturingFxController extends WizardStepFxControllerBase
 			});
 			
 			// increment to the next palm position
-			if(currentPalmPosition == FingerPosition.RIGHT_LOWER_PALM.getPosition())
+			if(currentPalmPosition == FingerPosition.RIGHT_UPPER_PALM.getPosition())
+									currentPalmPosition = FingerPosition.RIGHT_LOWER_PALM.getPosition();
+			else if(currentPalmPosition == FingerPosition.RIGHT_LOWER_PALM.getPosition())
 									currentPalmPosition = FingerPosition.RIGHT_WRITERS_PALM.getPosition();
 			else if(currentPalmPosition == FingerPosition.RIGHT_WRITERS_PALM.getPosition())
+									currentPalmPosition = FingerPosition.LEFT_LOWER_PALM.getPosition();
+			else if(currentPalmPosition == FingerPosition.LEFT_UPPER_PALM.getPosition())
 									currentPalmPosition = FingerPosition.LEFT_LOWER_PALM.getPosition();
 			else if(currentPalmPosition == FingerPosition.LEFT_LOWER_PALM.getPosition())
 									currentPalmPosition = FingerPosition.LEFT_WRITERS_PALM.getPosition();
@@ -355,7 +517,12 @@ public class PalmCapturingFxController extends WizardStepFxControllerBase
 									currentPalmPosition = -1; // completed
 			
 			// update the controls based on the current palm position
-			if(currentPalmPosition == FingerPosition.RIGHT_LOWER_PALM.getPosition())
+			if(currentPalmPosition == FingerPosition.RIGHT_UPPER_PALM.getPosition())
+			{
+				btnStartFingerprintCapturing.setText(
+						resources.getString("button.captureRightUpperPalmFingerprint"));
+			}
+			else if(currentPalmPosition == FingerPosition.RIGHT_LOWER_PALM.getPosition())
 			{
 				btnStartFingerprintCapturing.setText(
 						resources.getString("button.captureRightLowerPalmFingerprint"));
@@ -364,6 +531,11 @@ public class PalmCapturingFxController extends WizardStepFxControllerBase
 			{
 				btnStartFingerprintCapturing.setText(
 						resources.getString("button.captureRightWritersPalmFingerprint"));
+			}
+			else if(currentPalmPosition == FingerPosition.LEFT_UPPER_PALM.getPosition())
+			{
+				btnStartFingerprintCapturing.setText(
+						resources.getString("button.captureLeftUpperPalmFingerprint"));
 			}
 			else if(currentPalmPosition == FingerPosition.LEFT_LOWER_PALM.getPosition())
 			{
@@ -478,6 +650,11 @@ public class PalmCapturingFxController extends WizardStepFxControllerBase
 			Platform.runLater(btnStopFingerprintCapturing::fire);
 		}
 		
+		if(!capturedPalms.containsKey(FingerPosition.RIGHT_UPPER_PALM.getPosition()) &&
+				palmOrderIndices.get(FingerPosition.RIGHT_UPPER_PALM.getPosition()) <
+						palmOrderIndices.get(currentPalmPosition))
+			capturedPalms.put(FingerPosition.RIGHT_UPPER_PALM.getPosition(),
+			                  new PalmFingerprint(null, null, true));
 		if(!capturedPalms.containsKey(FingerPosition.RIGHT_LOWER_PALM.getPosition()) &&
 			palmOrderIndices.get(FingerPosition.RIGHT_LOWER_PALM.getPosition()) <
 						palmOrderIndices.get(currentPalmPosition))
@@ -487,6 +664,11 @@ public class PalmCapturingFxController extends WizardStepFxControllerBase
 				palmOrderIndices.get(FingerPosition.RIGHT_WRITERS_PALM.getPosition()) <
 						palmOrderIndices.get(currentPalmPosition))
 			capturedPalms.put(FingerPosition.RIGHT_WRITERS_PALM.getPosition(),
+			                  new PalmFingerprint(null, null, true));
+		if(!capturedPalms.containsKey(FingerPosition.LEFT_UPPER_PALM.getPosition()) &&
+				palmOrderIndices.get(FingerPosition.LEFT_UPPER_PALM.getPosition()) <
+						palmOrderIndices.get(currentPalmPosition))
+			capturedPalms.put(FingerPosition.LEFT_UPPER_PALM.getPosition(),
 			                  new PalmFingerprint(null, null, true));
 		if(!capturedPalms.containsKey(FingerPosition.LEFT_LOWER_PALM.getPosition()) &&
 				palmOrderIndices.get(FingerPosition.LEFT_LOWER_PALM.getPosition()) <
@@ -526,9 +708,13 @@ public class PalmCapturingFxController extends WizardStepFxControllerBase
 		GuiUtils.showNode(lblStatus, true);
 		
 		// disable all the checkboxes
-		palmUiComponentsMap.forEach((position, components) -> components.getCheckBox().setDisable(true));
+		enableAllCheckboxes(false);
 		
-		if(!cbRightLowerPalm.isSelected() && !cbRightWritersPalm.isSelected() &&
+		if(!cbRightUpperPalmIndex.isSelected() && !cbRightUpperPalmMiddle.isSelected() &&
+		   !cbRightUpperPalmRing.isSelected() && !cbRightUpperPalmLittle.isSelected() &&
+		   !cbRightLowerPalm.isSelected() && !cbRightWritersPalm.isSelected() &&
+		   !cbLeftUpperPalmIndex.isSelected() && !cbLeftUpperPalmMiddle.isSelected() &&
+		   !cbLeftUpperPalmRing.isSelected() && !cbLeftUpperPalmLittle.isSelected() &&
 		   !cbLeftLowerPalm.isSelected() && !cbLeftWritersPalm.isSelected())
 		{
 			GuiUtils.showNode(ivCompleted, true);
@@ -601,6 +787,23 @@ public class PalmCapturingFxController extends WizardStepFxControllerBase
 						    boolean currentPalm = currentPalmPosition == components.getPalmPosition().getPosition();
 						    GuiUtils.showNode(components.getSvgPath(), currentPalm);
 						});
+						
+						GuiUtils.showNode(svgRightUpperPalmIndex,
+						                  currentPalmPosition == FingerPosition.RIGHT_UPPER_PALM.getPosition());
+						GuiUtils.showNode(svgRightUpperPalmMiddle,
+						                  currentPalmPosition == FingerPosition.RIGHT_UPPER_PALM.getPosition());
+						GuiUtils.showNode(svgRightUpperPalmRing,
+						                  currentPalmPosition == FingerPosition.RIGHT_UPPER_PALM.getPosition());
+						GuiUtils.showNode(svgRightUpperPalmLittle,
+						                  currentPalmPosition == FingerPosition.RIGHT_UPPER_PALM.getPosition());
+						GuiUtils.showNode(svgLeftUpperPalmIndex,
+						                  currentPalmPosition == FingerPosition.LEFT_UPPER_PALM.getPosition());
+						GuiUtils.showNode(svgLeftUpperPalmMiddle,
+						                  currentPalmPosition == FingerPosition.LEFT_UPPER_PALM.getPosition());
+						GuiUtils.showNode(svgLeftUpperPalmRing,
+						                  currentPalmPosition == FingerPosition.LEFT_UPPER_PALM.getPosition());
+						GuiUtils.showNode(svgLeftUpperPalmLittle,
+						                  currentPalmPosition == FingerPosition.LEFT_UPPER_PALM.getPosition());
 					}
 					
 					String previewImageBase64 = response.getPreviewImage();
@@ -608,12 +811,29 @@ public class PalmCapturingFxController extends WizardStepFxControllerBase
 					ivFingerprintDeviceLivePreview.setImage(new Image(new ByteArrayInputStream(bytes)));
 				});
 				
+				int expectedFingersCount = 1;
+				
+				if(currentPalmPosition == FingerPosition.RIGHT_UPPER_PALM.getPosition())
+				{
+					if(cbRightUpperPalmIndex.isSelected()) expectedFingersCount++;
+					if(cbRightUpperPalmMiddle.isSelected()) expectedFingersCount++;
+					if(cbRightUpperPalmRing.isSelected()) expectedFingersCount++;
+					if(cbRightUpperPalmLittle.isSelected()) expectedFingersCount++;
+				}
+				else if(currentPalmPosition == FingerPosition.LEFT_UPPER_PALM.getPosition())
+				{
+					if(cbLeftUpperPalmIndex.isSelected()) expectedFingersCount++;
+					if(cbLeftUpperPalmMiddle.isSelected()) expectedFingersCount++;
+					if(cbLeftUpperPalmRing.isSelected()) expectedFingersCount++;
+					if(cbLeftUpperPalmLittle.isSelected()) expectedFingersCount++;
+				}
+				
 				// start the real capturing
 				String fingerprintDeviceName = Context.getCoreFxController().getDeviceManagerGadgetPaneController()
 																			.getFingerprintScannerDeviceName();
 				Future<TaskResponse<CaptureFingerprintResponse>> future = Context.getBioKitManager()
 						.getFingerprintService().startPreviewAndAutoCapture(fingerprintDeviceName, currentPalmPosition,
-						                                                    1, new ArrayList<>(),
+						                                                    expectedFingersCount, new ArrayList<>(),
 						                                                    true, true,
 						                                                    false, responseProcessor);
 				return future.get();
@@ -621,9 +841,7 @@ public class PalmCapturingFxController extends WizardStepFxControllerBase
 		};
 		capturingFingerprintTask.setOnSucceeded(e ->
         {
-        	// hide all SVGs of the palms
-	        palmUiComponentsMap.forEach((integer, components) ->
-			                                           GuiUtils.showNode(components.getSvgPath(), false));
+	        hideAllSVGs();
 	        GuiUtils.showNode(btnStopFingerprintCapturing, false);
 	        GuiUtils.showNode(piFingerprintDeviceLivePreview, false);
 	        
@@ -663,9 +881,8 @@ public class PalmCapturingFxController extends WizardStepFxControllerBase
 			        GuiUtils.showNode(piFingerprintDeviceLivePreview, false);
 			        GuiUtils.showNode(btnStartFingerprintCapturing, true);
 			        GuiUtils.showNode(btnStartOverFingerprintCapturing, true);
-			        
-			        palmUiComponentsMap.forEach((integer, components) ->
-				                                           GuiUtils.showNode(components.getSvgPath(), false));
+			
+			        hideAllSVGs();
 			        
 			        if(result.getReturnCode() == CaptureFingerprintResponse.FailureCodes.EXCEPTION_WHILE_CAPTURING)
 			        {
@@ -746,9 +963,7 @@ public class PalmCapturingFxController extends WizardStepFxControllerBase
 		        GuiUtils.showNode(piFingerprintDeviceLivePreview, false);
 		        GuiUtils.showNode(btnStartFingerprintCapturing, true);
 		        GuiUtils.showNode(btnStartOverFingerprintCapturing, true);
-		        
-		        palmUiComponentsMap.forEach((integer, components) ->
-				                                           GuiUtils.showNode(components.getSvgPath(), false));
+		        hideAllSVGs();
 		        
 		        lblStatus.setText(String.format(firstLivePreviewingResponse[0] ?
 				        resources.getString("label.status.failedToStartFingerprintCapturingWithErrorCode") :
@@ -773,9 +988,7 @@ public class PalmCapturingFxController extends WizardStepFxControllerBase
 			GuiUtils.showNode(piFingerprintDeviceLivePreview, false);
 			GuiUtils.showNode(btnStartFingerprintCapturing, true);
 			GuiUtils.showNode(btnStartOverFingerprintCapturing, true);
-			
-			palmUiComponentsMap.forEach((integer, components) ->
-					                                   GuiUtils.showNode(components.getSvgPath(), false));
+			hideAllSVGs();
 			
 			Throwable exception = capturingFingerprintTask.getException();
 			
@@ -842,9 +1055,7 @@ public class PalmCapturingFxController extends WizardStepFxControllerBase
 		
 		task.setOnSucceeded(e ->
 		{
-			palmUiComponentsMap.forEach((integer, components) ->
-					                                    GuiUtils.showNode(components.getSvgPath(), false));
-			
+			hideAllSVGs();
 		    tpFingerprintDeviceLivePreview.setActive(false);
 			ivFingerprintDeviceLivePreview.setImage(null);
 			GuiUtils.showNode(piProgress, false);
@@ -882,9 +1093,7 @@ public class PalmCapturingFxController extends WizardStepFxControllerBase
 		});
 		task.setOnFailed(e ->
 		{
-			palmUiComponentsMap.forEach((integer, components) ->
-					                                   GuiUtils.showNode(components.getSvgPath(), false));
-			
+			hideAllSVGs();
 		    tpFingerprintDeviceLivePreview.setActive(false);
 			ivFingerprintDeviceLivePreview.setImage(null);
 			GuiUtils.showNode(piProgress, false);
@@ -911,7 +1120,7 @@ public class PalmCapturingFxController extends WizardStepFxControllerBase
 		    {
 		        lblStatus.setText(resources.getString("label.status.failedToStopFingerprintCapturing"));
 		
-		        String errorCode = RegisterConvictedPresentErrorCodes.C007_00020.getCode();
+		        String errorCode = RegisterConvictedPresentErrorCodes.C007_00018.getCode();
 		        String[] errorDetails = {"failed while stopping the fingerprint capturing!"};
 		        Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails);
 		    }
@@ -941,11 +1150,12 @@ public class PalmCapturingFxController extends WizardStepFxControllerBase
 			GuiUtils.showNode(ivCompleted, false);
 			GuiUtils.showNode(btnStartFingerprintCapturing, true);
 			
+			enableAllCheckboxes(true);
+			selectAllCheckboxes();
+			
 			palmUiComponentsMap.forEach((position, components) ->
 			{
 				components.getImageView().setImage(null);
-				components.getCheckBox().setDisable(false);
-				components.getCheckBox().setSelected(true);
 				components.getTitledPane().setActive(false);
 				components.getTitledPane().setCaptured(false);
 				components.getTitledPane().setValid(false);
@@ -953,7 +1163,7 @@ public class PalmCapturingFxController extends WizardStepFxControllerBase
 			});
 			
 			capturedPalms.clear();
-			currentPalmPosition = FingerPosition.RIGHT_LOWER_PALM.getPosition();
+			currentPalmPosition = FingerPosition.RIGHT_UPPER_PALM.getPosition();
 			activateFingerIndicatorsForNextCapturing(currentPalmPosition);
 			btnStartFingerprintCapturing.setText(resources.getString("button.captureRightLowerPalmFingerprint"));
 		}
@@ -964,7 +1174,36 @@ public class PalmCapturingFxController extends WizardStepFxControllerBase
 		showPalmFingerprint(position, palmWsq, palmImage);
 		GuiUtils.showNode(btnStartOverFingerprintCapturing, true);
 		
-		if(currentPalmPosition == FingerPosition.RIGHT_LOWER_PALM.getPosition())
+		if(currentPalmPosition == FingerPosition.RIGHT_UPPER_PALM.getPosition())
+		{
+			lblStatus.setText(
+					resources.getString("label.status.successfullyCapturedRightUpperPalmFingerprint"));
+			GuiUtils.showNode(btnStartFingerprintCapturing, true);
+			
+			currentPalmPosition = FingerPosition.RIGHT_LOWER_PALM.getPosition();
+			if(!cbRightLowerPalm.isSelected())
+			{
+				currentPalmPosition = FingerPosition.RIGHT_WRITERS_PALM.getPosition();
+				if(!cbRightWritersPalm.isSelected())
+				{
+					currentPalmPosition = FingerPosition.LEFT_UPPER_PALM.getPosition();
+					if(!cbLeftUpperPalmIndex.isSelected() && !cbLeftUpperPalmMiddle.isSelected() &&
+							!cbLeftUpperPalmRing.isSelected() && !cbLeftUpperPalmLittle.isSelected())
+					{
+						currentPalmPosition = FingerPosition.LEFT_LOWER_PALM.getPosition();
+						if(!cbLeftLowerPalm.isSelected())
+						{
+							currentPalmPosition = FingerPosition.LEFT_WRITERS_PALM.getPosition();
+							if(!cbLeftWritersPalm.isSelected())
+							{
+								currentPalmPosition = -1;
+							}
+						}
+					}
+				}
+			}
+		}
+		else if(currentPalmPosition == FingerPosition.RIGHT_LOWER_PALM.getPosition())
 		{
 			lblStatus.setText(
 					resources.getString("label.status.successfullyCapturedRightLowerPalmFingerprint"));
@@ -972,6 +1211,32 @@ public class PalmCapturingFxController extends WizardStepFxControllerBase
 			
 			currentPalmPosition = FingerPosition.RIGHT_WRITERS_PALM.getPosition();
 			if(!cbRightWritersPalm.isSelected())
+			{
+				currentPalmPosition = FingerPosition.LEFT_UPPER_PALM.getPosition();
+				if(!cbLeftUpperPalmIndex.isSelected() && !cbLeftUpperPalmMiddle.isSelected() &&
+						!cbLeftUpperPalmRing.isSelected() && !cbLeftUpperPalmLittle.isSelected())
+				{
+					currentPalmPosition = FingerPosition.LEFT_LOWER_PALM.getPosition();
+					if(!cbLeftLowerPalm.isSelected())
+					{
+						currentPalmPosition = FingerPosition.LEFT_WRITERS_PALM.getPosition();
+						if(!cbLeftWritersPalm.isSelected())
+						{
+							currentPalmPosition = -1;
+						}
+					}
+				}
+			}
+		}
+		else if(currentPalmPosition == FingerPosition.RIGHT_WRITERS_PALM.getPosition())
+		{
+			lblStatus.setText(
+					resources.getString("label.status.successfullyCapturedRightWritersPalmFingerprint"));
+			GuiUtils.showNode(btnStartFingerprintCapturing, true);
+			
+			currentPalmPosition = FingerPosition.LEFT_UPPER_PALM.getPosition();
+			if(!cbLeftUpperPalmIndex.isSelected() && !cbLeftUpperPalmMiddle.isSelected() &&
+					!cbLeftUpperPalmRing.isSelected() && !cbLeftUpperPalmLittle.isSelected())
 			{
 				currentPalmPosition = FingerPosition.LEFT_LOWER_PALM.getPosition();
 				if(!cbLeftLowerPalm.isSelected())
@@ -984,10 +1249,10 @@ public class PalmCapturingFxController extends WizardStepFxControllerBase
 				}
 			}
 		}
-		else if(currentPalmPosition == FingerPosition.RIGHT_WRITERS_PALM.getPosition())
+		else if(currentPalmPosition == FingerPosition.LEFT_UPPER_PALM.getPosition())
 		{
 			lblStatus.setText(
-					resources.getString("label.status.successfullyCapturedRightWritersPalmFingerprint"));
+					resources.getString("label.status.successfullyCapturedLeftUpperPalmFingerprint"));
 			GuiUtils.showNode(btnStartFingerprintCapturing, true);
 			
 			currentPalmPosition = FingerPosition.LEFT_LOWER_PALM.getPosition();
@@ -1025,13 +1290,21 @@ public class PalmCapturingFxController extends WizardStepFxControllerBase
 		
 		String buttonLabel = null;
 		
-		if(currentPalmPosition == FingerPosition.RIGHT_LOWER_PALM.getPosition())
+		if(currentPalmPosition == FingerPosition.RIGHT_UPPER_PALM.getPosition())
+		{
+			buttonLabel = resources.getString("button.captureRightUpperPalmFingerprint");
+		}
+		else if(currentPalmPosition == FingerPosition.RIGHT_LOWER_PALM.getPosition())
 		{
 			buttonLabel = resources.getString("button.captureRightLowerPalmFingerprint");
 		}
 		else if(currentPalmPosition == FingerPosition.RIGHT_WRITERS_PALM.getPosition())
 		{
 			buttonLabel = resources.getString("button.captureRightWritersPalmFingerprint");
+		}
+		else if(currentPalmPosition == FingerPosition.LEFT_UPPER_PALM.getPosition())
+		{
+			buttonLabel = resources.getString("button.captureLeftUpperPalmFingerprint");
 		}
 		else if(currentPalmPosition == FingerPosition.LEFT_LOWER_PALM.getPosition())
 		{
@@ -1079,7 +1352,20 @@ public class PalmCapturingFxController extends WizardStepFxControllerBase
 			
 			if(!capturedPalms.containsKey(position))
 			{
-				boolean selected = components.getCheckBox().isSelected();
+				boolean selected;
+				
+				if(position == FingerPosition.RIGHT_UPPER_PALM.getPosition())
+				{
+					selected = cbRightUpperPalmIndex.isSelected() || cbRightUpperPalmMiddle.isSelected() ||
+							   cbRightUpperPalmRing.isSelected()  || cbRightUpperPalmLittle.isSelected();
+				}
+				else if(position == FingerPosition.LEFT_UPPER_PALM.getPosition())
+				{
+					selected = cbLeftUpperPalmIndex.isSelected() || cbLeftUpperPalmMiddle.isSelected() ||
+							   cbLeftUpperPalmRing.isSelected()  || cbLeftUpperPalmLittle.isSelected();
+				}
+				else selected = components.getCheckBox().isSelected();
+				
 				components.getTitledPane().setActive(currentPalm && selected);
 			}
 		});
@@ -1163,5 +1449,55 @@ public class PalmCapturingFxController extends WizardStepFxControllerBase
 	        if(popOver.isShowing()) popOver.hide();
 	        else popOver.show(targetNode);
         });
+	}
+	
+	private void enableAllCheckboxes(boolean bEnabled)
+	{
+		cbRightUpperPalmIndex.setDisable(!bEnabled);
+		cbRightUpperPalmMiddle.setDisable(!bEnabled);
+		cbRightUpperPalmRing.setDisable(!bEnabled);
+		cbRightUpperPalmLittle.setDisable(!bEnabled);
+		cbRightLowerPalm.setDisable(!bEnabled);
+		cbRightWritersPalm.setDisable(!bEnabled);
+		cbLeftUpperPalmIndex.setDisable(!bEnabled);
+		cbLeftUpperPalmMiddle.setDisable(!bEnabled);
+		cbLeftUpperPalmRing.setDisable(!bEnabled);
+		cbLeftUpperPalmLittle.setDisable(!bEnabled);
+		cbLeftLowerPalm.setDisable(!bEnabled);
+		cbLeftWritersPalm.setDisable(!bEnabled);
+	}
+	
+	private void selectAllCheckboxes()
+	{
+		cbRightUpperPalmIndex.setSelected(true);
+		cbRightUpperPalmMiddle.setSelected(true);
+		cbRightUpperPalmRing.setSelected(true);
+		cbRightUpperPalmLittle.setSelected(true);
+		cbRightLowerPalm.setSelected(true);
+		cbRightWritersPalm.setSelected(true);
+		cbLeftUpperPalmIndex.setSelected(true);
+		cbLeftUpperPalmMiddle.setSelected(true);
+		cbLeftUpperPalmRing.setSelected(true);
+		cbLeftUpperPalmLittle.setSelected(true);
+		cbLeftLowerPalm.setSelected(true);
+		cbLeftWritersPalm.setSelected(true);
+	}
+	
+	private void hideAllSVGs()
+	{
+		GuiUtils.showNode(svgRightWritersPalm, false);
+		GuiUtils.showNode(svgRightLowerPalm, false);
+		GuiUtils.showNode(svgRightUpperPalm, false);
+		GuiUtils.showNode(svgRightUpperPalmIndex, false);
+		GuiUtils.showNode(svgRightUpperPalmMiddle, false);
+		GuiUtils.showNode(svgRightUpperPalmRing, false);
+		GuiUtils.showNode(svgRightUpperPalmLittle, false);
+		GuiUtils.showNode(svgLeftWritersPalm, false);
+		GuiUtils.showNode(svgLeftLowerPalm, false);
+		GuiUtils.showNode(svgLeftUpperPalm, false);
+		GuiUtils.showNode(svgLeftUpperPalmIndex, false);
+		GuiUtils.showNode(svgLeftUpperPalmMiddle, false);
+		GuiUtils.showNode(svgLeftUpperPalmRing, false);
+		GuiUtils.showNode(svgLeftUpperPalmLittle, false);
 	}
 }
