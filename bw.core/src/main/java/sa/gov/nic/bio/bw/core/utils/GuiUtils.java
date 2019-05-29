@@ -719,10 +719,14 @@ public class GuiUtils implements AppLogger
 		animation.play();
 	}
 	
-	public static void attachFingerprintImages(Map<Integer, String> fingerprintBase64Images, ImageView ivRightThumb,
+	public static void attachFingerprintImages(Map<Integer, String> fingerprintBase64Images,
+	                                           Map<Integer, String> palmBase64Images, ImageView ivRightThumb,
 	                                           ImageView ivRightIndex, ImageView ivRightMiddle, ImageView ivRightRing,
 	                                           ImageView ivRightLittle, ImageView ivLeftThumb, ImageView ivLeftIndex,
-	                                           ImageView ivLeftMiddle, ImageView ivLeftRing, ImageView ivLeftLittle)
+	                                           ImageView ivLeftMiddle, ImageView ivLeftRing, ImageView ivLeftLittle,
+	                                           ImageView ivRightUpperPalm, ImageView ivRightLowerPalm,
+	                                           ImageView ivRightWritersPalm, ImageView ivLeftUpperPalm,
+	                                           ImageView ivLeftLowerPalm, ImageView ivLeftWritersPalm)
 	{
 		if(fingerprintBase64Images == null) return;
 		
@@ -785,8 +789,55 @@ public class GuiUtils implements AppLogger
 		{
 			ImageView imageView = imageViewMap.get(position);
 		    String dialogTitle = dialogTitleMap.get(position);
+		    
+		    if(imageView == null || dialogTitle == null) return;
 		
 		    byte[] bytes = Base64.getDecoder().decode(fingerprintImage);
+		    imageView.setImage(new Image(new ByteArrayInputStream(bytes)));
+		    GuiUtils.attachImageDialog(Context.getCoreFxController(), imageView, dialogTitle,
+		                               resourceBundle.getString("label.contextMenu.showImage"), false);
+		});
+		
+		if(palmBase64Images == null) return;
+		
+		dialogTitleMap.clear();
+		
+		dialogTitleMap.put(FingerPosition.RIGHT_UPPER_PALM.getPosition(),
+		                   resourceBundle.getString("label.upperPalm") + " (" +
+				                   resourceBundle.getString("label.rightHand") + ")");
+		dialogTitleMap.put(FingerPosition.RIGHT_LOWER_PALM.getPosition(),
+		                   resourceBundle.getString("label.lowerPalm") + " (" +
+				                   resourceBundle.getString("label.rightHand") + ")");
+		dialogTitleMap.put(FingerPosition.RIGHT_WRITERS_PALM.getPosition(),
+		                   resourceBundle.getString("label.writersPalm") + " (" +
+				                   resourceBundle.getString("label.rightHand") + ")");
+		dialogTitleMap.put(FingerPosition.LEFT_UPPER_PALM.getPosition(),
+		                   resourceBundle.getString("label.upperPalm") + " (" +
+				                   resourceBundle.getString("label.leftHand") + ")");
+		dialogTitleMap.put(FingerPosition.LEFT_LOWER_PALM.getPosition(),
+		                   resourceBundle.getString("label.lowerPalm") + " (" +
+				                   resourceBundle.getString("label.leftHand") + ")");
+		dialogTitleMap.put(FingerPosition.LEFT_WRITERS_PALM.getPosition(),
+		                   resourceBundle.getString("label.writersPalm") + " (" +
+				                   resourceBundle.getString("label.leftHand") + ")");
+		
+		imageViewMap.clear();
+		
+		imageViewMap.put(FingerPosition.RIGHT_UPPER_PALM.getPosition(), ivRightUpperPalm);
+		imageViewMap.put(FingerPosition.RIGHT_LOWER_PALM.getPosition(), ivRightLowerPalm);
+		imageViewMap.put(FingerPosition.RIGHT_WRITERS_PALM.getPosition(), ivRightWritersPalm);
+		imageViewMap.put(FingerPosition.LEFT_UPPER_PALM.getPosition(), ivLeftUpperPalm);
+		imageViewMap.put(FingerPosition.LEFT_LOWER_PALM.getPosition(), ivLeftLowerPalm);
+		imageViewMap.put(FingerPosition.LEFT_WRITERS_PALM.getPosition(), ivLeftWritersPalm);
+		
+		palmBase64Images.forEach((position, palmImage) ->
+		{
+		    ImageView imageView = imageViewMap.get(position);
+		    String dialogTitle = dialogTitleMap.get(position);
+		
+		    if(imageView == null || dialogTitle == null) return;
+		
+		    byte[] bytes = Base64.getDecoder().decode(palmImage);
 		    imageView.setImage(new Image(new ByteArrayInputStream(bytes)));
 		    GuiUtils.attachImageDialog(Context.getCoreFxController(), imageView, dialogTitle,
 		                               resourceBundle.getString("label.contextMenu.showImage"), false);

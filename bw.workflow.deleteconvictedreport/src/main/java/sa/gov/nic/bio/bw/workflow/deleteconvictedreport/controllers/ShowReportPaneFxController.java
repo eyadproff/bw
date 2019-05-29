@@ -369,9 +369,11 @@ public class ShowReportPaneFxController extends WizardStepFxControllerBase
 		
 		if(fingerprintBase64Images != null)
 		{
-			GuiUtils.attachFingerprintImages(fingerprintBase64Images, ivRightThumb, ivRightIndex, ivRightMiddle,
-			                                 ivRightRing, ivRightLittle, ivLeftThumb, ivLeftIndex, ivLeftMiddle,
-			                                 ivLeftRing, ivLeftLittle);
+			GuiUtils.attachFingerprintImages(fingerprintBase64Images, null, ivRightThumb, ivRightIndex,
+			                                 ivRightMiddle, ivRightRing, ivRightLittle, ivLeftThumb, ivLeftIndex,
+			                                 ivLeftMiddle, ivLeftRing, ivLeftLittle, null,
+			                                 null, null, null,
+			                                 null, null);
 		}
 	}
 	

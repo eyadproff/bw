@@ -95,11 +95,17 @@ public class ConvictedReportNestedFxController extends BodyFxControllerBase
 	@FXML private ImageView ivRightMiddle;
 	@FXML private ImageView ivRightRing;
 	@FXML private ImageView ivRightLittle;
+	@FXML private ImageView ivRightUpperPalm;
+	@FXML private ImageView ivRightLowerPalm;
+	@FXML private ImageView ivRightWritersPalm;
 	@FXML private ImageView ivLeftThumb;
 	@FXML private ImageView ivLeftIndex;
 	@FXML private ImageView ivLeftMiddle;
 	@FXML private ImageView ivLeftRing;
 	@FXML private ImageView ivLeftLittle;
+	@FXML private ImageView ivLeftUpperPalm;
+	@FXML private ImageView ivLeftLowerPalm;
+	@FXML private ImageView ivLeftWritersPalm;
 	
 	@Override
 	protected void onAttachedToScene()
@@ -113,7 +119,8 @@ public class ConvictedReportNestedFxController extends BodyFxControllerBase
 	}
 	
 	public void populateConvictedReportData(ConvictedReport convictedReport,
-	                                        Map<Integer, String> fingerprintBase64Images)
+	                                        Map<Integer, String> fingerprintBase64Images,
+	                                        Map<Integer, String> palmBase64Images)
 	{
 		if(convictedReport == null) return;
 		
@@ -415,9 +422,10 @@ public class ConvictedReportNestedFxController extends BodyFxControllerBase
 		
 		if(fingerprintBase64Images != null)
 		{
-			GuiUtils.attachFingerprintImages(fingerprintBase64Images, ivRightThumb, ivRightIndex, ivRightMiddle,
-			                                 ivRightRing, ivRightLittle, ivLeftThumb, ivLeftIndex, ivLeftMiddle,
-			                                 ivLeftRing, ivLeftLittle);
+			GuiUtils.attachFingerprintImages(fingerprintBase64Images, palmBase64Images, ivRightThumb, ivRightIndex,
+			                                 ivRightMiddle, ivRightRing, ivRightLittle, ivLeftThumb, ivLeftIndex,
+			                                 ivLeftMiddle, ivLeftRing, ivLeftLittle, ivRightUpperPalm, ivRightLowerPalm,
+			                                 ivRightWritersPalm, ivLeftUpperPalm, ivLeftLowerPalm, ivLeftWritersPalm);
 		}
 	}
 }

@@ -60,7 +60,7 @@ import java.util.stream.Collectors;
 @WithLookups({PersonTypesLookup.class, DocumentTypesLookup.class, CountriesLookup.class, CrimeTypesLookup.class,
 			  BiometricsExchangeCrimeTypesLookup.class, BiometricsExchangePartiesLookup.class})
 @Wizard({@Step(iconId = "\\uf256", title = "wizard.fingerprintCapturing"),
-		@Step(iconId = "\\uf255", title = "wizard.fingerprintCapturing"),
+		@Step(iconId = "\\uf255", title = "wizard.palmCapturing"),
 		@Step(iconId = "camera", title = "wizard.facePhotoCapturing"),
 		@Step(iconId = "search", title = "wizard.inquiryByFingerprints"),
 		@Step(iconId = "database", title = "wizard.inquiryResult"),
@@ -305,6 +305,9 @@ public class RegisterConvictedReportPresentWorkflow extends WizardWorkflowBase
 				passData(FingerprintCapturingFxController.class,
 				         ReviewAndSubmitPaneFxController.class,
 				         "fingerprintBase64Images", "missingFingerprints");
+				
+				passData(PalmCapturingFxController.class, ReviewAndSubmitPaneFxController.class,
+				         "palmBase64Images");
 				
 				setData(ReviewAndSubmitPaneFxController.class, "fingerprintsSourceSystem",
 				        ConvictedReport.FingerprintsSource.LIVE_SCAN);

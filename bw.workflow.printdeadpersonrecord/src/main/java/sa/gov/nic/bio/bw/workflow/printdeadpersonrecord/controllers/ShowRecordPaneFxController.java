@@ -288,9 +288,11 @@ public class ShowRecordPaneFxController extends WizardStepFxControllerBase
 		
 		GuiUtils.attachFacePhotoBase64(ivPersonPhoto, facePhotoBase64, true, gender);
 		
-		GuiUtils.attachFingerprintImages(fingerprintBase64Images, ivRightThumb, ivRightIndex, ivRightMiddle,
-		                                 ivRightRing, ivRightLittle, ivLeftThumb, ivLeftIndex, ivLeftMiddle,
-		                                 ivLeftRing, ivLeftLittle);
+		GuiUtils.attachFingerprintImages(fingerprintBase64Images, null, ivRightThumb, ivRightIndex,
+		                                 ivRightMiddle, ivRightRing, ivRightLittle, ivLeftThumb, ivLeftIndex,
+		                                 ivLeftMiddle, ivLeftRing, ivLeftLittle, null,
+		                                 null, null, null,
+		                                 null, null);
 	}
 	
 	private void printDeadPersonRecordReport(JasperPrint jasperPrint)
