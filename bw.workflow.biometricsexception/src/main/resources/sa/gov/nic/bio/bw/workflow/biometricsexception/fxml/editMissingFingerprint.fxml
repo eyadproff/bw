@@ -161,11 +161,9 @@
                                                             <children>
                                                                 <Label contentDisplay="CENTER" prefHeight="20.0"
                                                                        prefWidth="86.0" text="%Thumb"/>
-                                                                <MenuButton fx:id="MenuRThumb" alignment="CENTER_RIGHT"
-                                                                            contentDisplay="RIGHT"
-                                                                            mnemonicParsing="false"
-                                                                            nodeOrientation="RIGHT_TO_LEFT"
-                                                                            text="%Cause"/>
+                                                                <ComboBox fx:id="CMenuRThumb"
+                                                                          nodeOrientation="RIGHT_TO_LEFT"
+                                                                          promptText="%Cause"/>
                                                                 <VBox fx:id="VOtherRThumb" visible="false">
                                                                     <children>
                                                                         <Label contentDisplay="CENTER" prefHeight="20.0"
@@ -219,11 +217,9 @@
                                                             <children>
                                                                 <Label contentDisplay="CENTER" prefHeight="20.0"
                                                                        prefWidth="86.0" text="%IndexFinger"/>
-                                                                <MenuButton fx:id="MenuRIndex" alignment="CENTER_RIGHT"
-                                                                            contentDisplay="RIGHT"
-                                                                            mnemonicParsing="false"
-                                                                            nodeOrientation="RIGHT_TO_LEFT"
-                                                                            text="%Cause"/>
+                                                                <ComboBox fx:id="CMenuRIndex"
+                                                                          nodeOrientation="RIGHT_TO_LEFT"
+                                                                          promptText="%Cause"/>
                                                                 <VBox fx:id="VOtherRIndex" visible="false">
                                                                     <children>
                                                                         <Label contentDisplay="CENTER" prefHeight="20.0"
@@ -277,11 +273,9 @@
                                                             <children>
                                                                 <Label contentDisplay="CENTER" prefHeight="20.0"
                                                                        prefWidth="86.0" text="%MiddleFinger"/>
-                                                                <MenuButton fx:id="MenuRMiddle" alignment="CENTER_RIGHT"
-                                                                            contentDisplay="RIGHT"
-                                                                            mnemonicParsing="false"
-                                                                            nodeOrientation="RIGHT_TO_LEFT"
-                                                                            text="%Cause"/>
+                                                                <ComboBox fx:id="CMenuRMiddle"
+                                                                          nodeOrientation="RIGHT_TO_LEFT"
+                                                                          promptText="%Cause"/>
                                                                 <VBox fx:id="VOtherRMiddle" visible="false">
                                                                     <children>
                                                                         <Label contentDisplay="CENTER" prefHeight="20.0"
@@ -335,11 +329,9 @@
                                                             <children>
                                                                 <Label contentDisplay="CENTER" prefHeight="20.0"
                                                                        prefWidth="86.0" text="%RingFinger"/>
-                                                                <MenuButton fx:id="MenuRRing" alignment="CENTER_RIGHT"
-                                                                            contentDisplay="RIGHT"
-                                                                            mnemonicParsing="false"
-                                                                            nodeOrientation="RIGHT_TO_LEFT"
-                                                                            text="%Cause"/>
+                                                                <ComboBox fx:id="CMenuRRing"
+                                                                          nodeOrientation="RIGHT_TO_LEFT"
+                                                                          promptText="%Cause"/>
                                                                 <VBox fx:id="VOtherRRing" visible="false">
                                                                     <children>
                                                                         <Label contentDisplay="CENTER" prefHeight="20.0"
@@ -393,11 +385,9 @@
                                                             <children>
                                                                 <Label contentDisplay="CENTER" prefHeight="20.0"
                                                                        prefWidth="86.0" text="%LittleFinger"/>
-                                                                <MenuButton fx:id="MenuRLittle" alignment="CENTER_RIGHT"
-                                                                            contentDisplay="RIGHT"
-                                                                            mnemonicParsing="false"
-                                                                            nodeOrientation="RIGHT_TO_LEFT"
-                                                                            text="%Cause"/>
+                                                                <ComboBox fx:id="CMenuRLittle"
+                                                                          nodeOrientation="RIGHT_TO_LEFT"
+                                                                          promptText="%Cause"/>
                                                                 <VBox fx:id="VOtherRLittle" visible="false">
                                                                     <children>
                                                                         <Label contentDisplay="CENTER" prefHeight="20.0"
@@ -469,11 +459,9 @@
                                                             <children>
                                                                 <Label contentDisplay="CENTER" prefHeight="20.0"
                                                                        prefWidth="86.0" text="%Thumb"/>
-                                                                <MenuButton fx:id="MenuLThumb" alignment="CENTER_RIGHT"
-                                                                            contentDisplay="RIGHT"
-                                                                            mnemonicParsing="false"
-                                                                            nodeOrientation="RIGHT_TO_LEFT"
-                                                                            text="%Cause"/>
+                                                                <ComboBox fx:id="CMenuLThumb"
+                                                                          nodeOrientation="RIGHT_TO_LEFT"
+                                                                          promptText="%Cause"/>
                                                                 <VBox fx:id="VOtherLThumb" visible="false">
                                                                     <children>
                                                                         <Label contentDisplay="CENTER" prefHeight="20.0"
@@ -527,11 +515,9 @@
                                                             <children>
                                                                 <Label contentDisplay="CENTER" prefHeight="20.0"
                                                                        prefWidth="86.0" text="%IndexFinger"/>
-                                                                <MenuButton fx:id="MenuLIndex" alignment="CENTER_RIGHT"
-                                                                            contentDisplay="RIGHT"
-                                                                            mnemonicParsing="false"
-                                                                            nodeOrientation="RIGHT_TO_LEFT"
-                                                                            text="%Cause"/>
+                                                                <ComboBox fx:id="CMenuLIndex"
+                                                                          nodeOrientation="RIGHT_TO_LEFT"
+                                                                          promptText="%Cause"/>
                                                                 <VBox fx:id="VOtherLIndex" visible="false">
                                                                     <children>
                                                                         <Label contentDisplay="CENTER" prefHeight="20.0"
@@ -585,11 +571,9 @@
                                                             <children>
                                                                 <Label contentDisplay="CENTER" prefHeight="20.0"
                                                                        prefWidth="86.0" text="%MiddleFinger"/>
-                                                                <MenuButton fx:id="MenuLMiddle" alignment="CENTER_RIGHT"
-                                                                            contentDisplay="RIGHT"
-                                                                            mnemonicParsing="false"
-                                                                            nodeOrientation="RIGHT_TO_LEFT"
-                                                                            text="%Cause"/>
+                                                                <ComboBox fx:id="CMenuLMiddle"
+                                                                          nodeOrientation="RIGHT_TO_LEFT"
+                                                                          promptText="%Cause"/>
                                                                 <VBox fx:id="VOtherLMiddle" visible="false">
                                                                     <children>
                                                                         <Label contentDisplay="CENTER" prefHeight="20.0"
@@ -643,11 +627,9 @@
                                                             <children>
                                                                 <Label contentDisplay="CENTER" prefHeight="20.0"
                                                                        prefWidth="86.0" text="%RingFinger"/>
-                                                                <MenuButton fx:id="MenuLRing" alignment="CENTER_RIGHT"
-                                                                            contentDisplay="RIGHT"
-                                                                            mnemonicParsing="false"
-                                                                            nodeOrientation="RIGHT_TO_LEFT"
-                                                                            text="%Cause"/>
+                                                                <ComboBox fx:id="CMenuLRing"
+                                                                          nodeOrientation="RIGHT_TO_LEFT"
+                                                                          promptText="%Cause"/>
                                                                 <VBox fx:id="VOtherLRing" visible="false">
                                                                     <children>
                                                                         <Label contentDisplay="CENTER" prefHeight="20.0"
@@ -701,11 +683,9 @@
                                                             <children>
                                                                 <Label contentDisplay="CENTER" prefHeight="20.0"
                                                                        prefWidth="86.0" text="%LittleFinger"/>
-                                                                <MenuButton fx:id="MenuLLittle" alignment="CENTER_RIGHT"
-                                                                            contentDisplay="RIGHT"
-                                                                            mnemonicParsing="false"
-                                                                            nodeOrientation="RIGHT_TO_LEFT"
-                                                                            text="%Cause"/>
+                                                                <ComboBox fx:id="CMenuLLittle"
+                                                                          nodeOrientation="RIGHT_TO_LEFT"
+                                                                          promptText="%Cause"/>
                                                                 <VBox fx:id="VOtherLLittle" visible="false">
                                                                     <children>
                                                                         <Label contentDisplay="CENTER" prefHeight="20.0"

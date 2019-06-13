@@ -1,7 +1,13 @@
 .titled-pane > .title {
     -fx-alignment: center;
 }
-.menu-item:focused{
+
+.menu-item{
+    -fx-min-width: 200;
+    -fx-pref-width: 200;
+}
+
+.menu-item:focused {
      -fx-background-color : SteelBlue ;
 }
 .context-menu {
