@@ -50,7 +50,7 @@ public class CancelLatentPaneFxController extends BodyFxControllerBase
 		String personId = txtPersonId.getText();
 		String latentId = txtLatentId.getText();
 		
-		if(success)
+		if(success != null && success)
 		{
 			String message = String.format(resources.getString("cancelLatent.success"), latentId, personId);
 			showSuccessNotification(message);

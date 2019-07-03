@@ -28,6 +28,8 @@ import sa.gov.nic.bio.bw.core.utils.FxmlFile;
 import sa.gov.nic.bio.bw.core.utils.GuiLanguage;
 import sa.gov.nic.bio.bw.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.core.utils.IdleMonitor;
+import sa.gov.nic.bio.bw.core.utils.RuntimeEnvironment;
+import sa.gov.nic.bio.bw.core.webservice.WebserviceManager;
 import sa.gov.nic.bio.bw.core.wizard.WizardPane;
 import sa.gov.nic.bio.bw.core.workflow.Signal;
 import sa.gov.nic.bio.bw.core.workflow.SignalType;
@@ -519,24 +521,39 @@ public class CoreFxController extends FxControllerBase implements IdleMonitorReg
 		Scene scene = new Scene(rootPane);
 		scene.addEventFilter(KeyEvent.KEY_PRESSED, event ->
 		{
-			if(AppConstants.SHOWING_MOCK_TASKS_KEY_COMBINATION.match(event))
+			RuntimeEnvironment runtimeEnvironment = Context.getRuntimeEnvironment();
+			if(runtimeEnvironment == RuntimeEnvironment.LOCAL || runtimeEnvironment == RuntimeEnvironment.DEV)
 			{
-				showMockTasksCheckBox();
-				event.consume();
+				if(AppConstants.SHOWING_MOCK_TASKS_KEY_COMBINATION.match(event))
+				{
+					showMockTasksCheckBox();
+					event.consume();
+				}
+				else if(AppConstants.SCENIC_VIEW_KEY_COMBINATION.match(event))
+				{
+					AppUtils.showScenicView(scene);
+					event.consume();
+				}
+				else if(AppConstants.CHANGING_SERVER_KEY_COMBINATION.match(event))
+				{
+					String[] urls = Context.getConfigManager().getProperty("dev.webservice.urls").split("[,\\s]+");
+					WebserviceManager webserviceManager = Context.getWebserviceManager();
+					String oldBaseUrl = webserviceManager.getServerBaseUrl();
+					String userChoice = AppUtils.showChangeServerDialog(oldBaseUrl, urls, true);
+					
+					if(userChoice != null)
+					{
+						Context.getWebserviceManager().changeServerBaseUrl(userChoice);
+						LOGGER.info("change the server base URL from (" + oldBaseUrl + ") to (" + userChoice + ")");
+					}
+					
+					event.consume();
+				}
 			}
-			else if(AppConstants.SCENIC_VIEW_KEY_COMBINATION.match(event))
-			{
-				AppUtils.showScenicView(scene);
-				event.consume();
-			}
-			else if(AppConstants.OPEN_APP_FOLDER_KEY_COMBINATION.match(event))
+			
+			if(AppConstants.OPEN_APP_FOLDER_KEY_COMBINATION.match(event))
 			{
 				AppUtils.openAppFolder();
-				event.consume();
-			}
-			else if(AppConstants.CHANGING_SERVER_KEY_COMBINATION.match(event))
-			{
-				AppUtils.showChangeServerDialog();
 				event.consume();
 			}
 		});

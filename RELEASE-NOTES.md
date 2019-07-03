@@ -11,6 +11,14 @@ VERSION SCHEMA: vYYYY.MM.#SEQ
 
 ---
 
+## v2019.07.1
+
+- ENH: Add the ability to configure custom server.
+- FIX: Fix the deploy task in gradle.
+- FIX: Fix NPE in CancelLatentWorkflow.
+
+---
+
 ## v2019.05.3
 
 - NEW: Add Delete-Criminal-Fingerprints workflow.

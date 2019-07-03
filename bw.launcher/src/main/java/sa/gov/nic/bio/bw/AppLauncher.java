@@ -3,7 +3,6 @@ package sa.gov.nic.bio.bw;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.NodeOrientation;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyEvent;
@@ -28,7 +27,6 @@ import sa.gov.nic.bio.bw.core.utils.AppConstants;
 import sa.gov.nic.bio.bw.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.core.utils.CombinedResourceBundle;
 import sa.gov.nic.bio.bw.core.utils.ConfigManager;
-import sa.gov.nic.bio.bw.core.utils.DialogUtils;
 import sa.gov.nic.bio.bw.core.utils.GuiLanguage;
 import sa.gov.nic.bio.bw.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.core.utils.RuntimeEnvironment;
@@ -56,7 +54,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -158,42 +155,15 @@ public class AppLauncher extends Application implements AppLogger
 		    return;
 	    }
 	    
-	    boolean httpProtocolIncluded = false;
-	    
 	    if(runtimeEnvironment == RuntimeEnvironment.LOCAL || runtimeEnvironment == RuntimeEnvironment.DEV)
 	    {
-		    httpProtocolIncluded = true;
 		    String[] urls = configManager.getProperty("dev.webservice.urls").split("[,\\s]+");
-	    	
-		    CountDownLatch latch = new CountDownLatch(1);
-		    String[] userChoice = new String[1];
+		    serverUrl = AppUtils.showChangeServerDialog(serverUrl, urls, false);
 		
-		    Platform.runLater(() ->
+		    if(serverUrl == null)
 		    {
-			    String dialogTitle = stringsBundle.getString("dialog.choice.title");
-			    String headerText = stringsBundle.getString("dialog.choice.selectServer.headerText");
-			    String buttonText = stringsBundle.getString("dialog.choice.selectServer.button");
-			
-			    userChoice[0] = DialogUtils.showChoiceDialog(null, null, dialogTitle,
-		                                         headerText, urls, null, buttonText, true,
-                                                guiLanguage.getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT);
-			    latch.countDown();
-		    });
-		
-		    try
-		    {
-			    latch.await(); // wait until the user choose a url
-			    serverUrl = userChoice[0];
-			    
-			    if(serverUrl == null)
-			    {
-			    	Platform.exit();
-			    	return;
-			    }
-		    }
-		    catch(InterruptedException e)
-		    {
-			    e.printStackTrace();
+			    Platform.exit();
+			    return;
 		    }
 		
 	    }
@@ -206,7 +176,7 @@ public class AppLauncher extends Application implements AppLogger
 		    return;
 	    }
 	    
-	    if(!httpProtocolIncluded) serverUrl = WebserviceManager.PROTOCOL + "://" + serverUrl;
+	    if(!serverUrl.contains("://")) serverUrl = WebserviceManager.PROTOCOL + "://" + serverUrl;
 	
 	    LOGGER.info("serverUrl = " + serverUrl);
 	
@@ -625,22 +595,37 @@ public class AppLauncher extends Application implements AppLogger
 	    Scene scene = new Scene(rootPane);
 	    scene.addEventFilter(KeyEvent.KEY_PRESSED, event ->
 	    {
-		    if(AppConstants.SCENIC_VIEW_KEY_COMBINATION.match(event))
+		    RuntimeEnvironment runtimeEnvironment = Context.getRuntimeEnvironment();
+		    if(runtimeEnvironment == RuntimeEnvironment.LOCAL || runtimeEnvironment == RuntimeEnvironment.DEV)
 		    {
-		    	AppUtils.showScenicView(scene);
-			    event.consume();
+			    if(AppConstants.SCENIC_VIEW_KEY_COMBINATION.match(event))
+			    {
+				    AppUtils.showScenicView(scene);
+				    event.consume();
+			    }
+			    else if(AppConstants.SHOWING_MOCK_TASKS_KEY_COMBINATION.match(event))
+			    {
+				    coreFxController.showMockTasksCheckBox();
+				    event.consume();
+			    }
+			    else if(AppConstants.CHANGING_SERVER_KEY_COMBINATION.match(event))
+			    {
+				    String[] urls = Context.getConfigManager().getProperty("dev.webservice.urls").split("[,\\s]+");
+				    WebserviceManager webserviceManager = Context.getWebserviceManager();
+				    String oldBaseUrl = webserviceManager.getServerBaseUrl();
+				    String userChoice = AppUtils.showChangeServerDialog(oldBaseUrl, urls, true);
+				    
+				    if(userChoice != null)
+				    {
+					    webserviceManager.changeServerBaseUrl(userChoice);
+					    LOGGER.info("change the server base URL from (" + oldBaseUrl + ") to (" + userChoice + ")");
+				    }
+				
+				    event.consume();
+			    }
 		    }
-		    else if(AppConstants.SHOWING_MOCK_TASKS_KEY_COMBINATION.match(event))
-		    {
-			    coreFxController.showMockTasksCheckBox();
-			    event.consume();
-		    }
-		    else if(AppConstants.CHANGING_SERVER_KEY_COMBINATION.match(event))
-		    {
-			    AppUtils.showChangeServerDialog();
-			    event.consume();
-		    }
-		    else if(AppConstants.OPEN_APP_FOLDER_KEY_COMBINATION.match(event))
+		    
+		    if(AppConstants.OPEN_APP_FOLDER_KEY_COMBINATION.match(event))
 		    {
 			    AppUtils.openAppFolder();
 			    event.consume();
