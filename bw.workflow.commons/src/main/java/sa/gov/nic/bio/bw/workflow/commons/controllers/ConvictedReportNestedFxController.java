@@ -10,7 +10,7 @@ import javafx.scene.paint.Color;
 import sa.gov.nic.bio.bw.core.Context;
 import sa.gov.nic.bio.bw.core.beans.Gender;
 import sa.gov.nic.bio.bw.core.beans.Name;
-import sa.gov.nic.bio.bw.core.controllers.BodyFxControllerBase;
+import sa.gov.nic.bio.bw.core.controllers.ContentFxControllerBase;
 import sa.gov.nic.bio.bw.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.core.utils.FxmlFile;
 import sa.gov.nic.bio.bw.core.utils.GuiLanguage;
@@ -33,7 +33,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @FxmlFile("convictedReportNestedPane.fxml")
-public class ConvictedReportNestedFxController extends BodyFxControllerBase
+public class ConvictedReportNestedFxController extends ContentFxControllerBase
 {
 	@FXML private TitledPane tpEnrollmentDetails;
 	@FXML private Pane paneImage;

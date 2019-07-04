@@ -1,6 +1,6 @@
 package sa.gov.nic.bio.bw.core.workflow;
 
-import sa.gov.nic.bio.bw.core.controllers.BodyFxControllerBase;
+import sa.gov.nic.bio.bw.core.controllers.ContentFxControllerBase;
 import sa.gov.nic.bio.bw.core.interfaces.AppLogger;
 import sa.gov.nic.bio.bw.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.core.utils.CoreErrorCodes;
@@ -34,6 +34,9 @@ public interface Workflow extends AppLogger
 	
 	default String getId(){return null;}
 	
+	void setTabIndex(int tabIndex);
+	int getTabIndex();
+	
 	/**
 	 * The body of the workflow.
 	 *
@@ -57,7 +60,7 @@ public interface Workflow extends AppLogger
 	 * @throws InterruptedException thrown upon interrupting the workflow thread
 	 * @throws Signal thrown in case the submitted user task is a signal
 	 */
-	void renderUiAndWaitForUserInput(Class<? extends BodyFxControllerBase> controllerClass) throws InterruptedException,
+	void renderUiAndWaitForUserInput(Class<? extends ContentFxControllerBase> controllerClass) throws InterruptedException,
 	                                                                                               Signal;
 	
 	void executeWorkflowTask(Class<? extends WorkflowTask> taskClass) throws InterruptedException, Signal;

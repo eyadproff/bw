@@ -115,12 +115,12 @@ public class FingerprintsSourceFxController extends WizardStepFxControllerBase
 		{
 		    if(newValue)
 		    {
-		        Context.getCoreFxController().getWizardPane().updateStep(1, fingerprintCapturingTitle,
+		        Context.getCoreFxController().getWizardPane(getTabIndex()).updateStep(1, fingerprintCapturingTitle,
 		                                                                 "\\uf256");
 		
 		        if(!minusOneStep)
 		        {
-		            Context.getCoreFxController().getWizardPane().removeStep(2);
+		            Context.getCoreFxController().getWizardPane(getTabIndex()).removeStep(2);
 		            minusOneStep = true;
 		        }
 		    }
@@ -129,19 +129,19 @@ public class FingerprintsSourceFxController extends WizardStepFxControllerBase
 		{
 			if(newValue)
 			{
-				Context.getCoreFxController().getWizardPane().updateStep(1, enterPersonIdTitle,
+				Context.getCoreFxController().getWizardPane(getTabIndex()).updateStep(1, enterPersonIdTitle,
 				                                                         "\\uf2bb");
 				
 				if(minusOneStep)
 				{
-					Context.getCoreFxController().getWizardPane().addStep(2,
+					Context.getCoreFxController().getWizardPane(getTabIndex()).addStep(2,
 					                                                         showPersonInformationTitle,
 					                                                         "\\uf2b9");
 					minusOneStep = false;
 				}
 				else
 				{
-					Context.getCoreFxController().getWizardPane().updateStep(2,
+					Context.getCoreFxController().getWizardPane(getTabIndex()).updateStep(2,
 					                                                         showPersonInformationTitle,
 					                                                         "\\uf2b9");
 				}
@@ -151,12 +151,12 @@ public class FingerprintsSourceFxController extends WizardStepFxControllerBase
 		{
 		    if(newValue)
 		    {
-		        Context.getCoreFxController().getWizardPane().updateStep(1, enterCivilBiometricsId,
+		        Context.getCoreFxController().getWizardPane(getTabIndex()).updateStep(1, enterCivilBiometricsId,
 		                                                                 "\\uf2bb");
 		
 		        if(!minusOneStep)
 		        {
-		            Context.getCoreFxController().getWizardPane().removeStep(2);
+		            Context.getCoreFxController().getWizardPane(getTabIndex()).removeStep(2);
 		            minusOneStep = true;
 		        }
 		    }
@@ -165,12 +165,12 @@ public class FingerprintsSourceFxController extends WizardStepFxControllerBase
 		{
 		    if(newValue)
 		    {
-		        Context.getCoreFxController().getWizardPane().updateStep(1, enterCriminalBiometricsId,
+		        Context.getCoreFxController().getWizardPane(getTabIndex()).updateStep(1, enterCriminalBiometricsId,
 		                                                                 "\\uf2bb");
 		
 		        if(!minusOneStep)
 		        {
-		            Context.getCoreFxController().getWizardPane().removeStep(2);
+		            Context.getCoreFxController().getWizardPane(getTabIndex()).removeStep(2);
 		            minusOneStep = true;
 		        }
 		    }
@@ -179,19 +179,19 @@ public class FingerprintsSourceFxController extends WizardStepFxControllerBase
 		{
 		    if(newValue)
 		    {
-			    Context.getCoreFxController().getWizardPane().updateStep(1, scanFingerprintCardTitle,
+			    Context.getCoreFxController().getWizardPane(getTabIndex()).updateStep(1, scanFingerprintCardTitle,
 			                                                             "file");
 		    	
 			    if(minusOneStep)
 			    {
-				    Context.getCoreFxController().getWizardPane().addStep(2,
+				    Context.getCoreFxController().getWizardPane(getTabIndex()).addStep(2,
 				                                                          specifyFingerprintCoordinatesTitle,
 				                                                          "\\uf247");
 				    minusOneStep = false;
 			    }
 			    else
 			    {
-				    Context.getCoreFxController().getWizardPane().updateStep(2,
+				    Context.getCoreFxController().getWizardPane(getTabIndex()).updateStep(2,
 				                                                             specifyFingerprintCoordinatesTitle,
 				                                                             "\\uf247");
 			    }
@@ -201,19 +201,19 @@ public class FingerprintsSourceFxController extends WizardStepFxControllerBase
 		{
 		    if(newValue)
 		    {
-		        Context.getCoreFxController().getWizardPane().updateStep(1, uploadNistFileTitle,
+		        Context.getCoreFxController().getWizardPane(getTabIndex()).updateStep(1, uploadNistFileTitle,
 		                                                                 "upload");
 			
 			    if(minusOneStep)
 			    {
-				    Context.getCoreFxController().getWizardPane().addStep(2,
+				    Context.getCoreFxController().getWizardPane(getTabIndex()).addStep(2,
 				                                                          showPersonInformationTitle,
 				                                                          "\\uf2b9");
 				    minusOneStep = false;
 			    }
 			    else
 			    {
-				    Context.getCoreFxController().getWizardPane().updateStep(2,
+				    Context.getCoreFxController().getWizardPane(getTabIndex()).updateStep(2,
 				                                                             showPersonInformationTitle,
 				                                                             "\\uf2b9");
 			    }

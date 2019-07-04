@@ -23,6 +23,7 @@ import sa.gov.nic.bio.bw.core.Context;
 import sa.gov.nic.bio.bw.core.beans.MenuItem;
 import sa.gov.nic.bio.bw.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.core.utils.CombinedResourceBundle;
+import sa.gov.nic.bio.bw.core.workflow.Workflow;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -40,6 +41,7 @@ public class MenuPaneFxController extends RegionFxControllerBase
 
 	private MenuItem selectedMenu;
 	private ListView<MenuItem> selectedListView;
+	private boolean programmaticallySelected = false;
 	
 	@Override
 	protected void initialize()
@@ -263,7 +265,7 @@ public class MenuPaneFxController extends RegionFxControllerBase
 	
 	private void onSelectMenu(MenuItem menuItem)
 	{
-		Context.getCoreFxController().goToMenu(menuItem.getWorkflowClass());
+		if(!programmaticallySelected) Context.getCoreFxController().goToMenu(menuItem.getWorkflowClass());
 	}
 	
 	public void clearSelection()
@@ -283,5 +285,41 @@ public class MenuPaneFxController extends RegionFxControllerBase
 	public boolean isMenuEmpty()
 	{
 		return accordion.getPanes().isEmpty();
+	}
+	
+	public void selectMenu(Class<? extends Workflow> menuWorkflowClass)
+	{
+		programmaticallySelected = true;
+		clearSelection();
+		
+		for(TitledPane titledPane : accordion.getPanes())
+		{
+			if(menuWorkflowClass == null)
+			{
+				titledPane.setExpanded(false);
+				continue;
+			}
+			
+			@SuppressWarnings("unchecked")
+			ListView<MenuItem> listView = (ListView<MenuItem>) titledPane.getContent();
+			
+			for(MenuItem menuItem : listView.getItems())
+			{
+				if(menuItem.getWorkflowClass() == menuWorkflowClass)
+				{
+					selectedMenu = menuItem;
+					selectedListView = listView;
+					
+					selectedMenu.setSelected(true);
+					selectedListView.getSelectionModel().select(selectedMenu);
+					accordion.setExpandedPane(titledPane);
+					programmaticallySelected = false;
+					
+					return;
+				}
+			}
+		}
+		
+		programmaticallySelected = false;
 	}
 }

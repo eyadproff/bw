@@ -34,8 +34,8 @@ public class ConfirmImageFxController extends WizardStepFxControllerBase
 	@Override
 	protected void onAttachedToScene()
 	{
-		imagePane.maxWidthProperty().bind(Context.getCoreFxController().getBodyPane().widthProperty());
-		imagePane.maxHeightProperty().bind(Context.getCoreFxController().getBodyPane().heightProperty());
+		imagePane.maxWidthProperty().bind(Context.getCoreFxController().getBodyPane(getTabIndex()).widthProperty());
+		imagePane.maxHeightProperty().bind(Context.getCoreFxController().getBodyPane(getTabIndex()).heightProperty());
 		ivFinalImage.fitWidthProperty().bind(imagePane.widthProperty().divide(1.8));
 		ivFinalImage.fitHeightProperty().bind(imagePane.heightProperty().divide(1.8));
 		
@@ -46,7 +46,7 @@ public class ConfirmImageFxController extends WizardStepFxControllerBase
 				Platform.runLater(() ->
 				{
 				    imagePane.autosize();
-				    Context.getCoreFxController().getBodyPane().autosize();
+				    Context.getCoreFxController().getBodyPane(getTabIndex()).autosize();
 				});
 			}
 		};
@@ -71,7 +71,7 @@ public class ConfirmImageFxController extends WizardStepFxControllerBase
 		{
 			String errorCode = SearchByFaceImageErrorCodes.C005_00001.getCode();
 			String[] errorDetails = {"Failed to convert image to Base64-encoded representation!"};
-			Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails);
+			Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails, getTabIndex());
 			btnConfirmImage.setDisable(true);
 		}
 		

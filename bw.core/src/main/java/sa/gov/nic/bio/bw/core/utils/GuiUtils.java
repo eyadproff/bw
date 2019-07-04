@@ -23,8 +23,10 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.NodeOrientation;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.SnapshotParameters;
+import javafx.scene.control.Accordion;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
@@ -38,10 +40,12 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.Pagination;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.SplitPane;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TitledPane;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.skin.ComboBoxListViewSkin;
 import javafx.scene.effect.GaussianBlur;
@@ -78,8 +82,7 @@ import sa.gov.nic.bio.bw.core.interfaces.AppLogger;
 import sa.gov.nic.bio.bw.core.interfaces.LocalizedText;
 
 import javax.imageio.ImageIO;
-import java.awt.Color;
-import java.awt.Graphics2D;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -199,7 +202,7 @@ public class GuiUtils implements AppLogger
 				
 				Context.getScheduledExecutorService().shutdownNow();
 				Context.getExecutorService().shutdownNow();
-				Context.getWorkflowManager().interruptCoreWorkflow();
+				Context.getWorkflowManager().interruptAllCoreWorkflows();
 				
 				Platform.exit();
 				LOGGER.info("The application is exited!");
@@ -1033,5 +1036,93 @@ public class GuiUtils implements AppLogger
 	public static BooleanBinding textFieldBlankBinding(TextField textField)
 	{
 		return Bindings.createBooleanBinding(() -> textField.getText().strip().isBlank(), textField.textProperty());
+	}
+	
+	/**
+	 * Find a {@link Node} within a {@link Parent} by it's ID.
+	 * <p>
+	 * This might not cover all possible {@link Parent} implementations but it's
+	 * a decent crack. {@link Control} implementations all seem to have their
+	 * own method of storing children along side the usual
+	 * {@link Parent#getChildrenUnmodifiable()} method.
+	 *
+	 * @param parent
+	 *            The parent of the node you're looking for.
+	 * @param id
+	 *            The ID of node you're looking for.
+	 * @return The {@link Node} with a matching ID or {@code null}.
+	 */
+	@SuppressWarnings("unchecked")
+	public static <T> T getChildByID(Parent parent, String id)
+	{
+		String nodeId;
+		
+		if(parent instanceof TitledPane) {
+			TitledPane titledPane = (TitledPane) parent;
+			Node content = titledPane.getContent();
+			nodeId = content.idProperty().get();
+			
+			if(nodeId != null && nodeId.equals(id)) {
+				return (T) content;
+			}
+			
+			if(content instanceof Parent) {
+				T child = getChildByID((Parent) content, id);
+				
+				if(child != null) {
+					return child;
+				}
+			}
+		}
+		
+		for (Node node : parent.getChildrenUnmodifiable()) {
+			nodeId = node.idProperty().get();
+			if(nodeId != null && nodeId.equals(id)) {
+				return (T) node;
+			}
+			
+			if(node instanceof SplitPane) {
+				SplitPane splitPane = (SplitPane) node;
+				for (Node itemNode : splitPane.getItems()) {
+					nodeId = itemNode.idProperty().get();
+					
+					if(nodeId != null && nodeId.equals(id)) {
+						return (T) itemNode;
+					}
+					
+					if(itemNode instanceof Parent) {
+						T child = getChildByID((Parent) itemNode, id);
+						
+						if(child != null) {
+							return child;
+						}
+					}
+				}
+			}
+			else if(node instanceof Accordion) {
+				Accordion accordion = (Accordion) node;
+				for (TitledPane titledPane : accordion.getPanes()) {
+					nodeId = titledPane.idProperty().get();
+					
+					if(nodeId != null && nodeId.equals(id)) {
+						return (T) titledPane;
+					}
+					
+					T child = getChildByID(titledPane, id);
+					
+					if(child != null) {
+						return child;
+					}
+				}
+			}
+			else   if(node instanceof Parent) {
+				T child = getChildByID((Parent) node, id);
+				
+				if(child != null) {
+					return child;
+				}
+			}
+		}
+		return null;
 	}
 }

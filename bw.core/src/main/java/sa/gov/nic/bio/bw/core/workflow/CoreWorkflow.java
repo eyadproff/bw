@@ -4,7 +4,6 @@ import sa.gov.nic.bio.bw.core.Context;
 import sa.gov.nic.bio.bw.core.tasks.LogoutTask;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
@@ -13,6 +12,11 @@ import java.util.stream.Collectors;
 public class CoreWorkflow extends WorkflowBase
 {
 	private boolean loggedIn = false;
+	
+	public void setLoggedIn(boolean loggedIn)
+	{
+		this.loggedIn = loggedIn;
+	}
 	
 	@Override
 	public void onProcess(Map<String, String> configurations) throws InterruptedException
@@ -29,33 +33,34 @@ public class CoreWorkflow extends WorkflowBase
 				if(loggedIn) throw new Signal(SignalType.SUCCESS_LOGIN);
 				
 				Workflow loginWorkflow = workflowMap.get(KEY_WORKFLOW_LOGIN).get(0);
-				Context.getWorkflowManager().setCurrentWorkflow(loginWorkflow);
+				loginWorkflow.setTabIndex(getTabIndex());
+				Context.getWorkflowManager().setCurrentWorkflow(loginWorkflow, getTabIndex());
+				
 				loginWorkflow.onProcess(null);
 			}
 			catch(Signal loginSignal)
 			{
-				Context.getWorkflowManager().getUserTasks().clear();
+				Context.getWorkflowManager().getUserTasks(getTabIndex()).clear();
 				SignalType loginSignalType = loginSignal.getSignalType();
 				
 				switch(loginSignalType)
 				{
 					case SUCCESS_LOGIN:
 					{
-						boolean showErrorOnHome = loggedIn;
 						loggedIn = true;
-						
-						Map<String, String> homeConfigurations = new HashMap<>();
-						homeConfigurations.put("showErrorOnHome", String.valueOf(showErrorOnHome));
 						
 						try
 						{
 							Workflow homeWorkflow = workflowMap.get(KEY_WORKFLOW_HOME).get(0);
-							Context.getWorkflowManager().setCurrentWorkflow(homeWorkflow);
-							homeWorkflow.onProcess(homeConfigurations);
+							homeWorkflow.setTabIndex(getTabIndex());
+							Context.getWorkflowManager().setCurrentWorkflow(homeWorkflow, getTabIndex());
+							homeWorkflow.onProcess(null);
 						}
 						catch(Signal homeSignal)
 						{
-							Context.getWorkflowManager().getUserTasks().clear();
+							if(homeSignal.getSignalType() == SignalType.EXIT_WORKFLOW) return;
+							
+							Context.getWorkflowManager().getUserTasks(getTabIndex()).clear();
 							SignalType homeSignalType = homeSignal.getSignalType();
 							
 							switch(homeSignalType)
@@ -64,19 +69,19 @@ public class CoreWorkflow extends WorkflowBase
 								{
 									loggedIn = false;
 									Context.getExecutorService().submit(new LogoutTask());
-									Context.getWorkflowManager().setCurrentWorkflow(null);
+									Context.getWorkflowManager().setCurrentWorkflow(null, getTabIndex());
 									break;
 								}
 								case INVALID_STATE:
 								{
-									handleInvalidStateSignal(homeSignal.getPayload());
-									Context.getWorkflowManager().setCurrentWorkflow(null);
+									handleInvalidStateSignal(homeSignal.getPayload(), getTabIndex());
+									Context.getWorkflowManager().setCurrentWorkflow(null, getTabIndex());
 									break;
 								}
 								default: // wrong signal
 								{
 									LOGGER.severe("homeSignalType = " + homeSignalType);
-									Context.getWorkflowManager().setCurrentWorkflow(null);
+									Context.getWorkflowManager().setCurrentWorkflow(null, getTabIndex());
 								}
 							}
 						}
@@ -84,14 +89,14 @@ public class CoreWorkflow extends WorkflowBase
 					}
 					case INVALID_STATE:
 					{
-						handleInvalidStateSignal(loginSignal.getPayload());
-						Context.getWorkflowManager().setCurrentWorkflow(null);
+						handleInvalidStateSignal(loginSignal.getPayload(), getTabIndex());
+						Context.getWorkflowManager().setCurrentWorkflow(null, getTabIndex());
 						break;
 					}
 					default: // wrong signal
 					{
 						LOGGER.severe("loginSignalType = " + loginSignalType);
-						Context.getWorkflowManager().setCurrentWorkflow(null);
+						Context.getWorkflowManager().setCurrentWorkflow(null, getTabIndex());
 					}
 				}
 				
@@ -99,11 +104,11 @@ public class CoreWorkflow extends WorkflowBase
 		}
 	}
 	
-	private static void handleInvalidStateSignal(Map<String, Object> payload)
+	private static void handleInvalidStateSignal(Map<String, Object> payload, int tabIndex)
 	{
 		String errorCode = (String) payload.get(KEY_ERROR_CODE);
 		Exception exception = (Exception) payload.get(KEY_EXCEPTION);
 		String[] errorDetails = (String[]) payload.get(KEY_ERROR_DETAILS);
-		Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails);
+		Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails, tabIndex);
 	}
 }

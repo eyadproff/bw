@@ -32,27 +32,8 @@
                     </ImageView>
                 </graphic>
                 <content>
-                    <TabPane fx:id="tpMain" styleClass="floating, main-tab-pane, hidden-tab-header" tabClosingPolicy="ALL_TABS">
-                        <Tab text="%tab.mainTab" closable="false">
-                            <NotificationPane fx:id="notificationPane">
-                                <content>
-                                    <StackPane>
-                                        <VBox minWidth="0.0" minHeight="430.0">
-                                            <VBox fx:id="wizardPaneContainer"/>
-                                            <BorderPane fx:id="bodyPane" VBox.vgrow="ALWAYS">
-                                                <center>
-                                                    <!-- default place holder -->
-                                                    <ProgressIndicator maxHeight="25.0" maxWidth="25.0"/>
-                                                </center>
-                                            </BorderPane>
-                                        </VBox>
-                                        <StackPane fx:id="paneTransitionOverlay" styleClass="background-overlay-light" visible="false">
-                                            <ProgressIndicator maxHeight="25.0" maxWidth="25.0"/>
-                                        </StackPane>
-                                    </StackPane>
-                                </content>
-                            </NotificationPane>
-                        </Tab>
+                    <TabPane fx:id="tabPane" styleClass="floating, main-tab-pane, hidden-tab-header" tabClosingPolicy="ALL_TABS">
+                        <Tab fx:id="tabMain" text="%tab.mainTab" closable="false"/>
                         <Tab closable="false">
                             <graphic>
                                 <Glyph fontFamily="FontAwesome" icon="plus"/>

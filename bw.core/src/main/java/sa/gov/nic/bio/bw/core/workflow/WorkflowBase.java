@@ -1,7 +1,7 @@
 package sa.gov.nic.bio.bw.core.workflow;
 
 import sa.gov.nic.bio.bw.core.Context;
-import sa.gov.nic.bio.bw.core.controllers.BodyFxControllerBase;
+import sa.gov.nic.bio.bw.core.controllers.ContentFxControllerBase;
 import sa.gov.nic.bio.bw.core.interfaces.AppLogger;
 import sa.gov.nic.bio.bw.core.utils.CoreErrorCodes;
 
@@ -19,12 +19,25 @@ import java.util.concurrent.Future;
  */
 public abstract class WorkflowBase implements Workflow, AppLogger
 {
+	private int tabIndex;
 	private Future<?> future;
 	private Signal interruptionSignal;
 	
 	Long tcn;
 	Map<String, Object> uiInputData = new HashMap<>();
 	boolean renderedAtLeastOnceInTheStep = false;
+	
+	@Override
+	public void setTabIndex(int tabIndex)
+	{
+		this.tabIndex = tabIndex;
+	}
+	
+	@Override
+	public int getTabIndex()
+	{
+		return tabIndex;
+	}
 	
 	public Integer getWorkflowId()
 	{
@@ -54,7 +67,7 @@ public abstract class WorkflowBase implements Workflow, AppLogger
 		{
 			try
 			{
-				Context.getWorkflowManager().getUserTasks().put(uiDataMap);
+				Context.getWorkflowManager().getUserTasks(getTabIndex()).put(uiDataMap);
 			}
 			catch(InterruptedException e) // most likely the executor service is shutting down
 			{
@@ -71,7 +84,7 @@ public abstract class WorkflowBase implements Workflow, AppLogger
 	 * @throws InterruptedException thrown upon interrupting the workflow thread
 	 * @throws Signal thrown in case the submitted user task is a signal
 	 */
-	public void renderUiAndWaitForUserInput(Class<? extends BodyFxControllerBase> controllerClass)
+	public void renderUiAndWaitForUserInput(Class<? extends ContentFxControllerBase> controllerClass)
 																					throws InterruptedException, Signal
 	{
 		if(interruptionSignal != null) throwInterruptionSignal();
@@ -81,15 +94,15 @@ public abstract class WorkflowBase implements Workflow, AppLogger
 		if(workflowId != null) uiInputData.put(controllerClass.getName() + "#workflowId", workflowId);
 		if(tcn != null) uiInputData.put(controllerClass.getName() + "#workflowTcn", tcn);
 		
-		BodyFxControllerBase currentBodyFxController = Context.getWorkflowManager().getFormRenderer()
-																			.renderForm(controllerClass, uiInputData);
+		ContentFxControllerBase currentBodyFxController = Context.getWorkflowManager().getFormRenderer()
+		                                                         .renderForm(controllerClass, uiInputData, tabIndex);
 		renderedAtLeastOnceInTheStep = true;
 		
 		Map<String, Object> uiDataMap;
 		
 		try
 		{
-			uiDataMap = Context.getWorkflowManager().getUserTasks().take();
+			uiDataMap = Context.getWorkflowManager().getUserTasks(getTabIndex()).take();
 		}
 		catch(InterruptedException e)
 		{

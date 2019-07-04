@@ -129,7 +129,7 @@ public class ScanFingerprintCardPaneFxController extends WizardStepFxControllerB
 		        {
 			        String[] errorDetails = {"failed to scan the ten-print card!"};
 			        Context.getCoreFxController().showErrorDialog(String.valueOf(result.getReturnCode()),
-			                                                      null, errorDetails);
+			                                                      null, errorDetails, getTabIndex());
 			        
 		        }
 		    }
@@ -138,7 +138,7 @@ public class ScanFingerprintCardPaneFxController extends WizardStepFxControllerB
 		        LOGGER.severe("failed to receive a response for scanning the ten-print card!");
 		        String[] errorDetails = {"failed to receive a response for scanning the ten-print card!"};
 		        Context.getCoreFxController().showErrorDialog(taskResponse.getErrorCode(),
-		                                                      taskResponse.getException(), errorDetails);
+		                                                      taskResponse.getException(), errorDetails, getTabIndex());
 		    }
 		});
 		task.setOnFailed(e ->
@@ -163,7 +163,7 @@ public class ScanFingerprintCardPaneFxController extends WizardStepFxControllerB
 		
 		        String errorCode = FingerprintsInquiryErrorCodes.C013_00001.getCode();
 		        String[] errorDetails = {"failed to scan the ten-print card!"};
-		        Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails);
+		        Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails, getTabIndex());
 		    }
 		});
 		

@@ -34,7 +34,7 @@ import sa.gov.nic.bio.biokit.face.beans.CaptureFaceResponse;
 import sa.gov.nic.bio.biokit.face.beans.GetIcaoImageResponse;
 import sa.gov.nic.bio.bw.commons.resources.fxml.CommonFXML;
 import sa.gov.nic.bio.bw.core.Context;
-import sa.gov.nic.bio.bw.core.controllers.BodyFxControllerBase;
+import sa.gov.nic.bio.bw.core.controllers.ContentFxControllerBase;
 import sa.gov.nic.bio.bw.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.core.utils.FxmlFile;
 import sa.gov.nic.bio.bw.core.utils.GuiUtils;
@@ -51,7 +51,7 @@ import java.net.URL;
 import java.util.Map;
 
 @FxmlFile("photoQualityCheckDialog.fxml")
-public class PhotoQualityCheckDialogFxController extends BodyFxControllerBase
+public class PhotoQualityCheckDialogFxController extends ContentFxControllerBase
 {
 	@FXML private Pane buttonPane;
 	@FXML private AutoScalingStackPane subScenePane;
@@ -69,7 +69,7 @@ public class PhotoQualityCheckDialogFxController extends BodyFxControllerBase
 	@FXML private Button btnClose;
 	@FXML private Dialog<ButtonType> dialog;
 	
-	private BodyFxControllerBase hostController;
+	private ContentFxControllerBase hostController;
 	private Image inputPhotoImage;
 	private Image outputPhotoImage;
 	
@@ -79,7 +79,7 @@ public class PhotoQualityCheckDialogFxController extends BodyFxControllerBase
 	
 	private Translate pivotBase = new Translate(0.0, 0.0, -1.0);
 	
-	public void setHostController(BodyFxControllerBase hostController){this.hostController = hostController;}
+	public void setHostController(ContentFxControllerBase hostController){this.hostController = hostController;}
 	public void setInputPhotoImage(Image inputPhotoImage){this.inputPhotoImage = inputPhotoImage;}
 	public Image getOutputPhotoImage(){return outputPhotoImage;}
 	
@@ -99,7 +99,7 @@ public class PhotoQualityCheckDialogFxController extends BodyFxControllerBase
 				    {
 					    String errorCode = CommonsErrorCodes.C008_00017.getCode();
 					    String[] errorDetails = {"failed to load the face 3D model fxml!"};
-					    Context.getCoreFxController().showErrorDialog(errorCode, null, errorDetails);
+					    Context.getCoreFxController().showErrorDialog(errorCode, null, errorDetails, getTabIndex());
 					
 					    return;
 				    }
@@ -108,7 +108,7 @@ public class PhotoQualityCheckDialogFxController extends BodyFxControllerBase
 			    {
 			        String errorCode = CommonsErrorCodes.C008_00001.getCode();
 			        String[] errorDetails = {"failed to load the face 3D model!"};
-			        Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails);
+			        Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails, getTabIndex());
 			
 			        return;
 			    }
@@ -142,7 +142,7 @@ public class PhotoQualityCheckDialogFxController extends BodyFxControllerBase
 				dialog.close();
 				String errorCode = RegisterConvictedPresentErrorCodes.C007_00009.getCode();
 				String[] errorDetails = {"failed to convert inputPhotoImage to base64"};
-				Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails);
+				Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails, getTabIndex());
 				return;
 			}
 			
@@ -305,13 +305,13 @@ public class PhotoQualityCheckDialogFxController extends BodyFxControllerBase
 					String errorCode = RegisterConvictedPresentErrorCodes.C007_00010.getCode();
 					String[] errorDetails = {"failed to execute the task PhotoQualityCheckWorkflowTask! signal = " +
 											signal};
-					Context.getCoreFxController().showErrorDialog(errorCode, throwable, errorDetails);
+					Context.getCoreFxController().showErrorDialog(errorCode, throwable, errorDetails, getTabIndex());
 				}
 				else
 				{
 					String errorCode = RegisterConvictedPresentErrorCodes.C007_00011.getCode();
 					String[] errorDetails = {"failed to execute the task PhotoQualityCheckWorkflowTask!"};
-					Context.getCoreFxController().showErrorDialog(errorCode, throwable, errorDetails);
+					Context.getCoreFxController().showErrorDialog(errorCode, throwable, errorDetails, getTabIndex());
 				}
 			});
 		});
