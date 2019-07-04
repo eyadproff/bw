@@ -8,12 +8,18 @@ import javafx.geometry.NodeOrientation;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 import org.controlsfx.control.NotificationPane;
+import org.controlsfx.glyphfont.FontAwesome;
 import sa.gov.nic.bio.bw.core.Context;
 import sa.gov.nic.bio.bw.core.beans.StateBundle;
 import sa.gov.nic.bio.bw.core.interfaces.IdleMonitorRegisterer;
@@ -48,6 +54,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.prefs.Preferences;
 
@@ -74,6 +81,7 @@ public class CoreFxController extends FxControllerBase implements IdleMonitorReg
 	@FXML private NotificationPane notificationPane;
 	@FXML private BorderPane bodyPane;
 	@FXML private Pane wizardPaneContainer;
+	@FXML private TabPane tpMain;
 	
 	private Stage stage;
 	private WizardPane wizardPane;
@@ -82,6 +90,7 @@ public class CoreFxController extends FxControllerBase implements IdleMonitorReg
 	private CombinedResourceBundle currentBodyResourceBundle;
 	private boolean newMenuSelected;
 	private boolean languageChanged;
+	private AtomicInteger extraTabsCount = new AtomicInteger();
 	
 	public void registerStage(Stage stage)
 	{
@@ -119,8 +128,56 @@ public class CoreFxController extends FxControllerBase implements IdleMonitorReg
 	@Override
 	protected void initialize()
 	{
-		headerPaneController.getMockTasksCheckBox().selectedProperty().bindBidirectional(
-														footerPaneController.getMockTasksCheckBox().selectedProperty());
+		tpMain.getSelectionModel().selectedIndexProperty().addListener((observableValue, oldValue, newValue) ->
+		{
+			int index = newValue.intValue();
+			boolean lastTab = tpMain.getTabs().size() - 1 == index;
+			Tab tab = tpMain.getTabs().get(index);
+			
+			if(lastTab)
+			{
+				tab.setText(resources.getString("tab.extraTab") + " " + AppUtils.localizeNumbers(String.valueOf(extraTabsCount.incrementAndGet())));
+				tab.setClosable(true);
+				tab.setGraphic(null);
+				
+				Tab newPlusTab = new Tab();
+				newPlusTab.setClosable(false);
+				newPlusTab.setGraphic(AppUtils.createFontAwesomeIcon(FontAwesome.Glyph.PLUS));
+				tpMain.getTabs().add(newPlusTab);
+				tpMain.getSelectionModel().select(tab);
+			}
+		});
+		
+		KeyCombination forwardNavigation = new KeyCodeCombination(KeyCode.TAB, KeyCombination.CONTROL_DOWN);
+		KeyCombination backwardNavigation = new KeyCodeCombination(KeyCode.TAB, KeyCombination.CONTROL_DOWN, KeyCombination.SHIFT_DOWN);
+		
+		tpMain.addEventFilter(KeyEvent.KEY_PRESSED, keyEvent ->
+		{
+			int selectedIndex = tpMain.getSelectionModel().getSelectedIndex();
+			
+			if(forwardNavigation.match(keyEvent))
+		    {
+		    	keyEvent.consume();
+			
+			    if(tpMain.getTabs().size() > 2)
+			    {
+				    if(selectedIndex == tpMain.getTabs().size() - 2) tpMain.getSelectionModel().select(0);
+				    else tpMain.getSelectionModel().selectNext();
+			    }
+		    }
+		    else if(backwardNavigation.match(keyEvent))
+		    {
+			    keyEvent.consume();
+			
+			    if(tpMain.getTabs().size() > 2)
+			    {
+				    if(selectedIndex == 0) tpMain.getSelectionModel().select(tpMain.getTabs().size() - 2);
+				    else tpMain.getSelectionModel().selectPrevious();
+			    }
+		    }
+		});
+		
+		headerPaneController.getMockTasksCheckBox().selectedProperty().bindBidirectional(footerPaneController.getMockTasksCheckBox().selectedProperty());
 		
 		Context.setCoreFxController(this);
 		
@@ -140,16 +197,26 @@ public class CoreFxController extends FxControllerBase implements IdleMonitorReg
 		}
 	}
 	
+	public void onLogin(boolean hasAccessToMenus)
+	{
+		if(hasAccessToMenus) tpMain.getStyleClass().remove("hidden-tab-header");
+	}
+	
 	public void prepareToLogout()
 	{
-		menuPaneController.clearSelection();
-		notificationPane.hide();
 		stopIdleMonitor();
 		Context.getWebserviceManager().cancelRefreshTokenScheduler();
 	}
 	
 	public void logout()
 	{
+		tpMain.getStyleClass().add("hidden-tab-header");
+		extraTabsCount.set(0);
+		var tabs = tpMain.getTabs();
+		tabs.retainAll(tabs.get(0), tabs.get(tabs.size() - 1));
+		menuPaneController.clearSelection();
+		notificationPane.hide();
+		
 		GuiUtils.showNode(menuPane, false);
 		GuiUtils.showNode(headerPane, false);
 		GuiUtils.showNode(devicesRunnerGadgetPane, false);

@@ -11,6 +11,12 @@ VERSION SCHEMA: vYYYY.MM.#SEQ
 
 ---
 
+## v2019.07.2
+
+- NEW: Add multiple tabs feature that supports multiple workflows at the same time.
+
+---
+
 ## v2019.07.1
 
 - ENH: Add the ability to configure custom server.

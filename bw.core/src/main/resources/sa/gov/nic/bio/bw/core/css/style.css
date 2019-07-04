@@ -332,3 +332,47 @@
 .required {
     -fx-control-inner-background: #ffffc6;
 }
+
+.main-tab-pane > .tab-header-area > .headers-region > .tab:top {
+    -fx-background-color: -fx-outer-border, -fx-inner-border, white;
+}
+.main-tab-pane > .tab-header-area > .headers-region > .tab:right {
+    -fx-background-color: -fx-outer-border, -fx-inner-border-bottomup, white;
+}
+.main-tab-pane > .tab-header-area > .headers-region > .tab:bottom {
+    -fx-background-color: -fx-outer-border, -fx-inner-border-bottomup, white;
+}
+.main-tab-pane > .tab-header-area > .headers-region > .tab:left {
+    -fx-background-color: -fx-outer-border, -fx-inner-border, white;
+}
+
+.main-tab-pane > .tab-content-area {
+    -fx-padding: 0;
+    -fx-background-color: white;
+    -fx-background-insets: 0;
+    -fx-background-radius: 0;
+    -fx-border-width: 0;
+    -fx-border-color: white;
+}
+
+.main-tab-pane.floating > .tab-content-area {
+    -fx-border-color: #23A967;
+    -fx-border-width: 1px 0 0 0;
+}
+
+.main-tab-pane.hidden-tab-header {
+    -fx-tab-max-height: 0;
+}
+
+.main-tab-pane.hidden-tab-header > .tab-header-area {
+    visibility: hidden;
+    -fx-padding: 0;
+}
+
+.main-tab-pane.hidden-tab-header > .tab-content-area {
+    -fx-border-width: 0;
+}
+
+.gray-background {
+    -fx-background-color: #f4f4f4;
+}

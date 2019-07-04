@@ -78,11 +78,15 @@ public class HomePaneFxController extends BodyFxControllerBase
 			
 			if(menus.isEmpty())
 			{
+				Context.getCoreFxController().onLogin(false);
+				
 				String errorCode = HomeErrorCodes.N004_00001.getCode();
 				reportNegativeTaskResponse(errorCode, null, null);
 			}
 			else
 			{
+				Context.getCoreFxController().onLogin(true);
+				
 				DevicesRunnerGadgetPaneFxController deviceManagerGadgetPaneController =
 						Context.getCoreFxController().getDeviceManagerGadgetPaneController();
 				if(!deviceManagerGadgetPaneController.isDevicesRunnerRunning())
