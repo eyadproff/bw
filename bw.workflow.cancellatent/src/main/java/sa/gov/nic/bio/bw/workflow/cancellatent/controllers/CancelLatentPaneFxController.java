@@ -8,14 +8,14 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TextField;
 import sa.gov.nic.bio.bw.core.Context;
-import sa.gov.nic.bio.bw.core.controllers.BodyFxControllerBase;
+import sa.gov.nic.bio.bw.core.controllers.ContentFxControllerBase;
 import sa.gov.nic.bio.bw.core.utils.FxmlFile;
 import sa.gov.nic.bio.bw.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.core.workflow.Input;
 import sa.gov.nic.bio.bw.core.workflow.Output;
 
 @FxmlFile("cancelLatent.fxml")
-public class CancelLatentPaneFxController extends BodyFxControllerBase
+public class CancelLatentPaneFxController extends ContentFxControllerBase
 {
 	@Input private Boolean success;
 	@Output private Long personId;

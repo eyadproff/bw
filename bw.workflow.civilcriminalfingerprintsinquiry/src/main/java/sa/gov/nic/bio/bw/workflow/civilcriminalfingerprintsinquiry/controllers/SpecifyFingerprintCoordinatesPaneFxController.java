@@ -303,7 +303,7 @@ public class SpecifyFingerprintCoordinatesPaneFxController extends WizardStepFxC
 		
 		    String errorCode = FingerprintsInquiryErrorCodes.C013_00002.getCode();
 		    String[] errorDetails = {"failed to convert the image to base64 encoding!"};
-		    Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails);
+		    Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails, getTabIndex());
 		});
 		Context.getExecutorService().submit(task);
 	}

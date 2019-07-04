@@ -1,7 +1,7 @@
 package sa.gov.nic.bio.bw.core.workflow;
 
 import sa.gov.nic.bio.bw.core.Context;
-import sa.gov.nic.bio.bw.core.controllers.BodyFxControllerBase;
+import sa.gov.nic.bio.bw.core.controllers.ContentFxControllerBase;
 import sa.gov.nic.bio.bw.core.controllers.LookupFxController;
 import sa.gov.nic.bio.bw.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.core.utils.CombinedResourceBundle;
@@ -55,7 +55,7 @@ public abstract class WizardWorkflowBase extends WorkflowBase implements Resourc
 	public void onProcess(Map<String, String> configurations) throws Signal
 	{
 		this.configurations = configurations;
-		Context.getWorkflowManager().getUserTasks().clear();
+		Context.getWorkflowManager().getUserTasks(getTabIndex()).clear();
 		
 		String moduleName = getClass().getModule().getName();
 		CombinedResourceBundle resourceBundle = Context.getStringsResourceBundle();
@@ -238,7 +238,7 @@ public abstract class WizardWorkflowBase extends WorkflowBase implements Resourc
 	}
 	
 	@Override
-	public void renderUiAndWaitForUserInput(Class<? extends BodyFxControllerBase> controllerClass)
+	public void renderUiAndWaitForUserInput(Class<? extends ContentFxControllerBase> controllerClass)
 																					throws InterruptedException, Signal
 	{
 		super.renderUiAndWaitForUserInput(controllerClass);

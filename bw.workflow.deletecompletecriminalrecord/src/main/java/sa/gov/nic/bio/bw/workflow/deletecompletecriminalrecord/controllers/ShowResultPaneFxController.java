@@ -178,7 +178,7 @@ public class ShowResultPaneFxController extends WizardStepFxControllerBase
 					
 					String errorCode = DeleteCompleteCriminalRecordErrorCodes.C015_00002.getCode();
 					String[] errorDetails = {"got invalid status on checking for fingerprints deletion!"};
-					Context.getCoreFxController().showErrorDialog(errorCode, null, errorDetails);
+					Context.getCoreFxController().showErrorDialog(errorCode, null, errorDetails, getTabIndex());
 				}
 			}
 			else

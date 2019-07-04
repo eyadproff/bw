@@ -1098,7 +1098,7 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 		        String[] errorDetails = {firstLivePreviewingResponse[0] ?
 				        "failed while starting the fingerprint capturing!" :
 				        "failed while capturing the fingerprints!"};
-		        Context.getCoreFxController().showErrorDialog(errorCode, taskResponse.getException(), errorDetails);
+		        Context.getCoreFxController().showErrorDialog(errorCode, taskResponse.getException(), errorDetails, getTabIndex());
 	        }
 	
 	        stopCapturingIsInProgress.set(false);
@@ -1143,7 +1143,7 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 				String[] errorDetails = {firstLivePreviewingResponse[0] ?
 										"failed while starting the fingerprint capturing!" :
 										"failed while capturing the fingerprints!"};
-				Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails);
+				Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails, getTabIndex());
 			}
 		});
 		
@@ -1254,7 +1254,7 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 				
 				String errorCode = CommonsErrorCodes.C008_00012.getCode();
 				String[] errorDetails = {"failed while finding duplicated fingerprints!"};
-				Context.getCoreFxController().showErrorDialog(errorCode, taskResponse.getException(), errorDetails);
+				Context.getCoreFxController().showErrorDialog(errorCode, taskResponse.getException(), errorDetails, getTabIndex());
 			}
 		});
 		findDuplicatesTask.setOnFailed(e ->
@@ -1288,7 +1288,7 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 				
 				String errorCode = CommonsErrorCodes.C008_00013.getCode();
 				String[] errorDetails = {"failed while finding duplicated fingerprints!"};
-				Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails);
+				Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails, getTabIndex());
 			}
 		});
 		
@@ -1359,7 +1359,7 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 		
 		        String errorCode = CommonsErrorCodes.C008_00014.getCode();
 		        String[] errorDetails = {"failed while stopping the fingerprint capturing!"};
-		        Context.getCoreFxController().showErrorDialog(errorCode, taskResponse.getException(), errorDetails);
+		        Context.getCoreFxController().showErrorDialog(errorCode, taskResponse.getException(), errorDetails, getTabIndex());
 		    }
 		});
 		task.setOnFailed(e ->
@@ -1395,7 +1395,7 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 		
 		        String errorCode = CommonsErrorCodes.C008_00015.getCode();
 		        String[] errorDetails = {"failed while stopping the fingerprint capturing!"};
-		        Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails);
+		        Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails, getTabIndex());
 		    }
 		});
 		

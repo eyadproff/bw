@@ -13,7 +13,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import javafx.util.StringConverter;
 import sa.gov.nic.bio.bw.core.Context;
-import sa.gov.nic.bio.bw.core.controllers.BodyFxControllerBase;
+import sa.gov.nic.bio.bw.core.controllers.ContentFxControllerBase;
 import sa.gov.nic.bio.bw.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.core.utils.FxmlFile;
 import sa.gov.nic.bio.bw.core.utils.GuiLanguage;
@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.Locale;
 
 @FxmlFile("cancelCriminal.fxml")
-public class CancelCriminalPaneFxController extends BodyFxControllerBase
+public class CancelCriminalPaneFxController extends ContentFxControllerBase
 {
 	public enum CancelCriminalMethod
 	{

@@ -51,17 +51,17 @@ public class ImageSourceFxController extends WizardStepFxControllerBase
 		String capturePhotoByCameraTitle = resources.getString("wizard.capturePhotoByCamera");
 		
 		// change the wizard-step-indicator upon changing the image source
-		int stepIndex = Context.getCoreFxController().getWizardPane().getStepIndexByTitle(uploadImageTitle);
-		if(stepIndex < 0) stepIndex = Context.getCoreFxController().getWizardPane()
+		int stepIndex = Context.getCoreFxController().getWizardPane(getTabIndex()).getStepIndexByTitle(uploadImageTitle);
+		if(stepIndex < 0) stepIndex = Context.getCoreFxController().getWizardPane(getTabIndex())
 				.getStepIndexByTitle(capturePhotoByCameraTitle);
 		
 		final int finalStepIndex = stepIndex;
 		
 		rbByUploadingImage.selectedProperty().addListener((observable, oldValue, newValue) ->
 		{
-		    if(newValue) Context.getCoreFxController().getWizardPane().updateStep(finalStepIndex, uploadImageTitle,
+		    if(newValue) Context.getCoreFxController().getWizardPane(getTabIndex()).updateStep(finalStepIndex, uploadImageTitle,
 		                                                                          "upload");
-		    else Context.getCoreFxController().getWizardPane().updateStep(finalStepIndex, capturePhotoByCameraTitle,
+		    else Context.getCoreFxController().getWizardPane(getTabIndex()).updateStep(finalStepIndex, capturePhotoByCameraTitle,
 		                                                                  "camera");
 		});
 		

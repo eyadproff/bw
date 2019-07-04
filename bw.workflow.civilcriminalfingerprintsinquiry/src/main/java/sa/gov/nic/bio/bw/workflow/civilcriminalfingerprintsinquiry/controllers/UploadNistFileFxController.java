@@ -89,7 +89,7 @@ public class UploadNistFileFxController extends WizardStepFxControllerBase
 			{
 				String errorCode = FingerprintsInquiryErrorCodes.C013_00003.getCode();
 				String[] errorDetails = {"Failed to retrieve the file size (" + selectedFile.getAbsolutePath() + ")!"};
-				Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails);
+				Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails, getTabIndex());
 			}
 			
 			filePath = selectedFile.getAbsolutePath();

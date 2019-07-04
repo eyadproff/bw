@@ -128,7 +128,7 @@ public class ShowRecordPaneFxController extends WizardStepFxControllerBase
 			
 			    String errorCode = PrintDeadPersonRecordPresentErrorCodes.C012_00001.getCode();
 			    String[] errorDetails = {"failed while building the dead person record report!"};
-			    Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails);
+			    Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails, getTabIndex());
 			});
 			Context.getExecutorService().submit(buildDeadPersonRecordReportTask);
 		}
@@ -169,7 +169,7 @@ public class ShowRecordPaneFxController extends WizardStepFxControllerBase
 				
 				        String errorCode = PrintDeadPersonRecordPresentErrorCodes.C012_00002.getCode();
 				        String[] errorDetails = {"failed while saving the dead person record report as PDF!"};
-				        Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails);
+				        Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails, getTabIndex());
 				    }
 				});
 				buildDeadPersonRecordReportTask.setOnFailed(event ->
@@ -183,7 +183,7 @@ public class ShowRecordPaneFxController extends WizardStepFxControllerBase
 				
 				    String errorCode = PrintDeadPersonRecordPresentErrorCodes.C012_00003.getCode();
 				    String[] errorDetails = {"failed while building the dead person record report!"};
-				    Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails);
+				    Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails, getTabIndex());
 				});
 				Context.getExecutorService().submit(buildDeadPersonRecordReportTask);
 			}
@@ -202,7 +202,7 @@ public class ShowRecordPaneFxController extends WizardStepFxControllerBase
 					
 					String errorCode = PrintDeadPersonRecordPresentErrorCodes.C012_00004.getCode();
 					String[] errorDetails = {"failed while saving the dead person record report as PDF!"};
-					Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails);
+					Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails, getTabIndex());
 				}
 			}
 		}
@@ -314,7 +314,7 @@ public class ShowRecordPaneFxController extends WizardStepFxControllerBase
 		
 		    String errorCode = PrintDeadPersonRecordPresentErrorCodes.C012_00005.getCode();
 		    String[] errorDetails = {"failed while printing the dead person record report!"};
-		    Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails);
+		    Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails, getTabIndex());
 		});
 		Context.getExecutorService().submit(printReportTask);
 	}
@@ -352,7 +352,7 @@ public class ShowRecordPaneFxController extends WizardStepFxControllerBase
 		
 		    String errorCode = PrintDeadPersonRecordPresentErrorCodes.C012_00006.getCode();
 		    String[] errorDetails = {"failed while saving the dead person record report as PDF!"};
-		    Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails);
+		    Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails, getTabIndex());
 		});
 		Context.getExecutorService().submit(printReportTaskAsPdfTask);
 	}

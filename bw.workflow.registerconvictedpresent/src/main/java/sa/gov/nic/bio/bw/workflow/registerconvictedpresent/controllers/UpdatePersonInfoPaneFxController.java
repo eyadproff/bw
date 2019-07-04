@@ -494,7 +494,7 @@ public class UpdatePersonInfoPaneFxController extends WizardStepFxControllerBase
 			{
 				String errorCode = RegisterConvictedPresentErrorCodes.C007_00007.getCode();
 				String[] errorDetails = {"Failed to retrieve the file size (" + selectedFile.getAbsolutePath() + ")!"};
-				Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails);
+				Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails, getTabIndex());
 			}
 			
 			Image photoImage = new Image("file:///" + selectedFile.getAbsolutePath());
@@ -512,7 +512,7 @@ public class UpdatePersonInfoPaneFxController extends WizardStepFxControllerBase
 				String errorCode = RegisterConvictedPresentErrorCodes.C007_00012.getCode();
 				String[] errorDetails = {"Failed to load (" + PhotoQualityCheckDialogFxController.class.getName() +
 										")!"};
-				Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails);
+				Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails, getTabIndex());
 				return;
 			}
 			
@@ -533,7 +533,7 @@ public class UpdatePersonInfoPaneFxController extends WizardStepFxControllerBase
 					{
 						String errorCode = RegisterConvictedPresentErrorCodes.C007_00013.getCode();
 						String[] errorDetails = {"Failed to convert the face photo to base64!"};
-						Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails);
+						Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails, getTabIndex());
 						return;
 					}
 					

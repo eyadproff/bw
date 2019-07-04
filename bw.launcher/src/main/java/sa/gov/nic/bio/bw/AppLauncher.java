@@ -91,7 +91,6 @@ public class AppLauncher extends Application implements AppLogger
 	private ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor(
 																								DAEMON_THREAD_FACTORY);
 	
-	private ResourceBundle stringsBundle;
 	private String windowTitle;
 	private Pane rootPane;
 	private Image appIcon;
@@ -122,6 +121,7 @@ public class AppLauncher extends Application implements AppLogger
 	    RuntimeEnvironment runtimeEnvironment = RuntimeEnvironment.byName(sRuntimeEnvironment);
 	    GuiLanguage guiLanguage = Context.getGuiLanguage();
 	
+	    ResourceBundle stringsBundle;
 	    try
 	    {
 		    stringsBundle = AppUtils.getCoreStringsResourceBundle(guiLanguage.getLocale());
