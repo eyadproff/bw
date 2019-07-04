@@ -136,9 +136,18 @@ public class CoreFxController extends FxControllerBase implements IdleMonitorReg
 			
 			if(lastTab)
 			{
-				tab.setText(resources.getString("tab.extraTab") + " " + AppUtils.localizeNumbers(String.valueOf(extraTabsCount.incrementAndGet())));
+				String tabTitle = resources.getString("tab.extraTab") + " " + AppUtils.localizeNumbers(String.valueOf(extraTabsCount.incrementAndGet()));
+				tab.setText(tabTitle);
 				tab.setClosable(true);
 				tab.setGraphic(null);
+				tab.setOnCloseRequest(event ->
+				{
+					String headerText = resources.getString("closingTab.confirmation.header");
+					String contentText = String.format(resources.getString("closingTab.confirmation.message"), tabTitle);
+					boolean confirmed = Context.getCoreFxController().showConfirmationDialogAndWait(headerText, contentText);
+					
+					if(!confirmed) event.consume();
+				});
 				
 				Tab newPlusTab = new Tab();
 				newPlusTab.setClosable(false);
@@ -148,9 +157,42 @@ public class CoreFxController extends FxControllerBase implements IdleMonitorReg
 			}
 		});
 		
+		KeyCombination newTabShortcut = new KeyCodeCombination(KeyCode.T, KeyCombination.CONTROL_DOWN);
+		
+		tpMain.addEventFilter(KeyEvent.KEY_PRESSED, keyEvent ->
+		{
+			if(newTabShortcut.match(keyEvent) && !tpMain.getStyleClass().contains("hidden-tab-header"))
+			{
+				tpMain.getSelectionModel().select(tpMain.getTabs().size() - 1);
+				keyEvent.consume();
+			}
+		});
+		
+		KeyCombination closeTabShortcut = new KeyCodeCombination(KeyCode.W, KeyCombination.CONTROL_DOWN);
+		
+		tpMain.addEventFilter(KeyEvent.KEY_PRESSED, keyEvent ->
+		{
+			if(closeTabShortcut.match(keyEvent) && !tpMain.getStyleClass().contains("hidden-tab-header"))
+			{
+				keyEvent.consume();
+				
+				Tab selectedTab = tpMain.getSelectionModel().getSelectedItem();
+				
+				if(selectedTab.isClosable())
+				{
+					String headerText = resources.getString("closingTab.confirmation.header");
+					String contentText = String.format(resources.getString("closingTab.confirmation.message"), selectedTab.getText());
+					boolean confirmed = Context.getCoreFxController().showConfirmationDialogAndWait(headerText, contentText);
+					
+					if(confirmed) tpMain.getTabs().remove(selectedTab);
+				}
+			}
+		});
+		
 		KeyCombination forwardNavigation = new KeyCodeCombination(KeyCode.TAB, KeyCombination.CONTROL_DOWN);
 		KeyCombination backwardNavigation = new KeyCodeCombination(KeyCode.TAB, KeyCombination.CONTROL_DOWN, KeyCombination.SHIFT_DOWN);
 		
+		// adjust tab navigation to skip the last tab (+)
 		tpMain.addEventFilter(KeyEvent.KEY_PRESSED, keyEvent ->
 		{
 			int selectedIndex = tpMain.getSelectionModel().getSelectedIndex();
@@ -175,6 +217,15 @@ public class CoreFxController extends FxControllerBase implements IdleMonitorReg
 				    else tpMain.getSelectionModel().selectPrevious();
 			    }
 		    }
+		});
+		
+		// disable tab navigation be arrows
+		tpMain.addEventHandler(KeyEvent.KEY_PRESSED, keyEvent ->
+		{
+			if(KeyCode.UP == keyEvent.getCode()) keyEvent.consume();
+			else if(KeyCode.RIGHT == keyEvent.getCode()) keyEvent.consume();
+			else if(KeyCode.DOWN == keyEvent.getCode()) keyEvent.consume();
+			else if(KeyCode.LEFT == keyEvent.getCode()) keyEvent.consume();
 		});
 		
 		headerPaneController.getMockTasksCheckBox().selectedProperty().bindBidirectional(footerPaneController.getMockTasksCheckBox().selectedProperty());
