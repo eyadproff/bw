@@ -304,18 +304,15 @@ public class CoreFxController extends FxControllerBase implements IdleMonitorReg
 	
 	private void clearExtraTab(int index)
 	{
-		for(int i = 1; i < tabPane.getTabs().size() - 1; i++)
-		{
-			paneTransitionOverlays.remove(i);
-			notificationPanes.remove(i);
-			bodyPanes.remove(i);
-			wizardPaneContainers.remove(i);
-			wizardPanes.remove(i);
-			currentBodyControllers.remove(i);
-			currentBodyResourceBundles.remove(i);
-			tabMenuTracker.remove(i);
-			Context.getWorkflowManager().interruptCoreWorkflow(i);
-		}
+		paneTransitionOverlays.remove(index);
+		notificationPanes.remove(index);
+		bodyPanes.remove(index);
+		wizardPaneContainers.remove(index);
+		wizardPanes.remove(index);
+		currentBodyControllers.remove(index);
+		currentBodyResourceBundles.remove(index);
+		tabMenuTracker.remove(index);
+		Context.getWorkflowManager().interruptCoreWorkflow(index);
 	}
 	
 	private void clearExtraTabs()

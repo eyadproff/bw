@@ -11,6 +11,12 @@ VERSION SCHEMA: vYYYY.MM.#SEQ
 
 ---
 
+## v2019.07.3
+
+- FIX: Fix a bug in interrupting threads on closing multiple tabs.
+
+---
+
 ## v2019.07.2
 
 - NEW: Add multiple tabs feature that supports multiple workflows at the same time.
