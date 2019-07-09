@@ -15,6 +15,7 @@ VERSION SCHEMA: vYYYY.MM.#SEQ
 
 - ENH: Make all workflow threads as daemon threads.
 - FIX: Open core.beans to gson in order to make BW runs on JDK12+.
+- FIX: Fix issue when selecting server in DEV environment.
 
 ---
 

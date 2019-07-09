@@ -35,6 +35,7 @@ import sa.gov.nic.bio.bw.core.Context;
 import sa.gov.nic.bio.bw.core.interfaces.IdleMonitorRegisterer;
 
 import java.net.URL;
+import java.util.Arrays;
 import java.util.Optional;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -51,7 +52,7 @@ public class DialogUtils
 		var cboChoices = new ComboBox<String>();
 		cboChoices.getItems().addAll(choices);
 		cboChoices.getItems().addAll(customChoiceLabel);
-		cboChoices.getSelectionModel().select(selectedChoice);
+		if(Arrays.stream(choices).anyMatch(selectedChoice::equalsIgnoreCase)) cboChoices.getSelectionModel().select(selectedChoice);
 		
 		var txtCustomChoice = new TextField();
 		txtCustomChoice.setNodeOrientation(NodeOrientation.LEFT_TO_RIGHT);
