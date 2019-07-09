@@ -11,6 +11,13 @@ VERSION SCHEMA: vYYYY.MM.#SEQ
 
 ---
 
+## v2019.07.4
+
+- ENH: Make all workflow threads as daemon threads.
+- FIX: Open core.beans to gson in order to make BW runs on JDK12+.
+
+---
+
 ## v2019.07.3
 
 - FIX: Fix a bug in interrupting threads on closing multiple tabs.

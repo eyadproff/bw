@@ -69,6 +69,7 @@ public class WorkflowManager implements AppLogger
 		
 		workflowThreads.put(index, workflowThread);
 		workflowThread.setName("Workflow Thread #" + index);
+		workflowThread.setDaemon(true);
 		workflowThread.start();
 	}
 	
