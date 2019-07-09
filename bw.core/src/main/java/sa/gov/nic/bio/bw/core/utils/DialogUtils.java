@@ -52,7 +52,9 @@ public class DialogUtils
 		var cboChoices = new ComboBox<String>();
 		cboChoices.getItems().addAll(choices);
 		cboChoices.getItems().addAll(customChoiceLabel);
+		
 		if(Arrays.stream(choices).anyMatch(selectedChoice::equalsIgnoreCase)) cboChoices.getSelectionModel().select(selectedChoice);
+		else cboChoices.getSelectionModel().select(0);
 		
 		var txtCustomChoice = new TextField();
 		txtCustomChoice.setNodeOrientation(NodeOrientation.LEFT_TO_RIGHT);
