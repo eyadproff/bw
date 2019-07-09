@@ -1,7 +1,7 @@
 buildscript {
     repositories {
         flatDir {
-            dirs "libs/build"
+            dirs "libs/gradle-plugins"
         }
     }
     dependencies {
