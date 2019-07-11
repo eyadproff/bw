@@ -8,12 +8,18 @@ import javafx.geometry.NodeOrientation;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 import org.controlsfx.control.NotificationPane;
+import org.controlsfx.glyphfont.FontAwesome;
 import sa.gov.nic.bio.bw.core.Context;
 import sa.gov.nic.bio.bw.core.beans.StateBundle;
 import sa.gov.nic.bio.bw.core.interfaces.IdleMonitorRegisterer;
@@ -28,6 +34,8 @@ import sa.gov.nic.bio.bw.core.utils.FxmlFile;
 import sa.gov.nic.bio.bw.core.utils.GuiLanguage;
 import sa.gov.nic.bio.bw.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.core.utils.IdleMonitor;
+import sa.gov.nic.bio.bw.core.utils.RuntimeEnvironment;
+import sa.gov.nic.bio.bw.core.webservice.WebserviceManager;
 import sa.gov.nic.bio.bw.core.wizard.WizardPane;
 import sa.gov.nic.bio.bw.core.workflow.Signal;
 import sa.gov.nic.bio.bw.core.workflow.SignalType;
@@ -46,6 +54,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.prefs.Preferences;
 
@@ -56,6 +65,8 @@ import java.util.prefs.Preferences;
  */
 public class CoreFxController extends FxControllerBase implements IdleMonitorRegisterer, PersistableEntity
 {
+	private static final String FXML_BODY = "/sa/gov/nic/bio/bw/core/fxml/body.fxml";
+	
 	@FXML private Pane headerPane;
 	@FXML private Pane menuPane;
 	@FXML private Pane devicesRunnerGadgetPane;
@@ -63,23 +74,28 @@ public class CoreFxController extends FxControllerBase implements IdleMonitorReg
 	@FXML private Pane sidePane;
 	
 	@FXML private Pane paneStageOverlay;
-	@FXML private Pane paneTransitionOverlay;
 	@FXML private HeaderPaneFxController headerPaneController;
 	@FXML private FooterPaneFxController footerPaneController;
 	@FXML private MenuPaneFxController menuPaneController;
 	@FXML private DevicesRunnerGadgetPaneFxController devicesRunnerGadgetPaneController;
+	@FXML private TabPane tabPane;
+	@FXML private Tab tabMain;
 	@FXML private NotificationPane idleNotifier;
-	@FXML private NotificationPane notificationPane;
-	@FXML private BorderPane bodyPane;
-	@FXML private Pane wizardPaneContainer;
+	
+	private Map<Integer, Pane> paneTransitionOverlays = new HashMap<>();
+	private Map<Integer, NotificationPane> notificationPanes = new HashMap<>();
+	private Map<Integer, BorderPane> bodyPanes = new HashMap<>();
+	private Map<Integer, Pane> wizardPaneContainers = new HashMap<>();
+	private Map<Integer, WizardPane> wizardPanes = new HashMap<>();
+	private Map<Integer, ContentFxControllerBase> currentBodyControllers = new HashMap<>();
+	private Map<Integer, CombinedResourceBundle> currentBodyResourceBundles = new HashMap<>();
+	private Map<Integer, Class<? extends Workflow>> tabMenuTracker = new HashMap<>(); // TODO
 	
 	private Stage stage;
-	private WizardPane wizardPane;
 	private IdleMonitor idleMonitor;
-	private BodyFxControllerBase currentBodyController;
-	private CombinedResourceBundle currentBodyResourceBundle;
 	private boolean newMenuSelected;
 	private boolean languageChanged;
+	private AtomicInteger extraTabsCount = new AtomicInteger();
 	
 	public void registerStage(Stage stage)
 	{
@@ -87,8 +103,8 @@ public class CoreFxController extends FxControllerBase implements IdleMonitorReg
 	}
 	
 	public Stage getStage(){return stage;}
-	public NotificationPane getNotificationPane(){return notificationPane;}
-	public BorderPane getBodyPane(){return bodyPane;}
+	public NotificationPane getNotificationPane(int index){return notificationPanes.get(index);}
+	public BorderPane getBodyPane(int index){return bodyPanes.get(index);}
 	
 	public HeaderPaneFxController getHeaderPaneController(){return headerPaneController;}
 	public FooterPaneFxController getFooterPaneController(){return footerPaneController;}
@@ -97,8 +113,8 @@ public class CoreFxController extends FxControllerBase implements IdleMonitorReg
 	{return devicesRunnerGadgetPaneController;}
 	
 	public ResourceBundle getResourceBundle(){return resources;}
-	public WizardPane getWizardPane(){return wizardPane;}
-	public BodyFxControllerBase getCurrentBodyController(){return currentBodyController;}
+	public WizardPane getWizardPane(int index){return wizardPanes.get(index);}
+	public ContentFxControllerBase getCurrentBodyController(int index){return currentBodyControllers.get(index);}
 	
 	public void reattachDeviceRunnerGadgetPane(){sidePane.getChildren().add(devicesRunnerGadgetPane);}
 	
@@ -117,8 +133,126 @@ public class CoreFxController extends FxControllerBase implements IdleMonitorReg
 	@Override
 	protected void initialize()
 	{
-		headerPaneController.getMockTasksCheckBox().selectedProperty().bindBidirectional(
-														footerPaneController.getMockTasksCheckBox().selectedProperty());
+		tabMain.setUserData(0);
+		
+		tabPane.getSelectionModel().selectedIndexProperty().addListener((observableValue, oldValue, newValue) ->
+		{
+			int index = newValue.intValue();
+			boolean lastTab = tabPane.getTabs().size() - 1 == index;
+			Tab tab = tabPane.getTabs().get(index);
+			
+			if(lastTab)
+			{
+				int realIndex = extraTabsCount.incrementAndGet();
+				String tabTitle = resources.getString("tab.extraTab") + " " + AppUtils.localizeNumbers(String.valueOf(realIndex));
+				tab.setText(tabTitle);
+				tab.setUserData(realIndex);
+				tab.setClosable(true);
+				tab.setGraphic(null);
+				tab.setOnCloseRequest(event ->
+				{
+					String headerText = resources.getString("closingTab.confirmation.header");
+					String contentText = String.format(resources.getString("closingTab.confirmation.message"), tabTitle);
+					boolean confirmed = Context.getCoreFxController().showConfirmationDialogAndWait(headerText, contentText);
+					
+					if(confirmed) clearExtraTab(realIndex);
+					else event.consume();
+				});
+				
+				Tab newPlusTab = new Tab();
+				newPlusTab.setClosable(false);
+				newPlusTab.setGraphic(AppUtils.createFontAwesomeIcon(FontAwesome.Glyph.PLUS));
+				tabPane.getTabs().add(newPlusTab);
+				tabPane.getSelectionModel().select(tab);
+				
+				try
+				{
+					Pane mainBodyPane = loadNewBodyPane(realIndex);
+					tab.setContent(mainBodyPane);
+				}
+				catch(IOException e)
+				{
+					// TODO
+					e.printStackTrace();
+				}
+				
+				Context.getWorkflowManager().startCoreWorkflow(this::renderBodyForm, realIndex);
+			}
+			else menuPaneController.selectMenu(tabMenuTracker.get((int) tabPane.getTabs().get(index).getUserData()));
+		});
+		
+		KeyCombination newTabShortcut = new KeyCodeCombination(KeyCode.T, KeyCombination.CONTROL_DOWN);
+		
+		tabPane.addEventFilter(KeyEvent.KEY_PRESSED, keyEvent ->
+		{
+			if(newTabShortcut.match(keyEvent) && !tabPane.getStyleClass().contains("hidden-tab-header"))
+			{
+				tabPane.getSelectionModel().select(tabPane.getTabs().size() - 1);
+				keyEvent.consume();
+			}
+		});
+		
+		KeyCombination closeTabShortcut = new KeyCodeCombination(KeyCode.W, KeyCombination.CONTROL_DOWN);
+		
+		tabPane.addEventFilter(KeyEvent.KEY_PRESSED, keyEvent ->
+		{
+			if(closeTabShortcut.match(keyEvent) && !tabPane.getStyleClass().contains("hidden-tab-header"))
+			{
+				keyEvent.consume();
+				
+				Tab selectedTab = tabPane.getSelectionModel().getSelectedItem();
+				
+				if(selectedTab.isClosable())
+				{
+					String headerText = resources.getString("closingTab.confirmation.header");
+					String contentText = String.format(resources.getString("closingTab.confirmation.message"), selectedTab.getText());
+					boolean confirmed = Context.getCoreFxController().showConfirmationDialogAndWait(headerText, contentText);
+					
+					if(confirmed) tabPane.getTabs().remove(selectedTab);
+				}
+			}
+		});
+		
+		KeyCombination forwardNavigation = new KeyCodeCombination(KeyCode.TAB, KeyCombination.CONTROL_DOWN);
+		KeyCombination backwardNavigation = new KeyCodeCombination(KeyCode.TAB, KeyCombination.CONTROL_DOWN, KeyCombination.SHIFT_DOWN);
+		
+		// adjust tab navigation to skip the last tab (+)
+		tabPane.addEventFilter(KeyEvent.KEY_PRESSED, keyEvent ->
+		{
+			int selectedIndex = tabPane.getSelectionModel().getSelectedIndex();
+			
+			if(forwardNavigation.match(keyEvent))
+		    {
+		    	keyEvent.consume();
+			
+			    if(tabPane.getTabs().size() > 2)
+			    {
+				    if(selectedIndex == tabPane.getTabs().size() - 2) tabPane.getSelectionModel().select(0);
+				    else tabPane.getSelectionModel().selectNext();
+			    }
+		    }
+		    else if(backwardNavigation.match(keyEvent))
+		    {
+			    keyEvent.consume();
+			
+			    if(tabPane.getTabs().size() > 2)
+			    {
+				    if(selectedIndex == 0) tabPane.getSelectionModel().select(tabPane.getTabs().size() - 2);
+				    else tabPane.getSelectionModel().selectPrevious();
+			    }
+		    }
+		});
+		
+		// disable tab navigation be arrows
+		tabPane.addEventHandler(KeyEvent.KEY_PRESSED, keyEvent ->
+		{
+			if(KeyCode.UP == keyEvent.getCode()) keyEvent.consume();
+			else if(KeyCode.RIGHT == keyEvent.getCode()) keyEvent.consume();
+			else if(KeyCode.DOWN == keyEvent.getCode()) keyEvent.consume();
+			else if(KeyCode.LEFT == keyEvent.getCode()) keyEvent.consume();
+		});
+		
+		headerPaneController.getMockTasksCheckBox().selectedProperty().bindBidirectional(footerPaneController.getMockTasksCheckBox().selectedProperty());
 		
 		Context.setCoreFxController(this);
 		
@@ -126,28 +260,90 @@ public class CoreFxController extends FxControllerBase implements IdleMonitorReg
 		{
 			String errorCode = CoreErrorCodes.C002_00001.getCode();
 			String[] errorDetails = {"Uncaught exception!"};
-			showErrorDialog(errorCode, throwable, errorDetails);
+			showErrorDialog(errorCode, throwable, errorDetails, getCurrentTabIndex());
 		});
 		
 		idleMonitor = new IdleMonitor(this::onShowingIdleWarning, this::onIdle, this::onIdleInterrupt,
 		                              this::onTick, idleNotifier);
 		
-		if(!Context.getWorkflowManager().isRunning())
+		try
 		{
-			Platform.runLater(() -> Context.getWorkflowManager().startCoreWorkflow(this::renderBodyForm));
+			Pane mainBodyPane = loadNewBodyPane(0);
+			tabMain.setContent(mainBodyPane);
 		}
+		catch(IOException e)
+		{
+			// TODO
+			e.printStackTrace();
+		}
+		
+		if(!Context.getWorkflowManager().isRunning(0))
+		{
+			Platform.runLater(() -> Context.getWorkflowManager().startCoreWorkflow(this::renderBodyForm, 0));
+		}
+	}
+	
+	private Pane loadNewBodyPane(int index) throws IOException
+	{
+		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(FXML_BODY));
+		Pane bodyPane = fxmlLoader.load();
+		BodyFxController bodyFxController = fxmlLoader.getController();
+		
+		notificationPanes.put(index, bodyFxController.getNotificationPane());
+		bodyPanes.put(index, bodyFxController.getBodyPane());
+		wizardPaneContainers.put(index, bodyFxController.getWizardPaneContainer());
+		paneTransitionOverlays.put(index, bodyFxController.getPaneTransitionOverlay());
+		
+		return bodyPane;
+	}
+	
+	public int getCurrentTabIndex()
+	{
+		return (int) tabPane.getSelectionModel().getSelectedItem().getUserData();
+	}
+	
+	private void clearExtraTab(int index)
+	{
+		paneTransitionOverlays.remove(index);
+		notificationPanes.remove(index);
+		bodyPanes.remove(index);
+		wizardPaneContainers.remove(index);
+		wizardPanes.remove(index);
+		currentBodyControllers.remove(index);
+		currentBodyResourceBundles.remove(index);
+		tabMenuTracker.remove(index);
+		Context.getWorkflowManager().interruptCoreWorkflow(index);
+	}
+	
+	private void clearExtraTabs()
+	{
+		for(int i = 1; i < tabPane.getTabs().size() - 1; i++)
+		{
+			clearExtraTab(i);
+		}
+		
+		extraTabsCount.set(0);
+		var tabs = tabPane.getTabs();
+		tabs.retainAll(tabs.get(0), tabs.get(tabs.size() - 1));
+		tabPane.getSelectionModel().select(0);
+		menuPaneController.clearSelection();
+	}
+	
+	public void onLogin(boolean hasAccessToMenus)
+	{
+		if(hasAccessToMenus) tabPane.getStyleClass().remove("hidden-tab-header");
 	}
 	
 	public void prepareToLogout()
 	{
-		menuPaneController.clearSelection();
-		notificationPane.hide();
 		stopIdleMonitor();
 		Context.getWebserviceManager().cancelRefreshTokenScheduler();
 	}
 	
 	public void logout()
 	{
+		for(NotificationPane notificationPane : notificationPanes.values()) notificationPane.hide();
+		
 		GuiUtils.showNode(menuPane, false);
 		GuiUtils.showNode(headerPane, false);
 		GuiUtils.showNode(devicesRunnerGadgetPane, false);
@@ -156,22 +352,29 @@ public class CoreFxController extends FxControllerBase implements IdleMonitorReg
 		showTransitionOverlay(true);
 		menuPaneController.emptyMenus();
 		
-		final BodyFxControllerBase controller = currentBodyController;
-		if(controller != null)
+		for(ContentFxControllerBase currentBodyController : currentBodyControllers.values())
 		{
-			controller.detach();
-			Platform.runLater(controller::onDetachingFromScene);
+			if(currentBodyController != null)
+			{
+				currentBodyController.detach();
+				currentBodyController.onDetachingFromScene();
+			}
 		}
 		
-		Context.getWorkflowManager().interruptCurrentWorkflow(new Signal(SignalType.LOGOUT));
+		tabPane.getStyleClass().add("hidden-tab-header");
+		clearExtraTabs();
+		
+		Context.getWorkflowManager().interruptCurrentWorkflow(new Signal(SignalType.LOGOUT), 0);
 	}
 	
-	public void goToMenu(Class<?> menuWorkflowClass)
+	public void goToMenu(Class<? extends Workflow> menuWorkflowClass)
 	{
+		tabMenuTracker.put(getCurrentTabIndex(), menuWorkflowClass);
+		
 		clearWizardBar();
 		showTransitionOverlay(true);
 		
-		final BodyFxControllerBase controller = currentBodyController;
+		final ContentFxControllerBase controller = currentBodyControllers.get(getCurrentTabIndex());
 		if(controller != null)
 		{
 			controller.detach();
@@ -181,7 +384,7 @@ public class CoreFxController extends FxControllerBase implements IdleMonitorReg
 		newMenuSelected = true;
 		Map<String, Object> payload = new HashMap<>();
 		payload.put(Workflow.KEY_MENU_WORKFLOW_CLASS, menuWorkflowClass);
-		Context.getWorkflowManager().interruptCurrentWorkflow(new Signal(SignalType.MENU_NAVIGATION, payload));
+		Context.getWorkflowManager().interruptCurrentWorkflow(new Signal(SignalType.MENU_NAVIGATION, payload), getCurrentTabIndex());
 	}
 	
 	/**
@@ -191,22 +394,25 @@ public class CoreFxController extends FxControllerBase implements IdleMonitorReg
 	 * @param controllerClass class of the new/existing controller class of the body
 	 * @param uiInputData data passed by the workflow manager to the controller
 	 */
-	private BodyFxControllerBase renderBodyForm(Class<?> controllerClass, Map<String, Object> uiInputData) throws Signal
+	private ContentFxControllerBase renderBodyForm(Class<?> controllerClass, Map<String, Object> uiInputData, int index) throws Signal
 	{
+		LOGGER.fine("New render request by thread (" + Thread.currentThread().getName() + " ) with controllerClass (" + controllerClass.getName() + ")");
+		
+		ContentFxControllerBase currentBodyController = currentBodyControllers.get(index);
+		
 		synchronized(CoreFxController.class)
 		{
 			try
 			{
-				if(!languageChanged && !newMenuSelected && currentBodyController != null &&
-																currentBodyController.getClass() == controllerClass)
+				if(!languageChanged && !newMenuSelected && currentBodyController != null && currentBodyController.getClass() == controllerClass /*&&
+					currentBodyController.getTabIndex() == getCurrentTabIndex()*/)
 				{
 					// same form
-					final BodyFxControllerBase controller = currentBodyController;
+					final ContentFxControllerBase controller = currentBodyController;
 					
 					if(!controller.isDetached())
 					{
-						TaskResponse<?> negativeTaskResponse = (TaskResponse<?>)
-														uiInputData.get(Workflow.KEY_WORKFLOW_TASK_NEGATIVE_RESPONSE);
+						TaskResponse<?> negativeTaskResponse = (TaskResponse<?>) uiInputData.get(Workflow.KEY_WORKFLOW_TASK_NEGATIVE_RESPONSE);
 						
 						if(negativeTaskResponse != null)
 						{
@@ -237,23 +443,27 @@ public class CoreFxController extends FxControllerBase implements IdleMonitorReg
 					newMenuSelected = false;
 					languageChanged = false;
 					
-					final BodyFxControllerBase oldController = currentBodyController;
-					if(oldController != null)
+					if(currentBodyController != null)
 					{
-						oldController.detach();
-						Platform.runLater(oldController::onDetachingFromScene);
+						currentBodyController.detach();
+						Platform.runLater(currentBodyController::onDetachingFromScene);
 					}
 					
 					String moduleName = controllerClass.getModule().getName();
-					currentBodyResourceBundle = Context.getStringsResourceBundle();
+					CombinedResourceBundle currentBodyResourceBundle = Context.getStringsResourceBundle();
+					currentBodyResourceBundles.put(index, currentBodyResourceBundle);
 					currentBodyResourceBundle.setCurrentResourceBundleProviderModule(moduleName);
 					
-					final BodyFxControllerBase newController = renderNewBodyForm(currentBodyResourceBundle,
-					                                                             controllerClass);
-					if(newController != null) Workflow.loadWorkflowInputs(newController, uiInputData,
-					                                                          true, false);
+					final ContentFxControllerBase newController = renderNewBodyForm(currentBodyResourceBundle,
+					                                                                controllerClass, index);
+					if(newController != null)
+					{
+						newController.setTabIndex(index);
+						Workflow.loadWorkflowInputs(newController, uiInputData, true, false);
+					}
 					
 					currentBodyController = newController;
+					currentBodyControllers.put(index, newController);
 					
 					Platform.runLater(() ->
 					{
@@ -273,7 +483,7 @@ public class CoreFxController extends FxControllerBase implements IdleMonitorReg
 			{
 				String errorCode = CoreErrorCodes.C002_00002.getCode();
 				String[] errorDetails = {"Failed to render the UI! controllerClass = " + controllerClass.getName()};
-				showErrorDialog(errorCode, e, errorDetails);
+				showErrorDialog(errorCode, e, errorDetails, getCurrentTabIndex());
 			}
 		}
 		
@@ -286,15 +496,15 @@ public class CoreFxController extends FxControllerBase implements IdleMonitorReg
 	 *
 	 * @return the created JavaFX controller
 	 */
-	private BodyFxControllerBase renderNewBodyForm(ResourceBundle stringsBundle,
-	                                               Class<?> controllerClass)
+	private ContentFxControllerBase renderNewBodyForm(ResourceBundle stringsBundle,
+	                                                  Class<?> controllerClass, int tabIndex)
 	{
 		FxmlFile fxmlFile = controllerClass.getAnnotation(FxmlFile.class);
 		if(fxmlFile == null)
 		{
 			String errorCode = CoreErrorCodes.C002_00003.getCode();
 			String[] errorDetails = {"\"@FxmlFile\" is not set!", "controllerClass = " + controllerClass};
-			showErrorDialog(errorCode, null, errorDetails);
+			showErrorDialog(errorCode, null, errorDetails, tabIndex);
 			return null;
 		}
 		
@@ -307,7 +517,7 @@ public class CoreFxController extends FxControllerBase implements IdleMonitorReg
 			String errorCode = CoreErrorCodes.C002_00004.getCode();
 			String[] errorDetails = {"\"fxmlUrl\" is null!", "controllerClass = " + controllerClass, "fxml path = " +
 									fxmlPath};
-			showErrorDialog(errorCode, null, errorDetails);
+			showErrorDialog(errorCode, null, errorDetails, tabIndex);
 			return null;
 		}
 		
@@ -317,24 +527,24 @@ public class CoreFxController extends FxControllerBase implements IdleMonitorReg
 		try
 		{
 			loadedPane = paneLoader.load();
-			FxControllerBase fxController = paneLoader.getController();
+			ContentFxControllerBase fxController = paneLoader.getController();
 			Platform.runLater(() -> fxController.postInitialization(paneLoader.getRoot()));
 		}
 		catch(IOException e)
 		{
 			String errorCode = CoreErrorCodes.C002_00005.getCode();
 			String[] errorDetails = {"Failed to load FXML correctly!", "controllerClass = " + controllerClass};
-			showErrorDialog(errorCode, e, errorDetails);
+			showErrorDialog(errorCode, e, errorDetails, tabIndex);
 			return null;
 		}
 		
-		BodyFxControllerBase bodyFxController = paneLoader.getController();
+		ContentFxControllerBase bodyFxController = paneLoader.getController();
 		Platform.runLater(() ->
 		{
-			notificationPane.hide();
-			bodyPane.setCenter(loadedPane);
-			bodyPane.applyCss();
-			bodyPane.layout();
+			notificationPanes.get(tabIndex).hide();
+			bodyPanes.get(tabIndex).setCenter(loadedPane);
+			bodyPanes.get(tabIndex).applyCss();
+			bodyPanes.get(tabIndex).layout();
 		});
 		
 		return bodyFxController;
@@ -342,26 +552,32 @@ public class CoreFxController extends FxControllerBase implements IdleMonitorReg
 	
 	public void showTransitionOverlay(boolean bShow)
 	{
-		paneTransitionOverlay.setVisible(bShow);
-		if(bShow) bodyPane.setCenter(null);
+		int index = getCurrentTabIndex();
+		if(paneTransitionOverlays.get(index) != null) paneTransitionOverlays.get(index).setVisible(bShow);
+		if(bShow && bodyPanes.get(index) != null) bodyPanes.get(index).setCenter(null);
 	}
 	
 	public void setWizardPane(WizardPane wizardPane)
 	{
-		this.wizardPane = wizardPane;
-		Platform.runLater(() -> wizardPaneContainer.getChildren().setAll(wizardPane));
+		int index = getCurrentTabIndex();
+		this.wizardPanes.put(index, wizardPane);
+		Pane wizardPaneContainer = wizardPaneContainers.get(index);
+		if(wizardPaneContainer != null) Platform.runLater(() -> wizardPaneContainer.getChildren().setAll(wizardPane));
 	}
 	
 	public void clearWizardBar()
 	{
-		Platform.runLater(() -> wizardPaneContainer.getChildren().clear());
+		int index = getCurrentTabIndex();
+		Pane wizardPaneContainer = wizardPaneContainers.get(index);
+		if(wizardPaneContainer != null) Platform.runLater(() -> wizardPaneContainer.getChildren().clear());
 	}
 	
 	public void moveWizardForward()
 	{
 		Platform.runLater(() ->
 		{
-		    if(wizardPane != null) wizardPane.goNext();
+			int index = getCurrentTabIndex();
+		    if(wizardPanes.get(index) != null) wizardPanes.get(index).goNext();
 		});
 	}
 	
@@ -369,7 +585,8 @@ public class CoreFxController extends FxControllerBase implements IdleMonitorReg
 	{
 		Platform.runLater(() ->
 		{
-		    if(wizardPane != null) wizardPane.goPrevious();
+			int index = getCurrentTabIndex();
+		    if(wizardPanes.get(index) != null) wizardPanes.get(index).goPrevious();
 		});
 	}
 	
@@ -377,7 +594,8 @@ public class CoreFxController extends FxControllerBase implements IdleMonitorReg
 	{
 		Platform.runLater(() ->
 		{
-		    if(wizardPane != null) wizardPane.startOver();
+			int index = getCurrentTabIndex();
+		    if(wizardPanes.get(index) != null) wizardPanes.get(index).startOver();
 		});
 	}
 	
@@ -393,10 +611,10 @@ public class CoreFxController extends FxControllerBase implements IdleMonitorReg
 		                                          contentMessage, buttonConfirmText, buttonCancelText, rtl);
 	}
 	
-	public void showErrorDialog(String errorCode, Throwable throwable, String[] errorDetails)
+	public void showErrorDialog(String errorCode, Throwable throwable, String[] errorDetails, int tabIndex)
 	{
 		WorkflowManager workflowManager = Context.getWorkflowManager();
-		WorkflowBase currentWorkflow = (WorkflowBase) workflowManager.getCurrentWorkflow();
+		WorkflowBase currentWorkflow = (WorkflowBase) workflowManager.getCurrentWorkflow(tabIndex);
 		
 		Integer workflowId = null;
 		Long workflowTcn = null;
@@ -480,7 +698,7 @@ public class CoreFxController extends FxControllerBase implements IdleMonitorReg
 		{
 			String errorCode = CoreErrorCodes.C002_00006.getCode();
 			String[] errorDetails = {"Core \"stringsBundle\" resource bundle is missing!"};
-			showErrorDialog(errorCode, e, errorDetails);
+			showErrorDialog(errorCode, e, errorDetails, getCurrentTabIndex());
 			return;
 		}
 		
@@ -489,7 +707,7 @@ public class CoreFxController extends FxControllerBase implements IdleMonitorReg
 		{
 			String errorCode = CoreErrorCodes.C002_00007.getCode();
 			String[] errorDetails = {"Core \"fxmlUrl\" is null!"};
-			showErrorDialog(errorCode, null, errorDetails);
+			showErrorDialog(errorCode, null, errorDetails, getCurrentTabIndex());
 			return;
 		}
 		
@@ -510,7 +728,7 @@ public class CoreFxController extends FxControllerBase implements IdleMonitorReg
 		{
 			String errorCode = CoreErrorCodes.C002_00008.getCode();
 			String[] errorDetails = {"Failed to load core FXML correctly!"};
-			showErrorDialog(errorCode, e, errorDetails);
+			showErrorDialog(errorCode, e, errorDetails, getCurrentTabIndex());
 			return;
 		}
 		
@@ -519,24 +737,39 @@ public class CoreFxController extends FxControllerBase implements IdleMonitorReg
 		Scene scene = new Scene(rootPane);
 		scene.addEventFilter(KeyEvent.KEY_PRESSED, event ->
 		{
-			if(AppConstants.SHOWING_MOCK_TASKS_KEY_COMBINATION.match(event))
+			RuntimeEnvironment runtimeEnvironment = Context.getRuntimeEnvironment();
+			if(runtimeEnvironment == RuntimeEnvironment.LOCAL || runtimeEnvironment == RuntimeEnvironment.DEV)
 			{
-				showMockTasksCheckBox();
-				event.consume();
+				if(AppConstants.SHOWING_MOCK_TASKS_KEY_COMBINATION.match(event))
+				{
+					showMockTasksCheckBox();
+					event.consume();
+				}
+				else if(AppConstants.SCENIC_VIEW_KEY_COMBINATION.match(event))
+				{
+					AppUtils.showScenicView(scene);
+					event.consume();
+				}
+				else if(AppConstants.CHANGING_SERVER_KEY_COMBINATION.match(event))
+				{
+					String[] urls = Context.getConfigManager().getProperty("dev.webservice.urls").split("[,\\s]+");
+					WebserviceManager webserviceManager = Context.getWebserviceManager();
+					String oldBaseUrl = webserviceManager.getServerBaseUrl();
+					String userChoice = AppUtils.showChangeServerDialog(oldBaseUrl, urls, true);
+					
+					if(userChoice != null)
+					{
+						Context.getWebserviceManager().changeServerBaseUrl(userChoice);
+						LOGGER.info("change the server base URL from (" + oldBaseUrl + ") to (" + userChoice + ")");
+					}
+					
+					event.consume();
+				}
 			}
-			else if(AppConstants.SCENIC_VIEW_KEY_COMBINATION.match(event))
-			{
-				AppUtils.showScenicView(scene);
-				event.consume();
-			}
-			else if(AppConstants.OPEN_APP_FOLDER_KEY_COMBINATION.match(event))
+			
+			if(AppConstants.OPEN_APP_FOLDER_KEY_COMBINATION.match(event))
 			{
 				AppUtils.openAppFolder();
-				event.consume();
-			}
-			else if(AppConstants.CHANGING_SERVER_KEY_COMBINATION.match(event))
-			{
-				AppUtils.showChangeServerDialog();
 				event.consume();
 			}
 		});
@@ -555,11 +788,12 @@ public class CoreFxController extends FxControllerBase implements IdleMonitorReg
 		CoreFxController newCoreFxController = newRootPane.getController();
 		newStage.setOnCloseRequest(GuiUtils.createOnExitHandler(stage, newCoreFxController, new LogoutTask()));
 		
-		newCoreFxController.currentBodyController = currentBodyController; // to get its class info only
-		String moduleName = currentBodyController.getClass().getModule().getName();
-		newCoreFxController.currentBodyResourceBundle = Context.getStringsResourceBundle();
-		newCoreFxController.currentBodyResourceBundle.reload(toLanguage.getLocale());
-		newCoreFxController.currentBodyResourceBundle.setCurrentResourceBundleProviderModule(moduleName);
+		int index = getCurrentTabIndex();
+		newCoreFxController.currentBodyControllers.put(index, currentBodyControllers.get(index)); // to get its class info only
+		String moduleName = currentBodyControllers.get(index).getClass().getModule().getName();
+		newCoreFxController.currentBodyResourceBundles.put(index, Context.getStringsResourceBundle());
+		newCoreFxController.currentBodyResourceBundles.get(index).reload(toLanguage.getLocale());
+		newCoreFxController.currentBodyResourceBundles.get(index).setCurrentResourceBundleProviderModule(moduleName);
 		newCoreFxController.registerStage(newStage);
 		Context.getWorkflowManager().setFormRenderer(newCoreFxController::renderBodyForm);
 		newCoreFxController.languageChanged = true;
@@ -590,9 +824,10 @@ public class CoreFxController extends FxControllerBase implements IdleMonitorReg
 	 */
 	private boolean applyStateBundle(StateBundle stateBundle)
 	{
-		BodyFxControllerBase newBodyController = renderNewBodyForm(currentBodyResourceBundle,
-		                                                           currentBodyController.getClass());
-		currentBodyController = newBodyController;
+		int index = getCurrentTabIndex();
+		ContentFxControllerBase newBodyController = renderNewBodyForm(currentBodyResourceBundles.get(index),
+		                                                              currentBodyControllers.get(index).getClass(), index);
+		currentBodyControllers.put(index, newBodyController);
 		
 		if(newBodyController instanceof PersistableEntity)
 		{

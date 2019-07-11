@@ -457,7 +457,7 @@ public class InquiryByFingerprintsResultPaneFxController extends WizardStepFxCon
 		{
 			String errorCode = CommonsErrorCodes.C008_00037.getCode();
 			String[] errorDetails = {"Failed to load (" + ShowReportDialogFxController.class.getName() + ")!"};
-			Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails);
+			Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails, getTabIndex());
 		}
 	}
 }

@@ -285,7 +285,6 @@ public class WebserviceManager implements AppLogger
 		}
 		
 		int httpResponseCode = response.code();
-		ResponseBody responseBody = response.raw().body();
 		LOGGER.info("httpRequestMethod = " + httpRequestMethod);
 		LOGGER.info("apiUrl = " + apiUrl);
 		LOGGER.fine("httpRequestBody = " + httpRequestBody);
@@ -388,10 +387,5 @@ public class WebserviceManager implements AppLogger
 	public void cancelRefreshTokenScheduler()
 	{
 		if(scheduledRefreshTokenFuture != null) scheduledRefreshTokenFuture.cancel(true);
-	}
-	
-	private void createNewRetrofitInstance(String baseUrl)
-	{
-	
 	}
 }

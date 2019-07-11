@@ -2,6 +2,8 @@ package sa.gov.nic.bio.bw.core.controllers;
 
 import javafx.application.Platform;
 import javafx.concurrent.Task;
+import javafx.scene.Node;
+import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import org.controlsfx.control.NotificationPane;
@@ -10,6 +12,7 @@ import sa.gov.nic.bio.bw.core.Context;
 import sa.gov.nic.bio.bw.core.interfaces.NotificationController;
 import sa.gov.nic.bio.bw.core.interfaces.WorkflowUserTaskController;
 import sa.gov.nic.bio.bw.core.utils.CoreErrorCodes;
+import sa.gov.nic.bio.bw.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.core.utils.ThrowableAsException;
 import sa.gov.nic.bio.bw.core.workflow.DataConveyor;
 import sa.gov.nic.bio.bw.core.workflow.Input;
@@ -20,6 +23,7 @@ import sa.gov.nic.bio.bw.core.workflow.WorkflowTask;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
@@ -29,10 +33,12 @@ import java.util.logging.Level;
  *
  * @author Fouad Almalki
  */
-public abstract class BodyFxControllerBase extends RegionFxControllerBase implements WorkflowUserTaskController,
+public abstract class ContentFxControllerBase extends RegionFxControllerBase implements WorkflowUserTaskController,
 																					 NotificationController,
 																					 DataConveyor
 {
+	private int tabIndex;
+	
 	public static abstract class SuccessHandler
 	{
 		private Map<String, Object> dataMap;
@@ -64,6 +70,9 @@ public abstract class BodyFxControllerBase extends RegionFxControllerBase implem
 	
 	private AtomicBoolean detached = new AtomicBoolean();
 	private Map<String, Object> uiInputData = new HashMap<>();
+	
+	public int getTabIndex(){return tabIndex;}
+	public void setTabIndex(int tabIndex){this.tabIndex = tabIndex;}
 	
 	public boolean isDetached(){return detached.get();}
 	public void detach(){detached.set(true);}
@@ -120,7 +129,7 @@ public abstract class BodyFxControllerBase extends RegionFxControllerBase implem
 				{
 					String errorCode = CoreErrorCodes.C002_00027.getCode();
 					String[] errorDetails = {"Failure upon saving outputs of a task! task = " + taskClass.getName()};
-					Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails);
+					Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails, getTabIndex());
 				}
 			});
 			task.setOnFailed(event ->
@@ -154,7 +163,7 @@ public abstract class BodyFxControllerBase extends RegionFxControllerBase implem
 				errorCode = CoreErrorCodes.C002_00029.getCode();
 				exception = null;
 				errorDetails = new String[]{"Failure upon loading UI task! task = " + taskClass.getName()};
-				Context.getCoreFxController().showErrorDialog(errorCode, null, errorDetails);
+				Context.getCoreFxController().showErrorDialog(errorCode, null, errorDetails, getTabIndex());
 			}
 			
 			if(errorDetails == null) errorDetails = new String[0];
@@ -166,14 +175,14 @@ public abstract class BodyFxControllerBase extends RegionFxControllerBase implem
 			
 			errorDetails[errorDetails.length - 1] = "SignalType = " + signal.getSignalType();
 			
-			Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails);
+			Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails, getTabIndex());
 		}
 		catch(Throwable e)
 		{
 			String errorCode = CoreErrorCodes.C002_00030.getCode();
 			String[] errorDetails = {"Failure upon loading UI task! task = " +
 																	(taskClass != null ? taskClass.getName() : null)};
-			Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails);
+			Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails, getTabIndex());
 		}
 		
 		return false;
@@ -189,7 +198,7 @@ public abstract class BodyFxControllerBase extends RegionFxControllerBase implem
 	{
 		Platform.runLater(() ->
 		{
-			NotificationPane notificationPane = Context.getCoreFxController().getNotificationPane();
+			NotificationPane notificationPane = Context.getCoreFxController().getNotificationPane(getTabIndex());
 			
 			if(notificationPane.isShowing()) notificationPane.hide();
 		    notificationPane.setGraphic(new ImageView(icon));
@@ -203,7 +212,7 @@ public abstract class BodyFxControllerBase extends RegionFxControllerBase implem
 	@Override
 	public final void hideNotification()
 	{
-		Context.getCoreFxController().getNotificationPane().hide();
+		Context.getCoreFxController().getNotificationPane(getTabIndex()).hide();
 	}
 	
 	/**
@@ -266,7 +275,7 @@ public abstract class BodyFxControllerBase extends RegionFxControllerBase implem
 		}
 		else // client error, server error, or unknown error
 		{
-			Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails);
+			Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails, getTabIndex());
 		}
 	}
 	
@@ -276,7 +285,7 @@ public abstract class BodyFxControllerBase extends RegionFxControllerBase implem
 		{
 			hideNotification();
 			onShowingProgress(true);
-			Context.getWorkflowManager().submitUserTask(new HashMap<>());
+			Context.getWorkflowManager().submitUserTask(new HashMap<>(), getTabIndex());
 		}
 	}
 	
@@ -284,6 +293,24 @@ public abstract class BodyFxControllerBase extends RegionFxControllerBase implem
 	{
 		Map<String, Object> uiDataMap = new HashMap<>();
 		uiDataMap.put(Workflow.KEY_SIGNAL_TYPE, SignalType.RESET_WORKFLOW_STEP);
-		Context.getWorkflowManager().submitUserTask(uiDataMap);
+		Context.getWorkflowManager().submitUserTask(uiDataMap, getTabIndex());
+	}
+	
+	/**
+	 * Called after <code>initialize()</code>. It is used to apply global customization for all nodes in the GUI.
+	 *
+	 * @param rootNode the root node that is associated with this controller
+	 */
+	final void postInitialization(Node rootNode)
+	{
+		Set<Node> buttons = rootNode.lookupAll(".button");
+		buttons.forEach(node ->
+		{
+		    if(node instanceof Button)
+		    {
+		        Button button = (Button) node;
+		        GuiUtils.makeButtonClickableByPressingEnter(button);
+		    }
+		});
 	}
 }

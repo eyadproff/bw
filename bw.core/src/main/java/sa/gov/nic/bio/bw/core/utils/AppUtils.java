@@ -28,8 +28,7 @@ import sa.gov.nic.bio.bw.core.webservice.ClientErrorReportingAPI;
 import sa.gov.nic.bio.bw.core.webservice.WebserviceManager;
 
 import javax.imageio.ImageIO;
-import java.awt.Desktop;
-import java.awt.Point;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -75,6 +74,8 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.concurrent.CountDownLatch;
+import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -697,38 +698,73 @@ public final class AppUtils implements AppLogger
 		return new FingerCoordinate(topLeft, topRight, bottomLeft, bottomRight);
 	}
 	
-	public static void showChangeServerDialog()
+	public static String showChangeServerDialog(String oldBaseUrl, String[] urls, boolean uiThread)
 	{
-		RuntimeEnvironment runtimeEnvironment = Context.getRuntimeEnvironment();
-		if(runtimeEnvironment == RuntimeEnvironment.LOCAL || runtimeEnvironment == RuntimeEnvironment.DEV)
+		String[] userChoice = new String[1];
+		
+		String dialogTitle = getCoreStringsResourceBundle().getString("dialog.choice.title");
+		String headerText = getCoreStringsResourceBundle().getString("dialog.choice.selectServer.headerText");
+		String buttonText = getCoreStringsResourceBundle().getString("dialog.choice.selectServer.button");
+		String customChoiceLabel = getCoreStringsResourceBundle().getString("dialog.server.custom.label");
+		
+		CoreFxController coreFxController = Context.getCoreFxController();
+		boolean rtl = Context.getGuiLanguage().getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT;
+		
+		Function<String, Boolean> validator = url ->
 		{
-			WebserviceManager webserviceManager = Context.getWebserviceManager();
-			String oldBaseUrl = webserviceManager.getServerBaseUrl();
+			if(!url.contains("://")) return false;
 			
-			String[] urls = Context.getConfigManager().getProperty("dev.webservice.urls").split("[,\\s]+");
-			String[] userChoice = new String[1];
+			try
+			{
+				URL u = new URL(url);
+				u.toURI();
+			}
+			catch(Exception e)
+			{
+				return false;
+			}
+			
+			return true;
+		};
+		
+		if(uiThread) userChoice[0] = DialogUtils.showChoiceDialogWithExtraCustomText(coreFxController != null ? coreFxController.getStage() : null, coreFxController, dialogTitle,
+		                                                                             headerText, urls, oldBaseUrl, buttonText, rtl, customChoiceLabel, validator);
+		else
+		{
+			CountDownLatch latch = new CountDownLatch(1);
 			
 			Platform.runLater(() ->
 			{
-			    String dialogTitle = getCoreStringsResourceBundle().getString("dialog.choice.title");
-			    String headerText = getCoreStringsResourceBundle().getString(
-			    		                                                "dialog.choice.selectServer.headerText");
-			    String buttonText = getCoreStringsResourceBundle().getString("dialog.choice.selectServer.button");
 			
-			    CoreFxController coreFxController = Context.getCoreFxController();
-			    userChoice[0] = DialogUtils.showChoiceDialog(coreFxController.getStage(), coreFxController, dialogTitle,
-			                                                 headerText, urls, oldBaseUrl, buttonText,
-			                                                 false,
-			                                                 Context.getGuiLanguage().getNodeOrientation() ==
-				                                                                        NodeOrientation.RIGHT_TO_LEFT);
-				String baseUrl = userChoice[0];
-				if(baseUrl != null)
-				{
-					webserviceManager.changeServerBaseUrl(baseUrl);
-					LOGGER.info("change the server base URL from (" + oldBaseUrl + ") to (" + baseUrl + ")");
-				}
+			    userChoice[0] = DialogUtils.showChoiceDialogWithExtraCustomText(coreFxController != null ? coreFxController.getStage() : null, coreFxController, dialogTitle, headerText,
+			                                                                    urls, oldBaseUrl, buttonText, rtl, customChoiceLabel, validator);
+			    latch.countDown();
 			});
+			
+			try
+			{
+				latch.await();
+			}
+			catch(InterruptedException e)
+			{
+				e.printStackTrace();
+			}
 		}
+		
+		if(userChoice[0] == null) return null;
+		
+		URL finalUrl;
+		try
+		{
+			finalUrl = new URL(userChoice[0]);
+		}
+		catch(Exception e)
+		{
+			LOGGER.log(Level.SEVERE, "Not a valid URL = " + userChoice[0], e);
+			return null;
+		}
+		
+		return finalUrl.getProtocol() + "://" + finalUrl.getHost() + ":" + (finalUrl.getPort() == -1 ? finalUrl.getDefaultPort() : finalUrl.getPort());
 	}
 	
 	public static void openAppFolder()

@@ -1,5 +1,6 @@
 package sa.gov.nic.bio.bw.core.utils;
 
+import javafx.beans.binding.Bindings;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.NodeOrientation;
@@ -11,11 +12,13 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ChoiceDialog;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
@@ -32,12 +35,90 @@ import sa.gov.nic.bio.bw.core.Context;
 import sa.gov.nic.bio.bw.core.interfaces.IdleMonitorRegisterer;
 
 import java.net.URL;
+import java.util.Arrays;
 import java.util.Optional;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Function;
 
 public class DialogUtils
 {
+	public static String showChoiceDialogWithExtraCustomText(Window ownerWindow, IdleMonitorRegisterer idleMonitorRegisterer,
+	                                                         String title, String headerText, String[] choices, String selectedChoice,
+	                                                         String buttonConfirmText, boolean rtl, String customChoiceLabel, Function<String, Boolean> customChoiceValidator)
+	{
+		if(selectedChoice == null) selectedChoice = choices[0];
+		
+		var cboChoices = new ComboBox<String>();
+		cboChoices.getItems().addAll(choices);
+		cboChoices.getItems().addAll(customChoiceLabel);
+		
+		if(Arrays.stream(choices).anyMatch(selectedChoice::equalsIgnoreCase)) cboChoices.getSelectionModel().select(selectedChoice);
+		else cboChoices.getSelectionModel().select(0);
+		
+		var txtCustomChoice = new TextField();
+		txtCustomChoice.setNodeOrientation(NodeOrientation.LEFT_TO_RIGHT);
+		txtCustomChoice.disableProperty().bind(cboChoices.getSelectionModel().selectedItemProperty().isNotEqualTo(customChoiceLabel));
+		
+		cboChoices.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) ->
+		{
+			txtCustomChoice.clear();
+			
+			if(customChoiceLabel.equals(newValue)) txtCustomChoice.requestFocus();
+		});
+		
+		var vBox = new VBox(10.0);
+		vBox.getChildren().addAll(cboChoices, txtCustomChoice);
+		
+		var dialog = new Dialog<ButtonType>();
+		dialog.initOwner(ownerWindow);
+		dialog.initStyle(StageStyle.UTILITY);
+		dialog.setTitle(title);
+		dialog.setHeaderText(headerText);
+		dialog.getDialogPane().setContent(vBox);
+		dialog.setOnShown(event -> cboChoices.requestFocus());
+		
+		Scene scene = dialog.getDialogPane().getScene();
+		scene.setNodeOrientation(rtl ? NodeOrientation.RIGHT_TO_LEFT : NodeOrientation.LEFT_TO_RIGHT);
+		scene.addEventFilter(KeyEvent.KEY_PRESSED, event ->
+		{
+			if(AppConstants.SCENIC_VIEW_KEY_COMBINATION.match(event))
+			{
+				AppUtils.showScenicView(scene);
+				event.consume();
+			}
+		});
+		
+		var stage = (Stage) scene.getWindow();
+		stage.setAlwaysOnTop(true);
+		stage.sizeToScene();
+		
+		var buttonTypeConfirm = new ButtonType(buttonConfirmText, ButtonBar.ButtonData.OK_DONE);
+		dialog.getDialogPane().getButtonTypes().setAll(buttonTypeConfirm);
+		
+		var btnConfirm = (Button) dialog.getDialogPane().lookupButton(buttonTypeConfirm);
+		btnConfirm.setDefaultButton(true);
+		
+		btnConfirm.disableProperty().bind(txtCustomChoice.disabledProperty().not().and(
+						Bindings.createBooleanBinding(() -> customChoiceValidator != null && !customChoiceValidator.apply(txtCustomChoice.getText()), txtCustomChoice.textProperty())));
+		
+		if(idleMonitorRegisterer != null) idleMonitorRegisterer.registerStageForIdleMonitoring((Stage) scene.getWindow());
+		var optional = dialog.showAndWait();
+		if(idleMonitorRegisterer != null) idleMonitorRegisterer.unregisterStageForIdleMonitoring((Stage) scene.getWindow());
+		
+		var selectedButtonType = optional.orElse(null);
+		
+		if(selectedButtonType != buttonTypeConfirm) return null;
+		
+		String choice = cboChoices.getSelectionModel().getSelectedItem();
+		
+		if(choice == null) return null;
+		
+		if(choice.equals(customChoiceLabel)) return txtCustomChoice.getText();
+		
+		return choice;
+	}
+	
 	public static void showAlertDialog(AlertType alertType, Window ownerWindow,
 	                                   IdleMonitorRegisterer idleMonitorRegisterer, String title, String headerText,
 	                                   String contentText, String extraDetailsText, String buttonText,

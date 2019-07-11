@@ -1,14 +1,10 @@
 package sa.gov.nic.bio.bw.core.controllers;
 
 import javafx.fxml.FXML;
-import javafx.scene.Node;
-import javafx.scene.control.Button;
 import sa.gov.nic.bio.bw.core.interfaces.AppLogger;
-import sa.gov.nic.bio.bw.core.utils.GuiUtils;
 
 import java.net.URL;
 import java.util.ResourceBundle;
-import java.util.Set;
 
 /**
  * A base class for all JavaFX controllers.
@@ -39,22 +35,4 @@ public abstract class FxControllerBase implements AppLogger
 	 */
 	@FXML
 	protected void initialize(){}
-	
-	/**
-	 * Called after <code>initialize()</code>. It is used to apply global customization for all nodes in the GUI.
-	 *
-	 * @param rootNode the root node that is associated with this controller
-	 */
-	final void postInitialization(Node rootNode)
-	{
-		Set<Node> buttons = rootNode.lookupAll(".button");
-		buttons.forEach(node ->
-		{
-			if(node instanceof Button)
-			{
-				Button button = (Button) node;
-				GuiUtils.makeButtonClickableByPressingEnter(button);
-			}
-		});
-	}
 }

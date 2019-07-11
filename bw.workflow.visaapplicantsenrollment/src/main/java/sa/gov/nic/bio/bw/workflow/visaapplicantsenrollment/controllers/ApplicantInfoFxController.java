@@ -687,7 +687,7 @@ public class ApplicantInfoFxController extends WizardStepFxControllerBase
 				            String[] errorDetails = {"failed to scan the passport!",
 				                    "taskResponse errorCode = " + taskResponse.getErrorCode()};
 				            Context.getCoreFxController().showErrorDialog(errorCode, taskResponse.getException(),
-				                                                          errorDetails);
+				                                                          errorDetails, getTabIndex());
 				        }
 				    }
 				});
@@ -721,7 +721,7 @@ public class ApplicantInfoFxController extends WizardStepFxControllerBase
 				            dialogStage.close();
 				            String errorCode = VisaApplicantsEnrollmentErrorCodes.C010_00003.getCode();
 				            String[] errorDetails = {"failed to scan the passport!"};
-				            Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails);
+				            Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails, getTabIndex());
 				        }
 				    }
 				});

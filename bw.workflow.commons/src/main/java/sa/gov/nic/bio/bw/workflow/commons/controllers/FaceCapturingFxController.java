@@ -143,7 +143,7 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 					{
 						String errorCode = CommonsErrorCodes.C008_00017.getCode();
 						String[] errorDetails = {"failed to load the face 3D model fxml!"};
-						Context.getCoreFxController().showErrorDialog(errorCode, null, errorDetails);
+						Context.getCoreFxController().showErrorDialog(errorCode, null, errorDetails, getTabIndex());
 						
 						return;
 					}
@@ -152,7 +152,7 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 				{
 					String errorCode = CommonsErrorCodes.C008_00001.getCode();
 					String[] errorDetails = {"failed to load the face 3D model!"};
-					Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails);
+					Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails, getTabIndex());
 					
 					return;
 				}
@@ -323,7 +323,7 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 		{
 			String errorCode = CommonsErrorCodes.C008_00018.getCode();
 			String[] errorDetails = {"failed to encode the face image as Base64!"};
-			Context.getCoreFxController().showErrorDialog(errorCode, null, errorDetails);
+			Context.getCoreFxController().showErrorDialog(errorCode, null, errorDetails, getTabIndex());
 		}
 	}
 	
@@ -426,7 +426,7 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 			
 			    String errorCode = CommonsErrorCodes.C008_00002.getCode();
 			    String[] errorDetails = {"failed while starting the camera live preview!"};
-			    Context.getCoreFxController().showErrorDialog(errorCode, taskResponse.getException(), errorDetails);
+			    Context.getCoreFxController().showErrorDialog(errorCode, taskResponse.getException(), errorDetails, getTabIndex());
 		    }
 		});
 		task.setOnFailed(e ->
@@ -461,7 +461,7 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 				
 				String errorCode = CommonsErrorCodes.C008_00003.getCode();
 				String[] errorDetails = {"failed while starting the camera live preview!"};
-				Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails);
+				Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails, getTabIndex());
 			}
 		});
 		
@@ -529,7 +529,7 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 		
 		        String errorCode = CommonsErrorCodes.C008_00004.getCode();
 		        String[] errorDetails = {"failed while stopping the camera live preview!"};
-		        Context.getCoreFxController().showErrorDialog(errorCode, taskResponse.getException(), errorDetails);
+		        Context.getCoreFxController().showErrorDialog(errorCode, taskResponse.getException(), errorDetails, getTabIndex());
 		    }
 		});
 		task.setOnFailed(e ->
@@ -562,7 +562,7 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 		
 		        String errorCode = CommonsErrorCodes.C008_00005.getCode();
 		        String[] errorDetails = {"failed while stopping the camera live preview!"};
-		        Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails);
+		        Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails, getTabIndex());
 		    }
 		});
 		
@@ -806,7 +806,7 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 			
 			    String errorCode = CommonsErrorCodes.C008_00006.getCode();
 			    String[] errorDetails = {"failed while capturing the face!"};
-			    Context.getCoreFxController().showErrorDialog(errorCode, taskResponse.getException(), errorDetails);
+			    Context.getCoreFxController().showErrorDialog(errorCode, taskResponse.getException(), errorDetails, getTabIndex());
 		    }
 		});
 		task.setOnFailed(e ->
@@ -844,7 +844,7 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 				
 				String errorCode = CommonsErrorCodes.C008_00007.getCode();
 				String[] errorDetails = {"failed while capturing the face!"};
-				Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails);
+				Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails, getTabIndex());
 			}
 		});
 		

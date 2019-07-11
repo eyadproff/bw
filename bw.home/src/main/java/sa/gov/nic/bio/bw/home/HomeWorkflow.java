@@ -27,16 +27,14 @@ public class HomeWorkflow extends SinglePageWorkflowBase
 		{
 			try
 			{
-				boolean showErrorOnHome = false;
-				if(configurations != null) showErrorOnHome = "true".equals(configurations.get("showErrorOnHome"));
-				
-				setData(HomePaneFxController.class, "showErrorOnHome", showErrorOnHome);
 				renderUiAndWaitForUserInput(HomePaneFxController.class);
 			}
 			catch(Signal signal)
 			{
-				Context.getWorkflowManager().setCurrentWorkflow(null);
-				Context.getWorkflowManager().getUserTasks().clear();
+				if(signal.getSignalType() == SignalType.EXIT_WORKFLOW) throw signal;
+				
+				Context.getWorkflowManager().setCurrentWorkflow(null, getTabIndex());
+				Context.getWorkflowManager().getUserTasks(getTabIndex()).clear();
 				SignalType signalType = signal.getSignalType();
 				
 				outerLoop: while(true) switch(signalType)
@@ -52,7 +50,8 @@ public class HomeWorkflow extends SinglePageWorkflowBase
 						{
 							Constructor<?> declaredConstructor = menuWorkflowClass.getDeclaredConstructor();
 							subWorkflow = (Workflow) AppUtils.instantiateClassByReflection(declaredConstructor);
-							Context.getWorkflowManager().setCurrentWorkflow(subWorkflow);
+							subWorkflow.setTabIndex(getTabIndex());
+							Context.getWorkflowManager().setCurrentWorkflow(subWorkflow, getTabIndex());
 						}
 						catch(Exception e)
 						{
@@ -61,7 +60,7 @@ public class HomeWorkflow extends SinglePageWorkflowBase
 													 "menuWorkflowClass = " +
 													(menuWorkflowClass == null ? null : menuWorkflowClass.getName())};
 							
-							Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails);
+							Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails, getTabIndex());
 							break outerLoop;
 						}
 						
@@ -80,7 +79,7 @@ public class HomeWorkflow extends SinglePageWorkflowBase
 							String errorCode = HomeErrorCodes.C004_00002.getCode();
 							String[] errorDetails = {"The subWorkflow throws uncaught exception!",
 													 "subWorkflow type = " + subWorkflow.getClass().getName()};
-							Context.getCoreFxController().showErrorDialog(errorCode, t, errorDetails);
+							Context.getCoreFxController().showErrorDialog(errorCode, t, errorDetails, getTabIndex());
 							break outerLoop;
 						}
 						
@@ -89,7 +88,7 @@ public class HomeWorkflow extends SinglePageWorkflowBase
 						String[] errorDetails = {"The subWorkflow returns normally without a signal!",
 															"subWorkflow type = " + subWorkflow.getClass().getName()};
 						
-						Context.getCoreFxController().showErrorDialog(errorCode, null, errorDetails);
+						Context.getCoreFxController().showErrorDialog(errorCode, null, errorDetails, getTabIndex());
 						break outerLoop;
 					}
 				}

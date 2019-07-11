@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.ProgressIndicator?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.StackPane?>
-<?import org.controlsfx.control.NotificationPane?>
 <?import javafx.scene.layout.VBox?>
-
+<?import org.controlsfx.control.NotificationPane?>
+<?import org.controlsfx.glyphfont.Glyph?>
+<?import javafx.scene.control.Button?>
 <StackPane xmlns="http://javafx.com/javafx/11" xmlns:fx="http://javafx.com/fxml/1"
            fx:controller="sa.gov.nic.bio.bw.core.controllers.CoreFxController"
            styleClass="root-pane" stylesheets="@../css/style.css">
@@ -22,31 +25,21 @@
             </VBox>
         </left>
         <center>
-            <NotificationPane fx:id="idleNotifier">
+            <NotificationPane fx:id="idleNotifier" styleClass="gray-background">
                 <graphic>
                     <ImageView>
                         <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/icon_warning_32px.png"/>
                     </ImageView>
                 </graphic>
                 <content>
-                    <NotificationPane fx:id="notificationPane">
-                        <content>
-                            <StackPane>
-                                <VBox minWidth="0.0" minHeight="430.0">
-                                    <VBox fx:id="wizardPaneContainer"/>
-                                    <BorderPane fx:id="bodyPane" VBox.vgrow="ALWAYS">
-                                        <center>
-                                            <!-- default place holder -->
-                                            <ProgressIndicator maxHeight="25.0" maxWidth="25.0"/>
-                                        </center>
-                                    </BorderPane>
-                                </VBox>
-                                <StackPane fx:id="paneTransitionOverlay" styleClass="background-overlay-light" visible="false">
-                                    <ProgressIndicator maxHeight="25.0" maxWidth="25.0"/>
-                                </StackPane>
-                            </StackPane>
-                        </content>
-                    </NotificationPane>
+                    <TabPane fx:id="tabPane" styleClass="floating, main-tab-pane, hidden-tab-header" tabClosingPolicy="ALL_TABS">
+                        <Tab fx:id="tabMain" text="%tab.mainTab" closable="false"/>
+                        <Tab closable="false">
+                            <graphic>
+                                <Glyph fontFamily="FontAwesome" icon="plus"/>
+                            </graphic>
+                        </Tab>
+                    </TabPane>
                 </content>
             </NotificationPane>
         </center>

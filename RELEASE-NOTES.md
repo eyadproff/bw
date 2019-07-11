@@ -11,6 +11,34 @@ VERSION SCHEMA: vYYYY.MM.#SEQ
 
 ---
 
+## v2019.07.4
+
+- ENH: Make all workflow threads as daemon threads.
+- FIX: Open core.beans to gson in order to make BW runs on JDK12+.
+- FIX: Fix issue when selecting server in DEV environment.
+
+---
+
+## v2019.07.3
+
+- FIX: Fix a bug in interrupting threads on closing multiple tabs.
+
+---
+
+## v2019.07.2
+
+- NEW: Add multiple tabs feature that supports multiple workflows at the same time.
+
+---
+
+## v2019.07.1
+
+- ENH: Add the ability to configure custom server.
+- FIX: Fix the deploy task in gradle.
+- FIX: Fix NPE in CancelLatentWorkflow.
+
+---
+
 ## v2019.05.3
 
 - NEW: Add Delete-Criminal-Fingerprints workflow.

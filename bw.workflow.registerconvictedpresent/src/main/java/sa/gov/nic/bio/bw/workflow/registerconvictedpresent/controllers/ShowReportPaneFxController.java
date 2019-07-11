@@ -93,7 +93,7 @@ public class ShowReportPaneFxController extends WizardStepFxControllerBase
 			
 			    String errorCode = RegisterConvictedPresentErrorCodes.C007_00001.getCode();
 			    String[] errorDetails = {"failed while building the convicted report!"};
-			    Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails);
+			    Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails, getTabIndex());
 			});
 			Context.getExecutorService().submit(buildConvictedReportTask);
 		}
@@ -134,7 +134,7 @@ public class ShowReportPaneFxController extends WizardStepFxControllerBase
 						
 						String errorCode = RegisterConvictedPresentErrorCodes.C007_00002.getCode();
 						String[] errorDetails = {"failed while saving the convicted report as PDF!"};
-						Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails);
+						Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails, getTabIndex());
 					}
 				});
 				buildConvictedReportTask.setOnFailed(event ->
@@ -148,7 +148,7 @@ public class ShowReportPaneFxController extends WizardStepFxControllerBase
 				    
 				    String errorCode = RegisterConvictedPresentErrorCodes.C007_00003.getCode();
 				    String[] errorDetails = {"failed while building the convicted report!"};
-				    Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails);
+				    Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails, getTabIndex());
 				});
 				Context.getExecutorService().submit(buildConvictedReportTask);
 			}
@@ -167,7 +167,7 @@ public class ShowReportPaneFxController extends WizardStepFxControllerBase
 					
 					String errorCode = RegisterConvictedPresentErrorCodes.C007_00004.getCode();
 					String[] errorDetails = {"failed while saving the convicted report as PDF!"};
-					Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails);
+					Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails, getTabIndex());
 				}
 			}
 		}
@@ -194,7 +194,7 @@ public class ShowReportPaneFxController extends WizardStepFxControllerBase
 		    
 		    String errorCode = RegisterConvictedPresentErrorCodes.C007_00005.getCode();
 		    String[] errorDetails = {"failed while printing the convicted report!"};
-		    Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails);
+		    Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails, getTabIndex());
 		});
 		Context.getExecutorService().submit(printReportTask);
 	}
@@ -232,7 +232,7 @@ public class ShowReportPaneFxController extends WizardStepFxControllerBase
 		
 		    String errorCode = RegisterConvictedPresentErrorCodes.C007_00006.getCode();
 		    String[] errorDetails = {"failed while saving the convicted report as PDF!"};
-		    Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails);
+		    Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails, getTabIndex());
 		});
 		Context.getExecutorService().submit(printReportTaskAsPdfTask);
 	}

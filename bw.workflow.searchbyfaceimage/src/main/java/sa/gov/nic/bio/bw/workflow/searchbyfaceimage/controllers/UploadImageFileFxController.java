@@ -46,8 +46,8 @@ public class UploadImageFileFxController extends WizardStepFxControllerBase
 									resources.getString("fileChooser.selectImage.types"), "*.jpg");
 		fileChooser.getExtensionFilters().addAll(extFilterJPG);
 		
-		imagePane.maxWidthProperty().bind(Context.getCoreFxController().getBodyPane().widthProperty());
-		imagePane.maxHeightProperty().bind(Context.getCoreFxController().getBodyPane().heightProperty());
+		imagePane.maxWidthProperty().bind(Context.getCoreFxController().getBodyPane(getTabIndex()).widthProperty());
+		imagePane.maxHeightProperty().bind(Context.getCoreFxController().getBodyPane(getTabIndex()).heightProperty());
 		ivUploadedImage.fitWidthProperty().bind(imagePane.widthProperty().divide(1.8));
 		ivUploadedImage.fitHeightProperty().bind(imagePane.heightProperty().divide(1.8));
 		imagePane.autosize();
@@ -59,7 +59,7 @@ public class UploadImageFileFxController extends WizardStepFxControllerBase
 				Platform.runLater(() ->
 				{
 				    imagePane.autosize();
-				    Context.getCoreFxController().getBodyPane().autosize();
+				    Context.getCoreFxController().getBodyPane(getTabIndex()).autosize();
 				});
 			}
 		};
@@ -119,7 +119,7 @@ public class UploadImageFileFxController extends WizardStepFxControllerBase
 			{
 				String errorCode = SearchByFaceImageErrorCodes.C005_00002.getCode();
 				String[] errorDetails = {"Failed to retrieve the file size (" + selectedFile.getAbsolutePath() + ")!"};
-				Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails);
+				Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails, getTabIndex());
 			}
 			
 			Image image = new Image("file:///" + selectedFile.getAbsolutePath());
@@ -156,7 +156,7 @@ public class UploadImageFileFxController extends WizardStepFxControllerBase
 				{
 					String errorCode = SearchByFaceImageErrorCodes.C005_00003.getCode();
 					String[] errorDetails = {"Failed to load the image (" + selectedFile.getAbsolutePath() + ")!"};
-					Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails);
+					Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails, getTabIndex());
 				}
 			});
 			task.setOnFailed(event ->
@@ -164,7 +164,7 @@ public class UploadImageFileFxController extends WizardStepFxControllerBase
 				String errorCode = SearchByFaceImageErrorCodes.C005_00004.getCode();
 				String[] errorDetails = {"Failed to convert the selected file into an image (" +
 																				selectedFile.getAbsolutePath() + ")!"};
-				Context.getCoreFxController().showErrorDialog(errorCode, task.getException(), errorDetails);
+				Context.getCoreFxController().showErrorDialog(errorCode, task.getException(), errorDetails, getTabIndex());
 			});
 			
 			Context.getExecutorService().submit(task);
