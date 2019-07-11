@@ -27,8 +27,18 @@ public class BiometricsExceptionTypeFXController extends WizardStepFxControllerB
     @FXML
     private Button btnNext;
 
+    private boolean minusOneStep = false;
+
     @Override
     protected void onAttachedToScene() {
+        if (Type.FACE.equals(exceptionType)) {
+            rbFaceImage.setSelected(true);
+            rbFaceImage.requestFocus();
+            minusOneStep = true;
+        } else {
+            rbFingerPrints.setSelected(true);
+            rbFingerPrints.requestFocus();
+        }
         // go next on pressing ENTER on the radio buttons
         EventHandler<KeyEvent> eventHandler = event ->
         {
@@ -40,11 +50,12 @@ public class BiometricsExceptionTypeFXController extends WizardStepFxControllerB
         rbFingerPrints.addEventHandler(KeyEvent.KEY_PRESSED, eventHandler);
         rbFaceImage.addEventHandler(KeyEvent.KEY_PRESSED, eventHandler);
 
-        String FingerprintExceptionTitle = resources.getString("wizard.editMissingFingerPrint");
+        String ServiceTypeTitle = resources.getString("wizard.serviceType");
         String FaceImageExceptionTitle = resources.getString("wizard.FaceImage");
+        String AddOrEditFingerprintExceptionTitle = resources.getString("wizard.addOrEditMissingFingerPrint");
 
         // change the wizard-step-indicator upon changing the image source
-        int stepIndex = Context.getCoreFxController().getWizardPane().getStepIndexByTitle(FingerprintExceptionTitle);
+        int stepIndex = Context.getCoreFxController().getWizardPane().getStepIndexByTitle(ServiceTypeTitle);
         if (stepIndex < 0) stepIndex = Context.getCoreFxController().getWizardPane()
                 .getStepIndexByTitle(FaceImageExceptionTitle);
 
@@ -52,23 +63,34 @@ public class BiometricsExceptionTypeFXController extends WizardStepFxControllerB
 
         rbFingerPrints.selectedProperty().addListener((observable, oldValue, newValue) ->
         {
-            if (newValue)
-                Context.getCoreFxController().getWizardPane().updateStep(finalStepIndex, FingerprintExceptionTitle,
-                        "\\uf256");
-            else Context.getCoreFxController().getWizardPane().updateStep(finalStepIndex, FaceImageExceptionTitle,
-                    "user");
+            if (newValue) {
+                Context.getCoreFxController().getWizardPane().updateStep(finalStepIndex, ServiceTypeTitle,
+                        "question");
+                if (minusOneStep) {
+                    Context.getCoreFxController().getWizardPane().addStep(finalStepIndex + 1,
+                            AddOrEditFingerprintExceptionTitle,
+                            "\\uf256");
+                    minusOneStep = false;
+                } else {
+                    Context.getCoreFxController().getWizardPane().updateStep(finalStepIndex + 1,
+                            AddOrEditFingerprintExceptionTitle,
+                            "\\uf256");
+                }
+            } else {
+                Context.getCoreFxController().getWizardPane().updateStep(finalStepIndex, FaceImageExceptionTitle,
+                        "user");
+                if (!minusOneStep) {
+                    Context.getCoreFxController().getWizardPane().removeStep(finalStepIndex + 1);
+                    minusOneStep = true;
+                }
+
+            }
         });
 
         // if (hidePreviousButton != null) GuiUtils.showNode(btnPrevious, !hidePreviousButton);
 
         // load the old state, if exists
-        if (Type.FACE.equals(exceptionType)) {
-            rbFaceImage.setSelected(true);
-            rbFaceImage.requestFocus();
-        } else {
-            rbFingerPrints.setSelected(true);
-            rbFingerPrints.requestFocus();
-        }
+
     }
 
     @Override

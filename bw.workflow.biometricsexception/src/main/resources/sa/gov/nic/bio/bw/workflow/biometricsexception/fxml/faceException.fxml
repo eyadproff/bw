@@ -4,8 +4,10 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.MenuButton?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
@@ -22,65 +24,93 @@
                 <Insets bottom="10"/>
             </padding>
             <Button fx:id="btnPrevious" onAction="#onPreviousButtonClicked" text="%button.previous"/>
-            <Button fx:id="btnNext" onAction="#onNextButtonClicked" text="%button.next"/>
 
         </HBox>
     </bottom>
     <center>
-        <HBox maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="123.0" prefWidth="389.0"
-              BorderPane.alignment="CENTER">
-            <children>
-                <GridPane alignment="CENTER" hgap="5.0" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="113.0"
-                          prefWidth="394.0" styleClass="formBox">
-                    <columnConstraints>
-                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="142.0" minWidth="10.0" prefWidth="97.0"/>
-                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="216.0" minWidth="10.0" prefWidth="206.0"/>
-                    </columnConstraints>
-                    <rowConstraints>
-                        <RowConstraints maxHeight="94.0" minHeight="10.0" prefHeight="66.0" vgrow="SOMETIMES"/>
-                        <RowConstraints maxHeight="58.0" minHeight="10.0" prefHeight="47.0" vgrow="SOMETIMES"/>
-                    </rowConstraints>
-                    <children>
-                        <Label maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="16.0" prefWidth="114.0"
-                               text="%label.reason">
-                            <font>
-                                <Font name="System Bold" size="13.0"/>
-                            </font>
-                            <GridPane.margin>
-                                <Insets top="20.0"/>
-                            </GridPane.margin>
-                        </Label>
-                        <TextField fx:id="TxtfaceExcReason" prefHeight="22.0" prefWidth="202.0" promptText="%Cause"
-                                   visible="false" GridPane.columnIndex="1" GridPane.rowIndex="1">
-                            <font>
-                                <Font size="12.0"/>
-                            </font>
-                        </TextField>
-                        <!-- <MenuButton fx:id="SelectCause" mnemonicParsing="false" prefHeight="22.0" prefWidth="220.0" text="%Cause" GridPane.columnIndex="1">
+        <TabPane maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="185.0" prefWidth="352.0" styleClass="floating"
+                 BorderPane.alignment="CENTER">
+            <tabs>
+                <Tab closable="false" text="%AddFaceException">
+                    <content>
+                        <GridPane alignment="CENTER" hgap="5.0" maxHeight="-Infinity" maxWidth="-Infinity"
+                                  prefHeight="160.0" prefWidth="336.0">
+                            <columnConstraints>
+                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="142.0" minWidth="10.0" prefWidth="97.0"/>
+                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="216.0" minWidth="10.0"
+                                                   prefWidth="206.0"/>
+                            </columnConstraints>
+                            <rowConstraints>
+                                <RowConstraints maxHeight="94.0" minHeight="10.0" prefHeight="66.0" vgrow="SOMETIMES"/>
+                                <RowConstraints maxHeight="58.0" minHeight="10.0" prefHeight="47.0" vgrow="SOMETIMES"/>
+                                <RowConstraints maxHeight="58.0" minHeight="10.0" prefHeight="47.0" vgrow="SOMETIMES"/>
+                            </rowConstraints>
+                            <children>
+                                <Label alignment="CENTER_RIGHT" maxHeight="-Infinity" maxWidth="-Infinity"
+                                       prefHeight="16.0" prefWidth="114.0" text="%label.reason">
+                                    <font>
+                                        <Font name="System Bold" size="13.0"/>
+                                    </font>
+                                    <GridPane.margin>
+                                        <Insets top="20.0"/>
+                                    </GridPane.margin>
+                                </Label>
+                                <TextField fx:id="TxtfaceExcReason" prefHeight="22.0" prefWidth="202.0"
+                                           promptText="%Cause" visible="false" GridPane.columnIndex="1"
+                                           GridPane.rowIndex="1">
+                                    <font>
+                                        <Font size="12.0"/>
+                                    </font>
+                                </TextField>
+                                <!-- <MenuButton fx:id="SelectCause" mnemonicParsing="false" prefHeight="22.0" prefWidth="220.0" text="%Cause" GridPane.columnIndex="1">
 
-                             <GridPane.margin>
-                                 <Insets top="20.0" />
-                             </GridPane.margin>
-                             <font>
-                                 <Font size="12.0" />
-                             </font>
-                         </MenuButton>-->
-                        <ComboBox fx:id="ComboMenu" prefHeight="22.0" prefWidth="219.0" promptText="%Cause"
-                                  GridPane.columnIndex="1">
-                            <GridPane.margin>
-                                <Insets top="20.0"/>
-                            </GridPane.margin>
-                        </ComboBox>
+                                     <GridPane.margin>
+                                               <Insets top="20.0" />
+                                           </GridPane.margin>
+                                           <font>
+                                               <Font size="12.0" />
+                                           </font>
+                                       </MenuButton>-->
+                                <ComboBox fx:id="ComboMenu" prefHeight="22.0" prefWidth="190.0" promptText="%Cause"
+                                          GridPane.columnIndex="1">
+                                    <GridPane.margin>
+                                        <Insets top="20.0"/>
+                                    </GridPane.margin>
+                                </ComboBox>
+                                <Button mnemonicParsing="false" onAction="#onAddButtonClicked" text="%AddFaceException"
+                                        GridPane.columnIndex="1" GridPane.rowIndex="2"/>
 
-                    </children>
-                    <padding>
-                        <Insets left="20.0" right="20.0"/>
-                    </padding>
-                </GridPane>
-            </children>
-            <padding>
-                <Insets left="10.0" right="10.0" top="10.0"/>
-            </padding>
-        </HBox>
+                            </children>
+                            <padding>
+                                <Insets left="5.0" right="5.0"/>
+                            </padding>
+                        </GridPane>
+                    </content>
+                </Tab>
+                <Tab closable="false" text="%DeleteFaceException">
+                    <content>
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                            <children>
+                                <Label layoutX="23.0" layoutY="47.0" maxHeight="-Infinity" maxWidth="-Infinity"
+                                       prefHeight="16.0" prefWidth="90.0" text="%CauseText">
+                                    <font>
+                                        <Font name="System Bold" size="13.0"/>
+                                    </font>
+                                </Label>
+                                <Label fx:id="LblfaceExcReason" layoutX="137.0" layoutY="46.0" prefHeight="18.0"
+                                       prefWidth="183.0">
+                                    <font>
+                                        <Font size="13.0"/>
+                                    </font>
+                                </Label>
+                                <Button fx:id="DeleteButton" disable="true" layoutX="115.0" layoutY="121.0"
+                                        mnemonicParsing="false" onAction="#onDeleteButtonClicked"
+                                        text="%DeleteFaceException"/>
+                            </children>
+                        </AnchorPane>
+                    </content>
+                </Tab>
+            </tabs>
+        </TabPane>
     </center>
 </BorderPane>

@@ -1,26 +1,40 @@
 package sa.gov.nic.bio.bw.workflow.biometricsexception.controllers;
 
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.SVGPath;
+import sa.gov.nic.bio.bw.core.Context;
 import sa.gov.nic.bio.bw.core.controllers.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.core.utils.FxmlFile;
+import sa.gov.nic.bio.bw.core.utils.GuiLanguage;
 import sa.gov.nic.bio.bw.core.workflow.Input;
+import sa.gov.nic.bio.bw.core.workflow.Output;
+import sa.gov.nic.bio.bw.workflow.biometricsexception.beans.BioExclusion;
 import sa.gov.nic.bio.bw.workflow.biometricsexception.beans.Fingerprint;
 import sa.gov.nic.bio.bw.workflow.biometricsexception.beans.PersonFingerprints;
 import sa.gov.nic.bio.bw.workflow.commons.beans.NormalizedPersonInfo;
-import sa.gov.nic.bio.bw.workflow.commons.beans.PersonInfo;
+import sa.gov.nic.bio.bw.workflow.biometricsexception.controllers.ServiceTypeFXController.ServiceType;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @FxmlFile("reviewAndSubmit.fxml")
 public class ReviewAndSubmitFXController extends WizardStepFxControllerBase {
 
     @Input
-    private PersonFingerprints personfingerprints;
-    @Input
+    private PersonFingerprints Editedpersonfingerprints;
+    @Input(alwaysRequired = true)
     private NormalizedPersonInfo normalizedPersonInfo;
+    @Input(alwaysRequired = true)
+    private ServiceType serviceType;
+    @Input
+    private List<BioExclusion> BioExclusionsList;
 
+    @Output
+    private List<BioExclusion> EditedBioExclusionsList;
     @FXML
     private Label PersonID, PersonName;
 
@@ -106,47 +120,47 @@ public class ReviewAndSubmitFXController extends WizardStepFxControllerBase {
     private void checkMissingfingers() {
         int right = 0;
         int left = 0;
-        if (personfingerprints.getRThumb().isMissOrNot()) {
+        if (Editedpersonfingerprints.getRThumb().isMissOrNot()) {
             right++;
-            displayMissingFinger(personfingerprints.getRThumb(), VRightThumb, svgRightThumb, RThumbCouse, RThumbStatus);
+            displayMissingFinger(Editedpersonfingerprints.getRThumb(), VRightThumb, svgRightThumb, RThumbCouse, RThumbStatus);
         }
-        if (personfingerprints.getRIndex().isMissOrNot()) {
+        if (Editedpersonfingerprints.getRIndex().isMissOrNot()) {
             right++;
 
-            displayMissingFinger(personfingerprints.getRIndex(), VRightIndexFinger, svgRightIndex, RIndexCouse, RIndexStatus);
+            displayMissingFinger(Editedpersonfingerprints.getRIndex(), VRightIndexFinger, svgRightIndex, RIndexCouse, RIndexStatus);
         }
-        if (personfingerprints.getRMiddle().isMissOrNot()) {
+        if (Editedpersonfingerprints.getRMiddle().isMissOrNot()) {
             right++;
-            displayMissingFinger(personfingerprints.getRMiddle(), VRightMiddleFinger, svgRightMiddle, RMiddleCouse, RMiddleStatus);
+            displayMissingFinger(Editedpersonfingerprints.getRMiddle(), VRightMiddleFinger, svgRightMiddle, RMiddleCouse, RMiddleStatus);
         }
-        if (personfingerprints.getRRing().isMissOrNot()) {
+        if (Editedpersonfingerprints.getRRing().isMissOrNot()) {
             right++;
-            displayMissingFinger(personfingerprints.getRRing(), VRightRingFinger, svgRightRing, RRingCouse, RRingStatus);
+            displayMissingFinger(Editedpersonfingerprints.getRRing(), VRightRingFinger, svgRightRing, RRingCouse, RRingStatus);
         }
-        if (personfingerprints.getRLittle().isMissOrNot()) {
+        if (Editedpersonfingerprints.getRLittle().isMissOrNot()) {
             right++;
-            displayMissingFinger(personfingerprints.getRLittle(), VRightLittleFinger, svgRightLittle, RLittleCouse, RLittleStatus);
+            displayMissingFinger(Editedpersonfingerprints.getRLittle(), VRightLittleFinger, svgRightLittle, RLittleCouse, RLittleStatus);
         }
 
-        if (personfingerprints.getLThumb().isMissOrNot()) {
+        if (Editedpersonfingerprints.getLThumb().isMissOrNot()) {
             left++;
-            displayMissingFinger(personfingerprints.getLThumb(), VLeftThumb, svgLeftThumb, LThumbCouse, LThumbStatus);
+            displayMissingFinger(Editedpersonfingerprints.getLThumb(), VLeftThumb, svgLeftThumb, LThumbCouse, LThumbStatus);
         }
-        if (personfingerprints.getLIndex().isMissOrNot()) {
+        if (Editedpersonfingerprints.getLIndex().isMissOrNot()) {
             left++;
-            displayMissingFinger(personfingerprints.getLIndex(), VLeftIndexFinger, svgLeftIndex, LIndexCouse, LIndexStatus);
+            displayMissingFinger(Editedpersonfingerprints.getLIndex(), VLeftIndexFinger, svgLeftIndex, LIndexCouse, LIndexStatus);
         }
-        if (personfingerprints.getLMiddle().isMissOrNot()) {
+        if (Editedpersonfingerprints.getLMiddle().isMissOrNot()) {
             left++;
-            displayMissingFinger(personfingerprints.getLMiddle(), VLeftMiddleFinger, svgLeftMiddle, LMiddleCouse, LMiddleStatus);
+            displayMissingFinger(Editedpersonfingerprints.getLMiddle(), VLeftMiddleFinger, svgLeftMiddle, LMiddleCouse, LMiddleStatus);
         }
-        if (personfingerprints.getLRing().isMissOrNot()) {
+        if (Editedpersonfingerprints.getLRing().isMissOrNot()) {
             left++;
-            displayMissingFinger(personfingerprints.getLRing(), VLeftRingFinger, svgLeftRing, LRingCouse, LRingStatus);
+            displayMissingFinger(Editedpersonfingerprints.getLRing(), VLeftRingFinger, svgLeftRing, LRingCouse, LRingStatus);
         }
-        if (personfingerprints.getLLittle().isMissOrNot()) {
+        if (Editedpersonfingerprints.getLLittle().isMissOrNot()) {
             left++;
-            displayMissingFinger(personfingerprints.getLLittle(), VLeftLittleFinger, svgLeftLittle, LLittleCouse, LLittleStatus);
+            displayMissingFinger(Editedpersonfingerprints.getLLittle(), VLeftLittleFinger, svgLeftLittle, LLittleCouse, LLittleStatus);
         }
         if (right == 0) {
             RightMExist.setVisible(true);
@@ -168,7 +182,12 @@ public class ReviewAndSubmitFXController extends WizardStepFxControllerBase {
         svg.setVisible(true);
         svg.setManaged(true);
 
-        Couse.setText(finger.getCouse());
+        if (finger.getCause().getCauseId() == 1)
+            Couse.setText(finger.getDescription());
+        else {
+            if (Context.getGuiLanguage() == GuiLanguage.ARABIC) Couse.setText(finger.getCause().getArabicText());
+            else Couse.setText(finger.getCause().getEnglishText());
+        }
 
         if (finger.getStatus() == 0)
             Status.setText(resources.getString("Permanent"));
@@ -177,4 +196,15 @@ public class ReviewAndSubmitFXController extends WizardStepFxControllerBase {
 
     }
 
+    @Override
+    protected void onNextButtonClicked(ActionEvent actionEvent) {
+        if (serviceType.equals(ServiceType.ADD_OR_EDIT_FINGERPRINTS)) {
+            EditedBioExclusionsList = new ArrayList<BioExclusion>();
+            for (BioExclusion bioex : BioExclusionsList) {
+                bioex.setSamisId(normalizedPersonInfo.getPersonId());
+                EditedBioExclusionsList.add(bioex);
+            }
+        }
+        super.onNextButtonClicked(actionEvent);
+    }
 }

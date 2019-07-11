@@ -750,7 +750,7 @@
                 <Insets bottom="10"/>
             </padding>
             <Button fx:id="btnPrevious" onAction="#onPreviousButtonClicked" text="%button.previous"/>
-            <Button fx:id="btnNext" onAction="#onNextButtonClicked" text="%button.next"/>
+            <Button fx:id="btnNext" disable="true" onAction="#onNextButtonClicked" text="%button.next"/>
 
         </HBox>
     </bottom>

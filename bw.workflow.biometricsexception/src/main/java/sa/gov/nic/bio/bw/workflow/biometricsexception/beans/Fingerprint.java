@@ -2,9 +2,13 @@ package sa.gov.nic.bio.bw.workflow.biometricsexception.beans;
 
 public class Fingerprint {
 
-    private boolean missOrNot;
-    private String Couse;
+    private boolean missOrNot = false;
+    private Cause cause;
     private int Status;
+    private int Position;
+    private Integer seqNum;
+    private Boolean alreadyAdded = false;
+    private String description;
 
 
     public boolean isMissOrNot() {
@@ -15,12 +19,12 @@ public class Fingerprint {
         this.missOrNot = missOrNot;
     }
 
-    public String getCouse() {
-        return Couse;
+    public Cause getCause() {
+        return cause;
     }
 
-    public void setCouse(String couse) {
-        Couse = couse;
+    public void setCause(Cause cause) {
+        this.cause = cause;
     }
 
     public int getStatus() {
@@ -29,5 +33,37 @@ public class Fingerprint {
 
     public void setStatus(int status) {
         Status = status;
+    }
+
+    public int getPosition() {
+        return Position;
+    }
+
+    public void setPosition(int position) {
+        Position = position;
+    }
+
+    public Integer getSeqNum() {
+        return seqNum;
+    }
+
+    public void setSeqNum(Integer SeqNum) {
+        this.seqNum = seqNum;
+    }
+
+    public Boolean getAlreadyAdded() {
+        return alreadyAdded;
+    }
+
+    public void setAlreadyAdded(Boolean alreadyAdded) {
+        this.alreadyAdded = alreadyAdded;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

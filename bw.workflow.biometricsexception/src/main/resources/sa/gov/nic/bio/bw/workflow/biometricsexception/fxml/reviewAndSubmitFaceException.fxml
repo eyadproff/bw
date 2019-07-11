@@ -81,7 +81,8 @@
                     <children>
                         <VBox alignment="CENTER_LEFT" prefHeight="77.0" prefWidth="136.0" spacing="20.0">
                             <children>
-                                <Label alignment="CENTER_RIGHT" prefHeight="18.0" prefWidth="130.0" text="%CauseText">
+                                <Label fx:id="LblCause" alignment="CENTER_RIGHT" prefHeight="18.0" prefWidth="130.0"
+                                       text="%CauseText">
                                     <font>
                                         <Font name="System Bold" size="13.0"/>
                                     </font>
