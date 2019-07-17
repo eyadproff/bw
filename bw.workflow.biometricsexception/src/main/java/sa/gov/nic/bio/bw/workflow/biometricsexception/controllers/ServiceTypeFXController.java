@@ -43,8 +43,8 @@ public class ServiceTypeFXController extends WizardStepFxControllerBase {
         String DeleteFingerprintExceptionTitle = resources.getString("wizard.deleteMissingFingerPrint");
 
         // change the wizard-step-indicator upon changing the image source
-        int stepIndex = Context.getCoreFxController().getWizardPane().getStepIndexByTitle(AddOrEditFingerprintExceptionTitle);
-        if (stepIndex < 0) stepIndex = Context.getCoreFxController().getWizardPane()
+        int stepIndex = Context.getCoreFxController().getWizardPane(getTabIndex()).getStepIndexByTitle(AddOrEditFingerprintExceptionTitle);
+        if (stepIndex < 0) stepIndex = Context.getCoreFxController().getWizardPane(getTabIndex())
                 .getStepIndexByTitle(DeleteFingerprintExceptionTitle);
 
         final int finalStepIndex = stepIndex;
@@ -52,10 +52,10 @@ public class ServiceTypeFXController extends WizardStepFxControllerBase {
         rbAddOrEdit.selectedProperty().addListener((observable, oldValue, newValue) ->
         {
             if (newValue)
-                Context.getCoreFxController().getWizardPane().updateStep(finalStepIndex, AddOrEditFingerprintExceptionTitle,
+                Context.getCoreFxController().getWizardPane(getTabIndex()).updateStep(finalStepIndex, AddOrEditFingerprintExceptionTitle,
                         "\\uf256");
             else
-                Context.getCoreFxController().getWizardPane().updateStep(finalStepIndex, DeleteFingerprintExceptionTitle,
+                Context.getCoreFxController().getWizardPane(getTabIndex()).updateStep(finalStepIndex, DeleteFingerprintExceptionTitle,
                         "\\uf256");
         });
 

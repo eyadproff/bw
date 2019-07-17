@@ -43,7 +43,10 @@ public class FaceExceptionFXController extends WizardStepFxControllerBase {
     @Output
     private List<Cause> causesFC;
 
+    // to show
+    @Output
     private Cause Reason;
+    @Output
     private String Descrption;
 
     @FXML
@@ -56,13 +59,12 @@ public class FaceExceptionFXController extends WizardStepFxControllerBase {
     private Button DeleteButton;
 
     @SuppressWarnings("unchecked")
-    private List<Cause> causes;
+    private List<Cause> causes = (List<Cause>) Context.getUserSession().getAttribute(CausesLookup.KEY);
 
 
     @Override
     protected void onAttachedToScene() {
 
-        causes = (List<Cause>) Context.getUserSession().getAttribute(CausesLookup.KEY);
 
         AddItemsToMenu();
 
@@ -71,7 +73,10 @@ public class FaceExceptionFXController extends WizardStepFxControllerBase {
                 for (Cause causeFC : causes) {
 
                     if (causeFC.getCauseId() == FaceException.getCasueId()) {
-                        Reason = causeFC;
+                        Reason = new Cause();
+                        Reason.setCauseId(causeFC.getCauseId());
+                        Reason.setDescriptionAr(causeFC.getArabicText());
+                        Reason.setDescriptionEn(causeFC.getEnglishText());
                         if (FaceException.getCasueId() == 1) {
                             Descrption = FaceException.getDescription();
                         }
@@ -82,10 +87,9 @@ public class FaceExceptionFXController extends WizardStepFxControllerBase {
             }
         }
 
-        if (Reason != null) {
+        if (Reason != null)
             uploadReason();
 
-        }
         // for delete pane
         if (FaceException != null) {
             for (Cause causeFC : causes) {
@@ -107,7 +111,10 @@ public class FaceExceptionFXController extends WizardStepFxControllerBase {
     }
 
     private void AddItemsToMenu() {
-        GuiUtils.addAutoCompletionSupportToComboBox(ComboMenu, causes);
+        List<Cause> CauseFEx = new ArrayList<Cause>();
+        CauseFEx.addAll(causes);
+        CauseFEx.removeIf(cause -> cause.getCauseId() == 2);
+        GuiUtils.addAutoCompletionSupportToComboBox(ComboMenu, CauseFEx);
 
         Consumer<ComboBoxItem<Cause>> consumer = item ->
         {
@@ -186,11 +193,34 @@ public class FaceExceptionFXController extends WizardStepFxControllerBase {
                 return;
             } else {
                 Descrption = TxtfaceExcReason.getText();
-               // EditFaceException.setCasueId(1);
+                // EditFaceException.setCasueId(1);
             }
         }
+        if (FaceException != null) {
+            if (FaceException.getCasueId() == ComboMenu.getValue().getItem().getCauseId()) {
+                if (FaceException.getCasueId() == 1) {
+                    if (FaceException.getDescription().equals(Descrption)) {
+                        showWarningNotification(resources.getString("NoEditOnFaceExc"));
+                        return;
+                    } else {
+                        SeqNumbersList = new ArrayList<Integer>();
+                        SeqNumbersList.add(FaceException.getSeqNum());
+                    }
+                } else {
+                    showWarningNotification(resources.getString("NoEditOnFaceExc"));
+                    return;
+                }
+            } else {
+                SeqNumbersList = new ArrayList<Integer>();
+                SeqNumbersList.add(FaceException.getSeqNum());
+            }
 
-        Reason = ComboMenu.getValue().getItem();
+        }
+
+        Reason = new Cause();
+        Reason.setCauseId(ComboMenu.getValue().getItem().getCauseId());
+        Reason.setDescriptionEn(ComboMenu.getValue().getItem().getEnglishText());
+        Reason.setDescriptionAr(ComboMenu.getValue().getItem().getArabicText());
         EditFaceException.setCasueId(Reason.getCauseId());
 
         if (EditFaceException.getCasueId() == 1)
@@ -200,6 +230,8 @@ public class FaceExceptionFXController extends WizardStepFxControllerBase {
         typeFaceService = TypeFaceService.ADD_OR_EDIT;
 
         causesFC = causes;
+
+
         onNextButtonClicked(actionEvent);
 
     }
@@ -219,22 +251,26 @@ public class FaceExceptionFXController extends WizardStepFxControllerBase {
 
     @Override
     protected void onGoingPrevious(Map<String, Object> uiDataMap) {
-
-        //lookup
-        if (FaceException != null)
+        if (FaceException != null) {
             for (Cause causeFC : causes) {
 
                 if (causeFC.getCauseId() == FaceException.getCasueId()) {
+
+                    Reason = new Cause();
+                    Reason.setCauseId(causeFC.getCauseId());
+                    Reason.setDescriptionAr(causeFC.getArabicText());
+                    Reason.setDescriptionEn(causeFC.getEnglishText());
                     if (FaceException.getCasueId() == 1) {
                         Descrption = FaceException.getDescription();
-                    } else {
-                        Reason = causeFC;
                     }
                     break;
                 }
             }
-        else
+
+        } else
             Reason = null;
+
+
     }
 
     public enum TypeFaceService {

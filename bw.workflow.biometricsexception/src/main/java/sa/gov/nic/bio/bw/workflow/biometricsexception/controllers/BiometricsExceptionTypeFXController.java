@@ -55,8 +55,8 @@ public class BiometricsExceptionTypeFXController extends WizardStepFxControllerB
         String AddOrEditFingerprintExceptionTitle = resources.getString("wizard.addOrEditMissingFingerPrint");
 
         // change the wizard-step-indicator upon changing the image source
-        int stepIndex = Context.getCoreFxController().getWizardPane().getStepIndexByTitle(ServiceTypeTitle);
-        if (stepIndex < 0) stepIndex = Context.getCoreFxController().getWizardPane()
+        int stepIndex = Context.getCoreFxController().getWizardPane(getTabIndex()).getStepIndexByTitle(ServiceTypeTitle);
+        if (stepIndex < 0) stepIndex = Context.getCoreFxController().getWizardPane(getTabIndex())
                 .getStepIndexByTitle(FaceImageExceptionTitle);
 
         final int finalStepIndex = stepIndex;
@@ -64,23 +64,23 @@ public class BiometricsExceptionTypeFXController extends WizardStepFxControllerB
         rbFingerPrints.selectedProperty().addListener((observable, oldValue, newValue) ->
         {
             if (newValue) {
-                Context.getCoreFxController().getWizardPane().updateStep(finalStepIndex, ServiceTypeTitle,
+                Context.getCoreFxController().getWizardPane(getTabIndex()).updateStep(finalStepIndex, ServiceTypeTitle,
                         "question");
                 if (minusOneStep) {
-                    Context.getCoreFxController().getWizardPane().addStep(finalStepIndex + 1,
+                    Context.getCoreFxController().getWizardPane(getTabIndex()).addStep(finalStepIndex + 1,
                             AddOrEditFingerprintExceptionTitle,
                             "\\uf256");
                     minusOneStep = false;
                 } else {
-                    Context.getCoreFxController().getWizardPane().updateStep(finalStepIndex + 1,
+                    Context.getCoreFxController().getWizardPane(getTabIndex()).updateStep(finalStepIndex + 1,
                             AddOrEditFingerprintExceptionTitle,
                             "\\uf256");
                 }
             } else {
-                Context.getCoreFxController().getWizardPane().updateStep(finalStepIndex, FaceImageExceptionTitle,
+                Context.getCoreFxController().getWizardPane(getTabIndex()).updateStep(finalStepIndex, FaceImageExceptionTitle,
                         "user");
                 if (!minusOneStep) {
-                    Context.getCoreFxController().getWizardPane().removeStep(finalStepIndex + 1);
+                    Context.getCoreFxController().getWizardPane(getTabIndex()).removeStep(finalStepIndex + 1);
                     minusOneStep = true;
                 }
 

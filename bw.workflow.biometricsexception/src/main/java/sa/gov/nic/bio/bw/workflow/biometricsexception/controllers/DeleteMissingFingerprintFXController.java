@@ -195,6 +195,7 @@ public class DeleteMissingFingerprintFXController extends WizardStepFxController
 
                 fingerprint.setPosition(position);
                 fingerprint.setSeqNum(bioEx.getSeqNum());
+
                 fingerprint.setAlreadyAdded(true);
 
                 return fingerprint;
@@ -457,14 +458,14 @@ public class DeleteMissingFingerprintFXController extends WizardStepFxController
         } else Editedpersonfingerprints.setLMiddle(personfingerprints.getLMiddle());
 
         if (chbLeftRing.isSelected()) {
-            SeqNumbersList.add(personfingerprints.getLLittle().getSeqNum());
+            SeqNumbersList.add(personfingerprints.getLRing().getSeqNum());
             Editedpersonfingerprints.setLRing(new Fingerprint());
-        } else Editedpersonfingerprints.setLLittle(personfingerprints.getLLittle());
+        } else Editedpersonfingerprints.setLRing(personfingerprints.getLRing());
 
         if (chbLeftLittle.isSelected()) {
-            SeqNumbersList.add(personfingerprints.getLRing().getSeqNum());
+            SeqNumbersList.add(personfingerprints.getLLittle().getSeqNum());
             Editedpersonfingerprints.setLLittle(new Fingerprint());
-        } else Editedpersonfingerprints.setLRing(personfingerprints.getLRing());
+        } else Editedpersonfingerprints.setLLittle(personfingerprints.getLLittle());
 
 
         super.onNextButtonClicked(actionEvent);

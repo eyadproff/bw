@@ -20,8 +20,8 @@
     <center>
         <VBox alignment="CENTER">
             <children>
-                <HBox alignment="CENTER" prefHeight="93.0" prefWidth="600.0">
-                    <GridPane alignment="CENTER_LEFT" hgap="20" prefHeight="93.0" prefWidth="386.0" styleClass="formBox"
+                <HBox alignment="CENTER" prefHeight="93.0" prefWidth="700.0">
+                    <GridPane alignment="CENTER_LEFT" hgap="20" prefHeight="93.0" prefWidth="400.0" styleClass="formBox"
                               vgap="5">
                         <padding>
                             <Insets bottom="20" left="20" right="20" top="20"/>

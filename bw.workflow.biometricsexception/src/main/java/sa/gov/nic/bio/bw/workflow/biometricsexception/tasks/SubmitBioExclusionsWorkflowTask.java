@@ -9,6 +9,7 @@ import sa.gov.nic.bio.bw.core.workflow.Output;
 import sa.gov.nic.bio.bw.core.workflow.Signal;
 import sa.gov.nic.bio.bw.core.workflow.WorkflowTask;
 import sa.gov.nic.bio.bw.workflow.biometricsexception.beans.BioExclusion;
+import sa.gov.nic.bio.bw.workflow.biometricsexception.beans.SubmissionAndDeletionResponse;
 import sa.gov.nic.bio.bw.workflow.biometricsexception.webservice.BioExclusionAPI;
 import sa.gov.nic.bio.commons.TaskResponse;
 
@@ -23,11 +24,10 @@ public class SubmitBioExclusionsWorkflowTask extends WorkflowTask {
     @Override
     public void execute() throws Signal {
         BioExclusionAPI bioExclusionAPI = Context.getWebserviceManager().getApi(BioExclusionAPI.class);
-        Call<Long> apiCall = bioExclusionAPI.submitBioExclusions(AppUtils.toJson(EditedBioExclusionsList));
-        TaskResponse<Long> taskResponse = Context.getWebserviceManager().executeApi(apiCall);
-
+        Call<SubmissionAndDeletionResponse> apiCall = bioExclusionAPI.submitBioExclusions(AppUtils.toJson(EditedBioExclusionsList));
+        TaskResponse<SubmissionAndDeletionResponse> taskResponse = Context.getWebserviceManager().executeApi(apiCall);
         resetWorkflowStepIfNegativeOrNullTaskResponse(taskResponse);
 
-        Tcn = taskResponse.getResult();
+        Tcn = taskResponse.getResult().getTcn();
     }
 }

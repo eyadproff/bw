@@ -48,7 +48,7 @@ public class Fingerprint {
     }
 
     public void setSeqNum(Integer SeqNum) {
-        this.seqNum = seqNum;
+        this.seqNum = SeqNum;
     }
 
     public Boolean getAlreadyAdded() {
