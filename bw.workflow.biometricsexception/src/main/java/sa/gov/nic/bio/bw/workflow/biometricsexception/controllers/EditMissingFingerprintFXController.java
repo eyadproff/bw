@@ -334,8 +334,11 @@ public class EditMissingFingerprintFXController extends WizardStepFxControllerBa
         finger.setMissOrNot(true);
         if (Couse.getValue().getItem().getCauseId() != 1) {
             finger.setCause(Couse.getValue().getItem());
-
-            finger.setStatus(1);
+            //if Turncate then status =0
+            if (Couse.getValue().getItem().getCauseId() == 2) {
+                finger.setStatus(0);
+            } else
+                finger.setStatus(1);
         } else {
             finger.setCause(Couse.getValue().getItem());
             finger.setDescription(CouseOther.getText());
