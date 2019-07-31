@@ -29,5 +29,7 @@ public class GetDeporteeInfoByIdWorkflowTask extends WorkflowTask
 		
 		resetWorkflowStepIfNegativeOrNullTaskResponse(taskResponse);
 		deporteeInfo = taskResponse.getResult();
+
+		if(deporteeInfo.getSamisId() == null || deporteeInfo.getSamisId() == 0L) deporteeInfo.setSamisId(deporteeId);
 	}
 }

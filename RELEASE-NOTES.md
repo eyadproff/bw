@@ -11,6 +11,12 @@ VERSION SCHEMA: vYYYY.MM.#SEQ
 
 ---
 
+## v2019.08.1
+
+- CHN: If the returned SAMIS ID of DeporteeInfo is 0, set it to deportee ID.
+
+---
+
 ## v2019.07.4
 
 - ENH: Make all workflow threads as daemon threads.
