@@ -786,6 +786,8 @@ public class GuiUtils implements AppLogger
 		
 		fingerprintBase64Images.forEach((position, fingerprintImage) ->
 		{
+			if(fingerprintImage == null) return;
+
 			ImageView imageView = imageViewMap.get(position);
 		    String dialogTitle = dialogTitleMap.get(position);
 		
