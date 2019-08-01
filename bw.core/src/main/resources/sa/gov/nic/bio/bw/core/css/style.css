@@ -269,6 +269,10 @@
     -fx-font-weight: bold;
 }
 
+.blue-label {
+    -fx-text-fill: #00a6ff;
+}
+
 .small-font {
     -fx-font-size: 11;
 }

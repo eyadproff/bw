@@ -15,6 +15,7 @@ VERSION SCHEMA: vYYYY.MM.#SEQ
 
 - CHN: If the returned SAMIS ID of DeporteeInfo is 0, set it to deportee ID.
 - FIX: NPE if the fingerprint returned from the middleware is null.
+- CHN: Show Naturalized Saudi labels.
 
 ---
 

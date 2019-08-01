@@ -100,6 +100,7 @@ public class InquiryByFingerprintsResultPaneFxController extends WizardStepFxCon
 	@FXML private Label lblDocumentExpiryDate;
 	@FXML private Label lblCivilBiometricsId;
 	@FXML private Label lblCriminalBiometricsId;
+	@FXML private Label lblNaturalizedSaudi;
 	@FXML private Button btnShowReport;
 	@FXML private Button btnStartOver;
 	@FXML private Button btnRegisterUnknownPerson;
@@ -396,6 +397,11 @@ public class InquiryByFingerprintsResultPaneFxController extends WizardStepFxCon
 							   lblDocumentId, lblDocumentType, lblDocumentIssuanceDate, lblDocumentExpiryDate);
 		
 		normalizedPersonInfo = new NormalizedPersonInfo(personInfo);
+
+		GuiUtils.showNode(lblNaturalizedSaudi, normalizedPersonInfo.getNationality() != null &&
+							normalizedPersonInfo.getNationality().getCode() > 0 &&
+							!"SAU".equalsIgnoreCase(normalizedPersonInfo.getNationality().getMofaNationalityCode()) &&
+							String.valueOf(normalizedPersonInfo.getPersonId()).startsWith("1"));
 		
 		String facePhotoBase64 = normalizedPersonInfo.getFacePhotoBase64();
 		Gender gender = normalizedPersonInfo.getGender();

@@ -163,7 +163,20 @@ public class BuildConvictedReportTask extends Task<JasperPrint>
 			}
 		}
 		
-		if(countryBean != null) params.put(PARAMETER_NATIONALITY, countryBean.getDescriptionAR());
+		if(countryBean != null)
+		{
+			String nationalityText = countryBean.getArabicText();
+
+			if(countryBean.getCode() > 0 && !"SAU".equalsIgnoreCase(countryBean.getMofaNationalityCode()) &&
+			   String.valueOf(convictedReport.getSubjSamisId()).startsWith("1"))
+			{
+				// \u202B is used to render the brackets correctly
+				nationalityText += " \u202B" + AppUtils.getCoreStringsResourceBundle(Locales.SAUDI_AR_LOCALE)
+												 .getString("label.naturalizedSaudi");
+			}
+
+			params.put(PARAMETER_NATIONALITY, nationalityText);
+		}
 		else params.put(PARAMETER_NATIONALITY, AppUtils.getCoreStringsResourceBundle(Locales.SAUDI_AR_LOCALE)
 																		.getString("combobox.unknownNationality"));
 		

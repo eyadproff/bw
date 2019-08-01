@@ -91,8 +91,6 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 	@Override
 	protected void onAttachedToScene()
 	{
-		
-		
 		Name name = new Name(firstName, fatherName, grandfatherName, familyName, null,
 		                     null, null, null);
 		
@@ -108,7 +106,7 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 				                                                AppUtils.gregorianDateToSeconds(arrestDate));
 		
 		UserInfo userInfo = (UserInfo) Context.getUserSession().getAttribute("userInfo");
-		
+
 		convictedReport = new ConvictedReport(null, null, criminalBiometricsId, name,
 		                                      nationality.getCode(), nationality.getMofaNationalityCode(),
 		                                      occupation, gender.name().substring(0, 1), // "M" or "F"
