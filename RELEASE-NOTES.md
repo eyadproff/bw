@@ -17,6 +17,7 @@ VERSION SCHEMA: vYYYY.MM.#SEQ
 - FIX: NPE if the fingerprint returned from the middleware is null.
 - CHN: Show Naturalized Saudi labels.
 - NEW: Fingerprint inquiry report.
+- FIX: When data retrieved by criminal-hit only, the data does not persist upon navigate forward and backward.
 
 ---
 

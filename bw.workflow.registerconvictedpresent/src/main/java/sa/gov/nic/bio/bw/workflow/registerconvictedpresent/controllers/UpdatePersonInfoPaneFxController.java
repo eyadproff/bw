@@ -246,7 +246,8 @@ public class UpdatePersonInfoPaneFxController extends WizardStepFxControllerBase
 			documentIssuanceDate = normalizedPersonInfo.getDocumentIssuanceDate();
 			documentExpiryDate = normalizedPersonInfo.getDocumentExpiryDate();
 		}
-		
+
+		// civil hit or present
 		boolean disable = (civilHit != null && civilHit) || cameraFacePhotoBase64 != null;
 		
 		if(cameraFacePhotoBase64 != null)
@@ -272,127 +273,145 @@ public class UpdatePersonInfoPaneFxController extends WizardStepFxControllerBase
 		}
 		
 		if(!disable || !photoLoaded.get()) disablePhotoEditing.setValue(false);
-		
-		if(firstName != null)
+
+		if(isFirstLoad())
 		{
-			txtFirstName.setText(firstName);
-			txtFirstName.setDisable(disable);
+			if(firstName != null) txtFirstName.setText(firstName);
+			else focusedNode = txtFirstName;
 		}
 		else if(this.firstName != null) txtFirstName.setText(this.firstName);
 		else focusedNode = txtFirstName;
-		
-		
-		if(fatherName != null)
+
+		if(disable && !txtFirstName.getText().isEmpty()) txtFirstName.setDisable(true);
+
+		if(isFirstLoad())
 		{
-			txtFatherName.setText(fatherName);
-			txtFatherName.setDisable(disable);
+			if(fatherName != null) txtFatherName.setText(fatherName);
 		}
 		else if(this.fatherName != null) txtFatherName.setText(this.fatherName);
-		
-		if(grandfatherName != null)
+
+		if(disable && !txtFatherName.getText().isEmpty()) txtFatherName.setDisable(true);
+
+		if(isFirstLoad())
 		{
-			txtGrandfatherName.setText(grandfatherName);
-			txtGrandfatherName.setDisable(disable);
+			if(grandfatherName != null) txtGrandfatherName.setText(grandfatherName);
 		}
 		else if(this.grandfatherName != null) txtGrandfatherName.setText(this.grandfatherName);
-		
-		if(familyName != null)
+
+		if(disable && !txtGrandfatherName.getText().isEmpty()) txtGrandfatherName.setDisable(true);
+
+		if(isFirstLoad())
 		{
-			txtFamilyName.setText(familyName);
-			txtFamilyName.setDisable(disable);
+			if(familyName != null) txtFamilyName.setText(familyName);
+			else if(focusedNode == null) focusedNode = txtFamilyName;
 		}
 		else if(this.familyName != null) txtFamilyName.setText(this.familyName);
 		else if(focusedNode == null) focusedNode = txtFamilyName;
-		
-		if(gender != null)
+
+		if(disable && !txtFamilyName.getText().isEmpty()) txtFamilyName.setDisable(true);
+
+		if(isFirstLoad())
 		{
-			boolean selected = GuiUtils.selectComboBoxItem(cboGender, gender);
-			if(selected) cboGender.setDisable(disable);
+			if(gender != null) GuiUtils.selectComboBoxItem(cboGender, gender);
+			else if(focusedNode == null) focusedNode = cboGender;
 		}
 		else if(this.gender != null) GuiUtils.selectComboBoxItem(cboGender, this.gender);
 		else if(focusedNode == null) focusedNode = cboGender;
-		
-		if(nationality != null)
+
+		if(disable && cboGender.getSelectionModel().getSelectedIndex() >= 0) cboGender.setDisable(true);
+
+		if(isFirstLoad())
 		{
-			boolean selected = GuiUtils.selectComboBoxItem(cboNationality, nationality);
-			if(selected) cboNationality.setDisable(disable);
+			if(nationality != null) GuiUtils.selectComboBoxItem(cboNationality, nationality);
+			else cboNationality.getSelectionModel().select(0);
 		}
 		else if(this.nationality != null) GuiUtils.selectComboBoxItem(cboNationality, this.nationality);
 		else cboNationality.getSelectionModel().select(0);
-		
-		if(occupation != null)
+
+		if(disable && cboNationality.getSelectionModel().getSelectedIndex() > 0) cboNationality.setDisable(true);
+
+		if(isFirstLoad())
 		{
-			txtOccupation.setText(occupation);
-			txtOccupation.setDisable(disable);
+			if(occupation != null) txtOccupation.setText(occupation);
 		}
 		else if(this.occupation != null) txtOccupation.setText(this.occupation);
-		
-		if(birthPlace != null)
+
+		if(disable && !txtOccupation.getText().isEmpty()) txtOccupation.setDisable(true);
+
+		if(isFirstLoad())
 		{
-			txtBirthPlace.setText(birthPlace);
-			txtBirthPlace.setDisable(disable);
+			if(birthPlace != null) txtBirthPlace.setText(birthPlace);
 		}
 		else if(this.birthPlace != null) txtBirthPlace.setText(this.birthPlace);
-		
-		if(birthDate != null)
+
+		if(disable && !txtBirthPlace.getText().isEmpty()) txtBirthPlace.setDisable(true);
+
+		if(isFirstLoad())
 		{
-			dpBirthDate.setValue(birthDate);
-			dpBirthDate.setDisable(disable);
+			if(birthDate != null) dpBirthDate.setValue(birthDate);
 		}
 		else if(this.birthDate != null) dpBirthDate.setValue(this.birthDate);
-		
+
+		if(disable && dpBirthDate.getValue() != null) dpBirthDate.setDisable(true);
+
 		rdoBirthDateUseHijri.setSelected(true);
 		if(this.birthDateUseHijri != null && !this.birthDateUseHijri) rdoBirthDateUseGregorian.setSelected(true);
-		
-		if(personId != null)
+
+		if(isFirstLoad())
 		{
-			txtPersonId.setText(String.valueOf(personId));
-			txtPersonId.setDisable(disable);
+			if(personId != null) txtPersonId.setText(String.valueOf(personId));
 		}
 		else if(this.personId != null) txtPersonId.setText(String.valueOf(this.personId));
-		
-		if(personType != null)
+
+		if(disable && !txtPersonId.getText().isEmpty()) txtPersonId.setDisable(true);
+
+		if(isFirstLoad())
 		{
-			boolean selected = GuiUtils.selectComboBoxItem(cboPersonType, personType);
-			if(selected) cboPersonType.setDisable(disable);
+			if(personType != null) GuiUtils.selectComboBoxItem(cboPersonType, personType);
 		}
 		else if(this.personType != null) GuiUtils.selectComboBoxItem(cboPersonType, this.personType);
-		
-		if(documentId != null)
+
+		if(disable && cboPersonType.getSelectionModel().getSelectedIndex() >= 0) cboPersonType.setDisable(true);
+
+		if(isFirstLoad())
 		{
-			txtDocumentId.setText(documentId);
-			txtDocumentId.setDisable(disable);
+			if(documentId != null) txtDocumentId.setText(documentId);
 		}
 		else if(this.documentId != null) txtDocumentId.setText(this.documentId);
-		
-		if(documentType != null)
+
+		if(disable && !txtDocumentId.getText().isEmpty()) txtDocumentId.setDisable(true);
+
+		if(isFirstLoad())
 		{
-			boolean selected = GuiUtils.selectComboBoxItem(cboDocumentType, documentType);
-			if(selected) cboDocumentType.setDisable(disable);
+			if(documentType != null) GuiUtils.selectComboBoxItem(cboDocumentType, documentType);
 		}
 		else if(this.documentType != null) GuiUtils.selectComboBoxItem(cboDocumentType, this.documentType);
-		
-		if(documentIssuanceDate != null)
+
+		if(disable && cboDocumentType.getSelectionModel().getSelectedIndex() >= 0) cboDocumentType.setDisable(true);
+
+		if(isFirstLoad())
 		{
-			dpDocumentIssuanceDate.setValue(documentIssuanceDate);
-			dpDocumentIssuanceDate.setDisable(disable);
+			if(documentIssuanceDate != null) dpDocumentIssuanceDate.setValue(documentIssuanceDate);
 		}
 		else if(this.documentIssuanceDate != null) dpDocumentIssuanceDate.setValue(this.documentIssuanceDate);
+
+		if(disable && dpDocumentIssuanceDate.getValue() != null) dpDocumentIssuanceDate.setDisable(true);
 		
 		rdoDocumentIssuanceDateUseHijri.setSelected(true);
 		if(this.documentIssuanceDateUseHijri != null && !this.documentIssuanceDateUseHijri)
-			rdoDocumentIssuanceDateUseGregorian.setSelected(true);
-		
-		if(documentExpiryDate != null)
+																rdoDocumentIssuanceDateUseGregorian.setSelected(true);
+
+		if(isFirstLoad())
 		{
-			dpDocumentExpiryDate.setValue(documentExpiryDate);
-			dpDocumentExpiryDate.setDisable(disable);
+			if(documentExpiryDate != null) dpDocumentExpiryDate.setValue(documentExpiryDate);
 		}
 		else if(this.documentExpiryDate != null) dpDocumentExpiryDate.setValue(this.documentExpiryDate);
+
+		if(disable && dpDocumentExpiryDate.getValue() != null) dpDocumentExpiryDate.setDisable(true);
 		
 		rdoDocumentExpiryDateUseHijri.setSelected(true);
 		if(this.documentExpiryDateUseHijri != null && !this.documentExpiryDateUseHijri)
-			rdoDocumentExpiryDateUseGregorian.setSelected(true);
+																rdoDocumentExpiryDateUseGregorian.setSelected(true);
 		
 		if(focusedNode != null) focusedNode.requestFocus();
 		else btnNext.requestFocus();
