@@ -61,4 +61,14 @@ public class ConvertFingerprintBase64ImagesToWsqWorkflowTask extends WorkflowTas
 			resetWorkflowStepIfNegativeOrNullTaskResponse(TaskResponse.failure(errorCode, errorDetails));
 		}
 	}
+
+	public void setFingerprintBase64Images(Map<Integer, String> fingerprintBase64Images)
+	{
+		this.fingerprintBase64Images = fingerprintBase64Images;
+	}
+
+	public Map<Integer, String> getFingerprintWsqImages()
+	{
+		return fingerprintWsqImages;
+	}
 }

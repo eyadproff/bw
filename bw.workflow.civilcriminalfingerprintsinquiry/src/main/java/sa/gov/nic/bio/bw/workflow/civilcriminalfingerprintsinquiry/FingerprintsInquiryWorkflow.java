@@ -23,11 +23,7 @@ import sa.gov.nic.bio.bw.workflow.commons.beans.ConvictedReport;
 import sa.gov.nic.bio.bw.workflow.commons.beans.DeporteeInfo;
 import sa.gov.nic.bio.bw.workflow.commons.beans.DisCriminalReport;
 import sa.gov.nic.bio.bw.workflow.commons.beans.PersonInfo;
-import sa.gov.nic.bio.bw.workflow.commons.controllers.FingerprintCapturingFxController;
-import sa.gov.nic.bio.bw.workflow.commons.controllers.InquiryByFingerprintsPaneFxController;
-import sa.gov.nic.bio.bw.workflow.commons.controllers.InquiryByFingerprintsResultPaneFxController;
-import sa.gov.nic.bio.bw.workflow.commons.controllers.ShowingFingerprintsPaneFxController;
-import sa.gov.nic.bio.bw.workflow.commons.controllers.ShowingPersonInfoFxController;
+import sa.gov.nic.bio.bw.workflow.commons.controllers.*;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.BiometricsExchangeCrimeTypesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.BiometricsExchangePartiesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.CountriesLookup;
@@ -226,6 +222,11 @@ public class FingerprintsInquiryWorkflow extends WizardWorkflowBase
 				
 				if(fingerprintsSource == Source.ENTERING_PERSON_ID)
 				{
+					PersonInfo personInfo = getData(GetPersonInfoByIdWorkflowTask.class,
+													"personInfo");
+					if(personInfo != null) setData(ShowingFingerprintsPaneFxController.class,
+												  "facePhotoBase64", personInfo.getFace());
+
 					passData(ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask.class,
 					         ShowingFingerprintsPaneFxController.class,
 					         "fingerprintBase64Images");
@@ -252,6 +253,11 @@ public class FingerprintsInquiryWorkflow extends WizardWorkflowBase
 				}
 				else if(fingerprintsSource == Source.UPLOADING_NIST_FILE)
 				{
+					PersonInfo personInfo = getData(ExtractingDataFromNistFileWorkflowTask.class,
+													"personInfo");
+					if(personInfo != null) setData(ShowingFingerprintsPaneFxController.class,
+												   "facePhotoBase64", personInfo.getFace());
+
 					passData(ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask.class,
 					         ShowingFingerprintsPaneFxController.class,
 					         "fingerprintBase64Images");
@@ -259,6 +265,9 @@ public class FingerprintsInquiryWorkflow extends WizardWorkflowBase
 				else if(fingerprintsSource == Source.CAPTURING_FINGERPRINTS_VIA_FINGERPRINT_SCANNER)
 				{
 					incrementNSteps(-1); // to skip step #2 on going previous
+					passData(FaceCapturingFxController.class,
+							ShowingFingerprintsPaneFxController.class,
+							"facePhotoBase64");
 					passData(FingerprintCapturingFxController.class,
 					         ShowingFingerprintsPaneFxController.class,
 					         "fingerprintBase64Images");

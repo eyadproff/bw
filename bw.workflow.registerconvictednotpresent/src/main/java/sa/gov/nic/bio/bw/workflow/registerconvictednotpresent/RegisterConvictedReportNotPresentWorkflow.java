@@ -237,6 +237,10 @@ public class RegisterConvictedReportNotPresentWorkflow extends WizardWorkflowBas
 				
 				if(fingerprintsSource == Source.ENTERING_PERSON_ID)
 				{
+					PersonInfo personInfo = getData(GetPersonInfoByIdWorkflowTask.class,
+													"personInfo");
+					if(personInfo != null) setData(ShowingFingerprintsPaneFxController.class,
+												  "facePhotoBase64", personInfo.getFace());
 					passData(ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask.class,
 					         ShowingFingerprintsPaneFxController.class,
 					         "fingerprintBase64Images");
@@ -263,6 +267,10 @@ public class RegisterConvictedReportNotPresentWorkflow extends WizardWorkflowBas
 				}
 				else if(fingerprintsSource == Source.UPLOADING_NIST_FILE)
 				{
+					PersonInfo personInfo = getData(ExtractingDataFromNistFileWorkflowTask.class,
+							"personInfo");
+					if(personInfo != null) setData(ShowingFingerprintsPaneFxController.class,
+												   "facePhotoBase64", personInfo.getFace());
 					passData(ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask.class,
 					         ShowingFingerprintsPaneFxController.class,
 					         "fingerprintBase64Images");

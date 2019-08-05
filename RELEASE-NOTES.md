@@ -11,6 +11,12 @@ VERSION SCHEMA: vYYYY.MM.#SEQ
 
 ---
 
+## v2019.08.2
+
+- NEW: NIST file generator.
+
+---
+
 ## v2019.08.1
 
 - CHN: If the returned SAMIS ID of DeporteeInfo is 0, set it to deportee ID.
