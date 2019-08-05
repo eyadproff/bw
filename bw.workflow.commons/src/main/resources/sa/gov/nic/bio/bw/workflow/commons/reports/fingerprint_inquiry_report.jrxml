@@ -3,7 +3,6 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="fingerprint_inquiry_report" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="fc809ddb-4e5b-4a43-8942-b955f1f60184">
 	<property name="net.sf.jasperreports.awt.ignore.missing.font" value="true"/>
 	<property name="net.sf.jasperreports.default.font.name" value="CustomFont"/>
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 	<parameter name="LOGO" class="java.io.InputStream"/>
 	<parameter name="INQUIRY_TIMESTAMP" class="java.lang.String"/>
 	<parameter name="INQUIRER_ID" class="java.lang.String"/>
@@ -21,7 +20,7 @@
 	<parameter name="CRIMINAL_HIT" class="java.lang.Boolean"/>
 	<parameter name="CIVIL_BIOMETRICS_ID" class="java.lang.String"/>
 	<parameter name="CRIMINAL_BIOMETRICS_ID" class="java.lang.String"/>
-	<parameter name="SAMIS_IDS_COUNT" class="java.lang.String"/>
+	<parameter name="PERSON_IDS_COUNT" class="java.lang.String"/>
 	<parameter name="OLD_CRIMINAL_SYSTEM_RECORDS_COUNT" class="java.lang.String"/>
 	<parameter name="NEW_CRIMINAL_SYSTEM_RECORDS_COUNT" class="java.lang.String"/>
 	<parameter name="FIRST_PAGE_COUNTER" class="java.lang.String"/>
@@ -761,7 +760,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="CustomFont" isBold="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{SAMIS_IDS_COUNT}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{PERSON_IDS_COUNT}]]></textFieldExpression>
 			</textField>
 			<rectangle>
 				<reportElement x="154" y="526" width="95" height="23" uuid="b5405d20-7d4e-4c26-a4d5-2596ab1a0383">
@@ -809,33 +808,33 @@
 				</graphicElement>
 			</rectangle>
 			<rectangle>
-				<reportElement x="149" y="53" width="264" height="23" uuid="648f2e4b-fdfd-4a83-a480-4760d7ea9be5"/>
+				<reportElement x="188" y="59" width="185" height="23" uuid="648f2e4b-fdfd-4a83-a480-4760d7ea9be5"/>
 				<graphicElement>
 					<pen lineWidth="0.5"/>
 				</graphicElement>
 			</rectangle>
 			<staticText>
-				<reportElement x="354" y="57" width="55" height="15" uuid="0dbd1314-8892-427a-8bd3-5aad2240d3d6"/>
+				<reportElement x="314" y="63" width="55" height="15" uuid="0dbd1314-8892-427a-8bd3-5aad2240d3d6"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="CustomFont" size="11" isBold="true"/>
 				</textElement>
 				<text><![CDATA[رقم السجل:]]></text>
 			</staticText>
-			<textField evaluationTime="Report" isBlankWhenNull="true">
-				<reportElement key="" x="156" y="58" width="189" height="15" forecolor="#004EA1" uuid="817deb7e-1e51-4df4-ac80-e195c7fed087"/>
+			<textField evaluationTime="Band" isBlankWhenNull="true">
+				<reportElement key="" x="191" y="64" width="119" height="15" forecolor="#004EA1" uuid="817deb7e-1e51-4df4-ac80-e195c7fed087"/>
 				<textElement textAlignment="Right">
 					<font fontName="CustomFont" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{recordId}]]></textFieldExpression>
 			</textField>
 			<rectangle>
-				<reportElement x="149" y="30" width="264" height="23" uuid="92e9b338-3710-45f9-8ec0-ed5142b743af"/>
+				<reportElement x="188" y="36" width="185" height="23" uuid="92e9b338-3710-45f9-8ec0-ed5142b743af"/>
 				<graphicElement>
 					<pen lineWidth="0.5"/>
 				</graphicElement>
 			</rectangle>
 			<staticText>
-				<reportElement x="354" y="34" width="55" height="15" uuid="1f8445da-114e-4fa5-a86f-10a4c088140c"/>
+				<reportElement x="314" y="40" width="55" height="15" uuid="1f8445da-114e-4fa5-a86f-10a4c088140c"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="CustomFont" size="11" isBold="true"/>
 				</textElement>
@@ -987,56 +986,56 @@
 				</textElement>
 				<text><![CDATA[مكان الميلاد:]]></text>
 			</staticText>
-			<textField evaluationTime="Report" isBlankWhenNull="true">
+			<textField evaluationTime="Band" isBlankWhenNull="true">
 				<reportElement key="" x="19" y="305" width="492" height="16" forecolor="#004EA1" uuid="c27691f1-d4dc-4b9c-b022-61fd827fef25"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="CustomFont" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>
 			</textField>
-			<textField evaluationTime="Report" isBlankWhenNull="true">
+			<textField evaluationTime="Band" isBlankWhenNull="true">
 				<reportElement key="" x="379" y="358" width="158" height="15" forecolor="#004EA1" uuid="90c20466-bdd8-44bf-bd4b-99c1d1f05b8d"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="CustomFont" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{nationality}]]></textFieldExpression>
 			</textField>
-			<textField evaluationTime="Report" isBlankWhenNull="true">
+			<textField evaluationTime="Band" isBlankWhenNull="true">
 				<reportElement key="" x="197" y="358" width="169" height="15" forecolor="#004EA1" uuid="56d15cf5-7552-41a3-9386-26d10be7fd32"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="CustomFont" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{occupation}]]></textFieldExpression>
 			</textField>
-			<textField evaluationTime="Report" isBlankWhenNull="true">
+			<textField evaluationTime="Band" isBlankWhenNull="true">
 				<reportElement key="" x="19" y="358" width="167" height="15" forecolor="#004EA1" uuid="70cd0c2f-b997-45ff-a461-1a5c0eb7f1d9"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="CustomFont" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{gender}]]></textFieldExpression>
 			</textField>
-			<textField evaluationTime="Report" isBlankWhenNull="true">
+			<textField evaluationTime="Band" isBlankWhenNull="true">
 				<reportElement key="" x="383" y="412" width="154" height="15" forecolor="#004EA1" uuid="eba6bc15-3d5c-4992-83f5-ba2e5412d8b6"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="CustomFont" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{documentId}]]></textFieldExpression>
 			</textField>
-			<textField evaluationTime="Report" isBlankWhenNull="true">
+			<textField evaluationTime="Band" isBlankWhenNull="true">
 				<reportElement key="" x="198" y="412" width="168" height="15" forecolor="#004EA1" uuid="399fc140-2317-48a1-8f77-2affd1c55ba9"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="CustomFont" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{documentIdType}]]></textFieldExpression>
 			</textField>
-			<textField evaluationTime="Report" isBlankWhenNull="true">
+			<textField evaluationTime="Band" isBlankWhenNull="true">
 				<reportElement key="" x="374" y="439" width="171" height="15" forecolor="#004EA1" uuid="7e4bccd6-c99d-4b88-b859-1635a1be39f0"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="CustomFont" size="8" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{dateOfBirth}]]></textFieldExpression>
 			</textField>
-			<textField evaluationTime="Report" isBlankWhenNull="true">
+			<textField evaluationTime="Band" isBlankWhenNull="true">
 				<reportElement key="" x="198" y="439" width="168" height="15" forecolor="#004EA1" uuid="26fb8051-4b8e-4ff8-9607-beca1edde67e"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="CustomFont" isBold="false"/>
@@ -1084,25 +1083,25 @@
 				</textElement>
 				<text><![CDATA[نوع الهوية:]]></text>
 			</staticText>
-			<textField evaluationTime="Report" isBlankWhenNull="true">
+			<textField evaluationTime="Band" isBlankWhenNull="true">
 				<reportElement key="" x="379" y="385" width="158" height="15" forecolor="#004EA1" uuid="d83d3dcf-5350-4293-bf37-79db78d98357"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="CustomFont" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{personId}]]></textFieldExpression>
 			</textField>
-			<textField evaluationTime="Report" isBlankWhenNull="true">
+			<textField evaluationTime="Band" isBlankWhenNull="true">
 				<reportElement key="" x="197" y="385" width="169" height="15" forecolor="#004EA1" uuid="f3964a44-74d7-4b74-9a02-869c87199b10"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="CustomFont" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{personIdType}]]></textFieldExpression>
 			</textField>
-			<image scaleImage="FillFrame" evaluationTime="Report">
+			<image scaleImage="FillFrame" evaluationTime="Band">
 				<reportElement x="216" y="106" width="128" height="171" uuid="ebcec4da-6559-4ad6-b7a1-122e19ae725b"/>
 				<imageExpression><![CDATA[$F{faceImage}]]></imageExpression>
 			</image>
-			<textField evaluationTime="Report" isBlankWhenNull="true">
+			<textField evaluationTime="Band" isBlankWhenNull="true">
 				<reportElement x="208" y="774" width="146" height="18" uuid="dd65a2ae-1005-41e0-bc23-893b5f128a77"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="CustomFont"/>
@@ -1123,21 +1122,21 @@
 				</textElement>
 				<text><![CDATA[تاريخ انتهاء الوثيقة:]]></text>
 			</staticText>
-			<textField evaluationTime="Report" isBlankWhenNull="true">
+			<textField evaluationTime="Band" isBlankWhenNull="true">
 				<reportElement key="" x="10" y="385" width="181" height="15" forecolor="#004EA1" uuid="a852ecc4-8eee-413f-8c0d-5a187808bf1c"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="CustomFont" size="8" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{documentIssuanceDate}]]></textFieldExpression>
 			</textField>
-			<textField evaluationTime="Report" isBlankWhenNull="true">
+			<textField evaluationTime="Band" isBlankWhenNull="true">
 				<reportElement key="" x="10" y="412" width="181" height="15" forecolor="#004EA1" uuid="a2630c28-8cd5-434f-b3fe-572855c503ac"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="CustomFont" size="8" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{documentExpiryDate}]]></textFieldExpression>
 			</textField>
-			<textField evaluationTime="Report" isBlankWhenNull="true">
+			<textField evaluationTime="Band" isBlankWhenNull="true">
 				<reportElement key="" x="19" y="323" width="492" height="16" forecolor="#004EA1" uuid="d10edeac-7342-45ea-a06e-3c4c36bbe24b"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="CustomFont" isBold="false"/>
@@ -1145,29 +1144,29 @@
 				<textFieldExpression><![CDATA[$F{translatedName}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="156" y="34" width="188" height="15" forecolor="#004EA1" uuid="cd82fd3b-3d74-4d78-9ecd-5c411ae12bfc">
+				<reportElement x="191" y="40" width="120" height="15" forecolor="#004EA1" uuid="cd82fd3b-3d74-4d78-9ecd-5c411ae12bfc">
 					<printWhenExpression><![CDATA[$F{recordSourceSystem} == 1]]></printWhenExpression>
 				</reportElement>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="CustomFont" size="11" isBold="true"/>
+					<font fontName="CustomFont" size="11" isBold="false"/>
 				</textElement>
 				<text><![CDATA[النظام المدني]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="156" y="34" width="188" height="15" forecolor="#004EA1" uuid="eb06a2f7-828d-4393-bdf2-04719100f356">
+				<reportElement x="191" y="40" width="120" height="15" forecolor="#004EA1" uuid="eb06a2f7-828d-4393-bdf2-04719100f356">
 					<printWhenExpression><![CDATA[$F{recordSourceSystem} == 2]]></printWhenExpression>
 				</reportElement>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="CustomFont" size="11" isBold="true"/>
+					<font fontName="CustomFont" size="11" isBold="false"/>
 				</textElement>
 				<text><![CDATA[النظام الجنائي القديم]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="156" y="34" width="188" height="15" forecolor="#004EA1" uuid="4d178a83-c9aa-409b-b05a-3a9a55df06c5">
+				<reportElement x="191" y="40" width="120" height="15" forecolor="#004EA1" uuid="4d178a83-c9aa-409b-b05a-3a9a55df06c5">
 					<printWhenExpression><![CDATA[$F{recordSourceSystem} == 3]]></printWhenExpression>
 				</reportElement>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="CustomFont" size="11" isBold="true"/>
+					<font fontName="CustomFont" size="11" isBold="false"/>
 				</textElement>
 				<text><![CDATA[النظام الجنائي الجديد]]></text>
 			</staticText>

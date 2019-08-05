@@ -4,7 +4,7 @@ import sa.gov.nic.bio.bw.core.beans.JavaBean;
 
 import java.io.InputStream;
 
-public class FingerprintInquiryRecord extends JavaBean
+public class FingerprintInquiryRecord /*extends JavaBean*/
 {
     private Integer recordSourceSystem;
     private String recordId;
@@ -74,27 +74,4 @@ public class FingerprintInquiryRecord extends JavaBean
 
     public String getPageCounter(){return pageCounter;}
     public void setPageCounter(String pageCounter){this.pageCounter = pageCounter;}
-
-    @Override
-    public String toString() {
-        return "FingerprintInquiryRecord{" +
-                "recordSourceSystem=" + recordSourceSystem +
-                ", recordId='" + recordId + '\'' +
-                ", faceImage=" + faceImage +
-                ", name='" + name + '\'' +
-                ", translatedName='" + translatedName + '\'' +
-                ", nationality='" + nationality + '\'' +
-                ", occupation='" + occupation + '\'' +
-                ", gender='" + gender + '\'' +
-                ", personId='" + personId + '\'' +
-                ", personIdType='" + personIdType + '\'' +
-                ", documentId='" + documentId + '\'' +
-                ", documentIdType='" + documentIdType + '\'' +
-                ", documentIssuanceDate='" + documentIssuanceDate + '\'' +
-                ", documentExpiryDate='" + documentExpiryDate + '\'' +
-                ", dateOfBirth='" + dateOfBirth + '\'' +
-                ", birthPlace='" + birthPlace + '\'' +
-                ", pageCounter='" + pageCounter + '\'' +
-                '}';
-    }
 }
