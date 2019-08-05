@@ -74,7 +74,10 @@
                                         <Label text="%label.gender" GridPane.rowIndex="4" GridPane.columnIndex="0" styleClass="bold-label"/>
                                         <CopiableLabel fx:id="lblGender" GridPane.rowIndex="4" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
                                         <Label text="%label.nationality" GridPane.rowIndex="5" GridPane.columnIndex="0" styleClass="bold-label"/>
-                                        <CopiableLabel fx:id="lblNationality" GridPane.rowIndex="5" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
+                                        <HBox spacing="5.0" GridPane.rowIndex="5" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS">
+                                            <CopiableLabel fx:id="lblNationality"/>
+                                            <Label fx:id="lblNaturalizedSaudi" text="%label.naturalizedSaudi" styleClass="bold-label, blue-label" managed="false" visible="false"/>
+                                        </HBox>
                                         <Label text="%label.occupation" GridPane.rowIndex="6" GridPane.columnIndex="0" styleClass="bold-label"/>
                                         <CopiableLabel fx:id="lblOccupation" wrapText="true" GridPane.rowIndex="6" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
                                         <Label text="%label.birthPlace" GridPane.rowIndex="7" GridPane.columnIndex="0" styleClass="bold-label"/>

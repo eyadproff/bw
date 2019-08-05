@@ -94,6 +94,10 @@ public final class AppUtils implements AppLogger
 	private static final DateTimeFormatter DATE_WTH_WEEK_DAY_FORMATTER =
 																	DateTimeFormatter.ofPattern("EEEE dd MMMM yyyy G");
 	private static final DateTimeFormatter FORMAL_DATE_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+	private static final DateTimeFormatter DATE_SIMPLE_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy G");
+	private static final DateTimeFormatter DATE_SIMPLE_WTH_WEEK_DAY_FORMATTER =
+																	DateTimeFormatter.ofPattern("EEEE dd/MM/yyyy G");
+	private static final DateTimeFormatter TIME_12H_FORMATTER = DateTimeFormatter.ofPattern("hh:mm:ss a");
 	private static final HijrahChronology nicChronology = HijrahChronology.INSTANCE;
 	private static final FontAwesome FONTAWESOME_INSTANCE = new FontAwesome(Objects.requireNonNull(
 			AppUtils.class.getResource(FONT_AWESOME_FILE)).toExternalForm());
@@ -871,5 +875,23 @@ public final class AppUtils implements AppLogger
 		ClipboardContent content = new ClipboardContent();
 		content.putString(text);
 		Clipboard.getSystemClipboard().setContent(content);
+	}
+
+	public static String get3LinesTimestampInArabic()
+	{
+		ResourceBundle resourceBundle = getCoreStringsResourceBundle(AppConstants.Locales.SAUDI_AR_LOCALE);
+		ZonedDateTime now = ZonedDateTime.now(AppConstants.SAUDI_ZONE);
+
+		String firstLine = localizeNumbers(DATE_SIMPLE_WTH_WEEK_DAY_FORMATTER.withLocale(
+							AppConstants.Locales.SAUDI_AR_LOCALE).withChronology(HijrahChronology.INSTANCE).format(now),
+							AppConstants.Locales.SAUDI_AR_LOCALE, false);
+		String secondLine = resourceBundle.getString("label.equivalentDate") + ": " +
+							localizeNumbers(DATE_SIMPLE_FORMATTER.withLocale(AppConstants.Locales.SAUDI_AR_LOCALE)
+									.format(now), AppConstants.Locales.SAUDI_AR_LOCALE, false);
+		String thirdLine = resourceBundle.getString("label.theTime") + ": " +
+							localizeNumbers(TIME_12H_FORMATTER.withLocale(AppConstants.Locales.SAUDI_AR_LOCALE)
+									.format(now), AppConstants.Locales.SAUDI_AR_LOCALE, false);
+
+		return firstLine + "\n" + secondLine + "\n" + thirdLine;
 	}
 }

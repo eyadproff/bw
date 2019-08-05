@@ -8,15 +8,10 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.scene.control.*;
 import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
-import javafx.scene.control.TableCell;
-import javafx.scene.control.TableRow;
-import javafx.scene.control.TableView;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -24,9 +19,12 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.stage.FileChooser;
+import net.sf.jasperreports.engine.JasperPrint;
 import sa.gov.nic.bio.bw.core.Context;
 import sa.gov.nic.bio.bw.core.beans.Gender;
 import sa.gov.nic.bio.bw.core.beans.SelectableItem;
+import sa.gov.nic.bio.bw.core.beans.UserInfo;
 import sa.gov.nic.bio.bw.core.controllers.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.core.utils.DialogUtils;
@@ -36,13 +34,21 @@ import sa.gov.nic.bio.bw.core.workflow.Input;
 import sa.gov.nic.bio.bw.core.workflow.Output;
 import sa.gov.nic.bio.bw.workflow.commons.beans.NormalizedPersonInfo;
 import sa.gov.nic.bio.bw.workflow.commons.beans.PersonInfo;
+import sa.gov.nic.bio.bw.workflow.commons.tasks.BuildFingerprintInquiryReportTask;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.FingerprintInquiryStatusCheckerWorkflowTask.Status;
+import sa.gov.nic.bio.bw.workflow.commons.tasks.PrintReportTask;
+import sa.gov.nic.bio.bw.workflow.commons.tasks.SaveReportAsPdfTask;
 import sa.gov.nic.bio.bw.workflow.commons.ui.ImageViewPane;
 import sa.gov.nic.bio.bw.workflow.commons.ui.PTableColumn;
 import sa.gov.nic.bio.bw.workflow.commons.utils.CommonsErrorCodes;
 
+import java.awt.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
 @FxmlFile("inquiryByFingerprintsResult.fxml")
@@ -56,8 +62,9 @@ public class InquiryByFingerprintsResultPaneFxController extends WizardStepFxCon
 	@Input protected Map<Long, PersonInfo> civilPersonInfoMap;
 	@Input protected Map<Integer, PersonInfo> oldCriminalPersonInfoMap;
 	@Input protected Map<Long, PersonInfo> newCriminalPersonInfoMap;
+	@Input protected Map<Integer, String> fingerprintBase64Images;
 	@Output protected NormalizedPersonInfo normalizedPersonInfo;
-	
+
 	@FXML private ScrollPane infoPane;
 	@FXML private ImageViewPane paneImageView;
 	@FXML private Pane paneImage;
@@ -68,6 +75,7 @@ public class InquiryByFingerprintsResultPaneFxController extends WizardStepFxCon
 	@FXML private Pane paneCriminalFingerprintsNoHit;
 	@FXML private Pane paneCriminalFingerprintsHit;
 	@FXML private Pane paneNoHitMessage;
+	@FXML private Pane paneButtons;
 	@FXML private TabPane tabPaneCriminal;
 	@FXML private Tab tabOldSystem;
 	@FXML private Tab tabNewSystem;
@@ -100,14 +108,28 @@ public class InquiryByFingerprintsResultPaneFxController extends WizardStepFxCon
 	@FXML private Label lblDocumentExpiryDate;
 	@FXML private Label lblCivilBiometricsId;
 	@FXML private Label lblCriminalBiometricsId;
+	@FXML private Label lblNaturalizedSaudi;
+	@FXML private ProgressIndicator piProgress;
 	@FXML private Button btnShowReport;
 	@FXML private Button btnStartOver;
 	@FXML private Button btnRegisterUnknownPerson;
 	@FXML private Button btnConfirmPersonInformation;
+	@FXML private Button btnPrintReport;
+	@FXML private Button btnSaveReportAsPDF;
+
+	private FileChooser fileChooser = new FileChooser();
+	private AtomicReference<JasperPrint> jasperPrint = new AtomicReference<>();
+	private boolean civilHit;
+	private boolean criminalHit;
 	
 	@Override
 	protected void onAttachedToScene()
 	{
+		fileChooser.setTitle(resources.getString("fileChooser.saveReportAsPDF.title"));
+		FileChooser.ExtensionFilter extFilterPDF = new FileChooser.ExtensionFilter(
+										resources.getString("fileChooser.saveReportAsPDF.types"), "*.pdf");
+		fileChooser.getExtensionFilters().addAll(extFilterPDF);
+
 		boolean hideConfirmationButton = this.hideConfirmationButton != null && this.hideConfirmationButton;
 		if(hideConfirmationButton)
 		{
@@ -126,8 +148,8 @@ public class InquiryByFingerprintsResultPaneFxController extends WizardStepFxCon
 		
 		paneImageView.maxWidthProperty().bind(paneImage.widthProperty());
 		
-		boolean civilHit = status == Status.HIT && civilBiometricsId != null;
-		boolean criminalHit = status == Status.HIT && criminalBiometricsId != null;
+		civilHit = status == Status.HIT && civilBiometricsId != null;
+		criminalHit = status == Status.HIT && criminalBiometricsId != null;
 		
 		tcCivilSelection.setCellFactory(tc -> new TableCell<>()
 		{
@@ -365,6 +387,9 @@ public class InquiryByFingerprintsResultPaneFxController extends WizardStepFxCon
 		
 		tvReportNumbers.setOnKeyReleased(keyReleasedEventHandler);
 		tvReportNumbers.setOnMouseClicked(mouseEventHandler);
+
+		paneButtons.visibleProperty().bind(piProgress.visibleProperty().not());
+		paneButtons.managedProperty().bind(piProgress.managedProperty().not());
 	}
 	
 	@Override
@@ -396,6 +421,11 @@ public class InquiryByFingerprintsResultPaneFxController extends WizardStepFxCon
 							   lblDocumentId, lblDocumentType, lblDocumentIssuanceDate, lblDocumentExpiryDate);
 		
 		normalizedPersonInfo = new NormalizedPersonInfo(personInfo);
+
+		GuiUtils.showNode(lblNaturalizedSaudi, normalizedPersonInfo.getNationality() != null &&
+							normalizedPersonInfo.getNationality().getCode() > 0 &&
+							!"SAU".equalsIgnoreCase(normalizedPersonInfo.getNationality().getMofaNationalityCode()) &&
+							String.valueOf(normalizedPersonInfo.getPersonId()).startsWith("1"));
 		
 		String facePhotoBase64 = normalizedPersonInfo.getFacePhotoBase64();
 		Gender gender = normalizedPersonInfo.getGender();
@@ -459,5 +489,159 @@ public class InquiryByFingerprintsResultPaneFxController extends WizardStepFxCon
 			String[] errorDetails = {"Failed to load (" + ShowReportDialogFxController.class.getName() + ")!"};
 			Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails, getTabIndex());
 		}
+	}
+
+	@FXML
+	private void onPrintReportButtonClicked(ActionEvent actionEvent)
+	{
+		hideNotification();
+		GuiUtils.showNode(piProgress, true);
+
+		if(jasperPrint.get() == null)
+		{
+			var task = newBuildFingerprintInquiryReportTask();
+			task.setOnSucceeded(event ->
+			{
+				JasperPrint value = task.getValue();
+				jasperPrint.set(value);
+				printFingerprintInquiryReport(value);
+			});
+			task.setOnFailed(event ->
+			{
+				GuiUtils.showNode(piProgress, false);
+
+				Throwable exception = task.getException();
+
+				String errorCode = CommonsErrorCodes.C008_00042.getCode();
+				String[] errorDetails = {"failed while building the fingerprint inquiry report!"};
+				Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails, getTabIndex());
+			});
+			Context.getExecutorService().submit(task);
+		}
+		else printFingerprintInquiryReport(jasperPrint.get());
+	}
+
+	@FXML
+	private void onSaveReportAsPdfButtonClicked(ActionEvent actionEvent)
+	{
+		hideNotification();
+		File selectedFile = fileChooser.showSaveDialog(Context.getCoreFxController().getStage());
+
+		if(selectedFile != null)
+		{
+			GuiUtils.showNode(piProgress, true);
+
+			if(jasperPrint.get() == null)
+			{
+				var task = newBuildFingerprintInquiryReportTask();
+				task.setOnSucceeded(event ->
+				{
+					JasperPrint value = task.getValue();
+					jasperPrint.set(value);
+					try
+					{
+						saveFingerprintInquiryReportAsPDF(value, selectedFile);
+					}
+					catch(Exception e)
+					{
+						GuiUtils.showNode(piProgress, false);
+
+						String errorCode = CommonsErrorCodes.C008_00043.getCode();
+						String[] errorDetails = {"failed while saving the fingerprint inquiry report as PDF!"};
+						Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails, getTabIndex());
+					}
+				});
+				task.setOnFailed(event ->
+				{
+					GuiUtils.showNode(piProgress, false);
+
+					Throwable exception = task.getException();
+
+					String errorCode = CommonsErrorCodes.C008_00044.getCode();
+					String[] errorDetails = {"failed while building the fingerprint inquiry report!"};
+					Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails, getTabIndex());
+				});
+				Context.getExecutorService().submit(task);
+			}
+			else
+			{
+				try
+				{
+					saveFingerprintInquiryReportAsPDF(jasperPrint.get(), selectedFile);
+				}
+				catch(Exception e)
+				{
+					GuiUtils.showNode(piProgress, false);
+
+					String errorCode = CommonsErrorCodes.C008_00045.getCode();
+					String[] errorDetails = {"failed while saving the fingerprint inquiry report as PDF!"};
+					Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails, getTabIndex());
+				}
+			}
+		}
+	}
+
+	private void printFingerprintInquiryReport(JasperPrint jasperPrint)
+	{
+		PrintReportTask printReportTask = new PrintReportTask(jasperPrint);
+		printReportTask.setOnSucceeded(event ->
+		{
+			GuiUtils.showNode(piProgress, false);
+		});
+		printReportTask.setOnFailed(event ->
+		{
+			GuiUtils.showNode(piProgress, false);
+
+			Throwable exception = printReportTask.getException();
+
+			String errorCode = CommonsErrorCodes.C008_00046.getCode();
+			String[] errorDetails = {"failed while printing the fingerprint inquiry report!"};
+			Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails, getTabIndex());
+		});
+		Context.getExecutorService().submit(printReportTask);
+	}
+
+	private void saveFingerprintInquiryReportAsPDF(JasperPrint jasperPrint, File selectedFile)
+																						throws FileNotFoundException
+	{
+		SaveReportAsPdfTask printReportTaskAsPdfTask = new SaveReportAsPdfTask(jasperPrint,
+																			   new FileOutputStream(selectedFile));
+		printReportTaskAsPdfTask.setOnSucceeded(event ->
+		{
+			GuiUtils.showNode(piProgress, false);
+
+			showSuccessNotification(resources.getString("fingerprintInquiry.savingAsPDF.success.message"));
+
+			try
+			{
+				Desktop.getDesktop().open(selectedFile);
+			}
+			catch(Exception e)
+			{
+				LOGGER.warning("Failed to open the PDF file (" + selectedFile.getAbsolutePath() + ")!");
+			}
+		});
+		printReportTaskAsPdfTask.setOnFailed(event ->
+		{
+			GuiUtils.showNode(piProgress, false);
+
+			Throwable exception = printReportTaskAsPdfTask.getException();
+
+			String errorCode = CommonsErrorCodes.C008_00047.getCode();
+			String[] errorDetails = {"failed while saving the fingerprint inquiry report as PDF!"};
+			Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails, getTabIndex());
+		});
+		Context.getExecutorService().submit(printReportTaskAsPdfTask);
+	}
+
+	private BuildFingerprintInquiryReportTask newBuildFingerprintInquiryReportTask()
+	{
+		UserInfo userInfo = (UserInfo) Context.getUserSession().getAttribute("userInfo");
+		String inquirerId = AppUtils.localizeNumbers(String.valueOf(userInfo.getOperatorId()));
+
+		return new BuildFingerprintInquiryReportTask(inquirerId, civilHit, criminalHit, civilBiometricsId,
+													 criminalBiometricsId, civilPersonInfoMap,
+													 oldCriminalPersonInfoMap, newCriminalPersonInfoMap,
+													 fingerprintBase64Images);
 	}
 }

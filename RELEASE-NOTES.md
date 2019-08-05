@@ -11,6 +11,16 @@ VERSION SCHEMA: vYYYY.MM.#SEQ
 
 ---
 
+## v2019.08.1
+
+- CHN: If the returned SAMIS ID of DeporteeInfo is 0, set it to deportee ID.
+- FIX: NPE if the fingerprint returned from the middleware is null.
+- CHN: Show Naturalized Saudi labels.
+- NEW: Fingerprint inquiry report.
+- FIX: When data retrieved by criminal-hit only, the data does not persist upon navigate forward and backward.
+
+---
+
 ## v2019.07.4
 
 - ENH: Make all workflow threads as daemon threads.

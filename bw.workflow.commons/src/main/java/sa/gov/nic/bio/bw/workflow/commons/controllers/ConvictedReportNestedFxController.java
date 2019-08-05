@@ -35,7 +35,7 @@ import java.util.stream.Collectors;
 @FxmlFile("convictedReportNestedPane.fxml")
 public class ConvictedReportNestedFxController extends ContentFxControllerBase
 {
-	@FXML private TitledPane tpEnrollmentDetails;
+    @FXML private TitledPane tpEnrollmentDetails;
 	@FXML private Pane paneImage;
 	@FXML private Label lblReportNumber;
 	@FXML private Label lblEnrollerId;
@@ -85,6 +85,7 @@ public class ConvictedReportNestedFxController extends ContentFxControllerBase
 	@FXML private Label lblDeportationMonths;
 	@FXML private Label lblDeportationDays;
 	@FXML private Label lblOther;
+	@FXML private Label lblNaturalizedSaudi;
 	@FXML private CheckBox cbFinalDeportation;
 	@FXML private CheckBox cbLibel;
 	@FXML private CheckBox cbCovenant;
@@ -209,6 +210,9 @@ public class ConvictedReportNestedFxController extends ContentFxControllerBase
 			{
 				boolean arabic = Context.getGuiLanguage() == GuiLanguage.ARABIC;
 				lblNationality.setText(arabic ? countryBean.getDescriptionAR() : countryBean.getDescriptionEN());
+				GuiUtils.showNode(lblNaturalizedSaudi,
+						!"SAU".equalsIgnoreCase(countryBean.getMofaNationalityCode()) &&
+								String.valueOf(convictedReport.getSubjSamisId()).startsWith("1"));
 			}
 			else lblNationality.setText(resources.getString("combobox.unknownNationality"));
 		}
