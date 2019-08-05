@@ -38,7 +38,7 @@ public class ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTas
 		List<Integer> availableFingerprints = IntStream.rangeClosed(1, 10).boxed().collect(Collectors.toList());
 		availableFingerprints.removeAll(missingFingerprints);
 		
-		Map<Integer, String> fingerprintWsqMap = new HashMap<>();
+		Map<Integer, String> fingerprintWsqToBeConvertedMap = new HashMap<>();
 		Map<Integer, String> fingerprintImages = new HashMap<>();
 		combinedFingerprints = new ArrayList<>();
 		
@@ -73,7 +73,7 @@ public class ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTas
 						else slapMissingFingers.add(i);
 					}
 				}
-				else if(position == FingerPosition.TWO_THUMBS.getPosition())
+				else /*if(position == FingerPosition.TWO_THUMBS.getPosition())*/
 				{
 					if(availableFingerprints.contains(FingerPosition.RIGHT_THUMB.getPosition())) expectedFingersCount++;
 					else slapMissingFingers.add(FingerPosition.RIGHT_THUMB.getPosition());
@@ -119,18 +119,19 @@ public class ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTas
 					
 					fingerData.forEach(dmFingerData ->
 					{
-						fingerprintImages.put(dmFingerData.getPosition(), dmFingerData.getFinger());
+						fingerprintWsqToBeConvertedMap.put(dmFingerData.getPosition(),
+														   dmFingerData.getFingerWsqImage());
 						String roundingBox = dmFingerData.getRoundingBox();
 						FingerCoordinate fingerCoordinate = AppUtils.constructFingerCoordinates(roundingBox);
 						fingerCoordinates.add(fingerCoordinate);
 						
 						Finger segmentedFinger = new Finger(dmFingerData.getPosition(),
-						                                    dmFingerData.getFinger(), null);
-						combinedFingerprints.add(segmentedFinger);
+						                                    dmFingerData.getFingerWsqImage(), null);
+						combinedFingerprints.add(segmentedFinger); // segmented
 					});
 					
-					finger.setFingerCoordinates(fingerCoordinates);
-					combinedFingerprints.add(new Finger(finger));
+					if(finger.getFingerCoordinates() == null) finger.setFingerCoordinates(fingerCoordinates);
+					combinedFingerprints.add(new Finger(finger)); // slap
 				}
 				else if(result.getReturnCode() == SegmentFingerprintsResponse.FailureCodes.SEGMENTATION_FAILED)
 				{
@@ -165,7 +166,9 @@ public class ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTas
 					
 					Finger segmentedRightThumb = new Finger(finger);
 					segmentedRightThumb.setType(position);
-					combinedFingerprints.add(segmentedRightThumb);
+					combinedFingerprints.add(segmentedRightThumb); // the segmented
+					combinedFingerprints.add(new Finger(finger)); // the slap
+					fingerprintWsqToBeConvertedMap.put(position, finger.getImage());
 				}
 				else if(position == FingerPosition.LEFT_THUMB_SLAP.getPosition())
 				{
@@ -173,20 +176,24 @@ public class ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTas
 					
 					Finger segmentedLeftThumb = new Finger(finger);
 					segmentedLeftThumb.setType(position);
-					combinedFingerprints.add(segmentedLeftThumb);
+					combinedFingerprints.add(segmentedLeftThumb); // the segmented
+					combinedFingerprints.add(new Finger(finger)); // the slap
+					fingerprintWsqToBeConvertedMap.put(position, finger.getImage());
 				}
-				
-				combinedFingerprints.add(new Finger(finger));
-				fingerprintWsqMap.put(position, finger.getImage());
+				else
+				{
+					combinedFingerprints.add(new Finger(finger)); // the segmented
+					fingerprintWsqToBeConvertedMap.put(position, finger.getImage());
+				}
 			}
 		}
 		
-		if(!fingerprintWsqMap.isEmpty())
+		if(!fingerprintWsqToBeConvertedMap.isEmpty())
 		{
 			Future<TaskResponse<ConvertedFingerprintImagesResponse>>
-												serviceResponseFuture = Context.getBioKitManager()
-																			   .getFingerprintUtilitiesService()
-																			   .convertWsqToImages(fingerprintWsqMap);
+									serviceResponseFuture = Context.getBioKitManager()
+																   .getFingerprintUtilitiesService()
+																   .convertWsqToImages(fingerprintWsqToBeConvertedMap);
 			
 			TaskResponse<ConvertedFingerprintImagesResponse> response;
 			try

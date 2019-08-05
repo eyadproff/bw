@@ -19,6 +19,7 @@ import sa.gov.nic.bio.bw.workflow.civilcriminalfingerprintsinquiry.tasks.Extract
 import sa.gov.nic.bio.bw.workflow.civilcriminalfingerprintsinquiry.tasks.RetrieveFingerprintsAvailabilityByCivilBiometricIdWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.civilcriminalfingerprintsinquiry.tasks.RetrieveFingerprintsByCivilBiometricIdWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.civilcriminalfingerprintsinquiry.tasks.RetrieveFingerprintsByCriminalBiometricIdWorkflowTask;
+import sa.gov.nic.bio.bw.workflow.commons.beans.PersonInfo;
 import sa.gov.nic.bio.bw.workflow.commons.controllers.InquiryByFingerprintsPaneFxController;
 import sa.gov.nic.bio.bw.workflow.commons.controllers.ShowingFingerprintsPaneFxController;
 import sa.gov.nic.bio.bw.workflow.commons.controllers.ShowingPersonInfoFxController;
@@ -195,6 +196,11 @@ public class RegisterCriminalFingerprintsNotPresentWorkflow extends WizardWorkfl
 				
 				if(fingerprintsSource == Source.ENTERING_PERSON_ID)
 				{
+					PersonInfo personInfo = getData(GetPersonInfoByIdWorkflowTask.class,
+													"personInfo");
+					if(personInfo != null) setData(ShowingFingerprintsPaneFxController.class,
+												  "facePhotoBase64", personInfo.getFace());
+
 					passData(ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask.class,
 					         ShowingFingerprintsPaneFxController.class,
 					         "fingerprintBase64Images");
@@ -221,6 +227,11 @@ public class RegisterCriminalFingerprintsNotPresentWorkflow extends WizardWorkfl
 				}
 				else if(fingerprintsSource == Source.UPLOADING_NIST_FILE)
 				{
+					PersonInfo personInfo = getData(ExtractingDataFromNistFileWorkflowTask.class,
+													"personInfo");
+					if(personInfo != null) setData(ShowingFingerprintsPaneFxController.class,
+												   "facePhotoBase64", personInfo.getFace());
+
 					passData(ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask.class,
 					         ShowingFingerprintsPaneFxController.class,
 					         "fingerprintBase64Images");

@@ -3,6 +3,7 @@ package sa.gov.nic.bio.bw.core.utils;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.reflect.TypeToken;
 import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.geometry.NodeOrientation;
@@ -39,10 +40,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.lang.module.ModuleReference;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import java.lang.reflect.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -641,6 +639,11 @@ public final class AppUtils implements AppLogger
 		String fullName = firstName + " " + fatherName + " " + grandfatherName + " " + familyName;
 		return fullName.trim().replaceAll("\\s+", " "); // remove extra spaces
 	}
+
+	public static <T> String toJson(T object, Type rawType, Type... typeArguments)
+	{
+		return new Gson().toJson(object, TypeToken.getParameterized(rawType, typeArguments).getType());
+	}
 	
 	public static <T> String toJson(T object)
 	{
@@ -780,6 +783,20 @@ public final class AppUtils implements AppLogger
 		catch(Exception e)
 		{
 			LOGGER.warning("Failed to open the app folder (" + AppConstants.APP_FOLDER_PATH + ")");
+		}
+	}
+
+	public static void openFileOrFolder(File file)
+	{
+		if(file == null) return;
+
+		try
+		{
+			Desktop.getDesktop().open(file);
+		}
+		catch(Exception e)
+		{
+			LOGGER.warning("Failed to open file/folder (" + file.getAbsolutePath() + ")");
 		}
 	}
 	
