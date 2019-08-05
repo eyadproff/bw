@@ -439,6 +439,41 @@ public class RegisterConvictedReportNotPresentWorkflow extends WizardWorkflowBas
 				passData(FingerprintInquiryStatusCheckerWorkflowTask.class,
 				         InquiryByFingerprintsResultPaneFxController.class,
 				         "status", "civilBiometricsId", "criminalBiometricsId");
+
+				Source fingerprintsSource = getData(FingerprintsSourceFxController.class,
+						"fingerprintsSource");
+
+				if(fingerprintsSource == Source.ENTERING_PERSON_ID)
+				{
+					passData(ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask.class,
+							InquiryByFingerprintsResultPaneFxController.class,
+							"fingerprintBase64Images");
+				}
+				else if(fingerprintsSource == Source.ENTERING_CIVIL_BIOMETRICS_ID)
+				{
+					passData(ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask.class,
+							InquiryByFingerprintsResultPaneFxController.class,
+							"fingerprintBase64Images");
+				}
+				else if(fingerprintsSource == Source.ENTERING_CRIMINAL_BIOMETRICS_ID)
+				{
+					passData(ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask.class,
+							InquiryByFingerprintsResultPaneFxController.class,
+							"fingerprintBase64Images");
+				}
+				else if(fingerprintsSource == Source.SCANNING_FINGERPRINTS_CARD)
+				{
+					passData(SpecifyFingerprintCoordinatesPaneFxController.class,
+							InquiryByFingerprintsResultPaneFxController.class,
+							"fingerprintBase64Images");
+				}
+				else if(fingerprintsSource == Source.UPLOADING_NIST_FILE)
+				{
+					passData(ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask.class,
+							InquiryByFingerprintsResultPaneFxController.class,
+							"fingerprintBase64Images");
+				}
+
 				renderUiAndWaitForUserInput(InquiryByFingerprintsResultPaneFxController.class);
 				
 				break;

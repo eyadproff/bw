@@ -1127,4 +1127,12 @@ public class GuiUtils implements AppLogger
 		}
 		return null;
 	}
+
+	public static String getPageCounterFooterInArabic(int pageNumber, int pagesCount)
+	{
+		ResourceBundle resourceBundle = AppUtils.getCoreStringsResourceBundle(AppConstants.Locales.SAUDI_AR_LOCALE);
+		String text = resourceBundle.getString("label.thePage") + " " + pageNumber + " " +
+														resourceBundle.getString("label.from") + " " + pagesCount;
+		return AppUtils.localizeNumbers(text, AppConstants.Locales.SAUDI_AR_LOCALE, false);
+	}
 }

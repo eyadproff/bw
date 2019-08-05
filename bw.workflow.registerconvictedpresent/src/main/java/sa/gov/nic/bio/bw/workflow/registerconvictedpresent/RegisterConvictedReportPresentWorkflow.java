@@ -235,6 +235,9 @@ public class RegisterConvictedReportPresentWorkflow extends WizardWorkflowBase
 				passData(FingerprintInquiryStatusCheckerWorkflowTask.class,
 				         InquiryByFingerprintsResultPaneFxController.class,
 				         "status", "civilBiometricsId", "criminalBiometricsId");
+				passData(FingerprintCapturingFxController.class, InquiryByFingerprintsResultPaneFxController.class,
+						"fingerprintBase64Images");
+
 				renderUiAndWaitForUserInput(InquiryByFingerprintsResultPaneFxController.class);
 				break;
 			}

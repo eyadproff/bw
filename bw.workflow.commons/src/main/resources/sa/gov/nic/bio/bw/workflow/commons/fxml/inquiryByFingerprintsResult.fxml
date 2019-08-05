@@ -17,6 +17,8 @@
 <?import sa.gov.nic.bio.bw.workflow.commons.ui.CopiableLabel?>
 <?import sa.gov.nic.bio.bw.workflow.commons.ui.ImageViewPane?>
 <?import sa.gov.nic.bio.bw.workflow.commons.ui.PTableColumn?>
+<?import javafx.scene.control.ProgressIndicator?>
+<?import javafx.scene.layout.StackPane?>
 <BorderPane xmlns="http://javafx.com/javafx/11" xmlns:fx="http://javafx.com/fxml/1"
             fx:id="rootPane" stylesheets="@../css/style.css"
             fx:controller="sa.gov.nic.bio.bw.workflow.commons.controllers.InquiryByFingerprintsResultPaneFxController">
@@ -194,9 +196,14 @@
             <padding>
                 <Insets bottom="10"/>
             </padding>
-            <Button fx:id="btnStartOver" text="%button.startOver" onAction="#onStartOverButtonClicked"/>
-            <Button fx:id="btnRegisterUnknownPerson" text="%button.registerUnknownPerson" managed="false" visible="false" onAction="#onRegisterUnknownPersonButtonClicked"/>
-            <Button fx:id="btnConfirmPersonInformation" text="%button.confirm" onAction="#onNextButtonClicked"/>
+            <ProgressIndicator fx:id="piProgress" prefHeight="25.0" prefWidth="25.0" managed="false" visible="false"/>
+            <HBox fx:id="paneButtons" alignment="CENTER" spacing="10">
+                <Button fx:id="btnStartOver" text="%button.startOver" onAction="#onStartOverButtonClicked"/>
+                <Button fx:id="btnPrintReport" text="%button.printResultReport" onAction="#onPrintReportButtonClicked"/>
+                <Button fx:id="btnSaveReportAsPDF" text="%button.saveResultReportAsPDF" onAction="#onSaveReportAsPdfButtonClicked"/>
+                <Button fx:id="btnRegisterUnknownPerson" text="%button.registerUnknownPerson" managed="false" visible="false" onAction="#onRegisterUnknownPersonButtonClicked"/>
+                <Button fx:id="btnConfirmPersonInformation" text="%button.confirm" onAction="#onNextButtonClicked"/>
+            </HBox>
         </HBox>
     </bottom>
 </BorderPane>

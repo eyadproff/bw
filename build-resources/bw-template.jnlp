@@ -42,6 +42,20 @@
         <property name="jnlp.noPrefix.--add-opens java.base/java.util=" value='org.apache.commons.lang3'/>
         <property name="jnlp.noPrefix.--add-opens java.base/java.lang=" value='org.apache.commons.lang3'/>
         <property name="jnlp.noPrefix.--add-opens java.base/java.time=" value='org.apache.commons.lang3'/>
+        <property name="jnlp.noPrefix.--add-opens java.base/java.util.zip=" value='org.apache.commons.lang3'/>
+        <property name="jnlp.noPrefix.--add-opens java.base/jdk.internal.ref=" value='org.apache.commons.lang3'/>
+        <property name="jnlp.noPrefix.--add-opens java.base/java.io=" value='org.apache.commons.lang3'/>
+        <property name="jnlp.noPrefix.--add-opens java.base/sun.nio.fs=" value='org.apache.commons.lang3'/>
+        <property name="jnlp.noPrefix.--add-opens java.base/sun.nio.ch=" value='org.apache.commons.lang3'/>
+        <property name="jnlp.noPrefix.--add-opens java.base/java.lang.ref=" value='org.apache.commons.lang3'/>
+        <property name="jnlp.noPrefix.--add-opens java.base/java.nio=" value='org.apache.commons.lang3'/>
+        <property name="jnlp.noPrefix.--add-opens java.base/java.nio.channels=" value='org.apache.commons.lang3'/>
+        <property name="jnlp.noPrefix.--add-opens java.base/java.nio.channels.spi=" value='org.apache.commons.lang3'/>
+        <property name="jnlp.noPrefix.--add-opens java.base/java.util.concurrent.atomic=" value='org.apache.commons.lang3'/>
+        <property name="jnlp.noPrefix.--add-opens java.base/java.util.jar=" value='org.apache.commons.lang3'/>
+        <property name="jnlp.noPrefix.--add-opens java.base/sun.nio.cs=" value='org.apache.commons.lang3'/>
+        <property name="jnlp.noPrefix.--add-opens java.base/java.nio.charset=" value='org.apache.commons.lang3'/>
+        <property name="jnlp.noPrefix.--add-opens java.base/java.net=" value='org.apache.commons.lang3'/>
         <property name="jnlp.noPrefix.--add-opens java.desktop/java.awt=" value='org.apache.commons.lang3'/>
         <property name="jnlp.noPrefix.--add-opens java.base/java.time.chrono=" value='bw.core'/>
         <property name="jnlp.noPrefix.-Djava.library.path="
