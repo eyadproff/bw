@@ -35,6 +35,7 @@
         - services-gateway-biooperation/api/fingerprint/available/v2
         - services-gateway-biooperation/api/criminal/fingerprint/images/v1
         - services-gateway-biooperation/api/xafis/nist/extraction/v1
+        - services-gateway-biooperation/api/criminal/nist/generation/v1
         - services-gateway-biooperation/api/fingerprint/inquiry/v1
         - services-gateway-biooperation/api/fingerprint/inquiry/status/v2
         - services-gateway-demographic/api/person/deportee/info/v1
@@ -108,6 +109,7 @@
         - services-gateway-biooperation/api/fingerprint/available/v2
         - services-gateway-biooperation/api/criminal/fingerprint/images/v1
         - services-gateway-biooperation/api/xafis/nist/extraction/v1
+        - services-gateway-biooperation/api/criminal/nist/generation/v1
         - services-gateway-biooperation/api/fingerprint/inquiry/v1
         - services-gateway-biooperation/api/fingerprint/inquiry/status/v2
         - services-gateway-demographic/api/person/deportee/info/v1
@@ -155,6 +157,7 @@
         - services-gateway-biooperation/api/fingerprint/available/v2
         - services-gateway-biooperation/api/criminal/fingerprint/images/v1
         - services-gateway-biooperation/api/xafis/nist/extraction/v1
+        - services-gateway-biooperation/api/criminal/nist/generation/v1
         - services-gateway-biooperation/api/fingerprint/inquiry/v1
         - services-gateway-biooperation/api/fingerprint/inquiry/status/v2
         - services-gateway-biooperation/api/criminal/criminal-id/generation/v1
