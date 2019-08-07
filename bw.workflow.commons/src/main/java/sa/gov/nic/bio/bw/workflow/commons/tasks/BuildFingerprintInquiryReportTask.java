@@ -151,36 +151,43 @@ public class BuildFingerprintInquiryReportTask extends Task<JasperPrint>
 		}
 		else record.setFaceImage(CommonImages.PLACEHOLDER_AVATAR.getAsInputStream());
 
-		Name name = personInfo.getName();
-		StringBuilder sb = new StringBuilder();
+		if(personInfo != null)
+		{
+			Name name = personInfo.getName();
 
-		String firstName = name.getFirstName();
-		String fatherName = name.getFatherName();
-		String grandfatherName = name.getGrandfatherName();
-		String familyName = name.getFamilyName();
+			if(name != null)
+			{
+				StringBuilder sb = new StringBuilder();
 
-		if(firstName != null) sb.append(firstName).append(" ");
-		if(fatherName != null) sb.append(fatherName).append(" ");
-		if(grandfatherName != null) sb.append(grandfatherName).append(" ");
-		if(familyName != null) sb.append(familyName);
-		String fullName = sb.toString().stripTrailing();
+				String firstName = name.getFirstName();
+				String fatherName = name.getFatherName();
+				String grandfatherName = name.getGrandfatherName();
+				String familyName = name.getFamilyName();
 
-		record.setName(fullName);
+				if(firstName != null) sb.append(firstName).append(" ");
+				if(fatherName != null) sb.append(fatherName).append(" ");
+				if(grandfatherName != null) sb.append(grandfatherName).append(" ");
+				if(familyName != null) sb.append(familyName);
+				String fullName = sb.toString().stripTrailing();
 
-		sb = new StringBuilder();
+				record.setName(fullName);
 
-		firstName = name.getTranslatedFirstName();
-		fatherName = name.getTranslatedFatherName();
-		grandfatherName = name.getTranslatedGrandFatherName();
-		familyName = name.getTranslatedFamilyName();
+				sb = new StringBuilder();
 
-		if(firstName != null) sb.append(firstName).append(" ");
-		if(fatherName != null) sb.append(fatherName).append(" ");
-		if(grandfatherName != null) sb.append(grandfatherName).append(" ");
-		if(familyName != null) sb.append(familyName);
-		fullName = sb.toString().stripTrailing();
+				firstName = name.getTranslatedFirstName();
+				fatherName = name.getTranslatedFatherName();
+				grandfatherName = name.getTranslatedGrandFatherName();
+				familyName = name.getTranslatedFamilyName();
 
-		record.setTranslatedName(fullName);
+				if(firstName != null) sb.append(firstName).append(" ");
+				if(fatherName != null) sb.append(fatherName).append(" ");
+				if(grandfatherName != null) sb.append(grandfatherName).append(" ");
+				if(familyName != null) sb.append(familyName);
+				fullName = sb.toString().stripTrailing();
+
+				record.setTranslatedName(fullName);
+			}
+		}
 
 		var nationality = normalizedPersonInfo.getNationality();
 		var occupation = normalizedPersonInfo.getOccupation();

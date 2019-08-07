@@ -11,6 +11,12 @@ VERSION SCHEMA: vYYYY.MM.#SEQ
 
 ---
 
+## v2019.08.3
+
+- FIX: NPE while building fingerprint inquiry report if PersonInfo is null.
+
+---
+
 ## v2019.08.2
 
 - NEW: NIST file generator.
