@@ -11,6 +11,13 @@ VERSION SCHEMA: vYYYY.MM.#SEQ
 
 ---
 
+## v2019.09.3
+
+- NEW: Iris Registration.
+- NEW: Iris Inquiry.
+
+---
+
 ## v2019.09.2
 
 - FIX: The slap thumbs overwrites segmented thumbs.
