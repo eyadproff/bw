@@ -11,6 +11,14 @@ VERSION SCHEMA: vYYYY.MM.#SEQ
 
 ---
 
+## v2019.09.1
+
+- FIX: The slap fingerprints are segmented even though there are segmented fingerprints available from the source.
+- ENH: Upgrade Retrofit from v2.5.0 to v2.6.1.
+- ENH: Upgrade tomcat-websocket from v8.5.33 to v9.0.24.
+
+---
+
 ## v2019.08.3
 
 - FIX: NPE while building fingerprint inquiry report if PersonInfo is null.

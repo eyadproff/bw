@@ -42,6 +42,26 @@ public class ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTas
 		Map<Integer, String> fingerprintImages = new HashMap<>();
 		combinedFingerprints = new ArrayList<>();
 		
+		boolean segmentRightSlap = true;
+		boolean segmentLeftSlap = true;
+		boolean segmentThumbSlap = true;
+		
+		for(Finger finger : fingerprints)
+		{
+			int position = finger.getType();
+			
+			if(position >= FingerPosition.RIGHT_INDEX.getPosition() &&
+			   position <= FingerPosition.RIGHT_LITTLE.getPosition()) segmentRightSlap = false;
+			
+			if(position >= FingerPosition.LEFT_INDEX.getPosition() &&
+			   position <= FingerPosition.LEFT_LITTLE.getPosition()) segmentLeftSlap = false;
+			
+			if(position == FingerPosition.RIGHT_THUMB.getPosition() ||
+			   position == FingerPosition.LEFT_THUMB.getPosition() ||
+			   position == FingerPosition.RIGHT_THUMB_SLAP.getPosition() ||
+			   position == FingerPosition.LEFT_THUMB_SLAP.getPosition()) segmentThumbSlap = false;
+		}
+		
 		for(Finger finger : fingerprints)
 		{
 			int position = finger.getType();
@@ -63,6 +83,8 @@ public class ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTas
 						if(availableFingerprints.contains(i)) expectedFingersCount++;
 						else slapMissingFingers.add(i);
 					}
+					
+					if(!segmentRightSlap) continue;
 				}
 				else if(position == FingerPosition.LEFT_SLAP.getPosition())
 				{
@@ -72,6 +94,8 @@ public class ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTas
 						if(availableFingerprints.contains(i)) expectedFingersCount++;
 						else slapMissingFingers.add(i);
 					}
+					
+					if(!segmentLeftSlap) continue;
 				}
 				else /*if(position == FingerPosition.TWO_THUMBS.getPosition())*/
 				{
@@ -80,6 +104,8 @@ public class ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTas
 					
 					if(availableFingerprints.contains(FingerPosition.LEFT_THUMB.getPosition())) expectedFingersCount++;
 					else slapMissingFingers.add(FingerPosition.LEFT_THUMB.getPosition());
+					
+					if(!segmentThumbSlap) continue;
 				}
 				
 				Future<TaskResponse<SegmentFingerprintsResponse>>
