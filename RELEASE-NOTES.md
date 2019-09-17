@@ -11,6 +11,12 @@ VERSION SCHEMA: vYYYY.MM.#SEQ
 
 ---
 
+## v2019.09.2
+
+- FIX: The slap thumbs overwrites segmented thumbs.
+
+---
+
 ## v2019.09.1
 
 - FIX: The slap fingerprints are segmented even though there are segmented fingerprints available from the source.

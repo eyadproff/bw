@@ -45,6 +45,8 @@ public class ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTas
 		boolean segmentRightSlap = true;
 		boolean segmentLeftSlap = true;
 		boolean segmentThumbSlap = true;
+		boolean takeRightThumbSlapAsRightThumb = true;
+		boolean takeLeftThumbSlapAsLeftThumb = true;
 		
 		for(Finger finger : fingerprints)
 		{
@@ -53,13 +55,16 @@ public class ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTas
 			if(position >= FingerPosition.RIGHT_INDEX.getPosition() &&
 			   position <= FingerPosition.RIGHT_LITTLE.getPosition()) segmentRightSlap = false;
 			
-			if(position >= FingerPosition.LEFT_INDEX.getPosition() &&
-			   position <= FingerPosition.LEFT_LITTLE.getPosition()) segmentLeftSlap = false;
+			else if(position >= FingerPosition.LEFT_INDEX.getPosition() &&
+			        position <= FingerPosition.LEFT_LITTLE.getPosition()) segmentLeftSlap = false;
 			
-			if(position == FingerPosition.RIGHT_THUMB.getPosition() ||
-			   position == FingerPosition.LEFT_THUMB.getPosition() ||
-			   position == FingerPosition.RIGHT_THUMB_SLAP.getPosition() ||
-			   position == FingerPosition.LEFT_THUMB_SLAP.getPosition()) segmentThumbSlap = false;
+			else if(position == FingerPosition.RIGHT_THUMB.getPosition() ||
+			        position == FingerPosition.LEFT_THUMB.getPosition() ||
+			        position == FingerPosition.RIGHT_THUMB_SLAP.getPosition() ||
+			        position == FingerPosition.LEFT_THUMB_SLAP.getPosition()) segmentThumbSlap = false;
+			
+			if(position == FingerPosition.RIGHT_THUMB.getPosition()) takeRightThumbSlapAsRightThumb = false;
+			if(position == FingerPosition.LEFT_THUMB.getPosition()) takeLeftThumbSlapAsLeftThumb = false;
 		}
 		
 		for(Finger finger : fingerprints)
@@ -190,9 +195,13 @@ public class ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTas
 				{
 					position = FingerPosition.RIGHT_THUMB.getPosition();
 					
-					Finger segmentedRightThumb = new Finger(finger);
-					segmentedRightThumb.setType(position);
-					combinedFingerprints.add(segmentedRightThumb); // the segmented
+					if(takeRightThumbSlapAsRightThumb)
+					{
+						Finger segmentedRightThumb = new Finger(finger);
+						segmentedRightThumb.setType(position);
+						combinedFingerprints.add(segmentedRightThumb); // the segmented
+					}
+					
 					combinedFingerprints.add(new Finger(finger)); // the slap
 					fingerprintWsqToBeConvertedMap.put(position, finger.getImage());
 				}
@@ -200,9 +209,13 @@ public class ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTas
 				{
 					position = FingerPosition.LEFT_THUMB.getPosition();
 					
-					Finger segmentedLeftThumb = new Finger(finger);
-					segmentedLeftThumb.setType(position);
-					combinedFingerprints.add(segmentedLeftThumb); // the segmented
+					if(takeLeftThumbSlapAsLeftThumb)
+					{
+						Finger segmentedLeftThumb = new Finger(finger);
+						segmentedLeftThumb.setType(position);
+						combinedFingerprints.add(segmentedLeftThumb); // the segmented
+					}
+					
 					combinedFingerprints.add(new Finger(finger)); // the slap
 					fingerprintWsqToBeConvertedMap.put(position, finger.getImage());
 				}
