@@ -18,7 +18,6 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.control.SplitPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
 import javafx.scene.image.Image;
@@ -58,7 +57,6 @@ import sa.gov.nic.bio.bw.core.workflow.Input;
 import sa.gov.nic.bio.bw.core.workflow.Output;
 import sa.gov.nic.bio.bw.workflow.commons.beans.Finger;
 import sa.gov.nic.bio.bw.workflow.commons.beans.FingerprintUiComponents;
-import sa.gov.nic.bio.bw.workflow.commons.ui.AutoScalingStackPane;
 import sa.gov.nic.bio.bw.workflow.commons.ui.FourStateTitledPane;
 import sa.gov.nic.bio.bw.workflow.commons.utils.CommonsErrorCodes;
 import sa.gov.nic.bio.commons.TaskResponse;
@@ -77,8 +75,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-@FxmlFile("fingerprintCapturing.fxml")
-public class FingerprintCapturingFxController extends WizardStepFxControllerBase
+@FxmlFile("slapFingerprintsCapturing.fxml")
+public class SlapFingerprintsCapturingFxController extends WizardStepFxControllerBase
 {
 	@Input private Boolean hidePreviousButton;
 	@Input private Boolean allow9MissingWithNoRole;
@@ -93,13 +91,11 @@ public class FingerprintCapturingFxController extends WizardStepFxControllerBase
 	
 	@FXML private VBox paneControlsInnerContainer;
 	@FXML private ScrollPane paneControlsOuterContainer;
-	@FXML private AutoScalingStackPane spRightHand;
 	@FXML private ProgressIndicator piProgress;
 	@FXML private ProgressIndicator piFingerprintDeviceLivePreview;
 	@FXML private Label lblStatus;
 	@FXML private TitledPane tpRightHand;
 	@FXML private TitledPane tpLeftHand;
-	@FXML private SplitPane spFingerprints;
 	@FXML private ImageView ivCompleted;
 	@FXML private ImageView ivFingerprintDeviceLivePreviewPlaceholder;
 	@FXML private ImageView ivLeftLittlePlaceholder;

@@ -36,8 +36,9 @@ import sa.gov.nic.bio.bw.core.utils.GuiLanguage;
 import sa.gov.nic.bio.bw.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.core.utils.RuntimeEnvironment;
 import sa.gov.nic.bio.bw.core.workflow.Output;
-import sa.gov.nic.bio.bw.workflow.commons.ui.AutoScalingStackPane;
 import sa.gov.nic.bio.bw.login.utils.LoginErrorCodes;
+import sa.gov.nic.bio.bw.workflow.commons.controllers.ChangeFingerprintDialogFxController;
+import sa.gov.nic.bio.bw.workflow.commons.ui.AutoScalingStackPane;
 
 import java.util.HashSet;
 import java.util.Locale;

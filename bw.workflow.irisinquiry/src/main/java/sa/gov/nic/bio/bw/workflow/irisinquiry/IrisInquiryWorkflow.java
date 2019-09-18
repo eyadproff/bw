@@ -7,7 +7,7 @@ import sa.gov.nic.bio.bw.core.wizard.Wizard;
 import sa.gov.nic.bio.bw.core.workflow.AssociatedMenu;
 import sa.gov.nic.bio.bw.core.workflow.Signal;
 import sa.gov.nic.bio.bw.core.workflow.WizardWorkflowBase;
-import sa.gov.nic.bio.bw.workflow.commons.controllers.FingerprintCapturingFxController;
+import sa.gov.nic.bio.bw.workflow.commons.controllers.SlapFingerprintsCapturingFxController;
 
 @AssociatedMenu(workflowId = 1022, menuId = "menu.query.irisInquiry",
 				menuTitle = "menu.title", menuOrder = 7, devices = {Device.FINGERPRINT_SCANNER,
@@ -29,14 +29,14 @@ public class IrisInquiryWorkflow extends WizardWorkflowBase
 				int acceptBadQualityFingerprintMinRetries = Integer.parseInt(Context.getConfigManager().getProperty(
 										"registerConvictedReport.fingerprint.acceptBadQualityFingerprintMinRetries"));
 				
-				setData(FingerprintCapturingFxController.class, "hidePreviousButton", Boolean.TRUE);
-				setData(FingerprintCapturingFxController.class, "allow9MissingWithNoRole", Boolean.TRUE);
-				setData(FingerprintCapturingFxController.class, "acceptBadQualityFingerprint",
+				setData(SlapFingerprintsCapturingFxController.class, "hidePreviousButton", Boolean.TRUE);
+				setData(SlapFingerprintsCapturingFxController.class, "allow9MissingWithNoRole", Boolean.TRUE);
+				setData(SlapFingerprintsCapturingFxController.class, "acceptBadQualityFingerprint",
 				        acceptBadQualityFingerprint);
-				setData(FingerprintCapturingFxController.class, "acceptBadQualityFingerprintMinRetires",
+				setData(SlapFingerprintsCapturingFxController.class, "acceptBadQualityFingerprintMinRetires",
 				        acceptBadQualityFingerprintMinRetries);
 		
-				renderUiAndWaitForUserInput(FingerprintCapturingFxController.class);
+				renderUiAndWaitForUserInput(SlapFingerprintsCapturingFxController.class);
 				break;
 			}
 		}

@@ -1,12 +1,12 @@
-package sa.gov.nic.bio.bw.login.controllers;
+package sa.gov.nic.bio.bw.workflow.commons.controllers;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.RadioButton;
 import javafx.scene.shape.SVGPath;
-import sa.gov.nic.bio.bw.core.controllers.FxControllerBase;
 import sa.gov.nic.bio.bw.core.biokit.FingerPosition;
+import sa.gov.nic.bio.bw.core.controllers.FxControllerBase;
 import sa.gov.nic.bio.bw.core.utils.FxmlFile;
 import sa.gov.nic.bio.bw.core.utils.GuiUtils;
 

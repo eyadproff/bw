@@ -5,6 +5,7 @@ import sa.gov.nic.bio.bw.commons.resources.JavaResource;
 public enum CommonImages implements JavaResource
 {
 	ICON_APP("icon_app.png"),
+	ICON_CHANGE_FINGERPRINT("icon_change_fingerprint"),
 	ICON_SUCCESS_12PX("icon_success_12px.png"),
 	ICON_SUCCESS_16PX("icon_success_16px.png"),
 	ICON_SUCCESS_32PX("icon_success_32px.png"),
