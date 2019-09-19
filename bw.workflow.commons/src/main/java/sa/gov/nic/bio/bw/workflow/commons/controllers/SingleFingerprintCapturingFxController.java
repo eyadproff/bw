@@ -70,6 +70,7 @@ public class SingleFingerprintCapturingFxController extends WizardStepFxControll
 	@FXML private ScrollPane paneControlsOuterContainer;
 	@FXML private ProgressIndicator piProgress;
 	@FXML private Label lblStatus;
+	@FXML private Label lblCapturedFingerprint;
 	@FXML private FourStateTitledPane tpCapturedFingerprint;
 	@FXML private ImageView ivSuccess;
 	@FXML private ImageView ivCapturedFingerprintPlaceholder;
@@ -236,6 +237,8 @@ public class SingleFingerprintCapturingFxController extends WizardStepFxControll
 		        lblStatus.setText(resources.getString("label.status.fingerprintScannerInitializedSuccessfully"));
 		        fingerprintDeviceInitializedAtLeastOnce = true;
 		        LOGGER.info("The fingerprint scanner is initialized!");
+			
+			    btnCaptureFingerprint.requestFocus();
 		    }
 		    else if(fingerprintDeviceInitializedAtLeastOnce)
 		    {
@@ -263,6 +266,8 @@ public class SingleFingerprintCapturingFxController extends WizardStepFxControll
 				btnCaptureFingerprint.setText(resources.getString("button.recaptureTheFingerprint"));
 			}
 			else btnCaptureFingerprint.setText(resources.getString("button.captureTheFingerprint"));
+			
+			btnCaptureFingerprint.requestFocus();
 		}
 		else if(deviceManagerGadgetPaneController.isDevicesRunnerRunning())
 		{
@@ -311,18 +316,23 @@ public class SingleFingerprintCapturingFxController extends WizardStepFxControll
 		}
 	}
 	
-	@FXML
-	private void onCaptureFingerprintButtonClicked(ActionEvent event)
+	private void clearCapturedFingerprint()
 	{
+		capturedFingerprint = null;
 		ivCapturedFingerprint.setImage(null);
 		tpCapturedFingerprint.setActive(false);
 		tpCapturedFingerprint.setCaptured(false);
 		tpCapturedFingerprint.setValid(false);
-		capturedFingerprint = null;
-		
+		GuiUtils.showNode(ivSuccess, false);
+		GuiUtils.showNode(lblCapturedFingerprint, false);
+	}
+	
+	@FXML
+	private void onCaptureFingerprintButtonClicked(ActionEvent event)
+	{
+		clearCapturedFingerprint();
 		workflowStarted = true;
 		GuiUtils.showNode(piProgress, false);
-		GuiUtils.showNode(ivSuccess, false);
 		GuiUtils.showNode(btnCaptureFingerprint, false);
 		GuiUtils.showNode(lblStatus, true);
 		GuiUtils.showNode(btnStopFingerprintCapturing, true);
@@ -642,8 +652,10 @@ public class SingleFingerprintCapturingFxController extends WizardStepFxControll
 		                               fingerprint.isAcceptableFingerprintImageIntensity(),
 		                               fingerprint.isDuplicated());
 		
-		String dialogTitle = fingerLabel + " (" + handLabel + ")";
-		GuiUtils.attachImageDialog(Context.getCoreFxController(), imageView, dialogTitle,
+		String title = fingerLabel + " (" + handLabel + ")";
+		lblCapturedFingerprint.setText(title);
+		GuiUtils.showNode(lblCapturedFingerprint, true);
+		GuiUtils.attachImageDialog(Context.getCoreFxController(), imageView, title,
 		                           resources.getString("label.contextMenu.showImage"), false);
 	}
 	
@@ -732,6 +744,7 @@ public class SingleFingerprintCapturingFxController extends WizardStepFxControll
 				
 				if(confirmed)
 				{
+					clearCapturedFingerprint();
 					FingerPosition fingerPosition = controller.getCurrentFingerPosition();
 					if(fingerPosition != null) activateFingerprint(fingerPosition);
 				}

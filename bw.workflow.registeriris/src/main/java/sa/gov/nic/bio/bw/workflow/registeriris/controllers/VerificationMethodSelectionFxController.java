@@ -44,7 +44,7 @@ public class VerificationMethodSelectionFxController extends WizardStepFxControl
 		rbByFingerprint.addEventHandler(KeyEvent.KEY_PRESSED, eventHandler);
 		rbByFacePhoto.addEventHandler(KeyEvent.KEY_PRESSED, eventHandler);
 		
-		String fingerprintCapturingTitle = resources.getString("wizard.fingerprintCapturing");
+		String fingerprintCapturingTitle = resources.getString("wizard.singleFingerprintCapturing");
 		String facePhotoCapturingTitle = resources.getString("wizard.facePhotoCapturing");
 		
 		// change the wizard-step-indicator upon changing the verification method

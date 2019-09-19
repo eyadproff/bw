@@ -299,7 +299,7 @@ public class WebserviceManager implements AppLogger
 			return TaskResponse.success(resultBean, httpResponseCode);
 		}
 		else if(httpResponseCode == 400 || httpResponseCode == 401 || httpResponseCode == 403 ||
-				httpResponseCode == 404 || httpResponseCode == 500)
+				httpResponseCode == 404 || httpResponseCode == 406 || httpResponseCode == 500)
 		{
 			String errorCode;
 			ResponseBody errorBody = response.errorBody();

@@ -1,5 +1,6 @@
 package sa.gov.nic.bio.bw.workflow.registeriris;
 
+import sa.gov.nic.bio.bw.core.biokit.FingerPosition;
 import sa.gov.nic.bio.bw.core.utils.Device;
 import sa.gov.nic.bio.bw.core.wizard.Step;
 import sa.gov.nic.bio.bw.core.wizard.Wizard;
@@ -13,10 +14,13 @@ import sa.gov.nic.bio.bw.workflow.commons.controllers.SingleFingerprintCapturing
 import sa.gov.nic.bio.bw.workflow.commons.lookups.CountriesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.DocumentTypesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.PersonTypesLookup;
+import sa.gov.nic.bio.bw.workflow.commons.tasks.FaceVerificationWorkflowTask;
+import sa.gov.nic.bio.bw.workflow.commons.tasks.FingerprintVerificationWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.GetPersonInfoByIdWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.registeriris.controllers.PersonIdPaneFxController;
 import sa.gov.nic.bio.bw.workflow.registeriris.controllers.VerificationMethodSelectionFxController;
 import sa.gov.nic.bio.bw.workflow.registeriris.controllers.VerificationMethodSelectionFxController.VerificationMethod;
+import sa.gov.nic.bio.bw.workflow.registeriris.controllers.VerificationProgressPaneFxController;
 
 @AssociatedMenu(workflowId = 1021, menuId = "menu.register.registerIris",
 				menuTitle = "menu.title", menuOrder = 7, devices = {Device.FINGERPRINT_SCANNER,
@@ -25,7 +29,7 @@ import sa.gov.nic.bio.bw.workflow.registeriris.controllers.VerificationMethodSel
 @Wizard({@Step(iconId = "\\uf2bb", title = "wizard.enterPersonId"),
         @Step(iconId = "\\uf2b9", title = "wizard.showPersonInformation"),
         @Step(iconId = "question", title = "wizard.selectVerificationMethod"),
-		@Step(iconId = "\\uf25a", title = "wizard.fingerprintCapturing"),
+		@Step(iconId = "\\uf25a", title = "wizard.singleFingerprintCapturing"),
 		@Step(iconId = "\\uf2b5", title = "wizard.verification"),
 		@Step(iconId = "eye", title = "wizard.irisCapturing"),
 		@Step(iconId = "spinner", title = "wizard.enrollment"),
@@ -77,6 +81,52 @@ public class RegisterIrisWorkflow extends WizardWorkflowBase
 					renderUiAndWaitForUserInput(FaceCapturingFxController.class);
 				}
 				
+				break;
+			}
+			case 4:
+			{
+				VerificationMethod verificationMethod = getData(VerificationMethodSelectionFxController.class,
+				                                                "verificationMethod");
+				
+				setData(VerificationProgressPaneFxController.class, "verificationMethod", verificationMethod);
+				
+				renderUiAndWaitForUserInput(VerificationProgressPaneFxController.class);
+				
+				if(VerificationMethod.FINGERPRINT.equals(verificationMethod))
+				{
+					FingerPosition selectedFingerprintPosition = getData(SingleFingerprintCapturingFxController.class,
+					                                                     "selectedFingerprintPosition");
+					
+					passData(PersonIdPaneFxController.class, FingerprintVerificationWorkflowTask.class,
+					         "personId");
+					passData(SingleFingerprintCapturingFxController.class, "capturedFingerprintForBackend",
+					         FingerprintVerificationWorkflowTask.class, "fingerprint");
+					setData(FingerprintVerificationWorkflowTask.class, "fingerPosition",
+					        selectedFingerprintPosition.getPosition());
+					
+					executeWorkflowTask(FingerprintVerificationWorkflowTask.class);
+					
+					passData(FingerprintVerificationWorkflowTask.class, VerificationProgressPaneFxController.class,
+					         "matched");
+				}
+				else if(VerificationMethod.FACE_PHOTO.equals(verificationMethod))
+				{
+					passData(PersonIdPaneFxController.class, FaceVerificationWorkflowTask.class,
+					         "personId");
+					passData(FaceCapturingFxController.class, FaceVerificationWorkflowTask.class,
+					         "facePhotoBase64");
+					
+					executeWorkflowTask(FaceVerificationWorkflowTask.class);
+					
+					passData(FaceVerificationWorkflowTask.class, VerificationProgressPaneFxController.class,
+					         "matched");
+				}
+				
+				break;
+			}
+			case 5:
+			{
+				renderUiAndWaitForUserInput(VerificationMethodSelectionFxController.class);
 				break;
 			}
 		}

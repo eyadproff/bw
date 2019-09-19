@@ -72,20 +72,23 @@
                     </VBox>
                 </TitledPane>
                 <FourStateTitledPane fx:id="tpCapturedFingerprint" text="%label.capturedFingerprint" maxHeight="Infinity" collapsible="false" focusTraversable="false">
-                    <StackPane>
-                        <ImageViewPane>
-                            <imageView>
-                                <ImageView fx:id="ivCapturedFingerprintPlaceholder" preserveRatio="true">
-                                    <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/placeholder_image.png"/>
-                                </ImageView>
-                            </imageView>
-                        </ImageViewPane>
-                        <ImageViewPane minHeight="79.0">
-                            <imageView>
-                                <ImageView fx:id="ivCapturedFingerprint" preserveRatio="true"/>
-                            </imageView>
-                        </ImageViewPane>
-                    </StackPane>
+                    <VBox spacing="10.0">
+                        <StackPane VBox.vgrow="ALWAYS">
+                            <ImageViewPane>
+                                <imageView>
+                                    <ImageView fx:id="ivCapturedFingerprintPlaceholder" preserveRatio="true">
+                                        <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/placeholder_image.png"/>
+                                    </ImageView>
+                                </imageView>
+                            </ImageViewPane>
+                            <ImageViewPane minHeight="79.0">
+                                <imageView>
+                                    <ImageView fx:id="ivCapturedFingerprint" preserveRatio="true"/>
+                                </imageView>
+                            </ImageViewPane>
+                        </StackPane>
+                        <Label fx:id="lblCapturedFingerprint" alignment="CENTER" maxWidth="Infinity" managed="false" visible="false"/>
+                    </VBox>
                 </FourStateTitledPane>
             </SplitPane>
         </VBox>
