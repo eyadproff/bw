@@ -24,6 +24,8 @@ public enum CommonImages implements JavaResource
 	PLACEHOLDER_AVATAR("placeholder_avatar.jpg"),
 	PLACEHOLDER_IMAGE("placeholder_image.png"),
 	PLACEHOLDER_IMAGE_SQUARE("placeholder_image_square.png"),
+	PLACEHOLDER_IRIS_IMAGE("placeholder_iris_image.png"),
+	PLACEHOLDER_SKIPPED_IRIS_IMAGE("placeholder_skipped_iris_image.png"),
 	PLACEHOLDER_SKIP("placeholder_skip.png");
 	
 	private String fileName;

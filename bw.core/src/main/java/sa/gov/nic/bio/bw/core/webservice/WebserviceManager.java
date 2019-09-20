@@ -234,7 +234,7 @@ public class WebserviceManager implements AppLogger
 				
 				if(encodedNames != null && encodedValues != null)
 				{
-					int size = encodedNames.size() > encodedValues.size() ? encodedNames.size() : encodedValues.size();
+					int size = Math.max(encodedNames.size(), encodedValues.size());
 					
 					StringBuilder sb = new StringBuilder("[\n");
 					

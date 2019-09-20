@@ -11,6 +11,7 @@ import sa.gov.nic.bio.biokit.face.FaceService;
 import sa.gov.nic.bio.biokit.face.FaceUtilitiesService;
 import sa.gov.nic.bio.biokit.fingerprint.FingerprintService;
 import sa.gov.nic.bio.biokit.fingerprint.FingerprintUtilitiesService;
+import sa.gov.nic.bio.biokit.iris.IrisService;
 import sa.gov.nic.bio.biokit.passport.PassportScannerService;
 import sa.gov.nic.bio.biokit.scanner.ScannerService;
 import sa.gov.nic.bio.biokit.utils.JsonMapper;
@@ -25,10 +26,11 @@ public class BioKitManager
 	private String bclId;
 	private int websocketPort;
 	private WebsocketClient websocketClient;
-	private FaceService faceService;
 	private FingerprintService fingerprintService;
-	private FaceUtilitiesService faceUtilitiesService;
 	private FingerprintUtilitiesService fingerprintUtilitiesService;
+	private FaceService faceService;
+	private FaceUtilitiesService faceUtilitiesService;
+	private IrisService irisService;
 	private PassportScannerService passportScannerService;
 	private ScannerService scannerService;
 	private BiokitCommander biokitCommander;
@@ -45,10 +47,11 @@ public class BioKitManager
 		                                      maxBinaryMessageBufferSizeInBytes, responseTimeoutSeconds, jsonMapper,
 		                                      closureListener, websocketLogger, updateListener);
 		
-		faceService = DeviceServiceFactory.getFaceService(websocketClient);
 		fingerprintService = DeviceServiceFactory.getFingerprintService(websocketClient);
-		faceUtilitiesService = DeviceUtilitiesServiceFactory.getFaceUtilitiesService(websocketClient);
 		fingerprintUtilitiesService = DeviceUtilitiesServiceFactory.getFingerprintUtilitiesService(websocketClient);
+		faceService = DeviceServiceFactory.getFaceService(websocketClient);
+		faceUtilitiesService = DeviceUtilitiesServiceFactory.getFaceUtilitiesService(websocketClient);
+		irisService = DeviceServiceFactory.getIrisService(websocketClient);
 		passportScannerService = DeviceServiceFactory.getPassportScannerService(websocketClient);
 		scannerService = DeviceServiceFactory.getScannerService(websocketClient);
 		biokitCommander = BiokitCommanderFactory.getBiokitCommander(websocketClient);
@@ -76,10 +79,11 @@ public class BioKitManager
 	
 	public String getBclId(){return bclId;}
 	public int getWebsocketPort(){return websocketPort;}
-	public FaceService getFaceService(){return faceService;}
 	public FingerprintService getFingerprintService(){return fingerprintService;}
-	public FaceUtilitiesService getFaceUtilitiesService(){return faceUtilitiesService;}
 	public FingerprintUtilitiesService getFingerprintUtilitiesService(){return fingerprintUtilitiesService;}
+	public FaceService getFaceService(){return faceService;}
+	public FaceUtilitiesService getFaceUtilitiesService(){return faceUtilitiesService;}
+	public IrisService getIrisService(){return irisService;}
 	public PassportScannerService getPassportScannerService(){return passportScannerService;}
 	public ScannerService getScannerService(){return scannerService;}
 	public BiokitCommander getBiokitCommander(){return biokitCommander;}

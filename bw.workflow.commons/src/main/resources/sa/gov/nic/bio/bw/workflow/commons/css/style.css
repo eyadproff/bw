@@ -100,3 +100,10 @@
     -fx-text-fill: #00000033;
     -fx-rotate: 30;
 }
+
+.small-watermark {
+    -fx-font-size: 75px;
+    -fx-font-weight: bolder;
+    -fx-text-fill: rgba(213, 0, 4, 0.2);
+    -fx-rotate: 30;
+}

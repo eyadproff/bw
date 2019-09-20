@@ -351,7 +351,7 @@ public class SingleFingerprintCapturingFxController extends WizardStepFxControll
 						.getFingerprintService().startPreviewAndAutoCapture(fingerprintDeviceName,
 						                                                    selectedFingerprintPosition.getPosition(),
 						                                                    1, null, true,
-						                                                    true, null);
+						                                                    true, true, null);
 				return future.get();
 			}
 		};

@@ -94,6 +94,35 @@
                             <ProgressIndicator fx:id="piCamera" maxHeight="24.0" maxWidth="24.0" visible="false" managed="false"/>
                         </HBox>
                     </TitledPane>
+                    <TitledPane fx:id="tpIrisScanner" text="%label.irisScanner" alignment="CENTER" collapsible="false" focusTraversable="false">
+                        <HBox alignment="CENTER" spacing="10.0">
+                            <HBox fx:id="paneIrisScanner" alignment="CENTER" spacing="10.0">
+                                <Label fx:id="lblIrisScannerNotInitialized" text="%label.notInitialized">
+                                    <graphic>
+                                        <ImageView>
+                                            <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/icon_yellow_status.png"/>
+                                        </ImageView>
+                                    </graphic>
+                                </Label>
+                                <Label fx:id="lblIrisScannerNotConnected" text="%label.notConnected" visible="false" managed="false">
+                                    <graphic>
+                                        <ImageView>
+                                            <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/icon_red_status.png"/>
+                                        </ImageView>
+                                    </graphic>
+                                </Label>
+                                <Label fx:id="lblIrisScannerInitialized" text="%label.initialized" visible="false" managed="false">
+                                    <graphic>
+                                        <ImageView>
+                                            <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/icon_green_status.png"/>
+                                        </ImageView>
+                                    </graphic>
+                                </Label>
+                                <Button fx:id="btnIrisScannerAction" focusTraversable="false" disable="true" onMouseClicked="#onIrisActionButtonClicked"/>
+                            </HBox>
+                            <ProgressIndicator fx:id="piIrisScanner" maxHeight="24.0" maxWidth="24.0" visible="false" managed="false"/>
+                        </HBox>
+                    </TitledPane>
                     <TitledPane fx:id="tpPassportScanner" text="%label.passportScanner" alignment="CENTER" collapsible="false" focusTraversable="false">
                         <HBox alignment="CENTER" spacing="10.0">
                             <HBox fx:id="panePassportScanner" alignment="CENTER" spacing="10.0">

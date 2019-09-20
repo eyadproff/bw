@@ -9,6 +9,7 @@ import sa.gov.nic.bio.bw.core.workflow.Signal;
 import sa.gov.nic.bio.bw.core.workflow.WithLookups;
 import sa.gov.nic.bio.bw.core.workflow.WizardWorkflowBase;
 import sa.gov.nic.bio.bw.workflow.commons.controllers.FaceCapturingFxController;
+import sa.gov.nic.bio.bw.workflow.commons.controllers.IrisCapturingFxController;
 import sa.gov.nic.bio.bw.workflow.commons.controllers.ShowingPersonInfoFxController;
 import sa.gov.nic.bio.bw.workflow.commons.controllers.SingleFingerprintCapturingFxController;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.CountriesLookup;
@@ -18,22 +19,25 @@ import sa.gov.nic.bio.bw.workflow.commons.tasks.FaceVerificationWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.FingerprintVerificationWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.GetPersonInfoByIdWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.registeriris.controllers.PersonIdPaneFxController;
+import sa.gov.nic.bio.bw.workflow.registeriris.controllers.RegisteringIrisPaneFxController;
+import sa.gov.nic.bio.bw.workflow.registeriris.controllers.RegisteringIrisPaneFxController.Request;
 import sa.gov.nic.bio.bw.workflow.registeriris.controllers.VerificationMethodSelectionFxController;
 import sa.gov.nic.bio.bw.workflow.registeriris.controllers.VerificationMethodSelectionFxController.VerificationMethod;
 import sa.gov.nic.bio.bw.workflow.registeriris.controllers.VerificationProgressPaneFxController;
+import sa.gov.nic.bio.bw.workflow.registeriris.tasks.CheckIrisRegistrationWorkflowTask;
+import sa.gov.nic.bio.bw.workflow.registeriris.tasks.SubmitIrisRegistrationWorkflowTask;
 
 @AssociatedMenu(workflowId = 1021, menuId = "menu.register.registerIris",
 				menuTitle = "menu.title", menuOrder = 7, devices = {Device.FINGERPRINT_SCANNER,
-				                                                    Device.IRIS_SCANNER, Device.CAMERA})
+				                                                    Device.CAMERA, Device.IRIS_SCANNER})
 @WithLookups({PersonTypesLookup.class, DocumentTypesLookup.class, CountriesLookup.class})
 @Wizard({@Step(iconId = "\\uf2bb", title = "wizard.enterPersonId"),
-        @Step(iconId = "\\uf2b9", title = "wizard.showPersonInformation"),
-        @Step(iconId = "question", title = "wizard.selectVerificationMethod"),
-		@Step(iconId = "\\uf25a", title = "wizard.singleFingerprintCapturing"),
-		@Step(iconId = "\\uf2b5", title = "wizard.verification"),
-		@Step(iconId = "eye", title = "wizard.irisCapturing"),
-		@Step(iconId = "spinner", title = "wizard.enrollment"),
-		@Step(iconId = "\\uf0f6", title = "wizard.enrollmentResult")})
+         @Step(iconId = "\\uf2b9", title = "wizard.showPersonInformation"),
+         @Step(iconId = "question", title = "wizard.selectVerificationMethod"),
+		 @Step(iconId = "\\uf25a", title = "wizard.singleFingerprintCapturing"),
+		 @Step(iconId = "\\uf2b5", title = "wizard.verification"),
+		 @Step(iconId = "eye", title = "wizard.irisCapturing"),
+		 @Step(iconId = "save", title = "wizard.enrollment")})
 public class RegisterIrisWorkflow extends WizardWorkflowBase
 {
 	@Override
@@ -126,7 +130,34 @@ public class RegisterIrisWorkflow extends WizardWorkflowBase
 			}
 			case 5:
 			{
-				renderUiAndWaitForUserInput(VerificationMethodSelectionFxController.class);
+				setData(IrisCapturingFxController.class, "hidePreviousButton", Boolean.TRUE);
+				renderUiAndWaitForUserInput(IrisCapturingFxController.class);
+				break;
+			}
+			case 6:
+			{
+				renderUiAndWaitForUserInput(RegisteringIrisPaneFxController.class);
+				
+				Request request = getData(RegisteringIrisPaneFxController.class, "request");
+				if(request == Request.SUBMIT_IRIS_REGISTRATION)
+				{
+					passData(PersonIdPaneFxController.class, SubmitIrisRegistrationWorkflowTask.class,
+					         "personId");
+					passData(IrisCapturingFxController.class, "capturedRightIrisBase64",
+					         SubmitIrisRegistrationWorkflowTask.class, "rightIrisBase64");
+					passData(IrisCapturingFxController.class, "capturedLeftIrisBase64",
+					         SubmitIrisRegistrationWorkflowTask.class, "leftIrisBase64");
+					executeWorkflowTask(SubmitIrisRegistrationWorkflowTask.class);
+				}
+				else if(request == Request.CHECK_IRIS_REGISTRATION)
+				{
+					passData(SubmitIrisRegistrationWorkflowTask.class,
+					         CheckIrisRegistrationWorkflowTask.class, "tcn");
+					executeWorkflowTask(CheckIrisRegistrationWorkflowTask.class);
+					passData(CheckIrisRegistrationWorkflowTask.class, "status",
+					         RegisteringIrisPaneFxController.class, "irisRegistrationStatus");
+				}
+				
 				break;
 			}
 		}
