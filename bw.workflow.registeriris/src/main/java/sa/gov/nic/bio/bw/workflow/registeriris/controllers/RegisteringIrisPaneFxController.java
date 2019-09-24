@@ -36,6 +36,8 @@ public class RegisteringIrisPaneFxController extends WizardStepFxControllerBase
 	@FXML private Button btnRetry;
 	@FXML private Button btnStartOver;
 	
+	private boolean disableRetryButtonForever = false;
+	
 	@Override
 	protected void onAttachedToScene()
 	{
@@ -60,7 +62,7 @@ public class RegisteringIrisPaneFxController extends WizardStepFxControllerBase
 				piProgress.setVisible(false);
 				ivFailure.setVisible(true);
 				btnStartOver.setVisible(true);
-				btnRetry.setVisible(true);
+				btnRetry.setVisible(!disableRetryButtonForever);
 			}
 		}
 		else if(request == Request.CHECK_IRIS_REGISTRATION)
@@ -100,9 +102,17 @@ public class RegisteringIrisPaneFxController extends WizardStepFxControllerBase
 				piProgress.setVisible(false);
 				ivFailure.setVisible(true);
 				btnStartOver.setVisible(true);
-				btnRetry.setVisible(true);
+				btnRetry.setVisible(!disableRetryButtonForever);
 			}
 		}
+	}
+	
+	@Override
+	public void reportNegativeTaskResponse(String errorCode, Throwable exception, String[] errorDetails)
+	{
+		if("B003-0066".equals(errorCode)) disableRetryButtonForever = true;
+		
+		super.reportNegativeTaskResponse(errorCode, exception, errorDetails);
 	}
 	
 	@FXML

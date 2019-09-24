@@ -134,8 +134,19 @@ public class IrisCapturingFxController extends WizardStepFxControllerBase
 				CheckBox checkBox = (CheckBox) event.getSource();
 				if(checkBox.isSelected())
 				{
+					capturedRightIrisBase64 = null;
+					capturedLeftIrisBase64 = null;
+					ivCapturedFirstIris.setImage(null);
+					ivCapturedSecondIris.setImage(null);
+					GuiUtils.showNode(ivSuccess, false);
+					GuiUtils.showNode(piProgress, false);
+					GuiUtils.showNode(lblStatus, false);
+					GuiUtils.showNode(btnCaptureIris, true);
+					
 					if(checkBox == cbSkippedLeftIris) GuiUtils.showNode(ivSkippedLeftIris, false);
 					if(checkBox == cbSkippedRightIris) GuiUtils.showNode(ivSkippedRightIris, false);
+					
+					btnCaptureIris.setText(resources.getString("button.captureIris"));
 					return;
 				}
 				
@@ -147,6 +158,7 @@ public class IrisCapturingFxController extends WizardStepFxControllerBase
 					String message = resources.getString("iris.skippingTwoEye");
 					showWarningNotification(message);
 					event.consume();
+					return;
 				}
 				
 				@SuppressWarnings("unchecked")

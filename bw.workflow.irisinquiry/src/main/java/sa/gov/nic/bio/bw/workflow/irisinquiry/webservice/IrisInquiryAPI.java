@@ -12,13 +12,13 @@ import sa.gov.nic.bio.bw.workflow.irisinquiry.beans.IrisInquiryStatusResult;
 public interface IrisInquiryAPI
 {
 	@FormUrlEncoded
-	@POST("services-gateway-biooperation/api/iris/inquiry/v1")
+	@POST("services-gateway-biooperation/api/iris/identification/v1")
 	Call<Integer> inquireWithIris(@Header("Workflow-Code") Integer workflowId,
 	                              @Header("Workflow-Tcn") Long workflowTcn,
 	                              @Field("right-iris") String rightIrisBase64,
 	                              @Field("left-iris") String leftIrisBase64);
 	
-	@GET("services-gateway-biooperation/api/iris/inquiry/status/v1")
+	@GET("services-gateway-biooperation/api/iris/identification/status/v1")
 	Call<IrisInquiryStatusResult> checkIrisInquiryStatus(@Header("Workflow-Code") Integer workflowId,
 	                                                     @Header("Workflow-Tcn") Long workflowTcn,
 	                                                     @Query("inquiry-id") int inquiryId);
