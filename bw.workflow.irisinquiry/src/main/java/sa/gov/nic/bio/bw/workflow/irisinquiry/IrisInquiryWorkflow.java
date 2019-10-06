@@ -11,12 +11,12 @@ import sa.gov.nic.bio.bw.workflow.commons.beans.PersonInfo;
 import sa.gov.nic.bio.bw.workflow.commons.controllers.IrisCapturingFxController;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.DeporteeInfoToPersonInfoConverter;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.FingerprintInquiryStatusCheckerWorkflowTask;
-import sa.gov.nic.bio.bw.workflow.commons.tasks.FingerprintInquiryStatusCheckerWorkflowTask.Status;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.GetDeporteeInfoByIdWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.GetPersonInfoByIdWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.irisinquiry.controllers.InquiryByIrisPaneFxController;
 import sa.gov.nic.bio.bw.workflow.irisinquiry.controllers.InquiryByIrisResultPaneFxController;
 import sa.gov.nic.bio.bw.workflow.irisinquiry.tasks.IrisInquiryStatusCheckerWorkflowTask;
+import sa.gov.nic.bio.bw.workflow.irisinquiry.tasks.IrisInquiryStatusCheckerWorkflowTask.Status;
 import sa.gov.nic.bio.bw.workflow.irisinquiry.tasks.IrisInquiryWorkflowTask;
 
 import java.util.LinkedHashMap;
@@ -53,9 +53,9 @@ public class IrisInquiryWorkflow extends WizardWorkflowBase
 				
 				renderUiAndWaitForUserInput(InquiryByIrisPaneFxController.class);
 				
-				Integer inquiryId = getData(IrisInquiryWorkflowTask.class, "inquiryId");
+				Long tcn = getData(IrisInquiryWorkflowTask.class, "tcn");
 				
-				if(inquiryId == null)
+				if(tcn == null)
 				{
 					passData(IrisCapturingFxController.class, "capturedRightIrisBase64",
 					         IrisInquiryWorkflowTask.class, "rightIrisBase64");
@@ -66,7 +66,7 @@ public class IrisInquiryWorkflow extends WizardWorkflowBase
 				}
 				
 				passData(IrisInquiryWorkflowTask.class, IrisInquiryStatusCheckerWorkflowTask.class,
-				         "inquiryId");
+				         "tcn");
 				executeWorkflowTask(IrisInquiryStatusCheckerWorkflowTask.class);
 				
 				Status status = getData(IrisInquiryStatusCheckerWorkflowTask.class, "status");

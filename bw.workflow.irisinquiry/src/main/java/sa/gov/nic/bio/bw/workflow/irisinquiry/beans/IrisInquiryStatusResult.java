@@ -6,20 +6,12 @@ import java.util.List;
 
 public class IrisInquiryStatusResult extends JavaBean
 {
-	public static final int STATUS_INQUIRY_PENDING = 2;
-	public static final int STATUS_INQUIRY_NO_HIT = 91;
-	public static final int STATUS_INQUIRY_HIT = 93;
+	private Long bioId;
+	private List<Long> samisIdList;
 	
-	private int status;
-	private Long civilHitBioId;
-	private List<Long> civilIdList;
+	public Long getBioId(){return bioId;}
+	public void setBioId(Long bioId){this.bioId = bioId;}
 	
-	public int getStatus(){return status;}
-	public void setStatus(int status){this.status = status;}
-	
-	public Long getCivilHitBioId(){return civilHitBioId;}
-	public void setCivilHitBioId(Long civilHitBioId){this.civilHitBioId = civilHitBioId;}
-	
-	public List<Long> getCivilIdList(){return civilIdList;}
-	public void setCivilIdList(List<Long> civilIdList){this.civilIdList = civilIdList;}
+	public List<Long> getSamisIdList(){return samisIdList;}
+	public void setSamisIdList(List<Long> samisIdList){this.samisIdList = samisIdList;}
 }

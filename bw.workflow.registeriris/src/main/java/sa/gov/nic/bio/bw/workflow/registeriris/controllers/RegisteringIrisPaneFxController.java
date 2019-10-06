@@ -123,6 +123,15 @@ public class RegisteringIrisPaneFxController extends WizardStepFxControllerBase
 		ivFailure.setVisible(false);
 		piProgress.setVisible(true);
 		
+		if(request == Request.SUBMIT_IRIS_REGISTRATION)
+		{
+			lblStatus.setText(resources.getString("label.submittingIris"));
+		}
+		else if(request == Request.CHECK_IRIS_REGISTRATION)
+		{
+			lblStatus.setText(resources.getString("label.waitingIrisRegistration"));
+		}
+		
 		continueWorkflow();
 	}
 }

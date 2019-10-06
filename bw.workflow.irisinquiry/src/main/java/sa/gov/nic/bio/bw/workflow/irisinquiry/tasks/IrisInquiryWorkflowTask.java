@@ -11,7 +11,7 @@ public class IrisInquiryWorkflowTask extends WorkflowTask
 {
 	@Input(alwaysRequired = true) protected String rightIrisBase64;
 	@Input(alwaysRequired = true) protected String leftIrisBase64;
-	@Output private Integer inquiryId;
+	@Output private Long tcn;
 	
 	@Override
 	public void execute() throws Signal
@@ -21,6 +21,6 @@ public class IrisInquiryWorkflowTask extends WorkflowTask
 		var taskResponse = Context.getWebserviceManager().executeApi(apiCall);
 		resetWorkflowStepIfNegativeOrNullTaskResponse(taskResponse);
 		
-		inquiryId = taskResponse.getResult();
+		tcn = taskResponse.getResult();
 	}
 }

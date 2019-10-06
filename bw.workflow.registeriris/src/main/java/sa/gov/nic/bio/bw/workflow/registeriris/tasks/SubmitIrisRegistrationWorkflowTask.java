@@ -21,6 +21,6 @@ public class SubmitIrisRegistrationWorkflowTask extends WorkflowTask
 		var apiCall = api.submitIrisRegistration(workflowId, workflowTcn, personId, rightIrisBase64, leftIrisBase64);
 		var taskResponse = Context.getWebserviceManager().executeApi(apiCall);
 		resetWorkflowStepIfNegativeOrNullTaskResponse(taskResponse);
-		tcn = taskResponse.getResult().getTcn();
+		tcn = taskResponse.getResult();
 	}
 }

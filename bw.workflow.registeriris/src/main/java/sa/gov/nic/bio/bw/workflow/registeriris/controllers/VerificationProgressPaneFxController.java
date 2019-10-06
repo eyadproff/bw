@@ -47,7 +47,7 @@ public class VerificationProgressPaneFxController extends WizardStepFxController
 	{
 		if(successfulResponse)
 		{
-			if(matched) goNext();
+			if(!matched) goNext();
 			else
 			{
 				GuiUtils.showNode(paneNotMatched, true);
