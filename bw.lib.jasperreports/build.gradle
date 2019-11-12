@@ -4,7 +4,7 @@ apply plugin: 'java-library'
 
 dependencies {
     // Jasper reports
-    api name: "jasperreports-6.9.0"
+    api name: "jasperreports-6.10.0"
     implementation name: "ecj-4.6.1" // javac
     implementation name: "commons-logging-1.2"
     implementation name: "commons-digester-2.1"

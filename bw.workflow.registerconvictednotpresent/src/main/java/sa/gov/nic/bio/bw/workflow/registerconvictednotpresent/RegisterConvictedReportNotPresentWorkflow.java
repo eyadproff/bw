@@ -488,6 +488,18 @@ public class RegisterConvictedReportNotPresentWorkflow extends WizardWorkflowBas
 			}
 			case 6:
 			{
+				Source fingerprintsSource = getData(FingerprintsSourceFxController.class,
+				                                    "fingerprintsSource");
+				
+				if(fingerprintsSource == Source.UPLOADING_NIST_FILE)
+				{
+					PersonInfo personInfo = getData(ExtractingDataFromNistFileWorkflowTask.class,
+					                                "personInfo");
+					if(personInfo != null) setData(UpdatePersonInfoPaneFxController.class,
+					                               "facePhotoBase64FromAnotherSource",
+					                               personInfo.getFace());
+				}
+				
 				passData(getClass(), FIELD_CIVIL_HIT, UpdatePersonInfoPaneFxController.class, "civilHit");
 				passData(InquiryByFingerprintsResultPaneFxController.class, UpdatePersonInfoPaneFxController.class,
 				         "normalizedPersonInfo");

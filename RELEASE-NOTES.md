@@ -11,6 +11,12 @@ VERSION SCHEMA: vYYYY.MM.#SEQ
 
 ---
 
+## v2019.11.2
+
+- CHN: Use facePhoto that is extracted from NIST file when the inquiry result has no facePhoto.
+
+---
+
 ## v2019.09.2
 
 - FIX: The slap thumbs overwrites segmented thumbs.
