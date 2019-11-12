@@ -12,23 +12,22 @@ import sa.gov.nic.bio.bw.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.core.utils.FxmlFile;
 import sa.gov.nic.bio.bw.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.core.workflow.Input;
-import sa.gov.nic.bio.bw.workflow.commons.beans.ConvictedReport;
-import sa.gov.nic.bio.bw.workflow.commons.beans.Finger;
-import sa.gov.nic.bio.bw.workflow.commons.tasks.ConvictedReportInquiryByReportNumberWorkflowTask;
-import sa.gov.nic.bio.bw.workflow.commons.tasks.ConvictedReportInquiryBySearchCriteriaWorkflowTask;
+import sa.gov.nic.bio.bw.core.workflow.Output;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.GeneratingNistFileWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.commons.utils.CommonsErrorCodes;
 
 import java.io.File;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @FxmlFile("showingFingerprints.fxml")
 public class ShowingFingerprintsPaneFxController extends WizardStepFxControllerBase
 {
 	@Input private String facePhotoBase64;
 	@Input(alwaysRequired = true) private Map<Integer, String> fingerprintBase64Images;
+	@Output private List<Integer> missingFingerprints;
 	
 	@FXML private ImageView ivRightThumb;
 	@FXML private ImageView ivRightIndex;
@@ -50,6 +49,9 @@ public class ShowingFingerprintsPaneFxController extends WizardStepFxControllerB
 	@Override
 	protected void onAttachedToScene()
 	{
+		missingFingerprints = IntStream.rangeClosed(1, 10).boxed().collect(Collectors.toList());
+		fingerprintBase64Images.keySet().forEach(missingFingerprints::remove);
+		
 		fileChooser.setTitle(resources.getString("fileChooser.saveNistFile.title"));
 
 		GuiUtils.attachFingerprintImages(fingerprintBase64Images, ivRightThumb, ivRightIndex, ivRightMiddle,

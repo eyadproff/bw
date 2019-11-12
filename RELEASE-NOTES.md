@@ -14,6 +14,7 @@ VERSION SCHEMA: vYYYY.MM.#SEQ
 ## v2019.11.2
 
 - CHN: Use facePhoto that is extracted from NIST file when the inquiry result has no facePhoto.
+- CHN: Don't depend on missing fingerprints count coming from different sources (e.g. NIST file). Get it from ShowingFingerprintsPaneFxController.
 
 ---
 
