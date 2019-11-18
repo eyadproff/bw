@@ -22,7 +22,7 @@ import java.util.Map;
 
 public class GeneratingNistFileWorkflowTask extends WorkflowTask
 {
-	@Input(alwaysRequired = true) private String facePhotoBase64;
+	@Input private String facePhotoBase64;
 	@Input(alwaysRequired = true) private Map<Integer, String> fingerprintBase64Images;
 	@Input(alwaysRequired = true) private String nistOutputFilePath;
 
