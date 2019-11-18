@@ -89,7 +89,7 @@ public class RegisterCriminalFingerprintsNotPresentWorkflow extends WizardWorkfl
 					passData(FetchingFingerprintsWorkflowTask.class,
 					         ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask.class,
 					         "fingerprints");
-					passData(ShowingFingerprintsPaneFxController.class,
+					passData(FetchingMissingFingerprintsWorkflowTask.class,
 					         ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask.class,
 					         "missingFingerprints");
 					executeWorkflowTask(ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask.class);
@@ -113,7 +113,7 @@ public class RegisterCriminalFingerprintsNotPresentWorkflow extends WizardWorkfl
 					passData(RetrieveFingerprintsByCivilBiometricIdWorkflowTask.class,
 					         ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask.class,
 					         "fingerprints");
-					passData(ShowingFingerprintsPaneFxController.class,
+					passData(RetrieveFingerprintsAvailabilityByCivilBiometricIdWorkflowTask.class,
 					         ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask.class,
 					         "missingFingerprints");
 					executeWorkflowTask(ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask.class);
@@ -132,7 +132,7 @@ public class RegisterCriminalFingerprintsNotPresentWorkflow extends WizardWorkfl
 					passData(RetrieveFingerprintsByCriminalBiometricIdWorkflowTask.class,
 					         ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask.class,
 					         "fingerprints");
-					passData(ShowingFingerprintsPaneFxController.class,
+					passData(RetrieveFingerprintsByCriminalBiometricIdWorkflowTask.class,
 					         ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask.class,
 					         "missingFingerprints");
 					executeWorkflowTask(ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask.class);
@@ -152,7 +152,7 @@ public class RegisterCriminalFingerprintsNotPresentWorkflow extends WizardWorkfl
 					passData(ExtractingDataFromNistFileWorkflowTask.class,
 					         ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask.class,
 					         "fingerprints");
-					passData(ShowingFingerprintsPaneFxController.class,
+					passData(ExtractingDataFromNistFileWorkflowTask.class,
 					         ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask.class,
 					         "missingFingerprints");
 					executeWorkflowTask(ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask.class);
