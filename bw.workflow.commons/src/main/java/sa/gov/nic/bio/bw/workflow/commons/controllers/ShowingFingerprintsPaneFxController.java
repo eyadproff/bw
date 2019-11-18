@@ -53,6 +53,9 @@ public class ShowingFingerprintsPaneFxController extends WizardStepFxControllerB
 		fingerprintBase64Images.keySet().forEach(missingFingerprints::remove);
 		
 		fileChooser.setTitle(resources.getString("fileChooser.saveNistFile.title"));
+		FileChooser.ExtensionFilter extFilterJPG = new FileChooser.ExtensionFilter(
+				resources.getString("fileChooser.saveNistFile.types"), "*.nst");
+		fileChooser.getExtensionFilters().addAll(extFilterJPG);
 
 		GuiUtils.attachFingerprintImages(fingerprintBase64Images, ivRightThumb, ivRightIndex, ivRightMiddle,
 		                                 ivRightRing, ivRightLittle, ivLeftThumb, ivLeftIndex, ivLeftMiddle,
