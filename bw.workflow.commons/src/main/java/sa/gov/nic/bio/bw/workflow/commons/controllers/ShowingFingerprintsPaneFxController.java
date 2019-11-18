@@ -72,7 +72,6 @@ public class ShowingFingerprintsPaneFxController extends WizardStepFxControllerB
 		{
 			showProgress(true);
 
-			setData(GeneratingNistFileWorkflowTask.class, "facePhotoBase64", facePhotoBase64);
 			setData(GeneratingNistFileWorkflowTask.class, "fingerprintBase64Images", fingerprintBase64Images);
 			setData(GeneratingNistFileWorkflowTask.class, "nistOutputFilePath",
 					selectedFile.getAbsolutePath());
