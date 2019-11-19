@@ -86,6 +86,7 @@ subprojects {
                 options.compilerArgs = [
                         '-Xlint:unchecked',
                         '-Xlint:deprecation',
+                        '-Xlint:-requires-transitive-automatic',
                         '--module-path', classpath.asPath,
                         '--patch-module', "$moduleName=" + files(sourceSets.main.resources.srcDirs).asPath,
                 ]
@@ -99,6 +100,7 @@ subprojects {
                 options.compilerArgs = [
                         '-Xlint:unchecked',
                         '-Xlint:deprecation',
+                        '-Xlint:-requires-transitive-automatic',
                         '--module-path', classpath.asPath,
                         '--add-modules', 'junit',
                         '--add-reads', "$moduleName=junit",

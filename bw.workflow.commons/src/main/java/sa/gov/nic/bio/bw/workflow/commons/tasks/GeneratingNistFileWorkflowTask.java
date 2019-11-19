@@ -22,6 +22,7 @@ import java.util.Map;
 
 public class GeneratingNistFileWorkflowTask extends WorkflowTask
 {
+	@Input private String facePhotoBase64;
 	@Input(alwaysRequired = true) private Map<Integer, String> fingerprintBase64Images;
 	@Input(alwaysRequired = true) private String nistOutputFilePath;
 
@@ -43,7 +44,7 @@ public class GeneratingNistFileWorkflowTask extends WorkflowTask
 		String missingFingerprintsJson = AppUtils.toJson(missingFingerprints);
 
 		NistFileAPI api = Context.getWebserviceManager().getApi(NistFileAPI.class);
-		Call<NistFileResponse> call = api.generateNistFile(workflowId, workflowTcn,
+		Call<NistFileResponse> call = api.generateNistFile(workflowId, workflowTcn, facePhotoBase64,
 		                                                   fingerprintsJson, null,
 												 		   missingFingerprintsJson);
 		TaskResponse<NistFileResponse> taskResponse = Context.getWebserviceManager().executeApi(call);

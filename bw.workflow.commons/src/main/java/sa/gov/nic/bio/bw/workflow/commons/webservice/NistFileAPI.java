@@ -13,6 +13,7 @@ public interface NistFileAPI
 	@POST("services-gateway-biooperation/api/criminal/nist/generation/v1")
 	Call<NistFileResponse> generateNistFile(@Header("Workflow-Code") Integer workflowId,
 											@Header("Workflow-Tcn") Long workflowTcn,
+											@Field("face") String face,
 											@Field("fingers") String fingers,
 											@Field("palms") String palms,
 											@Field("missing") String missings);
