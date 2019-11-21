@@ -316,7 +316,7 @@ public class WebserviceManager implements AppLogger
 			{
 				String sErrorBody = errorBody.string();
 				
-				JsonObject jsonObject = new JsonParser().parse(sErrorBody).getAsJsonObject();
+				JsonObject jsonObject = JsonParser.parseString(sErrorBody).getAsJsonObject();
 				errorCode = jsonObject.get("errorCode").getAsString(); // Business error, or server error
 			}
 			catch(Exception e)

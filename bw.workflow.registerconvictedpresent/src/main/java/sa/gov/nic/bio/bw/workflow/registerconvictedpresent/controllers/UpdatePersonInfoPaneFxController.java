@@ -51,6 +51,7 @@ import java.util.function.Predicate;
 public class UpdatePersonInfoPaneFxController extends WizardStepFxControllerBase
 {
 	@Input private String cameraFacePhotoBase64;
+	@Input private String facePhotoBase64FromAnotherSource;
 	@Input private Boolean civilHit;
 	@Input private NormalizedPersonInfo normalizedPersonInfo;
 	@Output private String facePhotoBase64;
@@ -263,6 +264,12 @@ public class UpdatePersonInfoPaneFxController extends WizardStepFxControllerBase
 			{
 				this.facePhotoBase64 = facePhotoBase64;
 				GuiUtils.attachFacePhotoBase64(ivPersonPhoto, facePhotoBase64, true, gender);
+				photoLoaded.setValue(true);
+			}
+			else if(facePhotoBase64FromAnotherSource != null)
+			{
+				this.facePhotoBase64 = facePhotoBase64FromAnotherSource;
+				GuiUtils.attachFacePhotoBase64(ivPersonPhoto, facePhotoBase64FromAnotherSource, true, gender);
 				photoLoaded.setValue(true);
 			}
 		}

@@ -5,5 +5,5 @@ apply plugin: 'java-library'
 dependencies {
     api project(':bw.core')
     implementation project(':bw.lib.jasperreports')
-    implementation name: "gson-2.8.5"
+    implementation name: "gson-2.8.6"
 }

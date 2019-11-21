@@ -295,7 +295,7 @@ public class FingerprintsInquiryWorkflow extends WizardWorkflowBase
 					{
 						passData(FetchingFingerprintsWorkflowTask.class, FingerprintInquiryWorkflowTask.class,
 						         "fingerprints");
-						passData(FetchingMissingFingerprintsWorkflowTask.class, FingerprintInquiryWorkflowTask.class,
+						passData(ShowingFingerprintsPaneFxController.class, FingerprintInquiryWorkflowTask.class,
 						         "missingFingerprints");
 					}
 					else if(fingerprintsSource == Source.ENTERING_CIVIL_BIOMETRICS_ID)
@@ -303,7 +303,7 @@ public class FingerprintsInquiryWorkflow extends WizardWorkflowBase
 						passData(RetrieveFingerprintsByCivilBiometricIdWorkflowTask.class,
 						         FingerprintInquiryWorkflowTask.class,
 						         "fingerprints");
-						passData(RetrieveFingerprintsAvailabilityByCivilBiometricIdWorkflowTask.class,
+						passData(ShowingFingerprintsPaneFxController.class,
 						         FingerprintInquiryWorkflowTask.class,
 						         "missingFingerprints");
 					}
@@ -312,7 +312,7 @@ public class FingerprintsInquiryWorkflow extends WizardWorkflowBase
 						passData(RetrieveFingerprintsByCriminalBiometricIdWorkflowTask.class,
 						         FingerprintInquiryWorkflowTask.class,
 						         "fingerprints");
-						passData(RetrieveFingerprintsByCriminalBiometricIdWorkflowTask.class,
+						passData(ShowingFingerprintsPaneFxController.class,
 						         FingerprintInquiryWorkflowTask.class,
 						         "missingFingerprints");
 					}
@@ -326,21 +326,21 @@ public class FingerprintsInquiryWorkflow extends WizardWorkflowBase
 						passData(ConvertFingerprintBase64ImagesToWsqWorkflowTask.class,
 						         "fingerprintWsqImages", FingerprintInquiryWorkflowTask.class,
 						         "fingerprints", new FingerprintsWsqToFingerConverter());
-						passData(SpecifyFingerprintCoordinatesPaneFxController.class,
+						passData(ShowingFingerprintsPaneFxController.class,
 						         FingerprintInquiryWorkflowTask.class, "missingFingerprints");
 					}
 					else if(fingerprintsSource == Source.UPLOADING_NIST_FILE)
 					{
 						passData(ExtractingDataFromNistFileWorkflowTask.class, FingerprintInquiryWorkflowTask.class,
 						         "fingerprints");
-						passData(ExtractingDataFromNistFileWorkflowTask.class, FingerprintInquiryWorkflowTask.class,
+						passData(ShowingFingerprintsPaneFxController.class, FingerprintInquiryWorkflowTask.class,
 						         "missingFingerprints");
 					}
 					else if(fingerprintsSource == Source.CAPTURING_FINGERPRINTS_VIA_FINGERPRINT_SCANNER)
 					{
 						passData(FingerprintCapturingFxController.class, "slapFingerprints",
 						         FingerprintInquiryWorkflowTask.class, "fingerprints");
-						passData(FingerprintCapturingFxController.class, FingerprintInquiryWorkflowTask.class,
+						passData(ShowingFingerprintsPaneFxController.class, FingerprintInquiryWorkflowTask.class,
 						         "missingFingerprints");
 					}
 					

@@ -15,5 +15,6 @@ public interface NistFileAPI
 											@Header("Workflow-Tcn") Long workflowTcn,
 											@Field("face") String face,
 											@Field("fingers") String fingers,
+											@Field("palms") String palms,
 											@Field("missing") String missings);
 }
