@@ -506,7 +506,7 @@ public final class AppUtils implements AppLogger
 			{
 				try
 				{
-					JsonObject jsonObject = new JsonParser().parse(payload).getAsJsonObject();
+					JsonObject jsonObject = JsonParser.parseString(payload).getAsJsonObject();
 					String exp = jsonObject.get(field).getAsString();
 					
 					if(exp == null) LOGGER.warning("The payload has no \"" + field + "\"!");

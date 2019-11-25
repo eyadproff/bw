@@ -259,7 +259,7 @@ public class RegisterCriminalFingerprintsNotPresentWorkflow extends WizardWorkfl
 					{
 						passData(FetchingFingerprintsWorkflowTask.class, FingerprintInquiryWorkflowTask.class,
 						         "fingerprints");
-						passData(FetchingMissingFingerprintsWorkflowTask.class, FingerprintInquiryWorkflowTask.class,
+						passData(ShowingFingerprintsPaneFxController.class, FingerprintInquiryWorkflowTask.class,
 						         "missingFingerprints");
 					}
 					else if(fingerprintsSource == Source.ENTERING_CIVIL_BIOMETRICS_ID)
@@ -267,7 +267,7 @@ public class RegisterCriminalFingerprintsNotPresentWorkflow extends WizardWorkfl
 						passData(RetrieveFingerprintsByCivilBiometricIdWorkflowTask.class,
 						         FingerprintInquiryWorkflowTask.class,
 						         "fingerprints");
-						passData(RetrieveFingerprintsAvailabilityByCivilBiometricIdWorkflowTask.class,
+						passData(ShowingFingerprintsPaneFxController.class,
 						         FingerprintInquiryWorkflowTask.class,
 						         "missingFingerprints");
 					}
@@ -276,7 +276,7 @@ public class RegisterCriminalFingerprintsNotPresentWorkflow extends WizardWorkfl
 						passData(RetrieveFingerprintsByCriminalBiometricIdWorkflowTask.class,
 						         FingerprintInquiryWorkflowTask.class,
 						         "fingerprints");
-						passData(RetrieveFingerprintsByCriminalBiometricIdWorkflowTask.class,
+						passData(ShowingFingerprintsPaneFxController.class,
 						         FingerprintInquiryWorkflowTask.class,
 						         "missingFingerprints");
 					}
@@ -290,14 +290,14 @@ public class RegisterCriminalFingerprintsNotPresentWorkflow extends WizardWorkfl
 						passData(ConvertFingerprintBase64ImagesToWsqWorkflowTask.class,
 						         "fingerprintWsqImages", FingerprintInquiryWorkflowTask.class,
 						         "fingerprints", new FingerprintsWsqToFingerConverter());
-						passData(SpecifyFingerprintCoordinatesPaneFxController.class,
+						passData(ShowingFingerprintsPaneFxController.class,
 						         FingerprintInquiryWorkflowTask.class, "missingFingerprints");
 					}
 					else if(fingerprintsSource == Source.UPLOADING_NIST_FILE)
 					{
 						passData(ExtractingDataFromNistFileWorkflowTask.class, FingerprintInquiryWorkflowTask.class,
 						         "fingerprints");
-						passData(ExtractingDataFromNistFileWorkflowTask.class, FingerprintInquiryWorkflowTask.class,
+						passData(ShowingFingerprintsPaneFxController.class, FingerprintInquiryWorkflowTask.class,
 						         "missingFingerprints");
 					}
 					
@@ -341,7 +341,7 @@ public class RegisterCriminalFingerprintsNotPresentWorkflow extends WizardWorkfl
 						         "combinedFingerprints",
 						         SubmitCriminalFingerprintsWorkflowTask.class,
 						         "fingerprints");
-						passData(FetchingMissingFingerprintsWorkflowTask.class,
+						passData(ShowingFingerprintsPaneFxController.class,
 						         SubmitCriminalFingerprintsWorkflowTask.class,
 						         "missingFingerprints");
 					}
@@ -351,7 +351,7 @@ public class RegisterCriminalFingerprintsNotPresentWorkflow extends WizardWorkfl
 						         "combinedFingerprints",
 						         SubmitCriminalFingerprintsWorkflowTask.class,
 						         "fingerprints");
-						passData(RetrieveFingerprintsAvailabilityByCivilBiometricIdWorkflowTask.class,
+						passData(ShowingFingerprintsPaneFxController.class,
 						         SubmitCriminalFingerprintsWorkflowTask.class,
 						         "missingFingerprints");
 					}
@@ -361,7 +361,7 @@ public class RegisterCriminalFingerprintsNotPresentWorkflow extends WizardWorkfl
 						         "combinedFingerprints",
 						         SubmitCriminalFingerprintsWorkflowTask.class,
 						         "fingerprints");
-						passData(RetrieveFingerprintsByCriminalBiometricIdWorkflowTask.class,
+						passData(ShowingFingerprintsPaneFxController.class,
 						         SubmitCriminalFingerprintsWorkflowTask.class,
 						         "missingFingerprints");
 					}
@@ -370,14 +370,14 @@ public class RegisterCriminalFingerprintsNotPresentWorkflow extends WizardWorkfl
 						passData(ConvertFingerprintBase64ImagesToWsqWorkflowTask.class,
 						         "fingerprintWsqImages", SubmitCriminalFingerprintsWorkflowTask.class,
 						         "fingerprints", new FingerprintsWsqToFingerConverter());
-						passData(SpecifyFingerprintCoordinatesPaneFxController.class,
+						passData(ShowingFingerprintsPaneFxController.class,
 						         SubmitCriminalFingerprintsWorkflowTask.class, "missingFingerprints");
 					}
 					else if(fingerprintsSource == Source.UPLOADING_NIST_FILE)
 					{
 						passData(ExtractingDataFromNistFileWorkflowTask.class,
 						         SubmitCriminalFingerprintsWorkflowTask.class, "fingerprints");
-						passData(ExtractingDataFromNistFileWorkflowTask.class,
+						passData(ShowingFingerprintsPaneFxController.class,
 						         SubmitCriminalFingerprintsWorkflowTask.class, "missingFingerprints");
 					}
 					
