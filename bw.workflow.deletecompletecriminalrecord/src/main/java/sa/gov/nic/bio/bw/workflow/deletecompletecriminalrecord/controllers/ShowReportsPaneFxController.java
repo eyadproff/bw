@@ -243,7 +243,7 @@ public class ShowReportsPaneFxController extends WizardStepFxControllerBase
 		{
 			String errorCode = DeleteCompleteCriminalRecordErrorCodes.C015_00001.getCode();
 			String[] errorDetails = {"Failed to load (" + ShowReportDialogFxController.class.getName() + ")!"};
-			Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails);
+			Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails, getTabIndex());
 		}
 	}
 	

@@ -13,6 +13,7 @@ import sa.gov.nic.bio.bw.core.Context;
 import sa.gov.nic.bio.bw.core.beans.Gender;
 import sa.gov.nic.bio.bw.core.beans.UserInfo;
 import sa.gov.nic.bio.bw.core.controllers.WizardStepFxControllerBase;
+import sa.gov.nic.bio.bw.core.utils.AppConstants;
 import sa.gov.nic.bio.bw.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.core.utils.FxmlFile;
 import sa.gov.nic.bio.bw.core.utils.GuiUtils;
@@ -67,6 +68,7 @@ public class ShowRecordPaneFxController extends WizardStepFxControllerBase
 	@FXML private Label lblEnrollerId;
 	@FXML private Label lblEnrollmentTime;
 	@FXML private Label lblRecordId;
+	@FXML private Label lblNaturalizedSaudi;
 	@FXML private ImageView ivRightThumb;
 	@FXML private ImageView ivRightIndex;
 	@FXML private ImageView ivRightMiddle;
@@ -128,7 +130,7 @@ public class ShowRecordPaneFxController extends WizardStepFxControllerBase
 			
 			    String errorCode = PrintDeadPersonRecordPresentErrorCodes.C012_00001.getCode();
 			    String[] errorDetails = {"failed while building the dead person record report!"};
-			    Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails);
+			    Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails, getTabIndex());
 			});
 			Context.getExecutorService().submit(buildDeadPersonRecordReportTask);
 		}
@@ -169,7 +171,7 @@ public class ShowRecordPaneFxController extends WizardStepFxControllerBase
 				
 				        String errorCode = PrintDeadPersonRecordPresentErrorCodes.C012_00002.getCode();
 				        String[] errorDetails = {"failed while saving the dead person record report as PDF!"};
-				        Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails);
+				        Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails, getTabIndex());
 				    }
 				});
 				buildDeadPersonRecordReportTask.setOnFailed(event ->
@@ -183,7 +185,7 @@ public class ShowRecordPaneFxController extends WizardStepFxControllerBase
 				
 				    String errorCode = PrintDeadPersonRecordPresentErrorCodes.C012_00003.getCode();
 				    String[] errorDetails = {"failed while building the dead person record report!"};
-				    Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails);
+				    Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails, getTabIndex());
 				});
 				Context.getExecutorService().submit(buildDeadPersonRecordReportTask);
 			}
@@ -202,7 +204,7 @@ public class ShowRecordPaneFxController extends WizardStepFxControllerBase
 					
 					String errorCode = PrintDeadPersonRecordPresentErrorCodes.C012_00004.getCode();
 					String[] errorDetails = {"failed while saving the dead person record report as PDF!"};
-					Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails);
+					Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails, getTabIndex());
 				}
 			}
 		}
@@ -211,6 +213,11 @@ public class ShowRecordPaneFxController extends WizardStepFxControllerBase
 	private void populateData()
 	{
 		NormalizedPersonInfo normalizedPersonInfo = new NormalizedPersonInfo(personInfo);
+
+		GuiUtils.showNode(lblNaturalizedSaudi, normalizedPersonInfo.getNationality() != null &&
+				normalizedPersonInfo.getNationality().getCode() > 0 &&
+				!"SAU".equalsIgnoreCase(normalizedPersonInfo.getNationality().getMofaNationalityCode()) &&
+				String.valueOf(normalizedPersonInfo.getPersonId()).startsWith("1"));
 		
 		GuiUtils.attachFacePhotoBase64(ivPersonPhoto, normalizedPersonInfo.getFacePhotoBase64(), true,
 		                               normalizedPersonInfo.getGender());
@@ -267,6 +274,14 @@ public class ShowRecordPaneFxController extends WizardStepFxControllerBase
 		DocumentType documentType = normalizedPersonInfo.getDocumentType();
 		LocalDate documentIssuanceDate = normalizedPersonInfo.getDocumentIssuanceDate();
 		LocalDate documentExpiryDate = normalizedPersonInfo.getDocumentExpiryDate();
+
+		String nationalityText = nationality != null ? nationality.getArabicText() : null;
+		if(lblNaturalizedSaudi.isVisible())
+		{
+			// \u202B is used to render the brackets correctly
+			nationalityText += " \u202B" + AppUtils.getCoreStringsResourceBundle(AppConstants.Locales.SAUDI_AR_LOCALE)
+												   .getString("label.naturalizedSaudi");
+		}
 		
 		deadPersonRecordReport = new DeadPersonRecordReport(sRecordId, enrollerId, inquirerId, enrollmentTime,
 		                  facePhotoBase64, normalizedPersonInfo.getFirstName(),
@@ -274,7 +289,7 @@ public class ShowRecordPaneFxController extends WizardStepFxControllerBase
 		                  normalizedPersonInfo.getGrandfatherName(),
 		                  normalizedPersonInfo.getFamilyName(),
 		                  gender != null ? gender.toString() : null,
-		                  nationality != null ? nationality.getArabicText() : null,
+						  nationalityText,
 		                  normalizedPersonInfo.getOccupation(),
 		                  normalizedPersonInfo.getBirthPlace(),
 		                  birthDate != null ? AppUtils.formatHijriGregorianDate(birthDate) : null,
@@ -316,7 +331,7 @@ public class ShowRecordPaneFxController extends WizardStepFxControllerBase
 		
 		    String errorCode = PrintDeadPersonRecordPresentErrorCodes.C012_00005.getCode();
 		    String[] errorDetails = {"failed while printing the dead person record report!"};
-		    Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails);
+		    Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails, getTabIndex());
 		});
 		Context.getExecutorService().submit(printReportTask);
 	}
@@ -354,7 +369,7 @@ public class ShowRecordPaneFxController extends WizardStepFxControllerBase
 		
 		    String errorCode = PrintDeadPersonRecordPresentErrorCodes.C012_00006.getCode();
 		    String[] errorDetails = {"failed while saving the dead person record report as PDF!"};
-		    Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails);
+		    Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails, getTabIndex());
 		});
 		Context.getExecutorService().submit(printReportTaskAsPdfTask);
 	}

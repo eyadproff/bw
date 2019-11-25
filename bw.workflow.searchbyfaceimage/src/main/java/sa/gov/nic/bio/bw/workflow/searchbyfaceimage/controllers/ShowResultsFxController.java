@@ -70,8 +70,8 @@ public class ShowResultsFxController extends WizardStepFxControllerBase
 	@Override
 	protected void onAttachedToScene()
 	{
-		imagePane.maxWidthProperty().bind(Context.getCoreFxController().getBodyPane().widthProperty());
-		imagePane.maxHeightProperty().bind(Context.getCoreFxController().getBodyPane().heightProperty());
+		imagePane.maxWidthProperty().bind(Context.getCoreFxController().getBodyPane(getTabIndex()).widthProperty());
+		imagePane.maxHeightProperty().bind(Context.getCoreFxController().getBodyPane(getTabIndex()).heightProperty());
 		ivCenterImage.fitWidthProperty().bind(imagePane.widthProperty().divide(1.8));
 		ivCenterImage.fitHeightProperty().bind(imagePane.heightProperty().divide(1.8));
 		spCandidates.maxHeightProperty().bind(new SimpleDoubleProperty(0.0));
@@ -83,7 +83,7 @@ public class ShowResultsFxController extends WizardStepFxControllerBase
 				Platform.runLater(() ->
 				{
 				    imagePane.autosize();
-				    Context.getCoreFxController().getBodyPane().autosize();
+				    Context.getCoreFxController().getBodyPane(getTabIndex()).autosize();
 				});
 			}
 		};

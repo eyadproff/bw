@@ -10,7 +10,7 @@ import javafx.scene.paint.Color;
 import sa.gov.nic.bio.bw.core.Context;
 import sa.gov.nic.bio.bw.core.beans.Gender;
 import sa.gov.nic.bio.bw.core.beans.Name;
-import sa.gov.nic.bio.bw.core.controllers.BodyFxControllerBase;
+import sa.gov.nic.bio.bw.core.controllers.ContentFxControllerBase;
 import sa.gov.nic.bio.bw.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.core.utils.FxmlFile;
 import sa.gov.nic.bio.bw.core.utils.GuiLanguage;
@@ -33,9 +33,9 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @FxmlFile("convictedReportNestedPane.fxml")
-public class ConvictedReportNestedFxController extends BodyFxControllerBase
+public class ConvictedReportNestedFxController extends ContentFxControllerBase
 {
-	@FXML private TitledPane tpEnrollmentDetails;
+    @FXML private TitledPane tpEnrollmentDetails;
 	@FXML private Pane paneImage;
 	@FXML private Label lblReportNumber;
 	@FXML private Label lblEnrollerId;
@@ -85,6 +85,7 @@ public class ConvictedReportNestedFxController extends BodyFxControllerBase
 	@FXML private Label lblDeportationMonths;
 	@FXML private Label lblDeportationDays;
 	@FXML private Label lblOther;
+	@FXML private Label lblNaturalizedSaudi;
 	@FXML private CheckBox cbFinalDeportation;
 	@FXML private CheckBox cbLibel;
 	@FXML private CheckBox cbCovenant;
@@ -216,6 +217,9 @@ public class ConvictedReportNestedFxController extends BodyFxControllerBase
 			{
 				boolean arabic = Context.getGuiLanguage() == GuiLanguage.ARABIC;
 				lblNationality.setText(arabic ? countryBean.getDescriptionAR() : countryBean.getDescriptionEN());
+				GuiUtils.showNode(lblNaturalizedSaudi,
+						!"SAU".equalsIgnoreCase(countryBean.getMofaNationalityCode()) &&
+								String.valueOf(convictedReport.getSubjSamisId()).startsWith("1"));
 			}
 			else lblNationality.setText(resources.getString("combobox.unknownNationality"));
 		}

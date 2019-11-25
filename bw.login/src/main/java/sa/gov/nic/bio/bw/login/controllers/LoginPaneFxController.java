@@ -23,7 +23,7 @@ import sa.gov.nic.bio.biokit.websocket.ClosureListener;
 import sa.gov.nic.bio.bw.core.Context;
 import sa.gov.nic.bio.bw.core.beans.StateBundle;
 import sa.gov.nic.bio.bw.core.biokit.FingerPosition;
-import sa.gov.nic.bio.bw.core.controllers.BodyFxControllerBase;
+import sa.gov.nic.bio.bw.core.controllers.ContentFxControllerBase;
 import sa.gov.nic.bio.bw.core.controllers.DevicesRunnerGadgetPaneFxController;
 import sa.gov.nic.bio.bw.core.interfaces.PersistableEntity;
 import sa.gov.nic.bio.bw.core.utils.AppConstants;
@@ -36,8 +36,9 @@ import sa.gov.nic.bio.bw.core.utils.GuiLanguage;
 import sa.gov.nic.bio.bw.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.core.utils.RuntimeEnvironment;
 import sa.gov.nic.bio.bw.core.workflow.Output;
-import sa.gov.nic.bio.bw.workflow.commons.ui.AutoScalingStackPane;
 import sa.gov.nic.bio.bw.login.utils.LoginErrorCodes;
+import sa.gov.nic.bio.bw.workflow.commons.controllers.ChangeFingerprintDialogFxController;
+import sa.gov.nic.bio.bw.workflow.commons.ui.AutoScalingStackPane;
 
 import java.util.HashSet;
 import java.util.Locale;
@@ -45,7 +46,7 @@ import java.util.Set;
 import java.util.prefs.Preferences;
 
 @FxmlFile("login.fxml")
-public class LoginPaneFxController extends BodyFxControllerBase implements PersistableEntity
+public class LoginPaneFxController extends ContentFxControllerBase implements PersistableEntity
 {
 	public enum LoginMethod
 	{
@@ -304,7 +305,7 @@ public class LoginPaneFxController extends BodyFxControllerBase implements Persi
 				String errorCode = LoginErrorCodes.C003_00009.getCode();
 				String[] errorDetails =
 									{"Failed to load (" + CaptureFingerprintDialogFxController.class.getName() + ")!"};
-				Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails);
+				Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails, getTabIndex());
 			}
 		}
 	}
@@ -340,7 +341,7 @@ public class LoginPaneFxController extends BodyFxControllerBase implements Persi
 		{
 			String errorCode = LoginErrorCodes.C003_00010.getCode();
 			String[] errorDetails = {"Failed to load (" + ChangePasswordDialogFxController.class.getName() + ")!"};
-			Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails);
+			Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails, getTabIndex());
 		}
 	}
 	
@@ -448,7 +449,7 @@ public class LoginPaneFxController extends BodyFxControllerBase implements Persi
 		{
 			String errorCode = LoginErrorCodes.C003_00011.getCode();
 			String[] errorDetails = {"Failed to load (" + ChangeFingerprintDialogFxController.class.getName() + ")!"};
-			Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails);
+			Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails, getTabIndex());
 		}
 	}
 	

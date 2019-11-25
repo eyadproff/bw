@@ -63,7 +63,7 @@ public class EnterReportNumberPaneFxController extends WizardStepFxControllerBas
 			{
 				String errorCode = DeleteConvictedReportErrorCodes.C014_00001.getCode();
 				String[] errorDetails = {"The returned convicted report has no status!"};
-				Context.getCoreFxController().showErrorDialog(errorCode, null, errorDetails);
+				Context.getCoreFxController().showErrorDialog(errorCode, null, errorDetails, getTabIndex());
 			}
 		}
 	}

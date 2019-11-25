@@ -1,19 +1,19 @@
 buildscript {
     repositories {
         flatDir {
-            dirs "libs/build"
+            dirs "libs/gradle-plugins"
         }
     }
     dependencies {
-        classpath name: 'jsch-0.1.54'
-        classpath name: 'groovy-ssh-2.9.0'
-        classpath name: 'gradle-ssh-plugin-2.9.0'
+        classpath name: 'jsch-0.1.55'
+        classpath name: 'groovy-ssh-2.10.1'
+        classpath name: 'gradle-ssh-plugin-2.10.1'
     }
 }
 
 allprojects {
     group = 'sa.gov.nic.bio'
-    version = '2019.05.4'
+    version = '2019.11.1'
 }
 
 subprojects {
@@ -49,7 +49,7 @@ subprojects {
         // BCL-Utils and Biokit library
         implementation name: "bio.commons-2019.01.2"
         implementation name: "bcl-utils-2018.11.1"
-        implementation name: "biokit-library-2019.05.1"
+        implementation name: "biokit-library-2019.09.1"
 
         // JUnit
         testImplementation name : "junit-platform-commons-1.2.0"
@@ -86,6 +86,7 @@ subprojects {
                 options.compilerArgs = [
                         '-Xlint:unchecked',
                         '-Xlint:deprecation',
+                        '-Xlint:-requires-transitive-automatic',
                         '--module-path', classpath.asPath,
                         '--patch-module', "$moduleName=" + files(sourceSets.main.resources.srcDirs).asPath,
                 ]
@@ -99,6 +100,7 @@ subprojects {
                 options.compilerArgs = [
                         '-Xlint:unchecked',
                         '-Xlint:deprecation',
+                        '-Xlint:-requires-transitive-automatic',
                         '--module-path', classpath.asPath,
                         '--add-modules', 'junit',
                         '--add-reads', "$moduleName=junit",
@@ -145,10 +147,9 @@ task collectDependencies(type: Copy, group: 'web-start') {
 
 task packageWebStart(group: 'web-start') {
     doLast {
-
         String jnlpTemplate = new File("build-resources/bw-template.jnlp").getText('UTF-8')
 
-        File directory = new File("${projectDir}/build/web-start")
+        File directory = new File(project.rootDir, 'build/web-start')
         directory.mkdirs()
         File file = new File(directory, 'APPLICATION.JNLP')
         file.createNewFile()
@@ -184,7 +185,7 @@ task packageWebStartAndDeployDev(group: 'web-start') {
             session(remotes.webServer) {
                 remove '/opt/dev/wlp/usr/servers/bio-client-downloader/clients/bw'
                 execute 'mkdir /opt/dev/wlp/usr/servers/bio-client-downloader/clients/bw'
-                put from: new File('build/web-start').listFiles().toList(), into: '/opt/dev/wlp/usr/servers/bio-client-downloader/clients/bw'
+                put from: new File(project.rootDir, 'build/web-start').listFiles().toList(), into: '/opt/dev/wlp/usr/servers/bio-client-downloader/clients/bw'
             }
         }
     }
@@ -197,7 +198,7 @@ task packageWebStartAndDeployInt(group: 'web-start') {
             session(remotes.webServer) {
                 remove '/opt/int/wlp/usr/servers/bio-client-downloader/clients/bw'
                 execute 'mkdir /opt/int/wlp/usr/servers/bio-client-downloader/clients/bw'
-                put from: new File('build/web-start').listFiles().toList(), into: '/opt/int/wlp/usr/servers/bio-client-downloader/clients/bw'
+                put from: new File(project.rootDir, 'build/web-start').listFiles().toList(), into: '/opt/int/wlp/usr/servers/bio-client-downloader/clients/bw'
             }
         }
     }
@@ -210,7 +211,7 @@ task deploy_dev(group: 'web-start') {
             session(remotes.webServer) {
                 remove '/opt/dev/wlp/usr/servers/bio-client-downloader/clients/bw'
                 execute 'mkdir /opt/dev/wlp/usr/servers/bio-client-downloader/clients/bw'
-                put from: new File('build/web-start').listFiles().toList(), into: '/opt/dev/wlp/usr/servers/bio-client-downloader/clients/bw'
+                put from: new File(project.rootDir, 'build/web-start').listFiles().toList(), into: '/opt/dev/wlp/usr/servers/bio-client-downloader/clients/bw'
             }
         }
     }
@@ -222,7 +223,7 @@ task deploy_int(group: 'web-start') {
             session(remotes.webServer) {
                 remove '/opt/int/wlp/usr/servers/bio-client-downloader/clients/bw'
                 execute 'mkdir /opt/int/wlp/usr/servers/bio-client-downloader/clients/bw'
-                put from: new File('build/web-start').listFiles().toList(), into: '/opt/int/wlp/usr/servers/bio-client-downloader/clients/bw'
+                put from: new File(project.rootDir, 'build/web-start').listFiles().toList(), into: '/opt/int/wlp/usr/servers/bio-client-downloader/clients/bw'
             }
         }
     }

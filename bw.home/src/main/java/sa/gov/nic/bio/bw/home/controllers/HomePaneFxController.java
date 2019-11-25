@@ -11,7 +11,7 @@ import sa.gov.nic.bio.bcl.utils.BclUtils;
 import sa.gov.nic.bio.bw.core.Context;
 import sa.gov.nic.bio.bw.core.beans.MenuItem;
 import sa.gov.nic.bio.bw.core.beans.UserSession;
-import sa.gov.nic.bio.bw.core.controllers.BodyFxControllerBase;
+import sa.gov.nic.bio.bw.core.controllers.ContentFxControllerBase;
 import sa.gov.nic.bio.bw.core.controllers.DevicesRunnerGadgetPaneFxController;
 import sa.gov.nic.bio.bw.core.utils.Device;
 import sa.gov.nic.bio.bw.core.utils.FxmlFile;
@@ -25,7 +25,7 @@ import java.util.Map;
 import java.util.Set;
 
 @FxmlFile("home.fxml")
-public class HomePaneFxController extends BodyFxControllerBase
+public class HomePaneFxController extends ContentFxControllerBase
 {
 	@Input private boolean showErrorOnHome;
 	
@@ -62,6 +62,7 @@ public class HomePaneFxController extends BodyFxControllerBase
 			Context.getCoreFxController().startIdleMonitor();
 			
 			UserSession userSession = Context.getUserSession();
+			if(userSession == null) return;
 			HomeBean homeBean = (HomeBean) userSession.getAttribute("homeBean");
 			
 			Image facePhoto = homeBean.getFacePhoto();
@@ -78,11 +79,15 @@ public class HomePaneFxController extends BodyFxControllerBase
 			
 			if(menus.isEmpty())
 			{
+				Context.getCoreFxController().onLogin(false);
+				
 				String errorCode = HomeErrorCodes.N004_00001.getCode();
 				reportNegativeTaskResponse(errorCode, null, null);
 			}
 			else
 			{
+				Context.getCoreFxController().onLogin(true);
+				
 				DevicesRunnerGadgetPaneFxController deviceManagerGadgetPaneController =
 						Context.getCoreFxController().getDeviceManagerGadgetPaneController();
 				if(!deviceManagerGadgetPaneController.isDevicesRunnerRunning())

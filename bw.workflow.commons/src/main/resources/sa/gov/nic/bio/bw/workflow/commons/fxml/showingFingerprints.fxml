@@ -12,6 +12,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import sa.gov.nic.bio.bw.workflow.commons.ui.ImageViewPane?>
+<?import javafx.scene.control.ProgressIndicator?>
 <BorderPane xmlns="http://javafx.com/javafx/11" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="sa.gov.nic.bio.bw.workflow.commons.controllers.ShowingFingerprintsPaneFxController"
             fx:id="rootPane" stylesheets="@../css/style.css">
@@ -171,8 +172,10 @@
             <padding>
                 <Insets bottom="10"/>
             </padding>
+            <ProgressIndicator fx:id="piProgress" prefHeight="25.0" prefWidth="25.0" managed="false" visible="false"/>
             <Button fx:id="btnPrevious" text="%button.previous" onAction="#onPreviousButtonClicked"/>
-            <Button fx:id="btnInquiry" text="%button.inquiry" onAction="#onInquiryButtonClicked"/>
+            <Button fx:id="btnGenerateNistFile" text="%button.generateNistFile" onAction="#onGenerateNistFileButtonClicked"/>
+            <Button fx:id="btnInquiry" text="%button.inquiry" onAction="#onNextButtonClicked"/>
         </HBox>
     </bottom>
 </BorderPane>

@@ -23,11 +23,7 @@ import sa.gov.nic.bio.bw.workflow.commons.beans.ConvictedReport;
 import sa.gov.nic.bio.bw.workflow.commons.beans.DeporteeInfo;
 import sa.gov.nic.bio.bw.workflow.commons.beans.DisCriminalReport;
 import sa.gov.nic.bio.bw.workflow.commons.beans.PersonInfo;
-import sa.gov.nic.bio.bw.workflow.commons.controllers.FingerprintCapturingFxController;
-import sa.gov.nic.bio.bw.workflow.commons.controllers.InquiryByFingerprintsPaneFxController;
-import sa.gov.nic.bio.bw.workflow.commons.controllers.InquiryByFingerprintsResultPaneFxController;
-import sa.gov.nic.bio.bw.workflow.commons.controllers.ShowingFingerprintsPaneFxController;
-import sa.gov.nic.bio.bw.workflow.commons.controllers.ShowingPersonInfoFxController;
+import sa.gov.nic.bio.bw.workflow.commons.controllers.*;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.BiometricsExchangeCrimeTypesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.BiometricsExchangePartiesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.CountriesLookup;
@@ -181,11 +177,11 @@ public class FingerprintsInquiryWorkflow extends WizardWorkflowBase
 				{
 					incrementNSteps(1); // to skip step #2 on going next
 					
-					setData(FingerprintCapturingFxController.class, "acceptBadQualityFingerprint",
+					setData(SlapFingerprintsCapturingFxController.class, "acceptBadQualityFingerprint",
 					        Boolean.TRUE);
-					setData(FingerprintCapturingFxController.class, "acceptBadQualityFingerprintMinRetires",
+					setData(SlapFingerprintsCapturingFxController.class, "acceptBadQualityFingerprintMinRetires",
 					        0);
-					renderUiAndWaitForUserInput(FingerprintCapturingFxController.class);
+					renderUiAndWaitForUserInput(SlapFingerprintsCapturingFxController.class);
 				}
 				
 				break;
@@ -226,6 +222,11 @@ public class FingerprintsInquiryWorkflow extends WizardWorkflowBase
 				
 				if(fingerprintsSource == Source.ENTERING_PERSON_ID)
 				{
+					PersonInfo personInfo = getData(GetPersonInfoByIdWorkflowTask.class,
+													"personInfo");
+					if(personInfo != null) setData(ShowingFingerprintsPaneFxController.class,
+												  "facePhotoBase64", personInfo.getFace());
+
 					passData(ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask.class,
 					         ShowingFingerprintsPaneFxController.class,
 					         "fingerprintBase64Images");
@@ -252,6 +253,11 @@ public class FingerprintsInquiryWorkflow extends WizardWorkflowBase
 				}
 				else if(fingerprintsSource == Source.UPLOADING_NIST_FILE)
 				{
+					PersonInfo personInfo = getData(ExtractingDataFromNistFileWorkflowTask.class,
+													"personInfo");
+					if(personInfo != null) setData(ShowingFingerprintsPaneFxController.class,
+												   "facePhotoBase64", personInfo.getFace());
+
 					passData(ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask.class,
 					         ShowingFingerprintsPaneFxController.class,
 					         "fingerprintBase64Images");
@@ -259,7 +265,10 @@ public class FingerprintsInquiryWorkflow extends WizardWorkflowBase
 				else if(fingerprintsSource == Source.CAPTURING_FINGERPRINTS_VIA_FINGERPRINT_SCANNER)
 				{
 					incrementNSteps(-1); // to skip step #2 on going previous
-					passData(FingerprintCapturingFxController.class,
+					passData(FaceCapturingFxController.class,
+							ShowingFingerprintsPaneFxController.class,
+							"facePhotoBase64");
+					passData(SlapFingerprintsCapturingFxController.class,
 					         ShowingFingerprintsPaneFxController.class,
 					         "fingerprintBase64Images");
 				}
@@ -286,7 +295,7 @@ public class FingerprintsInquiryWorkflow extends WizardWorkflowBase
 					{
 						passData(FetchingFingerprintsWorkflowTask.class, FingerprintInquiryWorkflowTask.class,
 						         "fingerprints");
-						passData(FetchingMissingFingerprintsWorkflowTask.class, FingerprintInquiryWorkflowTask.class,
+						passData(ShowingFingerprintsPaneFxController.class, FingerprintInquiryWorkflowTask.class,
 						         "missingFingerprints");
 					}
 					else if(fingerprintsSource == Source.ENTERING_CIVIL_BIOMETRICS_ID)
@@ -294,7 +303,7 @@ public class FingerprintsInquiryWorkflow extends WizardWorkflowBase
 						passData(RetrieveFingerprintsByCivilBiometricIdWorkflowTask.class,
 						         FingerprintInquiryWorkflowTask.class,
 						         "fingerprints");
-						passData(RetrieveFingerprintsAvailabilityByCivilBiometricIdWorkflowTask.class,
+						passData(ShowingFingerprintsPaneFxController.class,
 						         FingerprintInquiryWorkflowTask.class,
 						         "missingFingerprints");
 					}
@@ -303,7 +312,7 @@ public class FingerprintsInquiryWorkflow extends WizardWorkflowBase
 						passData(RetrieveFingerprintsByCriminalBiometricIdWorkflowTask.class,
 						         FingerprintInquiryWorkflowTask.class,
 						         "fingerprints");
-						passData(RetrieveFingerprintsByCriminalBiometricIdWorkflowTask.class,
+						passData(ShowingFingerprintsPaneFxController.class,
 						         FingerprintInquiryWorkflowTask.class,
 						         "missingFingerprints");
 					}
@@ -317,21 +326,21 @@ public class FingerprintsInquiryWorkflow extends WizardWorkflowBase
 						passData(ConvertFingerprintBase64ImagesToWsqWorkflowTask.class,
 						         "fingerprintWsqImages", FingerprintInquiryWorkflowTask.class,
 						         "fingerprints", new FingerprintsWsqToFingerConverter());
-						passData(SpecifyFingerprintCoordinatesPaneFxController.class,
+						passData(ShowingFingerprintsPaneFxController.class,
 						         FingerprintInquiryWorkflowTask.class, "missingFingerprints");
 					}
 					else if(fingerprintsSource == Source.UPLOADING_NIST_FILE)
 					{
 						passData(ExtractingDataFromNistFileWorkflowTask.class, FingerprintInquiryWorkflowTask.class,
 						         "fingerprints");
-						passData(ExtractingDataFromNistFileWorkflowTask.class, FingerprintInquiryWorkflowTask.class,
+						passData(ShowingFingerprintsPaneFxController.class, FingerprintInquiryWorkflowTask.class,
 						         "missingFingerprints");
 					}
 					else if(fingerprintsSource == Source.CAPTURING_FINGERPRINTS_VIA_FINGERPRINT_SCANNER)
 					{
-						passData(FingerprintCapturingFxController.class, "slapFingerprints",
+						passData(SlapFingerprintsCapturingFxController.class, "slapFingerprints",
 						         FingerprintInquiryWorkflowTask.class, "fingerprints");
-						passData(FingerprintCapturingFxController.class, FingerprintInquiryWorkflowTask.class,
+						passData(ShowingFingerprintsPaneFxController.class, FingerprintInquiryWorkflowTask.class,
 						         "missingFingerprints");
 					}
 					
@@ -446,6 +455,46 @@ public class FingerprintsInquiryWorkflow extends WizardWorkflowBase
 				passData(FingerprintInquiryStatusCheckerWorkflowTask.class,
 				         InquiryByFingerprintsResultPaneFxController.class,
 				         "status", "civilBiometricsId", "criminalBiometricsId");
+
+				Source fingerprintsSource = getData(FingerprintsSourceFxController.class,
+						"fingerprintsSource");
+
+				if(fingerprintsSource == Source.ENTERING_PERSON_ID)
+				{
+					passData(ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask.class,
+							InquiryByFingerprintsResultPaneFxController.class,
+							"fingerprintBase64Images");
+				}
+				else if(fingerprintsSource == Source.ENTERING_CIVIL_BIOMETRICS_ID)
+				{
+					passData(ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask.class,
+							InquiryByFingerprintsResultPaneFxController.class,
+							"fingerprintBase64Images");
+				}
+				else if(fingerprintsSource == Source.ENTERING_CRIMINAL_BIOMETRICS_ID)
+				{
+					passData(ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask.class,
+							InquiryByFingerprintsResultPaneFxController.class,
+							"fingerprintBase64Images");
+				}
+				else if(fingerprintsSource == Source.SCANNING_FINGERPRINTS_CARD)
+				{
+					passData(SpecifyFingerprintCoordinatesPaneFxController.class,
+							InquiryByFingerprintsResultPaneFxController.class,
+							"fingerprintBase64Images");
+				}
+				else if(fingerprintsSource == Source.UPLOADING_NIST_FILE)
+				{
+					passData(ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask.class,
+							InquiryByFingerprintsResultPaneFxController.class,
+							"fingerprintBase64Images");
+				}
+				else if(fingerprintsSource == Source.CAPTURING_FINGERPRINTS_VIA_FINGERPRINT_SCANNER)
+				{
+					passData(SlapFingerprintsCapturingFxController.class, InquiryByFingerprintsResultPaneFxController.class,
+					         "fingerprintBase64Images");
+				}
+
 				renderUiAndWaitForUserInput(InquiryByFingerprintsResultPaneFxController.class);
 				
 				break;

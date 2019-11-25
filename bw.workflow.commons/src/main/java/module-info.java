@@ -4,7 +4,7 @@ module bw.workflow.commons
 	exports sa.gov.nic.bio.bw.workflow.commons.beans;
 	requires bw.core;
 	requires bw.lib.jasperreports;
-	requires gson;
+	requires com.google.gson;
 	requires java.desktop;
 	requires biokit.library;
 	requires bio.commons;

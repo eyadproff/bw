@@ -128,8 +128,8 @@ public class CaptureFingerprintDialogFxController extends FxControllerBase
 						.getFingerprintService().startPreviewAndAutoCapture(fingerprintDeviceName,
 						                                                    fingerPosition.getPosition(),
 						                                                    1, null,
-						                                                    true, true,
-						                                                    true, responseProcessor);
+						                                                    true, true, true,
+						                                                    responseProcessor);
 				return future.get();
 			}
 		};
@@ -236,7 +236,7 @@ public class CaptureFingerprintDialogFxController extends FxControllerBase
 		        String[] errorDetails = {firstLivePreviewingResponse[0] ?
 	                                     "failed while starting the fingerprint capturing!" :
 	                                     "failed while capturing the fingerprints!"};
-		        Context.getCoreFxController().showErrorDialog(errorCode, taskResponse.getException(), errorDetails);
+		        Context.getCoreFxController().showErrorDialog(errorCode, taskResponse.getException(), errorDetails, Context.getCoreFxController().getCurrentTabIndex());
 		    }
 		});
 		capturingFingerprintTask.setOnFailed(e ->
@@ -275,7 +275,7 @@ public class CaptureFingerprintDialogFxController extends FxControllerBase
 		        String[] errorDetails = {firstLivePreviewingResponse[0] ?
 		                                 "failed while starting the fingerprint capturing!" :
 		                                 "failed while capturing the fingerprints!"};
-		        Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails);
+		        Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails, Context.getCoreFxController().getCurrentTabIndex());
 		    }
 		});
 		
@@ -315,14 +315,14 @@ public class CaptureFingerprintDialogFxController extends FxControllerBase
 		        {
 			        String[] errorDetails = {"failed while stopping the fingerprint capturing!"};
 			        Context.getCoreFxController().showErrorDialog(String.valueOf(result.getReturnCode()),
-			                                                      taskResponse.getException(), errorDetails);
+			                                                      taskResponse.getException(), errorDetails, Context.getCoreFxController().getCurrentTabIndex());
 		        }
 		    }
 		    else
 		    {
 		        String errorCode = LoginErrorCodes.C003_00007.getCode();
 		        String[] errorDetails = {"failed while stopping the fingerprint capturing!"};
-		        Context.getCoreFxController().showErrorDialog(errorCode, taskResponse.getException(), errorDetails);
+		        Context.getCoreFxController().showErrorDialog(errorCode, taskResponse.getException(), errorDetails, Context.getCoreFxController().getCurrentTabIndex());
 		    }
 		});
 		task.setOnFailed(e ->
@@ -333,7 +333,7 @@ public class CaptureFingerprintDialogFxController extends FxControllerBase
 			
 			String errorCode = LoginErrorCodes.C003_00008.getCode();
 			String[] errorDetails = {"failed while stopping the fingerprint capturing!"};
-			Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails);
+			Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails, Context.getCoreFxController().getCurrentTabIndex());
 		});
 		
 		Context.getExecutorService().submit(task);

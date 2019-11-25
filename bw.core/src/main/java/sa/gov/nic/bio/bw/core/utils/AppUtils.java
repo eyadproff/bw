@@ -3,6 +3,7 @@ package sa.gov.nic.bio.bw.core.utils;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.reflect.TypeToken;
 import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.geometry.NodeOrientation;
@@ -28,8 +29,7 @@ import sa.gov.nic.bio.bw.core.webservice.ClientErrorReportingAPI;
 import sa.gov.nic.bio.bw.core.webservice.WebserviceManager;
 
 import javax.imageio.ImageIO;
-import java.awt.Desktop;
-import java.awt.Point;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -40,10 +40,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.lang.module.ModuleReference;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import java.lang.reflect.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -75,6 +72,8 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.concurrent.CountDownLatch;
+import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -93,6 +92,10 @@ public final class AppUtils implements AppLogger
 	private static final DateTimeFormatter DATE_WTH_WEEK_DAY_FORMATTER =
 																	DateTimeFormatter.ofPattern("EEEE dd MMMM yyyy G");
 	private static final DateTimeFormatter FORMAL_DATE_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+	private static final DateTimeFormatter DATE_SIMPLE_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy G");
+	private static final DateTimeFormatter DATE_SIMPLE_WTH_WEEK_DAY_FORMATTER =
+																	DateTimeFormatter.ofPattern("EEEE dd/MM/yyyy G");
+	private static final DateTimeFormatter TIME_12H_FORMATTER = DateTimeFormatter.ofPattern("hh:mm:ss a");
 	private static final HijrahChronology nicChronology = HijrahChronology.INSTANCE;
 	private static final FontAwesome FONTAWESOME_INSTANCE = new FontAwesome(Objects.requireNonNull(
 			AppUtils.class.getResource(FONT_AWESOME_FILE)).toExternalForm());
@@ -503,7 +506,7 @@ public final class AppUtils implements AppLogger
 			{
 				try
 				{
-					JsonObject jsonObject = new JsonParser().parse(payload).getAsJsonObject();
+					JsonObject jsonObject = JsonParser.parseString(payload).getAsJsonObject();
 					String exp = jsonObject.get(field).getAsString();
 					
 					if(exp == null) LOGGER.warning("The payload has no \"" + field + "\"!");
@@ -636,6 +639,11 @@ public final class AppUtils implements AppLogger
 		String fullName = firstName + " " + fatherName + " " + grandfatherName + " " + familyName;
 		return fullName.trim().replaceAll("\\s+", " "); // remove extra spaces
 	}
+
+	public static <T> String toJson(T object, Type rawType, Type... typeArguments)
+	{
+		return new Gson().toJson(object, TypeToken.getParameterized(rawType, typeArguments).getType());
+	}
 	
 	public static <T> String toJson(T object)
 	{
@@ -697,38 +705,73 @@ public final class AppUtils implements AppLogger
 		return new FingerCoordinate(topLeft, topRight, bottomLeft, bottomRight);
 	}
 	
-	public static void showChangeServerDialog()
+	public static String showChangeServerDialog(String oldBaseUrl, String[] urls, boolean uiThread)
 	{
-		RuntimeEnvironment runtimeEnvironment = Context.getRuntimeEnvironment();
-		if(runtimeEnvironment == RuntimeEnvironment.LOCAL || runtimeEnvironment == RuntimeEnvironment.DEV)
+		String[] userChoice = new String[1];
+		
+		String dialogTitle = getCoreStringsResourceBundle().getString("dialog.choice.title");
+		String headerText = getCoreStringsResourceBundle().getString("dialog.choice.selectServer.headerText");
+		String buttonText = getCoreStringsResourceBundle().getString("dialog.choice.selectServer.button");
+		String customChoiceLabel = getCoreStringsResourceBundle().getString("dialog.server.custom.label");
+		
+		CoreFxController coreFxController = Context.getCoreFxController();
+		boolean rtl = Context.getGuiLanguage().getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT;
+		
+		Function<String, Boolean> validator = url ->
 		{
-			WebserviceManager webserviceManager = Context.getWebserviceManager();
-			String oldBaseUrl = webserviceManager.getServerBaseUrl();
+			if(!url.contains("://")) return false;
 			
-			String[] urls = Context.getConfigManager().getProperty("dev.webservice.urls").split("[,\\s]+");
-			String[] userChoice = new String[1];
+			try
+			{
+				URL u = new URL(url);
+				u.toURI();
+			}
+			catch(Exception e)
+			{
+				return false;
+			}
+			
+			return true;
+		};
+		
+		if(uiThread) userChoice[0] = DialogUtils.showChoiceDialogWithExtraCustomText(coreFxController != null ? coreFxController.getStage() : null, coreFxController, dialogTitle,
+		                                                                             headerText, urls, oldBaseUrl, buttonText, rtl, customChoiceLabel, validator);
+		else
+		{
+			CountDownLatch latch = new CountDownLatch(1);
 			
 			Platform.runLater(() ->
 			{
-			    String dialogTitle = getCoreStringsResourceBundle().getString("dialog.choice.title");
-			    String headerText = getCoreStringsResourceBundle().getString(
-			    		                                                "dialog.choice.selectServer.headerText");
-			    String buttonText = getCoreStringsResourceBundle().getString("dialog.choice.selectServer.button");
 			
-			    CoreFxController coreFxController = Context.getCoreFxController();
-			    userChoice[0] = DialogUtils.showChoiceDialog(coreFxController.getStage(), coreFxController, dialogTitle,
-			                                                 headerText, urls, oldBaseUrl, buttonText,
-			                                                 false,
-			                                                 Context.getGuiLanguage().getNodeOrientation() ==
-				                                                                        NodeOrientation.RIGHT_TO_LEFT);
-				String baseUrl = userChoice[0];
-				if(baseUrl != null)
-				{
-					webserviceManager.changeServerBaseUrl(baseUrl);
-					LOGGER.info("change the server base URL from (" + oldBaseUrl + ") to (" + baseUrl + ")");
-				}
+			    userChoice[0] = DialogUtils.showChoiceDialogWithExtraCustomText(coreFxController != null ? coreFxController.getStage() : null, coreFxController, dialogTitle, headerText,
+			                                                                    urls, oldBaseUrl, buttonText, rtl, customChoiceLabel, validator);
+			    latch.countDown();
 			});
+			
+			try
+			{
+				latch.await();
+			}
+			catch(InterruptedException e)
+			{
+				e.printStackTrace();
+			}
 		}
+		
+		if(userChoice[0] == null) return null;
+		
+		URL finalUrl;
+		try
+		{
+			finalUrl = new URL(userChoice[0]);
+		}
+		catch(Exception e)
+		{
+			LOGGER.log(Level.SEVERE, "Not a valid URL = " + userChoice[0], e);
+			return null;
+		}
+		
+		return finalUrl.getProtocol() + "://" + finalUrl.getHost() + ":" + (finalUrl.getPort() == -1 ? finalUrl.getDefaultPort() : finalUrl.getPort());
 	}
 	
 	public static void openAppFolder()
@@ -740,6 +783,20 @@ public final class AppUtils implements AppLogger
 		catch(Exception e)
 		{
 			LOGGER.warning("Failed to open the app folder (" + AppConstants.APP_FOLDER_PATH + ")");
+		}
+	}
+
+	public static void openFileOrFolder(File file)
+	{
+		if(file == null) return;
+
+		try
+		{
+			Desktop.getDesktop().open(file);
+		}
+		catch(Exception e)
+		{
+			LOGGER.warning("Failed to open file/folder (" + file.getAbsolutePath() + ")");
 		}
 	}
 	
@@ -835,5 +892,23 @@ public final class AppUtils implements AppLogger
 		ClipboardContent content = new ClipboardContent();
 		content.putString(text);
 		Clipboard.getSystemClipboard().setContent(content);
+	}
+
+	public static String get3LinesTimestampInArabic()
+	{
+		ResourceBundle resourceBundle = getCoreStringsResourceBundle(AppConstants.Locales.SAUDI_AR_LOCALE);
+		ZonedDateTime now = ZonedDateTime.now(AppConstants.SAUDI_ZONE);
+
+		String firstLine = localizeNumbers(DATE_SIMPLE_WTH_WEEK_DAY_FORMATTER.withLocale(
+							AppConstants.Locales.SAUDI_AR_LOCALE).withChronology(HijrahChronology.INSTANCE).format(now),
+							AppConstants.Locales.SAUDI_AR_LOCALE, false);
+		String secondLine = resourceBundle.getString("label.equivalentDate") + ": " +
+							localizeNumbers(DATE_SIMPLE_FORMATTER.withLocale(AppConstants.Locales.SAUDI_AR_LOCALE)
+									.format(now), AppConstants.Locales.SAUDI_AR_LOCALE, false);
+		String thirdLine = resourceBundle.getString("label.theTime") + ": " +
+							localizeNumbers(TIME_12H_FORMATTER.withLocale(AppConstants.Locales.SAUDI_AR_LOCALE)
+									.format(now), AppConstants.Locales.SAUDI_AR_LOCALE, false);
+
+		return firstLine + "\n" + secondLine + "\n" + thirdLine;
 	}
 }

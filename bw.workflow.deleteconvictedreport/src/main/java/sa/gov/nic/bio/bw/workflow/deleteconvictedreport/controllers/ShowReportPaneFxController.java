@@ -38,7 +38,7 @@ import java.util.stream.Collectors;
 @FxmlFile("showReport.fxml")
 public class ShowReportPaneFxController extends WizardStepFxControllerBase
 {
-	@Input(alwaysRequired = true) private ConvictedReport convictedReport;
+    @Input(alwaysRequired = true) private ConvictedReport convictedReport;
 	@Input(alwaysRequired = true) private Map<Integer, String> fingerprintBase64Images;
 	
 	@FXML private ScrollPane paneReport;
@@ -92,6 +92,7 @@ public class ShowReportPaneFxController extends WizardStepFxControllerBase
 	@FXML private Label lblDeportationMonths;
 	@FXML private Label lblDeportationDays;
 	@FXML private Label lblOther;
+	@FXML private Label lblNaturalizedSaudi;
 	@FXML private CheckBox cbFinalDeportation;
 	@FXML private CheckBox cbLibel;
 	@FXML private CheckBox cbCovenant;
@@ -197,6 +198,9 @@ public class ShowReportPaneFxController extends WizardStepFxControllerBase
 			{
 				boolean arabic = Context.getGuiLanguage() == GuiLanguage.ARABIC;
 				lblNationality.setText(arabic ? countryBean.getDescriptionAR() : countryBean.getDescriptionEN());
+				GuiUtils.showNode(lblNaturalizedSaudi,
+								!"SAU".equalsIgnoreCase(countryBean.getMofaNationalityCode()) &&
+								String.valueOf(convictedReport.getSubjSamisId()).startsWith("1"));
 			}
 			else lblNationality.setText(resources.getString("combobox.unknownNationality"));
 		}

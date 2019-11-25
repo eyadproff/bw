@@ -11,9 +11,82 @@ VERSION SCHEMA: vYYYY.MM.#SEQ
 
 ---
 
-## v2019.05.4
+## v2019.11.2
 
+- NEW: Iris Registration.
+- NEW: Iris Inquiry.
 - NEW: Add Palm-Fingerprint-Capturing in criminal workflows.
+
+---
+
+## v2019.11.1
+
+- CHN: Use facePhoto that is extracted from NIST file when the inquiry result has no facePhoto.
+- CHN: Don't depend on missing fingerprints count coming from different sources (e.g. NIST file). Get it from ShowingFingerprintsPaneFxController.
+
+---
+
+## v2019.09.2
+
+- FIX: The slap thumbs overwrites segmented thumbs.
+
+---
+
+## v2019.09.1
+
+- FIX: The slap fingerprints are segmented even though there are segmented fingerprints available from the source.
+- ENH: Upgrade Retrofit from v2.5.0 to v2.6.1.
+- ENH: Upgrade tomcat-websocket from v8.5.33 to v9.0.24.
+
+---
+
+## v2019.08.3
+
+- FIX: NPE while building fingerprint inquiry report if PersonInfo is null.
+
+---
+
+## v2019.08.2
+
+- NEW: NIST file generator.
+
+---
+
+## v2019.08.1
+
+- CHN: If the returned SAMIS ID of DeporteeInfo is 0, set it to deportee ID.
+- FIX: NPE if the fingerprint returned from the middleware is null.
+- CHN: Show Naturalized Saudi labels.
+- NEW: Fingerprint inquiry report.
+- FIX: When data retrieved by criminal-hit only, the data does not persist upon navigate forward and backward.
+
+---
+
+## v2019.07.4
+
+- ENH: Make all workflow threads as daemon threads.
+- FIX: Open core.beans to gson in order to make BW runs on JDK12+.
+- FIX: Fix issue when selecting server in DEV environment.
+
+---
+
+## v2019.07.3
+
+- FIX: Fix a bug in interrupting threads on closing multiple tabs.
+
+---
+
+## v2019.07.2
+
+- NEW: Add multiple tabs feature that supports multiple workflows at the same time.
+
+---
+
+## v2019.07.1
+
+- ENH: Add the ability to configure custom server.
+- FIX: Fix the deploy task in gradle.
+- FIX: Fix NPE in CancelLatentWorkflow.
 
 ---
 

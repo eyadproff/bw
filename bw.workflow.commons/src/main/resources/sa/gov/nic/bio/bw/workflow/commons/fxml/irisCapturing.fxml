@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressIndicator?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import sa.gov.nic.bio.bw.workflow.commons.ui.ImageViewPane?>
+<?import javafx.scene.control.CheckBox?>
+<BorderPane xmlns="http://javafx.com/javafx/11" xmlns:fx="http://javafx.com/fxml/1"
+            fx:id="rootPane" fx:controller="sa.gov.nic.bio.bw.workflow.commons.controllers.IrisCapturingFxController"
+            stylesheets="@../css/style.css">
+    <center>
+        <VBox>
+            <padding>
+                <Insets top="10" bottom="10"/>
+            </padding>
+            <SplitPane styleClass="white-background" dividerPositions="0.3,0.65">
+                <TitledPane text="%label.irisDeviceControlPanel" maxHeight="Infinity" collapsible="false" focusTraversable="false">
+                    <ScrollPane fx:id="paneControlsOuterContainer" fitToWidth="true" VBox.vgrow="ALWAYS" maxHeight="Infinity">
+                        <VBox fx:id="paneControlsInnerContainer" alignment="CENTER" spacing="10.0">
+                            <padding>
+                                <Insets topRightBottomLeft="10.0"/>
+                            </padding>
+                            <ProgressIndicator fx:id="piProgress" prefHeight="25.0" prefWidth="25.0" managed="false" visible="false"/>
+                            <ImageView fx:id="ivSuccess" managed="false" visible="false">
+                                <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/icon_success_16px.png"/>
+                            </ImageView>
+                            <Label fx:id="lblStatus" wrapText="true" textAlignment="CENTER" managed="false" visible="false"/>
+                            <VBox alignment="CENTER" spacing="5.0">
+                                <Button fx:id="btnCancel" text="%button.cancel" managed="false" visible="false" wrapText="true" textAlignment="CENTER"/>
+                                <Button fx:id="btnCaptureIris" maxHeight="Infinity" text="%button.captureIris" managed="false" visible="false" wrapText="true" textAlignment="CENTER" onAction="#onCaptureIrisButtonClicked"/>
+                            </VBox>
+                        </VBox>
+                    </ScrollPane>
+                </TitledPane>
+                <TitledPane fx:id="tpCapturedFirstIris" maxHeight="Infinity" collapsible="false" focusTraversable="false">
+                    <VBox spacing="10.0">
+                        <StackPane VBox.vgrow="ALWAYS">
+                            <ImageViewPane>
+                                <imageView>
+                                    <ImageView fx:id="ivSkippedFirstIris" preserveRatio="true" managed="false" visible="false">
+                                        <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/placeholder_skipped_iris_image.png"/>
+                                    </ImageView>
+                                </imageView>
+                            </ImageViewPane>
+                            <ImageViewPane>
+                                <imageView>
+                                    <ImageView fx:id="ivCapturedFirstIrisPlaceholder" preserveRatio="true">
+                                        <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/placeholder_iris_image.png"/>
+                                    </ImageView>
+                                </imageView>
+                            </ImageViewPane>
+                            <ImageViewPane minHeight="79.0">
+                                <imageView>
+                                    <ImageView fx:id="ivCapturedFirstIris" preserveRatio="true"/>
+                                </imageView>
+                            </ImageViewPane>
+                        </StackPane>
+                        <CheckBox fx:id="cbSkippedFirstIris" alignment="CENTER" maxWidth="Infinity" selected="true"/>
+                    </VBox>
+                </TitledPane>
+                <TitledPane fx:id="tpCapturedSecondIris" maxHeight="Infinity" collapsible="false" focusTraversable="false">
+                    <VBox spacing="10.0">
+                        <StackPane VBox.vgrow="ALWAYS">
+                            <ImageViewPane>
+                                <imageView>
+                                    <ImageView fx:id="ivSkippedSecondIris" preserveRatio="true" managed="false" visible="false">
+                                        <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/placeholder_skipped_iris_image.png"/>
+                                    </ImageView>
+                                </imageView>
+                            </ImageViewPane>
+                            <ImageViewPane>
+                                <imageView>
+                                    <ImageView fx:id="ivCapturedSecondIrisPlaceholder" preserveRatio="true">
+                                        <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/placeholder_iris_image.png"/>
+                                    </ImageView>
+                                </imageView>
+                            </ImageViewPane>
+                            <ImageViewPane minHeight="79.0">
+                                <imageView>
+                                    <ImageView fx:id="ivCapturedSecondIris" preserveRatio="true"/>
+                                </imageView>
+                            </ImageViewPane>
+                        </StackPane>
+                        <CheckBox fx:id="cbSkippedSecondIris" alignment="CENTER" maxWidth="Infinity" selected="true"/>
+                    </VBox>
+                </TitledPane>
+            </SplitPane>
+        </VBox>
+    </center>
+    <bottom>
+        <HBox alignment="CENTER" spacing="10">
+            <padding>
+                <Insets bottom="10"/>
+            </padding>
+            <Button fx:id="btnPrevious" text="%button.previous" onAction="#onPreviousButtonClicked"/>
+            <Button fx:id="btnStartOver" text="%button.startOver" onAction="#onStartOverButtonClicked"/>
+            <Button fx:id="btnNext" text="%button.next" onAction="#onNextButtonClicked"/>
+        </HBox>
+    </bottom>
+</BorderPane>

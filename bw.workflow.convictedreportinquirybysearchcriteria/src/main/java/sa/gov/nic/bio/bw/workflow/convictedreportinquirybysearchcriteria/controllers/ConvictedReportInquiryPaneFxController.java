@@ -32,7 +32,7 @@ import javafx.scene.layout.Pane;
 import sa.gov.nic.bio.bw.core.Context;
 import sa.gov.nic.bio.bw.core.beans.Gender;
 import sa.gov.nic.bio.bw.core.beans.Name;
-import sa.gov.nic.bio.bw.core.controllers.BodyFxControllerBase;
+import sa.gov.nic.bio.bw.core.controllers.ContentFxControllerBase;
 import sa.gov.nic.bio.bw.core.controllers.DevicesRunnerGadgetPaneFxController;
 import sa.gov.nic.bio.bw.core.utils.AppConstants;
 import sa.gov.nic.bio.bw.core.utils.AppUtils;
@@ -51,7 +51,7 @@ import sa.gov.nic.bio.bw.workflow.convictedreportinquirybysearchcriteria.utils.C
 import java.util.List;
 
 @FxmlFile("convictedReportInquiry.fxml")
-public class ConvictedReportInquiryPaneFxController extends BodyFxControllerBase
+public class ConvictedReportInquiryPaneFxController extends ContentFxControllerBase
 {
 	
 	@Input private Integer resultsTotalCount;
@@ -548,7 +548,7 @@ public class ConvictedReportInquiryPaneFxController extends BodyFxControllerBase
 		{
 			String errorCode = ConvictedReportInquiryErrorCodes.C014_00001.getCode();
 			String[] errorDetails = {"Failed to load (" + ShowReportDialogFxController.class.getName() + ")!"};
-			Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails);
+			Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails, getTabIndex());
 		}
 	}
 	

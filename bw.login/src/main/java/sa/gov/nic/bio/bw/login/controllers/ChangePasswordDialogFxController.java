@@ -88,7 +88,7 @@ public class ChangePasswordDialogFxController extends FxControllerBase
 						{
 							String errorCode = LoginErrorCodes.C003_00001.getCode();
 							String[] errorDetails = {"Failed to get a response when changing the password!"};
-							Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails);
+							Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails, Context.getCoreFxController().getCurrentTabIndex());
 							return;
 						}
 						
@@ -118,7 +118,7 @@ public class ChangePasswordDialogFxController extends FxControllerBase
 							}
 							else // client error, server error, or unknown error
 							{
-								Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails);
+								Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails, Context.getCoreFxController().getCurrentTabIndex());
 							}
 							
 							showProgress(false);
@@ -130,7 +130,7 @@ public class ChangePasswordDialogFxController extends FxControllerBase
 						showProgress(false);
 						String errorCode = LoginErrorCodes.C003_00002.getCode();
 						String[] errorDetails = {"Failure when executing ChangePasswordTask!"};
-						Context.getCoreFxController().showErrorDialog(errorCode, null, errorDetails);
+						Context.getCoreFxController().showErrorDialog(errorCode, null, errorDetails, Context.getCoreFxController().getCurrentTabIndex());
 					});
 					
 					Context.getExecutorService().submit(task);

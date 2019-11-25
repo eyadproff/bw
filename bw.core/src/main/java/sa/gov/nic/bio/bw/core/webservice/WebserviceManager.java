@@ -234,7 +234,7 @@ public class WebserviceManager implements AppLogger
 				
 				if(encodedNames != null && encodedValues != null)
 				{
-					int size = encodedNames.size() > encodedValues.size() ? encodedNames.size() : encodedValues.size();
+					int size = Math.max(encodedNames.size(), encodedValues.size());
 					
 					StringBuilder sb = new StringBuilder("[\n");
 					
@@ -285,7 +285,6 @@ public class WebserviceManager implements AppLogger
 		}
 		
 		int httpResponseCode = response.code();
-		ResponseBody responseBody = response.raw().body();
 		LOGGER.info("httpRequestMethod = " + httpRequestMethod);
 		LOGGER.info("apiUrl = " + apiUrl);
 		LOGGER.fine("httpRequestBody = " + httpRequestBody);
@@ -300,7 +299,7 @@ public class WebserviceManager implements AppLogger
 			return TaskResponse.success(resultBean, httpResponseCode);
 		}
 		else if(httpResponseCode == 400 || httpResponseCode == 401 || httpResponseCode == 403 ||
-				httpResponseCode == 404 || httpResponseCode == 500)
+				httpResponseCode == 404 || httpResponseCode == 406 || httpResponseCode == 500)
 		{
 			String errorCode;
 			ResponseBody errorBody = response.errorBody();
@@ -317,7 +316,7 @@ public class WebserviceManager implements AppLogger
 			{
 				String sErrorBody = errorBody.string();
 				
-				JsonObject jsonObject = new JsonParser().parse(sErrorBody).getAsJsonObject();
+				JsonObject jsonObject = JsonParser.parseString(sErrorBody).getAsJsonObject();
 				errorCode = jsonObject.get("errorCode").getAsString(); // Business error, or server error
 			}
 			catch(Exception e)
@@ -388,10 +387,5 @@ public class WebserviceManager implements AppLogger
 	public void cancelRefreshTokenScheduler()
 	{
 		if(scheduledRefreshTokenFuture != null) scheduledRefreshTokenFuture.cancel(true);
-	}
-	
-	private void createNewRetrofitInstance(String baseUrl)
-	{
-	
 	}
 }

@@ -15,7 +15,7 @@ import sa.gov.nic.bio.bw.workflow.commons.beans.DeporteeInfo;
 import sa.gov.nic.bio.bw.workflow.commons.beans.DisCriminalReport;
 import sa.gov.nic.bio.bw.workflow.commons.beans.PersonInfo;
 import sa.gov.nic.bio.bw.workflow.commons.controllers.FaceCapturingFxController;
-import sa.gov.nic.bio.bw.workflow.commons.controllers.FingerprintCapturingFxController;
+import sa.gov.nic.bio.bw.workflow.commons.controllers.SlapFingerprintsCapturingFxController;
 import sa.gov.nic.bio.bw.workflow.commons.controllers.InquiryByFingerprintsPaneFxController;
 import sa.gov.nic.bio.bw.workflow.commons.controllers.InquiryByFingerprintsResultPaneFxController;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.BiometricsExchangeCrimeTypesLookup;
@@ -90,14 +90,14 @@ public class RegisterConvictedReportPresentWorkflow extends WizardWorkflowBase
 				int acceptBadQualityFingerprintMinRetries = Integer.parseInt(Context.getConfigManager().getProperty(
 										"registerConvictedReport.fingerprint.acceptBadQualityFingerprintMinRetries"));
 				
-				setData(FingerprintCapturingFxController.class, "hidePreviousButton", Boolean.TRUE);
-				setData(FingerprintCapturingFxController.class, "allow9MissingWithNoRole", Boolean.TRUE);
-				setData(FingerprintCapturingFxController.class, "acceptBadQualityFingerprint",
+				setData(SlapFingerprintsCapturingFxController.class, "hidePreviousButton", Boolean.TRUE);
+				setData(SlapFingerprintsCapturingFxController.class, "allow9MissingWithNoRole", Boolean.TRUE);
+				setData(SlapFingerprintsCapturingFxController.class, "acceptBadQualityFingerprint",
 				        acceptBadQualityFingerprint);
-				setData(FingerprintCapturingFxController.class, "acceptBadQualityFingerprintMinRetires",
+				setData(SlapFingerprintsCapturingFxController.class, "acceptBadQualityFingerprintMinRetires",
 				        acceptBadQualityFingerprintMinRetries);
 		
-				renderUiAndWaitForUserInput(FingerprintCapturingFxController.class);
+				renderUiAndWaitForUserInput(SlapFingerprintsCapturingFxController.class);
 				break;
 			}
 			case 1:
@@ -130,9 +130,9 @@ public class RegisterConvictedReportPresentWorkflow extends WizardWorkflowBase
 				
 				if(inquiryId == null)
 				{
-					passData(FingerprintCapturingFxController.class, "slapFingerprints",
+					passData(SlapFingerprintsCapturingFxController.class, "slapFingerprints",
 					         FingerprintInquiryWorkflowTask.class, "fingerprints");
-					passData(FingerprintCapturingFxController.class, FingerprintInquiryWorkflowTask.class,
+					passData(SlapFingerprintsCapturingFxController.class, FingerprintInquiryWorkflowTask.class,
 					         "missingFingerprints");
 					
 					executeWorkflowTask(FingerprintInquiryWorkflowTask.class);
@@ -242,6 +242,9 @@ public class RegisterConvictedReportPresentWorkflow extends WizardWorkflowBase
 				passData(FingerprintInquiryStatusCheckerWorkflowTask.class,
 				         InquiryByFingerprintsResultPaneFxController.class,
 				         "status", "civilBiometricsId", "criminalBiometricsId");
+				passData(SlapFingerprintsCapturingFxController.class, InquiryByFingerprintsResultPaneFxController.class,
+				         "fingerprintBase64Images");
+
 				renderUiAndWaitForUserInput(InquiryByFingerprintsResultPaneFxController.class);
 				break;
 			}
@@ -299,10 +302,10 @@ public class RegisterConvictedReportPresentWorkflow extends WizardWorkflowBase
 				passData(ShareInformationPaneFxController.class, "crimesWithShares",
 				         ReviewAndSubmitPaneFxController.class, "crimes");
 				
-				passData(FingerprintCapturingFxController.class, "slapFingerprints",
+				passData(SlapFingerprintsCapturingFxController.class, "slapFingerprints",
 				         ReviewAndSubmitPaneFxController.class, "fingerprints");
 				
-				passData(FingerprintCapturingFxController.class,
+				passData(SlapFingerprintsCapturingFxController.class,
 				         ReviewAndSubmitPaneFxController.class,
 				         "fingerprintBase64Images", "missingFingerprints");
 				
@@ -362,11 +365,11 @@ public class RegisterConvictedReportPresentWorkflow extends WizardWorkflowBase
 				{
 					passData(GenerateNewCriminalBiometricsIdWorkflowTask.class,
 					         SubmitCriminalFingerprintsWorkflowTask.class, "criminalBiometricsId");
-					passData(FingerprintCapturingFxController.class, "combinedFingerprints",
+					passData(SlapFingerprintsCapturingFxController.class, "combinedFingerprints",
 					         SubmitCriminalFingerprintsWorkflowTask.class, "fingerprints");
 					passData(PalmCapturingFxController.class, SubmitCriminalFingerprintsWorkflowTask.class,
 					         "palms");
-					passData(FingerprintCapturingFxController.class, SubmitCriminalFingerprintsWorkflowTask.class,
+					passData(SlapFingerprintsCapturingFxController.class, SubmitCriminalFingerprintsWorkflowTask.class,
 					         "missingFingerprints");
 					executeWorkflowTask(SubmitCriminalFingerprintsWorkflowTask.class);
 				}
@@ -412,7 +415,7 @@ public class RegisterConvictedReportPresentWorkflow extends WizardWorkflowBase
 				         "convictedReport");
 				passData(SubmitConvictedReportWorkflowTask.class, ShowReportPaneFxController.class,
 				         "convictedReportResponse");
-				passData(FingerprintCapturingFxController.class, ShowReportPaneFxController.class,
+				passData(SlapFingerprintsCapturingFxController.class, ShowReportPaneFxController.class,
 				         "fingerprintBase64Images");
 				renderUiAndWaitForUserInput(ShowReportPaneFxController.class);
 				break;

@@ -22,7 +22,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import net.sf.jasperreports.engine.JasperPrint;
 import sa.gov.nic.bio.bw.core.Context;
-import sa.gov.nic.bio.bw.core.controllers.BodyFxControllerBase;
+import sa.gov.nic.bio.bw.core.controllers.ContentFxControllerBase;
 import sa.gov.nic.bio.bw.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.core.utils.DialogUtils;
 import sa.gov.nic.bio.bw.core.utils.FxmlFile;
@@ -47,7 +47,7 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
 @FxmlFile("showReportDialog.fxml")
-public class ShowReportDialogFxController extends BodyFxControllerBase
+public class ShowReportDialogFxController extends ContentFxControllerBase
 {
 	@FXML private ConvictedReportNestedFxController convictedReportNestedPaneController;
 	@FXML private ScrollPane paneReport;
@@ -155,7 +155,7 @@ public class ShowReportDialogFxController extends BodyFxControllerBase
 							        String errorCode = CommonsErrorCodes.C008_00040.getCode();
 							        String[] errorDetails = {"failed to load the root convicted report! Report number" +
 								                                                        " (" + rootReportNumber + ")"};
-							        Context.getCoreFxController().showErrorDialog(errorCode, throwable, errorDetails);
+							        Context.getCoreFxController().showErrorDialog(errorCode, throwable, errorDetails, getTabIndex());
 						        });
 						
 						        if(!success)
@@ -173,7 +173,7 @@ public class ShowReportDialogFxController extends BodyFxControllerBase
 				        String errorCode = CommonsErrorCodes.C008_00041.getCode();
 				        String[] errorDetails = {"failed to load the convicted report! Report number (" +
 						                                                                            reportNumber + ")"};
-				        Context.getCoreFxController().showErrorDialog(errorCode, throwable, errorDetails);
+				        Context.getCoreFxController().showErrorDialog(errorCode, throwable, errorDetails, getTabIndex());
 			        });
 			
 			        if(!success)
@@ -190,7 +190,7 @@ public class ShowReportDialogFxController extends BodyFxControllerBase
 		        String errorCode = CommonsErrorCodes.C008_00030.getCode();
 		        String[] errorDetails = {"failed to retrieve the convicted report by report number ( " +
 		                                                                                            reportNumber + ")"};
-		        Context.getCoreFxController().showErrorDialog(errorCode, throwable, errorDetails);
+		        Context.getCoreFxController().showErrorDialog(errorCode, throwable, errorDetails, getTabIndex());
 	        });
 	
 	        if(!success)
@@ -262,7 +262,7 @@ public class ShowReportDialogFxController extends BodyFxControllerBase
 					String[] errorDetails = {"failed to retrieve the convicted report by report " +
 							"number (" + newValue.getReportNumber() + ")"};
 					Context.getCoreFxController().showErrorDialog(errorCode, throwable,
-					                                              errorDetails);
+					                                              errorDetails, getTabIndex());
 				});
 				
 				if(!success)
@@ -283,7 +283,7 @@ public class ShowReportDialogFxController extends BodyFxControllerBase
 			String errorCode = CommonsErrorCodes.C008_00039.getCode();
 			String[] errorDetails = {"the returned list is empty for root report number" +
 					" ( " + convictedReport.getRootReportNumber() + ")"};
-			Context.getCoreFxController().showErrorDialog(errorCode, null, errorDetails);
+			Context.getCoreFxController().showErrorDialog(errorCode, null, errorDetails, getTabIndex());
 		}
 	}
 	
@@ -316,7 +316,7 @@ public class ShowReportDialogFxController extends BodyFxControllerBase
 			String errorCode = CommonsErrorCodes.C008_00029.getCode();
 			String[] errorDetails = {"failed to load the fingerprints for report number ( " +
 					reportNumber + ")"};
-			Context.getCoreFxController().showErrorDialog(errorCode, throwable, errorDetails);
+			Context.getCoreFxController().showErrorDialog(errorCode, throwable, errorDetails, getTabIndex());
 		});
 		
 		if(!success)
@@ -386,7 +386,7 @@ public class ShowReportDialogFxController extends BodyFxControllerBase
 			
 			    String errorCode = CommonsErrorCodes.C008_00031.getCode();
 			    String[] errorDetails = {"failed while building the convicted report!"};
-			    Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails);
+			    Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails, getTabIndex());
 			});
 			Context.getExecutorService().submit(buildConvictedReportTask);
 		}
@@ -424,7 +424,7 @@ public class ShowReportDialogFxController extends BodyFxControllerBase
 				
 				        String errorCode = CommonsErrorCodes.C008_00032.getCode();
 				        String[] errorDetails = {"failed while saving the convicted report as PDF!"};
-				        Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails);
+				        Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails, getTabIndex());
 				    }
 				});
 				buildConvictedReportTask.setOnFailed(event ->
@@ -437,7 +437,7 @@ public class ShowReportDialogFxController extends BodyFxControllerBase
 				
 				    String errorCode = CommonsErrorCodes.C008_00033.getCode();
 				    String[] errorDetails = {"failed while building the convicted report!"};
-				    Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails);
+				    Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails, getTabIndex());
 				});
 				Context.getExecutorService().submit(buildConvictedReportTask);
 			}
@@ -455,7 +455,7 @@ public class ShowReportDialogFxController extends BodyFxControllerBase
 					
 					String errorCode = CommonsErrorCodes.C008_00034.getCode();
 					String[] errorDetails = {"failed while saving the convicted report as PDF!"};
-					Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails);
+					Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails, getTabIndex());
 				}
 			}
 		}
@@ -480,7 +480,7 @@ public class ShowReportDialogFxController extends BodyFxControllerBase
 		
 		    String errorCode = CommonsErrorCodes.C008_00035.getCode();
 		    String[] errorDetails = {"failed while printing the convicted report!"};
-		    Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails);
+		    Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails, getTabIndex());
 		});
 		Context.getExecutorService().submit(printReportTask);
 	}
@@ -523,7 +523,7 @@ public class ShowReportDialogFxController extends BodyFxControllerBase
 		
 		    String errorCode = CommonsErrorCodes.C008_00036.getCode();
 		    String[] errorDetails = {"failed while saving the convicted report as PDF!"};
-		    Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails);
+		    Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails, getTabIndex());
 		});
 		Context.getExecutorService().submit(printReportTaskAsPdfTask);
 	}
