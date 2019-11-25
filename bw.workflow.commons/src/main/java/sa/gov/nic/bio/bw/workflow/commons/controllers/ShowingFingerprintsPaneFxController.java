@@ -61,7 +61,7 @@ public class ShowingFingerprintsPaneFxController extends WizardStepFxControllerB
 		                                 ivRightMiddle, ivRightRing, ivRightLittle, ivLeftThumb, ivLeftIndex,
 		                                 ivLeftMiddle, ivLeftRing, ivLeftLittle, null,
 		                                 null, null, null,
-		                                 null, null)
+		                                 null, null);
 		
 		boolean disableInquiry = fingerprintBase64Images.isEmpty();
 		btnInquiry.setDisable(disableInquiry);
