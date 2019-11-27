@@ -28,16 +28,19 @@ public class FingerprintInquiryWorkflowTask extends WorkflowTask
 		FingerprintInquiryAPI fingerprintInquiryAPI =
 				Context.getWebserviceManager().getApi(FingerprintInquiryAPI.class);
 		
-		boolean removeThumbSlap = fingerprints.stream()
-		                                      .anyMatch(finger ->
-		                                                finger.getType() >= FingerPosition.RIGHT_THUMB.getPosition() &&
-		                                                finger.getType() <= FingerPosition.LEFT_LITTLE.getPosition());
+		boolean removeSlaps = fingerprints.stream()
+		                                  .anyMatch(finger ->
+		                                            finger.getType() >= FingerPosition.RIGHT_THUMB.getPosition() &&
+		                                            finger.getType() <= FingerPosition.LEFT_LITTLE.getPosition());
 		
 		List<Finger> fingerprintList = new ArrayList<>();
 		fingerprints.forEach(finger ->
 		{
-			if(removeThumbSlap && (finger.getType() == FingerPosition.RIGHT_THUMB_SLAP.getPosition() ||
-								   finger.getType() == FingerPosition.LEFT_THUMB_SLAP.getPosition())) return;
+			if(removeSlaps && (finger.getType() == FingerPosition.RIGHT_THUMB_SLAP.getPosition() ||
+							   finger.getType() == FingerPosition.LEFT_THUMB_SLAP.getPosition() ||
+							   finger.getType() == FingerPosition.RIGHT_SLAP.getPosition() ||
+							   finger.getType() == FingerPosition.LEFT_SLAP.getPosition() ||
+							   finger.getType() == FingerPosition.TWO_THUMBS.getPosition())) return;
 			
 			fingerprintList.add(finger);
 		});
