@@ -11,7 +11,7 @@ VERSION SCHEMA: vYYYY.MM.#SEQ
 
 ---
 
-## v2019.11.1
+## v2019.11.2
 
 - CHN: Don't send slaps if segmented fingerprints are available.
 
