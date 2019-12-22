@@ -12,6 +12,6 @@ module bw.workflow.visaapplicantsenrollment
 	opens sa.gov.nic.bio.bw.workflow.visaapplicantsenrollment.fxml to bw.core;
 	opens sa.gov.nic.bio.bw.workflow.visaapplicantsenrollment.lookups to bw.core;
 	opens sa.gov.nic.bio.bw.workflow.visaapplicantsenrollment.controllers to javafx.fxml, bw.core;
-	opens sa.gov.nic.bio.bw.workflow.visaapplicantsenrollment.beans to org.apache.commons.lang3;
+	opens sa.gov.nic.bio.bw.workflow.visaapplicantsenrollment.beans to org.apache.commons.lang3, com.google.gson;
 	exports sa.gov.nic.bio.bw.workflow.visaapplicantsenrollment.controllers;
 }
