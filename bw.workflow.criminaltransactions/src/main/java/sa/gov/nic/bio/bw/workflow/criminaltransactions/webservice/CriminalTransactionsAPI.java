@@ -11,5 +11,12 @@ public interface CriminalTransactionsAPI
 	@GET("services-gateway-demographic/api/criminal/activity/info/custom/v1")
 	Call<CriminalTransactionsInquiryResult> inquireCriminalTransactions(@Header("Workflow-Code") Integer workflowId,
 	                                                                    @Header("Workflow-Tcn") Long workflowTcn,
-	                                                                    @Query("criminal-id") Long criminalId);
+	                                                                    @Query("event-type") Integer eventType,
+	                                                                    @Query("criminal-id") Long criminalId,
+	                                                                    @Query("report-number") Long reportNumber,
+	                                                                    @Query("delink-id") Long delinkId,
+	                                                                    @Query("page-start") Integer pageStart,
+	                                                                    @Query("page-end") Integer pageEnd,
+	                                                                    @Query("location") Integer location,
+	                                                                    @Query("operator-id") Long operatorId);
 }

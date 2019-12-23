@@ -1,12 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Pagination?>
 <?import javafx.scene.control.ProgressIndicator?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.TitledPane?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
@@ -17,14 +22,48 @@
             fx:id="rootPane" stylesheets="@../css/style.css">
     <center>
         <VBox>
-            <HBox spacing="5.0">
-                <padding>
-                    <Insets topRightBottomLeft="10.0"/>
-                </padding>
-                <Label text="%label.criminalBiometricsId"/>
-                <TextField fx:id="txtCriminalBiometricsId" onAction="#onInquiryButtonClicked"/>
-                <Button fx:id="btnInquiry" text="%button.inquiry" onAction="#onInquiryButtonClicked"/>
-            </HBox>
+            <TitledPane text="%label.searchCriteria">
+                <VBox alignment="CENTER" spacing="10.0">
+                    <ScrollPane hbarPolicy="NEVER" pannable="true" minHeight="100.0" maxHeight="Infinity" fitToHeight="true">
+                        <VBox spacing="5.0">
+                            <padding>
+                                <Insets topRightBottomLeft="10.0"/>
+                            </padding>
+                            <GridPane hgap="5.0" vgap="5.0">
+                                <padding>
+                                    <Insets left="20.0"/>
+                                </padding>
+                                <CheckBox fx:id="cbCriminalBiometricsId" text="%label.criminalBiometricsId" GridPane.columnIndex="0" GridPane.rowIndex="0" selected="true"/>
+                                <TextField fx:id="txtCriminalBiometricsId" GridPane.columnIndex="1" GridPane.rowIndex="0" onAction="#onInquiryButtonClicked"/>
+                                <CheckBox fx:id="cbReportNumber" text="%label.reportNumber" GridPane.columnIndex="2" GridPane.rowIndex="0">
+                                    <padding>
+                                        <Insets left="10.0"/>
+                                    </padding>
+                                </CheckBox>
+                                <TextField fx:id="txtReportNumber" GridPane.columnIndex="3" GridPane.rowIndex="0" onAction="#onInquiryButtonClicked"/>
+                                <CheckBox fx:id="cbLocation" text="%label.location" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+                                <TextField fx:id="txtLocation" GridPane.columnIndex="1" GridPane.rowIndex="1" onAction="#onInquiryButtonClicked"/>
+                                <CheckBox fx:id="cbOperatorId" text="%label.operatorId" GridPane.columnIndex="2" GridPane.rowIndex="1">
+                                    <padding>
+                                        <Insets left="10.0"/>
+                                    </padding>
+                                </CheckBox>
+                                <TextField fx:id="txtOperatorId" GridPane.columnIndex="3" GridPane.rowIndex="1" onAction="#onInquiryButtonClicked"/>
+                                <CheckBox fx:id="cbCriminalDelinkId" text="%label.criminalDelinkId" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+                                <TextField fx:id="txtCriminalDelinkId" GridPane.columnIndex="1" GridPane.rowIndex="2" onAction="#onInquiryButtonClicked"/>
+                                <CheckBox fx:id="cbTransactionType" text="%label.transactionType" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+                                <ComboBox fx:id="cboTransactionType" GridPane.columnIndex="1" GridPane.rowIndex="3" GridPane.columnSpan="3"/>
+                            </GridPane>
+                        </VBox>
+                    </ScrollPane>
+                    <StackPane>
+                        <HBox alignment="CENTER" spacing="5.0" pickOnBounds="false">
+                            <Button fx:id="btnInquiry" text="%button.inquiry" onAction="#onInquiryButtonClicked"/>
+                            <Button fx:id="btnClearFields" text="%button.clearFields" onAction="#onClearFieldsButtonClicked"/>
+                        </HBox>
+                    </StackPane>
+                </VBox>
+            </TitledPane>
             <TitledPane fx:id="tpSearchResults" text="%label.searchResults" collapsible="false" maxHeight="Infinity" VBox.vgrow="ALWAYS" focusTraversable="false">
                 <StackPane>
                     <VBox alignment="BOTTOM_LEFT">
@@ -34,26 +73,30 @@
                             </graphic>
                         </Label>
                     </VBox>
-                    <VBox fx:id="paneTable">
-                        <TableView fx:id="tvCriminalTransactions" prefHeight="250.0" maxHeight="Infinity" VBox.vgrow="ALWAYS">
-                            <placeholder>
-                                <StackPane>
-                                    <Label fx:id="lblCriminalTransactionsPlaceHolder" text="%table.placeholder"/>
-                                    <ProgressIndicator fx:id="piCriminalTransactionsPlaceHolder" maxHeight="25.0" maxWidth="25.0" visible="false"/>
-                                </StackPane>
-                            </placeholder>
-                            <columns>
-                                <PTableColumn fx:id="tcSequence" text="#" percentageWidth="0.03"/>
-                                <PTableColumn fx:id="tcTransactionType" text="%table.column.transactionType" percentageWidth="0.15"/>
-                                <PTableColumn fx:id="tcTransactionId" text="%table.column.transactionId" percentageWidth="0.13"/>
-                                <PTableColumn fx:id="tcDateAndTime" text="%table.column.dateAndTime" percentageWidth="0.3"/>
-                                <PTableColumn fx:id="tcOperatorId" text="%table.column.operatorId" percentageWidth="0.12"/>
-                                <PTableColumn fx:id="tcLocation" text="%table.column.location" percentageWidth="0.05"/>
-                                <PTableColumn fx:id="tcConvictedReportId" text="%table.column.convictedReportId" percentageWidth="0.13"/>
-                                <PTableColumn fx:id="tcResult" text="%table.column.result" percentageWidth="0.05"/>
-                            </columns>
-                        </TableView>
-                    </VBox>
+                    <Pagination fx:id="pagination" pageCount="1" styleClass="disable-tooltip" VBox.vgrow="ALWAYS" maxHeight="Infinity" minHeight="160.0">
+                    <fx:define>
+                        <VBox fx:id="paneTable">
+                            <TableView fx:id="tvCriminalTransactions" prefHeight="250.0" maxHeight="Infinity" VBox.vgrow="ALWAYS">
+                                <placeholder>
+                                    <StackPane>
+                                        <Label fx:id="lblCriminalTransactionsPlaceHolder" text="%table.placeholder"/>
+                                        <ProgressIndicator fx:id="piCriminalTransactionsPlaceHolder" maxHeight="25.0" maxWidth="25.0" visible="false"/>
+                                    </StackPane>
+                                </placeholder>
+                                <columns>
+                                    <PTableColumn fx:id="tcSequence" text="#" percentageWidth="0.03"/>
+                                    <PTableColumn fx:id="tcTransactionType" text="%table.column.transactionType" percentageWidth="0.15"/>
+                                    <PTableColumn fx:id="tcTransactionId" text="%table.column.transactionId" percentageWidth="0.13"/>
+                                    <PTableColumn fx:id="tcDateAndTime" text="%table.column.dateAndTime" percentageWidth="0.3"/>
+                                    <PTableColumn fx:id="tcOperatorId" text="%table.column.operatorId" percentageWidth="0.12"/>
+                                    <PTableColumn fx:id="tcLocation" text="%table.column.location" percentageWidth="0.05"/>
+                                    <PTableColumn fx:id="tcConvictedReportId" text="%table.column.convictedReportId" percentageWidth="0.13"/>
+                                    <PTableColumn fx:id="tcResult" text="%table.column.result" percentageWidth="0.05"/>
+                                </columns>
+                            </TableView>
+                        </VBox>
+                    </fx:define>
+                    </Pagination>
                 </StackPane>
             </TitledPane>
         </VBox>

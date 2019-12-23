@@ -23,7 +23,7 @@ public class ConvictedReportInquiryBySearchCriteriaWorkflow extends SinglePageWo
 		renderUiAndWaitForUserInput(ConvictedReportInquiryPaneFxController.class);
 		
 		passData(ConvictedReportInquiryPaneFxController.class, ConvictedReportInquiryBySearchCriteriaWorkflowTask.class,
-		         "recordsPerPage", "reportNumber", "criminalBiometricsId", "location", "personId",
+		         "reportNumber", "criminalBiometricsId", "location", "personId",
 		         "documentId", "firstName", "fatherName", "grandfatherName", "familyName", "judgementNumber",
 		         "prisonerNumber", "operatorId", "judgmentDateFrom", "judgmentDateTo", "showOldReports",
 		         "showDeletedReports", "recordsPerPage", "pageIndex");
