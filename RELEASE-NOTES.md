@@ -11,11 +11,18 @@ VERSION SCHEMA: vYYYY.MM.#SEQ
 
 ---
 
-## v2019.11.2
+## v2019.12.1
 
+- NEW: Criminal Transactions Inquiry Workflow.
 - NEW: Iris Registration.
 - NEW: Iris Inquiry.
 - NEW: Add Palm-Fingerprint-Capturing in criminal workflows.
+
+---
+
+## v2019.11.2
+
+- CHN: Don't send slaps if segmented fingerprints are available.
 
 ---
 

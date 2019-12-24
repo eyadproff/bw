@@ -1,0 +1,31 @@
+.titled-pane > .title {
+    -fx-alignment: center;
+}
+
+.active-record {
+    -fx-control-inner-background: white;
+}
+
+.old-record {
+    -fx-control-inner-background: #fff7ab;
+}
+
+.deleted-record {
+    -fx-control-inner-background: #ff9285;
+}
+
+.old-record-legend {
+    -fx-background-color: #fff7ab;
+    -fx-border-color: black;
+    -fx-border-width: 1px;
+    -fx-min-width: 10px;
+    -fx-min-height: 10px;
+}
+
+.deleted-record-legend {
+    -fx-background-color: #ff9285;
+    -fx-border-color: black;
+    -fx-border-width: 1px;
+    -fx-min-width: 10px;
+    -fx-min-height: 10px;
+}

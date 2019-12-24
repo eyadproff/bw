@@ -89,6 +89,8 @@ public final class AppUtils implements AppLogger
 	private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd MMMM yyyy G");
 	private static final DateTimeFormatter DATE_FORMATTER_SIMPLE = DateTimeFormatter.ofPattern("dd/MM/yyyy G");
 	private static final DateTimeFormatter DATE_FORMATTER_SIMPLE_RTL = DateTimeFormatter.ofPattern("yyyy/MM/dd G");
+	private static final DateTimeFormatter DATE_TIME_FORMATTER_SIMPLE = DateTimeFormatter.ofPattern("hh:mm:ss a - EEEE dd/MM/yyyy G");
+	private static final DateTimeFormatter DATE_TIME_FORMATTER_SIMPLE_RTL = DateTimeFormatter.ofPattern("hh:mm:ss a - EEEE yyyy/MM/dd G");
 	private static final DateTimeFormatter DATE_WTH_WEEK_DAY_FORMATTER =
 																	DateTimeFormatter.ofPattern("EEEE dd MMMM yyyy G");
 	private static final DateTimeFormatter FORMAL_DATE_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
@@ -236,6 +238,14 @@ public final class AppUtils implements AppLogger
 							Locale.getDefault()).format(temporal), Locale.getDefault(), false);
 		else return localizeNumbers(DATE_FORMATTER_SIMPLE.withLocale(
 							Locale.getDefault()).format(temporal), Locale.getDefault(), false);
+	}
+	
+	public static String formatDateTimeSimple(TemporalAccessor temporal, boolean rtl)
+	{
+		if(rtl) return localizeNumbers(DATE_TIME_FORMATTER_SIMPLE_RTL.withLocale(
+				Locale.getDefault()).format(temporal), Locale.getDefault(), false);
+		else return localizeNumbers(DATE_TIME_FORMATTER_SIMPLE.withLocale(
+				Locale.getDefault()).format(temporal), Locale.getDefault(), false);
 	}
 	
 	public static LocalDate parseFormalDate(String sDate)
@@ -394,6 +404,28 @@ public final class AppUtils implements AppLogger
 			return AppUtils.formatDateTime(hijriDateTime) + " - " + AppUtils.formatDate(gregorianDateTime);
 		}
 		else return AppUtils.formatDateTime(gregorianDateTime);
+	}
+	
+	public static String formatHijriGregorianDateTimeSimple(long seconds, boolean rtl)
+	{
+		ChronoZonedDateTime<HijrahDate> hijriDateTime = null;
+		
+		try
+		{
+			hijriDateTime = AppUtils.secondsToHijriDateTime(seconds);
+		}
+		catch(DateTimeException e)
+		{
+			// thrown in case of "Hijrah date out of range"
+		}
+		
+		ZonedDateTime gregorianDateTime = AppUtils.secondsToGregorianDateTime(seconds);
+		
+		if(hijriDateTime != null)
+		{
+			return AppUtils.formatDateTimeSimple(hijriDateTime, rtl) + " - " + AppUtils.formatDateSimple(gregorianDateTime, rtl);
+		}
+		else return AppUtils.formatDateTimeSimple(gregorianDateTime, rtl);
 	}
 	
 	public static String formatHijriDateSimple(long seconds, boolean rtl)
