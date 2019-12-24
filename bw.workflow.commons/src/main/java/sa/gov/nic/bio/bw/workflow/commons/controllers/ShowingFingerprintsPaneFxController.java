@@ -56,10 +56,12 @@ public class ShowingFingerprintsPaneFxController extends WizardStepFxControllerB
 		FileChooser.ExtensionFilter extFilterJPG = new FileChooser.ExtensionFilter(
 				resources.getString("fileChooser.saveNistFile.types"), "*.nst");
 		fileChooser.getExtensionFilters().addAll(extFilterJPG);
-
-		GuiUtils.attachFingerprintImages(fingerprintBase64Images, ivRightThumb, ivRightIndex, ivRightMiddle,
-		                                 ivRightRing, ivRightLittle, ivLeftThumb, ivLeftIndex, ivLeftMiddle,
-		                                 ivLeftRing, ivLeftLittle);
+		
+		GuiUtils.attachFingerprintImages(fingerprintBase64Images, null, ivRightThumb, ivRightIndex,
+		                                 ivRightMiddle, ivRightRing, ivRightLittle, ivLeftThumb, ivLeftIndex,
+		                                 ivLeftMiddle, ivLeftRing, ivLeftLittle, null,
+		                                 null, null, null,
+		                                 null, null);
 		
 		boolean disableInquiry = fingerprintBase64Images.isEmpty();
 		btnInquiry.setDisable(disableInquiry);

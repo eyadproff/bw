@@ -391,10 +391,14 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 		if(facePhotoBase64 != null) GuiUtils.attachFacePhotoBase64(ivPersonPhoto, facePhotoBase64, true,
 		                                                           genderNewValue);
 		
-		if(fingerprintBase64Images != null) GuiUtils.attachFingerprintImages(fingerprintBase64Images, ivRightThumb,
+		if(fingerprintBase64Images != null) GuiUtils.attachFingerprintImages(fingerprintBase64Images,
+		                                                                     null, ivRightThumb,
 		                                                                     ivRightIndex, ivRightMiddle, ivRightRing,
 		                                                                     ivRightLittle, ivLeftThumb, ivLeftIndex,
-		                                                                     ivLeftMiddle, ivLeftRing, ivLeftLittle);
+		                                                                     ivLeftMiddle, ivLeftRing, ivLeftLittle,
+		                                                                     null, null,
+		                                                                     null, null,
+		                                                                     null, null);
 		
 		GuiUtils.setLabelText(lblCivilBiometricsId, civilBiometricsId);
 		GuiUtils.setLabelText(lblCriminalBiometricsId, criminalBiometricsId);

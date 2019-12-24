@@ -78,6 +78,7 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 	@Input(alwaysRequired = true) private Map<Integer, String> fingerprintBase64Images;
 	@Input(alwaysRequired = true) private List<Finger> fingerprints;
 	@Input(alwaysRequired = true) private List<Integer> missingFingerprints;
+	@Input private Map<Integer, String> palmBase64Images;
 	@Input private String fingerprintsSourceSystem;
 	@Output private ConvictedReport convictedReport;
 	
@@ -126,7 +127,8 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 		                                      ConvictedReport.Status.ACTIVE);
 		
 		convictedReportNestedPaneController.setWillBeGeneratedTextOnCriminalBiometricsId();
-		convictedReportNestedPaneController.populateConvictedReportData(convictedReport, fingerprintBase64Images);
+		convictedReportNestedPaneController.populateConvictedReportData(convictedReport, fingerprintBase64Images,
+		                                                                palmBase64Images);
 	}
 	
 	@Override

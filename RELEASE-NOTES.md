@@ -14,6 +14,9 @@ VERSION SCHEMA: vYYYY.MM.#SEQ
 ## v2019.12.1
 
 - NEW: Criminal Transactions Inquiry Workflow.
+- NEW: Iris Registration.
+- NEW: Iris Inquiry.
+- NEW: Add Palm-Fingerprint-Capturing in criminal workflows.
 
 ---
 

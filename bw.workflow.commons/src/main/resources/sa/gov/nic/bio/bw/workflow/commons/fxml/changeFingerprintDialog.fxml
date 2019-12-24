@@ -16,7 +16,7 @@
 <Dialog xmlns="http://javafx.com/javafx"
         xmlns:fx="http://javafx.com/fxml"
         fx:id="dialog"
-        fx:controller="sa.gov.nic.bio.bw.login.controllers.ChangeFingerprintDialogFxController">
+        fx:controller="sa.gov.nic.bio.bw.workflow.commons.controllers.ChangeFingerprintDialogFxController">
 
     <fx:define>
         <ToggleGroup fx:id="toggleGroup"/>

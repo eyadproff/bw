@@ -72,6 +72,7 @@ public class ShowReportDialogFxController extends ContentFxControllerBase
 	private Long reportNumber;
 	private ConvictedReport convictedReport;
 	private Map<Integer, String> fingerprintBase64Images;
+	private Map<Integer, String> palmBase64Images;
 	
 	@Override
 	protected void initialize()
@@ -341,7 +342,8 @@ public class ShowReportDialogFxController extends ContentFxControllerBase
 			GuiUtils.showNode(lblWatermarkDeletedReport, true);
 		}
 		
-		convictedReportNestedPaneController.populateConvictedReportData(convictedReport, fingerprintBase64Images);
+		convictedReportNestedPaneController.populateConvictedReportData(convictedReport, fingerprintBase64Images,
+		                                                                palmBase64Images);
 		
 		GuiUtils.showNode(paneLoadingInProgress, false);
 		GuiUtils.showNode(paneReport, true);

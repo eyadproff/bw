@@ -18,12 +18,15 @@ public class SubmitCriminalFingerprintsWorkflowTask extends WorkflowTask
 {
 	@Input(alwaysRequired = true) private Long criminalBiometricsId;
 	@Input(alwaysRequired = true) private List<Finger> fingerprints;
+	@Input private List<Finger> palms;
 	@Input(alwaysRequired = true) private List<Integer> missingFingerprints;
 	@Output private Long tcn;
 	
 	@Override
 	public void execute() throws Signal
 	{
+		if(palms != null && !palms.isEmpty()) fingerprints.addAll(palms);
+		
 		CriminalFingerprintsAPI api = Context.getWebserviceManager().getApi(CriminalFingerprintsAPI.class);
 		Call<CriminalFingerprintsRegistrationResponse> apiCall = api.registerCriminalFingerprints(
 																				  workflowId,

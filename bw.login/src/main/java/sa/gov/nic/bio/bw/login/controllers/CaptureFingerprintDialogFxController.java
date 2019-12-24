@@ -128,7 +128,7 @@ public class CaptureFingerprintDialogFxController extends FxControllerBase
 						.getFingerprintService().startPreviewAndAutoCapture(fingerprintDeviceName,
 						                                                    fingerPosition.getPosition(),
 						                                                    1, null,
-						                                                    true, true,
+						                                                    true, true, true,
 						                                                    responseProcessor);
 				return future.get();
 			}

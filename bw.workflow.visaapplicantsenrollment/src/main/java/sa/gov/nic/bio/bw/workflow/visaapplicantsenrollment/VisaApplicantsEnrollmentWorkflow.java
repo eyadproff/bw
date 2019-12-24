@@ -9,7 +9,7 @@ import sa.gov.nic.bio.bw.core.workflow.Signal;
 import sa.gov.nic.bio.bw.core.workflow.WithLookups;
 import sa.gov.nic.bio.bw.core.workflow.WizardWorkflowBase;
 import sa.gov.nic.bio.bw.workflow.commons.controllers.FaceCapturingFxController;
-import sa.gov.nic.bio.bw.workflow.commons.controllers.FingerprintCapturingFxController;
+import sa.gov.nic.bio.bw.workflow.commons.controllers.SlapFingerprintsCapturingFxController;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.CountriesLookup;
 import sa.gov.nic.bio.bw.workflow.visaapplicantsenrollment.controllers.ApplicantInfoFxController;
 import sa.gov.nic.bio.bw.workflow.visaapplicantsenrollment.controllers.ReviewAndSubmitPaneFxController;
@@ -46,13 +46,13 @@ public class VisaApplicantsEnrollmentWorkflow extends WizardWorkflowBase
 				int acceptBadQualityFingerprintMinRetries = Integer.parseInt(Context.getConfigManager().getProperty(
 										"visaApplicantsEnrollment.fingerprint.acceptBadQualityFingerprintMinRetries"));
 				
-				setData(FingerprintCapturingFxController.class, "hidePreviousButton", Boolean.FALSE);
-				setData(FingerprintCapturingFxController.class, "acceptBadQualityFingerprint",
+				setData(SlapFingerprintsCapturingFxController.class, "hidePreviousButton", Boolean.FALSE);
+				setData(SlapFingerprintsCapturingFxController.class, "acceptBadQualityFingerprint",
 				        acceptBadQualityFingerprint);
-				setData(FingerprintCapturingFxController.class, "acceptBadQualityFingerprintMinRetires",
+				setData(SlapFingerprintsCapturingFxController.class, "acceptBadQualityFingerprintMinRetires",
 				        acceptBadQualityFingerprintMinRetries);
 				
-				renderUiAndWaitForUserInput(FingerprintCapturingFxController.class);
+				renderUiAndWaitForUserInput(SlapFingerprintsCapturingFxController.class);
 				break;
 			}
 			case 2:
@@ -78,7 +78,7 @@ public class VisaApplicantsEnrollmentWorkflow extends WizardWorkflowBase
 				         "issuanceCountry", "passportType", "dialingCode", "mobileNumber");
 				passData(FaceCapturingFxController.class, ReviewAndSubmitPaneFxController.class,
 				         "facePhoto", "facePhotoBase64");
-				passData(FingerprintCapturingFxController.class, ReviewAndSubmitPaneFxController.class,
+				passData(SlapFingerprintsCapturingFxController.class, ReviewAndSubmitPaneFxController.class,
 				         "fingerprintBase64Images", "slapFingerprints", "missingFingerprints");
 				
 				renderUiAndWaitForUserInput(ReviewAndSubmitPaneFxController.class);
@@ -99,7 +99,7 @@ public class VisaApplicantsEnrollmentWorkflow extends WizardWorkflowBase
 				         "visaApplicantInfo");
 				passData(VisaApplicantsWorkflowTask.class, ShowReceiptFxController.class,
 				         "visaApplicantEnrollmentResponse");
-				passData(FingerprintCapturingFxController.class, ShowReceiptFxController.class,
+				passData(SlapFingerprintsCapturingFxController.class, ShowReceiptFxController.class,
 				         "fingerprintBase64Images");
 				
 				renderUiAndWaitForUserInput(ShowReceiptFxController.class);

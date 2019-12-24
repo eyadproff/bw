@@ -177,11 +177,11 @@ public class FingerprintsInquiryWorkflow extends WizardWorkflowBase
 				{
 					incrementNSteps(1); // to skip step #2 on going next
 					
-					setData(FingerprintCapturingFxController.class, "acceptBadQualityFingerprint",
+					setData(SlapFingerprintsCapturingFxController.class, "acceptBadQualityFingerprint",
 					        Boolean.TRUE);
-					setData(FingerprintCapturingFxController.class, "acceptBadQualityFingerprintMinRetires",
+					setData(SlapFingerprintsCapturingFxController.class, "acceptBadQualityFingerprintMinRetires",
 					        0);
-					renderUiAndWaitForUserInput(FingerprintCapturingFxController.class);
+					renderUiAndWaitForUserInput(SlapFingerprintsCapturingFxController.class);
 				}
 				
 				break;
@@ -268,7 +268,7 @@ public class FingerprintsInquiryWorkflow extends WizardWorkflowBase
 					passData(FaceCapturingFxController.class,
 							ShowingFingerprintsPaneFxController.class,
 							"facePhotoBase64");
-					passData(FingerprintCapturingFxController.class,
+					passData(SlapFingerprintsCapturingFxController.class,
 					         ShowingFingerprintsPaneFxController.class,
 					         "fingerprintBase64Images");
 				}
@@ -338,7 +338,7 @@ public class FingerprintsInquiryWorkflow extends WizardWorkflowBase
 					}
 					else if(fingerprintsSource == Source.CAPTURING_FINGERPRINTS_VIA_FINGERPRINT_SCANNER)
 					{
-						passData(FingerprintCapturingFxController.class, "slapFingerprints",
+						passData(SlapFingerprintsCapturingFxController.class, "slapFingerprints",
 						         FingerprintInquiryWorkflowTask.class, "fingerprints");
 						passData(ShowingFingerprintsPaneFxController.class, FingerprintInquiryWorkflowTask.class,
 						         "missingFingerprints");
@@ -491,8 +491,8 @@ public class FingerprintsInquiryWorkflow extends WizardWorkflowBase
 				}
 				else if(fingerprintsSource == Source.CAPTURING_FINGERPRINTS_VIA_FINGERPRINT_SCANNER)
 				{
-					passData(FingerprintCapturingFxController.class, InquiryByFingerprintsResultPaneFxController.class,
-							"fingerprintBase64Images");
+					passData(SlapFingerprintsCapturingFxController.class, InquiryByFingerprintsResultPaneFxController.class,
+					         "fingerprintBase64Images");
 				}
 
 				renderUiAndWaitForUserInput(InquiryByFingerprintsResultPaneFxController.class);

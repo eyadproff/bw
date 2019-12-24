@@ -315,144 +315,234 @@
         </VBox>
     </TitledPane>
     <TitledPane text="%label.fingerprints" collapsible="false" focusTraversable="false">
-        <VBox alignment="CENTER" spacing="5.0" minHeight="280.0">
+        <VBox alignment="CENTER" spacing="5.0" minHeight="650.0">
             <TitledPane text="%label.rightHand" collapsible="false" wrapText="true" maxHeight="Infinity" HBox.hgrow="ALWAYS" focusTraversable="false">
-                <GridPane vgap="5" maxHeight="Infinity" nodeOrientation="LEFT_TO_RIGHT">
-                    <padding>
-                        <Insets topRightBottomLeft="5.0"/>
-                    </padding>
-                    <columnConstraints>
-                        <ColumnConstraints percentWidth="20"/>
-                        <ColumnConstraints percentWidth="20"/>
-                        <ColumnConstraints percentWidth="20"/>
-                        <ColumnConstraints percentWidth="20"/>
-                        <ColumnConstraints percentWidth="20"/>
-                    </columnConstraints>
-                    <TitledPane text="%label.fingers.thumb" collapsible="false" wrapText="true" maxHeight="Infinity" graphicTextGap="0.0" HBox.hgrow="ALWAYS" GridPane.rowIndex="0" GridPane.columnIndex="0" GridPane.vgrow="ALWAYS" focusTraversable="false">
-                        <StackPane>
-                            <ImageViewPane minHeight="48.0">
-                                <imageView>
-                                    <ImageView fx:id="ivRightThumb" preserveRatio="true">
-                                        <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/placeholder_skip.png"/>
-                                    </ImageView>
-                                </imageView>
-                            </ImageViewPane>
-                        </StackPane>
-                    </TitledPane>
-                    <TitledPane text="%label.fingers.index" collapsible="false" wrapText="true" maxHeight="Infinity" graphicTextGap="0.0" HBox.hgrow="ALWAYS" GridPane.rowIndex="0" GridPane.columnIndex="1" GridPane.vgrow="ALWAYS" focusTraversable="false">
-                        <StackPane>
-                            <ImageViewPane minHeight="48.0">
-                                <imageView>
-                                    <ImageView fx:id="ivRightIndex" preserveRatio="true">
-                                        <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/placeholder_skip.png"/>
-                                    </ImageView>
-                                </imageView>
-                            </ImageViewPane>
-                        </StackPane>
-                    </TitledPane>
-                    <TitledPane text="%label.fingers.middle" collapsible="false" wrapText="true" maxHeight="Infinity" graphicTextGap="0.0" HBox.hgrow="ALWAYS" GridPane.rowIndex="0" GridPane.columnIndex="2" GridPane.vgrow="ALWAYS" focusTraversable="false">
-                        <StackPane>
-                            <ImageViewPane minHeight="48.0">
-                                <imageView>
-                                    <ImageView fx:id="ivRightMiddle" preserveRatio="true">
-                                        <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/placeholder_skip.png"/>
-                                    </ImageView>
-                                </imageView>
-                            </ImageViewPane>
-                        </StackPane>
-                    </TitledPane>
-                    <TitledPane text="%label.fingers.ring" collapsible="false" wrapText="true" maxHeight="Infinity" graphicTextGap="0.0" HBox.hgrow="ALWAYS" GridPane.rowIndex="0" GridPane.columnIndex="3" GridPane.vgrow="ALWAYS" focusTraversable="false">
-                        <StackPane>
-                            <ImageViewPane minHeight="48.0">
-                                <imageView>
-                                    <ImageView fx:id="ivRightRing" preserveRatio="true">
-                                        <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/placeholder_skip.png"/>
-                                    </ImageView>
-                                </imageView>
-                            </ImageViewPane>
-                        </StackPane>
-                    </TitledPane>
-                    <TitledPane text="%label.fingers.little" collapsible="false" wrapText="true" maxHeight="Infinity" graphicTextGap="0.0" HBox.hgrow="ALWAYS" GridPane.rowIndex="0" GridPane.columnIndex="4" GridPane.vgrow="ALWAYS" focusTraversable="false">
-                        <StackPane>
-                            <ImageViewPane minHeight="48.0">
-                                <imageView>
-                                    <ImageView fx:id="ivRightLittle" preserveRatio="true">
-                                        <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/placeholder_skip.png"/>
-                                    </ImageView>
-                                </imageView>
-                            </ImageViewPane>
-                        </StackPane>
-                    </TitledPane>
-                </GridPane>
+                <VBox>
+                    <GridPane vgap="5" maxHeight="Infinity" nodeOrientation="LEFT_TO_RIGHT">
+                        <padding>
+                            <Insets topRightBottomLeft="5.0"/>
+                        </padding>
+                        <columnConstraints>
+                            <ColumnConstraints percentWidth="20"/>
+                            <ColumnConstraints percentWidth="20"/>
+                            <ColumnConstraints percentWidth="20"/>
+                            <ColumnConstraints percentWidth="20"/>
+                            <ColumnConstraints percentWidth="20"/>
+                        </columnConstraints>
+                        <TitledPane text="%label.fingers.thumb" collapsible="false" wrapText="true" maxHeight="Infinity" graphicTextGap="0.0" HBox.hgrow="ALWAYS" GridPane.rowIndex="0" GridPane.columnIndex="0" GridPane.vgrow="ALWAYS" focusTraversable="false">
+                            <StackPane>
+                                <ImageViewPane minHeight="48.0">
+                                    <imageView>
+                                        <ImageView fx:id="ivRightThumb" preserveRatio="true">
+                                            <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/placeholder_skip.png"/>
+                                        </ImageView>
+                                    </imageView>
+                                </ImageViewPane>
+                            </StackPane>
+                        </TitledPane>
+                        <TitledPane text="%label.fingers.index" collapsible="false" wrapText="true" maxHeight="Infinity" graphicTextGap="0.0" HBox.hgrow="ALWAYS" GridPane.rowIndex="0" GridPane.columnIndex="1" GridPane.vgrow="ALWAYS" focusTraversable="false">
+                            <StackPane>
+                                <ImageViewPane minHeight="48.0">
+                                    <imageView>
+                                        <ImageView fx:id="ivRightIndex" preserveRatio="true">
+                                            <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/placeholder_skip.png"/>
+                                        </ImageView>
+                                    </imageView>
+                                </ImageViewPane>
+                            </StackPane>
+                        </TitledPane>
+                        <TitledPane text="%label.fingers.middle" collapsible="false" wrapText="true" maxHeight="Infinity" graphicTextGap="0.0" HBox.hgrow="ALWAYS" GridPane.rowIndex="0" GridPane.columnIndex="2" GridPane.vgrow="ALWAYS" focusTraversable="false">
+                            <StackPane>
+                                <ImageViewPane minHeight="48.0">
+                                    <imageView>
+                                        <ImageView fx:id="ivRightMiddle" preserveRatio="true">
+                                            <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/placeholder_skip.png"/>
+                                        </ImageView>
+                                    </imageView>
+                                </ImageViewPane>
+                            </StackPane>
+                        </TitledPane>
+                        <TitledPane text="%label.fingers.ring" collapsible="false" wrapText="true" maxHeight="Infinity" graphicTextGap="0.0" HBox.hgrow="ALWAYS" GridPane.rowIndex="0" GridPane.columnIndex="3" GridPane.vgrow="ALWAYS" focusTraversable="false">
+                            <StackPane>
+                                <ImageViewPane minHeight="48.0">
+                                    <imageView>
+                                        <ImageView fx:id="ivRightRing" preserveRatio="true">
+                                            <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/placeholder_skip.png"/>
+                                        </ImageView>
+                                    </imageView>
+                                </ImageViewPane>
+                            </StackPane>
+                        </TitledPane>
+                        <TitledPane text="%label.fingers.little" collapsible="false" wrapText="true" maxHeight="Infinity" graphicTextGap="0.0" HBox.hgrow="ALWAYS" GridPane.rowIndex="0" GridPane.columnIndex="4" GridPane.vgrow="ALWAYS" focusTraversable="false">
+                            <StackPane>
+                                <ImageViewPane minHeight="48.0">
+                                    <imageView>
+                                        <ImageView fx:id="ivRightLittle" preserveRatio="true">
+                                            <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/placeholder_skip.png"/>
+                                        </ImageView>
+                                    </imageView>
+                                </ImageViewPane>
+                            </StackPane>
+                        </TitledPane>
+                    </GridPane>
+                    <GridPane vgap="5" maxHeight="Infinity" nodeOrientation="LEFT_TO_RIGHT">
+                        <padding>
+                            <Insets topRightBottomLeft="5.0"/>
+                        </padding>
+                        <columnConstraints>
+                            <ColumnConstraints percentWidth="33"/>
+                            <ColumnConstraints percentWidth="34"/>
+                            <ColumnConstraints percentWidth="33"/>
+                        </columnConstraints>
+                        <TitledPane text="%label.upperPalm" collapsible="false" wrapText="true" maxHeight="Infinity" graphicTextGap="0.0" HBox.hgrow="ALWAYS" GridPane.rowIndex="0" GridPane.columnIndex="0" GridPane.vgrow="ALWAYS" focusTraversable="false">
+                            <StackPane>
+                                <ImageViewPane minHeight="98.0">
+                                    <imageView>
+                                        <ImageView fx:id="ivRightUpperPalm" preserveRatio="true">
+                                            <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/placeholder_skip.png"/>
+                                        </ImageView>
+                                    </imageView>
+                                </ImageViewPane>
+                            </StackPane>
+                        </TitledPane>
+                        <TitledPane text="%label.lowerPalm" collapsible="false" wrapText="true" maxHeight="Infinity" graphicTextGap="0.0" HBox.hgrow="ALWAYS" GridPane.rowIndex="0" GridPane.columnIndex="1" GridPane.vgrow="ALWAYS" focusTraversable="false">
+                            <StackPane>
+                                <ImageViewPane minHeight="98.0">
+                                    <imageView>
+                                        <ImageView fx:id="ivRightLowerPalm" preserveRatio="true">
+                                            <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/placeholder_skip.png"/>
+                                        </ImageView>
+                                    </imageView>
+                                </ImageViewPane>
+                            </StackPane>
+                        </TitledPane>
+                        <TitledPane text="%label.writersPalm" collapsible="false" wrapText="true" maxHeight="Infinity" graphicTextGap="0.0" HBox.hgrow="ALWAYS" GridPane.rowIndex="0" GridPane.columnIndex="2" GridPane.vgrow="ALWAYS" focusTraversable="false">
+                            <StackPane>
+                                <ImageViewPane minHeight="98.0">
+                                    <imageView>
+                                        <ImageView fx:id="ivRightWritersPalm" preserveRatio="true">
+                                            <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/placeholder_skip.png"/>
+                                        </ImageView>
+                                    </imageView>
+                                </ImageViewPane>
+                            </StackPane>
+                        </TitledPane>
+                    </GridPane>
+                </VBox>
             </TitledPane>
             <TitledPane text="%label.leftHand" collapsible="false" wrapText="true" maxHeight="Infinity" HBox.hgrow="ALWAYS" focusTraversable="false">
-                <GridPane vgap="5" maxHeight="Infinity" nodeOrientation="LEFT_TO_RIGHT">
-                    <padding>
-                        <Insets topRightBottomLeft="5.0"/>
-                    </padding>
-                    <columnConstraints>
-                        <ColumnConstraints percentWidth="20"/>
-                        <ColumnConstraints percentWidth="20"/>
-                        <ColumnConstraints percentWidth="20"/>
-                        <ColumnConstraints percentWidth="20"/>
-                        <ColumnConstraints percentWidth="20"/>
-                    </columnConstraints>
-                    <TitledPane text="%label.fingers.thumb" collapsible="false" wrapText="true" maxHeight="Infinity" graphicTextGap="0.0" HBox.hgrow="ALWAYS" GridPane.rowIndex="0" GridPane.columnIndex="0" GridPane.vgrow="ALWAYS" focusTraversable="false">
-                        <StackPane>
-                            <ImageViewPane minHeight="48.0">
-                                <imageView>
-                                    <ImageView fx:id="ivLeftThumb" preserveRatio="true">
-                                        <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/placeholder_skip.png"/>
-                                    </ImageView>
-                                </imageView>
-                            </ImageViewPane>
-                        </StackPane>
-                    </TitledPane>
-                    <TitledPane text="%label.fingers.index" collapsible="false" wrapText="true" maxHeight="Infinity" graphicTextGap="0.0" HBox.hgrow="ALWAYS" GridPane.rowIndex="0" GridPane.columnIndex="1" GridPane.vgrow="ALWAYS" focusTraversable="false">
-                        <StackPane>
-                            <ImageViewPane minHeight="48.0">
-                                <imageView>
-                                    <ImageView fx:id="ivLeftIndex" preserveRatio="true">
-                                        <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/placeholder_skip.png"/>
-                                    </ImageView>
-                                </imageView>
-                            </ImageViewPane>
-                        </StackPane>
-                    </TitledPane>
-                    <TitledPane text="%label.fingers.middle" collapsible="false" wrapText="true" maxHeight="Infinity" graphicTextGap="0.0" HBox.hgrow="ALWAYS" GridPane.rowIndex="0" GridPane.columnIndex="2" GridPane.vgrow="ALWAYS" focusTraversable="false">
-                        <StackPane>
-                            <ImageViewPane minHeight="48.0">
-                                <imageView>
-                                    <ImageView fx:id="ivLeftMiddle" preserveRatio="true">
-                                        <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/placeholder_skip.png"/>
-                                    </ImageView>
-                                </imageView>
-                            </ImageViewPane>
-                        </StackPane>
-                    </TitledPane>
-                    <TitledPane text="%label.fingers.ring" collapsible="false" wrapText="true" maxHeight="Infinity" graphicTextGap="0.0" HBox.hgrow="ALWAYS" GridPane.rowIndex="0" GridPane.columnIndex="3" GridPane.vgrow="ALWAYS" focusTraversable="false">
-                        <StackPane>
-                            <ImageViewPane minHeight="48.0">
-                                <imageView>
-                                    <ImageView fx:id="ivLeftRing" preserveRatio="true">
-                                        <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/placeholder_skip.png"/>
-                                    </ImageView>
-                                </imageView>
-                            </ImageViewPane>
-                        </StackPane>
-                    </TitledPane>
-                    <TitledPane text="%label.fingers.little" collapsible="false" wrapText="true" maxHeight="Infinity" graphicTextGap="0.0" HBox.hgrow="ALWAYS" GridPane.rowIndex="0" GridPane.columnIndex="4" GridPane.vgrow="ALWAYS" focusTraversable="false">
-                        <StackPane>
-                            <ImageViewPane minHeight="48.0">
-                                <imageView>
-                                    <ImageView fx:id="ivLeftLittle" preserveRatio="true">
-                                        <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/placeholder_skip.png"/>
-                                    </ImageView>
-                                </imageView>
-                            </ImageViewPane>
-                        </StackPane>
-                    </TitledPane>
-                </GridPane>
+                <VBox>
+                    <GridPane vgap="5" maxHeight="Infinity" nodeOrientation="LEFT_TO_RIGHT">
+                        <padding>
+                            <Insets topRightBottomLeft="5.0"/>
+                        </padding>
+                        <columnConstraints>
+                            <ColumnConstraints percentWidth="20"/>
+                            <ColumnConstraints percentWidth="20"/>
+                            <ColumnConstraints percentWidth="20"/>
+                            <ColumnConstraints percentWidth="20"/>
+                            <ColumnConstraints percentWidth="20"/>
+                        </columnConstraints>
+                        <TitledPane text="%label.fingers.thumb" collapsible="false" wrapText="true" maxHeight="Infinity" graphicTextGap="0.0" HBox.hgrow="ALWAYS" GridPane.rowIndex="0" GridPane.columnIndex="0" GridPane.vgrow="ALWAYS" focusTraversable="false">
+                            <StackPane>
+                                <ImageViewPane minHeight="48.0">
+                                    <imageView>
+                                        <ImageView fx:id="ivLeftThumb" preserveRatio="true">
+                                            <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/placeholder_skip.png"/>
+                                        </ImageView>
+                                    </imageView>
+                                </ImageViewPane>
+                            </StackPane>
+                        </TitledPane>
+                        <TitledPane text="%label.fingers.index" collapsible="false" wrapText="true" maxHeight="Infinity" graphicTextGap="0.0" HBox.hgrow="ALWAYS" GridPane.rowIndex="0" GridPane.columnIndex="1" GridPane.vgrow="ALWAYS" focusTraversable="false">
+                            <StackPane>
+                                <ImageViewPane minHeight="48.0">
+                                    <imageView>
+                                        <ImageView fx:id="ivLeftIndex" preserveRatio="true">
+                                            <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/placeholder_skip.png"/>
+                                        </ImageView>
+                                    </imageView>
+                                </ImageViewPane>
+                            </StackPane>
+                        </TitledPane>
+                        <TitledPane text="%label.fingers.middle" collapsible="false" wrapText="true" maxHeight="Infinity" graphicTextGap="0.0" HBox.hgrow="ALWAYS" GridPane.rowIndex="0" GridPane.columnIndex="2" GridPane.vgrow="ALWAYS" focusTraversable="false">
+                            <StackPane>
+                                <ImageViewPane minHeight="48.0">
+                                    <imageView>
+                                        <ImageView fx:id="ivLeftMiddle" preserveRatio="true">
+                                            <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/placeholder_skip.png"/>
+                                        </ImageView>
+                                    </imageView>
+                                </ImageViewPane>
+                            </StackPane>
+                        </TitledPane>
+                        <TitledPane text="%label.fingers.ring" collapsible="false" wrapText="true" maxHeight="Infinity" graphicTextGap="0.0" HBox.hgrow="ALWAYS" GridPane.rowIndex="0" GridPane.columnIndex="3" GridPane.vgrow="ALWAYS" focusTraversable="false">
+                            <StackPane>
+                                <ImageViewPane minHeight="48.0">
+                                    <imageView>
+                                        <ImageView fx:id="ivLeftRing" preserveRatio="true">
+                                            <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/placeholder_skip.png"/>
+                                        </ImageView>
+                                    </imageView>
+                                </ImageViewPane>
+                            </StackPane>
+                        </TitledPane>
+                        <TitledPane text="%label.fingers.little" collapsible="false" wrapText="true" maxHeight="Infinity" graphicTextGap="0.0" HBox.hgrow="ALWAYS" GridPane.rowIndex="0" GridPane.columnIndex="4" GridPane.vgrow="ALWAYS" focusTraversable="false">
+                            <StackPane>
+                                <ImageViewPane minHeight="48.0">
+                                    <imageView>
+                                        <ImageView fx:id="ivLeftLittle" preserveRatio="true">
+                                            <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/placeholder_skip.png"/>
+                                        </ImageView>
+                                    </imageView>
+                                </ImageViewPane>
+                            </StackPane>
+                        </TitledPane>
+                    </GridPane>
+                    <GridPane vgap="5" maxHeight="Infinity" nodeOrientation="LEFT_TO_RIGHT">
+                        <padding>
+                            <Insets topRightBottomLeft="5.0"/>
+                        </padding>
+                        <columnConstraints>
+                            <ColumnConstraints percentWidth="33"/>
+                            <ColumnConstraints percentWidth="34"/>
+                            <ColumnConstraints percentWidth="33"/>
+                        </columnConstraints>
+                        <TitledPane text="%label.upperPalm" collapsible="false" wrapText="true" maxHeight="Infinity" graphicTextGap="0.0" HBox.hgrow="ALWAYS" GridPane.rowIndex="0" GridPane.columnIndex="0" GridPane.vgrow="ALWAYS" focusTraversable="false">
+                            <StackPane>
+                                <ImageViewPane minHeight="48.0">
+                                    <imageView>
+                                        <ImageView fx:id="ivLeftUpperPalm" preserveRatio="true">
+                                            <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/placeholder_skip.png"/>
+                                        </ImageView>
+                                    </imageView>
+                                </ImageViewPane>
+                            </StackPane>
+                        </TitledPane>
+                        <TitledPane text="%label.lowerPalm" collapsible="false" wrapText="true" maxHeight="Infinity" graphicTextGap="0.0" HBox.hgrow="ALWAYS" GridPane.rowIndex="0" GridPane.columnIndex="1" GridPane.vgrow="ALWAYS" focusTraversable="false">
+                            <StackPane>
+                                <ImageViewPane minHeight="48.0">
+                                    <imageView>
+                                        <ImageView fx:id="ivLeftLowerPalm" preserveRatio="true">
+                                            <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/placeholder_skip.png"/>
+                                        </ImageView>
+                                    </imageView>
+                                </ImageViewPane>
+                            </StackPane>
+                        </TitledPane>
+                        <TitledPane text="%label.writersPalm" collapsible="false" wrapText="true" maxHeight="Infinity" graphicTextGap="0.0" HBox.hgrow="ALWAYS" GridPane.rowIndex="0" GridPane.columnIndex="2" GridPane.vgrow="ALWAYS" focusTraversable="false">
+                            <StackPane>
+                                <ImageViewPane minHeight="48.0">
+                                    <imageView>
+                                        <ImageView fx:id="ivLeftWritersPalm" preserveRatio="true">
+                                            <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/placeholder_skip.png"/>
+                                        </ImageView>
+                                    </imageView>
+                                </ImageViewPane>
+                            </StackPane>
+                        </TitledPane>
+                    </GridPane>
+                </VBox>
             </TitledPane>
         </VBox>
     </TitledPane>
