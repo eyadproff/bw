@@ -53,8 +53,8 @@
         - services-gateway-biooperation/api/criminal/report/v1
     
     menu.query.criminalTransactions:
-            - services-gateway-lookups/api/criminal/transaction/types/v1
-            - services-gateway-demographic/api/criminal/activity/info/custom/v1
+        - services-gateway-lookups/api/criminal/transaction/types/v1
+        - services-gateway-demographic/api/criminal/activity/info/custom/v1
     
     menu.cancel.deleteCompleteCriminalRecord:
         - services-gateway-lookups/api/application/person-type/v1
@@ -91,6 +91,15 @@
     menu.query.faceVerification:
         - services-gateway-lookups/api/application/nationality/all/v1
         - services-gateway-biooperation/api/face/verify/v1
+        
+    menu.query.irisInquiry:
+        - services-gateway-lookups/api/application/person-type/v1
+        - services-gateway-lookups/api/application/id-types/v1
+        - services-gateway-lookups/api/application/nationality/all/v1
+        - services-gateway-biooperation/api/iris/identification/v1
+        - services-gateway-biooperation/api/iris/identification/status/v1
+        - services-gateway-demographic/api/person/info/v1
+        - services-gateway-demographic/api/person/deportee/info/v1
     
     menu.query.printDeadPersonRecord:
         - services-gateway-lookups/api/application/person-type/v1
@@ -174,6 +183,16 @@
         - services-gateway-biooperation/api/criminal/criminal-id/generation/v1
         - services-gateway-biooperation/api/criminal/fingers/registration/v1
         - services-gateway-biooperation/api/criminal/fingers/registration/status/v1
+        
+    menu.register.registerIris:
+        - services-gateway-lookups/api/application/person-type/v1
+        - services-gateway-lookups/api/application/id-types/v1
+        - services-gateway-lookups/api/application/nationality/all/v1
+        - services-gateway-demographic/api/person/info/v1
+        - services-gateway-biooperation/api/fingerprint/verify/basic/v1
+        - services-gateway-biooperation/api/face/verify/basic/v1
+        - services-gateway-biooperation/api/iris/registration/v1
+        - services-gateway-biooperation/api/iris/registration/status/v1
     
     menu.securityClearance.faceVerification:
         - services-gateway-lookups/api/application/nationality/all/v1

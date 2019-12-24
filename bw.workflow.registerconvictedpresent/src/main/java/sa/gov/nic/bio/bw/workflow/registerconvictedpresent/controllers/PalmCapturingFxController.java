@@ -160,7 +160,7 @@ public class PalmCapturingFxController extends WizardStepFxControllerBase
 												Context.getCoreFxController().getDeviceManagerGadgetPaneController();
 		deviceManagerGadgetPaneController.setNextFingerprintDeviceType(FingerprintDeviceType.PALM);
 		
-		btnNext.disableProperty().bind(ivCompleted.visibleProperty().not());
+		//btnNext.disableProperty().bind(ivCompleted.visibleProperty().not());
 		
 		paneControlsInnerContainer.minHeightProperty().bind(Bindings.createDoubleBinding(() ->
 		{

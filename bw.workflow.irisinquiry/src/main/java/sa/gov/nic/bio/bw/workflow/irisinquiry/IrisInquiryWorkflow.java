@@ -5,10 +5,14 @@ import sa.gov.nic.bio.bw.core.wizard.Step;
 import sa.gov.nic.bio.bw.core.wizard.Wizard;
 import sa.gov.nic.bio.bw.core.workflow.AssociatedMenu;
 import sa.gov.nic.bio.bw.core.workflow.Signal;
+import sa.gov.nic.bio.bw.core.workflow.WithLookups;
 import sa.gov.nic.bio.bw.core.workflow.WizardWorkflowBase;
 import sa.gov.nic.bio.bw.workflow.commons.beans.DeporteeInfo;
 import sa.gov.nic.bio.bw.workflow.commons.beans.PersonInfo;
 import sa.gov.nic.bio.bw.workflow.commons.controllers.IrisCapturingFxController;
+import sa.gov.nic.bio.bw.workflow.commons.lookups.CountriesLookup;
+import sa.gov.nic.bio.bw.workflow.commons.lookups.DocumentTypesLookup;
+import sa.gov.nic.bio.bw.workflow.commons.lookups.PersonTypesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.DeporteeInfoToPersonInfoConverter;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.FingerprintInquiryStatusCheckerWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.GetDeporteeInfoByIdWorkflowTask;
@@ -26,6 +30,7 @@ import java.util.Map;
 @AssociatedMenu(workflowId = 1022, menuId = "menu.query.irisInquiry",
 				menuTitle = "menu.title", menuOrder = 7, devices = {Device.FINGERPRINT_SCANNER,
 				                                                    Device.IRIS_SCANNER, Device.CAMERA})
+@WithLookups({PersonTypesLookup.class, DocumentTypesLookup.class, CountriesLookup.class})
 @Wizard({@Step(iconId = "eye", title = "wizard.irisCapturing"),
 		@Step(iconId = "search", title = "wizard.inquiryByIris"),
 		@Step(iconId = "database", title = "wizard.inquiryResult")})
