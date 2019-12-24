@@ -145,8 +145,6 @@ public class CriminalTransactionsPaneFxController extends ContentFxControllerBas
 		var successLabel = resources.getString("label.success");
 		var failureLabel = resources.getString("label.failure");
 		
-		GuiUtils.addAutoCompletionSupportToComboBox(cboTransactionType, criminalTransactionTypes);
-		GuiUtils.makeComboBoxOpenableByPressingEnter(cboTransactionType);
 		ObservableList<ComboBoxItem<CriminalTransactionType>> CriminalTransactionTypeItems = FXCollections.observableArrayList();
 		criminalTransactionTypes.forEach(idType -> CriminalTransactionTypeItems.add(new ComboBoxItem<>(idType, arabic ?
 		                                                                                                       idType.getDescriptionAr() : idType.getDescriptionEn())));

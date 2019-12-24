@@ -377,14 +377,18 @@ public class GuiUtils implements AppLogger
 			{
 			    if(comboBox.getSelectionModel().getSelectedItem() == null)
 			    {
-			        comboBoxItems.forEach(item -> item.setHidden(!item.getText().toLowerCase()
-			                .contains(newValue.toLowerCase())));
+				    comboBoxItems.forEach(item ->
+				    {
+					    if(item == null || item.getText() == null || newValue == null) return;
+					    
+					    item.setHidden(!item.getText().toLowerCase().contains(newValue.toLowerCase()));
+				    });
 			    }
 			    else
 			    {
 			        boolean validText = false;
 			
-			        for(ComboBoxItem hideableItem : comboBoxItems)
+			        for(var hideableItem : comboBoxItems)
 			        {
 			            if(hideableItem.getText().equals(newValue))
 			            {
