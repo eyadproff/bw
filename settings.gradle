@@ -23,4 +23,4 @@ include 'bw.workflow.editconvictedreport'
 include 'bw.workflow.registercriminalfingerprintspresent'
 include 'bw.workflow.registercriminalfingerprintsnotpresent'
 include 'bw.workflow.deletecriminalfingerprints'
-
+include 'bw.workflow.criminaltransactions'

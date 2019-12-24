@@ -52,6 +52,10 @@
         - services-gateway-demographic/api/criminal/info/basic/custom/v1
         - services-gateway-biooperation/api/criminal/report/v1
     
+    menu.query.criminalTransactions:
+            - services-gateway-lookups/api/criminal/transaction/types/v1
+            - services-gateway-demographic/api/criminal/activity/info/custom/v1
+    
     menu.cancel.deleteCompleteCriminalRecord:
         - services-gateway-lookups/api/application/person-type/v1
         - services-gateway-lookups/api/application/id-types/v1
