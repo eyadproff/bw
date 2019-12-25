@@ -7,10 +7,12 @@ import sa.gov.nic.bio.bw.core.wizard.Wizard;
 import sa.gov.nic.bio.bw.core.workflow.AssociatedMenu;
 import sa.gov.nic.bio.bw.core.workflow.Signal;
 import sa.gov.nic.bio.bw.core.workflow.WizardWorkflowBase;
-import sa.gov.nic.bio.bw.workflow.commons.controllers.SlapFingerprintsCapturingFxController;
 import sa.gov.nic.bio.bw.workflow.commons.controllers.InquiryByFingerprintsPaneFxController;
+import sa.gov.nic.bio.bw.workflow.commons.controllers.SlapFingerprintsCapturingFxController;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.FingerprintInquiryStatusCheckerWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.FingerprintInquiryWorkflowTask;
+import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.beans.CriminalFingerprintSource;
+import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.beans.CriminalWorkflowSource;
 import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.controllers.PalmCapturingFxController;
 import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.tasks.CriminalFingerprintsStatusCheckerWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.tasks.GenerateNewCriminalBiometricsIdWorkflowTask;
@@ -107,6 +109,8 @@ public class RegisterCriminalFingerprintsPresentWorkflow extends WizardWorkflowB
 					         "palms");
 					passData(SlapFingerprintsCapturingFxController.class, SubmitCriminalFingerprintsWorkflowTask.class,
 					         "missingFingerprints");
+					setData(SubmitCriminalFingerprintsWorkflowTask.class, "criminalWorkflowSource", CriminalWorkflowSource.CRIMINAL_PRESENT);
+					setData(SubmitCriminalFingerprintsWorkflowTask.class, "criminalFingerprintSource", CriminalFingerprintSource.LIVE_CAPTURE);
 					executeWorkflowTask(SubmitCriminalFingerprintsWorkflowTask.class);
 				}
 				else if(request == Request.CHECK_FINGERPRINTS)

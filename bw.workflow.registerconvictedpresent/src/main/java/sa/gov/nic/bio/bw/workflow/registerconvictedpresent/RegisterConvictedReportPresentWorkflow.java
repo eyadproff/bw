@@ -15,9 +15,9 @@ import sa.gov.nic.bio.bw.workflow.commons.beans.DeporteeInfo;
 import sa.gov.nic.bio.bw.workflow.commons.beans.DisCriminalReport;
 import sa.gov.nic.bio.bw.workflow.commons.beans.PersonInfo;
 import sa.gov.nic.bio.bw.workflow.commons.controllers.FaceCapturingFxController;
-import sa.gov.nic.bio.bw.workflow.commons.controllers.SlapFingerprintsCapturingFxController;
 import sa.gov.nic.bio.bw.workflow.commons.controllers.InquiryByFingerprintsPaneFxController;
 import sa.gov.nic.bio.bw.workflow.commons.controllers.InquiryByFingerprintsResultPaneFxController;
+import sa.gov.nic.bio.bw.workflow.commons.controllers.SlapFingerprintsCapturingFxController;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.BiometricsExchangeCrimeTypesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.BiometricsExchangePartiesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.CountriesLookup;
@@ -35,6 +35,8 @@ import sa.gov.nic.bio.bw.workflow.commons.tasks.FingerprintInquiryWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.GetDeporteeInfoByIdWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.GetPersonInfoByIdWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.SegmentWsqFingerprintsWorkflowTask;
+import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.beans.CriminalFingerprintSource;
+import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.beans.CriminalWorkflowSource;
 import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.controllers.JudgmentDetailsPaneFxController;
 import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.controllers.PalmCapturingFxController;
 import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.controllers.PunishmentDetailsPaneFxController;
@@ -371,6 +373,8 @@ public class RegisterConvictedReportPresentWorkflow extends WizardWorkflowBase
 					         "palms");
 					passData(SlapFingerprintsCapturingFxController.class, SubmitCriminalFingerprintsWorkflowTask.class,
 					         "missingFingerprints");
+					setData(SubmitCriminalFingerprintsWorkflowTask.class, "criminalWorkflowSource", CriminalWorkflowSource.CRIMINAL_PRESENT);
+					setData(SubmitCriminalFingerprintsWorkflowTask.class, "criminalFingerprintSource", CriminalFingerprintSource.LIVE_CAPTURE);
 					executeWorkflowTask(SubmitCriminalFingerprintsWorkflowTask.class);
 				}
 				else if(request == Request.CHECK_FINGERPRINTS)
@@ -393,6 +397,8 @@ public class RegisterConvictedReportPresentWorkflow extends WizardWorkflowBase
 					}
 					
 					setData(SubmitConvictedReportWorkflowTask.class, "convictedReport", convictedReport);
+					setData(SubmitConvictedReportWorkflowTask.class, "criminalWorkflowSource", CriminalWorkflowSource.CRIMINAL_PRESENT);
+					setData(SubmitConvictedReportWorkflowTask.class, "criminalFingerprintSource", CriminalFingerprintSource.LIVE_CAPTURE);
 					executeWorkflowTask(SubmitConvictedReportWorkflowTask.class);
 				}
 				else if(request == Request.EXCHANGE_CONVICTED_REPORT)

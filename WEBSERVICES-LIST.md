@@ -135,7 +135,6 @@
         - services-gateway-biooperation/api/xafis/report/v1
         - services-gateway-biooperation/api/gcc/criminal/exchange/v1
         - services-gateway-demographic/api/criminal/info/basic/custom/v1
-        - services-gateway-biooperation/api/criminal/report/v1
     
     menu.register.registerConvictedPresent:
         - services-gateway-lookups/api/application/person-type/v1
@@ -157,7 +156,6 @@
         - services-gateway-biooperation/api/xafis/report/v1
         - services-gateway-biooperation/api/gcc/criminal/exchange/v1
         - services-gateway-demographic/api/criminal/info/basic/custom/v1
-        - services-gateway-biooperation/api/criminal/report/v1
 
     menu.register.registerCriminalFingerprintsNotPresent:
         - services-gateway-lookups/api/application/person-type/v1

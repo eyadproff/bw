@@ -84,14 +84,17 @@
                                     </StackPane>
                                 </placeholder>
                                 <columns>
-                                    <PTableColumn fx:id="tcSequence" text="#" percentageWidth="0.03"/>
-                                    <PTableColumn fx:id="tcTransactionType" text="%table.column.transactionType" percentageWidth="0.15"/>
-                                    <PTableColumn fx:id="tcTransactionId" text="%table.column.transactionId" percentageWidth="0.13"/>
-                                    <PTableColumn fx:id="tcDateAndTime" text="%table.column.dateAndTime" percentageWidth="0.3"/>
-                                    <PTableColumn fx:id="tcOperatorId" text="%table.column.operatorId" percentageWidth="0.12"/>
-                                    <PTableColumn fx:id="tcLocation" text="%table.column.location" percentageWidth="0.05"/>
-                                    <PTableColumn fx:id="tcConvictedReportId" text="%table.column.convictedReportId" percentageWidth="0.13"/>
-                                    <PTableColumn fx:id="tcResult" text="%table.column.result" percentageWidth="0.05"/>
+                                    <PTableColumn fx:id="tcSequence" text="#" percentageWidth="0.03" sortable="false" reorderable="false"/>
+                                    <PTableColumn fx:id="tcTransactionType" text="%table.column.transactionType" percentageWidth="0.2" sortable="false" reorderable="false"/>
+                                    <PTableColumn fx:id="tcResult" text="%table.column.result" percentageWidth="0.05" sortable="false" reorderable="false"/>
+                                    <PTableColumn fx:id="tcTransactionId" text="%table.column.transactionId" percentageWidth="0.14" sortable="false" reorderable="false"/>
+                                    <PTableColumn fx:id="tcCriminalId" text="%table.column.criminalId" percentageWidth="0.13" sortable="false" reorderable="false"/>
+                                    <PTableColumn fx:id="tcDateAndTime" text="%table.column.dateAndTime" percentageWidth="0.3" sortable="false" reorderable="false"/>
+                                    <PTableColumn fx:id="tcOperatorId" text="%table.column.operatorId" percentageWidth="0.12" sortable="false" reorderable="false"/>
+                                    <PTableColumn fx:id="tcLocation" text="%table.column.location" percentageWidth="0.05" sortable="false" reorderable="false"/>
+                                    <PTableColumn fx:id="tcConvictedReportId" text="%table.column.convictedReportId" percentageWidth="0.13" sortable="false" reorderable="false"/>
+                                    <PTableColumn fx:id="tcPersonPresence" text="%table.column.personPresence" percentageWidth="0.1" sortable="false" reorderable="false"/>
+                                    <PTableColumn fx:id="tcFingerprintsSource" text="%table.column.fingerprintsSource" percentageWidth="0.3" sortable="false" reorderable="false"/>
                                 </columns>
                             </TableView>
                         </VBox>
