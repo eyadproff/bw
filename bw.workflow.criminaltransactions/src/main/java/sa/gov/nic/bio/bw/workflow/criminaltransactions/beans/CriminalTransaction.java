@@ -16,6 +16,8 @@ public class CriminalTransaction extends JavaBean
 	private String apiRspCode;
 	private String apiHttpCode;
 	private Long timestamp;
+	private String criminalFingerprintSource;
+	private String criminalWorkflowSource;
 	
 	public int getSequence(){return sequence;}
 	public void setSequence(int sequence){this.sequence = sequence;}
@@ -52,4 +54,10 @@ public class CriminalTransaction extends JavaBean
 	
 	public Long getTimestamp(){return timestamp;}
 	public void setTimestamp(Long timestamp){this.timestamp = timestamp;}
+	
+	public String getCriminalFingerprintSource(){return criminalFingerprintSource;}
+	public void setCriminalFingerprintSource(String criminalFingerprintSource){this.criminalFingerprintSource = criminalFingerprintSource;}
+	
+	public String getCriminalWorkflowSource(){return criminalWorkflowSource;}
+	public void setCriminalWorkflowSource(String criminalWorkflowSource){this.criminalWorkflowSource = criminalWorkflowSource;}
 }

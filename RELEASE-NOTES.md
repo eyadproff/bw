@@ -11,7 +11,7 @@ VERSION SCHEMA: vYYYY.MM.#SEQ
 
 ---
 
-## v2019.12.1
+## v2020.01.1
 
 - NEW: Criminal Transactions Inquiry Workflow.
 - NEW: Iris Registration.

@@ -38,6 +38,8 @@ import sa.gov.nic.bio.bw.core.workflow.Output;
 import sa.gov.nic.bio.bw.workflow.criminaltransactions.beans.CriminalTransaction;
 import sa.gov.nic.bio.bw.workflow.criminaltransactions.beans.CriminalTransactionType;
 import sa.gov.nic.bio.bw.workflow.criminaltransactions.lookups.CriminalTransactionTypesLookup;
+import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.beans.CriminalFingerprintSource;
+import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.beans.CriminalWorkflowSource;
 
 import java.util.List;
 import java.util.function.Function;
@@ -76,11 +78,14 @@ public class CriminalTransactionsPaneFxController extends ContentFxControllerBas
 	@FXML private TableColumn<CriminalTransaction, String> tcSequence;
 	@FXML private TableColumn<CriminalTransaction, String> tcTransactionType;
 	@FXML private TableColumn<CriminalTransaction, String> tcTransactionId;
+	@FXML private TableColumn<CriminalTransaction, String> tcCriminalId;
 	@FXML private TableColumn<CriminalTransaction, String> tcDateAndTime;
 	@FXML private TableColumn<CriminalTransaction, String> tcOperatorId;
 	@FXML private TableColumn<CriminalTransaction, String> tcLocation;
 	@FXML private TableColumn<CriminalTransaction, String> tcConvictedReportId;
 	@FXML private TableColumn<CriminalTransaction, String> tcResult;
+	@FXML private TableColumn<CriminalTransaction, String> tcPersonPresence;
+	@FXML private TableColumn<CriminalTransaction, String> tcFingerprintsSource;
 	@FXML private Label lblCriminalTransactionsPlaceHolder;
 	@FXML private ProgressIndicator piCriminalTransactionsPlaceHolder;
 	@FXML private Button btnInquiry;
@@ -144,6 +149,14 @@ public class CriminalTransactionsPaneFxController extends ContentFxControllerBas
 		
 		var successLabel = resources.getString("label.success");
 		var failureLabel = resources.getString("label.failure");
+		var presentLabel = resources.getString("label.present");
+		var notPresentLabel = resources.getString("label.notPresent");
+		var byEnteringPersonIdLabel = resources.getString("label.byEnteringPersonId");
+		var byEnteringCivilBiometricsIdLabel = resources.getString("label.byEnteringCivilBiometricsId");
+		var byEnteringCriminalBiometricsIdLabel = resources.getString("label.byEnteringCriminalBiometricsId");
+		var byScanningFingerprintsCardLabel = resources.getString("label.byScanningFingerprintsCard");
+		var byUploadingNistFileLabel = resources.getString("label.byUploadingNistFile");
+		var byCapturingFingerprintsViaScannerLabel = resources.getString("label.byCapturingFingerprintsViaScanner");
 		
 		ObservableList<ComboBoxItem<CriminalTransactionType>> CriminalTransactionTypeItems = FXCollections.observableArrayList();
 		criminalTransactionTypes.forEach(idType -> CriminalTransactionTypeItems.add(new ComboBoxItem<>(idType, arabic ?
@@ -171,6 +184,14 @@ public class CriminalTransactionsPaneFxController extends ContentFxControllerBas
 			var tcn = record.getTcn();
 			if(tcn == null) return null;
 			return new SimpleStringProperty(AppUtils.localizeNumbers(String.valueOf(tcn)));
+		});
+		
+		tcCriminalId.setCellValueFactory(param ->
+		{
+			var record = param.getValue();
+			var criminalId = record.getCriminalId();
+			if(criminalId == null) return null;
+			return new SimpleStringProperty(AppUtils.localizeNumbers(criminalId));
 		});
 		
 		tcDateAndTime.setCellValueFactory(param ->
@@ -211,6 +232,56 @@ public class CriminalTransactionsPaneFxController extends ContentFxControllerBas
 			var successful = record.getSuccessful();
 			if(successful == null) return null;
 			return new SimpleStringProperty(successful ? successLabel : failureLabel);
+		});
+		
+		tcPersonPresence.setCellValueFactory(param ->
+		{
+		    var record = param.getValue();
+			var workflowSource = record.getCriminalWorkflowSource();
+			if(workflowSource == null) return null;
+			
+			if(workflowSource.equals(CriminalWorkflowSource.CRIMINAL_PRESENT.name()))
+			{
+				return new SimpleStringProperty(presentLabel);
+			}
+			else if(workflowSource.equals(CriminalWorkflowSource.CRIMINAL_NOT_PRESENT.name()))
+			{
+				return new SimpleStringProperty(notPresentLabel);
+			}
+			else return null;
+		});
+		
+		tcFingerprintsSource.setCellValueFactory(param ->
+		{
+		    var record = param.getValue();
+			var fingerprintSource = record.getCriminalFingerprintSource();
+			if(fingerprintSource == null) return null;
+			
+			if(fingerprintSource.equals(CriminalFingerprintSource.LIVE_CAPTURE.name()))
+			{
+				return new SimpleStringProperty(byCapturingFingerprintsViaScannerLabel);
+			}
+			else if(fingerprintSource.equals(CriminalFingerprintSource.IMPORT_BY_SAMIS_ID.name()))
+			{
+				return new SimpleStringProperty(byEnteringPersonIdLabel);
+			}
+			else if(fingerprintSource.equals(CriminalFingerprintSource.IMPORT_BY_BIO_ID.name()))
+			{
+				return new SimpleStringProperty(byEnteringCivilBiometricsIdLabel);
+			}
+			else if(fingerprintSource.equals(CriminalFingerprintSource.IMPORT_BY_CRIMINAL_ID.name()))
+			{
+				return new SimpleStringProperty(byEnteringCriminalBiometricsIdLabel);
+			}
+			else if(fingerprintSource.equals(CriminalFingerprintSource.IMPORT_BY_FINGERPRINTS_CARD_SCANNER.name()))
+			{
+				return new SimpleStringProperty(byScanningFingerprintsCardLabel);
+			}
+			else if(fingerprintSource.equals(CriminalFingerprintSource.IMPORT_BY_NIST_FILE.name()))
+			{
+				return new SimpleStringProperty(byUploadingNistFileLabel);
+			}
+			else return null;
 		});
 		
 		txtCriminalBiometricsId.requestFocus();
