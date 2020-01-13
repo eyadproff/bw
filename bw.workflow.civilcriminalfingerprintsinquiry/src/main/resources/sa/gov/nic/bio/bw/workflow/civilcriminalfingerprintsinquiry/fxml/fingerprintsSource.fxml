@@ -21,18 +21,22 @@
     <center>
         <VBox alignment="CENTER">
             <HBox alignment="CENTER">
-                <GridPane alignment="CENTER" vgap="5" hgap="20" styleClass="formBox">
+                <HBox spacing="5.0" styleClass="formBox">
                     <padding>
                         <Insets top="20" right="20" bottom="20" left="20"/>
                     </padding>
-                    <Label text="%label.fingerprintsSource" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
-                    <RadioButton fx:id="rbByEnteringPersonId" text="%label.byEnteringPersonId" toggleGroup="$toggleGroup" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
-                    <RadioButton fx:id="rbByEnteringCivilBiometricsId" text="%label.byEnteringCivilBiometricsId" toggleGroup="$toggleGroup" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
-                    <RadioButton fx:id="rbByEnteringCriminalBiometricsId" text="%label.byEnteringCriminalBiometricsId" toggleGroup="$toggleGroup" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
-                    <RadioButton fx:id="rbByScanningFingerprintsCard" text="%label.byScanningFingerprintsCard" toggleGroup="$toggleGroup" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
-                    <RadioButton fx:id="rbByUploadingNistFile" text="%label.byUploadingNistFile" toggleGroup="$toggleGroup" GridPane.columnIndex="1" GridPane.rowIndex="4"/>
-                    <RadioButton fx:id="rbByCapturingFingerprintsViaScanner" text="%label.byCapturingFingerprintsViaScanner" toggleGroup="$toggleGroup" GridPane.columnIndex="1" GridPane.rowIndex="5" managed="false" visible="false" disable="true"/>
-                </GridPane>
+                    <VBox spacing="5.0">
+                        <Label text="%label.fingerprintsSource"/>
+                    </VBox>
+                    <VBox alignment="CENTER_LEFT" spacing="5.0">
+                        <RadioButton fx:id="rbByEnteringPersonId" text="%label.byEnteringPersonId" toggleGroup="$toggleGroup"/>
+                        <RadioButton fx:id="rbByEnteringCivilBiometricsId" text="%label.byEnteringCivilBiometricsId" toggleGroup="$toggleGroup"/>
+                        <RadioButton fx:id="rbByEnteringCriminalBiometricsId" text="%label.byEnteringCriminalBiometricsId" toggleGroup="$toggleGroup"/>
+                        <RadioButton fx:id="rbByScanningFingerprintsCard" text="%label.byScanningFingerprintsCard" toggleGroup="$toggleGroup"/>
+                        <RadioButton fx:id="rbByUploadingNistFile" text="%label.byUploadingNistFile" toggleGroup="$toggleGroup"/>
+                        <RadioButton fx:id="rbByCapturingFingerprintsViaScanner" text="%label.byCapturingFingerprintsViaScanner" toggleGroup="$toggleGroup" managed="false" visible="false" disable="true"/>
+                    </VBox>
+                </HBox>
             </HBox>
         </VBox>
     </center>

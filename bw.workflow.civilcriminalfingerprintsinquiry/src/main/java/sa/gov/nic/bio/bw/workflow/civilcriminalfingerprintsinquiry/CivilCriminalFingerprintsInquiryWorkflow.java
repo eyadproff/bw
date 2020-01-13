@@ -61,7 +61,7 @@ import java.util.stream.Collectors;
 		@Step(iconId = "\\uf256", title = "wizard.showFingerprintsView"),
 		@Step(iconId = "search", title = "wizard.inquiryByFingerprints"),
 		@Step(iconId = "database", title = "wizard.showInquiryResult")})
-public class FingerprintsInquiryWorkflow extends WizardWorkflowBase
+public class CivilCriminalFingerprintsInquiryWorkflow extends WizardWorkflowBase
 {
 	private static final String FIELD_CIVIL_HIT = "CIVIL_HIT";
 	private static final String FIELD_CIVIL_PERSON_INFO_MAP = "CIVIL_PERSON_INFO_MAP";

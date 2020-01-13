@@ -6,9 +6,9 @@ import sa.gov.nic.bio.bw.core.workflow.Input;
 import sa.gov.nic.bio.bw.core.workflow.Output;
 import sa.gov.nic.bio.bw.core.workflow.Signal;
 import sa.gov.nic.bio.bw.core.workflow.WorkflowTask;
+import sa.gov.nic.bio.bw.workflow.commons.beans.FingerprintInquiryStatusResult;
 import sa.gov.nic.bio.bw.workflow.commons.utils.CommonsErrorCodes;
 import sa.gov.nic.bio.bw.workflow.commons.webservice.FingerprintInquiryAPI;
-import sa.gov.nic.bio.bw.workflow.commons.beans.FingerprintInquiryStatusResult;
 import sa.gov.nic.bio.commons.TaskResponse;
 
 import java.util.List;
@@ -23,6 +23,7 @@ public class FingerprintInquiryStatusCheckerWorkflowTask extends WorkflowTask
 	}
 	
 	@Input(alwaysRequired = true) private Integer inquiryId;
+	@Input private Boolean ignoreCriminalFingerprintsInquiryResult;
 	@Output private Status status;
 	@Output private Long civilBiometricsId;
 	@Output private Long criminalBiometricsId;
@@ -31,12 +32,19 @@ public class FingerprintInquiryStatusCheckerWorkflowTask extends WorkflowTask
 	@Override
 	public void execute() throws Signal
 	{
-		FingerprintInquiryAPI fingerprintInquiryAPI =
-				Context.getWebserviceManager().getApi(FingerprintInquiryAPI.class);
-		Call<FingerprintInquiryStatusResult> apiCall =
-							fingerprintInquiryAPI.checkFingerprintsInquiryStatus(workflowId, workflowTcn, inquiryId);
-		TaskResponse<FingerprintInquiryStatusResult> taskResponse = Context.getWebserviceManager()
-																		.executeApi(apiCall);
+		var api = Context.getWebserviceManager().getApi(FingerprintInquiryAPI.class);
+		Call<FingerprintInquiryStatusResult> apiCall;
+		
+		if(ignoreCriminalFingerprintsInquiryResult != null && ignoreCriminalFingerprintsInquiryResult)
+		{
+			apiCall = api.checkFingerprintsInquiryStatusWithoutCriminal(workflowId, workflowTcn, inquiryId);
+		}
+		else
+		{
+			apiCall = api.checkFingerprintsInquiryStatus(workflowId, workflowTcn, inquiryId);
+		}
+		
+		var taskResponse = Context.getWebserviceManager().executeApi(apiCall);
 		resetWorkflowStepIfNegativeOrNullTaskResponse(taskResponse);
 		
 		FingerprintInquiryStatusResult result = taskResponse.getResult();
@@ -57,6 +65,12 @@ public class FingerprintInquiryStatusCheckerWorkflowTask extends WorkflowTask
 			
 			if(civilBiometricsId != null && civilBiometricsId <= 0L) civilBiometricsId = null;
 			if(criminalBiometricsId != null && criminalBiometricsId <= 0L) criminalBiometricsId = null;
+			
+			if(ignoreCriminalFingerprintsInquiryResult != null && ignoreCriminalFingerprintsInquiryResult)
+			{
+				criminalBiometricsId = null;
+				if(civilBiometricsId == null) status = Status.NOT_HIT;
+			}
 		}
 		else
 		{

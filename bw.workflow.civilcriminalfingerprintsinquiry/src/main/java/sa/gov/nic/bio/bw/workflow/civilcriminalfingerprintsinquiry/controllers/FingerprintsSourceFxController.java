@@ -30,6 +30,7 @@ public class FingerprintsSourceFxController extends WizardStepFxControllerBase
 	}
 	
 	@Input private Boolean showLiveScanOption;
+	@Input private Boolean hideCriminalBiometricsIdOption;
 	@Output private Source fingerprintsSource;
 	
 	@FXML private RadioButton rbByEnteringCivilBiometricsId;
@@ -49,6 +50,12 @@ public class FingerprintsSourceFxController extends WizardStepFxControllerBase
 		{
 			GuiUtils.showNode(rbByCapturingFingerprintsViaScanner, true);
 			rbByCapturingFingerprintsViaScanner.setDisable(false);
+		}
+		
+		if(hideCriminalBiometricsIdOption != null && hideCriminalBiometricsIdOption)
+		{
+			GuiUtils.showNode(rbByEnteringCriminalBiometricsId, false);
+			rbByEnteringCriminalBiometricsId.setDisable(false);
 		}
 		
 		if(fingerprintsSource == Source.CAPTURING_FINGERPRINTS_VIA_FINGERPRINT_SCANNER)

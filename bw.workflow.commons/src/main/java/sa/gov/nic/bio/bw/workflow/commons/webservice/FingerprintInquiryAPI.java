@@ -22,4 +22,9 @@ public interface FingerprintInquiryAPI
 	Call<FingerprintInquiryStatusResult> checkFingerprintsInquiryStatus(@Header("Workflow-Code") Integer workflowId,
 	                                                                    @Header("Workflow-Tcn") Long workflowTcn,
 	                                                                    @Query("inquiry-id") int inquiryId);
+	
+	@GET("services-gateway-biooperation/api/fingerprint/inquiry/status/v3")
+	Call<FingerprintInquiryStatusResult> checkFingerprintsInquiryStatusWithoutCriminal(@Header("Workflow-Code") Integer workflowId,
+	                                                                                   @Header("Workflow-Tcn") Long workflowTcn,
+	                                                                                   @Query("inquiry-id") int inquiryId);
 }

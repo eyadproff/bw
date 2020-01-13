@@ -26,3 +26,5 @@ include 'bw.workflow.deletecriminalfingerprints'
 include 'bw.workflow.criminaltransactions'
 include 'bw.workflow.registeriris'
 include 'bw.workflow.irisinquiry'
+include 'bw.workflow.civilfingerprintsinquiry'
+

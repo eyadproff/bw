@@ -11,6 +11,12 @@ VERSION SCHEMA: vYYYY.MM.#SEQ
 
 ---
 
+## v2020.01.2
+
+- NEW: Civil Fingerprints Inquiry Workflow.
+
+---
+
 ## v2020.01.1
 
 - NEW: Criminal Transactions Inquiry Workflow.

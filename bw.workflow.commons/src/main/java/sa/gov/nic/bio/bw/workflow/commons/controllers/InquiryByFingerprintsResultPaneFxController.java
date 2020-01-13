@@ -56,6 +56,7 @@ public class InquiryByFingerprintsResultPaneFxController extends WizardStepFxCon
 {
 	@Input protected Boolean hideRegisterUnknownButton;
 	@Input protected Boolean hideConfirmationButton;
+	@Input protected Boolean ignoreCriminalFingerprintsInquiryResult;
 	@Input protected Status status;
 	@Input protected Long civilBiometricsId;
 	@Input protected Long criminalBiometricsId;
@@ -67,6 +68,7 @@ public class InquiryByFingerprintsResultPaneFxController extends WizardStepFxCon
 
 	@FXML private ScrollPane infoPane;
 	@FXML private ImageViewPane paneImageView;
+	@FXML private TitledPane tpPaneCriminal;
 	@FXML private Pane paneImage;
 	@FXML private Pane paneFingerprintsHitResults;
 	@FXML private Pane gridPane;
@@ -146,6 +148,14 @@ public class InquiryByFingerprintsResultPaneFxController extends WizardStepFxCon
 			                                  tcNewCriminalSelection.getPercentageWidth());
 		}
 		
+		if(ignoreCriminalFingerprintsInquiryResult != null && ignoreCriminalFingerprintsInquiryResult)
+		{
+			GuiUtils.showNode(tpPaneCriminal, false);
+			GuiUtils.showNode(btnShowReport, false);
+			GuiUtils.showNode(btnPrintReport, false);
+			GuiUtils.showNode(btnSaveReportAsPDF, false);
+		}
+		
 		paneImageView.maxWidthProperty().bind(paneImage.widthProperty());
 		
 		civilHit = status == Status.HIT && civilBiometricsId != null;
@@ -158,7 +168,7 @@ public class InquiryByFingerprintsResultPaneFxController extends WizardStepFxCon
 			{
 				super.updateItem(item, empty);
 				
-				TableRow tableRow = getTableRow();
+				var tableRow = getTableRow();
 				
 				if(!hideConfirmationButton && tableRow != null && tableRow.getIndex() == 0)
 				{

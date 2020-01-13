@@ -44,6 +44,22 @@
         - services-gateway-demographic/api/criminal/info/basic/custom/v1
         - services-gateway-biooperation/api/criminal/report/v1
     
+    menu.query.civilfingerprintsinquiry:
+        - services-gateway-lookups/api/application/person-type/v1
+        - services-gateway-lookups/api/application/id-types/v1
+        - services-gateway-lookups/api/application/nationality/all/v1
+        - services-gateway-lookups/api/application/crime-types/v1
+        - services-gateway-demographic/api/person/info/v1
+        - services-gateway-biooperation/api/fingerprint/images/v1
+        - services-gateway-biooperation/api/fingerprint/available/v1
+        - services-gateway-biooperation/api/fingerprint/images/v2
+        - services-gateway-biooperation/api/fingerprint/available/v2
+        - services-gateway-biooperation/api/xafis/nist/extraction/v1
+        - services-gateway-biooperation/api/criminal/nist/generation/v1
+        - services-gateway-biooperation/api/fingerprint/inquiry/v1
+        - services-gateway-biooperation/api/fingerprint/inquiry/status/v3
+        - services-gateway-demographic/api/person/deportee/info/v1
+    
     menu.query.convictedReportInquiryBySearchCriteria:
         - services-gateway-lookups/api/application/person-type/v1
         - services-gateway-lookups/api/application/id-types/v1

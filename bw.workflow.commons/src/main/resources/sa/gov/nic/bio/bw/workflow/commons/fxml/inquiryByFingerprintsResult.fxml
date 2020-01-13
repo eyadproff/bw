@@ -58,7 +58,7 @@
                             </TableView>
                         </VBox>
                     </TitledPane>
-                    <TitledPane text="%label.criminalFingerprints" VBox.vgrow="ALWAYS" maxHeight="Infinity" focusTraversable="false" collapsible="false">
+                    <TitledPane fx:id="tpPaneCriminal" text="%label.criminalFingerprints" VBox.vgrow="ALWAYS" maxHeight="Infinity" focusTraversable="false" collapsible="false">
                         <VBox alignment="CENTER" spacing="5.0">
                             <HBox fx:id="paneCriminalFingerprintsNoHit" alignment="CENTER" spacing="5.0" managed="false" visible="false">
                                 <ImageView>
