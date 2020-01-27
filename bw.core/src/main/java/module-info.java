@@ -37,7 +37,7 @@ module bw.core
 	opens sa.gov.nic.bio.bw.core.wizard to javafx.fxml;
 	opens sa.gov.nic.bio.bw.core.css;
 	opens sa.gov.nic.bio.bw.core.beans to org.apache.commons.lang3, com.google.gson;
-	opens sa.gov.nic.bio.bw.core.utils to org.apache.commons.lang3;
+	opens sa.gov.nic.bio.bw.core.utils to org.apache.commons.lang3, com.google.gson;
 	exports sa.gov.nic.bio.bw.core.wizard;
 	exports sa.gov.nic.bio.bw.core.tasks;
 }

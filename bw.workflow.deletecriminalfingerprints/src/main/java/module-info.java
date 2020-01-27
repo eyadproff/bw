@@ -9,5 +9,5 @@ module bw.workflow.deletecriminalfingerprints
 	opens sa.gov.nic.bio.bw.workflow.deletecriminalfingerprints.fxml to bw.core;
 	opens sa.gov.nic.bio.bw.workflow.deletecriminalfingerprints.tasks to bw.core;
 	opens sa.gov.nic.bio.bw.workflow.deletecriminalfingerprints.controllers to javafx.fxml, bw.core;
-	opens sa.gov.nic.bio.bw.workflow.deletecriminalfingerprints.beans to org.apache.commons.lang3;
+	opens sa.gov.nic.bio.bw.workflow.deletecriminalfingerprints.beans to org.apache.commons.lang3, com.google.gson;
 }
