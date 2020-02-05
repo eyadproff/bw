@@ -17,6 +17,8 @@
 <?import sa.gov.nic.bio.bw.workflow.commons.ui.CopiableLabel?>
 <?import sa.gov.nic.bio.bw.workflow.commons.ui.ImageViewPane?>
 <?import sa.gov.nic.bio.bw.workflow.commons.ui.PTableColumn?>
+<?import javafx.scene.control.ProgressIndicator?>
+<?import javafx.scene.layout.StackPane?>
 <BorderPane xmlns="http://javafx.com/javafx/11" xmlns:fx="http://javafx.com/fxml/1"
             fx:id="rootPane" stylesheets="@../css/style.css"
             fx:controller="sa.gov.nic.bio.bw.workflow.commons.controllers.InquiryByFingerprintsResultPaneFxController">
@@ -56,7 +58,7 @@
                             </TableView>
                         </VBox>
                     </TitledPane>
-                    <TitledPane text="%label.criminalFingerprints" VBox.vgrow="ALWAYS" maxHeight="Infinity" focusTraversable="false" collapsible="false">
+                    <TitledPane fx:id="tpPaneCriminal" text="%label.criminalFingerprints" VBox.vgrow="ALWAYS" maxHeight="Infinity" focusTraversable="false" collapsible="false">
                         <VBox alignment="CENTER" spacing="5.0">
                             <HBox fx:id="paneCriminalFingerprintsNoHit" alignment="CENTER" spacing="5.0" managed="false" visible="false">
                                 <ImageView>
@@ -155,7 +157,10 @@
                                                     <Label text="%label.gender" GridPane.rowIndex="4" GridPane.columnIndex="0" styleClass="bold-label"/>
                                                     <CopiableLabel fx:id="lblGender" GridPane.rowIndex="4" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
                                                     <Label text="%label.nationality" GridPane.rowIndex="5" GridPane.columnIndex="0" styleClass="bold-label"/>
-                                                    <CopiableLabel fx:id="lblNationality" GridPane.rowIndex="5" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
+                                                    <HBox spacing="5.0" GridPane.rowIndex="5" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS">
+                                                        <CopiableLabel fx:id="lblNationality"/>
+                                                        <Label fx:id="lblNaturalizedSaudi" text="%label.naturalizedSaudi" styleClass="bold-label, blue-label" managed="false" visible="false"/>
+                                                    </HBox>
                                                     <Label text="%label.occupation" GridPane.rowIndex="6" GridPane.columnIndex="0" styleClass="bold-label"/>
                                                     <CopiableLabel fx:id="lblOccupation" GridPane.rowIndex="6" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
                                                     <Label text="%label.birthPlace" GridPane.rowIndex="7" GridPane.columnIndex="0" styleClass="bold-label"/>
@@ -191,9 +196,14 @@
             <padding>
                 <Insets bottom="10"/>
             </padding>
-            <Button fx:id="btnStartOver" text="%button.startOver" onAction="#onStartOverButtonClicked"/>
-            <Button fx:id="btnRegisterUnknownPerson" text="%button.registerUnknownPerson" managed="false" visible="false" onAction="#onRegisterUnknownPersonButtonClicked"/>
-            <Button fx:id="btnConfirmPersonInformation" text="%button.confirm" onAction="#onNextButtonClicked"/>
+            <ProgressIndicator fx:id="piProgress" prefHeight="25.0" prefWidth="25.0" managed="false" visible="false"/>
+            <HBox fx:id="paneButtons" alignment="CENTER" spacing="10">
+                <Button fx:id="btnStartOver" text="%button.startOver" onAction="#onStartOverButtonClicked"/>
+                <Button fx:id="btnPrintReport" text="%button.printResultReport" onAction="#onPrintReportButtonClicked"/>
+                <Button fx:id="btnSaveReportAsPDF" text="%button.saveResultReportAsPDF" onAction="#onSaveReportAsPdfButtonClicked"/>
+                <Button fx:id="btnRegisterUnknownPerson" text="%button.registerUnknownPerson" managed="false" visible="false" onAction="#onRegisterUnknownPersonButtonClicked"/>
+                <Button fx:id="btnConfirmPersonInformation" text="%button.confirm" onAction="#onNextButtonClicked"/>
+            </HBox>
         </HBox>
     </bottom>
 </BorderPane>

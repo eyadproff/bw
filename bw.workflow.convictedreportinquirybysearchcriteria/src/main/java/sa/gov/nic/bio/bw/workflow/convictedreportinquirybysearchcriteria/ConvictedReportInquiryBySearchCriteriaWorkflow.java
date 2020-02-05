@@ -13,7 +13,7 @@ import sa.gov.nic.bio.bw.workflow.commons.tasks.ConvictedReportInquiryBySearchCr
 import sa.gov.nic.bio.bw.workflow.convictedreportinquirybysearchcriteria.controllers.ConvictedReportInquiryPaneFxController;
 
 @AssociatedMenu(workflowId = 1011, menuId = "menu.query.convictedReportInquiryBySearchCriteria",
-				menuTitle = "menu.title", menuOrder = 5, devices = Device.BIO_UTILITIES)
+				menuTitle = "menu.title", menuOrder = 4, devices = Device.BIO_UTILITIES)
 @WithLookups({PersonTypesLookup.class, DocumentTypesLookup.class, CountriesLookup.class, CrimeTypesLookup.class})
 public class ConvictedReportInquiryBySearchCriteriaWorkflow extends SinglePageWorkflowBase
 {
@@ -23,7 +23,7 @@ public class ConvictedReportInquiryBySearchCriteriaWorkflow extends SinglePageWo
 		renderUiAndWaitForUserInput(ConvictedReportInquiryPaneFxController.class);
 		
 		passData(ConvictedReportInquiryPaneFxController.class, ConvictedReportInquiryBySearchCriteriaWorkflowTask.class,
-		         "recordsPerPage", "reportNumber", "criminalBiometricsId", "location", "personId",
+		         "reportNumber", "criminalBiometricsId", "location", "personId",
 		         "documentId", "firstName", "fatherName", "grandfatherName", "familyName", "judgementNumber",
 		         "prisonerNumber", "operatorId", "judgmentDateFrom", "judgmentDateTo", "showOldReports",
 		         "showDeletedReports", "recordsPerPage", "pageIndex");

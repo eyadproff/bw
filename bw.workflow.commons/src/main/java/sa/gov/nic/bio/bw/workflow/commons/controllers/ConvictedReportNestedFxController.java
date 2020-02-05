@@ -35,7 +35,7 @@ import java.util.stream.Collectors;
 @FxmlFile("convictedReportNestedPane.fxml")
 public class ConvictedReportNestedFxController extends ContentFxControllerBase
 {
-	@FXML private TitledPane tpEnrollmentDetails;
+    @FXML private TitledPane tpEnrollmentDetails;
 	@FXML private Pane paneImage;
 	@FXML private Label lblReportNumber;
 	@FXML private Label lblEnrollerId;
@@ -85,6 +85,7 @@ public class ConvictedReportNestedFxController extends ContentFxControllerBase
 	@FXML private Label lblDeportationMonths;
 	@FXML private Label lblDeportationDays;
 	@FXML private Label lblOther;
+	@FXML private Label lblNaturalizedSaudi;
 	@FXML private CheckBox cbFinalDeportation;
 	@FXML private CheckBox cbLibel;
 	@FXML private CheckBox cbCovenant;
@@ -95,11 +96,17 @@ public class ConvictedReportNestedFxController extends ContentFxControllerBase
 	@FXML private ImageView ivRightMiddle;
 	@FXML private ImageView ivRightRing;
 	@FXML private ImageView ivRightLittle;
+	@FXML private ImageView ivRightUpperPalm;
+	@FXML private ImageView ivRightLowerPalm;
+	@FXML private ImageView ivRightWritersPalm;
 	@FXML private ImageView ivLeftThumb;
 	@FXML private ImageView ivLeftIndex;
 	@FXML private ImageView ivLeftMiddle;
 	@FXML private ImageView ivLeftRing;
 	@FXML private ImageView ivLeftLittle;
+	@FXML private ImageView ivLeftUpperPalm;
+	@FXML private ImageView ivLeftLowerPalm;
+	@FXML private ImageView ivLeftWritersPalm;
 	
 	@Override
 	protected void onAttachedToScene()
@@ -113,7 +120,8 @@ public class ConvictedReportNestedFxController extends ContentFxControllerBase
 	}
 	
 	public void populateConvictedReportData(ConvictedReport convictedReport,
-	                                        Map<Integer, String> fingerprintBase64Images)
+	                                        Map<Integer, String> fingerprintBase64Images,
+	                                        Map<Integer, String> palmBase64Images)
 	{
 		if(convictedReport == null) return;
 		
@@ -209,6 +217,9 @@ public class ConvictedReportNestedFxController extends ContentFxControllerBase
 			{
 				boolean arabic = Context.getGuiLanguage() == GuiLanguage.ARABIC;
 				lblNationality.setText(arabic ? countryBean.getDescriptionAR() : countryBean.getDescriptionEN());
+				GuiUtils.showNode(lblNaturalizedSaudi,
+						!"SAU".equalsIgnoreCase(countryBean.getMofaNationalityCode()) &&
+								String.valueOf(convictedReport.getSubjSamisId()).startsWith("1"));
 			}
 			else lblNationality.setText(resources.getString("combobox.unknownNationality"));
 		}
@@ -415,9 +426,10 @@ public class ConvictedReportNestedFxController extends ContentFxControllerBase
 		
 		if(fingerprintBase64Images != null)
 		{
-			GuiUtils.attachFingerprintImages(fingerprintBase64Images, ivRightThumb, ivRightIndex, ivRightMiddle,
-			                                 ivRightRing, ivRightLittle, ivLeftThumb, ivLeftIndex, ivLeftMiddle,
-			                                 ivLeftRing, ivLeftLittle);
+			GuiUtils.attachFingerprintImages(fingerprintBase64Images, palmBase64Images, ivRightThumb, ivRightIndex,
+			                                 ivRightMiddle, ivRightRing, ivRightLittle, ivLeftThumb, ivLeftIndex,
+			                                 ivLeftMiddle, ivLeftRing, ivLeftLittle, ivRightUpperPalm, ivRightLowerPalm,
+			                                 ivRightWritersPalm, ivLeftUpperPalm, ivLeftLowerPalm, ivLeftWritersPalm);
 		}
 	}
 }

@@ -40,6 +40,7 @@ public class ShowingPersonInfoFxController extends WizardStepFxControllerBase
 	@FXML private Label lblDocumentType;
 	@FXML private Label lblDocumentIssuanceDate;
 	@FXML private Label lblDocumentExpiryDate;
+	@FXML private Label lblNaturalizedSaudi;
 	@FXML private Button btnStartOver;
 	@FXML private Button btnConfirmPersonInfo;
 	
@@ -47,6 +48,11 @@ public class ShowingPersonInfoFxController extends WizardStepFxControllerBase
 	protected void onAttachedToScene()
 	{
 		normalizedPersonInfo = new NormalizedPersonInfo(personInfo);
+
+		GuiUtils.showNode(lblNaturalizedSaudi, normalizedPersonInfo.getNationality() != null &&
+				normalizedPersonInfo.getNationality().getCode() > 0 &&
+				!"SAU".equalsIgnoreCase(normalizedPersonInfo.getNationality().getMofaNationalityCode()) &&
+				String.valueOf(normalizedPersonInfo.getPersonId()).startsWith("1"));
 		
 		String facePhotoBase64 = normalizedPersonInfo.getFacePhotoBase64();
 		Gender gender = normalizedPersonInfo.getGender();

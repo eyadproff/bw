@@ -7,7 +7,9 @@ import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.POST;
 import retrofit2.http.Query;
+import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.beans.CriminalFingerprintSource;
 import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.beans.CriminalFingerprintsRegistrationResponse;
+import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.beans.CriminalWorkflowSource;
 
 public interface CriminalFingerprintsAPI
 {
@@ -23,7 +25,9 @@ public interface CriminalFingerprintsAPI
 																		@Field("criminal-id") Long criminalId,
 																		@Field("fingers") String fingerList,
 																		@Field("palms") String palmList,
-																		@Field("missing") String missingFingers);
+																		@Field("missing") String missingFingers,
+																		@Field("workflow-source") CriminalWorkflowSource criminalWorkflowSource,
+																		@Field("fingers-source") CriminalFingerprintSource criminalFingerprintSource);
 	
 	@GET("services-gateway-biooperation/api/criminal/fingers/registration/status/v1")
 	Call<Void> checkCriminalFingerprintsStatus(@Header("Workflow-Code") Integer workflowId,

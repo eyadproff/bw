@@ -9,5 +9,5 @@ module bw.workflow.deletecompletecriminalrecord
 	opens sa.gov.nic.bio.bw.workflow.deletecompletecriminalrecord.fxml to bw.core;
 	opens sa.gov.nic.bio.bw.workflow.deletecompletecriminalrecord.tasks to bw.core;
 	opens sa.gov.nic.bio.bw.workflow.deletecompletecriminalrecord.controllers to javafx.fxml, bw.core;
-	opens sa.gov.nic.bio.bw.workflow.deletecompletecriminalrecord.beans to org.apache.commons.lang3;
+	opens sa.gov.nic.bio.bw.workflow.deletecompletecriminalrecord.beans to org.apache.commons.lang3, com.google.gson;
 }

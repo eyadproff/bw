@@ -4,11 +4,12 @@ apply plugin: 'java-library'
 
 dependencies {
     // Jasper reports
-    api name: "jasperreports-6.8.0"
+    api name: "jasperreports-6.10.0"
     implementation name: "ecj-4.6.1" // javac
     implementation name: "commons-logging-1.2"
     implementation name: "commons-digester-2.1"
     implementation name: "commons-collections4-4.3"
+    implementation name: "commons-collections-3.2.2"
     implementation name: "commons-beanutils-1.9.3"
     implementation name: "itext-4.2.1"
 

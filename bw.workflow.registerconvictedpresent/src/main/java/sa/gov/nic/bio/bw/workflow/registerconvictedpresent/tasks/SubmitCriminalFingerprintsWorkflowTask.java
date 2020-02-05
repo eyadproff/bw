@@ -8,7 +8,9 @@ import sa.gov.nic.bio.bw.core.workflow.Output;
 import sa.gov.nic.bio.bw.core.workflow.Signal;
 import sa.gov.nic.bio.bw.core.workflow.WorkflowTask;
 import sa.gov.nic.bio.bw.workflow.commons.beans.Finger;
+import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.beans.CriminalFingerprintSource;
 import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.beans.CriminalFingerprintsRegistrationResponse;
+import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.beans.CriminalWorkflowSource;
 import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.webservice.CriminalFingerprintsAPI;
 import sa.gov.nic.bio.commons.TaskResponse;
 
@@ -18,12 +20,17 @@ public class SubmitCriminalFingerprintsWorkflowTask extends WorkflowTask
 {
 	@Input(alwaysRequired = true) private Long criminalBiometricsId;
 	@Input(alwaysRequired = true) private List<Finger> fingerprints;
+	@Input private List<Finger> palms;
 	@Input(alwaysRequired = true) private List<Integer> missingFingerprints;
+	@Input private CriminalWorkflowSource criminalWorkflowSource;
+	@Input private CriminalFingerprintSource criminalFingerprintSource;
 	@Output private Long tcn;
 	
 	@Override
 	public void execute() throws Signal
 	{
+		if(palms != null && !palms.isEmpty()) fingerprints.addAll(palms);
+		
 		CriminalFingerprintsAPI api = Context.getWebserviceManager().getApi(CriminalFingerprintsAPI.class);
 		Call<CriminalFingerprintsRegistrationResponse> apiCall = api.registerCriminalFingerprints(
 																				  workflowId,
@@ -31,7 +38,9 @@ public class SubmitCriminalFingerprintsWorkflowTask extends WorkflowTask
                                                                                   criminalBiometricsId,
                                                                                   AppUtils.toJson(fingerprints),
                                                                                   null,
-                                                                                  AppUtils.toJson(missingFingerprints));
+                                                                                  AppUtils.toJson(missingFingerprints),
+																				  criminalWorkflowSource,
+																				  criminalFingerprintSource);
 		TaskResponse<CriminalFingerprintsRegistrationResponse> taskResponse = Context.getWebserviceManager()
 																					 .executeApi(apiCall);
 		resetWorkflowStepIfNegativeOrNullTaskResponse(taskResponse);

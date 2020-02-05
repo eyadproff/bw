@@ -13,7 +13,7 @@ buildscript {
 
 allprojects {
     group = 'sa.gov.nic.bio'
-    version = '2019.07.4'
+    version = '2020.01.2'
 }
 
 subprojects {
@@ -49,7 +49,7 @@ subprojects {
         // BCL-Utils and Biokit library
         implementation name: "bio.commons-2019.01.2"
         implementation name: "bcl-utils-2018.11.1"
-        implementation name: "biokit-library-2019.03.1"
+        implementation name: "biokit-library-2019.09.1"
 
         // JUnit
         testImplementation name : "junit-platform-commons-1.2.0"
@@ -86,6 +86,7 @@ subprojects {
                 options.compilerArgs = [
                         '-Xlint:unchecked',
                         '-Xlint:deprecation',
+                        '-Xlint:-requires-transitive-automatic',
                         '--module-path', classpath.asPath,
                         '--patch-module', "$moduleName=" + files(sourceSets.main.resources.srcDirs).asPath,
                 ]
@@ -99,6 +100,7 @@ subprojects {
                 options.compilerArgs = [
                         '-Xlint:unchecked',
                         '-Xlint:deprecation',
+                        '-Xlint:-requires-transitive-automatic',
                         '--module-path', classpath.asPath,
                         '--add-modules', 'junit',
                         '--add-reads', "$moduleName=junit",

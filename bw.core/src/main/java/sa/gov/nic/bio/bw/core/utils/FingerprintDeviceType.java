@@ -5,7 +5,8 @@ import sa.gov.nic.bio.bw.core.biokit.FingerPosition;
 public enum FingerprintDeviceType
 {
 	SINGLE(FingerPosition.RIGHT_THUMB.getPosition()),
-	SLAP(FingerPosition.RIGHT_SLAP.getPosition());
+	SLAP(FingerPosition.RIGHT_SLAP.getPosition()),
+	PALM(FingerPosition.RIGHT_LOWER_PALM.getPosition());
 	
 	private final int position;
 	

@@ -78,6 +78,7 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 	@Input(alwaysRequired = true) private Map<Integer, String> fingerprintBase64Images;
 	@Input(alwaysRequired = true) private List<Finger> fingerprints;
 	@Input(alwaysRequired = true) private List<Integer> missingFingerprints;
+	@Input private Map<Integer, String> palmBase64Images;
 	@Input private String fingerprintsSourceSystem;
 	@Output private ConvictedReport convictedReport;
 	
@@ -91,8 +92,6 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 	@Override
 	protected void onAttachedToScene()
 	{
-		
-		
 		Name name = new Name(firstName, fatherName, grandfatherName, familyName, null,
 		                     null, null, null);
 		
@@ -108,7 +107,7 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 				                                                AppUtils.gregorianDateToSeconds(arrestDate));
 		
 		UserInfo userInfo = (UserInfo) Context.getUserSession().getAttribute("userInfo");
-		
+
 		convictedReport = new ConvictedReport(null, null, criminalBiometricsId, name,
 		                                      nationality.getCode(), nationality.getMofaNationalityCode(),
 		                                      occupation, gender.name().substring(0, 1), // "M" or "F"
@@ -128,7 +127,8 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase
 		                                      ConvictedReport.Status.ACTIVE);
 		
 		convictedReportNestedPaneController.setWillBeGeneratedTextOnCriminalBiometricsId();
-		convictedReportNestedPaneController.populateConvictedReportData(convictedReport, fingerprintBase64Images);
+		convictedReportNestedPaneController.populateConvictedReportData(convictedReport, fingerprintBase64Images,
+		                                                                palmBase64Images);
 	}
 	
 	@Override

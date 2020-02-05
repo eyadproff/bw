@@ -7,10 +7,13 @@ import sa.gov.nic.bio.bw.core.wizard.Wizard;
 import sa.gov.nic.bio.bw.core.workflow.AssociatedMenu;
 import sa.gov.nic.bio.bw.core.workflow.Signal;
 import sa.gov.nic.bio.bw.core.workflow.WizardWorkflowBase;
-import sa.gov.nic.bio.bw.workflow.commons.controllers.FingerprintCapturingFxController;
 import sa.gov.nic.bio.bw.workflow.commons.controllers.InquiryByFingerprintsPaneFxController;
+import sa.gov.nic.bio.bw.workflow.commons.controllers.SlapFingerprintsCapturingFxController;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.FingerprintInquiryStatusCheckerWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.FingerprintInquiryWorkflowTask;
+import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.beans.CriminalFingerprintSource;
+import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.beans.CriminalWorkflowSource;
+import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.controllers.PalmCapturingFxController;
 import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.tasks.CriminalFingerprintsStatusCheckerWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.tasks.GenerateNewCriminalBiometricsIdWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.registerconvictedpresent.tasks.SubmitCriminalFingerprintsWorkflowTask;
@@ -21,6 +24,7 @@ import sa.gov.nic.bio.bw.workflow.registercriminalfingerprintspresent.controller
 @AssociatedMenu(workflowId = 1018, menuId = "menu.register.registerCriminalFingerprintsPresent",
 				menuTitle = "menu.title", menuOrder = 4, devices = {Device.FINGERPRINT_SCANNER})
 @Wizard({@Step(iconId = "\\uf256", title = "wizard.fingerprintCapturing"),
+		@Step(iconId = "\\uf255", title = "wizard.palmCapturing"),
 		@Step(iconId = "search", title = "wizard.inquiryByFingerprints"),
 		@Step(iconId = "database", title = "wizard.inquiryResult"),
 		@Step(iconId = "save", title = "wizard.registerFingerprints")})
@@ -38,17 +42,22 @@ public class RegisterCriminalFingerprintsPresentWorkflow extends WizardWorkflowB
 				int acceptBadQualityFingerprintMinRetries = Integer.parseInt(Context.getConfigManager().getProperty(
 										"registerConvictedReport.fingerprint.acceptBadQualityFingerprintMinRetries"));
 				
-				setData(FingerprintCapturingFxController.class, "hidePreviousButton", Boolean.TRUE);
-				setData(FingerprintCapturingFxController.class, "allow9MissingWithNoRole", Boolean.TRUE);
-				setData(FingerprintCapturingFxController.class, "acceptBadQualityFingerprint",
+				setData(SlapFingerprintsCapturingFxController.class, "hidePreviousButton", Boolean.TRUE);
+				setData(SlapFingerprintsCapturingFxController.class, "allow9MissingWithNoRole", Boolean.TRUE);
+				setData(SlapFingerprintsCapturingFxController.class, "acceptBadQualityFingerprint",
 				        acceptBadQualityFingerprint);
-				setData(FingerprintCapturingFxController.class, "acceptBadQualityFingerprintMinRetires",
+				setData(SlapFingerprintsCapturingFxController.class, "acceptBadQualityFingerprintMinRetires",
 				        acceptBadQualityFingerprintMinRetries);
 		
-				renderUiAndWaitForUserInput(FingerprintCapturingFxController.class);
+				renderUiAndWaitForUserInput(SlapFingerprintsCapturingFxController.class);
 				break;
 			}
 			case 1:
+			{
+				renderUiAndWaitForUserInput(PalmCapturingFxController.class);
+				break;
+			}
+			case 2:
 			{
 				passData(FingerprintInquiryStatusCheckerWorkflowTask.class, InquiryByFingerprintsPaneFxController.class,
 				         "status");
@@ -59,9 +68,9 @@ public class RegisterCriminalFingerprintsPresentWorkflow extends WizardWorkflowB
 				
 				if(inquiryId == null)
 				{
-					passData(FingerprintCapturingFxController.class, "slapFingerprints",
+					passData(SlapFingerprintsCapturingFxController.class, "slapFingerprints",
 					         FingerprintInquiryWorkflowTask.class, "fingerprints");
-					passData(FingerprintCapturingFxController.class, FingerprintInquiryWorkflowTask.class,
+					passData(SlapFingerprintsCapturingFxController.class, FingerprintInquiryWorkflowTask.class,
 					         "missingFingerprints");
 					
 					executeWorkflowTask(FingerprintInquiryWorkflowTask.class);
@@ -72,14 +81,14 @@ public class RegisterCriminalFingerprintsPresentWorkflow extends WizardWorkflowB
 				executeWorkflowTask(FingerprintInquiryStatusCheckerWorkflowTask.class);
 				break;
 			}
-			case 2:
+			case 3:
 			{
 				passData(FingerprintInquiryStatusCheckerWorkflowTask.class,
 				         InquiryByFingerprintsResultPaneFxController.class, "criminalBiometricsId");
 				renderUiAndWaitForUserInput(InquiryByFingerprintsResultPaneFxController.class);
 				break;
 			}
-			case 3:
+			case 4:
 			{
 				renderUiAndWaitForUserInput(RegisteringFingerprintsPaneFxController.class);
 				
@@ -94,10 +103,14 @@ public class RegisterCriminalFingerprintsPresentWorkflow extends WizardWorkflowB
 				{
 					passData(GenerateNewCriminalBiometricsIdWorkflowTask.class,
 					         SubmitCriminalFingerprintsWorkflowTask.class, "criminalBiometricsId");
-					passData(FingerprintCapturingFxController.class, "combinedFingerprints",
+					passData(SlapFingerprintsCapturingFxController.class, "combinedFingerprints",
 					         SubmitCriminalFingerprintsWorkflowTask.class, "fingerprints");
-					passData(FingerprintCapturingFxController.class, SubmitCriminalFingerprintsWorkflowTask.class,
+					passData(PalmCapturingFxController.class, SubmitCriminalFingerprintsWorkflowTask.class,
+					         "palms");
+					passData(SlapFingerprintsCapturingFxController.class, SubmitCriminalFingerprintsWorkflowTask.class,
 					         "missingFingerprints");
+					setData(SubmitCriminalFingerprintsWorkflowTask.class, "criminalWorkflowSource", CriminalWorkflowSource.CRIMINAL_PRESENT);
+					setData(SubmitCriminalFingerprintsWorkflowTask.class, "criminalFingerprintSource", CriminalFingerprintSource.LIVE_CAPTURE);
 					executeWorkflowTask(SubmitCriminalFingerprintsWorkflowTask.class);
 				}
 				else if(request == Request.CHECK_FINGERPRINTS)

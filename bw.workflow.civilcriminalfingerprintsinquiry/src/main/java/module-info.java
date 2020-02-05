@@ -11,7 +11,7 @@ module bw.workflow.civilcriminalfingerprintsinquiry
 	opens sa.gov.nic.bio.bw.workflow.civilcriminalfingerprintsinquiry.fxml to bw.core;
 	opens sa.gov.nic.bio.bw.workflow.civilcriminalfingerprintsinquiry.controllers to javafx.fxml, bw.core;
 	opens sa.gov.nic.bio.bw.workflow.civilcriminalfingerprintsinquiry.tasks to bw.core;
-	opens sa.gov.nic.bio.bw.workflow.civilcriminalfingerprintsinquiry.beans to org.apache.commons.lang3;
+	opens sa.gov.nic.bio.bw.workflow.civilcriminalfingerprintsinquiry.beans to org.apache.commons.lang3, com.google.gson;
 	exports sa.gov.nic.bio.bw.workflow.civilcriminalfingerprintsinquiry.webservice;
 	exports sa.gov.nic.bio.bw.workflow.civilcriminalfingerprintsinquiry.tasks;
 	exports sa.gov.nic.bio.bw.workflow.civilcriminalfingerprintsinquiry.beans;

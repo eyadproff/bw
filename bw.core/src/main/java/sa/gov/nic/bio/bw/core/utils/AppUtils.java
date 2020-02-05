@@ -3,6 +3,7 @@ package sa.gov.nic.bio.bw.core.utils;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.reflect.TypeToken;
 import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.geometry.NodeOrientation;
@@ -39,10 +40,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.lang.module.ModuleReference;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import java.lang.reflect.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -91,9 +89,15 @@ public final class AppUtils implements AppLogger
 	private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd MMMM yyyy G");
 	private static final DateTimeFormatter DATE_FORMATTER_SIMPLE = DateTimeFormatter.ofPattern("dd/MM/yyyy G");
 	private static final DateTimeFormatter DATE_FORMATTER_SIMPLE_RTL = DateTimeFormatter.ofPattern("yyyy/MM/dd G");
+	private static final DateTimeFormatter DATE_TIME_FORMATTER_SIMPLE = DateTimeFormatter.ofPattern("hh:mm:ss a - EEEE dd/MM/yyyy G");
+	private static final DateTimeFormatter DATE_TIME_FORMATTER_SIMPLE_RTL = DateTimeFormatter.ofPattern("hh:mm:ss a - EEEE yyyy/MM/dd G");
 	private static final DateTimeFormatter DATE_WTH_WEEK_DAY_FORMATTER =
 																	DateTimeFormatter.ofPattern("EEEE dd MMMM yyyy G");
 	private static final DateTimeFormatter FORMAL_DATE_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+	private static final DateTimeFormatter DATE_SIMPLE_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy G");
+	private static final DateTimeFormatter DATE_SIMPLE_WTH_WEEK_DAY_FORMATTER =
+																	DateTimeFormatter.ofPattern("EEEE dd/MM/yyyy G");
+	private static final DateTimeFormatter TIME_12H_FORMATTER = DateTimeFormatter.ofPattern("hh:mm:ss a");
 	private static final HijrahChronology nicChronology = HijrahChronology.INSTANCE;
 	private static final FontAwesome FONTAWESOME_INSTANCE = new FontAwesome(Objects.requireNonNull(
 			AppUtils.class.getResource(FONT_AWESOME_FILE)).toExternalForm());
@@ -234,6 +238,14 @@ public final class AppUtils implements AppLogger
 							Locale.getDefault()).format(temporal), Locale.getDefault(), false);
 		else return localizeNumbers(DATE_FORMATTER_SIMPLE.withLocale(
 							Locale.getDefault()).format(temporal), Locale.getDefault(), false);
+	}
+	
+	public static String formatDateTimeSimple(TemporalAccessor temporal, boolean rtl)
+	{
+		if(rtl) return localizeNumbers(DATE_TIME_FORMATTER_SIMPLE_RTL.withLocale(
+				Locale.getDefault()).format(temporal), Locale.getDefault(), false);
+		else return localizeNumbers(DATE_TIME_FORMATTER_SIMPLE.withLocale(
+				Locale.getDefault()).format(temporal), Locale.getDefault(), false);
 	}
 	
 	public static LocalDate parseFormalDate(String sDate)
@@ -394,6 +406,28 @@ public final class AppUtils implements AppLogger
 		else return AppUtils.formatDateTime(gregorianDateTime);
 	}
 	
+	public static String formatHijriGregorianDateTimeSimple(long seconds, boolean rtl)
+	{
+		ChronoZonedDateTime<HijrahDate> hijriDateTime = null;
+		
+		try
+		{
+			hijriDateTime = AppUtils.secondsToHijriDateTime(seconds);
+		}
+		catch(DateTimeException e)
+		{
+			// thrown in case of "Hijrah date out of range"
+		}
+		
+		ZonedDateTime gregorianDateTime = AppUtils.secondsToGregorianDateTime(seconds);
+		
+		if(hijriDateTime != null)
+		{
+			return AppUtils.formatDateTimeSimple(hijriDateTime, rtl) + " - " + AppUtils.formatDateSimple(gregorianDateTime, rtl);
+		}
+		else return AppUtils.formatDateTimeSimple(gregorianDateTime, rtl);
+	}
+	
 	public static String formatHijriDateSimple(long seconds, boolean rtl)
 	{
 		HijrahDate hijriDate = null;
@@ -504,7 +538,7 @@ public final class AppUtils implements AppLogger
 			{
 				try
 				{
-					JsonObject jsonObject = new JsonParser().parse(payload).getAsJsonObject();
+					JsonObject jsonObject = JsonParser.parseString(payload).getAsJsonObject();
 					String exp = jsonObject.get(field).getAsString();
 					
 					if(exp == null) LOGGER.warning("The payload has no \"" + field + "\"!");
@@ -636,6 +670,11 @@ public final class AppUtils implements AppLogger
 		
 		String fullName = firstName + " " + fatherName + " " + grandfatherName + " " + familyName;
 		return fullName.trim().replaceAll("\\s+", " "); // remove extra spaces
+	}
+
+	public static <T> String toJson(T object, Type rawType, Type... typeArguments)
+	{
+		return new Gson().toJson(object, TypeToken.getParameterized(rawType, typeArguments).getType());
 	}
 	
 	public static <T> String toJson(T object)
@@ -778,6 +817,20 @@ public final class AppUtils implements AppLogger
 			LOGGER.warning("Failed to open the app folder (" + AppConstants.APP_FOLDER_PATH + ")");
 		}
 	}
+
+	public static void openFileOrFolder(File file)
+	{
+		if(file == null) return;
+
+		try
+		{
+			Desktop.getDesktop().open(file);
+		}
+		catch(Exception e)
+		{
+			LOGGER.warning("Failed to open file/folder (" + file.getAbsolutePath() + ")");
+		}
+	}
 	
 	public static String stacktraceToString(Throwable throwable)
 	{
@@ -871,5 +924,23 @@ public final class AppUtils implements AppLogger
 		ClipboardContent content = new ClipboardContent();
 		content.putString(text);
 		Clipboard.getSystemClipboard().setContent(content);
+	}
+
+	public static String get3LinesTimestampInArabic()
+	{
+		ResourceBundle resourceBundle = getCoreStringsResourceBundle(AppConstants.Locales.SAUDI_AR_LOCALE);
+		ZonedDateTime now = ZonedDateTime.now(AppConstants.SAUDI_ZONE);
+
+		String firstLine = localizeNumbers(DATE_SIMPLE_WTH_WEEK_DAY_FORMATTER.withLocale(
+							AppConstants.Locales.SAUDI_AR_LOCALE).withChronology(HijrahChronology.INSTANCE).format(now),
+							AppConstants.Locales.SAUDI_AR_LOCALE, false);
+		String secondLine = resourceBundle.getString("label.equivalentDate") + ": " +
+							localizeNumbers(DATE_SIMPLE_FORMATTER.withLocale(AppConstants.Locales.SAUDI_AR_LOCALE)
+									.format(now), AppConstants.Locales.SAUDI_AR_LOCALE, false);
+		String thirdLine = resourceBundle.getString("label.theTime") + ": " +
+							localizeNumbers(TIME_12H_FORMATTER.withLocale(AppConstants.Locales.SAUDI_AR_LOCALE)
+									.format(now), AppConstants.Locales.SAUDI_AR_LOCALE, false);
+
+		return firstLine + "\n" + secondLine + "\n" + thirdLine;
 	}
 }
