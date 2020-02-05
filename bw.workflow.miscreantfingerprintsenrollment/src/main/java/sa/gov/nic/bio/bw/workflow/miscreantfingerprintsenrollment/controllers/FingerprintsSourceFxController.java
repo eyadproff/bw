@@ -25,15 +25,15 @@ public class FingerprintsSourceFxController extends WizardStepFxControllerBase
 	
 	@Output private Source fingerprintsSource;
 	
-	@FXML private RadioButton rbByScanningFingerprintsCard;
 	@FXML private RadioButton rbByUploadingNistFile;
+	@FXML private RadioButton rbByScanningFingerprintsCard;
 	@FXML private Button btnNext;
-	
-	private boolean minusOneStep = false;
 	
 	@Override
 	protected void onAttachedToScene()
 	{
+		System.out.println("fingerprintsSource = " + fingerprintsSource);
+		
 		if(fingerprintsSource == Source.SCANNING_FINGERPRINTS_CARD)
 		{
 			rbByScanningFingerprintsCard.setSelected(true);
@@ -55,56 +55,34 @@ public class FingerprintsSourceFxController extends WizardStepFxControllerBase
 			}
 		};
 		
-		rbByScanningFingerprintsCard.addEventHandler(KeyEvent.KEY_PRESSED, eventHandler);
 		rbByUploadingNistFile.addEventHandler(KeyEvent.KEY_PRESSED, eventHandler);
+		rbByScanningFingerprintsCard.addEventHandler(KeyEvent.KEY_PRESSED, eventHandler);
 		
-		String scanFingerprintCardTitle = resources.getString("wizard.scanFingerprintCard");
 		String uploadNistFileTitle = resources.getString("wizard.uploadNistFile");
 		String showPersonInformationTitle = resources.getString("wizard.showPersonInformation");
+		String scanFingerprintCardTitle = resources.getString("wizard.scanFingerprintCard");
 		String specifyFingerprintCoordinatesTitle = resources.getString("wizard.specifyFingerprintCoordinates");
 		
-		rbByScanningFingerprintsCard.selectedProperty().addListener((observable, oldValue, newValue) ->
-		{
-		    if(newValue)
-		    {
-			    Context.getCoreFxController().getWizardPane(getTabIndex()).updateStep(1, scanFingerprintCardTitle,
-			                                                             "file");
-		    	
-			    if(minusOneStep)
-			    {
-				    Context.getCoreFxController().getWizardPane(getTabIndex()).addStep(2,
-				                                                          specifyFingerprintCoordinatesTitle,
-				                                                          "\\uf247");
-				    minusOneStep = false;
-			    }
-			    else
-			    {
-				    Context.getCoreFxController().getWizardPane(getTabIndex()).updateStep(2,
-				                                                             specifyFingerprintCoordinatesTitle,
-				                                                             "\\uf247");
-			    }
-		    }
-		});
 		rbByUploadingNistFile.selectedProperty().addListener((observable, oldValue, newValue) ->
 		{
 		    if(newValue)
 		    {
-		        Context.getCoreFxController().getWizardPane(getTabIndex()).updateStep(1, uploadNistFileTitle,
-		                                                                 "upload");
-			
-			    if(minusOneStep)
-			    {
-				    Context.getCoreFxController().getWizardPane(getTabIndex()).addStep(2,
-				                                                          showPersonInformationTitle,
-				                                                          "\\uf2b9");
-				    minusOneStep = false;
-			    }
-			    else
-			    {
-				    Context.getCoreFxController().getWizardPane(getTabIndex()).updateStep(2,
-				                                                             showPersonInformationTitle,
-				                                                             "\\uf2b9");
-			    }
+		        Context.getCoreFxController().getWizardPane(getTabIndex()).updateStep(3, uploadNistFileTitle,
+		                                                                              "upload");
+			    Context.getCoreFxController().getWizardPane(getTabIndex()).updateStep(4,
+			                                                                          showPersonInformationTitle,
+			                                                                          "\\uf2b9");
+		    }
+		});
+		rbByScanningFingerprintsCard.selectedProperty().addListener((observable, oldValue, newValue) ->
+		{
+		    if(newValue)
+		    {
+			    Context.getCoreFxController().getWizardPane(getTabIndex()).updateStep(3, scanFingerprintCardTitle,
+			                                                             "file");
+			    Context.getCoreFxController().getWizardPane(getTabIndex()).updateStep(4,
+			                                                                          specifyFingerprintCoordinatesTitle,
+			                                                                          "\\uf247");
 		    }
 		});
 		
@@ -120,7 +98,13 @@ public class FingerprintsSourceFxController extends WizardStepFxControllerBase
 	@Override
 	public void onGoingNext(Map<String, Object> uiDataMap)
 	{
-		if(rbByScanningFingerprintsCard.isSelected()) fingerprintsSource = Source.SCANNING_FINGERPRINTS_CARD;
-		else if(rbByUploadingNistFile.isSelected()) fingerprintsSource = Source.UPLOADING_NIST_FILE;
+		if(rbByUploadingNistFile.isSelected()) fingerprintsSource = Source.UPLOADING_NIST_FILE;
+		else if(rbByScanningFingerprintsCard.isSelected()) fingerprintsSource = Source.SCANNING_FINGERPRINTS_CARD;
+	}
+	
+	@Override
+	protected void onGoingPrevious(Map<String, Object> uiDataMap)
+	{
+		onGoingNext(uiDataMap);
 	}
 }

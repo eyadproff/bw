@@ -27,8 +27,8 @@
                         <Label text="%label.fingerprintsSource"/>
                     </VBox>
                     <VBox alignment="CENTER_LEFT" spacing="5.0">
-                        <RadioButton fx:id="rbByScanningFingerprintsCard" text="%label.byScanningFingerprintsCard" toggleGroup="$toggleGroup"/>
                         <RadioButton fx:id="rbByUploadingNistFile" text="%label.byUploadingNistFile" toggleGroup="$toggleGroup"/>
+                        <RadioButton fx:id="rbByScanningFingerprintsCard" text="%label.byScanningFingerprintsCard" toggleGroup="$toggleGroup"/>
                     </VBox>
                 </HBox>
             </HBox>
