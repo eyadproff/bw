@@ -10,7 +10,7 @@ import sa.gov.nic.bio.bw.workflow.miscreantfingerprintsenrollment.webservice.Mis
 
 public class GetMiscreantInfoByIdWorkflowTask extends WorkflowTask
 {
-	@Input(alwaysRequired = true) private int miscreantId;
+	@Input(alwaysRequired = true) private long miscreantId;
 	@Output private MiscreantInfo miscreantInfo;
 	
 	@Override

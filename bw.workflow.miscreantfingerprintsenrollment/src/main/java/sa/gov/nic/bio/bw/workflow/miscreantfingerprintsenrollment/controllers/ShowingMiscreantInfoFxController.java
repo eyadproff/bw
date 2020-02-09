@@ -10,16 +10,16 @@ import sa.gov.nic.bio.bw.core.utils.FxmlFile;
 import sa.gov.nic.bio.bw.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.core.workflow.Input;
 import sa.gov.nic.bio.bw.core.workflow.Output;
-import sa.gov.nic.bio.bw.workflow.commons.beans.NormalizedPersonInfo;
-import sa.gov.nic.bio.bw.workflow.commons.beans.PersonInfo;
+import sa.gov.nic.bio.bw.workflow.miscreantfingerprintsenrollment.beans.MiscreantInfo;
+import sa.gov.nic.bio.bw.workflow.miscreantfingerprintsenrollment.beans.NormalizedMiscreantInfo;
 
 import java.util.function.Consumer;
 
 @FxmlFile("showingMiscreantInfo.fxml")
 public class ShowingMiscreantInfoFxController extends WizardStepFxControllerBase
 {
-	@Input private PersonInfo personInfo;
-	@Output private NormalizedPersonInfo normalizedPersonInfo;
+	@Input private MiscreantInfo miscreantInfo;
+	@Output private NormalizedMiscreantInfo normalizedMiscreantInfo;
 	
 	@FXML private ScrollPane infoPane;
 	@FXML private Label lblFirstName;
@@ -37,7 +37,7 @@ public class ShowingMiscreantInfoFxController extends WizardStepFxControllerBase
 	@Override
 	protected void onAttachedToScene()
 	{
-		normalizedPersonInfo = new NormalizedPersonInfo(personInfo);
+		normalizedMiscreantInfo = new NormalizedMiscreantInfo(miscreantInfo);
 		
 		String notAvailable = resources.getString("label.notAvailable");
 		Consumer<Label> consumer = label ->
@@ -46,15 +46,15 @@ public class ShowingMiscreantInfoFxController extends WizardStepFxControllerBase
 			label.setTextFill(Color.RED);
 		};
 		
-		GuiUtils.setLabelText(lblFirstName, normalizedPersonInfo.getFirstNameLabel()).orElse(consumer);
-		GuiUtils.setLabelText(lblFatherName, normalizedPersonInfo.getFatherNameLabel()).orElse(consumer);
-		GuiUtils.setLabelText(lblGrandfatherName, normalizedPersonInfo.getGrandfatherNameLabel()).orElse(consumer);
-		GuiUtils.setLabelText(lblFamilyName, normalizedPersonInfo.getFamilyNameLabel()).orElse(consumer);
-		GuiUtils.setLabelText(lblGender, normalizedPersonInfo.getGender()).orElse(consumer);
-		GuiUtils.setLabelText(lblNationality, normalizedPersonInfo.getNationality()).orElse(consumer);
-		GuiUtils.setLabelText(lblOccupation, normalizedPersonInfo.getOccupation()).orElse(consumer);
-		GuiUtils.setLabelText(lblBirthPlace, normalizedPersonInfo.getBirthPlace()).orElse(consumer);
-		GuiUtils.setLabelText(lblBirthDate, normalizedPersonInfo.getBirthDate()).orElse(consumer);
+		GuiUtils.setLabelText(lblFirstName, normalizedMiscreantInfo.getFirstNameLabel()).orElse(consumer);
+		GuiUtils.setLabelText(lblFatherName, normalizedMiscreantInfo.getFatherNameLabel()).orElse(consumer);
+		GuiUtils.setLabelText(lblGrandfatherName, normalizedMiscreantInfo.getGrandfatherNameLabel()).orElse(consumer);
+		GuiUtils.setLabelText(lblFamilyName, normalizedMiscreantInfo.getFamilyNameLabel()).orElse(consumer);
+		GuiUtils.setLabelText(lblGender, normalizedMiscreantInfo.getGender()).orElse(consumer);
+		GuiUtils.setLabelText(lblNationality, normalizedMiscreantInfo.getNationality()).orElse(consumer);
+		GuiUtils.setLabelText(lblOccupation, normalizedMiscreantInfo.getOccupation()).orElse(consumer);
+		GuiUtils.setLabelText(lblBirthPlace, normalizedMiscreantInfo.getBirthPlace()).orElse(consumer);
+		GuiUtils.setLabelText(lblBirthDate, normalizedMiscreantInfo.getBirthDate()).orElse(consumer);
 		
 		infoPane.autosize();
 		btnConfirmMiscreantInfo.requestFocus();

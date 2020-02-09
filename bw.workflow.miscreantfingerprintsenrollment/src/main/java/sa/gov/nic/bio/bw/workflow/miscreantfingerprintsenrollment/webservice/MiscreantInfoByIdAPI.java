@@ -9,5 +9,5 @@ import sa.gov.nic.bio.bw.workflow.miscreantfingerprintsenrollment.beans.Miscrean
 public interface MiscreantInfoByIdAPI
 {
 	@GET("services-gateway-demographic/api/miscreant/info/v1")
-	Call<MiscreantInfo> getMiscreantInfoById(@Header("Workflow-Code") Integer workflowId, @Header("Workflow-Tcn") Long workflowTcn, @Query("miscreant-id") int miscreantId);
+	Call<MiscreantInfo> getMiscreantInfoById(@Header("Workflow-Code") Integer workflowId, @Header("Workflow-Tcn") Long workflowTcn, @Query("miscreant-id") long miscreantId);
 }

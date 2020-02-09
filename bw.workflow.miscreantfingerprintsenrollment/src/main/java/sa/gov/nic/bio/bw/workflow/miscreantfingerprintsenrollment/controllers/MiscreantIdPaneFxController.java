@@ -10,12 +10,10 @@ import sa.gov.nic.bio.bw.core.utils.FxmlFile;
 import sa.gov.nic.bio.bw.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.core.workflow.Output;
 
-import java.util.Map;
-
 @FxmlFile("miscreantId.fxml")
 public class MiscreantIdPaneFxController extends WizardStepFxControllerBase
 {
-	@Output private Integer miscreantId;
+	@Output private Long miscreantId;
 	
 	@FXML private ProgressIndicator piProgress;
 	@FXML private TextField txtPersonId;
@@ -45,17 +43,11 @@ public class MiscreantIdPaneFxController extends WizardStepFxControllerBase
 	}
 	
 	@Override
-	protected void onGoingPrevious(Map<String, Object> uiDataMap)
-	{
-		if(!btnNext.isDisabled()) miscreantId = Integer.parseInt(txtPersonId.getText());
-	}
-	
-	@Override
 	protected void onNextButtonClicked(ActionEvent actionEvent)
 	{
 		if(btnNext.isDisabled()) return;
 		
-		miscreantId = Integer.parseInt(txtPersonId.getText());
+		miscreantId = Long.parseLong(txtPersonId.getText());
 		continueWorkflow();
 	}
 }
