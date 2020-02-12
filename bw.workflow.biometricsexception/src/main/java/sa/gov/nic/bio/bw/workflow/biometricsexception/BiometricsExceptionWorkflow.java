@@ -33,7 +33,7 @@ import java.util.List;
 
 
 @AssociatedMenu(workflowId = 1017, menuId = "menu.edit.biometricsException", menuTitle = "menu.title", menuOrder = 2)
-@WithLookups({PersonTypesLookup.class, CountriesLookup.class, CausesLookup.class})
+@WithLookups({PersonTypesLookup.class,DocumentTypesLookup.class, CountriesLookup.class,CausesLookup.class})
 @Wizard({@Step(iconId = "\\uf2bb", title = "wizard.InquiryByPersonId"),
         @Step(iconId = "database", title = "wizard.inquiryResult"),
         @Step(iconId = "question", title = "wizard.biometricsExceptionType"),

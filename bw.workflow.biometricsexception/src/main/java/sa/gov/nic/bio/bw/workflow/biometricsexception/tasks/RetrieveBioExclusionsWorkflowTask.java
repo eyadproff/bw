@@ -26,7 +26,7 @@ public class RetrieveBioExclusionsWorkflowTask extends WorkflowTask {
         TaskResponse<List<BioExclusion>> taskResponse = Context.getWebserviceManager().executeApi(apiCall);
         //resetWorkflowStepIfNegativeOrNullTaskResponse(taskResponse);
 
-        boolean notFound = !taskResponse.isSuccess() && "B003-0061".equals(taskResponse.getErrorCode());
+        boolean notFound = !taskResponse.isSuccess() && "B003-0078".equals(taskResponse.getErrorCode());
 
         if (notFound) return;
 

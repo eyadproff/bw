@@ -4,7 +4,7 @@ public class Fingerprint {
 
     private boolean missOrNot = false;
     private Cause cause;
-    private int Status;
+    private Integer Status;
     private int Position;
     private Integer seqNum;
     private Boolean alreadyAdded = false;
@@ -27,11 +27,11 @@ public class Fingerprint {
         this.cause = cause;
     }
 
-    public int getStatus() {
+    public Integer getStatus() {
         return Status;
     }
 
-    public void setStatus(int status) {
+    public void setStatus(Integer status) {
         Status = status;
     }
 

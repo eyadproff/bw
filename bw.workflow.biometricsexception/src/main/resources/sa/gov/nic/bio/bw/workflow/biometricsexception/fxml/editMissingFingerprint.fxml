@@ -164,43 +164,59 @@
                                                                 <ComboBox fx:id="CMenuRThumb"
                                                                           nodeOrientation="RIGHT_TO_LEFT"
                                                                           promptText="%Cause"/>
-                                                                <VBox fx:id="VOtherRThumb" visible="false">
+
+                                                                <VBox fx:id="VOtherRThumb" prefHeight="133.0" prefWidth="123.0" visible="false">
                                                                     <children>
-                                                                        <Label contentDisplay="CENTER" prefHeight="20.0"
-                                                                               prefWidth="80.0" text="%Status"/>
-                                                                        <RadioButton toggleGroup="$TGRThumb"
-                                                                                     contentDisplay="CENTER"
-                                                                                     mnemonicParsing="false"
-                                                                                     prefHeight="27.0" prefWidth="97.0"
-                                                                                     text="%Permanent">
-                                                                            <VBox.margin>
-                                                                                <Insets left="10.0" right="10.0"/>
-                                                                            </VBox.margin>
-                                                                        </RadioButton>
-                                                                        <RadioButton toggleGroup="$TGRThumb"
-                                                                                     mnemonicParsing="false"
-                                                                                     prefHeight="27.0" prefWidth="98.0"
-                                                                                     text="%Temporary">
+                                                                        <Label contentDisplay="CENTER" prefHeight="20.0" prefWidth="80.0" text="%Status" />
+                                                                        <RadioButton toggleGroup="$TGRThumb" mnemonicParsing="false" prefHeight="27.0" prefWidth="98.0" text="%3months">
                                                                             <opaqueInsets>
-                                                                                <Insets/>
+                                                                                <Insets />
                                                                             </opaqueInsets>
                                                                             <VBox.margin>
-                                                                                <Insets left="10.0" right="10.0"/>
+                                                                                <Insets left="10.0" right="10.0" />
+                                                                            </VBox.margin>
+                                                                            <font>
+                                                                                <Font size="11.0" />
+                                                                            </font>
+                                                                        </RadioButton>
+                                                                        <RadioButton toggleGroup="$TGRThumb" layoutX="20.0" layoutY="57.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="98.0" text="%6months">
+                                                                            <opaqueInsets>
+                                                                                <Insets />
+                                                                            </opaqueInsets>
+                                                                            <VBox.margin>
+                                                                                <Insets left="10.0" right="10.0" />
+                                                                            </VBox.margin>
+                                                                            <font>
+                                                                                <Font size="11.0" />
+                                                                            </font>
+                                                                        </RadioButton>
+                                                                        <RadioButton toggleGroup="$TGRThumb" layoutX="20.0" layoutY="84.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="98.0" text="%oneYear">
+                                                                            <opaqueInsets>
+                                                                                <Insets />
+                                                                            </opaqueInsets>
+                                                                            <font>
+                                                                                <Font size="11.0" />
+                                                                            </font>
+                                                                            <VBox.margin>
+                                                                                <Insets left="10.0" right="10.0" />
                                                                             </VBox.margin>
                                                                         </RadioButton>
-                                                                        <TextField fx:id="CouseTRThumb"
-                                                                                   maxHeight="-Infinity"
-                                                                                   maxWidth="-Infinity"
-                                                                                   prefHeight="22.0" prefWidth="121.0"
-                                                                                   promptText="%Cause"
-                                                                                   VBox.vgrow="ALWAYS">
+                                                                        <RadioButton toggleGroup="$TGRThumb" contentDisplay="CENTER" mnemonicParsing="false" prefHeight="27.0" prefWidth="97.0" text="%Permanent">
                                                                             <VBox.margin>
-                                                                                <Insets top="5.0"/>
+                                                                                <Insets left="10.0" right="10.0" />
+                                                                            </VBox.margin>
+                                                                            <font>
+                                                                                <Font size="11.0" />
+                                                                            </font>
+                                                                        </RadioButton>
+                                                                        <TextField fx:id="CouseTRThumb" visible="false" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="22.0" prefWidth="121.0" promptText="%Cause" VBox.vgrow="ALWAYS">
+                                                                            <VBox.margin>
+                                                                                <Insets top="5.0" />
                                                                             </VBox.margin>
                                                                         </TextField>
                                                                     </children>
                                                                     <VBox.margin>
-                                                                        <Insets top="10.0"/>
+                                                                        <Insets />
                                                                     </VBox.margin>
                                                                 </VBox>
                                                             </children>
@@ -220,51 +236,69 @@
                                                                 <ComboBox fx:id="CMenuRIndex"
                                                                           nodeOrientation="RIGHT_TO_LEFT"
                                                                           promptText="%Cause"/>
-                                                                <VBox fx:id="VOtherRIndex" visible="false">
+
+                                                                <VBox fx:id="VOtherRIndex" prefHeight="133.0" prefWidth="123.0" visible="false">
                                                                     <children>
-                                                                        <Label contentDisplay="CENTER" prefHeight="20.0"
-                                                                               prefWidth="80.0" text="%Status"/>
-                                                                        <RadioButton toggleGroup="$TGRIndex"
-                                                                                     contentDisplay="CENTER"
-                                                                                     mnemonicParsing="false"
-                                                                                     prefHeight="27.0" prefWidth="97.0"
-                                                                                     text="%Permanent">
-                                                                            <VBox.margin>
-                                                                                <Insets left="10.0" right="10.0"/>
-                                                                            </VBox.margin>
-                                                                        </RadioButton>
-                                                                        <RadioButton toggleGroup="$TGRIndex"
-                                                                                     mnemonicParsing="false"
-                                                                                     prefHeight="27.0" prefWidth="98.0"
-                                                                                     text="%Temporary">
+                                                                        <Label contentDisplay="CENTER" prefHeight="20.0" prefWidth="80.0" text="%Status" />
+                                                                        <RadioButton toggleGroup="$TGRIndex" mnemonicParsing="false" prefHeight="27.0" prefWidth="98.0" text="%3months">
                                                                             <opaqueInsets>
-                                                                                <Insets/>
+                                                                                <Insets />
                                                                             </opaqueInsets>
                                                                             <VBox.margin>
-                                                                                <Insets left="10.0" right="10.0"/>
+                                                                                <Insets left="10.0" right="10.0" />
+                                                                            </VBox.margin>
+                                                                            <font>
+                                                                                <Font size="11.0" />
+                                                                            </font>
+                                                                        </RadioButton>
+                                                                        <RadioButton toggleGroup="$TGRIndex" layoutX="20.0" layoutY="57.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="98.0" text="%6months">
+                                                                            <opaqueInsets>
+                                                                                <Insets />
+                                                                            </opaqueInsets>
+                                                                            <VBox.margin>
+                                                                                <Insets left="10.0" right="10.0" />
+                                                                            </VBox.margin>
+                                                                            <font>
+                                                                                <Font size="11.0" />
+                                                                            </font>
+                                                                        </RadioButton>
+                                                                        <RadioButton toggleGroup="$TGRIndex" layoutX="20.0" layoutY="84.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="98.0" text="%oneYear">
+                                                                            <opaqueInsets>
+                                                                                <Insets />
+                                                                            </opaqueInsets>
+                                                                            <font>
+                                                                                <Font size="11.0" />
+                                                                            </font>
+                                                                            <VBox.margin>
+                                                                                <Insets left="10.0" right="10.0" />
                                                                             </VBox.margin>
                                                                         </RadioButton>
-                                                                        <TextField fx:id="CouseTRIndex"
-                                                                                   maxHeight="-Infinity"
-                                                                                   maxWidth="-Infinity"
-                                                                                   prefHeight="22.0" prefWidth="121.0"
-                                                                                   promptText="%Cause"
-                                                                                   VBox.vgrow="ALWAYS">
+                                                                        <RadioButton toggleGroup="$TGRIndex" contentDisplay="CENTER" mnemonicParsing="false" prefHeight="27.0" prefWidth="97.0" text="%Permanent">
                                                                             <VBox.margin>
-                                                                                <Insets top="5.0"/>
+                                                                                <Insets left="10.0" right="10.0" />
+                                                                            </VBox.margin>
+                                                                            <font>
+                                                                                <Font size="11.0" />
+                                                                            </font>
+                                                                        </RadioButton>
+                                                                        <TextField fx:id="CouseTRIndex" visible="false" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="22.0" prefWidth="121.0" promptText="%Cause" VBox.vgrow="ALWAYS">
+                                                                            <VBox.margin>
+                                                                                <Insets top="5.0" />
                                                                             </VBox.margin>
                                                                         </TextField>
                                                                     </children>
                                                                     <VBox.margin>
-                                                                        <Insets top="10.0"/>
+                                                                        <Insets />
                                                                     </VBox.margin>
                                                                 </VBox>
+
                                                             </children>
                                                             <padding>
                                                                 <Insets bottom="10.0" left="5.0" right="5.0"
                                                                         top="10.0"/>
                                                             </padding>
                                                         </VBox>
+
                                                         <VBox fx:id="VRightMiddleFinger" disable="true"
                                                               maxHeight="-Infinity" maxWidth="-Infinity"
                                                               minHeight="-Infinity" minWidth="-Infinity"
@@ -276,45 +310,61 @@
                                                                 <ComboBox fx:id="CMenuRMiddle"
                                                                           nodeOrientation="RIGHT_TO_LEFT"
                                                                           promptText="%Cause"/>
-                                                                <VBox fx:id="VOtherRMiddle" visible="false">
+                                                                <VBox fx:id="VOtherRMiddle" prefHeight="133.0" prefWidth="123.0" visible="false">
                                                                     <children>
-                                                                        <Label contentDisplay="CENTER" prefHeight="20.0"
-                                                                               prefWidth="80.0" text="%Status"/>
-                                                                        <RadioButton toggleGroup="$TGRMiddle"
-                                                                                     contentDisplay="CENTER"
-                                                                                     mnemonicParsing="false"
-                                                                                     prefHeight="27.0" prefWidth="97.0"
-                                                                                     text="%Permanent">
-                                                                            <VBox.margin>
-                                                                                <Insets left="10.0" right="10.0"/>
-                                                                            </VBox.margin>
-                                                                        </RadioButton>
-                                                                        <RadioButton toggleGroup="$TGRMiddle"
-                                                                                     mnemonicParsing="false"
-                                                                                     prefHeight="27.0" prefWidth="98.0"
-                                                                                     text="%Temporary">
+                                                                        <Label contentDisplay="CENTER" prefHeight="20.0" prefWidth="80.0" text="%Status" />
+                                                                        <RadioButton toggleGroup="$TGRMiddle" mnemonicParsing="false" prefHeight="27.0" prefWidth="98.0" text="%3months">
                                                                             <opaqueInsets>
-                                                                                <Insets/>
+                                                                                <Insets />
                                                                             </opaqueInsets>
                                                                             <VBox.margin>
-                                                                                <Insets left="10.0" right="10.0"/>
+                                                                                <Insets left="10.0" right="10.0" />
+                                                                            </VBox.margin>
+                                                                            <font>
+                                                                                <Font size="11.0" />
+                                                                            </font>
+                                                                        </RadioButton>
+                                                                        <RadioButton toggleGroup="$TGRMiddle" layoutX="20.0" layoutY="57.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="98.0" text="%6months">
+                                                                            <opaqueInsets>
+                                                                                <Insets />
+                                                                            </opaqueInsets>
+                                                                            <VBox.margin>
+                                                                                <Insets left="10.0" right="10.0" />
+                                                                            </VBox.margin>
+                                                                            <font>
+                                                                                <Font size="11.0" />
+                                                                            </font>
+                                                                        </RadioButton>
+                                                                        <RadioButton toggleGroup="$TGRMiddle" layoutX="20.0" layoutY="84.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="98.0" text="%oneYear">
+                                                                            <opaqueInsets>
+                                                                                <Insets />
+                                                                            </opaqueInsets>
+                                                                            <font>
+                                                                                <Font size="11.0" />
+                                                                            </font>
+                                                                            <VBox.margin>
+                                                                                <Insets left="10.0" right="10.0" />
                                                                             </VBox.margin>
                                                                         </RadioButton>
-                                                                        <TextField fx:id="CouseTRMiddle"
-                                                                                   maxHeight="-Infinity"
-                                                                                   maxWidth="-Infinity"
-                                                                                   prefHeight="22.0" prefWidth="121.0"
-                                                                                   promptText="%Cause"
-                                                                                   VBox.vgrow="ALWAYS">
+                                                                        <RadioButton toggleGroup="$TGRMiddle" contentDisplay="CENTER" mnemonicParsing="false" prefHeight="27.0" prefWidth="97.0" text="%Permanent">
                                                                             <VBox.margin>
-                                                                                <Insets top="5.0"/>
+                                                                                <Insets left="10.0" right="10.0" />
+                                                                            </VBox.margin>
+                                                                            <font>
+                                                                                <Font size="11.0" />
+                                                                            </font>
+                                                                        </RadioButton>
+                                                                        <TextField fx:id="CouseTRMiddle" visible="false" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="22.0" prefWidth="121.0" promptText="%Cause" VBox.vgrow="ALWAYS">
+                                                                            <VBox.margin>
+                                                                                <Insets top="5.0" />
                                                                             </VBox.margin>
                                                                         </TextField>
                                                                     </children>
                                                                     <VBox.margin>
-                                                                        <Insets top="10.0"/>
+                                                                        <Insets />
                                                                     </VBox.margin>
                                                                 </VBox>
+
                                                             </children>
                                                             <padding>
                                                                 <Insets bottom="10.0" left="5.0" right="5.0"
@@ -332,43 +382,59 @@
                                                                 <ComboBox fx:id="CMenuRRing"
                                                                           nodeOrientation="RIGHT_TO_LEFT"
                                                                           promptText="%Cause"/>
-                                                                <VBox fx:id="VOtherRRing" visible="false">
+
+                                                                <VBox fx:id="VOtherRRing" prefHeight="133.0" prefWidth="123.0" visible="false">
                                                                     <children>
-                                                                        <Label contentDisplay="CENTER" prefHeight="20.0"
-                                                                               prefWidth="80.0" text="%Status"/>
-                                                                        <RadioButton toggleGroup="$TGRRing"
-                                                                                     contentDisplay="CENTER"
-                                                                                     mnemonicParsing="false"
-                                                                                     prefHeight="27.0" prefWidth="97.0"
-                                                                                     text="%Permanent">
-                                                                            <VBox.margin>
-                                                                                <Insets left="10.0" right="10.0"/>
-                                                                            </VBox.margin>
-                                                                        </RadioButton>
-                                                                        <RadioButton toggleGroup="$TGRRing"
-                                                                                     mnemonicParsing="false"
-                                                                                     prefHeight="27.0" prefWidth="98.0"
-                                                                                     text="%Temporary">
+                                                                        <Label contentDisplay="CENTER" prefHeight="20.0" prefWidth="80.0" text="%Status" />
+                                                                        <RadioButton toggleGroup="$TGRRing" mnemonicParsing="false" prefHeight="27.0" prefWidth="98.0" text="%3months">
                                                                             <opaqueInsets>
-                                                                                <Insets/>
+                                                                                <Insets />
                                                                             </opaqueInsets>
                                                                             <VBox.margin>
-                                                                                <Insets left="10.0" right="10.0"/>
+                                                                                <Insets left="10.0" right="10.0" />
+                                                                            </VBox.margin>
+                                                                            <font>
+                                                                                <Font size="11.0" />
+                                                                            </font>
+                                                                        </RadioButton>
+                                                                        <RadioButton toggleGroup="$TGRRing" layoutX="20.0" layoutY="57.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="98.0" text="%6months">
+                                                                            <opaqueInsets>
+                                                                                <Insets />
+                                                                            </opaqueInsets>
+                                                                            <VBox.margin>
+                                                                                <Insets left="10.0" right="10.0" />
+                                                                            </VBox.margin>
+                                                                            <font>
+                                                                                <Font size="11.0" />
+                                                                            </font>
+                                                                        </RadioButton>
+                                                                        <RadioButton toggleGroup="$TGRRing" layoutX="20.0" layoutY="84.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="98.0" text="%oneYear">
+                                                                            <opaqueInsets>
+                                                                                <Insets />
+                                                                            </opaqueInsets>
+                                                                            <font>
+                                                                                <Font size="11.0" />
+                                                                            </font>
+                                                                            <VBox.margin>
+                                                                                <Insets left="10.0" right="10.0" />
                                                                             </VBox.margin>
                                                                         </RadioButton>
-                                                                        <TextField fx:id="CouseTRRing"
-                                                                                   maxHeight="-Infinity"
-                                                                                   maxWidth="-Infinity"
-                                                                                   prefHeight="22.0" prefWidth="121.0"
-                                                                                   promptText="%Cause"
-                                                                                   VBox.vgrow="ALWAYS">
+                                                                        <RadioButton toggleGroup="$TGRRing" contentDisplay="CENTER" mnemonicParsing="false" prefHeight="27.0" prefWidth="97.0" text="%Permanent">
                                                                             <VBox.margin>
-                                                                                <Insets top="5.0"/>
+                                                                                <Insets left="10.0" right="10.0" />
+                                                                            </VBox.margin>
+                                                                            <font>
+                                                                                <Font size="11.0" />
+                                                                            </font>
+                                                                        </RadioButton>
+                                                                        <TextField fx:id="CouseTRRing" visible="false" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="22.0" prefWidth="121.0" promptText="%Cause" VBox.vgrow="ALWAYS">
+                                                                            <VBox.margin>
+                                                                                <Insets top="5.0" />
                                                                             </VBox.margin>
                                                                         </TextField>
                                                                     </children>
                                                                     <VBox.margin>
-                                                                        <Insets top="10.0"/>
+                                                                        <Insets />
                                                                     </VBox.margin>
                                                                 </VBox>
                                                             </children>
@@ -388,45 +454,61 @@
                                                                 <ComboBox fx:id="CMenuRLittle"
                                                                           nodeOrientation="RIGHT_TO_LEFT"
                                                                           promptText="%Cause"/>
-                                                                <VBox fx:id="VOtherRLittle" visible="false">
+                                                                <VBox fx:id="VOtherRLittle" prefHeight="133.0" prefWidth="123.0" visible="false">
                                                                     <children>
-                                                                        <Label contentDisplay="CENTER" prefHeight="20.0"
-                                                                               prefWidth="80.0" text="%Status"/>
-                                                                        <RadioButton toggleGroup="$TGRLittle"
-                                                                                     contentDisplay="CENTER"
-                                                                                     mnemonicParsing="false"
-                                                                                     prefHeight="27.0" prefWidth="97.0"
-                                                                                     text="%Permanent">
-                                                                            <VBox.margin>
-                                                                                <Insets left="10.0" right="10.0"/>
-                                                                            </VBox.margin>
-                                                                        </RadioButton>
-                                                                        <RadioButton toggleGroup="$TGRLittle"
-                                                                                     mnemonicParsing="false"
-                                                                                     prefHeight="27.0" prefWidth="98.0"
-                                                                                     text="%Temporary">
+                                                                        <Label contentDisplay="CENTER" prefHeight="20.0" prefWidth="80.0" text="%Status" />
+                                                                        <RadioButton toggleGroup="$TGRLittle" mnemonicParsing="false" prefHeight="27.0" prefWidth="98.0" text="%3months">
                                                                             <opaqueInsets>
-                                                                                <Insets/>
+                                                                                <Insets />
                                                                             </opaqueInsets>
                                                                             <VBox.margin>
-                                                                                <Insets left="10.0" right="10.0"/>
+                                                                                <Insets left="10.0" right="10.0" />
+                                                                            </VBox.margin>
+                                                                            <font>
+                                                                                <Font size="11.0" />
+                                                                            </font>
+                                                                        </RadioButton>
+                                                                        <RadioButton toggleGroup="$TGRLittle" layoutX="20.0" layoutY="57.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="98.0" text="%6months">
+                                                                            <opaqueInsets>
+                                                                                <Insets />
+                                                                            </opaqueInsets>
+                                                                            <VBox.margin>
+                                                                                <Insets left="10.0" right="10.0" />
+                                                                            </VBox.margin>
+                                                                            <font>
+                                                                                <Font size="11.0" />
+                                                                            </font>
+                                                                        </RadioButton>
+                                                                        <RadioButton toggleGroup="$TGRLittle" layoutX="20.0" layoutY="84.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="98.0" text="%oneYear">
+                                                                            <opaqueInsets>
+                                                                                <Insets />
+                                                                            </opaqueInsets>
+                                                                            <font>
+                                                                                <Font size="11.0" />
+                                                                            </font>
+                                                                            <VBox.margin>
+                                                                                <Insets left="10.0" right="10.0" />
                                                                             </VBox.margin>
                                                                         </RadioButton>
-                                                                        <TextField fx:id="CouseTRLittle"
-                                                                                   maxHeight="-Infinity"
-                                                                                   maxWidth="-Infinity"
-                                                                                   prefHeight="22.0" prefWidth="121.0"
-                                                                                   promptText="%Cause"
-                                                                                   VBox.vgrow="ALWAYS">
+                                                                        <RadioButton toggleGroup="$TGRLittle" contentDisplay="CENTER" mnemonicParsing="false" prefHeight="27.0" prefWidth="97.0" text="%Permanent">
                                                                             <VBox.margin>
-                                                                                <Insets top="5.0"/>
+                                                                                <Insets left="10.0" right="10.0" />
+                                                                            </VBox.margin>
+                                                                            <font>
+                                                                                <Font size="11.0" />
+                                                                            </font>
+                                                                        </RadioButton>
+                                                                        <TextField fx:id="CouseTRLittle" visible="false" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="22.0" prefWidth="121.0" promptText="%Cause" VBox.vgrow="ALWAYS">
+                                                                            <VBox.margin>
+                                                                                <Insets top="5.0" />
                                                                             </VBox.margin>
                                                                         </TextField>
                                                                     </children>
                                                                     <VBox.margin>
-                                                                        <Insets top="10.0"/>
+                                                                        <Insets />
                                                                     </VBox.margin>
                                                                 </VBox>
+
                                                             </children>
                                                             <padding>
                                                                 <Insets bottom="10.0" left="5.0" right="5.0"
@@ -462,43 +544,59 @@
                                                                 <ComboBox fx:id="CMenuLThumb"
                                                                           nodeOrientation="RIGHT_TO_LEFT"
                                                                           promptText="%Cause"/>
-                                                                <VBox fx:id="VOtherLThumb" visible="false">
+
+                                                                <VBox fx:id="VOtherLThumb" prefHeight="133.0" prefWidth="123.0" visible="false">
                                                                     <children>
-                                                                        <Label contentDisplay="CENTER" prefHeight="20.0"
-                                                                               prefWidth="80.0" text="%Status"/>
-                                                                        <RadioButton toggleGroup="$TGLThumb"
-                                                                                     contentDisplay="CENTER"
-                                                                                     mnemonicParsing="false"
-                                                                                     prefHeight="27.0" prefWidth="97.0"
-                                                                                     text="%Permanent">
-                                                                            <VBox.margin>
-                                                                                <Insets left="10.0" right="10.0"/>
-                                                                            </VBox.margin>
-                                                                        </RadioButton>
-                                                                        <RadioButton toggleGroup="$TGLThumb"
-                                                                                     mnemonicParsing="false"
-                                                                                     prefHeight="27.0" prefWidth="98.0"
-                                                                                     text="%Temporary">
+                                                                        <Label contentDisplay="CENTER" prefHeight="20.0" prefWidth="80.0" text="%Status" />
+                                                                        <RadioButton toggleGroup="$TGLThumb" mnemonicParsing="false" prefHeight="27.0" prefWidth="98.0" text="%3months">
                                                                             <opaqueInsets>
-                                                                                <Insets/>
+                                                                                <Insets />
                                                                             </opaqueInsets>
                                                                             <VBox.margin>
-                                                                                <Insets left="10.0" right="10.0"/>
+                                                                                <Insets left="10.0" right="10.0" />
+                                                                            </VBox.margin>
+                                                                            <font>
+                                                                                <Font size="11.0" />
+                                                                            </font>
+                                                                        </RadioButton>
+                                                                        <RadioButton toggleGroup="$TGLThumb" layoutX="20.0" layoutY="57.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="98.0" text="%6months">
+                                                                            <opaqueInsets>
+                                                                                <Insets />
+                                                                            </opaqueInsets>
+                                                                            <VBox.margin>
+                                                                                <Insets left="10.0" right="10.0" />
+                                                                            </VBox.margin>
+                                                                            <font>
+                                                                                <Font size="11.0" />
+                                                                            </font>
+                                                                        </RadioButton>
+                                                                        <RadioButton toggleGroup="$TGLThumb" layoutX="20.0" layoutY="84.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="98.0" text="%oneYear">
+                                                                            <opaqueInsets>
+                                                                                <Insets />
+                                                                            </opaqueInsets>
+                                                                            <font>
+                                                                                <Font size="11.0" />
+                                                                            </font>
+                                                                            <VBox.margin>
+                                                                                <Insets left="10.0" right="10.0" />
                                                                             </VBox.margin>
                                                                         </RadioButton>
-                                                                        <TextField fx:id="CouseTLThumb"
-                                                                                   maxHeight="-Infinity"
-                                                                                   maxWidth="-Infinity"
-                                                                                   prefHeight="22.0" prefWidth="121.0"
-                                                                                   promptText="%Cause"
-                                                                                   VBox.vgrow="ALWAYS">
+                                                                        <RadioButton toggleGroup="$TGLThumb" contentDisplay="CENTER" mnemonicParsing="false" prefHeight="27.0" prefWidth="97.0" text="%Permanent">
                                                                             <VBox.margin>
-                                                                                <Insets top="5.0"/>
+                                                                                <Insets left="10.0" right="10.0" />
+                                                                            </VBox.margin>
+                                                                            <font>
+                                                                                <Font size="11.0" />
+                                                                            </font>
+                                                                        </RadioButton>
+                                                                        <TextField fx:id="CouseTLThumb" visible="false" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="22.0" prefWidth="121.0" promptText="%Cause" VBox.vgrow="ALWAYS">
+                                                                            <VBox.margin>
+                                                                                <Insets top="5.0" />
                                                                             </VBox.margin>
                                                                         </TextField>
                                                                     </children>
                                                                     <VBox.margin>
-                                                                        <Insets top="10.0"/>
+                                                                        <Insets />
                                                                     </VBox.margin>
                                                                 </VBox>
                                                             </children>
@@ -518,43 +616,59 @@
                                                                 <ComboBox fx:id="CMenuLIndex"
                                                                           nodeOrientation="RIGHT_TO_LEFT"
                                                                           promptText="%Cause"/>
-                                                                <VBox fx:id="VOtherLIndex" visible="false">
+
+                                                                <VBox fx:id="VOtherLIndex" prefHeight="133.0" prefWidth="123.0" visible="false">
                                                                     <children>
-                                                                        <Label contentDisplay="CENTER" prefHeight="20.0"
-                                                                               prefWidth="80.0" text="%Status"/>
-                                                                        <RadioButton toggleGroup="$TGLIndex"
-                                                                                     contentDisplay="CENTER"
-                                                                                     mnemonicParsing="false"
-                                                                                     prefHeight="27.0" prefWidth="97.0"
-                                                                                     text="%Permanent">
-                                                                            <VBox.margin>
-                                                                                <Insets left="10.0" right="10.0"/>
-                                                                            </VBox.margin>
-                                                                        </RadioButton>
-                                                                        <RadioButton toggleGroup="$TGLIndex"
-                                                                                     mnemonicParsing="false"
-                                                                                     prefHeight="27.0" prefWidth="98.0"
-                                                                                     text="%Temporary">
+                                                                        <Label contentDisplay="CENTER" prefHeight="20.0" prefWidth="80.0" text="%Status" />
+                                                                        <RadioButton toggleGroup="$TGLIndex" mnemonicParsing="false" prefHeight="27.0" prefWidth="98.0" text="%3months">
                                                                             <opaqueInsets>
-                                                                                <Insets/>
+                                                                                <Insets />
                                                                             </opaqueInsets>
                                                                             <VBox.margin>
-                                                                                <Insets left="10.0" right="10.0"/>
+                                                                                <Insets left="10.0" right="10.0" />
+                                                                            </VBox.margin>
+                                                                            <font>
+                                                                                <Font size="11.0" />
+                                                                            </font>
+                                                                        </RadioButton>
+                                                                        <RadioButton toggleGroup="$TGLIndex" layoutX="20.0" layoutY="57.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="98.0" text="%6months">
+                                                                            <opaqueInsets>
+                                                                                <Insets />
+                                                                            </opaqueInsets>
+                                                                            <VBox.margin>
+                                                                                <Insets left="10.0" right="10.0" />
+                                                                            </VBox.margin>
+                                                                            <font>
+                                                                                <Font size="11.0" />
+                                                                            </font>
+                                                                        </RadioButton>
+                                                                        <RadioButton toggleGroup="$TGLIndex" layoutX="20.0" layoutY="84.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="98.0" text="%oneYear">
+                                                                            <opaqueInsets>
+                                                                                <Insets />
+                                                                            </opaqueInsets>
+                                                                            <font>
+                                                                                <Font size="11.0" />
+                                                                            </font>
+                                                                            <VBox.margin>
+                                                                                <Insets left="10.0" right="10.0" />
                                                                             </VBox.margin>
                                                                         </RadioButton>
-                                                                        <TextField fx:id="CouseTLIndex"
-                                                                                   maxHeight="-Infinity"
-                                                                                   maxWidth="-Infinity"
-                                                                                   prefHeight="22.0" prefWidth="121.0"
-                                                                                   promptText="%Cause"
-                                                                                   VBox.vgrow="ALWAYS">
+                                                                        <RadioButton toggleGroup="$TGLIndex" contentDisplay="CENTER" mnemonicParsing="false" prefHeight="27.0" prefWidth="97.0" text="%Permanent">
                                                                             <VBox.margin>
-                                                                                <Insets top="5.0"/>
+                                                                                <Insets left="10.0" right="10.0" />
+                                                                            </VBox.margin>
+                                                                            <font>
+                                                                                <Font size="11.0" />
+                                                                            </font>
+                                                                        </RadioButton>
+                                                                        <TextField fx:id="CouseTLIndex" visible="false" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="22.0" prefWidth="121.0" promptText="%Cause" VBox.vgrow="ALWAYS">
+                                                                            <VBox.margin>
+                                                                                <Insets top="5.0" />
                                                                             </VBox.margin>
                                                                         </TextField>
                                                                     </children>
                                                                     <VBox.margin>
-                                                                        <Insets top="10.0"/>
+                                                                        <Insets />
                                                                     </VBox.margin>
                                                                 </VBox>
                                                             </children>
@@ -574,43 +688,59 @@
                                                                 <ComboBox fx:id="CMenuLMiddle"
                                                                           nodeOrientation="RIGHT_TO_LEFT"
                                                                           promptText="%Cause"/>
-                                                                <VBox fx:id="VOtherLMiddle" visible="false">
+
+                                                                <VBox fx:id="VOtherLMiddle" prefHeight="133.0" prefWidth="123.0" visible="false">
                                                                     <children>
-                                                                        <Label contentDisplay="CENTER" prefHeight="20.0"
-                                                                               prefWidth="80.0" text="%Status"/>
-                                                                        <RadioButton toggleGroup="$TGLMiddle"
-                                                                                     contentDisplay="CENTER"
-                                                                                     mnemonicParsing="false"
-                                                                                     prefHeight="27.0" prefWidth="97.0"
-                                                                                     text="%Permanent">
-                                                                            <VBox.margin>
-                                                                                <Insets left="10.0" right="10.0"/>
-                                                                            </VBox.margin>
-                                                                        </RadioButton>
-                                                                        <RadioButton toggleGroup="$TGLMiddle"
-                                                                                     mnemonicParsing="false"
-                                                                                     prefHeight="27.0" prefWidth="98.0"
-                                                                                     text="%Temporary">
+                                                                        <Label contentDisplay="CENTER" prefHeight="20.0" prefWidth="80.0" text="%Status" />
+                                                                        <RadioButton toggleGroup="$TGLMiddle" mnemonicParsing="false" prefHeight="27.0" prefWidth="98.0" text="%3months">
                                                                             <opaqueInsets>
-                                                                                <Insets/>
+                                                                                <Insets />
                                                                             </opaqueInsets>
                                                                             <VBox.margin>
-                                                                                <Insets left="10.0" right="10.0"/>
+                                                                                <Insets left="10.0" right="10.0" />
+                                                                            </VBox.margin>
+                                                                            <font>
+                                                                                <Font size="11.0" />
+                                                                            </font>
+                                                                        </RadioButton>
+                                                                        <RadioButton toggleGroup="$TGLMiddle" layoutX="20.0" layoutY="57.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="98.0" text="%6months">
+                                                                            <opaqueInsets>
+                                                                                <Insets />
+                                                                            </opaqueInsets>
+                                                                            <VBox.margin>
+                                                                                <Insets left="10.0" right="10.0" />
+                                                                            </VBox.margin>
+                                                                            <font>
+                                                                                <Font size="11.0" />
+                                                                            </font>
+                                                                        </RadioButton>
+                                                                        <RadioButton toggleGroup="$TGLMiddle" layoutX="20.0" layoutY="84.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="98.0" text="%oneYear">
+                                                                            <opaqueInsets>
+                                                                                <Insets />
+                                                                            </opaqueInsets>
+                                                                            <font>
+                                                                                <Font size="11.0" />
+                                                                            </font>
+                                                                            <VBox.margin>
+                                                                                <Insets left="10.0" right="10.0" />
                                                                             </VBox.margin>
                                                                         </RadioButton>
-                                                                        <TextField fx:id="CouseTLMiddle"
-                                                                                   maxHeight="-Infinity"
-                                                                                   maxWidth="-Infinity"
-                                                                                   prefHeight="22.0" prefWidth="121.0"
-                                                                                   promptText="%Cause"
-                                                                                   VBox.vgrow="ALWAYS">
+                                                                        <RadioButton toggleGroup="$TGLMiddle" contentDisplay="CENTER" mnemonicParsing="false" prefHeight="27.0" prefWidth="97.0" text="%Permanent">
                                                                             <VBox.margin>
-                                                                                <Insets top="5.0"/>
+                                                                                <Insets left="10.0" right="10.0" />
+                                                                            </VBox.margin>
+                                                                            <font>
+                                                                                <Font size="11.0" />
+                                                                            </font>
+                                                                        </RadioButton>
+                                                                        <TextField fx:id="CouseTLMiddle" visible="false" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="22.0" prefWidth="121.0" promptText="%Cause" VBox.vgrow="ALWAYS">
+                                                                            <VBox.margin>
+                                                                                <Insets top="5.0" />
                                                                             </VBox.margin>
                                                                         </TextField>
                                                                     </children>
                                                                     <VBox.margin>
-                                                                        <Insets top="10.0"/>
+                                                                        <Insets />
                                                                     </VBox.margin>
                                                                 </VBox>
                                                             </children>
@@ -630,43 +760,59 @@
                                                                 <ComboBox fx:id="CMenuLRing"
                                                                           nodeOrientation="RIGHT_TO_LEFT"
                                                                           promptText="%Cause"/>
-                                                                <VBox fx:id="VOtherLRing" visible="false">
+
+                                                                <VBox fx:id="VOtherLRing" prefHeight="133.0" prefWidth="123.0" visible="false">
                                                                     <children>
-                                                                        <Label contentDisplay="CENTER" prefHeight="20.0"
-                                                                               prefWidth="80.0" text="%Status"/>
-                                                                        <RadioButton toggleGroup="$TGLRing"
-                                                                                     contentDisplay="CENTER"
-                                                                                     mnemonicParsing="false"
-                                                                                     prefHeight="27.0" prefWidth="97.0"
-                                                                                     text="%Permanent">
-                                                                            <VBox.margin>
-                                                                                <Insets left="10.0" right="10.0"/>
-                                                                            </VBox.margin>
-                                                                        </RadioButton>
-                                                                        <RadioButton toggleGroup="$TGLRing"
-                                                                                     mnemonicParsing="false"
-                                                                                     prefHeight="27.0" prefWidth="98.0"
-                                                                                     text="%Temporary">
+                                                                        <Label contentDisplay="CENTER" prefHeight="20.0" prefWidth="80.0" text="%Status" />
+                                                                        <RadioButton toggleGroup="$TGLRing" mnemonicParsing="false" prefHeight="27.0" prefWidth="98.0" text="%3months">
                                                                             <opaqueInsets>
-                                                                                <Insets/>
+                                                                                <Insets />
                                                                             </opaqueInsets>
                                                                             <VBox.margin>
-                                                                                <Insets left="10.0" right="10.0"/>
+                                                                                <Insets left="10.0" right="10.0" />
+                                                                            </VBox.margin>
+                                                                            <font>
+                                                                                <Font size="11.0" />
+                                                                            </font>
+                                                                        </RadioButton>
+                                                                        <RadioButton toggleGroup="$TGLRing" layoutX="20.0" layoutY="57.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="98.0" text="%6months">
+                                                                            <opaqueInsets>
+                                                                                <Insets />
+                                                                            </opaqueInsets>
+                                                                            <VBox.margin>
+                                                                                <Insets left="10.0" right="10.0" />
+                                                                            </VBox.margin>
+                                                                            <font>
+                                                                                <Font size="11.0" />
+                                                                            </font>
+                                                                        </RadioButton>
+                                                                        <RadioButton toggleGroup="$TGLRing" layoutX="20.0" layoutY="84.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="98.0" text="%oneYear">
+                                                                            <opaqueInsets>
+                                                                                <Insets />
+                                                                            </opaqueInsets>
+                                                                            <font>
+                                                                                <Font size="11.0" />
+                                                                            </font>
+                                                                            <VBox.margin>
+                                                                                <Insets left="10.0" right="10.0" />
                                                                             </VBox.margin>
                                                                         </RadioButton>
-                                                                        <TextField fx:id="CouseTLRing"
-                                                                                   maxHeight="-Infinity"
-                                                                                   maxWidth="-Infinity"
-                                                                                   prefHeight="22.0" prefWidth="121.0"
-                                                                                   promptText="%Cause"
-                                                                                   VBox.vgrow="ALWAYS">
+                                                                        <RadioButton toggleGroup="$TGLRing" contentDisplay="CENTER" mnemonicParsing="false" prefHeight="27.0" prefWidth="97.0" text="%Permanent">
                                                                             <VBox.margin>
-                                                                                <Insets top="5.0"/>
+                                                                                <Insets left="10.0" right="10.0" />
+                                                                            </VBox.margin>
+                                                                            <font>
+                                                                                <Font size="11.0" />
+                                                                            </font>
+                                                                        </RadioButton>
+                                                                        <TextField fx:id="CouseTLRing" visible="false" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="22.0" prefWidth="121.0" promptText="%Cause" VBox.vgrow="ALWAYS">
+                                                                            <VBox.margin>
+                                                                                <Insets top="5.0" />
                                                                             </VBox.margin>
                                                                         </TextField>
                                                                     </children>
                                                                     <VBox.margin>
-                                                                        <Insets top="10.0"/>
+                                                                        <Insets />
                                                                     </VBox.margin>
                                                                 </VBox>
                                                             </children>
@@ -686,43 +832,59 @@
                                                                 <ComboBox fx:id="CMenuLLittle"
                                                                           nodeOrientation="RIGHT_TO_LEFT"
                                                                           promptText="%Cause"/>
-                                                                <VBox fx:id="VOtherLLittle" visible="false">
+
+                                                                <VBox fx:id="VOtherLLittle" prefHeight="133.0" prefWidth="123.0" visible="false">
                                                                     <children>
-                                                                        <Label contentDisplay="CENTER" prefHeight="20.0"
-                                                                               prefWidth="80.0" text="%Status"/>
-                                                                        <RadioButton toggleGroup="$TGLLittle"
-                                                                                     contentDisplay="CENTER"
-                                                                                     mnemonicParsing="false"
-                                                                                     prefHeight="27.0" prefWidth="97.0"
-                                                                                     text="%Permanent">
-                                                                            <VBox.margin>
-                                                                                <Insets left="10.0" right="10.0"/>
-                                                                            </VBox.margin>
-                                                                        </RadioButton>
-                                                                        <RadioButton toggleGroup="$TGLLittle"
-                                                                                     mnemonicParsing="false"
-                                                                                     prefHeight="27.0" prefWidth="98.0"
-                                                                                     text="%Temporary">
+                                                                        <Label contentDisplay="CENTER" prefHeight="20.0" prefWidth="80.0" text="%Status" />
+                                                                        <RadioButton toggleGroup="$TGLLittle" mnemonicParsing="false" prefHeight="27.0" prefWidth="98.0" text="%3months">
                                                                             <opaqueInsets>
-                                                                                <Insets/>
+                                                                                <Insets />
                                                                             </opaqueInsets>
                                                                             <VBox.margin>
-                                                                                <Insets left="10.0" right="10.0"/>
+                                                                                <Insets left="10.0" right="10.0" />
+                                                                            </VBox.margin>
+                                                                            <font>
+                                                                                <Font size="11.0" />
+                                                                            </font>
+                                                                        </RadioButton>
+                                                                        <RadioButton toggleGroup="$TGLLittle" layoutX="20.0" layoutY="57.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="98.0" text="%6months">
+                                                                            <opaqueInsets>
+                                                                                <Insets />
+                                                                            </opaqueInsets>
+                                                                            <VBox.margin>
+                                                                                <Insets left="10.0" right="10.0" />
+                                                                            </VBox.margin>
+                                                                            <font>
+                                                                                <Font size="11.0" />
+                                                                            </font>
+                                                                        </RadioButton>
+                                                                        <RadioButton toggleGroup="$TGLLittle" layoutX="20.0" layoutY="84.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="98.0" text="%oneYear">
+                                                                            <opaqueInsets>
+                                                                                <Insets />
+                                                                            </opaqueInsets>
+                                                                            <font>
+                                                                                <Font size="11.0" />
+                                                                            </font>
+                                                                            <VBox.margin>
+                                                                                <Insets left="10.0" right="10.0" />
                                                                             </VBox.margin>
                                                                         </RadioButton>
-                                                                        <TextField fx:id="CouseTLLittle"
-                                                                                   maxHeight="-Infinity"
-                                                                                   maxWidth="-Infinity"
-                                                                                   prefHeight="22.0" prefWidth="121.0"
-                                                                                   promptText="%Cause"
-                                                                                   VBox.vgrow="ALWAYS">
+                                                                        <RadioButton toggleGroup="$TGLLittle" contentDisplay="CENTER" mnemonicParsing="false" prefHeight="27.0" prefWidth="97.0" text="%Permanent">
                                                                             <VBox.margin>
-                                                                                <Insets top="5.0"/>
+                                                                                <Insets left="10.0" right="10.0" />
+                                                                            </VBox.margin>
+                                                                            <font>
+                                                                                <Font size="11.0" />
+                                                                            </font>
+                                                                        </RadioButton>
+                                                                        <TextField fx:id="CouseTLLittle"  visible="false" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="22.0" prefWidth="121.0" promptText="%Cause" VBox.vgrow="ALWAYS">
+                                                                            <VBox.margin>
+                                                                                <Insets top="5.0" />
                                                                             </VBox.margin>
                                                                         </TextField>
                                                                     </children>
                                                                     <VBox.margin>
-                                                                        <Insets top="10.0"/>
+                                                                        <Insets />
                                                                     </VBox.margin>
                                                                 </VBox>
                                                             </children>

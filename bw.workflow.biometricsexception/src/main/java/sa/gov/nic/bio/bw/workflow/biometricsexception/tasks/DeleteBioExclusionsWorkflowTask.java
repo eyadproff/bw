@@ -30,7 +30,7 @@ public class DeleteBioExclusionsWorkflowTask extends WorkflowTask {
         Call<SubmissionAndDeletionResponse> apiCall = bioExclusionAPI.deleteBioExclusions(AppUtils.toJson(SeqNumbersList), userInfo.getOperatorId());
         TaskResponse<SubmissionAndDeletionResponse> taskResponse = Context.getWebserviceManager().executeApi(apiCall);
 
-        boolean notFound = !taskResponse.isSuccess() && "B003-0061".equals(taskResponse.getErrorCode());
+        boolean notFound = !taskResponse.isSuccess() && "B003-0078".equals(taskResponse.getErrorCode());
 
         if (notFound)
             return;

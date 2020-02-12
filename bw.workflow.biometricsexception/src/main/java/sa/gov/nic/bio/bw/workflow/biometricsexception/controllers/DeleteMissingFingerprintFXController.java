@@ -152,8 +152,8 @@ public class DeleteMissingFingerprintFXController extends WizardStepFxController
             personfingerprints.setLThumb(getLast(BioExclusionsList, 5));
             personfingerprints.setLIndex(getLast(BioExclusionsList, 6));
             personfingerprints.setLMiddle(getLast(BioExclusionsList, 7));
-            personfingerprints.setLLittle(getLast(BioExclusionsList, 8));
-            personfingerprints.setLRing(getLast(BioExclusionsList, 9));
+            personfingerprints.setLRing(getLast(BioExclusionsList, 8));
+            personfingerprints.setLLittle(getLast(BioExclusionsList, 9));
 
             checkMissingfingers();
 
@@ -188,10 +188,20 @@ public class DeleteMissingFingerprintFXController extends WizardStepFxController
                 if (bioEx.getCasueId() == 1) {
                     fingerprint.setDescription(bioEx.getDescription());
                 }
-                if (bioEx.getExpireDate() > 0)
-                    fingerprint.setStatus(1);//Temporary
-                else
+//                if (bioEx.getExpireDate() > 0)
+//                    fingerprint.setStatus(1);//Temporary
+//                else
+//                    fingerprint.setStatus(0);
+
+
+                if (bioEx.getMonth() == 0)
                     fingerprint.setStatus(0);
+                else if (bioEx.getMonth() == 3)
+                    fingerprint.setStatus(3);
+                else if (bioEx.getMonth() == 6)
+                    fingerprint.setStatus(6);
+                else
+                    fingerprint.setStatus(12);
 
                 fingerprint.setPosition(position);
                 fingerprint.setSeqNum(bioEx.getSeqNum());
@@ -289,10 +299,19 @@ public class DeleteMissingFingerprintFXController extends WizardStepFxController
         }
 
 
+//        if (finger.getStatus() == 0)
+//            Status.setText(resources.getString("Permanent"));
+//        else
+//            Status.setText(resources.getString("Temporary"));
+
         if (finger.getStatus() == 0)
             Status.setText(resources.getString("Permanent"));
+        else if (finger.getStatus() == 3)
+            Status.setText(resources.getString("3months"));
+        else if (finger.getStatus() == 6)
+            Status.setText(resources.getString("6months"));
         else
-            Status.setText(resources.getString("Temporary"));
+            Status.setText(resources.getString("oneYear"));
 
     }
 
@@ -337,6 +356,8 @@ public class DeleteMissingFingerprintFXController extends WizardStepFxController
 
             chbLeftLittle.setSelected(true);
         }
+
+        CheckBoxAction();
 
     }
 
@@ -407,6 +428,8 @@ public class DeleteMissingFingerprintFXController extends WizardStepFxController
 
         if (numChBox > 0)
             btnNext.setDisable(false);
+        else
+            btnNext.setDisable(true);
 
     }
 

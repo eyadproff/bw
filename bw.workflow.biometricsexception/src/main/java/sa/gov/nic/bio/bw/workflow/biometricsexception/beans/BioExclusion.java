@@ -12,6 +12,7 @@ public class BioExclusion {
     private Long expireDate;
     private Long deleterId;
     private Long operatorId;
+    private Integer month;
 
     public BioExclusion(){
 
@@ -117,5 +118,13 @@ public class BioExclusion {
 
     public void setOperatorId(Long operatorId) {
         this.operatorId = operatorId;
+    }
+
+    public Integer getMonth() {
+        return month;
+    }
+
+    public void setMonth(Integer month) {
+        this.month = month;
     }
 }

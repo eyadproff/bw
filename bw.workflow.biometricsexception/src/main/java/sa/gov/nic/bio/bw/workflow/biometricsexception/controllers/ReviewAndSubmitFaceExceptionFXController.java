@@ -34,9 +34,13 @@ public class ReviewAndSubmitFaceExceptionFXController extends WizardStepFxContro
     @FXML
     private Label LblfaceExcReason;
     @FXML
+    private Label LblfaceExcStatus;
+    @FXML
     private Label PersonID, PersonName;
     @FXML
     private Label LblCause;
+    @FXML
+    private Label LblStatus;
 
     @Override
     protected void onAttachedToScene() {
@@ -60,8 +64,18 @@ public class ReviewAndSubmitFaceExceptionFXController extends WizardStepFxContro
                 }
             }
 
+//            if (EditFaceException.getDuration() == 0)
+//                LblfaceExcStatus.setText(resources.getString("Permanent"));
+             if (EditFaceException.getMonth() == 3)
+                LblfaceExcStatus.setText(resources.getString("3months"));
+            else if (EditFaceException.getMonth() == 6)
+                LblfaceExcStatus.setText(resources.getString("6months"));
+            else
+                LblfaceExcStatus.setText(resources.getString("oneYear"));
+
         } else {
             LblCause.setVisible(false);
+            LblStatus.setVisible(false);
             LblfaceExcReason.setText(resources.getString("NoFaceException"));
         }
     }
@@ -72,8 +86,8 @@ public class ReviewAndSubmitFaceExceptionFXController extends WizardStepFxContro
             EditedBioExclusionsList = new ArrayList<BioExclusion>();
             EditFaceException.setSamisId(normalizedPersonInfo.getPersonId());
             EditFaceException.setBioType(3);
-            Long ExDate = new Long(1564475459);
-            EditFaceException.setExpireDate(ExDate);
+//            Long ExDate = new Long(1564475459);
+//            EditFaceException.setExpireDate(ExDate);
             UserInfo userInfo = (UserInfo) Context.getUserSession().getAttribute("userInfo");
             EditFaceException.setOperatorId(userInfo.getOperatorId());
             EditedBioExclusionsList.add(EditFaceException);

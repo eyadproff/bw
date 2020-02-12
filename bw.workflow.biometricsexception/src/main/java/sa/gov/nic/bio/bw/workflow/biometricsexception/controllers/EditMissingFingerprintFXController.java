@@ -5,6 +5,9 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.util.StringConverter;
+
+import java.time.Instant;
+
 import sa.gov.nic.bio.bw.core.Context;
 import sa.gov.nic.bio.bw.core.beans.ComboBoxItem;
 import sa.gov.nic.bio.bw.core.beans.UserInfo;
@@ -114,17 +117,17 @@ public class EditMissingFingerprintFXController extends WizardStepFxControllerBa
         causes = (List<Cause>) Context.getUserSession().getAttribute(CausesLookup.KEY);
 
 
-        AddItemsToMenu(CMenuRThumb, VOtherRThumb, causes);
-        AddItemsToMenu(CMenuRIndex, VOtherRIndex, causes);
-        AddItemsToMenu(CMenuRMiddle, VOtherRMiddle, causes);
-        AddItemsToMenu(CMenuRRing, VOtherRRing, causes);
-        AddItemsToMenu(CMenuRLittle, VOtherRLittle, causes);
+        AddItemsToMenu(CMenuRThumb, VOtherRThumb, CouseTRThumb, causes,TGRThumb);
+        AddItemsToMenu(CMenuRIndex, VOtherRIndex, CouseTRIndex, causes,TGRIndex);
+        AddItemsToMenu(CMenuRMiddle, VOtherRMiddle, CouseTRMiddle, causes,TGRMiddle);
+        AddItemsToMenu(CMenuRRing, VOtherRRing, CouseTRRing, causes,TGRRing);
+        AddItemsToMenu(CMenuRLittle, VOtherRLittle, CouseTRLittle, causes,TGRLittle);
 
-        AddItemsToMenu(CMenuLThumb, VOtherLThumb, causes);
-        AddItemsToMenu(CMenuLIndex, VOtherLIndex, causes);
-        AddItemsToMenu(CMenuLMiddle, VOtherLMiddle, causes);
-        AddItemsToMenu(CMenuLRing, VOtherLRing, causes);
-        AddItemsToMenu(CMenuLLittle, VOtherLLittle, causes);
+        AddItemsToMenu(CMenuLThumb, VOtherLThumb, CouseTLThumb, causes,TGLThumb);
+        AddItemsToMenu(CMenuLIndex, VOtherLIndex, CouseTLIndex, causes,TGLIndex);
+        AddItemsToMenu(CMenuLMiddle, VOtherLMiddle, CouseTLMiddle, causes,TGLMiddle);
+        AddItemsToMenu(CMenuLRing, VOtherLRing, CouseTLRing, causes,TGLRing);
+        AddItemsToMenu(CMenuLLittle, VOtherLLittle, CouseTLLittle, causes,TGLLittle);
 
         if (isFirstLoad()) {
             Upload();
@@ -185,10 +188,19 @@ public class EditMissingFingerprintFXController extends WizardStepFxControllerBa
                 if (bioEx.getCasueId() == 1) {
                     fingerprint.setDescription(bioEx.getDescription());
                 }
-                if (bioEx.getExpireDate() > 0)
+              /*  if (bioEx.getExpireDate() > 0)
                     fingerprint.setStatus(1);//Temporary
                 else
+                    fingerprint.setStatus(0);*/
+                //duration int bioex ==status in fingerprint
+                if (bioEx.getMonth() == 0)
                     fingerprint.setStatus(0);
+                else if (bioEx.getMonth() == 3)
+                    fingerprint.setStatus(3);
+                else if (bioEx.getMonth() == 6)
+                    fingerprint.setStatus(6);
+                else
+                    fingerprint.setStatus(12);
 
                 fingerprint.setPosition(position);
                 fingerprint.setSeqNum(bioEx.getSeqNum());
@@ -277,10 +289,11 @@ public class EditMissingFingerprintFXController extends WizardStepFxControllerBa
 
     }
 
-    private void AddItemsToMenu(ComboBox<ComboBoxItem<Cause>> menu, VBox VOther, List<Cause> causes) {
+    private void AddItemsToMenu(ComboBox<ComboBoxItem<Cause>> menu, VBox VOther, TextField TextCouse, List<Cause> causes,ToggleGroup TG) {
         List<Cause> CauseFEx = new ArrayList<Cause>();
         CauseFEx.addAll(causes);
-        CauseFEx.removeIf(cause -> cause.getCauseId() == 4);
+        //
+        // CauseFEx.removeIf(cause -> cause.getCauseId() == 4);
 
         GuiUtils.addAutoCompletionSupportToComboBox(menu, CauseFEx);
 
@@ -316,37 +329,81 @@ public class EditMissingFingerprintFXController extends WizardStepFxControllerBa
         });
 
         menu.getItems().forEach(consumer);
-        menu.setOnAction(e -> OnActionComboMenu(menu, VOther));
+        menu.setOnAction(e -> OnActionComboMenu(menu, VOther, TextCouse,TG));
 
 
     }
 
-    private void OnActionComboMenu(ComboBox<ComboBoxItem<Cause>> menu, VBox VOther) {
+    private void OnActionComboMenu(ComboBox<ComboBoxItem<Cause>> menu, VBox VOther, TextField TextCouse,ToggleGroup TG) {
         if (menu.getValue().getItem().getCauseId() == 1) {
+            TextCouse.setVisible(true);
             VOther.setVisible(true);
-        } else
+        } else if (menu.getValue().getItem().getCauseId() == 2) {
+            TextCouse.setVisible(false);
             VOther.setVisible(false);
+        } else {
+            TextCouse.setVisible(false);
+            VOther.setVisible(true);
+
+        }
+
+        // Low Quality never be Permanent
+        if (menu.getValue().getItem().getCauseId() == 4) {
+            ((RadioButton)TG.getToggles().get(3)).setDisable(true);
+        }else
+            ((RadioButton)TG.getToggles().get(3)).setDisable(false);
+
+
 
     }
 
 
     private void addMFToPersonFPs(Fingerprint finger, ComboBox<ComboBoxItem<Cause>> Couse, ToggleGroup TG, TextField CouseOther) {
+//        finger.setMissOrNot(true);
+//        if (Couse.getValue().getItem().getCauseId() != 1) {
+//            finger.setCause(Couse.getValue().getItem());
+//            //if Turncate then status =Permanent else one year
+//            if (Couse.getValue().getItem().getCauseId() == 2) {
+//                finger.setStatus(0);
+//            } else
+//                finger.setStatus(12);
+//        }
+//
+//        else {
+//            finger.setCause(Couse.getValue().getItem());
+//            finger.setDescription(CouseOther.getText());
+//            if (((RadioButton) TG.getSelectedToggle()).getText().equals(resources.getString("3months")))
+//                finger.setStatus(3);
+//            else if (((RadioButton) TG.getSelectedToggle()).getText().equals(resources.getString("6months")))
+//                finger.setStatus(6);
+//            else if (((RadioButton) TG.getSelectedToggle()).getText().equals(resources.getString("oneYear")))
+//                finger.setStatus(12);
+//            else
+//                finger.setStatus(0);
+//           // finger.setStatus(((RadioButton) TG.getSelectedToggle()).getText());
+//        }
+
         finger.setMissOrNot(true);
-        if (Couse.getValue().getItem().getCauseId() != 1) {
-            finger.setCause(Couse.getValue().getItem());
-            //if Turncate then status =0
-            if (Couse.getValue().getItem().getCauseId() == 2) {
-                finger.setStatus(0);
-            } else
-                finger.setStatus(1);
-        } else {
-            finger.setCause(Couse.getValue().getItem());
-            finger.setDescription(CouseOther.getText());
-            if (((RadioButton) TG.getSelectedToggle()).getText().equals(resources.getString("Temporary")))
-                finger.setStatus(1);
+        finger.setCause(Couse.getValue().getItem());
+        if (Couse.getValue().getItem().getCauseId() != 2) {
+
+            if (((RadioButton) TG.getSelectedToggle()).getText().equals(resources.getString("3months")))
+                finger.setStatus(3);
+            else if (((RadioButton) TG.getSelectedToggle()).getText().equals(resources.getString("6months")))
+                finger.setStatus(6);
+            else if (((RadioButton) TG.getSelectedToggle()).getText().equals(resources.getString("oneYear")))
+                finger.setStatus(12);
             else
                 finger.setStatus(0);
+
+            if (Couse.getValue().getItem().getCauseId() == 1)
+                finger.setDescription(CouseOther.getText());
+
+        } else {
+            finger.setStatus(0);
+
         }
+
 
     }
 
@@ -377,7 +434,7 @@ public class EditMissingFingerprintFXController extends WizardStepFxControllerBa
 
     }
 
-    private void setDataToScene(Fingerprint finger, ComboBox<ComboBoxItem<Cause>> Couse, ToggleGroup TG, TextField CouseOther, CheckBox chBox, VBox VOther) {
+    private void setDataToScene(Fingerprint finger, ComboBox<ComboBoxItem<Cause>> Couse, ToggleGroup TG, TextField TextCouse, CheckBox chBox, VBox VOther) {
 
         chBox.setSelected(true);
         if (finger.getAlreadyAdded())
@@ -389,14 +446,24 @@ public class EditMissingFingerprintFXController extends WizardStepFxControllerBa
                 .findFirst()
                 .ifPresent(Couse::setValue);
 
-        if (finger.getCause().getCauseId() == 1) {
+        if (finger.getCause().getCauseId() != 2) {
             VOther.setVisible(true);
-            if (finger.getStatus() == 0)
-                TG.getToggles().get(0).setSelected(true);
-            else
-                TG.getToggles().get(1).setSelected(true);
 
-            CouseOther.setText(finger.getDescription());
+            if (finger.getStatus() == 0)
+                TG.getToggles().get(3).setSelected(true);
+            else if (finger.getStatus() == 12)
+                TG.getToggles().get(2).setSelected(true);
+            else if (finger.getStatus() == 6)
+                TG.getToggles().get(1).setSelected(true);
+            else
+                TG.getToggles().get(0).setSelected(true);
+
+
+            if (finger.getCause().getCauseId() == 1) {
+                TextCouse.setVisible(true);
+                TextCouse.setText(finger.getDescription());
+            }
+
         }
 
 
@@ -406,16 +473,18 @@ public class EditMissingFingerprintFXController extends WizardStepFxControllerBa
         if (menu.getValue() == null) {
             showWarningNotification(resources.getString("SelectCause"));
             return true;
-        } else if (menu.getValue().getItem().getCauseId() == 1) {
+        } else if (menu.getValue().getItem().getCauseId() != 2) {
 
             if (TG.getSelectedToggle() == null) {
                 showWarningNotification(resources.getString("SelectStatus"));
                 return true;
 
             }
-            if (Couse.getText().trim().isEmpty()) {
-                showWarningNotification(resources.getString("WriteCause"));
-                return true;
+            if (menu.getValue().getItem().getCauseId() == 1) {
+                if (Couse.getText().trim().isEmpty()) {
+                    showWarningNotification(resources.getString("WriteCause"));
+                    return true;
+                }
             }
         }
         return false;
@@ -425,8 +494,17 @@ public class EditMissingFingerprintFXController extends WizardStepFxControllerBa
 
         if (finger.getAlreadyAdded()) {
             if ((getLast(personMissinfingerprints, position)).getCause().equals(finger.getCause()))
-                return false;
+                if (finger.getCause().getCauseId() == 1) {
+                    if (finger.getDescription().equals((getLast(personMissinfingerprints, position)).getDescription()))
+                        if ((getLast(personMissinfingerprints, position)).getStatus().equals(finger.getStatus()))
+                            return false;
+                } else if ((getLast(personMissinfingerprints, position)).getStatus().equals(finger.getStatus())) {
+                    return false;
+                }
+
         }
+
+
         return true;
 
     }
@@ -435,11 +513,20 @@ public class EditMissingFingerprintFXController extends WizardStepFxControllerBa
         BioExclusion bioEx = new BioExclusion();
         bioEx.setBioType(1);
         bioEx.setPosition(position);
-        //if 0 then not Temporary
-        if (finger.getStatus() == 0)
-            bioEx.setExpireDate(new Long(0));
-        else
-            bioEx.setExpireDate(new Long(1564475459));
+        // -- epoch time by Second
+        if (finger.getStatus() == 0) {
+            bioEx.setExpireDate(new Long(-1));
+            bioEx.setMonth(0);
+        } else if (finger.getStatus() == 3) {
+            bioEx.setExpireDate(Instant.now().getEpochSecond() + new Long(7889238));
+            bioEx.setMonth(3);
+        } else if (finger.getStatus() == 6) {
+            bioEx.setExpireDate(Instant.now().getEpochSecond() + new Long(15778476));
+            bioEx.setMonth(6);
+        } else {
+            bioEx.setExpireDate(Instant.now().getEpochSecond() + new Long(31556952));
+            bioEx.setMonth(12);
+        }
 
         //need to edit
         bioEx.setCasueId(finger.getCause().getCauseId());

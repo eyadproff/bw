@@ -191,8 +191,12 @@ public class ReviewAndSubmitFXController extends WizardStepFxControllerBase {
 
         if (finger.getStatus() == 0)
             Status.setText(resources.getString("Permanent"));
+        else if (finger.getStatus() == 3)
+            Status.setText(resources.getString("3months"));
+        else if (finger.getStatus() == 6)
+            Status.setText(resources.getString("6months"));
         else
-            Status.setText(resources.getString("Temporary"));
+            Status.setText(resources.getString("oneYear"));
 
     }
 
