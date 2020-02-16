@@ -14,7 +14,6 @@ import sa.gov.nic.bio.bw.workflow.commons.lookups.CountriesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.DocumentTypesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.PersonTypesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.DeporteeInfoToPersonInfoConverter;
-import sa.gov.nic.bio.bw.workflow.commons.tasks.FingerprintInquiryStatusCheckerWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.GetDeporteeInfoByIdWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.GetPersonInfoByIdWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.irisinquiry.controllers.InquiryByIrisPaneFxController;
@@ -130,7 +129,7 @@ public class IrisInquiryWorkflow extends WizardWorkflowBase
 			{
 				passData(getClass(), FIELD_CIVIL_PERSON_INFO_MAP, InquiryByIrisResultPaneFxController.class,
 				         "civilPersonInfoMap");
-				passData(FingerprintInquiryStatusCheckerWorkflowTask.class,
+				passData(IrisInquiryStatusCheckerWorkflowTask.class,
 				         InquiryByIrisResultPaneFxController.class,
 				         "status", "civilBiometricsId");
 				renderUiAndWaitForUserInput(InquiryByIrisResultPaneFxController.class);
