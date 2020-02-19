@@ -5,9 +5,6 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.util.StringConverter;
-
-import java.time.Instant;
-
 import sa.gov.nic.bio.bw.core.Context;
 import sa.gov.nic.bio.bw.core.beans.ComboBoxItem;
 import sa.gov.nic.bio.bw.core.beans.UserInfo;
@@ -23,7 +20,7 @@ import sa.gov.nic.bio.bw.workflow.biometricsexception.beans.Fingerprint;
 import sa.gov.nic.bio.bw.workflow.biometricsexception.beans.PersonFingerprints;
 import sa.gov.nic.bio.bw.workflow.biometricsexception.lookups.CausesLookup;
 
-
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -293,7 +290,7 @@ public class EditMissingFingerprintFXController extends WizardStepFxControllerBa
         List<Cause> CauseFEx = new ArrayList<Cause>();
         CauseFEx.addAll(causes);
         //
-        // CauseFEx.removeIf(cause -> cause.getCauseId() == 4);
+         CauseFEx.removeIf(cause -> cause.getCauseId() == 4);
 
         GuiUtils.addAutoCompletionSupportToComboBox(menu, CauseFEx);
 
@@ -515,7 +512,7 @@ public class EditMissingFingerprintFXController extends WizardStepFxControllerBa
         bioEx.setPosition(position);
         // -- epoch time by Second
         if (finger.getStatus() == 0) {
-            bioEx.setExpireDate(new Long(-1));
+            bioEx.setExpireDate(new Long(0));
             bioEx.setMonth(0);
         } else if (finger.getStatus() == 3) {
             bioEx.setExpireDate(Instant.now().getEpochSecond() + new Long(7889238));
