@@ -139,17 +139,17 @@ public class EditMissingFingerprintFXController extends WizardStepFxControllerBa
         if (personMissinfingerprints != null) {
             Editedpersonfingerprints = new PersonFingerprints();
 
-            Editedpersonfingerprints.setRThumb(getLast(personMissinfingerprints, 0));
-            Editedpersonfingerprints.setRIndex(getLast(personMissinfingerprints, 1));
-            Editedpersonfingerprints.setRMiddle(getLast(personMissinfingerprints, 2));
-            Editedpersonfingerprints.setRRing(getLast(personMissinfingerprints, 3));
-            Editedpersonfingerprints.setRLittle(getLast(personMissinfingerprints, 4));
+            Editedpersonfingerprints.setRThumb(getLast(personMissinfingerprints, 1));
+            Editedpersonfingerprints.setRIndex(getLast(personMissinfingerprints, 2));
+            Editedpersonfingerprints.setRMiddle(getLast(personMissinfingerprints, 3));
+            Editedpersonfingerprints.setRRing(getLast(personMissinfingerprints, 4));
+            Editedpersonfingerprints.setRLittle(getLast(personMissinfingerprints, 5));
 
-            Editedpersonfingerprints.setLThumb(getLast(personMissinfingerprints, 5));
-            Editedpersonfingerprints.setLIndex(getLast(personMissinfingerprints, 6));
-            Editedpersonfingerprints.setLMiddle(getLast(personMissinfingerprints, 7));
-            Editedpersonfingerprints.setLRing(getLast(personMissinfingerprints, 8));
-            Editedpersonfingerprints.setLLittle(getLast(personMissinfingerprints, 9));
+            Editedpersonfingerprints.setLThumb(getLast(personMissinfingerprints, 6));
+            Editedpersonfingerprints.setLIndex(getLast(personMissinfingerprints, 7));
+            Editedpersonfingerprints.setLMiddle(getLast(personMissinfingerprints, 8));
+            Editedpersonfingerprints.setLRing(getLast(personMissinfingerprints, 9));
+            Editedpersonfingerprints.setLLittle(getLast(personMissinfingerprints, 10));
 
 
         } else {
@@ -547,8 +547,8 @@ public class EditMissingFingerprintFXController extends WizardStepFxControllerBa
             if (isEmpty(CMenuRThumb, TGRThumb, CouseTRThumb))
                 return;
             addMFToPersonFPs(Editedpersonfingerprints.getRThumb(), CMenuRThumb, TGRThumb, CouseTRThumb);
-            if (canAddToList(Editedpersonfingerprints.getRThumb(), 0)) {
-                BioExclusionsList.add(addToList(Editedpersonfingerprints.getRThumb(), 0));
+            if (canAddToList(Editedpersonfingerprints.getRThumb(), 1)) {
+                BioExclusionsList.add(addToList(Editedpersonfingerprints.getRThumb(), 1));
                 if (Editedpersonfingerprints.getRThumb().getAlreadyAdded()) {
                     SeqNumbersList.add(Editedpersonfingerprints.getRThumb().getSeqNum());
                 }
@@ -558,8 +558,8 @@ public class EditMissingFingerprintFXController extends WizardStepFxControllerBa
             if (isEmpty(CMenuRIndex, TGRIndex, CouseTRIndex))
                 return;
             addMFToPersonFPs(Editedpersonfingerprints.getRIndex(), CMenuRIndex, TGRIndex, CouseTRIndex);
-            if (canAddToList(Editedpersonfingerprints.getRIndex(), 1)) {
-                BioExclusionsList.add(addToList(Editedpersonfingerprints.getRIndex(), 1));
+            if (canAddToList(Editedpersonfingerprints.getRIndex(), 2)) {
+                BioExclusionsList.add(addToList(Editedpersonfingerprints.getRIndex(), 2));
                 if (Editedpersonfingerprints.getRIndex().getAlreadyAdded()) {
                     SeqNumbersList.add(Editedpersonfingerprints.getRIndex().getSeqNum());
                 }
@@ -569,8 +569,8 @@ public class EditMissingFingerprintFXController extends WizardStepFxControllerBa
             if (isEmpty(CMenuRMiddle, TGRMiddle, CouseTRMiddle))
                 return;
             addMFToPersonFPs(Editedpersonfingerprints.getRMiddle(), CMenuRMiddle, TGRMiddle, CouseTRMiddle);
-            if (canAddToList(Editedpersonfingerprints.getRMiddle(), 2)) {
-                BioExclusionsList.add(addToList(Editedpersonfingerprints.getRMiddle(), 2));
+            if (canAddToList(Editedpersonfingerprints.getRMiddle(),3 )) {
+                BioExclusionsList.add(addToList(Editedpersonfingerprints.getRMiddle(), 3));
                 if (Editedpersonfingerprints.getRMiddle().getAlreadyAdded()) {
                     SeqNumbersList.add(Editedpersonfingerprints.getRMiddle().getSeqNum());
                 }
@@ -580,8 +580,8 @@ public class EditMissingFingerprintFXController extends WizardStepFxControllerBa
             if (isEmpty(CMenuRRing, TGRRing, CouseTRRing))
                 return;
             addMFToPersonFPs(Editedpersonfingerprints.getRRing(), CMenuRRing, TGRRing, CouseTRRing);
-            if (canAddToList(Editedpersonfingerprints.getRRing(), 3)) {
-                BioExclusionsList.add(addToList(Editedpersonfingerprints.getRRing(), 3));
+            if (canAddToList(Editedpersonfingerprints.getRRing(), 4)) {
+                BioExclusionsList.add(addToList(Editedpersonfingerprints.getRRing(), 4));
                 if (Editedpersonfingerprints.getRRing().getAlreadyAdded()) {
                     SeqNumbersList.add(Editedpersonfingerprints.getRRing().getSeqNum());
                 }
@@ -591,8 +591,8 @@ public class EditMissingFingerprintFXController extends WizardStepFxControllerBa
             if (isEmpty(CMenuRLittle, TGRLittle, CouseTRLittle))
                 return;
             addMFToPersonFPs(Editedpersonfingerprints.getRLittle(), CMenuRLittle, TGRLittle, CouseTRLittle);
-            if (canAddToList(Editedpersonfingerprints.getRLittle(), 4)) {
-                BioExclusionsList.add(addToList(Editedpersonfingerprints.getRLittle(), 4));
+            if (canAddToList(Editedpersonfingerprints.getRLittle(), 5)) {
+                BioExclusionsList.add(addToList(Editedpersonfingerprints.getRLittle(), 5));
                 if (Editedpersonfingerprints.getRLittle().getAlreadyAdded()) {
                     SeqNumbersList.add(Editedpersonfingerprints.getRLittle().getSeqNum());
                 }
@@ -604,8 +604,8 @@ public class EditMissingFingerprintFXController extends WizardStepFxControllerBa
             if (isEmpty(CMenuLThumb, TGLThumb, CouseTLThumb))
                 return;
             addMFToPersonFPs(Editedpersonfingerprints.getLThumb(), CMenuLThumb, TGLThumb, CouseTLThumb);
-            if (canAddToList(Editedpersonfingerprints.getLThumb(), 5)) {
-                BioExclusionsList.add(addToList(Editedpersonfingerprints.getLThumb(), 5));
+            if (canAddToList(Editedpersonfingerprints.getLThumb(), 6)) {
+                BioExclusionsList.add(addToList(Editedpersonfingerprints.getLThumb(), 6));
                 if (Editedpersonfingerprints.getLThumb().getAlreadyAdded()) {
                     SeqNumbersList.add(Editedpersonfingerprints.getLThumb().getSeqNum());
                 }
@@ -615,8 +615,8 @@ public class EditMissingFingerprintFXController extends WizardStepFxControllerBa
             if (isEmpty(CMenuLIndex, TGLIndex, CouseTLIndex))
                 return;
             addMFToPersonFPs(Editedpersonfingerprints.getLIndex(), CMenuLIndex, TGLIndex, CouseTLIndex);
-            if (canAddToList(Editedpersonfingerprints.getLIndex(), 6)) {
-                BioExclusionsList.add(addToList(Editedpersonfingerprints.getLIndex(), 6));
+            if (canAddToList(Editedpersonfingerprints.getLIndex(), 7)) {
+                BioExclusionsList.add(addToList(Editedpersonfingerprints.getLIndex(), 7));
                 if (Editedpersonfingerprints.getLIndex().getAlreadyAdded()) {
                     SeqNumbersList.add(Editedpersonfingerprints.getLIndex().getSeqNum());
                 }
@@ -626,8 +626,8 @@ public class EditMissingFingerprintFXController extends WizardStepFxControllerBa
             if (isEmpty(CMenuLMiddle, TGLMiddle, CouseTLMiddle))
                 return;
             addMFToPersonFPs(Editedpersonfingerprints.getLMiddle(), CMenuLMiddle, TGLMiddle, CouseTLMiddle);
-            if (canAddToList(Editedpersonfingerprints.getLMiddle(), 7)) {
-                BioExclusionsList.add(addToList(Editedpersonfingerprints.getLMiddle(), 7));
+            if (canAddToList(Editedpersonfingerprints.getLMiddle(), 8)) {
+                BioExclusionsList.add(addToList(Editedpersonfingerprints.getLMiddle(), 8));
                 if (Editedpersonfingerprints.getLMiddle().getAlreadyAdded()) {
                     SeqNumbersList.add(Editedpersonfingerprints.getLMiddle().getSeqNum());
                 }
@@ -637,8 +637,8 @@ public class EditMissingFingerprintFXController extends WizardStepFxControllerBa
             if (isEmpty(CMenuLRing, TGLRing, CouseTLRing))
                 return;
             addMFToPersonFPs(Editedpersonfingerprints.getLRing(), CMenuLRing, TGLRing, CouseTLRing);
-            if (canAddToList(Editedpersonfingerprints.getLRing(), 8)) {
-                BioExclusionsList.add(addToList(Editedpersonfingerprints.getLRing(), 8));
+            if (canAddToList(Editedpersonfingerprints.getLRing(), 9)) {
+                BioExclusionsList.add(addToList(Editedpersonfingerprints.getLRing(), 9));
                 if (Editedpersonfingerprints.getLRing().getAlreadyAdded()) {
                     SeqNumbersList.add(Editedpersonfingerprints.getLRing().getSeqNum());
                 }
@@ -648,8 +648,8 @@ public class EditMissingFingerprintFXController extends WizardStepFxControllerBa
             if (isEmpty(CMenuLLittle, TGLLittle, CouseTLLittle))
                 return;
             addMFToPersonFPs(Editedpersonfingerprints.getLLittle(), CMenuLLittle, TGLLittle, CouseTLLittle);
-            if (canAddToList(Editedpersonfingerprints.getLLittle(), 9)) {
-                BioExclusionsList.add(addToList(Editedpersonfingerprints.getLLittle(), 9));
+            if (canAddToList(Editedpersonfingerprints.getLLittle(), 10)) {
+                BioExclusionsList.add(addToList(Editedpersonfingerprints.getLLittle(), 10));
                 if (Editedpersonfingerprints.getLLittle().getAlreadyAdded()) {
                     SeqNumbersList.add(Editedpersonfingerprints.getLLittle().getSeqNum());
                 }

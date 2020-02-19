@@ -143,17 +143,17 @@ public class DeleteMissingFingerprintFXController extends WizardStepFxController
         if (BioExclusionsList != null) {
 
             personfingerprints = new PersonFingerprints();
-            personfingerprints.setRThumb(getLast(BioExclusionsList, 0));
-            personfingerprints.setRIndex(getLast(BioExclusionsList, 1));
-            personfingerprints.setRMiddle(getLast(BioExclusionsList, 2));
-            personfingerprints.setRRing(getLast(BioExclusionsList, 3));
-            personfingerprints.setRLittle(getLast(BioExclusionsList, 4));
+            personfingerprints.setRThumb(getLast(BioExclusionsList, 1));
+            personfingerprints.setRIndex(getLast(BioExclusionsList, 2));
+            personfingerprints.setRMiddle(getLast(BioExclusionsList, 3));
+            personfingerprints.setRRing(getLast(BioExclusionsList, 4));
+            personfingerprints.setRLittle(getLast(BioExclusionsList, 5));
 
-            personfingerprints.setLThumb(getLast(BioExclusionsList, 5));
-            personfingerprints.setLIndex(getLast(BioExclusionsList, 6));
-            personfingerprints.setLMiddle(getLast(BioExclusionsList, 7));
-            personfingerprints.setLRing(getLast(BioExclusionsList, 8));
-            personfingerprints.setLLittle(getLast(BioExclusionsList, 9));
+            personfingerprints.setLThumb(getLast(BioExclusionsList, 6));
+            personfingerprints.setLIndex(getLast(BioExclusionsList, 7));
+            personfingerprints.setLMiddle(getLast(BioExclusionsList, 8));
+            personfingerprints.setLRing(getLast(BioExclusionsList, 9));
+            personfingerprints.setLLittle(getLast(BioExclusionsList, 10));
 
             checkMissingfingers();
 
