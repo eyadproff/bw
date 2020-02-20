@@ -82,6 +82,8 @@ public class SlapFingerprintsCapturingFxController extends WizardStepFxControlle
 	@Input private Boolean allow9MissingWithNoRole;
 	@Input private Boolean acceptBadQualityFingerprint;
 	@Input private Integer acceptBadQualityFingerprintMinRetires;
+	@Input private Boolean hideCheckBoxOfMissing;
+	@Input private List<Integer> exceptionOfFingerprints;
 	@Output private Map<Integer, Fingerprint> capturedFingerprints;
 	@Output private List<Finger> segmentedFingerprints;
 	@Output private List<Finger> slapFingerprints;
@@ -307,7 +309,18 @@ public class SlapFingerprintsCapturingFxController extends WizardStepFxControlle
                                                    svgLeftLittle, tpLeftLittle, cbLeftLittle,
                                                    resources.getString("label.fingers.little"),
                                                    resources.getString("label.leftHand")));
-		
+
+		// disable all the checkboxes if We do not have the choice to select MissingFingerPrint
+		if(hideCheckBoxOfMissing !=null && hideCheckBoxOfMissing) {
+			fingerprintUiComponentsMap.forEach((position, components) -> {
+				components.getCheckBox().setDisable(true);
+				if(exceptionOfFingerprints.contains(position))
+					components.getCheckBox().setSelected(false);
+
+			});
+
+		}
+
 		// disable the finger's titledPane whenever its checkbox is unselected
 		fingerprintUiComponentsMap.forEach((position, components) ->
                components.getTitledPane().disableProperty().bind(components.getCheckBox().selectedProperty().not()));
