@@ -24,8 +24,9 @@ public class SubmitBioExclusionsWorkflowTask extends WorkflowTask {
     @Override
     public void execute() throws Signal {
         BioExclusionAPI bioExclusionAPI = Context.getWebserviceManager().getApi(BioExclusionAPI.class);
-        Call<SubmissionAndDeletionResponse> apiCall = bioExclusionAPI.submitBioExclusions(AppUtils.toJson(EditedBioExclusionsList));
+        Call<SubmissionAndDeletionResponse> apiCall = bioExclusionAPI.submitBioExclusions(workflowId, workflowTcn,AppUtils.toJson(EditedBioExclusionsList));
         TaskResponse<SubmissionAndDeletionResponse> taskResponse = Context.getWebserviceManager().executeApi(apiCall);
+
         resetWorkflowStepIfNegativeOrNullTaskResponse(taskResponse);
 
         Tcn = taskResponse.getResult().getTcn();

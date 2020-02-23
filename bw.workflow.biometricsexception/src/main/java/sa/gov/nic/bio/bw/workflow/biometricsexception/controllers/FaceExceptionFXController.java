@@ -4,11 +4,9 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import javafx.util.StringConverter;
 import sa.gov.nic.bio.bw.core.Context;
 import sa.gov.nic.bio.bw.core.beans.ComboBoxItem;
-import sa.gov.nic.bio.bw.core.beans.UserInfo;
 import sa.gov.nic.bio.bw.core.controllers.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.core.utils.FxmlFile;
 import sa.gov.nic.bio.bw.core.utils.GuiLanguage;
@@ -277,12 +275,15 @@ public class FaceExceptionFXController extends WizardStepFxControllerBase {
             if (((RadioButton) RBStatus.getSelectedToggle()).getText().equals(resources.getString("3months"))) {
                 EditFaceException.setMonth(3);
                 EditFaceException.setExpireDate(Instant.now().getEpochSecond() + new Long(7889238));
+                EditFaceException.setCreateDate(Instant.now().getEpochSecond());
             } else if (((RadioButton) RBStatus.getSelectedToggle()).getText().equals(resources.getString("6months"))) {
                 EditFaceException.setMonth(6);
                 EditFaceException.setExpireDate(Instant.now().getEpochSecond() + new Long(15778476));
+                EditFaceException.setCreateDate(Instant.now().getEpochSecond());
             } else  {
                 EditFaceException.setMonth(12);
                 EditFaceException.setExpireDate(Instant.now().getEpochSecond() + new Long(31556952));
+                EditFaceException.setCreateDate(Instant.now().getEpochSecond());
             }
        // }
 //        else {

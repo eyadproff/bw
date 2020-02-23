@@ -9,6 +9,7 @@ public class BioExclusion {
     private String description;
     private Long crDt;
     private Integer status;
+    private Long createDate;
     private Long expireDate;
     private Long deleterId;
     private Long operatorId;
@@ -103,6 +104,15 @@ public class BioExclusion {
     public void setExpireDate(Long expireDate) {
         this.expireDate = expireDate;
     }
+
+    public Long getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(Long createDate) {
+        this.createDate = createDate;
+    }
+
 
     public Long getDeleterId() {
         return deleterId;

@@ -512,16 +512,20 @@ public class EditMissingFingerprintFXController extends WizardStepFxControllerBa
         bioEx.setPosition(position);
         // -- epoch time by Second
         if (finger.getStatus() == 0) {
-            bioEx.setExpireDate(new Long(0));
-            bioEx.setMonth(0);
+           // bioEx.setExpireDate(new Long(0));
+            bioEx.setCreateDate(Instant.now().getEpochSecond());
+           // bioEx.setMonth(0);
         } else if (finger.getStatus() == 3) {
             bioEx.setExpireDate(Instant.now().getEpochSecond() + new Long(7889238));
+            bioEx.setCreateDate(Instant.now().getEpochSecond());
             bioEx.setMonth(3);
         } else if (finger.getStatus() == 6) {
             bioEx.setExpireDate(Instant.now().getEpochSecond() + new Long(15778476));
+            bioEx.setCreateDate(Instant.now().getEpochSecond());
             bioEx.setMonth(6);
         } else {
             bioEx.setExpireDate(Instant.now().getEpochSecond() + new Long(31556952));
+            bioEx.setCreateDate(Instant.now().getEpochSecond());
             bioEx.setMonth(12);
         }
 

@@ -22,14 +22,20 @@ public class RetrieveBioExclusionsWorkflowTask extends WorkflowTask {
     @Override
     public void execute() throws Signal {
         BioExclusionAPI bioExclusionAPI = Context.getWebserviceManager().getApi(BioExclusionAPI.class);
-        Call<List<BioExclusion>> apiCall = bioExclusionAPI.retrieveBioExclusions(samisId);
+        Call<List<BioExclusion>> apiCall = bioExclusionAPI.retrieveBioExclusions(workflowId, workflowTcn, samisId);
         TaskResponse<List<BioExclusion>> taskResponse = Context.getWebserviceManager().executeApi(apiCall);
-        resetWorkflowStepIfNegativeOrNullTaskResponse(taskResponse);
-
-        boolean notFound = !taskResponse.isSuccess() && "B003-0078".equals(taskResponse.getErrorCode());
+        boolean notFound = !taskResponse.isSuccess() && "B003-0079".equals(taskResponse.getErrorCode());
 
         if (notFound) return;
 
+        //should return which one Expired
+            if ("B003-0079".equals(taskResponse.getErrorCode()))
+                System.out.println("Bio Exclusion period expired");
+            else
+                resetWorkflowStepIfNegativeOrNullTaskResponse(taskResponse);
+
+
         bioExclusionList = taskResponse.getResult();
+
     }
 }

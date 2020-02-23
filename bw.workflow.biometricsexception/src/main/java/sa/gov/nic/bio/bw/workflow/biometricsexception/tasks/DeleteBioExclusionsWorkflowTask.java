@@ -8,8 +8,6 @@ import sa.gov.nic.bio.bw.core.workflow.Input;
 import sa.gov.nic.bio.bw.core.workflow.Output;
 import sa.gov.nic.bio.bw.core.workflow.Signal;
 import sa.gov.nic.bio.bw.core.workflow.WorkflowTask;
-import sa.gov.nic.bio.bw.workflow.biometricsexception.beans.BioExclusion;
-
 import sa.gov.nic.bio.bw.workflow.biometricsexception.beans.SubmissionAndDeletionResponse;
 import sa.gov.nic.bio.bw.workflow.biometricsexception.webservice.BioExclusionAPI;
 import sa.gov.nic.bio.commons.TaskResponse;
@@ -27,7 +25,7 @@ public class DeleteBioExclusionsWorkflowTask extends WorkflowTask {
 
         UserInfo userInfo = (UserInfo) Context.getUserSession().getAttribute("userInfo");
         BioExclusionAPI bioExclusionAPI = Context.getWebserviceManager().getApi(BioExclusionAPI.class);
-        Call<SubmissionAndDeletionResponse> apiCall = bioExclusionAPI.deleteBioExclusions(AppUtils.toJson(SeqNumbersList), userInfo.getOperatorId());
+        Call<SubmissionAndDeletionResponse> apiCall = bioExclusionAPI.deleteBioExclusions(workflowId, workflowTcn,AppUtils.toJson(SeqNumbersList), userInfo.getOperatorId());
         TaskResponse<SubmissionAndDeletionResponse> taskResponse = Context.getWebserviceManager().executeApi(apiCall);
 
         boolean notFound = !taskResponse.isSuccess() && "B003-0078".equals(taskResponse.getErrorCode());
