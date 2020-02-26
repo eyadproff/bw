@@ -19,7 +19,7 @@
     <fx:define>
         <ToggleGroup fx:id="toggleGroup"/>
     </fx:define>
-    <!--toggleGroup="$toggleGroup"-->
+<!--    toggleGroup="$toggleGroup"-->
     <center>
         <VBox alignment="CENTER">
             <children>

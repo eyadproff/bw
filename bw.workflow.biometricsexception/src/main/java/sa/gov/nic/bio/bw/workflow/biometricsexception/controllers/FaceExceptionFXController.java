@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
-@FxmlFile("faceException.fxml")
+@FxmlFile("faceException22.fxml")
 public class FaceExceptionFXController extends WizardStepFxControllerBase {
 
 
@@ -127,8 +127,31 @@ public class FaceExceptionFXController extends WizardStepFxControllerBase {
             }
         }
 
+        if (EditFaceException == null && FaceException != null) {
+
+            if (FaceException != null) {
+                for (Cause causeFC : causes) {
+
+                    if (causeFC.getCauseId() == FaceException.getCasueId()) {
+                        EditFaceException = new BioExclusion();
+                        EditFaceException.setCasueId(causeFC.getCauseId());
+//                        Reason.setDescriptionAr(causeFC.getArabicText());
+//                        Reason.setDescriptionEn(causeFC.getEnglishText());
+                        EditFaceException.setMonth(FaceException.getMonth());
+                        if (FaceException.getCasueId() == 1) {
+                            EditFaceException.setDescription(FaceException.getDescription());
+                        }
+
+                        break;
+                    }
+                }
+
+            }
+
+        }
         if (EditFaceException != null)
             uploadReason();
+
 
         // for delete pane
         if (FaceException != null) {
@@ -156,7 +179,7 @@ public class FaceExceptionFXController extends WizardStepFxControllerBase {
                 }
             }
 
-        }else{
+        } else {
             LblDelfaceExcStatus.setVisible(false);
             LblDelfaceExcCouse.setVisible(false);
             LblfaceExcReason.setText(resources.getString("NoFaceException"));
@@ -214,7 +237,6 @@ public class FaceExceptionFXController extends WizardStepFxControllerBase {
             TxtfaceExcReason.setVisible(false);
 
 
-
     }
 
 
@@ -234,15 +256,14 @@ public class FaceExceptionFXController extends WizardStepFxControllerBase {
             TxtfaceExcReason.setVisible(false);
 
 
-
-      //  if (RBStatusFaceEx.isVisible()) {
-             if (EditFaceException.getMonth() == 12)
-                RBStatus.getToggles().get(2).setSelected(true);
-            else if (EditFaceException.getMonth() == 6)
-                RBStatus.getToggles().get(1).setSelected(true);
-            else
-                RBStatus.getToggles().get(0).setSelected(true);
-     //   }
+        //  if (RBStatusFaceEx.isVisible()) {
+        if (EditFaceException.getMonth() == 12)
+            RBStatus.getToggles().get(2).setSelected(true);
+        else if (EditFaceException.getMonth() == 6)
+            RBStatus.getToggles().get(1).setSelected(true);
+        else
+            RBStatus.getToggles().get(0).setSelected(true);
+        //   }
     }
 
 
@@ -271,26 +292,25 @@ public class FaceExceptionFXController extends WizardStepFxControllerBase {
                 // EditFaceException.setCasueId(1);
             }
         }
-       // if (RBStatusFaceEx.isVisible()) {
-            if (((RadioButton) RBStatus.getSelectedToggle()).getText().equals(resources.getString("3months"))) {
-                EditFaceException.setMonth(3);
-                EditFaceException.setExpireDate(Instant.now().getEpochSecond() + new Long(7889238));
-                EditFaceException.setCreateDate(Instant.now().getEpochSecond());
-            } else if (((RadioButton) RBStatus.getSelectedToggle()).getText().equals(resources.getString("6months"))) {
-                EditFaceException.setMonth(6);
-                EditFaceException.setExpireDate(Instant.now().getEpochSecond() + new Long(15778476));
-                EditFaceException.setCreateDate(Instant.now().getEpochSecond());
-            } else  {
-                EditFaceException.setMonth(12);
-                EditFaceException.setExpireDate(Instant.now().getEpochSecond() + new Long(31556952));
-                EditFaceException.setCreateDate(Instant.now().getEpochSecond());
-            }
-       // }
+        // if (RBStatusFaceEx.isVisible()) {
+        if (((RadioButton) RBStatus.getSelectedToggle()).getText().equals(resources.getString("3months"))) {
+            EditFaceException.setMonth(3);
+            EditFaceException.setExpireDate(Instant.now().getEpochSecond() + new Long(7889238));
+            EditFaceException.setCreateDate(Instant.now().getEpochSecond());
+        } else if (((RadioButton) RBStatus.getSelectedToggle()).getText().equals(resources.getString("6months"))) {
+            EditFaceException.setMonth(6);
+            EditFaceException.setExpireDate(Instant.now().getEpochSecond() + new Long(15778476));
+            EditFaceException.setCreateDate(Instant.now().getEpochSecond());
+        } else {
+            EditFaceException.setMonth(12);
+            EditFaceException.setExpireDate(Instant.now().getEpochSecond() + new Long(31556952));
+            EditFaceException.setCreateDate(Instant.now().getEpochSecond());
+        }
+        // }
 //        else {
 //            EditFaceException.setMonth(12);
 //            EditFaceException.setExpireDate(Instant.now().getEpochSecond() + new Long(31556952));
 //        }
-
 
 
         if (FaceException != null) {

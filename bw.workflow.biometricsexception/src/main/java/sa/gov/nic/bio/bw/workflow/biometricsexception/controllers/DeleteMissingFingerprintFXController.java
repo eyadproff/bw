@@ -6,6 +6,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.SVGPath;
 import sa.gov.nic.bio.bw.core.Context;
 import sa.gov.nic.bio.bw.core.controllers.WizardStepFxControllerBase;
@@ -19,18 +20,21 @@ import sa.gov.nic.bio.bw.workflow.biometricsexception.beans.Fingerprint;
 import sa.gov.nic.bio.bw.workflow.biometricsexception.beans.PersonFingerprints;
 import sa.gov.nic.bio.bw.workflow.biometricsexception.lookups.CausesLookup;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-@FxmlFile("deleteMissingFingerprint.fxml")
+@FxmlFile("deleteMissingFingerprint22.fxml")
 public class DeleteMissingFingerprintFXController extends WizardStepFxControllerBase {
 
 
-    private PersonFingerprints personfingerprints;
-
     @Input
     private List<BioExclusion> BioExclusionsList;
+
+    @Input
+    private List<Integer> MissingFingerPrints;
+
 
     @Output
     private PersonFingerprints Editedpersonfingerprints;
@@ -126,19 +130,38 @@ public class DeleteMissingFingerprintFXController extends WizardStepFxController
     private Label LLittleCouse, LLittleStatus;
 
     @FXML
-    private Label RightMExist, LeftMExist;
+    private Label RightMExist, LeftMExist, lblExcpiredExc;
+    ;
     @FXML
     private Button btnNext;
 
     @SuppressWarnings("unchecked")
     private List<Cause> causes;
+    private PersonFingerprints personfingerprints;
+    private List<BioExclusion> expiredException;
 
     @Override
     protected void onAttachedToScene() {
 
-
+        SeqNumbersList = new ArrayList<Integer>();
+        expiredException = new ArrayList<BioExclusion>();
         causes = (List<Cause>) Context.getUserSession().getAttribute(CausesLookup.KEY);
 
+
+        if (BioExclusionsList != null)
+            for (BioExclusion bioEx : BioExclusionsList) {
+                if (bioEx.getExpireDate() != null && bioEx.getExpireDate() < Instant.now().getEpochSecond())
+                    if (MissingFingerPrints != null && MissingFingerPrints.contains(bioEx.getPosition())) {
+                        expiredException.add(bioEx);
+                        BioExclusionsList.remove(bioEx);
+                    } else
+                        SeqNumbersList.add(bioEx.getSeqNum());
+
+            }
+        if (!expiredException.isEmpty()) {
+            lblExcpiredExc.setVisible(true);
+            expiredException.forEach(x -> ShowExpiredException(x.getPosition()));
+        }
 
         if (BioExclusionsList != null) {
 
@@ -169,6 +192,48 @@ public class DeleteMissingFingerprintFXController extends WizardStepFxController
         if (Editedpersonfingerprints != null) {
             checkDeletedMFP();
         }
+    }
+    private void ShowExpiredException(Integer Position) {
+        switch (Position) {
+            case 1:
+                FillSVG(svgRightThumb);
+                break;
+            case 2:
+                FillSVG(svgRightIndex);
+                break;
+            case 3:
+                FillSVG(svgRightMiddle);
+                break;
+            case 4:
+                FillSVG(svgRightRing);
+                break;
+            case 5:
+                FillSVG(svgRightLittle);
+                break;
+            case 6:
+                FillSVG(svgLeftThumb);
+                break;
+            case 7:
+                FillSVG(svgLeftIndex);
+                break;
+            case 8:
+                FillSVG(svgLeftMiddle);
+                break;
+            case 9:
+                FillSVG(svgLeftRing);
+                break;
+            case 10:
+                FillSVG(svgLeftLittle);
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void FillSVG(SVGPath svg) {
+        svg.setVisible(true);
+        svg.setManaged(true);
+        svg.setFill(Color.RED);
     }
 
     private Fingerprint getLast(List<BioExclusion> personMissinfingerprints, Integer position) {
@@ -365,63 +430,63 @@ public class DeleteMissingFingerprintFXController extends WizardStepFxController
     private void CheckBoxAction() {
         int numChBox = 0;
         if (chbRightThumb.isSelected()) {
-            VRightThumb.setStyle("-fx-border-color:RoyalBlue");
+            VRightThumb.setStyle("-fx-border-color:red");
             numChBox++;
         } else {
             VRightThumb.setStyle("-fx-border-color:gray");
         }
         if (chbRightIndex.isSelected()) {
             numChBox++;
-            VRightIndexFinger.setStyle("-fx-border-color:RoyalBlue");
+            VRightIndexFinger.setStyle("-fx-border-color:red");
         } else {
             VRightIndexFinger.setStyle("-fx-border-color:gray");
         }
         if (chbRightMiddle.isSelected()) {
             numChBox++;
-            VRightMiddleFinger.setStyle("-fx-border-color:RoyalBlue");
+            VRightMiddleFinger.setStyle("-fx-border-color:red");
         } else {
             VRightMiddleFinger.setStyle("-fx-border-color:gray");
         }
         if (chbRightRing.isSelected()) {
             numChBox++;
-            VRightRingFinger.setStyle("-fx-border-color:RoyalBlue");
+            VRightRingFinger.setStyle("-fx-border-color:red");
         } else {
             VRightRingFinger.setStyle("-fx-border-color:gray");
         }
         if (chbRightLittle.isSelected()) {
             numChBox++;
-            VRightLittleFinger.setStyle("-fx-border-color:RoyalBlue");
+            VRightLittleFinger.setStyle("-fx-border-color:red");
         } else {
             VRightLittleFinger.setStyle("-fx-border-color:gray");
         }
 
         if (chbLeftThumb.isSelected()) {
             numChBox++;
-            VLeftThumb.setStyle("-fx-border-color:RoyalBlue");
+            VLeftThumb.setStyle("-fx-border-color:red");
         } else {
             VLeftThumb.setStyle("-fx-border-color:gray");
         }
         if (chbLeftIndex.isSelected()) {
             numChBox++;
-            VLeftIndexFinger.setStyle("-fx-border-color:RoyalBlue");
+            VLeftIndexFinger.setStyle("-fx-border-color:red");
         } else {
             VLeftIndexFinger.setStyle("-fx-border-color:gray");
         }
         if (chbLeftMiddle.isSelected()) {
             numChBox++;
-            VLeftMiddleFinger.setStyle("-fx-border-color:RoyalBlue");
+            VLeftMiddleFinger.setStyle("-fx-border-color:red");
         } else {
             VLeftMiddleFinger.setStyle("-fx-border-color:gray");
         }
         if (chbLeftRing.isSelected()) {
             numChBox++;
-            VLeftRingFinger.setStyle("-fx-border-color:RoyalBlue");
+            VLeftRingFinger.setStyle("-fx-border-color:red");
         } else {
             VLeftRingFinger.setStyle("-fx-border-color:gray");
         }
         if (chbLeftLittle.isSelected()) {
             numChBox++;
-            VLeftLittleFinger.setStyle("-fx-border-color:RoyalBlue");
+            VLeftLittleFinger.setStyle("-fx-border-color:red");
         } else {
             VLeftLittleFinger.setStyle("-fx-border-color:gray");
         }
@@ -437,7 +502,7 @@ public class DeleteMissingFingerprintFXController extends WizardStepFxController
     protected void onNextButtonClicked(ActionEvent actionEvent) {
 
         Editedpersonfingerprints = new PersonFingerprints();
-        SeqNumbersList = new ArrayList<Integer>();
+
 
         if (chbRightThumb.isSelected()) {
             SeqNumbersList.add(personfingerprints.getRThumb().getSeqNum());

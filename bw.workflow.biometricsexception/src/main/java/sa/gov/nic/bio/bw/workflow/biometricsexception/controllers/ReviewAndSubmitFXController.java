@@ -21,7 +21,7 @@ import sa.gov.nic.bio.bw.workflow.biometricsexception.controllers.ServiceTypeFXC
 import java.util.ArrayList;
 import java.util.List;
 
-@FxmlFile("reviewAndSubmit.fxml")
+@FxmlFile("reviewAndSubmit22.fxml")
 public class ReviewAndSubmitFXController extends WizardStepFxControllerBase {
 
     @Input

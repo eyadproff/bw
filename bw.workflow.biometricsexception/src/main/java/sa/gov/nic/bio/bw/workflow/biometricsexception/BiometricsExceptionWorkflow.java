@@ -7,25 +7,22 @@ import sa.gov.nic.bio.bw.core.workflow.Signal;
 import sa.gov.nic.bio.bw.core.workflow.WithLookups;
 import sa.gov.nic.bio.bw.core.workflow.WizardWorkflowBase;
 import sa.gov.nic.bio.bw.workflow.biometricsexception.beans.BioExclusion;
-import sa.gov.nic.bio.bw.workflow.biometricsexception.beans.PersonFingerprints;
-import sa.gov.nic.bio.bw.workflow.biometricsexception.beans.Fingerprint;
+import sa.gov.nic.bio.bw.workflow.biometricsexception.controllers.*;
+import sa.gov.nic.bio.bw.workflow.biometricsexception.controllers.BiometricsExceptionTypeFXController.Type;
+import sa.gov.nic.bio.bw.workflow.biometricsexception.controllers.FaceExceptionFXController.TypeFaceService;
+import sa.gov.nic.bio.bw.workflow.biometricsexception.controllers.ServiceTypeFXController.ServiceType;
 import sa.gov.nic.bio.bw.workflow.biometricsexception.lookups.CausesLookup;
 import sa.gov.nic.bio.bw.workflow.biometricsexception.tasks.DeleteBioExclusionsWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.biometricsexception.tasks.RetrieveBioExclusionsWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.biometricsexception.tasks.SubmitBioExclusionsWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.commons.beans.NormalizedPersonInfo;
-import sa.gov.nic.bio.bw.workflow.commons.beans.PersonInfo;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.CountriesLookup;
-import sa.gov.nic.bio.bw.workflow.commons.lookups.CrimeTypesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.DocumentTypesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.PersonTypesLookup;
-import sa.gov.nic.bio.bw.workflow.biometricsexception.controllers.*;
-import sa.gov.nic.bio.bw.workflow.biometricsexception.controllers.BiometricsExceptionTypeFXController.Type;
-import sa.gov.nic.bio.bw.workflow.biometricsexception.controllers.ServiceTypeFXController.ServiceType;
-import sa.gov.nic.bio.bw.workflow.biometricsexception.controllers.FaceExceptionFXController.TypeFaceService;
+import sa.gov.nic.bio.bw.workflow.commons.tasks.FetchingMissingFingerprintsWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.GetPersonInfoByIdWorkflowTask;
 
-import java.util.ArrayList;
+import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
 
@@ -33,9 +30,9 @@ import java.util.List;
 
 
 @AssociatedMenu(workflowId = 1017, menuId = "menu.edit.biometricsException", menuTitle = "menu.title", menuOrder = 2)
-@WithLookups({PersonTypesLookup.class,DocumentTypesLookup.class, CountriesLookup.class,CausesLookup.class})
-@Wizard({@Step(iconId = "\\uf2bb", title = "wizard.InquiryByPersonId"),
-        @Step(iconId = "database", title = "wizard.inquiryResult"),
+@WithLookups({PersonTypesLookup.class, DocumentTypesLookup.class, CountriesLookup.class, CausesLookup.class})
+@Wizard({@Step(iconId = "\\uf2bb", title = "wizard.enterPersonId"),
+        @Step(iconId = "database", title = "wizard.showingPersonInfo"),
         @Step(iconId = "question", title = "wizard.biometricsExceptionType"),
         @Step(iconId = "question", title = "wizard.serviceType"),
         @Step(iconId = "\\uf256", title = "wizard.addOrEditMissingFingerPrint"),
@@ -51,6 +48,7 @@ public class BiometricsExceptionWorkflow extends WizardWorkflowBase {
 
         switch (step) {
             case 0: {
+                //  renderUiAndWaitForUserInput(testC.class);
                 renderUiAndWaitForUserInput(PersonIdPaneFxController.class);
                 passData(PersonIdPaneFxController.class, GetPersonInfoByIdWorkflowTask.class,
                         "personId");
@@ -108,26 +106,40 @@ public class BiometricsExceptionWorkflow extends WizardWorkflowBase {
                 Type type = getData(BiometricsExceptionTypeFXController.class, "exceptionType");
 
                 if (Type.FINGERPRINTS.equals(type)) {
-
+                    List<Integer> MissingFingerPrints=null ;
                     setData(RetrieveBioExclusionsWorkflowTask.class, "samisId", (((NormalizedPersonInfo) getData(ShowingPersonInfoFxController.class, "normalizedPersonInfo")).getPersonId()).intValue());
                     executeWorkflowTask(RetrieveBioExclusionsWorkflowTask.class);
 
-                    List<BioExclusion> BioExclusionsList = getData(RetrieveBioExclusionsWorkflowTask.class, "bioExclusionList");
+                    List<BioExclusion> BioExclusionsList=getData(RetrieveBioExclusionsWorkflowTask.class, "bioExclusionList");
+
 
                     if (BioExclusionsList != null) {
 
                         //to get last tuples
-                        BioExclusionsList.removeIf(bioex -> bioex.getBioType() != 1 && bioex.getStatus() == 0);
+                        BioExclusionsList.removeIf(bioex -> bioex.getBioType() != 1);
                         Collections.reverse(BioExclusionsList);
+
+                        //if not enrolled what ?
+                        //if there is ExpiredExc then get Available fingerprints
+                        for (BioExclusion bioEx : BioExclusionsList) {
+                            if (bioEx.getExpireDate() != null && bioEx.getExpireDate() < Instant.now().getEpochSecond()) {
+                                setData(FetchingMissingFingerprintsWorkflowTask.class, "personId", (((NormalizedPersonInfo) getData(ShowingPersonInfoFxController.class, "normalizedPersonInfo")).getPersonId()).intValue());
+                                executeWorkflowTask(FetchingMissingFingerprintsWorkflowTask.class);
+                                MissingFingerPrints = getData(FetchingMissingFingerprintsWorkflowTask.class, "missingFingerprints");
+                                break;
+                            }
+                        }
                     }
                     if (ServiceType.ADD_OR_EDIT_FINGERPRINTS.equals(serviceType)) {
 
                         setData(EditMissingFingerprintFXController.class, "personMissinfingerprints", BioExclusionsList);
+                        setData(EditMissingFingerprintFXController.class, "MissingFingerPrints", MissingFingerPrints);
                         renderUiAndWaitForUserInput(EditMissingFingerprintFXController.class);
 
 
                     } else {
                         setData(DeleteMissingFingerprintFXController.class, "BioExclusionsList", BioExclusionsList);
+                        setData(DeleteMissingFingerprintFXController.class, "MissingFingerPrints", MissingFingerPrints);
                         renderUiAndWaitForUserInput(DeleteMissingFingerprintFXController.class);
 
                     }
@@ -179,9 +191,7 @@ public class BiometricsExceptionWorkflow extends WizardWorkflowBase {
                 if (Type.FINGERPRINTS.equals(type)) {
                     if (ServiceType.ADD_OR_EDIT_FINGERPRINTS.equals(serviceType)) {
 
-                        //add or edit task
-                        passData(ReviewAndSubmitFXController.class, SubmitBioExclusionsWorkflowTask.class, "EditedBioExclusionsList");
-                        executeWorkflowTask(SubmitBioExclusionsWorkflowTask.class);
+
 
                         if (((List<Integer>) getData(EditMissingFingerprintFXController.class, "SeqNumbersList")).size() != 0) {
 
@@ -189,6 +199,9 @@ public class BiometricsExceptionWorkflow extends WizardWorkflowBase {
                             executeWorkflowTask(DeleteBioExclusionsWorkflowTask.class);
 
                         }
+                        //add or edit task
+                        passData(ReviewAndSubmitFXController.class, SubmitBioExclusionsWorkflowTask.class, "EditedBioExclusionsList");
+                        executeWorkflowTask(SubmitBioExclusionsWorkflowTask.class);
 
 
                     } else {
@@ -203,9 +216,7 @@ public class BiometricsExceptionWorkflow extends WizardWorkflowBase {
                     TypeFaceService typeFaceService = getData(FaceExceptionFXController.class, "typeFaceService");
 
                     if (typeFaceService.equals(TypeFaceService.ADD_OR_EDIT)) {
-                        //add or edit task
-                        passData(ReviewAndSubmitFaceExceptionFXController.class, SubmitBioExclusionsWorkflowTask.class, "EditedBioExclusionsList");
-                        executeWorkflowTask(SubmitBioExclusionsWorkflowTask.class);
+
 
                         if (((List<Integer>) getData(FaceExceptionFXController.class, "SeqNumbersList")) != null) {
 
@@ -213,6 +224,9 @@ public class BiometricsExceptionWorkflow extends WizardWorkflowBase {
                             executeWorkflowTask(DeleteBioExclusionsWorkflowTask.class);
 
                         }
+                        //add or edit task
+                        passData(ReviewAndSubmitFaceExceptionFXController.class, SubmitBioExclusionsWorkflowTask.class, "EditedBioExclusionsList");
+                        executeWorkflowTask(SubmitBioExclusionsWorkflowTask.class);
 
 
                     } else {

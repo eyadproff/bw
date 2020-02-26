@@ -18,7 +18,7 @@ import sa.gov.nic.bio.bw.workflow.biometricsexception.controllers.FaceExceptionF
 import java.util.ArrayList;
 import java.util.List;
 
-@FxmlFile("reviewAndSubmitFaceException.fxml")
+@FxmlFile("reviewAndSubmitFaceException22.fxml")
 public class ReviewAndSubmitFaceExceptionFXController extends WizardStepFxControllerBase {
     @Input(alwaysRequired = true)
     private NormalizedPersonInfo normalizedPersonInfo;

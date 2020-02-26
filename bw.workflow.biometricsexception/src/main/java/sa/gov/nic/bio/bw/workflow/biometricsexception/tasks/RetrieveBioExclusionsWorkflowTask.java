@@ -29,7 +29,7 @@ public class RetrieveBioExclusionsWorkflowTask extends WorkflowTask {
         if (notFound) return;
 
         //should return which one Expired
-            if ("B003-0079".equals(taskResponse.getErrorCode()))
+            if ("B003-0078".equals(taskResponse.getErrorCode()))
                 System.out.println("Bio Exclusion period expired");
             else
                 resetWorkflowStepIfNegativeOrNullTaskResponse(taskResponse);

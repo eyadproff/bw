@@ -4,6 +4,8 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.SVGPath;
 import javafx.util.StringConverter;
 import sa.gov.nic.bio.bw.core.Context;
 import sa.gov.nic.bio.bw.core.beans.ComboBoxItem;
@@ -26,12 +28,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
-@FxmlFile("editMissingFingerprint.fxml")
+@FxmlFile("editMissingFingerprint22.fxml")
 public class EditMissingFingerprintFXController extends WizardStepFxControllerBase {
 
 
     @Input
     private List<BioExclusion> personMissinfingerprints;
+    @Input
+    private List<Integer> MissingFingerPrints;
 
     @Output
     private List<BioExclusion> BioExclusionsList;
@@ -89,6 +93,28 @@ public class EditMissingFingerprintFXController extends WizardStepFxControllerBa
     private CheckBox chbLeftLittle;
 
     @FXML
+    private SVGPath svgRightLittle;
+    @FXML
+    private SVGPath svgRightRing;
+    @FXML
+    private SVGPath svgRightMiddle;
+    @FXML
+    private SVGPath svgRightIndex;
+    @FXML
+    private SVGPath svgRightThumb;
+
+    @FXML
+    private SVGPath svgLeftLittle;
+    @FXML
+    private SVGPath svgLeftRing;
+    @FXML
+    private SVGPath svgLeftMiddle;
+    @FXML
+    private SVGPath svgLeftIndex;
+    @FXML
+    private SVGPath svgLeftThumb;
+
+    @FXML
     private ComboBox<ComboBoxItem<Cause>> CMenuRThumb, CMenuRIndex, CMenuRMiddle, CMenuRRing, CMenuRLittle;
     @FXML
     private ComboBox<ComboBoxItem<Cause>> CMenuLThumb, CMenuLIndex, CMenuLMiddle, CMenuLRing, CMenuLLittle;
@@ -104,27 +130,47 @@ public class EditMissingFingerprintFXController extends WizardStepFxControllerBa
     private TextField CouseTLThumb, CouseTLIndex, CouseTLMiddle, CouseTLRing, CouseTLLittle;
     @FXML
     private Button btnNext;
+    @FXML
+    private Label lblExcpiredExc;
 
     @SuppressWarnings("unchecked")
     private List<Cause> causes;
+    private List<BioExclusion> expiredException;
 
     @Override
     protected void onAttachedToScene() {
+        SeqNumbersList = new ArrayList<Integer>();
+        expiredException = new ArrayList<BioExclusion>();
+
+        if (personMissinfingerprints != null)
+            for (BioExclusion bioEx : personMissinfingerprints) {
+                if (bioEx.getExpireDate() != null && bioEx.getExpireDate() < Instant.now().getEpochSecond())
+                    if (MissingFingerPrints != null && MissingFingerPrints.contains(bioEx.getPosition())) {
+                        expiredException.add(bioEx);
+                        personMissinfingerprints.remove(bioEx);
+                    } else
+                        SeqNumbersList.add(bioEx.getSeqNum());
+
+            }
+        if (!expiredException.isEmpty()) {
+            lblExcpiredExc.setVisible(true);
+            expiredException.forEach(x -> ShowExpiredException(x.getPosition()));
+        }
+
 
         causes = (List<Cause>) Context.getUserSession().getAttribute(CausesLookup.KEY);
 
+        AddItemsToMenu(CMenuRThumb, VOtherRThumb, CouseTRThumb, causes, TGRThumb);
+        AddItemsToMenu(CMenuRIndex, VOtherRIndex, CouseTRIndex, causes, TGRIndex);
+        AddItemsToMenu(CMenuRMiddle, VOtherRMiddle, CouseTRMiddle, causes, TGRMiddle);
+        AddItemsToMenu(CMenuRRing, VOtherRRing, CouseTRRing, causes, TGRRing);
+        AddItemsToMenu(CMenuRLittle, VOtherRLittle, CouseTRLittle, causes, TGRLittle);
 
-        AddItemsToMenu(CMenuRThumb, VOtherRThumb, CouseTRThumb, causes,TGRThumb);
-        AddItemsToMenu(CMenuRIndex, VOtherRIndex, CouseTRIndex, causes,TGRIndex);
-        AddItemsToMenu(CMenuRMiddle, VOtherRMiddle, CouseTRMiddle, causes,TGRMiddle);
-        AddItemsToMenu(CMenuRRing, VOtherRRing, CouseTRRing, causes,TGRRing);
-        AddItemsToMenu(CMenuRLittle, VOtherRLittle, CouseTRLittle, causes,TGRLittle);
-
-        AddItemsToMenu(CMenuLThumb, VOtherLThumb, CouseTLThumb, causes,TGLThumb);
-        AddItemsToMenu(CMenuLIndex, VOtherLIndex, CouseTLIndex, causes,TGLIndex);
-        AddItemsToMenu(CMenuLMiddle, VOtherLMiddle, CouseTLMiddle, causes,TGLMiddle);
-        AddItemsToMenu(CMenuLRing, VOtherLRing, CouseTLRing, causes,TGLRing);
-        AddItemsToMenu(CMenuLLittle, VOtherLLittle, CouseTLLittle, causes,TGLLittle);
+        AddItemsToMenu(CMenuLThumb, VOtherLThumb, CouseTLThumb, causes, TGLThumb);
+        AddItemsToMenu(CMenuLIndex, VOtherLIndex, CouseTLIndex, causes, TGLIndex);
+        AddItemsToMenu(CMenuLMiddle, VOtherLMiddle, CouseTLMiddle, causes, TGLMiddle);
+        AddItemsToMenu(CMenuLRing, VOtherLRing, CouseTLRing, causes, TGLRing);
+        AddItemsToMenu(CMenuLLittle, VOtherLLittle, CouseTLLittle, causes, TGLLittle);
 
         if (isFirstLoad()) {
             Upload();
@@ -167,6 +213,49 @@ public class EditMissingFingerprintFXController extends WizardStepFxControllerBa
             Editedpersonfingerprints.setLLittle(new Fingerprint());
             Editedpersonfingerprints.setLRing(new Fingerprint());
         }
+    }
+
+    private void ShowExpiredException(Integer Position) {
+        switch (Position) {
+            case 1:
+                FillSVG(svgRightThumb);
+                break;
+            case 2:
+                FillSVG(svgRightIndex);
+                break;
+            case 3:
+                FillSVG(svgRightMiddle);
+                break;
+            case 4:
+                FillSVG(svgRightRing);
+                break;
+            case 5:
+                FillSVG(svgRightLittle);
+                break;
+            case 6:
+                FillSVG(svgLeftThumb);
+                break;
+            case 7:
+                FillSVG(svgLeftIndex);
+                break;
+            case 8:
+                FillSVG(svgLeftMiddle);
+                break;
+            case 9:
+                FillSVG(svgLeftRing);
+                break;
+            case 10:
+                FillSVG(svgLeftLittle);
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void FillSVG(SVGPath svg) {
+        svg.setVisible(true);
+        svg.setManaged(true);
+        svg.setFill(Color.RED);
     }
 
     private Fingerprint getLast(List<BioExclusion> personMissinfingerprints, Integer position) {
@@ -286,11 +375,11 @@ public class EditMissingFingerprintFXController extends WizardStepFxControllerBa
 
     }
 
-    private void AddItemsToMenu(ComboBox<ComboBoxItem<Cause>> menu, VBox VOther, TextField TextCouse, List<Cause> causes,ToggleGroup TG) {
+    private void AddItemsToMenu(ComboBox<ComboBoxItem<Cause>> menu, VBox VOther, TextField TextCouse, List<Cause> causes, ToggleGroup TG) {
         List<Cause> CauseFEx = new ArrayList<Cause>();
         CauseFEx.addAll(causes);
         //
-         CauseFEx.removeIf(cause -> cause.getCauseId() == 4);
+        CauseFEx.removeIf(cause -> cause.getCauseId() == 4);
 
         GuiUtils.addAutoCompletionSupportToComboBox(menu, CauseFEx);
 
@@ -326,12 +415,12 @@ public class EditMissingFingerprintFXController extends WizardStepFxControllerBa
         });
 
         menu.getItems().forEach(consumer);
-        menu.setOnAction(e -> OnActionComboMenu(menu, VOther, TextCouse,TG));
+        menu.setOnAction(e -> OnActionComboMenu(menu, VOther, TextCouse, TG));
 
 
     }
 
-    private void OnActionComboMenu(ComboBox<ComboBoxItem<Cause>> menu, VBox VOther, TextField TextCouse,ToggleGroup TG) {
+    private void OnActionComboMenu(ComboBox<ComboBoxItem<Cause>> menu, VBox VOther, TextField TextCouse, ToggleGroup TG) {
         if (menu.getValue().getItem().getCauseId() == 1) {
             TextCouse.setVisible(true);
             VOther.setVisible(true);
@@ -346,10 +435,9 @@ public class EditMissingFingerprintFXController extends WizardStepFxControllerBa
 
         // Low Quality never be Permanent
         if (menu.getValue().getItem().getCauseId() == 4) {
-            ((RadioButton)TG.getToggles().get(3)).setDisable(true);
-        }else
-            ((RadioButton)TG.getToggles().get(3)).setDisable(false);
-
+            ((RadioButton) TG.getToggles().get(3)).setDisable(true);
+        } else
+            ((RadioButton) TG.getToggles().get(3)).setDisable(false);
 
 
     }
@@ -512,9 +600,9 @@ public class EditMissingFingerprintFXController extends WizardStepFxControllerBa
         bioEx.setPosition(position);
         // -- epoch time by Second
         if (finger.getStatus() == 0) {
-           // bioEx.setExpireDate(new Long(0));
+            // bioEx.setExpireDate(new Long(0));
             bioEx.setCreateDate(Instant.now().getEpochSecond());
-           // bioEx.setMonth(0);
+            // bioEx.setMonth(0);
         } else if (finger.getStatus() == 3) {
             bioEx.setExpireDate(Instant.now().getEpochSecond() + new Long(7889238));
             bioEx.setCreateDate(Instant.now().getEpochSecond());
@@ -545,7 +633,7 @@ public class EditMissingFingerprintFXController extends WizardStepFxControllerBa
     @Override
     protected void onNextButtonClicked(ActionEvent actionEvent) {
         BioExclusionsList = new ArrayList<BioExclusion>();
-        SeqNumbersList = new ArrayList<Integer>();
+
 
         if (chbRightThumb.isSelected()) {
             if (isEmpty(CMenuRThumb, TGRThumb, CouseTRThumb))
@@ -573,7 +661,7 @@ public class EditMissingFingerprintFXController extends WizardStepFxControllerBa
             if (isEmpty(CMenuRMiddle, TGRMiddle, CouseTRMiddle))
                 return;
             addMFToPersonFPs(Editedpersonfingerprints.getRMiddle(), CMenuRMiddle, TGRMiddle, CouseTRMiddle);
-            if (canAddToList(Editedpersonfingerprints.getRMiddle(),3 )) {
+            if (canAddToList(Editedpersonfingerprints.getRMiddle(), 3)) {
                 BioExclusionsList.add(addToList(Editedpersonfingerprints.getRMiddle(), 3));
                 if (Editedpersonfingerprints.getRMiddle().getAlreadyAdded()) {
                     SeqNumbersList.add(Editedpersonfingerprints.getRMiddle().getSeqNum());
@@ -665,6 +753,17 @@ public class EditMissingFingerprintFXController extends WizardStepFxControllerBa
             showWarningNotification(resources.getString("NoEditOrAddMissingFP"));
             return;
         }
+
+        BioExclusionsList.forEach(x -> {
+            for (BioExclusion bio : expiredException) {
+                if (bio.getPosition() == x.getPosition()) {
+                    SeqNumbersList.add(bio.getSeqNum());
+                    break;
+                }
+            }
+
+        });
+
 
         super.onNextButtonClicked(actionEvent);
     }
