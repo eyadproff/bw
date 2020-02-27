@@ -72,9 +72,9 @@
                      <items>
                         <TitledPane collapsible="false" prefHeight="541.0" prefWidth="389.0" text="%RightHand">
                            <content>
-                              <ScrollPane>
+                              <ScrollPane fitToHeight="true">
                                  <content>
-                                            <VBox minHeight="-Infinity" minWidth="-Infinity" prefHeight="515.0" prefWidth="378.0" spacing="5.0">
+                                            <VBox alignment="TOP_CENTER" minHeight="-Infinity" minWidth="-Infinity" prefHeight="509.0" prefWidth="378.0" spacing="5.0">
                                                 <children>
                                                     <VBox fx:id="VRightThumb" managed="false" minHeight="-Infinity" minWidth="-Infinity" prefHeight="91.0" prefWidth="252.0" spacing="10.0" style="-fx-border-color: gray;" visible="false">
                                                         <VBox.margin>
@@ -191,9 +191,9 @@
                                                             <Insets left="20.0" right="20.0" />
                                                         </VBox.margin>
                                                     </VBox>
-                                                    <Label fx:id="RightMExist" managed="false" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="200.0" text="%DoesNotExist" visible="false">
+                                                    <Label fx:id="RightMExist" alignment="CENTER" contentDisplay="CENTER" managed="false" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="200.0" text="%DoesNotExist" visible="false">
                                                         <VBox.margin>
-                                                            <Insets bottom="20.0" left="50.0" right="50.0" top="100.0" />
+                                                            <Insets bottom="20.0" left="20.0" right="20.0" top="5.0" />
                                                         </VBox.margin>
                                                     </Label>
                                                 </children>
@@ -207,9 +207,9 @@
                         </TitledPane>
                         <TitledPane collapsible="false" prefHeight="541.0" prefWidth="389.0" text="%LeftHand">
                            <content>
-                              <ScrollPane>
+                              <ScrollPane fitToHeight="true">
                                  <content>
-                                            <VBox minHeight="-Infinity" minWidth="-Infinity" prefHeight="509.0" prefWidth="378.0" spacing="5.0">
+                                            <VBox alignment="TOP_CENTER" minHeight="-Infinity" minWidth="-Infinity" prefHeight="509.0" prefWidth="378.0" spacing="5.0">
                                                 <children>
                                                     <VBox fx:id="VLeftThumb" managed="false" minHeight="-Infinity" minWidth="-Infinity" prefHeight="91.0" prefWidth="252.0" spacing="10.0" style="-fx-border-color: gray;" visible="false">
                                                         <VBox.margin>
@@ -326,9 +326,9 @@
                                                             <Insets left="20.0" right="20.0" />
                                                         </VBox.margin>
                                                     </VBox>
-                                                    <Label fx:id="LeftMExist" managed="false" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="200.0" text="%DoesNotExist" visible="false">
+                                                    <Label fx:id="LeftMExist" alignment="CENTER" contentDisplay="CENTER" managed="false" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="200.0" text="%DoesNotExist" visible="false">
                                                         <VBox.margin>
-                                                            <Insets bottom="20.0" left="50.0" right="50.0" top="100.0" />
+                                                            <Insets bottom="20.0" left="20.0" right="20.0" top="5.0" />
                                                         </VBox.margin>
                                                     </Label>
                                                 </children>

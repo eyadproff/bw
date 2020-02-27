@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
-@FxmlFile("editMissingFingerprint22.fxml")
+@FxmlFile("editMissingFingerprint2.fxml")
 public class EditMissingFingerprintFXController extends WizardStepFxControllerBase {
 
 
@@ -36,14 +36,13 @@ public class EditMissingFingerprintFXController extends WizardStepFxControllerBa
     private List<BioExclusion> personMissinfingerprints;
     @Input
     private List<Integer> MissingFingerPrints;
-
+    //new exceptions
     @Output
     private List<BioExclusion> BioExclusionsList;
     //delete old after edit
     @Output
     private List<Integer> SeqNumbersList;
-
-    //To Review
+    //To Review old and new
     @Output
     private PersonFingerprints Editedpersonfingerprints;
 
@@ -139,9 +138,12 @@ public class EditMissingFingerprintFXController extends WizardStepFxControllerBa
 
     @Override
     protected void onAttachedToScene() {
+
+        BioExclusionsList = new ArrayList<BioExclusion>();
         SeqNumbersList = new ArrayList<Integer>();
         expiredException = new ArrayList<BioExclusion>();
 
+        //remove expired Exception
         if (personMissinfingerprints != null)
             for (BioExclusion bioEx : personMissinfingerprints) {
                 if (bioEx.getExpireDate() != null && bioEx.getExpireDate() < Instant.now().getEpochSecond())
@@ -152,6 +154,8 @@ public class EditMissingFingerprintFXController extends WizardStepFxControllerBa
                         SeqNumbersList.add(bioEx.getSeqNum());
 
             }
+
+        //To know what fingerException expired
         if (!expiredException.isEmpty()) {
             lblExcpiredExc.setVisible(true);
             expiredException.forEach(x -> ShowExpiredException(x.getPosition()));
@@ -172,16 +176,21 @@ public class EditMissingFingerprintFXController extends WizardStepFxControllerBa
         AddItemsToMenu(CMenuLRing, VOtherLRing, CouseTLRing, causes, TGLRing);
         AddItemsToMenu(CMenuLLittle, VOtherLLittle, CouseTLLittle, causes, TGLLittle);
 
-        if (isFirstLoad()) {
+        //if no old state
+        if (Editedpersonfingerprints == null) {
             Upload();
         }
 
+        //old state when return from Review
         uploadMissingFPIfAny();
+
         CheckBoxAction();
+
 
     }
 
     private void Upload() {
+
         if (personMissinfingerprints != null) {
             Editedpersonfingerprints = new PersonFingerprints();
 
@@ -274,11 +283,6 @@ public class EditMissingFingerprintFXController extends WizardStepFxControllerBa
                 if (bioEx.getCasueId() == 1) {
                     fingerprint.setDescription(bioEx.getDescription());
                 }
-              /*  if (bioEx.getExpireDate() > 0)
-                    fingerprint.setStatus(1);//Temporary
-                else
-                    fingerprint.setStatus(0);*/
-                //duration int bioex ==status in fingerprint
                 if (bioEx.getMonth() == 0)
                     fingerprint.setStatus(0);
                 else if (bioEx.getMonth() == 3)
@@ -444,29 +448,6 @@ public class EditMissingFingerprintFXController extends WizardStepFxControllerBa
 
 
     private void addMFToPersonFPs(Fingerprint finger, ComboBox<ComboBoxItem<Cause>> Couse, ToggleGroup TG, TextField CouseOther) {
-//        finger.setMissOrNot(true);
-//        if (Couse.getValue().getItem().getCauseId() != 1) {
-//            finger.setCause(Couse.getValue().getItem());
-//            //if Turncate then status =Permanent else one year
-//            if (Couse.getValue().getItem().getCauseId() == 2) {
-//                finger.setStatus(0);
-//            } else
-//                finger.setStatus(12);
-//        }
-//
-//        else {
-//            finger.setCause(Couse.getValue().getItem());
-//            finger.setDescription(CouseOther.getText());
-//            if (((RadioButton) TG.getSelectedToggle()).getText().equals(resources.getString("3months")))
-//                finger.setStatus(3);
-//            else if (((RadioButton) TG.getSelectedToggle()).getText().equals(resources.getString("6months")))
-//                finger.setStatus(6);
-//            else if (((RadioButton) TG.getSelectedToggle()).getText().equals(resources.getString("oneYear")))
-//                finger.setStatus(12);
-//            else
-//                finger.setStatus(0);
-//           // finger.setStatus(((RadioButton) TG.getSelectedToggle()).getText());
-//        }
 
         finger.setMissOrNot(true);
         finger.setCause(Couse.getValue().getItem());
@@ -632,7 +613,6 @@ public class EditMissingFingerprintFXController extends WizardStepFxControllerBa
 
     @Override
     protected void onNextButtonClicked(ActionEvent actionEvent) {
-        BioExclusionsList = new ArrayList<BioExclusion>();
 
 
         if (chbRightThumb.isSelected()) {
@@ -771,7 +751,13 @@ public class EditMissingFingerprintFXController extends WizardStepFxControllerBa
     @Override
     protected void onGoingPrevious(Map<String, Object> uiDataMap) {
 
-        Upload();
+        Editedpersonfingerprints = null;
 
     }
+
+    @Override
+    public void onReturnFromWorkflow(boolean successfulResponse) {
+        if (successfulResponse) goNext();
+    }
+
 }

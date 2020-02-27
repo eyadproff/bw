@@ -5,7 +5,12 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<BorderPane prefHeight="400.0" prefWidth="600.0" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sa.gov.nic.bio.bw.workflow.biometricsexception.controllers.FaceExceptionFXController">
+<BorderPane prefHeight="400.0" prefWidth="803.0" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sa.gov.nic.bio.bw.workflow.biometricsexception.controllers.FaceExceptionFXController">
+   <top>
+       <Label fx:id="lblExcpiredExc" prefHeight="17.0" prefWidth="817.0" text="%Label.expiredExceptions" textFill="#FF0E07" visible="false" wrapText="true">
+       </Label>
+   </top>
+
     <bottom>
         <HBox alignment="CENTER" spacing="10">
             <padding>
@@ -15,6 +20,7 @@
 
         </HBox>
     </bottom>
+
     <center>
 
 <!--        <fx:define>-->

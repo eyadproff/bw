@@ -1,5 +1,6 @@
 package sa.gov.nic.bio.bw.workflow.biometricsexception.controllers;
 
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -31,14 +32,8 @@ public class BiometricsExceptionTypeFXController extends WizardStepFxControllerB
 
     @Override
     protected void onAttachedToScene() {
-        if (Type.FACE.equals(exceptionType)) {
-            rbFaceImage.setSelected(true);
-            rbFaceImage.requestFocus();
-            minusOneStep = true;
-        } else {
-            rbFingerPrints.setSelected(true);
-            rbFingerPrints.requestFocus();
-        }
+
+
         // go next on pressing ENTER on the radio buttons
         EventHandler<KeyEvent> eventHandler = event ->
         {
@@ -90,18 +85,47 @@ public class BiometricsExceptionTypeFXController extends WizardStepFxControllerB
         // if (hidePreviousButton != null) GuiUtils.showNode(btnPrevious, !hidePreviousButton);
 
         // load the old state, if exists
+        if (Type.FACE.equals(exceptionType)) {
+            rbFaceImage.setSelected(true);
+            rbFaceImage.requestFocus();
+            minusOneStep = true;
+        } else {
+            rbFingerPrints.setSelected(true);
+            rbFingerPrints.requestFocus();
+        }
 
     }
 
+//    @Override
+//    protected void onGoingPrevious(Map<String, Object> uiDataMap) {
+//        rbFaceImage.setSelected(false);
+//        rbFingerPrints.setSelected(false);
+//        exceptionType=null;
+//
+//    }
     @Override
     protected void onGoingPrevious(Map<String, Object> uiDataMap) {
         onGoingNext(uiDataMap);
-    }
 
+    }
     @Override
     public void onGoingNext(Map<String, Object> uiDataMap) {
         if (rbFaceImage.isSelected()) exceptionType = Type.FACE;
         else exceptionType = Type.FINGERPRINTS;
+    }
+
+
+    @Override
+    public void onReturnFromWorkflow(boolean successfulResponse) {
+        if (successfulResponse) goNext();
+    }
+
+    @FXML
+    protected void onNextButtonClicked(ActionEvent actionEvent) {
+        if (rbFaceImage.isSelected()) exceptionType = Type.FACE;
+        else exceptionType = Type.FINGERPRINTS;
+
+        continueWorkflow();
     }
 
     public enum Type {

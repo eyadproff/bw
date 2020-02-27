@@ -1,5 +1,6 @@
 package sa.gov.nic.bio.bw.workflow.biometricsexception.controllers;
 
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -29,6 +30,8 @@ public class ServiceTypeFXController extends WizardStepFxControllerBase {
 
     @Override
     protected void onAttachedToScene() {
+
+
         EventHandler<KeyEvent> eventHandler = event ->
         {
             if (event.getCode() == KeyCode.ENTER) {
@@ -69,11 +72,13 @@ public class ServiceTypeFXController extends WizardStepFxControllerBase {
             rbAddOrEdit.setSelected(true);
             rbAddOrEdit.requestFocus();
         }
+
     }
 
     @Override
     protected void onGoingPrevious(Map<String, Object> uiDataMap) {
         onGoingNext(uiDataMap);
+
     }
 
     @Override
@@ -82,9 +87,22 @@ public class ServiceTypeFXController extends WizardStepFxControllerBase {
         else serviceType = ServiceTypeFXController.ServiceType.ADD_OR_EDIT_FINGERPRINTS;
     }
 
+    @Override
+    public void onReturnFromWorkflow(boolean successfulResponse) {
+        if (successfulResponse) goNext();
+    }
+
+    @Override
+    protected void onNextButtonClicked(ActionEvent actionEvent) {
+        if (rbDelete.isSelected()) serviceType = ServiceTypeFXController.ServiceType.DELETE_FINGERPRINTS;
+        else serviceType = ServiceTypeFXController.ServiceType.ADD_OR_EDIT_FINGERPRINTS;
+        continueWorkflow();
+    }
+
     public enum ServiceType {
         ADD_OR_EDIT_FINGERPRINTS,
         DELETE_FINGERPRINTS
 
     }
+
 }

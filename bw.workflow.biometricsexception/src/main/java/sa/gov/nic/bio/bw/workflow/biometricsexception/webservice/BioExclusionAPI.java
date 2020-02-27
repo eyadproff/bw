@@ -27,7 +27,7 @@ public interface BioExclusionAPI {
                                                             @Field("biometrics-exclusive") String bioExclusions);
 
     @FormUrlEncoded
-    @POST("services-gateway-biooperation/api/enrollment/biometrics/exclusion/delete/v12")
+    @POST("services-gateway-biooperation/api/enrollment/biometrics/exclusion/delete/v1")
     Call<SubmissionAndDeletionResponse> deleteBioExclusions(@Header("Workflow-Code") Integer workflowId,
                                                             @Header("Workflow-Tcn") Long workflowTcn,
                                                             @Field("seq-numbers") String seqNum,

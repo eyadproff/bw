@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-@FxmlFile("deleteMissingFingerprint22.fxml")
+@FxmlFile("deleteMissingFingerprint2.fxml")
 public class DeleteMissingFingerprintFXController extends WizardStepFxControllerBase {
 
 
@@ -145,10 +145,11 @@ public class DeleteMissingFingerprintFXController extends WizardStepFxController
 
         SeqNumbersList = new ArrayList<Integer>();
         expiredException = new ArrayList<BioExclusion>();
+
         causes = (List<Cause>) Context.getUserSession().getAttribute(CausesLookup.KEY);
 
-
-        if (BioExclusionsList != null)
+        if (BioExclusionsList != null) {
+            // remove Expired Exception
             for (BioExclusion bioEx : BioExclusionsList) {
                 if (bioEx.getExpireDate() != null && bioEx.getExpireDate() < Instant.now().getEpochSecond())
                     if (MissingFingerPrints != null && MissingFingerPrints.contains(bioEx.getPosition())) {
@@ -158,12 +159,6 @@ public class DeleteMissingFingerprintFXController extends WizardStepFxController
                         SeqNumbersList.add(bioEx.getSeqNum());
 
             }
-        if (!expiredException.isEmpty()) {
-            lblExcpiredExc.setVisible(true);
-            expiredException.forEach(x -> ShowExpiredException(x.getPosition()));
-        }
-
-        if (BioExclusionsList != null) {
 
             personfingerprints = new PersonFingerprints();
             personfingerprints.setRThumb(getLast(BioExclusionsList, 1));
@@ -188,11 +183,19 @@ public class DeleteMissingFingerprintFXController extends WizardStepFxController
             LeftMExist.setManaged(true);
         }
 
+        //To know what fingerException expired
+        if (!expiredException.isEmpty()) {
+            lblExcpiredExc.setVisible(true);
+            expiredException.forEach(x -> ShowExpiredException(x.getPosition()));
+        }
 
+       // old state if return from Review
         if (Editedpersonfingerprints != null) {
             checkDeletedMFP();
         }
+
     }
+
     private void ShowExpiredException(Integer Position) {
         switch (Position) {
             case 1:
@@ -259,7 +262,7 @@ public class DeleteMissingFingerprintFXController extends WizardStepFxController
 //                    fingerprint.setStatus(0);
 
 
-                if (bioEx.getMonth() == 0)
+                if (bioEx.getMonth() == null || bioEx.getMonth() == 0)
                     fingerprint.setStatus(0);
                 else if (bioEx.getMonth() == 3)
                     fingerprint.setStatus(3);
@@ -502,7 +505,6 @@ public class DeleteMissingFingerprintFXController extends WizardStepFxController
     protected void onNextButtonClicked(ActionEvent actionEvent) {
 
         Editedpersonfingerprints = new PersonFingerprints();
-
 
         if (chbRightThumb.isSelected()) {
             SeqNumbersList.add(personfingerprints.getRThumb().getSeqNum());

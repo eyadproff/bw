@@ -12,13 +12,13 @@ import sa.gov.nic.bio.bw.core.workflow.Input;
 import sa.gov.nic.bio.bw.core.workflow.Output;
 import sa.gov.nic.bio.bw.workflow.biometricsexception.beans.BioExclusion;
 import sa.gov.nic.bio.bw.workflow.biometricsexception.beans.Cause;
-import sa.gov.nic.bio.bw.workflow.commons.beans.NormalizedPersonInfo;
 import sa.gov.nic.bio.bw.workflow.biometricsexception.controllers.FaceExceptionFXController.TypeFaceService;
+import sa.gov.nic.bio.bw.workflow.commons.beans.NormalizedPersonInfo;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@FxmlFile("reviewAndSubmitFaceException22.fxml")
+@FxmlFile("reviewAndSubmitFaceException2.fxml")
 public class ReviewAndSubmitFaceExceptionFXController extends WizardStepFxControllerBase {
     @Input(alwaysRequired = true)
     private NormalizedPersonInfo normalizedPersonInfo;
@@ -44,6 +44,9 @@ public class ReviewAndSubmitFaceExceptionFXController extends WizardStepFxContro
 
     @Override
     protected void onAttachedToScene() {
+
+        EditedBioExclusionsList = new ArrayList<BioExclusion>();
+
         PersonName.setText(normalizedPersonInfo.getFirstName() + " " + normalizedPersonInfo.getFatherName() + " " + normalizedPersonInfo.getFamilyName());
         PersonID.setText(normalizedPersonInfo.getPersonId().toString());
 
@@ -78,12 +81,13 @@ public class ReviewAndSubmitFaceExceptionFXController extends WizardStepFxContro
             LblStatus.setVisible(false);
             LblfaceExcReason.setText(resources.getString("NoFaceException"));
         }
+
     }
 
     @Override
     protected void onNextButtonClicked(ActionEvent actionEvent) {
         if (typeFaceService.equals(TypeFaceService.ADD_OR_EDIT)) {
-            EditedBioExclusionsList = new ArrayList<BioExclusion>();
+
             EditFaceException.setSamisId(normalizedPersonInfo.getPersonId());
             EditFaceException.setBioType(3);
 //            Long ExDate = new Long(1564475459);
@@ -92,6 +96,11 @@ public class ReviewAndSubmitFaceExceptionFXController extends WizardStepFxContro
             EditFaceException.setOperatorId(userInfo.getOperatorId());
             EditedBioExclusionsList.add(EditFaceException);
         }
-        super.onNextButtonClicked(actionEvent);
+        continueWorkflow();
+    }
+
+    @Override
+    public void onReturnFromWorkflow(boolean successfulResponse) {
+        if (successfulResponse) goNext();
     }
 }

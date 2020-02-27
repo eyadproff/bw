@@ -21,7 +21,7 @@ import sa.gov.nic.bio.bw.workflow.biometricsexception.controllers.ServiceTypeFXC
 import java.util.ArrayList;
 import java.util.List;
 
-@FxmlFile("reviewAndSubmit22.fxml")
+@FxmlFile("reviewAndSubmit2.fxml")
 public class ReviewAndSubmitFXController extends WizardStepFxControllerBase {
 
     @Input
@@ -114,6 +114,7 @@ public class ReviewAndSubmitFXController extends WizardStepFxControllerBase {
 
 
         checkMissingfingers();
+
 
     }
 
@@ -209,6 +210,11 @@ public class ReviewAndSubmitFXController extends WizardStepFxControllerBase {
                 EditedBioExclusionsList.add(bioex);
             }
         }
-        super.onNextButtonClicked(actionEvent);
+       // super.onNextButtonClicked(actionEvent);
+        continueWorkflow();
+    }
+    @Override
+    public void onReturnFromWorkflow(boolean successfulResponse) {
+        if (successfulResponse) goNext();
     }
 }

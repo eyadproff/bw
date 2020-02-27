@@ -48,11 +48,9 @@ public class BiometricsExceptionWorkflow extends WizardWorkflowBase {
 
         switch (step) {
             case 0: {
-                //  renderUiAndWaitForUserInput(testC.class);
                 renderUiAndWaitForUserInput(PersonIdPaneFxController.class);
                 passData(PersonIdPaneFxController.class, GetPersonInfoByIdWorkflowTask.class,
                         "personId");
-
                 //  setData(GetPersonInfoByIdWorkflowTask.class, "returnNullResultInCaseNotFound", true);
 
                 executeWorkflowTask(GetPersonInfoByIdWorkflowTask.class);
@@ -70,47 +68,46 @@ public class BiometricsExceptionWorkflow extends WizardWorkflowBase {
             case 2: {
                 renderUiAndWaitForUserInput(BiometricsExceptionTypeFXController.class);
 
-                break;
-            }
-            case 3: {
                 Type type = getData(BiometricsExceptionTypeFXController.class, "exceptionType");
-                if (Type.FINGERPRINTS.equals(type))
-                    renderUiAndWaitForUserInput(ServiceTypeFXController.class);
-                else {
-                    incrementNSteps(1); // to skip step #4 on going next
+                if (Type.FACE.equals(type)) {
 
                     setData(RetrieveBioExclusionsWorkflowTask.class, "samisId", (((NormalizedPersonInfo) getData(ShowingPersonInfoFxController.class, "normalizedPersonInfo")).getPersonId()).intValue());
                     executeWorkflowTask(RetrieveBioExclusionsWorkflowTask.class);
 
                     List<BioExclusion> bioEx = getData(RetrieveBioExclusionsWorkflowTask.class, "bioExclusionList");
+                    BioExclusion FaceException = null;
                     if (bioEx != null) {
-                        BioExclusion FaceException;
+
                         //to get last tuples
                         Collections.reverse(bioEx);
                         for (BioExclusion bioex : bioEx) {
                             if (bioex.getBioType() == 3 && bioex.getStatus() == 0) {
                                 FaceException = bioex;
-                                setData(FaceExceptionFXController.class, "FaceException", FaceException);
+
                                 break;
 
                             }
                         }
                     }
+                    setData(FaceExceptionFXController.class, "FaceException", FaceException);
 
-                    renderUiAndWaitForUserInput(FaceExceptionFXController.class);
+
                 }
                 break;
             }
-            case 4: {
-                ServiceType serviceType = getData(ServiceTypeFXController.class, "serviceType");
+            case 3: {
                 Type type = getData(BiometricsExceptionTypeFXController.class, "exceptionType");
 
                 if (Type.FINGERPRINTS.equals(type)) {
-                    List<Integer> MissingFingerPrints=null ;
+                    renderUiAndWaitForUserInput(ServiceTypeFXController.class);
+
+                    ServiceType serviceType = getData(ServiceTypeFXController.class, "serviceType");
+
+                    List<Integer> MissingFingerPrints = null;
                     setData(RetrieveBioExclusionsWorkflowTask.class, "samisId", (((NormalizedPersonInfo) getData(ShowingPersonInfoFxController.class, "normalizedPersonInfo")).getPersonId()).intValue());
                     executeWorkflowTask(RetrieveBioExclusionsWorkflowTask.class);
 
-                    List<BioExclusion> BioExclusionsList=getData(RetrieveBioExclusionsWorkflowTask.class, "bioExclusionList");
+                    List<BioExclusion> BioExclusionsList = getData(RetrieveBioExclusionsWorkflowTask.class, "bioExclusionList");
 
 
                     if (BioExclusionsList != null) {
@@ -130,19 +127,43 @@ public class BiometricsExceptionWorkflow extends WizardWorkflowBase {
                             }
                         }
                     }
+
+
                     if (ServiceType.ADD_OR_EDIT_FINGERPRINTS.equals(serviceType)) {
 
                         setData(EditMissingFingerprintFXController.class, "personMissinfingerprints", BioExclusionsList);
                         setData(EditMissingFingerprintFXController.class, "MissingFingerPrints", MissingFingerPrints);
-                        renderUiAndWaitForUserInput(EditMissingFingerprintFXController.class);
+                        //   renderUiAndWaitForUserInput(EditMissingFingerprintFXController.class);
 
 
                     } else {
                         setData(DeleteMissingFingerprintFXController.class, "BioExclusionsList", BioExclusionsList);
                         setData(DeleteMissingFingerprintFXController.class, "MissingFingerPrints", MissingFingerPrints);
+                        //  renderUiAndWaitForUserInput(DeleteMissingFingerprintFXController.class);
+
+                    }
+                } else {
+
+                    incrementNSteps(1); // to skip step #4 on going next
+                    renderUiAndWaitForUserInput(FaceExceptionFXController.class);
+
+                }
+
+
+                break;
+            }
+            case 4: {
+                ServiceType serviceType = getData(ServiceTypeFXController.class, "serviceType");
+                Type type = getData(BiometricsExceptionTypeFXController.class, "exceptionType");
+
+                if (Type.FINGERPRINTS.equals(type)) {
+                    if (ServiceType.ADD_OR_EDIT_FINGERPRINTS.equals(serviceType)) {
+                        renderUiAndWaitForUserInput(EditMissingFingerprintFXController.class);
+                    } else {
                         renderUiAndWaitForUserInput(DeleteMissingFingerprintFXController.class);
 
                     }
+
                 }
                 break;
             }
@@ -151,14 +172,14 @@ public class BiometricsExceptionWorkflow extends WizardWorkflowBase {
                 Type type = getData(BiometricsExceptionTypeFXController.class, "exceptionType");
 
                 if (Type.FINGERPRINTS.equals(type)) {
+                    //     renderUiAndWaitForUserInput(ReviewAndSubmitFXController.class);
+
                     if (ServiceType.ADD_OR_EDIT_FINGERPRINTS.equals(serviceType)) {
 
                         passData(ShowingPersonInfoFxController.class, ReviewAndSubmitFXController.class, "normalizedPersonInfo");
                         passData(EditMissingFingerprintFXController.class, ReviewAndSubmitFXController.class, "Editedpersonfingerprints");
                         passData(EditMissingFingerprintFXController.class, ReviewAndSubmitFXController.class, "BioExclusionsList");
                         setData(ReviewAndSubmitFXController.class, "serviceType", ServiceType.ADD_OR_EDIT_FINGERPRINTS);
-
-                        renderUiAndWaitForUserInput(ReviewAndSubmitFXController.class);
 
 
                     } else {
@@ -167,30 +188,12 @@ public class BiometricsExceptionWorkflow extends WizardWorkflowBase {
                         passData(DeleteMissingFingerprintFXController.class, ReviewAndSubmitFXController.class, "Editedpersonfingerprints", "personfingerprints");
                         setData(ReviewAndSubmitFXController.class, "serviceType", ServiceType.DELETE_FINGERPRINTS);
 
-                        renderUiAndWaitForUserInput(ReviewAndSubmitFXController.class);
 
                     }
-                } else {
-                    incrementNSteps(-1); // to skip step #4 on going previous
 
-                    passData(ShowingPersonInfoFxController.class, ReviewAndSubmitFaceExceptionFXController.class, "normalizedPersonInfo");
-                    passData(FaceExceptionFXController.class, ReviewAndSubmitFaceExceptionFXController.class, "EditFaceException");
-                    passData(FaceExceptionFXController.class, ReviewAndSubmitFaceExceptionFXController.class, "typeFaceService");
-                    passData(FaceExceptionFXController.class, ReviewAndSubmitFaceExceptionFXController.class, "causesFC");
+                    renderUiAndWaitForUserInput(ReviewAndSubmitFXController.class);
 
-                    renderUiAndWaitForUserInput(ReviewAndSubmitFaceExceptionFXController.class);
-
-                }
-
-                break;
-            }
-            case 6: {
-                ServiceType serviceType = getData(ServiceTypeFXController.class, "serviceType");
-                Type type = getData(BiometricsExceptionTypeFXController.class, "exceptionType");
-
-                if (Type.FINGERPRINTS.equals(type)) {
                     if (ServiceType.ADD_OR_EDIT_FINGERPRINTS.equals(serviceType)) {
-
 
 
                         if (((List<Integer>) getData(EditMissingFingerprintFXController.class, "SeqNumbersList")).size() != 0) {
@@ -208,11 +211,18 @@ public class BiometricsExceptionWorkflow extends WizardWorkflowBase {
 
                         //delete task
                         passData(DeleteMissingFingerprintFXController.class, DeleteBioExclusionsWorkflowTask.class, "SeqNumbersList");
-
                         executeWorkflowTask(DeleteBioExclusionsWorkflowTask.class);
 
                     }
                 } else {
+                    incrementNSteps(-1); // to skip step #4 on going previous
+
+                    passData(ShowingPersonInfoFxController.class, ReviewAndSubmitFaceExceptionFXController.class, "normalizedPersonInfo");
+                    passData(FaceExceptionFXController.class, ReviewAndSubmitFaceExceptionFXController.class, "EditFaceException");
+                    passData(FaceExceptionFXController.class, ReviewAndSubmitFaceExceptionFXController.class, "typeFaceService");
+                    passData(FaceExceptionFXController.class, ReviewAndSubmitFaceExceptionFXController.class, "causesFC");
+                    renderUiAndWaitForUserInput(ReviewAndSubmitFaceExceptionFXController.class);
+
                     TypeFaceService typeFaceService = getData(FaceExceptionFXController.class, "typeFaceService");
 
                     if (typeFaceService.equals(TypeFaceService.ADD_OR_EDIT)) {
@@ -235,11 +245,13 @@ public class BiometricsExceptionWorkflow extends WizardWorkflowBase {
                         executeWorkflowTask(DeleteBioExclusionsWorkflowTask.class);
 
                     }
+
                 }
 
-
+                break;
+            }
+            case 6: {
                 setData(ShowResultFXController.class, "success", true);
-
                 renderUiAndWaitForUserInput(ShowResultFXController.class);
 
                 break;

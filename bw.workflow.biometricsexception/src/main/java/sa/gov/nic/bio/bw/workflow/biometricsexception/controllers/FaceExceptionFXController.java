@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
-@FxmlFile("faceException22.fxml")
+@FxmlFile("faceException2.fxml")
 public class FaceExceptionFXController extends WizardStepFxControllerBase {
 
 
@@ -67,88 +67,75 @@ public class FaceExceptionFXController extends WizardStepFxControllerBase {
     private Label LblDelfaceExcStatus;
     @FXML
     private Label LblDelfaceExcCouse;
+    @FXML
+    private Label lblExcpiredExc;
 
     @SuppressWarnings("unchecked")
     private List<Cause> causes = (List<Cause>) Context.getUserSession().getAttribute(CausesLookup.KEY);
-
+    private Integer excpiredExceptionSeqNum;
 
     @Override
     protected void onAttachedToScene() {
-//        String text;
-//        if (Context.getGuiLanguage() == GuiLanguage.ARABIC) text = causeFC.getArabicText();
-//        else text = causeFC.getEnglishText();
+
+        SeqNumbersList = new ArrayList<Integer>();
 
         AddItemsToMenu();
+        // do not show if expired
+        if (FaceException != null && FaceException.getExpireDate() != null && FaceException.getExpireDate() < Instant.now().getEpochSecond()) {
+            excpiredExceptionSeqNum = FaceException.getSeqNum();
+            FaceException = null;
+            lblExcpiredExc.setVisible(true);
 
-       /* if (isFirstLoad()) {
-            if (FaceException != null) {
-                for (Cause causeFC : causes) {
-
-                    if (causeFC.getCauseId() == FaceException.getCasueId()) {
-                        Reason = new Cause();
-                        Reason.setCauseId(causeFC.getCauseId());
-                        Reason.setDescriptionAr(causeFC.getArabicText());
-                        Reason.setDescriptionEn(causeFC.getEnglishText());
-                        if (FaceException.getCasueId() == 1) {
-                            Descrption = FaceException.getDescription();
-                        }
-
-                        break;
-                    }
-                }
-
-            }
         }
-
-        if (Reason != null)
-            uploadReason();*/
 
         RBStatusFaceEx.setVisible(true);
         StatusLabel.setVisible(true);
 
-        if (isFirstLoad()) {
-            if (FaceException != null) {
-                for (Cause causeFC : causes) {
-
-                    if (causeFC.getCauseId() == FaceException.getCasueId()) {
-                        EditFaceException = new BioExclusion();
-                        EditFaceException.setCasueId(causeFC.getCauseId());
-//                        Reason.setDescriptionAr(causeFC.getArabicText());
-//                        Reason.setDescriptionEn(causeFC.getEnglishText());
-                        EditFaceException.setMonth(FaceException.getMonth());
-                        if (FaceException.getCasueId() == 1) {
-                            EditFaceException.setDescription(FaceException.getDescription());
-                        }
-
-                        break;
-                    }
-                }
-
-            }
-        }
-
+        //   if (isFirstLoad()) {
+        //if there is old state show or make new
         if (EditFaceException == null && FaceException != null) {
+            for (Cause causeFC : causes) {
 
-            if (FaceException != null) {
-                for (Cause causeFC : causes) {
-
-                    if (causeFC.getCauseId() == FaceException.getCasueId()) {
-                        EditFaceException = new BioExclusion();
-                        EditFaceException.setCasueId(causeFC.getCauseId());
+                if (causeFC.getCauseId() == FaceException.getCasueId()) {
+                    EditFaceException = new BioExclusion();
+                    EditFaceException.setCasueId(causeFC.getCauseId());
 //                        Reason.setDescriptionAr(causeFC.getArabicText());
 //                        Reason.setDescriptionEn(causeFC.getEnglishText());
-                        EditFaceException.setMonth(FaceException.getMonth());
-                        if (FaceException.getCasueId() == 1) {
-                            EditFaceException.setDescription(FaceException.getDescription());
-                        }
-
-                        break;
+                    EditFaceException.setMonth(FaceException.getMonth());
+                    if (FaceException.getCasueId() == 1) {
+                        EditFaceException.setDescription(FaceException.getDescription());
                     }
-                }
 
+                    break;
+                }
             }
 
         }
+        //   }
+
+//        if (EditFaceException == null && FaceException != null) {
+//
+//            if (FaceException != null) {
+//                for (Cause causeFC : causes) {
+//
+//                    if (causeFC.getCauseId() == FaceException.getCasueId()) {
+//                        EditFaceException = new BioExclusion();
+//                        EditFaceException.setCasueId(causeFC.getCauseId());
+////                        Reason.setDescriptionAr(causeFC.getArabicText());
+////                        Reason.setDescriptionEn(causeFC.getEnglishText());
+//                        EditFaceException.setMonth(FaceException.getMonth());
+//                        if (FaceException.getCasueId() == 1) {
+//                            EditFaceException.setDescription(FaceException.getDescription());
+//                        }
+//
+//                        break;
+//                    }
+//                }
+//
+//            }
+//
+//        }
+        // upload old state
         if (EditFaceException != null)
             uploadReason();
 
@@ -184,6 +171,13 @@ public class FaceExceptionFXController extends WizardStepFxControllerBase {
             LblDelfaceExcCouse.setVisible(false);
             LblfaceExcReason.setText(resources.getString("NoFaceException"));
         }
+
+        //  continueWorkflow();
+
+        if(FaceException!=null)
+            System.out.println("face"+FaceException.getCasueId());
+        if(EditFaceException!=null)
+            System.out.println("Editface"+EditFaceException.getCasueId());
     }
 
     private void AddItemsToMenu() {
@@ -255,15 +249,13 @@ public class FaceExceptionFXController extends WizardStepFxControllerBase {
         } else
             TxtfaceExcReason.setVisible(false);
 
-
-        //  if (RBStatusFaceEx.isVisible()) {
         if (EditFaceException.getMonth() == 12)
             RBStatus.getToggles().get(2).setSelected(true);
         else if (EditFaceException.getMonth() == 6)
             RBStatus.getToggles().get(1).setSelected(true);
         else
             RBStatus.getToggles().get(0).setSelected(true);
-        //   }
+
     }
 
 
@@ -289,10 +281,9 @@ public class FaceExceptionFXController extends WizardStepFxControllerBase {
                 return;
             } else {
                 EditFaceException.setDescription(TxtfaceExcReason.getText());
-                // EditFaceException.setCasueId(1);
             }
         }
-        // if (RBStatusFaceEx.isVisible()) {
+
         if (((RadioButton) RBStatus.getSelectedToggle()).getText().equals(resources.getString("3months"))) {
             EditFaceException.setMonth(3);
             EditFaceException.setExpireDate(Instant.now().getEpochSecond() + new Long(7889238));
@@ -306,11 +297,7 @@ public class FaceExceptionFXController extends WizardStepFxControllerBase {
             EditFaceException.setExpireDate(Instant.now().getEpochSecond() + new Long(31556952));
             EditFaceException.setCreateDate(Instant.now().getEpochSecond());
         }
-        // }
-//        else {
-//            EditFaceException.setMonth(12);
-//            EditFaceException.setExpireDate(Instant.now().getEpochSecond() + new Long(31556952));
-//        }
+
 
 
         if (FaceException != null) {
@@ -321,11 +308,11 @@ public class FaceExceptionFXController extends WizardStepFxControllerBase {
                             showWarningNotification(resources.getString("NoEditOnFaceExc"));
                             return;
                         } else {
-                            SeqNumbersList = new ArrayList<Integer>();
+
                             SeqNumbersList.add(FaceException.getSeqNum());
                         }
                     } else {
-                        SeqNumbersList = new ArrayList<Integer>();
+
                         SeqNumbersList.add(FaceException.getSeqNum());
                     }
                 } else {
@@ -333,13 +320,13 @@ public class FaceExceptionFXController extends WizardStepFxControllerBase {
                         showWarningNotification(resources.getString("NoEditOnFaceExc"));
                         return;
                     } else {
-                        SeqNumbersList = new ArrayList<Integer>();
+
                         SeqNumbersList.add(FaceException.getSeqNum());
                     }
 
                 }
             } else {
-                SeqNumbersList = new ArrayList<Integer>();
+
                 SeqNumbersList.add(FaceException.getSeqNum());
             }
 
@@ -367,6 +354,8 @@ public class FaceExceptionFXController extends WizardStepFxControllerBase {
 
         causesFC = causes;
 
+        if (excpiredExceptionSeqNum != null)
+            SeqNumbersList.add(excpiredExceptionSeqNum);
 
         onNextButtonClicked(actionEvent);
 
@@ -377,7 +366,7 @@ public class FaceExceptionFXController extends WizardStepFxControllerBase {
     private void onDeleteButtonClicked(ActionEvent actionEvent) {
 
         EditFaceException = null;
-        SeqNumbersList = new ArrayList<Integer>();
+
         SeqNumbersList.add(FaceException.getSeqNum());
         typeFaceService = TypeFaceService.DELETE;
 
@@ -386,48 +375,53 @@ public class FaceExceptionFXController extends WizardStepFxControllerBase {
 
     }
 
-    @Override
+        @Override
     protected void onGoingPrevious(Map<String, Object> uiDataMap) {
-      /*  if (FaceException != null) {
-            for (Cause causeFC : causes) {
-
-                if (causeFC.getCauseId() == FaceException.getCasueId()) {
-
-                    Reason = new Cause();
-                    Reason.setCauseId(causeFC.getCauseId());
-                    Reason.setDescriptionAr(causeFC.getArabicText());
-                    Reason.setDescriptionEn(causeFC.getEnglishText());
-                    if (FaceException.getCasueId() == 1) {
-                        Descrption = FaceException.getDescription();
-                    }
-                    break;
-                }
-            }
-
-        } else
-            Reason = null;*/
-
-
-        if (FaceException != null) {
-            for (Cause causeFC : causes) {
-
-                if (causeFC.getCauseId() == FaceException.getCasueId()) {
-                    EditFaceException = new BioExclusion();
-                    EditFaceException.setCasueId(causeFC.getCauseId());
-//                        Reason.setDescriptionAr(causeFC.getArabicText());
-//                        Reason.setDescriptionEn(causeFC.getEnglishText());
-                    EditFaceException.setMonth(FaceException.getMonth());
-                    if (FaceException.getCasueId() == 1) {
-                        EditFaceException.setDescription(FaceException.getDescription());
-                    }
-
-                    break;
-                }
-            }
-
-        } else
-            EditFaceException = null;
-
+//      /*  if (FaceException != null) {
+//            for (Cause causeFC : causes) {
+//
+//                if (causeFC.getCauseId() == FaceException.getCasueId()) {
+//
+//                    Reason = new Cause();
+//                    Reason.setCauseId(causeFC.getCauseId());
+//                    Reason.setDescriptionAr(causeFC.getArabicText());
+//                    Reason.setDescriptionEn(causeFC.getEnglishText());
+//                    if (FaceException.getCasueId() == 1) {
+//                        Descrption = FaceException.getDescription();
+//                    }
+//                    break;
+//                }
+//            }
+//
+//        } else
+//            Reason = null;*/
+//
+//
+//        if (FaceException != null) {
+//            for (Cause causeFC : causes) {
+//
+//                if (causeFC.getCauseId() == FaceException.getCasueId()) {
+//                    EditFaceException = new BioExclusion();
+//                    EditFaceException.setCasueId(causeFC.getCauseId());
+////                        Reason.setDescriptionAr(causeFC.getArabicText());
+////                        Reason.setDescriptionEn(causeFC.getEnglishText());
+//                    EditFaceException.setMonth(FaceException.getMonth());
+//                    if (FaceException.getCasueId() == 1) {
+//                        EditFaceException.setDescription(FaceException.getDescription());
+//                    }
+//
+//                    break;
+//                }
+//            }
+//
+//        } else
+//            EditFaceException = null;
+//
+            EditFaceException=null;
+    }
+    @Override
+    public void onReturnFromWorkflow(boolean successfulResponse) {
+        if (successfulResponse) goNext();
     }
 
     public enum TypeFaceService {
