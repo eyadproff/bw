@@ -68,13 +68,13 @@
             </SplitPane>
             <TitledPane collapsible="false" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="569.0" prefWidth="785.0" text="%Label.biometricsException">
                <content>
-                  <SplitPane dividerPositions="0.49938195302843014" prefHeight="511.0" prefWidth="783.0">
+                  <SplitPane dividerPositions="0.5" prefHeight="511.0" prefWidth="783.0">
                      <items>
                         <TitledPane collapsible="false" prefHeight="541.0" prefWidth="389.0" text="%RightHand">
                            <content>
                               <ScrollPane fitToHeight="true">
                                  <content>
-                                            <VBox alignment="TOP_CENTER" minHeight="-Infinity" minWidth="-Infinity" prefHeight="509.0" prefWidth="378.0" spacing="5.0">
+                                            <VBox alignment="TOP_CENTER" maxHeight="-Infinity" prefHeight="509.0" prefWidth="378.0" spacing="5.0">
                                                 <children>
                                                     <VBox fx:id="VRightThumb" managed="false" minHeight="-Infinity" minWidth="-Infinity" prefHeight="91.0" prefWidth="252.0" spacing="10.0" style="-fx-border-color: gray;" visible="false">
                                                         <VBox.margin>
@@ -209,7 +209,7 @@
                            <content>
                               <ScrollPane fitToHeight="true">
                                  <content>
-                                            <VBox alignment="TOP_CENTER" minHeight="-Infinity" minWidth="-Infinity" prefHeight="509.0" prefWidth="378.0" spacing="5.0">
+                                            <VBox alignment="TOP_CENTER" maxHeight="-Infinity" prefHeight="509.0" prefWidth="378.0" spacing="5.0">
                                                 <children>
                                                     <VBox fx:id="VLeftThumb" managed="false" minHeight="-Infinity" minWidth="-Infinity" prefHeight="91.0" prefWidth="252.0" spacing="10.0" style="-fx-border-color: gray;" visible="false">
                                                         <VBox.margin>

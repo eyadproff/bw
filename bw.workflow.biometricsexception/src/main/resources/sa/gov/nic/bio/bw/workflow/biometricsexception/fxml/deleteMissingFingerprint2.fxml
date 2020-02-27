@@ -77,7 +77,7 @@
                            <content>
                               <ScrollPane fitToHeight="true" fitToWidth="true">
                                  <content>
-                                            <VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="517.0" prefWidth="450.0" spacing="5.0">
+                                            <VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="509.0" prefWidth="450.0" spacing="5.0">
                                                 <children>
                                                     <VBox fx:id="VRightThumb" managed="false" minHeight="-Infinity" minWidth="-Infinity" prefHeight="91.0" prefWidth="252.0" spacing="10.0" style="-fx-border-color: gray;" visible="false">
                                                         <VBox.margin>
@@ -212,7 +212,7 @@
                            <content>
                               <ScrollPane fitToHeight="true" fitToWidth="true">
                                  <content>
-                                            <VBox alignment="TOP_CENTER" maxWidth="-Infinity" prefHeight="517.0" prefWidth="450.0" spacing="5.0">
+                                            <VBox alignment="TOP_CENTER" maxWidth="-Infinity" prefHeight="509.0" prefWidth="450.0" spacing="5.0">
                                                 <children>
                                                     <VBox fx:id="VLeftThumb" managed="false" minHeight="-Infinity" minWidth="-Infinity" prefHeight="91.0" prefWidth="252.0" spacing="10.0" style="-fx-border-color: gray;" visible="false">
                                                         <VBox.margin>
