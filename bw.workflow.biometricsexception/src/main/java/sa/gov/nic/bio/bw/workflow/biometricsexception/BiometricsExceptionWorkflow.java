@@ -21,6 +21,7 @@ import sa.gov.nic.bio.bw.workflow.commons.lookups.DocumentTypesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.PersonTypesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.FetchingMissingFingerprintsWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.GetPersonInfoByIdWorkflowTask;
+import sa.gov.nic.bio.bw.workflow.commons.controllers.ShowingPersonInfoFxController;
 
 import java.time.Instant;
 import java.util.Collections;
@@ -228,7 +229,7 @@ public class BiometricsExceptionWorkflow extends WizardWorkflowBase {
                     if (typeFaceService.equals(TypeFaceService.ADD_OR_EDIT)) {
 
 
-                        if (((List<Integer>) getData(FaceExceptionFXController.class, "SeqNumbersList")) != null) {
+                        if (( getData(FaceExceptionFXController.class, "SeqNumbersList")) != null) {
 
                             passData(FaceExceptionFXController.class, DeleteBioExclusionsWorkflowTask.class, "SeqNumbersList");
                             executeWorkflowTask(DeleteBioExclusionsWorkflowTask.class);
