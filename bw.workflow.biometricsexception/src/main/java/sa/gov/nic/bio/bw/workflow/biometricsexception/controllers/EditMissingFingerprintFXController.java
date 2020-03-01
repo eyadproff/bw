@@ -145,18 +145,23 @@ public class EditMissingFingerprintFXController extends WizardStepFxControllerBa
 
         //remove expired Exception
         if (personMissinfingerprints != null)
-            for (BioExclusion bioEx : personMissinfingerprints) {
-                if (bioEx.getExpireDate() != null && bioEx.getExpireDate() < Instant.now().getEpochSecond())
+            personMissinfingerprints.removeIf(bioEx -> {
+                if (bioEx.getExpireDate() != null && bioEx.getExpireDate() < Instant.now().getEpochSecond()) {
                     if (MissingFingerPrints != null && MissingFingerPrints.contains(bioEx.getPosition())) {
                         expiredException.add(bioEx);
-                        personMissinfingerprints.remove(bioEx);
-                    } else
+                    } else {
                         SeqNumbersList.add(bioEx.getSeqNum());
+                    }
 
-            }
+                    return true;
+
+                }
+                return false;
+            });
 
         //To know what fingerException expired
         if (!expiredException.isEmpty()) {
+            System.out.println(expiredException.size());
             lblExcpiredExc.setVisible(true);
             expiredException.forEach(x -> ShowExpiredException(x.getPosition()));
         }
@@ -581,7 +586,8 @@ public class EditMissingFingerprintFXController extends WizardStepFxControllerBa
         bioEx.setPosition(position);
         // -- epoch time by Second
         if (finger.getStatus() == 0) {
-            // bioEx.setExpireDate(new Long(0));
+            //expiredDate null
+         //   bioEx.setExpireDate(new Long(22222));
             bioEx.setCreateDate(Instant.now().getEpochSecond());
             // bioEx.setMonth(0);
         } else if (finger.getStatus() == 3) {

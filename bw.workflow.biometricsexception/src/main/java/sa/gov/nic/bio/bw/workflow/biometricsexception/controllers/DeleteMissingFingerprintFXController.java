@@ -149,16 +149,20 @@ public class DeleteMissingFingerprintFXController extends WizardStepFxController
         causes = (List<Cause>) Context.getUserSession().getAttribute(CausesLookup.KEY);
 
         if (BioExclusionsList != null) {
-            // remove Expired Exception
-            for (BioExclusion bioEx : BioExclusionsList) {
-                if (bioEx.getExpireDate() != null && bioEx.getExpireDate() < Instant.now().getEpochSecond())
-                    if (MissingFingerPrints != null && MissingFingerPrints.contains(bioEx.getPosition())) {
-                        expiredException.add(bioEx);
-                        BioExclusionsList.remove(bioEx);
-                    } else
-                        SeqNumbersList.add(bioEx.getSeqNum());
 
-            }
+            //remove expired Exception
+            BioExclusionsList.removeIf(bioEx -> {
+                    if (bioEx.getExpireDate() != null && bioEx.getExpireDate() < Instant.now().getEpochSecond()) {
+                        if (MissingFingerPrints != null && MissingFingerPrints.contains(bioEx.getPosition())) {
+                            expiredException.add(bioEx);
+                        } else {
+                            SeqNumbersList.add(bioEx.getSeqNum());
+                        }
+                        return true;
+
+                    }
+                    return false;
+                });
 
             personfingerprints = new PersonFingerprints();
             personfingerprints.setRThumb(getLast(BioExclusionsList, 1));
