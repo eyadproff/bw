@@ -11,6 +11,12 @@ VERSION SCHEMA: vYYYY.MM.#SEQ
 
 ---
 
+## v2020.02.1
+
+- NEW: Miscreant Fingerprints Enrollment Workflow.
+
+---
+
 ## v2020.01.2
 
 - NEW: Civil Fingerprints Inquiry Workflow.

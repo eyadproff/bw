@@ -117,6 +117,12 @@
         - services-gateway-demographic/api/person/info/v1
         - services-gateway-demographic/api/person/deportee/info/v1
     
+    menu.query.miscreantfingerprintsenrollment:
+        - services-gateway-lookups/api/application/nationality/all/v1
+        - services-gateway-demographic/api/miscreant/info/v1
+        - services-gateway-biooperation/api/miscreant/fingers/registration/v1
+        - services-gateway-biooperation/api/miscreant/fingers/registration/status/v1
+    
     menu.query.printDeadPersonRecord:
         - services-gateway-lookups/api/application/person-type/v1
         - services-gateway-lookups/api/application/id-types/v1
