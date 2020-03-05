@@ -12,18 +12,25 @@ public interface CitizenEnrollmentAPI {
 
     @FormUrlEncoded
     @POST("services-gateway-biooperation/api/enrollment/biometrics/exclusion/retrieve/v1")
-    Call<List<BioExclusion>> retrieveBioExclusions(@Field("samis-id") Integer samisId);
+    Call<List<BioExclusion>> retrieveBioExclusions(@Header("Workflow-Code") Integer workflowId,
+                                                   @Header("Workflow-Tcn") Long workflowTcn,
+                                                   @Field("samis-id") Integer samisId);
 
     @FormUrlEncoded
     @POST("services-gateway-biooperation/api/iris/registration/v1")
-    Call<Long> submitCitizenRegistration(@Header("Workflow-Code") Integer workflowId,
-                                      @Header("Workflow-Tcn") Long workflowTcn,
-                                      @Field("person-id") Long personId,
-                                      @Field("right-iris") String rightIrisBase64,
-                                      @Field("left-iris") String leftIrisBase64);
+    Call<Long> enrollPerson(@Header("Workflow-Code") Integer workflowId,
+                                         @Header("Workflow-Tcn") Long workflowTcn,
+                                         @Field("person-id") Long personId,
+                                         @Field("person-type")  Integer personType,
+                                         @Field("fingers") String fingers,
+                                         @Field("missing") String missing,
+                                         @Field("face-image") String faceImage,
+                                         @Field("birth-date") String birthDate,
+                                         @Field("gender") Integer gender,
+                                         @Field("supervisor-id") Long supervisorId);
 
     @GET("services-gateway-biooperation/api/iris/registration/status/v1")
     Call<Void> checkCitizenRegistration(@Header("Workflow-Code") Integer workflowId,
-                                     @Header("Workflow-Tcn") Long workflowTcn,
-                                     @Query("tcn") Long tcn);
+                                        @Header("Workflow-Tcn") Long workflowTcn,
+                                        @Query("tcn") Long tcn);
 }

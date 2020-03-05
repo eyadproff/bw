@@ -11,7 +11,7 @@ import sa.gov.nic.bio.commons.TaskResponse;
 
 public class IsSameGenderWorkflowTask extends WorkflowTask
 {
-    @Input(alwaysRequired = true) private PersonInfo personInfo;
+   @Input(alwaysRequired = true) private PersonInfo personInfo;
 
 
     @Override
@@ -19,9 +19,9 @@ public class IsSameGenderWorkflowTask extends WorkflowTask
     {
         UserInfo userInfo = (UserInfo) Context.getUserSession().getAttribute("userInfo");
 
-                if (personInfo.getGender() != userInfo.getGender()) {
+               if (personInfo.getGender() != userInfo.getGender()) {
                     String[] x={"The Operator and the Citizen must be the same gender"};
-                    resetWorkflowStepIfNegativeOrNullTaskResponse(TaskResponse.failure(CitizenEnrollmentErrorCodes.B020_00001.getCode(),x));
+                    resetWorkflowStepIfNegativeOrNullTaskResponse(TaskResponse.failure(CitizenEnrollmentErrorCodes.B011_00001.getCode(),x));
                 }
     }
 }

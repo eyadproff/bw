@@ -310,11 +310,12 @@ public class SlapFingerprintsCapturingFxController extends WizardStepFxControlle
                                                    resources.getString("label.fingers.little"),
                                                    resources.getString("label.leftHand")));
 
+
 		// disable all the checkboxes if We do not have the choice to select MissingFingerPrint
 		if(hideCheckBoxOfMissing !=null && hideCheckBoxOfMissing) {
 			fingerprintUiComponentsMap.forEach((position, components) -> {
 				components.getCheckBox().setDisable(true);
-				if(exceptionOfFingerprints.contains(position))
+				if(exceptionOfFingerprints!=null && exceptionOfFingerprints.contains(position))
 					components.getCheckBox().setSelected(false);
 
 			});

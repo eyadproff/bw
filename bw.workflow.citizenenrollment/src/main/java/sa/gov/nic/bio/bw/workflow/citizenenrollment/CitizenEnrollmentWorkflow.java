@@ -8,19 +8,14 @@ import sa.gov.nic.bio.bw.core.workflow.Signal;
 import sa.gov.nic.bio.bw.core.workflow.WithLookups;
 import sa.gov.nic.bio.bw.core.workflow.WizardWorkflowBase;
 import sa.gov.nic.bio.bw.workflow.citizenenrollment.beans.BioExclusion;
-import sa.gov.nic.bio.bw.workflow.citizenenrollment.controllers.IrisCapturingFxController;
-import sa.gov.nic.bio.bw.workflow.citizenenrollment.controllers.PersonIdPaneFxController;
-import sa.gov.nic.bio.bw.workflow.citizenenrollment.controllers.ReviewAndSubmitPaneFxController;
-import sa.gov.nic.bio.bw.workflow.citizenenrollment.controllers.ShowingPersonInfoFxController;
-import sa.gov.nic.bio.bw.workflow.citizenenrollment.tasks.IsSameGenderWorkflowTask;
-import sa.gov.nic.bio.bw.workflow.citizenenrollment.tasks.RetrieveBioExclusionsWorkflowTask;
-import sa.gov.nic.bio.bw.workflow.commons.beans.NormalizedPersonInfo;
+import sa.gov.nic.bio.bw.workflow.citizenenrollment.controllers.*;
 import sa.gov.nic.bio.bw.workflow.commons.controllers.FaceCapturingFxController;
 import sa.gov.nic.bio.bw.workflow.commons.controllers.SlapFingerprintsCapturingFxController;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.CountriesLookup;
+import sa.gov.nic.bio.bw.workflow.commons.lookups.DocumentTypesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.PersonTypesLookup;
-import sa.gov.nic.bio.bw.workflow.commons.tasks.GetPersonInfoByIdWorkflowTask;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,7 +23,7 @@ import java.util.List;
 
 @AssociatedMenu(workflowId = 1002, menuId = "menu.register.citizenEnrollment", menuTitle = "menu.title", menuOrder = 1,
         devices = {Device.FINGERPRINT_SCANNER, Device.CAMERA, Device.IRIS_SCANNER})
-@WithLookups({PersonTypesLookup.class, CountriesLookup.class})
+@WithLookups({PersonTypesLookup.class, CountriesLookup.class, DocumentTypesLookup.class})
 @Wizard({@Step(iconId = "\\uf2bb", title = "wizard.enterPersonId"),
         @Step(iconId = "\\uf2b9", title = "wizard.showPersonInformation"),
         @Step(iconId = "\\uf256", title = "wizard.fingerprintCapturing"),
@@ -45,30 +40,42 @@ public class CitizenEnrollmentWorkflow extends WizardWorkflowBase {
 
                 renderUiAndWaitForUserInput(PersonIdPaneFxController.class);
 
-                passData(PersonIdPaneFxController.class, GetPersonInfoByIdWorkflowTask.class,
-                        "personId");
-
-                //  setData(GetPersonInfoByIdWorkflowTask.class, "returnNullResultInCaseNotFound", true);
+//                passData(PersonIdPaneFxController.class, GetPersonInfoByIdWorkflowTask.class,
+//                        "personId");
+//
+//                  setData(GetPersonInfoByIdWorkflowTask.class, "returnNullResultInCaseNotFound", true);
 
                 //check enroll or not
 
                 //death
 
                 //different gender
-                executeWorkflowTask(GetPersonInfoByIdWorkflowTask.class);
-                passData(GetPersonInfoByIdWorkflowTask.class, IsSameGenderWorkflowTask.class,
-                        "personInfo");
-
-                executeWorkflowTask(IsSameGenderWorkflowTask.class);
+//                executeWorkflowTask(GetPersonInfoByIdWorkflowTask.class);
+//                passData(GetPersonInfoByIdWorkflowTask.class, IsSameGenderWorkflowTask.class,
+//                        "personInfo");
+//
+//                executeWorkflowTask(IsSameGenderWorkflowTask.class);
 
 
                 break;
             }
             case 1: {
-                passData(GetPersonInfoByIdWorkflowTask.class, ShowingPersonInfoFxController.class,
+                passData(PersonIdPaneFxController.class, ShowingPersonInfoFxController.class,
                         "personInfo");
 
                 renderUiAndWaitForUserInput(ShowingPersonInfoFxController.class);
+
+//                setData(RetrieveBioExclusionsWorkflowTask.class, "samisId", (((NormalizedPersonInfo) getData(ShowingPersonInfoFxController.class, "normalizedPersonInfo")).getPersonId()).intValue());
+//
+//                executeWorkflowTask(RetrieveBioExclusionsWorkflowTask.class);
+//                List<BioExclusion> bioExclusion = getData(RetrieveBioExclusionsWorkflowTask.class, "bioExclusionList");
+//                List<Integer> exceptionOfFingerprints = new ArrayList<>();
+//                bioExclusion.forEach(bioExc -> {
+//                    if (bioExc.getStatus() == 0 && bioExc.getBioType() == 1)
+//                        exceptionOfFingerprints.add(bioExc.getPosition());
+//                });
+
+
 
                 break;
             }
@@ -89,20 +96,35 @@ public class CitizenEnrollmentWorkflow extends WizardWorkflowBase {
 //                setData(SlapFingerprintsCapturingFxController.class, "acceptBadQualityFingerprintMinRetires",
 //                        acceptBadQualityFingerprintMinRetries);
 
+
+//                setData(RetrieveBioExclusionsWorkflowTask.class, "samisId", (((NormalizedPersonInfo) getData(ShowingPersonInfoFxController.class, "normalizedPersonInfo")).getPersonId()).intValue());
+//
+//                executeWorkflowTask(RetrieveBioExclusionsWorkflowTask.class);
+//                List<BioExclusion> bioExclusion = getData(RetrieveBioExclusionsWorkflowTask.class, "bioExclusionList");
+//                List<Integer> exceptionOfFingerprints = new ArrayList<>();
+//                bioExclusion.forEach(bioExc -> {
+//                    if (bioExc.getStatus() == 0 && bioExc.getBioType() == 1)
+//                        exceptionOfFingerprints.add(bioExc.getPosition());
+//                });
+//                @Input private Boolean hidePreviousButton;
+//                @Input private Boolean allow9MissingWithNoRole;
+//                @Input private Boolean acceptBadQualityFingerprint;
+//                @Input private Integer acceptBadQualityFingerprintMinRetires;
+//                @Input private Boolean hideCheckBoxOfMissing;
+//                @Input private List<Integer> exceptionOfFingerprints;
+
+                List<BioExclusion> bioExclusion = getData(ShowingPersonInfoFxController.class, "bioExclusion");
+                List<Integer> exceptionOfFingerprints = new ArrayList<>();
+                if (bioExclusion != null)
+                    bioExclusion.forEach(bioExc -> {
+                        ///null mean Permanent Exception
+                        if (bioExc.getStatus() == 0 && bioExc.getBioType() == 1 && (bioExc.getExpireDate() == null || bioExc.getExpireDate() > Instant.now().getEpochSecond()))
+                            exceptionOfFingerprints.add(bioExc.getPosition());
+                    });
+
+                setData(SlapFingerprintsCapturingFxController.class, "exceptionOfFingerprints", exceptionOfFingerprints);
                 setData(SlapFingerprintsCapturingFxController.class, "hideCheckBoxOfMissing",
                         Boolean.TRUE);
-                setData(RetrieveBioExclusionsWorkflowTask.class, "samisId", (((NormalizedPersonInfo) getData(ShowingPersonInfoFxController.class, "normalizedPersonInfo")).getPersonId()).intValue());
-
-                executeWorkflowTask(RetrieveBioExclusionsWorkflowTask.class);
-                List<BioExclusion> bioExclusion = getData(RetrieveBioExclusionsWorkflowTask.class, "bioExclusionList");
-                List<Integer> exceptionOfFingerprints = new ArrayList<>();
-                bioExclusion.forEach(bioExc -> {
-                    if (bioExc.getStatus() == 0 && bioExc.getBioType() == 1)
-                        exceptionOfFingerprints.add(bioExc.getPosition());
-                });
-
-                setData(SlapFingerprintsCapturingFxController.class, "exceptionOfFingerprints",
-                        exceptionOfFingerprints);
                 renderUiAndWaitForUserInput(SlapFingerprintsCapturingFxController.class);
 
 
@@ -120,10 +142,10 @@ public class CitizenEnrollmentWorkflow extends WizardWorkflowBase {
 //                        acceptBadQualityFaceMinRetries);
 //                setData(FaceCapturingFxController.class, "acceptAnyCapturedImage", true);
 
-                List<BioExclusion> bioExclusion = getData(RetrieveBioExclusionsWorkflowTask.class, "bioExclusionList");
+                List<BioExclusion> bioExclusion = getData(ShowingPersonInfoFxController.class, "bioExclusion");
 
-                for (BioExclusion bioExc:bioExclusion) {
-                    if (bioExc.getStatus() == 0 && bioExc.getBioType() == 3) {
+                for (BioExclusion bioExc : bioExclusion) {
+                    if (bioExc.getStatus() == 0 && bioExc.getBioType() == 3 && bioExc.getExpireDate() > Instant.now().getEpochSecond()) {
                         setData(FaceCapturingFxController.class, "acceptBadQualityFace", Boolean.TRUE);
                         setData(FaceCapturingFxController.class, "acceptBadQualityFaceMinRetries",
                                 0);
@@ -163,7 +185,7 @@ public class CitizenEnrollmentWorkflow extends WizardWorkflowBase {
                 passData(FaceCapturingFxController.class, ReviewAndSubmitPaneFxController.class, "facePhotoBase64");
 
                 Boolean SkipIris = getData(IrisCapturingFxController.class, "Skip");
-                if (SkipIris) {
+                if (!SkipIris) {
                     passData(IrisCapturingFxController.class, ReviewAndSubmitPaneFxController.class, "capturedRightIrisBase64");
                     passData(IrisCapturingFxController.class, ReviewAndSubmitPaneFxController.class, "capturedLeftIrisBase64");
                 }
@@ -211,8 +233,8 @@ public class CitizenEnrollmentWorkflow extends WizardWorkflowBase {
             }
             case 6: {
                 //submit
-//                renderUiAndWaitForUserInput(RegisteringIrisPaneFxController.class);
-//
+                renderUiAndWaitForUserInput(RegisteringCitizenPaneFxController.class);
+
 //                Request request = getData(RegisteringIrisPaneFxController.class, "request");
 //                if(request == Request.SUBMIT_IRIS_REGISTRATION)
 //                {
@@ -235,9 +257,7 @@ public class CitizenEnrollmentWorkflow extends WizardWorkflowBase {
 
                 break;
             }
-//            case 7: {
-//                //result submit
-//            }
+
 
             default:
                 break;
