@@ -16,8 +16,11 @@ import sa.gov.nic.bio.bw.core.utils.FxmlFile;
 import sa.gov.nic.bio.bw.core.utils.GuiLanguage;
 import sa.gov.nic.bio.bw.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.core.workflow.Input;
+import sa.gov.nic.bio.bw.core.workflow.Output;
+import sa.gov.nic.bio.bw.workflow.citizenenrollment.beans.CitizenEnrollmentInfo;
 import sa.gov.nic.bio.bw.workflow.commons.beans.Finger;
 import sa.gov.nic.bio.bw.workflow.commons.beans.NormalizedPersonInfo;
+import sa.gov.nic.bio.bw.workflow.commons.beans.PersonInfo;
 import sa.gov.nic.bio.bw.workflow.commons.ui.ImageViewPane;
 
 import java.io.ByteArrayInputStream;
@@ -30,6 +33,8 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase 
 
     @Input(alwaysRequired = true)
     private NormalizedPersonInfo normalizedPersonInfo;
+    @Input(alwaysRequired = true)
+    private PersonInfo personInfo;
 //	@Input(alwaysRequired = true) private String firstName;
 //	@Input private String secondName;
 //	@Input private String otherName;
@@ -67,7 +72,8 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase 
 
 
 //	@Input(requiredOnReturn = true) private VisaApplicantEnrollmentResponse visaApplicantEnrollmentResponse;
-//	@Output private VisaApplicantInfo visaApplicantInfo;
+	@Output
+    private CitizenEnrollmentInfo citizenEnrollmentInfo;
 
     @FXML
     private VBox paneImage;
@@ -136,6 +142,8 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase 
     protected void onAttachedToScene() {
         paneImageView.maxWidthProperty().bind(paneImage.widthProperty());
 
+        citizenEnrollmentInfo=new CitizenEnrollmentInfo(personInfo.getSamisId(),normalizedPersonInfo.getPersonType().getCode(),fingerprintBase64Images,
+                missingFingerprints,facePhotoBase64,personInfo.getBirthDate(),personInfo.getGender(),capturedRightIrisBase64,capturedLeftIrisBase64);
 //		mobileNumber = dialingCode.getDialingCode() + "-" + mobileNumber;
 //
 //		visaApplicantInfo = new VisaApplicantInfo(null, null, firstName, secondName,

@@ -11,6 +11,7 @@ import sa.gov.nic.bio.bw.core.Context;
 import sa.gov.nic.bio.bw.core.controllers.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.core.utils.FxmlFile;
 import sa.gov.nic.bio.bw.core.workflow.*;
+import sa.gov.nic.bio.bw.workflow.citizenenrollment.beans.CitizenEnrollmentInfo;
 import sa.gov.nic.bio.bw.workflow.citizenenrollment.tasks.CheckCitizenRegistrationWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.citizenenrollment.tasks.CheckCitizenRegistrationWorkflowTask.Status;
 import sa.gov.nic.bio.bw.workflow.citizenenrollment.tasks.SubmitCitizenRegistrationWorkflowTask;
@@ -19,21 +20,17 @@ import sa.gov.nic.bio.commons.TaskResponse;
 
 import java.util.Map;
 
-@FxmlFile("registeringIris.fxml")
+@FxmlFile("registeringCitizen.fxml")
 public class RegisteringCitizenPaneFxController extends WizardStepFxControllerBase {
     public enum Request {
-        SUBMIT_IRIS_REGISTRATION,
-        CHECK_IRIS_REGISTRATION
+        SUBMIT_CITIZEN_REGISTRATION,
+        CHECK_CITIZEN_REGISTRATION
     }
 
-    @Input
-    protected Long personId;
-    @Input
-    protected String rightIrisBase64;
-    @Input
-    protected String leftIrisBase64;
-    @Input
-    private Status citizenRegistrationStatus;
+    @Input(alwaysRequired = true)
+    private CitizenEnrollmentInfo citizenEnrollmentInfo;
+
+
     @Output
     private Request request;
 
@@ -50,11 +47,12 @@ public class RegisteringCitizenPaneFxController extends WizardStepFxControllerBa
     @FXML
     private Button btnStartOver;
 
+    private Status citizenRegistrationStatus;
     private boolean disableRetryButtonForever = false;
 
     @Override
     protected void onAttachedToScene() {
-        request = Request.SUBMIT_IRIS_REGISTRATION;
+        request = Request.SUBMIT_CITIZEN_REGISTRATION;
         RegisteringTasks();
         //continueWorkflow();
         //se data to task
@@ -106,50 +104,54 @@ public class RegisteringCitizenPaneFxController extends WizardStepFxControllerBa
 
     }
 
-    private void RegisteringTasks(){
-      //  Request request = getData(RegisteringIrisPaneFxController.class, "request");
-                if(request == Request.SUBMIT_IRIS_REGISTRATION)
-                {
-                    passData(PersonIdPaneFxController.class, SubmitCitizenRegistrationWorkflowTask.class,
-                            "personId");
+    private void RegisteringTasks() {
+        //  Request request = getData(RegisteringIrisPaneFxController.class, "request");
+        if (request == Request.SUBMIT_CITIZEN_REGISTRATION) {
+            //setData(SubmitCitizenRegistrationWorkflowTask.class,"citizenEnrollmentInfo",citizenEnrollmentInfo);
+//                    passData(PersonIdPaneFxController.class, SubmitCitizenRegistrationWorkflowTask.class,
+//                            "personId");
 //                    passData(sa.gov.nic.bio.bw.workflow.commons.controllers.IrisCapturingFxController.class, "capturedRightIrisBase64",
 //                            SubmitIrisRegistrationWorkflowTask.class, "rightIrisBase64");
 //                    passData(sa.gov.nic.bio.bw.workflow.commons.controllers.IrisCapturingFxController.class, "capturedLeftIrisBase64",
 //                            SubmitIrisRegistrationWorkflowTask.class, "leftIrisBase64");
-                    executeTask(SubmitCitizenRegistrationWorkflowTask.class);
-                }
-                else if(request == Request.CHECK_IRIS_REGISTRATION)
-                {
-                    passData(SubmitCitizenRegistrationWorkflowTask.class,
-                            CheckCitizenRegistrationWorkflowTask.class, "tcn");
-                    executeTask(CheckCitizenRegistrationWorkflowTask.class);
+            executeTask(SubmitCitizenRegistrationWorkflowTask.class);
+        } else if (request == Request.CHECK_CITIZEN_REGISTRATION) {
+
+//                    passData(SubmitCitizenRegistrationWorkflowTask.class,
+//                            CheckCitizenRegistrationWorkflowTask.class, "tcn");
+            executeTask(CheckCitizenRegistrationWorkflowTask.class);
 //                    passData(CheckIrisRegistrationWorkflowTask.class, "status",
 //                            RegisteringIrisPaneFxController.class, "irisRegistrationStatus");
-                    citizenRegistrationStatus=getData(CheckCitizenRegistrationWorkflowTask.class,"status");
-                }
+
+        }
     }
 
     public void onReturnFromExecuteTask(boolean successfulResponse) {
-        if (request == Request.SUBMIT_IRIS_REGISTRATION) {
+        if (request == Request.SUBMIT_CITIZEN_REGISTRATION) {
             if (successfulResponse) {
-                lblStatus.setText(resources.getString("label.waitingIrisRegistration"));
-                request = Request.CHECK_IRIS_REGISTRATION;
+                lblStatus.setText(resources.getString("label.waitingCitizenRegistration"));
+                request = Request.CHECK_CITIZEN_REGISTRATION;
                 RegisteringTasks();
             } else {
-                lblStatus.setText(resources.getString("label.failedToSendIris"));
+                lblStatus.setText(resources.getString("label.failedToSendCitizenInfo"));
                 piProgress.setVisible(false);
                 ivFailure.setVisible(true);
                 btnStartOver.setVisible(true);
                 btnRetry.setVisible(!disableRetryButtonForever);
             }
-        } else if (request == Request.CHECK_IRIS_REGISTRATION) {
+        } else if (request == Request.CHECK_CITIZEN_REGISTRATION) {
+
             if (successfulResponse) {
+                citizenRegistrationStatus = getData(CheckCitizenRegistrationWorkflowTask.class, "status");
+
                 if (citizenRegistrationStatus == Status.PENDING) {
+
                     Context.getExecutorService().submit(() ->
                     {
                         try {
                             int seconds = Integer.parseInt(Context.getConfigManager().getProperty(
                                     "registerIris.inquiry.checkEverySeconds"));
+
                             Thread.sleep(seconds * 1000);
                         } catch (InterruptedException e) {
                             e.printStackTrace();
@@ -159,17 +161,18 @@ public class RegisteringCitizenPaneFxController extends WizardStepFxControllerBa
                     });
 
                 } else if (citizenRegistrationStatus == Status.SUCCESS) {
-                    lblStatus.setText(resources.getString("label.successIrisRegistration"));
+                    lblStatus.setText(resources.getString("label.successCitizenRegistration"));
                     piProgress.setVisible(false);
                     ivSuccess.setVisible(true);
                     btnStartOver.setVisible(true);
                 }
             } else {
-                lblStatus.setText(resources.getString("label.failedToRegisterIris"));
+                lblStatus.setText(resources.getString("label.failedToRegisterCitizen"));
                 piProgress.setVisible(false);
                 ivFailure.setVisible(true);
                 btnStartOver.setVisible(true);
                 btnRetry.setVisible(!disableRetryButtonForever);
+
             }
         }
     }
@@ -188,15 +191,14 @@ public class RegisteringCitizenPaneFxController extends WizardStepFxControllerBa
         ivFailure.setVisible(false);
         piProgress.setVisible(true);
 
-        if (request == Request.SUBMIT_IRIS_REGISTRATION) {
-            lblStatus.setText(resources.getString("label.submittingIris"));
-        } else if (request == Request.CHECK_IRIS_REGISTRATION) {
-            lblStatus.setText(resources.getString("label.waitingIrisRegistration"));
+        if (request == Request.SUBMIT_CITIZEN_REGISTRATION) {
+            lblStatus.setText(resources.getString("label.submitting"));
+        } else if (request == Request.CHECK_CITIZEN_REGISTRATION) {
+            lblStatus.setText(resources.getString("label.waitingCitizenRegistration"));
         }
 
         RegisteringTasks();
     }
-
 
 
     private boolean executeTask(Class<? extends WorkflowTask> taskClass) {
@@ -257,12 +259,12 @@ public class RegisteringCitizenPaneFxController extends WizardStepFxControllerBa
                             }
                         }
 
-                        String errorCode = CitizenEnrollmentErrorCodes.C011_00001.getCode();
+                        String errorCode = CitizenEnrollmentErrorCodes.C011_00010.getCode();
                         String[] errorDetails = {"failed to execute the task " + taskClass.getName() + "! signal = " +
                                 signal};
                         Context.getCoreFxController().showErrorDialog(errorCode, throwable, errorDetails, getTabIndex());
                     } else {
-                        String errorCode = CitizenEnrollmentErrorCodes.C011_00002.getCode();
+                        String errorCode = CitizenEnrollmentErrorCodes.C011_00011.getCode();
                         String[] errorDetails = {"failed to execute the task " + taskClass.getName() + "!"};
                         Context.getCoreFxController().showErrorDialog(errorCode, throwable, errorDetails, getTabIndex());
                     }

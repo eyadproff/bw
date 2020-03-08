@@ -171,12 +171,12 @@ public class PersonIdPaneFxController extends WizardStepFxControllerBase {
                             }
                         }
 
-                        String errorCode = CitizenEnrollmentErrorCodes.C011_00001.getCode();
+                        String errorCode = CitizenEnrollmentErrorCodes.C011_00010.getCode();
                         String[] errorDetails = {"failed to execute the task " + taskClass.getName() + "! signal = " +
                                 signal};
                         Context.getCoreFxController().showErrorDialog(errorCode, throwable, errorDetails, getTabIndex());
                     } else {
-                        String errorCode = CitizenEnrollmentErrorCodes.C011_00002.getCode();
+                        String errorCode = CitizenEnrollmentErrorCodes.C011_00011.getCode();
                         String[] errorDetails = {"failed to execute the task " + taskClass.getName() + "!"};
                         Context.getCoreFxController().showErrorDialog(errorCode, throwable, errorDetails, getTabIndex());
                     }

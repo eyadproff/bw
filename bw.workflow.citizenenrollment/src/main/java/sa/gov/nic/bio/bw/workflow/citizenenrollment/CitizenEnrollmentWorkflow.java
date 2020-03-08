@@ -64,7 +64,8 @@ public class CitizenEnrollmentWorkflow extends WizardWorkflowBase {
                         "personInfo");
 
                 renderUiAndWaitForUserInput(ShowingPersonInfoFxController.class);
-
+//
+//                renderUiAndWaitForUserInput(RegisteringCitizenPaneFxController.class);
 //                setData(RetrieveBioExclusionsWorkflowTask.class, "samisId", (((NormalizedPersonInfo) getData(ShowingPersonInfoFxController.class, "normalizedPersonInfo")).getPersonId()).intValue());
 //
 //                executeWorkflowTask(RetrieveBioExclusionsWorkflowTask.class);
@@ -175,6 +176,7 @@ public class CitizenEnrollmentWorkflow extends WizardWorkflowBase {
                 //Review
 
                 passData(ShowingPersonInfoFxController.class, ReviewAndSubmitPaneFxController.class, "normalizedPersonInfo");
+                passData(PersonIdPaneFxController.class, ReviewAndSubmitPaneFxController.class, "personInfo");
 
                 passData(SlapFingerprintsCapturingFxController.class, ReviewAndSubmitPaneFxController.class, "fingerprintBase64Images");
                 passData(SlapFingerprintsCapturingFxController.class, ReviewAndSubmitPaneFxController.class, "slapFingerprints");
@@ -232,6 +234,10 @@ public class CitizenEnrollmentWorkflow extends WizardWorkflowBase {
                 break;
             }
             case 6: {
+
+
+                passData(ReviewAndSubmitPaneFxController.class, RegisteringCitizenPaneFxController.class, "citizenEnrollmentInfo");
+
                 //submit
                 renderUiAndWaitForUserInput(RegisteringCitizenPaneFxController.class);
 
