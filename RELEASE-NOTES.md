@@ -11,9 +11,10 @@ VERSION SCHEMA: vYYYY.MM.#SEQ
 
 ---
 
-## v2020.02.1
+## v2020.03.1
 
 - NEW: Miscreant Fingerprints Enrollment Workflow.
+- FIX: Fix bug in crime types lookup.
 
 ---
 

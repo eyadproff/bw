@@ -1,0 +1,5 @@
+project.ext.moduleName = 'bw.workflow.latentreversesearch'
+
+dependencies {
+    implementation project(':bw.workflow.commons')
+}
