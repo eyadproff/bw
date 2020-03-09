@@ -49,7 +49,7 @@ public class BiometricsExceptionTypeFXController extends WizardStepFxControllerB
         String FaceImageExceptionTitle = resources.getString("wizard.FaceImage");
         String AddOrEditFingerprintExceptionTitle = resources.getString("wizard.addOrEditMissingFingerPrint");
 
-        // change the wizard-step-indicator upon changing the image source
+        // change the wizard-step-indicator upon changing the ExceptionType
         int stepIndex = Context.getCoreFxController().getWizardPane(getTabIndex()).getStepIndexByTitle(ServiceTypeTitle);
         if (stepIndex < 0) stepIndex = Context.getCoreFxController().getWizardPane(getTabIndex())
                 .getStepIndexByTitle(FaceImageExceptionTitle);
@@ -96,13 +96,6 @@ public class BiometricsExceptionTypeFXController extends WizardStepFxControllerB
 
     }
 
-//    @Override
-//    protected void onGoingPrevious(Map<String, Object> uiDataMap) {
-//        rbFaceImage.setSelected(false);
-//        rbFingerPrints.setSelected(false);
-//        exceptionType=null;
-//
-//    }
     @Override
     protected void onGoingPrevious(Map<String, Object> uiDataMap) {
         onGoingNext(uiDataMap);

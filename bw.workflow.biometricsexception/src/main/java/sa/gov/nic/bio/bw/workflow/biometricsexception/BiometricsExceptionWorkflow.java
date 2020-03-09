@@ -27,7 +27,6 @@ import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
 
-//import sa.gov.nic.bio.bw.workflow.commons.controllers.ShowingPersonInfoFxController;
 
 
 @AssociatedMenu(workflowId = 1017, menuId = "menu.edit.biometricsException", menuTitle = "menu.title", menuOrder = 2)
@@ -117,7 +116,7 @@ public class BiometricsExceptionWorkflow extends WizardWorkflowBase {
                         BioExclusionsList.removeIf(bioex -> bioex.getBioType() != 1);
                         Collections.reverse(BioExclusionsList);
 
-                        //if not enrolled what ?
+
                         //if there is ExpiredExc then get Available fingerprints
                         for (BioExclusion bioEx : BioExclusionsList) {
                             if (bioEx.getExpireDate() != null && bioEx.getExpireDate() < Instant.now().getEpochSecond()) {
@@ -134,13 +133,13 @@ public class BiometricsExceptionWorkflow extends WizardWorkflowBase {
 
                         setData(EditMissingFingerprintFXController.class, "personMissinfingerprints", BioExclusionsList);
                         setData(EditMissingFingerprintFXController.class, "MissingFingerPrints", MissingFingerPrints);
-                        //   renderUiAndWaitForUserInput(EditMissingFingerprintFXController.class);
+
 
 
                     } else {
                         setData(DeleteMissingFingerprintFXController.class, "BioExclusionsList", BioExclusionsList);
                         setData(DeleteMissingFingerprintFXController.class, "MissingFingerPrints", MissingFingerPrints);
-                        //  renderUiAndWaitForUserInput(DeleteMissingFingerprintFXController.class);
+
 
                     }
                 } else {
@@ -173,7 +172,7 @@ public class BiometricsExceptionWorkflow extends WizardWorkflowBase {
                 Type type = getData(BiometricsExceptionTypeFXController.class, "exceptionType");
 
                 if (Type.FINGERPRINTS.equals(type)) {
-                    //     renderUiAndWaitForUserInput(ReviewAndSubmitFXController.class);
+
 
                     if (ServiceType.ADD_OR_EDIT_FINGERPRINTS.equals(serviceType)) {
 

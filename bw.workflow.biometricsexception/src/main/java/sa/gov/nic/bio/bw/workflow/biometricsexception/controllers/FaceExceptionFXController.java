@@ -40,11 +40,6 @@ public class FaceExceptionFXController extends WizardStepFxControllerBase {
     @Output
     private List<Cause> causesFC;
 
-    // to show
-
-    // private Cause Reason;
-
-    //  private String Descrption;
 
     @FXML
     private TextField TxtfaceExcReason;
@@ -91,7 +86,7 @@ public class FaceExceptionFXController extends WizardStepFxControllerBase {
         RBStatusFaceEx.setVisible(true);
         StatusLabel.setVisible(true);
 
-        //   if (isFirstLoad()) {
+
         //if there is old state show or make new
         if (EditFaceException == null && FaceException != null) {
             for (Cause causeFC : causes) {
@@ -111,30 +106,8 @@ public class FaceExceptionFXController extends WizardStepFxControllerBase {
             }
 
         }
-        //   }
 
-//        if (EditFaceException == null && FaceException != null) {
-//
-//            if (FaceException != null) {
-//                for (Cause causeFC : causes) {
-//
-//                    if (causeFC.getCauseId() == FaceException.getCasueId()) {
-//                        EditFaceException = new BioExclusion();
-//                        EditFaceException.setCasueId(causeFC.getCauseId());
-////                        Reason.setDescriptionAr(causeFC.getArabicText());
-////                        Reason.setDescriptionEn(causeFC.getEnglishText());
-//                        EditFaceException.setMonth(FaceException.getMonth());
-//                        if (FaceException.getCasueId() == 1) {
-//                            EditFaceException.setDescription(FaceException.getDescription());
-//                        }
-//
-//                        break;
-//                    }
-//                }
-//
-//            }
-//
-//        }
+
         // upload old state
         if (EditFaceException != null)
             uploadReason();
@@ -332,23 +305,7 @@ public class FaceExceptionFXController extends WizardStepFxControllerBase {
 
         }
 
-//        Reason = new Cause();
-//        Reason.setCauseId(ComboMenu.getValue().getItem().getCauseId());
-//        Reason.setDescriptionEn(ComboMenu.getValue().getItem().getEnglishText());
-//        Reason.setDescriptionAr(ComboMenu.getValue().getItem().getArabicText());
-//        EditFaceException.setCasueId(Reason.getCauseId());
 
-//        if (EditFaceException.getCasueId() == 1)
-//            EditFaceException.setDescription(Descrption);
-
-//        if (((RadioButton) RBStatus.getSelectedToggle()).getText().equals(resources.getString("3months")))
-//            EditFaceException.setDuration(3);
-//        else if (((RadioButton) RBStatus.getSelectedToggle()).getText().equals(resources.getString("6months")))
-//            EditFaceException.setDuration(6);
-//        else if (((RadioButton) RBStatus.getSelectedToggle()).getText().equals(resources.getString("oneYear")))
-//            EditFaceException.setDuration(12);
-//        else
-//            EditFaceException.setDuration(0);
 
         typeFaceService = TypeFaceService.ADD_OR_EDIT;
 
@@ -377,45 +334,6 @@ public class FaceExceptionFXController extends WizardStepFxControllerBase {
 
         @Override
     protected void onGoingPrevious(Map<String, Object> uiDataMap) {
-//      /*  if (FaceException != null) {
-//            for (Cause causeFC : causes) {
-//
-//                if (causeFC.getCauseId() == FaceException.getCasueId()) {
-//
-//                    Reason = new Cause();
-//                    Reason.setCauseId(causeFC.getCauseId());
-//                    Reason.setDescriptionAr(causeFC.getArabicText());
-//                    Reason.setDescriptionEn(causeFC.getEnglishText());
-//                    if (FaceException.getCasueId() == 1) {
-//                        Descrption = FaceException.getDescription();
-//                    }
-//                    break;
-//                }
-//            }
-//
-//        } else
-//            Reason = null;*/
-//
-//
-//        if (FaceException != null) {
-//            for (Cause causeFC : causes) {
-//
-//                if (causeFC.getCauseId() == FaceException.getCasueId()) {
-//                    EditFaceException = new BioExclusion();
-//                    EditFaceException.setCasueId(causeFC.getCauseId());
-////                        Reason.setDescriptionAr(causeFC.getArabicText());
-////                        Reason.setDescriptionEn(causeFC.getEnglishText());
-//                    EditFaceException.setMonth(FaceException.getMonth());
-//                    if (FaceException.getCasueId() == 1) {
-//                        EditFaceException.setDescription(FaceException.getDescription());
-//                    }
-//
-//                    break;
-//                }
-//            }
-//
-//        } else
-//            EditFaceException = null;
 //
             EditFaceException=null;
     }
