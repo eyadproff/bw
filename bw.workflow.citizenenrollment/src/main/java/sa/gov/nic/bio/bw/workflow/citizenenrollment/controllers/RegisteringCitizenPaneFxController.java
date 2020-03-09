@@ -14,7 +14,7 @@ import sa.gov.nic.bio.bw.core.workflow.*;
 import sa.gov.nic.bio.bw.workflow.citizenenrollment.beans.CitizenEnrollmentInfo;
 import sa.gov.nic.bio.bw.workflow.citizenenrollment.tasks.CheckCitizenRegistrationWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.citizenenrollment.tasks.CheckCitizenRegistrationWorkflowTask.Status;
-import sa.gov.nic.bio.bw.workflow.citizenenrollment.tasks.SubmitCitizenRegistrationWorkflowTask;
+import sa.gov.nic.bio.bw.workflow.citizenenrollment.tasks.CitizenRegistrationWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.citizenenrollment.utils.CitizenEnrollmentErrorCodes;
 import sa.gov.nic.bio.commons.TaskResponse;
 
@@ -114,7 +114,7 @@ public class RegisteringCitizenPaneFxController extends WizardStepFxControllerBa
 //                            SubmitIrisRegistrationWorkflowTask.class, "rightIrisBase64");
 //                    passData(sa.gov.nic.bio.bw.workflow.commons.controllers.IrisCapturingFxController.class, "capturedLeftIrisBase64",
 //                            SubmitIrisRegistrationWorkflowTask.class, "leftIrisBase64");
-            executeTask(SubmitCitizenRegistrationWorkflowTask.class);
+            executeTask(CitizenRegistrationWorkflowTask.class);
         } else if (request == Request.CHECK_CITIZEN_REGISTRATION) {
 
 //                    passData(SubmitCitizenRegistrationWorkflowTask.class,

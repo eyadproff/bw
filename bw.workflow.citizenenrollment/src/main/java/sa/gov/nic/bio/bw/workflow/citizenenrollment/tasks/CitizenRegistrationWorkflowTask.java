@@ -4,7 +4,7 @@ import sa.gov.nic.bio.bw.core.workflow.Output;
 import sa.gov.nic.bio.bw.core.workflow.Signal;
 import sa.gov.nic.bio.bw.core.workflow.WorkflowTask;
 
-public class SubmitCitizenRegistrationWorkflowTask extends WorkflowTask {
+public class CitizenRegistrationWorkflowTask extends WorkflowTask {
 //    @Input(alwaysRequired = true)
 //    private CitizenEnrollmentInfo citizenEnrollmentInfo;
 

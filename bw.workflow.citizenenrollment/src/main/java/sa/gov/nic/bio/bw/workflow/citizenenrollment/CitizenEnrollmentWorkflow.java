@@ -9,6 +9,8 @@ import sa.gov.nic.bio.bw.core.workflow.WithLookups;
 import sa.gov.nic.bio.bw.core.workflow.WizardWorkflowBase;
 import sa.gov.nic.bio.bw.workflow.citizenenrollment.beans.BioExclusion;
 import sa.gov.nic.bio.bw.workflow.citizenenrollment.controllers.*;
+import sa.gov.nic.bio.bw.workflow.citizenenrollment.tasks.CheckIrisRegistrationWorkflowTask;
+import sa.gov.nic.bio.bw.workflow.citizenenrollment.tasks.SubmitIrisRegistrationWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.commons.controllers.FaceCapturingFxController;
 import sa.gov.nic.bio.bw.workflow.commons.controllers.SlapFingerprintsCapturingFxController;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.CountriesLookup;
@@ -30,8 +32,8 @@ import java.util.List;
         @Step(iconId = "camera", title = "wizard.facePhotoCapturing"),
         @Step(iconId = "eye", title = "wizard.irisCapturing"),
         @Step(iconId = "th_list", title = "wizard.reviewAndSubmit"),
-        @Step(iconId = "spinner", title = "wizard.enrollment"),
-        @Step(iconId = "\\uf0f6", title = "wizard.enrollmentResult")})
+        @Step(iconId = "save", title = "wizard.enrollmentIris"),
+        @Step(iconId = "save", title = "wizard.enrollmentPerson")})
 public class CitizenEnrollmentWorkflow extends WizardWorkflowBase {
     @Override
     public void onStep(int step) throws InterruptedException, Signal {
@@ -60,11 +62,12 @@ public class CitizenEnrollmentWorkflow extends WizardWorkflowBase {
                 break;
             }
             case 1: {
-                passData(PersonIdPaneFxController.class, ShowingPersonInfoFxController.class,
-                        "personInfo");
-
-                renderUiAndWaitForUserInput(ShowingPersonInfoFxController.class);
+//                passData(PersonIdPaneFxController.class, ShowingPersonInfoFxController.class,
+//                        "personInfo");
 //
+//                renderUiAndWaitForUserInput(ShowingPersonInfoFxController.class);
+//
+                renderUiAndWaitForUserInput(IrisCapturingFxController.class);
 //                renderUiAndWaitForUserInput(RegisteringCitizenPaneFxController.class);
 //                setData(RetrieveBioExclusionsWorkflowTask.class, "samisId", (((NormalizedPersonInfo) getData(ShowingPersonInfoFxController.class, "normalizedPersonInfo")).getPersonId()).intValue());
 //
@@ -233,7 +236,32 @@ public class CitizenEnrollmentWorkflow extends WizardWorkflowBase {
 //                        "visaApplicantEnrollmentResponse");
                 break;
             }
-            case 6: {
+            case 6:{
+                renderUiAndWaitForUserInput(RegisteringIrisPaneFxController.class);
+
+                RegisteringIrisPaneFxController.Request request = getData(RegisteringIrisPaneFxController.class, "request");
+                if(request == RegisteringIrisPaneFxController.Request.SUBMIT_IRIS_REGISTRATION)
+                {
+//                    passData(PersonIdPaneFxController.class, SubmitIrisRegistrationWorkflowTask.class,
+//                            "personId");
+//                    passData(sa.gov.nic.bio.bw.workflow.commons.controllers.IrisCapturingFxController.class, "capturedRightIrisBase64",
+//                            SubmitIrisRegistrationWorkflowTask.class, "rightIrisBase64");
+//                    passData(sa.gov.nic.bio.bw.workflow.commons.controllers.IrisCapturingFxController.class, "capturedLeftIrisBase64",
+//                            SubmitIrisRegistrationWorkflowTask.class, "leftIrisBase64");
+                    passData(ReviewAndSubmitPaneFxController.class, SubmitIrisRegistrationWorkflowTask.class, "citizenEnrollmentInfo");
+                    executeWorkflowTask(SubmitIrisRegistrationWorkflowTask.class);
+                }
+                else if(request == RegisteringIrisPaneFxController.Request.CHECK_IRIS_REGISTRATION)
+                {
+                    passData(SubmitIrisRegistrationWorkflowTask.class,
+                            CheckIrisRegistrationWorkflowTask.class, "tcn");
+                    executeWorkflowTask(CheckIrisRegistrationWorkflowTask.class);
+                    passData(CheckIrisRegistrationWorkflowTask.class, "status",
+                            RegisteringIrisPaneFxController.class, "irisRegistrationStatus");
+                }
+                break;
+            }
+            case 7: {
 
 
                 passData(ReviewAndSubmitPaneFxController.class, RegisteringCitizenPaneFxController.class, "citizenEnrollmentInfo");

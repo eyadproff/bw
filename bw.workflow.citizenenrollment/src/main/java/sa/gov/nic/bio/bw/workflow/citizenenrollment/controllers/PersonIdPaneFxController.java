@@ -13,10 +13,11 @@ import sa.gov.nic.bio.bw.core.workflow.Output;
 import sa.gov.nic.bio.bw.core.workflow.Signal;
 import sa.gov.nic.bio.bw.core.workflow.Workflow;
 import sa.gov.nic.bio.bw.core.workflow.WorkflowTask;
+import sa.gov.nic.bio.bw.workflow.citizenenrollment.beans.PersonInfo;
+import sa.gov.nic.bio.bw.workflow.citizenenrollment.tasks.GetPersonInfoByIdWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.citizenenrollment.tasks.IsSameGenderWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.citizenenrollment.utils.CitizenEnrollmentErrorCodes;
-import sa.gov.nic.bio.bw.workflow.commons.beans.PersonInfo;
-import sa.gov.nic.bio.bw.workflow.commons.tasks.GetPersonInfoByIdWorkflowTask;
+
 import sa.gov.nic.bio.commons.TaskResponse;
 
 import java.util.Map;
@@ -133,7 +134,7 @@ public class PersonIdPaneFxController extends WizardStepFxControllerBase {
         setData(GetPersonInfoByIdWorkflowTask.class,
                 "personId", personId);
 
-        executeTask(GetPersonInfoByIdWorkflowTask.class) ;
+        executeTask(GetPersonInfoByIdWorkflowTask.class);
 
     }
 
@@ -146,6 +147,16 @@ public class PersonIdPaneFxController extends WizardStepFxControllerBase {
                             setData(IsSameGenderWorkflowTask.class,
                                     "personInfo", getData("personInfo"));
                             personInfo = getData("personInfo");
+//                            if (personInfo.getIsEnrolled().equals("Y")) {
+//                                showWarningNotification(resources.getString("personIsEnrolled"));
+//                                //  reportNegativeTaskResponse(TaskResponse.failure(CitizenEnrollmentErrorCodes.B011_00001.getCode(),));
+//                                // showErrorNotification(resources.getString("personIsEnrolled"));
+//                                return;
+//                            }
+                            if (personInfo.getDeathInd().equals("Y")) {
+                                showWarningNotification(resources.getString("personIsDeath"));
+                                return;
+                            }
                             executeTask(IsSameGenderWorkflowTask.class);
                         }
                         if (taskClass.getName().equals(IsSameGenderWorkflowTask.class.getName())) {

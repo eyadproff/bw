@@ -17,7 +17,7 @@ public interface CitizenEnrollmentAPI {
                                                    @Field("samis-id") Integer samisId);
 
     @FormUrlEncoded
-    @POST("services-gateway-biooperation/api/iris/registration/v1")
+    @POST("services-gateway-biooperation/api/enrollment/register/v1")
     Call<Long> enrollPerson(@Header("Workflow-Code") Integer workflowId,
                                          @Header("Workflow-Tcn") Long workflowTcn,
                                          @Field("person-id") Long personId,
@@ -29,8 +29,10 @@ public interface CitizenEnrollmentAPI {
                                          @Field("gender") Integer gender,
                                          @Field("supervisor-id") Long supervisorId);
 
-    @GET("services-gateway-biooperation/api/iris/registration/status/v1")
+    @GET("services-gateway-biooperation/api/enrollment/status/v1")
     Call<Void> checkCitizenRegistration(@Header("Workflow-Code") Integer workflowId,
                                         @Header("Workflow-Tcn") Long workflowTcn,
-                                        @Query("tcn") Long tcn);
+                                        @Query("person-id") Long personId);
+
+
 }

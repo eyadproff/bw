@@ -10,4 +10,5 @@ module bw.workflow.citizenenrollment
 	opens sa.gov.nic.bio.bw.workflow.citizenenrollment.fxml to bw.core;
 	opens sa.gov.nic.bio.bw.workflow.citizenenrollment.controllers to javafx.fxml, bw.core;
 	opens sa.gov.nic.bio.bw.workflow.citizenenrollment.tasks to bw.core;
+	opens sa.gov.nic.bio.bw.workflow.citizenenrollment.beans to org.apache.commons.lang3;
 }

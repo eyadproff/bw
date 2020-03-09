@@ -15,10 +15,10 @@ import sa.gov.nic.bio.bw.core.workflow.Output;
 import sa.gov.nic.bio.bw.core.workflow.Signal;
 import sa.gov.nic.bio.bw.core.workflow.Workflow;
 import sa.gov.nic.bio.bw.workflow.citizenenrollment.beans.BioExclusion;
+import sa.gov.nic.bio.bw.workflow.citizenenrollment.beans.NormalizedPersonInfo;
+import sa.gov.nic.bio.bw.workflow.citizenenrollment.beans.PersonInfo;
 import sa.gov.nic.bio.bw.workflow.citizenenrollment.tasks.RetrieveBioExclusionsWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.citizenenrollment.utils.CitizenEnrollmentErrorCodes;
-import sa.gov.nic.bio.bw.workflow.commons.beans.NormalizedPersonInfo;
-import sa.gov.nic.bio.bw.workflow.commons.beans.PersonInfo;
 import sa.gov.nic.bio.commons.TaskResponse;
 
 import java.util.List;

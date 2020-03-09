@@ -41,14 +41,14 @@ public class IrisCapturingFxController extends WizardStepFxControllerBase {
     private Boolean hidePreviousButton;
     @Input
     private Boolean hideStartOverButton;
-	@Input
-	private Boolean hideSkipButton;
+    @Input
+    private Boolean hideSkipButton;
     @Output
     private String capturedRightIrisBase64;
     @Output
     private String capturedLeftIrisBase64;
     @Output
-	private Boolean Skip =false;
+    private Boolean Skip = false;
 
     @FXML
     private VBox paneControlsInnerContainer;
@@ -100,9 +100,11 @@ public class IrisCapturingFxController extends WizardStepFxControllerBase {
     private ImageView ivSkippedLeftIris;
     private CheckBox cbSkippedRightIris;
     private CheckBox cbSkippedLeftIris;
+    private int stepIndex;
 
     @Override
     protected void onAttachedToScene() {
+
         DevicesRunnerGadgetPaneFxController deviceManagerGadgetPaneController =
                 Context.getCoreFxController().getDeviceManagerGadgetPaneController();
 
@@ -126,7 +128,7 @@ public class IrisCapturingFxController extends WizardStepFxControllerBase {
 
         if (hidePreviousButton != null) GuiUtils.showNode(btnPrevious, !hidePreviousButton);
         if (hideStartOverButton != null) GuiUtils.showNode(btnStartOver, !hideStartOverButton);
-		if (hideSkipButton != null) GuiUtils.showNode(btnSkip, !hideSkipButton);
+        if (hideSkipButton != null) GuiUtils.showNode(btnSkip, !hideSkipButton);
 
         ivRightIris = rtl ? ivCapturedSecondIris : ivCapturedFirstIris;
         ivLeftIris = rtl ? ivCapturedFirstIris : ivCapturedSecondIris;
@@ -431,7 +433,7 @@ public class IrisCapturingFxController extends WizardStepFxControllerBase {
 
     @FXML
     private void onSkipButtonClicked() {
-    	Skip=true;
+        Skip = true;
         goNext();
 
     }
