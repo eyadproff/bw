@@ -13,6 +13,7 @@ VERSION SCHEMA: vYYYY.MM.#SEQ
 
 ## v2020.03.2
 
+- NEW: Add new NIC logo.
 - FIX: Fix bug in crime types lookup.
 
 ---
