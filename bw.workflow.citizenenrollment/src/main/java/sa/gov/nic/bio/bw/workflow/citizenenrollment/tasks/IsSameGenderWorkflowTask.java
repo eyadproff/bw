@@ -21,7 +21,7 @@ public class IsSameGenderWorkflowTask extends WorkflowTask
 
                if (personInfo.getGender() != userInfo.getGender()) {
                     String[] x={"The Operator and the Citizen must be the same gender"};
-                    resetWorkflowStepIfNegativeOrNullTaskResponse(TaskResponse.failure(CitizenEnrollmentErrorCodes.B011_00003.getCode(),x));
+                    resetWorkflowStepIfNegativeOrNullTaskResponse(TaskResponse.failure(CitizenEnrollmentErrorCodes.B018_00003.getCode(),x));
                 }
     }
 }

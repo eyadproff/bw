@@ -2,7 +2,7 @@ package sa.gov.nic.bio.bw.workflow.citizenenrollment.utils;
 
 public enum CitizenEnrollmentErrorCodes
 {
-	B011_00001,B011_00002,B011_00003,C011_00010,C011_00011;
+	B018_00001,B018_00002, B018_00003, C018_00010, C018_00011;
 	
 	public final String getCode()
 	{

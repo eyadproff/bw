@@ -22,6 +22,9 @@ public class CitizenRegistrationWorkflowTask extends WorkflowTask {
 //        var taskResponse = Context.getWebserviceManager().executeApi(apiCall);
 //        resetWorkflowStepIfNegativeOrNullTaskResponse(taskResponse);
 //        tcn = taskResponse.getResult();
+
+
+       // resetWorkflowStepIfNegativeOrNullTaskResponse(TaskResponse.failure(CitizenEnrollmentErrorCodes.B018_00001.getCode()));
         System.out.println("SubmitCitizen");
     }
 }

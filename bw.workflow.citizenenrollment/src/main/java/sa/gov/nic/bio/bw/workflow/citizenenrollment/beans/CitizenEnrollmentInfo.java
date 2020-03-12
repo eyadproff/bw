@@ -1,14 +1,15 @@
 package sa.gov.nic.bio.bw.workflow.citizenenrollment.beans;
 
+import sa.gov.nic.bio.bw.workflow.commons.beans.Finger;
+
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 public class CitizenEnrollmentInfo {
 
     private Long personId;
     private Integer personType;
-    private Map<Integer, String> fingers;
+    private List<Finger> fingers;
     private List<Integer> missing;
     private String faceImage;
     private Date birthDate;
@@ -17,7 +18,7 @@ public class CitizenEnrollmentInfo {
     private String capturedLeftIrisBase64;
 
 
-    public CitizenEnrollmentInfo(Long personId, Integer personType, Map<Integer, String> fingers, List<Integer> missing, String faceImage, Date birthDate, Integer gender, String capturedRightIrisBase64, String capturedLeftIrisBase64) {
+    public CitizenEnrollmentInfo(Long personId, Integer personType, List<Finger> fingers, List<Integer> missing, String faceImage, Date birthDate, Integer gender, String capturedRightIrisBase64, String capturedLeftIrisBase64) {
         this.personId = personId;
         this.personType = personType;
         this.fingers = fingers;
@@ -40,11 +41,11 @@ public class CitizenEnrollmentInfo {
     }
 
 
-    public Map<Integer, String> getFingers() {
+    public List<Finger> getFingers() {
         return fingers;
     }
 
-    public void setFingers(Map<Integer, String> fingers) {
+    public void setFingers(List<Finger> fingers) {
         this.fingers = fingers;
     }
 

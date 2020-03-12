@@ -6,23 +6,14 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.paint.Color;
-import sa.gov.nic.bio.bw.core.Context;
 import sa.gov.nic.bio.bw.core.controllers.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.core.utils.FxmlFile;
 import sa.gov.nic.bio.bw.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.core.workflow.Input;
 import sa.gov.nic.bio.bw.core.workflow.Output;
-import sa.gov.nic.bio.bw.core.workflow.Signal;
-import sa.gov.nic.bio.bw.core.workflow.Workflow;
-import sa.gov.nic.bio.bw.workflow.citizenenrollment.beans.BioExclusion;
 import sa.gov.nic.bio.bw.workflow.citizenenrollment.beans.NormalizedPersonInfo;
 import sa.gov.nic.bio.bw.workflow.citizenenrollment.beans.PersonInfo;
-import sa.gov.nic.bio.bw.workflow.citizenenrollment.tasks.RetrieveBioExclusionsWorkflowTask;
-import sa.gov.nic.bio.bw.workflow.citizenenrollment.utils.CitizenEnrollmentErrorCodes;
-import sa.gov.nic.bio.commons.TaskResponse;
 
-import java.util.List;
-import java.util.Map;
 import java.util.function.Consumer;
 
 @FxmlFile("showingPersonInfo.fxml")
@@ -31,8 +22,6 @@ public class ShowingPersonInfoFxController extends WizardStepFxControllerBase {
     private PersonInfo personInfo;
     @Output
     private NormalizedPersonInfo normalizedPersonInfo;
-    @Output
-    List<BioExclusion> bioExclusion;
 
 
     @FXML
@@ -60,10 +49,6 @@ public class ShowingPersonInfoFxController extends WizardStepFxControllerBase {
     private Label lblPersonId;
     @FXML
     private Label lblPersonType;
-    //	@FXML private Label lblDocumentId;
-//	@FXML private Label lblDocumentType;
-//	@FXML private Label lblDocumentIssuanceDate;
-//	@FXML private Label lblDocumentExpiryDate;
     @FXML
     private Label lblNaturalizedSaudi;
     @FXML
@@ -102,10 +87,6 @@ public class ShowingPersonInfoFxController extends WizardStepFxControllerBase {
         GuiUtils.setLabelText(lblBirthDate, normalizedPersonInfo.getBirthDate()).orElse(consumer);
         GuiUtils.setLabelText(lblPersonId, normalizedPersonInfo.getPersonId()).orElse(consumer);
         GuiUtils.setLabelText(lblPersonType, normalizedPersonInfo.getPersonType()).orElse(consumer);
-//		GuiUtils.setLabelText(lblDocumentId, normalizedPersonInfo.getDocumentId()).orElse(consumer);
-//		GuiUtils.setLabelText(lblDocumentType, normalizedPersonInfo.getDocumentType()).orElse(consumer);
-//		GuiUtils.setLabelText(lblDocumentIssuanceDate, normalizedPersonInfo.getDocumentIssuanceDate()).orElse(consumer);
-//		GuiUtils.setLabelText(lblDocumentExpiryDate, normalizedPersonInfo.getDocumentExpiryDate()).orElse(consumer);
 
         infoPane.autosize();
         btnConfirmPersonInfo.requestFocus();
@@ -118,47 +99,7 @@ public class ShowingPersonInfoFxController extends WizardStepFxControllerBase {
     @Override
     protected void onNextButtonClicked(ActionEvent actionEvent) {
 
-        setData(RetrieveBioExclusionsWorkflowTask.class,
-                "samisId", normalizedPersonInfo.getPersonId().intValue());
-
-        executeUiTask(RetrieveBioExclusionsWorkflowTask.class, new SuccessHandler() {
-                    @Override
-                    protected void onSuccess() {
-						 bioExclusion = getData( "bioExclusionList");
-						goNext();
-                    }
-                }, throwable ->
-                {
-
-
-                    if (throwable instanceof Signal) {
-                        Signal signal = (Signal) throwable;
-                        Map<String, Object> payload = signal.getPayload();
-                        if (payload != null) {
-                            TaskResponse<?> taskResponse = (TaskResponse<?>)
-                                    payload.get(Workflow.KEY_WORKFLOW_TASK_NEGATIVE_RESPONSE);
-
-                            if (taskResponse != null) {
-                                this.reportNegativeTaskResponse(taskResponse.getErrorCode(),
-                                        taskResponse.getException(),
-                                        taskResponse.getErrorDetails());
-                                return;
-                            }
-                        }
-
-						String errorCode = CitizenEnrollmentErrorCodes.C011_00010.getCode();
-						String[] errorDetails = {"failed to execute the task RetrieveBioExclusionsWorkflowTask! signal = " +
-								signal};
-						Context.getCoreFxController().showErrorDialog(errorCode, throwable, errorDetails, getTabIndex());
-                    } else {
-						String errorCode = CitizenEnrollmentErrorCodes.C011_00011.getCode();
-						String[] errorDetails = {"failed to execute the task RetrieveBioExclusionsWorkflowTask!"};
-						Context.getCoreFxController().showErrorDialog(errorCode, throwable, errorDetails, getTabIndex());
-                    }
-                }
-        );
-
-       // continueWorkflow();
+        continueWorkflow();
     }
 
 

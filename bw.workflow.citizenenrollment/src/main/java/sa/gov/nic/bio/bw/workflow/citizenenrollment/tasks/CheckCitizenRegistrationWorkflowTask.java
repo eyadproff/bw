@@ -12,7 +12,7 @@ public class CheckCitizenRegistrationWorkflowTask extends WorkflowTask
 		SUCCESS
 	}
 	
-//	@Input(alwaysRequired = true) private Long tcn;
+//	@Input(alwaysRequired = true) private Long personId;
 	@Output private Status status;
 
 	public  static  int x=3;
@@ -29,6 +29,7 @@ public class CheckCitizenRegistrationWorkflowTask extends WorkflowTask
 //		if(httpCode == 200) status = Status.SUCCESS;
 //		else if(httpCode == 202) status = Status.PENDING;
 
+	//	resetWorkflowStepIfNegativeOrNullTaskResponse(TaskResponse.failure(CitizenEnrollmentErrorCodes.B018_00001.getCode()));
 		if(x-->0)status = Status.PENDING;
 		else status = Status.SUCCESS;
 

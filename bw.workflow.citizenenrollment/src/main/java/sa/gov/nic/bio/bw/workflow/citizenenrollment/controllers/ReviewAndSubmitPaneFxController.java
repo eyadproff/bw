@@ -35,26 +35,6 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase 
     private NormalizedPersonInfo normalizedPersonInfo;
     @Input(alwaysRequired = true)
     private PersonInfo personInfo;
-//	@Input(alwaysRequired = true) private String firstName;
-//	@Input private String secondName;
-//	@Input private String otherName;
-//	@Input(alwaysRequired = true) private String familyName;
-//	@Input(alwaysRequired = true) private Country nationality;
-//	@Input(alwaysRequired = true) private Gender gender;
-//	@Input private Country birthPlace;
-//	@Input(alwaysRequired = true) private LocalDate birthDate;
-//	@Input(alwaysRequired = true) private Boolean birthDateUseHijri;
-//	@Input(alwaysRequired = true) private VisaTypeBean visaType;
-//	@Input(alwaysRequired = true) private String passportNumber;
-//	@Input(alwaysRequired = true) private LocalDate issueDate;
-//	@Input(alwaysRequired = true) private Boolean issueDateUseHijri;
-//	@Input(alwaysRequired = true) private LocalDate expirationDate;
-//	@Input(alwaysRequired = true) private Boolean expirationDateUseHijri;
-//	@Input(alwaysRequired = true) private Country issuanceCountry;
-//	@Input(alwaysRequired = true) private PassportTypeBean passportType;
-//	@Input(alwaysRequired = true) private CountryDialingCode dialingCode;
-//	@Input(alwaysRequired = true) private String mobileNumber;
-
     @Input(alwaysRequired = true)
     private Image facePhoto;
     @Input(alwaysRequired = true)
@@ -66,12 +46,12 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase 
     @Input(alwaysRequired = true)
     private List<Integer> missingFingerprints;
     @Input
+    private List<Finger> combinedFingerprints;
+    @Input
     private String capturedRightIrisBase64;
     @Input
     private String capturedLeftIrisBase64;
 
-
-//	@Input(requiredOnReturn = true) private VisaApplicantEnrollmentResponse visaApplicantEnrollmentResponse;
 	@Output
     private CitizenEnrollmentInfo citizenEnrollmentInfo;
 
@@ -97,13 +77,6 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase 
     private Label lblBirthPlace;
     @FXML
     private Label lblBirthDate;
-    //	@FXML private Label lblVisaType;
-//	@FXML private Label lblPassportNumber;
-//	@FXML private Label lblIssueDate;
-//	@FXML private Label lblExpirationDate;
-//	@FXML private Label lblIssuanceCountry;
-//	@FXML private Label lblPassportType;
-//	@FXML private Label lblMobileNumber;
     @FXML
     private ImageView ivRightThumb;
     @FXML
@@ -142,15 +115,8 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase 
     protected void onAttachedToScene() {
         paneImageView.maxWidthProperty().bind(paneImage.widthProperty());
 
-        citizenEnrollmentInfo=new CitizenEnrollmentInfo(personInfo.getSamisId(),normalizedPersonInfo.getPersonType().getCode(),fingerprintBase64Images,
+        citizenEnrollmentInfo=new CitizenEnrollmentInfo(personInfo.getSamisId(),normalizedPersonInfo.getPersonType().getCode(),combinedFingerprints,
                 missingFingerprints,facePhotoBase64,personInfo.getBirthDate(),personInfo.getGender(),capturedRightIrisBase64,capturedLeftIrisBase64);
-//		mobileNumber = dialingCode.getDialingCode() + "-" + mobileNumber;
-//
-//		visaApplicantInfo = new VisaApplicantInfo(null, null, firstName, secondName,
-//		                                          otherName, familyName, nationality, birthDate, passportNumber,
-//		                                          gender, visaType, issueDate, issuanceCountry, expirationDate,
-//		                                          birthPlace, passportType, mobileNumber, facePhotoBase64,
-//		                                          slapFingerprints, missingFingerprints);
 
         ivPersonPhoto.setImage(facePhoto);
         GuiUtils.attachImageDialog(Context.getCoreFxController(), ivPersonPhoto,
@@ -164,24 +130,13 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase 
 
         boolean arabic = Context.getGuiLanguage() == GuiLanguage.ARABIC;
         lblNationality.setText(arabic ? normalizedPersonInfo.getNationality().getDescriptionAR() : normalizedPersonInfo.getNationality().getDescriptionEN());
-        //lblBirthPlace.setText(arabic ? normalizedPersonInfo.getBirthPlace().getDescriptionAR() : birthPlace.getDescriptionEN());
         lblBirthPlace.setText(normalizedPersonInfo.getBirthPlace());
-//		lblIssuanceCountry.setText(arabic ? issuanceCountry.getDescriptionAR() : issuanceCountry.getDescriptionEN());
-//
+
         lblGender.setText(normalizedPersonInfo.getGender() == Gender.FEMALE ? resources.getString("label.female") :
                 resources.getString("label.male"));
 
         lblBirthDate.setText(AppUtils.formatHijriGregorianDate(AppUtils.gregorianDateToSeconds(normalizedPersonInfo.getBirthDate())));
-//		lblVisaType.setText(arabic ? visaType.getDescriptionAR() : visaType.getDescriptionEN());
-//		lblPassportNumber.setText(passportNumber);
 
-//		lblIssueDate.setText(AppUtils.formatHijriGregorianDate(AppUtils.gregorianDateToSeconds(issueDate)));
-//		lblExpirationDate.setText(AppUtils.formatHijriGregorianDate(
-//				AppUtils.gregorianDateToSeconds(expirationDate)));
-//
-//		lblPassportType.setText(arabic ? passportType.getDescriptionAR() : passportType.getDescriptionEN());
-//
-//		lblMobileNumber.setText("+" + mobileNumber);
 
         GuiUtils.attachFingerprintImages(fingerprintBase64Images, null, ivRightThumb, ivRightIndex,
                 ivRightMiddle, ivRightRing, ivRightLittle, ivLeftThumb, ivLeftIndex,
@@ -210,9 +165,6 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase 
     @Override
     public void onReturnFromWorkflow(boolean successfulResponse) {
         if (successfulResponse) {
-//			visaApplicantInfo.setApplicantId(visaApplicantEnrollmentResponse.getApplicantId());
-//			visaApplicantInfo.setEnrollmentDate(AppUtils.secondsToGregorianDateTime(
-//												visaApplicantEnrollmentResponse.getEnrollmentDate()));
             goNext();
         }
     }
