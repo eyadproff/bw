@@ -48,7 +48,7 @@ public class IrisCapturingFxController extends WizardStepFxControllerBase {
     @Output
     private String capturedLeftIrisBase64;
     @Output
-    private Boolean Skip = false;
+    private Boolean Skip ;
 
     @FXML
     private VBox paneControlsInnerContainer;
@@ -100,10 +100,11 @@ public class IrisCapturingFxController extends WizardStepFxControllerBase {
     private ImageView ivSkippedLeftIris;
     private CheckBox cbSkippedRightIris;
     private CheckBox cbSkippedLeftIris;
-    private int stepIndex;
+
 
     @Override
     protected void onAttachedToScene() {
+        Skip = false;
 
         DevicesRunnerGadgetPaneFxController deviceManagerGadgetPaneController =
                 Context.getCoreFxController().getDeviceManagerGadgetPaneController();
