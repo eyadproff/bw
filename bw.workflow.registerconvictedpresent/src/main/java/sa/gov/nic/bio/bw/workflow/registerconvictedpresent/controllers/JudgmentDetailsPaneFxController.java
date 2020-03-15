@@ -21,10 +21,13 @@ import sa.gov.nic.bio.bw.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.core.utils.FxmlFile;
 import sa.gov.nic.bio.bw.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.core.workflow.Output;
+import sa.gov.nic.bio.bw.workflow.commons.beans.CrimeCode;
 import sa.gov.nic.bio.bw.workflow.commons.beans.CrimeType;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.CrimeTypesLookup;
-import sa.gov.nic.bio.bw.workflow.commons.beans.CrimeCode;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -153,11 +156,21 @@ public class JudgmentDetailsPaneFxController extends WizardStepFxControllerBase
 		
 		Map<Integer, String> crimeEventTitles = crimeTypes.stream().collect(
 									Collectors.toMap(CrimeType::getEventCode, CrimeType::getEventDesc, (k1, k2) -> k1));
-		Map<Integer, String> crimeClassTitles = crimeTypes.stream().collect(
-									Collectors.toMap(CrimeType::getClassCode, CrimeType::getClassDesc, (k1, k2) -> k1));
+		Map<Integer, Map<Integer, String>> crimeClassTitles = crimeTypes.stream().collect(Collectors.groupingBy(CrimeType::getEventCode,
+                                                Collectors.toMap(CrimeType::getClassCode, CrimeType::getClassDesc, (k1, k2) -> k1)));
+		
 		crimeClasses = crimeTypes.stream().collect(Collectors.groupingBy(CrimeType::getEventCode,
 		                                                                 Collectors.mapping(CrimeType::getClassCode,
 		                                                                                    Collectors.toList())));
+		
+		try
+		{
+			Files.writeString(Path.of("C:/test/" + System.currentTimeMillis() + ".txt"), crimeClassTitles.toString());
+		}
+		catch(IOException e)
+		{
+			e.printStackTrace();
+		}
 		
 		List<Integer> crimeEventCodes = List.copyOf(crimeEventTitles.keySet());
 		
@@ -373,7 +386,7 @@ public class JudgmentDetailsPaneFxController extends WizardStepFxControllerBase
 	
 	private void initCrimeEventComboBox(ComboBox<ComboBoxItem<Integer>> cboCrimeEvent,
 	                                    ComboBox<ComboBoxItem<Integer>> cboCrimeClass,
-	                                    Map<Integer, String> crimeEventTitles, Map<Integer, String> crimeClassTitles)
+	                                    Map<Integer, String> crimeEventTitles, Map<Integer, Map<Integer, String>> crimeClassTitles)
 	{
 		cboCrimeEvent.getItems().forEach(item -> item.setText(crimeEventTitles.get(item.getItem())));
 		cboCrimeEvent.valueProperty().addListener((observable, oldValue, newValue) ->
@@ -387,10 +400,11 @@ public class JudgmentDetailsPaneFxController extends WizardStepFxControllerBase
 		    }
 		
 		    List<Integer> crimeClassCodes = crimeClasses.get(newValue.getItem());
-		    GuiUtils.addAutoCompletionSupportToComboBox(cboCrimeClass, crimeClassCodes,
+			System.out.println("crimeClassCodes22 = " + crimeClassCodes);
+			GuiUtils.addAutoCompletionSupportToComboBox(cboCrimeClass, crimeClassCodes,
 		                                                showingPropertyChangeListenerReference,
 		                                                textPropertyChangeListenerReference);
-			cboCrimeClass.getItems().forEach(item -> item.setText(crimeClassTitles.get(item.getItem())));
+			cboCrimeClass.getItems().forEach(item -> item.setText(crimeClassTitles.get(newValue.getItem()).get(item.getItem())));
 			cboCrimeClass.getSelectionModel().selectFirst();
 		
 		});

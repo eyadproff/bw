@@ -30,6 +30,15 @@ public class CrimeTypesLookup implements Callable<TaskResponse<?>>, AppLogger
 			else return taskResponse;
 			
 			Context.getUserSession().setAttribute(KEY, crimeTypes);
+			
+			//try
+			//{
+			//	Files.writeString(Path.of("C:\\test\\" + System.currentTimeMillis() + ".json"), crimeTypes.toString());
+			//}
+			//catch(IOException e)
+			//{
+			//	e.printStackTrace();
+			//}
 		}
 		
 		return TaskResponse.success();
