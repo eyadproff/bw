@@ -287,8 +287,8 @@ public class ShowReportPaneFxController extends WizardStepFxControllerBase
 			
 			Map<Integer, String> crimeEventTitles = crimeTypes.stream().collect(
 					Collectors.toMap(CrimeType::getEventCode, CrimeType::getEventDesc, (k1, k2) -> k1));
-			Map<Integer, String> crimeClassTitles = crimeTypes.stream().collect(
-					Collectors.toMap(CrimeType::getClassCode, CrimeType::getClassDesc, (k1, k2) -> k1));
+			Map<Integer, Map<Integer, String>> crimeClassTitles = crimeTypes.stream().collect(Collectors.groupingBy(CrimeType::getEventCode,
+			                                                                                                        Collectors.toMap(CrimeType::getClassCode, CrimeType::getClassDesc, (k1, k2) -> k1)));
 			
 			int counter = 0;
 			List<CrimeCode> crimeCodes = convictedReport.getCrimeCodes();
@@ -299,35 +299,35 @@ public class ShowReportPaneFxController extends WizardStepFxControllerBase
 					case 0:
 					{
 						lblCrimeClassification1.setText(crimeEventTitles.get(crimeCode.getCrimeEvent()) + ": " +
-								                                crimeClassTitles.get(crimeCode.getCrimeClass()));
+								                                crimeClassTitles.get(crimeCode.getCrimeEvent()).get(crimeCode.getCrimeClass()));
 						break;
 					}
 					case 1:
 					{
 						GuiUtils.showNode(lblCrimeClassification2, true);
 						lblCrimeClassification2.setText(crimeEventTitles.get(crimeCode.getCrimeEvent()) + ": " +
-								                                crimeClassTitles.get(crimeCode.getCrimeClass()));
+								                                crimeClassTitles.get(crimeCode.getCrimeEvent()).get(crimeCode.getCrimeClass()));
 						break;
 					}
 					case 2:
 					{
 						GuiUtils.showNode(lblCrimeClassification3, true);
 						lblCrimeClassification3.setText(crimeEventTitles.get(crimeCode.getCrimeEvent()) + ": " +
-								                                crimeClassTitles.get(crimeCode.getCrimeClass()));
+								                                crimeClassTitles.get(crimeCode.getCrimeEvent()).get(crimeCode.getCrimeClass()));
 						break;
 					}
 					case 3:
 					{
 						GuiUtils.showNode(lblCrimeClassification4, true);
 						lblCrimeClassification4.setText(crimeEventTitles.get(crimeCode.getCrimeEvent()) + ": " +
-								                                crimeClassTitles.get(crimeCode.getCrimeClass()));
+								                                crimeClassTitles.get(crimeCode.getCrimeEvent()).get(crimeCode.getCrimeClass()));
 						break;
 					}
 					case 4:
 					{
 						GuiUtils.showNode(lblCrimeClassification5, true);
 						lblCrimeClassification5.setText(crimeEventTitles.get(crimeCode.getCrimeEvent()) + ": " +
-								                                crimeClassTitles.get(crimeCode.getCrimeClass()));
+								                                crimeClassTitles.get(crimeCode.getCrimeEvent()).get(crimeCode.getCrimeClass()));
 						break;
 					}
 				}

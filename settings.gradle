@@ -27,6 +27,6 @@ include 'bw.workflow.criminaltransactions'
 include 'bw.workflow.registeriris'
 include 'bw.workflow.irisinquiry'
 include 'bw.workflow.civilfingerprintsinquiry'
+include 'bw.workflow.latentreversesearch'
 include 'bw.workflow.biometricsexception'
 include 'bw.workflow.miscreantfingerprintsenrollment'
-

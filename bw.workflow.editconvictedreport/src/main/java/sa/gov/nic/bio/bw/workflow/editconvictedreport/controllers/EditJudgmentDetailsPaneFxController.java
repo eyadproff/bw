@@ -207,8 +207,8 @@ public class EditJudgmentDetailsPaneFxController extends WizardStepFxControllerB
 		
 		Map<Integer, String> crimeEventTitles = crimeTypes.stream().collect(
 									Collectors.toMap(CrimeType::getEventCode, CrimeType::getEventDesc, (k1, k2) -> k1));
-		Map<Integer, String> crimeClassTitles = crimeTypes.stream().collect(
-									Collectors.toMap(CrimeType::getClassCode, CrimeType::getClassDesc, (k1, k2) -> k1));
+		Map<Integer, Map<Integer, String>> crimeClassTitles = crimeTypes.stream().collect(Collectors.groupingBy(CrimeType::getEventCode,
+		                                                                                                        Collectors.toMap(CrimeType::getClassCode, CrimeType::getClassDesc, (k1, k2) -> k1)));
 		crimeClasses = crimeTypes.stream().collect(Collectors.groupingBy(CrimeType::getEventCode,
 		                                                                 Collectors.mapping(CrimeType::getClassCode,
 		                                                                                    Collectors.toList())));
@@ -493,7 +493,7 @@ public class EditJudgmentDetailsPaneFxController extends WizardStepFxControllerB
 		for(CrimeCode oldCrime : oldCrimes)
 		{
 			String crimeEvent = crimeEventTitles.get(oldCrime.getCrimeEvent());
-			String crimeClass = crimeClassTitles.get(oldCrime.getCrimeClass());
+			String crimeClass = crimeClassTitles.get(oldCrime.getCrimeEvent()).get(oldCrime.getCrimeClass());
 			Label label = new Label(crimeEvent + " - " + crimeClass);
 			label.getStyleClass().add("old-value");
 			paneOldCrimes.getChildren().add(label);
@@ -611,7 +611,7 @@ public class EditJudgmentDetailsPaneFxController extends WizardStepFxControllerB
 	
 	private void initCrimeEventComboBox(ComboBox<ComboBoxItem<Integer>> cboCrimeEvent,
 	                                    ComboBox<ComboBoxItem<Integer>> cboCrimeClass,
-	                                    Map<Integer, String> crimeEventTitles, Map<Integer, String> crimeClassTitles)
+	                                    Map<Integer, String> crimeEventTitles, Map<Integer, Map<Integer, String>> crimeClassTitles)
 	{
 		cboCrimeEvent.getItems().forEach(item -> item.setText(crimeEventTitles.get(item.getItem())));
 		cboCrimeEvent.valueProperty().addListener((observable, oldValue, newValue) ->
@@ -628,7 +628,7 @@ public class EditJudgmentDetailsPaneFxController extends WizardStepFxControllerB
 		    GuiUtils.addAutoCompletionSupportToComboBox(cboCrimeClass, crimeClassCodes,
 		                                                showingPropertyChangeListenerReference,
 		                                                textPropertyChangeListenerReference);
-			cboCrimeClass.getItems().forEach(item -> item.setText(crimeClassTitles.get(item.getItem())));
+			cboCrimeClass.getItems().forEach(item -> item.setText(crimeClassTitles.get(newValue.getItem()).get(item.getItem())));
 			cboCrimeClass.getSelectionModel().selectFirst();
 		
 		});

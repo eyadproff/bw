@@ -282,8 +282,8 @@ public class BuildConvictedReportTask extends Task<JasperPrint>
 		
 		Map<Integer, String> crimeEventTitles = crimeTypes.stream().collect(
 									Collectors.toMap(CrimeType::getEventCode, CrimeType::getEventDesc, (k1, k2) -> k1));
-		Map<Integer, String> crimeClassTitles = crimeTypes.stream().collect(
-									Collectors.toMap(CrimeType::getClassCode, CrimeType::getClassDesc, (k1, k2) -> k1));
+		Map<Integer, Map<Integer, String>> crimeClassTitles = crimeTypes.stream().collect(Collectors.groupingBy(CrimeType::getEventCode,
+		                                                                                                        Collectors.toMap(CrimeType::getClassCode, CrimeType::getClassDesc, (k1, k2) -> k1)));
 		
 		int counter = 0;
 		List<CrimeCode> crimeCodes = convictedReport.getCrimeCodes();
@@ -291,7 +291,7 @@ public class BuildConvictedReportTask extends Task<JasperPrint>
 		{
 			//String criminalClass = crimeEventTitles.get(crimeCode.getCrimeEvent()) +
 			//					   ": " + crimeClassTitles.get(crimeCode.getCrimeClass());
-			String criminalClass = crimeClassTitles.get(crimeCode.getCrimeClass()); // as requested
+			String criminalClass = crimeClassTitles.get(crimeCode.getCrimeEvent()).get(crimeCode.getCrimeClass()); // as requested
 			
 			switch(counter++)
 			{

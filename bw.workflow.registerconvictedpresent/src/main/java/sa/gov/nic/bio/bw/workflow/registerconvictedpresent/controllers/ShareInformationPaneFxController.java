@@ -215,8 +215,8 @@ public class ShareInformationPaneFxController extends WizardStepFxControllerBase
 		
 		Map<Integer, String> crimeEventTitles = crimeTypes.stream().collect(
 								Collectors.toMap(CrimeType::getEventCode, CrimeType::getEventDesc, (k1, k2) -> k1));
-		Map<Integer, String> crimeClassTitles = crimeTypes.stream().collect(
-								Collectors.toMap(CrimeType::getClassCode, CrimeType::getClassDesc, (k1, k2) -> k1));
+		Map<Integer, Map<Integer, String>> crimeClassTitles = crimeTypes.stream().collect(Collectors.groupingBy(CrimeType::getEventCode,
+		                                                                                                        Collectors.toMap(CrimeType::getClassCode, CrimeType::getClassDesc, (k1, k2) -> k1)));
 		
 		// fill data
 		for(int i = 0; i < crimesWithShares.size(); i++)
@@ -290,13 +290,13 @@ public class ShareInformationPaneFxController extends WizardStepFxControllerBase
 	                             TableColumn<BiometricsExchangeDecision, ImageView> tcSystemDecision,
 	                             TableColumn<BiometricsExchangeDecision, CheckBox> tcOperatorDecision,
 	                             CrimeCode crimeCode, Map<Integer, String> crimeEventTitles,
-	                             Map<Integer, String> crimeClassTitles,
+	                             Map<Integer, Map<Integer, String>> crimeClassTitles,
 	                             Map<Integer, BiometricsExchangeParty> biometricsExchangePartiesMap,
 	                             boolean disableSharing)
 	{
 		GuiUtils.showNode(tpCrimeClassification, true);
 		lblCrimeClassification.setText(crimeEventTitles.get(crimeCode.getCrimeEvent()) + ": " +
-                                       crimeClassTitles.get(crimeCode.getCrimeClass()));
+                                       crimeClassTitles.get(crimeCode.getCrimeEvent()).get(crimeCode.getCrimeClass()));
 		
 		GuiUtils.initSequenceTableColumn(tcSequence);
 		tcSequence.setCellValueFactory(p -> new ReadOnlyObjectWrapper<>(p.getValue()));
