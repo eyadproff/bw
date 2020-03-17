@@ -11,6 +11,12 @@ VERSION SCHEMA: vYYYY.MM.#SEQ
 
 ---
 
+## v2020.03.3
+
+- NEW: Latent Reverse Search Workflow.
+
+---
+
 ## v2020.03.2
 
 - NEW: Add new NIC logo.

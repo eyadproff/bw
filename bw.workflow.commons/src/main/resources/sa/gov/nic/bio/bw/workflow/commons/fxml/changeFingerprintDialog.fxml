@@ -26,7 +26,7 @@
         <DialogPane prefWidth="500.0" prefHeight="420.0" headerText="%changeFingerprint.message" stylesheets="@/sa/gov/nic/bio/bw/core/css/style.css,@../css/style.css">
             <graphic>
                 <ImageView>
-                    <Image url="@../images/icon_change_fingerprint.png"/>
+                    <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/icon_change_fingerprint.png"/>
                 </ImageView>
             </graphic>
             <content>

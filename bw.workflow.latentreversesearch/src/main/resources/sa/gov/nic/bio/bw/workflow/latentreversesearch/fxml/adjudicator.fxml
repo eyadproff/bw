@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.ButtonType?>
+<?import javafx.scene.control.Dialog?>
+<?import javafx.scene.control.DialogPane?>
+<?import javafx.scene.web.WebView?>
+<Dialog xmlns="http://javafx.com/javafx"
+        xmlns:fx="http://javafx.com/fxml"
+        fx:id="dialog" title="%dialog.title.fingerprintCapturingWindow"
+        fx:controller="sa.gov.nic.bio.bw.workflow.latentreversesearch.controllers.AdjudicatorDialogFxController">
+    <dialogPane>
+        <DialogPane prefWidth="250.0" prefHeight="350.0" headerText="%captureFingerprint.message" stylesheets="@/sa/gov/nic/bio/bw/core/css/style.css,@../css/style.css">
+            <content>
+                <WebView fx:id="wvAdjudicator"/>
+            </content>
+            <ButtonType fx:id="btCancel" text="%button.cancel"/>
+        </DialogPane>
+    </dialogPane>
+</Dialog>
