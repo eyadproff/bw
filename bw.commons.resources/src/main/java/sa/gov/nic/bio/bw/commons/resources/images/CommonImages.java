@@ -13,6 +13,7 @@ public enum CommonImages implements JavaResource
 	ICON_WARNING_12PX("icon_warning_12px.png"),
 	ICON_WARNING_16PX("icon_warning_16px.png"),
 	ICON_WARNING_32PX("icon_warning_32px.png"),
+	ICON_ERROR_12PX("icon_error_12px.png"),
 	ICON_ERROR_16PX("icon_error_16px.png"),
 	ICON_ERROR_32PX("icon_error_32px.png"),
 	ICON_GREEN_STATUS("icon_green_status.png"),

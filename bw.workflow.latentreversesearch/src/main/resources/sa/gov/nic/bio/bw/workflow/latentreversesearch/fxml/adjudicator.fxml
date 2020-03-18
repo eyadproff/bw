@@ -1,19 +1,152 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.ButtonType?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Dialog?>
 <?import javafx.scene.control.DialogPane?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressIndicator?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.web.WebView?>
+<?import sa.gov.nic.bio.bw.workflow.commons.ui.PTableColumn?>
 <Dialog xmlns="http://javafx.com/javafx"
         xmlns:fx="http://javafx.com/fxml"
         fx:id="dialog" title="%dialog.title.fingerprintCapturingWindow"
         fx:controller="sa.gov.nic.bio.bw.workflow.latentreversesearch.controllers.AdjudicatorDialogFxController">
     <dialogPane>
-        <DialogPane prefWidth="250.0" prefHeight="350.0" headerText="%captureFingerprint.message" stylesheets="@/sa/gov/nic/bio/bw/core/css/style.css,@../css/style.css">
+        <DialogPane prefWidth="850.0" prefHeight="650.0" stylesheets="@/sa/gov/nic/bio/bw/core/css/style.css,@../css/style.css">
             <content>
-                <WebView fx:id="wvAdjudicator"/>
+                <BorderPane>
+                    <top>
+                        <BorderPane fx:id="paneTop">
+                            <top>
+                                <TitledPane text="%label.metaData" collapsible="false" focusTraversable="false" maxWidth="Infinity" maxHeight="150.0">
+                                    <VBox spacing="5.0">
+                                        <HBox spacing="20.0" alignment="CENTER_LEFT">
+                                            <HBox spacing="5.0" alignment="CENTER_LEFT">
+                                                <Label text="%label.transactionNumber"/>
+                                                <TextField fx:id="txtTransactionNumber" editable="false"/>
+                                            </HBox>
+                                            <HBox spacing="5.0" alignment="CENTER_LEFT">
+                                                <Label text="%label.status"/>
+                                                <TextField fx:id="txtStatus" editable="false"/>
+                                            </HBox>
+                                        </HBox>
+                                        <HBox spacing="5.0" alignment="CENTER_LEFT">
+                                            <HBox alignment="CENTER_LEFT">
+                                                <padding>
+                                                    <Insets top="3.0"/>
+                                                </padding>
+                                                <ImageView fx:id="ivLatentAssociationSuccessIcon">
+                                                    <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/icon_success_12px.png"/>
+                                                </ImageView>
+                                                <ImageView fx:id="ivLatentAssociationWarningIcon" managed="false" visible="false">
+                                                    <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/icon_warning_12px.png"/>
+                                                </ImageView>
+                                            </HBox>
+                                            <Label text="%label.civilBiometricsId"/>
+                                            <TextField fx:id="txtCivilBiometricsId" editable="false"/>
+                                            <HBox fx:id="paneLatentAssociated" spacing="5.0" alignment="CENTER_LEFT">
+                                                <Label text="%label.associatedWithLatent"/>
+                                                <TextField fx:id="txtAssociatedLatentNumber" editable="false"/>
+                                            </HBox>
+                                            <HBox fx:id="paneLatentNotAssociated" managed="false" visible="false" alignment="CENTER_LEFT">
+                                                <Label text="%label.notAssociatedWithLatent"/>
+                                            </HBox>
+                                        </HBox>
+                                    </VBox>
+                                </TitledPane>
+                            </top>
+                            <center>
+                                <SplitPane dividerPositions="0.3">
+                                    <TitledPane text="%label.latentList" collapsible="false" focusTraversable="false">
+                                        <TableView fx:id="tvLatentList" maxHeight="200.0">
+                                            <columnResizePolicy>
+                                                <TableView fx:constant="UNCONSTRAINED_RESIZE_POLICY"/>
+                                            </columnResizePolicy>
+                                            <placeholder>
+                                                <Label text="%table.placeholder.noLatent"/>
+                                            </placeholder>
+                                            <columns>
+                                                <PTableColumn fx:id="tcLatentNumber" text="%table.column.latentNumber" reorderable="false" percentageWidth="0.8"/>
+                                                <PTableColumn fx:id="tcHitScore" text="%table.column.hitScore" reorderable="false" percentageWidth="0.2"/>
+                                            </columns>
+                                        </TableView>
+                                    </TitledPane>
+                                    <TitledPane text="%label.decisionsHistory" collapsible="false" focusTraversable="false">
+                                        <TableView fx:id="tvDecisionsHistory" maxHeight="200.0">
+                                            <columnResizePolicy>
+                                                <TableView fx:constant="UNCONSTRAINED_RESIZE_POLICY"/>
+                                            </columnResizePolicy>
+                                            <placeholder>
+                                                <Label text="%table.placeholder.noHistory"/>
+                                            </placeholder>
+                                            <columns>
+                                                <PTableColumn fx:id="tcDecisionSequence" text="#" reorderable="false" percentageWidth="0.05"/>
+                                                <PTableColumn fx:id="tcDecision" text="%table.column.decision" reorderable="false" percentageWidth="0.15"/>
+                                                <PTableColumn fx:id="tcDecisionLatentNumber" text="%table.column.latentNumber" reorderable="false" percentageWidth="0.2"/>
+                                                <PTableColumn fx:id="tcDecisionFingerType" text="%table.column.decisionFingerType" reorderable="false" percentageWidth="0.2"/>
+                                                <PTableColumn fx:id="tcOperatorId" text="%table.column.operatorId" reorderable="false" percentageWidth="0.2"/>
+                                                <PTableColumn fx:id="tcDecisionDateTime" text="%table.column.decisionDateTime" reorderable="false" percentageWidth="0.2"/>
+                                            </columns>
+                                        </TableView>
+                                    </TitledPane>
+                                </SplitPane>
+                            </center>
+                        </BorderPane>
+                    </top>
+                    <center>
+                        <VBox alignment="CENTER">
+                            <padding>
+                                <Insets top="5.0"/>
+                            </padding>
+                            <VBox fx:id="paneLoadingInProgress" alignment="CENTER" managed="false" visible="false">
+                                <ProgressIndicator prefHeight="25.0" prefWidth="25.0"/>
+                                <Label text="%label.loading"/>
+                            </VBox>
+                            <VBox fx:id="paneLoadingError" alignment="CENTER" managed="false" visible="false">
+                                <ImageView>
+                                    <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/icon_error_32px.png"/>
+                                </ImageView>
+                                <Label text="%label.failedToLoadLatentHitRecord"/>
+                            </VBox>
+                            <BorderPane fx:id="paneAdjudicator">
+                                <top>
+                                    <HBox spacing="5.0" alignment="CENTER_LEFT">
+                                        <padding>
+                                            <Insets top="10.0" bottom="5.0"/>
+                                        </padding>
+                                        <Label text="%label.selectFinger"/>
+                                        <ComboBox fx:id="cboSelectedFinger"/>
+                                    </HBox>
+                                </top>
+                                <center>
+                                    <WebView fx:id="wvAdjudicator"/>
+                                </center>
+                            </BorderPane>
+                        </VBox>
+                    </center>
+                    <bottom>
+                        <HBox fx:id="paneButtons" alignment="CENTER" spacing="10" HBox.hgrow="ALWAYS">
+                            <padding>
+                                <Insets top="10.0"/>
+                            </padding>
+                            <ProgressIndicator fx:id="piSubmitting" prefHeight="25.0" prefWidth="25.0" managed="false" visible="false"/>
+                            <Button fx:id="btnLinkLatent" text="%button.linkLatent" disable="true"/>
+                            <Button fx:id="btnFinishWithoutLinkingLatent" text="%button.finishWithoutLinkingLatent" disable="true"/>
+                        </HBox>
+                    </bottom>
+                </BorderPane>
             </content>
-            <ButtonType fx:id="btCancel" text="%button.cancel"/>
         </DialogPane>
     </dialogPane>
 </Dialog>

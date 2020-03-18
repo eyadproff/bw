@@ -182,8 +182,8 @@ public class LatentReverseSearchPaneFxController extends ContentFxControllerBase
 		GuiUtils.applyValidatorToTextField(txtReferenceNumber, "\\d*", "[^\\d]", 18);
 		GuiUtils.applyValidatorToTextField(txtLocationId, "\\d*", "[^\\d]", 4);
 		
-		btnOpenLatentHitList.disableProperty().bind(Bindings.size(tvLatentHits.getSelectionModel()
-		                                                                      .getSelectedItems()).isEqualTo(0));
+		//btnOpenLatentHitList.disableProperty().bind(Bindings.size(tvLatentHits.getSelectionModel()
+		//                                                                      .getSelectedItems()).isEqualTo(0));
 		
 		EventHandler<? super KeyEvent> keyReleasedEventHandler = keyEvent ->
 		{
@@ -386,7 +386,7 @@ public class LatentReverseSearchPaneFxController extends ContentFxControllerBase
 			if(controller != null)
 			{
 				var selectedItem = tvLatentHits.getSelectionModel().getSelectedItem();
-				controller.setTransactionNumber(selectedItem.getTransactionNumber());
+				//controller.setTransactionNumber(selectedItem.getTransactionNumber());
 				controller.show();
 			}
 		}
