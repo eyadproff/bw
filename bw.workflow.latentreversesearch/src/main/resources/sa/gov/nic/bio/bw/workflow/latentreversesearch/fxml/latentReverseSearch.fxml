@@ -39,11 +39,17 @@
                             <HBox spacing="5.0" alignment="CENTER_LEFT">
                                 <RadioButton fx:id="rdoLatestNew" toggleGroup="$toggleGroup1" selected="true" text="%radio.latestNewCases"/>
                             </HBox>
-                            <RadioButton fx:id="rdoOtherSearchCriteria" toggleGroup="$toggleGroup1" text="%radio.otherSearchCriteria">
-                                <padding>
-                                    <Insets top="10.0" bottom="5.0"/>
-                                </padding>
-                            </RadioButton>
+                            <HBox spacing="5.0" alignment="CENTER_LEFT">
+                                <RadioButton fx:id="rdoLockedByOperator" toggleGroup="$toggleGroup1" text="%radio.inProgressCasesByOperatorId"/>
+                                <TextField fx:id="txtOperatorId"/>
+                            </HBox>
+                            <HBox spacing="5.0" alignment="CENTER_LEFT">
+                                <RadioButton fx:id="rdoOtherSearchCriteria" toggleGroup="$toggleGroup1" text="%radio.otherSearchCriteria">
+                                    <padding>
+                                        <Insets bottom="5.0"/>
+                                    </padding>
+                                </RadioButton>
+                            </HBox>
                             <GridPane hgap="5.0" vgap="5.0">
                                 <padding>
                                     <Insets left="20.0"/>
@@ -153,7 +159,7 @@
             <padding>
                 <Insets topRightBottomLeft="10"/>
             </padding>
-            <Button fx:id="btnOpenLatentHitList" text="%button.openLatentHitList" onAction="#onOpenLatentHitListButtonClicked"/>
+            <Button fx:id="btnOpenLatentHitsWindow" text="%button.openLatentHitsWindow" onAction="#onOpenLatentHitsWindowButtonClicked"/>
         </HBox>
     </bottom>
 </BorderPane>

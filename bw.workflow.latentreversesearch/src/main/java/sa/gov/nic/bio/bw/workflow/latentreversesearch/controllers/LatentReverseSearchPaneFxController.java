@@ -51,6 +51,7 @@ public class LatentReverseSearchPaneFxController extends ContentFxControllerBase
 {
 	@Input private Integer resultsTotalCount;
 	@Input private List<LatentHit> latentHits;
+	@Output private Long operatorId;
 	@Output private Long transactionNumber;
 	@Output private Long civilBiometricsId;
 	@Output private Long personId;
@@ -72,6 +73,7 @@ public class LatentReverseSearchPaneFxController extends ContentFxControllerBase
 	@FXML private CheckBox cbStatus;
 	@FXML private CheckBox cbEntryDate;
 	@FXML private ComboBox<ComboBoxItem<LatentHitProcessingStatus>> cboStatus;
+	@FXML private TextField txtOperatorId;
 	@FXML private TextField txtTransactionNumber;
 	@FXML private TextField txtCivilBiometricsId;
 	@FXML private TextField txtPersonId;
@@ -80,6 +82,7 @@ public class LatentReverseSearchPaneFxController extends ContentFxControllerBase
 	@FXML private DatePicker dpEntryDateFrom;
 	@FXML private DatePicker dpEntryDateTo;
 	@FXML private RadioButton rdoLatestNew;
+	@FXML private RadioButton rdoLockedByOperator;
 	@FXML private RadioButton rdoOtherSearchCriteria;
 	@FXML private RadioButton rdoEntryDateFromUseHijri;
 	@FXML private RadioButton rdoEntryDateFromGregorian;
@@ -98,7 +101,7 @@ public class LatentReverseSearchPaneFxController extends ContentFxControllerBase
 	@FXML private ProgressIndicator piCandidateLatentsPlaceHolder;
 	@FXML private Button btnInquiry;
 	@FXML private Button btnClearFields;
-	@FXML private Button btnOpenLatentHitList;
+	@FXML private Button btnOpenLatentHitsWindow;
 	
 	private Node paginationControlBox;
 	private boolean tableInitialized = false;
@@ -130,6 +133,7 @@ public class LatentReverseSearchPaneFxController extends ContentFxControllerBase
 		    }
 		});
 		
+		txtOperatorId.disableProperty().bind(rdoLockedByOperator.selectedProperty().not());
 		txtTransactionNumber.disableProperty().bind(cbTransactionNumber.selectedProperty().not());
 		txtCivilBiometricsId.disableProperty().bind(cbCivilBiometricsId.selectedProperty().not());
 		txtPersonId.disableProperty().bind(cbPersonId.selectedProperty().not());
@@ -139,6 +143,7 @@ public class LatentReverseSearchPaneFxController extends ContentFxControllerBase
 		dpEntryDateFrom.disableProperty().bind(cbEntryDate.selectedProperty().not());
 		dpEntryDateTo.disableProperty().bind(cbEntryDate.selectedProperty().not());
 		
+		BooleanBinding operatorIdBinding = createTextFieldNotCompleteBooleanBinding(txtOperatorId);
 		BooleanBinding transactionNumberBinding = createTextFieldNotCompleteBooleanBinding(txtTransactionNumber);
 		BooleanBinding civilBiometricsIdBinding = createTextFieldNotCompleteBooleanBinding(txtCivilBiometricsId);
 		BooleanBinding personIdBinding = createTextFieldNotCompleteBooleanBinding(txtPersonId);
@@ -152,9 +157,9 @@ public class LatentReverseSearchPaneFxController extends ContentFxControllerBase
 		                                                 .and(txtLocationId.disableProperty()).and(cboStatus.disableProperty())
 		                                                 .and(dpEntryDateFrom.disableProperty()).and(dpEntryDateTo.disableProperty());
 		
-		btnInquiry.disableProperty().bind(rdoOtherSearchCriteria.selectedProperty().and(transactionNumberBinding.or(civilBiometricsIdBinding)
-		                                       .or(personIdBinding).or(referenceNumberBinding).or(locationIdBinding).or(statusBinding)
-                                               .or(entryDateFromBinding).or(entryDateToBinding).or(allDisabled)).or(disableInquiryButtonProperty));
+		btnInquiry.disableProperty().bind(rdoLockedByOperator.selectedProperty().and(operatorIdBinding).or(rdoOtherSearchCriteria.selectedProperty().and(transactionNumberBinding
+                                                                .or(civilBiometricsIdBinding).or(personIdBinding).or(referenceNumberBinding).or(locationIdBinding)
+                                                                .or(statusBinding).or(entryDateFromBinding).or(entryDateToBinding).or(allDisabled)).or(disableInquiryButtonProperty)));
 		
 		GuiUtils.initDatePicker(rdoEntryDateFromUseHijri, dpEntryDateFrom, null);
 		GuiUtils.initDatePicker(rdoEntryDateToUseHijri, dpEntryDateTo, null);
@@ -174,26 +179,25 @@ public class LatentReverseSearchPaneFxController extends ContentFxControllerBase
 			if(event.getCode() == KeyCode.RIGHT || event.getCode() == KeyCode.LEFT) event.consume();
 		});
 		
-		GuiUtils.applyValidatorToTextField(txtTransactionNumber, "\\d*", "[^\\d]",
-		                                   10);
-		GuiUtils.applyValidatorToTextField(txtCivilBiometricsId, "\\d*", "[^\\d]",
-		                                   10);
+		GuiUtils.applyValidatorToTextField(txtOperatorId, "\\d*", "[^\\d]", 10);
+		GuiUtils.applyValidatorToTextField(txtTransactionNumber, "\\d*", "[^\\d]", 10);
+		GuiUtils.applyValidatorToTextField(txtCivilBiometricsId, "\\d*", "[^\\d]", 10);
 		GuiUtils.applyValidatorToTextField(txtPersonId, "\\d*", "[^\\d]", 10);
 		GuiUtils.applyValidatorToTextField(txtReferenceNumber, "\\d*", "[^\\d]", 18);
 		GuiUtils.applyValidatorToTextField(txtLocationId, "\\d*", "[^\\d]", 4);
 		
-		//btnOpenLatentHitList.disableProperty().bind(Bindings.size(tvLatentHits.getSelectionModel()
-		//                                                                      .getSelectedItems()).isEqualTo(0));
+		btnOpenLatentHitsWindow.disableProperty().bind(Bindings.size(tvLatentHits.getSelectionModel()
+		                                                                      .getSelectedItems()).isEqualTo(0));
 		
 		EventHandler<? super KeyEvent> keyReleasedEventHandler = keyEvent ->
 		{
-			if(keyEvent.getCode() == KeyCode.ENTER) btnOpenLatentHitList.fire();
+			if(keyEvent.getCode() == KeyCode.ENTER) btnOpenLatentHitsWindow.fire();
 		};
 		EventHandler<? super MouseEvent> mouseEventHandler = mouseEvent ->
 		{
 			if(mouseEvent.getButton().equals(MouseButton.PRIMARY) && mouseEvent.getClickCount() == 2)
 			{
-				btnOpenLatentHitList.fire();
+				btnOpenLatentHitsWindow.fire();
 			}
 		};
 		
@@ -337,7 +341,12 @@ public class LatentReverseSearchPaneFxController extends ContentFxControllerBase
 		entryDateFrom = null;
 		entryDateTo = null;
 		
-		if(!rdoLatestNew.isSelected())
+		if(rdoLockedByOperator.isSelected())
+		{
+			operatorId = Long.parseLong(txtOperatorId.getText());
+			status = LatentHitProcessingStatus.IN_PROGRESS;
+		}
+		else if(rdoOtherSearchCriteria.isSelected())
 		{
 			if(!txtTransactionNumber.isDisabled()) transactionNumber = Long.parseLong(txtTransactionNumber.getText());
 			if(!txtCivilBiometricsId.isDisabled()) civilBiometricsId = Long.parseLong(txtCivilBiometricsId.getText());
@@ -364,6 +373,7 @@ public class LatentReverseSearchPaneFxController extends ContentFxControllerBase
 	@FXML
 	private void onClearFieldsButtonClicked(ActionEvent actionEvent)
 	{
+		txtOperatorId.clear();
 		txtTransactionNumber.clear();
 		txtCivilBiometricsId.clear();
 		txtPersonId.clear();
@@ -374,7 +384,7 @@ public class LatentReverseSearchPaneFxController extends ContentFxControllerBase
 	}
 	
 	@FXML
-	private void onOpenLatentHitListButtonClicked(ActionEvent actionEvent)
+	private void onOpenLatentHitsWindowButtonClicked(ActionEvent actionEvent)
 	{
 		hideNotification();
 		
@@ -386,7 +396,8 @@ public class LatentReverseSearchPaneFxController extends ContentFxControllerBase
 			if(controller != null)
 			{
 				var selectedItem = tvLatentHits.getSelectionModel().getSelectedItem();
-				//controller.setTransactionNumber(selectedItem.getTransactionNumber());
+				controller.setTransactionNumber(selectedItem.getTransactionNumber());
+				controller.setCivilBiometricsId(selectedItem.getCivilBiometricsId());
 				controller.show();
 			}
 		}
