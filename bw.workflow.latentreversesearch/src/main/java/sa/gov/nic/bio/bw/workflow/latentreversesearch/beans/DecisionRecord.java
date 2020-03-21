@@ -1,6 +1,8 @@
 package sa.gov.nic.bio.bw.workflow.latentreversesearch.beans;
 
-public class DecisionRecord
+import sa.gov.nic.bio.bw.core.beans.JavaBean;
+
+public class DecisionRecord extends JavaBean
 {
 	private Decision decision;
 	private String latentNumber;

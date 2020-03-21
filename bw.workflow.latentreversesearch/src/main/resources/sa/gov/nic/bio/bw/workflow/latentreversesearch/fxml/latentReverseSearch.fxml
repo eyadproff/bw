@@ -159,6 +159,7 @@
             <padding>
                 <Insets topRightBottomLeft="10"/>
             </padding>
+            <ProgressIndicator fx:id="piSubmitting" prefHeight="25.0" prefWidth="25.0" managed="false" visible="false"/>
             <Button fx:id="btnOpenLatentHitsWindow" text="%button.openLatentHitsWindow" onAction="#onOpenLatentHitsWindowButtonClicked"/>
         </HBox>
     </bottom>

@@ -17,12 +17,13 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.web.WebView?>
+<?import sa.gov.nic.bio.bw.workflow.commons.ui.ImageViewPane?>
 <?import sa.gov.nic.bio.bw.workflow.commons.ui.PTableColumn?>
+<?import javafx.scene.layout.StackPane?>
 <Dialog xmlns="http://javafx.com/javafx"
         xmlns:fx="http://javafx.com/fxml"
         fx:id="dialog" title="%dialog.title.latentHitsWindow"
-        fx:controller="sa.gov.nic.bio.bw.workflow.latentreversesearch.controllers.AdjudicatorDialogFxController">
+        fx:controller="sa.gov.nic.bio.bw.workflow.latentreversesearch.controllers.LatentHitsDialogFxController">
     <dialogPane>
         <DialogPane prefWidth="850.0" prefHeight="650.0" stylesheets="@/sa/gov/nic/bio/bw/core/css/style.css,@../css/style.css">
             <content>
@@ -127,7 +128,7 @@
                                 </ImageView>
                                 <Label text="%label.failedToLoadLatentHitRecord"/>
                             </VBox>
-                            <BorderPane fx:id="paneAdjudicator" managed="false" visible="false">
+                            <BorderPane fx:id="paneAdjudicator" managed="false" visible="false" VBox.vgrow="ALWAYS">
                                 <top>
                                     <HBox spacing="5.0" alignment="CENTER_LEFT">
                                         <padding>
@@ -138,15 +139,34 @@
                                     </HBox>
                                 </top>
                                 <center>
-                                    <TitledPane fx:id="tpVisualVerification" text="%label.visualVerification" collapsible="false" focusTraversable="false">
+                                    <TitledPane fx:id="tpVisualVerification" text="%label.visualVerification" collapsible="false" focusTraversable="false" maxHeight="Infinity" maxWidth="Infinity">
                                         <graphic>
-                                            <Button fx:id="btnVisualVerificationFullScreen" text="%button.fullScreen" focusTraversable="false">
+                                            <Button fx:id="btnOpenAdjudicator" text="%button.openAdjudicator" focusTraversable="false" onAction="#onOpenAdjudicatorButtonClicked">
                                                 <padding>
                                                     <Insets top="1.0" bottom="3.0" right="5.0" left="5.0"/>
                                                 </padding>
                                             </Button>
                                         </graphic>
-                                        <WebView fx:id="wvAdjudicator"/>
+                                        <SplitPane dividerPositions="0.5">
+                                            <TitledPane text="%label.latentImage" collapsible="false" focusTraversable="false" maxHeight="Infinity">
+                                                <StackPane>
+                                                    <ImageViewPane>
+                                                        <imageView>
+                                                            <ImageView fx:id="ivLatentImage" preserveRatio="true"/>
+                                                        </imageView>
+                                                    </ImageViewPane>
+                                                </StackPane>
+                                            </TitledPane>
+                                            <TitledPane text="%label.fingerprintImage" collapsible="false" focusTraversable="false" maxHeight="Infinity">
+                                                <StackPane>
+                                                    <ImageViewPane>
+                                                        <imageView>
+                                                            <ImageView fx:id="ivFingerprintImage" preserveRatio="true"/>
+                                                        </imageView>
+                                                    </ImageViewPane>
+                                                </StackPane>
+                                            </TitledPane>
+                                        </SplitPane>
                                     </TitledPane>
                                 </center>
                             </BorderPane>
@@ -157,10 +177,9 @@
                             <padding>
                                 <Insets top="10.0"/>
                             </padding>
-                            <ProgressIndicator fx:id="piSubmitting" prefHeight="25.0" prefWidth="25.0" managed="false" visible="false"/>
-                            <Button fx:id="btnLinkLatent" text="%button.linkLatent" disable="true"/>
-                            <Button fx:id="btnFinishWithoutLinkingLatent" text="%button.finishWithoutLinkingLatent"/>
-                            <Button fx:id="btnViewWithoutAction" text="%button.closeWithoutAction"/>
+                            <Button fx:id="btnLinkLatent" text="%button.linkLatent" disable="true" onAction="#onLinkLatentButtonClicked"/>
+                            <Button fx:id="btnFinishWithoutLinkingLatent" text="%button.finishWithoutLinkingLatent" onAction="#onFinishWithoutLinkingLatentButtonClicked"/>
+                            <Button fx:id="btnCloseWithoutAction" text="%button.closeWithoutAction" onAction="#onCloseWithoutActionButtonClicked"/>
                         </HBox>
                     </bottom>
                 </BorderPane>

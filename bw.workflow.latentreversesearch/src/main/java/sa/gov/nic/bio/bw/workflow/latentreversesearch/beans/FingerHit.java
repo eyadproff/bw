@@ -1,6 +1,8 @@
 package sa.gov.nic.bio.bw.workflow.latentreversesearch.beans;
 
-public class FingerHit
+import sa.gov.nic.bio.bw.core.beans.JavaBean;
+
+public class FingerHit extends JavaBean
 {
 	private int position;
 	private int score;

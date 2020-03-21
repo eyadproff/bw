@@ -40,6 +40,7 @@ import sa.gov.nic.bio.bw.core.utils.FxmlFile;
 import sa.gov.nic.bio.bw.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.core.workflow.Input;
 import sa.gov.nic.bio.bw.core.workflow.Output;
+import sa.gov.nic.bio.bw.workflow.latentreversesearch.beans.Decision;
 import sa.gov.nic.bio.bw.workflow.latentreversesearch.beans.LatentHit;
 import sa.gov.nic.bio.bw.workflow.latentreversesearch.beans.LatentHitProcessingStatus;
 import sa.gov.nic.bio.bw.workflow.latentreversesearch.utils.LatentReverseSearchErrorCodes;
@@ -49,8 +50,17 @@ import java.util.List;
 @FxmlFile("latentReverseSearch.fxml")
 public class LatentReverseSearchPaneFxController extends ContentFxControllerBase
 {
+	public enum Request
+	{
+		SEARCH,
+		LINK_LATENT,
+		FINISH_WITHOUT_LINKING_LATENT,
+		REVERT_TO_NEW,
+	}
+	
 	@Input private Integer resultsTotalCount;
 	@Input private List<LatentHit> latentHits;
+	@Output private Request request;
 	@Output private Long operatorId;
 	@Output private Long transactionNumber;
 	@Output private Long civilBiometricsId;
@@ -62,6 +72,7 @@ public class LatentReverseSearchPaneFxController extends ContentFxControllerBase
 	@Output private Long entryDateTo;
 	@Output private Integer recordsPerPage;
 	@Output private Integer pageIndex;
+	@Output private String latentNumber;
 	
 	@FXML private TitledPane tpSearchResults;
 	@FXML private Pane paneTable;
@@ -99,6 +110,7 @@ public class LatentReverseSearchPaneFxController extends ContentFxControllerBase
 	@FXML private TableColumn<LatentHit, String> tcEntryDateTime;
 	@FXML private Label lblCandidateLatentsPlaceHolder;
 	@FXML private ProgressIndicator piCandidateLatentsPlaceHolder;
+	@FXML private ProgressIndicator piSubmitting;
 	@FXML private Button btnInquiry;
 	@FXML private Button btnClearFields;
 	@FXML private Button btnOpenLatentHitsWindow;
@@ -291,30 +303,62 @@ public class LatentReverseSearchPaneFxController extends ContentFxControllerBase
 	{
 		if(successfulResponse)
 		{
-			piCandidateLatentsPlaceHolder.setVisible(false);
-			lblCandidateLatentsPlaceHolder.setVisible(true);
-			
-			if(resultsTotalCount != null)
+			if(request == Request.SEARCH)
 			{
-				tpSearchResults.setText(resources.getString("label.searchResults") + " (" +
-						                        AppUtils.localizeNumbers(String.valueOf(resultsTotalCount)) + ")");
+				piCandidateLatentsPlaceHolder.setVisible(false);
+				lblCandidateLatentsPlaceHolder.setVisible(true);
 				
-				int pageCount = (resultsTotalCount - 1) / AppConstants.TABLE_PAGINATION_RECORDS_PER_PAGE + 1;
-				if(pageIndex > pageCount) pageIndex = pageCount;
-				Platform.runLater(() ->
+				if(resultsTotalCount != null)
 				{
-				    pagination.setPageCount(pageCount);
-				    pagination.setCurrentPageIndex(pageIndex);
+					tpSearchResults.setText(resources.getString("label.searchResults") + " (" +
+							                        AppUtils.localizeNumbers(String.valueOf(resultsTotalCount)) + ")");
+					
+					int pageCount = (resultsTotalCount - 1) / AppConstants.TABLE_PAGINATION_RECORDS_PER_PAGE + 1;
+					if(pageIndex > pageCount) pageIndex = pageCount;
+					Platform.runLater(() ->
+					{
+					    pagination.setPageCount(pageCount);
+					    pagination.setCurrentPageIndex(pageIndex);
+					
+					    if(newQuery) newQuery = false;
+					});
+				}
 				
-				    if(newQuery) newQuery = false;
-				});
+				if(latentHits != null)
+				{
+					tvLatentHits.getItems().setAll(latentHits);
+					tvLatentHits.requestFocus();
+				}
+			}
+			else if(request == Request.LINK_LATENT)
+			{
+				String latentNumber = AppUtils.localizeNumbers(this.latentNumber);
+				String civilBiometricsId = AppUtils.localizeNumbers(String.valueOf(this.civilBiometricsId));
+				
+				String message = resources.getString("linkingLatent.success.message");
+				message = String.format(message, latentNumber, civilBiometricsId);
+				showSuccessNotification(message);
+			}
+			else if(request == Request.FINISH_WITHOUT_LINKING_LATENT)
+			{
+				String transactionNumber = AppUtils.localizeNumbers(String.valueOf(this.transactionNumber));
+				
+				String message = resources.getString("finishWithoutLinkingLatent.success.message");
+				message = String.format(message, transactionNumber);
+				showSuccessNotification(message);
+			}
+			else if(request == Request.REVERT_TO_NEW)
+			{
+				String transactionNumber = AppUtils.localizeNumbers(String.valueOf(this.transactionNumber));
+				
+				String message = resources.getString("closingWithoutAction.success.message");
+				message = String.format(message, transactionNumber);
+				showSuccessNotification(message);
 			}
 			
-			if(latentHits != null)
-			{
-				tvLatentHits.getItems().setAll(latentHits);
-				tvLatentHits.requestFocus();
-			}
+			this.transactionNumber = null;
+			this.latentNumber = null;
+			this.civilBiometricsId = null;
 		}
 	}
 	
@@ -367,6 +411,7 @@ public class LatentReverseSearchPaneFxController extends ContentFxControllerBase
 		tpSearchResults.setText(resources.getString("label.searchResults") + " (" + AppUtils.localizeNumbers("0") + ")");
 		
 		newQuery = true;
+		request = Request.SEARCH;
 		continueWorkflow();
 	}
 	
@@ -390,21 +435,44 @@ public class LatentReverseSearchPaneFxController extends ContentFxControllerBase
 		
 		try
 		{
-			AdjudicatorDialogFxController controller = DialogUtils.buildCustomDialogByFxml(
-								Context.getCoreFxController().getStage(), AdjudicatorDialogFxController.class, true);
+			LatentHitsDialogFxController controller = DialogUtils.buildCustomDialogByFxml(
+					Context.getCoreFxController().getStage(), LatentHitsDialogFxController.class, true);
 			
 			if(controller != null)
 			{
 				var selectedItem = tvLatentHits.getSelectionModel().getSelectedItem();
 				controller.setTransactionNumber(selectedItem.getTransactionNumber());
 				controller.setCivilBiometricsId(selectedItem.getCivilBiometricsId());
-				controller.show();
+				var resultOptional = controller.showAndWait();
+				resultOptional.ifPresent(latentOperatorDecision ->
+				{
+					var decision = latentOperatorDecision.getDecision();
+					if(decision == Decision.LATENT_ASSOCIATED)
+					{
+						request = Request.LINK_LATENT;
+						latentNumber = latentOperatorDecision.getLatentNumber();
+						civilBiometricsId = latentOperatorDecision.getCivilBiometricsId();
+						continueWorkflow();
+					}
+					else if(decision == Decision.FINISHED_WITHOUT_ASSOCIATING_LATENT)
+					{
+						request = Request.FINISH_WITHOUT_LINKING_LATENT;
+						transactionNumber = latentOperatorDecision.getTcn();
+						continueWorkflow();
+					}
+					else if(decision == Decision.VIEW_WITHOUT_ACTION)
+					{
+						request = Request.REVERT_TO_NEW;
+						transactionNumber = latentOperatorDecision.getTcn();
+						continueWorkflow();
+					}
+				});
 			}
 		}
 		catch(Exception e)
 		{
 			String errorCode = LatentReverseSearchErrorCodes.C018_00001.getCode();
-			String[] errorDetails = {"Failed to load (" + AdjudicatorDialogFxController.class.getName() + ")!"};
+			String[] errorDetails = {"Failed to load (" + LatentHitsDialogFxController.class.getName() + ")!"};
 			Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails, getTabIndex());
 		}
 	}

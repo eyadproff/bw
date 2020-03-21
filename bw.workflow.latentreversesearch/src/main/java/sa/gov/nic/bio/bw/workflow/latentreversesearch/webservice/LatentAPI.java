@@ -1,10 +1,13 @@
 package sa.gov.nic.bio.bw.workflow.latentreversesearch.webservice;
 
 import retrofit2.Call;
+import retrofit2.http.Field;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
+import retrofit2.http.POST;
 import retrofit2.http.Query;
 import sa.gov.nic.bio.bw.workflow.commons.beans.SearchQueryResult;
+import sa.gov.nic.bio.bw.workflow.latentreversesearch.beans.Decision;
 import sa.gov.nic.bio.bw.workflow.latentreversesearch.beans.LatentHit;
 import sa.gov.nic.bio.bw.workflow.latentreversesearch.beans.LatentHitDetails;
 import sa.gov.nic.bio.bw.workflow.latentreversesearch.beans.LatentHitProcessingStatus;
@@ -22,4 +25,9 @@ public interface LatentAPI
 	@GET("services-gateway-demographic/api/latent/hit/details/v1")
 	Call<LatentHitDetails> getLatentHitDetails(@Header("Workflow-Code") Integer workflowId, @Header("Workflow-Tcn") Long workflowTcn,
 	                                           @Query("transaction-number") Long transactionNumber);
+	
+	@POST("services-gateway-demographic/api/latent/hit/decision/v1")
+	Call<Void> addDecisionToLatentHit(@Header("Workflow-Code") Integer workflowId, @Header("Workflow-Tcn") Long workflowTcn,
+	                                  @Field("transaction-number") Long transactionNumber, @Field("decision") Decision decision,
+	                                  @Field("latent-number") String latentNumber, @Field("civil-biometrics-id") Long civilBiometricsId);
 }

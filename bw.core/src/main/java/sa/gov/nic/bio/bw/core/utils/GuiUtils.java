@@ -426,8 +426,14 @@ public class GuiUtils implements AppLogger
 		comboBox.showingProperty().addListener(showingPropertyChangeListener);
 		comboBox.getEditor().textProperty().addListener(textPropertyChangeListener);
 	}
-
+	
 	public static void attachImageDialog(CoreFxController coreFxController, ImageView imageView, String dialogTitle,
+	                                     String showImageText, boolean blur)
+	{
+		attachImageDialog(coreFxController.getStage(), imageView, dialogTitle, showImageText, blur);
+	}
+
+	public static void attachImageDialog(Stage stage, ImageView imageView, String dialogTitle,
 	                                     String showImageText, boolean blur)
 	{
 		Runnable runnable = () ->
@@ -462,14 +468,14 @@ public class GuiUtils implements AppLogger
 
 			BorderPane borderPane = new BorderPane();
 			borderPane.setCenter(iv);
-			Stage stage = DialogUtils.buildCustomDialog(coreFxController.getStage(), dialogTitle, borderPane,
+			Stage newStage = DialogUtils.buildCustomDialog(stage, dialogTitle, borderPane,
 			                                            Context.getGuiLanguage().getNodeOrientation()
 					                                            == NodeOrientation.RIGHT_TO_LEFT, false);
-			stage.getScene().addEventHandler(KeyEvent.KEY_PRESSED, keyEvent ->
+			newStage.getScene().addEventHandler(KeyEvent.KEY_PRESSED, keyEvent ->
 			{
-				if(keyEvent.getCode() == KeyCode.ESCAPE) stage.close();
+				if(keyEvent.getCode() == KeyCode.ESCAPE) newStage.close();
 			});
-			stage.show();
+			newStage.show();
 		};
 
 		imageView.setOnMouseClicked(mouseEvent ->

@@ -1,8 +1,10 @@
 package sa.gov.nic.bio.bw.workflow.latentreversesearch.beans;
 
+import sa.gov.nic.bio.bw.core.beans.JavaBean;
+
 import java.util.List;
 
-public class Latent
+public class Latent extends JavaBean
 {
 	private String number;
 	private int score;
