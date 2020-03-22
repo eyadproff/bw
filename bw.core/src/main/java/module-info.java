@@ -2,8 +2,6 @@ module bw.core
 {
 	uses sa.gov.nic.bio.bw.core.workflow.Workflow;
 	
-	requires static javafx.web;
-	requires static javafx.media;
 	requires static org.scenicview.scenicview;
 	requires transitive java.logging;
 	requires transitive java.prefs;
@@ -13,6 +11,8 @@ module bw.core
 	requires transitive javafx.fxml;
 	requires transitive javafx.graphics;
 	requires transitive javafx.swing;
+	requires transitive javafx.web;
+	requires transitive javafx.media;
 	requires transitive bw.commons.resources;
 	requires transitive org.controlsfx.controls;
 	requires transitive retrofit2;

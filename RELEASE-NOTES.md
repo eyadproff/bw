@@ -14,6 +14,9 @@ VERSION SCHEMA: vYYYY.MM.#SEQ
 ## v2020.03.3
 
 - NEW: Latent Reverse Search Workflow.
+- ENH: Upgrade Java SE to 14.
+- ENH: Upgrade Java FX to 14.
+- ENH: Upgrade dependencies to latest versions.
 
 ---
 
