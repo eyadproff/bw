@@ -347,6 +347,7 @@ public class LatentHitsDialogFxController extends ContentFxControllerBase
 		LatentHitProcessingStatus status = latentHitDetails.getStatus();
 		Long lockedByOperatorId = latentHitDetails.getLockedByOperatorId();
 		String associatedLatentNumber = latentHitDetails.getAssociatedLatentNumber();
+		boolean operatorCanOverride = latentHitDetails.isOperatorCanOverride();
 		
 		txtTransactionNumber.setText(String.valueOf(transactionNumber));
 		txtCivilBiometricsId.setText(String.valueOf(civilBiometricsId));
@@ -374,7 +375,7 @@ public class LatentHitsDialogFxController extends ContentFxControllerBase
 			UserInfo userInfo = (UserInfo) Context.getUserSession().getAttribute("userInfo");
 			boolean lockedByAnotherUser = lockedByOperatorId != null && lockedByOperatorId != userInfo.getOperatorId();
 			
-			if(lockedByAnotherUser)
+			if(lockedByAnotherUser && !operatorCanOverride)
 			{
 				GuiUtils.showNode(ivAnotherOperatorLockWarningIcon, true);
 			}

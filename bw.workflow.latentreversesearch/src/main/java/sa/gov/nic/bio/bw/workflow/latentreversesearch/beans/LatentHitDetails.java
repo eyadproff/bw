@@ -11,6 +11,7 @@ public class LatentHitDetails extends JavaBean
 	private LatentHitProcessingStatus status;
 	private Long lockedByOperatorId;
 	private String associatedLatentNumber;
+	private boolean operatorCanOverride;
 	
 	public List<DecisionRecord> getDecisionRecords(){return decisionRecords;}
 	public void setDecisionRecords(List<DecisionRecord> decisionRecords){this.decisionRecords = decisionRecords;}
@@ -26,4 +27,7 @@ public class LatentHitDetails extends JavaBean
 	
 	public String getAssociatedLatentNumber(){return associatedLatentNumber;}
 	public void setAssociatedLatentNumber(String associatedLatentNumber){this.associatedLatentNumber = associatedLatentNumber;}
+	
+	public boolean isOperatorCanOverride(){return operatorCanOverride;}
+	public void setOperatorCanOverride(boolean operatorCanOverride){this.operatorCanOverride = operatorCanOverride;}
 }
