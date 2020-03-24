@@ -11,7 +11,6 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.geometry.NodeOrientation;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
@@ -41,8 +40,8 @@ import sa.gov.nic.bio.bw.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.core.workflow.Input;
 import sa.gov.nic.bio.bw.core.workflow.Output;
 import sa.gov.nic.bio.bw.workflow.latentreversesearch.beans.Decision;
-import sa.gov.nic.bio.bw.workflow.latentreversesearch.beans.LatentHit;
-import sa.gov.nic.bio.bw.workflow.latentreversesearch.beans.LatentHitProcessingStatus;
+import sa.gov.nic.bio.bw.workflow.latentreversesearch.beans.LatentJobStatus;
+import sa.gov.nic.bio.bw.workflow.latentreversesearch.beans.LatentJob;
 import sa.gov.nic.bio.bw.workflow.latentreversesearch.utils.LatentReverseSearchErrorCodes;
 
 import java.util.List;
@@ -59,17 +58,17 @@ public class LatentReverseSearchPaneFxController extends ContentFxControllerBase
 	}
 	
 	@Input private Integer resultsTotalCount;
-	@Input private List<LatentHit> latentHits;
+	@Input private List<LatentJob> latentJobs;
 	@Output private Request request;
 	@Output private Long operatorId;
-	@Output private Long transactionNumber;
+	@Output private Long jobId;
 	@Output private Long civilBiometricsId;
 	@Output private Long personId;
-	@Output private Long referenceNumber;
+	@Output private Long tcn;
 	@Output private Integer locationId;
-	@Output private LatentHitProcessingStatus status;
-	@Output private Long entryDateFrom;
-	@Output private Long entryDateTo;
+	@Output private LatentJobStatus status;
+	@Output private Long createDateFrom;
+	@Output private Long createDateTo;
 	@Output private Integer recordsPerPage;
 	@Output private Integer pageIndex;
 	@Output private String latentNumber;
@@ -83,15 +82,15 @@ public class LatentReverseSearchPaneFxController extends ContentFxControllerBase
 	@FXML private CheckBox cbLocationId;
 	@FXML private CheckBox cbStatus;
 	@FXML private CheckBox cbEntryDate;
-	@FXML private ComboBox<ComboBoxItem<LatentHitProcessingStatus>> cboStatus;
+	@FXML private ComboBox<ComboBoxItem<LatentJobStatus>> cboStatus;
 	@FXML private TextField txtOperatorId;
 	@FXML private TextField txtTransactionNumber;
 	@FXML private TextField txtCivilBiometricsId;
 	@FXML private TextField txtPersonId;
 	@FXML private TextField txtReferenceNumber;
 	@FXML private TextField txtLocationId;
-	@FXML private DatePicker dpEntryDateFrom;
-	@FXML private DatePicker dpEntryDateTo;
+	@FXML private DatePicker dpCreateDateFrom;
+	@FXML private DatePicker dpCreateDateTo;
 	@FXML private RadioButton rdoLatestNew;
 	@FXML private RadioButton rdoLockedByOperator;
 	@FXML private RadioButton rdoOtherSearchCriteria;
@@ -100,14 +99,15 @@ public class LatentReverseSearchPaneFxController extends ContentFxControllerBase
 	@FXML private RadioButton rdoEntryDateToUseHijri;
 	@FXML private RadioButton rdoEntryDateToGregorian;
 	@FXML private Pagination pagination;
-	@FXML private TableView<LatentHit> tvLatentHits;
-	@FXML private TableColumn<LatentHit, String> tcTransactionNumber;
-	@FXML private TableColumn<LatentHit, String> tcCivilBiometricsId;
-	@FXML private TableColumn<LatentHit, String> tcPersonId;
-	@FXML private TableColumn<LatentHit, String> tcReferenceNumber;
-	@FXML private TableColumn<LatentHit, String> tcLocationId;
-	@FXML private TableColumn<LatentHit, String> tcStatus;
-	@FXML private TableColumn<LatentHit, String> tcEntryDateTime;
+	@FXML private TableView<LatentJob> tvLatentHits;
+	@FXML private TableColumn<LatentJob, String> tcTransactionNumber;
+	@FXML private TableColumn<LatentJob, String> tcCivilBiometricsId;
+	@FXML private TableColumn<LatentJob, String> tcPersonId;
+	@FXML private TableColumn<LatentJob, String> tcReferenceNumber;
+	@FXML private TableColumn<LatentJob, String> tcLocationId;
+	@FXML private TableColumn<LatentJob, String> tcStatus;
+	@FXML private TableColumn<LatentJob, String> tcCreateDateTime;
+	@FXML private TableColumn<LatentJob, String> tcUpdateDateTime;
 	@FXML private Label lblCandidateLatentsPlaceHolder;
 	@FXML private ProgressIndicator piCandidateLatentsPlaceHolder;
 	@FXML private ProgressIndicator piSubmitting;
@@ -152,8 +152,8 @@ public class LatentReverseSearchPaneFxController extends ContentFxControllerBase
 		txtReferenceNumber.disableProperty().bind(cbReferenceNumber.selectedProperty().not());
 		txtLocationId.disableProperty().bind(cbLocationId.selectedProperty().not());
 		cboStatus.disableProperty().bind(cbStatus.selectedProperty().not());
-		dpEntryDateFrom.disableProperty().bind(cbEntryDate.selectedProperty().not());
-		dpEntryDateTo.disableProperty().bind(cbEntryDate.selectedProperty().not());
+		dpCreateDateFrom.disableProperty().bind(cbEntryDate.selectedProperty().not());
+		dpCreateDateTo.disableProperty().bind(cbEntryDate.selectedProperty().not());
 		
 		BooleanBinding operatorIdBinding = createTextFieldNotCompleteBooleanBinding(txtOperatorId);
 		BooleanBinding transactionNumberBinding = createTextFieldNotCompleteBooleanBinding(txtTransactionNumber);
@@ -162,19 +162,19 @@ public class LatentReverseSearchPaneFxController extends ContentFxControllerBase
 		BooleanBinding referenceNumberBinding = createTextFieldNotCompleteBooleanBinding(txtReferenceNumber);
 		BooleanBinding locationIdBinding = createTextFieldNotCompleteBooleanBinding(txtLocationId);
 		BooleanBinding statusBinding = createComboBoxNotCompleteBooleanBinding(cboStatus);
-		BooleanBinding entryDateFromBinding = createDatePickerNotCompleteBooleanBinding(dpEntryDateFrom);
-		BooleanBinding entryDateToBinding = createDatePickerNotCompleteBooleanBinding(dpEntryDateTo);
+		BooleanBinding entryDateFromBinding = createDatePickerNotCompleteBooleanBinding(dpCreateDateFrom);
+		BooleanBinding entryDateToBinding = createDatePickerNotCompleteBooleanBinding(dpCreateDateTo);
 		BooleanBinding allDisabled = txtTransactionNumber.disableProperty().and(txtCivilBiometricsId.disableProperty())
 		                                                 .and(txtPersonId.disableProperty()).and(txtReferenceNumber.disableProperty())
 		                                                 .and(txtLocationId.disableProperty()).and(cboStatus.disableProperty())
-		                                                 .and(dpEntryDateFrom.disableProperty()).and(dpEntryDateTo.disableProperty());
+		                                                 .and(dpCreateDateFrom.disableProperty()).and(dpCreateDateTo.disableProperty());
 		
 		btnInquiry.disableProperty().bind(rdoLockedByOperator.selectedProperty().and(operatorIdBinding).or(rdoOtherSearchCriteria.selectedProperty().and(transactionNumberBinding
                                                                 .or(civilBiometricsIdBinding).or(personIdBinding).or(referenceNumberBinding).or(locationIdBinding)
                                                                 .or(statusBinding).or(entryDateFromBinding).or(entryDateToBinding).or(allDisabled)).or(disableInquiryButtonProperty)));
 		
-		GuiUtils.initDatePicker(rdoEntryDateFromUseHijri, dpEntryDateFrom, null);
-		GuiUtils.initDatePicker(rdoEntryDateToUseHijri, dpEntryDateTo, null);
+		GuiUtils.initDatePicker(rdoEntryDateFromUseHijri, dpCreateDateFrom, null);
+		GuiUtils.initDatePicker(rdoEntryDateToUseHijri, dpCreateDateTo, null);
 		
 		rdoEntryDateFromUseHijri.setSelected(true);
 		rdoEntryDateToUseHijri.setSelected(true);
@@ -216,8 +216,8 @@ public class LatentReverseSearchPaneFxController extends ContentFxControllerBase
 		tvLatentHits.setOnKeyReleased(keyReleasedEventHandler);
 		tvLatentHits.setOnMouseClicked(mouseEventHandler);
 		
-		ObservableList<ComboBoxItem<LatentHitProcessingStatus>> statusItems = FXCollections.observableArrayList();
-		for(var status : LatentHitProcessingStatus.values())
+		ObservableList<ComboBoxItem<LatentJobStatus>> statusItems = FXCollections.observableArrayList();
+		for(var status : LatentJobStatus.values())
 		{
 			String statusText;
 			
@@ -238,35 +238,40 @@ public class LatentReverseSearchPaneFxController extends ContentFxControllerBase
 		tcTransactionNumber.setCellValueFactory(param ->
 		{
 			var latentHit = param.getValue();
-			long transactionNumber = latentHit.getTransactionNumber();
-			return new SimpleStringProperty(AppUtils.localizeNumbers(String.valueOf(transactionNumber)));
+			Long jobId = latentHit.getJobId();
+			if(jobId == null) return null;
+			return new SimpleStringProperty(AppUtils.localizeNumbers(String.valueOf(jobId)));
 		});
 		
 		tcCivilBiometricsId.setCellValueFactory(param ->
 		{
 			var latentHit = param.getValue();
-			long civilBiometricsId = latentHit.getCivilBiometricsId();
+			Long civilBiometricsId = latentHit.getBioId();
+			if(civilBiometricsId == null) return null;
 			return new SimpleStringProperty(AppUtils.localizeNumbers(String.valueOf(civilBiometricsId)));
 		});
 		
 		tcPersonId.setCellValueFactory(param ->
 		{
 			var latentHit = param.getValue();
-			long personId = latentHit.getPersonId();
-			return new SimpleStringProperty(AppUtils.localizeNumbers(String.valueOf(personId)));
+			Long samisId = latentHit.getSamisId();
+			if(samisId == null) return null;
+			return new SimpleStringProperty(AppUtils.localizeNumbers(String.valueOf(samisId)));
 		});
 		
 		tcReferenceNumber.setCellValueFactory(param ->
 		{
 			var latentHit = param.getValue();
-			long referenceNumber = latentHit.getReferenceNumber();
-			return new SimpleStringProperty(AppUtils.localizeNumbers(String.valueOf(referenceNumber)));
+			Long tcn = latentHit.getTcn();
+			if(tcn == null) return null;
+			return new SimpleStringProperty(AppUtils.localizeNumbers(String.valueOf(tcn)));
 		});
 		
 		tcLocationId.setCellValueFactory(param ->
 		{
 			var latentHit = param.getValue();
-			int locationId = latentHit.getLocationId();
+			Long locationId = latentHit.getLocationId();
+			if(locationId == null) return null;
 			return new SimpleStringProperty(AppUtils.localizeNumbers(String.valueOf(locationId)));
 		});
 		
@@ -274,6 +279,8 @@ public class LatentReverseSearchPaneFxController extends ContentFxControllerBase
 		{
 			var latentHit = param.getValue();
 			var status = latentHit.getStatus();
+			if(status == null) return null;
+			
 			String statusText;
 			
 			switch(status)
@@ -287,12 +294,20 @@ public class LatentReverseSearchPaneFxController extends ContentFxControllerBase
 			return new SimpleStringProperty(statusText);
 		});
 		
-		tcEntryDateTime.setCellValueFactory(param ->
+		tcCreateDateTime.setCellValueFactory(param ->
 		{
-		    boolean rtl = Context.getGuiLanguage().getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT;
-			var latentHit = param.getValue();
-		    long entryDateTime = latentHit.getEntryDateTime();
-		    return new SimpleStringProperty(AppUtils.formatHijriDateSimple(entryDateTime, rtl));
+		    var latentHit = param.getValue();
+		    Long createDateTime = latentHit.getCreateTime();
+			if(createDateTime == null) return null;
+		    return new SimpleStringProperty(AppUtils.formatHijriGregorianDateTime(createDateTime));
+		});
+		
+		tcUpdateDateTime.setCellValueFactory(param ->
+		{
+		    var latentHit = param.getValue();
+		    Long updateDateTime = latentHit.getUpdateTime();
+		    if(updateDateTime == null) return null;
+		    return new SimpleStringProperty(AppUtils.formatHijriGregorianDateTime(updateDateTime));
 		});
 		
 		btnInquiry.requestFocus();
@@ -324,9 +339,11 @@ public class LatentReverseSearchPaneFxController extends ContentFxControllerBase
 					});
 				}
 				
-				if(latentHits != null)
+				System.out.println("latentJobs = " + latentJobs);
+				
+				if(latentJobs != null)
 				{
-					tvLatentHits.getItems().setAll(latentHits);
+					tvLatentHits.getItems().setAll(latentJobs);
 					tvLatentHits.requestFocus();
 				}
 			}
@@ -341,7 +358,7 @@ public class LatentReverseSearchPaneFxController extends ContentFxControllerBase
 			}
 			else if(request == Request.FINISH_WITHOUT_LINKING_LATENT)
 			{
-				String transactionNumber = AppUtils.localizeNumbers(String.valueOf(this.transactionNumber));
+				String transactionNumber = AppUtils.localizeNumbers(String.valueOf(this.jobId));
 				
 				String message = resources.getString("finishWithoutLinkingLatent.success.message");
 				message = String.format(message, transactionNumber);
@@ -349,14 +366,14 @@ public class LatentReverseSearchPaneFxController extends ContentFxControllerBase
 			}
 			else if(request == Request.REVERT_TO_NEW)
 			{
-				String transactionNumber = AppUtils.localizeNumbers(String.valueOf(this.transactionNumber));
+				String transactionNumber = AppUtils.localizeNumbers(String.valueOf(this.jobId));
 				
 				String message = resources.getString("closingWithoutAction.success.message");
 				message = String.format(message, transactionNumber);
 				showSuccessNotification(message);
 			}
 			
-			this.transactionNumber = null;
+			this.jobId = null;
 			this.latentNumber = null;
 			this.civilBiometricsId = null;
 		}
@@ -376,30 +393,30 @@ public class LatentReverseSearchPaneFxController extends ContentFxControllerBase
 	{
 		if(btnInquiry.isDisabled() || !btnInquiry.isVisible()) return;
 		
-		transactionNumber = null;
+		jobId = null;
 		civilBiometricsId = null;
 		personId = null;
-		referenceNumber = null;
+		tcn = null;
 		locationId = null;
 		status = null;
-		entryDateFrom = null;
-		entryDateTo = null;
+		createDateFrom = null;
+		createDateTo = null;
 		
 		if(rdoLockedByOperator.isSelected())
 		{
 			operatorId = Long.parseLong(txtOperatorId.getText());
-			status = LatentHitProcessingStatus.IN_PROGRESS;
+			status = LatentJobStatus.IN_PROGRESS;
 		}
 		else if(rdoOtherSearchCriteria.isSelected())
 		{
-			if(!txtTransactionNumber.isDisabled()) transactionNumber = Long.parseLong(txtTransactionNumber.getText());
+			if(!txtTransactionNumber.isDisabled()) jobId = Long.parseLong(txtTransactionNumber.getText());
 			if(!txtCivilBiometricsId.isDisabled()) civilBiometricsId = Long.parseLong(txtCivilBiometricsId.getText());
 			if(!txtPersonId.isDisabled()) personId = Long.parseLong(txtPersonId.getText());
-			if(!txtReferenceNumber.isDisabled()) referenceNumber = Long.parseLong(txtReferenceNumber.getText());
+			if(!txtReferenceNumber.isDisabled()) tcn = Long.parseLong(txtReferenceNumber.getText());
 			if(!txtLocationId.isDisabled()) locationId = Integer.parseInt(txtLocationId.getText());
 			if(!cboStatus.isDisabled()) status = cboStatus.getValue().getItem();
-			if(!dpEntryDateFrom.isDisabled()) entryDateFrom = AppUtils.gregorianDateToSeconds(dpEntryDateFrom.getValue());
-			if(!dpEntryDateTo.isDisabled()) entryDateTo = AppUtils.gregorianDateToSeconds(dpEntryDateTo.getValue());
+			if(!dpCreateDateFrom.isDisabled()) createDateFrom = AppUtils.gregorianDateToSeconds(dpCreateDateFrom.getValue());
+			if(!dpCreateDateTo.isDisabled()) createDateTo = AppUtils.gregorianDateToSeconds(dpCreateDateTo.getValue());
 		}
 		
 		pagination.setPageCount(1);
@@ -407,7 +424,7 @@ public class LatentReverseSearchPaneFxController extends ContentFxControllerBase
 		recordsPerPage = AppConstants.TABLE_PAGINATION_RECORDS_PER_PAGE;
 		pageIndex = 0;
 		resultsTotalCount = null;
-		latentHits = null;
+		latentJobs = null;
 		tpSearchResults.setText(resources.getString("label.searchResults") + " (" + AppUtils.localizeNumbers("0") + ")");
 		
 		newQuery = true;
@@ -424,8 +441,8 @@ public class LatentReverseSearchPaneFxController extends ContentFxControllerBase
 		txtPersonId.clear();
 		txtReferenceNumber.clear();
 		txtLocationId.clear();
-		dpEntryDateFrom.setValue(null);
-		dpEntryDateTo.setValue(null);
+		dpCreateDateFrom.setValue(null);
+		dpCreateDateTo.setValue(null);
 	}
 	
 	@FXML
@@ -441,8 +458,8 @@ public class LatentReverseSearchPaneFxController extends ContentFxControllerBase
 			if(controller != null)
 			{
 				var selectedItem = tvLatentHits.getSelectionModel().getSelectedItem();
-				controller.setTransactionNumber(selectedItem.getTransactionNumber());
-				controller.setCivilBiometricsId(selectedItem.getCivilBiometricsId());
+				controller.setTransactionNumber(selectedItem.getJobId());
+				controller.setCivilBiometricsId(selectedItem.getBioId());
 				var resultOptional = controller.showAndWait();
 				resultOptional.ifPresent(latentOperatorDecision ->
 				{
@@ -457,13 +474,13 @@ public class LatentReverseSearchPaneFxController extends ContentFxControllerBase
 					else if(decision == Decision.FINISHED_WITHOUT_ASSOCIATING_LATENT)
 					{
 						request = Request.FINISH_WITHOUT_LINKING_LATENT;
-						transactionNumber = latentOperatorDecision.getTcn();
+						jobId = latentOperatorDecision.getTcn();
 						continueWorkflow();
 					}
 					else if(decision == Decision.VIEW_WITHOUT_ACTION)
 					{
 						request = Request.REVERT_TO_NEW;
-						transactionNumber = latentOperatorDecision.getTcn();
+						jobId = latentOperatorDecision.getTcn();
 						continueWorkflow();
 					}
 				});
@@ -487,7 +504,7 @@ public class LatentReverseSearchPaneFxController extends ContentFxControllerBase
 				recordsPerPage = AppConstants.TABLE_PAGINATION_RECORDS_PER_PAGE;
 				this.pageIndex = pageIndex;
 				resultsTotalCount = null;
-				latentHits = null;
+				latentJobs = null;
 				tpSearchResults.setText(resources.getString("label.searchResults") + " (" + AppUtils.localizeNumbers("0") + ")");
 				continueWorkflow();
 			}

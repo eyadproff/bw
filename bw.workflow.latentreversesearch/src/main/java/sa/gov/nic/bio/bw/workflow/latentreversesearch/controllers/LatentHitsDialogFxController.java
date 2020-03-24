@@ -38,7 +38,7 @@ import sa.gov.nic.bio.bw.workflow.latentreversesearch.beans.DecisionRecord;
 import sa.gov.nic.bio.bw.workflow.latentreversesearch.beans.FingerHit;
 import sa.gov.nic.bio.bw.workflow.latentreversesearch.beans.Latent;
 import sa.gov.nic.bio.bw.workflow.latentreversesearch.beans.LatentHitDetails;
-import sa.gov.nic.bio.bw.workflow.latentreversesearch.beans.LatentHitProcessingStatus;
+import sa.gov.nic.bio.bw.workflow.latentreversesearch.beans.LatentJobStatus;
 import sa.gov.nic.bio.bw.workflow.latentreversesearch.beans.LatentOperatorDecision;
 import sa.gov.nic.bio.bw.workflow.latentreversesearch.tasks.GetLatentHitDetailsWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.latentreversesearch.utils.LatentReverseSearchErrorCodes;
@@ -344,7 +344,7 @@ public class LatentHitsDialogFxController extends ContentFxControllerBase
 	{
 		List<Latent> latents = latentHitDetails.getLatents();
 		List<DecisionRecord> decisionRecords = latentHitDetails.getDecisionRecords();
-		LatentHitProcessingStatus status = latentHitDetails.getStatus();
+		LatentJobStatus status = latentHitDetails.getStatus();
 		Long lockedByOperatorId = latentHitDetails.getLockedByOperatorId();
 		String associatedLatentNumber = latentHitDetails.getAssociatedLatentNumber();
 		boolean operatorCanOverride = latentHitDetails.isOperatorCanOverride();
@@ -367,7 +367,7 @@ public class LatentHitsDialogFxController extends ContentFxControllerBase
 		
 		txtStatus.setText(statusText);
 		
-		if(status == LatentHitProcessingStatus.IN_PROGRESS)
+		if(status == LatentJobStatus.IN_PROGRESS)
 		{
 			if(lockedByOperatorId != null) txtOperatorId.setText(String.valueOf(lockedByOperatorId));
 			GuiUtils.showNode(paneLockedByOperator, true);

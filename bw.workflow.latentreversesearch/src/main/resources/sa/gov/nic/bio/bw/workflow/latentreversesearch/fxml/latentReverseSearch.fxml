@@ -82,7 +82,7 @@
                                         <Insets left="10.0"/>
                                     </padding>
                                 </ComboBox>
-                                <CheckBox fx:id="cbEntryDate" text="%label.entryDate" GridPane.columnIndex="0" GridPane.rowIndex="3" disable="true">
+                                <CheckBox fx:id="cbEntryDate" text="%label.creationDate" GridPane.columnIndex="0" GridPane.rowIndex="3" disable="true">
                                     <padding>
                                         <Insets top="4.0"/>
                                     </padding>
@@ -93,7 +93,7 @@
                                     </padding>
                                     <Label text="%label.from"/>
                                     <VBox spacing="5.0">
-                                        <DatePicker fx:id="dpEntryDateFrom" promptText="dd/MM/yyyy"/>
+                                        <DatePicker fx:id="dpCreateDateFrom" promptText="dd/MM/yyyy"/>
                                         <HBox spacing="5.0">
                                             <Label text="%label.input" styleClass="small-font"/>
                                             <RadioButton fx:id="rdoEntryDateFromUseHijri" toggleGroup="$toggleGroup2" text="%radio.hijri" styleClass="small-font, small-radio-button" focusTraversable="false"/>
@@ -106,7 +106,7 @@
                                         </padding>
                                     </Label>
                                     <VBox spacing="5.0">
-                                        <DatePicker fx:id="dpEntryDateTo" promptText="dd/MM/yyyy"/>
+                                        <DatePicker fx:id="dpCreateDateTo" promptText="dd/MM/yyyy"/>
                                         <HBox spacing="5.0">
                                             <Label text="%label.input" styleClass="small-font"/>
                                             <RadioButton fx:id="rdoEntryDateToUseHijri" toggleGroup="$toggleGroup3" text="%radio.hijri" styleClass="small-font, small-radio-button" focusTraversable="false"/>
@@ -138,13 +138,14 @@
                                         </StackPane>
                                     </placeholder>
                                     <columns>
-                                        <PTableColumn fx:id="tcTransactionNumber" text="%table.column.transactionNumber" reorderable="false" sortable="false" percentageWidth="0.04"/>
-                                        <PTableColumn fx:id="tcCivilBiometricsId" text="%table.column.civilBiometricsId" reorderable="false" sortable="false" percentageWidth="0.25"/>
-                                        <PTableColumn fx:id="tcPersonId" text="%table.column.personId" reorderable="false" sortable="false" percentageWidth="0.13"/>
-                                        <PTableColumn fx:id="tcReferenceNumber" text="%table.column.referenceNumber" reorderable="false" sortable="false" percentageWidth="0.13"/>
-                                        <PTableColumn fx:id="tcLocationId" text="%table.column.locationId" reorderable="false" sortable="false" percentageWidth="0.18"/>
-                                        <PTableColumn fx:id="tcStatus" text="%table.column.status" reorderable="false" sortable="false" percentageWidth="0.09"/>
-                                        <PTableColumn fx:id="tcEntryDateTime" text="%table.column.entryDateTime" reorderable="false" sortable="false" percentageWidth="0.14"/>
+                                        <PTableColumn fx:id="tcTransactionNumber" text="%table.column.transactionNumber" reorderable="false" sortable="false" percentageWidth="0.13"/>
+                                        <PTableColumn fx:id="tcCivilBiometricsId" text="%table.column.civilBiometricsId" reorderable="false" sortable="false" percentageWidth="0.15"/>
+                                        <PTableColumn fx:id="tcPersonId" text="%table.column.personId" reorderable="false" sortable="false" percentageWidth="0.1"/>
+                                        <PTableColumn fx:id="tcReferenceNumber" text="%table.column.referenceNumber" reorderable="false" sortable="false" percentageWidth="0.15"/>
+                                        <PTableColumn fx:id="tcLocationId" text="%table.column.locationId" reorderable="false" sortable="false" percentageWidth="0.1"/>
+                                        <PTableColumn fx:id="tcStatus" text="%table.column.status" reorderable="false" sortable="false" percentageWidth="0.1"/>
+                                        <PTableColumn fx:id="tcCreateDateTime" text="%table.column.createDateTime" reorderable="false" sortable="false" percentageWidth="0.4"/>
+                                        <PTableColumn fx:id="tcUpdateDateTime" text="%table.column.updateDateTime" reorderable="false" sortable="false" percentageWidth="0.4"/>
                                     </columns>
                                 </TableView>
                             </VBox>

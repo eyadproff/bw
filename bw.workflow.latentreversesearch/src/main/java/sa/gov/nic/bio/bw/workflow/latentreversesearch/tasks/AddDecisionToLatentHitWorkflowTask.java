@@ -9,7 +9,7 @@ import sa.gov.nic.bio.bw.workflow.latentreversesearch.webservice.LatentAPI;
 
 public class AddDecisionToLatentHitWorkflowTask extends WorkflowTask
 {
-	@Input(alwaysRequired = true) private Long transactionNumber;
+	@Input(alwaysRequired = true) private Long jobId;
 	@Input(alwaysRequired = true) private Decision decision;
 	@Input private String latentNumber;
 	@Input private Long civilBiometricsId;
@@ -18,7 +18,7 @@ public class AddDecisionToLatentHitWorkflowTask extends WorkflowTask
 	public void execute() throws Signal
 	{
 		var api = Context.getWebserviceManager().getApi(LatentAPI.class);
-		var call = api.addDecisionToLatentHit(workflowId, workflowTcn, transactionNumber, decision, latentNumber, civilBiometricsId);
+		var call = api.addDecisionToLatentHit(workflowId, workflowTcn, jobId, decision, latentNumber, civilBiometricsId);
 		var taskResponse = Context.getWebserviceManager().executeApi(call);
 		
 		resetWorkflowStepIfNegativeTaskResponse(taskResponse);

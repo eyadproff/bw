@@ -7,7 +7,7 @@ import sa.gov.nic.bio.bw.workflow.latentreversesearch.beans.Decision;
 import sa.gov.nic.bio.bw.workflow.latentreversesearch.controllers.LatentReverseSearchPaneFxController;
 import sa.gov.nic.bio.bw.workflow.latentreversesearch.controllers.LatentReverseSearchPaneFxController.Request;
 import sa.gov.nic.bio.bw.workflow.latentreversesearch.tasks.AddDecisionToLatentHitWorkflowTask;
-import sa.gov.nic.bio.bw.workflow.latentreversesearch.tasks.LatentHitsInquiryBySearchCriteriaWorkflowTask;
+import sa.gov.nic.bio.bw.workflow.latentreversesearch.tasks.LatentJobsInquiryBySearchCriteriaWorkflowTask;
 
 @AssociatedMenu(workflowId = 1026, menuId = "menu.query.latentReverseSearch", menuTitle = "menu.title", menuOrder = 9)
 public class LatentReverseSearchWorkflow extends SinglePageWorkflowBase
@@ -20,35 +20,35 @@ public class LatentReverseSearchWorkflow extends SinglePageWorkflowBase
 		Request request = getData(LatentReverseSearchPaneFxController.class, "request");
 		if(request == Request.SEARCH)
 		{
-			passData(LatentReverseSearchPaneFxController.class, LatentHitsInquiryBySearchCriteriaWorkflowTask.class,
-			         "transactionNumber", "civilBiometricsId", "personId", "referenceNumber",
-			         "locationId", "status", "entryDateFrom", "entryDateTo", "recordsPerPage", "pageIndex");
+			passData(LatentReverseSearchPaneFxController.class, LatentJobsInquiryBySearchCriteriaWorkflowTask.class,
+			         "jobId", "civilBiometricsId", "personId", "tcn",
+			         "locationId", "status", "createDateFrom", "createDateTo", "recordsPerPage", "pageIndex");
 			
-			executeWorkflowTask(LatentHitsInquiryBySearchCriteriaWorkflowTask.class);
+			executeWorkflowTask(LatentJobsInquiryBySearchCriteriaWorkflowTask.class);
 			
-			passData(LatentHitsInquiryBySearchCriteriaWorkflowTask.class,
-			         LatentReverseSearchPaneFxController.class, "resultsTotalCount", "latentHits");
+			passData(LatentJobsInquiryBySearchCriteriaWorkflowTask.class,
+			         LatentReverseSearchPaneFxController.class, "resultsTotalCount", "latentJobs");
 		}
 		else if(request == Request.LINK_LATENT)
 		{
 			passData(LatentReverseSearchPaneFxController.class, AddDecisionToLatentHitWorkflowTask.class,
-			         "transactionNumber", "civilBiometricsId", "latentNumber");
+			         "jobId", "civilBiometricsId", "latentNumber");
 			setData(AddDecisionToLatentHitWorkflowTask.class, "decision", Decision.LATENT_ASSOCIATED);
 			
 			executeWorkflowTask(AddDecisionToLatentHitWorkflowTask.class);
 		}
 		else if(request == Request.FINISH_WITHOUT_LINKING_LATENT)
 		{
-			passData(LatentReverseSearchPaneFxController.class, LatentHitsInquiryBySearchCriteriaWorkflowTask.class,
-			         "transactionNumber");
+			passData(LatentReverseSearchPaneFxController.class, AddDecisionToLatentHitWorkflowTask.class,
+			         "jobId");
 			setData(AddDecisionToLatentHitWorkflowTask.class, "decision", Decision.FINISHED_WITHOUT_ASSOCIATING_LATENT);
 			
 			executeWorkflowTask(AddDecisionToLatentHitWorkflowTask.class);
 		}
 		else if(request == Request.REVERT_TO_NEW)
 		{
-			passData(LatentReverseSearchPaneFxController.class, LatentHitsInquiryBySearchCriteriaWorkflowTask.class,
-			         "transactionNumber");
+			passData(LatentReverseSearchPaneFxController.class, AddDecisionToLatentHitWorkflowTask.class,
+			         "jobId");
 			setData(AddDecisionToLatentHitWorkflowTask.class, "decision", Decision.VIEW_WITHOUT_ACTION);
 			
 			executeWorkflowTask(AddDecisionToLatentHitWorkflowTask.class);
