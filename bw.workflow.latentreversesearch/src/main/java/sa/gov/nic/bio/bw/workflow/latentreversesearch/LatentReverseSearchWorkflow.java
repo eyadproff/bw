@@ -1,5 +1,6 @@
 package sa.gov.nic.bio.bw.workflow.latentreversesearch;
 
+import sa.gov.nic.bio.bw.core.utils.Device;
 import sa.gov.nic.bio.bw.core.workflow.AssociatedMenu;
 import sa.gov.nic.bio.bw.core.workflow.Signal;
 import sa.gov.nic.bio.bw.core.workflow.SinglePageWorkflowBase;
@@ -8,7 +9,8 @@ import sa.gov.nic.bio.bw.workflow.latentreversesearch.controllers.LatentReverseS
 import sa.gov.nic.bio.bw.workflow.latentreversesearch.tasks.AddDecisionToLatentHitWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.latentreversesearch.tasks.LatentJobsInquiryBySearchCriteriaWorkflowTask;
 
-@AssociatedMenu(workflowId = 1026, menuId = "menu.query.latentReverseSearch", menuTitle = "menu.title", menuOrder = 9)
+@AssociatedMenu(workflowId = 1026, menuId = "menu.query.latentReverseSearch", menuTitle = "menu.title", menuOrder = 9,
+				devices = {Device.BIO_UTILITIES})
 public class LatentReverseSearchWorkflow extends SinglePageWorkflowBase
 {
 	@Override

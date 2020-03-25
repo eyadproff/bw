@@ -13,7 +13,9 @@ public class LatentHitsDetails extends JavaBean
 	private List<Finger> civilFingers;
 	private List<Integer> civilMissingFingers;
 	private Map<Long, List<FingerHitDetails>> latentHitDetails;
+	private Map<Long, String> latentImagesWsq; // set by the webservice
 	private Map<Long, String> latentImagesBase64; // set by the webservice
+	private Map<Integer, String> fingerImagesBase64; // set by the webservice
 	
 	public Long getTcn(){return tcn;}
 	public void setTcn(Long tcn){this.tcn = tcn;}
@@ -30,6 +32,12 @@ public class LatentHitsDetails extends JavaBean
 	public Map<Long, List<FingerHitDetails>> getLatentHitDetails(){return latentHitDetails;}
 	public void setLatentHitDetails(Map<Long, List<FingerHitDetails>> latentHitDetails){this.latentHitDetails = latentHitDetails;}
 	
+	public Map<Long, String> getLatentImagesWsq(){return latentImagesWsq;}
+	public void setLatentImagesWsq(Map<Long, String> latentImagesWsq){this.latentImagesWsq = latentImagesWsq;}
+	
 	public Map<Long, String> getLatentImagesBase64(){return latentImagesBase64;}
 	public void setLatentImagesBase64(Map<Long, String> latentImagesBase64){this.latentImagesBase64 = latentImagesBase64;}
+	
+	public Map<Integer, String> getFingerImagesBase64(){return fingerImagesBase64;}
+	public void setFingerImagesBase64(Map<Integer, String> fingerImagesBase64){this.fingerImagesBase64 = fingerImagesBase64;}
 }

@@ -362,7 +362,7 @@ public class LatentReverseSearchPaneFxController extends ContentFxControllerBase
 						case ASSOCIATE_LATENT:
 						{
 							String latentNumber = AppUtils.localizeNumbers(String.valueOf(decisionHistory.getLinkedLatentBioId()));
-							String civilBiometricsId = AppUtils.localizeNumbers(String.valueOf(this.civilBiometricsId));
+							String civilBiometricsId = AppUtils.localizeNumbers(String.valueOf(decisionHistory.getLinkedCivilBioID()));
 							
 							String message = resources.getString("linkingLatent.success.message");
 							message = String.format(message, latentNumber, civilBiometricsId);
@@ -377,14 +377,6 @@ public class LatentReverseSearchPaneFxController extends ContentFxControllerBase
 							message = String.format(message, jobId);
 							showSuccessNotification(message);
 							break;
-						}
-						case VIEW_ONLY:
-						{
-							String jobId = AppUtils.localizeNumbers(String.valueOf(decisionHistory.getJobId()));
-							
-							String message = resources.getString("closingWithoutAction.success.message");
-							message = String.format(message, jobId);
-							showSuccessNotification(message);
 						}
 					}
 				}

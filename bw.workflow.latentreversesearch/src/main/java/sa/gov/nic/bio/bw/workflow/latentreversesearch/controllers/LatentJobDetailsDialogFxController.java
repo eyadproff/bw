@@ -1,6 +1,8 @@
 package sa.gov.nic.bio.bw.workflow.latentreversesearch.controllers;
 
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -103,8 +105,10 @@ public class LatentJobDetailsDialogFxController extends ContentFxControllerBase
 	private long jobId;
 	private long tcn;
 	private long civilBiometricsId;
-	private Map<Integer, String> fingerImagesBase64 = new HashMap<>();
+	private Map<Integer, String> fingerImagesWsq = new HashMap<>();
+	private Map<Integer, String> fingerImagesBase64;
 	private boolean errorOnceAtLeast = false;
+	private BooleanProperty disableCompleteButton = new SimpleBooleanProperty(false);
 	
 	@Override
 	protected void initialize()
@@ -177,9 +181,9 @@ public class LatentJobDetailsDialogFxController extends ContentFxControllerBase
 			
 			switch(decision)
 			{
-				case ASSOCIATE_LATENT: decisionText = resources.getString("label.latentAssociated"); break;
-				case COMPLETE_WITHOUT_ASSOCIATING_LATENT: decisionText = resources.getString("label.linkLatent"); break;
-				case VIEW_ONLY: decisionText = resources.getString("label.finishWithoutLinkingLatent"); break;
+				case ASSOCIATE_LATENT: decisionText = resources.getString("label.linkLatent"); break;
+				case COMPLETE_WITHOUT_ASSOCIATING_LATENT: decisionText = resources.getString("label.completeWithoutLinkingLatent"); break;
+				case VIEW_ONLY: decisionText = resources.getString("label.viewOnly"); break;
 				default: decisionText = "";
 			}
 			
@@ -239,7 +243,7 @@ public class LatentJobDetailsDialogFxController extends ContentFxControllerBase
 					int score = fingerHit.getScore();
 					String[] labels = fingerprintLabelMap.get(position);
 					
-					statusItems.add(new ComboBoxItem<>(fingerHit, labels[0] + " (" + labels[1] + ") [" +
+					statusItems.add(new ComboBoxItem<>(fingerHit, labels[0] + " (" + labels[1] + ") [" + resources.getString("label.score") + " " + 
 																  AppUtils.localizeNumbers(String.valueOf(score)) + "]"));
 				}
 				
@@ -286,7 +290,7 @@ public class LatentJobDetailsDialogFxController extends ContentFxControllerBase
 		btnOpenAdjudicator.disableProperty().bind(ivFingerprintImage.imageProperty().isNull().or(ivLatentImage.imageProperty().isNull()));
 		btnLinkLatent.disableProperty().bind(cboSelectedFinger.getSelectionModel().selectedItemProperty().isNull().or(ivAnotherOperatorLockWarningIcon.visibleProperty())
 		                                                                                                          .or(ivLatentAssociationWarningIcon.visibleProperty()));
-		btnFinishWithoutLinkingLatent.disableProperty().bind(ivAnotherOperatorLockWarningIcon.visibleProperty());
+		btnFinishWithoutLinkingLatent.disableProperty().bind(ivAnotherOperatorLockWarningIcon.visibleProperty().or(disableCompleteButton));
 		cboSelectedFinger.disableProperty().bind(tvLatentList.getSelectionModel().selectedItemProperty().isNull());
 		
 		dialog.setOnShown(event ->
@@ -432,6 +436,7 @@ public class LatentJobDetailsDialogFxController extends ContentFxControllerBase
 		{
 			Map<Long, List<FingerHitDetails>> latentHitDetails = latentHitsDetails.getLatentHitDetails();
 			Map<Long, String> latentImagesBase64 = latentHitsDetails.getLatentImagesBase64();
+			Map<Long, String> latentImagesWsq = latentHitsDetails.getLatentImagesWsq();
 			List<Finger> civilFingers = latentHitsDetails.getCivilFingers();
 			
 			if(latentHitDetails != null)
@@ -447,6 +452,7 @@ public class LatentJobDetailsDialogFxController extends ContentFxControllerBase
 					latent.setLatentId(entry.getKey());
 					latent.setFingerHitDetails(fingerHitDetails);
 					latent.setGeneralScore(generalScore);
+					latent.setLatentImageWsq(latentImagesWsq.get(entry.getKey()));
 					latent.setLatentImageBase64(latentImagesBase64.get(entry.getKey()));
 					latents.add(latent);
 				}
@@ -456,9 +462,11 @@ public class LatentJobDetailsDialogFxController extends ContentFxControllerBase
 			{
 				for(Finger finger : civilFingers)
 				{
-					fingerImagesBase64.put(finger.getType(), finger.getImage());
+					fingerImagesWsq.put(finger.getType(), finger.getImage());
 				}
 			}
+			
+			fingerImagesBase64 = latentHitsDetails.getFingerImagesBase64();
 		}
 		
 		tvLatentList.getItems().setAll(latents);
@@ -504,6 +512,7 @@ public class LatentJobDetailsDialogFxController extends ContentFxControllerBase
 		else //if(status == LatentHitProcessingStatus.DONE) 
 		{
 			GuiUtils.showNode(ivAnotherOperatorLockSuccessIcon, true);
+			disableCompleteButton.setValue(true);
 			
 			if(linkedLatentHit != null)
 			{
@@ -535,8 +544,8 @@ public class LatentJobDetailsDialogFxController extends ContentFxControllerBase
 			{
 				var latent = tvLatentList.getSelectionModel().getSelectedItem();
 				var selectedItem = cboSelectedFinger.getSelectionModel().getSelectedItem();
-				String latentImageBase64 = latent != null ? latent.getLatentImageBase64() : null;
-				String fingerImageBase64 = selectedItem != null ? fingerImagesBase64.get(selectedItem.getItem().getPosition()) : null;
+				String latentImageBase64 = latent != null ? latent.getLatentImageWsq() : null;
+				String fingerImageBase64 = selectedItem != null ? fingerImagesWsq.get(selectedItem.getItem().getPosition()) : null;
 				
 				controller.setFingerImageBase64(fingerImageBase64);
 				controller.setLatentImageBase64(latentImageBase64);
@@ -623,14 +632,6 @@ public class LatentJobDetailsDialogFxController extends ContentFxControllerBase
 	@FXML
 	private void onCloseWithoutActionButtonClicked(ActionEvent actionEvent)
 	{
-		Stage stage = (Stage) dialog.getDialogPane().getScene().getWindow();
-		String transactionNumber = AppUtils.localizeNumbers(String.valueOf(this.tcn));
-		
-		String headerText = resources.getString("closingWithoutAction.confirmation.header");
-		String contentText = String.format(resources.getString("closingWithoutAction.confirmation.message"), transactionNumber);
-		boolean confirmed = Context.getCoreFxController().showConfirmationDialogAndWait(stage, headerText, contentText);
-		if(!confirmed) return;
-		
 		UserInfo userInfo = (UserInfo) Context.getUserSession().getAttribute("userInfo");
 		ComboBoxItem<FingerHitDetails> selectedItem = cboSelectedFinger.getSelectionModel().getSelectedItem();
 		FingerHitDetails fingerHitDetails = selectedItem != null ? selectedItem.getItem() : null;

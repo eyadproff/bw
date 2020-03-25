@@ -2,6 +2,7 @@ package sa.gov.nic.bio.bw.workflow.latentreversesearch.webservice;
 
 import retrofit2.Call;
 import retrofit2.http.Field;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.POST;
@@ -27,6 +28,7 @@ public interface LatentAPI
 	@GET("services-gateway-biooperation/api/latent/jobs/info/tcn/v1")
 	Call<LatentJobDetails> getLatentJobDetails(@Header("Workflow-Code") Integer workflowId, @Header("Workflow-Tcn") Long workflowTcn, @Query("tcn") Long tcn);
 	
-	@POST("services-gateway-biooperation/api/job/decision/submit/v1")
+	@FormUrlEncoded
+	@POST("services-gateway-biooperation/api/latent/job/decision/submit/v1")
 	Call<Void> addDecisionToLatentHit(@Header("Workflow-Code") Integer workflowId, @Header("Workflow-Tcn") Long workflowTcn, @Field("decision") String decisionHistoryJson);
 }
