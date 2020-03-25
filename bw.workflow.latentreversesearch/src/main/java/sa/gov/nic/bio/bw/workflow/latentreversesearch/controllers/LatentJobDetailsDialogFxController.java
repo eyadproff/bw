@@ -289,7 +289,9 @@ public class LatentJobDetailsDialogFxController extends ContentFxControllerBase
 		
 		btnOpenAdjudicator.disableProperty().bind(ivFingerprintImage.imageProperty().isNull().or(ivLatentImage.imageProperty().isNull()));
 		btnLinkLatent.disableProperty().bind(cboSelectedFinger.getSelectionModel().selectedItemProperty().isNull().or(ivAnotherOperatorLockWarningIcon.visibleProperty())
-		                                                                                                          .or(ivLatentAssociationWarningIcon.visibleProperty()));
+		                                                                                                          .or(ivLatentAssociationWarningIcon.visibleProperty()
+		                                                                                                          .or(ivFingerprintImage.imageProperty().isNull()
+                                                                                                                  .or(ivLatentImage.imageProperty().isNull()))));
 		btnFinishWithoutLinkingLatent.disableProperty().bind(ivAnotherOperatorLockWarningIcon.visibleProperty().or(disableCompleteButton));
 		cboSelectedFinger.disableProperty().bind(tvLatentList.getSelectionModel().selectedItemProperty().isNull());
 		
@@ -608,8 +610,6 @@ public class LatentJobDetailsDialogFxController extends ContentFxControllerBase
 		if(!confirmed) return;
 		
 		UserInfo userInfo = (UserInfo) Context.getUserSession().getAttribute("userInfo");
-		ComboBoxItem<FingerHitDetails> selectedItem = cboSelectedFinger.getSelectionModel().getSelectedItem();
-		FingerHitDetails fingerHitDetails = selectedItem != null ? selectedItem.getItem() : null;
 		
 		DecisionHistory decisionHistory = new DecisionHistory();
 		decisionHistory.setJobId(jobId);
@@ -619,12 +619,6 @@ public class LatentJobDetailsDialogFxController extends ContentFxControllerBase
 		decisionHistory.setDecisionDate(System.currentTimeMillis() / 1000L);
 		decisionHistory.setLinkedCivilBioID(this.civilBiometricsId);
 		
-		if(fingerHitDetails != null)
-		{
-			decisionHistory.setScore(fingerHitDetails.getScore());
-			decisionHistory.setFingerPos(fingerHitDetails.getPosition());
-		}
-		
 		dialog.setResult(decisionHistory);
 		dialog.close();
 	}
@@ -633,8 +627,6 @@ public class LatentJobDetailsDialogFxController extends ContentFxControllerBase
 	private void onCloseWithoutActionButtonClicked(ActionEvent actionEvent)
 	{
 		UserInfo userInfo = (UserInfo) Context.getUserSession().getAttribute("userInfo");
-		ComboBoxItem<FingerHitDetails> selectedItem = cboSelectedFinger.getSelectionModel().getSelectedItem();
-		FingerHitDetails fingerHitDetails = selectedItem != null ? selectedItem.getItem() : null;
 		
 		DecisionHistory decisionHistory = new DecisionHistory();
 		decisionHistory.setJobId(jobId);
@@ -643,12 +635,6 @@ public class LatentJobDetailsDialogFxController extends ContentFxControllerBase
 		decisionHistory.setDecision(Decision.VIEW_ONLY.getCode());
 		decisionHistory.setDecisionDate(System.currentTimeMillis() / 1000L);
 		decisionHistory.setLinkedCivilBioID(this.civilBiometricsId);
-		
-		if(fingerHitDetails != null)
-		{
-			decisionHistory.setScore(fingerHitDetails.getScore());
-			decisionHistory.setFingerPos(fingerHitDetails.getPosition());
-		}
 		
 		dialog.setResult(decisionHistory);
 		dialog.close();
