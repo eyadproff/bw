@@ -118,9 +118,10 @@
         - services-gateway-demographic/api/person/deportee/info/v1
     
     menu.query.latentreversesearch:
-        - services-gateway-demographic/api/latent/hits/custom/v1
-        - services-gateway-demographic/api/latent/hit/details/v1
-        - services-gateway-demographic/api/latent/hit/decision/v1
+        - services-gateway-biooperation/api/latent/info/v1
+        - services-gateway-biooperation/api/latent/jobs/info/custom/v1
+        - services-gateway-biooperation/api/latent/jobs/info/tcn/v1
+        - services-gateway-biooperation/api/job/decision/submit/v1
     
     menu.query.miscreantfingerprintsenrollment:
         - services-gateway-lookups/api/application/nationality/all/v1

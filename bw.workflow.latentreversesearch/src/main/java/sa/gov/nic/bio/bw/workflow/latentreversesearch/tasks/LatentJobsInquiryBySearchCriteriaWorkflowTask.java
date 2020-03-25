@@ -34,7 +34,7 @@ public class LatentJobsInquiryBySearchCriteriaWorkflowTask extends WorkflowTask
 		
 		var api = Context.getWebserviceManager().getApi(LatentAPI.class);
 		var call = api.inquireLatentJobsBySearchCriteria(workflowId, workflowTcn, jobId, civilBiometricsId,
-		                                                 personId, tcn, locationId, status, createDateFrom, createDateTo, start, end);
+		                                                 personId, tcn, locationId, status != null ? status.getCode() : null, createDateFrom, createDateTo, start, end);
 		var taskResponse = Context.getWebserviceManager().executeApi(call);
 		
 		resetWorkflowStepIfNegativeOrNullTaskResponse(taskResponse);

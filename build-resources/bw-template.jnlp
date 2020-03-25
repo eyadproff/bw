@@ -58,6 +58,7 @@
         <property name="jnlp.noPrefix.--add-opens java.base/java.net=" value='org.apache.commons.lang3'/>
         <property name="jnlp.noPrefix.--add-opens java.desktop/java.awt=" value='org.apache.commons.lang3'/>
         <property name="jnlp.noPrefix.--add-opens java.base/java.time.chrono=" value='bw.core'/>
+        <property name="jnlp.noPrefix.--enable-preview" value=''/>
         <property name="jnlp.noPrefix.-Djava.library.path="
                   value='"C:/bio/java/jre14.0.0-32bit/bin;C:/bio/user-apps/${user.name}/bw/resources"'/>
     </resources>

@@ -23,7 +23,7 @@
 <Dialog xmlns="http://javafx.com/javafx"
         xmlns:fx="http://javafx.com/fxml"
         fx:id="dialog" title="%dialog.title.latentHitsWindow"
-        fx:controller="sa.gov.nic.bio.bw.workflow.latentreversesearch.controllers.LatentHitsDialogFxController">
+        fx:controller="sa.gov.nic.bio.bw.workflow.latentreversesearch.controllers.LatentJobDetailsDialogFxController">
     <dialogPane>
         <DialogPane prefWidth="850.0" prefHeight="650.0" stylesheets="@/sa/gov/nic/bio/bw/core/css/style.css,@../css/style.css">
             <content>
@@ -36,15 +36,15 @@
                                         <HBox spacing="5.0" alignment="CENTER_LEFT">
                                             <HBox spacing="20.0" alignment="CENTER_LEFT">
                                                 <HBox spacing="5.0" alignment="CENTER_LEFT">
-                                                    <Label text="%label.transactionNumber"/>
-                                                    <TextField fx:id="txtTransactionNumber" editable="false"/>
+                                                    <Label text="%label.jobId"/>
+                                                    <TextField fx:id="txtJobId" editable="false"/>
                                                 </HBox>
                                                 <HBox spacing="5.0" alignment="CENTER_LEFT">
                                                     <Label text="%label.status"/>
                                                     <TextField fx:id="txtStatus" editable="false"/>
                                                 </HBox>
                                             </HBox>
-                                            <HBox fx:id="paneLockedByOperator" spacing="5.0" alignment="CENTER_LEFT" managed="false" visible="false">
+                                            <HBox spacing="5.0" alignment="CENTER_LEFT">
                                                 <Label text="%label.byOperator"/>
                                                 <TextField fx:id="txtOperatorId" editable="false"/>
                                                 <ImageView fx:id="ivAnotherOperatorLockSuccessIcon" managed="false" visible="false">
@@ -127,6 +127,12 @@
                                     <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/icon_error_32px.png"/>
                                 </ImageView>
                                 <Label text="%label.failedToLoadLatentHitRecord"/>
+                            </VBox>
+                            <VBox fx:id="paneLoadingWarning" alignment="CENTER" managed="false" visible="false">
+                                <ImageView>
+                                    <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/icon_warning_32px.png"/>
+                                </ImageView>
+                                <Label fx:id="lblLoadingWarning"/>
                             </VBox>
                             <BorderPane fx:id="paneAdjudicator" managed="false" visible="false" VBox.vgrow="ALWAYS">
                                 <top>

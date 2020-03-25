@@ -6,20 +6,20 @@ import java.util.List;
 
 public class Latent extends JavaBean
 {
-	private String number;
-	private int score;
-	private String imageBase64;
-	private List<FingerHit> fingerHits;
+	private long latentId;
+	private String latentImageBase64;
+	private Integer generalScore;
+	private List<FingerHitDetails> fingerHitDetails;
 	
-	public String getNumber(){return number;}
-	public void setNumber(String number){this.number = number;}
+	public long getLatentId(){return latentId;}
+	public void setLatentId(long latentId){this.latentId = latentId;}
 	
-	public int getScore(){return score;}
-	public void setScore(int score){this.score = score;}
+	public String getLatentImageBase64(){return latentImageBase64;}
+	public void setLatentImageBase64(String latentImageBase64){this.latentImageBase64 = latentImageBase64;}
 	
-	public String getImageBase64(){return imageBase64;}
-	public void setImageBase64(String imageBase64){this.imageBase64 = imageBase64;}
+	public Integer getGeneralScore(){return generalScore;}
+	public void setGeneralScore(Integer generalScore){this.generalScore = generalScore;}
 	
-	public List<FingerHit> getFingerHits(){return fingerHits;}
-	public void setFingerHits(List<FingerHit> fingerHits){this.fingerHits = fingerHits;}
+	public List<FingerHitDetails> getFingerHitDetails(){return fingerHitDetails;}
+	public void setFingerHitDetails(List<FingerHitDetails> fingerHitDetails){this.fingerHitDetails = fingerHitDetails;}
 }
