@@ -497,6 +497,7 @@ public class LatentReverseSearchPaneFxController extends ContentFxControllerBase
 				resultsTotalCount = null;
 				latentJobs = null;
 				tpSearchResults.setText(resources.getString("label.searchResults") + " (" + AppUtils.localizeNumbers("0") + ")");
+				request = Request.SEARCH;
 				continueWorkflow();
 			}
 		}

@@ -193,7 +193,7 @@ public class LatentJobDetailsDialogFxController extends ContentFxControllerBase
 		{
 			var decisionRecord = param.getValue();
 			var latentNumber = decisionRecord.getLinkedLatentBioId();
-			if(latentNumber == null) return null;
+			if(latentNumber == null || latentNumber == 0L) return null;
 			
 		    return new SimpleStringProperty(AppUtils.localizeNumbers(String.valueOf(latentNumber)));
 		});
@@ -201,7 +201,7 @@ public class LatentJobDetailsDialogFxController extends ContentFxControllerBase
 		{
 		    var decisionRecord = param.getValue();
 		    Integer fingerPosition = decisionRecord.getFingerPos();
-		    if(fingerPosition == null) return null;
+		    if(fingerPosition == null || fingerPosition == 0) return null;
 			
 			String[] labels = fingerprintLabelMap.get(fingerPosition);
 			
