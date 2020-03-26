@@ -218,8 +218,12 @@ public class GuiUtils implements AppLogger
 					
 					try
 					{
-						BclUtils.launchAppByBCL(serverUrl, AppConstants.APP_CODE.toLowerCase(), -1,
-						                        -1, null);
+						String jvmArch = System.getProperty("sun.arch.data.model");
+						boolean jvmArch32 = "32".equals(jvmArch); // consider everything else as 64-bit
+						String appCode = AppConstants.APP_CODE.toLowerCase();
+						if(!jvmArch32) appCode = appCode + "64";
+						
+						BclUtils.launchAppByBCL(serverUrl, appCode, -1, -1, null);
 					}
 					catch(Exception e)
 					{
