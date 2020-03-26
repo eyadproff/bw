@@ -289,7 +289,7 @@ public class LatentJobDetailsDialogFxController extends ContentFxControllerBase
 		
 		btnOpenAdjudicator.disableProperty().bind(ivFingerprintImage.imageProperty().isNull().or(ivLatentImage.imageProperty().isNull()));
 		btnLinkLatent.disableProperty().bind(cboSelectedFinger.getSelectionModel().selectedItemProperty().isNull().or(ivAnotherOperatorLockWarningIcon.visibleProperty())
-		                                                                                                          .or(ivLatentAssociationWarningIcon.visibleProperty()
+		                                                                                                          .or(txtAssociatedLatentNumber.visibleProperty()
 		                                                                                                          .or(ivFingerprintImage.imageProperty().isNull()
                                                                                                                   .or(ivLatentImage.imageProperty().isNull()))));
 		btnFinishWithoutLinkingLatent.disableProperty().bind(ivAnotherOperatorLockWarningIcon.visibleProperty().or(disableCompleteButton));
