@@ -224,3 +224,81 @@ task deploy_int(group: 'web-start') {
         }
     }
 }
+
+// 64-bit
+
+task packageWebStart64(group: 'web-start') {
+    doLast {
+        String jnlpTemplate = new File("build-resources/bw64-template.jnlp").getText('UTF-8')
+
+        File directory = new File(project.rootDir, 'build/web-start64')
+        directory.mkdirs()
+        File file = new File(directory, 'APPLICATION.JNLP')
+        file.createNewFile()
+        file.text = jnlpTemplate
+
+        // copy jar files
+        copy {
+            from 'build/libs'
+            into "build/web-start64/modulepath-jars"
+        }
+
+        // copy javafx DLLs
+        copy {
+            from 'build-resources/javafx-dlls/64-bit'
+            into "build/web-start64/resources"
+        }
+    }
+}
+packageWebStart64.dependsOn(collectDependencies)
+
+
+task packageWebStart64AndDeployDev(group: 'web-start') {
+    doLast {
+        ssh.run {
+            session(remotes.webServer) {
+                remove '/opt/dev/wlp/usr/servers/bio-client-downloader/clients/bw64'
+                execute 'mkdir /opt/dev/wlp/usr/servers/bio-client-downloader/clients/bw64'
+                put from: new File(project.rootDir, 'build/web-start64').listFiles().toList(), into: '/opt/dev/wlp/usr/servers/bio-client-downloader/clients/bw64'
+            }
+        }
+    }
+}
+packageWebStart64AndDeployDev.dependsOn(packageWebStart64)
+
+task packageWebStart64AndDeployInt(group: 'web-start') {
+    doLast {
+        ssh.run {
+            session(remotes.webServer) {
+                remove '/opt/int/wlp/usr/servers/bio-client-downloader/clients/bw64'
+                execute 'mkdir /opt/int/wlp/usr/servers/bio-client-downloader/clients/bw64'
+                put from: new File(project.rootDir, 'build/web-start64').listFiles().toList(), into: '/opt/int/wlp/usr/servers/bio-client-downloader/clients/bw64'
+            }
+        }
+    }
+}
+packageWebStart64AndDeployInt.dependsOn(packageWebStart64)
+
+task deploy_dev64(group: 'web-start') {
+    doLast {
+        ssh.run {
+            session(remotes.webServer) {
+                remove '/opt/dev/wlp/usr/servers/bio-client-downloader/clients/bw64'
+                execute 'mkdir /opt/dev/wlp/usr/servers/bio-client-downloader/clients/bw64'
+                put from: new File(project.rootDir, 'build/web-start64').listFiles().toList(), into: '/opt/dev/wlp/usr/servers/bio-client-downloader/clients/bw64'
+            }
+        }
+    }
+}
+
+task deploy_int64(group: 'web-start') {
+    doLast {
+        ssh.run {
+            session(remotes.webServer) {
+                remove '/opt/int/wlp/usr/servers/bio-client-downloader/clients/bw64'
+                execute 'mkdir /opt/int/wlp/usr/servers/bio-client-downloader/clients/bw64'
+                put from: new File(project.rootDir, 'build/web-start64').listFiles().toList(), into: '/opt/int/wlp/usr/servers/bio-client-downloader/clients/bw64'
+            }
+        }
+    }
+}

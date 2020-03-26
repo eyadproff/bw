@@ -17,6 +17,7 @@ VERSION SCHEMA: vYYYY.MM.#SEQ
 - ENH: Upgrade Java SE to 14.
 - ENH: Upgrade Java FX to 14.
 - ENH: Upgrade dependencies to latest versions.
+- NEW: Add support for web-start 64-bit deployment.
 
 ---
 
