@@ -39,7 +39,7 @@ run {
                 "--add-opens=java.base/java.time.chrono=bw.core",
                 "--add-opens=javafx.controls/javafx.scene.control.skin=bw.core",
                 "--add-opens=javafx.controls/com.sun.javafx.scene.control=org.scenicview.scenicview",
-                '-Djava.library.path=../build-resources/javafx-dlls/64-bit;../build-resources/javafx-dlls/64-bit-extra',
+                '-Djava.library.path=../build-resources/javafx-dlls/64-bit',
                 '-Djavafx.preloader=sa.gov.nic.bio.bw.preloader.AppPreloader',
                 '--module', "$moduleName/$mainClassName"
         ]
