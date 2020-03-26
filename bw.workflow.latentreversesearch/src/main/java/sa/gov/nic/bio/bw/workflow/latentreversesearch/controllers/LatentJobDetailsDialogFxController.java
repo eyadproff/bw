@@ -520,13 +520,13 @@ public class LatentJobDetailsDialogFxController extends ContentFxControllerBase
 			{
 				txtAssociatedLatentNumber.setText(String.valueOf(linkedLatentHit));
 				GuiUtils.showNode(paneLatentAssociated, true);
-				GuiUtils.showNode(ivLatentAssociationSuccessIcon, true);
 			}
 			else
 			{
 				GuiUtils.showNode(paneLatentNotAssociated, true);
-				GuiUtils.showNode(ivLatentAssociationWarningIcon, true);
 			}
+			
+			GuiUtils.showNode(ivLatentAssociationSuccessIcon, true);
 		}
 		
 		GuiUtils.showNode(paneTop, true);
