@@ -61,7 +61,9 @@ public class AdjudicatorDialogFxController extends ContentFxControllerBase
 			if(Context.getRuntimeEnvironment() == RuntimeEnvironment.DEV || Context.getRuntimeEnvironment() == RuntimeEnvironment.LOCAL) serverUrl = AppConstants.DEV_SERVER_URL;
 			if(serverUrl.startsWith("http")) serverUrl = serverUrl.substring(serverUrl.indexOf("://") + 3);
 			
-			webEngine.load("http://" + serverUrl + ADJUDICATOR_PATH);
+			String finalUrl = "http://" + serverUrl + ADJUDICATOR_PATH;
+			LOGGER.info("Opening web browser: " + finalUrl);
+			webEngine.load(finalUrl);
 		});
 	}
 	
