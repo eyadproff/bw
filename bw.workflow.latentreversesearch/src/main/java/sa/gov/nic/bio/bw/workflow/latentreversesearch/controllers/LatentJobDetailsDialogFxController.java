@@ -172,7 +172,7 @@ public class LatentJobDetailsDialogFxController extends ContentFxControllerBase
 		{
 		    var decisionRecord = param.getValue();
 			var decisionCode = decisionRecord.getDecision();
-			if(decisionCode == null) return null;
+			if(decisionCode == null || decisionCode == 0) return null;
 			
 			Decision decision = Decision.findByCode(decisionCode);
 			if(decision == null) return null;
@@ -210,14 +210,16 @@ public class LatentJobDetailsDialogFxController extends ContentFxControllerBase
 		tcOperatorId.setCellValueFactory(param ->
 		{
 		    var decisionRecord = param.getValue();
-		    long operatorId = decisionRecord.getOperatorId();
+		    Long operatorId = decisionRecord.getOperatorId();
+		    if(operatorId == null || operatorId == 0L) return null;
 		
 		    return new SimpleStringProperty(AppUtils.localizeNumbers(String.valueOf(operatorId)));
 		});
 		tcDecisionDateTime.setCellValueFactory(param ->
 		{
 		    var decisionRecord = param.getValue();
-		    long decisionTimestamp = decisionRecord.getDecisionDate();
+		    Long decisionTimestamp = decisionRecord.getDecisionDate();
+		    if(decisionTimestamp == null) return null;
 		    return new SimpleStringProperty(AppUtils.formatHijriGregorianDateTime(decisionTimestamp));
 		});
 		
