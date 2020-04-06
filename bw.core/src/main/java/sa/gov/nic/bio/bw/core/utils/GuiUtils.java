@@ -82,6 +82,7 @@ import sa.gov.nic.bio.bw.core.interfaces.AppLogger;
 import sa.gov.nic.bio.bw.core.interfaces.LocalizedText;
 
 import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
@@ -1199,5 +1200,30 @@ public class GuiUtils implements AppLogger
 		String text = resourceBundle.getString("label.thePage") + " " + pageNumber + " " +
 														resourceBundle.getString("label.from") + " " + pagesCount;
 		return AppUtils.localizeNumbers(text, AppConstants.Locales.SAUDI_AR_LOCALE, false);
+	}
+	
+	public static boolean isJpegImage(String base64Image)
+	{
+		try
+		{
+			byte[] bytes = Base64.getDecoder().decode(base64Image);
+			var bais = new ByteArrayInputStream(bytes);
+			var iis = ImageIO.createImageInputStream(bais);
+			var readers = ImageIO.getImageReadersByFormatName("jpg");
+			
+			if(readers.hasNext())
+			{
+				ImageReader reader = readers.next();
+				reader.setInput(iis);
+				reader.read(0);
+				return true;
+			}
+			
+			return false;
+		}
+		catch(IOException e)
+		{
+			return false;
+		}
 	}
 }

@@ -1,6 +1,7 @@
 package sa.gov.nic.bio.bw.workflow.latentreversesearch.tasks;
 
 import sa.gov.nic.bio.bw.core.Context;
+import sa.gov.nic.bio.bw.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.core.workflow.Input;
 import sa.gov.nic.bio.bw.core.workflow.Output;
 import sa.gov.nic.bio.bw.core.workflow.Signal;
@@ -41,12 +42,19 @@ public class GetLatentHitDetailsWorkflowTask extends WorkflowTask
 					fingerImagesWsq.put(civilFinger.getType(), civilFinger.getImage());
 				}
 				
-				var task = new ConvertWsqToFingerprintBase64ImagesWorkflowTask();
-				task.setFingerprintWsqImages(fingerImagesWsq);
-				task.execute();
-				
-				Map<Integer, String> fingerprintBase64Images = task.getFingerprintBase64Images();
-				latentHitsDetails.setFingerImagesBase64(fingerprintBase64Images);
+				if(civilFingers.isEmpty() || GuiUtils.isJpegImage(civilFingers.get(0).getImage()))
+				{
+					latentHitsDetails.setFingerImagesBase64(fingerImagesWsq);
+				}
+				else
+				{
+					var task = new ConvertWsqToFingerprintBase64ImagesWorkflowTask();
+					task.setFingerprintWsqImages(fingerImagesWsq);
+					task.execute();
+					
+					Map<Integer, String> fingerprintBase64Images = task.getFingerprintBase64Images();
+					latentHitsDetails.setFingerImagesBase64(fingerprintBase64Images);
+				}
 			}
 			
 			var latentHitDetails = latentHitsDetails.getLatentHitDetails();
@@ -69,13 +77,20 @@ public class GetLatentHitDetailsWorkflowTask extends WorkflowTask
 						Map<Integer, String> temp = new HashMap<>();
 						temp.put(1, fingerImage);
 						
-						var task = new ConvertWsqToFingerprintBase64ImagesWorkflowTask();
-						task.setFingerprintWsqImages(temp);
-						task.execute();
-						
-						Map<Integer, String> fingerprintBase64Images = task.getFingerprintBase64Images();
-						String imageBase64 = fingerprintBase64Images.get(1);
-						latentImagesBase64.put(latentId, imageBase64);
+						if(GuiUtils.isJpegImage(fingerImage))
+						{
+							latentImagesBase64.put(latentId, fingerImage);
+						}
+						else
+						{
+							var task = new ConvertWsqToFingerprintBase64ImagesWorkflowTask();
+							task.setFingerprintWsqImages(temp);
+							task.execute();
+							
+							Map<Integer, String> fingerprintBase64Images = task.getFingerprintBase64Images();
+							String imageBase64 = fingerprintBase64Images.get(1);
+							latentImagesBase64.put(latentId, imageBase64);
+						}
 					}
 				}
 				

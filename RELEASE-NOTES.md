@@ -11,6 +11,12 @@ VERSION SCHEMA: vYYYY.MM.#SEQ
 
 ---
 
+## v2020.04.1
+
+- FIX: Latent image cannot be rendered when it is received from the backend as JPEG.
+
+---
+
 ## v2020.03.3
 
 - NEW: Latent Reverse Search Workflow.
