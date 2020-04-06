@@ -21,7 +21,7 @@
 
         <!-- BCL properties -->
         <property name="jnlp.bcl.jreVersion" value="jre14.0.0-64bit"/>
-        <property name="jnlp.bcl.appId" value="bw"/>
+        <property name="jnlp.bcl.appId" value="bw64"/>
         <property name="jnlp.bcl.mainClass" value="sa.gov.nic.bio.bw.AppLauncher"/>
         <property name="jnlp.bcl.shared" value="false"/>
         <property name="jnlp.bcl.usesModules" value="true"/>
