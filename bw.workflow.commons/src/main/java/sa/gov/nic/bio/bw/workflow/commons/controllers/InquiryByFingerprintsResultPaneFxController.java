@@ -4,14 +4,20 @@ import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
+import javafx.scene.control.TableCell;
+import javafx.scene.control.TableRow;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TitledPane;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -119,10 +125,12 @@ public class InquiryByFingerprintsResultPaneFxController extends WizardStepFxCon
 	@FXML private Button btnPrintReport;
 	@FXML private Button btnSaveReportAsPDF;
 
-	private FileChooser fileChooser = new FileChooser();
-	private AtomicReference<JasperPrint> jasperPrint = new AtomicReference<>();
+	private final FileChooser fileChooser = new FileChooser();
+	private final AtomicReference<JasperPrint> jasperPrint = new AtomicReference<>();
 	private boolean civilHit;
 	private boolean criminalHit;
+	private Long selectedCivilPersonId;
+	private int selectedCivilPersonIdIndex = -1;
 	
 	@Override
 	protected void onAttachedToScene()
@@ -161,6 +169,14 @@ public class InquiryByFingerprintsResultPaneFxController extends WizardStepFxCon
 		civilHit = status == Status.HIT && civilBiometricsId != null;
 		criminalHit = status == Status.HIT && criminalBiometricsId != null;
 		
+		for(Long personId : civilPersonInfoMap.keySet())
+		{
+			selectedCivilPersonIdIndex++;
+			if(String.valueOf(personId).startsWith("800")) continue;
+			selectedCivilPersonId = personId;
+			break;
+		}
+		
 		tcCivilSelection.setCellFactory(tc -> new TableCell<>()
 		{
 			@Override
@@ -170,7 +186,7 @@ public class InquiryByFingerprintsResultPaneFxController extends WizardStepFxCon
 				
 				var tableRow = getTableRow();
 				
-				if(!hideConfirmationButton && tableRow != null && tableRow.getIndex() == 0)
+				if(!hideConfirmationButton && tableRow != null && tableRow.getIndex() == selectedCivilPersonIdIndex)
 				{
 					CheckBox checkBox = new CheckBox();
 					checkBox.setSelected(true);
@@ -187,7 +203,7 @@ public class InquiryByFingerprintsResultPaneFxController extends WizardStepFxCon
 			{
 				super.updateItem(item, empty);
 				
-				TableRow tableRow = getTableRow();
+				TableRow<?> tableRow = getTableRow();
 				if(tableRow != null && item != null)
 				{
 					if(!hideConfirmationButton && !civilHit)
@@ -209,7 +225,7 @@ public class InquiryByFingerprintsResultPaneFxController extends WizardStepFxCon
 			{
 				super.updateItem(item, empty);
 				
-				TableRow tableRow = getTableRow();
+				TableRow<?> tableRow = getTableRow();
 				if(tableRow != null && item != null)
 				{
 					if(!hideConfirmationButton && !civilHit)
@@ -350,7 +366,7 @@ public class InquiryByFingerprintsResultPaneFxController extends WizardStepFxCon
 			
 			if(!tvCivilPersonIds.getItems().isEmpty())
 			{
-				tvCivilPersonIds.getSelectionModel().select(0);
+				tvCivilPersonIds.getSelectionModel().select(selectedCivilPersonIdIndex);
 				if(!tvDisRecords.getItems().isEmpty()) tabPaneCriminal.getSelectionModel().select(tabOldSystem);
 				else tabPaneCriminal.getSelectionModel().select(tabNewSystem);
 			}
@@ -409,8 +425,7 @@ public class InquiryByFingerprintsResultPaneFxController extends WizardStepFxCon
 		
 		if(civilHit)
 		{
-			ObservableList<Long> personIds = tvCivilPersonIds.getItems();
-			normalizedPersonInfo = new NormalizedPersonInfo(civilPersonInfoMap.get(personIds.get(0)));
+			normalizedPersonInfo = new NormalizedPersonInfo(civilPersonInfoMap.get((selectedCivilPersonId)));
 		}
 	}
 	

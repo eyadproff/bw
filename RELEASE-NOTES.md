@@ -11,6 +11,12 @@ VERSION SCHEMA: vYYYY.MM.#SEQ
 
 ---
 
+## v2020.04.2
+
+- FIX: Civil fingerprints hits that return person id (800XXXXXXX) has no person information.
+
+---
+
 ## v2020.04.1
 
 - FIX: Latent image cannot be rendered when it is received from the backend as JPEG.
