@@ -11,6 +11,12 @@ VERSION SCHEMA: vYYYY.MM.#SEQ
 
 ---
 
+## v2020.04.3
+
+- FIX: NPE in InquiryByFingerprintsResultPaneFxController.
+
+---
+
 ## v2020.04.2
 
 - FIX: Civil fingerprints hits that return person id (800XXXXXXX) has no person information.

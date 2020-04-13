@@ -13,7 +13,7 @@ buildscript {
 
 allprojects {
     group = 'sa.gov.nic.bio'
-    version = '2020.04.2'
+    version = '2020.04.3'
 }
 
 subprojects {

@@ -169,12 +169,15 @@ public class InquiryByFingerprintsResultPaneFxController extends WizardStepFxCon
 		civilHit = status == Status.HIT && civilBiometricsId != null;
 		criminalHit = status == Status.HIT && criminalBiometricsId != null;
 		
-		for(Long personId : civilPersonInfoMap.keySet())
+		if(civilPersonInfoMap != null)
 		{
-			selectedCivilPersonIdIndex++;
-			if(String.valueOf(personId).startsWith("800")) continue;
-			selectedCivilPersonId = personId;
-			break;
+			for(Long personId : civilPersonInfoMap.keySet())
+			{
+				selectedCivilPersonIdIndex++;
+				if(String.valueOf(personId).startsWith("800")) continue;
+				selectedCivilPersonId = personId;
+				break;
+			}
 		}
 		
 		tcCivilSelection.setCellFactory(tc -> new TableCell<>()
@@ -366,7 +369,7 @@ public class InquiryByFingerprintsResultPaneFxController extends WizardStepFxCon
 			
 			if(!tvCivilPersonIds.getItems().isEmpty())
 			{
-				tvCivilPersonIds.getSelectionModel().select(selectedCivilPersonIdIndex);
+				if(selectedCivilPersonIdIndex >= 0) tvCivilPersonIds.getSelectionModel().select(selectedCivilPersonIdIndex);
 				if(!tvDisRecords.getItems().isEmpty()) tabPaneCriminal.getSelectionModel().select(tabOldSystem);
 				else tabPaneCriminal.getSelectionModel().select(tabNewSystem);
 			}
