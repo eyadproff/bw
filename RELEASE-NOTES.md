@@ -11,6 +11,34 @@ VERSION SCHEMA: vYYYY.MM.#SEQ
 
 ---
 
+## v2020.04.3
+
+- FIX: NPE in InquiryByFingerprintsResultPaneFxController.
+
+---
+
+## v2020.04.2
+
+- FIX: Civil fingerprints hits that return person id (800XXXXXXX) has no person information.
+
+---
+
+## v2020.04.1
+
+- FIX: Latent image cannot be rendered when it is received from the backend as JPEG.
+
+---
+
+## v2020.03.3
+
+- NEW: Latent Reverse Search Workflow.
+- ENH: Upgrade Java SE to 14.
+- ENH: Upgrade Java FX to 14.
+- ENH: Upgrade dependencies to latest versions.
+- NEW: Add support for web-start 64-bit deployment.
+
+---
+
 ## v2020.03.2
 
 - NEW: Add new NIC logo.

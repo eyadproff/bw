@@ -24,7 +24,12 @@ public class CheckForNewUpdatesWorkflowTask extends WorkflowTask
 			if(Context.getRuntimeEnvironment() == RuntimeEnvironment.DEV) serverUrl = AppConstants.DEV_SERVER_URL;
 			if(serverUrl.startsWith("http")) serverUrl = serverUrl.substring(serverUrl.indexOf("://") + 3);
 			
-			Boolean newUpdates = BclUtils.checkForAppUpdates(serverUrl, "bw", false, json ->
+			String jvmArch = System.getProperty("sun.arch.data.model");
+			boolean jvmArch32 = "32".equals(jvmArch); // consider everything else as 64-bit
+			String appCode = AppConstants.APP_CODE.toLowerCase();
+			if(!jvmArch32) appCode = appCode + "64";
+			
+			Boolean newUpdates = BclUtils.checkForAppUpdates(serverUrl, appCode, false, json ->
 			{
 			    try
 			    {

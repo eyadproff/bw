@@ -13,14 +13,14 @@ buildscript {
 
 allprojects {
     group = 'sa.gov.nic.bio'
-    version = '2020.03.2'
+    version = '2020.04.3'
 }
 
 subprojects {
     apply plugin: 'java'
 
-    sourceCompatibility = 11
-    targetCompatibility = 11
+    sourceCompatibility = 14
+    targetCompatibility = 14
 
     tasks.withType(JavaCompile) {
         options.encoding = 'UTF-8'
@@ -35,16 +35,16 @@ subprojects {
 
     dependencies {
         // JavaFX
-        implementation name: "javafx.base-12.0.0"
-        implementation name: "javafx.controls-12.0.0"
-        implementation name: "javafx.fxml-12.0.0"
-        implementation name: "javafx.graphics-12.0.0"
-        implementation name: "javafx.swing-12.0.0"
-        compileOnly name: "javafx.media-12.0.0"
-        compileOnly name: "javafx.web-12.0.0"
+        implementation name: "javafx.base-14.0.0"
+        implementation name: "javafx.controls-14.0.0"
+        implementation name: "javafx.fxml-14.0.0"
+        implementation name: "javafx.graphics-14.0.0"
+        implementation name: "javafx.swing-14.0.0"
+        implementation name: "javafx.web-14.0.0"
+        implementation name: "javafx.media-14.0.0"
 
         // JavaFX extension library
-        implementation name: "controlsfx-11.0.0"
+        implementation name: "controlsfx-11.0.1"
 
         // BCL-Utils and Biokit library
         implementation name: "bio.commons-2019.01.2"
@@ -131,16 +131,12 @@ apply plugin: "org.hidetake.ssh"
 task collectDependencies(type: Copy, group: 'web-start') {
     from(subprojects.collect { it.tasks.withType(Jar) }) {
         exclude 'scenicview-*.jar'
-        exclude 'javafx.web-*.jar'
-        exclude 'javafx.media-*.jar'
     }
     from(subprojects.collect { it.sourceSets.main.runtimeClasspath }) {
         exclude 'sa/**'
         exclude 'org/**'
         exclude 'module-info.class'
         exclude 'scenicview-*.jar'
-        exclude 'javafx.web-*.jar'
-        exclude 'javafx.media-*.jar'
     }
     into 'build/libs'
 }
@@ -224,6 +220,84 @@ task deploy_int(group: 'web-start') {
                 remove '/opt/int/wlp/usr/servers/bio-client-downloader/clients/bw'
                 execute 'mkdir /opt/int/wlp/usr/servers/bio-client-downloader/clients/bw'
                 put from: new File(project.rootDir, 'build/web-start').listFiles().toList(), into: '/opt/int/wlp/usr/servers/bio-client-downloader/clients/bw'
+            }
+        }
+    }
+}
+
+// 64-bit
+
+task packageWebStart64(group: 'web-start') {
+    doLast {
+        String jnlpTemplate = new File("build-resources/bw64-template.jnlp").getText('UTF-8')
+
+        File directory = new File(project.rootDir, 'build/web-start64')
+        directory.mkdirs()
+        File file = new File(directory, 'APPLICATION.JNLP')
+        file.createNewFile()
+        file.text = jnlpTemplate
+
+        // copy jar files
+        copy {
+            from 'build/libs'
+            into "build/web-start64/modulepath-jars"
+        }
+
+        // copy javafx DLLs
+        copy {
+            from 'build-resources/javafx-dlls/64-bit'
+            into "build/web-start64/resources"
+        }
+    }
+}
+packageWebStart64.dependsOn(collectDependencies)
+
+
+task packageWebStart64AndDeployDev(group: 'web-start') {
+    doLast {
+        ssh.run {
+            session(remotes.webServer) {
+                remove '/opt/dev/wlp/usr/servers/bio-client-downloader/clients/bw64'
+                execute 'mkdir /opt/dev/wlp/usr/servers/bio-client-downloader/clients/bw64'
+                put from: new File(project.rootDir, 'build/web-start64').listFiles().toList(), into: '/opt/dev/wlp/usr/servers/bio-client-downloader/clients/bw64'
+            }
+        }
+    }
+}
+packageWebStart64AndDeployDev.dependsOn(packageWebStart64)
+
+task packageWebStart64AndDeployInt(group: 'web-start') {
+    doLast {
+        ssh.run {
+            session(remotes.webServer) {
+                remove '/opt/int/wlp/usr/servers/bio-client-downloader/clients/bw64'
+                execute 'mkdir /opt/int/wlp/usr/servers/bio-client-downloader/clients/bw64'
+                put from: new File(project.rootDir, 'build/web-start64').listFiles().toList(), into: '/opt/int/wlp/usr/servers/bio-client-downloader/clients/bw64'
+            }
+        }
+    }
+}
+packageWebStart64AndDeployInt.dependsOn(packageWebStart64)
+
+task deploy_dev64(group: 'web-start') {
+    doLast {
+        ssh.run {
+            session(remotes.webServer) {
+                remove '/opt/dev/wlp/usr/servers/bio-client-downloader/clients/bw64'
+                execute 'mkdir /opt/dev/wlp/usr/servers/bio-client-downloader/clients/bw64'
+                put from: new File(project.rootDir, 'build/web-start64').listFiles().toList(), into: '/opt/dev/wlp/usr/servers/bio-client-downloader/clients/bw64'
+            }
+        }
+    }
+}
+
+task deploy_int64(group: 'web-start') {
+    doLast {
+        ssh.run {
+            session(remotes.webServer) {
+                remove '/opt/int/wlp/usr/servers/bio-client-downloader/clients/bw64'
+                execute 'mkdir /opt/int/wlp/usr/servers/bio-client-downloader/clients/bw64'
+                put from: new File(project.rootDir, 'build/web-start64').listFiles().toList(), into: '/opt/int/wlp/usr/servers/bio-client-downloader/clients/bw64'
             }
         }
     }
