@@ -53,7 +53,6 @@ import java.util.List;
 @FxmlFile("convictedReportInquiry.fxml")
 public class ConvictedReportInquiryPaneFxController extends ContentFxControllerBase
 {
-	
 	@Input private Integer resultsTotalCount;
 	@Input private List<ConvictedReport> convictedReports;
 	@Output private Long reportNumber;
@@ -546,7 +545,7 @@ public class ConvictedReportInquiryPaneFxController extends ContentFxControllerB
 		}
 		catch(Exception e)
 		{
-			String errorCode = ConvictedReportInquiryErrorCodes.C014_00001.getCode();
+			String errorCode = ConvictedReportInquiryErrorCodes.C011_00001.getCode();
 			String[] errorDetails = {"Failed to load (" + ShowReportDialogFxController.class.getName() + ")!"};
 			Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails, getTabIndex());
 		}

@@ -158,10 +158,10 @@ public class CriminalTransactionsPaneFxController extends ContentFxControllerBas
 		var byUploadingNistFileLabel = resources.getString("label.byUploadingNistFile");
 		var byCapturingFingerprintsViaScannerLabel = resources.getString("label.byCapturingFingerprintsViaScanner");
 		
-		ObservableList<ComboBoxItem<CriminalTransactionType>> CriminalTransactionTypeItems = FXCollections.observableArrayList();
-		criminalTransactionTypes.forEach(idType -> CriminalTransactionTypeItems.add(new ComboBoxItem<>(idType, arabic ?
+		ObservableList<ComboBoxItem<CriminalTransactionType>> criminalTransactionTypeItems = FXCollections.observableArrayList();
+		criminalTransactionTypes.forEach(idType -> criminalTransactionTypeItems.add(new ComboBoxItem<>(idType, arabic ?
 		                                                                                                       idType.getDescriptionAr() : idType.getDescriptionEn())));
-		cboTransactionType.setItems(CriminalTransactionTypeItems);
+		cboTransactionType.setItems(criminalTransactionTypeItems);
 		
 		tcSequence.setCellValueFactory(param ->
 		{

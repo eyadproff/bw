@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jnlp xmlns="http://java.com/jnlp" spec="6.0+" href="APPLICATION.JNLP">
+    <information>
+        <title>Biometrics Client Launcher</title>
+        <vendor>NIC</vendor>
+    </information>
+    <security>
+        <all-permissions/>
+    </security>
+    <update check="always"/>
+    <resources>
+        <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se"/>
+
+        <!-- List of jars -->
+        <jar href="jnlp-jars/bcl-2019.01.1.jar"/>
+        <jar href="jnlp-jars/bcl-utils-2018.11.1.jar"/>
+        <jar href="jnlp-jars/gson-2.8.5.jar"/>
+
+        <!-- Enable jars compressing -->
+        <property name="jnlp.packEnabled" value="true"/>
+
+        <!-- BCL properties -->
+        <property name="jnlp.bcl.jreVersion" value="jre14.0.0-64bit"/>
+        <property name="jnlp.bcl.appId" value="bw64"/>
+        <property name="jnlp.bcl.mainClass" value="sa.gov.nic.bio.bw.AppLauncher"/>
+        <property name="jnlp.bcl.shared" value="false"/>
+        <property name="jnlp.bcl.usesModules" value="true"/>
+
+        <!-- Optional properties. Add "jnlp.noPrefix" as a prefix to remove it when bypassing it to the application
+             i.e. The key "jnlp.noPrefix.-Djavafx.preloader" will be bypassed as "-Djavafx.preloader" -->
+        <property name="jnlp.noPrefix.-Djavafx.preloader=" value='sa.gov.nic.bio.bw.preloader.AppPreloader'/>
+        <property name="jnlp.noPrefix.-Xmx" value='1024m'/>
+        <property name="jnlp.noPrefix.--add-modules=" value='ALL-MODULE-PATH'/>
+        <property name="jnlp.noPrefix.--add-opens javafx.base/com.sun.javafx.runtime=" value='org.controlsfx.controls'/>
+        <property name="jnlp.noPrefix.--add-opens javafx.graphics/com.sun.javafx.css=" value='org.controlsfx.controls'/>
+        <property name="jnlp.noPrefix.--add-opens javafx.graphics/com.sun.javafx.scene=" value='org.controlsfx.controls'/>
+        <property name="jnlp.noPrefix.--add-opens javafx.graphics/com.sun.javafx.scene.traversal=" value='org.controlsfx.controls'/>
+        <property name="jnlp.noPrefix.--add-opens javafx.controls/com.sun.javafx.scene.control=" value='org.controlsfx.controls'/>
+        <property name="jnlp.noPrefix.--add-opens javafx.controls/com.sun.javafx.scene.control.behavior=" value='org.controlsfx.controls'/>
+        <property name="jnlp.noPrefix.--add-opens javafx.controls/javafx.scene.control.skin=" value='org.controlsfx.controls'/>
+        <property name="jnlp.noPrefix.--add-opens javafx.graphics/javafx.scene=" value='org.controlsfx.controls'/>
+        <property name="jnlp.noPrefix.--add-opens java.base/java.util=" value='org.apache.commons.lang3'/>
+        <property name="jnlp.noPrefix.--add-opens java.base/java.lang=" value='org.apache.commons.lang3'/>
+        <property name="jnlp.noPrefix.--add-opens java.base/java.time=" value='org.apache.commons.lang3'/>
+        <property name="jnlp.noPrefix.--add-opens java.base/java.util.zip=" value='org.apache.commons.lang3'/>
+        <property name="jnlp.noPrefix.--add-opens java.base/jdk.internal.ref=" value='org.apache.commons.lang3'/>
+        <property name="jnlp.noPrefix.--add-opens java.base/java.io=" value='org.apache.commons.lang3'/>
+        <property name="jnlp.noPrefix.--add-opens java.base/sun.nio.fs=" value='org.apache.commons.lang3'/>
+        <property name="jnlp.noPrefix.--add-opens java.base/sun.nio.ch=" value='org.apache.commons.lang3'/>
+        <property name="jnlp.noPrefix.--add-opens java.base/java.lang.ref=" value='org.apache.commons.lang3'/>
+        <property name="jnlp.noPrefix.--add-opens java.base/java.nio=" value='org.apache.commons.lang3'/>
+        <property name="jnlp.noPrefix.--add-opens java.base/java.nio.channels=" value='org.apache.commons.lang3'/>
+        <property name="jnlp.noPrefix.--add-opens java.base/java.nio.channels.spi=" value='org.apache.commons.lang3'/>
+        <property name="jnlp.noPrefix.--add-opens java.base/java.util.concurrent.atomic=" value='org.apache.commons.lang3'/>
+        <property name="jnlp.noPrefix.--add-opens java.base/java.util.jar=" value='org.apache.commons.lang3'/>
+        <property name="jnlp.noPrefix.--add-opens java.base/sun.nio.cs=" value='org.apache.commons.lang3'/>
+        <property name="jnlp.noPrefix.--add-opens java.base/java.nio.charset=" value='org.apache.commons.lang3'/>
+        <property name="jnlp.noPrefix.--add-opens java.base/java.net=" value='org.apache.commons.lang3'/>
+        <property name="jnlp.noPrefix.--add-opens java.desktop/java.awt=" value='org.apache.commons.lang3'/>
+        <property name="jnlp.noPrefix.--add-opens java.base/java.time.chrono=" value='bw.core'/>
+        <property name="jnlp.noPrefix.--enable-preview" value=''/>
+        <property name="jnlp.noPrefix.-Djava.library.path="
+                  value='"C:/bio/java/jre14.0.0-64bit/bin;C:/bio/user-apps/${user.name}/bw64/resources"'/>
+    </resources>
+    <application-desc main-class="sa.gov.nic.bio.bcl.ClientLauncher"/>
+</jnlp>

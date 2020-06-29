@@ -602,6 +602,11 @@ public class CoreFxController extends FxControllerBase implements IdleMonitorReg
 	// must be called from UI thread
 	public boolean showConfirmationDialogAndWait(String headerText, String contentMessage)
 	{
+		return showConfirmationDialogAndWait(stage, headerText, contentMessage);
+	}
+	
+	public boolean showConfirmationDialogAndWait(Stage stage, String headerText, String contentMessage)
+	{
 		String title = resources.getString("dialog.confirm.title");
 		String buttonConfirmText = resources.getString("dialog.confirm.buttons.confirm");
 		String buttonCancelText = resources.getString("dialog.confirm.buttons.cancel");
