@@ -48,7 +48,7 @@ public class CitizenEnrollmentWorkflow extends WizardWorkflowBase {
                 //check enroll or not
                 passData(GetPersonInfoByIdWorkflowTask.class, IsEnrolledWorkflowTask.class,
                         "personInfo");
-                //  executeWorkflowTask(IsEnrolledWorkflowTask.class);
+                executeWorkflowTask(IsEnrolledWorkflowTask.class);
 
                 //death
                 passData(GetPersonInfoByIdWorkflowTask.class, DeathIndicatorWorkflowTask.class,
@@ -112,7 +112,7 @@ public class CitizenEnrollmentWorkflow extends WizardWorkflowBase {
                 break;
             }
             case 2: {
-//missing finger
+                      //missing finger
 
                 //   setData(SlapFingerprintsCapturingFxController.class, "allow9MissingWithNoRole", Boolean.TRUE);
 
@@ -163,7 +163,7 @@ public class CitizenEnrollmentWorkflow extends WizardWorkflowBase {
                 break;
             }
             case 3: {
-//face Exception
+                  //face Exception
 
                 List<BioExclusion> bioExclusion = getData(RetrieveBioExclusionsWorkflowTask.class, "bioExclusion");
 

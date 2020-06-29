@@ -13,7 +13,6 @@ import sa.gov.nic.bio.bw.core.utils.FxmlFile;
 import sa.gov.nic.bio.bw.core.workflow.Input;
 import sa.gov.nic.bio.bw.core.workflow.Output;
 import sa.gov.nic.bio.bw.workflow.citizenenrollment.tasks.CheckCitizenRegistrationWorkflowTask;
-import sa.gov.nic.bio.bw.workflow.citizenenrollment.tasks.CheckCitizenRegistrationWorkflowTask.Status;
 import sa.gov.nic.bio.bw.workflow.citizenenrollment.tasks.CheckIrisRegistrationWorkflowTask;
 
 @FxmlFile("registeringCitizen.fxml")
@@ -26,7 +25,7 @@ public class RegisteringCitizenPaneFxController extends WizardStepFxControllerBa
     }
 
     @Input
-    private Status citizenRegistrationStatus;
+    private CheckCitizenRegistrationWorkflowTask.Status citizenRegistrationStatus;
     @Input
     private CheckIrisRegistrationWorkflowTask.Status irisRegistrationStatus;
 

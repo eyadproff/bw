@@ -104,7 +104,6 @@ public class IrisCapturingFxController extends WizardStepFxControllerBase {
 
     @Override
     protected void onAttachedToScene() {
-        Skip = false;
 
         DevicesRunnerGadgetPaneFxController deviceManagerGadgetPaneController =
                 Context.getCoreFxController().getDeviceManagerGadgetPaneController();
@@ -302,6 +301,9 @@ public class IrisCapturingFxController extends WizardStepFxControllerBase {
 
     @FXML
     private void onCaptureIrisButtonClicked(ActionEvent event) {
+
+        Skip = false;
+
         capturedRightIrisBase64 = null;
         capturedLeftIrisBase64 = null;
         ivCapturedFirstIris.setImage(null);

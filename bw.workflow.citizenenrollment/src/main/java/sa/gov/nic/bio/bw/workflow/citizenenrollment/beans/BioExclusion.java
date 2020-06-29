@@ -26,11 +26,7 @@ public class BioExclusion {
     private Integer month;
 
 
-
     public BioExclusion(){
-
-
-
     }
 
     public BioExclusion(Long samisId,Integer casueId,Integer bioType, Integer position, Long expireDate){
