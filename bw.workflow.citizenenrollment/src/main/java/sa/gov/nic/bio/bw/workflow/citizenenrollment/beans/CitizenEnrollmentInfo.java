@@ -18,7 +18,9 @@ public class CitizenEnrollmentInfo {
     private String capturedLeftIrisBase64;
 
 
-    public CitizenEnrollmentInfo(Long personId, Integer personType, List<Finger> fingers, List<Integer> missing, String faceImage, Date birthDate, Integer gender, String capturedRightIrisBase64, String capturedLeftIrisBase64) {
+    public CitizenEnrollmentInfo(Long personId, Integer personType, List<Finger> fingers, List<Integer> missing,
+                                 String faceImage, Date birthDate, Integer gender, String capturedRightIrisBase64,
+                                 String capturedLeftIrisBase64) {
         this.personId = personId;
         this.personType = personType;
         this.fingers = fingers;
@@ -29,7 +31,6 @@ public class CitizenEnrollmentInfo {
         this.capturedRightIrisBase64 = capturedRightIrisBase64;
         this.capturedLeftIrisBase64 = capturedLeftIrisBase64;
     }
-
 
 
     public Long getPersonId() {

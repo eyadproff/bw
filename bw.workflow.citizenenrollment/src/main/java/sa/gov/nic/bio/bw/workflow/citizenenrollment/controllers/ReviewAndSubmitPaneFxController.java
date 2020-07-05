@@ -52,7 +52,7 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase 
     @Input
     private String capturedLeftIrisBase64;
 
-	@Output
+    @Output
     private CitizenEnrollmentInfo citizenEnrollmentInfo;
 
     @FXML
@@ -115,8 +115,11 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase 
     protected void onAttachedToScene() {
         paneImageView.maxWidthProperty().bind(paneImage.widthProperty());
 
-        citizenEnrollmentInfo=new CitizenEnrollmentInfo(personInfo.getSamisId(),normalizedPersonInfo.getPersonType().getCode(),combinedFingerprints,
-                missingFingerprints,facePhotoBase64,personInfo.getBirthDate(),personInfo.getGender(),capturedRightIrisBase64,capturedLeftIrisBase64);
+        citizenEnrollmentInfo = new CitizenEnrollmentInfo(personInfo.getSamisId(),
+                normalizedPersonInfo.getPersonType().getCode(),
+                combinedFingerprints, missingFingerprints, facePhotoBase64,
+                personInfo.getBirthDate(), personInfo.getGender(),
+                capturedRightIrisBase64, capturedLeftIrisBase64);
 
         ivPersonPhoto.setImage(facePhoto);
         GuiUtils.attachImageDialog(Context.getCoreFxController(), ivPersonPhoto,
@@ -129,37 +132,41 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase 
         lblFamilyName.setText(normalizedPersonInfo.getFamilyName());
 
         boolean arabic = Context.getGuiLanguage() == GuiLanguage.ARABIC;
-        lblNationality.setText(arabic ? normalizedPersonInfo.getNationality().getDescriptionAR() : normalizedPersonInfo.getNationality().getDescriptionEN());
+        lblNationality.setText(arabic ? normalizedPersonInfo.getNationality().getDescriptionAR() :
+                               normalizedPersonInfo.getNationality().getDescriptionEN());
         lblBirthPlace.setText(normalizedPersonInfo.getBirthPlace());
 
         lblGender.setText(normalizedPersonInfo.getGender() == Gender.FEMALE ? resources.getString("label.female") :
-                resources.getString("label.male"));
+                          resources.getString("label.male"));
 
-        lblBirthDate.setText(AppUtils.formatHijriGregorianDate(AppUtils.gregorianDateToSeconds(normalizedPersonInfo.getBirthDate())));
-
-
-        GuiUtils.attachFingerprintImages(fingerprintBase64Images, null, ivRightThumb, ivRightIndex,
-                ivRightMiddle, ivRightRing, ivRightLittle, ivLeftThumb, ivLeftIndex,
-                ivLeftMiddle, ivLeftRing, ivLeftLittle, null,
-                null, null, null,
-                null, null);
+        lblBirthDate.setText(AppUtils.formatHijriGregorianDate(
+                AppUtils.gregorianDateToSeconds(normalizedPersonInfo.getBirthDate())));
 
 
-		Image capturedRightIrisImage = null;
-		Image capturedLeftIrisImage = null;
+        GuiUtils.attachFingerprintImages(fingerprintBase64Images, null, ivRightThumb, ivRightIndex, ivRightMiddle,
+                ivRightRing, ivRightLittle, ivLeftThumb, ivLeftIndex, ivLeftMiddle, ivLeftRing,
+                ivLeftLittle, null, null, null, null, null, null);
 
-		if(capturedRightIrisBase64 != null) capturedRightIrisImage =
-				new Image(new ByteArrayInputStream(Base64.getDecoder().decode(capturedRightIrisBase64)));
-		if(capturedLeftIrisBase64 != null) capturedLeftIrisImage =
-				new Image(new ByteArrayInputStream(Base64.getDecoder().decode(capturedLeftIrisBase64)));
 
-		if (capturedRightIrisImage != null) {
-			ivRightIris.setImage(capturedRightIrisImage);
+        Image capturedRightIrisImage = null;
+        Image capturedLeftIrisImage = null;
 
-		}
-		if (capturedLeftIrisImage != null) {
-			ivLeftIris.setImage(capturedLeftIrisImage);
-		}
+        if (capturedRightIrisBase64 != null) {
+            capturedRightIrisImage = new Image(
+                    new ByteArrayInputStream(Base64.getDecoder().decode(capturedRightIrisBase64)));
+        }
+        if (capturedLeftIrisBase64 != null) {
+            capturedLeftIrisImage = new Image(
+                    new ByteArrayInputStream(Base64.getDecoder().decode(capturedLeftIrisBase64)));
+        }
+
+        if (capturedRightIrisImage != null) {
+            ivRightIris.setImage(capturedRightIrisImage);
+
+        }
+        if (capturedLeftIrisImage != null) {
+            ivLeftIris.setImage(capturedLeftIrisImage);
+        }
     }
 
     @Override
@@ -178,12 +185,12 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase 
 
     @FXML
     private void onSubmitButtonClicked(ActionEvent actionEvent) {
-        String headerText =
-                resources.getString("CitizenEnrollment.registering.confirmation.header");
-        String contentText =
-                resources.getString("CitizenEnrollment.registering.confirmation.message");
+        String headerText = resources.getString("CitizenEnrollment.registering.confirmation.header");
+        String contentText = resources.getString("CitizenEnrollment.registering.confirmation.message");
         boolean confirmed = Context.getCoreFxController().showConfirmationDialogAndWait(headerText, contentText);
 
-        if (confirmed) continueWorkflow();
+        if (confirmed) {
+            continueWorkflow();
+        }
     }
 }

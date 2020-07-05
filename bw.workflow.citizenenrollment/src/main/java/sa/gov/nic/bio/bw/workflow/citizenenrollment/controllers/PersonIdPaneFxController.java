@@ -18,45 +18,44 @@ public class PersonIdPaneFxController extends WizardStepFxControllerBase {
 
     @FXML
     private ProgressIndicator piProgress;
-    @FXML private TextField txtPersonId;
-    @FXML private Button btnNext;
+    @FXML
+    private TextField txtPersonId;
+    @FXML
+    private Button btnNext;
 
     @Override
-    protected void onAttachedToScene()
-    {
-        GuiUtils.applyValidatorToTextField(txtPersonId, "^1\\d*", "\\D+|^[02-9]",
-                10);
+    protected void onAttachedToScene() {
+        GuiUtils.applyValidatorToTextField(txtPersonId, "^1\\d*", "\\D+|^[02-9]", 10);
 
         btnNext.disableProperty().bind(txtPersonId.textProperty().isEmpty().or(txtPersonId.disabledProperty()));
-        btnNext.setOnAction(actionEvent ->
-        {
+        btnNext.setOnAction(actionEvent -> {
             personId = Long.parseLong(txtPersonId.getText());
             continueWorkflow();
         });
 
-        if(personId != null) txtPersonId.setText(String.valueOf(personId));
+        if (personId != null) {
+            txtPersonId.setText(String.valueOf(personId));
+        }
         txtPersonId.requestFocus();
     }
 
     @Override
-    public void onReturnFromWorkflow(boolean successfulResponse)
-    {
-        if(successfulResponse) goNext();
+    public void onReturnFromWorkflow(boolean successfulResponse) {
+        if (successfulResponse) {
+            goNext();
+        }
     }
 
     @Override
-    public void onShowingProgress(boolean bShow)
-    {
+    public void onShowingProgress(boolean bShow) {
         piProgress.setVisible(bShow);
         txtPersonId.setDisable(bShow);
     }
 
     @FXML
-    private void onEnterPressed(ActionEvent actionEvent)
-    {
+    private void onEnterPressed(ActionEvent actionEvent) {
         btnNext.fire();
     }
-
 
 
 }

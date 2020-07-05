@@ -21,22 +21,22 @@ public class RetrieveBioExclusionsWorkflowTask extends WorkflowTask {
     private Integer samisId;
 
     @Output
-
     private List<BioExclusion> bioExclusionList;
 
 
     @Override
-
     public void execute() throws Signal {
 
         CitizenEnrollmentAPI bioExclusionAPI = Context.getWebserviceManager().getApi(CitizenEnrollmentAPI.class);
-        Call<List<BioExclusion>> apiCall = bioExclusionAPI.retrieveBioExclusions(workflowId,workflowTcn,samisId);
+        Call<List<BioExclusion>> apiCall = bioExclusionAPI.retrieveBioExclusions(workflowId, workflowTcn, samisId);
         TaskResponse<List<BioExclusion>> taskResponse = Context.getWebserviceManager().executeApi(apiCall);
 
 
         boolean notFound = !taskResponse.isSuccess() && "B003-0079".equals(taskResponse.getErrorCode());
 
-        if (notFound) return;
+        if (notFound) {
+            return;
+        }
 
         resetWorkflowStepIfNegativeOrNullTaskResponse(taskResponse);
         bioExclusionList = taskResponse.getResult();

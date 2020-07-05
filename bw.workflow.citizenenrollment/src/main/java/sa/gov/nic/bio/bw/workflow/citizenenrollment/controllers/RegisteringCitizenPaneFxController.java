@@ -75,21 +75,22 @@ public class RegisteringCitizenPaneFxController extends WizardStepFxControllerBa
                 CitizenLblStatus.setText(resources.getString("label.waitingCitizenRegistration"));
                 request = Request.CHECK_CITIZEN_REGISTRATION;
                 continueWorkflow();
-            } else {
+            }
+            else {
                 CitizenLblStatus.setText(resources.getString("label.failedToSendCitizenInfo"));
                 CPiProgress.setVisible(false);
                 CitizenIvFailure.setVisible(true);
                 btnStartOver.setVisible(true);
                 btnRetry.setVisible(!disableRetryButtonForever);
             }
-        } else if (request == Request.CHECK_CITIZEN_REGISTRATION) {
+        }
+        else if (request == Request.CHECK_CITIZEN_REGISTRATION) {
             if (successfulResponse) {
                 if (citizenRegistrationStatus == CheckCitizenRegistrationWorkflowTask.Status.PENDING) {
-                    Context.getExecutorService().submit(() ->
-                    {
+                    Context.getExecutorService().submit(() -> {
                         try {
                             int seconds = Integer.parseInt(Context.getConfigManager().getProperty(
-                                    "registerIris.inquiry.checkEverySeconds"));
+                                    "registerCitizen.inquiry.checkEverySeconds"));
                             Thread.sleep(seconds * 1000);
                         } catch (InterruptedException e) {
                             e.printStackTrace();
@@ -98,14 +99,16 @@ public class RegisteringCitizenPaneFxController extends WizardStepFxControllerBa
                         Platform.runLater(this::continueWorkflow);
                     });
 
-                } else if (citizenRegistrationStatus == CheckCitizenRegistrationWorkflowTask.Status.SUCCESS) {
+                }
+                else if (citizenRegistrationStatus == CheckCitizenRegistrationWorkflowTask.Status.SUCCESS) {
                     CitizenLblStatus.setText(resources.getString("label.successCitizenRegistration"));
                     CPiProgress.setVisible(false);
                     CitizenIvSuccess.setVisible(true);
 
 
-                    if (skipIris)
+                    if (skipIris) {
                         btnStartOver.setVisible(true);
+                    }
                     else {
                         IPiProgress.setVisible(true);
                         IrisLblStatus.setVisible(true);
@@ -114,33 +117,36 @@ public class RegisteringCitizenPaneFxController extends WizardStepFxControllerBa
                         continueWorkflow();
                     }
                 }
-            } else {
+            }
+            else {
                 CitizenLblStatus.setText(resources.getString("label.failedToRegisterCitizen"));
                 CPiProgress.setVisible(false);
                 CitizenIvFailure.setVisible(true);
                 btnStartOver.setVisible(true);
                 btnRetry.setVisible(!disableRetryButtonForever);
             }
-        } else if (request == Request.SUBMIT_IRIS_REGISTRATION) {
+        }
+        else if (request == Request.SUBMIT_IRIS_REGISTRATION) {
             if (successfulResponse) {
                 IrisLblStatus.setText(resources.getString("label.waitingIrisRegistration"));
                 request = Request.CHECK_IRIS_REGISTRATION;
                 continueWorkflow();
-            } else {
+            }
+            else {
                 IrisLblStatus.setText(resources.getString("label.failedToSendIris"));
                 IPiProgress.setVisible(false);
                 IrisIvFailure.setVisible(true);
                 btnStartOver.setVisible(true);
                 btnRetry.setVisible(!disableRetryButtonForever);
             }
-        } else if (request == Request.CHECK_IRIS_REGISTRATION) {
+        }
+        else if (request == Request.CHECK_IRIS_REGISTRATION) {
             if (successfulResponse) {
                 if (irisRegistrationStatus == CheckIrisRegistrationWorkflowTask.Status.PENDING) {
-                    Context.getExecutorService().submit(() ->
-                    {
+                    Context.getExecutorService().submit(() -> {
                         try {
-                            int seconds = Integer.parseInt(Context.getConfigManager().getProperty(
-                                    "registerIris.inquiry.checkEverySeconds"));
+                            int seconds = Integer.parseInt(
+                                    Context.getConfigManager().getProperty("registerIris.inquiry.checkEverySeconds"));
                             Thread.sleep(seconds * 1000);
                         } catch (InterruptedException e) {
                             e.printStackTrace();
@@ -149,13 +155,15 @@ public class RegisteringCitizenPaneFxController extends WizardStepFxControllerBa
                         Platform.runLater(this::continueWorkflow);
                     });
 
-                } else if (irisRegistrationStatus == CheckIrisRegistrationWorkflowTask.Status.SUCCESS) {
+                }
+                else if (irisRegistrationStatus == CheckIrisRegistrationWorkflowTask.Status.SUCCESS) {
                     IrisLblStatus.setText(resources.getString("label.successIrisRegistration"));
                     IPiProgress.setVisible(false);
                     IrisIvSuccess.setVisible(true);
                     btnStartOver.setVisible(true);
                 }
-            } else {
+            }
+            else {
                 IrisLblStatus.setText(resources.getString("label.failedToRegisterIris"));
                 IPiProgress.setVisible(false);
                 IrisIvFailure.setVisible(true);
@@ -167,7 +175,9 @@ public class RegisteringCitizenPaneFxController extends WizardStepFxControllerBa
 
     @Override
     public void reportNegativeTaskResponse(String errorCode, Throwable exception, String[] errorDetails) {
-        if ("B003-0066".equals(errorCode)) disableRetryButtonForever = true;
+        if ("B003-0066".equals(errorCode)) {
+            disableRetryButtonForever = true;
+        }
 
         super.reportNegativeTaskResponse(errorCode, exception, errorDetails);
     }
@@ -182,15 +192,18 @@ public class RegisteringCitizenPaneFxController extends WizardStepFxControllerBa
             CitizenLblStatus.setText(resources.getString("label.submitting"));
             CitizenIvFailure.setVisible(false);
             CPiProgress.setVisible(true);
-        } else if (request == Request.CHECK_CITIZEN_REGISTRATION) {
+        }
+        else if (request == Request.CHECK_CITIZEN_REGISTRATION) {
             CitizenLblStatus.setText(resources.getString("label.waitingCitizenRegistration"));
             CitizenIvFailure.setVisible(false);
             CPiProgress.setVisible(true);
-        } else if (request == Request.SUBMIT_IRIS_REGISTRATION) {
+        }
+        else if (request == Request.SUBMIT_IRIS_REGISTRATION) {
             IrisLblStatus.setText(resources.getString("label.submittingIris"));
             IrisIvFailure.setVisible(false);
             IPiProgress.setVisible(true);
-        } else if (request == Request.CHECK_IRIS_REGISTRATION) {
+        }
+        else if (request == Request.CHECK_IRIS_REGISTRATION) {
             IrisLblStatus.setText(resources.getString("label.waitingIrisRegistration"));
             IrisIvFailure.setVisible(false);
             IPiProgress.setVisible(true);

@@ -9,31 +9,35 @@ import sa.gov.nic.bio.bw.workflow.citizenenrollment.utils.CitizenEnrollmentError
 import sa.gov.nic.bio.bw.workflow.citizenenrollment.webservice.CitizenEnrollmentAPI;
 import sa.gov.nic.bio.commons.TaskResponse;
 
-public class CheckCitizenRegistrationWorkflowTask extends WorkflowTask
-{
-	public enum Status
-	{
-		PENDING,
-		SUCCESS
-	}
-	
-	@Input(alwaysRequired = true) private Long personId;
-	@Output private Status status;
+public class CheckCitizenRegistrationWorkflowTask extends WorkflowTask {
+    public enum Status {
+        PENDING,
+        SUCCESS
+    }
 
-	
-	@Override
-	public void execute() throws Signal
-	{
-		var api = Context.getWebserviceManager().getApi(CitizenEnrollmentAPI.class);
-		var apiCall = api.checkCitizenRegistration(workflowId, workflowTcn, personId);
-		var taskResponse = Context.getWebserviceManager().executeApi(apiCall);
-		resetWorkflowStepIfNegativeTaskResponse(taskResponse);
+    @Input(alwaysRequired = true)
+    private Long personId;
+    @Output
+    private Status status;
 
-		Integer httpCode = taskResponse.getHttpCode();
-		if(httpCode == 200) status = Status.SUCCESS;
-		else if(httpCode == 202) status = Status.PENDING;
 
-		resetWorkflowStepIfNegativeOrNullTaskResponse(TaskResponse.failure(CitizenEnrollmentErrorCodes.B018_00001.getCode()));
+    @Override
+    public void execute() throws Signal {
+        var api = Context.getWebserviceManager().getApi(CitizenEnrollmentAPI.class);
+        var apiCall = api.checkCitizenRegistration(workflowId, workflowTcn, personId);
+        var taskResponse = Context.getWebserviceManager().executeApi(apiCall);
+        resetWorkflowStepIfNegativeTaskResponse(taskResponse);
 
-	}
+        Integer httpCode = taskResponse.getHttpCode();
+        if (httpCode == 200) {
+            status = Status.SUCCESS;
+        }
+        else if (httpCode == 202) {
+            status = Status.PENDING;
+        }
+
+        resetWorkflowStepIfNegativeOrNullTaskResponse(
+                TaskResponse.failure(CitizenEnrollmentErrorCodes.B018_00001.getCode()));
+
+    }
 }

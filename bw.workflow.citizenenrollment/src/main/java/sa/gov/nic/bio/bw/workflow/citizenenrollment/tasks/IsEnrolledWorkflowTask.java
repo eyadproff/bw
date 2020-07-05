@@ -16,7 +16,8 @@ public class IsEnrolledWorkflowTask extends WorkflowTask {
     public void execute() throws Signal {
 
         if (personInfo.getIsEnrolled().equals("Y")) {
-            resetWorkflowStepIfNegativeOrNullTaskResponse(TaskResponse.failure(CitizenEnrollmentErrorCodes.B018_00001.getCode()));
+            resetWorkflowStepIfNegativeOrNullTaskResponse(
+                    TaskResponse.failure(CitizenEnrollmentErrorCodes.B018_00001.getCode()));
         }
     }
 }

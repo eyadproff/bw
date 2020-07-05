@@ -61,17 +61,17 @@ public class ShowingPersonInfoFxController extends WizardStepFxControllerBase {
         normalizedPersonInfo = new NormalizedPersonInfo(personInfo);
 
         GuiUtils.showNode(lblNaturalizedSaudi, normalizedPersonInfo.getNationality() != null &&
-                normalizedPersonInfo.getNationality().getCode() > 0 &&
-                !"SAU".equalsIgnoreCase(normalizedPersonInfo.getNationality().getMofaNationalityCode()) &&
-                String.valueOf(normalizedPersonInfo.getPersonId()).startsWith("1"));
+                                               normalizedPersonInfo.getNationality().getCode() > 0 &&
+                                               !"SAU".equalsIgnoreCase(normalizedPersonInfo.getNationality()
+                                                       .getMofaNationalityCode()) &&
+                                               String.valueOf(normalizedPersonInfo.getPersonId()).startsWith("1"));
 
-//		String facePhotoBase64 = normalizedPersonInfo.getFacePhotoBase64();
-//		Gender gender = normalizedPersonInfo.getGender();
-//		GuiUtils.attachFacePhotoBase64(ivPersonPhoto, facePhotoBase64, true, gender);
+        //		String facePhotoBase64 = normalizedPersonInfo.getFacePhotoBase64();
+        //		Gender gender = normalizedPersonInfo.getGender();
+        //		GuiUtils.attachFacePhotoBase64(ivPersonPhoto, facePhotoBase64, true, gender);
 
         String notAvailable = resources.getString("label.notAvailable");
-        Consumer<Label> consumer = label ->
-        {
+        Consumer<Label> consumer = label -> {
             label.setText(notAvailable);
             label.setTextFill(Color.RED);
         };
@@ -93,7 +93,9 @@ public class ShowingPersonInfoFxController extends WizardStepFxControllerBase {
     }
 
     public void onReturnFromWorkflow(boolean successfulResponse) {
-        if (successfulResponse) goNext();
+        if (successfulResponse) {
+            goNext();
+        }
     }
 
     @Override

@@ -22,16 +22,20 @@ public class CitizenRegistrationWorkflowTask extends WorkflowTask {
     @Override
     public void execute() throws Signal {
         var api = Context.getWebserviceManager().getApi(CitizenEnrollmentAPI.class);
-        var apiCall = api.enrollPerson(workflowId, workflowTcn, citizenEnrollmentInfo.getPersonId(), citizenEnrollmentInfo.getPersonType(),
-                AppUtils.toJson(citizenEnrollmentInfo.getFingers())
-                , AppUtils.toJson(citizenEnrollmentInfo.getMissing()), citizenEnrollmentInfo.getFaceImage(),
-                AppUtils.toJson(citizenEnrollmentInfo.getBirthDate()), citizenEnrollmentInfo.getGender(), null);
+        var apiCall = api.enrollPerson(workflowId, workflowTcn, citizenEnrollmentInfo.getPersonId(),
+                                       citizenEnrollmentInfo.getPersonType(),
+                                       AppUtils.toJson(citizenEnrollmentInfo.getFingers()),
+                                       AppUtils.toJson(citizenEnrollmentInfo.getMissing()),
+                                       citizenEnrollmentInfo.getFaceImage(),
+                                       AppUtils.toJson(citizenEnrollmentInfo.getBirthDate()),
+                                       citizenEnrollmentInfo.getGender(), null);
         var taskResponse = Context.getWebserviceManager().executeApi(apiCall);
         resetWorkflowStepIfNegativeOrNullTaskResponse(taskResponse);
         tcn = taskResponse.getResult();
 
 
-        resetWorkflowStepIfNegativeOrNullTaskResponse(TaskResponse.failure(CitizenEnrollmentErrorCodes.B018_00001.getCode()));
+        resetWorkflowStepIfNegativeOrNullTaskResponse(
+                TaskResponse.failure(CitizenEnrollmentErrorCodes.B018_00001.getCode()));
 
     }
 }

@@ -26,37 +26,35 @@ public class BioExclusion {
     private Integer month;
 
 
-    public BioExclusion(){
+    public BioExclusion() {
     }
 
-    public BioExclusion(Long samisId,Integer casueId,Integer bioType, Integer position, Long expireDate){
+    public BioExclusion(Long samisId, Integer casueId, Integer bioType, Integer position, Long expireDate) {
 
-        this.samisId=samisId;
+        this.samisId = samisId;
 
-        this.casueId=casueId;
+        this.casueId = casueId;
 
-        this.bioType=bioType;
+        this.bioType = bioType;
 
-        this.position=position;
+        this.position = position;
 
-        this.expireDate=expireDate;
-
-    }
-
-    public BioExclusion(Long samisId,Integer casueId,Integer bioType,Long expireDate){
-
-        this.samisId=samisId;
-
-        this.casueId=casueId;
-
-        this.bioType=bioType;
-
-        this.expireDate=expireDate;
-
-
+        this.expireDate = expireDate;
 
     }
 
+    public BioExclusion(Long samisId, Integer casueId, Integer bioType, Long expireDate) {
+
+        this.samisId = samisId;
+
+        this.casueId = casueId;
+
+        this.bioType = bioType;
+
+        this.expireDate = expireDate;
+
+
+    }
 
 
     public Integer getSeqNum() {
@@ -66,13 +64,11 @@ public class BioExclusion {
     }
 
 
-
     public void setSeqNum(Integer seqNum) {
 
         this.seqNum = seqNum;
 
     }
-
 
 
     public Long getSamisId() {
@@ -82,13 +78,11 @@ public class BioExclusion {
     }
 
 
-
     public void setSamisId(Long samisId) {
 
         this.samisId = samisId;
 
     }
-
 
 
     public Integer getCasueId() {
@@ -98,13 +92,11 @@ public class BioExclusion {
     }
 
 
-
     public void setCasueId(Integer casueId) {
 
         this.casueId = casueId;
 
     }
-
 
 
     public Integer getBioType() {
@@ -114,13 +106,11 @@ public class BioExclusion {
     }
 
 
-
     public void setBioType(Integer bioType) {
 
         this.bioType = bioType;
 
     }
-
 
 
     public Integer getPosition() {
@@ -130,13 +120,11 @@ public class BioExclusion {
     }
 
 
-
     public void setPosition(Integer position) {
 
         this.position = position;
 
     }
-
 
 
     public String getDescription() {
@@ -146,13 +134,11 @@ public class BioExclusion {
     }
 
 
-
     public void setDescription(String description) {
 
         this.description = description;
 
     }
-
 
 
     public Long getCrDt() {
@@ -162,13 +148,11 @@ public class BioExclusion {
     }
 
 
-
     public void setCrDt(Long crDt) {
 
         this.crDt = crDt;
 
     }
-
 
 
     public Integer getStatus() {
@@ -178,13 +162,11 @@ public class BioExclusion {
     }
 
 
-
     public void setStatus(Integer status) {
 
         this.status = status;
 
     }
-
 
 
     public Long getExpireDate() {
@@ -194,13 +176,11 @@ public class BioExclusion {
     }
 
 
-
     public void setExpireDate(Long expireDate) {
 
         this.expireDate = expireDate;
 
     }
-
 
 
     public Long getDeleterId() {
@@ -210,13 +190,11 @@ public class BioExclusion {
     }
 
 
-
     public void setDeleterId(Long deleterId) {
 
         this.deleterId = deleterId;
 
     }
-
 
 
     public Long getOperatorId() {
@@ -226,7 +204,6 @@ public class BioExclusion {
     }
 
 
-
     public void setOperatorId(Long operatorId) {
 
         this.operatorId = operatorId;
@@ -234,13 +211,11 @@ public class BioExclusion {
     }
 
 
-
     public Integer getMonth() {
 
         return month;
 
     }
-
 
 
     public void setMonth(Integer month) {

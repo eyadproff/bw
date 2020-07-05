@@ -10,24 +10,25 @@ import sa.gov.nic.bio.bw.workflow.citizenenrollment.utils.CitizenEnrollmentError
 import sa.gov.nic.bio.bw.workflow.citizenenrollment.webservice.IrisRegistrationAPI;
 import sa.gov.nic.bio.commons.TaskResponse;
 
-public class SubmitIrisRegistrationWorkflowTask extends WorkflowTask
-{
-	@Input(alwaysRequired = true)
-	private CitizenEnrollmentInfo citizenEnrollmentInfo;
-	@Output private Long tcn;
-	
-	@Override
-	public void execute() throws Signal
-	{
-		var api = Context.getWebserviceManager().getApi(IrisRegistrationAPI.class);
-		var apiCall = api.submitIrisRegistration(workflowId, workflowTcn, citizenEnrollmentInfo.getPersonId(),
-				citizenEnrollmentInfo.getCapturedRightIrisBase64(), citizenEnrollmentInfo.getCapturedLeftIrisBase64());
-		var taskResponse = Context.getWebserviceManager().executeApi(apiCall);
-		resetWorkflowStepIfNegativeOrNullTaskResponse(taskResponse);
-		tcn = taskResponse.getResult();
+public class SubmitIrisRegistrationWorkflowTask extends WorkflowTask {
+    @Input(alwaysRequired = true)
+    private CitizenEnrollmentInfo citizenEnrollmentInfo;
+    @Output
+    private Long tcn;
+
+    @Override
+    public void execute() throws Signal {
+        var api = Context.getWebserviceManager().getApi(IrisRegistrationAPI.class);
+        var apiCall = api.submitIrisRegistration(workflowId, workflowTcn, citizenEnrollmentInfo.getPersonId(),
+                                                 citizenEnrollmentInfo.getCapturedRightIrisBase64(),
+                                                 citizenEnrollmentInfo.getCapturedLeftIrisBase64());
+        var taskResponse = Context.getWebserviceManager().executeApi(apiCall);
+        resetWorkflowStepIfNegativeOrNullTaskResponse(taskResponse);
+        tcn = taskResponse.getResult();
 
 
-		resetWorkflowStepIfNegativeOrNullTaskResponse(TaskResponse.failure(CitizenEnrollmentErrorCodes.B018_00001.getCode()));
+        resetWorkflowStepIfNegativeOrNullTaskResponse(
+                TaskResponse.failure(CitizenEnrollmentErrorCodes.B018_00001.getCode()));
 
-	}
+    }
 }

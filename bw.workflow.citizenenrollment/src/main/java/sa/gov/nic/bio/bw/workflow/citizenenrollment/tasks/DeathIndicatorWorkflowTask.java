@@ -16,7 +16,8 @@ public class DeathIndicatorWorkflowTask extends WorkflowTask {
     public void execute() throws Signal {
 
         if (personInfo.getDeathInd().equals("Y")) {
-            resetWorkflowStepIfNegativeOrNullTaskResponse(TaskResponse.failure(CitizenEnrollmentErrorCodes.B018_00002.getCode()));
+            resetWorkflowStepIfNegativeOrNullTaskResponse(
+                    TaskResponse.failure(CitizenEnrollmentErrorCodes.B018_00002.getCode()));
         }
     }
 }

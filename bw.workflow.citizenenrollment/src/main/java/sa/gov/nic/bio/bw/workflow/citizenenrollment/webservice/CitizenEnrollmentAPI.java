@@ -19,15 +19,15 @@ public interface CitizenEnrollmentAPI {
     @FormUrlEncoded
     @POST("services-gateway-biooperation/api/enrollment/register/v1")
     Call<Long> enrollPerson(@Header("Workflow-Code") Integer workflowId,
-                                         @Header("Workflow-Tcn") Long workflowTcn,
-                                         @Field("person-id") Long personId,
-                                         @Field("person-type")  Integer personType,
-                                         @Field("fingers") String fingers,
-                                         @Field("missing") String missing,
-                                         @Field("face-image") String faceImage,
-                                         @Field("birth-date") String birthDate,
-                                         @Field("gender") Integer gender,
-                                         @Field("supervisor-id") Long supervisorId);
+                            @Header("Workflow-Tcn") Long workflowTcn,
+                            @Field("person-id") Long personId,
+                            @Field("person-type") Integer personType,
+                            @Field("fingers") String fingers,
+                            @Field("missing") String missing,
+                            @Field("face-image") String faceImage,
+                            @Field("birth-date") String birthDate,
+                            @Field("gender") Integer gender,
+                            @Field("supervisor-id") Long supervisorId);
 
     @GET("services-gateway-biooperation/api/enrollment/status/v1")
     Call<Void> checkCitizenRegistration(@Header("Workflow-Code") Integer workflowId,

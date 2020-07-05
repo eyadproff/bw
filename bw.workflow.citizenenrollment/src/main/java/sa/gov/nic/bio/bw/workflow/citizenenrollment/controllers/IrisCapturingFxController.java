@@ -48,7 +48,7 @@ public class IrisCapturingFxController extends WizardStepFxControllerBase {
     @Output
     private String capturedLeftIrisBase64;
     @Output
-    private Boolean Skip ;
+    private Boolean Skip;
 
     @FXML
     private VBox paneControlsInnerContainer;
@@ -126,9 +126,9 @@ public class IrisCapturingFxController extends WizardStepFxControllerBase {
         var rightIrisLabel = resources.getString("label.rightIris");
         var leftIrisLabel = resources.getString("label.leftIris");
 
-        if (hidePreviousButton != null) GuiUtils.showNode(btnPrevious, !hidePreviousButton);
-        if (hideStartOverButton != null) GuiUtils.showNode(btnStartOver, !hideStartOverButton);
-        if (hideSkipButton != null) GuiUtils.showNode(btnSkip, !hideSkipButton);
+        if (hidePreviousButton != null) { GuiUtils.showNode(btnPrevious, !hidePreviousButton); }
+        if (hideStartOverButton != null) { GuiUtils.showNode(btnStartOver, !hideStartOverButton); }
+        if (hideSkipButton != null) { GuiUtils.showNode(btnSkip, !hideSkipButton); }
 
         ivRightIris = rtl ? ivCapturedSecondIris : ivCapturedFirstIris;
         ivLeftIris = rtl ? ivCapturedFirstIris : ivCapturedSecondIris;
@@ -165,15 +165,15 @@ public class IrisCapturingFxController extends WizardStepFxControllerBase {
                     GuiUtils.showNode(lblStatus, false);
                     GuiUtils.showNode(btnCaptureIris, true);
 
-                    if (checkBox == cbSkippedLeftIris) GuiUtils.showNode(ivSkippedLeftIris, false);
-                    if (checkBox == cbSkippedRightIris) GuiUtils.showNode(ivSkippedRightIris, false);
+                    if (checkBox == cbSkippedLeftIris) { GuiUtils.showNode(ivSkippedLeftIris, false); }
+                    if (checkBox == cbSkippedRightIris) { GuiUtils.showNode(ivSkippedRightIris, false); }
 
                     btnCaptureIris.setText(resources.getString("button.captureIris"));
                     return;
                 }
 
                 if ((checkBox == cbSkippedLeftIris && !cbSkippedRightIris.isSelected()) ||
-                        (checkBox == cbSkippedRightIris && !cbSkippedLeftIris.isSelected())) {
+                    (checkBox == cbSkippedRightIris && !cbSkippedLeftIris.isSelected())) {
                     checkBox.setSelected(true);
 
                     String message = resources.getString("iris.skippingTwoEye");
@@ -206,15 +206,17 @@ public class IrisCapturingFxController extends WizardStepFxControllerBase {
                         GuiUtils.showNode(lblStatus, false);
                         GuiUtils.showNode(btnCaptureIris, true);
 
-                        if (checkBox == cbSkippedLeftIris) GuiUtils.showNode(ivSkippedLeftIris, true);
-                        if (checkBox == cbSkippedRightIris) GuiUtils.showNode(ivSkippedRightIris, true);
+                        if (checkBox == cbSkippedLeftIris) { GuiUtils.showNode(ivSkippedLeftIris, true); }
+                        if (checkBox == cbSkippedRightIris) { GuiUtils.showNode(ivSkippedRightIris, true); }
 
                         btnCaptureIris.setText(resources.getString("button.captureIris"));
-                    } else {
+                    }
+                    else {
                         checkBox.setSelected(true);
                         event.consume();
                     }
-                } else {
+                }
+                else {
                     checkBox.setSelected(true);
 
                     String message = resources.getString("iris.skippingOneEye.notAuthorized");
@@ -229,11 +231,11 @@ public class IrisCapturingFxController extends WizardStepFxControllerBase {
 
         btnNext.disabledProperty().addListener((observable, oldValue, newValue) ->
         {
-            if (!newValue) btnNext.requestFocus();
+            if (!newValue) { btnNext.requestFocus(); }
         });
 
         // load the persisted captured iris, if any
-        if (capturedRightIrisBase64 != null || capturedLeftIrisBase64 != null) showIris();
+        if (capturedRightIrisBase64 != null || capturedLeftIrisBase64 != null) { showIris(); }
 
         // register a listener to the event of the devices-runner being running or not
         deviceManagerGadgetPaneController.setDevicesRunnerRunningListener(running ->
@@ -251,7 +253,8 @@ public class IrisCapturingFxController extends WizardStepFxControllerBase {
             if (initialized) {
                 if (capturedRightIrisBase64 != null || capturedLeftIrisBase64 != null) {
                     btnCaptureIris.setText(resources.getString("button.recaptureIris"));
-                } else btnCaptureIris.setText(resources.getString("button.captureIris"));
+                }
+                else { btnCaptureIris.setText(resources.getString("button.captureIris")); }
 
                 GuiUtils.showNode(btnCaptureIris, true);
                 GuiUtils.showNode(lblStatus, true);
@@ -260,12 +263,14 @@ public class IrisCapturingFxController extends WizardStepFxControllerBase {
                 LOGGER.info("The iris scanner is initialized!");
 
                 btnCaptureIris.requestFocus();
-            } else if (irisDeviceInitializedAtLeastOnce) {
+            }
+            else if (irisDeviceInitializedAtLeastOnce) {
                 GuiUtils.showNode(btnCaptureIris, false);
                 GuiUtils.showNode(lblStatus, true);
                 lblStatus.setText(resources.getString("label.status.irisScannerDisconnected"));
                 LOGGER.info("The iris scanner is disconnected!");
-            } else {
+            }
+            else {
                 GuiUtils.showNode(btnCaptureIris, false);
                 GuiUtils.showNode(lblStatus, true);
                 lblStatus.setText(resources.getString("label.status.irisScannerNotInitialized"));
@@ -277,15 +282,18 @@ public class IrisCapturingFxController extends WizardStepFxControllerBase {
 
             if (capturedRightIrisBase64 != null || capturedLeftIrisBase64 != null) {
                 btnCaptureIris.setText(resources.getString("button.recaptureIris"));
-            } else btnCaptureIris.setText(resources.getString("button.captureIris"));
+            }
+            else { btnCaptureIris.setText(resources.getString("button.captureIris")); }
 
             btnCaptureIris.requestFocus();
-        } else if (deviceManagerGadgetPaneController.isDevicesRunnerRunning()) {
+        }
+        else if (deviceManagerGadgetPaneController.isDevicesRunnerRunning()) {
             GuiUtils.showNode(btnCaptureIris, false);
             GuiUtils.showNode(lblStatus, true);
             lblStatus.setText(resources.getString("label.status.irisScannerNotInitialized"));
             deviceManagerGadgetPaneController.initializeIrisScanner();
-        } else {
+        }
+        else {
             GuiUtils.showNode(btnCaptureIris, false);
             GuiUtils.showNode(lblStatus, true);
             lblStatus.setText(resources.getString("label.status.irisScannerNotInitialized"));
@@ -323,8 +331,8 @@ public class IrisCapturingFxController extends WizardStepFxControllerBase {
                         .getIrisScannerDeviceName();
 
                 int position = LEFT_AND_RIGHT_IRIS;
-                if (!cbSkippedRightIris.isSelected()) position = LEFT_IRIS_ONLY;
-                if (!cbSkippedLeftIris.isSelected()) position = RIGHT_IRIS_ONLY;
+                if (!cbSkippedRightIris.isSelected()) { position = LEFT_IRIS_ONLY; }
+                if (!cbSkippedLeftIris.isSelected()) { position = RIGHT_IRIS_ONLY; }
 
                 Future<TaskResponse<CaptureIrisResponse>> future = Context.getBioKitManager()
                         .getIrisService()
@@ -345,34 +353,40 @@ public class IrisCapturingFxController extends WizardStepFxControllerBase {
                 CaptureIrisResponse result = taskResponse.getResult();
 
                 if (result.getReturnCode() == CaptureIrisResponse.SuccessCodes.SUCCESS) {
-                    if (cbSkippedRightIris.isSelected()) capturedRightIrisBase64 = result.getRightIrisImageBase64();
-                    if (cbSkippedLeftIris.isSelected()) capturedLeftIrisBase64 = result.getLeftIrisImageBase64();
+                    if (cbSkippedRightIris.isSelected()) { capturedRightIrisBase64 = result.getRightIrisImageBase64(); }
+                    if (cbSkippedLeftIris.isSelected()) { capturedLeftIrisBase64 = result.getLeftIrisImageBase64(); }
                     showIris();
-                } else {
+                }
+                else {
                     if (result.getReturnCode() == CaptureIrisResponse.FailureCodes.EXCEPTION_WHILE_CAPTURING) {
                         lblStatus.setText(resources.getString("label.status.exceptionWhileCapturingIris"));
-                    } else if (result.getReturnCode() == CaptureIrisResponse.FailureCodes.DEVICE_NOT_FOUND_OR_UNPLUGGED) {
+                    }
+                    else if (result.getReturnCode() == CaptureIrisResponse.FailureCodes.DEVICE_NOT_FOUND_OR_UNPLUGGED) {
                         lblStatus.setText(resources.getString("label.status.irisDeviceNotFoundOrUnplugged"));
                         GuiUtils.showNode(btnCaptureIris, false);
                         DevicesRunnerGadgetPaneFxController deviceManagerGadgetPaneController =
                                 Context.getCoreFxController().getDeviceManagerGadgetPaneController();
                         deviceManagerGadgetPaneController.initializeIrisScanner();
-                    } else if (result.getReturnCode() == CaptureIrisResponse.FailureCodes.DEVICE_BUSY) {
+                    }
+                    else if (result.getReturnCode() == CaptureIrisResponse.FailureCodes.DEVICE_BUSY) {
                         lblStatus.setText(resources.getString("label.status.irisDeviceBusy"));
-                    } else {
+                    }
+                    else {
                         lblStatus.setText(String.format(
                                 resources.getString("label.status.failedToCaptureIrisWithErrorCode"),
                                 result.getReturnCode()));
                     }
                 }
-            } else {
+            }
+            else {
                 lblStatus.setText(String.format(
                         resources.getString("label.status.failedToCaptureIrisWithErrorCode"),
                         taskResponse.getErrorCode()));
 
                 String errorCode = CommonsErrorCodes.C008_00056.getCode();
                 String[] errorDetails = {"failed while capturing the iris!"};
-                Context.getCoreFxController().showErrorDialog(errorCode, taskResponse.getException(), errorDetails, getTabIndex());
+                Context.getCoreFxController()
+                        .showErrorDialog(errorCode, taskResponse.getException(), errorDetails, getTabIndex());
             }
         });
         capturingIrisTask.setOnFailed(e ->
@@ -383,15 +397,18 @@ public class IrisCapturingFxController extends WizardStepFxControllerBase {
 
             Throwable exception = capturingIrisTask.getException();
 
-            if (exception instanceof ExecutionException) exception = exception.getCause();
+            if (exception instanceof ExecutionException) { exception = exception.getCause(); }
 
             if (exception instanceof TimeoutException) {
                 lblStatus.setText(resources.getString("label.status.devicesRunnerReadTimeout"));
-            } else if (exception instanceof NotConnectedException) {
+            }
+            else if (exception instanceof NotConnectedException) {
                 lblStatus.setText(resources.getString("label.status.disconnectedFromDevicesRunner"));
-            } else if (exception instanceof CancellationException) {
+            }
+            else if (exception instanceof CancellationException) {
                 lblStatus.setText(resources.getString("label.status.capturingIrisCancelled"));
-            } else {
+            }
+            else {
                 lblStatus.setText(resources.getString("label.status.failedToCaptureIris"));
 
                 String errorCode = CommonsErrorCodes.C008_00057.getCode();
@@ -407,10 +424,14 @@ public class IrisCapturingFxController extends WizardStepFxControllerBase {
         Image capturedRightIrisImage = null;
         Image capturedLeftIrisImage = null;
 
-        if (capturedRightIrisBase64 != null) capturedRightIrisImage =
-                new Image(new ByteArrayInputStream(Base64.getDecoder().decode(capturedRightIrisBase64)));
-        if (capturedLeftIrisBase64 != null) capturedLeftIrisImage =
-                new Image(new ByteArrayInputStream(Base64.getDecoder().decode(capturedLeftIrisBase64)));
+        if (capturedRightIrisBase64 != null) {
+            capturedRightIrisImage =
+                    new Image(new ByteArrayInputStream(Base64.getDecoder().decode(capturedRightIrisBase64)));
+        }
+        if (capturedLeftIrisBase64 != null) {
+            capturedLeftIrisImage =
+                    new Image(new ByteArrayInputStream(Base64.getDecoder().decode(capturedLeftIrisBase64)));
+        }
 
         var contextMenuLabel = resources.getString("label.contextMenu.showImage");
         var rightIrisLabel = resources.getString("label.rightIris");

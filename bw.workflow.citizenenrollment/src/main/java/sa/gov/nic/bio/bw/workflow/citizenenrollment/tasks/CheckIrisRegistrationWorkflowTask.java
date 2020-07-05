@@ -9,31 +9,35 @@ import sa.gov.nic.bio.bw.workflow.citizenenrollment.utils.CitizenEnrollmentError
 import sa.gov.nic.bio.bw.workflow.citizenenrollment.webservice.IrisRegistrationAPI;
 import sa.gov.nic.bio.commons.TaskResponse;
 
-public class CheckIrisRegistrationWorkflowTask extends WorkflowTask
-{
-	public enum Status
-	{
-		PENDING,
-		SUCCESS
-	}
-	
-	@Input(alwaysRequired = true) private Long tcn;
+public class CheckIrisRegistrationWorkflowTask extends WorkflowTask {
+    public enum Status {
+        PENDING,
+        SUCCESS
+    }
 
-	@Output private Status status;
-	
-	@Override
-	public void execute() throws Signal
-	{
-		var api = Context.getWebserviceManager().getApi(IrisRegistrationAPI.class);
-		var apiCall = api.checkIrisRegistration(workflowId, workflowTcn, tcn);
-		var taskResponse = Context.getWebserviceManager().executeApi(apiCall);
-		resetWorkflowStepIfNegativeTaskResponse(taskResponse);
+    @Input(alwaysRequired = true)
+    private Long tcn;
 
-		Integer httpCode = taskResponse.getHttpCode();
-		if(httpCode == 200) status = Status.SUCCESS;
-		else if(httpCode == 202) status = Status.PENDING;
+    @Output
+    private Status status;
+
+    @Override
+    public void execute() throws Signal {
+        var api = Context.getWebserviceManager().getApi(IrisRegistrationAPI.class);
+        var apiCall = api.checkIrisRegistration(workflowId, workflowTcn, tcn);
+        var taskResponse = Context.getWebserviceManager().executeApi(apiCall);
+        resetWorkflowStepIfNegativeTaskResponse(taskResponse);
+
+        Integer httpCode = taskResponse.getHttpCode();
+        if (httpCode == 200) {
+            status = Status.SUCCESS;
+        }
+        else if (httpCode == 202) {
+            status = Status.PENDING;
+        }
 
 
-		resetWorkflowStepIfNegativeOrNullTaskResponse(TaskResponse.failure(CitizenEnrollmentErrorCodes.B018_00001.getCode()));
-	}
+        resetWorkflowStepIfNegativeOrNullTaskResponse(
+                TaskResponse.failure(CitizenEnrollmentErrorCodes.B018_00001.getCode()));
+    }
 }
