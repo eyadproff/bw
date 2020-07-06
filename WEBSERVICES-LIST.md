@@ -232,3 +232,11 @@
         - services-gateway-lookups/api/application/visa-type/all/v2
         - services-gateway-lookups/api/application/passport-types/v1
         - services-gateway-biooperation/api/enrollment/visa-applicant/v1
+        
+     menu.register.citizenEnrollment:
+        -services-gateway-demographic/api/person/info/v3
+        -services-gateway-biooperation/api/enrollment/biometrics/exclusion/retrieve/v1
+        -services-gateway-biooperation/api/enrollment/register/v1
+        -services-gateway-biooperation/api/enrollment/status/v1
+        -services-gateway-biooperation/api/iris/registration/v1
+        -services-gateway-biooperation/api/iris/registration/status/v1
