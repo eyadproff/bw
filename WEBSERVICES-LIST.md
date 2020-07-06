@@ -232,3 +232,9 @@
         - services-gateway-lookups/api/application/visa-type/all/v2
         - services-gateway-lookups/api/application/passport-types/v1
         - services-gateway-biooperation/api/enrollment/visa-applicant/v1
+        
+     menu.edit.biometricsException:
+        -services-gateway-demographic/api/person/info/v1
+        -services-gateway-biooperation/api/enrollment/biometrics/exclusion/retrieve/v1
+        -services-gateway-biooperation/api/enrollment/biometrics/exclusion/v1
+        -services-gateway-biooperation/api/enrollment/biometrics/exclusion/delete/v1
