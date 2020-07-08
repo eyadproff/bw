@@ -1,0 +1,709 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
+<?import sa.gov.nic.bio.bw.workflow.commons.ui.*?>
+
+<BorderPane fx:id="rootPane" prefHeight="791.0" prefWidth="1301.0" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sa.gov.nic.bio.bw.workflow.biometricsexception.controllers.EditMissingFingerprintFXController">
+
+                <center>
+      <VBox alignment="TOP_CENTER" prefHeight="536.0" prefWidth="1098.0">
+         <children>
+            <ScrollPane fitToWidth="true" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="506.0" prefWidth="1066.0">
+               <content>
+
+                                                                              <!--        <fx:define>-->
+            <!--            <ToggleGroup fx:id="TGRThumb"/>-->
+            <!--        </fx:define>-->
+            <!--        <fx:define>-->
+            <!--            <ToggleGroup fx:id="TGRIndex"/>-->
+            <!--        </fx:define>-->
+            <!--        <fx:define>-->
+            <!--            <ToggleGroup fx:id="TGRMiddle"/>-->
+            <!--        </fx:define>-->
+            <!--        <fx:define>-->
+            <!--            <ToggleGroup fx:id="TGRRing"/>-->
+            <!--        </fx:define>-->
+            <!--        <fx:define>-->
+            <!--            <ToggleGroup fx:id="TGRLittle"/>-->
+            <!--        </fx:define>-->
+
+
+                  <!--        <fx:define>-->
+            <!--            <ToggleGroup fx:id="TGLThumb"/>-->
+            <!--        </fx:define>-->
+            <!--        <fx:define>-->
+            <!--            <ToggleGroup fx:id="TGLIndex"/>-->
+            <!--        </fx:define>-->
+            <!--        <fx:define>-->
+            <!--            <ToggleGroup fx:id="TGLMiddle"/>-->
+            <!--        </fx:define>-->
+            <!--        <fx:define>-->
+            <!--            <ToggleGroup fx:id="TGLRing"/>-->
+            <!--        </fx:define>-->
+            <!--        <fx:define>-->
+                        <!--            <ToggleGroup fx:id="TGLLittle"/>-->
+            <!--        </fx:define>-->
+
+
+                  <!--        <ScrollPane maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="572.0" prefWidth="885.0" BorderPane.alignment="CENTER">-->
+            <!--            <content>-->
+            <!--                <StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="572.0" prefWidth="832.0">-->
+
+
+                  <!--                    <children>-->
+                              <SplitPane dividerPositions="0.5" orientation="VERTICAL" prefHeight="502.0" prefWidth="1064.0">
+                                <items>
+
+                                                                                                      <TitledPane collapsible="false" focusTraversable="false" maxHeight="-Infinity" text="%RightHand" VBox.vgrow="ALWAYS">
+                           <SplitPane dividerPositions="0.2, 0.4, 0.6, 0.8" orientation="HORIZONTAL" styleClass="white-background">
+                              <items>
+                                                                    <VBox fx:id="VRightThumb" disable="true" spacing="8.0" style="-fx-border-color: gray;">
+                                                                        <children>
+                                                                            <Label contentDisplay="CENTER" minHeight="-Infinity" minWidth="-Infinity" prefHeight="20.0" prefWidth="86.0" text="%Thumb" wrapText="true" />
+                                                                            <ComboBox fx:id="CMenuRThumb" nodeOrientation="RIGHT_TO_LEFT" prefHeight="30.0" prefWidth="253.0" promptText="%Cause" />
+
+                                                                                                                                                          <VBox fx:id="VOtherRThumb" prefHeight="133.0" prefWidth="123.0" visible="false">
+                                                                                <children>
+                                                                                    <Label contentDisplay="CENTER" prefHeight="20.0" prefWidth="80.0" text="%Status" wrapText="true" />
+                                                                                    <RadioButton mnemonicParsing="false" prefHeight="27.0" prefWidth="98.0" text="%3months">
+                                                                                        <opaqueInsets>
+                                                                                            <Insets />
+                                                                                        </opaqueInsets>
+                                                                                        <VBox.margin>
+                                                                                            <Insets left="10.0" right="10.0" />
+                                                                                        </VBox.margin>
+                                                                     <toggleGroup>
+                                                                        <ToggleGroup fx:id="TGRThumb" />
+                                                                     </toggleGroup>
+                                                                                    </RadioButton>
+                                                                                    <RadioButton layoutX="20.0" layoutY="57.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="98.0" text="%6months" toggleGroup="$TGRThumb">
+                                                                                        <opaqueInsets>
+                                                                                            <Insets />
+                                                                                        </opaqueInsets>
+                                                                                        <VBox.margin>
+                                                                                            <Insets left="10.0" right="10.0" />
+                                                                                        </VBox.margin>
+                                                                                    </RadioButton>
+                                                                                    <RadioButton layoutX="20.0" layoutY="84.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="98.0" text="%oneYear" toggleGroup="$TGRThumb">
+                                                                                        <opaqueInsets>
+                                                                                            <Insets />
+                                                                                        </opaqueInsets>
+                                                                                        <VBox.margin>
+                                                                                            <Insets left="10.0" right="10.0" />
+                                                                                        </VBox.margin>
+                                                                                    </RadioButton>
+                                                                                    <RadioButton contentDisplay="CENTER" mnemonicParsing="false" prefHeight="27.0" prefWidth="97.0" text="%Permanent" toggleGroup="$TGRThumb">
+                                                                                        <VBox.margin>
+                                                                                            <Insets left="10.0" right="10.0" />
+                                                                                        </VBox.margin>
+                                                                                    </RadioButton>
+                                                                                    <TextField fx:id="CouseTRThumb" prefHeight="25.0" prefWidth="271.0" promptText="%Cause" visible="false" VBox.vgrow="ALWAYS">
+                                                                                        <VBox.margin>
+                                                                                            <Insets top="5.0" />
+                                                                                        </VBox.margin>
+                                                                                    </TextField>
+                                                                                </children>
+                                                                                <VBox.margin>
+                                                                                    <Insets />
+                                                                                </VBox.margin>
+                                                                            </VBox>
+                                                                        </children>
+                                                                        <padding>
+                                                                            <Insets bottom="10.0" left="5.0" right="5.0" top="10.0" />
+                                                                        </padding>
+                                                                    </VBox>
+                                                                    <VBox fx:id="VRightIndexFinger" disable="true" spacing="8.0" style="-fx-border-color: gray;">
+                                                                        <children>
+                                                                            <Label contentDisplay="CENTER" prefHeight="20.0" prefWidth="86.0" text="%IndexFinger" wrapText="true" />
+                                                                            <ComboBox fx:id="CMenuRIndex" nodeOrientation="RIGHT_TO_LEFT" prefHeight="30.0" prefWidth="253.0" promptText="%Cause" />
+
+                                                                                                                                                    <VBox fx:id="VOtherRIndex" prefHeight="133.0" prefWidth="91.0" visible="false">
+                                                                                <children>
+                                                                                    <Label contentDisplay="CENTER" prefHeight="20.0" prefWidth="80.0" text="%Status" />
+                                                                                    <RadioButton mnemonicParsing="false" prefHeight="27.0" prefWidth="98.0" text="%3months">
+                                                                                        <opaqueInsets>
+                                                                                                <Insets />
+                                                                                        </opaqueInsets>
+                                                                                        <VBox.margin>
+                                                                                            <Insets left="10.0" right="10.0" />
+                                                                                        </VBox.margin>
+                                                                     <toggleGroup>
+                                                                        <ToggleGroup fx:id="TGRIndex" />
+                                                                     </toggleGroup>
+                                                                                    </RadioButton>
+                                                                                    <RadioButton layoutX="20.0" layoutY="57.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="98.0" text="%6months" toggleGroup="$TGRIndex">
+                                                                                        <opaqueInsets>
+                                                                                                        <Insets />
+                                                                                        </opaqueInsets>
+                                                                                        <VBox.margin>
+                                                                                            <Insets left="10.0" right="10.0" />
+                                                                                        </VBox.margin>
+                                                                                    </RadioButton>
+                                                                                    <RadioButton layoutX="20.0" layoutY="84.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="98.0" text="%oneYear" toggleGroup="$TGRIndex">
+                                                                                        <opaqueInsets>
+                                                                                            <Insets />
+                                                                                        </opaqueInsets>
+                                                                                        <VBox.margin>
+                                                                                            <Insets left="10.0" right="10.0" />
+                                                                                        </VBox.margin>
+                                                                                    </RadioButton>
+                                                                                    <RadioButton contentDisplay="CENTER" mnemonicParsing="false" prefHeight="27.0" prefWidth="97.0" text="%Permanent" toggleGroup="$TGRIndex">
+                                                                                        <VBox.margin>
+                                                                                            <Insets left="10.0" right="10.0" />
+                                                                                        </VBox.margin>
+                                                                                    </RadioButton>
+                                                                                    <TextField fx:id="CouseTRIndex" prefHeight="25.0" prefWidth="271.0" promptText="%Cause" visible="false" VBox.vgrow="ALWAYS">
+                                                                                        <VBox.margin>
+                                                                                            <Insets top="5.0" />
+                                                                                        </VBox.margin>
+                                                                                    </TextField>
+                                                                                </children>
+                                                                                <VBox.margin>
+                                                                                    <Insets />
+                                                                                </VBox.margin>
+                                                                            </VBox>
+
+                                                                                                                                                </children>
+                                                                        <padding>
+                                                                            <Insets bottom="10.0" left="5.0" right="5.0" top="10.0" />
+                                                                        </padding>
+                                                                    </VBox>
+
+                                                                                                                                            <VBox fx:id="VRightMiddleFinger" disable="true" spacing="8.0" style="-fx-border-color: gray;">
+                                                                            <children>
+                                                                            <Label contentDisplay="CENTER" prefHeight="20.0" prefWidth="86.0" text="%MiddleFinger" wrapText="true" />
+                                                                            <ComboBox fx:id="CMenuRMiddle" nodeOrientation="RIGHT_TO_LEFT" prefHeight="30.0" prefWidth="253.0" promptText="%Cause" />
+                                                                            <VBox fx:id="VOtherRMiddle" prefHeight="133.0" prefWidth="123.0" visible="false">
+                                                                                <children>
+                                                                                    <Label contentDisplay="CENTER" prefHeight="20.0" prefWidth="80.0" text="%Status" />
+                                                                                    <RadioButton mnemonicParsing="false" prefHeight="27.0" prefWidth="98.0" text="%3months">
+                                                                                        <opaqueInsets>
+                                                                                            <Insets />
+                                                                                        </opaqueInsets>
+                                                                                        <VBox.margin>
+                                                                                            <Insets left="10.0" right="10.0" />
+                                                                                        </VBox.margin>
+                                                                     <toggleGroup>
+                                                                        <ToggleGroup fx:id="TGRMiddle" />
+                                                                        </toggleGroup>
+                                                                                    </RadioButton>
+                                                                                                <RadioButton layoutX="20.0" layoutY="57.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="98.0" text="%6months" toggleGroup="$TGRMiddle">
+                                                                                        <opaqueInsets>
+                                                                                            <Insets />
+                                                                                        </opaqueInsets>
+                                                                                        <VBox.margin>
+                                                                                            <Insets left="10.0" right="10.0" />
+                                                                                        </VBox.margin>
+                                                                                    </RadioButton>
+                                                                                    <RadioButton layoutX="20.0" layoutY="84.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="98.0" text="%oneYear" toggleGroup="$TGRMiddle">
+                                                                                        <opaqueInsets>
+                                                                                            <Insets />
+                                                                                        </opaqueInsets>
+                                                                                        <VBox.margin>
+                                                                                            <Insets left="10.0" right="10.0" />
+                                                                                        </VBox.margin>
+                                                                                    </RadioButton>
+                                                                                    <RadioButton contentDisplay="CENTER" mnemonicParsing="false" prefHeight="27.0" prefWidth="97.0" text="%Permanent" toggleGroup="$TGRMiddle">
+                                                                                        <VBox.margin>
+                                                                                            <Insets left="10.0" right="10.0" />
+                                                                                        </VBox.margin>
+                                                                                    </RadioButton>
+                                                                                    <TextField fx:id="CouseTRMiddle" prefHeight="25.0" prefWidth="271.0" promptText="%Cause" visible="false" VBox.vgrow="ALWAYS">
+                                                                                        <VBox.margin>
+                                                                                            <Insets top="5.0" />
+                                                                                        </VBox.margin>
+                                                                                    </TextField>
+                                                                                </children>
+                                                                                <VBox.margin>
+                                                                                    <Insets />
+                                                                                </VBox.margin>
+                                                                            </VBox>
+
+                                                                                                                                                </children>
+                                                                        <padding>
+                                                                            <Insets bottom="10.0" left="5.0" right="5.0" top="10.0" />
+                                                                        </padding>
+                                                                    </VBox>
+                                                                    <VBox fx:id="VRightRingFinger" disable="true" spacing="8.0" style="-fx-border-color: gray;">
+                                                                        <children>
+                                                                            <Label contentDisplay="CENTER" prefHeight="20.0" prefWidth="86.0" text="%RingFinger" />
+                                                                            <ComboBox fx:id="CMenuRRing" nodeOrientation="RIGHT_TO_LEFT" prefHeight="30.0" prefWidth="253.0" promptText="%Cause" />
+
+                                                                                                                                                    <VBox fx:id="VOtherRRing" prefHeight="133.0" prefWidth="123.0" visible="false">
+                                                                                <children>
+                                                                                    <Label contentDisplay="CENTER" prefHeight="20.0" prefWidth="80.0" text="%Status" />
+                                                                                    <RadioButton mnemonicParsing="false" prefHeight="27.0" prefWidth="98.0" text="%3months">
+                                                                                        <opaqueInsets>
+                                                                                            <Insets />
+                                                                                        </opaqueInsets>
+                                                                                        <VBox.margin>
+                                                                                            <Insets left="10.0" right="10.0" />
+                                                                                        </VBox.margin>
+                                                                     <toggleGroup>
+                                                                        <ToggleGroup fx:id="TGRRing" />
+                                                                     </toggleGroup>
+                                                                                    </RadioButton>
+                                                                                    <RadioButton layoutX="20.0" layoutY="57.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="98.0" text="%6months" toggleGroup="$TGRRing">
+                                                                                        <opaqueInsets>
+                                                                                            <Insets />
+                                                                                        </opaqueInsets>
+                                                                                        <VBox.margin>
+                                                                                            <Insets left="10.0" right="10.0" />
+                                                                                        </VBox.margin>
+                                                                                    </RadioButton>
+                                                                                    <RadioButton layoutX="20.0" layoutY="84.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="98.0" text="%oneYear" toggleGroup="$TGRRing">
+                                                                                        <opaqueInsets>
+                                                                                            <Insets />
+                                                                                        </opaqueInsets>
+                                                                                        <VBox.margin>
+                                                                                            <Insets left="10.0" right="10.0" />
+                                                                                        </VBox.margin>
+                                                                                    </RadioButton>
+                                                                                    <RadioButton contentDisplay="CENTER" mnemonicParsing="false" prefHeight="27.0" prefWidth="97.0" text="%Permanent" toggleGroup="$TGRRing">
+                                                                                        <VBox.margin>
+                                                                                            <Insets left="10.0" right="10.0" />
+                                                                                        </VBox.margin>
+                                                                                    </RadioButton>
+                                                                                    <TextField fx:id="CouseTRRing" prefHeight="25.0" prefWidth="270.0" promptText="%Cause" visible="false" VBox.vgrow="ALWAYS">
+                                                                                        <VBox.margin>
+                                                                                            <Insets top="5.0" />
+                                                                                        </VBox.margin>
+                                                                                    </TextField>
+                                                                                </children>
+                                                                                <VBox.margin>
+                                                                                    <Insets />
+                                                                                </VBox.margin>
+                                                                            </VBox>
+                                                                        </children>
+                                                                                 <padding>
+                                                                            <Insets bottom="10.0" left="5.0" right="5.0" top="10.0" />
+                                                                        </padding>
+                                                                    </VBox>
+                                                                    <VBox fx:id="VRightLittleFinger" disable="true" spacing="8.0" style="-fx-border-color: gray;">
+                                                                        <children>
+                                                                            <Label contentDisplay="CENTER" prefHeight="20.0" prefWidth="86.0" text="%LittleFinger" wrapText="true" />
+                                                                            <ComboBox fx:id="CMenuRLittle" nodeOrientation="RIGHT_TO_LEFT" prefHeight="30.0" prefWidth="253.0" promptText="%Cause" />
+                                                                            <VBox fx:id="VOtherRLittle" prefHeight="133.0" prefWidth="123.0" visible="false">
+                                                                                <children>
+                                                                                    <Label contentDisplay="CENTER" prefHeight="20.0" prefWidth="80.0" text="%Status" />
+                                                                                    <RadioButton mnemonicParsing="false" prefHeight="27.0" prefWidth="98.0" text="%3months">
+                                                                                        <opaqueInsets>
+                                                                                            <Insets />
+                                                                                           </opaqueInsets>
+                                                                                        <VBox.margin>
+                                                                                            <Insets left="10.0" right="10.0" />
+                                                                                        </VBox.margin>
+                                                                     <toggleGroup>
+                                                                        <ToggleGroup fx:id="TGRLittle" />
+                                                                     </toggleGroup>
+                                                                                    </RadioButton>
+                                                                                    <RadioButton layoutX="20.0" layoutY="57.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="98.0" text="%6months" toggleGroup="$TGRLittle">
+                                                                                        <opaqueInsets>
+                                                                                            <Insets />
+                                                                                        </opaqueInsets>
+                                                                                        <VBox.margin>
+                                                                                            <Insets left="10.0" right="10.0" />
+                                                                                        </VBox.margin>
+                                                                                    </RadioButton>
+                                                                                    <RadioButton layoutX="20.0" layoutY="84.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="98.0" text="%oneYear" toggleGroup="$TGRLittle">
+                                                                                        <opaqueInsets>
+                                                                                            <Insets />
+                                                                                        </opaqueInsets>
+                                                                                        <VBox.margin>
+                                                                                            <Insets left="10.0" right="10.0" />
+                                                                                        </VBox.margin>
+                                                                                    </RadioButton>
+                                                                                    <RadioButton contentDisplay="CENTER" mnemonicParsing="false" prefHeight="27.0" prefWidth="97.0" text="%Permanent" toggleGroup="$TGRLittle">
+                                                                                        <VBox.margin>
+                                                                                            <Insets left="10.0" right="10.0" />
+                                                                                        </VBox.margin>
+                                                                                    </RadioButton>
+                                                                                    <TextField fx:id="CouseTRLittle" prefHeight="25.0" prefWidth="271.0" promptText="%Cause" visible="false" VBox.vgrow="ALWAYS">
+                                                                                        <VBox.margin>
+                                                                                            <Insets top="5.0" />
+                                                                                        </VBox.margin>
+                                                                                    </TextField>
+                                                                                </children>
+                                                                                <VBox.margin>
+                                                                                    <Insets />
+                                                                                </VBox.margin>
+                                                                            </VBox>
+
+                                                                                                                                                </children>
+                                                                        <padding>
+                                                                            <Insets bottom="10.0" left="5.0" right="5.0" top="10.0" />
+                                                                        </padding>
+                                                                    </VBox>
+                              </items>
+                           </SplitPane>
+                                    </TitledPane>
+
+
+                                          <TitledPane collapsible="false" focusTraversable="false" maxHeight="-Infinity" text="%LeftHand" VBox.vgrow="ALWAYS">
+                           <SplitPane dividerPositions="0.2, 0.4, 0.6, 0.8" styleClass="white-background">
+                              <items>
+                                                                    <VBox fx:id="VLeftThumb" disable="true" spacing="8.0" style="-fx-border-color: gray;">
+                                                                        <children>
+                                                                            <Label contentDisplay="CENTER" prefHeight="20.0" prefWidth="86.0" text="%Thumb" />
+                                                                            <ComboBox fx:id="CMenuLThumb" nodeOrientation="RIGHT_TO_LEFT" prefHeight="30.0" prefWidth="253.0" promptText="%Cause" />
+
+                                                                                                                                                    <VBox fx:id="VOtherLThumb" prefHeight="133.0" prefWidth="123.0" visible="false">
+                                                                                <children>
+                                                                                    <Label contentDisplay="CENTER" prefHeight="20.0" prefWidth="80.0" text="%Status" wrapText="true" />
+                                                                                    <RadioButton mnemonicParsing="false" prefHeight="27.0" prefWidth="98.0" text="%3months" wrapText="true">
+                                                                                        <opaqueInsets>
+                                                                                            <Insets />
+                                                                                        </opaqueInsets>
+                                                                                        <VBox.margin>
+                                                                                            <Insets left="10.0" right="10.0" />
+                                                                                        </VBox.margin>
+                                                                     <toggleGroup>
+                                                                        <ToggleGroup fx:id="TGLThumb" />
+                                                                     </toggleGroup>
+                                                                                    </RadioButton>
+                                                                                    <RadioButton layoutX="20.0" layoutY="57.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="98.0" text="%6months" toggleGroup="$TGLThumb" wrapText="true">
+                                                                                        <opaqueInsets>
+                                                                                            <Insets />
+                                                                                        </opaqueInsets>
+                                                                                        <VBox.margin>
+                                                                                            <Insets left="10.0" right="10.0" />
+                                                                                        </VBox.margin>
+                                                                                    </RadioButton>
+                                                                                    <RadioButton layoutX="20.0" layoutY="84.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="98.0" text="%oneYear" toggleGroup="$TGLThumb" wrapText="true">
+                                                                                        <opaqueInsets>
+                                                                                            <Insets />
+                                                                                        </opaqueInsets>
+                                                                                        <VBox.margin>
+                                                                                            <Insets left="10.0" right="10.0" />
+                                                                                        </VBox.margin>
+                                                                                    </RadioButton>
+                                                                                    <RadioButton contentDisplay="CENTER" mnemonicParsing="false" prefHeight="27.0" prefWidth="97.0" text="%Permanent" toggleGroup="$TGLThumb" wrapText="true">
+                                                                                        <VBox.margin>
+                                                                                            <Insets left="10.0" right="10.0" />
+                                                                                        </VBox.margin>
+                                                                                    </RadioButton>
+                                                                                    <TextField fx:id="CouseTLThumb" prefHeight="22.0" prefWidth="121.0" promptText="%Cause" visible="false" VBox.vgrow="ALWAYS">
+                                                                                        <VBox.margin>
+                                                                                            <Insets top="5.0" />
+                                                                                        </VBox.margin>
+                                                                                    </TextField>
+                                                                                </children>
+                                                                                <VBox.margin>
+                                                                                    <Insets />
+                                                                                </VBox.margin>
+                                                                            </VBox>
+                                                                        </children>
+                                                                        <padding>
+                                                                            <Insets bottom="10.0" left="5.0" right="5.0" top="10.0" />
+                                                                        </padding>
+                                                                    </VBox>
+                                                                    <VBox fx:id="VLeftIndexFinger" disable="true" spacing="8.0" style="-fx-border-color: gray;">
+                                                                        <children>
+                                                                            <Label contentDisplay="CENTER" prefHeight="20.0" prefWidth="86.0" text="%IndexFinger" />
+                                                                            <ComboBox fx:id="CMenuLIndex" nodeOrientation="RIGHT_TO_LEFT" prefHeight="30.0" prefWidth="253.0" promptText="%Cause" />
+
+                                                                                                                                                    <VBox fx:id="VOtherLIndex" prefHeight="133.0" prefWidth="123.0" visible="false">
+                                                                                <children>
+                                                                                    <Label contentDisplay="CENTER" prefHeight="20.0" prefWidth="80.0" text="%Status" wrapText="true" />
+                                                                                    <RadioButton mnemonicParsing="false" prefHeight="27.0" prefWidth="98.0" text="%3months" wrapText="true">
+                                                                                        <opaqueInsets>
+                                                                                            <Insets />
+                                                                                        </opaqueInsets>
+                                                                                        <VBox.margin>
+                                                                                            <Insets left="10.0" right="10.0" />
+                                                                                        </VBox.margin>
+                                                                     <toggleGroup>
+                                                                        <ToggleGroup fx:id="TGLIndex" />
+                                                                     </toggleGroup>
+                                                                                    </RadioButton>
+                                                                                    <RadioButton layoutX="20.0" layoutY="57.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="98.0" text="%6months" toggleGroup="$TGLIndex" wrapText="true">
+                                                                                        <opaqueInsets>
+                                                                                            <Insets />
+                                                                                        </opaqueInsets>
+                                                                                        <VBox.margin>
+                                                                                            <Insets left="10.0" right="10.0" />
+                                                                                        </VBox.margin>
+                                                                                    </RadioButton>
+                                                                                    <RadioButton layoutX="20.0" layoutY="84.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="98.0" text="%oneYear" toggleGroup="$TGLIndex" wrapText="true">
+                                                                                        <opaqueInsets>
+                                                                                            <Insets />
+                                                                                        </opaqueInsets>
+                                                                                        <VBox.margin>
+                                                                                            <Insets left="10.0" right="10.0" />
+                                                                                        </VBox.margin>
+                                                                                    </RadioButton>
+                                                                                    <RadioButton contentDisplay="CENTER" mnemonicParsing="false" prefHeight="27.0" prefWidth="97.0" text="%Permanent" toggleGroup="$TGLIndex" wrapText="true">
+                                                                                        <VBox.margin>
+                                                                                            <Insets left="10.0" right="10.0" />
+                                                                                        </VBox.margin>
+                                                                                    </RadioButton>
+                                                                                    <TextField fx:id="CouseTLIndex" prefHeight="22.0" prefWidth="121.0" promptText="%Cause" visible="false" VBox.vgrow="ALWAYS">
+                                                                                        <VBox.margin>
+                                                                                            <Insets top="5.0" />
+                                                                                        </VBox.margin>
+                                                                                    </TextField>
+                                                                                </children>
+                                                                                <VBox.margin>
+                                                                                    <Insets />
+                                                                                </VBox.margin>
+                                                                            </VBox>
+                                                                        </children>
+                                                                        <padding>
+                                                                            <Insets bottom="10.0" left="5.0" right="5.0" top="10.0" />
+                                                                        </padding>
+                                                                    </VBox>
+                                                                    <VBox fx:id="VLeftMiddleFinger" disable="true" spacing="8.0" style="-fx-border-color: gray;">
+                                                                        <children>
+                                                                            <Label contentDisplay="CENTER" prefHeight="20.0" prefWidth="86.0" text="%MiddleFinger" />
+                                                                            <ComboBox fx:id="CMenuLMiddle" nodeOrientation="RIGHT_TO_LEFT" prefHeight="30.0" prefWidth="253.0" promptText="%Cause" />
+
+                                                                                                                                                    <VBox fx:id="VOtherLMiddle" prefHeight="133.0" prefWidth="123.0" visible="false">
+                                                                                <children>
+                                                                                    <Label contentDisplay="CENTER" prefHeight="20.0" prefWidth="80.0" text="%Status" wrapText="true" />
+                                                                                    <RadioButton mnemonicParsing="false" prefHeight="27.0" prefWidth="98.0" text="%3months" wrapText="true">
+                                                                                        <opaqueInsets>
+                                                                                            <Insets />
+                                                                                        </opaqueInsets>
+                                                                                        <VBox.margin>
+                                                                                            <Insets left="10.0" right="10.0" />
+                                                                                        </VBox.margin>
+                                                                     <toggleGroup>
+                                                                        <ToggleGroup fx:id="TGLMiddle" />
+                                                                     </toggleGroup>
+                                                                                    </RadioButton>
+                                                                                    <RadioButton layoutX="20.0" layoutY="57.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="98.0" text="%6months" toggleGroup="$TGLMiddle" wrapText="true">
+                                                                                        <opaqueInsets>
+                                                                                            <Insets />
+                                                                                        </opaqueInsets>
+                                                                                        <VBox.margin>
+                                                                                            <Insets left="10.0" right="10.0" />
+                                                                                        </VBox.margin>
+                                                                                    </RadioButton>
+                                                                                    <RadioButton layoutX="20.0" layoutY="84.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="98.0" text="%oneYear" toggleGroup="$TGLMiddle" wrapText="true">
+                                                                                        <opaqueInsets>
+                                                                                            <Insets />
+                                                                                        </opaqueInsets>
+                                                                                        <VBox.margin>
+                                                                                            <Insets left="10.0" right="10.0" />
+                                                                                        </VBox.margin>
+                                                                                    </RadioButton>
+                                                                                    <RadioButton contentDisplay="CENTER" mnemonicParsing="false" prefHeight="27.0" prefWidth="97.0" text="%Permanent" toggleGroup="$TGLMiddle" wrapText="true">
+                                                                                        <VBox.margin>
+                                                                                            <Insets left="10.0" right="10.0" />
+                                                                                        </VBox.margin>
+                                                                                    </RadioButton>
+                                                                                    <TextField fx:id="CouseTLMiddle" prefHeight="22.0" prefWidth="121.0" promptText="%Cause" visible="false" VBox.vgrow="ALWAYS">
+                                                                                        <VBox.margin>
+                                                                                            <Insets top="5.0" />
+                                                                                        </VBox.margin>
+                                                                                    </TextField>
+                                                                                </children>
+                                                                                <VBox.margin>
+                                                                                    <Insets />
+                                                                                </VBox.margin>
+                                                                            </VBox>
+                                                                        </children>
+                                                                        <padding>
+                                                                            <Insets bottom="10.0" left="5.0" right="5.0" top="10.0" />
+                                                                                  </padding>
+                                                                    </VBox>
+                                                                    <VBox fx:id="VLeftRingFinger" disable="true" spacing="8.0" style="-fx-border-color: gray;">
+                                                                        <children>
+                                                                            <Label contentDisplay="CENTER" prefHeight="20.0" prefWidth="86.0" text="%RingFinger" />
+                                                                            <ComboBox fx:id="CMenuLRing" nodeOrientation="RIGHT_TO_LEFT" prefHeight="30.0" prefWidth="253.0" promptText="%Cause" />
+
+                                                                                                                                                    <VBox fx:id="VOtherLRing" prefHeight="133.0" prefWidth="123.0" visible="false">
+                                                                                <children>
+                                                                                    <Label contentDisplay="CENTER" prefHeight="20.0" prefWidth="80.0" text="%Status" wrapText="true" />
+                                                                                    <RadioButton mnemonicParsing="false" prefHeight="27.0" prefWidth="98.0" text="%3months" wrapText="true">
+                                                                                        <opaqueInsets>
+                                                                                            <Insets />
+                                                                                        </opaqueInsets>
+                                                                                        <VBox.margin>
+                                                                                            <Insets left="10.0" right="10.0" />
+                                                                                        </VBox.margin>
+                                                                     <toggleGroup>
+                                                                        <ToggleGroup fx:id="TGLRing" />
+                                                                     </toggleGroup>
+                                                                                    </RadioButton>
+                                                                                    <RadioButton layoutX="20.0" layoutY="57.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="98.0" text="%6months" toggleGroup="$TGLRing" wrapText="true">
+                                                                                        <opaqueInsets>
+                                                                                            <Insets />
+                                                                                        </opaqueInsets>
+                                                                                        <VBox.margin>
+                                                                                            <Insets left="10.0" right="10.0" />
+                                                                                        </VBox.margin>
+                                                                                    </RadioButton>
+                                                                                    <RadioButton layoutX="20.0" layoutY="84.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="98.0" text="%oneYear" toggleGroup="$TGLRing" wrapText="true">
+                                                                                        <opaqueInsets>
+                                                                                            <Insets />
+                                                                                        </opaqueInsets>
+                                                                                        <VBox.margin>
+                                                                                               <Insets left="10.0" right="10.0" />
+                                                                                        </VBox.margin>
+                                                                                    </RadioButton>
+                                                                                    <RadioButton contentDisplay="CENTER" mnemonicParsing="false" prefHeight="27.0" prefWidth="97.0" text="%Permanent" toggleGroup="$TGLRing" wrapText="true">
+                                                                                        <VBox.margin>
+                                                                                            <Insets left="10.0" right="10.0" />
+                                                                                        </VBox.margin>
+                                                                                    </RadioButton>
+                                                                                    <TextField fx:id="CouseTLRing" prefHeight="22.0" prefWidth="121.0" promptText="%Cause" visible="false" VBox.vgrow="ALWAYS">
+                                                                                        <VBox.margin>
+                                                                                            <Insets top="5.0" />
+                                                                                        </VBox.margin>
+                                                                                    </TextField>
+                                                                                </children>
+                                                                                <VBox.margin>
+                                                                                    <Insets />
+                                                                                </VBox.margin>
+                                                                            </VBox>
+                                                                        </children>
+                                                                        <padding>
+                                                                            <Insets bottom="10.0" left="5.0" right="5.0" top="10.0" />
+                                                                        </padding>
+                                                                    </VBox>
+                                                                    <VBox fx:id="VLeftLittleFinger" disable="true" spacing="8.0" style="-fx-border-color: gray;">
+                                                                        <children>
+                                                                            <Label contentDisplay="CENTER" prefHeight="20.0" prefWidth="86.0" text="%LittleFinger" />
+                                                                            <ComboBox fx:id="CMenuLLittle" nodeOrientation="RIGHT_TO_LEFT" prefHeight="30.0" prefWidth="253.0" promptText="%Cause" />
+
+                                                                                                                                                    <VBox fx:id="VOtherLLittle" prefHeight="133.0" prefWidth="123.0" visible="false">
+                                                                                <children>
+                                                                                    <Label contentDisplay="CENTER" prefHeight="20.0" prefWidth="80.0" text="%Status" wrapText="true" />
+                                                                                    <RadioButton mnemonicParsing="false" prefHeight="27.0" prefWidth="98.0" text="%3months" wrapText="true">
+                                                                                        <opaqueInsets>
+                                                                                            <Insets />
+                                                                                        </opaqueInsets>
+                                                                                        <VBox.margin>
+                                                                                            <Insets left="10.0" right="10.0" />
+                                                                                        </VBox.margin>
+                                                                     <toggleGroup>
+                                                                        <ToggleGroup fx:id="TGLLittle" />
+                                                                     </toggleGroup>
+                                                                                    </RadioButton>
+                                                                                    <RadioButton layoutX="20.0" layoutY="57.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="98.0" text="%6months" toggleGroup="$TGLLittle" wrapText="true">
+                                                                                        <opaqueInsets>
+                                                                                            <Insets />
+                                                                                        </opaqueInsets>
+                                                                                        <VBox.margin>
+                                                                                            <Insets left="10.0" right="10.0" />
+                                                                                        </VBox.margin>
+                                                                                    </RadioButton>
+                                                                                    <RadioButton layoutX="20.0" layoutY="84.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="98.0" text="%oneYear" toggleGroup="$TGLLittle" wrapText="true">
+                                                                                        <opaqueInsets>
+                                                                                            <Insets />
+                                                                                        </opaqueInsets>
+                                                                                        <VBox.margin>
+                                                                                            <Insets left="10.0" right="10.0" />
+                                                                                        </VBox.margin>
+                                                                                    </RadioButton>
+                                                                                    <RadioButton contentDisplay="CENTER" mnemonicParsing="false" prefHeight="27.0" prefWidth="97.0" text="%Permanent" toggleGroup="$TGLLittle" wrapText="true">
+                                                                                        <VBox.margin>
+                                                                                            <Insets left="10.0" right="10.0" />
+                                                                                        </VBox.margin>
+                                                                                    </RadioButton>
+                                                                                    <TextField fx:id="CouseTLLittle" prefHeight="22.0" prefWidth="121.0" promptText="%Cause" visible="false" VBox.vgrow="ALWAYS">
+                                                                                        <VBox.margin>
+                                                                                            <Insets top="5.0" />
+                                                                                        </VBox.margin>
+                                                                                    </TextField>
+                                                                                </children>
+                                                                                <VBox.margin>
+                                                                                    <Insets />
+                                                                                </VBox.margin>
+                                                                            </VBox>
+                                                                        </children>
+                                                                        <padding>
+                                                                            <Insets bottom="10.0" left="5.0" right="5.0" top="10.0" />
+                                                                        </padding>
+                                                                    </VBox>
+                              </items>
+                           </SplitPane>
+                                    </TitledPane>
+
+                                                                                                  </items>
+                              </SplitPane>
+               </content>
+            </ScrollPane>
+         </children>
+      </VBox>
+<!--                        <Pane maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="564.0" prefWidth="820.0">-->
+<!--                            <children>-->
+<!--                                <GridPane layoutX="4.0" layoutY="5.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="551.0" prefWidth="811.0" vgap="10.0">-->
+<!--                                    <columnConstraints>-->
+<!--                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />-->
+<!--                                    </columnConstraints>-->
+<!--                                    <rowConstraints>-->
+<!--                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />-->
+<!--                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />-->
+<!--                                    </rowConstraints>-->
+<!--                                </GridPane>-->
+<!--                            </children>-->
+<!--                        </Pane>-->
+<!--                    </children>-->
+<!--                </StackPane>-->
+<!--            </content>-->
+<!--        </ScrollPane>-->
+    </center>
+    <bottom>
+        <HBox alignment="CENTER" spacing="10">
+            <padding>
+                <Insets bottom="10" />
+            </padding>
+            <Button fx:id="btnPrevious" onAction="#onPreviousButtonClicked" text="%button.previous" />
+            <Button fx:id="btnNext" disable="true" onAction="#onNextButtonClicked" text="%button.next" />
+
+                    </HBox>
+    </bottom>
+   <top>
+      <VBox maxWidth="-Infinity" prefWidth="1066.0" BorderPane.alignment="CENTER">
+         <children>
+            <Label fx:id="lblExcpiredExc" prefHeight="17.0" prefWidth="817.0" text="%Label.expiredExceptions" textFill="#FF0E07" visible="false" wrapText="true">
+               <padding>
+                  <Insets top="10.0" />
+               </padding></Label>
+              <StackPane maxHeight="Infinity" prefHeight="170.0" prefWidth="1066.0">
+      
+                                    <Pane maxHeight="276.0" maxWidth="350.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="228.0" prefWidth="322.0">
+                      <HBox alignment="CENTER" layoutX="17.0" layoutY="-39.0" maxHeight="Infinity" maxWidth="Infinity" nodeOrientation="LEFT_TO_RIGHT" prefHeight="258.0" prefWidth="316.0" spacing="10">
+      
+                                            <AutoScalingStackPane maxHeight="Infinity" maxWidth="Infinity" minHeight="100.0" minWidth="100.0">
+                              <SVGPath fx:id="svgLeftLittle" content="m 77.658,36 c 0,-2.811 -2.285,-5.097 -5.096,-5.097 -1.686,0 -3.168,0.831 -4.098,2.094 v -7.351 c 0,-0.009 -0.004,-0.017 -0.004,-0.026 -0.002,-0.008 0.002,-0.016 0.002,-0.023 -0.291,-2.877 -2.719,-5.046 -5.646,-5.046 -1.939,0 -3.652,0.969 -4.678,2.442 v -3.499 c 0,-0.004 0.002,-0.007 0.002,-0.01 0,-2.994 -2.436,-5.43 -5.43,-5.43 -2.98,0 -5.405,2.413 -5.428,5.388 -10e-4,0.015 -0.008,0.026 -0.008,0.042 v 3.735 c -1,-1.419 -2.647,-2.351 -4.511,-2.351 -2.993,0 -5.433,2.385 -5.523,5.349 0,0.004 -0.002,0.007 -0.002,0.011 v 0.032 c -10e-4,0.042 -0.006,0.083 -0.006,0.125 0,0.012 0.005,0.021 0.006,0.031 v 31.495 l -6.733,-7.663 c -0.01,-0.013 -0.014,-0.028 -0.026,-0.04 -0.019,-0.02 -0.04,-0.038 -0.063,-0.055 -0.214,-0.238 -0.443,-0.441 -0.647,-0.577 -0.809,-0.605 -1.77,-0.927 -2.78,-0.927 -2.563,0 -4.647,2.092 -4.647,4.662 0,0.748 0.17,1.459 0.505,2.112 0,10e-4 0.002,0.002 0.003,0.003 0.006,0.012 0.003,0.026 0.01,0.038 L 35.229,76.66 c 10e-4,0.003 0.005,0.004 0.006,0.006 0.002,0.004 0.002,0.008 0.004,0.012 3.712,5.801 10.033,9.265 16.907,9.265 H 65.36 c 0.002,0 0.004,0.001 0.006,0.001 6.777,0 12.291,-6.478 12.291,-14.44 V 36.01 C 77.656,36.006 77.658,36.003 77.658,36 Z M 65.373,84.945 c -0.002,0 -0.002,-10e-4 -0.004,-10e-4 H 52.146 c -6.529,0 -12.533,-3.289 -16.062,-8.799 L 23.759,55.023 c -0.002,-0.007 -0.01,-0.01 -0.013,-0.017 -0.005,-0.012 -0.004,-0.025 -0.011,-0.037 -0.262,-0.512 -0.395,-1.069 -0.395,-1.657 0,-2.02 1.636,-3.662 3.647,-3.662 0.792,0 1.545,0.251 2.203,0.743 0.168,0.112 0.353,0.281 0.522,0.476 0.005,0.006 0.012,0.008 0.017,0.013 l 7.633,8.687 c 0.003,0.004 0.008,0.005 0.012,0.009 0.038,0.04 0.083,0.07 0.131,0.097 0.012,0.006 0.021,0.018 0.034,0.022 0.061,0.026 0.128,0.042 0.199,0.042 0.063,0 0.125,-0.014 0.184,-0.037 0.024,-0.01 0.043,-0.025 0.065,-0.039 0.027,-0.016 0.057,-0.026 0.081,-0.048 0.004,-0.004 0.006,-0.01 0.01,-0.014 0.026,-0.024 0.044,-0.055 0.065,-0.085 0.016,-0.024 0.037,-0.046 0.048,-0.072 0.012,-0.025 0.014,-0.054 0.021,-0.082 0.009,-0.036 0.021,-0.07 0.022,-0.107 0,-0.006 0.003,-0.01 0.003,-0.016 V 26.323 c 0.035,-2.461 2.048,-4.454 4.525,-4.454 2.469,0 4.476,1.993 4.511,4.454 v 20.469 c 0,0.276 0.224,0.5 0.5,0.5 0.276,0 0.5,-0.224 0.5,-0.5 V 26.417 c 10e-4,-0.011 0.006,-0.02 0.006,-0.031 0,-0.042 -0.005,-0.083 -0.006,-0.125 v -6.745 c 10e-4,-0.011 0.006,-0.021 0.006,-0.031 0,-2.442 1.987,-4.43 4.43,-4.43 2.441,0 4.426,1.983 4.43,4.423 0,0.002 -0.002,0.004 -0.002,0.007 V 47.76 c 0,0.276 0.225,0.5 0.5,0.5 0.277,0 0.5,-0.224 0.5,-0.5 V 26.178 c 0,-0.003 0.002,-0.006 0.002,-0.01 0,-2.546 2.098,-4.617 4.676,-4.617 2.408,0 4.402,1.775 4.648,4.132 v 26.31 c 0,0.276 0.225,0.5 0.5,0.5 0.277,0 0.5,-0.224 0.5,-0.5 l -0.09363,-11.448815 8.614118,-0.04986 c 1.119113,-0.0065 0.566799,-5.03949 -1.134479,-7.218092 C 74.116203,31.057257 71.420626,31.903 72.561,31.903 c 1.452645,0 2.731674,0.760915 3.459124,1.905317 0.4013,0.631312 0.634743,1.379328 0.636876,2.180683 0,0.002 -0.002,0.003 -0.002,0.005 v 35.511 c 0.001,7.408 -5.059,13.435 -11.282,13.44 z" managed="false" nodeOrientation="RIGHT_TO_LEFT" styleClass="finger-svg" visible="false" />
+                              <SVGPath fx:id="svgLeftRing" content="m 77.658,36 c 0,-2.811 -2.285,-5.097 -5.096,-5.097 -1.686,0 -3.168,0.831 -4.098,2.094 v -7.351 c 0,-0.009 -0.004,-0.017 -0.004,-0.026 -0.002,-0.008 0.002,-0.016 0.002,-0.023 -0.291,-2.877 -2.719,-5.046 -5.646,-5.046 -1.939,0 -3.652,0.969 -4.678,2.442 v -3.499 c 0,-0.004 0.002,-0.007 0.002,-0.01 0,-2.994 -2.436,-5.43 -5.43,-5.43 -2.98,0 -5.405,2.413 -5.428,5.388 -10e-4,0.015 -0.008,0.026 -0.008,0.042 v 3.735 c -1,-1.419 -2.647,-2.351 -4.511,-2.351 -2.993,0 -5.433,2.385 -5.523,5.349 0,0.004 -0.002,0.007 -0.002,0.011 v 0.032 c -10e-4,0.042 -0.006,0.083 -0.006,0.125 0,0.012 0.005,0.021 0.006,0.031 v 31.495 l -6.733,-7.663 c -0.01,-0.013 -0.014,-0.028 -0.026,-0.04 -0.019,-0.02 -0.04,-0.038 -0.063,-0.055 -0.214,-0.238 -0.443,-0.441 -0.647,-0.577 -0.809,-0.605 -1.77,-0.927 -2.78,-0.927 -2.563,0 -4.647,2.092 -4.647,4.662 0,0.748 0.17,1.459 0.505,2.112 0,10e-4 0.002,0.002 0.003,0.003 0.006,0.012 0.003,0.026 0.01,0.038 L 35.229,76.66 c 10e-4,0.003 0.005,0.004 0.006,0.006 0.002,0.004 0.002,0.008 0.004,0.012 3.712,5.801 10.033,9.265 16.907,9.265 H 65.36 c 0.002,0 0.004,0.001 0.006,0.001 6.777,0 12.291,-6.478 12.291,-14.44 V 36.01 C 77.656,36.006 77.658,36.003 77.658,36 Z M 65.373,84.945 c -0.002,0 -0.002,-10e-4 -0.004,-10e-4 H 52.146 c -6.529,0 -12.533,-3.289 -16.062,-8.799 L 23.759,55.023 c -0.002,-0.007 -0.01,-0.01 -0.013,-0.017 -0.005,-0.012 -0.004,-0.025 -0.011,-0.037 -0.262,-0.512 -0.395,-1.069 -0.395,-1.657 0,-2.02 1.636,-3.662 3.647,-3.662 0.792,0 1.545,0.251 2.203,0.743 0.168,0.112 0.353,0.281 0.522,0.476 0.005,0.006 0.012,0.008 0.017,0.013 l 7.633,8.687 c 0.003,0.004 0.008,0.005 0.012,0.009 0.038,0.04 0.083,0.07 0.131,0.097 0.012,0.006 0.021,0.018 0.034,0.022 0.061,0.026 0.128,0.042 0.199,0.042 0.063,0 0.125,-0.014 0.184,-0.037 0.024,-0.01 0.043,-0.025 0.065,-0.039 0.027,-0.016 0.057,-0.026 0.081,-0.048 0.004,-0.004 0.006,-0.01 0.01,-0.014 0.026,-0.024 0.044,-0.055 0.065,-0.085 0.016,-0.024 0.037,-0.046 0.048,-0.072 0.012,-0.025 0.014,-0.054 0.021,-0.082 0.009,-0.036 0.021,-0.07 0.022,-0.107 0,-0.006 0.003,-0.01 0.003,-0.016 V 26.323 c 0.035,-2.461 2.048,-4.454 4.525,-4.454 2.469,0 4.476,1.993 4.511,4.454 v 20.469 c 0,0.276 0.224,0.5 0.5,0.5 0.276,0 0.5,-0.224 0.5,-0.5 V 26.417 c 10e-4,-0.011 0.006,-0.02 0.006,-0.031 0,-0.042 -0.005,-0.083 -0.006,-0.125 v -6.745 c 10e-4,-0.011 0.006,-0.021 0.006,-0.031 0,-2.442 1.987,-4.43 4.43,-4.43 2.441,0 4.426,1.983 4.43,4.423 0,0.002 -0.002,0.004 -0.002,0.007 V 47.76 c 0,0.276 0.225,0.5 0.5,0.5 0.277,0 0.5,-0.224 0.5,-0.5 V 30.933851 h 9.737699 L 67.293636,23.307458 64.296242,21.257966 60.506105,21.608462 57.95061,24.290045 58.137,26.178 c 0,0 0.002,-0.006 0.002,-0.01 0,-2.546 2.098,-4.617 4.676,-4.617 2.408,0 4.402,1.775 4.648,4.132 v 26.31 c 0,0.276 0.225,0.5 0.5,0.5 0.277,0 0.5,-0.224 0.5,-0.5 V 36 c 0,-2.259 1.838,-4.097 4.098,-4.097 2.254,0 4.09,1.832 4.096,4.086 0,0.002 -0.002,0.003 -0.002,0.005 v 35.511 c 0.001,7.408 -5.059,13.435 -11.282,13.44 z" managed="false" nodeOrientation="RIGHT_TO_LEFT" styleClass="finger-svg" visible="false" />
+                              <SVGPath fx:id="svgLeftMiddle" content="m 77.658,36 c 0,-2.811 -2.285,-5.097 -5.096,-5.097 -1.686,0 -3.168,0.831 -4.098,2.094 v -7.351 c 0,-0.009 -0.004,-0.017 -0.004,-0.026 -0.002,-0.008 0.002,-0.016 0.002,-0.023 -0.291,-2.877 -2.719,-5.046 -5.646,-5.046 -1.939,0 -3.652,0.969 -4.678,2.442 v -3.499 c 0,-0.004 0.002,-0.007 0.002,-0.01 0,-2.994 -2.436,-5.43 -5.43,-5.43 -2.98,0 -5.405,2.413 -5.428,5.388 -10e-4,0.015 -0.008,0.026 -0.008,0.042 v 3.735 c -1,-1.419 -2.647,-2.351 -4.511,-2.351 -2.993,0 -5.433,2.385 -5.523,5.349 0,0.004 -0.002,0.007 -0.002,0.011 v 0.032 c -10e-4,0.042 -0.006,0.083 -0.006,0.125 0,0.012 0.005,0.021 0.006,0.031 v 31.495 l -6.733,-7.663 c -0.01,-0.013 -0.014,-0.028 -0.026,-0.04 -0.019,-0.02 -0.04,-0.038 -0.063,-0.055 -0.214,-0.238 -0.443,-0.441 -0.647,-0.577 -0.809,-0.605 -1.77,-0.927 -2.78,-0.927 -2.563,0 -4.647,2.092 -4.647,4.662 0,0.748 0.17,1.459 0.505,2.112 0,10e-4 0.002,0.002 0.003,0.003 0.006,0.012 0.003,0.026 0.01,0.038 L 35.229,76.66 c 10e-4,0.003 0.005,0.004 0.006,0.006 0.002,0.004 0.002,0.008 0.004,0.012 3.712,5.801 10.033,9.265 16.907,9.265 H 65.36 c 0.002,0 0.004,0.001 0.006,0.001 6.777,0 12.291,-6.478 12.291,-14.44 V 36.01 C 77.656,36.006 77.658,36.003 77.658,36 Z M 65.373,84.945 c -0.002,0 -0.002,-10e-4 -0.004,-10e-4 H 52.146 c -6.529,0 -12.533,-3.289 -16.062,-8.799 L 23.759,55.023 c -0.002,-0.007 -0.01,-0.01 -0.013,-0.017 -0.005,-0.012 -0.004,-0.025 -0.011,-0.037 -0.262,-0.512 -0.395,-1.069 -0.395,-1.657 0,-2.02 1.636,-3.662 3.647,-3.662 0.792,0 1.545,0.251 2.203,0.743 0.168,0.112 0.353,0.281 0.522,0.476 0.005,0.006 0.012,0.008 0.017,0.013 l 7.633,8.687 c 0.003,0.004 0.008,0.005 0.012,0.009 0.038,0.04 0.083,0.07 0.131,0.097 0.012,0.006 0.021,0.018 0.034,0.022 0.061,0.026 0.128,0.042 0.199,0.042 0.063,0 0.125,-0.014 0.184,-0.037 0.024,-0.01 0.043,-0.025 0.065,-0.039 0.027,-0.016 0.057,-0.026 0.081,-0.048 0.004,-0.004 0.006,-0.01 0.01,-0.014 0.026,-0.024 0.044,-0.055 0.065,-0.085 0.016,-0.024 0.037,-0.046 0.048,-0.072 0.012,-0.025 0.014,-0.054 0.021,-0.082 0.009,-0.036 0.021,-0.07 0.022,-0.107 0,-0.006 0.003,-0.01 0.003,-0.016 V 26.323 c 0.035,-2.461 2.048,-4.454 4.525,-4.454 2.469,0 4.476,1.993 4.511,4.454 v 20.469 c 0,0.276 0.224,0.5 0.5,0.5 0.276,0 0.5,-0.224 0.5,-0.5 V 26.417 c 10e-4,-0.011 0.006,-0.02 0.006,-0.031 0,-0.042 -0.005,-0.083 -0.006,-0.125 l 0,-1.915104 9.363172,0 -0.509228,-7.419378 -3.166535,-2.260001 -3.736434,0.514941 -1.94084,2.647827 L 48.273,19.516 c 10e-4,-0.011 0.006,-0.021 0.006,-0.031 0,-2.442 1.987,-4.43 4.43,-4.43 2.441,0 4.426,1.983 4.43,4.423 0,0.002 -0.002,0.004 -0.002,0.007 V 47.76 c 0,0.276 0.225,0.5 0.5,0.5 0.277,0 0.5,-0.224 0.5,-0.5 V 26.178 c 0,-0.003 0.002,-0.006 0.002,-0.01 0,-2.546 2.098,-4.617 4.676,-4.617 2.408,0 4.402,1.775 4.648,4.132 v 26.31 c 0,0.276 0.225,0.5 0.5,0.5 0.277,0 0.5,-0.224 0.5,-0.5 V 36 c 0,-2.259 1.838,-4.097 4.098,-4.097 2.254,0 4.09,1.832 4.096,4.086 0,0.002 -0.002,0.003 -0.002,0.005 v 35.511 c 0.001,7.408 -5.059,13.435 -11.282,13.44 z" managed="false" nodeOrientation="RIGHT_TO_LEFT" styleClass="finger-svg" visible="false" />
+                              <SVGPath fx:id="svgLeftIndex" content="m 77.658,36 c 0,-2.811 -2.285,-5.097 -5.096,-5.097 -1.686,0 -3.168,0.831 -4.098,2.094 v -7.351 c 0,-0.009 -0.004,-0.017 -0.004,-0.026 -0.002,-0.008 0.002,-0.016 0.002,-0.023 -0.291,-2.877 -2.719,-5.046 -5.646,-5.046 -1.939,0 -3.652,0.969 -4.678,2.442 v -3.499 c 0,-0.004 0.002,-0.007 0.002,-0.01 0,-2.994 -2.436,-5.43 -5.43,-5.43 -2.98,0 -5.405,2.413 -5.428,5.388 -10e-4,0.015 -0.008,0.026 -0.008,0.042 v 3.735 c -1,-1.419 -2.647,-2.351 -4.511,-2.351 -2.993,0 -5.433,2.385 -5.523,5.349 0,0.004 -0.002,0.007 -0.002,0.011 v 0.032 c -10e-4,0.042 -0.006,0.083 -0.006,0.125 0,0.012 0.005,0.021 0.006,0.031 v 31.495 l -6.733,-7.663 c -0.01,-0.013 -0.014,-0.028 -0.026,-0.04 -0.019,-0.02 -0.04,-0.038 -0.063,-0.055 -0.214,-0.238 -0.443,-0.441 -0.647,-0.577 -0.809,-0.605 -1.77,-0.927 -2.78,-0.927 -2.563,0 -4.647,2.092 -4.647,4.662 0,0.748 0.17,1.459 0.505,2.112 0,10e-4 0.002,0.002 0.003,0.003 0.006,0.012 0.003,0.026 0.01,0.038 L 35.229,76.66 c 10e-4,0.003 0.005,0.004 0.006,0.006 0.002,0.004 0.002,0.008 0.004,0.012 3.712,5.801 10.033,9.265 16.907,9.265 H 65.36 c 0.002,0 0.004,0.001 0.006,0.001 6.777,0 12.291,-6.478 12.291,-14.44 V 36.01 C 77.656,36.006 77.658,36.003 77.658,36 Z M 65.373,84.945 c -0.002,0 -0.002,-10e-4 -0.004,-10e-4 H 52.146 c -6.529,0 -12.533,-3.289 -16.062,-8.799 L 23.759,55.023 c -0.002,-0.007 -0.01,-0.01 -0.013,-0.017 -0.005,-0.012 -0.004,-0.025 -0.011,-0.037 -0.262,-0.512 -0.395,-1.069 -0.395,-1.657 0,-2.02 1.636,-3.662 3.647,-3.662 0.792,0 1.545,0.251 2.203,0.743 0.168,0.112 0.353,0.281 0.522,0.476 0.005,0.006 0.012,0.008 0.017,0.013 l 7.633,8.687 c 0.003,0.004 0.008,0.005 0.012,0.009 0.038,0.04 0.083,0.07 0.131,0.097 0.012,0.006 0.021,0.018 0.034,0.022 0.061,0.026 0.128,0.042 0.199,0.042 0.063,0 0.125,-0.014 0.184,-0.037 0.024,-0.01 0.043,-0.025 0.065,-0.039 0.027,-0.016 0.057,-0.026 0.081,-0.048 0.004,-0.004 0.006,-0.01 0.01,-0.014 0.026,-0.024 0.044,-0.055 0.065,-0.085 0.016,-0.024 0.037,-0.046 0.048,-0.072 0.012,-0.025 0.014,-0.054 0.021,-0.082 0.009,-0.036 0.021,-0.07 0.022,-0.107 0,-0.006 0.003,-0.01 0.003,-0.016 V 30.900117 h 9.550436 L 47.274,23.219 43.853964,21.543225 40.485164,21.750419 38.127603,24.169777 38.237,26.323 c 0.035,-2.461 2.048,-4.454 4.525,-4.454 2.469,0 4.476,1.993 4.511,4.454 v 20.469 c 0,0.276 0.224,0.5 0.5,0.5 0.276,0 0.5,-0.224 0.5,-0.5 V 26.417 c 10e-4,-0.011 0.006,-0.02 0.006,-0.031 0,-0.042 -0.005,-0.083 -0.006,-0.125 v -6.745 c 10e-4,-0.011 0.006,-0.021 0.006,-0.031 0,-2.442 1.987,-4.43 4.43,-4.43 2.441,0 4.426,1.983 4.43,4.423 0,0.002 -0.002,0.004 -0.002,0.007 V 47.76 c 0,0.276 0.225,0.5 0.5,0.5 0.277,0 0.5,-0.224 0.5,-0.5 V 26.178 c 0,-0.003 0.002,-0.006 0.002,-0.01 0,-2.546 2.098,-4.617 4.676,-4.617 2.408,0 4.402,1.775 4.648,4.132 v 26.31 c 0,0.276 0.225,0.5 0.5,0.5 0.277,0 0.5,-0.224 0.5,-0.5 V 36 c 0,-2.259 1.838,-4.097 4.098,-4.097 2.254,0 4.09,1.832 4.096,4.086 0,0.002 -0.002,0.003 -0.002,0.005 v 35.511 c 0.001,7.408 -5.059,13.435 -11.282,13.44 z" managed="false" nodeOrientation="RIGHT_TO_LEFT" styleClass="finger-svg" visible="false" />
+                              <SVGPath fx:id="svgLeftThumb" content="m 77.658,36 c 0,-2.811 -2.285,-5.097 -5.096,-5.097 -1.686,0 -3.168,0.831 -4.098,2.094 v -7.351 c 0,-0.009 -0.004,-0.017 -0.004,-0.026 -0.002,-0.008 0.002,-0.016 0.002,-0.023 -0.291,-2.877 -2.719,-5.046 -5.646,-5.046 -1.939,0 -3.652,0.969 -4.678,2.442 v -3.499 c 0,-0.004 0.002,-0.007 0.002,-0.01 0,-2.994 -2.436,-5.43 -5.43,-5.43 -2.98,0 -5.405,2.413 -5.428,5.388 -10e-4,0.015 -0.008,0.026 -0.008,0.042 v 3.735 c -1,-1.419 -2.647,-2.351 -4.511,-2.351 -2.993,0 -5.433,2.385 -5.523,5.349 0,0.004 -0.002,0.007 -0.002,0.011 v 0.032 c -10e-4,0.042 -0.006,0.083 -0.006,0.125 0,0.012 0.005,0.021 0.006,0.031 v 31.495 l -6.733,-7.663 c -0.01,-0.013 -0.014,-0.028 -0.026,-0.04 -0.019,-0.02 -0.04,-0.038 -0.063,-0.055 -0.214,-0.238 -0.443,-0.441 -0.647,-0.577 -0.809,-0.605 -1.77,-0.927 -2.78,-0.927 -2.563,0 -4.647,2.092 -4.647,4.662 0,0.748 0.17,1.459 0.505,2.112 0,10e-4 0.002,0.002 0.003,0.003 0.006,0.012 0.003,0.026 0.01,0.038 L 35.229,76.66 c 10e-4,0.003 0.005,0.004 0.006,0.006 0.002,0.004 0.002,0.008 0.004,0.012 3.712,5.801 10.033,9.265 16.907,9.265 H 65.36 c 0.002,0 0.004,0.001 0.006,0.001 6.777,0 12.291,-6.478 12.291,-14.44 V 36.01 C 77.656,36.006 77.658,36.003 77.658,36 Z M 65.373,84.945 c -0.002,0 -0.002,-10e-4 -0.004,-10e-4 H 52.146 c -6.529,0 -12.533,-3.289 -16.062,-8.799 L 27.17314,60.873991 33.990375,54.891994 28.64655,49.348509 25.407546,49.493893 23.990303,50.644511 22.342,53.311 l 1.417,1.712 c -0.002,-0.007 -0.01,-0.01 -0.013,-0.017 -0.005,-0.012 -0.004,-0.025 -0.011,-0.037 -0.262,-0.512 -0.395,-1.069 -0.395,-1.657 0,-2.02 1.636,-3.662 3.647,-3.662 0.792,0 1.545,0.251 2.203,0.743 0.168,0.112 0.353,0.281 0.522,0.476 0.005,0.006 0.012,0.008 0.017,0.013 l 7.633,8.687 c 0.003,0.004 0.008,0.005 0.012,0.009 0.038,0.04 0.083,0.07 0.131,0.097 0.012,0.006 0.021,0.018 0.034,0.022 0.061,0.026 0.128,0.042 0.199,0.042 0.063,0 0.125,-0.014 0.184,-0.037 0.024,-0.01 0.043,-0.025 0.065,-0.039 0.027,-0.016 0.057,-0.026 0.081,-0.048 0.004,-0.004 0.006,-0.01 0.01,-0.014 0.026,-0.024 0.044,-0.055 0.065,-0.085 0.016,-0.024 0.037,-0.046 0.048,-0.072 0.012,-0.025 0.014,-0.054 0.021,-0.082 0.009,-0.036 0.021,-0.07 0.022,-0.107 0,-0.006 0.003,-0.01 0.003,-0.016 V 26.323 c 0.035,-2.461 2.048,-4.454 4.525,-4.454 2.469,0 4.476,1.993 4.511,4.454 v 20.469 c 0,0.276 0.224,0.5 0.5,0.5 0.276,0 0.5,-0.224 0.5,-0.5 V 26.417 c 10e-4,-0.011 0.006,-0.02 0.006,-0.031 0,-0.042 -0.005,-0.083 -0.006,-0.125 v -6.745 c 10e-4,-0.011 0.006,-0.021 0.006,-0.031 0,-2.442 1.987,-4.43 4.43,-4.43 2.441,0 4.426,1.983 4.43,4.423 0,0.002 -0.002,0.004 -0.002,0.007 V 47.76 c 0,0.276 0.225,0.5 0.5,0.5 0.277,0 0.5,-0.224 0.5,-0.5 V 26.178 c 0,-0.003 0.002,-0.006 0.002,-0.01 0,-2.546 2.098,-4.617 4.676,-4.617 2.408,0 4.402,1.775 4.648,4.132 v 26.31 c 0,0.276 0.225,0.5 0.5,0.5 0.277,0 0.5,-0.224 0.5,-0.5 V 36 c 0,-2.259 1.838,-4.097 4.098,-4.097 2.254,0 4.09,1.832 4.096,4.086 0,0.002 -0.002,0.003 -0.002,0.005 v 35.511 c 0.001,7.408 -5.059,13.435 -11.282,13.44 z" managed="false" nodeOrientation="RIGHT_TO_LEFT" styleClass="finger-svg" visible="false" />
+                              <SVGPath content="M77.658,36c0-2.811-2.285-5.097-5.096-5.097c-1.686,0-3.168,0.831-4.098,2.094v-7.351   c0-0.009-0.004-0.017-0.004-0.026c-0.002-0.008,0.002-0.016,0.002-0.023c-0.291-2.877-2.719-5.046-5.646-5.046   c-1.939,0-3.652,0.969-4.678,2.442v-3.499c0-0.004,0.002-0.007,0.002-0.01c0-2.994-2.436-5.43-5.43-5.43   c-2.98,0-5.405,2.413-5.428,5.388c-0.001,0.015-0.008,0.026-0.008,0.042v3.735c-1-1.419-2.647-2.351-4.511-2.351   c-2.993,0-5.433,2.385-5.523,5.349c0,0.004-0.002,0.007-0.002,0.011v0.032c-0.001,0.042-0.006,0.083-0.006,0.125   c0,0.012,0.005,0.021,0.006,0.031v31.495l-6.733-7.663c-0.01-0.013-0.014-0.028-0.026-0.04c-0.019-0.02-0.04-0.038-0.063-0.055   c-0.214-0.238-0.443-0.441-0.647-0.577c-0.809-0.605-1.77-0.927-2.78-0.927c-2.563,0-4.647,2.092-4.647,4.662   c0,0.748,0.17,1.459,0.505,2.112c0,0.001,0.002,0.002,0.003,0.003c0.006,0.012,0.003,0.026,0.01,0.038l12.369,21.196   c0.001,0.003,0.005,0.004,0.006,0.006c0.002,0.004,0.002,0.008,0.004,0.012c3.712,5.801,10.033,9.265,16.907,9.265h13.214   c0.002,0,0.004,0.001,0.006,0.001c6.777,0,12.291-6.478,12.291-14.44V36.01C77.656,36.006,77.658,36.003,77.658,36z M65.373,84.945   c-0.002,0-0.002-0.001-0.004-0.001H52.146c-6.529,0-12.533-3.289-16.062-8.799L23.759,55.023c-0.002-0.007-0.01-0.01-0.013-0.017   c-0.005-0.012-0.004-0.025-0.011-0.037c-0.262-0.512-0.395-1.069-0.395-1.657c0-2.02,1.636-3.662,3.647-3.662   c0.792,0,1.545,0.251,2.203,0.743c0.168,0.112,0.353,0.281,0.522,0.476c0.005,0.006,0.012,0.008,0.017,0.013l7.633,8.687   c0.003,0.004,0.008,0.005,0.012,0.009c0.038,0.04,0.083,0.07,0.131,0.097c0.012,0.006,0.021,0.018,0.034,0.022   c0.061,0.026,0.128,0.042,0.199,0.042c0.063,0,0.125-0.014,0.184-0.037c0.024-0.01,0.043-0.025,0.065-0.039   c0.027-0.016,0.057-0.026,0.081-0.048c0.004-0.004,0.006-0.01,0.01-0.014c0.026-0.024,0.044-0.055,0.065-0.085   c0.016-0.024,0.037-0.046,0.048-0.072c0.012-0.025,0.014-0.054,0.021-0.082c0.009-0.036,0.021-0.07,0.022-0.107   c0-0.006,0.003-0.01,0.003-0.016V26.323c0.035-2.461,2.048-4.454,4.525-4.454c2.469,0,4.476,1.993,4.511,4.454v20.469   c0,0.276,0.224,0.5,0.5,0.5s0.5-0.224,0.5-0.5V26.417c0.001-0.011,0.006-0.02,0.006-0.031c0-0.042-0.005-0.083-0.006-0.125v-6.745   c0.001-0.011,0.006-0.021,0.006-0.031c0-2.442,1.987-4.43,4.43-4.43c2.441,0,4.426,1.983,4.43,4.423   c0,0.002-0.002,0.004-0.002,0.007V47.76c0,0.276,0.225,0.5,0.5,0.5c0.277,0,0.5-0.224,0.5-0.5V26.178   c0-0.003,0.002-0.006,0.002-0.01c0-2.546,2.098-4.617,4.676-4.617c2.408,0,4.402,1.775,4.648,4.132v26.31   c0,0.276,0.225,0.5,0.5,0.5c0.277,0,0.5-0.224,0.5-0.5V36c0-2.259,1.838-4.097,4.098-4.097c2.254,0,4.09,1.832,4.096,4.086   c0,0.002-0.002,0.003-0.002,0.005v35.511C76.656,78.913,71.596,84.94,65.373,84.945z" nodeOrientation="RIGHT_TO_LEFT" />
+                          </AutoScalingStackPane>
+                          <AutoScalingStackPane maxHeight="Infinity" maxWidth="Infinity" minHeight="100.0" minWidth="100.0">
+                              <SVGPath fx:id="svgRightLittle" content="m 77.658,36 c 0,-2.811 -2.285,-5.097 -5.096,-5.097 -1.686,0 -3.168,0.831 -4.098,2.094 v -7.351 c 0,-0.009 -0.004,-0.017 -0.004,-0.026 -0.002,-0.008 0.002,-0.016 0.002,-0.023 -0.291,-2.877 -2.719,-5.046 -5.646,-5.046 -1.939,0 -3.652,0.969 -4.678,2.442 v -3.499 c 0,-0.004 0.002,-0.007 0.002,-0.01 0,-2.994 -2.436,-5.43 -5.43,-5.43 -2.98,0 -5.405,2.413 -5.428,5.388 -10e-4,0.015 -0.008,0.026 -0.008,0.042 v 3.735 c -1,-1.419 -2.647,-2.351 -4.511,-2.351 -2.993,0 -5.433,2.385 -5.523,5.349 0,0.004 -0.002,0.007 -0.002,0.011 v 0.032 c -10e-4,0.042 -0.006,0.083 -0.006,0.125 0,0.012 0.005,0.021 0.006,0.031 v 31.495 l -6.733,-7.663 c -0.01,-0.013 -0.014,-0.028 -0.026,-0.04 -0.019,-0.02 -0.04,-0.038 -0.063,-0.055 -0.214,-0.238 -0.443,-0.441 -0.647,-0.577 -0.809,-0.605 -1.77,-0.927 -2.78,-0.927 -2.563,0 -4.647,2.092 -4.647,4.662 0,0.748 0.17,1.459 0.505,2.112 0,10e-4 0.002,0.002 0.003,0.003 0.006,0.012 0.003,0.026 0.01,0.038 L 35.229,76.66 c 10e-4,0.003 0.005,0.004 0.006,0.006 0.002,0.004 0.002,0.008 0.004,0.012 3.712,5.801 10.033,9.265 16.907,9.265 H 65.36 c 0.002,0 0.004,0.001 0.006,0.001 6.777,0 12.291,-6.478 12.291,-14.44 V 36.01 C 77.656,36.006 77.658,36.003 77.658,36 Z M 65.373,84.945 c -0.002,0 -0.002,-10e-4 -0.004,-10e-4 H 52.146 c -6.529,0 -12.533,-3.289 -16.062,-8.799 L 23.759,55.023 c -0.002,-0.007 -0.01,-0.01 -0.013,-0.017 -0.005,-0.012 -0.004,-0.025 -0.011,-0.037 -0.262,-0.512 -0.395,-1.069 -0.395,-1.657 0,-2.02 1.636,-3.662 3.647,-3.662 0.792,0 1.545,0.251 2.203,0.743 0.168,0.112 0.353,0.281 0.522,0.476 0.005,0.006 0.012,0.008 0.017,0.013 l 7.633,8.687 c 0.003,0.004 0.008,0.005 0.012,0.009 0.038,0.04 0.083,0.07 0.131,0.097 0.012,0.006 0.021,0.018 0.034,0.022 0.061,0.026 0.128,0.042 0.199,0.042 0.063,0 0.125,-0.014 0.184,-0.037 0.024,-0.01 0.043,-0.025 0.065,-0.039 0.027,-0.016 0.057,-0.026 0.081,-0.048 0.004,-0.004 0.006,-0.01 0.01,-0.014 0.026,-0.024 0.044,-0.055 0.065,-0.085 0.016,-0.024 0.037,-0.046 0.048,-0.072 0.012,-0.025 0.014,-0.054 0.021,-0.082 0.009,-0.036 0.021,-0.07 0.022,-0.107 0,-0.006 0.003,-0.01 0.003,-0.016 V 26.323 c 0.035,-2.461 2.048,-4.454 4.525,-4.454 2.469,0 4.476,1.993 4.511,4.454 v 20.469 c 0,0.276 0.224,0.5 0.5,0.5 0.276,0 0.5,-0.224 0.5,-0.5 V 26.417 c 10e-4,-0.011 0.006,-0.02 0.006,-0.031 0,-0.042 -0.005,-0.083 -0.006,-0.125 v -6.745 c 10e-4,-0.011 0.006,-0.021 0.006,-0.031 0,-2.442 1.987,-4.43 4.43,-4.43 2.441,0 4.426,1.983 4.43,4.423 0,0.002 -0.002,0.004 -0.002,0.007 V 47.76 c 0,0.276 0.225,0.5 0.5,0.5 0.277,0 0.5,-0.224 0.5,-0.5 V 26.178 c 0,-0.003 0.002,-0.006 0.002,-0.01 0,-2.546 2.098,-4.617 4.676,-4.617 2.408,0 4.402,1.775 4.648,4.132 v 26.31 c 0,0.276 0.225,0.5 0.5,0.5 0.277,0 0.5,-0.224 0.5,-0.5 l -0.09363,-11.448815 8.614118,-0.04986 c 1.119113,-0.0065 0.566799,-5.03949 -1.134479,-7.218092 C 74.116203,31.057257 71.420626,31.903 72.561,31.903 c 1.452645,0 2.731674,0.760915 3.459124,1.905317 0.4013,0.631312 0.634743,1.379328 0.636876,2.180683 0,0.002 -0.002,0.003 -0.002,0.005 v 35.511 c 0.001,7.408 -5.059,13.435 -11.282,13.44 z" managed="false" nodeOrientation="LEFT_TO_RIGHT" styleClass="finger-svg" visible="false" />
+                              <SVGPath fx:id="svgRightRing" content="m 77.658,36 c 0,-2.811 -2.285,-5.097 -5.096,-5.097 -1.686,0 -3.168,0.831 -4.098,2.094 v -7.351 c 0,-0.009 -0.004,-0.017 -0.004,-0.026 -0.002,-0.008 0.002,-0.016 0.002,-0.023 -0.291,-2.877 -2.719,-5.046 -5.646,-5.046 -1.939,0 -3.652,0.969 -4.678,2.442 v -3.499 c 0,-0.004 0.002,-0.007 0.002,-0.01 0,-2.994 -2.436,-5.43 -5.43,-5.43 -2.98,0 -5.405,2.413 -5.428,5.388 -10e-4,0.015 -0.008,0.026 -0.008,0.042 v 3.735 c -1,-1.419 -2.647,-2.351 -4.511,-2.351 -2.993,0 -5.433,2.385 -5.523,5.349 0,0.004 -0.002,0.007 -0.002,0.011 v 0.032 c -10e-4,0.042 -0.006,0.083 -0.006,0.125 0,0.012 0.005,0.021 0.006,0.031 v 31.495 l -6.733,-7.663 c -0.01,-0.013 -0.014,-0.028 -0.026,-0.04 -0.019,-0.02 -0.04,-0.038 -0.063,-0.055 -0.214,-0.238 -0.443,-0.441 -0.647,-0.577 -0.809,-0.605 -1.77,-0.927 -2.78,-0.927 -2.563,0 -4.647,2.092 -4.647,4.662 0,0.748 0.17,1.459 0.505,2.112 0,10e-4 0.002,0.002 0.003,0.003 0.006,0.012 0.003,0.026 0.01,0.038 L 35.229,76.66 c 10e-4,0.003 0.005,0.004 0.006,0.006 0.002,0.004 0.002,0.008 0.004,0.012 3.712,5.801 10.033,9.265 16.907,9.265 H 65.36 c 0.002,0 0.004,0.001 0.006,0.001 6.777,0 12.291,-6.478 12.291,-14.44 V 36.01 C 77.656,36.006 77.658,36.003 77.658,36 Z M 65.373,84.945 c -0.002,0 -0.002,-10e-4 -0.004,-10e-4 H 52.146 c -6.529,0 -12.533,-3.289 -16.062,-8.799 L 23.759,55.023 c -0.002,-0.007 -0.01,-0.01 -0.013,-0.017 -0.005,-0.012 -0.004,-0.025 -0.011,-0.037 -0.262,-0.512 -0.395,-1.069 -0.395,-1.657 0,-2.02 1.636,-3.662 3.647,-3.662 0.792,0 1.545,0.251 2.203,0.743 0.168,0.112 0.353,0.281 0.522,0.476 0.005,0.006 0.012,0.008 0.017,0.013 l 7.633,8.687 c 0.003,0.004 0.008,0.005 0.012,0.009 0.038,0.04 0.083,0.07 0.131,0.097 0.012,0.006 0.021,0.018 0.034,0.022 0.061,0.026 0.128,0.042 0.199,0.042 0.063,0 0.125,-0.014 0.184,-0.037 0.024,-0.01 0.043,-0.025 0.065,-0.039 0.027,-0.016 0.057,-0.026 0.081,-0.048 0.004,-0.004 0.006,-0.01 0.01,-0.014 0.026,-0.024 0.044,-0.055 0.065,-0.085 0.016,-0.024 0.037,-0.046 0.048,-0.072 0.012,-0.025 0.014,-0.054 0.021,-0.082 0.009,-0.036 0.021,-0.07 0.022,-0.107 0,-0.006 0.003,-0.01 0.003,-0.016 V 26.323 c 0.035,-2.461 2.048,-4.454 4.525,-4.454 2.469,0 4.476,1.993 4.511,4.454 v 20.469 c 0,0.276 0.224,0.5 0.5,0.5 0.276,0 0.5,-0.224 0.5,-0.5 V 26.417 c 10e-4,-0.011 0.006,-0.02 0.006,-0.031 0,-0.042 -0.005,-0.083 -0.006,-0.125 v -6.745 c 10e-4,-0.011 0.006,-0.021 0.006,-0.031 0,-2.442 1.987,-4.43 4.43,-4.43 2.441,0 4.426,1.983 4.43,4.423 0,0.002 -0.002,0.004 -0.002,0.007 V 47.76 c 0,0.276 0.225,0.5 0.5,0.5 0.277,0 0.5,-0.224 0.5,-0.5 V 30.933851 h 9.737699 L 67.293636,23.307458 64.296242,21.257966 60.506105,21.608462 57.95061,24.290045 58.137,26.178 c 0,0 0.002,-0.006 0.002,-0.01 0,-2.546 2.098,-4.617 4.676,-4.617 2.408,0 4.402,1.775 4.648,4.132 v 26.31 c 0,0.276 0.225,0.5 0.5,0.5 0.277,0 0.5,-0.224 0.5,-0.5 V 36 c 0,-2.259 1.838,-4.097 4.098,-4.097 2.254,0 4.09,1.832 4.096,4.086 0,0.002 -0.002,0.003 -0.002,0.005 v 35.511 c 0.001,7.408 -5.059,13.435 -11.282,13.44 z" managed="false" nodeOrientation="LEFT_TO_RIGHT" styleClass="finger-svg" visible="false" />
+                              <SVGPath fx:id="svgRightMiddle" content="m 77.658,36 c 0,-2.811 -2.285,-5.097 -5.096,-5.097 -1.686,0 -3.168,0.831 -4.098,2.094 v -7.351 c 0,-0.009 -0.004,-0.017 -0.004,-0.026 -0.002,-0.008 0.002,-0.016 0.002,-0.023 -0.291,-2.877 -2.719,-5.046 -5.646,-5.046 -1.939,0 -3.652,0.969 -4.678,2.442 v -3.499 c 0,-0.004 0.002,-0.007 0.002,-0.01 0,-2.994 -2.436,-5.43 -5.43,-5.43 -2.98,0 -5.405,2.413 -5.428,5.388 -10e-4,0.015 -0.008,0.026 -0.008,0.042 v 3.735 c -1,-1.419 -2.647,-2.351 -4.511,-2.351 -2.993,0 -5.433,2.385 -5.523,5.349 0,0.004 -0.002,0.007 -0.002,0.011 v 0.032 c -10e-4,0.042 -0.006,0.083 -0.006,0.125 0,0.012 0.005,0.021 0.006,0.031 v 31.495 l -6.733,-7.663 c -0.01,-0.013 -0.014,-0.028 -0.026,-0.04 -0.019,-0.02 -0.04,-0.038 -0.063,-0.055 -0.214,-0.238 -0.443,-0.441 -0.647,-0.577 -0.809,-0.605 -1.77,-0.927 -2.78,-0.927 -2.563,0 -4.647,2.092 -4.647,4.662 0,0.748 0.17,1.459 0.505,2.112 0,10e-4 0.002,0.002 0.003,0.003 0.006,0.012 0.003,0.026 0.01,0.038 L 35.229,76.66 c 10e-4,0.003 0.005,0.004 0.006,0.006 0.002,0.004 0.002,0.008 0.004,0.012 3.712,5.801 10.033,9.265 16.907,9.265 H 65.36 c 0.002,0 0.004,0.001 0.006,0.001 6.777,0 12.291,-6.478 12.291,-14.44 V 36.01 C 77.656,36.006 77.658,36.003 77.658,36 Z M 65.373,84.945 c -0.002,0 -0.002,-10e-4 -0.004,-10e-4 H 52.146 c -6.529,0 -12.533,-3.289 -16.062,-8.799 L 23.759,55.023 c -0.002,-0.007 -0.01,-0.01 -0.013,-0.017 -0.005,-0.012 -0.004,-0.025 -0.011,-0.037 -0.262,-0.512 -0.395,-1.069 -0.395,-1.657 0,-2.02 1.636,-3.662 3.647,-3.662 0.792,0 1.545,0.251 2.203,0.743 0.168,0.112 0.353,0.281 0.522,0.476 0.005,0.006 0.012,0.008 0.017,0.013 l 7.633,8.687 c 0.003,0.004 0.008,0.005 0.012,0.009 0.038,0.04 0.083,0.07 0.131,0.097 0.012,0.006 0.021,0.018 0.034,0.022 0.061,0.026 0.128,0.042 0.199,0.042 0.063,0 0.125,-0.014 0.184,-0.037 0.024,-0.01 0.043,-0.025 0.065,-0.039 0.027,-0.016 0.057,-0.026 0.081,-0.048 0.004,-0.004 0.006,-0.01 0.01,-0.014 0.026,-0.024 0.044,-0.055 0.065,-0.085 0.016,-0.024 0.037,-0.046 0.048,-0.072 0.012,-0.025 0.014,-0.054 0.021,-0.082 0.009,-0.036 0.021,-0.07 0.022,-0.107 0,-0.006 0.003,-0.01 0.003,-0.016 V 26.323 c 0.035,-2.461 2.048,-4.454 4.525,-4.454 2.469,0 4.476,1.993 4.511,4.454 v 20.469 c 0,0.276 0.224,0.5 0.5,0.5 0.276,0 0.5,-0.224 0.5,-0.5 V 26.417 c 10e-4,-0.011 0.006,-0.02 0.006,-0.031 0,-0.042 -0.005,-0.083 -0.006,-0.125 l 0,-1.915104 9.363172,0 -0.509228,-7.419378 -3.166535,-2.260001 -3.736434,0.514941 -1.94084,2.647827 L 48.273,19.516 c 10e-4,-0.011 0.006,-0.021 0.006,-0.031 0,-2.442 1.987,-4.43 4.43,-4.43 2.441,0 4.426,1.983 4.43,4.423 0,0.002 -0.002,0.004 -0.002,0.007 V 47.76 c 0,0.276 0.225,0.5 0.5,0.5 0.277,0 0.5,-0.224 0.5,-0.5 V 26.178 c 0,-0.003 0.002,-0.006 0.002,-0.01 0,-2.546 2.098,-4.617 4.676,-4.617 2.408,0 4.402,1.775 4.648,4.132 v 26.31 c 0,0.276 0.225,0.5 0.5,0.5 0.277,0 0.5,-0.224 0.5,-0.5 V 36 c 0,-2.259 1.838,-4.097 4.098,-4.097 2.254,0 4.09,1.832 4.096,4.086 0,0.002 -0.002,0.003 -0.002,0.005 v 35.511 c 0.001,7.408 -5.059,13.435 -11.282,13.44 z" managed="false" nodeOrientation="LEFT_TO_RIGHT" styleClass="finger-svg" visible="false" />
+                              <SVGPath fx:id="svgRightIndex" content="m 77.658,36 c 0,-2.811 -2.285,-5.097 -5.096,-5.097 -1.686,0 -3.168,0.831 -4.098,2.094 v -7.351 c 0,-0.009 -0.004,-0.017 -0.004,-0.026 -0.002,-0.008 0.002,-0.016 0.002,-0.023 -0.291,-2.877 -2.719,-5.046 -5.646,-5.046 -1.939,0 -3.652,0.969 -4.678,2.442 v -3.499 c 0,-0.004 0.002,-0.007 0.002,-0.01 0,-2.994 -2.436,-5.43 -5.43,-5.43 -2.98,0 -5.405,2.413 -5.428,5.388 -10e-4,0.015 -0.008,0.026 -0.008,0.042 v 3.735 c -1,-1.419 -2.647,-2.351 -4.511,-2.351 -2.993,0 -5.433,2.385 -5.523,5.349 0,0.004 -0.002,0.007 -0.002,0.011 v 0.032 c -10e-4,0.042 -0.006,0.083 -0.006,0.125 0,0.012 0.005,0.021 0.006,0.031 v 31.495 l -6.733,-7.663 c -0.01,-0.013 -0.014,-0.028 -0.026,-0.04 -0.019,-0.02 -0.04,-0.038 -0.063,-0.055 -0.214,-0.238 -0.443,-0.441 -0.647,-0.577 -0.809,-0.605 -1.77,-0.927 -2.78,-0.927 -2.563,0 -4.647,2.092 -4.647,4.662 0,0.748 0.17,1.459 0.505,2.112 0,10e-4 0.002,0.002 0.003,0.003 0.006,0.012 0.003,0.026 0.01,0.038 L 35.229,76.66 c 10e-4,0.003 0.005,0.004 0.006,0.006 0.002,0.004 0.002,0.008 0.004,0.012 3.712,5.801 10.033,9.265 16.907,9.265 H 65.36 c 0.002,0 0.004,0.001 0.006,0.001 6.777,0 12.291,-6.478 12.291,-14.44 V 36.01 C 77.656,36.006 77.658,36.003 77.658,36 Z M 65.373,84.945 c -0.002,0 -0.002,-10e-4 -0.004,-10e-4 H 52.146 c -6.529,0 -12.533,-3.289 -16.062,-8.799 L 23.759,55.023 c -0.002,-0.007 -0.01,-0.01 -0.013,-0.017 -0.005,-0.012 -0.004,-0.025 -0.011,-0.037 -0.262,-0.512 -0.395,-1.069 -0.395,-1.657 0,-2.02 1.636,-3.662 3.647,-3.662 0.792,0 1.545,0.251 2.203,0.743 0.168,0.112 0.353,0.281 0.522,0.476 0.005,0.006 0.012,0.008 0.017,0.013 l 7.633,8.687 c 0.003,0.004 0.008,0.005 0.012,0.009 0.038,0.04 0.083,0.07 0.131,0.097 0.012,0.006 0.021,0.018 0.034,0.022 0.061,0.026 0.128,0.042 0.199,0.042 0.063,0 0.125,-0.014 0.184,-0.037 0.024,-0.01 0.043,-0.025 0.065,-0.039 0.027,-0.016 0.057,-0.026 0.081,-0.048 0.004,-0.004 0.006,-0.01 0.01,-0.014 0.026,-0.024 0.044,-0.055 0.065,-0.085 0.016,-0.024 0.037,-0.046 0.048,-0.072 0.012,-0.025 0.014,-0.054 0.021,-0.082 0.009,-0.036 0.021,-0.07 0.022,-0.107 0,-0.006 0.003,-0.01 0.003,-0.016 V 30.900117 h 9.550436 L 47.274,23.219 43.853964,21.543225 40.485164,21.750419 38.127603,24.169777 38.237,26.323 c 0.035,-2.461 2.048,-4.454 4.525,-4.454 2.469,0 4.476,1.993 4.511,4.454 v 20.469 c 0,0.276 0.224,0.5 0.5,0.5 0.276,0 0.5,-0.224 0.5,-0.5 V 26.417 c 10e-4,-0.011 0.006,-0.02 0.006,-0.031 0,-0.042 -0.005,-0.083 -0.006,-0.125 v -6.745 c 10e-4,-0.011 0.006,-0.021 0.006,-0.031 0,-2.442 1.987,-4.43 4.43,-4.43 2.441,0 4.426,1.983 4.43,4.423 0,0.002 -0.002,0.004 -0.002,0.007 V 47.76 c 0,0.276 0.225,0.5 0.5,0.5 0.277,0 0.5,-0.224 0.5,-0.5 V 26.178 c 0,-0.003 0.002,-0.006 0.002,-0.01 0,-2.546 2.098,-4.617 4.676,-4.617 2.408,0 4.402,1.775 4.648,4.132 v 26.31 c 0,0.276 0.225,0.5 0.5,0.5 0.277,0 0.5,-0.224 0.5,-0.5 V 36 c 0,-2.259 1.838,-4.097 4.098,-4.097 2.254,0 4.09,1.832 4.096,4.086 0,0.002 -0.002,0.003 -0.002,0.005 v 35.511 c 0.001,7.408 -5.059,13.435 -11.282,13.44 z" managed="false" nodeOrientation="LEFT_TO_RIGHT" styleClass="finger-svg" visible="false" />
+                              <SVGPath fx:id="svgRightThumb" content="m 77.658,36 c 0,-2.811 -2.285,-5.097 -5.096,-5.097 -1.686,0 -3.168,0.831 -4.098,2.094 v -7.351 c 0,-0.009 -0.004,-0.017 -0.004,-0.026 -0.002,-0.008 0.002,-0.016 0.002,-0.023 -0.291,-2.877 -2.719,-5.046 -5.646,-5.046 -1.939,0 -3.652,0.969 -4.678,2.442 v -3.499 c 0,-0.004 0.002,-0.007 0.002,-0.01 0,-2.994 -2.436,-5.43 -5.43,-5.43 -2.98,0 -5.405,2.413 -5.428,5.388 -10e-4,0.015 -0.008,0.026 -0.008,0.042 v 3.735 c -1,-1.419 -2.647,-2.351 -4.511,-2.351 -2.993,0 -5.433,2.385 -5.523,5.349 0,0.004 -0.002,0.007 -0.002,0.011 v 0.032 c -10e-4,0.042 -0.006,0.083 -0.006,0.125 0,0.012 0.005,0.021 0.006,0.031 v 31.495 l -6.733,-7.663 c -0.01,-0.013 -0.014,-0.028 -0.026,-0.04 -0.019,-0.02 -0.04,-0.038 -0.063,-0.055 -0.214,-0.238 -0.443,-0.441 -0.647,-0.577 -0.809,-0.605 -1.77,-0.927 -2.78,-0.927 -2.563,0 -4.647,2.092 -4.647,4.662 0,0.748 0.17,1.459 0.505,2.112 0,10e-4 0.002,0.002 0.003,0.003 0.006,0.012 0.003,0.026 0.01,0.038 L 35.229,76.66 c 10e-4,0.003 0.005,0.004 0.006,0.006 0.002,0.004 0.002,0.008 0.004,0.012 3.712,5.801 10.033,9.265 16.907,9.265 H 65.36 c 0.002,0 0.004,0.001 0.006,0.001 6.777,0 12.291,-6.478 12.291,-14.44 V 36.01 C 77.656,36.006 77.658,36.003 77.658,36 Z M 65.373,84.945 c -0.002,0 -0.002,-10e-4 -0.004,-10e-4 H 52.146 c -6.529,0 -12.533,-3.289 -16.062,-8.799 L 27.17314,60.873991 33.990375,54.891994 28.64655,49.348509 25.407546,49.493893 23.990303,50.644511 22.342,53.311 l 1.417,1.712 c -0.002,-0.007 -0.01,-0.01 -0.013,-0.017 -0.005,-0.012 -0.004,-0.025 -0.011,-0.037 -0.262,-0.512 -0.395,-1.069 -0.395,-1.657 0,-2.02 1.636,-3.662 3.647,-3.662 0.792,0 1.545,0.251 2.203,0.743 0.168,0.112 0.353,0.281 0.522,0.476 0.005,0.006 0.012,0.008 0.017,0.013 l 7.633,8.687 c 0.003,0.004 0.008,0.005 0.012,0.009 0.038,0.04 0.083,0.07 0.131,0.097 0.012,0.006 0.021,0.018 0.034,0.022 0.061,0.026 0.128,0.042 0.199,0.042 0.063,0 0.125,-0.014 0.184,-0.037 0.024,-0.01 0.043,-0.025 0.065,-0.039 0.027,-0.016 0.057,-0.026 0.081,-0.048 0.004,-0.004 0.006,-0.01 0.01,-0.014 0.026,-0.024 0.044,-0.055 0.065,-0.085 0.016,-0.024 0.037,-0.046 0.048,-0.072 0.012,-0.025 0.014,-0.054 0.021,-0.082 0.009,-0.036 0.021,-0.07 0.022,-0.107 0,-0.006 0.003,-0.01 0.003,-0.016 V 26.323 c 0.035,-2.461 2.048,-4.454 4.525,-4.454 2.469,0 4.476,1.993 4.511,4.454 v 20.469 c 0,0.276 0.224,0.5 0.5,0.5 0.276,0 0.5,-0.224 0.5,-0.5 V 26.417 c 10e-4,-0.011 0.006,-0.02 0.006,-0.031 0,-0.042 -0.005,-0.083 -0.006,-0.125 v -6.745 c 10e-4,-0.011 0.006,-0.021 0.006,-0.031 0,-2.442 1.987,-4.43 4.43,-4.43 2.441,0 4.426,1.983 4.43,4.423 0,0.002 -0.002,0.004 -0.002,0.007 V 47.76 c 0,0.276 0.225,0.5 0.5,0.5 0.277,0 0.5,-0.224 0.5,-0.5 V 26.178 c 0,-0.003 0.002,-0.006 0.002,-0.01 0,-2.546 2.098,-4.617 4.676,-4.617 2.408,0 4.402,1.775 4.648,4.132 v 26.31 c 0,0.276 0.225,0.5 0.5,0.5 0.277,0 0.5,-0.224 0.5,-0.5 V 36 c 0,-2.259 1.838,-4.097 4.098,-4.097 2.254,0 4.09,1.832 4.096,4.086 0,0.002 -0.002,0.003 -0.002,0.005 v 35.511 c 0.001,7.408 -5.059,13.435 -11.282,13.44 z" managed="false" nodeOrientation="LEFT_TO_RIGHT" styleClass="finger-svg" visible="false" />
+                              <SVGPath content="M77.658,36c0-2.811-2.285-5.097-5.096-5.097c-1.686,0-3.168,0.831-4.098,2.094v-7.351   c0-0.009-0.004-0.017-0.004-0.026c-0.002-0.008,0.002-0.016,0.002-0.023c-0.291-2.877-2.719-5.046-5.646-5.046   c-1.939,0-3.652,0.969-4.678,2.442v-3.499c0-0.004,0.002-0.007,0.002-0.01c0-2.994-2.436-5.43-5.43-5.43   c-2.98,0-5.405,2.413-5.428,5.388c-0.001,0.015-0.008,0.026-0.008,0.042v3.735c-1-1.419-2.647-2.351-4.511-2.351   c-2.993,0-5.433,2.385-5.523,5.349c0,0.004-0.002,0.007-0.002,0.011v0.032c-0.001,0.042-0.006,0.083-0.006,0.125   c0,0.012,0.005,0.021,0.006,0.031v31.495l-6.733-7.663c-0.01-0.013-0.014-0.028-0.026-0.04c-0.019-0.02-0.04-0.038-0.063-0.055   c-0.214-0.238-0.443-0.441-0.647-0.577c-0.809-0.605-1.77-0.927-2.78-0.927c-2.563,0-4.647,2.092-4.647,4.662   c0,0.748,0.17,1.459,0.505,2.112c0,0.001,0.002,0.002,0.003,0.003c0.006,0.012,0.003,0.026,0.01,0.038l12.369,21.196   c0.001,0.003,0.005,0.004,0.006,0.006c0.002,0.004,0.002,0.008,0.004,0.012c3.712,5.801,10.033,9.265,16.907,9.265h13.214   c0.002,0,0.004,0.001,0.006,0.001c6.777,0,12.291-6.478,12.291-14.44V36.01C77.656,36.006,77.658,36.003,77.658,36z M65.373,84.945   c-0.002,0-0.002-0.001-0.004-0.001H52.146c-6.529,0-12.533-3.289-16.062-8.799L23.759,55.023c-0.002-0.007-0.01-0.01-0.013-0.017   c-0.005-0.012-0.004-0.025-0.011-0.037c-0.262-0.512-0.395-1.069-0.395-1.657c0-2.02,1.636-3.662,3.647-3.662   c0.792,0,1.545,0.251,2.203,0.743c0.168,0.112,0.353,0.281,0.522,0.476c0.005,0.006,0.012,0.008,0.017,0.013l7.633,8.687   c0.003,0.004,0.008,0.005,0.012,0.009c0.038,0.04,0.083,0.07,0.131,0.097c0.012,0.006,0.021,0.018,0.034,0.022   c0.061,0.026,0.128,0.042,0.199,0.042c0.063,0,0.125-0.014,0.184-0.037c0.024-0.01,0.043-0.025,0.065-0.039   c0.027-0.016,0.057-0.026,0.081-0.048c0.004-0.004,0.006-0.01,0.01-0.014c0.026-0.024,0.044-0.055,0.065-0.085   c0.016-0.024,0.037-0.046,0.048-0.072c0.012-0.025,0.014-0.054,0.021-0.082c0.009-0.036,0.021-0.07,0.022-0.107   c0-0.006,0.003-0.01,0.003-0.016V26.323c0.035-2.461,2.048-4.454,4.525-4.454c2.469,0,4.476,1.993,4.511,4.454v20.469   c0,0.276,0.224,0.5,0.5,0.5s0.5-0.224,0.5-0.5V26.417c0.001-0.011,0.006-0.02,0.006-0.031c0-0.042-0.005-0.083-0.006-0.125v-6.745   c0.001-0.011,0.006-0.021,0.006-0.031c0-2.442,1.987-4.43,4.43-4.43c2.441,0,4.426,1.983,4.43,4.423   c0,0.002-0.002,0.004-0.002,0.007V47.76c0,0.276,0.225,0.5,0.5,0.5c0.277,0,0.5-0.224,0.5-0.5V26.178   c0-0.003,0.002-0.006,0.002-0.01c0-2.546,2.098-4.617,4.676-4.617c2.408,0,4.402,1.775,4.648,4.132v26.31   c0,0.276,0.225,0.5,0.5,0.5c0.277,0,0.5-0.224,0.5-0.5V36c0-2.259,1.838-4.097,4.098-4.097c2.254,0,4.09,1.832,4.096,4.086   c0,0.002-0.002,0.003-0.002,0.005v35.511C76.656,78.913,71.596,84.94,65.373,84.945z" nodeOrientation="LEFT_TO_RIGHT" />
+                          </AutoScalingStackPane>
+                      </HBox>
+      
+                                        <CheckBox fx:id="chbLeftRing" layoutX="88.0" layoutY="19.0" onAction="#CheckBoxAction" scaleX="0.7" scaleY="0.7" />
+                      <CheckBox fx:id="chbLeftMiddle" layoutX="107.0" layoutY="8.0" onAction="#CheckBoxAction" scaleX="0.7" scaleY="0.7" />
+                      <CheckBox fx:id="chbLeftIndex" layoutX="125.0" layoutY="21.0" onAction="#CheckBoxAction" scaleX="0.7" scaleY="0.7" />
+                      <CheckBox fx:id="chbLeftThumb" layoutX="157.0" layoutY="71.0" onAction="#CheckBoxAction" scaleX="0.7" scaleY="0.7" />
+                      <CheckBox fx:id="chbRightLittle" layoutX="264.0" layoutY="37.0" onAction="#CheckBoxAction" scaleX="0.7" scaleY="0.7" />
+                      <CheckBox fx:id="chbRightRing" layoutX="245.0" layoutY="19.0" onAction="#CheckBoxAction" scaleX="0.7" scaleY="0.7" />
+                      <CheckBox fx:id="chbRightMiddle" layoutX="227.0" layoutY="8.0" onAction="#CheckBoxAction" scaleX="0.7" scaleY="0.7" />
+                      <CheckBox fx:id="chbRightIndex" layoutX="209.0" layoutY="20.0" onAction="#CheckBoxAction" scaleX="0.7" scaleY="0.7" />
+                      <CheckBox fx:id="chbRightThumb" layoutX="180.0" layoutY="71.0" onAction="#CheckBoxAction" scaleX="0.7" scaleY="0.7" />
+                      <CheckBox fx:id="chbLeftLittle" layoutX="70.0" layoutY="39.0" onAction="#CheckBoxAction" scaleX="0.7" scaleY="0.7" />
+      
+                        
+                              </Pane>
+              </StackPane>
+         </children>
+      </VBox>
+   </top>
+
+            </BorderPane>

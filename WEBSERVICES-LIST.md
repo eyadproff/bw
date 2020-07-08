@@ -240,3 +240,9 @@
         -services-gateway-biooperation/api/enrollment/status/v1
         -services-gateway-biooperation/api/iris/registration/v1
         -services-gateway-biooperation/api/iris/registration/status/v1
+        
+     menu.edit.biometricsException:
+        -services-gateway-demographic/api/person/info/v1
+        -services-gateway-biooperation/api/enrollment/biometrics/exclusion/retrieve/v1
+        -services-gateway-biooperation/api/enrollment/biometrics/exclusion/v1
+        -services-gateway-biooperation/api/enrollment/biometrics/exclusion/delete/v1
