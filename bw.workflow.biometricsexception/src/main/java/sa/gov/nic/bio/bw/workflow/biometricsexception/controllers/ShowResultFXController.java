@@ -23,7 +23,8 @@ public class ShowResultFXController extends WizardStepFxControllerBase {
             VSuccess.setVisible(true);
             VSuccess.setManaged(true);
 
-        } else {
+        }
+        else {
             VFailed.setVisible(true);
             VFailed.setManaged(true);
         }

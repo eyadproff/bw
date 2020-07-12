@@ -47,36 +47,36 @@ public class ReviewAndSubmitFaceExceptionFXController extends WizardStepFxContro
 
         EditedBioExclusionsList = new ArrayList<BioExclusion>();
 
-        PersonName.setText(normalizedPersonInfo.getFirstName() + " " + normalizedPersonInfo.getFatherName() + " " + normalizedPersonInfo.getFamilyName());
+        PersonName.setText(normalizedPersonInfo.getFirstName() + " " + normalizedPersonInfo.getFatherName() + " " +
+                           normalizedPersonInfo.getFamilyName());
         PersonID.setText(normalizedPersonInfo.getPersonId().toString());
 
         if (EditFaceException != null) {
             LblCause.setVisible(true);
             for (Cause causeFC : causesFC) {
 
-                if (causeFC.getCauseId() == EditFaceException.getCasueId()) {
+                if (causeFC.getCauseId().equals( EditFaceException.getCasueId())) {
                     if (EditFaceException.getCasueId() == 1) {
                         LblfaceExcReason.setText(EditFaceException.getDescription());
-                    } else {
-                        if (Context.getGuiLanguage() == GuiLanguage.ARABIC)
+                    }
+                    else {
+                        if (Context.getGuiLanguage() == GuiLanguage.ARABIC) {
                             LblfaceExcReason.setText(causeFC.getArabicText());
-                        else
-                            LblfaceExcReason.setText(causeFC.getEnglishText());
+                        }
+                        else { LblfaceExcReason.setText(causeFC.getEnglishText()); }
                     }
                     break;
                 }
             }
 
-//            if (EditFaceException.getDuration() == 0)
-//                LblfaceExcStatus.setText(resources.getString("Permanent"));
-             if (EditFaceException.getMonth() == 3)
-                LblfaceExcStatus.setText(resources.getString("3months"));
-            else if (EditFaceException.getMonth() == 6)
-                LblfaceExcStatus.setText(resources.getString("6months"));
-            else
-                LblfaceExcStatus.setText(resources.getString("oneYear"));
+            //            if (EditFaceException.getDuration() == 0)
+            //                LblfaceExcStatus.setText(resources.getString("Permanent"));
+            if (EditFaceException.getMonth() == 3) { LblfaceExcStatus.setText(resources.getString("3months")); }
+            else if (EditFaceException.getMonth() == 6) { LblfaceExcStatus.setText(resources.getString("6months")); }
+            else { LblfaceExcStatus.setText(resources.getString("oneYear")); }
 
-        } else {
+        }
+        else {
             LblCause.setVisible(false);
             LblStatus.setVisible(false);
             LblfaceExcReason.setText(resources.getString("NoFaceException"));
@@ -90,8 +90,8 @@ public class ReviewAndSubmitFaceExceptionFXController extends WizardStepFxContro
 
             EditFaceException.setSamisId(normalizedPersonInfo.getPersonId());
             EditFaceException.setBioType(3);
-//            Long ExDate = new Long(1564475459);
-//            EditFaceException.setExpireDate(ExDate);
+            //            Long ExDate = new Long(1564475459);
+            //            EditFaceException.setExpireDate(ExDate);
             UserInfo userInfo = (UserInfo) Context.getUserSession().getAttribute("userInfo");
             EditFaceException.setOperatorId(userInfo.getOperatorId());
             EditedBioExclusionsList.add(EditFaceException);
@@ -101,6 +101,6 @@ public class ReviewAndSubmitFaceExceptionFXController extends WizardStepFxContro
 
     @Override
     public void onReturnFromWorkflow(boolean successfulResponse) {
-        if (successfulResponse) goNext();
+        if (successfulResponse) { goNext(); }
     }
 }

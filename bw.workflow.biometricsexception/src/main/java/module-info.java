@@ -9,6 +9,6 @@ module bw.workflow.biometricsexception {
     opens sa.gov.nic.bio.bw.workflow.biometricsexception.fxml to bw.core;
     opens sa.gov.nic.bio.bw.workflow.biometricsexception.tasks to bw.core;
     opens sa.gov.nic.bio.bw.workflow.biometricsexception.lookups to bw.core;
-    opens sa.gov.nic.bio.bw.workflow.biometricsexception.beans to org.apache.commons.lang3;
+    opens sa.gov.nic.bio.bw.workflow.biometricsexception.beans to org.apache.commons.lang3, com.google.gson;
     opens sa.gov.nic.bio.bw.workflow.biometricsexception.controllers to javafx.fxml, bw.core;
 }

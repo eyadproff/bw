@@ -34,13 +34,13 @@ public class PersonIdPaneFxController extends WizardStepFxControllerBase {
             continueWorkflow();
         });
 
-        if (personId != null) txtPersonId.setText(String.valueOf(personId));
+        if (personId != null) { txtPersonId.setText(String.valueOf(personId)); }
         txtPersonId.requestFocus();
     }
 
     @Override
     public void onReturnFromWorkflow(boolean successfulResponse) {
-        if (successfulResponse) goNext();
+        if (successfulResponse) { goNext(); }
     }
 
     @Override

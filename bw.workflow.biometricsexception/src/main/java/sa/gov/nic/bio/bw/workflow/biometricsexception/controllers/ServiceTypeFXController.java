@@ -46,20 +46,27 @@ public class ServiceTypeFXController extends WizardStepFxControllerBase {
         String DeleteFingerprintExceptionTitle = resources.getString("wizard.deleteMissingFingerPrint");
 
         // change the wizard-step-indicator upon changing the image source
-        int stepIndex = Context.getCoreFxController().getWizardPane(getTabIndex()).getStepIndexByTitle(AddOrEditFingerprintExceptionTitle);
-        if (stepIndex < 0) stepIndex = Context.getCoreFxController().getWizardPane(getTabIndex())
-                .getStepIndexByTitle(DeleteFingerprintExceptionTitle);
+        int stepIndex = Context.getCoreFxController().getWizardPane(getTabIndex())
+                .getStepIndexByTitle(AddOrEditFingerprintExceptionTitle);
+        if (stepIndex < 0) {
+            stepIndex = Context.getCoreFxController().getWizardPane(getTabIndex())
+                    .getStepIndexByTitle(DeleteFingerprintExceptionTitle);
+        }
 
         final int finalStepIndex = stepIndex;
 
         rbAddOrEdit.selectedProperty().addListener((observable, oldValue, newValue) ->
         {
-            if (newValue)
-                Context.getCoreFxController().getWizardPane(getTabIndex()).updateStep(finalStepIndex, AddOrEditFingerprintExceptionTitle,
-                        "\\uf256");
-            else
-                Context.getCoreFxController().getWizardPane(getTabIndex()).updateStep(finalStepIndex, DeleteFingerprintExceptionTitle,
-                        "\\uf256");
+            if (newValue) {
+                Context.getCoreFxController().getWizardPane(getTabIndex())
+                        .updateStep(finalStepIndex, AddOrEditFingerprintExceptionTitle,
+                                "\\uf256");
+            }
+            else {
+                Context.getCoreFxController().getWizardPane(getTabIndex())
+                        .updateStep(finalStepIndex, DeleteFingerprintExceptionTitle,
+                                "\\uf256");
+            }
         });
 
         // if (hidePreviousButton != null) GuiUtils.showNode(btnPrevious, !hidePreviousButton);
@@ -68,7 +75,8 @@ public class ServiceTypeFXController extends WizardStepFxControllerBase {
         if (ServiceTypeFXController.ServiceType.DELETE_FINGERPRINTS.equals(serviceType)) {
             rbDelete.setSelected(true);
             rbDelete.requestFocus();
-        } else {
+        }
+        else {
             rbAddOrEdit.setSelected(true);
             rbAddOrEdit.requestFocus();
         }
@@ -83,19 +91,19 @@ public class ServiceTypeFXController extends WizardStepFxControllerBase {
 
     @Override
     public void onGoingNext(Map<String, Object> uiDataMap) {
-        if (rbDelete.isSelected()) serviceType = ServiceTypeFXController.ServiceType.DELETE_FINGERPRINTS;
-        else serviceType = ServiceTypeFXController.ServiceType.ADD_OR_EDIT_FINGERPRINTS;
+        if (rbDelete.isSelected()) { serviceType = ServiceTypeFXController.ServiceType.DELETE_FINGERPRINTS; }
+        else { serviceType = ServiceTypeFXController.ServiceType.ADD_OR_EDIT_FINGERPRINTS; }
     }
 
     @Override
     public void onReturnFromWorkflow(boolean successfulResponse) {
-        if (successfulResponse) goNext();
+        if (successfulResponse) { goNext(); }
     }
 
     @Override
     protected void onNextButtonClicked(ActionEvent actionEvent) {
-        if (rbDelete.isSelected()) serviceType = ServiceTypeFXController.ServiceType.DELETE_FINGERPRINTS;
-        else serviceType = ServiceTypeFXController.ServiceType.ADD_OR_EDIT_FINGERPRINTS;
+        if (rbDelete.isSelected()) { serviceType = ServiceTypeFXController.ServiceType.DELETE_FINGERPRINTS; }
+        else { serviceType = ServiceTypeFXController.ServiceType.ADD_OR_EDIT_FINGERPRINTS; }
         continueWorkflow();
     }
 

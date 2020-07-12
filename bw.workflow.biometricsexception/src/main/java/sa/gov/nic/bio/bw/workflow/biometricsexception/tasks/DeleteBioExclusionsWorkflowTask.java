@@ -25,13 +25,14 @@ public class DeleteBioExclusionsWorkflowTask extends WorkflowTask {
 
         UserInfo userInfo = (UserInfo) Context.getUserSession().getAttribute("userInfo");
         BioExclusionAPI bioExclusionAPI = Context.getWebserviceManager().getApi(BioExclusionAPI.class);
-        Call<SubmissionAndDeletionResponse> apiCall = bioExclusionAPI.deleteBioExclusions(workflowId, workflowTcn,AppUtils.toJson(SeqNumbersList), userInfo.getOperatorId());
+        Call<SubmissionAndDeletionResponse> apiCall = bioExclusionAPI
+                .deleteBioExclusions(workflowId, workflowTcn, AppUtils.toJson(SeqNumbersList),
+                        userInfo.getOperatorId());
         TaskResponse<SubmissionAndDeletionResponse> taskResponse = Context.getWebserviceManager().executeApi(apiCall);
 
         boolean notFound = !taskResponse.isSuccess() && "B003-0078".equals(taskResponse.getErrorCode());
 
-        if (notFound)
-            return;
+        if (notFound) { return; }
 
 
         resetWorkflowStepIfNegativeOrNullTaskResponse(taskResponse);

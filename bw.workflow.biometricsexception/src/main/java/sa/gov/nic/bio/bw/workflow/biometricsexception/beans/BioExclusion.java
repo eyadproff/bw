@@ -15,21 +15,23 @@ public class BioExclusion {
     private Long operatorId;
     private Integer month;
 
-    public BioExclusion(){
+    public BioExclusion() {
 
     }
-    public BioExclusion(Long samisId,Integer casueId,Integer bioType, Integer position, Long expireDate){
-        this.samisId=samisId;
-        this.casueId=casueId;
-        this.bioType=bioType;
-        this.position=position;
-        this.expireDate=expireDate;
+
+    public BioExclusion(Long samisId, Integer casueId, Integer bioType, Integer position, Long expireDate) {
+        this.samisId = samisId;
+        this.casueId = casueId;
+        this.bioType = bioType;
+        this.position = position;
+        this.expireDate = expireDate;
     }
-    public BioExclusion(Long samisId,Integer casueId,Integer bioType,Long expireDate){
-        this.samisId=samisId;
-        this.casueId=casueId;
-        this.bioType=bioType;
-        this.expireDate=expireDate;
+
+    public BioExclusion(Long samisId, Integer casueId, Integer bioType, Long expireDate) {
+        this.samisId = samisId;
+        this.casueId = casueId;
+        this.bioType = bioType;
+        this.expireDate = expireDate;
 
     }
 

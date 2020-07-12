@@ -131,7 +131,7 @@ public class DeleteMissingFingerprintFXController extends WizardStepFxController
 
     @FXML
     private Label RightMExist, LeftMExist, lblExcpiredExc;
-    ;
+
     @FXML
     private Button btnNext;
 
@@ -152,17 +152,18 @@ public class DeleteMissingFingerprintFXController extends WizardStepFxController
 
             //remove expired Exception
             BioExclusionsList.removeIf(bioEx -> {
-                    if (bioEx.getExpireDate() != null && bioEx.getExpireDate() < Instant.now().getEpochSecond()) {
-                        if (MissingFingerPrints != null && MissingFingerPrints.contains(bioEx.getPosition())) {
-                            expiredException.add(bioEx);
-                        } else {
-                            SeqNumbersList.add(bioEx.getSeqNum());
-                        }
-                        return true;
-
+                if (bioEx.getExpireDate() != null && bioEx.getExpireDate() < Instant.now().getEpochSecond()) {
+                    if (MissingFingerPrints != null && MissingFingerPrints.contains(bioEx.getPosition())) {
+                        expiredException.add(bioEx);
                     }
-                    return false;
-                });
+                    else {
+                        SeqNumbersList.add(bioEx.getSeqNum());
+                    }
+                    return true;
+
+                }
+                return false;
+            });
 
             personfingerprints = new PersonFingerprints();
             personfingerprints.setRThumb(getLast(BioExclusionsList, 1));
@@ -179,7 +180,8 @@ public class DeleteMissingFingerprintFXController extends WizardStepFxController
 
             checkMissingfingers();
 
-        } else {
+        }
+        else {
             RightMExist.setVisible(true);
             RightMExist.setManaged(true);
 
@@ -193,7 +195,7 @@ public class DeleteMissingFingerprintFXController extends WizardStepFxController
             expiredException.forEach(x -> ShowExpiredException(x.getPosition()));
         }
 
-       // old state if return from Review
+        // old state if return from Review
         if (Editedpersonfingerprints != null) {
             checkDeletedMFP();
         }
@@ -248,11 +250,11 @@ public class DeleteMissingFingerprintFXController extends WizardStepFxController
 
         for (BioExclusion bioEx : personMissinfingerprints) {
 
-            if (bioEx.getStatus() == 0 && bioEx.getPosition() == position) {
+            if (bioEx.getStatus().equals(0)&& bioEx.getPosition().equals(position)) {
                 fingerprint.setMissOrNot(true);
                 //lookup
                 for (Cause cause : causes) {
-                    if (cause.getCauseId() == bioEx.getCasueId()) {
+                    if (cause.getCauseId().equals(bioEx.getCasueId())) {
                         fingerprint.setCause(cause);
                         break;
                     }
@@ -260,20 +262,16 @@ public class DeleteMissingFingerprintFXController extends WizardStepFxController
                 if (bioEx.getCasueId() == 1) {
                     fingerprint.setDescription(bioEx.getDescription());
                 }
-//                if (bioEx.getExpireDate() > 0)
-//                    fingerprint.setStatus(1);//Temporary
-//                else
-//                    fingerprint.setStatus(0);
+                //                if (bioEx.getExpireDate() > 0)
+                //                    fingerprint.setStatus(1);//Temporary
+                //                else
+                //                    fingerprint.setStatus(0);
 
 
-                if (bioEx.getMonth() == null || bioEx.getMonth() == 0)
-                    fingerprint.setStatus(0);
-                else if (bioEx.getMonth() == 3)
-                    fingerprint.setStatus(3);
-                else if (bioEx.getMonth() == 6)
-                    fingerprint.setStatus(6);
-                else
-                    fingerprint.setStatus(12);
+                if (bioEx.getMonth() == null || bioEx.getMonth() == 0) { fingerprint.setStatus(0); }
+                else if (bioEx.getMonth() == 3) { fingerprint.setStatus(3); }
+                else if (bioEx.getMonth() == 6) { fingerprint.setStatus(6); }
+                else { fingerprint.setStatus(12); }
 
                 fingerprint.setPosition(position);
                 fingerprint.setSeqNum(bioEx.getSeqNum());
@@ -299,22 +297,26 @@ public class DeleteMissingFingerprintFXController extends WizardStepFxController
         }
         if (personfingerprints.getRIndex().isMissOrNot()) {
             right++;
-            displayMissingFinger(personfingerprints.getRIndex(), VRightIndexFinger, svgRightIndex, RIndexCouse, RIndexStatus);
+            displayMissingFinger(personfingerprints.getRIndex(), VRightIndexFinger, svgRightIndex, RIndexCouse,
+                    RIndexStatus);
             chbRightIndex.setDisable(false);
         }
         if (personfingerprints.getRMiddle().isMissOrNot()) {
             right++;
-            displayMissingFinger(personfingerprints.getRMiddle(), VRightMiddleFinger, svgRightMiddle, RMiddleCouse, RMiddleStatus);
+            displayMissingFinger(personfingerprints.getRMiddle(), VRightMiddleFinger, svgRightMiddle, RMiddleCouse,
+                    RMiddleStatus);
             chbRightMiddle.setDisable(false);
         }
         if (personfingerprints.getRRing().isMissOrNot()) {
             right++;
-            displayMissingFinger(personfingerprints.getRRing(), VRightRingFinger, svgRightRing, RRingCouse, RRingStatus);
+            displayMissingFinger(personfingerprints.getRRing(), VRightRingFinger, svgRightRing, RRingCouse,
+                    RRingStatus);
             chbRightRing.setDisable(false);
         }
         if (personfingerprints.getRLittle().isMissOrNot()) {
             right++;
-            displayMissingFinger(personfingerprints.getRLittle(), VRightLittleFinger, svgRightLittle, RLittleCouse, RLittleStatus);
+            displayMissingFinger(personfingerprints.getRLittle(), VRightLittleFinger, svgRightLittle, RLittleCouse,
+                    RLittleStatus);
             chbRightLittle.setDisable(false);
         }
 
@@ -325,12 +327,14 @@ public class DeleteMissingFingerprintFXController extends WizardStepFxController
         }
         if (personfingerprints.getLIndex().isMissOrNot()) {
             left++;
-            displayMissingFinger(personfingerprints.getLIndex(), VLeftIndexFinger, svgLeftIndex, LIndexCouse, LIndexStatus);
+            displayMissingFinger(personfingerprints.getLIndex(), VLeftIndexFinger, svgLeftIndex, LIndexCouse,
+                    LIndexStatus);
             chbLeftIndex.setDisable(false);
         }
         if (personfingerprints.getLMiddle().isMissOrNot()) {
             left++;
-            displayMissingFinger(personfingerprints.getLMiddle(), VLeftMiddleFinger, svgLeftMiddle, LMiddleCouse, LMiddleStatus);
+            displayMissingFinger(personfingerprints.getLMiddle(), VLeftMiddleFinger, svgLeftMiddle, LMiddleCouse,
+                    LMiddleStatus);
             chbLeftMiddle.setDisable(false);
         }
         if (personfingerprints.getLRing().isMissOrNot()) {
@@ -340,7 +344,8 @@ public class DeleteMissingFingerprintFXController extends WizardStepFxController
         }
         if (personfingerprints.getLLittle().isMissOrNot()) {
             left++;
-            displayMissingFinger(personfingerprints.getLLittle(), VLeftLittleFinger, svgLeftLittle, LLittleCouse, LLittleStatus);
+            displayMissingFinger(personfingerprints.getLLittle(), VLeftLittleFinger, svgLeftLittle, LLittleCouse,
+                    LLittleStatus);
             chbLeftLittle.setDisable(false);
         }
         if (right == 0) {
@@ -363,27 +368,22 @@ public class DeleteMissingFingerprintFXController extends WizardStepFxController
         svg.setVisible(true);
         svg.setManaged(true);
 
-        if (finger.getCause().getCauseId() == 1)
-            Couse.setText(finger.getDescription());
+        if (finger.getCause().getCauseId() == 1) { Couse.setText(finger.getDescription()); }
         else {
-            if (Context.getGuiLanguage() == GuiLanguage.ARABIC) Couse.setText(finger.getCause().getArabicText());
-            else Couse.setText(finger.getCause().getEnglishText());
+            if (Context.getGuiLanguage() == GuiLanguage.ARABIC) { Couse.setText(finger.getCause().getArabicText()); }
+            else { Couse.setText(finger.getCause().getEnglishText()); }
         }
 
 
-//        if (finger.getStatus() == 0)
-//            Status.setText(resources.getString("Permanent"));
-//        else
-//            Status.setText(resources.getString("Temporary"));
+        //        if (finger.getStatus() == 0)
+        //            Status.setText(resources.getString("Permanent"));
+        //        else
+        //            Status.setText(resources.getString("Temporary"));
 
-        if (finger.getStatus() == 0)
-            Status.setText(resources.getString("Permanent"));
-        else if (finger.getStatus() == 3)
-            Status.setText(resources.getString("3months"));
-        else if (finger.getStatus() == 6)
-            Status.setText(resources.getString("6months"));
-        else
-            Status.setText(resources.getString("oneYear"));
+        if (finger.getStatus() == 0) { Status.setText(resources.getString("Permanent")); }
+        else if (finger.getStatus() == 3) { Status.setText(resources.getString("3months")); }
+        else if (finger.getStatus() == 6) { Status.setText(resources.getString("6months")); }
+        else { Status.setText(resources.getString("oneYear")); }
 
     }
 
@@ -439,69 +439,77 @@ public class DeleteMissingFingerprintFXController extends WizardStepFxController
         if (chbRightThumb.isSelected()) {
             VRightThumb.setStyle("-fx-border-color:red");
             numChBox++;
-        } else {
+        }
+        else {
             VRightThumb.setStyle("-fx-border-color:gray");
         }
         if (chbRightIndex.isSelected()) {
             numChBox++;
             VRightIndexFinger.setStyle("-fx-border-color:red");
-        } else {
+        }
+        else {
             VRightIndexFinger.setStyle("-fx-border-color:gray");
         }
         if (chbRightMiddle.isSelected()) {
             numChBox++;
             VRightMiddleFinger.setStyle("-fx-border-color:red");
-        } else {
+        }
+        else {
             VRightMiddleFinger.setStyle("-fx-border-color:gray");
         }
         if (chbRightRing.isSelected()) {
             numChBox++;
             VRightRingFinger.setStyle("-fx-border-color:red");
-        } else {
+        }
+        else {
             VRightRingFinger.setStyle("-fx-border-color:gray");
         }
         if (chbRightLittle.isSelected()) {
             numChBox++;
             VRightLittleFinger.setStyle("-fx-border-color:red");
-        } else {
+        }
+        else {
             VRightLittleFinger.setStyle("-fx-border-color:gray");
         }
 
         if (chbLeftThumb.isSelected()) {
             numChBox++;
             VLeftThumb.setStyle("-fx-border-color:red");
-        } else {
+        }
+        else {
             VLeftThumb.setStyle("-fx-border-color:gray");
         }
         if (chbLeftIndex.isSelected()) {
             numChBox++;
             VLeftIndexFinger.setStyle("-fx-border-color:red");
-        } else {
+        }
+        else {
             VLeftIndexFinger.setStyle("-fx-border-color:gray");
         }
         if (chbLeftMiddle.isSelected()) {
             numChBox++;
             VLeftMiddleFinger.setStyle("-fx-border-color:red");
-        } else {
+        }
+        else {
             VLeftMiddleFinger.setStyle("-fx-border-color:gray");
         }
         if (chbLeftRing.isSelected()) {
             numChBox++;
             VLeftRingFinger.setStyle("-fx-border-color:red");
-        } else {
+        }
+        else {
             VLeftRingFinger.setStyle("-fx-border-color:gray");
         }
         if (chbLeftLittle.isSelected()) {
             numChBox++;
             VLeftLittleFinger.setStyle("-fx-border-color:red");
-        } else {
+        }
+        else {
             VLeftLittleFinger.setStyle("-fx-border-color:gray");
         }
 
-        if (numChBox > 0)
-            btnNext.setDisable(false);
-        else
-            btnNext.setDisable(true);
+        if (numChBox > 0) { btnNext.setDisable(false); }
+        else { btnNext.setDisable(true); }
 
     }
 
@@ -513,53 +521,63 @@ public class DeleteMissingFingerprintFXController extends WizardStepFxController
         if (chbRightThumb.isSelected()) {
             SeqNumbersList.add(personfingerprints.getRThumb().getSeqNum());
             Editedpersonfingerprints.setRThumb(new Fingerprint());
-        } else Editedpersonfingerprints.setRThumb(personfingerprints.getRThumb());
+        }
+        else { Editedpersonfingerprints.setRThumb(personfingerprints.getRThumb()); }
 
         if (chbRightIndex.isSelected()) {
             SeqNumbersList.add(personfingerprints.getRIndex().getSeqNum());
             Editedpersonfingerprints.setRIndex(new Fingerprint());
-        } else Editedpersonfingerprints.setRIndex(personfingerprints.getRIndex());
+        }
+        else { Editedpersonfingerprints.setRIndex(personfingerprints.getRIndex()); }
 
         if (chbRightMiddle.isSelected()) {
             SeqNumbersList.add(personfingerprints.getRMiddle().getSeqNum());
             Editedpersonfingerprints.setRMiddle(new Fingerprint());
-        } else Editedpersonfingerprints.setRMiddle(personfingerprints.getRMiddle());
+        }
+        else { Editedpersonfingerprints.setRMiddle(personfingerprints.getRMiddle()); }
 
         if (chbRightRing.isSelected()) {
             SeqNumbersList.add(personfingerprints.getRRing().getSeqNum());
             Editedpersonfingerprints.setRRing(new Fingerprint());
-        } else Editedpersonfingerprints.setRRing(personfingerprints.getRRing());
+        }
+        else { Editedpersonfingerprints.setRRing(personfingerprints.getRRing()); }
 
         if (chbRightLittle.isSelected()) {
             SeqNumbersList.add(personfingerprints.getRLittle().getSeqNum());
             Editedpersonfingerprints.setRLittle(new Fingerprint());
-        } else Editedpersonfingerprints.setRLittle(personfingerprints.getRLittle());
+        }
+        else { Editedpersonfingerprints.setRLittle(personfingerprints.getRLittle()); }
 
 
         if (chbLeftThumb.isSelected()) {
             SeqNumbersList.add(personfingerprints.getLThumb().getSeqNum());
             Editedpersonfingerprints.setLThumb(new Fingerprint());
-        } else Editedpersonfingerprints.setLThumb(personfingerprints.getLThumb());
+        }
+        else { Editedpersonfingerprints.setLThumb(personfingerprints.getLThumb()); }
 
         if (chbLeftIndex.isSelected()) {
             SeqNumbersList.add(personfingerprints.getLIndex().getSeqNum());
             Editedpersonfingerprints.setLIndex(new Fingerprint());
-        } else Editedpersonfingerprints.setLIndex(personfingerprints.getLIndex());
+        }
+        else { Editedpersonfingerprints.setLIndex(personfingerprints.getLIndex()); }
 
         if (chbLeftMiddle.isSelected()) {
             SeqNumbersList.add(personfingerprints.getLMiddle().getSeqNum());
             Editedpersonfingerprints.setLMiddle(new Fingerprint());
-        } else Editedpersonfingerprints.setLMiddle(personfingerprints.getLMiddle());
+        }
+        else { Editedpersonfingerprints.setLMiddle(personfingerprints.getLMiddle()); }
 
         if (chbLeftRing.isSelected()) {
             SeqNumbersList.add(personfingerprints.getLRing().getSeqNum());
             Editedpersonfingerprints.setLRing(new Fingerprint());
-        } else Editedpersonfingerprints.setLRing(personfingerprints.getLRing());
+        }
+        else { Editedpersonfingerprints.setLRing(personfingerprints.getLRing()); }
 
         if (chbLeftLittle.isSelected()) {
             SeqNumbersList.add(personfingerprints.getLLittle().getSeqNum());
             Editedpersonfingerprints.setLLittle(new Fingerprint());
-        } else Editedpersonfingerprints.setLLittle(personfingerprints.getLLittle());
+        }
+        else { Editedpersonfingerprints.setLLittle(personfingerprints.getLLittle()); }
 
 
         super.onNextButtonClicked(actionEvent);

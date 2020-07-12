@@ -50,9 +50,12 @@ public class BiometricsExceptionTypeFXController extends WizardStepFxControllerB
         String AddOrEditFingerprintExceptionTitle = resources.getString("wizard.addOrEditMissingFingerPrint");
 
         // change the wizard-step-indicator upon changing the ExceptionType
-        int stepIndex = Context.getCoreFxController().getWizardPane(getTabIndex()).getStepIndexByTitle(ServiceTypeTitle);
-        if (stepIndex < 0) stepIndex = Context.getCoreFxController().getWizardPane(getTabIndex())
-                .getStepIndexByTitle(FaceImageExceptionTitle);
+        int stepIndex =
+                Context.getCoreFxController().getWizardPane(getTabIndex()).getStepIndexByTitle(ServiceTypeTitle);
+        if (stepIndex < 0) {
+            stepIndex = Context.getCoreFxController().getWizardPane(getTabIndex())
+                    .getStepIndexByTitle(FaceImageExceptionTitle);
+        }
 
         final int finalStepIndex = stepIndex;
 
@@ -66,14 +69,17 @@ public class BiometricsExceptionTypeFXController extends WizardStepFxControllerB
                             AddOrEditFingerprintExceptionTitle,
                             "\\uf256");
                     minusOneStep = false;
-                } else {
+                }
+                else {
                     Context.getCoreFxController().getWizardPane(getTabIndex()).updateStep(finalStepIndex + 1,
                             AddOrEditFingerprintExceptionTitle,
                             "\\uf256");
                 }
-            } else {
-                Context.getCoreFxController().getWizardPane(getTabIndex()).updateStep(finalStepIndex, FaceImageExceptionTitle,
-                        "user");
+            }
+            else {
+                Context.getCoreFxController().getWizardPane(getTabIndex())
+                        .updateStep(finalStepIndex, FaceImageExceptionTitle,
+                                "user");
                 if (!minusOneStep) {
                     Context.getCoreFxController().getWizardPane(getTabIndex()).removeStep(finalStepIndex + 1);
                     minusOneStep = true;
@@ -89,7 +95,8 @@ public class BiometricsExceptionTypeFXController extends WizardStepFxControllerB
             rbFaceImage.setSelected(true);
             rbFaceImage.requestFocus();
             minusOneStep = true;
-        } else {
+        }
+        else {
             rbFingerPrints.setSelected(true);
             rbFingerPrints.requestFocus();
         }
@@ -101,22 +108,23 @@ public class BiometricsExceptionTypeFXController extends WizardStepFxControllerB
         onGoingNext(uiDataMap);
 
     }
+
     @Override
     public void onGoingNext(Map<String, Object> uiDataMap) {
-        if (rbFaceImage.isSelected()) exceptionType = Type.FACE;
-        else exceptionType = Type.FINGERPRINTS;
+        if (rbFaceImage.isSelected()) { exceptionType = Type.FACE; }
+        else { exceptionType = Type.FINGERPRINTS; }
     }
 
 
     @Override
     public void onReturnFromWorkflow(boolean successfulResponse) {
-        if (successfulResponse) goNext();
+        if (successfulResponse) { goNext(); }
     }
 
     @FXML
     protected void onNextButtonClicked(ActionEvent actionEvent) {
-        if (rbFaceImage.isSelected()) exceptionType = Type.FACE;
-        else exceptionType = Type.FINGERPRINTS;
+        if (rbFaceImage.isSelected()) { exceptionType = Type.FACE; }
+        else { exceptionType = Type.FINGERPRINTS; }
 
         continueWorkflow();
     }

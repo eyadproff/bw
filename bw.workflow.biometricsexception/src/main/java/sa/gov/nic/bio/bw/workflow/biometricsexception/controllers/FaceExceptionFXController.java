@@ -76,7 +76,8 @@ public class FaceExceptionFXController extends WizardStepFxControllerBase {
 
         AddItemsToMenu();
         // do not show if expired
-        if (FaceException != null && FaceException.getExpireDate() != null && FaceException.getExpireDate() < Instant.now().getEpochSecond()) {
+        if (FaceException != null && FaceException.getExpireDate() != null &&
+            FaceException.getExpireDate() < Instant.now().getEpochSecond()) {
             excpiredExceptionSeqNum = FaceException.getSeqNum();
             FaceException = null;
             lblExcpiredExc.setVisible(true);
@@ -91,11 +92,11 @@ public class FaceExceptionFXController extends WizardStepFxControllerBase {
         if (EditFaceException == null && FaceException != null) {
             for (Cause causeFC : causes) {
 
-                if (causeFC.getCauseId() == FaceException.getCasueId()) {
+                if (causeFC.getCauseId().equals( FaceException.getCasueId())) {
                     EditFaceException = new BioExclusion();
                     EditFaceException.setCasueId(causeFC.getCauseId());
-//                        Reason.setDescriptionAr(causeFC.getArabicText());
-//                        Reason.setDescriptionEn(causeFC.getEnglishText());
+                    //                        Reason.setDescriptionAr(causeFC.getArabicText());
+                    //                        Reason.setDescriptionEn(causeFC.getEnglishText());
                     EditFaceException.setMonth(FaceException.getMonth());
                     if (FaceException.getCasueId() == 1) {
                         EditFaceException.setDescription(FaceException.getDescription());
@@ -109,37 +110,38 @@ public class FaceExceptionFXController extends WizardStepFxControllerBase {
 
 
         // upload old state
-        if (EditFaceException != null)
-            uploadReason();
+        if (EditFaceException != null) { uploadReason(); }
 
 
         // for delete pane
         if (FaceException != null) {
             for (Cause causeFC : causes) {
 
-                if (causeFC.getCauseId() == FaceException.getCasueId()) {
+                if (causeFC.getCauseId().equals( FaceException.getCasueId())) {
                     if (FaceException.getCasueId() == 1) {
                         LblfaceExcReason.setText(FaceException.getDescription());
-                    } else {
-                        if (Context.getGuiLanguage() == GuiLanguage.ARABIC)
+                    }
+                    else {
+                        if (Context.getGuiLanguage() == GuiLanguage.ARABIC) {
                             LblfaceExcReason.setText(causeFC.getArabicText());
-                        else LblfaceExcReason.setText(causeFC.getEnglishText());
+                        }
+                        else { LblfaceExcReason.setText(causeFC.getEnglishText()); }
                     }
 
                     //duration
 
-                    if (FaceException.getMonth() == 3)
-                        LblfaceExcStatus.setText(resources.getString("3months"));
-                    else if (FaceException.getMonth() == 6)
+                    if (FaceException.getMonth() == 3) { LblfaceExcStatus.setText(resources.getString("3months")); }
+                    else if (FaceException.getMonth() == 6) {
                         LblfaceExcStatus.setText(resources.getString("6months"));
-                    else
-                        LblfaceExcStatus.setText(resources.getString("oneYear"));
+                    }
+                    else { LblfaceExcStatus.setText(resources.getString("oneYear")); }
                     DeleteButton.setDisable(false);
                     break;
                 }
             }
 
-        } else {
+        }
+        else {
             LblDelfaceExcStatus.setVisible(false);
             LblDelfaceExcCouse.setVisible(false);
             LblfaceExcReason.setText(resources.getString("NoFaceException"));
@@ -147,10 +149,8 @@ public class FaceExceptionFXController extends WizardStepFxControllerBase {
 
         //  continueWorkflow();
 
-        if(FaceException!=null)
-            System.out.println("face"+FaceException.getCasueId());
-        if(EditFaceException!=null)
-            System.out.println("Editface"+EditFaceException.getCasueId());
+        if (FaceException != null) { System.out.println("face" + FaceException.getCasueId()); }
+        if (EditFaceException != null) { System.out.println("Editface" + EditFaceException.getCasueId()); }
     }
 
     private void AddItemsToMenu() {
@@ -164,8 +164,8 @@ public class FaceExceptionFXController extends WizardStepFxControllerBase {
             Cause cause = item.getItem();
 
             String text;
-            if (Context.getGuiLanguage() == GuiLanguage.ARABIC) text = cause.getArabicText();
-            else text = cause.getEnglishText();
+            if (Context.getGuiLanguage() == GuiLanguage.ARABIC) { text = cause.getArabicText(); }
+            else { text = cause.getEnglishText(); }
 
             String resultText = text.trim();
             item.setText(resultText);
@@ -174,16 +174,16 @@ public class FaceExceptionFXController extends WizardStepFxControllerBase {
         ComboMenu.setConverter(new StringConverter<>() {
             @Override
             public String toString(ComboBoxItem<Cause> object) {
-                if (object == null) return "";
-                else return object.getText();
+                if (object == null) { return ""; }
+                else { return object.getText(); }
             }
 
             @Override
             public ComboBoxItem<Cause> fromString(String string) {
-                if (string == null || string.trim().isEmpty()) return null;
+                if (string == null || string.trim().isEmpty()) { return null; }
 
                 for (ComboBoxItem<Cause> causeComboBoxItem : ComboMenu.getItems()) {
-                    if (string.equals(causeComboBoxItem.getText())) return causeComboBoxItem;
+                    if (string.equals(causeComboBoxItem.getText())) { return causeComboBoxItem; }
                 }
 
                 return null;
@@ -200,8 +200,8 @@ public class FaceExceptionFXController extends WizardStepFxControllerBase {
         if (ComboMenu.getValue().getItem().getCauseId() == 1) {
             TxtfaceExcReason.setVisible(true);
 
-        } else
-            TxtfaceExcReason.setVisible(false);
+        }
+        else { TxtfaceExcReason.setVisible(false); }
 
 
     }
@@ -219,15 +219,12 @@ public class FaceExceptionFXController extends WizardStepFxControllerBase {
             TxtfaceExcReason.setVisible(true);
             TxtfaceExcReason.setText(EditFaceException.getDescription());
 
-        } else
-            TxtfaceExcReason.setVisible(false);
+        }
+        else { TxtfaceExcReason.setVisible(false); }
 
-        if (EditFaceException.getMonth() == 12)
-            RBStatus.getToggles().get(2).setSelected(true);
-        else if (EditFaceException.getMonth() == 6)
-            RBStatus.getToggles().get(1).setSelected(true);
-        else
-            RBStatus.getToggles().get(0).setSelected(true);
+        if (EditFaceException.getMonth() == 12) { RBStatus.getToggles().get(2).setSelected(true); }
+        else if (EditFaceException.getMonth() == 6) { RBStatus.getToggles().get(1).setSelected(true); }
+        else { RBStatus.getToggles().get(0).setSelected(true); }
 
     }
 
@@ -240,8 +237,8 @@ public class FaceExceptionFXController extends WizardStepFxControllerBase {
         if (ComboMenu.getValue() == null) {
             showWarningNotification(resources.getString("SelectCause"));
             return;
-        } else
-            EditFaceException.setCasueId(ComboMenu.getValue().getItem().getCauseId());
+        }
+        else { EditFaceException.setCasueId(ComboMenu.getValue().getItem().getCauseId()); }
 
         if (RBStatus.getSelectedToggle() == null) {
             showWarningNotification(resources.getString("SelectStatus"));
@@ -252,7 +249,8 @@ public class FaceExceptionFXController extends WizardStepFxControllerBase {
             if (TxtfaceExcReason.getText().trim().isEmpty()) {
                 showWarningNotification(resources.getString("WriteCause"));
                 return;
-            } else {
+            }
+            else {
                 EditFaceException.setDescription(TxtfaceExcReason.getText());
             }
         }
@@ -261,44 +259,50 @@ public class FaceExceptionFXController extends WizardStepFxControllerBase {
             EditFaceException.setMonth(3);
             EditFaceException.setExpireDate(Instant.now().getEpochSecond() + new Long(7889238));
             EditFaceException.setCreateDate(Instant.now().getEpochSecond());
-        } else if (((RadioButton) RBStatus.getSelectedToggle()).getText().equals(resources.getString("6months"))) {
+        }
+        else if (((RadioButton) RBStatus.getSelectedToggle()).getText().equals(resources.getString("6months"))) {
             EditFaceException.setMonth(6);
             EditFaceException.setExpireDate(Instant.now().getEpochSecond() + new Long(15778476));
             EditFaceException.setCreateDate(Instant.now().getEpochSecond());
-        } else {
+        }
+        else {
             EditFaceException.setMonth(12);
             EditFaceException.setExpireDate(Instant.now().getEpochSecond() + new Long(31556952));
             EditFaceException.setCreateDate(Instant.now().getEpochSecond());
         }
 
 
-
         if (FaceException != null) {
-            if (FaceException.getCasueId() == ComboMenu.getValue().getItem().getCauseId()) {
+            if (FaceException.getCasueId().equals( ComboMenu.getValue().getItem().getCauseId())) {
                 if (FaceException.getCasueId() == 1) {
                     if (FaceException.getDescription().equals(EditFaceException.getDescription())) {
-                        if (FaceException.getMonth() == EditFaceException.getMonth()) {
+                        if (FaceException.getMonth().equals( EditFaceException.getMonth())) {
                             showWarningNotification(resources.getString("NoEditOnFaceExc"));
                             return;
-                        } else {
+                        }
+                        else {
 
                             SeqNumbersList.add(FaceException.getSeqNum());
                         }
-                    } else {
+                    }
+                    else {
 
                         SeqNumbersList.add(FaceException.getSeqNum());
                     }
-                } else {
-                    if (FaceException.getMonth() == EditFaceException.getMonth()) {
+                }
+                else {
+                    if (FaceException.getMonth().equals( EditFaceException.getMonth())) {
                         showWarningNotification(resources.getString("NoEditOnFaceExc"));
                         return;
-                    } else {
+                    }
+                    else {
 
                         SeqNumbersList.add(FaceException.getSeqNum());
                     }
 
                 }
-            } else {
+            }
+            else {
 
                 SeqNumbersList.add(FaceException.getSeqNum());
             }
@@ -306,13 +310,11 @@ public class FaceExceptionFXController extends WizardStepFxControllerBase {
         }
 
 
-
         typeFaceService = TypeFaceService.ADD_OR_EDIT;
 
         causesFC = causes;
 
-        if (excpiredExceptionSeqNum != null)
-            SeqNumbersList.add(excpiredExceptionSeqNum);
+        if (excpiredExceptionSeqNum != null) { SeqNumbersList.add(excpiredExceptionSeqNum); }
 
         onNextButtonClicked(actionEvent);
 
@@ -332,14 +334,15 @@ public class FaceExceptionFXController extends WizardStepFxControllerBase {
 
     }
 
-        @Override
+    @Override
     protected void onGoingPrevious(Map<String, Object> uiDataMap) {
-//
-            EditFaceException=null;
+        //
+        EditFaceException = null;
     }
+
     @Override
     public void onReturnFromWorkflow(boolean successfulResponse) {
-        if (successfulResponse) goNext();
+        if (successfulResponse) { goNext(); }
     }
 
     public enum TypeFaceService {
