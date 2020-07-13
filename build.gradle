@@ -13,7 +13,7 @@ buildscript {
 
 allprojects {
     group = 'sa.gov.nic.bio'
-    version = '2020.04.3'
+    version = '2020.07.1'
 }
 
 subprojects {
@@ -48,7 +48,7 @@ subprojects {
 
         // BCL-Utils and Biokit library
         implementation name: "bio.commons-2019.01.2"
-        implementation name: "bcl-utils-2018.11.1"
+        implementation name: "bcl-utils-2020.07.1"
         implementation name: "biokit-library-2019.09.1"
 
         // JUnit

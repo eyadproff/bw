@@ -29,7 +29,14 @@ public class CheckForNewUpdatesWorkflowTask extends WorkflowTask
 			String appCode = AppConstants.APP_CODE.toLowerCase();
 			if(!jvmArch32) appCode = appCode + "64";
 			
-			Boolean newUpdates = BclUtils.checkForAppUpdates(serverUrl, appCode, false, json ->
+			String protocol = "http";
+			if(serverUrl.startsWith("http"))
+			{
+				if(serverUrl.startsWith("https")) protocol = "https";
+				serverUrl = serverUrl.substring(serverUrl.indexOf("://") + 3);
+			}
+			
+			Boolean newUpdates = BclUtils.checkForAppUpdates(protocol, serverUrl, appCode, false, json ->
 			{
 			    try
 			    {

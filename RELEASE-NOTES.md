@@ -11,6 +11,12 @@ VERSION SCHEMA: vYYYY.MM.#SEQ
 
 ---
 
+## v2020.07.1
+
+- NEW: Add support for https in BCL.
+
+---
+
 ## v2020.04.3
 
 - FIX: NPE in InquiryByFingerprintsResultPaneFxController.
