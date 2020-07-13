@@ -215,7 +215,12 @@ public class GuiUtils implements AppLogger
 										Context.getRuntimeEnvironment() == RuntimeEnvironment.DEV)
 																serverUrl = AppConstants.DEV_SERVER_URL;
 					
-					if(serverUrl.startsWith("http")) serverUrl = serverUrl.substring(serverUrl.indexOf("://") + 3);
+					String protocol = "http";
+					if(serverUrl.startsWith("http"))
+					{
+						if(serverUrl.startsWith("https")) protocol = "https";
+						serverUrl = serverUrl.substring(serverUrl.indexOf("://") + 3);
+					}
 					
 					try
 					{
@@ -224,7 +229,7 @@ public class GuiUtils implements AppLogger
 						String appCode = AppConstants.APP_CODE.toLowerCase();
 						if(!jvmArch32) appCode = appCode + "64";
 						
-						BclUtils.launchAppByBCL(serverUrl, appCode, -1, -1, null);
+						BclUtils.launchAppByBCL(protocol, serverUrl, appCode, -1, -1, null);
 					}
 					catch(Exception e)
 					{
