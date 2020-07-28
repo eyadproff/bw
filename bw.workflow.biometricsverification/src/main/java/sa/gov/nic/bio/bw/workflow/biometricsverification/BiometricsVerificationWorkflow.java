@@ -1,6 +1,7 @@
 package sa.gov.nic.bio.bw.workflow.biometricsverification;
 
 import sa.gov.nic.bio.bw.core.biokit.FingerPosition;
+import sa.gov.nic.bio.bw.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.core.utils.Device;
 import sa.gov.nic.bio.bw.core.wizard.Step;
 import sa.gov.nic.bio.bw.core.wizard.Wizard;
@@ -8,14 +9,14 @@ import sa.gov.nic.bio.bw.core.workflow.AssociatedMenu;
 import sa.gov.nic.bio.bw.core.workflow.Signal;
 import sa.gov.nic.bio.bw.core.workflow.WithLookups;
 import sa.gov.nic.bio.bw.core.workflow.WizardWorkflowBase;
+import sa.gov.nic.bio.bw.workflow.biometricsverification.beans.MatchingResponse;
 import sa.gov.nic.bio.bw.workflow.biometricsverification.controllers.VerificationMethodSelectionFxController;
 import sa.gov.nic.bio.bw.workflow.biometricsverification.controllers.VerificationMethodSelectionFxController.VerificationMethod;
 import sa.gov.nic.bio.bw.workflow.biometricsverification.controllers.VerificationProgressPaneFxController;
 import sa.gov.nic.bio.bw.workflow.commons.controllers.FaceCapturingFxController;
 import sa.gov.nic.bio.bw.workflow.commons.controllers.SingleFingerprintCapturingFxController;
-import sa.gov.nic.bio.bw.workflow.commons.tasks.FingerprintVerificationWorkflowTask;
+import sa.gov.nic.bio.bw.workflow.biometricsverification.tasks.FingerprintVerificationWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.faceverification.beans.FaceMatchingResponse;
-import sa.gov.nic.bio.bw.workflow.faceverification.controllers.MatchingFxController;
 import sa.gov.nic.bio.bw.workflow.faceverification.controllers.PersonIdPaneFxController;
 import sa.gov.nic.bio.bw.workflow.biometricsverification.controllers.ShowResultFxController;
 import sa.gov.nic.bio.bw.workflow.faceverification.tasks.FaceVerificationWorkflowTask;
@@ -28,17 +29,10 @@ import sa.gov.nic.bio.bw.workflow.searchbyfaceimage.controllers.UploadImageFileF
 @AssociatedMenu(workflowId = 1028, menuId = "menu.query.biometricsVerification", menuTitle = "menu.title", menuOrder = 11,
                 devices = {Device.FINGERPRINT_SCANNER, Device.CAMERA, Device.IRIS_SCANNER})
 @WithLookups(CountriesLookup.class)
-//@Wizard({@Step(iconId = "\\uf2bb", title = "wizard.InquiryByPersonId"),
-//               // @Step(iconId = "database", title = "wizard.inquiryResult"),
-//                @Step(iconId = "\\uf256", title = "wizard.fingerprintCapturing"),
-//                @Step(iconId = "camera", title = "wizard.facePhotoCapturing"),
-//                @Step(iconId = "th_list", title = "wizard.reviewAndSubmit"),
-//                @Step(iconId = "spinner", title = "wizard.enrollment"),
-//                @Step(iconId = "\\uf0f6", title = "wizard.enrollmentResult")})
 @Wizard({@Step(iconId = "\\uf2bb", title = "wizard.personId"),
                 @Step(iconId = "question", title = "wizard.selectVerificationMethod"),
-                 @Step(iconId = "question", title = "wizard.imageSource"),
-             //   @Step(iconId = "question", title = "wizard.imageSource"),
+                @Step(iconId = "question", title = "wizard.imageSource"),
+                //   @Step(iconId = "question", title = "wizard.imageSource"),
                 @Step(iconId = "upload", title = "wizard.uploadImage"),
                 @Step(iconId = "unlock", title = "wizard.confirm"),
                 @Step(iconId = "\\uf248", title = "wizard.matching"),
@@ -70,9 +64,9 @@ public class BiometricsVerificationWorkflow extends WizardWorkflowBase {
                             0);
                     renderUiAndWaitForUserInput(SingleFingerprintCapturingFxController.class);
                 }
-                else {
-
-                }
+//                else {
+//
+//                }
 
                 break;
             }
@@ -110,15 +104,7 @@ public class BiometricsVerificationWorkflow extends WizardWorkflowBase {
                 break;
             }
             case 5: {
-//                renderUiAndWaitForUserInput(MatchingFxController.class);
-//
-//                passData(PersonIdPaneFxController.class, FaceVerificationWorkflowTask.class,
-//                        "personId");
-//                passData(ConfirmImageFxController.class, FaceVerificationWorkflowTask.class,
-//                        "facePhotoBase64");
-//                executeWorkflowTask(FaceVerificationWorkflowTask.class);
-//
-////
+
                 VerificationMethod verificationMethod = getData(VerificationMethodSelectionFxController.class,
                         "verificationMethod");
 
@@ -126,9 +112,9 @@ public class BiometricsVerificationWorkflow extends WizardWorkflowBase {
 
                 renderUiAndWaitForUserInput(VerificationProgressPaneFxController.class);
 
-                if(VerificationMethod.FINGERPRINT.equals(verificationMethod))
-                {
+                if (VerificationMethod.FINGERPRINT.equals(verificationMethod)) {
                     incrementNSteps(-2); // to skip steps #3 #4 on going previous
+
                     FingerPosition selectedFingerprintPosition = getData(SingleFingerprintCapturingFxController.class,
                             "selectedFingerprintPosition");
 
@@ -141,11 +127,13 @@ public class BiometricsVerificationWorkflow extends WizardWorkflowBase {
 
                     executeWorkflowTask(FingerprintVerificationWorkflowTask.class);
 
-                    passData(FingerprintVerificationWorkflowTask.class, VerificationProgressPaneFxController.class,
-                            "matched");
+                    MatchingResponse matchingResponse =
+                            getData(FingerprintVerificationWorkflowTask.class, "matchingResponse");
+
+                    setData(VerificationProgressPaneFxController.class,
+                            "matched", matchingResponse.isMatched());
                 }
-                else if(VerificationMethod.FACE_PHOTO.equals(verificationMethod))
-                {
+                else if (VerificationMethod.FACE_PHOTO.equals(verificationMethod)) {
                     passData(PersonIdPaneFxController.class, FaceVerificationWorkflowTask.class,
                             "personId");
                     passData(ConfirmImageFxController.class, FaceVerificationWorkflowTask.class,
@@ -153,21 +141,45 @@ public class BiometricsVerificationWorkflow extends WizardWorkflowBase {
 
                     executeWorkflowTask(FaceVerificationWorkflowTask.class);
 
-                    FaceMatchingResponse faceMatchingResponse= getData(FaceVerificationWorkflowTask.class,
+                    FaceMatchingResponse faceMatchingResponse = getData(FaceVerificationWorkflowTask.class,
                             "faceMatchingResponse");
                     setData(VerificationProgressPaneFxController.class,
-                            "matched",faceMatchingResponse.isMatched());
+                            "matched", faceMatchingResponse.isMatched());
                 }
 
                 break;
             }
             case 6: {
+                VerificationMethod verificationMethod = getData(VerificationMethodSelectionFxController.class,
+                        "verificationMethod");
+
                 passData(PersonIdPaneFxController.class, ShowResultFxController.class,
                         "personId");
-                passData(ConfirmImageFxController.class, ShowResultFxController.class,
-                        "facePhoto");
-                passData(FaceVerificationWorkflowTask.class, ShowResultFxController.class,
-                        "faceMatchingResponse");
+
+                if (VerificationMethod.FINGERPRINT.equals(verificationMethod)) {
+
+                    MatchingResponse matchingResponse =
+                            getData(FingerprintVerificationWorkflowTask.class, "matchingResponse");
+
+
+                    setData(ShowResultFxController.class, "facePhoto",
+                            AppUtils.imageFromBase64(matchingResponse.getPersonInfo().getFace()));
+
+                    setData(ShowResultFxController.class, "personInfo",
+                            matchingResponse.getPersonInfo());
+                }
+                else if (VerificationMethod.FACE_PHOTO.equals(verificationMethod)) {
+
+                    passData(ConfirmImageFxController.class, ShowResultFxController.class,
+                            "facePhoto");
+
+                    FaceMatchingResponse faceMatchingResponse =
+                            getData(FaceVerificationWorkflowTask.class, "faceMatchingResponse");
+
+                    setData(ShowResultFxController.class, "personInfo",
+                            faceMatchingResponse.getPersonInfo());
+
+                }
 
                 renderUiAndWaitForUserInput(ShowResultFxController.class);
                 break;

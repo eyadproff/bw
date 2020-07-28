@@ -27,7 +27,7 @@ public class VerificationMethodSelectionFxController extends WizardStepFxControl
     @FXML private Button btnPrevious;
     @FXML private Button btnNext;
 
-    private boolean minusOneStep = false;
+    private boolean minusSteps = false;
 
     @Override
     protected void onAttachedToScene() {
@@ -36,7 +36,7 @@ public class VerificationMethodSelectionFxController extends WizardStepFxControl
         if (VerificationMethod.FINGERPRINT.equals(verificationMethod)) {
             rbByFingerprint.setSelected(true);
             rbByFingerprint.requestFocus();
-            minusOneStep = true;
+            minusSteps = true;
         }
         else {
             rbByFacePhoto.setSelected(true);
@@ -44,7 +44,7 @@ public class VerificationMethodSelectionFxController extends WizardStepFxControl
         }
 
 
-        System.out.println(minusOneStep + " test");
+
         // go next on pressing ENTER on the radio buttons
         EventHandler<KeyEvent> eventHandler = event ->
         {
@@ -79,10 +79,10 @@ public class VerificationMethodSelectionFxController extends WizardStepFxControl
                         fingerprintCapturingTitle,
                         "\\uf25a");
 
-                if (!minusOneStep) {
+                if (!minusSteps) {
                     Context.getCoreFxController().getWizardPane(getTabIndex()).removeStep(finalStepIndex + 1);
                     Context.getCoreFxController().getWizardPane(getTabIndex()).removeStep(finalStepIndex + 1);
-                    minusOneStep = true;
+                    minusSteps = true;
                 }
             }
 
@@ -95,7 +95,7 @@ public class VerificationMethodSelectionFxController extends WizardStepFxControl
                         .getWizardPane(getTabIndex()).updateStep(finalStepIndex, facePhotoSourceTitle,
                         "question");
 
-                if (minusOneStep) {
+                if (minusSteps) {
                     Context.getCoreFxController()
                             .getWizardPane(getTabIndex())
                             .addStep(finalStepIndex + 1, resources.getString("wizard.uploadImage"),
@@ -104,7 +104,7 @@ public class VerificationMethodSelectionFxController extends WizardStepFxControl
                             .getWizardPane(getTabIndex()).addStep(finalStepIndex + 2, resources.getString("wizard" +
                                                                                                           ".confirm"),
                             "unlock");
-                    minusOneStep = false;
+                    minusSteps = false;
                 }
                 else {
                     Context.getCoreFxController()
@@ -119,8 +119,6 @@ public class VerificationMethodSelectionFxController extends WizardStepFxControl
                 }
             }
         });
-
-
 
 
     }
