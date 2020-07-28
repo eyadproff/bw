@@ -184,13 +184,14 @@ public class CitizenEnrollmentWorkflow extends WizardWorkflowBase {
                 //face Exception
 
                 List<BioExclusion> bioExclusion = getData(RetrieveBioExclusionsWorkflowTask.class, "bioExclusion");
-
-                for (BioExclusion bioExc : bioExclusion) {
-                    if (bioExc.getStatus() == 0 && bioExc.getBioType() == 3 &&
-                        bioExc.getExpireDate() > Instant.now().getEpochSecond()) {
-                        setData(FaceCapturingFxController.class, "acceptBadQualityFace", Boolean.TRUE);
-                        setData(FaceCapturingFxController.class, "acceptBadQualityFaceMinRetries", 0);
-                        break;
+                if (bioExclusion != null) {
+                    for (BioExclusion bioExc : bioExclusion) {
+                        if (bioExc.getStatus() == 0 && bioExc.getBioType() == 3 &&
+                            bioExc.getExpireDate() > Instant.now().getEpochSecond()) {
+                            setData(FaceCapturingFxController.class, "acceptBadQualityFace", Boolean.TRUE);
+                            setData(FaceCapturingFxController.class, "acceptBadQualityFaceMinRetries", 0);
+                            break;
+                        }
                     }
                 }
 

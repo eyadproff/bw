@@ -257,17 +257,17 @@ public class FaceExceptionFXController extends WizardStepFxControllerBase {
 
         if (((RadioButton) RBStatus.getSelectedToggle()).getText().equals(resources.getString("3months"))) {
             EditFaceException.setMonth(3);
-            EditFaceException.setExpireDate(Instant.now().getEpochSecond() + new Long(7889238));
+            EditFaceException.setExpireDate(Instant.now().getEpochSecond() + 7889238);
             EditFaceException.setCreateDate(Instant.now().getEpochSecond());
         }
         else if (((RadioButton) RBStatus.getSelectedToggle()).getText().equals(resources.getString("6months"))) {
             EditFaceException.setMonth(6);
-            EditFaceException.setExpireDate(Instant.now().getEpochSecond() + new Long(15778476));
+            EditFaceException.setExpireDate(Instant.now().getEpochSecond() + 15778476);
             EditFaceException.setCreateDate(Instant.now().getEpochSecond());
         }
         else {
             EditFaceException.setMonth(12);
-            EditFaceException.setExpireDate(Instant.now().getEpochSecond() + new Long(31556952));
+            EditFaceException.setExpireDate(Instant.now().getEpochSecond() + 31556952);
             EditFaceException.setCreateDate(Instant.now().getEpochSecond());
         }
 
