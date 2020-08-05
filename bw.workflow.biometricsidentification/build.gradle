@@ -1,0 +1,6 @@
+project.ext.moduleName = 'bw.workflow.biometricsidentification'
+
+dependencies {
+    implementation project(':bw.workflow.commons')
+    implementation name: "gson-2.8.6"
+}
