@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+
+<?import sa.gov.nic.bio.bw.workflow.commons.ui.CopiableLabel?>
+<?import sa.gov.nic.bio.bw.workflow.commons.ui.ImageViewPane?>
+
+<BorderPane fx:id="rootPane" prefHeight="635.0" prefWidth="792.0" stylesheets="@../css/style.css"
+            xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sa.gov.nic.bio.bw.workflow.biometricsinquiry.controllers.ShowResultFxController">
+    <center>
+        <HBox alignment="CENTER">
+
+
+                 <TitledPane collapsible="false" focusTraversable="false" maxHeight="400.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="308.0" prefWidth="307.0" text="%label.personPhoto">
+                     <VBox fx:id="paneImage" alignment="CENTER">
+                         <ImageViewPane fx:id="paneImageView" minHeight="200.0">
+                             <imageView>
+                                 <ImageView fx:id="ivPersonPhoto" preserveRatio="true">
+                                     <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/placeholder_avatar.jpg"/>
+                                 </ImageView>
+                             </imageView>
+                         </ImageViewPane>
+                     </VBox>
+                 </TitledPane>
+            <TitledPane collapsible="false" focusTraversable="false" maxHeight="400.0" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="308.0" prefWidth="335.0" text="%label.personInfo">
+            <VBox alignment="CENTER" prefHeight="386.0" prefWidth="333.0" spacing="15.0">
+                <padding>
+                    <Insets topRightBottomLeft="10.0" />
+                </padding>
+                <VBox fx:id="infoPane" alignment="TOP_LEFT" managed="true" maxHeight="Infinity" maxWidth="Infinity"
+                      minHeight="-Infinity" minWidth="-Infinity" prefHeight="261.0" prefWidth="313.0" spacing="5.0" visible="false">
+                    <HBox spacing="5">
+                        <Label styleClass="bold-text" text="%label.personId" />
+                              <CopiableLabel fx:id="lblPersonId" text="%label.notAvailable"/>
+                    </HBox>
+                    <HBox spacing="5">
+                        <Label styleClass="bold-text" text="%label.firstName" />
+                              <CopiableLabel fx:id="lblFirstName" text="%label.notAvailable"/>
+                    </HBox>
+                    <HBox spacing="5">
+                        <Label styleClass="bold-text" text="%label.fatherName" />
+                              <CopiableLabel fx:id="lblFatherName" text="%label.notAvailable"/>
+                    </HBox>
+                    <HBox spacing="5">
+                        <Label styleClass="bold-text" text="%label.grandfatherName" />
+                              <CopiableLabel fx:id="lblGrandfatherName" text="%label.notAvailable"/>
+                    </HBox>
+                    <HBox spacing="5">
+                        <Label styleClass="bold-text" text="%label.familyName" />
+                              <CopiableLabel fx:id="lblFamilyName" text="%label.notAvailable"/>
+                    </HBox>
+                    <HBox spacing="5">
+                        <Label styleClass="bold-text" text="%label.gender" />
+                              <CopiableLabel fx:id="lblGender" text="%label.notAvailable"/>
+                    </HBox>
+                    <HBox spacing="5">
+                        <Label styleClass="bold-text" text="%label.nationality" />
+                              <CopiableLabel fx:id="lblNationality" text="%label.notAvailable"/>
+                    </HBox>
+                    <HBox spacing="5">
+                        <Label styleClass="bold-text" text="%label.outOfKingdom" />
+                              <CopiableLabel fx:id="lblOutOfKingdom" text="%label.notAvailable"/>
+                    </HBox>
+                </VBox>
+<!--                <VBox fx:id="notMatchedPane" alignment="CENTER" managed="false" spacing="5.0" visible="false">-->
+<!--                    <ImageView>-->
+<!--                        <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/icon_error_32px.png" />-->
+<!--                    </ImageView>-->
+<!--                    <Label fx:id="lblNotMatched" />-->
+<!--                </VBox>-->
+
+                      <VBox fx:id="matchedPane" alignment="CENTER" managed="true" spacing="5.0" visible="false">
+                    <ImageView>
+                        <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/icon_success_32px.png" />
+                        </ImageView>
+                    <Label text="%label.facePhotoIsMatched" />
+                </VBox>
+            </VBox>
+            </TitledPane>
+        </HBox>
+    </center>
+    <bottom>
+        <HBox alignment="CENTER" spacing="10">
+            <padding>
+                <Insets bottom="10" />
+            </padding>
+            <Button fx:id="btnStartOver" onAction="#onStartOverButtonClicked" text="%button.startOver" />
+        </HBox>
+    </bottom>
+</BorderPane>

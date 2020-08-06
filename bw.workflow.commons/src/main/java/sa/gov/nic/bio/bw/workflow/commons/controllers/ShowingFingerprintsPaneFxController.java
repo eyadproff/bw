@@ -25,6 +25,7 @@ import java.util.stream.IntStream;
 @FxmlFile("showingFingerprints.fxml")
 public class ShowingFingerprintsPaneFxController extends WizardStepFxControllerBase
 {
+	@Input private Boolean hideGenerateNistFileButton;
 	@Input private String facePhotoBase64;
 	@Input(alwaysRequired = true) private Map<Integer, String> fingerprintBase64Images;
 	@Output private List<Integer> missingFingerprints;
@@ -66,6 +67,11 @@ public class ShowingFingerprintsPaneFxController extends WizardStepFxControllerB
 		boolean disableInquiry = fingerprintBase64Images.isEmpty();
 		btnInquiry.setDisable(disableInquiry);
 		if(!disableInquiry) btnInquiry.requestFocus();
+
+		if(hideGenerateNistFileButton!=null&& hideGenerateNistFileButton){
+			btnGenerateNistFile.setVisible(false);
+			btnGenerateNistFile.setManaged(false);
+		}
 	}
 	
 	@FXML

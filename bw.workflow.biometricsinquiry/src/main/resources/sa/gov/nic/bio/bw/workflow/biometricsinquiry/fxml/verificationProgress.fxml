@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressIndicator?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<BorderPane xmlns="http://javafx.com/javafx/11" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="sa.gov.nic.bio.bw.workflow.biometricsinquiry.controllers.VerificationProgressPaneFxController"
+            fx:id="rootPane" stylesheets="@../css/style.css">
+    <center>
+        <VBox alignment="CENTER" spacing="5.0">
+            <ProgressIndicator fx:id="piProgress" maxWidth="25.0" maxHeight="25.0"/>
+            <Label fx:id="lblFingerprintVerificationInProgress" text="%label.fingerprintVerificationInProgress" managed="false" visible="false"/>
+            <Label fx:id="lblFaceVerificationInProgress" text="%label.faceVerificationInProgress" managed="false" visible="false"/>
+            <VBox fx:id="paneNotMatched" alignment="CENTER" spacing="5.0" managed="false" visible="false">
+                <ImageView>
+                    <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/icon_warning_32px.png"/>
+                </ImageView>
+                <Label fx:id="lblFingerprintVerificationNotMatched" text="%label.fingerprintNotMatched" managed="false" visible="false"/>
+                <Label fx:id="lblFaceVerificationNotMatched" text="%label.faceNotMatched" managed="false" visible="false"/>
+            </VBox>
+            <VBox fx:id="paneError" alignment="CENTER" spacing="5.0" managed="false" visible="false">
+                <ImageView>
+                    <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/icon_error_32px.png"/>
+                </ImageView>
+                <Label fx:id="lblFingerprintVerificationError" text="%label.fingerprintVerificationProcessError" managed="false" visible="false"/>
+                <Label fx:id="lblFaceVerificationError" text="%label.faceVerificationProcessError" managed="false" visible="false"/>
+                <Button fx:id="btnRetry" text="%button.retry" managed="false" visible="false" onAction="#onRetryButtonClicked"/>
+            </VBox>
+        </VBox>
+    </center>
+    <bottom>
+        <HBox alignment="CENTER" spacing="10">
+            <padding>
+                <Insets bottom="10"/>
+            </padding>
+            <Button fx:id="btnPrevious" text="%button.previous" managed="false" visible="false" onAction="#onPreviousButtonClicked"/>
+            <Button fx:id="btnStartOver" text="%button.startOver" managed="false" visible="false" onAction="#onStartOverButtonClicked"/>
+        </HBox>
+    </bottom>
+</BorderPane>
