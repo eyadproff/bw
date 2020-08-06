@@ -30,6 +30,8 @@
                                  GridPane.columnIndex="1" GridPane.rowIndex="0"/>
                     <RadioButton fx:id="rbByFingerprint" text="%label.byFingerprint" toggleGroup="$toggleGroup"
                                  GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                    <RadioButton fx:id="rbByIris" text="%label.byIris" toggleGroup="$toggleGroup"
+                                 GridPane.columnIndex="1" GridPane.rowIndex="2"/>
 
                 </GridPane>
             </HBox>
