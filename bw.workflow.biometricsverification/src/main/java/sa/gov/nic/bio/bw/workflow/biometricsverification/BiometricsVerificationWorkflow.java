@@ -32,7 +32,6 @@ import sa.gov.nic.bio.bw.workflow.searchbyfaceimage.controllers.UploadImageFileF
 @Wizard({@Step(iconId = "\\uf2bb", title = "wizard.personId"),
                 @Step(iconId = "question", title = "wizard.selectVerificationMethod"),
                 @Step(iconId = "question", title = "wizard.imageSource"),
-                //   @Step(iconId = "question", title = "wizard.imageSource"),
                 @Step(iconId = "upload", title = "wizard.uploadImage"),
                 @Step(iconId = "unlock", title = "wizard.confirm"),
                 @Step(iconId = "\\uf248", title = "wizard.matching"),

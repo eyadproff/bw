@@ -232,3 +232,8 @@
         - services-gateway-lookups/api/application/visa-type/all/v2
         - services-gateway-lookups/api/application/passport-types/v1
         - services-gateway-biooperation/api/enrollment/visa-applicant/v1
+        
+    menu.query.biometricsVerification:
+        - services-gateway-lookups/api/application/nationality/all/v1
+        - services-gateway-biooperation/api/face/verify/v1
+        - services-gateway-biooperation/api/fingerprint/verify/v1
