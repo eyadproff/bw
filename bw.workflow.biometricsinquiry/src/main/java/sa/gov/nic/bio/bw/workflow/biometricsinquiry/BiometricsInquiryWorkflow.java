@@ -29,8 +29,8 @@ import java.util.Map;
 
 @AssociatedMenu(workflowId = 1029, menuId = "menu.query.biometricsInquiry", menuTitle = "menu.title",
                 menuOrder = 12,
-                devices = {Device.FINGERPRINT_SCANNER, Device.CAMERA})
-//@WithLookups({CountriesLookup.class})
+                devices = {Device.FINGERPRINT_SCANNER, Device.CAMERA, Device.IRIS_SCANNER})
+@WithLookups({CountriesLookup.class})
 @Wizard({@Step(iconId = "question", title = "wizard.selectInquiryMethod"),
                 @Step(iconId = "question", title = "wizard.imageSource"),
                 @Step(iconId = "upload", title = "wizard.uploadImage"),
@@ -51,9 +51,8 @@ public class BiometricsInquiryWorkflow extends WizardWorkflowBase {
                 break;
             }
             case 1: {
-                InquiryMethod inquiryMethod =
-                        (InquiryMethod) getData(inquiryMethodSelectionFxController.class,
-                                "inquiryMethod");
+                InquiryMethod inquiryMethod = getData(inquiryMethodSelectionFxController.class,
+                        "inquiryMethod");
                 if (inquiryMethod == InquiryMethod.FACE_PHOTO) {
                     renderUiAndWaitForUserInput(ImageSourceFxController.class);
                 }
@@ -74,7 +73,7 @@ public class BiometricsInquiryWorkflow extends WizardWorkflowBase {
                 break;
             }
             case 2: {
-                Source imageSource = (Source) getData(ImageSourceFxController.class, "imageSource");
+                Source imageSource = getData(ImageSourceFxController.class, "imageSource");
                 if (Source.UPLOAD.equals(imageSource)) {
                     renderUiAndWaitForUserInput(UploadImageFileFxController.class);
                 }
@@ -85,11 +84,10 @@ public class BiometricsInquiryWorkflow extends WizardWorkflowBase {
                 break;
             }
             case 3: {
-                Source imageSource = (Source) getData(ImageSourceFxController.class, "imageSource");
+                Source imageSource = getData(ImageSourceFxController.class, "imageSource");
 
-                InquiryMethod inquiryMethod =
-                        (InquiryMethod) getData(inquiryMethodSelectionFxController.class,
-                                "inquiryMethod");
+                InquiryMethod inquiryMethod = getData(inquiryMethodSelectionFxController.class,
+                        "inquiryMethod");
 
                 if (inquiryMethod == InquiryMethod.FACE_PHOTO) {
                     if (Source.UPLOAD.equals(imageSource)) {
@@ -113,9 +111,8 @@ public class BiometricsInquiryWorkflow extends WizardWorkflowBase {
                 break;
             }
             case 4: {
-                InquiryMethod inquiryMethod =
-                        (InquiryMethod) getData(inquiryMethodSelectionFxController.class,
-                                "inquiryMethod");
+                InquiryMethod inquiryMethod = getData(inquiryMethodSelectionFxController.class,
+                        "inquiryMethod");
 
                 if (InquiryMethod.FINGERPRINT.equals(inquiryMethod)) {
 
@@ -270,9 +267,8 @@ public class BiometricsInquiryWorkflow extends WizardWorkflowBase {
                 break;
             }
             case 5: {
-                InquiryMethod inquiryMethod =
-                        (InquiryMethod) getData(inquiryMethodSelectionFxController.class,
-                                "inquiryMethod");
+                InquiryMethod inquiryMethod = getData(inquiryMethodSelectionFxController.class,
+                        "inquiryMethod");
 
                 if (InquiryMethod.FINGERPRINT.equals(inquiryMethod)) {
 

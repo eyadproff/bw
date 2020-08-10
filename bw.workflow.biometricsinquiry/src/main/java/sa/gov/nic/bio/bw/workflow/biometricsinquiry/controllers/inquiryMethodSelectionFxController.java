@@ -202,12 +202,12 @@ public class inquiryMethodSelectionFxController extends WizardStepFxControllerBa
         });
 
 
-        DevicesRunnerGadgetPaneFxController deviceManagerGadgetPaneController =
-                Context.getCoreFxController().getDeviceManagerGadgetPaneController();
-
-        if (!deviceManagerGadgetPaneController.isDevicesRunnerRunning()) {
-            deviceManagerGadgetPaneController.runAndConnectDevicesRunner();
-        }
+//        DevicesRunnerGadgetPaneFxController deviceManagerGadgetPaneController =
+//                Context.getCoreFxController().getDeviceManagerGadgetPaneController();
+//
+//        if (!deviceManagerGadgetPaneController.isDevicesRunnerRunning()) {
+//            deviceManagerGadgetPaneController.runAndConnectDevicesRunner();
+//        }
 
     }
 
