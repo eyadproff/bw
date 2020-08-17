@@ -3,18 +3,10 @@ package sa.gov.nic.bio.bw.workflow.citizenenrollment.webservice;
 import retrofit2.Call;
 
 import retrofit2.http.*;
-import sa.gov.nic.bio.bw.workflow.citizenenrollment.beans.BioExclusion;
 
-import java.util.List;
 
 public interface CitizenEnrollmentAPI {
 
-
-    @FormUrlEncoded
-    @POST("services-gateway-biooperation/api/enrollment/biometrics/exclusion/retrieve/v1")
-    Call<List<BioExclusion>> retrieveBioExclusions(@Header("Workflow-Code") Integer workflowId,
-                                                   @Header("Workflow-Tcn") Long workflowTcn,
-                                                   @Field("samis-id") Integer samisId);
 
     @FormUrlEncoded
     @POST("services-gateway-biooperation/api/enrollment/register/v1")

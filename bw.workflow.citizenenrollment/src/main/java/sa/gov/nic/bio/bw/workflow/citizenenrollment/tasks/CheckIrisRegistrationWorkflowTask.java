@@ -37,7 +37,7 @@ public class CheckIrisRegistrationWorkflowTask extends WorkflowTask {
         }
 
 
-        resetWorkflowStepIfNegativeOrNullTaskResponse(
-                TaskResponse.failure(CitizenEnrollmentErrorCodes.B018_00001.getCode()));
+//        resetWorkflowStepIfNegativeOrNullTaskResponse(
+//                TaskResponse.failure(CitizenEnrollmentErrorCodes.B018_00001.getCode()));
     }
 }

@@ -34,8 +34,8 @@ public class CitizenRegistrationWorkflowTask extends WorkflowTask {
         tcn = taskResponse.getResult();
 
 
-        resetWorkflowStepIfNegativeOrNullTaskResponse(
-                TaskResponse.failure(CitizenEnrollmentErrorCodes.B018_00001.getCode()));
+//        resetWorkflowStepIfNegativeOrNullTaskResponse(
+//                TaskResponse.failure(CitizenEnrollmentErrorCodes.B018_00001.getCode()));
 
     }
 }

@@ -661,7 +661,7 @@
    <top>
       <VBox maxWidth="-Infinity" prefWidth="1066.0" BorderPane.alignment="CENTER">
          <children>
-            <Label fx:id="lblExcpiredExc" prefHeight="17.0" prefWidth="817.0" text="%Label.expiredExceptions" textFill="#FF0E07" visible="false" wrapText="true">
+            <Label fx:id="lblExpiredExc" prefHeight="17.0" prefWidth="817.0" text="%Label.expiredExceptions" textFill="#FF0E07" visible="false" wrapText="true">
                <padding>
                   <Insets top="10.0" />
                </padding></Label>

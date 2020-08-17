@@ -212,9 +212,11 @@ public class BiometricsExceptionWorkflow extends WizardWorkflowBase {
 
                     if (ServiceType.ADD_OR_EDIT_FINGERPRINTS.equals(serviceType)) {
 
+                        @SuppressWarnings("unchecked")
+                        List<Integer> SeqNumbersList =
+                                getData(EditMissingFingerprintFXController.class, "SeqNumbersList");
 
-                        if (((List<Integer>) getData(EditMissingFingerprintFXController.class, "SeqNumbersList"))
-                                    .size() != 0) {
+                        if (SeqNumbersList.size() != 0) {
 
                             passData(EditMissingFingerprintFXController.class, DeleteBioExclusionsWorkflowTask.class,
                                     "SeqNumbersList");

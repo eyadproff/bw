@@ -136,17 +136,17 @@ public class DeleteMissingFingerprintFXController extends WizardStepFxController
     private Button btnNext;
 
     @SuppressWarnings("unchecked")
-    private List<Cause> causes;
+    private List<Cause> causes=(List<Cause>) Context.getUserSession().getAttribute(CausesLookup.KEY);
     private PersonFingerprints personfingerprints;
     private List<BioExclusion> expiredException;
 
     @Override
     protected void onAttachedToScene() {
 
-        SeqNumbersList = new ArrayList<Integer>();
-        expiredException = new ArrayList<BioExclusion>();
+        SeqNumbersList = new ArrayList<>();
+        expiredException = new ArrayList<>();
 
-        causes = (List<Cause>) Context.getUserSession().getAttribute(CausesLookup.KEY);
+       // causes = (List<Cause>) Context.getUserSession().getAttribute(CausesLookup.KEY);
 
         if (BioExclusionsList != null) {
 

@@ -36,8 +36,8 @@ public class CheckCitizenRegistrationWorkflowTask extends WorkflowTask {
             status = Status.PENDING;
         }
 
-        resetWorkflowStepIfNegativeOrNullTaskResponse(
-                TaskResponse.failure(CitizenEnrollmentErrorCodes.B018_00001.getCode()));
+//        resetWorkflowStepIfNegativeOrNullTaskResponse(
+//                TaskResponse.failure(CitizenEnrollmentErrorCodes.B018_00001.getCode()));
 
     }
 }

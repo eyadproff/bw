@@ -130,17 +130,19 @@ public class EditMissingFingerprintFXController extends WizardStepFxControllerBa
     @FXML
     private Button btnNext;
     @FXML
-    private Label lblExcpiredExc;
+    private Label lblExpiredExc;
 
-    private List<Cause> causes;
+    @SuppressWarnings("unchecked")
+    private List<Cause> causes = (List<Cause>) Context.getUserSession().getAttribute(CausesLookup.KEY);
+
     private List<BioExclusion> expiredException;
 
     @Override
     protected void onAttachedToScene() {
 
-        BioExclusionsList = new ArrayList<BioExclusion>();
-        SeqNumbersList = new ArrayList<Integer>();
-        expiredException = new ArrayList<BioExclusion>();
+        BioExclusionsList = new ArrayList<>();
+        SeqNumbersList = new ArrayList<>();
+        expiredException = new ArrayList<>();
 
         //remove expired Exception
         if (personMissinfingerprints != null) {
@@ -163,12 +165,12 @@ public class EditMissingFingerprintFXController extends WizardStepFxControllerBa
         //To know what fingerException expired
         if (!expiredException.isEmpty()) {
             //System.out.println(expiredException.size());
-            lblExcpiredExc.setVisible(true);
+            lblExpiredExc.setVisible(true);
             expiredException.forEach(x -> ShowExpiredException(x.getPosition()));
         }
 
 
-        causes = (List<Cause>) Context.getUserSession().getAttribute(CausesLookup.KEY);
+        //  causes = (List<Cause>) Context.getUserSession().getAttribute(CausesLookup.KEY);
 
         AddItemsToMenu(CMenuRThumb, VOtherRThumb, CouseTRThumb, causes, TGRThumb);
         AddItemsToMenu(CMenuRIndex, VOtherRIndex, CouseTRIndex, causes, TGRIndex);
@@ -279,7 +281,7 @@ public class EditMissingFingerprintFXController extends WizardStepFxControllerBa
 
         for (BioExclusion bioEx : personMissinfingerprints) {
 
-            if (bioEx.getStatus().equals(0) && bioEx.getPosition().equals(position) ) {
+            if (bioEx.getStatus().equals(0) && bioEx.getPosition().equals(position)) {
                 fingerprint.setMissOrNot(true);
                 for (Cause cause : causes) {
                     if (cause.getCauseId().equals(bioEx.getCasueId())) {
@@ -393,7 +395,7 @@ public class EditMissingFingerprintFXController extends WizardStepFxControllerBa
 
     private void AddItemsToMenu(ComboBox<ComboBoxItem<Cause>> menu, VBox VOther, TextField TextCouse,
             List<Cause> causes, ToggleGroup TG) {
-        List<Cause> CauseFEx = new ArrayList<Cause>();
+        List<Cause> CauseFEx = new ArrayList<>();
         CauseFEx.addAll(causes);
         //
         CauseFEx.removeIf(cause -> cause.getCauseId() == 4);
@@ -780,7 +782,7 @@ public class EditMissingFingerprintFXController extends WizardStepFxControllerBa
 
         BioExclusionsList.forEach(x -> {
             for (BioExclusion bio : expiredException) {
-                if (bio.getPosition().equals( x.getPosition())) {
+                if (bio.getPosition().equals(x.getPosition())) {
                     SeqNumbersList.add(bio.getSeqNum());
                     break;
                 }

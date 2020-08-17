@@ -175,6 +175,7 @@ public class RegisteringCitizenPaneFxController extends WizardStepFxControllerBa
 
     @Override
     public void reportNegativeTaskResponse(String errorCode, Throwable exception, String[] errorDetails) {
+        //Failed to register the iris! The request cannot be resent.
         if ("B003-0066".equals(errorCode)) {
             disableRetryButtonForever = true;
         }
