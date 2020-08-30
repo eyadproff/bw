@@ -9,10 +9,11 @@ import sa.gov.nic.bio.bw.core.workflow.WithLookups;
 import sa.gov.nic.bio.bw.core.workflow.WizardWorkflowBase;
 import sa.gov.nic.bio.bw.workflow.biometricsinquiry.controllers.inquiryMethodSelectionFxController;
 import sa.gov.nic.bio.bw.workflow.biometricsinquiry.controllers.inquiryMethodSelectionFxController.InquiryMethod;
-import sa.gov.nic.bio.bw.workflow.commons.beans.DeporteeInfo;
 import sa.gov.nic.bio.bw.workflow.commons.beans.PersonInfo;
 import sa.gov.nic.bio.bw.workflow.commons.controllers.*;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.CountriesLookup;
+import sa.gov.nic.bio.bw.workflow.commons.lookups.DocumentTypesLookup;
+import sa.gov.nic.bio.bw.workflow.commons.lookups.PersonTypesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.*;
 import sa.gov.nic.bio.bw.workflow.irisinquiry.controllers.InquiryByIrisPaneFxController;
 import sa.gov.nic.bio.bw.workflow.irisinquiry.controllers.InquiryByIrisResultPaneFxController;
@@ -30,7 +31,7 @@ import java.util.Map;
 @AssociatedMenu(workflowId = 1029, menuId = "menu.query.biometricsInquiry", menuTitle = "menu.title",
                 menuOrder = 12,
                 devices = {Device.FINGERPRINT_SCANNER, Device.CAMERA, Device.IRIS_SCANNER})
-@WithLookups({CountriesLookup.class})
+@WithLookups({CountriesLookup.class, PersonTypesLookup.class, DocumentTypesLookup.class})
 @Wizard({@Step(iconId = "question", title = "wizard.selectInquiryMethod"),
                 @Step(iconId = "question", title = "wizard.imageSource"),
                 @Step(iconId = "upload", title = "wizard.uploadImage"),
