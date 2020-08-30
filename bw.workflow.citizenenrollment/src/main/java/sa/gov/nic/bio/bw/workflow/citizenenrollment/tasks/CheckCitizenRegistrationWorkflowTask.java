@@ -12,7 +12,9 @@ import sa.gov.nic.bio.commons.TaskResponse;
 public class CheckCitizenRegistrationWorkflowTask extends WorkflowTask {
     public enum Status {
         PENDING,
-        SUCCESS
+        SUCCESS,
+        HIT,
+        ERROR
     }
 
     @Input(alwaysRequired = true)
@@ -28,16 +30,19 @@ public class CheckCitizenRegistrationWorkflowTask extends WorkflowTask {
         var taskResponse = Context.getWebserviceManager().executeApi(apiCall);
         resetWorkflowStepIfNegativeTaskResponse(taskResponse);
 
-        Integer httpCode = taskResponse.getHttpCode();
-        if (httpCode == 200) {
+        Integer Code = taskResponse.getResult();
+        if (Code == 1) {
             status = Status.SUCCESS;
         }
-        else if (httpCode == 202) {
+        else if (Code == 2) {
             status = Status.PENDING;
+        } else if (Code == 3) {
+            status = Status.HIT;
+        }
+        else if (Code == 4) {
+            status = Status.ERROR;
         }
 
-//        resetWorkflowStepIfNegativeOrNullTaskResponse(
-//                TaskResponse.failure(CitizenEnrollmentErrorCodes.B018_00001.getCode()));
 
     }
 }

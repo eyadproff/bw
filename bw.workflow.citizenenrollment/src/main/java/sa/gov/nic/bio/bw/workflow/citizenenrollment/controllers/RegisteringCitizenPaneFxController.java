@@ -30,8 +30,9 @@ public class RegisteringCitizenPaneFxController extends WizardStepFxControllerBa
     private CheckIrisRegistrationWorkflowTask.Status irisRegistrationStatus;
 
     @Input(alwaysRequired = true)
-    Boolean skipIris;
-
+    private Boolean skipIris;
+    @Input
+    private Boolean isEnrolled;
     @Output
     private Request request;
 
@@ -71,7 +72,7 @@ public class RegisteringCitizenPaneFxController extends WizardStepFxControllerBa
     @Override
     public void onReturnFromWorkflow(boolean successfulResponse) {
         if (request == Request.SUBMIT_CITIZEN_REGISTRATION) {
-            if (successfulResponse) {
+            if (successfulResponse && isEnrolled) {
                 CitizenLblStatus.setText(resources.getString("label.waitingCitizenRegistration"));
                 request = Request.CHECK_CITIZEN_REGISTRATION;
                 continueWorkflow();
@@ -117,6 +118,23 @@ public class RegisteringCitizenPaneFxController extends WizardStepFxControllerBa
                         continueWorkflow();
                     }
                 }
+
+                else if (citizenRegistrationStatus == CheckCitizenRegistrationWorkflowTask.Status.HIT) {
+                    CitizenLblStatus.setText(resources.getString("label.failedToRegisterCitizenHitResponse"));
+                    CPiProgress.setVisible(false);
+                    CitizenIvFailure.setVisible(true);
+                    btnStartOver.setVisible(true);
+                    btnRetry.setVisible(false);
+                }
+                else if (citizenRegistrationStatus == CheckCitizenRegistrationWorkflowTask.Status.ERROR) {
+                    CitizenLblStatus.setText(resources.getString("label.failedToRegisterCitizen"));
+                    CPiProgress.setVisible(false);
+                    CitizenIvFailure.setVisible(true);
+                    btnStartOver.setVisible(true);
+                    btnRetry.setVisible(!disableRetryButtonForever);
+                }
+
+
             }
             else {
                 CitizenLblStatus.setText(resources.getString("label.failedToRegisterCitizen"));

@@ -27,8 +27,5 @@ public class SubmitIrisRegistrationWorkflowTask extends WorkflowTask {
         tcn = taskResponse.getResult();
 
 
-//        resetWorkflowStepIfNegativeOrNullTaskResponse(
-//                TaskResponse.failure(CitizenEnrollmentErrorCodes.B018_00001.getCode()));
-
     }
 }

@@ -17,7 +17,7 @@ public class CitizenRegistrationWorkflowTask extends WorkflowTask {
 
 
     @Output
-    private Long tcn;
+    private Boolean isEnrolled;
 
     @Override
     public void execute() throws Signal {
@@ -31,11 +31,8 @@ public class CitizenRegistrationWorkflowTask extends WorkflowTask {
                                        citizenEnrollmentInfo.getGender(), null);
         var taskResponse = Context.getWebserviceManager().executeApi(apiCall);
         resetWorkflowStepIfNegativeOrNullTaskResponse(taskResponse);
-        tcn = taskResponse.getResult();
+        isEnrolled = taskResponse.getResult();
 
-
-//        resetWorkflowStepIfNegativeOrNullTaskResponse(
-//                TaskResponse.failure(CitizenEnrollmentErrorCodes.B018_00001.getCode()));
 
     }
 }

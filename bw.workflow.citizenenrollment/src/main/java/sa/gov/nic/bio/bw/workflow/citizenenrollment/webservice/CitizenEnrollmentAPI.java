@@ -10,7 +10,7 @@ public interface CitizenEnrollmentAPI {
 
     @FormUrlEncoded
     @POST("services-gateway-biooperation/api/enrollment/register/v1")
-    Call<Long> enrollPerson(@Header("Workflow-Code") Integer workflowId,
+    Call<Boolean> enrollPerson(@Header("Workflow-Code") Integer workflowId,
                             @Header("Workflow-Tcn") Long workflowTcn,
                             @Field("person-id") Long personId,
                             @Field("person-type") Integer personType,
@@ -22,7 +22,7 @@ public interface CitizenEnrollmentAPI {
                             @Field("supervisor-id") Long supervisorId);
 
     @GET("services-gateway-biooperation/api/enrollment/status/v1")
-    Call<Void> checkCitizenRegistration(@Header("Workflow-Code") Integer workflowId,
+    Call<Integer> checkCitizenRegistration(@Header("Workflow-Code") Integer workflowId,
                                         @Header("Workflow-Tcn") Long workflowTcn,
                                         @Query("person-id") Long personId);
 

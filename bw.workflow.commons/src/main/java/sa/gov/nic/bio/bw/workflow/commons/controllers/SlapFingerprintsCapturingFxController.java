@@ -315,8 +315,8 @@ public class SlapFingerprintsCapturingFxController extends WizardStepFxControlle
 		if(hideCheckBoxOfMissing !=null && hideCheckBoxOfMissing) {
 			fingerprintUiComponentsMap.forEach((position, components) -> {
 				components.getCheckBox().setVisible(false);
-				if(exceptionOfFingerprints!=null && exceptionOfFingerprints.contains(position))
-					components.getCheckBox().setSelected(false);
+				components.getCheckBox().setSelected(
+						exceptionOfFingerprints == null || !exceptionOfFingerprints.contains(position));
 
 			});
 

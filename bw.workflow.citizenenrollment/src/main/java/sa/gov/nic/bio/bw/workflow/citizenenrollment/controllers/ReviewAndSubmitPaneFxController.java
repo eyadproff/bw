@@ -19,8 +19,8 @@ import sa.gov.nic.bio.bw.core.workflow.Input;
 import sa.gov.nic.bio.bw.core.workflow.Output;
 import sa.gov.nic.bio.bw.workflow.citizenenrollment.beans.CitizenEnrollmentInfo;
 import sa.gov.nic.bio.bw.workflow.commons.beans.Finger;
-import sa.gov.nic.bio.bw.workflow.commons.beans.NormalizedPersonInfo;
-import sa.gov.nic.bio.bw.workflow.commons.beans.PersonInfo;
+import sa.gov.nic.bio.bw.workflow.citizenenrollment.beans.NormalizedPersonInfo;
+import sa.gov.nic.bio.bw.workflow.citizenenrollment.beans.PersonInfo;
 import sa.gov.nic.bio.bw.workflow.commons.ui.ImageViewPane;
 
 import java.io.ByteArrayInputStream;

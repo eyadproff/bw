@@ -35,9 +35,5 @@ public class CheckIrisRegistrationWorkflowTask extends WorkflowTask {
         else if (httpCode == 202) {
             status = Status.PENDING;
         }
-
-
-//        resetWorkflowStepIfNegativeOrNullTaskResponse(
-//                TaskResponse.failure(CitizenEnrollmentErrorCodes.B018_00001.getCode()));
     }
 }
