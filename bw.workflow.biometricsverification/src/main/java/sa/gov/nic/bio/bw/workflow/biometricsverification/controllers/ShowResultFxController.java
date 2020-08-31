@@ -50,15 +50,6 @@ public class ShowResultFxController extends WizardStepFxControllerBase {
     @Override
     protected void onAttachedToScene() {
 
-
-        ivPersonPhoto.setImage(facePhoto);
-        GuiUtils.attachImageDialog(Context.getCoreFxController(), ivPersonPhoto,
-                resources.getString("label.personPhoto"),
-                resources.getString("label.contextMenu.showImage"), false);
-
-        GuiUtils.showNode(matchedPane, true);
-        GuiUtils.showNode(infoPane, true);
-
         //  PersonInfo personInfo = matchingResponse.getPersonInfo();
         long samisId = personInfo.getSamisId();
         Name name = personInfo.getName();
@@ -66,6 +57,16 @@ public class ShowResultFxController extends WizardStepFxControllerBase {
         String fatherName = name.getFatherName();
         String grandfatherName = name.getGrandfatherName();
         String familyName = name.getFamilyName();
+
+        Gender gender = Gender.values()[personInfo.getGender() - 1];
+        GuiUtils.attachFacePhoto(ivPersonPhoto, facePhoto, true, gender);
+        //  ivPersonPhoto.setImage(facePhoto);
+        GuiUtils.attachImageDialog(Context.getCoreFxController(), ivPersonPhoto,
+                resources.getString("label.personPhoto"),
+                resources.getString("label.contextMenu.showImage"), false);
+
+        GuiUtils.showNode(matchedPane, true);
+        GuiUtils.showNode(infoPane, true);
 
         if (firstName != null && (firstName.trim().isEmpty() || firstName.trim().equals("-"))) { firstName = null; }
         if (fatherName != null && (fatherName.trim().isEmpty() || fatherName.trim().equals("-"))) { fatherName = null; }
@@ -107,7 +108,7 @@ public class ShowResultFxController extends WizardStepFxControllerBase {
             lblFamilyName.setTextFill(Color.RED);
         }
 
-        Gender gender = Gender.values()[personInfo.getGender() - 1];
+
         lblGender.setText(gender == Gender.MALE ? resources.getString("label.male") :
                           resources.getString("label.female"));
 
