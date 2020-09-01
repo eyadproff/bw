@@ -12,4 +12,5 @@ module bw.workflow.irisinquiry
 	opens sa.gov.nic.bio.bw.workflow.irisinquiry.controllers to javafx.fxml, bw.core;
 	opens sa.gov.nic.bio.bw.workflow.irisinquiry.beans to org.apache.commons.lang3, com.google.gson;
 	exports sa.gov.nic.bio.bw.workflow.irisinquiry.controllers;
+	exports sa.gov.nic.bio.bw.workflow.irisinquiry.tasks to bw.workflow.biometricsinquiry;
 }

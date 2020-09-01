@@ -14,4 +14,5 @@ module bw.workflow.faceverification
 	opens sa.gov.nic.bio.bw.workflow.faceverification.beans to org.apache.commons.lang3, com.google.gson;
 	exports sa.gov.nic.bio.bw.workflow.faceverification.controllers;
 	exports sa.gov.nic.bio.bw.workflow.faceverification.beans;
+	exports sa.gov.nic.bio.bw.workflow.faceverification.tasks to bw.workflow.biometricsverification;
 }
