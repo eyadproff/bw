@@ -59,6 +59,7 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 	@Input private Boolean acceptAnyCapturedImage;
 	@Input private Boolean acceptBadQualityFace;
 	@Input private Integer acceptBadQualityFaceMinRetries;
+	@Input private String imageExtension;
 	@Output private Image capturedFacePhoto;
 	@Output private Image croppedFacePhoto;
 	@Output private Image facePhoto;
@@ -316,8 +317,16 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 		
 		try
 		{
-			if(facePhoto != null) facePhotoBase64 = AppUtils.imageToBase64(facePhoto);
-			else facePhotoBase64 = null;
+
+			if(facePhoto != null) {
+				if (imageExtension!=null)
+					facePhotoBase64 = AppUtils.imageToBase64(facePhoto, imageExtension);
+				else
+					facePhotoBase64 = AppUtils.imageToBase64(facePhoto);
+			}else {
+				facePhotoBase64 = null;
+			}
+
 		}
 		catch(IOException e)
 		{

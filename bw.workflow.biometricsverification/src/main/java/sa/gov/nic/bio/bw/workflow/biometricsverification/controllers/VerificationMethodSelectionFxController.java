@@ -1,5 +1,6 @@
 package sa.gov.nic.bio.bw.workflow.biometricsverification.controllers;
 
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -132,5 +133,18 @@ public class VerificationMethodSelectionFxController extends WizardStepFxControl
     public void onGoingNext(Map<String, Object> uiDataMap) {
         if (rbByFacePhoto.isSelected()) { verificationMethod = VerificationMethod.FACE_PHOTO; }
         else { verificationMethod = VerificationMethod.FINGERPRINT; }
+    }
+
+    @FXML
+    protected void onNextButtonClicked(ActionEvent actionEvent)
+    {
+        continueWorkflow();
+    }
+    @Override
+    public void onReturnFromWorkflow(boolean successfulResponse) {
+
+        if (successfulResponse) {
+            goNext();
+        }
     }
 }

@@ -51,6 +51,8 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase 
     private String capturedRightIrisBase64;
     @Input
     private String capturedLeftIrisBase64;
+    @Input
+    private Boolean ignorePossibilityAndCompleteWorkflow;
 
     @Output
     private CitizenEnrollmentInfo citizenEnrollmentInfo;
@@ -171,6 +173,9 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase 
 
     @Override
     public void onReturnFromWorkflow(boolean successfulResponse) {
+
+        if (ignorePossibilityAndCompleteWorkflow != null && !ignorePossibilityAndCompleteWorkflow) { return; }
+
         if (successfulResponse) {
             goNext();
         }

@@ -2,7 +2,7 @@ module bw.workflow.citizenenrollment
 {
     requires bw.core;
     requires bw.workflow.commons;
-    requires bw.workflow.biometricsexception;
+    requires bw.workflow.searchbyfaceimage;
     requires bio.commons;
     requires biokit.library;
 

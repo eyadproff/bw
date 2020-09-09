@@ -49,6 +49,7 @@ import sa.gov.nic.bio.commons.TaskResponse;
 import java.io.ByteArrayInputStream;
 import java.util.Base64;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
@@ -61,6 +62,7 @@ public class SingleFingerprintCapturingFxController extends WizardStepFxControll
 	@Input private Boolean hidePreviousButton;
 	@Input private Boolean acceptBadQualityFingerprint;
 	@Input private Integer acceptBadQualityFingerprintMinRetires;
+	@Input private List<Integer> exceptionOfFingerprints;
 	@Output private Fingerprint capturedFingerprint;
 	@Output private Finger capturedFingerprintForBackend;
 	@Output private String fingerprintBase64Image;
@@ -106,20 +108,34 @@ public class SingleFingerprintCapturingFxController extends WizardStepFxControll
 		DevicesRunnerGadgetPaneFxController deviceManagerGadgetPaneController =
 												Context.getCoreFxController().getDeviceManagerGadgetPaneController();
 		deviceManagerGadgetPaneController.setNextFingerprintDeviceType(FingerprintDeviceType.SINGLE);
-		
+
 		btnChangeFingerprint.disableProperty().bind(btnCaptureFingerprint.visibleProperty().not());
 		if(acceptBadQualityFingerprint) btnNext.disableProperty().bind(ivCapturedFingerprint.imageProperty().isNull());
 		else btnNext.disableProperty().bind(ivSuccess.visibleProperty().not());
-		
+
 		paneControlsInnerContainer.minHeightProperty().bind(Bindings.createDoubleBinding(() ->
 		{
 			paneControlsOuterContainer.requestLayout();
 			return paneControlsOuterContainer.getViewportBounds().getHeight();
 		}, paneControlsOuterContainer.viewportBoundsProperty()));
-		
-		if(selectedFingerprintPosition == null) selectedFingerprintPosition = FingerPosition.RIGHT_INDEX;
+
+		if (selectedFingerprintPosition == null) {
+			SELECT_FINGER_POSITION:if(exceptionOfFingerprints!=null){
+			   if (!exceptionOfFingerprints.contains(2)) { selectedFingerprintPosition = FingerPosition.RIGHT_INDEX;break SELECT_FINGER_POSITION; }
+			   else if (!exceptionOfFingerprints.contains(7)) { selectedFingerprintPosition = FingerPosition.LEFT_INDEX;break SELECT_FINGER_POSITION; }
+			   else if (!exceptionOfFingerprints.contains(1)) { selectedFingerprintPosition = FingerPosition.RIGHT_THUMB; break SELECT_FINGER_POSITION;}
+			   else if (!exceptionOfFingerprints.contains(6)) { selectedFingerprintPosition = FingerPosition.LEFT_THUMB;break SELECT_FINGER_POSITION; }
+			   else if (!exceptionOfFingerprints.contains(3)) { selectedFingerprintPosition = FingerPosition.RIGHT_MIDDLE;break SELECT_FINGER_POSITION; }
+			   else if (!exceptionOfFingerprints.contains(8)) { selectedFingerprintPosition = FingerPosition.LEFT_MIDDLE;break SELECT_FINGER_POSITION; }
+			   else if (!exceptionOfFingerprints.contains(4)) { selectedFingerprintPosition = FingerPosition.RIGHT_RING;break SELECT_FINGER_POSITION; }
+			   else if (!exceptionOfFingerprints.contains(9)) { selectedFingerprintPosition = FingerPosition.LEFT_RING;break SELECT_FINGER_POSITION; }
+			   else if (!exceptionOfFingerprints.contains(5)) { selectedFingerprintPosition = FingerPosition.RIGHT_LITTLE;break SELECT_FINGER_POSITION; }
+			   else if (!exceptionOfFingerprints.contains(10)) { selectedFingerprintPosition = FingerPosition.LEFT_LITTLE;break SELECT_FINGER_POSITION; }
+		}else {selectedFingerprintPosition = FingerPosition.RIGHT_INDEX;}
+		}
+
 		activateFingerprint(selectedFingerprintPosition);
-		
+
 		// show the image placeholder if and only if there is no image
 		ivCapturedFingerprintPlaceholder.visibleProperty().bind(ivCapturedFingerprint.imageProperty().isNull());
 		
@@ -311,7 +327,7 @@ public class SingleFingerprintCapturingFxController extends WizardStepFxControll
 		{
 			DMFingerData fingerData = capturedFingerprint.getDmFingerData();
 			fingerprintBase64Image = fingerData.getFinger();
-			capturedFingerprintForBackend = new Finger(fingerData.getPosition(), fingerData.getFingerWsqImage(),
+			capturedFingerprintForBackend = new Finger(fingerData.getPosition(), capturedFingerprint.getSlapWsq(),
 			                                           null);
 		}
 	}
@@ -731,6 +747,8 @@ public class SingleFingerprintCapturingFxController extends WizardStepFxControll
 	@FXML
 	private void onChangeFingerprintButtonClicked(ActionEvent actionEvent)
 	{
+		if (exceptionOfFingerprints != null && exceptionOfFingerprints.size() > 0) { showWarningNotification(resources.getString("ExceptionsWarning")); }
+
 		try
 		{
 			ChangeFingerprintDialogFxController controller = DialogUtils.buildCustomDialogByFxml(
@@ -739,6 +757,7 @@ public class SingleFingerprintCapturingFxController extends WizardStepFxControll
 			
 			if(controller != null)
 			{
+				controller.setExceptionOfFingerprints(exceptionOfFingerprints);
 				controller.setCurrentFingerPosition(selectedFingerprintPosition);
 				boolean confirmed = controller.showDialogAndWait();
 				

@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
-@FxmlFile("editMissingFingerprint2.fxml")
+@FxmlFile("editMissingFingerprint.fxml")
 public class EditMissingFingerprintFXController extends WizardStepFxControllerBase {
 
 
@@ -57,6 +57,8 @@ public class EditMissingFingerprintFXController extends WizardStepFxControllerBa
     private VBox VRightRingFinger, VOtherRRing;
     @FXML
     private VBox VRightLittleFinger, VOtherRLittle;
+    @FXML
+    private VBox VRightHand, VOtherRHand;
 
     @FXML
     private VBox VLeftThumb, VOtherLThumb;
@@ -68,6 +70,8 @@ public class EditMissingFingerprintFXController extends WizardStepFxControllerBa
     private VBox VLeftRingFinger, VOtherLRing;
     @FXML
     private VBox VLeftLittleFinger, VOtherLLittle;
+    @FXML
+    private VBox VLeftHand, VOtherLHand;
 
     @FXML
     private CheckBox chbRightThumb;
@@ -79,6 +83,8 @@ public class EditMissingFingerprintFXController extends WizardStepFxControllerBa
     private CheckBox chbRightRing;
     @FXML
     private CheckBox chbRightLittle;
+    @FXML
+    private CheckBox chbRightHand;
 
     @FXML
     private CheckBox chbLeftThumb;
@@ -90,6 +96,8 @@ public class EditMissingFingerprintFXController extends WizardStepFxControllerBa
     private CheckBox chbLeftRing;
     @FXML
     private CheckBox chbLeftLittle;
+    @FXML
+    private CheckBox chbLeftHand;
 
     @FXML
     private SVGPath svgRightLittle;
@@ -113,20 +121,21 @@ public class EditMissingFingerprintFXController extends WizardStepFxControllerBa
     @FXML
     private SVGPath svgLeftThumb;
 
-    @FXML
-    private ComboBox<ComboBoxItem<Cause>> CMenuRThumb, CMenuRIndex, CMenuRMiddle, CMenuRRing, CMenuRLittle;
-    @FXML
-    private ComboBox<ComboBoxItem<Cause>> CMenuLThumb, CMenuLIndex, CMenuLMiddle, CMenuLRing, CMenuLLittle;
 
     @FXML
-    private ToggleGroup TGRThumb, TGRIndex, TGRMiddle, TGRRing, TGRLittle;
+    private ComboBox<ComboBoxItem<Cause>> CMenuRThumb, CMenuRIndex, CMenuRMiddle, CMenuRRing, CMenuRLittle, CMenuRHand;
     @FXML
-    private ToggleGroup TGLThumb, TGLIndex, TGLMiddle, TGLRing, TGLLittle;
+    private ComboBox<ComboBoxItem<Cause>> CMenuLThumb, CMenuLIndex, CMenuLMiddle, CMenuLRing, CMenuLLittle, CMenuLHand;
 
     @FXML
-    private TextField CouseTRThumb, CouseTRIndex, CouseTRMiddle, CouseTRRing, CouseTRLittle;
+    private ToggleGroup TGRThumb, TGRIndex, TGRMiddle, TGRRing, TGRLittle, TGRHand;
     @FXML
-    private TextField CouseTLThumb, CouseTLIndex, CouseTLMiddle, CouseTLRing, CouseTLLittle;
+    private ToggleGroup TGLThumb, TGLIndex, TGLMiddle, TGLRing, TGLLittle, TGLHand;
+
+    @FXML
+    private TextField CouseTRThumb, CouseTRIndex, CouseTRMiddle, CouseTRRing, CouseTRLittle, CouseTRHand;
+    @FXML
+    private TextField CouseTLThumb, CouseTLIndex, CouseTLMiddle, CouseTLRing, CouseTLLittle, CouseTLHand;
     @FXML
     private Button btnNext;
     @FXML
@@ -139,6 +148,8 @@ public class EditMissingFingerprintFXController extends WizardStepFxControllerBa
 
     @Override
     protected void onAttachedToScene() {
+
+        applyValidatorToTextFields();
 
         BioExclusionsList = new ArrayList<>();
         SeqNumbersList = new ArrayList<>();
@@ -164,7 +175,6 @@ public class EditMissingFingerprintFXController extends WizardStepFxControllerBa
 
         //To know what fingerException expired
         if (!expiredException.isEmpty()) {
-            //System.out.println(expiredException.size());
             lblExpiredExc.setVisible(true);
             expiredException.forEach(x -> ShowExpiredException(x.getPosition()));
         }
@@ -177,12 +187,14 @@ public class EditMissingFingerprintFXController extends WizardStepFxControllerBa
         AddItemsToMenu(CMenuRMiddle, VOtherRMiddle, CouseTRMiddle, causes, TGRMiddle);
         AddItemsToMenu(CMenuRRing, VOtherRRing, CouseTRRing, causes, TGRRing);
         AddItemsToMenu(CMenuRLittle, VOtherRLittle, CouseTRLittle, causes, TGRLittle);
+        AddItemsToMenu(CMenuRHand, VOtherRHand, CouseTRHand, causes, TGRHand);
 
         AddItemsToMenu(CMenuLThumb, VOtherLThumb, CouseTLThumb, causes, TGLThumb);
         AddItemsToMenu(CMenuLIndex, VOtherLIndex, CouseTLIndex, causes, TGLIndex);
         AddItemsToMenu(CMenuLMiddle, VOtherLMiddle, CouseTLMiddle, causes, TGLMiddle);
         AddItemsToMenu(CMenuLRing, VOtherLRing, CouseTLRing, causes, TGLRing);
         AddItemsToMenu(CMenuLLittle, VOtherLLittle, CouseTLLittle, causes, TGLLittle);
+        AddItemsToMenu(CMenuLHand, VOtherLHand, CouseTLHand, causes, TGLHand);
 
         //if no old state
         if (Editedpersonfingerprints == null) {
@@ -388,9 +400,53 @@ public class EditMissingFingerprintFXController extends WizardStepFxControllerBa
             VLeftLittleFinger.setDisable(true);
         }
 
+        if (chbRightHand.isSelected()) {
+            DisableAllHandFingers(chbRightThumb, VRightThumb);
+            DisableAllHandFingers(chbRightIndex, VRightIndexFinger);
+            DisableAllHandFingers(chbRightMiddle, VRightMiddleFinger);
+            DisableAllHandFingers(chbRightRing, VRightRingFinger);
+            DisableAllHandFingers(chbRightLittle, VRightLittleFinger);
+            numChBox++;
+            VRightHand.setDisable(false);
+
+        }
+        else {
+            chbRightThumb.setDisable(false);
+            chbRightIndex.setDisable(false);
+            chbRightMiddle.setDisable(false);
+            chbRightRing.setDisable(false);
+            chbRightLittle.setDisable(false);
+
+            VRightHand.setDisable(true);
+        }
+
+        if (chbLeftHand.isSelected()) {
+            DisableAllHandFingers(chbLeftThumb, VLeftThumb);
+            DisableAllHandFingers(chbLeftIndex, VLeftIndexFinger);
+            DisableAllHandFingers(chbLeftMiddle, VLeftMiddleFinger);
+            DisableAllHandFingers(chbLeftRing, VLeftRingFinger);
+            DisableAllHandFingers(chbLeftLittle, VLeftLittleFinger);
+            numChBox++;
+            VLeftHand.setDisable(false);
+
+        }
+        else {
+            chbLeftThumb.setDisable(false);
+            chbLeftIndex.setDisable(false);
+            chbLeftMiddle.setDisable(false);
+            chbLeftRing.setDisable(false);
+            chbLeftLittle.setDisable(false);
+
+            VLeftHand.setDisable(true);
+        }
         if (numChBox > 0) { btnNext.setDisable(false); }
 
 
+    }
+
+    private void DisableAllHandFingers(CheckBox checkBox, VBox vbox) {
+        checkBox.setDisable(true);
+        vbox.setDisable(true);
     }
 
     private void AddItemsToMenu(ComboBox<ComboBoxItem<Cause>> menu, VBox VOther, TextField TextCouse,
@@ -495,48 +551,97 @@ public class EditMissingFingerprintFXController extends WizardStepFxControllerBa
     }
 
     private void uploadMissingFPIfAny() {
+        boolean isRightFullHandMiss =
+                IsFullHandMiss(Editedpersonfingerprints.getRThumb(), Editedpersonfingerprints.getRIndex(),
+                        Editedpersonfingerprints.getRMiddle(), Editedpersonfingerprints.getRRing(),
+                        Editedpersonfingerprints.getRLittle());
 
-        if (Editedpersonfingerprints.getRThumb().isMissOrNot()) {
-            setDataToScene(Editedpersonfingerprints.getRThumb(), CMenuRThumb, TGRThumb, CouseTRThumb, chbRightThumb,
-                    VOtherRThumb);
+        if (isRightFullHandMiss) {
+            setDataToScene(Editedpersonfingerprints.getRThumb(), CMenuRHand, TGRHand, CouseTRHand, chbRightHand,
+                    VOtherRHand);
         }
-        if (Editedpersonfingerprints.getRIndex().isMissOrNot()) {
-            setDataToScene(Editedpersonfingerprints.getRIndex(), CMenuRIndex, TGRIndex, CouseTRIndex, chbRightIndex,
-                    VOtherRIndex);
-        }
-        if (Editedpersonfingerprints.getRMiddle().isMissOrNot()) {
-            setDataToScene(Editedpersonfingerprints.getRMiddle(), CMenuRMiddle, TGRMiddle, CouseTRMiddle,
-                    chbRightMiddle, VOtherRMiddle);
-        }
-        if (Editedpersonfingerprints.getRRing().isMissOrNot()) {
-            setDataToScene(Editedpersonfingerprints.getRRing(), CMenuRRing, TGRRing, CouseTRRing, chbRightRing,
-                    VOtherRRing);
-        }
-        if (Editedpersonfingerprints.getRLittle().isMissOrNot()) {
-            setDataToScene(Editedpersonfingerprints.getRLittle(), CMenuRLittle, TGRLittle, CouseTRLittle,
-                    chbRightLittle, VOtherRLittle);
+        else {
+            if (Editedpersonfingerprints.getRThumb().isMissOrNot()) {
+                setDataToScene(Editedpersonfingerprints.getRThumb(), CMenuRThumb, TGRThumb, CouseTRThumb, chbRightThumb,
+                        VOtherRThumb);
+            }
+
+            if (Editedpersonfingerprints.getRIndex().isMissOrNot()) {
+                setDataToScene(Editedpersonfingerprints.getRIndex(), CMenuRIndex, TGRIndex, CouseTRIndex, chbRightIndex,
+                        VOtherRIndex);
+            }
+            if (Editedpersonfingerprints.getRMiddle().isMissOrNot()) {
+                setDataToScene(Editedpersonfingerprints.getRMiddle(), CMenuRMiddle, TGRMiddle, CouseTRMiddle,
+                        chbRightMiddle, VOtherRMiddle);
+            }
+            if (Editedpersonfingerprints.getRRing().isMissOrNot()) {
+                setDataToScene(Editedpersonfingerprints.getRRing(), CMenuRRing, TGRRing, CouseTRRing, chbRightRing,
+                        VOtherRRing);
+            }
+            if (Editedpersonfingerprints.getRLittle().isMissOrNot()) {
+                setDataToScene(Editedpersonfingerprints.getRLittle(), CMenuRLittle, TGRLittle, CouseTRLittle,
+                        chbRightLittle, VOtherRLittle);
+            }
         }
 
-        if (Editedpersonfingerprints.getLThumb().isMissOrNot()) {
-            setDataToScene(Editedpersonfingerprints.getLThumb(), CMenuLThumb, TGLThumb, CouseTLThumb, chbLeftThumb,
-                    VOtherLThumb);
+        boolean isLeftFullHandMiss =
+                IsFullHandMiss(Editedpersonfingerprints.getLThumb(), Editedpersonfingerprints.getLIndex(),
+                        Editedpersonfingerprints.getLMiddle(), Editedpersonfingerprints.getLRing(),
+                        Editedpersonfingerprints.getLLittle());
+        if (isLeftFullHandMiss) {
+            setDataToScene(Editedpersonfingerprints.getLThumb(), CMenuLHand, TGLHand, CouseTLHand, chbLeftHand,
+                    VOtherLHand);
+
         }
-        if (Editedpersonfingerprints.getLIndex().isMissOrNot()) {
-            setDataToScene(Editedpersonfingerprints.getLIndex(), CMenuLIndex, TGLIndex, CouseTLIndex, chbLeftIndex,
-                    VOtherLIndex);
+        else {
+            if (Editedpersonfingerprints.getLThumb().isMissOrNot()) {
+                setDataToScene(Editedpersonfingerprints.getLThumb(), CMenuLThumb, TGLThumb, CouseTLThumb, chbLeftThumb,
+                        VOtherLThumb);
+            }
+            if (Editedpersonfingerprints.getLIndex().isMissOrNot()) {
+                setDataToScene(Editedpersonfingerprints.getLIndex(), CMenuLIndex, TGLIndex, CouseTLIndex, chbLeftIndex,
+                        VOtherLIndex);
+            }
+            if (Editedpersonfingerprints.getLMiddle().isMissOrNot()) {
+                setDataToScene(Editedpersonfingerprints.getLMiddle(), CMenuLMiddle, TGLMiddle, CouseTLMiddle,
+                        chbLeftMiddle,
+                        VOtherLMiddle);
+            }
+            if (Editedpersonfingerprints.getLRing().isMissOrNot()) {
+                setDataToScene(Editedpersonfingerprints.getLRing(), CMenuLRing, TGLRing, CouseTLRing, chbLeftRing,
+                        VOtherLRing);
+            }
+            if (Editedpersonfingerprints.getLLittle().isMissOrNot()) {
+                setDataToScene(Editedpersonfingerprints.getLLittle(), CMenuLLittle, TGLLittle, CouseTLLittle,
+                        chbLeftLittle,
+                        VOtherLLittle);
+            }
         }
-        if (Editedpersonfingerprints.getLMiddle().isMissOrNot()) {
-            setDataToScene(Editedpersonfingerprints.getLMiddle(), CMenuLMiddle, TGLMiddle, CouseTLMiddle, chbLeftMiddle,
-                    VOtherLMiddle);
+
+
+    }
+
+    //must be all Miss for the same reason
+    private boolean IsFullHandMiss(Fingerprint Thumb, Fingerprint Index, Fingerprint Middle, Fingerprint Ring,
+            Fingerprint Little) {
+        if (Thumb.isMissOrNot() && Index.isMissOrNot() && Middle.isMissOrNot() && Ring.isMissOrNot() &&
+            Little.isMissOrNot()) {
+            int status = Thumb.getStatus();
+            if (Index.getStatus() == status && Middle.getStatus() == status && Ring.getStatus() == status &&
+                Little.getStatus() == status) {
+                int causeId = Thumb.getCause().getCauseId();
+                if (Index.getCause().getCauseId() == causeId && Middle.getCause().getCauseId() == causeId &&
+                    Ring.getCause().getCauseId() == causeId && Little.getCause().getCauseId() == causeId) {
+                    if (causeId != 1) { return true; }
+                    String description = Thumb.getDescription();
+                    if (Index.getDescription().equals(description) && Middle.getDescription().equals(description) &&
+                        Ring.getDescription().equals(description) && Little.getDescription().equals(description)) {
+                        return true;
+                    }
+                }
+            }
         }
-        if (Editedpersonfingerprints.getLRing().isMissOrNot()) {
-            setDataToScene(Editedpersonfingerprints.getLRing(), CMenuLRing, TGLRing, CouseTLRing, chbLeftRing,
-                    VOtherLRing);
-        }
-        if (Editedpersonfingerprints.getLLittle().isMissOrNot()) {
-            setDataToScene(Editedpersonfingerprints.getLLittle(), CMenuLLittle, TGLLittle, CouseTLLittle, chbLeftLittle,
-                    VOtherLLittle);
-        }
+        return false;
 
 
     }
@@ -625,9 +730,7 @@ public class EditMissingFingerprintFXController extends WizardStepFxControllerBa
         // -- epoch time by Second
         if (finger.getStatus() == 0) {
             //expiredDate null
-            //   bioEx.setExpireDate(new Long(22222));
             bioEx.setCreateDate(Instant.now().getEpochSecond());
-            // bioEx.setMonth(0);
         }
         else if (finger.getStatus() == 3) {
             bioEx.setExpireDate(Instant.now().getEpochSecond() + 7889238);
@@ -645,7 +748,7 @@ public class EditMissingFingerprintFXController extends WizardStepFxControllerBa
             bioEx.setMonth(12);
         }
 
-        //need to edit
+        //need to improve
         bioEx.setCasueId(finger.getCause().getCauseId());
         if (bioEx.getCasueId() == 1) { bioEx.setDescription(finger.getDescription()); }
 
@@ -661,125 +764,87 @@ public class EditMissingFingerprintFXController extends WizardStepFxControllerBa
     protected void onNextButtonClicked(ActionEvent actionEvent) {
 
 
-        if (chbRightThumb.isSelected()) {
-            if (isEmpty(CMenuRThumb, TGRThumb, CouseTRThumb)) { return; }
-            addMFToPersonFPs(Editedpersonfingerprints.getRThumb(), CMenuRThumb, TGRThumb, CouseTRThumb);
-            if (canAddToList(Editedpersonfingerprints.getRThumb(), 1)) {
-                BioExclusionsList.add(addToList(Editedpersonfingerprints.getRThumb(), 1));
-                if (Editedpersonfingerprints.getRThumb().getAlreadyAdded()) {
-                    SeqNumbersList.add(Editedpersonfingerprints.getRThumb().getSeqNum());
-                }
-            }
-        }
-        else { Editedpersonfingerprints.setRThumb(new Fingerprint()); }
-        if (chbRightIndex.isSelected()) {
-            if (isEmpty(CMenuRIndex, TGRIndex, CouseTRIndex)) { return; }
-            addMFToPersonFPs(Editedpersonfingerprints.getRIndex(), CMenuRIndex, TGRIndex, CouseTRIndex);
-            if (canAddToList(Editedpersonfingerprints.getRIndex(), 2)) {
-                BioExclusionsList.add(addToList(Editedpersonfingerprints.getRIndex(), 2));
-                if (Editedpersonfingerprints.getRIndex().getAlreadyAdded()) {
-                    SeqNumbersList.add(Editedpersonfingerprints.getRIndex().getSeqNum());
-                }
-            }
-        }
-        else { Editedpersonfingerprints.setRIndex(new Fingerprint()); }
-        if (chbRightMiddle.isSelected()) {
-            if (isEmpty(CMenuRMiddle, TGRMiddle, CouseTRMiddle)) { return; }
-            addMFToPersonFPs(Editedpersonfingerprints.getRMiddle(), CMenuRMiddle, TGRMiddle, CouseTRMiddle);
-            if (canAddToList(Editedpersonfingerprints.getRMiddle(), 3)) {
-                BioExclusionsList.add(addToList(Editedpersonfingerprints.getRMiddle(), 3));
-                if (Editedpersonfingerprints.getRMiddle().getAlreadyAdded()) {
-                    SeqNumbersList.add(Editedpersonfingerprints.getRMiddle().getSeqNum());
-                }
-            }
-        }
-        else { Editedpersonfingerprints.setRMiddle(new Fingerprint()); }
-        if (chbRightRing.isSelected()) {
-            if (isEmpty(CMenuRRing, TGRRing, CouseTRRing)) { return; }
-            addMFToPersonFPs(Editedpersonfingerprints.getRRing(), CMenuRRing, TGRRing, CouseTRRing);
-            if (canAddToList(Editedpersonfingerprints.getRRing(), 4)) {
-                BioExclusionsList.add(addToList(Editedpersonfingerprints.getRRing(), 4));
-                if (Editedpersonfingerprints.getRRing().getAlreadyAdded()) {
-                    SeqNumbersList.add(Editedpersonfingerprints.getRRing().getSeqNum());
-                }
-            }
-        }
-        else { Editedpersonfingerprints.setRRing(new Fingerprint()); }
-        if (chbRightLittle.isSelected()) {
-            if (isEmpty(CMenuRLittle, TGRLittle, CouseTRLittle)) { return; }
-            addMFToPersonFPs(Editedpersonfingerprints.getRLittle(), CMenuRLittle, TGRLittle, CouseTRLittle);
-            if (canAddToList(Editedpersonfingerprints.getRLittle(), 5)) {
-                BioExclusionsList.add(addToList(Editedpersonfingerprints.getRLittle(), 5));
-                if (Editedpersonfingerprints.getRLittle().getAlreadyAdded()) {
-                    SeqNumbersList.add(Editedpersonfingerprints.getRLittle().getSeqNum());
-                }
-            }
-        }
-        else { Editedpersonfingerprints.setRLittle(new Fingerprint()); }
+        if(chbRightHand.isSelected()){
+            PrepareExceptionToBackend(CMenuRHand, TGRHand, CouseTRHand, Editedpersonfingerprints.getRThumb(), 1);
+            PrepareExceptionToBackend(CMenuRHand, TGRHand, CouseTRHand, Editedpersonfingerprints.getRIndex(), 2);
+            PrepareExceptionToBackend(CMenuRHand, TGRHand, CouseTRHand, Editedpersonfingerprints.getRMiddle(), 3);
+            PrepareExceptionToBackend(CMenuRHand, TGRHand, CouseTRHand, Editedpersonfingerprints.getRRing(), 4);
+            PrepareExceptionToBackend(CMenuRHand, TGRHand, CouseTRHand, Editedpersonfingerprints.getRLittle(), 5);
 
+        }else
+        {
+            if (chbRightThumb.isSelected()) {
+                PrepareExceptionToBackend(CMenuRThumb, TGRThumb, CouseTRThumb, Editedpersonfingerprints.getRThumb(), 1);
+            }
+            else { Editedpersonfingerprints.setRThumb(new Fingerprint()); }
 
-        if (chbLeftThumb.isSelected()) {
-            if (isEmpty(CMenuLThumb, TGLThumb, CouseTLThumb)) { return; }
-            addMFToPersonFPs(Editedpersonfingerprints.getLThumb(), CMenuLThumb, TGLThumb, CouseTLThumb);
-            if (canAddToList(Editedpersonfingerprints.getLThumb(), 6)) {
-                BioExclusionsList.add(addToList(Editedpersonfingerprints.getLThumb(), 6));
-                if (Editedpersonfingerprints.getLThumb().getAlreadyAdded()) {
-                    SeqNumbersList.add(Editedpersonfingerprints.getLThumb().getSeqNum());
-                }
+            if (chbRightIndex.isSelected()) {
+                PrepareExceptionToBackend(CMenuRIndex, TGRIndex, CouseTRIndex, Editedpersonfingerprints.getRIndex(), 2);
             }
-        }
-        else { Editedpersonfingerprints.setLThumb(new Fingerprint()); }
-        if (chbLeftIndex.isSelected()) {
-            if (isEmpty(CMenuLIndex, TGLIndex, CouseTLIndex)) { return; }
-            addMFToPersonFPs(Editedpersonfingerprints.getLIndex(), CMenuLIndex, TGLIndex, CouseTLIndex);
-            if (canAddToList(Editedpersonfingerprints.getLIndex(), 7)) {
-                BioExclusionsList.add(addToList(Editedpersonfingerprints.getLIndex(), 7));
-                if (Editedpersonfingerprints.getLIndex().getAlreadyAdded()) {
-                    SeqNumbersList.add(Editedpersonfingerprints.getLIndex().getSeqNum());
-                }
-            }
-        }
-        else { Editedpersonfingerprints.setLIndex(new Fingerprint()); }
-        if (chbLeftMiddle.isSelected()) {
-            if (isEmpty(CMenuLMiddle, TGLMiddle, CouseTLMiddle)) { return; }
-            addMFToPersonFPs(Editedpersonfingerprints.getLMiddle(), CMenuLMiddle, TGLMiddle, CouseTLMiddle);
-            if (canAddToList(Editedpersonfingerprints.getLMiddle(), 8)) {
-                BioExclusionsList.add(addToList(Editedpersonfingerprints.getLMiddle(), 8));
-                if (Editedpersonfingerprints.getLMiddle().getAlreadyAdded()) {
-                    SeqNumbersList.add(Editedpersonfingerprints.getLMiddle().getSeqNum());
-                }
-            }
-        }
-        else { Editedpersonfingerprints.setLMiddle(new Fingerprint()); }
-        if (chbLeftRing.isSelected()) {
-            if (isEmpty(CMenuLRing, TGLRing, CouseTLRing)) { return; }
-            addMFToPersonFPs(Editedpersonfingerprints.getLRing(), CMenuLRing, TGLRing, CouseTLRing);
-            if (canAddToList(Editedpersonfingerprints.getLRing(), 9)) {
-                BioExclusionsList.add(addToList(Editedpersonfingerprints.getLRing(), 9));
-                if (Editedpersonfingerprints.getLRing().getAlreadyAdded()) {
-                    SeqNumbersList.add(Editedpersonfingerprints.getLRing().getSeqNum());
-                }
-            }
-        }
-        else { Editedpersonfingerprints.setLRing(new Fingerprint()); }
-        if (chbLeftLittle.isSelected()) {
-            if (isEmpty(CMenuLLittle, TGLLittle, CouseTLLittle)) { return; }
-            addMFToPersonFPs(Editedpersonfingerprints.getLLittle(), CMenuLLittle, TGLLittle, CouseTLLittle);
-            if (canAddToList(Editedpersonfingerprints.getLLittle(), 10)) {
-                BioExclusionsList.add(addToList(Editedpersonfingerprints.getLLittle(), 10));
-                if (Editedpersonfingerprints.getLLittle().getAlreadyAdded()) {
-                    SeqNumbersList.add(Editedpersonfingerprints.getLLittle().getSeqNum());
-                }
-            }
-        }
-        else { Editedpersonfingerprints.setLLittle(new Fingerprint()); }
+            else { Editedpersonfingerprints.setRIndex(new Fingerprint()); }
 
+            if (chbRightMiddle.isSelected()) {
+                PrepareExceptionToBackend(CMenuRMiddle, TGRMiddle, CouseTRMiddle, Editedpersonfingerprints.getRMiddle(),
+                        3);
+            }
+            else { Editedpersonfingerprints.setRMiddle(new Fingerprint()); }
 
+            if (chbRightRing.isSelected()) {
+                PrepareExceptionToBackend(CMenuRRing, TGRRing, CouseTRRing, Editedpersonfingerprints.getRRing(), 4);
+
+            }
+            else { Editedpersonfingerprints.setRRing(new Fingerprint()); }
+
+            if (chbRightLittle.isSelected()) {
+                PrepareExceptionToBackend(CMenuRLittle, TGRLittle, CouseTRLittle, Editedpersonfingerprints.getRLittle(),
+                        5);
+            }
+            else { Editedpersonfingerprints.setRLittle(new Fingerprint()); }
+
+        }
+
+        if(chbLeftHand.isSelected()){
+            PrepareExceptionToBackend(CMenuLHand, TGLHand, CouseTLHand, Editedpersonfingerprints.getLThumb(), 6);
+            PrepareExceptionToBackend(CMenuLHand, TGLHand, CouseTLHand, Editedpersonfingerprints.getLIndex(), 7);
+            PrepareExceptionToBackend(CMenuLHand, TGLHand, CouseTLHand, Editedpersonfingerprints.getLMiddle(), 8);
+            PrepareExceptionToBackend(CMenuLHand, TGLHand, CouseTLHand, Editedpersonfingerprints.getLRing(), 9);
+            PrepareExceptionToBackend(CMenuLHand, TGLHand, CouseTLHand, Editedpersonfingerprints.getLLittle(), 10);
+        }else
+        {
+            if (chbLeftThumb.isSelected()) {
+                PrepareExceptionToBackend(CMenuLThumb, TGLThumb, CouseTLThumb, Editedpersonfingerprints.getLThumb(), 6);
+            }
+            else { Editedpersonfingerprints.setLThumb(new Fingerprint()); }
+
+            if (chbLeftIndex.isSelected()) {
+                PrepareExceptionToBackend(CMenuLIndex, TGLIndex, CouseTLIndex, Editedpersonfingerprints.getLIndex(), 7);
+            }
+            else { Editedpersonfingerprints.setLIndex(new Fingerprint()); }
+
+            if (chbLeftMiddle.isSelected()) {
+                PrepareExceptionToBackend(CMenuLMiddle, TGLMiddle, CouseTLMiddle, Editedpersonfingerprints.getLMiddle(),
+                        8);
+            }
+            else { Editedpersonfingerprints.setLMiddle(new Fingerprint()); }
+
+            if (chbLeftRing.isSelected()) {
+                PrepareExceptionToBackend(CMenuLRing, TGLRing, CouseTLRing, Editedpersonfingerprints.getLRing(), 9);
+            }
+            else { Editedpersonfingerprints.setLRing(new Fingerprint()); }
+
+            if (chbLeftLittle.isSelected()) {
+                PrepareExceptionToBackend(CMenuLLittle, TGLLittle, CouseTLLittle, Editedpersonfingerprints.getLLittle(),
+                        10);
+            }
+            else { Editedpersonfingerprints.setLLittle(new Fingerprint()); }
+
+        }
         if (BioExclusionsList.size() == 0) {
             showWarningNotification(resources.getString("NoEditOrAddMissingFP"));
             return;
         }
 
+        //delete expired if add new
         BioExclusionsList.forEach(x -> {
             for (BioExclusion bio : expiredException) {
                 if (bio.getPosition().equals(x.getPosition())) {
@@ -793,6 +858,21 @@ public class EditMissingFingerprintFXController extends WizardStepFxControllerBa
 
         super.onNextButtonClicked(actionEvent);
     }
+    private void PrepareExceptionToBackend(ComboBox<ComboBoxItem<Cause>> comboBox, ToggleGroup toggleGroup,
+            TextField textField,Fingerprint fingerprint , int position){
+
+        if (isEmpty(comboBox, toggleGroup, textField)) { return; }
+        addMFToPersonFPs(fingerprint, comboBox, toggleGroup, textField);
+        if (canAddToList(fingerprint, position)) {
+            BioExclusionsList.add(addToList(fingerprint, position));
+            if (fingerprint.getAlreadyAdded()) {
+                SeqNumbersList.add(fingerprint.getSeqNum());
+
+            }
+        }
+
+
+    }
 
     @Override
     protected void onGoingPrevious(Map<String, Object> uiDataMap) {
@@ -804,6 +884,24 @@ public class EditMissingFingerprintFXController extends WizardStepFxControllerBa
     @Override
     public void onReturnFromWorkflow(boolean successfulResponse) {
         if (successfulResponse) { goNext(); }
+    }
+
+    private void applyValidatorToTextFields() {
+
+        GuiUtils.applyValidatorToTextField(CouseTRThumb, 100);
+        GuiUtils.applyValidatorToTextField(CouseTRIndex, 100);
+        GuiUtils.applyValidatorToTextField(CouseTRMiddle, 100);
+        GuiUtils.applyValidatorToTextField(CouseTRRing, 100);
+        GuiUtils.applyValidatorToTextField(CouseTRLittle, 100);
+        GuiUtils.applyValidatorToTextField(CouseTRHand, 100);
+
+        GuiUtils.applyValidatorToTextField(CouseTLThumb, 100);
+        GuiUtils.applyValidatorToTextField(CouseTLIndex, 100);
+        GuiUtils.applyValidatorToTextField(CouseTLMiddle, 100);
+        GuiUtils.applyValidatorToTextField(CouseTLRing, 100);
+        GuiUtils.applyValidatorToTextField(CouseTLLittle, 100);
+        GuiUtils.applyValidatorToTextField(CouseTLHand, 100);
+
     }
 
 }

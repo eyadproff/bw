@@ -72,7 +72,7 @@ public class FaceExceptionFXController extends WizardStepFxControllerBase {
     @Override
     protected void onAttachedToScene() {
 
-        SeqNumbersList = new ArrayList<Integer>();
+        SeqNumbersList = new ArrayList<>();
 
         AddItemsToMenu();
         // do not show if expired
@@ -95,8 +95,6 @@ public class FaceExceptionFXController extends WizardStepFxControllerBase {
                 if (causeFC.getCauseId().equals( FaceException.getCasueId())) {
                     EditFaceException = new BioExclusion();
                     EditFaceException.setCasueId(causeFC.getCauseId());
-                    //                        Reason.setDescriptionAr(causeFC.getArabicText());
-                    //                        Reason.setDescriptionEn(causeFC.getEnglishText());
                     EditFaceException.setMonth(FaceException.getMonth());
                     if (FaceException.getCasueId() == 1) {
                         EditFaceException.setDescription(FaceException.getDescription());
@@ -154,7 +152,7 @@ public class FaceExceptionFXController extends WizardStepFxControllerBase {
     }
 
     private void AddItemsToMenu() {
-        List<Cause> CauseFEx = new ArrayList<Cause>();
+        List<Cause> CauseFEx = new ArrayList<>();
         CauseFEx.addAll(causes);
         CauseFEx.removeIf(cause -> cause.getCauseId() == 2);
         GuiUtils.addAutoCompletionSupportToComboBox(ComboMenu, CauseFEx);

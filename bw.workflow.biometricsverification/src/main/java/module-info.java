@@ -1,5 +1,3 @@
-
-
 module bw.workflow.biometricsverification
 {
     requires bw.core;
@@ -8,6 +6,7 @@ module bw.workflow.biometricsverification
     requires bw.workflow.faceverification;
     requires bw.workflow.searchbyfaceimage;
     requires com.google.gson;
+    requires bw.lib.jasperreports;
 
 
     opens sa.gov.nic.bio.bw.workflow.biometricsverification.bundles;
@@ -16,5 +15,6 @@ module bw.workflow.biometricsverification
     opens sa.gov.nic.bio.bw.workflow.biometricsverification.tasks to bw.core;
     opens sa.gov.nic.bio.bw.workflow.biometricsverification.controllers to javafx.fxml, bw.core;
     opens sa.gov.nic.bio.bw.workflow.biometricsverification.beans to org.apache.commons.lang3, com.google.gson;
+
 
 }

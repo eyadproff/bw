@@ -10,6 +10,7 @@ import sa.gov.nic.bio.bw.core.controllers.FxControllerBase;
 import sa.gov.nic.bio.bw.core.utils.FxmlFile;
 import sa.gov.nic.bio.bw.core.utils.GuiUtils;
 
+import java.util.List;
 import java.util.Optional;
 
 @FxmlFile("changeFingerprintDialog.fxml")
@@ -38,14 +39,23 @@ public class ChangeFingerprintDialogFxController extends FxControllerBase
 	@FXML private RadioButton rdoRightThumb;
 	@FXML private ButtonType btConfirm;
 	@FXML private ButtonType btCancel;
-	
+
 	private FingerPosition currentFingerPosition;
-	
+	private List<Integer> exceptionOfFingerprints;
+
+	public List<Integer> getExceptionOfFingerprints() {
+		return exceptionOfFingerprints;
+	}
+
+	public void setExceptionOfFingerprints(List<Integer> exceptionOfFingerprints) {
+		this.exceptionOfFingerprints = exceptionOfFingerprints;
+	}
+
 	public FingerPosition getCurrentFingerPosition(){return currentFingerPosition;}
 	public void setCurrentFingerPosition(FingerPosition currentFingerPosition)
 	{
 		this.currentFingerPosition = currentFingerPosition;
-		
+
 		switch(currentFingerPosition)
 		{
 			case LEFT_LITTLE: rdoLeftLittle.setSelected(true); break;
@@ -60,7 +70,7 @@ public class ChangeFingerprintDialogFxController extends FxControllerBase
 			case RIGHT_THUMB: rdoRightThumb.setSelected(true); break;
 		}
 	}
-	
+
 	@Override
 	protected void initialize()
 	{
@@ -86,21 +96,40 @@ public class ChangeFingerprintDialogFxController extends FxControllerBase
 													if(newValue) activateFingerprint(FingerPosition.RIGHT_INDEX);});
 			rdoRightThumb.selectedProperty().addListener((observable, oldValue, newValue) ->{
 													if(newValue) activateFingerprint(FingerPosition.RIGHT_THUMB);});
-			
+
+			if (exceptionOfFingerprints != null) { disableAllMissingFingers(); }
 			activateFingerprint(currentFingerPosition);
 		});
 	}
-	
+
+	private void disableAllMissingFingers(){
+
+		for (Integer fingerPosition:exceptionOfFingerprints)
+			switch(fingerPosition){
+		        case 10: rdoLeftLittle.setDisable(true); break;
+		        case 9: rdoLeftRing.setDisable(true); break;
+		        case 8: rdoLeftMiddle.setDisable(true); break;
+		        case 7: rdoLeftIndex.setDisable(true); break;
+		        case 6: rdoLeftThumb.setDisable(true); break;
+		        case 5: rdoRightLittle.setDisable(true); break;
+		        case 4: rdoRightRing.setDisable(true); break;
+		        case 3: rdoRightMiddle.setDisable(true); break;
+		        case 2: rdoRightIndex.setDisable(true); break;
+		        case 1: rdoRightThumb.setDisable(true); break;
+		}
+
+	}
+
 	public boolean showDialogAndWait()
 	{
 		Optional<ButtonType> buttonTypeOptional = dialog.showAndWait();
 		return buttonTypeOptional.isPresent() && buttonTypeOptional.get() == btConfirm;
 	}
-	
+
 	private void activateFingerprint(FingerPosition fingerPosition)
 	{
 		currentFingerPosition = fingerPosition;
-		
+
 		GuiUtils.showNode(svgLeftLittle, fingerPosition == FingerPosition.LEFT_LITTLE);
 		GuiUtils.showNode(svgLeftRing, fingerPosition == FingerPosition.LEFT_RING);
 		GuiUtils.showNode(svgLeftMiddle, fingerPosition == FingerPosition.LEFT_MIDDLE);

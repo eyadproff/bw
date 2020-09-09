@@ -45,7 +45,7 @@ public class ReviewAndSubmitFaceExceptionFXController extends WizardStepFxContro
     @Override
     protected void onAttachedToScene() {
 
-        EditedBioExclusionsList = new ArrayList<BioExclusion>();
+        EditedBioExclusionsList = new ArrayList<>();
 
         PersonName.setText(normalizedPersonInfo.getFirstName() + " " + normalizedPersonInfo.getFatherName() + " " +
                            normalizedPersonInfo.getFamilyName());
@@ -90,8 +90,6 @@ public class ReviewAndSubmitFaceExceptionFXController extends WizardStepFxContro
 
             EditFaceException.setSamisId(normalizedPersonInfo.getPersonId());
             EditFaceException.setBioType(3);
-            //            Long ExDate = new Long(1564475459);
-            //            EditFaceException.setExpireDate(ExDate);
             UserInfo userInfo = (UserInfo) Context.getUserSession().getAttribute("userInfo");
             EditFaceException.setOperatorId(userInfo.getOperatorId());
             EditedBioExclusionsList.add(EditFaceException);

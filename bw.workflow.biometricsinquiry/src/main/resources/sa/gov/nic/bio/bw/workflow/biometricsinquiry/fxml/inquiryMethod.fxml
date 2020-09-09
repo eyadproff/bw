@@ -25,10 +25,10 @@
                     <padding>
                         <Insets top="20" right="20" bottom="20" left="20"/>
                     </padding>
-                    <Label text="%label.verificationMethod" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+                    <Label text="%label.inquiryMethod" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
                     <RadioButton fx:id="rbByFacePhoto" text="%label.byFacePhoto" toggleGroup="$toggleGroup"
                                  GridPane.columnIndex="1" GridPane.rowIndex="0"/>
-                    <RadioButton fx:id="rbByFingerprint" text="%label.byFingerprint" toggleGroup="$toggleGroup"
+                    <RadioButton fx:id="rbByFingerprint" text="%label.byFingerprints" toggleGroup="$toggleGroup"
                                  GridPane.columnIndex="1" GridPane.rowIndex="1"/>
                     <RadioButton fx:id="rbByIris" text="%label.byIris" toggleGroup="$toggleGroup"
                                  GridPane.columnIndex="1" GridPane.rowIndex="2"/>

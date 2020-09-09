@@ -12,7 +12,5 @@ module bw.workflow.biometricsinquiry
     opens sa.gov.nic.bio.bw.workflow.biometricsinquiry to bw.core;
     opens sa.gov.nic.bio.bw.workflow.biometricsinquiry.fxml to bw.core;
     opens sa.gov.nic.bio.bw.workflow.biometricsinquiry.controllers to javafx.fxml, bw.core;
-    //  opens sa.gov.nic.bio.bw.workflow.biometricsinquiry.tasks to bw.core;
 
-    // opens sa.gov.nic.bio.bw.workflow.biometricsverification.beans to org.apache.commons.lang3, com.google.gson;
 }

@@ -8,7 +8,8 @@
 <?import sa.gov.nic.bio.bw.workflow.commons.ui.CopiableLabel?>
 <?import sa.gov.nic.bio.bw.workflow.commons.ui.ImageViewPane?>
 
-<BorderPane fx:id="rootPane" prefHeight="635.0" prefWidth="792.0" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sa.gov.nic.bio.bw.workflow.biometricsverification.controllers.ShowResultFxController">
+<BorderPane fx:id="rootPane" prefHeight="635.0" prefWidth="792.0" stylesheets="@../css/style.css"
+            xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sa.gov.nic.bio.bw.workflow.biometricsinquiry.controllers.ShowResultFxController">
     <center>
         <HBox alignment="CENTER">
 
@@ -81,8 +82,6 @@
                 <Insets bottom="10" />
             </padding>
             <Button fx:id="btnStartOver" onAction="#onStartOverButtonClicked" text="%button.startOver" />
-            <Button fx:id="btnPrintRecord" text="%button.printRecord" onAction="#onPrintRecordButtonClicked"/>
-            <Button fx:id="btnSaveRecordAsPDF" text="%button.saveRecordAsPDF" onAction="#onSaveRecordAsPdfButtonClicked"/>
         </HBox>
     </bottom>
 </BorderPane>

@@ -1,14 +1,11 @@
 package sa.gov.nic.bio.bw.workflow.citizenenrollment;
 
-import sa.gov.nic.bio.bw.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.core.utils.Device;
 import sa.gov.nic.bio.bw.core.wizard.Step;
 import sa.gov.nic.bio.bw.core.wizard.Wizard;
-import sa.gov.nic.bio.bw.core.workflow.AssociatedMenu;
-import sa.gov.nic.bio.bw.core.workflow.Signal;
-import sa.gov.nic.bio.bw.core.workflow.WithLookups;
-import sa.gov.nic.bio.bw.core.workflow.WizardWorkflowBase;
-import sa.gov.nic.bio.bw.workflow.biometricsexception.beans.BioExclusion;
+import sa.gov.nic.bio.bw.core.workflow.*;
+import sa.gov.nic.bio.bw.workflow.commons.beans.BioExclusion;
+import sa.gov.nic.bio.bw.workflow.commons.tasks.RetrieveBioExclusionsWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.citizenenrollment.beans.NormalizedPersonInfo;
 import sa.gov.nic.bio.bw.workflow.citizenenrollment.controllers.*;
 import sa.gov.nic.bio.bw.workflow.citizenenrollment.tasks.*;
@@ -17,7 +14,8 @@ import sa.gov.nic.bio.bw.workflow.commons.controllers.SlapFingerprintsCapturingF
 import sa.gov.nic.bio.bw.workflow.commons.lookups.CountriesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.DocumentTypesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.PersonTypesLookup;
-import sa.gov.nic.bio.bw.workflow.biometricsexception.tasks.RetrieveBioExclusionsWorkflowTask;
+import sa.gov.nic.bio.bw.workflow.searchbyfaceimage.beans.Candidate;
+import sa.gov.nic.bio.bw.workflow.searchbyfaceimage.tasks.SearchByFacePhotoWorkflowTask;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -58,8 +56,8 @@ public class CitizenEnrollmentWorkflow extends WizardWorkflowBase {
                 executeWorkflowTask(DeathIndicatorWorkflowTask.class);
 
                 //different gender
-                //                passData(GetPersonInfoByIdWorkflowTask.class, IsSameGenderWorkflowTask.class, "personInfo");
-                //                executeWorkflowTask(IsSameGenderWorkflowTask.class);
+                passData(GetPersonInfoByIdWorkflowTask.class, IsSameGenderWorkflowTask.class, "personInfo");
+                executeWorkflowTask(IsSameGenderWorkflowTask.class);
 
 
                 break;
@@ -72,6 +70,9 @@ public class CitizenEnrollmentWorkflow extends WizardWorkflowBase {
                 setData(RetrieveBioExclusionsWorkflowTask.class, "samisId",
                         (((NormalizedPersonInfo) getData(ShowingPersonInfoFxController.class, "normalizedPersonInfo"))
                                 .getPersonId()).intValue());
+
+//               Long id=getData(PersonIdPaneFxController.class,"personId");
+//               setData(RetrieveBioExclusionsWorkflowTask.class,"samisId",id.intValue());
                 executeWorkflowTask(RetrieveBioExclusionsWorkflowTask.class);
 
 
@@ -96,6 +97,7 @@ public class CitizenEnrollmentWorkflow extends WizardWorkflowBase {
                 setData(SlapFingerprintsCapturingFxController.class, "exceptionOfFingerprints",
                         exceptionOfFingerprints);
                 setData(SlapFingerprintsCapturingFxController.class, "hideCheckBoxOfMissing", Boolean.TRUE);
+              //  setData(SlapFingerprintsCapturingFxController.class, "allow9MissingWithNoRole", Boolean.TRUE);
                 renderUiAndWaitForUserInput(SlapFingerprintsCapturingFxController.class);
 
 
@@ -115,7 +117,7 @@ public class CitizenEnrollmentWorkflow extends WizardWorkflowBase {
                         }
                     }
                 }
-
+                setData(FaceCapturingFxController.class, "imageExtension", "jpg");
                 renderUiAndWaitForUserInput(FaceCapturingFxController.class);
 
 
@@ -158,7 +160,16 @@ public class CitizenEnrollmentWorkflow extends WizardWorkflowBase {
                 }
                 renderUiAndWaitForUserInput(ReviewAndSubmitPaneFxController.class);
 
-
+                List<Integer> missingFingerprints = getData(SlapFingerprintsCapturingFxController.class, "missingFingerprints");
+                if(missingFingerprints.size()>=10) {
+                    passData(FaceCapturingFxController.class, SearchByFacePhotoWorkflowTask.class,
+                            "facePhotoBase64");
+                    executeWorkflowTask(SearchByFacePhotoWorkflowTask.class);
+                    passData(SearchByFacePhotoWorkflowTask.class, PossibilityFaceImageExistsWorkflowTask.class, "candidates");
+                    executeWorkflowTask(PossibilityFaceImageExistsWorkflowTask.class);
+                    passData(PossibilityFaceImageExistsWorkflowTask.class, ReviewAndSubmitPaneFxController.class,
+                            "ignorePossibilityAndCompleteWorkflow");
+                }
                 break;
             }
 

@@ -51,6 +51,8 @@ public class DeleteMissingFingerprintFXController extends WizardStepFxController
     private CheckBox chbRightRing;
     @FXML
     private CheckBox chbRightLittle;
+    @FXML
+    private CheckBox chbRightHand;
 
     @FXML
     private CheckBox chbLeftThumb;
@@ -62,6 +64,8 @@ public class DeleteMissingFingerprintFXController extends WizardStepFxController
     private CheckBox chbLeftRing;
     @FXML
     private CheckBox chbLeftLittle;
+    @FXML
+    private CheckBox chbLeftHand;
 
     @FXML
     private SVGPath svgRightLittle;
@@ -136,7 +140,7 @@ public class DeleteMissingFingerprintFXController extends WizardStepFxController
     private Button btnNext;
 
     @SuppressWarnings("unchecked")
-    private List<Cause> causes=(List<Cause>) Context.getUserSession().getAttribute(CausesLookup.KEY);
+    private List<Cause> causes = (List<Cause>) Context.getUserSession().getAttribute(CausesLookup.KEY);
     private PersonFingerprints personfingerprints;
     private List<BioExclusion> expiredException;
 
@@ -146,7 +150,7 @@ public class DeleteMissingFingerprintFXController extends WizardStepFxController
         SeqNumbersList = new ArrayList<>();
         expiredException = new ArrayList<>();
 
-       // causes = (List<Cause>) Context.getUserSession().getAttribute(CausesLookup.KEY);
+        // causes = (List<Cause>) Context.getUserSession().getAttribute(CausesLookup.KEY);
 
         if (BioExclusionsList != null) {
 
@@ -250,7 +254,7 @@ public class DeleteMissingFingerprintFXController extends WizardStepFxController
 
         for (BioExclusion bioEx : personMissinfingerprints) {
 
-            if (bioEx.getStatus().equals(0)&& bioEx.getPosition().equals(position)) {
+            if (bioEx.getStatus().equals(0) && bioEx.getPosition().equals(position)) {
                 fingerprint.setMissOrNot(true);
                 //lookup
                 for (Cause cause : causes) {
@@ -294,59 +298,69 @@ public class DeleteMissingFingerprintFXController extends WizardStepFxController
             right++;
             displayMissingFinger(personfingerprints.getRThumb(), VRightThumb, svgRightThumb, RThumbCouse, RThumbStatus);
             chbRightThumb.setDisable(false);
+            chbRightHand.setDisable(false);
         }
         if (personfingerprints.getRIndex().isMissOrNot()) {
             right++;
             displayMissingFinger(personfingerprints.getRIndex(), VRightIndexFinger, svgRightIndex, RIndexCouse,
                     RIndexStatus);
             chbRightIndex.setDisable(false);
+            chbRightHand.setDisable(false);
         }
         if (personfingerprints.getRMiddle().isMissOrNot()) {
             right++;
             displayMissingFinger(personfingerprints.getRMiddle(), VRightMiddleFinger, svgRightMiddle, RMiddleCouse,
                     RMiddleStatus);
             chbRightMiddle.setDisable(false);
+            chbRightHand.setDisable(false);
         }
         if (personfingerprints.getRRing().isMissOrNot()) {
             right++;
             displayMissingFinger(personfingerprints.getRRing(), VRightRingFinger, svgRightRing, RRingCouse,
                     RRingStatus);
             chbRightRing.setDisable(false);
+            chbRightHand.setDisable(false);
         }
         if (personfingerprints.getRLittle().isMissOrNot()) {
             right++;
             displayMissingFinger(personfingerprints.getRLittle(), VRightLittleFinger, svgRightLittle, RLittleCouse,
                     RLittleStatus);
             chbRightLittle.setDisable(false);
+            chbRightHand.setDisable(false);
         }
 
         if (personfingerprints.getLThumb().isMissOrNot()) {
             left++;
             displayMissingFinger(personfingerprints.getLThumb(), VLeftThumb, svgLeftThumb, LThumbCouse, LThumbStatus);
             chbLeftThumb.setDisable(false);
+            chbLeftHand.setDisable(false);
         }
         if (personfingerprints.getLIndex().isMissOrNot()) {
             left++;
             displayMissingFinger(personfingerprints.getLIndex(), VLeftIndexFinger, svgLeftIndex, LIndexCouse,
                     LIndexStatus);
             chbLeftIndex.setDisable(false);
+            chbLeftHand.setDisable(false);
         }
         if (personfingerprints.getLMiddle().isMissOrNot()) {
             left++;
             displayMissingFinger(personfingerprints.getLMiddle(), VLeftMiddleFinger, svgLeftMiddle, LMiddleCouse,
                     LMiddleStatus);
             chbLeftMiddle.setDisable(false);
+            chbLeftHand.setDisable(false);
         }
         if (personfingerprints.getLRing().isMissOrNot()) {
             left++;
             displayMissingFinger(personfingerprints.getLRing(), VLeftRingFinger, svgLeftRing, LRingCouse, LRingStatus);
             chbLeftRing.setDisable(false);
+            chbLeftHand.setDisable(false);
         }
         if (personfingerprints.getLLittle().isMissOrNot()) {
             left++;
             displayMissingFinger(personfingerprints.getLLittle(), VLeftLittleFinger, svgLeftLittle, LLittleCouse,
                     LLittleStatus);
             chbLeftLittle.setDisable(false);
+            chbLeftHand.setDisable(false);
         }
         if (right == 0) {
             RightMExist.setVisible(true);
@@ -373,12 +387,6 @@ public class DeleteMissingFingerprintFXController extends WizardStepFxController
             if (Context.getGuiLanguage() == GuiLanguage.ARABIC) { Couse.setText(finger.getCause().getArabicText()); }
             else { Couse.setText(finger.getCause().getEnglishText()); }
         }
-
-
-        //        if (finger.getStatus() == 0)
-        //            Status.setText(resources.getString("Permanent"));
-        //        else
-        //            Status.setText(resources.getString("Temporary"));
 
         if (finger.getStatus() == 0) { Status.setText(resources.getString("Permanent")); }
         else if (finger.getStatus() == 3) { Status.setText(resources.getString("3months")); }
@@ -436,12 +444,15 @@ public class DeleteMissingFingerprintFXController extends WizardStepFxController
     @FXML
     private void CheckBoxAction() {
         int numChBox = 0;
+
         if (chbRightThumb.isSelected()) {
             VRightThumb.setStyle("-fx-border-color:red");
             numChBox++;
         }
         else {
             VRightThumb.setStyle("-fx-border-color:gray");
+            chbRightHand.setSelected(false);
+
         }
         if (chbRightIndex.isSelected()) {
             numChBox++;
@@ -449,6 +460,7 @@ public class DeleteMissingFingerprintFXController extends WizardStepFxController
         }
         else {
             VRightIndexFinger.setStyle("-fx-border-color:gray");
+            chbRightHand.setSelected(false);
         }
         if (chbRightMiddle.isSelected()) {
             numChBox++;
@@ -456,6 +468,7 @@ public class DeleteMissingFingerprintFXController extends WizardStepFxController
         }
         else {
             VRightMiddleFinger.setStyle("-fx-border-color:gray");
+            chbRightHand.setSelected(false);
         }
         if (chbRightRing.isSelected()) {
             numChBox++;
@@ -463,6 +476,7 @@ public class DeleteMissingFingerprintFXController extends WizardStepFxController
         }
         else {
             VRightRingFinger.setStyle("-fx-border-color:gray");
+            chbRightHand.setSelected(false);
         }
         if (chbRightLittle.isSelected()) {
             numChBox++;
@@ -470,7 +484,9 @@ public class DeleteMissingFingerprintFXController extends WizardStepFxController
         }
         else {
             VRightLittleFinger.setStyle("-fx-border-color:gray");
+            chbRightHand.setSelected(false);
         }
+
 
         if (chbLeftThumb.isSelected()) {
             numChBox++;
@@ -478,6 +494,7 @@ public class DeleteMissingFingerprintFXController extends WizardStepFxController
         }
         else {
             VLeftThumb.setStyle("-fx-border-color:gray");
+            chbLeftHand.setSelected(false);
         }
         if (chbLeftIndex.isSelected()) {
             numChBox++;
@@ -485,6 +502,7 @@ public class DeleteMissingFingerprintFXController extends WizardStepFxController
         }
         else {
             VLeftIndexFinger.setStyle("-fx-border-color:gray");
+            chbLeftHand.setSelected(false);
         }
         if (chbLeftMiddle.isSelected()) {
             numChBox++;
@@ -492,6 +510,7 @@ public class DeleteMissingFingerprintFXController extends WizardStepFxController
         }
         else {
             VLeftMiddleFinger.setStyle("-fx-border-color:gray");
+            chbLeftHand.setSelected(false);
         }
         if (chbLeftRing.isSelected()) {
             numChBox++;
@@ -499,6 +518,7 @@ public class DeleteMissingFingerprintFXController extends WizardStepFxController
         }
         else {
             VLeftRingFinger.setStyle("-fx-border-color:gray");
+            chbLeftHand.setSelected(false);
         }
         if (chbLeftLittle.isSelected()) {
             numChBox++;
@@ -506,11 +526,48 @@ public class DeleteMissingFingerprintFXController extends WizardStepFxController
         }
         else {
             VLeftLittleFinger.setStyle("-fx-border-color:gray");
+            chbLeftHand.setSelected(false);
         }
 
         if (numChBox > 0) { btnNext.setDisable(false); }
         else { btnNext.setDisable(true); }
 
+    }
+
+    @FXML
+    private void CheckFullHandBoxAction() {
+        if (chbRightHand.isSelected()) {
+            if (!chbRightThumb.isDisable()) { chbRightThumb.setSelected(true); }
+            if (!chbRightIndex.isDisable()) { chbRightIndex.setSelected(true); }
+            if (!chbRightMiddle.isDisable()) { chbRightMiddle.setSelected(true); }
+            if (!chbRightRing.isDisable()) { chbRightRing.setSelected(true); }
+            if (!chbRightLittle.isDisable()) { chbRightLittle.setSelected(true); }
+
+        }
+        else {
+            if (!chbRightThumb.isDisable()) { chbRightThumb.setSelected(false); }
+            if (!chbRightIndex.isDisable()) { chbRightIndex.setSelected(false); }
+            if (!chbRightMiddle.isDisable()) { chbRightMiddle.setSelected(false); }
+            if (!chbRightRing.isDisable()) { chbRightRing.setSelected(false); }
+            if (!chbRightLittle.isDisable()) { chbRightLittle.setSelected(false); }
+        }
+
+        if (chbLeftHand.isSelected()) {
+            if (!chbLeftThumb.isDisable()) { chbLeftThumb.setSelected(true); }
+            if (!chbLeftIndex.isDisable()) { chbLeftIndex.setSelected(true); }
+            if (!chbLeftMiddle.isDisable()) { chbLeftMiddle.setSelected(true); }
+            if (!chbLeftRing.isDisable()) { chbLeftRing.setSelected(true); }
+            if (!chbLeftLittle.isDisable()) { chbLeftLittle.setSelected(true); }
+
+        }
+        else {
+            if (!chbLeftThumb.isDisable()) { chbLeftThumb.setSelected(false); }
+            if (!chbLeftIndex.isDisable()) { chbLeftIndex.setSelected(false); }
+            if (!chbLeftMiddle.isDisable()) { chbLeftMiddle.setSelected(false); }
+            if (!chbLeftRing.isDisable()) { chbLeftRing.setSelected(false); }
+            if (!chbLeftLittle.isDisable()) { chbLeftLittle.setSelected(false); }
+        }
+        CheckBoxAction();
     }
 
     @Override

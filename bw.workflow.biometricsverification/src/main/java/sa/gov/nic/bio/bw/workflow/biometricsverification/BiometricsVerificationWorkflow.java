@@ -9,6 +9,8 @@ import sa.gov.nic.bio.bw.core.workflow.AssociatedMenu;
 import sa.gov.nic.bio.bw.core.workflow.Signal;
 import sa.gov.nic.bio.bw.core.workflow.WithLookups;
 import sa.gov.nic.bio.bw.core.workflow.WizardWorkflowBase;
+import sa.gov.nic.bio.bw.workflow.commons.beans.BioExclusion;
+import sa.gov.nic.bio.bw.workflow.commons.tasks.RetrieveBioExclusionsWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.biometricsverification.beans.MatchingResponse;
 import sa.gov.nic.bio.bw.workflow.biometricsverification.controllers.VerificationMethodSelectionFxController;
 import sa.gov.nic.bio.bw.workflow.biometricsverification.controllers.VerificationMethodSelectionFxController.VerificationMethod;
@@ -16,6 +18,10 @@ import sa.gov.nic.bio.bw.workflow.biometricsverification.controllers.Verificatio
 import sa.gov.nic.bio.bw.workflow.commons.controllers.FaceCapturingFxController;
 import sa.gov.nic.bio.bw.workflow.commons.controllers.SingleFingerprintCapturingFxController;
 import sa.gov.nic.bio.bw.workflow.biometricsverification.tasks.FingerprintVerificationWorkflowTask;
+import sa.gov.nic.bio.bw.workflow.commons.controllers.SlapFingerprintsCapturingFxController;
+import sa.gov.nic.bio.bw.workflow.commons.lookups.DocumentTypesLookup;
+import sa.gov.nic.bio.bw.workflow.commons.lookups.PersonTypesLookup;
+import sa.gov.nic.bio.bw.workflow.commons.tasks.GetPersonInfoByIdWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.faceverification.beans.FaceMatchingResponse;
 import sa.gov.nic.bio.bw.workflow.faceverification.controllers.PersonIdPaneFxController;
 import sa.gov.nic.bio.bw.workflow.biometricsverification.controllers.ShowResultFxController;
@@ -26,9 +32,13 @@ import sa.gov.nic.bio.bw.workflow.searchbyfaceimage.controllers.ImageSourceFxCon
 import sa.gov.nic.bio.bw.workflow.searchbyfaceimage.controllers.ImageSourceFxController.Source;
 import sa.gov.nic.bio.bw.workflow.searchbyfaceimage.controllers.UploadImageFileFxController;
 
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
+
 @AssociatedMenu(workflowId = 1028, menuId = "menu.query.biometricsVerification", menuTitle = "menu.title", menuOrder = 11,
                 devices = {Device.FINGERPRINT_SCANNER, Device.CAMERA, Device.IRIS_SCANNER})
-@WithLookups(CountriesLookup.class)
+@WithLookups({CountriesLookup.class, PersonTypesLookup.class, DocumentTypesLookup.class})
 @Wizard({@Step(iconId = "\\uf2bb", title = "wizard.personId"),
                 @Step(iconId = "question", title = "wizard.selectVerificationMethod"),
                 @Step(iconId = "question", title = "wizard.imageSource"),
@@ -47,6 +57,8 @@ public class BiometricsVerificationWorkflow extends WizardWorkflowBase {
             }
             case 1: {
                 renderUiAndWaitForUserInput(VerificationMethodSelectionFxController.class);
+                setData(RetrieveBioExclusionsWorkflowTask.class,"samisId",((Long)getData(PersonIdPaneFxController.class,"personId")).intValue());
+                executeWorkflowTask(RetrieveBioExclusionsWorkflowTask.class);
                 break;
             }
             case 2: {
@@ -61,11 +73,26 @@ public class BiometricsVerificationWorkflow extends WizardWorkflowBase {
                             Boolean.TRUE);
                     setData(SingleFingerprintCapturingFxController.class, "acceptBadQualityFingerprintMinRetires",
                             0);
+
+                    List<BioExclusion> bioExclusion = getData(RetrieveBioExclusionsWorkflowTask.class, "bioExclusionList");
+                    List<Integer> exceptionOfFingerprints = new ArrayList<>();
+                    if (bioExclusion != null) {
+                        for (BioExclusion bioExc : bioExclusion) {
+                            ///null mean Permanent Exception
+                            if (bioExc.getStatus() == 0 && bioExc.getBioType() == 1 && (bioExc.getExpireDate() == null ||
+                                                                                        bioExc.getExpireDate() >
+                                                                                        Instant.now().getEpochSecond())) {
+                                exceptionOfFingerprints.add(bioExc.getPosition());
+                            }
+                        }
+                    }
+
+                    setData(SingleFingerprintCapturingFxController.class, "exceptionOfFingerprints",
+                            exceptionOfFingerprints);
+
                     renderUiAndWaitForUserInput(SingleFingerprintCapturingFxController.class);
                 }
-//                else {
-//
-//                }
+
 
                 break;
             }
@@ -151,7 +178,7 @@ public class BiometricsVerificationWorkflow extends WizardWorkflowBase {
             case 6: {
                 VerificationMethod verificationMethod = getData(VerificationMethodSelectionFxController.class,
                         "verificationMethod");
-
+                setData(ShowResultFxController.class, "verificationMethod", verificationMethod);
                 passData(PersonIdPaneFxController.class, ShowResultFxController.class,
                         "personId");
 
@@ -161,22 +188,21 @@ public class BiometricsVerificationWorkflow extends WizardWorkflowBase {
                             getData(FingerprintVerificationWorkflowTask.class, "matchingResponse");
 
 
-                    setData(ShowResultFxController.class, "facePhoto",
-                            AppUtils.imageFromBase64(matchingResponse.getPersonInfo().getFace()));
-
                     setData(ShowResultFxController.class, "personInfo",
                             matchingResponse.getPersonInfo());
                 }
                 else if (VerificationMethod.FACE_PHOTO.equals(verificationMethod)) {
 
                     passData(ConfirmImageFxController.class, ShowResultFxController.class,
-                            "facePhoto");
+                            "facePhotoBase64");
 
                     FaceMatchingResponse faceMatchingResponse =
                             getData(FaceVerificationWorkflowTask.class, "faceMatchingResponse");
 
-                    setData(ShowResultFxController.class, "personInfo",
-                            faceMatchingResponse.getPersonInfo());
+                    setData(GetPersonInfoByIdWorkflowTask.class,"personId",faceMatchingResponse.getPersonInfo().getSamisId());
+                    executeWorkflowTask(GetPersonInfoByIdWorkflowTask.class);
+
+                    passData(GetPersonInfoByIdWorkflowTask.class,ShowResultFxController.class, "personInfo");
 
                 }
 

@@ -3,11 +3,12 @@
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.shape.*?>
 <?import javafx.scene.text.*?>
-<?import sa.gov.nic.bio.bw.workflow.commons.ui.*?>
 
-<BorderPane prefHeight="755.0" prefWidth="997.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sa.gov.nic.bio.bw.workflow.biometricsexception.controllers.DeleteMissingFingerprintFXController">
+<?import javafx.scene.shape.SVGPath?>
+<?import sa.gov.nic.bio.bw.workflow.commons.ui.AutoScalingStackPane?>
+
+<BorderPane prefHeight="1095.0" prefWidth="997.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sa.gov.nic.bio.bw.workflow.biometricsexception.controllers.DeleteMissingFingerprintFXController">
     <bottom>
         <HBox alignment="CENTER" prefHeight="0.0" prefWidth="1173.0" spacing="10">
             <padding>
@@ -64,20 +65,21 @@
                         <CheckBox fx:id="chbRightIndex" disable="true" layoutX="209.0" layoutY="35.0" onAction="#CheckBoxAction" scaleX="0.7" scaleY="0.7" />
                         <CheckBox fx:id="chbRightThumb" disable="true" layoutX="180.0" layoutY="86.0" onAction="#CheckBoxAction" scaleX="0.7" scaleY="0.7" />
                         <CheckBox fx:id="chbLeftLittle" disable="true" layoutX="71.0" layoutY="50.0" onAction="#CheckBoxAction" scaleX="0.7" scaleY="0.7" />
-
+                        <CheckBox fx:id="chbLeftHand" disable="true" layoutX="20.0" layoutY="80.0" mnemonicParsing="false" onAction="#CheckFullHandBoxAction" />
+                        <CheckBox fx:id="chbRightHand" disable="true" layoutX="310.0" layoutY="80.0" mnemonicParsing="false" onAction="#CheckFullHandBoxAction" />
 
                     </Pane>
                 </StackPane>
-            <SplitPane dividerPositions="0.5" maxHeight="-Infinity" maxWidth="-Infinity" orientation="VERTICAL" prefHeight="533.0" prefWidth="945.0">
+            <SplitPane dividerPositions="0.5" maxHeight="1.7976931348623157E308" maxWidth="-Infinity" orientation="VERTICAL" prefHeight="500.0" prefWidth="950.0">
                <items>
                   <TitledPane alignment="CENTER" collapsible="false" text="%Label.biometricsException" />
-                  <SplitPane dividerPositions="0.5" prefHeight="421.0" prefWidth="939.0" styleClass="white-background">
+                  <SplitPane dividerPositions="0.5" maxHeight="1.7976931348623157E308" prefHeight="517.0" prefWidth="957.0" styleClass="white-background">
                       <items>
-                        <TitledPane collapsible="false" text="%RightHand">
+                        <TitledPane collapsible="false" maxHeight="1.7976931348623157E308" text="%RightHand">
                            <content>
-                              <ScrollPane fitToHeight="true" fitToWidth="true">
+                              <ScrollPane fitToHeight="true" fitToWidth="true" maxHeight="1.7976931348623157E308">
                                  <content>
-                                            <VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="509.0" prefWidth="450.0" spacing="5.0">
+                                            <VBox alignment="TOP_CENTER" maxHeight="1.7976931348623157E308" maxWidth="-Infinity" prefHeight="509.0" prefWidth="450.0" spacing="5.0">
                                                 <children>
                                                     <VBox fx:id="VRightThumb" managed="false" minHeight="-Infinity" minWidth="-Infinity" prefHeight="91.0" prefWidth="252.0" spacing="10.0" style="-fx-border-color: gray;" visible="false">
                                                         <VBox.margin>
@@ -208,11 +210,11 @@
                               </ScrollPane>
                            </content>
                         </TitledPane>
-                        <TitledPane collapsible="false" text="%LeftHand">
+                        <TitledPane collapsible="false" maxHeight="1.7976931348623157E308" text="%LeftHand">
                            <content>
-                              <ScrollPane fitToHeight="true" fitToWidth="true">
+                              <ScrollPane fitToHeight="true" fitToWidth="true" maxHeight="1.7976931348623157E308">
                                  <content>
-                                            <VBox alignment="TOP_CENTER" maxWidth="-Infinity" prefHeight="509.0" prefWidth="450.0" spacing="5.0">
+                                            <VBox alignment="TOP_CENTER" maxHeight="1.7976931348623157E308" maxWidth="-Infinity" prefHeight="509.0" prefWidth="450.0" spacing="5.0">
                                                 <children>
                                                     <VBox fx:id="VLeftThumb" managed="false" minHeight="-Infinity" minWidth="-Infinity" prefHeight="91.0" prefWidth="252.0" spacing="10.0" style="-fx-border-color: gray;" visible="false">
                                                         <VBox.margin>

@@ -2,5 +2,5 @@ project.ext.moduleName = 'bw.workflow.citizenenrollment'
 
 dependencies {
     implementation project(':bw.workflow.commons')
-    implementation project(':bw.workflow.biometricsexception')
+    implementation project(':bw.workflow.searchbyfaceimage')
 }
