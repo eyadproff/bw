@@ -34,7 +34,7 @@ public class FingerprintVerificationWorkflowTask extends WorkflowTask {
             matchingResponse = new MatchingResponse(true, personInfo);
         }
         else {
-			if ("B003-0021".equals(taskResponse.getErrorCode())) // not matched
+			if ("B003-0005".equals(taskResponse.getErrorCode())) // not matched
 			{
                 matchingResponse = new MatchingResponse(false, null);
 			}

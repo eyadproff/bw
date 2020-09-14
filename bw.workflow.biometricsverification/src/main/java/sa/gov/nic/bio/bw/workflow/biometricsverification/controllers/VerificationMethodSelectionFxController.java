@@ -25,7 +25,7 @@ public class VerificationMethodSelectionFxController extends WizardStepFxControl
 
     @FXML private RadioButton rbByFingerprint;
     @FXML private RadioButton rbByFacePhoto;
-    @FXML private Button btnPrevious;
+    @FXML private Button btnStartOver;
     @FXML private Button btnNext;
 
     private boolean minusSteps = false;

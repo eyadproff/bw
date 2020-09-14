@@ -411,11 +411,11 @@ public class EditMissingFingerprintFXController extends WizardStepFxControllerBa
 
         }
         else {
-            chbRightThumb.setDisable(false);
-            chbRightIndex.setDisable(false);
-            chbRightMiddle.setDisable(false);
-            chbRightRing.setDisable(false);
-            chbRightLittle.setDisable(false);
+            if (!chbRightThumb.isSelected()) { chbRightThumb.setDisable(false); }
+            if (!chbRightIndex.isSelected()) { chbRightIndex.setDisable(false); }
+            if (!chbRightMiddle.isSelected()) { chbRightMiddle.setDisable(false); }
+            if (!chbRightRing.isSelected()) { chbRightRing.setDisable(false); }
+            if (!chbRightLittle.isSelected()) { chbRightLittle.setDisable(false); }
 
             VRightHand.setDisable(true);
         }
@@ -431,11 +431,11 @@ public class EditMissingFingerprintFXController extends WizardStepFxControllerBa
 
         }
         else {
-            chbLeftThumb.setDisable(false);
-            chbLeftIndex.setDisable(false);
-            chbLeftMiddle.setDisable(false);
-            chbLeftRing.setDisable(false);
-            chbLeftLittle.setDisable(false);
+            if (!chbLeftThumb.isSelected()) { chbLeftThumb.setDisable(false); }
+            if (!chbLeftIndex.isSelected()) { chbLeftIndex.setDisable(false); }
+            if (!chbLeftMiddle.isSelected()) { chbLeftMiddle.setDisable(false); }
+            if (!chbLeftRing.isSelected()) { chbLeftRing.setDisable(false); }
+            if (!chbLeftLittle.isSelected()) { chbLeftLittle.setDisable(false); }
 
             VLeftHand.setDisable(true);
         }

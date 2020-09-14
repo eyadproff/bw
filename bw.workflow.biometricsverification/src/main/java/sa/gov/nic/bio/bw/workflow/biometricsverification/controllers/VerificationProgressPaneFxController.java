@@ -75,7 +75,7 @@ public class VerificationProgressPaneFxController extends WizardStepFxController
     @Override
     public void onShowingProgress(boolean bShow) {
         GuiUtils.showNode(btnStartOver, !bShow);
-       // GuiUtils.showNode(btnPrevious, !bShow);
+        GuiUtils.showNode(btnPrevious, !bShow);
         GuiUtils.showNode(piProgress, bShow);
         GuiUtils.showNode(lblFingerprintVerificationInProgress,
                 bShow && verificationMethod == VerificationMethod.FINGERPRINT);

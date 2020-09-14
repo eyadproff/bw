@@ -120,18 +120,23 @@ public class SingleFingerprintCapturingFxController extends WizardStepFxControll
 		}, paneControlsOuterContainer.viewportBoundsProperty()));
 
 		if (selectedFingerprintPosition == null) {
-			SELECT_FINGER_POSITION:if(exceptionOfFingerprints!=null){
-			   if (!exceptionOfFingerprints.contains(2)) { selectedFingerprintPosition = FingerPosition.RIGHT_INDEX;break SELECT_FINGER_POSITION; }
-			   else if (!exceptionOfFingerprints.contains(7)) { selectedFingerprintPosition = FingerPosition.LEFT_INDEX;break SELECT_FINGER_POSITION; }
-			   else if (!exceptionOfFingerprints.contains(1)) { selectedFingerprintPosition = FingerPosition.RIGHT_THUMB; break SELECT_FINGER_POSITION;}
-			   else if (!exceptionOfFingerprints.contains(6)) { selectedFingerprintPosition = FingerPosition.LEFT_THUMB;break SELECT_FINGER_POSITION; }
-			   else if (!exceptionOfFingerprints.contains(3)) { selectedFingerprintPosition = FingerPosition.RIGHT_MIDDLE;break SELECT_FINGER_POSITION; }
-			   else if (!exceptionOfFingerprints.contains(8)) { selectedFingerprintPosition = FingerPosition.LEFT_MIDDLE;break SELECT_FINGER_POSITION; }
-			   else if (!exceptionOfFingerprints.contains(4)) { selectedFingerprintPosition = FingerPosition.RIGHT_RING;break SELECT_FINGER_POSITION; }
-			   else if (!exceptionOfFingerprints.contains(9)) { selectedFingerprintPosition = FingerPosition.LEFT_RING;break SELECT_FINGER_POSITION; }
-			   else if (!exceptionOfFingerprints.contains(5)) { selectedFingerprintPosition = FingerPosition.RIGHT_LITTLE;break SELECT_FINGER_POSITION; }
-			   else if (!exceptionOfFingerprints.contains(10)) { selectedFingerprintPosition = FingerPosition.LEFT_LITTLE;break SELECT_FINGER_POSITION; }
-		}else {selectedFingerprintPosition = FingerPosition.RIGHT_INDEX;}
+			if (exceptionOfFingerprints != null) {
+				if (!exceptionOfFingerprints.contains(2)) { selectedFingerprintPosition = FingerPosition.RIGHT_INDEX; }
+				else if (!exceptionOfFingerprints.contains(7)) { selectedFingerprintPosition = FingerPosition.LEFT_INDEX; }
+				else if (!exceptionOfFingerprints.contains(1)) { selectedFingerprintPosition = FingerPosition.RIGHT_THUMB;}
+				else if (!exceptionOfFingerprints.contains(6)) { selectedFingerprintPosition = FingerPosition.LEFT_THUMB; }
+				else if (!exceptionOfFingerprints.contains(3)) { selectedFingerprintPosition = FingerPosition.RIGHT_MIDDLE; }
+				else if (!exceptionOfFingerprints.contains(8)) { selectedFingerprintPosition = FingerPosition.LEFT_MIDDLE; }
+				else if (!exceptionOfFingerprints.contains(4)) { selectedFingerprintPosition = FingerPosition.RIGHT_RING; }
+				else if (!exceptionOfFingerprints.contains(9)) { selectedFingerprintPosition = FingerPosition.LEFT_RING; }
+				else if (!exceptionOfFingerprints.contains(5)) { selectedFingerprintPosition = FingerPosition.RIGHT_LITTLE; }
+				else if (!exceptionOfFingerprints.contains(10)) { selectedFingerprintPosition = FingerPosition.LEFT_LITTLE; }
+				else {
+					showWarningNotification(resources.getString("AllFingerMissingWarning"));
+					selectedFingerprintPosition = FingerPosition.RIGHT_INDEX;
+				}
+			}
+			else {selectedFingerprintPosition = FingerPosition.RIGHT_INDEX;}
 		}
 
 		activateFingerprint(selectedFingerprintPosition);
@@ -791,5 +796,6 @@ public class SingleFingerprintCapturingFxController extends WizardStepFxControll
 		GuiUtils.showNode(svgRightMiddle, fingerPosition == FingerPosition.RIGHT_MIDDLE);
 		GuiUtils.showNode(svgRightIndex, fingerPosition == FingerPosition.RIGHT_INDEX);
 		GuiUtils.showNode(svgRightThumb, fingerPosition == FingerPosition.RIGHT_THUMB);
+
 	}
 }

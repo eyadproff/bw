@@ -15,7 +15,7 @@ import sa.gov.nic.bio.bw.workflow.commons.lookups.CountriesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.DocumentTypesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.PersonTypesLookup;
 import sa.gov.nic.bio.bw.workflow.searchbyfaceimage.beans.Candidate;
-import sa.gov.nic.bio.bw.workflow.searchbyfaceimage.tasks.SearchByFacePhotoWorkflowTask;
+import sa.gov.nic.bio.bw.workflow.citizenenrollment.tasks.SearchByFacePhotoWorkflowTask;
 
 import java.time.Instant;
 import java.util.ArrayList;

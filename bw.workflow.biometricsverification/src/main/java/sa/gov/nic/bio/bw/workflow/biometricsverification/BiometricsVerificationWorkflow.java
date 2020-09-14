@@ -135,11 +135,15 @@ public class BiometricsVerificationWorkflow extends WizardWorkflowBase {
                         "verificationMethod");
 
                 setData(VerificationProgressPaneFxController.class, "verificationMethod", verificationMethod);
+                //solve go previous problem: incrementNSteps before render
+                if (VerificationMethod.FINGERPRINT.equals(verificationMethod)) {
+                    incrementNSteps(-2); // to skip steps #3 #4 on going previous
+                }
 
                 renderUiAndWaitForUserInput(VerificationProgressPaneFxController.class);
 
                 if (VerificationMethod.FINGERPRINT.equals(verificationMethod)) {
-                    incrementNSteps(-2); // to skip steps #3 #4 on going previous
+//                    incrementNSteps(-2); // to skip steps #3 #4 on going previous
 
                     FingerPosition selectedFingerprintPosition = getData(SingleFingerprintCapturingFxController.class,
                             "selectedFingerprintPosition");

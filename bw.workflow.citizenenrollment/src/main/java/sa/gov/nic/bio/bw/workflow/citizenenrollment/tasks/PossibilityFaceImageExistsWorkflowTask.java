@@ -25,18 +25,24 @@ public class PossibilityFaceImageExistsWorkflowTask extends WorkflowTask {
 
         int score = Integer.parseInt(
                 Context.getConfigManager().getProperty("registerCitizen.faceSearch.score"));
-        for (Candidate candidate : candidates) {
-            if (score < candidate.getScore()) {
-                String headerText = Context.getGuiLanguage() == GuiLanguage.ARABIC?"تنبيه لإحتمالية وجود تطابق في صورة الوجه":"Alert ! there is a Possibility the FaceImage Exists";
-                String contentText = Context.getGuiLanguage() == GuiLanguage.ARABIC?" هل أنت متأكد من أنك تريد إكمال عملية التسجيل":"Are you sure you want to complete?";
-                boolean confirmed = Context.getCoreFxController().showConfirmationDialogAndWait(headerText, contentText);
+        if (candidates != null) {
+            for (Candidate candidate : candidates) {
+                if (score < candidate.getScore()) {
+                    String headerText =
+                            Context.getGuiLanguage() == GuiLanguage.ARABIC ? "تنبيه لإحتمالية وجود تطابق في صورة الوجه في قواعد البيانات !!" : "Alert ! there is a Possibility the FaceImage Exists";
+                    String contentText = Context.getGuiLanguage() == GuiLanguage.ARABIC ? " هل أنت متأكد من أنك تريد إكمال عملية التسجيل" : "Are you sure you want to complete?";
+                    boolean confirmed = Context.getCoreFxController().showConfirmationDialogAndWait(headerText, contentText);
 
-                if (confirmed) {
-                    ignorePossibilityAndCompleteWorkflow=true;
+                    if (confirmed) {
+                        ignorePossibilityAndCompleteWorkflow = true;
+                    }
+                    else { ignorePossibilityAndCompleteWorkflow = false; }
+                    break;
                 }
             }
         }
-        ignorePossibilityAndCompleteWorkflow=false;
+        else { ignorePossibilityAndCompleteWorkflow = true; }
+
 
     }
 }

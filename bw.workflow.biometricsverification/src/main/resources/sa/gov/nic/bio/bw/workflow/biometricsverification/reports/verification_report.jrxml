@@ -98,10 +98,10 @@
 				<textElement textAlignment="Right">
 					<font fontName="CustomFont" size="13" isBold="true"/>
 				</textElement>
-				<text><![CDATA[تطوير مركز التميز لنظم السمات الحيوية]]></text>
+				<text><![CDATA[تطوير مركز المعلومات الوطني]]></text>
 			</staticText>
 			<line>
-				<reportElement x="380" y="81" width="171" height="1" uuid="92b666d9-f9b2-4b05-a807-4443ef75d926"/>
+				<reportElement x="385" y="81" width="171" height="1" uuid="92b666d9-f9b2-4b05-a807-4443ef75d926"/>
 			</line>
 			<staticText>
 				<reportElement x="380" y="59" width="173" height="22" uuid="9e2964d7-a036-481e-ae25-6fa3f1cfa826">
@@ -369,7 +369,7 @@
 				<text><![CDATA[تم التحقق بواسطة : ]]></text>
 			</staticText>
 			<textField evaluationTime="Report" isBlankWhenNull="true">
-				<reportElement key="" x="182" y="244" width="254" height="27" uuid="a260eefe-b2a8-4c3f-a12b-aa8d81fcab58">
+				<reportElement key="" x="180" y="242" width="254" height="27" uuid="a260eefe-b2a8-4c3f-a12b-aa8d81fcab58">
 					<property name="com.jaspersoft.studio.unit.rightIndent" value="px"/>
 					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>

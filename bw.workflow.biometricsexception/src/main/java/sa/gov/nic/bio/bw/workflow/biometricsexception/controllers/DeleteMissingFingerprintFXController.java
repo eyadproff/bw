@@ -451,7 +451,7 @@ public class DeleteMissingFingerprintFXController extends WizardStepFxController
         }
         else {
             VRightThumb.setStyle("-fx-border-color:gray");
-            chbRightHand.setSelected(false);
+           // chbRightHand.setSelected(false);
 
         }
         if (chbRightIndex.isSelected()) {
@@ -460,7 +460,7 @@ public class DeleteMissingFingerprintFXController extends WizardStepFxController
         }
         else {
             VRightIndexFinger.setStyle("-fx-border-color:gray");
-            chbRightHand.setSelected(false);
+          //  chbRightHand.setSelected(false);
         }
         if (chbRightMiddle.isSelected()) {
             numChBox++;
@@ -468,7 +468,7 @@ public class DeleteMissingFingerprintFXController extends WizardStepFxController
         }
         else {
             VRightMiddleFinger.setStyle("-fx-border-color:gray");
-            chbRightHand.setSelected(false);
+           // chbRightHand.setSelected(false);
         }
         if (chbRightRing.isSelected()) {
             numChBox++;
@@ -476,7 +476,7 @@ public class DeleteMissingFingerprintFXController extends WizardStepFxController
         }
         else {
             VRightRingFinger.setStyle("-fx-border-color:gray");
-            chbRightHand.setSelected(false);
+          //  chbRightHand.setSelected(false);
         }
         if (chbRightLittle.isSelected()) {
             numChBox++;
@@ -484,7 +484,7 @@ public class DeleteMissingFingerprintFXController extends WizardStepFxController
         }
         else {
             VRightLittleFinger.setStyle("-fx-border-color:gray");
-            chbRightHand.setSelected(false);
+           // chbRightHand.setSelected(false);
         }
 
 
@@ -494,7 +494,7 @@ public class DeleteMissingFingerprintFXController extends WizardStepFxController
         }
         else {
             VLeftThumb.setStyle("-fx-border-color:gray");
-            chbLeftHand.setSelected(false);
+           // chbLeftHand.setSelected(false);
         }
         if (chbLeftIndex.isSelected()) {
             numChBox++;
@@ -502,7 +502,7 @@ public class DeleteMissingFingerprintFXController extends WizardStepFxController
         }
         else {
             VLeftIndexFinger.setStyle("-fx-border-color:gray");
-            chbLeftHand.setSelected(false);
+          //  chbLeftHand.setSelected(false);
         }
         if (chbLeftMiddle.isSelected()) {
             numChBox++;
@@ -510,7 +510,7 @@ public class DeleteMissingFingerprintFXController extends WizardStepFxController
         }
         else {
             VLeftMiddleFinger.setStyle("-fx-border-color:gray");
-            chbLeftHand.setSelected(false);
+          //  chbLeftHand.setSelected(false);
         }
         if (chbLeftRing.isSelected()) {
             numChBox++;
@@ -518,7 +518,7 @@ public class DeleteMissingFingerprintFXController extends WizardStepFxController
         }
         else {
             VLeftRingFinger.setStyle("-fx-border-color:gray");
-            chbLeftHand.setSelected(false);
+           // chbLeftHand.setSelected(false);
         }
         if (chbLeftLittle.isSelected()) {
             numChBox++;
@@ -526,7 +526,7 @@ public class DeleteMissingFingerprintFXController extends WizardStepFxController
         }
         else {
             VLeftLittleFinger.setStyle("-fx-border-color:gray");
-            chbLeftHand.setSelected(false);
+          //  chbLeftHand.setSelected(false);
         }
 
         if (numChBox > 0) { btnNext.setDisable(false); }

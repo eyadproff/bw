@@ -39,18 +39,18 @@ public class inquiryMethodSelectionFxController extends WizardStepFxControllerBa
 
         // load the old state, if exists
         if (InquiryMethod.FINGERPRINT.equals(inquiryMethod)) {
-            rbByFingerprint.setSelected(true);
-            rbByFingerprint.requestFocus();
+//            rbByFingerprint.setSelected(true);
+//            rbByFingerprint.requestFocus();
             minusStep = true;
         }
         else if (InquiryMethod.IRIS.equals(inquiryMethod)) {
-            rbByIris.setSelected(true);
-            rbByIris.requestFocus();
+//            rbByIris.setSelected(true);
+//            rbByIris.requestFocus();
             minus2Steps = true;
         }
         else {
-            rbByFacePhoto.setSelected(true);
-            rbByFacePhoto.requestFocus();
+//            rbByFacePhoto.setSelected(true);
+//            rbByFacePhoto.requestFocus();
         }
 
 
@@ -200,6 +200,21 @@ public class inquiryMethodSelectionFxController extends WizardStepFxControllerBa
             }
 
         });
+
+
+        // load the old state, if exists
+        if (InquiryMethod.FINGERPRINT.equals(inquiryMethod)) {
+            rbByFingerprint.setSelected(true);
+            rbByFingerprint.requestFocus();
+        }
+        else if (InquiryMethod.IRIS.equals(inquiryMethod)) {
+            rbByIris.setSelected(true);
+            rbByIris.requestFocus();
+        }
+        else {
+            rbByFacePhoto.setSelected(true);
+            rbByFacePhoto.requestFocus();
+        }
 
 
         DevicesRunnerGadgetPaneFxController deviceManagerGadgetPaneController =

@@ -97,7 +97,6 @@ public class ChangeFingerprintDialogFxController extends FxControllerBase
 			rdoRightThumb.selectedProperty().addListener((observable, oldValue, newValue) ->{
 													if(newValue) activateFingerprint(FingerPosition.RIGHT_THUMB);});
 
-			if (exceptionOfFingerprints != null) { disableAllMissingFingers(); }
 			activateFingerprint(currentFingerPosition);
 		});
 	}
@@ -106,16 +105,16 @@ public class ChangeFingerprintDialogFxController extends FxControllerBase
 
 		for (Integer fingerPosition:exceptionOfFingerprints)
 			switch(fingerPosition){
-		        case 10: rdoLeftLittle.setDisable(true); break;
-		        case 9: rdoLeftRing.setDisable(true); break;
-		        case 8: rdoLeftMiddle.setDisable(true); break;
-		        case 7: rdoLeftIndex.setDisable(true); break;
-		        case 6: rdoLeftThumb.setDisable(true); break;
-		        case 5: rdoRightLittle.setDisable(true); break;
-		        case 4: rdoRightRing.setDisable(true); break;
-		        case 3: rdoRightMiddle.setDisable(true); break;
-		        case 2: rdoRightIndex.setDisable(true); break;
-		        case 1: rdoRightThumb.setDisable(true); break;
+		        case 10: rdoLeftLittle.setDisable(true); GuiUtils.showNode(svgLeftLittle, true);svgLeftLittle.setDisable(true); break;
+		        case 9: rdoLeftRing.setDisable(true); GuiUtils.showNode(svgLeftRing, true);svgLeftRing.setDisable(true); break;
+		        case 8: rdoLeftMiddle.setDisable(true); GuiUtils.showNode(svgLeftMiddle, true);svgLeftMiddle.setDisable(true); break;
+		        case 7: rdoLeftIndex.setDisable(true); GuiUtils.showNode(svgLeftIndex, true);svgLeftIndex.setDisable(true); break;
+		        case 6: rdoLeftThumb.setDisable(true); GuiUtils.showNode(svgLeftThumb, true);svgLeftThumb.setDisable(true); break;
+		        case 5: rdoRightLittle.setDisable(true); GuiUtils.showNode(svgRightLittle, true);svgRightLittle.setDisable(true); break;
+		        case 4: rdoRightRing.setDisable(true); GuiUtils.showNode(svgRightRing, true);svgRightRing.setDisable(true); break;
+		        case 3: rdoRightMiddle.setDisable(true); GuiUtils.showNode(svgRightMiddle, true);svgRightMiddle.setDisable(true); break;
+		        case 2: rdoRightIndex.setDisable(true); GuiUtils.showNode(svgRightIndex, true);svgRightIndex.setDisable(true);break;
+		        case 1: rdoRightThumb.setDisable(true); GuiUtils.showNode(svgRightThumb, true);svgRightThumb.setDisable(true); break;
 		}
 
 	}
@@ -140,5 +139,7 @@ public class ChangeFingerprintDialogFxController extends FxControllerBase
 		GuiUtils.showNode(svgRightMiddle, fingerPosition == FingerPosition.RIGHT_MIDDLE);
 		GuiUtils.showNode(svgRightIndex, fingerPosition == FingerPosition.RIGHT_INDEX);
 		GuiUtils.showNode(svgRightThumb, fingerPosition == FingerPosition.RIGHT_THUMB);
+
+		if (exceptionOfFingerprints != null && exceptionOfFingerprints.size()>0) { disableAllMissingFingers(); }
 	}
 }

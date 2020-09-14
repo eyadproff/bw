@@ -252,6 +252,7 @@
         - services-gateway-lookups/api/application/nationality/all/v1
         - services-gateway-biooperation/api/face/verify/v1
         - services-gateway-biooperation/api/fingerprint/verify/v1
+        -services-gateway-biooperation/api/enrollment/biometrics/exclusion/retrieve/v1
         - services-gateway-lookups/api/application/person-type/v1
         - services-gateway-lookups/api/application/id-types/v1
         - services-gateway-lookups/api/application/nationality/all/v1
