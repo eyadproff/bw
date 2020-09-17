@@ -24,7 +24,7 @@ public class PossibilityFaceImageExistsWorkflowTask extends WorkflowTask {
     public void execute() throws Signal {
 
         int score = Integer.parseInt(
-                Context.getConfigManager().getProperty("registerCitizen.faceSearch.score"));
+                Context.getConfigManager().getProperty("citizenEnrollment.faceSearch.score"));
         if (candidates != null) {
             for (Candidate candidate : candidates) {
                 if (score < candidate.getScore()) {

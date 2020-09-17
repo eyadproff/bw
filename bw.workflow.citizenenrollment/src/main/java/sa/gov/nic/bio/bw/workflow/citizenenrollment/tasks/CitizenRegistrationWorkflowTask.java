@@ -7,9 +7,7 @@ import sa.gov.nic.bio.bw.core.workflow.Output;
 import sa.gov.nic.bio.bw.core.workflow.Signal;
 import sa.gov.nic.bio.bw.core.workflow.WorkflowTask;
 import sa.gov.nic.bio.bw.workflow.citizenenrollment.beans.CitizenEnrollmentInfo;
-import sa.gov.nic.bio.bw.workflow.citizenenrollment.utils.CitizenEnrollmentErrorCodes;
 import sa.gov.nic.bio.bw.workflow.citizenenrollment.webservice.CitizenEnrollmentAPI;
-import sa.gov.nic.bio.commons.TaskResponse;
 
 public class CitizenRegistrationWorkflowTask extends WorkflowTask {
     @Input(alwaysRequired = true)
@@ -17,7 +15,7 @@ public class CitizenRegistrationWorkflowTask extends WorkflowTask {
 
 
     @Output
-    private Boolean isEnrolled;
+    private Boolean isEnrollmentProcessStart;
 
     @Override
     public void execute() throws Signal {
@@ -31,7 +29,7 @@ public class CitizenRegistrationWorkflowTask extends WorkflowTask {
                                        citizenEnrollmentInfo.getGender(), null);
         var taskResponse = Context.getWebserviceManager().executeApi(apiCall);
         resetWorkflowStepIfNegativeOrNullTaskResponse(taskResponse);
-        isEnrolled = taskResponse.getResult();
+        isEnrollmentProcessStart = taskResponse.getResult();
 
 
     }

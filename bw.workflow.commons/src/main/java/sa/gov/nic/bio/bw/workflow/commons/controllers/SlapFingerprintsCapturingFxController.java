@@ -637,6 +637,7 @@ public class SlapFingerprintsCapturingFxController extends WizardStepFxControlle
 			});
 
 			if (exceptionOfFingerprints.size()>0) {
+				@SuppressWarnings("unchecked")
 				List<String> userRoles = (List<String>) Context.getUserSession().getAttribute("userRoles");
 
 				int userSkipAbility = 0;

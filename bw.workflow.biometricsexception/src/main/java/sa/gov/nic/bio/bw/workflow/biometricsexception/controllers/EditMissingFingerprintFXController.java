@@ -411,11 +411,11 @@ public class EditMissingFingerprintFXController extends WizardStepFxControllerBa
 
         }
         else {
-            if (!chbRightThumb.isSelected()) { chbRightThumb.setDisable(false); }
-            if (!chbRightIndex.isSelected()) { chbRightIndex.setDisable(false); }
-            if (!chbRightMiddle.isSelected()) { chbRightMiddle.setDisable(false); }
-            if (!chbRightRing.isSelected()) { chbRightRing.setDisable(false); }
-            if (!chbRightLittle.isSelected()) { chbRightLittle.setDisable(false); }
+            if (!Editedpersonfingerprints.getRThumb().getAlreadyAdded()) { chbRightThumb.setDisable(false); }
+            if (!Editedpersonfingerprints.getRIndex().getAlreadyAdded()) { chbRightIndex.setDisable(false); }
+            if (!Editedpersonfingerprints.getRMiddle().getAlreadyAdded()) { chbRightMiddle.setDisable(false); }
+            if (!Editedpersonfingerprints.getRRing().getAlreadyAdded()) { chbRightRing.setDisable(false); }
+            if (!Editedpersonfingerprints.getRLittle().getAlreadyAdded()) { chbRightLittle.setDisable(false); }
 
             VRightHand.setDisable(true);
         }
@@ -431,11 +431,11 @@ public class EditMissingFingerprintFXController extends WizardStepFxControllerBa
 
         }
         else {
-            if (!chbLeftThumb.isSelected()) { chbLeftThumb.setDisable(false); }
-            if (!chbLeftIndex.isSelected()) { chbLeftIndex.setDisable(false); }
-            if (!chbLeftMiddle.isSelected()) { chbLeftMiddle.setDisable(false); }
-            if (!chbLeftRing.isSelected()) { chbLeftRing.setDisable(false); }
-            if (!chbLeftLittle.isSelected()) { chbLeftLittle.setDisable(false); }
+            if (!Editedpersonfingerprints.getLThumb().getAlreadyAdded()) { chbLeftThumb.setDisable(false); }
+            if (!Editedpersonfingerprints.getLIndex().getAlreadyAdded()) { chbLeftIndex.setDisable(false); }
+            if (!Editedpersonfingerprints.getLMiddle().getAlreadyAdded()) { chbLeftMiddle.setDisable(false); }
+            if (!Editedpersonfingerprints.getLRing().getAlreadyAdded()) { chbLeftRing.setDisable(false); }
+            if (!Editedpersonfingerprints.getLLittle().getAlreadyAdded()) { chbLeftLittle.setDisable(false); }
 
             VLeftHand.setDisable(true);
         }

@@ -1,5 +1,6 @@
 package sa.gov.nic.bio.bw.workflow.citizenenrollment;
 
+import sa.gov.nic.bio.bw.core.Context;
 import sa.gov.nic.bio.bw.core.utils.Device;
 import sa.gov.nic.bio.bw.core.wizard.Step;
 import sa.gov.nic.bio.bw.core.wizard.Wizard;
@@ -14,7 +15,6 @@ import sa.gov.nic.bio.bw.workflow.commons.controllers.SlapFingerprintsCapturingF
 import sa.gov.nic.bio.bw.workflow.commons.lookups.CountriesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.DocumentTypesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.PersonTypesLookup;
-import sa.gov.nic.bio.bw.workflow.searchbyfaceimage.beans.Candidate;
 import sa.gov.nic.bio.bw.workflow.citizenenrollment.tasks.SearchByFacePhotoWorkflowTask;
 
 import java.time.Instant;
@@ -71,10 +71,7 @@ public class CitizenEnrollmentWorkflow extends WizardWorkflowBase {
                         (((NormalizedPersonInfo) getData(ShowingPersonInfoFxController.class, "normalizedPersonInfo"))
                                 .getPersonId()).intValue());
 
-//               Long id=getData(PersonIdPaneFxController.class,"personId");
-//               setData(RetrieveBioExclusionsWorkflowTask.class,"samisId",id.intValue());
                 executeWorkflowTask(RetrieveBioExclusionsWorkflowTask.class);
-
 
 
                 break;
@@ -94,30 +91,46 @@ public class CitizenEnrollmentWorkflow extends WizardWorkflowBase {
                     }
                 }
 
+                boolean acceptBadQualityFingerprint = "true".equals(Context.getConfigManager().getProperty(
+                        "citizenEnrollment.fingerprint.acceptBadQualityFingerprint"));
+                int acceptBadQualityFingerprintMinRetries = Integer.parseInt(Context.getConfigManager().getProperty(
+                        "citizenEnrollment.fingerprint.acceptBadQualityFingerprintMinRetries"));
+
+
                 setData(SlapFingerprintsCapturingFxController.class, "exceptionOfFingerprints",
                         exceptionOfFingerprints);
                 setData(SlapFingerprintsCapturingFxController.class, "hideCheckBoxOfMissing", Boolean.TRUE);
-              //  setData(SlapFingerprintsCapturingFxController.class, "allow9MissingWithNoRole", Boolean.TRUE);
+                //  setData(SlapFingerprintsCapturingFxController.class, "allow9MissingWithNoRole", Boolean.TRUE);
+                setData(SlapFingerprintsCapturingFxController.class, "acceptBadQualityFingerprintMinRetires",
+                        acceptBadQualityFingerprintMinRetries);
+                setData(SlapFingerprintsCapturingFxController.class, "acceptBadQualityFingerprint",
+                        acceptBadQualityFingerprint);
+
                 renderUiAndWaitForUserInput(SlapFingerprintsCapturingFxController.class);
 
 
                 break;
             }
             case 3: {
-                //face Exception
+
+                boolean acceptBadQualityFace = "true".equals(Context.getConfigManager().getProperty(
+                        "citizenEnrollment.fingerprint.acceptBadQualityFace"));
+                int acceptBadQualityFaceMinRetries = Integer.parseInt(Context.getConfigManager().getProperty(
+                        "citizenEnrollment.fingerprint.acceptBadQualityFaceMinRetries"));
+
 
                 List<BioExclusion> bioExclusion = getData(RetrieveBioExclusionsWorkflowTask.class, "bioExclusionList");
                 if (bioExclusion != null) {
                     for (BioExclusion bioExc : bioExclusion) {
                         if (bioExc.getStatus() == 0 && bioExc.getBioType() == 3 &&
                             bioExc.getExpireDate() > Instant.now().getEpochSecond()) {
-                            setData(FaceCapturingFxController.class, "acceptBadQualityFace", Boolean.TRUE);
-                            setData(FaceCapturingFxController.class, "acceptBadQualityFaceMinRetries", 0);
+                            setData(FaceCapturingFxController.class, "acceptBadQualityFace", acceptBadQualityFace);
+                            setData(FaceCapturingFxController.class, "acceptBadQualityFaceMinRetries", acceptBadQualityFaceMinRetries);
                             break;
                         }
                     }
                 }
-                setData(FaceCapturingFxController.class, "imageExtension", "jpg");
+                setData(FaceCapturingFxController.class, "imageForEnrollment", true);
                 renderUiAndWaitForUserInput(FaceCapturingFxController.class);
 
 
@@ -160,16 +173,16 @@ public class CitizenEnrollmentWorkflow extends WizardWorkflowBase {
                 }
                 renderUiAndWaitForUserInput(ReviewAndSubmitPaneFxController.class);
 
-                List<Integer> missingFingerprints = getData(SlapFingerprintsCapturingFxController.class, "missingFingerprints");
-                if(missingFingerprints.size()>=10) {
-                    passData(FaceCapturingFxController.class, SearchByFacePhotoWorkflowTask.class,
-                            "facePhotoBase64");
-                    executeWorkflowTask(SearchByFacePhotoWorkflowTask.class);
-                    passData(SearchByFacePhotoWorkflowTask.class, PossibilityFaceImageExistsWorkflowTask.class, "candidates");
-                    executeWorkflowTask(PossibilityFaceImageExistsWorkflowTask.class);
-                    passData(PossibilityFaceImageExistsWorkflowTask.class, ReviewAndSubmitPaneFxController.class,
-                            "ignorePossibilityAndCompleteWorkflow");
-                }
+//                List<Integer> missingFingerprints = getData(SlapFingerprintsCapturingFxController.class, "missingFingerprints");
+//                if (missingFingerprints.size() >= 10) {
+//                    passData(FaceCapturingFxController.class, SearchByFacePhotoWorkflowTask.class,
+//                            "facePhotoBase64");
+//                    executeWorkflowTask(SearchByFacePhotoWorkflowTask.class);
+//                    passData(SearchByFacePhotoWorkflowTask.class, PossibilityFaceImageExistsWorkflowTask.class, "candidates");
+//                    executeWorkflowTask(PossibilityFaceImageExistsWorkflowTask.class);
+//                    passData(PossibilityFaceImageExistsWorkflowTask.class, ReviewAndSubmitPaneFxController.class,
+//                            "ignorePossibilityAndCompleteWorkflow");
+//                }
                 break;
             }
 
@@ -187,7 +200,7 @@ public class CitizenEnrollmentWorkflow extends WizardWorkflowBase {
                             "citizenEnrollmentInfo");
                     executeWorkflowTask(CitizenRegistrationWorkflowTask.class);
                     passData(CitizenRegistrationWorkflowTask.class, RegisteringCitizenPaneFxController.class,
-                            "isEnrolled");
+                            "isEnrollmentProcessStart");
                 }
                 else if (request == RegisteringCitizenPaneFxController.Request.CHECK_CITIZEN_REGISTRATION) {
                     setData(CheckCitizenRegistrationWorkflowTask.class, "personId",

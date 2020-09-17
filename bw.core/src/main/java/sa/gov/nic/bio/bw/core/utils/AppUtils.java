@@ -635,9 +635,25 @@ public final class AppUtils implements AppLogger
 		BufferedImage newImage = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
 		int[] rgb = bufferedImage.getRGB(0, 0, w, h, null, 0, w);
 		newImage.setRGB(0, 0, w, h, rgb, 0, w);
-		
+
 		ImageIO.write(newImage, "png", byteOutput);
 		byte[] bytes = byteOutput.toByteArray();
+		return bytesToBase64(bytes);
+	}
+
+	public static String enrollmentImageToBase64(Image image) throws IOException {
+		ByteArrayOutputStream byteOutput = new ByteArrayOutputStream();
+		BufferedImage bufferedImage = SwingFXUtils.fromFXImage(image, null);
+
+		int w = bufferedImage.getWidth();
+		int h = bufferedImage.getHeight();
+		BufferedImage newImage = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
+		int[] rgb = bufferedImage.getRGB(0, 0, w, h, null, 0, w);
+		newImage.setRGB(0, 0, w, h, rgb, 0, w);
+
+		ImageIO.write(newImage, "jpeg", byteOutput);
+		byte[] bytes = byteOutput.toByteArray();
+
 		return bytesToBase64(bytes);
 	}
 	

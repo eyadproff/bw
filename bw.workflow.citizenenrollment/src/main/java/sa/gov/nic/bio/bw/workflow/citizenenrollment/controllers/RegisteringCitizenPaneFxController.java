@@ -32,7 +32,7 @@ public class RegisteringCitizenPaneFxController extends WizardStepFxControllerBa
     @Input(alwaysRequired = true)
     private Boolean skipIris;
     @Input
-    private Boolean isEnrolled;
+    private Boolean isEnrollmentProcessStart;
     @Output
     private Request request;
 
@@ -72,7 +72,7 @@ public class RegisteringCitizenPaneFxController extends WizardStepFxControllerBa
     @Override
     public void onReturnFromWorkflow(boolean successfulResponse) {
         if (request == Request.SUBMIT_CITIZEN_REGISTRATION) {
-            if (successfulResponse && isEnrolled) {
+            if (successfulResponse && isEnrollmentProcessStart) {
                 CitizenLblStatus.setText(resources.getString("label.waitingCitizenRegistration"));
                 request = Request.CHECK_CITIZEN_REGISTRATION;
                 continueWorkflow();
@@ -91,7 +91,7 @@ public class RegisteringCitizenPaneFxController extends WizardStepFxControllerBa
                     Context.getExecutorService().submit(() -> {
                         try {
                             int seconds = Integer.parseInt(Context.getConfigManager().getProperty(
-                                    "registerCitizen.inquiry.checkEverySeconds"));
+                                    "citizenEnrollment.inquiry.checkEverySeconds"));
                             Thread.sleep(seconds * 1000);
                         } catch (InterruptedException e) {
                             e.printStackTrace();
