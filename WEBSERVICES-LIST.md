@@ -234,37 +234,43 @@
         - services-gateway-biooperation/api/enrollment/visa-applicant/v1
         
      menu.register.citizenEnrollment:
-        -services-gateway-demographic/api/person/info/v3
-        -services-gateway-biooperation/api/enrollment/biometrics/exclusion/retrieve/v1
-        -services-gateway-biooperation/api/enrollment/register/v1
-        -services-gateway-biooperation/api/enrollment/status/v1
-        -services-gateway-biooperation/api/iris/registration/v1
-        -services-gateway-biooperation/api/iris/registration/status/v1
+        - services-gateway-lookups/api/application/id-types/v1
+        - services-gateway-lookups/api/application/nationality/all/v1
+        - services-gateway-lookups/api/application/person-type/v1
+        - services-gateway-demographic/api/person/info/v3
+        - services-gateway-biooperation/api/enrollment/biometrics/exclusion/retrieve/v1
+        - services-gateway-biooperation/api/enrollment/register/v1
+        - services-gateway-biooperation/api/enrollment/status/v1
+        - services-gateway-biooperation/api/iris/registration/v1
+        - services-gateway-biooperation/api/iris/registration/status/v1
         - services-gateway-biooperation/api/face/search/v1
         
      menu.edit.biometricsException:
-        -services-gateway-demographic/api/person/info/v1
-        -services-gateway-biooperation/api/enrollment/biometrics/exclusion/retrieve/v1
-        -services-gateway-biooperation/api/enrollment/biometrics/exclusion/v1
-        -services-gateway-biooperation/api/enrollment/biometrics/exclusion/delete/v1
+        - services-gateway-lookups/api/application/id-types/v1
+        - services-gateway-lookups/api/application/nationality/all/v1
+        - services-gateway-lookups/api/application/person-type/v1
+        - services-gateway-demographic/api/person/info/v1
+        - services-gateway-lookups/api/bio/exclusive/causes/v1
+        - services-gateway-biooperation/api/enrollment/biometrics/exclusion/retrieve/v1
+        - services-gateway-biooperation/api/enrollment/biometrics/exclusion/v1
+        - services-gateway-biooperation/api/enrollment/biometrics/exclusion/delete/v1
         
     menu.query.biometricsVerification:
+        - services-gateway-lookups/api/application/id-types/v1
+        - services-gateway-lookups/api/application/person-type/v1
         - services-gateway-lookups/api/application/nationality/all/v1
         - services-gateway-biooperation/api/face/verify/v1
         - services-gateway-biooperation/api/fingerprint/verify/v1
-        -services-gateway-biooperation/api/enrollment/biometrics/exclusion/retrieve/v1
-        - services-gateway-lookups/api/application/person-type/v1
-        - services-gateway-lookups/api/application/id-types/v1
-        - services-gateway-lookups/api/application/nationality/all/v1
+        - services-gateway-biooperation/api/enrollment/biometrics/exclusion/retrieve/v1
         
     menu.query.biometricsInquiry:
-        - services-gateway-biooperation/api/face/search/v1
         - services-gateway-lookups/api/application/person-type/v1
         - services-gateway-lookups/api/application/id-types/v1
         - services-gateway-lookups/api/application/nationality/all/v1
+        - services-gateway-demographic/api/person/info/v1
         - services-gateway-biooperation/api/iris/identification/v1
         - services-gateway-biooperation/api/iris/identification/status/v1
-        - services-gateway-demographic/api/person/info/v1
+        - services-gateway-biooperation/api/face/search/v1
         - services-gateway-biooperation/api/fingerprint/images/v1
         - services-gateway-biooperation/api/fingerprint/available/v1
         - services-gateway-biooperation/api/fingerprint/images/v2

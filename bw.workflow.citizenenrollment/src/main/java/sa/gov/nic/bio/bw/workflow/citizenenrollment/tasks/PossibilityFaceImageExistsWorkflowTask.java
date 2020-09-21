@@ -17,7 +17,7 @@ public class PossibilityFaceImageExistsWorkflowTask extends WorkflowTask {
     @Input(alwaysRequired = true)
     private List<Candidate> candidates;
     @Output
-    private Boolean ignorePossibilityAndCompleteWorkflow;
+    private Boolean IsPossibleFaceImageExists;
 
 
     @Override
@@ -27,22 +27,10 @@ public class PossibilityFaceImageExistsWorkflowTask extends WorkflowTask {
                 Context.getConfigManager().getProperty("citizenEnrollment.faceSearch.score"));
         if (candidates != null) {
             for (Candidate candidate : candidates) {
-                if (score < candidate.getScore()) {
-                    String headerText =
-                            Context.getGuiLanguage() == GuiLanguage.ARABIC ? "تنبيه لإحتمالية وجود تطابق في صورة الوجه في قواعد البيانات !!" : "Alert ! there is a Possibility the FaceImage Exists";
-                    String contentText = Context.getGuiLanguage() == GuiLanguage.ARABIC ? " هل أنت متأكد من أنك تريد إكمال عملية التسجيل" : "Are you sure you want to complete?";
-                    boolean confirmed = Context.getCoreFxController().showConfirmationDialogAndWait(headerText, contentText);
-
-                    if (confirmed) {
-                        ignorePossibilityAndCompleteWorkflow = true;
-                    }
-                    else { ignorePossibilityAndCompleteWorkflow = false; }
-                    break;
-                }
+                if (score < candidate.getScore()) { IsPossibleFaceImageExists = true; }
+                break;
             }
         }
-        else { ignorePossibilityAndCompleteWorkflow = true; }
-
-
     }
+
 }

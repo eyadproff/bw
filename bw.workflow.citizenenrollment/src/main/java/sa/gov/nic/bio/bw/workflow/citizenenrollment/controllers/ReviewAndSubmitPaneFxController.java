@@ -52,7 +52,7 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase 
     @Input
     private String capturedLeftIrisBase64;
     @Input
-    private Boolean ignorePossibilityAndCompleteWorkflow;
+    private Boolean IsPossibleFaceImageExists;
 
     @Output
     private CitizenEnrollmentInfo citizenEnrollmentInfo;
@@ -173,9 +173,6 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase 
 
     @Override
     public void onReturnFromWorkflow(boolean successfulResponse) {
-
-        if (ignorePossibilityAndCompleteWorkflow != null && !ignorePossibilityAndCompleteWorkflow) { return; }
-
         if (successfulResponse) {
             goNext();
         }
@@ -195,7 +192,17 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase 
         boolean confirmed = Context.getCoreFxController().showConfirmationDialogAndWait(headerText, contentText);
 
         if (confirmed) {
-            continueWorkflow();
+            if (IsPossibleFaceImageExists != null && IsPossibleFaceImageExists) {
+
+                String headerPossibilityText = resources.getString("CitizenEnrollment.possibility.confirmation.header");
+                String contentPossibilityText = resources.getString("CitizenEnrollment.possibility.confirmation.message");
+                boolean possibilityConfirmed = Context.getCoreFxController().showConfirmationDialogAndWait(headerPossibilityText, contentPossibilityText);
+
+                if (possibilityConfirmed) {
+                    continueWorkflow();
+                }
+            }
+            else { continueWorkflow(); }
         }
     }
 }

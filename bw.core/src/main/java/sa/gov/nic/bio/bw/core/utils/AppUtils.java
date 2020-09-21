@@ -641,7 +641,7 @@ public final class AppUtils implements AppLogger
 		return bytesToBase64(bytes);
 	}
 
-	public static String enrollmentImageToBase64(Image image) throws IOException {
+	public static String ImageToJpegBase64(Image image) throws IOException {
 		ByteArrayOutputStream byteOutput = new ByteArrayOutputStream();
 		BufferedImage bufferedImage = SwingFXUtils.fromFXImage(image, null);
 

@@ -143,73 +143,25 @@ public class BiometricsInquiryWorkflow extends WizardWorkflowBase {
 
                     FingerprintInquiryStatusCheckerWorkflowTask.Status
                             status = getData(FingerprintInquiryStatusCheckerWorkflowTask.class, "status");
-//                    if (status == FingerprintInquiryStatusCheckerWorkflowTask.Status.HIT) {
-//                        //                        Long civilBiometricsId = getData(FingerprintInquiryStatusCheckerWorkflowTask.class,
-//                        //                                "civilBiometricsId");
-//                        //                        if (civilBiometricsId != null) {
-//                        //                            setData(getClass(), FIELD_CIVIL_HIT, Boolean.TRUE);
-//                        //                            List<Long> civilPersonIds = getData(FingerprintInquiryStatusCheckerWorkflowTask.class,
-//                        //                                    "civilPersonIds");
-//                        //                            if (!civilPersonIds.isEmpty()) {
-//                        //                                // LinkedHashMap is ordered
-//                        //                                Map<Long, PersonInfo> civilPersonInfoMap = new LinkedHashMap<>();
-//                        //
-//                        //                                for (Long civilPersonId : civilPersonIds) {
-//                        //                                    if (civilPersonId == null) { continue; }
-//                        //
-//                        //                                    PersonInfo personInfo;
-//                        //
-//                        //                                    setData(GetPersonInfoByIdWorkflowTask.class, "personId", civilPersonId);
-//                        //                                    setData(GetPersonInfoByIdWorkflowTask.class,
-//                        //                                            "returnNullResultInCaseNotFound", Boolean.TRUE);
-//                        //                                    executeWorkflowTask(GetPersonInfoByIdWorkflowTask.class);
-//                        //                                    personInfo = getData(GetPersonInfoByIdWorkflowTask.class, "personInfo");
-//                        //
-//                        //
-//                        //                                    civilPersonInfoMap.put(civilPersonId, personInfo);
-//                        //                                }
-//                        //
-//                        //                                setData(getClass(), FIELD_CIVIL_PERSON_INFO_MAP, civilPersonInfoMap);
-//                        //                            }
-//                        //                        }
-//
-//                        //one civil ID will be returned
-//                        List<Long> civilPersonIds = getData(FingerprintInquiryStatusCheckerWorkflowTask.class,
-//                                "civilPersonIds");
-//                        if (civilPersonIds != null) {
-//                            setData(GetPersonInfoByIdWorkflowTask.class, "personId", civilPersonIds.get(0));
-//                            setData(GetPersonInfoByIdWorkflowTask.class,
-//                                    "returnNullResultInCaseNotFound", Boolean.TRUE);
-//                            executeWorkflowTask(GetPersonInfoByIdWorkflowTask.class);
-//
-//                        }
-//
-//
-//                    }
 
-                    if(status == FingerprintInquiryStatusCheckerWorkflowTask.Status.HIT)
-                    {
+                    if (status == FingerprintInquiryStatusCheckerWorkflowTask.Status.HIT) {
                         Long civilBiometricsId = getData(FingerprintInquiryStatusCheckerWorkflowTask.class,
                                 "civilBiometricsId");
-                        if(civilBiometricsId != null)
-                        {
+                        if (civilBiometricsId != null) {
                             setData(getClass(), FIELD_CIVIL_HIT, Boolean.TRUE);
                             List<Long> civilPersonIds = getData(FingerprintInquiryStatusCheckerWorkflowTask.class,
                                     "civilPersonIds");
-                            if(!civilPersonIds.isEmpty())
-                            {
+                            if (!civilPersonIds.isEmpty()) {
                                 // LinkedHashMap is ordered
                                 Map<Long, PersonInfo> civilPersonInfoMap = new LinkedHashMap<>();
 
-                                for(Long civilPersonId : civilPersonIds)
-                                {
-                                    if(civilPersonId == null) continue;
+                                for (Long civilPersonId : civilPersonIds) {
+                                    if (civilPersonId == null) { continue; }
 
                                     PersonInfo personInfo;
 
                                     String sCivilPersonId = String.valueOf(civilPersonId);
-                                    if(sCivilPersonId.length() == 10 && sCivilPersonId.startsWith("9"))
-                                    {
+                                    if (sCivilPersonId.length() == 10 && sCivilPersonId.startsWith("9")) {
                                         setData(GetDeporteeInfoByIdWorkflowTask.class, "deporteeId",
                                                 civilPersonId);
                                         setData(GetDeporteeInfoByIdWorkflowTask.class,
@@ -219,8 +171,7 @@ public class BiometricsInquiryWorkflow extends WizardWorkflowBase {
                                                 "deporteeInfo");
                                         personInfo = new DeporteeInfoToPersonInfoConverter().convert(deporteeInfo);
                                     }
-                                    else
-                                    {
+                                    else {
                                         setData(GetPersonInfoByIdWorkflowTask.class, "personId", civilPersonId);
                                         setData(GetPersonInfoByIdWorkflowTask.class,
                                                 "returnNullResultInCaseNotFound", Boolean.TRUE);
@@ -284,12 +235,24 @@ public class BiometricsInquiryWorkflow extends WizardWorkflowBase {
 
                                     PersonInfo personInfo;
 
-                                    setData(GetPersonInfoByIdWorkflowTask.class, "personId", civilPersonId);
-                                    setData(GetPersonInfoByIdWorkflowTask.class,
-                                            "returnNullResultInCaseNotFound", Boolean.TRUE);
-                                    executeWorkflowTask(GetPersonInfoByIdWorkflowTask.class);
-                                    personInfo = getData(GetPersonInfoByIdWorkflowTask.class, "personInfo");
-
+                                    String sCivilPersonId = String.valueOf(civilPersonId);
+                                    if (sCivilPersonId.length() == 10 && sCivilPersonId.startsWith("9")) {
+                                        setData(GetDeporteeInfoByIdWorkflowTask.class, "deporteeId",
+                                                civilPersonId);
+                                        setData(GetDeporteeInfoByIdWorkflowTask.class,
+                                                "returnNullResultInCaseNotFound", Boolean.TRUE);
+                                        executeWorkflowTask(GetDeporteeInfoByIdWorkflowTask.class);
+                                        DeporteeInfo deporteeInfo = getData(GetDeporteeInfoByIdWorkflowTask.class,
+                                                "deporteeInfo");
+                                        personInfo = new DeporteeInfoToPersonInfoConverter().convert(deporteeInfo);
+                                    }
+                                    else {
+                                        setData(GetPersonInfoByIdWorkflowTask.class, "personId", civilPersonId);
+                                        setData(GetPersonInfoByIdWorkflowTask.class,
+                                                "returnNullResultInCaseNotFound", Boolean.TRUE);
+                                        executeWorkflowTask(GetPersonInfoByIdWorkflowTask.class);
+                                        personInfo = getData(GetPersonInfoByIdWorkflowTask.class, "personInfo");
+                                    }
 
                                     civilPersonInfoMap.put(civilPersonId, personInfo);
                                 }
@@ -298,7 +261,6 @@ public class BiometricsInquiryWorkflow extends WizardWorkflowBase {
                             }
                         }
                     }
-
                 }
                 break;
             }
@@ -307,17 +269,6 @@ public class BiometricsInquiryWorkflow extends WizardWorkflowBase {
                         "inquiryMethod");
 
                 if (InquiryMethod.FINGERPRINT.equals(inquiryMethod)) {
-
-//                    PersonInfo personInfo = getData(GetPersonInfoByIdWorkflowTask.class, "personInfo");
-//                    setData(ShowResultFxController.class, "personId", personInfo.getSamisId());
-//                    setData(ShowResultFxController.class, "facePhoto",
-//                            AppUtils.imageFromBase64(personInfo.getFace()));
-//
-//                    setData(ShowResultFxController.class, "personInfo",
-//                            personInfo);
-//                    setData(ShowResultFxController.class, "personInfo",
-//                            personInfo);
-//                    renderUiAndWaitForUserInput(ShowResultFxController.class);
 
                     passData(getClass(), FIELD_CIVIL_PERSON_INFO_MAP, InquiryByFingerprintsResultPaneFxController.class,
                             "civilPersonInfoMap");

@@ -23,7 +23,7 @@ public enum CommonImages implements JavaResource
 	LOGO_NIC("logo_nic.png"),
 	LOGO_SEMAT("logo_semat.png"),
 	LOGO_SAUDI_SECURITY("logo_saudi_security.jpg"),
-	LOGO_CIVIL_AFFAIRS("logo_civil_affairs.png"),
+	LOGO_CIVIL_AFFAIRS("logo_civil_affairs.jpg"),
 	PLACEHOLDER_AVATAR("placeholder_avatar.jpg"),
 	PLACEHOLDER_IMAGE("placeholder_image.png"),
 	PLACEHOLDER_IMAGE_SQUARE("placeholder_image_square.png"),

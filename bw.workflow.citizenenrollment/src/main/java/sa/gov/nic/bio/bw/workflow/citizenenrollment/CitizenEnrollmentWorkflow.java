@@ -173,16 +173,17 @@ public class CitizenEnrollmentWorkflow extends WizardWorkflowBase {
                 }
                 renderUiAndWaitForUserInput(ReviewAndSubmitPaneFxController.class);
 
-//                List<Integer> missingFingerprints = getData(SlapFingerprintsCapturingFxController.class, "missingFingerprints");
-//                if (missingFingerprints.size() >= 10) {
-//                    passData(FaceCapturingFxController.class, SearchByFacePhotoWorkflowTask.class,
-//                            "facePhotoBase64");
-//                    executeWorkflowTask(SearchByFacePhotoWorkflowTask.class);
-//                    passData(SearchByFacePhotoWorkflowTask.class, PossibilityFaceImageExistsWorkflowTask.class, "candidates");
-//                    executeWorkflowTask(PossibilityFaceImageExistsWorkflowTask.class);
-//                    passData(PossibilityFaceImageExistsWorkflowTask.class, ReviewAndSubmitPaneFxController.class,
-//                            "ignorePossibilityAndCompleteWorkflow");
-//                }
+                //Search for face if there is no fingerprints
+                List<Integer> missingFingerprints = getData(SlapFingerprintsCapturingFxController.class, "missingFingerprints");
+                if (missingFingerprints.size() >= 10) {
+                    passData(FaceCapturingFxController.class, SearchByFacePhotoWorkflowTask.class,
+                            "facePhotoBase64");
+                    executeWorkflowTask(SearchByFacePhotoWorkflowTask.class);
+                    passData(SearchByFacePhotoWorkflowTask.class, PossibilityFaceImageExistsWorkflowTask.class, "candidates");
+                    executeWorkflowTask(PossibilityFaceImageExistsWorkflowTask.class);
+                    passData(PossibilityFaceImageExistsWorkflowTask.class, ReviewAndSubmitPaneFxController.class,
+                            "IsPossibleFaceImageExists");
+                }
                 break;
             }
 

@@ -633,49 +633,8 @@ public class SlapFingerprintsCapturingFxController extends WizardStepFxControlle
 
 			fingerprintUiComponentsMap.forEach((position, components) -> {
 				components.getCheckBox().setVisible(false);
-
+				components.getCheckBox().setSelected(exceptionOfFingerprints == null || !exceptionOfFingerprints.contains(position));
 			});
-
-			if (exceptionOfFingerprints.size()>0) {
-				@SuppressWarnings("unchecked")
-				List<String> userRoles = (List<String>) Context.getUserSession().getAttribute("userRoles");
-
-				int userSkipAbility = 0;
-
-				if (allow9MissingWithNoRole != null && allow9MissingWithNoRole) { userSkipAbility = 9; }
-				else {
-					for (int i = 10; i >= 1; i--) {
-						String skipNRole = Context.getConfigManager().getProperty(
-								String.format(AppConstants.Locales.SAUDI_EN_LOCALE, "fingerprint.roles.skip%02d", i));
-						if (userRoles.contains(skipNRole)) {
-							userSkipAbility = i;
-							break;
-						}
-					}
-				}
-				if (userSkipAbility >= exceptionOfFingerprints.size()) // has permission
-				{
-					String headerText = resources.getString("fingerprint.skippingFingerprint.confirmation.header");
-					String contentText = exceptionOfFingerprints.size() > 1 ? String.format(
-							resources.getString("fingerprintException.skippingFingerprints.confirmation.message"),
-							exceptionOfFingerprints.size()) : resources.getString("fingerprintException.skippingFingerprint.confirmation.message");
-
-					boolean confirmed = Context.getCoreFxController().showConfirmationDialogAndWait(headerText,
-							contentText);
-					if (confirmed) {
-						fingerprintUiComponentsMap.forEach((position, components) -> {
-							components.getCheckBox().setSelected( !exceptionOfFingerprints.contains(position));
-
-						});
-					}
-				}
-				else {
-					String message;
-					message = resources.getString("fingerprintException.skippingFingerprint.notAuthorized.atAll");
-
-					showWarningNotification(message);
-				}
-			}
 		}
 	}
 	
