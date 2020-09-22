@@ -4,6 +4,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.RadioButton;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -27,6 +28,7 @@ public class VerificationMethodSelectionFxController extends WizardStepFxControl
     @FXML private RadioButton rbByFacePhoto;
     @FXML private Button btnStartOver;
     @FXML private Button btnNext;
+    @FXML private ProgressIndicator piProgress;
 
     private boolean minusSteps = false;
 
@@ -43,7 +45,6 @@ public class VerificationMethodSelectionFxController extends WizardStepFxControl
             rbByFacePhoto.setSelected(true);
             rbByFacePhoto.requestFocus();
         }
-
 
 
         // go next on pressing ENTER on the radio buttons
@@ -136,10 +137,17 @@ public class VerificationMethodSelectionFxController extends WizardStepFxControl
     }
 
     @FXML
-    protected void onNextButtonClicked(ActionEvent actionEvent)
-    {
+    protected void onNextButtonClicked(ActionEvent actionEvent) {
         continueWorkflow();
     }
+
+    @Override
+    public void onShowingProgress(boolean bShow) {
+        piProgress.setVisible(bShow);
+        btnNext.setDisable(bShow);
+        btnStartOver.setDisable(bShow);
+    }
+
     @Override
     public void onReturnFromWorkflow(boolean successfulResponse) {
 

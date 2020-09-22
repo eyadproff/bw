@@ -4,6 +4,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.RadioButton;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -23,6 +24,8 @@ public class ServiceTypeFXController extends WizardStepFxControllerBase {
     private RadioButton rbAddOrEdit;
     @FXML
     private RadioButton rbDelete;
+    @FXML
+    private ProgressIndicator piProgress;
     @FXML
     private Button btnPrevious;
     @FXML
@@ -93,6 +96,13 @@ public class ServiceTypeFXController extends WizardStepFxControllerBase {
     public void onGoingNext(Map<String, Object> uiDataMap) {
         if (rbDelete.isSelected()) { serviceType = ServiceTypeFXController.ServiceType.DELETE_FINGERPRINTS; }
         else { serviceType = ServiceTypeFXController.ServiceType.ADD_OR_EDIT_FINGERPRINTS; }
+    }
+
+    @Override
+    public void onShowingProgress(boolean bShow) {
+        piProgress.setVisible(bShow);
+        btnNext.setDisable(bShow);
+        btnPrevious.setDisable(bShow);
     }
 
     @Override

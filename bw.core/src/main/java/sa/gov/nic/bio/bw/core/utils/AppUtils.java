@@ -31,14 +31,7 @@ import sa.gov.nic.bio.bw.core.webservice.WebserviceManager;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.lang.module.ModuleReference;
 import java.lang.reflect.*;
 import java.net.URI;
@@ -641,7 +634,7 @@ public final class AppUtils implements AppLogger
 		return bytesToBase64(bytes);
 	}
 
-	public static String ImageToJpegBase64(Image image) throws IOException {
+	public static String imageToJpegBase64(Image image) throws IOException {
 		ByteArrayOutputStream byteOutput = new ByteArrayOutputStream();
 		BufferedImage bufferedImage = SwingFXUtils.fromFXImage(image, null);
 

@@ -3,13 +3,16 @@ package sa.gov.nic.bio.bw.workflow.biometricsexception.controllers;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ProgressIndicator;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.SVGPath;
 import sa.gov.nic.bio.bw.core.Context;
 import sa.gov.nic.bio.bw.core.controllers.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.core.utils.FxmlFile;
 import sa.gov.nic.bio.bw.core.utils.GuiLanguage;
+import sa.gov.nic.bio.bw.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.core.workflow.Input;
 import sa.gov.nic.bio.bw.core.workflow.Output;
 import sa.gov.nic.bio.bw.workflow.biometricsexception.beans.BioExclusion;
@@ -106,13 +109,19 @@ public class ReviewAndSubmitFXController extends WizardStepFxControllerBase {
 
     @FXML
     private Label RightMExist, LeftMExist;
+    @FXML
+    private ProgressIndicator piProgress;
+    @FXML
+    private Button btnPrevious;
+    @FXML
+    private Button btnSubmit;
 
     @Override
     protected void onAttachedToScene() {
         PersonName.setText(normalizedPersonInfo.getFirstName() + " " + normalizedPersonInfo.getFatherName() + " " +
                            normalizedPersonInfo.getFamilyName());
-        PersonID.setText(normalizedPersonInfo.getPersonId().toString());
-
+        //        PersonID.setText(normalizedPersonInfo.getPersonId().toString());
+        GuiUtils.setLabelText(PersonID, normalizedPersonInfo.getPersonId());
 
         checkMissingfingers();
 
@@ -207,8 +216,8 @@ public class ReviewAndSubmitFXController extends WizardStepFxControllerBase {
 
     }
 
-    @Override
-    protected void onNextButtonClicked(ActionEvent actionEvent) {
+    @FXML
+    protected void onSubmitButtonClicked(ActionEvent actionEvent) {
         if (serviceType.equals(ServiceType.ADD_OR_EDIT_FINGERPRINTS)) {
             EditedBioExclusionsList = new ArrayList<BioExclusion>();
             for (BioExclusion bioex : BioExclusionsList) {
@@ -218,6 +227,13 @@ public class ReviewAndSubmitFXController extends WizardStepFxControllerBase {
         }
         // super.onNextButtonClicked(actionEvent);
         continueWorkflow();
+    }
+
+    @Override
+    public void onShowingProgress(boolean bShow) {
+        GuiUtils.showNode(btnPrevious, !bShow);
+        GuiUtils.showNode(btnSubmit, !bShow);
+        GuiUtils.showNode(piProgress, bShow);
     }
 
     @Override

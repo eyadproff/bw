@@ -320,7 +320,7 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 
 			if(facePhoto != null) {
 				if (isImageForEnrollment != null && isImageForEnrollment)
-					facePhotoBase64 = AppUtils.ImageToJpegBase64(facePhoto);
+					facePhotoBase64 = AppUtils.imageToJpegBase64(facePhoto);
 				else
 					facePhotoBase64 = AppUtils.imageToBase64(facePhoto);
 			}else {

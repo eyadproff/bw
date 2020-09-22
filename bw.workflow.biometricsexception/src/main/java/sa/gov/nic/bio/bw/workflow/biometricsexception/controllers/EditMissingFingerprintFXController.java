@@ -764,38 +764,50 @@ public class EditMissingFingerprintFXController extends WizardStepFxControllerBa
     protected void onNextButtonClicked(ActionEvent actionEvent) {
 
 
-        if(chbRightHand.isSelected()){
+        if (chbRightHand.isSelected()) {
+
+            if (isEmpty(CMenuRHand, TGRHand, CouseTRHand)) { return; }
             PrepareExceptionToBackend(CMenuRHand, TGRHand, CouseTRHand, Editedpersonfingerprints.getRThumb(), 1);
             PrepareExceptionToBackend(CMenuRHand, TGRHand, CouseTRHand, Editedpersonfingerprints.getRIndex(), 2);
             PrepareExceptionToBackend(CMenuRHand, TGRHand, CouseTRHand, Editedpersonfingerprints.getRMiddle(), 3);
             PrepareExceptionToBackend(CMenuRHand, TGRHand, CouseTRHand, Editedpersonfingerprints.getRRing(), 4);
             PrepareExceptionToBackend(CMenuRHand, TGRHand, CouseTRHand, Editedpersonfingerprints.getRLittle(), 5);
 
-        }else
-        {
+        }
+        else {
             if (chbRightThumb.isSelected()) {
+
+                if (isEmpty(CMenuRThumb, TGRThumb, CouseTRThumb)) { return; }
                 PrepareExceptionToBackend(CMenuRThumb, TGRThumb, CouseTRThumb, Editedpersonfingerprints.getRThumb(), 1);
             }
             else { Editedpersonfingerprints.setRThumb(new Fingerprint()); }
 
             if (chbRightIndex.isSelected()) {
+
+                if (isEmpty(CMenuRIndex, TGRIndex, CouseTRIndex)) { return; }
                 PrepareExceptionToBackend(CMenuRIndex, TGRIndex, CouseTRIndex, Editedpersonfingerprints.getRIndex(), 2);
             }
             else { Editedpersonfingerprints.setRIndex(new Fingerprint()); }
 
             if (chbRightMiddle.isSelected()) {
+
+                if (isEmpty(CMenuRMiddle, TGRMiddle, CouseTRMiddle)) { return; }
                 PrepareExceptionToBackend(CMenuRMiddle, TGRMiddle, CouseTRMiddle, Editedpersonfingerprints.getRMiddle(),
                         3);
             }
             else { Editedpersonfingerprints.setRMiddle(new Fingerprint()); }
 
             if (chbRightRing.isSelected()) {
+
+                if (isEmpty(CMenuRRing, TGRRing, CouseTRRing)) { return; }
                 PrepareExceptionToBackend(CMenuRRing, TGRRing, CouseTRRing, Editedpersonfingerprints.getRRing(), 4);
 
             }
             else { Editedpersonfingerprints.setRRing(new Fingerprint()); }
 
             if (chbRightLittle.isSelected()) {
+
+                if (isEmpty(CMenuRLittle, TGRLittle, CouseTRLittle)) { return; }
                 PrepareExceptionToBackend(CMenuRLittle, TGRLittle, CouseTRLittle, Editedpersonfingerprints.getRLittle(),
                         5);
             }
@@ -803,36 +815,48 @@ public class EditMissingFingerprintFXController extends WizardStepFxControllerBa
 
         }
 
-        if(chbLeftHand.isSelected()){
+        if (chbLeftHand.isSelected()) {
+
+            if (isEmpty(CMenuLHand, TGLHand, CouseTLHand)) { return; }
             PrepareExceptionToBackend(CMenuLHand, TGLHand, CouseTLHand, Editedpersonfingerprints.getLThumb(), 6);
             PrepareExceptionToBackend(CMenuLHand, TGLHand, CouseTLHand, Editedpersonfingerprints.getLIndex(), 7);
             PrepareExceptionToBackend(CMenuLHand, TGLHand, CouseTLHand, Editedpersonfingerprints.getLMiddle(), 8);
             PrepareExceptionToBackend(CMenuLHand, TGLHand, CouseTLHand, Editedpersonfingerprints.getLRing(), 9);
             PrepareExceptionToBackend(CMenuLHand, TGLHand, CouseTLHand, Editedpersonfingerprints.getLLittle(), 10);
-        }else
-        {
+        }
+        else {
             if (chbLeftThumb.isSelected()) {
+
+                if (isEmpty(CMenuLThumb, TGLThumb, CouseTLThumb)) { return; }
                 PrepareExceptionToBackend(CMenuLThumb, TGLThumb, CouseTLThumb, Editedpersonfingerprints.getLThumb(), 6);
             }
             else { Editedpersonfingerprints.setLThumb(new Fingerprint()); }
 
             if (chbLeftIndex.isSelected()) {
+
+                if (isEmpty(CMenuLIndex, TGLIndex, CouseTLIndex)) { return; }
                 PrepareExceptionToBackend(CMenuLIndex, TGLIndex, CouseTLIndex, Editedpersonfingerprints.getLIndex(), 7);
             }
             else { Editedpersonfingerprints.setLIndex(new Fingerprint()); }
 
             if (chbLeftMiddle.isSelected()) {
+
+                if (isEmpty(CMenuLMiddle, TGLMiddle, CouseTLMiddle)) { return; }
                 PrepareExceptionToBackend(CMenuLMiddle, TGLMiddle, CouseTLMiddle, Editedpersonfingerprints.getLMiddle(),
                         8);
             }
             else { Editedpersonfingerprints.setLMiddle(new Fingerprint()); }
 
             if (chbLeftRing.isSelected()) {
+
+                if (isEmpty(CMenuLRing, TGLRing, CouseTLRing)) { return; }
                 PrepareExceptionToBackend(CMenuLRing, TGLRing, CouseTLRing, Editedpersonfingerprints.getLRing(), 9);
             }
             else { Editedpersonfingerprints.setLRing(new Fingerprint()); }
 
             if (chbLeftLittle.isSelected()) {
+
+                if (isEmpty(CMenuLLittle, TGLLittle, CouseTLLittle)) { return; }
                 PrepareExceptionToBackend(CMenuLLittle, TGLLittle, CouseTLLittle, Editedpersonfingerprints.getLLittle(),
                         10);
             }
@@ -858,10 +882,10 @@ public class EditMissingFingerprintFXController extends WizardStepFxControllerBa
 
         super.onNextButtonClicked(actionEvent);
     }
-    private void PrepareExceptionToBackend(ComboBox<ComboBoxItem<Cause>> comboBox, ToggleGroup toggleGroup,
-            TextField textField,Fingerprint fingerprint , int position){
 
-        if (isEmpty(comboBox, toggleGroup, textField)) { return; }
+    private void PrepareExceptionToBackend(ComboBox<ComboBoxItem<Cause>> comboBox, ToggleGroup toggleGroup,
+            TextField textField, Fingerprint fingerprint, int position) {
+
         addMFToPersonFPs(fingerprint, comboBox, toggleGroup, textField);
         if (canAddToList(fingerprint, position)) {
             BioExclusionsList.add(addToList(fingerprint, position));
@@ -870,8 +894,6 @@ public class EditMissingFingerprintFXController extends WizardStepFxControllerBa
 
             }
         }
-
-
     }
 
     @Override

@@ -9,22 +9,13 @@
 <?import sa.gov.nic.bio.bw.workflow.commons.ui.AutoScalingStackPane?>
 
 <BorderPane prefHeight="1095.0" prefWidth="997.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sa.gov.nic.bio.bw.workflow.biometricsexception.controllers.DeleteMissingFingerprintFXController">
-    <bottom>
-        <HBox alignment="CENTER" prefHeight="0.0" prefWidth="1173.0" spacing="10">
-            <padding>
-                <Insets bottom="10" />
-            </padding>
-            <Button fx:id="btnPrevious" onAction="#onPreviousButtonClicked" text="%button.previous" />
-            <Button fx:id="btnNext" disable="true" onAction="#onNextButtonClicked" text="%button.next" />
 
-        </HBox>
-    </bottom>
    <center>
         <VBox alignment="CENTER" prefHeight="259.0" prefWidth="944.0" BorderPane.alignment="CENTER">
             <children>
             <HBox maxWidth="-Infinity" prefWidth="945.0">
                <children>
-                      <Label maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="17.0" prefWidth="300.0" text="%label.SelectMissingFingerprintsToBeDeleted">
+                      <Label maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="17.0" prefWidth="262.0" text="%label.SelectMissingFingerprintsToBeDeleted">
                           <font>
                               <Font name="System Bold" size="12.0" />
                           </font>
@@ -355,4 +346,15 @@
             </padding>
         </VBox>
    </center>
+
+    <bottom>
+        <HBox alignment="CENTER" prefHeight="0.0" prefWidth="1173.0" spacing="10">
+            <padding>
+                <Insets bottom="10" />
+            </padding>
+            <Button fx:id="btnPrevious" onAction="#onPreviousButtonClicked" text="%button.previous" />
+            <Button fx:id="btnNext" disable="true" onAction="#onNextButtonClicked" text="%button.next" />
+
+        </HBox>
+    </bottom>
 </BorderPane>

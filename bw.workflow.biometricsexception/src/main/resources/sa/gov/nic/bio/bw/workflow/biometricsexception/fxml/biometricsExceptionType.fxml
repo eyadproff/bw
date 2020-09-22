@@ -13,6 +13,7 @@
 <?import javafx.scene.text.Font?>
 
 <?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.control.ProgressIndicator?>
 <BorderPane xmlns:fx="http://javafx.com/fxml/1" prefHeight="400.0" prefWidth="600.0"
             stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/8.0.172-ea"
             fx:controller="sa.gov.nic.bio.bw.workflow.biometricsexception.controllers.BiometricsExceptionTypeFXController">
@@ -56,6 +57,10 @@
                         </rowConstraints>
                     </GridPane>
                 </HBox>
+                <ProgressIndicator fx:id="piProgress" maxHeight="25.0" maxWidth="25.0" visible="false">
+                    <VBox.margin>
+                        <Insets top="10.0" />
+                    </VBox.margin></ProgressIndicator>
             </children>
         </VBox>
     </center>

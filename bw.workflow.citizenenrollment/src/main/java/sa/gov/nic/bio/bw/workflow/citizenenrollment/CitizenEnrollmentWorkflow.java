@@ -130,7 +130,7 @@ public class CitizenEnrollmentWorkflow extends WizardWorkflowBase {
                         }
                     }
                 }
-                setData(FaceCapturingFxController.class, "imageForEnrollment", true);
+                setData(FaceCapturingFxController.class, "isImageForEnrollment", true);
                 renderUiAndWaitForUserInput(FaceCapturingFxController.class);
 
 

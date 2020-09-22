@@ -4,6 +4,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.paint.Color;
 import sa.gov.nic.bio.bw.core.controllers.WizardStepFxControllerBase;
@@ -52,6 +53,8 @@ public class ShowingPersonInfoFxController extends WizardStepFxControllerBase {
     @FXML
     private Label lblNaturalizedSaudi;
     @FXML
+    private ProgressIndicator piProgress;
+    @FXML
     private Button btnStartOver;
     @FXML
     private Button btnConfirmPersonInfo;
@@ -96,6 +99,13 @@ public class ShowingPersonInfoFxController extends WizardStepFxControllerBase {
         if (successfulResponse) {
             goNext();
         }
+    }
+
+    @Override
+    public void onShowingProgress(boolean bShow) {
+        piProgress.setVisible(bShow);
+        btnConfirmPersonInfo.setDisable(bShow);
+        btnStartOver.setDisable(bShow);
     }
 
     @Override

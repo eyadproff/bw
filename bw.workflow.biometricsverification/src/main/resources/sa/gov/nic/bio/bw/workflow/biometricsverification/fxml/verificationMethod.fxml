@@ -10,6 +10,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
+<?import javafx.scene.control.ProgressIndicator?>
 <BorderPane xmlns="http://javafx.com/javafx/11" xmlns:fx="http://javafx.com/fxml/1"
             fx:id="rootPane" stylesheets="@../css/style.css"
             fx:controller="sa.gov.nic.bio.bw.workflow.biometricsverification.controllers.VerificationMethodSelectionFxController">
@@ -33,6 +34,10 @@
 
                 </GridPane>
             </HBox>
+            <ProgressIndicator fx:id="piProgress" maxHeight="25.0" maxWidth="25.0" visible="false">
+                <VBox.margin>
+                    <Insets top="10.0" />
+                </VBox.margin></ProgressIndicator>
         </VBox>
     </center>
     <bottom>

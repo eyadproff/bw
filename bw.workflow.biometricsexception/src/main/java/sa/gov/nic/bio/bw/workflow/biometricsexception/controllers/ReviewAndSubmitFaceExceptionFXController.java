@@ -2,12 +2,15 @@ package sa.gov.nic.bio.bw.workflow.biometricsexception.controllers;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ProgressIndicator;
 import sa.gov.nic.bio.bw.core.Context;
 import sa.gov.nic.bio.bw.core.beans.UserInfo;
 import sa.gov.nic.bio.bw.core.controllers.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.core.utils.FxmlFile;
 import sa.gov.nic.bio.bw.core.utils.GuiLanguage;
+import sa.gov.nic.bio.bw.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.core.workflow.Input;
 import sa.gov.nic.bio.bw.core.workflow.Output;
 import sa.gov.nic.bio.bw.workflow.biometricsexception.beans.BioExclusion;
@@ -42,6 +45,13 @@ public class ReviewAndSubmitFaceExceptionFXController extends WizardStepFxContro
     @FXML
     private Label LblStatus;
 
+    @FXML
+    private ProgressIndicator piProgress;
+    @FXML
+    private Button btnPrevious;
+    @FXML
+    private Button btnSubmit;
+
     @Override
     protected void onAttachedToScene() {
 
@@ -49,7 +59,8 @@ public class ReviewAndSubmitFaceExceptionFXController extends WizardStepFxContro
 
         PersonName.setText(normalizedPersonInfo.getFirstName() + " " + normalizedPersonInfo.getFatherName() + " " +
                            normalizedPersonInfo.getFamilyName());
-        PersonID.setText(normalizedPersonInfo.getPersonId().toString());
+       // PersonID.setText(normalizedPersonInfo.getPersonId().toString());
+        GuiUtils.setLabelText(PersonID, normalizedPersonInfo.getPersonId());
 
         if (EditFaceException != null) {
             LblCause.setVisible(true);
@@ -84,8 +95,8 @@ public class ReviewAndSubmitFaceExceptionFXController extends WizardStepFxContro
 
     }
 
-    @Override
-    protected void onNextButtonClicked(ActionEvent actionEvent) {
+    @FXML
+    protected void onSubmitButtonClicked(ActionEvent actionEvent) {
         if (typeFaceService.equals(TypeFaceService.ADD_OR_EDIT)) {
 
             EditFaceException.setSamisId(normalizedPersonInfo.getPersonId());
@@ -95,6 +106,13 @@ public class ReviewAndSubmitFaceExceptionFXController extends WizardStepFxContro
             EditedBioExclusionsList.add(EditFaceException);
         }
         continueWorkflow();
+    }
+
+    @Override
+    public void onShowingProgress(boolean bShow) {
+        GuiUtils.showNode(btnPrevious, !bShow);
+        GuiUtils.showNode(btnSubmit, !bShow);
+        GuiUtils.showNode(piProgress, bShow);
     }
 
     @Override

@@ -4,12 +4,14 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.RadioButton;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import sa.gov.nic.bio.bw.core.Context;
 import sa.gov.nic.bio.bw.core.controllers.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.core.utils.FxmlFile;
+import sa.gov.nic.bio.bw.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.core.workflow.Output;
 
 import java.util.Map;
@@ -23,6 +25,8 @@ public class BiometricsExceptionTypeFXController extends WizardStepFxControllerB
     private RadioButton rbFingerPrints;
     @FXML
     private RadioButton rbFaceImage;
+    @FXML
+    private ProgressIndicator piProgress;
     @FXML
     private Button btnPrevious;
     @FXML
@@ -127,6 +131,13 @@ public class BiometricsExceptionTypeFXController extends WizardStepFxControllerB
         else { exceptionType = Type.FINGERPRINTS; }
 
         continueWorkflow();
+    }
+
+    @Override
+    public void onShowingProgress(boolean bShow) {
+        piProgress.setVisible(bShow);
+        btnNext.setDisable(bShow);
+        btnPrevious.setDisable(bShow);
     }
 
     public enum Type {

@@ -71,6 +71,7 @@
                     </GridPane>
                 </ScrollPane>
             </HBox>
+            <ProgressIndicator fx:id="piProgress" maxWidth="25.0" maxHeight="25.0" visible="false"/>
         </VBox>
     </center>
     <bottom>

@@ -320,4 +320,9 @@ public class ShowResultFxController extends WizardStepFxControllerBase {
         });
         Context.getExecutorService().submit(printReportTaskAsPdfTask);
     }
+
+    @Override
+    public void onReturnFromWorkflow(boolean successfulResponse) {
+        if (successfulResponse) { goNext(); }
+    }
 }

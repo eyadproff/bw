@@ -174,7 +174,19 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase 
     @Override
     public void onReturnFromWorkflow(boolean successfulResponse) {
         if (successfulResponse) {
-            goNext();
+            if (IsPossibleFaceImageExists != null && IsPossibleFaceImageExists) {
+
+                String headerPossibilityText = resources.getString("CitizenEnrollment.possibility.confirmation.header");
+                String contentPossibilityText = resources.getString("CitizenEnrollment.possibility.confirmation.message");
+                boolean possibilityConfirmed = Context.getCoreFxController().showConfirmationDialogAndWait(headerPossibilityText, contentPossibilityText);
+
+                if (possibilityConfirmed) {
+                    goNext();
+                }
+            }
+            else {
+                goNext();
+            }
         }
     }
 
@@ -191,18 +203,6 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase 
         String contentText = resources.getString("CitizenEnrollment.registering.confirmation.message");
         boolean confirmed = Context.getCoreFxController().showConfirmationDialogAndWait(headerText, contentText);
 
-        if (confirmed) {
-            if (IsPossibleFaceImageExists != null && IsPossibleFaceImageExists) {
-
-                String headerPossibilityText = resources.getString("CitizenEnrollment.possibility.confirmation.header");
-                String contentPossibilityText = resources.getString("CitizenEnrollment.possibility.confirmation.message");
-                boolean possibilityConfirmed = Context.getCoreFxController().showConfirmationDialogAndWait(headerPossibilityText, contentPossibilityText);
-
-                if (possibilityConfirmed) {
-                    continueWorkflow();
-                }
-            }
-            else { continueWorkflow(); }
-        }
+        if (confirmed) { continueWorkflow(); }
     }
 }
