@@ -105,7 +105,12 @@ public class ReviewAndSubmitFaceExceptionFXController extends WizardStepFxContro
             EditFaceException.setOperatorId(userInfo.getOperatorId());
             EditedBioExclusionsList.add(EditFaceException);
         }
-        continueWorkflow();
+
+        String headerText = resources.getString("BiometricsException.addOrEditFaceException.confirmation.header");
+        String contentText = resources.getString("BiometricsException.addOrEditFaceException.confirmation.message");
+        boolean confirmed = Context.getCoreFxController().showConfirmationDialogAndWait(headerText, contentText);
+
+        if (confirmed) { continueWorkflow(); }
     }
 
     @Override

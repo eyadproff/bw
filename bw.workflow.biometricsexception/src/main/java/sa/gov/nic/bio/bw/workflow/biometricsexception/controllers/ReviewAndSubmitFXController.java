@@ -225,8 +225,12 @@ public class ReviewAndSubmitFXController extends WizardStepFxControllerBase {
                 EditedBioExclusionsList.add(bioex);
             }
         }
-        // super.onNextButtonClicked(actionEvent);
-        continueWorkflow();
+
+        String headerText = resources.getString("BiometricsException.addOrEditFingersException.confirmation.header");
+        String contentText = resources.getString("BiometricsException.addOrEditFingersException.confirmation.message");
+        boolean confirmed = Context.getCoreFxController().showConfirmationDialogAndWait(headerText, contentText);
+
+        if (confirmed) { continueWorkflow(); }
     }
 
     @Override
