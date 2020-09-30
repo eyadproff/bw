@@ -161,7 +161,7 @@ public class CitizenEnrollmentWorkflow extends WizardWorkflowBase {
                         "missingFingerprints");
 
                 passData(FaceCapturingFxController.class, ReviewAndSubmitPaneFxController.class, "facePhoto");
-                passData(FaceCapturingFxController.class, ReviewAndSubmitPaneFxController.class, "facePhotoBase64");
+                passData(FaceCapturingFxController.class,"facePhotoBase64ForEnrollment", ReviewAndSubmitPaneFxController.class, "facePhotoBase64");
 
 
                 Boolean SkipIris = getData(IrisCapturingFxController.class, "Skip");

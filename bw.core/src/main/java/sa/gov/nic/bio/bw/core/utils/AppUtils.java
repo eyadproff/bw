@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
+import net.coobird.thumbnailator.Thumbnails;
 import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.geometry.NodeOrientation;
@@ -28,7 +29,11 @@ import sa.gov.nic.bio.bw.core.interfaces.AppLogger;
 import sa.gov.nic.bio.bw.core.webservice.ClientErrorReportingAPI;
 import sa.gov.nic.bio.bw.core.webservice.WebserviceManager;
 
+import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
+import javax.imageio.ImageWriteParam;
+import javax.imageio.ImageWriter;
+import javax.imageio.stream.ImageOutputStream;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
@@ -55,16 +60,9 @@ import java.time.chrono.HijrahChronology;
 import java.time.chrono.HijrahDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Base64;
+import java.util.*;
 import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.ResourceBundle;
 import java.util.concurrent.CountDownLatch;
 import java.util.function.Function;
 import java.util.logging.Level;
@@ -649,7 +647,30 @@ public final class AppUtils implements AppLogger
 
 		return bytesToBase64(bytes);
 	}
-	
+
+	public static String  resizeFacePhoto(String facePhotoBase64) throws IOException {
+
+		int faceImageWidth= Integer.parseInt(Context.getConfigManager().getProperty("FACE_IMAGE_WIDTH"));
+		int faceImageHeight= Integer.parseInt(Context.getConfigManager().getProperty("FACE_IMAGE_HEIGHT"));
+
+		byte[] image = Base64.getDecoder().decode(facePhotoBase64);
+		ByteArrayInputStream stream = new ByteArrayInputStream(image);
+		BufferedImage buffer = ImageIO.read(stream);
+		BufferedImage output = Thumbnails.of(buffer).size(faceImageWidth, faceImageHeight).keepAspectRatio(true).asBufferedImage();
+		ByteArrayOutputStream outPutStream = new ByteArrayOutputStream();
+
+		ImageIO.write(output, "jpg", outPutStream);
+		byte[] thumbnail = outPutStream.toByteArray();
+		String thumb = Base64.getEncoder().encodeToString(thumbnail);
+
+		FileOutputStream fos = new FileOutputStream(new File("faceImageAfterResizing.jpeg"));
+		fos.write(thumbnail);
+		fos.close();
+
+		return thumb;
+
+	}
+
 	public static Image imageFromBase64(String base64Image)
 	{
 		if(base64Image == null) return null;
@@ -657,7 +678,7 @@ public final class AppUtils implements AppLogger
 		byte[] imageByteArray = Base64.getDecoder().decode(base64Image);
 		return new Image(new ByteArrayInputStream(imageByteArray));
 	}
-	
+
 	public static String constructName(Name name)
 	{
 		if(name == null) return null;

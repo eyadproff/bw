@@ -64,6 +64,7 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 	@Output private Image croppedFacePhoto;
 	@Output private Image facePhoto;
 	@Output private String facePhotoBase64;
+	@Output private String facePhotoBase64ForEnrollment;
 	@Output private Boolean icaoSuccessIconVisible;
 	@Output private Boolean icaoWarningIconVisible;
 	@Output private Boolean icaoErrorIconVisible;
@@ -317,16 +318,8 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 		
 		try
 		{
-
-			if(facePhoto != null) {
-				if (isImageForEnrollment != null && isImageForEnrollment)
-					facePhotoBase64 = AppUtils.imageToJpegBase64(facePhoto);
-				else
-					facePhotoBase64 = AppUtils.imageToBase64(facePhoto);
-			}else {
-				facePhotoBase64 = null;
-			}
-
+			if(facePhoto != null) facePhotoBase64 = AppUtils.imageToBase64(facePhoto);
+			else facePhotoBase64 = null;
 		}
 		catch(IOException e)
 		{
@@ -335,7 +328,45 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 			Context.getCoreFxController().showErrorDialog(errorCode, null, errorDetails, getTabIndex());
 		}
 	}
-	
+
+	@FXML
+	protected void onNextButtonClicked(ActionEvent actionEvent)
+	{
+		if (isImageForEnrollment != null && isImageForEnrollment) {
+			Image capturedImage = ivCapturedImage.getImage();
+			Image croppedImage = ivCroppedImage.getImage();
+			if (croppedImage != null) { facePhoto = croppedImage; }
+			else { facePhoto = capturedImage; }
+			try {
+				if (facePhoto != null) {
+					facePhotoBase64ForEnrollment = AppUtils.imageToJpegBase64(facePhoto);
+					String facePhotoBase64AfterValidation = null;
+					try {
+						facePhotoBase64AfterValidation = AppUtils.resizeFacePhoto(facePhotoBase64ForEnrollment);
+					} catch (IOException e) {
+						String errorCode = CommonsErrorCodes.C008_00060.getCode();
+						String[] errorDetails = {"failed to resize the face image !!"};
+						Context.getCoreFxController().showErrorDialog(errorCode, null, errorDetails, getTabIndex());
+					}
+
+					if (AppUtils.base64ToBytes(facePhotoBase64AfterValidation).length / 1024.0 > Double.parseDouble(Context.getConfigManager().getProperty("FACE_SIZE_LIMIT"))) {
+						showWarningNotification(resources.getString("facePhoto.faceCapture.exceedMaxSize"));
+						return;
+					}
+					facePhotoBase64ForEnrollment = facePhotoBase64AfterValidation;
+				}
+
+			} catch (IOException e) {
+				String errorCode = CommonsErrorCodes.C008_00018.getCode();
+				String[] errorDetails = {"failed to encode the face image as Base64!"};
+				Context.getCoreFxController().showErrorDialog(errorCode, null, errorDetails, getTabIndex());
+
+			}
+		}
+
+		goNext();
+	}
+
 	@FXML
 	private void onStartCameraLivePreviewButtonClicked(ActionEvent actionEvent)
 	{
@@ -582,6 +613,7 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 	private void onCaptureFaceButtonClicked(ActionEvent actionEvent)
 	{
 		LOGGER.info("capturing the face...");
+		hideNotification();
 		if(acceptBadQualityFace != null && acceptBadQualityFace) btnNext.setDisable(true);
 		
 		GuiUtils.showNode(btnCaptureFace, false);

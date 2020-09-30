@@ -254,6 +254,7 @@
         - services-gateway-biooperation/api/enrollment/biometrics/exclusion/retrieve/v1
         - services-gateway-biooperation/api/enrollment/biometrics/exclusion/v1
         - services-gateway-biooperation/api/enrollment/biometrics/exclusion/delete/v1
+        - services-gateway-biooperation/api/fingerprint/available/v1
         
     menu.query.biometricsVerification:
         - services-gateway-lookups/api/application/id-types/v1
