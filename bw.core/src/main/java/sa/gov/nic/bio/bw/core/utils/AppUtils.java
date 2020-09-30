@@ -663,10 +663,6 @@ public final class AppUtils implements AppLogger
 		byte[] thumbnail = outPutStream.toByteArray();
 		String thumb = Base64.getEncoder().encodeToString(thumbnail);
 
-		FileOutputStream fos = new FileOutputStream(new File("faceImageAfterResizing.jpeg"));
-		fos.write(thumbnail);
-		fos.close();
-
 		return thumb;
 
 	}
