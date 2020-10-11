@@ -11,6 +11,16 @@ VERSION SCHEMA: vYYYY.MM.#SEQ
 
 ---
 
+## v2020.10.1
+
+- NEW: Citizen Enrollment Workflow.
+- NEW: Biometrics Exception Workflow.
+- NEW: Biometrics Verification Workflow.
+- NEW: Biometrics Inquiry Workflow.
+- FIX: fix bug in single fingerprint capturing.
+
+---
+
 ## v2020.07.1
 
 - NEW: Add support for https in BCL.

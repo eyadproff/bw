@@ -62,6 +62,11 @@ public class ShowResultFxController extends WizardStepFxControllerBase {
     @Override
     protected void onAttachedToScene() {
 
+        fileChooser.setTitle(resources.getString("fileChooser.saveReportAsPDF.title"));
+        FileChooser.ExtensionFilter extFilterPDF = new FileChooser.ExtensionFilter(
+                resources.getString("fileChooser.saveReportAsPDF.types"), "*.pdf");
+        fileChooser.getExtensionFilters().addAll(extFilterPDF);
+
         long samisId = personInfo.getSamisId();
         Name name = personInfo.getName();
         String firstName = name.getFirstName();
