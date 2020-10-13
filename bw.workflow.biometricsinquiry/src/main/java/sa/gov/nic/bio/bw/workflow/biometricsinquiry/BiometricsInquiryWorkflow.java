@@ -63,6 +63,7 @@ public class BiometricsInquiryWorkflow extends WizardWorkflowBase {
                 else if (inquiryMethod == InquiryMethod.FINGERPRINT) {
                     incrementNSteps(1); // to skip step # 2
 
+                    setData(SlapFingerprintsCapturingFxController.class, "allow9MissingWithNoRole", Boolean.TRUE);
                     setData(SlapFingerprintsCapturingFxController.class, "acceptBadQualityFingerprint",
                             Boolean.TRUE);
                     setData(SlapFingerprintsCapturingFxController.class, "acceptBadQualityFingerprintMinRetires",
