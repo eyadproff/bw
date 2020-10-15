@@ -97,6 +97,8 @@ public class ReviewAndSubmitFaceExceptionFXController extends WizardStepFxContro
 
     @FXML
     protected void onSubmitButtonClicked(ActionEvent actionEvent) {
+        String headerText;
+        String contentText;
         if (typeFaceService.equals(TypeFaceService.ADD_OR_EDIT)) {
 
             EditFaceException.setSamisId(normalizedPersonInfo.getPersonId());
@@ -104,10 +106,15 @@ public class ReviewAndSubmitFaceExceptionFXController extends WizardStepFxContro
             UserInfo userInfo = (UserInfo) Context.getUserSession().getAttribute("userInfo");
             EditFaceException.setOperatorId(userInfo.getOperatorId());
             EditedBioExclusionsList.add(EditFaceException);
+
+            headerText = resources.getString("BiometricsException.addOrEditFaceException.confirmation.header");
+            contentText = resources.getString("BiometricsException.addOrEditFaceException.confirmation.message");
+        }
+        else {
+            headerText = resources.getString("BiometricsException.deleteFaceException.confirmation.header");
+            contentText = resources.getString("BiometricsException.deleteFaceException.confirmation.message");
         }
 
-        String headerText = resources.getString("BiometricsException.addOrEditFaceException.confirmation.header");
-        String contentText = resources.getString("BiometricsException.addOrEditFaceException.confirmation.message");
         boolean confirmed = Context.getCoreFxController().showConfirmationDialogAndWait(headerText, contentText);
 
         if (confirmed) { continueWorkflow(); }

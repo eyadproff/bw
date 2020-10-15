@@ -218,16 +218,22 @@ public class ReviewAndSubmitFXController extends WizardStepFxControllerBase {
 
     @FXML
     protected void onSubmitButtonClicked(ActionEvent actionEvent) {
+        String headerText;
+        String contentText;
         if (serviceType.equals(ServiceType.ADD_OR_EDIT_FINGERPRINTS)) {
             EditedBioExclusionsList = new ArrayList<BioExclusion>();
             for (BioExclusion bioex : BioExclusionsList) {
                 bioex.setSamisId(normalizedPersonInfo.getPersonId());
                 EditedBioExclusionsList.add(bioex);
             }
+            headerText = resources.getString("BiometricsException.addOrEditFingersException.confirmation.header");
+            contentText = resources.getString("BiometricsException.addOrEditFingersException.confirmation.message");
+        }
+        else {
+            headerText = resources.getString("BiometricsException.deleteFingersException.confirmation.header");
+            contentText = resources.getString("BiometricsException.deleteFingersException.confirmation.message");
         }
 
-        String headerText = resources.getString("BiometricsException.addOrEditFingersException.confirmation.header");
-        String contentText = resources.getString("BiometricsException.addOrEditFingersException.confirmation.message");
         boolean confirmed = Context.getCoreFxController().showConfirmationDialogAndWait(headerText, contentText);
 
         if (confirmed) { continueWorkflow(); }
