@@ -12,11 +12,14 @@
 <?import javafx.scene.layout.VBox?>
 <?import sa.gov.nic.bio.bw.workflow.commons.ui.CopiableLabel?>
 <?import sa.gov.nic.bio.bw.workflow.commons.ui.ImageViewPaneWithAlignment?>
+<?import javafx.scene.control.ProgressIndicator?>
+<?import javafx.scene.layout.StackPane?>
 <BorderPane xmlns="http://javafx.com/javafx/11" xmlns:fx="http://javafx.com/fxml/1"
             fx:id="rootPane" stylesheets="@../css/style.css"
             fx:controller="sa.gov.nic.bio.bw.workflow.criminalclearancereport.controllers.ShowingPersonInfoFxController">
     <center>
-        <VBox alignment="TOP_CENTER">
+        <StackPane>
+        <VBox fx:id="infoVBox" alignment="TOP_CENTER" >
             <padding>
                 <Insets top="10.0" bottom="10.0"/>
             </padding>
@@ -70,12 +73,17 @@
                 </ScrollPane>
             </HBox>
         </VBox>
+        <VBox alignment="CENTER">
+            <ProgressIndicator fx:id="piProgress" prefHeight="25.0" prefWidth="25.0" managed="false" visible="false"/>
+        </VBox>
+        </StackPane>
     </center>
     <bottom>
         <HBox alignment="CENTER" spacing="10">
             <padding>
                 <Insets bottom="10"/>
             </padding>
+
             <Button fx:id="btnStartOver" text="%button.startOver" onAction="#onStartOverButtonClicked"/>
             <Button fx:id="btnConfirmPersonInfo" text="%button.confirm" onAction="#onNextButtonClicked"/>
         </HBox>

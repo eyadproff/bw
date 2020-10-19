@@ -1,13 +1,17 @@
 package sa.gov.nic.bio.bw.workflow.criminalclearancereport.controllers;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import sa.gov.nic.bio.bw.core.beans.Gender;
 import sa.gov.nic.bio.bw.core.controllers.WizardStepFxControllerBase;
+import sa.gov.nic.bio.bw.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.core.utils.FxmlFile;
 import sa.gov.nic.bio.bw.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.core.workflow.Input;
@@ -24,6 +28,7 @@ public class ShowingPersonInfoFxController extends WizardStepFxControllerBase
 	@Output private NormalizedPersonInfo normalizedPersonInfo;
 	
 	@FXML private ScrollPane infoPane;
+	@FXML private VBox infoVBox;
 	@FXML private ImageView ivPersonPhoto;
 	@FXML private Label lblFirstName;
 	@FXML private Label lblFatherName;
@@ -41,6 +46,7 @@ public class ShowingPersonInfoFxController extends WizardStepFxControllerBase
 	@FXML private Label lblDocumentIssuanceDate;
 	@FXML private Label lblDocumentExpiryDate;
 	@FXML private Label lblNaturalizedSaudi;
+	@FXML private ProgressIndicator piProgress;
 	@FXML private Button btnStartOver;
 	@FXML private Button btnConfirmPersonInfo;
 	
@@ -83,5 +89,26 @@ public class ShowingPersonInfoFxController extends WizardStepFxControllerBase
 		
 		infoPane.autosize();
 		btnConfirmPersonInfo.requestFocus();
+	}
+
+	@Override
+	public void onReturnFromWorkflow(boolean successfulResponse)
+	{
+		if(successfulResponse) goNext();
+	}
+
+	@Override
+	public void onShowingProgress(boolean bShow)
+	{
+		GuiUtils.showNode(piProgress, bShow);
+		btnConfirmPersonInfo.setDisable(bShow);
+		btnStartOver.setDisable(bShow);
+		infoVBox.setDisable(bShow);
+	}
+
+	@FXML
+	protected void onNextButtonClicked(ActionEvent actionEvent)
+	{
+		continueWorkflow();
 	}
 }

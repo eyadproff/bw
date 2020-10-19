@@ -25,17 +25,11 @@
                 </ImageView>
                 <Label text="%label.fingerprintsInquiryError"/>
             </VBox>
-            <VBox fx:id="paneHit" alignment="CENTER" spacing="5.0" managed="false" visible="false">
-                <ImageView>
-                    <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/icon_success_32px.png"/>
-                </ImageView>
-                <Label text="%label.fingerprintsInquiryHit"/>
-            </VBox>
             <VBox fx:id="paneNotHit" alignment="CENTER" spacing="5.0" managed="false" visible="false">
                 <ImageView>
                     <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/icon_warning_32px.png"/>
                 </ImageView>
-                <Label text="%label.fingerprintsInquiryNoHit"/>
+                <Label text="%label.fingerprintsInquiryNoHitCivilDB"/>
             </VBox>
             <VBox fx:id="paneDevicesRunnerNotRunning" alignment="CENTER" spacing="5.0" managed="false" visible="false">
                 <ImageView>
@@ -52,8 +46,7 @@
             </padding>
             <Button fx:id="btnStartOver" text="%button.startOver" managed="false" visible="false" onAction="#onStartOverButtonClicked"/>
             <Button fx:id="btnRetry" text="%button.retry" managed="false" visible="false" onAction="#onRetryButtonClicked"/>
-            <Button fx:id="btnShowFingerPrints" text="%button.retry" managed="false" visible="false" onAction="#onShowingFingerPrints"/>
-            <Button fx:id="btnReCaptureFingerPrints" text="%button.retry" managed="false" visible="false" onAction="#onReCapturingFingerPrints"/>
+            <Button fx:id="btnTakeFingerprints" text="%button.takeFingerprints" managed="false" visible="false" onAction="#onTakeFingerprintsClicked"/>
         </HBox>
     </bottom>
 </BorderPane>
