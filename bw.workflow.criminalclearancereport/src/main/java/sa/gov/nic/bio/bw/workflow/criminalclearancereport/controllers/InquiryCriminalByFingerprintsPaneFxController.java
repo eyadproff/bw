@@ -23,7 +23,8 @@ public class InquiryCriminalByFingerprintsPaneFxController extends WizardStepFxC
 
     @FXML private VBox paneError;
     @FXML private VBox paneNotHit;
-    @FXML private VBox paneHit;
+    @FXML private VBox paneHitCriminal;
+    @FXML private VBox paneNotHitCriminal;
     @FXML private VBox paneDevicesRunnerNotRunning;
     @FXML private ProgressIndicator piProgress;
     @FXML private Label lblProgress;
@@ -106,9 +107,11 @@ public class InquiryCriminalByFingerprintsPaneFxController extends WizardStepFxC
                 });
             }
             else if (status == Status.HIT && criminalBiometricsId !=null) {
-                showHitProgress(true);
+                showHitCriminalProgress(true);
             }
-            else {
+            else if (status == Status.HIT ){
+                showHitCriminalProgress(false);
+            }else {
                 showHitProgress(false);
             }
         }
@@ -123,9 +126,30 @@ public class InquiryCriminalByFingerprintsPaneFxController extends WizardStepFxC
         GuiUtils.showNode(btnRegister, false);
         GuiUtils.showNode(btnStartOver, !bShow);
         GuiUtils.showNode(paneError, !bShow);
-        GuiUtils.showNode(paneNotHit, false);
+        GuiUtils.showNode(paneNotHitCriminal, false);
+        GuiUtils.showNode(paneNotHit,false);
+        GuiUtils.showNode(paneHitCriminal, false);
         GuiUtils.showNode(lblCanceling, false);
         GuiUtils.showNode(lblCancelled, false);
+    }
+
+    private void showHitCriminalProgress(boolean bShow) {
+
+        GuiUtils.showNode(piProgress, false);
+        GuiUtils.showNode(lblProgress, false);
+        GuiUtils.showNode(btnCancel, false);
+        GuiUtils.showNode(btnRetry, bShow);
+        GuiUtils.showNode(btnRegister, true);
+        GuiUtils.showNode(btnStartOver, true);
+        GuiUtils.showNode(paneError, false);
+        GuiUtils.showNode(paneNotHitCriminal, !bShow);
+        GuiUtils.showNode(paneNotHit,false);
+        GuiUtils.showNode(paneHitCriminal, bShow);
+        GuiUtils.showNode(lblCanceling, false);
+        GuiUtils.showNode(lblCancelled, false);
+
+        if (bShow && criminalBiometricsId != null) { txtCriminalBiometricsId.setText(criminalBiometricsId.toString()); }
+
     }
 
     private void showHitProgress(boolean bShow) {
@@ -134,11 +158,12 @@ public class InquiryCriminalByFingerprintsPaneFxController extends WizardStepFxC
         GuiUtils.showNode(lblProgress, false);
         GuiUtils.showNode(btnCancel, false);
         GuiUtils.showNode(btnRetry, !bShow);
-        GuiUtils.showNode(btnRegister, true);
-        GuiUtils.showNode(btnStartOver, true);
+        GuiUtils.showNode(btnRegister, false);
+        GuiUtils.showNode(btnStartOver, !bShow);
         GuiUtils.showNode(paneError, false);
-        GuiUtils.showNode(paneNotHit, !bShow);
-        GuiUtils.showNode(paneHit, bShow);
+        GuiUtils.showNode(paneNotHitCriminal, false);
+        GuiUtils.showNode(paneNotHit,!bShow);
+        GuiUtils.showNode(paneHitCriminal, false);
         GuiUtils.showNode(lblCanceling, false);
         GuiUtils.showNode(lblCancelled, false);
 

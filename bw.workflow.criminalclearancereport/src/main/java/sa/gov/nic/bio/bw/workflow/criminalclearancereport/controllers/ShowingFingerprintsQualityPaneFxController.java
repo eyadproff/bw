@@ -41,7 +41,7 @@ import java.util.stream.IntStream;
 
 @FxmlFile("showingFingerprintsQuality.fxml")
 public class ShowingFingerprintsQualityPaneFxController extends WizardStepFxControllerBase {
-    @Input private String facePhotoBase64;
+
     @Input(alwaysRequired = true) private List<Fingerprint> fingerprints;
     @Output private List<Integer> missingFingerprints;
     @Output private ServiceType serviceType;
@@ -386,7 +386,7 @@ public class ShowingFingerprintsQualityPaneFxController extends WizardStepFxCont
 
     @FXML
     protected void onNextButtonClicked(ActionEvent actionEvent) {
-        System.out.println(addTwoSteps);
+
         serviceType = ServiceType.INQUIRY;
 
         String inquiryByFingerprintsInCriminal = resources.getString("wizard.inquiryByFingerprintsInCriminal");

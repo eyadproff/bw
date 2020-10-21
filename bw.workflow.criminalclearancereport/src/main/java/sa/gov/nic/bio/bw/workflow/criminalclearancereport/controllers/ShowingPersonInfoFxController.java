@@ -11,7 +11,6 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import sa.gov.nic.bio.bw.core.beans.Gender;
 import sa.gov.nic.bio.bw.core.controllers.WizardStepFxControllerBase;
-import sa.gov.nic.bio.bw.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.core.utils.FxmlFile;
 import sa.gov.nic.bio.bw.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.core.workflow.Input;

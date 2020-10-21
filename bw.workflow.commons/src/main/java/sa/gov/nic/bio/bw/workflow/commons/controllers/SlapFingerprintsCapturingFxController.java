@@ -79,6 +79,7 @@ import java.util.stream.Collectors;
 public class SlapFingerprintsCapturingFxController extends WizardStepFxControllerBase
 {
 	@Input private Boolean hidePreviousButton;
+	@Input private Boolean showStartOverButton;
 	@Input private Boolean allow9MissingWithNoRole;
 	@Input private Boolean acceptBadQualityFingerprint;
 	@Input private Integer acceptBadQualityFingerprintMinRetires;
@@ -171,6 +172,7 @@ public class SlapFingerprintsCapturingFxController extends WizardStepFxControlle
 	@FXML private Button btnLeftHandLegend;
 	@FXML private Button btnPrevious;
 	@FXML private Button btnNext;
+	@FXML private Button btnStartOver;
 	
 	private int currentSlapPosition = FingerPosition.RIGHT_SLAP.getPosition();
 	private Map<Integer, FingerprintQualityThreshold> fingerprintQualityThresholdMap;
@@ -494,6 +496,7 @@ public class SlapFingerprintsCapturingFxController extends WizardStepFxControlle
 		});
 		
 		if(hidePreviousButton != null) GuiUtils.showNode(btnPrevious, !hidePreviousButton);
+		if(showStartOverButton != null) GuiUtils.showNode(btnStartOver, showStartOverButton);
 		
 		// load the persisted captured fingerprints, if any
 		if(capturedFingerprints != null && !capturedFingerprints.isEmpty())

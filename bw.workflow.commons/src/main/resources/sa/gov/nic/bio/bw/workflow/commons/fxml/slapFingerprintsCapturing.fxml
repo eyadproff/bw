@@ -414,6 +414,7 @@
             </padding>
             <Button fx:id="btnPrevious" text="%button.previous" onAction="#onPreviousButtonClicked"/>
             <Button fx:id="btnNext" text="%button.next" onAction="#onNextButtonClicked"/>
+            <Button fx:id="btnStartOver" text="%button.next" visible="false" managed="false" onAction="#onStartOverButtonClicked"/>
         </HBox>
     </bottom>
 </BorderPane>

@@ -124,7 +124,6 @@ public class InquiryByFingerprintsPaneFxController extends WizardStepFxControlle
             }
             else if (status == Status.HIT) {
                 if (minusOneStepAndAddTwo) {
-                    //                    Context.getCoreFxController().getWizardPane(getTabIndex()).removeStep(finalStepIndex);
                     Context.getCoreFxController().getWizardPane(getTabIndex()).removeStep(finalStepIndex);
                     Context.getCoreFxController().getWizardPane(getTabIndex()).removeStep(finalStepIndex);
                     Context.getCoreFxController().getWizardPane(getTabIndex()).addStep(finalStepIndex,
@@ -138,9 +137,6 @@ public class InquiryByFingerprintsPaneFxController extends WizardStepFxControlle
 
                 if (!minusOneStepAndAddTwo) {
                     Context.getCoreFxController().getWizardPane(getTabIndex()).removeStep(finalStepIndex);
-                    //                   Context.getCoreFxController().getWizardPane(getTabIndex()).addStep(finalStepIndex,
-                    //                           selectFingerprintsSource,
-                    //                           "question");
                     Context.getCoreFxController().getWizardPane(getTabIndex()).addStep(finalStepIndex + 1,
                             fingerprintCapturing,
                             "\\uf256");
