@@ -4,5 +4,6 @@ dependencies {
     implementation project(':bw.workflow.commons')
     implementation project(':bw.lib.jasperreports')
     implementation project(':bw.workflow.civilcriminalfingerprintsinquiry')
+    implementation name: "gson-2.8.6"
 
 }

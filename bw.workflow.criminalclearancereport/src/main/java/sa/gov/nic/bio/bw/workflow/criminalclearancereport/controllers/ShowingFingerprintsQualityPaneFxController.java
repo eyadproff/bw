@@ -12,7 +12,6 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.stage.FileChooser;
 import org.controlsfx.control.PopOver;
 import org.controlsfx.glyphfont.FontAwesome;
 import org.controlsfx.glyphfont.Glyph;
@@ -30,12 +29,9 @@ import sa.gov.nic.bio.bw.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.core.workflow.Input;
 import sa.gov.nic.bio.bw.core.workflow.Output;
 import sa.gov.nic.bio.bw.workflow.commons.beans.FingerprintUiComponents;
-import sa.gov.nic.bio.bw.workflow.commons.tasks.GeneratingNistFileWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.commons.ui.FourStateTitledPane;
-import sa.gov.nic.bio.bw.workflow.commons.utils.CommonsErrorCodes;
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
@@ -48,6 +44,7 @@ public class ShowingFingerprintsQualityPaneFxController extends WizardStepFxCont
     @Input private String facePhotoBase64;
     @Input(alwaysRequired = true) private List<Fingerprint> fingerprints;
     @Output private List<Integer> missingFingerprints;
+    @Output private ServiceType serviceType;
 
     @FXML private ImageView ivRightThumb;
     @FXML private ImageView ivRightIndex;
@@ -60,8 +57,6 @@ public class ShowingFingerprintsQualityPaneFxController extends WizardStepFxCont
     @FXML private ImageView ivLeftRing;
     @FXML private ImageView ivLeftLittle;
     @FXML private ProgressIndicator piProgress;
-    @FXML private Button btnStartOver;
-    @FXML private Button btnInquiry;
     @FXML private FourStateTitledPane tpRightLittle;
     @FXML private FourStateTitledPane tpRightRing;
     @FXML private FourStateTitledPane tpRightMiddle;
@@ -74,16 +69,26 @@ public class ShowingFingerprintsQualityPaneFxController extends WizardStepFxCont
     @FXML private FourStateTitledPane tpLeftThumb;
     @FXML private Button btnRightHandLegend;
     @FXML private Button btnLeftHandLegend;
+    @FXML private Button btnStartOver;
+    @FXML private Button btnInquiry;
+    @FXML private Button btnReTakeFingerprints;
 
     private Map<Integer, FingerprintQualityThreshold> fingerprintQualityThresholdMap;
     private Map<Integer, FingerPosition> fingerprintsPosition = new HashMap<>();
     private Map<Integer, FingerprintUiComponents> fingerprintUiComponentsMap = new HashMap<>();
 
+    private boolean addTwoSteps = false;
 
-    private FileChooser fileChooser = new FileChooser();
+    public enum ServiceType {
+        RETAKE_FINGERPRINT,
+        INQUIRY
+    }
 
     @Override
     protected void onAttachedToScene() {
+
+        if (serviceType == ServiceType.RETAKE_FINGERPRINT) { addTwoSteps = true; }
+
         Glyph glyph = AppUtils.createFontAwesomeIcon(FontAwesome.Glyph.INFO_CIRCLE);
         btnRightHandLegend.setGraphic(glyph);
         glyph = AppUtils.createFontAwesomeIcon(FontAwesome.Glyph.INFO_CIRCLE);
@@ -170,7 +175,6 @@ public class ShowingFingerprintsQualityPaneFxController extends WizardStepFxCont
 
     private void showProgress(boolean bShow) {
         GuiUtils.showNode(btnStartOver, !bShow);
-        //		GuiUtils.showNode(btnGenerateNistFile, !bShow);
         GuiUtils.showNode(btnInquiry, !bShow);
         GuiUtils.showNode(piProgress, bShow);
     }
@@ -350,7 +354,70 @@ public class ShowingFingerprintsQualityPaneFxController extends WizardStepFxCont
     }
 
     @FXML
-    private void onReTakeFingerprintsClicked(ActionEvent actionEvent){
+    private void onReTakeFingerprintsClicked(ActionEvent actionEvent) {
 
+        serviceType = ServiceType.RETAKE_FINGERPRINT;
+
+        String inquiryByFingerprintsInCriminal = resources.getString("wizard.inquiryByFingerprintsInCriminal");
+        String showingFingerprintsView = resources.getString("wizard.showFingerprintsView");
+        String fingerprintCapturing = resources.getString("wizard.fingerprintCapturing");
+
+        int stepIndex = Context.getCoreFxController().getWizardPane(getTabIndex()).getStepIndexByTitle(fingerprintCapturing);
+
+        if (stepIndex < 0) {
+            stepIndex = Context.getCoreFxController().getWizardPane(getTabIndex())
+                    .getStepIndexByTitle(inquiryByFingerprintsInCriminal);
+        }
+        final int finalStepIndex = stepIndex;
+
+
+        if (!addTwoSteps) {
+            Context.getCoreFxController().getWizardPane(getTabIndex()).addStep(finalStepIndex,
+                    fingerprintCapturing,
+                    "\\uf256");
+            Context.getCoreFxController().getWizardPane(getTabIndex()).addStep(finalStepIndex + 1,
+                    showingFingerprintsView,
+                    "\\uf256");
+
+            addTwoSteps = true;
+        }
+        continueWorkflow();
+    }
+
+    @FXML
+    protected void onNextButtonClicked(ActionEvent actionEvent) {
+        System.out.println(addTwoSteps);
+        serviceType = ServiceType.INQUIRY;
+
+        String inquiryByFingerprintsInCriminal = resources.getString("wizard.inquiryByFingerprintsInCriminal");
+        String fingerprintCapturing = resources.getString("wizard.fingerprintCapturing");
+
+        int stepIndex = Context.getCoreFxController().getWizardPane(getTabIndex()).getStepIndexByTitle(fingerprintCapturing);
+
+        if (stepIndex < 0) {
+            stepIndex = Context.getCoreFxController().getWizardPane(getTabIndex())
+                    .getStepIndexByTitle(inquiryByFingerprintsInCriminal);
+//            addTwoSteps = false;
+        }
+        final int finalStepIndex = stepIndex;
+
+
+        if (addTwoSteps) {
+            Context.getCoreFxController().getWizardPane(getTabIndex()).removeStep(finalStepIndex);
+            Context.getCoreFxController().getWizardPane(getTabIndex()).removeStep(finalStepIndex);
+
+            Context.getCoreFxController().getWizardPane(getTabIndex()).updateStep(finalStepIndex, inquiryByFingerprintsInCriminal, "search");
+            addTwoSteps = false;
+        }
+        else {
+            Context.getCoreFxController().getWizardPane(getTabIndex()).updateStep(finalStepIndex, inquiryByFingerprintsInCriminal, "search");
+        }
+
+        continueWorkflow();
+    }
+
+    @Override
+    public void onReturnFromWorkflow(boolean successfulResponse) {
+        if (successfulResponse) { goNext(); }
     }
 }

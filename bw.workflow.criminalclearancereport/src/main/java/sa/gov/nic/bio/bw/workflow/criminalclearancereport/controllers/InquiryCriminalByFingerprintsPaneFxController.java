@@ -6,6 +6,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import sa.gov.nic.bio.bw.core.Context;
 import sa.gov.nic.bio.bw.core.controllers.DevicesRunnerGadgetPaneFxController;
@@ -13,32 +14,28 @@ import sa.gov.nic.bio.bw.core.controllers.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.core.utils.FxmlFile;
 import sa.gov.nic.bio.bw.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.core.workflow.Input;
-import sa.gov.nic.bio.bw.core.workflow.Output;
-import sa.gov.nic.bio.bw.workflow.commons.tasks.FingerprintInquiryStatusCheckerWorkflowTask.Status;
+import sa.gov.nic.bio.bw.workflow.criminalclearancereport.tasks.FingerprintInquiryCriminalStatusCheckerWorkflowTask.Status;
 
-@FxmlFile("inquiryByFingerprints.fxml")
-public class InquiryByFingerprintsPaneFxController extends WizardStepFxControllerBase {
+@FxmlFile("inquiryCriminalByFingerprints.fxml")
+public class InquiryCriminalByFingerprintsPaneFxController extends WizardStepFxControllerBase {
     @Input(requiredOnReturn = true) private Status status;
-    @Output private ServiceType serviceType;
+    @Input private Long criminalBiometricsId;
 
     @FXML private VBox paneError;
     @FXML private VBox paneNotHit;
+    @FXML private VBox paneHit;
     @FXML private VBox paneDevicesRunnerNotRunning;
     @FXML private ProgressIndicator piProgress;
     @FXML private Label lblProgress;
     @FXML private Label lblCanceling;
     @FXML private Label lblCancelled;
+    @FXML private TextField txtCriminalBiometricsId;
     @FXML private Button btnCancel;
     @FXML private Button btnRetry;
     @FXML private Button btnStartOver;
-    @FXML private Button btnTakeFingerprints;
+    @FXML private Button btnRegister;
 
     private boolean fingerprintInquiryCancelled = false;
-    private boolean minusOneStepAndAddTwo = false;
-
-    public enum ServiceType {
-        TAKEFINGERPRINTS
-    }
 
     @Override
     protected void onAttachedToScene() {
@@ -80,20 +77,6 @@ public class InquiryByFingerprintsPaneFxController extends WizardStepFxControlle
     @Override
     public void onReturnFromWorkflow(boolean successfulResponse) {
 
-        if (serviceType == ServiceType.TAKEFINGERPRINTS) { goNext(); }
-
-        String showingQualityFingerprintsView = resources.getString("wizard.showQualityFingerprintsView");
-        String showingFingerprintsView = resources.getString("wizard.showFingerprintsView");
-        String fingerprintCapturing = resources.getString("wizard.fingerprintCapturing");
-
-        int stepIndex = Context.getCoreFxController().getWizardPane(getTabIndex()).getStepIndexByTitle(showingQualityFingerprintsView);
-
-        if (stepIndex < 0) {
-            stepIndex = Context.getCoreFxController().getWizardPane(getTabIndex())
-                    .getStepIndexByTitle(fingerprintCapturing);
-        }
-        final int finalStepIndex = stepIndex;
-
         if (successfulResponse) {
             if (status == Status.PENDING) {
                 btnCancel.setDisable(false);
@@ -122,35 +105,11 @@ public class InquiryByFingerprintsPaneFxController extends WizardStepFxControlle
                     });
                 });
             }
-            else if (status == Status.HIT) {
-                if (minusOneStepAndAddTwo) {
-                    //                    Context.getCoreFxController().getWizardPane(getTabIndex()).removeStep(finalStepIndex);
-                    Context.getCoreFxController().getWizardPane(getTabIndex()).removeStep(finalStepIndex);
-                    Context.getCoreFxController().getWizardPane(getTabIndex()).removeStep(finalStepIndex);
-                    Context.getCoreFxController().getWizardPane(getTabIndex()).addStep(finalStepIndex,
-                            showingQualityFingerprintsView,
-                            "\\uf256");
-                    minusOneStepAndAddTwo = false;
-                }
-                goNext();
+            else if (status == Status.HIT && criminalBiometricsId !=null) {
+                showHitProgress(true);
             }
             else {
-
-                if (!minusOneStepAndAddTwo) {
-                    Context.getCoreFxController().getWizardPane(getTabIndex()).removeStep(finalStepIndex);
-                    //                   Context.getCoreFxController().getWizardPane(getTabIndex()).addStep(finalStepIndex,
-                    //                           selectFingerprintsSource,
-                    //                           "question");
-                    Context.getCoreFxController().getWizardPane(getTabIndex()).addStep(finalStepIndex + 1,
-                            fingerprintCapturing,
-                            "\\uf256");
-                    Context.getCoreFxController().getWizardPane(getTabIndex()).addStep(finalStepIndex + 2,
-                            showingFingerprintsView,
-                            "\\uf256");
-
-                    minusOneStepAndAddTwo = true;
-                }
-                showNotHitProgress(true);
+                showHitProgress(false);
             }
         }
         else { showProgress(false); }
@@ -161,7 +120,7 @@ public class InquiryByFingerprintsPaneFxController extends WizardStepFxControlle
         GuiUtils.showNode(lblProgress, bShow);
         GuiUtils.showNode(btnCancel, bShow);
         GuiUtils.showNode(btnRetry, !bShow);
-        GuiUtils.showNode(btnTakeFingerprints, false);
+        GuiUtils.showNode(btnRegister, false);
         GuiUtils.showNode(btnStartOver, !bShow);
         GuiUtils.showNode(paneError, !bShow);
         GuiUtils.showNode(paneNotHit, false);
@@ -169,19 +128,21 @@ public class InquiryByFingerprintsPaneFxController extends WizardStepFxControlle
         GuiUtils.showNode(lblCancelled, false);
     }
 
-    private void showNotHitProgress(boolean bShow) {
+    private void showHitProgress(boolean bShow) {
 
-        GuiUtils.showNode(piProgress, !bShow);
-        GuiUtils.showNode(lblProgress, !bShow);
-        GuiUtils.showNode(btnCancel, !bShow);
-        GuiUtils.showNode(btnRetry, bShow);
-        GuiUtils.showNode(btnTakeFingerprints, bShow);
-        GuiUtils.showNode(btnStartOver, bShow);
-        GuiUtils.showNode(paneError, !bShow);
-        GuiUtils.showNode(paneNotHit, bShow);
+        GuiUtils.showNode(piProgress, false);
+        GuiUtils.showNode(lblProgress, false);
+        GuiUtils.showNode(btnCancel, false);
+        GuiUtils.showNode(btnRetry, !bShow);
+        GuiUtils.showNode(btnRegister, true);
+        GuiUtils.showNode(btnStartOver, true);
+        GuiUtils.showNode(paneError, false);
+        GuiUtils.showNode(paneNotHit, !bShow);
+        GuiUtils.showNode(paneHit, bShow);
         GuiUtils.showNode(lblCanceling, false);
         GuiUtils.showNode(lblCancelled, false);
 
+        if (bShow && criminalBiometricsId != null) { txtCriminalBiometricsId.setText(criminalBiometricsId.toString()); }
 
     }
 
@@ -199,8 +160,7 @@ public class InquiryByFingerprintsPaneFxController extends WizardStepFxControlle
     }
 
     @FXML
-    private void onTakeFingerprintsClicked(ActionEvent actionEvent) {
-        serviceType = ServiceType.TAKEFINGERPRINTS;
-        continueWorkflow();
+    private void onRegisterClicked(ActionEvent actionEvent) {
+        goNext();
     }
 }

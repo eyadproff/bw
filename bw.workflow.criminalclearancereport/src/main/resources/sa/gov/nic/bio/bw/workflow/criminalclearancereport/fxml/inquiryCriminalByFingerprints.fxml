@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressIndicator?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.GridPane?>
+<BorderPane xmlns="http://javafx.com/javafx/11" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="sa.gov.nic.bio.bw.workflow.criminalclearancereport.controllers.InquiryCriminalByFingerprintsPaneFxController"
+            fx:id="rootPane" stylesheets="@../css/style.css">
+    <center>
+        <VBox alignment="CENTER" spacing="5.0">
+            <ProgressIndicator fx:id="piProgress" maxWidth="25.0" maxHeight="25.0"/>
+            <Label fx:id="lblProgress" text="%label.fingerprintInquiryInProgress"/>
+            <Button fx:id="btnCancel" text="%button.cancel"/>
+            <Label fx:id="lblCanceling" text="%label.fingerprintInquiryCanceling" managed="false" visible="false"/>
+            <Label fx:id="lblCancelled" text="%label.fingerprintInquiryCancelled" managed="false" visible="false"/>
+            <VBox fx:id="paneError" alignment="CENTER" spacing="5.0" managed="false" visible="false">
+                <ImageView>
+                    <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/icon_error_32px.png"/>
+                </ImageView>
+                <Label text="%label.fingerprintsInquiryError"/>
+            </VBox>
+            <VBox fx:id="paneNotHit" alignment="CENTER" spacing="5.0" managed="false" visible="false">
+                <ImageView>
+                    <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/icon_success_32px.png"/>
+                </ImageView>
+                <Label text="%label.fingerprintsInquiryNoHitCriminalDB"/>
+            </VBox>
+            <VBox fx:id="paneHit" alignment="CENTER" spacing="5.0" managed="false" visible="false">
+                <ImageView>
+                    <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/icon_warning_32px.png"/>
+                </ImageView>
+                <Label text="%label.fingerprintsInquiryHitCriminalDB"/>
+                <GridPane alignment="CENTER" vgap="5.0" hgap="5.0">
+                    <Label text="%label.criminalBiometricsId" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                    <TextField fx:id="txtCriminalBiometricsId" editable="false" prefColumnCount="10" focusTraversable="false" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+                </GridPane>
+            </VBox>
+            <VBox fx:id="paneDevicesRunnerNotRunning" alignment="CENTER" spacing="5.0" managed="false" visible="false">
+                <ImageView>
+                    <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/icon_warning_32px.png"/>
+                </ImageView>
+                <Label text="%label.devicesRunnerNotRunning"/>
+            </VBox>
+        </VBox>
+    </center>
+    <bottom>
+        <HBox alignment="CENTER" spacing="10">
+            <padding>
+                <Insets bottom="10"/>
+            </padding>
+            <Button fx:id="btnStartOver" text="%button.startOver" managed="false" visible="false" onAction="#onStartOverButtonClicked"/>
+            <Button fx:id="btnRetry" text="%button.retry" managed="false" visible="false" onAction="#onRetryButtonClicked"/>
+            <Button fx:id="btnRegister" text="%button.registerCriminalClearanceReport" managed="false" visible="false" onAction="#onRegisterClicked"/>
+        </HBox>
+    </bottom>
+</BorderPane>

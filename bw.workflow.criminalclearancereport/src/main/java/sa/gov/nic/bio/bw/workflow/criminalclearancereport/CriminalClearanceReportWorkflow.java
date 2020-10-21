@@ -11,12 +11,15 @@ import sa.gov.nic.bio.bw.workflow.civilcriminalfingerprintsinquiry.controllers.S
 import sa.gov.nic.bio.bw.workflow.civilcriminalfingerprintsinquiry.controllers.SpecifyFingerprintCoordinatesPaneFxController;
 import sa.gov.nic.bio.bw.workflow.commons.beans.PersonInfo;
 import sa.gov.nic.bio.bw.workflow.criminalclearancereport.controllers.*;
+import sa.gov.nic.bio.bw.workflow.criminalclearancereport.controllers.ShowingFingerprintsQualityPaneFxController.ServiceType;
 import sa.gov.nic.bio.bw.workflow.commons.controllers.ShowingFingerprintsPaneFxController;
 import sa.gov.nic.bio.bw.workflow.commons.controllers.SlapFingerprintsCapturingFxController;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.CountriesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.DocumentTypesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.PersonTypesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.*;
+import sa.gov.nic.bio.bw.workflow.criminalclearancereport.tasks.FingerprintInquiryCriminalStatusCheckerWorkflowTask;
+import sa.gov.nic.bio.bw.workflow.criminalclearancereport.tasks.FingerprintInquiryCriminalWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.criminalclearancereport.tasks.SegmentWsqFingerprintsWorkflowTask;
 
 @AssociatedMenu(workflowId = 1031, menuId = "menu.query.criminalclearancereport",
@@ -89,7 +92,8 @@ public class CriminalClearanceReportWorkflow extends WizardWorkflowBase {
             case 3: {
                 FingerprintInquiryStatusCheckerWorkflowTask.Status status = getData(FingerprintInquiryStatusCheckerWorkflowTask.class, "status");
 
-                if (status == FingerprintInquiryStatusCheckerWorkflowTask.Status.NOT_HIT) {
+                InquiryByFingerprintsPaneFxController.ServiceType serviceType = getData(InquiryByFingerprintsPaneFxController.class, "serviceType");
+                if (serviceType == InquiryByFingerprintsPaneFxController.ServiceType.TAKEFINGERPRINTS) {
                     incrementNSteps(1);
                 }
                 setData(InquiryByFingerprintsPaneFxController.class, "status", status);
@@ -111,85 +115,104 @@ public class CriminalClearanceReportWorkflow extends WizardWorkflowBase {
                         "inquiryId");
                 executeWorkflowTask(FingerprintInquiryStatusCheckerWorkflowTask.class);
 
+                status = getData(FingerprintInquiryStatusCheckerWorkflowTask.class, "status");
+
+                if (status == FingerprintInquiryStatusCheckerWorkflowTask.Status.HIT) {
+                    passData(FetchingFingerprintsWorkflowTask.class,
+                            SegmentWsqFingerprintsWorkflowTask.class,
+                            "fingerprints");
+                    passData(FetchingMissingFingerprintsWorkflowTask.class,
+                            SegmentWsqFingerprintsWorkflowTask.class,
+                            "missingFingerprints");
+                    executeWorkflowTask(SegmentWsqFingerprintsWorkflowTask.class);
+
+                    passData(
+                            SegmentWsqFingerprintsWorkflowTask.class,
+                            "segmentedFingerPrints", ShowingFingerprintsQualityPaneFxController.class, "fingerprints");
+                }
+
+
                 break;
             }
             case 4: {
+                ServiceType serviceType = getData(ShowingFingerprintsQualityPaneFxController.class, "serviceType");
 
-                passData(FetchingFingerprintsWorkflowTask.class,
-                        SegmentWsqFingerprintsWorkflowTask.class,
-                        "fingerprints");
-                passData(FetchingMissingFingerprintsWorkflowTask.class,
-                        SegmentWsqFingerprintsWorkflowTask.class,
-                        "missingFingerprints");
-                executeWorkflowTask(SegmentWsqFingerprintsWorkflowTask.class);
-
-                passData(
-                        SegmentWsqFingerprintsWorkflowTask.class,
-                        "segmentedFingerPrints", ShowingFingerprintsQualityPaneFxController.class, "fingerprints");
+                if (serviceType == ServiceType.INQUIRY) {
+                    incrementNSteps(2);
+                }
                 renderUiAndWaitForUserInput(ShowingFingerprintsQualityPaneFxController.class);
 
                 break;
             }
             case 5: {
-                setData(FingerprintsSourceFxController.class, "showLiveScanOption", Boolean.TRUE);
-                renderUiAndWaitForUserInput(FingerprintsSourceFxController.class);
+                FingerprintInquiryStatusCheckerWorkflowTask.Status status = getData(FingerprintInquiryStatusCheckerWorkflowTask.class, "status");
+
+                if (status == FingerprintInquiryStatusCheckerWorkflowTask.Status.NOT_HIT) {
+                    incrementNSteps(-1);
+                }
+
+                setData(SlapFingerprintsCapturingFxController.class, "acceptBadQualityFingerprint",
+                        Boolean.TRUE);
+                setData(SlapFingerprintsCapturingFxController.class, "acceptBadQualityFingerprintMinRetires",
+                        0);
+                renderUiAndWaitForUserInput(SlapFingerprintsCapturingFxController.class);
+
                 break;
             }
             case 6: {
-                FingerprintsSourceFxController.Source fingerprintsSource = getData(FingerprintsSourceFxController.class,
-                        "fingerprintsSource");
-                if (fingerprintsSource.equals(FingerprintsSourceFxController.Source.CAPTURING_FINGERPRINTS_VIA_FINGERPRINT_SCANNER)) {
-                    renderUiAndWaitForUserInput(SlapFingerprintsCapturingFxController.class);
-                }
-                if (fingerprintsSource.equals(FingerprintsSourceFxController.Source.SCANNING_FINGERPRINTS_CARD)) {
-                    renderUiAndWaitForUserInput(ScanFingerprintCardPaneFxController.class);
-                }
-
-                break;
-            }
-            case 7: {
-
-                FingerprintsSourceFxController.Source fingerprintsSource = getData(FingerprintsSourceFxController.class,
-                        "fingerprintsSource");
-                if (fingerprintsSource.equals(FingerprintsSourceFxController.Source.CAPTURING_FINGERPRINTS_VIA_FINGERPRINT_SCANNER)) {
-                    incrementNSteps(1);
-                    passData(SlapFingerprintsCapturingFxController.class,
-                            ShowingFingerprintsPaneFxController.class,
-                            "fingerprintBase64Images");
-                    setData(ShowingFingerprintsPaneFxController.class, "hideGenerateNistFileButton", Boolean.TRUE);
-                    renderUiAndWaitForUserInput(ShowingFingerprintsPaneFxController.class);
-                }
-                if (fingerprintsSource.equals(FingerprintsSourceFxController.Source.SCANNING_FINGERPRINTS_CARD)) {
-                    passData(ScanFingerprintCardPaneFxController.class,
-                            SpecifyFingerprintCoordinatesPaneFxController.class, "cardImage");
-
-                    renderUiAndWaitForUserInput(SpecifyFingerprintCoordinatesPaneFxController.class);
-                }
-
-                break;
-            }
-            case 8: {
-                passData(SpecifyFingerprintCoordinatesPaneFxController.class,
+                //                    incrementNSteps(1);
+                passData(SlapFingerprintsCapturingFxController.class,
                         ShowingFingerprintsPaneFxController.class,
                         "fingerprintBase64Images");
                 setData(ShowingFingerprintsPaneFxController.class, "hideGenerateNistFileButton", Boolean.TRUE);
                 renderUiAndWaitForUserInput(ShowingFingerprintsPaneFxController.class);
+
+
                 break;
             }
-            case 9: {
-                FingerprintsSourceFxController.Source fingerprintsSource = getData(FingerprintsSourceFxController.class,
-                        "fingerprintsSource");
-                if (fingerprintsSource.equals(FingerprintsSourceFxController.Source.CAPTURING_FINGERPRINTS_VIA_FINGERPRINT_SCANNER)) {
-                    incrementNSteps(-1);
+            case 7: {
+                ServiceType serviceType = getData(ShowingFingerprintsQualityPaneFxController.class, "serviceType");
+                if (serviceType == ServiceType.INQUIRY) {
+                    incrementNSteps(-2);
                 }
-                //                renderUiAndWaitForUserInput();
+
+                FingerprintInquiryCriminalStatusCheckerWorkflowTask.Status status = getData(
+                        FingerprintInquiryCriminalStatusCheckerWorkflowTask.class, "status");
+
+                setData(InquiryCriminalByFingerprintsPaneFxController.class, "status", status);
+                renderUiAndWaitForUserInput(InquiryCriminalByFingerprintsPaneFxController.class);
+                Integer inquiryId = getData(FingerprintInquiryCriminalWorkflowTask.class, "inquiryId");
+
+                if (inquiryId == null) {
+                    passData(FetchingFingerprintsWorkflowTask.class, FingerprintInquiryCriminalWorkflowTask.class,
+                            "fingerprints");
+                    passData(ShowingFingerprintsPaneFxController.class, FingerprintInquiryCriminalWorkflowTask.class,
+                            "missingFingerprints");
+                    executeWorkflowTask(FingerprintInquiryCriminalWorkflowTask.class);
+                }
+
+                passData(FingerprintInquiryCriminalWorkflowTask.class,
+                        FingerprintInquiryCriminalStatusCheckerWorkflowTask.class,
+                        "inquiryId");
+                setData(FingerprintInquiryCriminalStatusCheckerWorkflowTask.class, "ignoreCriminalFingerprintsInquiryResult", Boolean.TRUE);
+                executeWorkflowTask(FingerprintInquiryCriminalStatusCheckerWorkflowTask.class);
+
+                status = getData(FingerprintInquiryCriminalStatusCheckerWorkflowTask.class, "status");
+                if (status == FingerprintInquiryCriminalStatusCheckerWorkflowTask.Status.HIT) {
+                    Long criminalBiometricsId = getData(
+                            FingerprintInquiryCriminalStatusCheckerWorkflowTask.class, "criminalBiometricsId");
+                    setData(InquiryCriminalByFingerprintsPaneFxController.class, "criminalBiometricsId", criminalBiometricsId);
+                }
                 break;
             }
-            case 10: {
-                //                renderUiAndWaitForUserInput();
+            case 8: {
+                renderUiAndWaitForUserInput(CriminalClearanceDetailsPaneFxController.class);
                 break;
             }
             case 11: {
+
+
+
                 //                renderUiAndWaitForUserInput();
                 break;
             }
