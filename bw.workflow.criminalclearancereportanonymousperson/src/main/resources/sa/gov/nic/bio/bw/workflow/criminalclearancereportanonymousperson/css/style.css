@@ -1,0 +1,7 @@
+.titled-pane > .title {
+    -fx-alignment: center;
+}
+
+.hidden-divider *.split-pane-divider {
+    -fx-padding: 1 0 1 0;
+}

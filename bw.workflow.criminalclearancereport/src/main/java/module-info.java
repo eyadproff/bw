@@ -1,4 +1,4 @@
-module bw.bw.workflow.criminalclearancereport {
+module bw.workflow.criminalclearancereport {
 
     requires bw.core;
     requires bw.workflow.commons;
@@ -15,5 +15,8 @@ module bw.bw.workflow.criminalclearancereport {
     opens sa.gov.nic.bio.bw.workflow.criminalclearancereport.tasks to bw.core;
 //    opens sa.gov.nic.bio.bw.workflow.criminalclearancereport.beans to bw.core, com.google.gson, org.apache.commons.lang3;
     opens sa.gov.nic.bio.bw.workflow.criminalclearancereport.controllers to javafx.fxml, bw.core;
+    exports sa.gov.nic.bio.bw.workflow.criminalclearancereport.tasks;
+    exports sa.gov.nic.bio.bw.workflow.criminalclearancereport.controllers;
+
 
 }

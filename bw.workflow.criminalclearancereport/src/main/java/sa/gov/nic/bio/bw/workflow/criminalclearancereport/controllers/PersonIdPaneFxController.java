@@ -24,9 +24,10 @@ public class PersonIdPaneFxController extends WizardStepFxControllerBase
 	@Override
 	protected void onAttachedToScene()
 	{
-		GuiUtils.applyValidatorToTextField(txtPersonId, "^1\\d*", "\\D+|^[02-9]",
-		                                   10);
-		
+//		GuiUtils.applyValidatorToTextField(txtPersonId, "^1\\d*", "\\D+|^[02-9]",
+//		                                   10);
+		GuiUtils.applyValidatorToTextField(txtPersonId, "\\d*", "[^\\d]", 10);
+
 		btnNext.disableProperty().bind(txtPersonId.textProperty().isEmpty().or(txtPersonId.disabledProperty()));
 		btnNext.setOnAction(actionEvent ->
 		{

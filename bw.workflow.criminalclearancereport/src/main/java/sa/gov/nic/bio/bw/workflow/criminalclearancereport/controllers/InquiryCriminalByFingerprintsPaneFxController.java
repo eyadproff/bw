@@ -109,11 +109,12 @@ public class InquiryCriminalByFingerprintsPaneFxController extends WizardStepFxC
             else if (status == Status.HIT && criminalBiometricsId !=null) {
                 showHitCriminalProgress(true);
             }
-            else if (status == Status.HIT ){
+            else {
                 showHitCriminalProgress(false);
-            }else {
-                showHitProgress(false);
             }
+//            }else {
+//                showHitProgress(false);
+//            }
         }
         else { showProgress(false); }
     }
@@ -152,24 +153,24 @@ public class InquiryCriminalByFingerprintsPaneFxController extends WizardStepFxC
 
     }
 
-    private void showHitProgress(boolean bShow) {
-
-        GuiUtils.showNode(piProgress, false);
-        GuiUtils.showNode(lblProgress, false);
-        GuiUtils.showNode(btnCancel, false);
-        GuiUtils.showNode(btnRetry, !bShow);
-        GuiUtils.showNode(btnRegister, false);
-        GuiUtils.showNode(btnStartOver, !bShow);
-        GuiUtils.showNode(paneError, false);
-        GuiUtils.showNode(paneNotHitCriminal, false);
-        GuiUtils.showNode(paneNotHit,!bShow);
-        GuiUtils.showNode(paneHitCriminal, false);
-        GuiUtils.showNode(lblCanceling, false);
-        GuiUtils.showNode(lblCancelled, false);
-
-        if (bShow && criminalBiometricsId != null) { txtCriminalBiometricsId.setText(criminalBiometricsId.toString()); }
-
-    }
+//    private void showHitProgress(boolean bShow) {
+//
+//        GuiUtils.showNode(piProgress, false);
+//        GuiUtils.showNode(lblProgress, false);
+//        GuiUtils.showNode(btnCancel, false);
+//        GuiUtils.showNode(btnRetry, !bShow);
+//        GuiUtils.showNode(btnRegister, false);
+//        GuiUtils.showNode(btnStartOver, !bShow);
+//        GuiUtils.showNode(paneError, false);
+//        GuiUtils.showNode(paneNotHitCriminal, false);
+//        GuiUtils.showNode(paneNotHit,!bShow);
+//        GuiUtils.showNode(paneHitCriminal, false);
+//        GuiUtils.showNode(lblCanceling, false);
+//        GuiUtils.showNode(lblCancelled, false);
+//
+//        if (bShow && criminalBiometricsId != null) { txtCriminalBiometricsId.setText(criminalBiometricsId.toString()); }
+//
+//    }
 
     @Override
     protected void onDetachingFromScene() {

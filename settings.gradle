@@ -30,4 +30,5 @@ include 'bw.workflow.civilfingerprintsinquiry'
 include 'bw.workflow.latentreversesearch'
 include 'bw.workflow.miscreantfingerprintsenrollment'
 include 'bw.workflow.criminalclearancereport'
+include 'bw.workflow.criminalclearancereportanonymousperson'
 
