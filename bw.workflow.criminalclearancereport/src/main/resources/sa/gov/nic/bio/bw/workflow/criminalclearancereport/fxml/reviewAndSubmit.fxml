@@ -56,6 +56,18 @@
                                         <CopiableLabel fx:id="lblBirthPlace" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="6" />
                                         <Label styleClass="bold-label" text="%label.birthDate" GridPane.columnIndex="0" GridPane.rowIndex="7" />
                                         <CopiableLabel fx:id="lblBirthDate" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="7" />
+                                        <Label text="%label.personId" GridPane.rowIndex="8" GridPane.columnIndex="0" styleClass="bold-label"/>
+                                        <CopiableLabel fx:id="lblPersonId" GridPane.rowIndex="8" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
+                                        <Label text="%label.personType" GridPane.rowIndex="9" GridPane.columnIndex="0" styleClass="bold-label"/>
+                                        <CopiableLabel fx:id="lblPersonType" GridPane.rowIndex="9" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
+                                        <Label text="%label.documentId" GridPane.rowIndex="10" GridPane.columnIndex="0" styleClass="bold-label"/>
+                                        <CopiableLabel fx:id="lblDocumentId" GridPane.rowIndex="10" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
+                                        <Label text="%label.documentType" GridPane.rowIndex="11" GridPane.columnIndex="0" styleClass="bold-label"/>
+                                        <CopiableLabel fx:id="lblDocumentType" GridPane.rowIndex="11" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
+                                        <Label text="%label.documentIssuanceDate" GridPane.rowIndex="12" GridPane.columnIndex="0" styleClass="bold-label"/>
+                                        <CopiableLabel fx:id="lblDocumentIssuanceDate" GridPane.rowIndex="12" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
+                                        <Label text="%label.documentExpiryDate" GridPane.rowIndex="13" GridPane.columnIndex="0" styleClass="bold-label"/>
+                                        <CopiableLabel fx:id="lblDocumentExpiryDate" GridPane.rowIndex="13" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
                               <rowConstraints>
                                  <RowConstraints />
                                  <RowConstraints />

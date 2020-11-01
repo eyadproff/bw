@@ -1,13 +1,10 @@
 package sa.gov.nic.bio.bw.workflow.criminalclearancereport;
 
-import javafx.scene.image.Image;
+
 import sa.gov.nic.bio.bw.core.utils.Device;
 import sa.gov.nic.bio.bw.core.wizard.Step;
 import sa.gov.nic.bio.bw.core.wizard.Wizard;
 import sa.gov.nic.bio.bw.core.workflow.*;
-import sa.gov.nic.bio.bw.workflow.civilcriminalfingerprintsinquiry.controllers.ScanFingerprintCardPaneFxController;
-import sa.gov.nic.bio.bw.workflow.civilcriminalfingerprintsinquiry.controllers.SpecifyFingerprintCoordinatesPaneFxController;
-import sa.gov.nic.bio.bw.workflow.commons.beans.NormalizedPersonInfo;
 import sa.gov.nic.bio.bw.workflow.commons.beans.PersonInfo;
 import sa.gov.nic.bio.bw.workflow.criminalclearancereport.controllers.*;
 import sa.gov.nic.bio.bw.workflow.criminalclearancereport.controllers.ShowingFingerprintsQualityPaneFxController.ServiceType;
@@ -21,7 +18,6 @@ import sa.gov.nic.bio.bw.workflow.criminalclearancereport.tasks.FingerprintInqui
 import sa.gov.nic.bio.bw.workflow.criminalclearancereport.tasks.FingerprintInquiryCriminalWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.criminalclearancereport.tasks.SegmentWsqFingerprintsWorkflowTask;
 
-import java.util.Map;
 
 @AssociatedMenu(workflowId = 1031, menuId = "menu.query.criminalclearancereport",
                 menuTitle = "menu.title", menuOrder = 8, devices = {Device.FINGERPRINT_SCANNER})

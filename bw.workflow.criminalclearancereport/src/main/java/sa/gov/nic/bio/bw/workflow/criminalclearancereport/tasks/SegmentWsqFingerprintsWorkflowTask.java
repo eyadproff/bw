@@ -4,7 +4,6 @@ import sa.gov.nic.bio.biokit.exceptions.NotConnectedException;
 import sa.gov.nic.bio.biokit.fingerprint.beans.SegmentFingerprintsResponse;
 import sa.gov.nic.bio.biokit.websocket.beans.DMFingerData;
 import sa.gov.nic.bio.bw.core.Context;
-import sa.gov.nic.bio.bw.core.beans.FingerCoordinate;
 import sa.gov.nic.bio.bw.core.beans.Fingerprint;
 import sa.gov.nic.bio.bw.core.biokit.FingerPosition;
 import sa.gov.nic.bio.bw.core.workflow.Input;
@@ -158,7 +157,7 @@ public class SegmentWsqFingerprintsWorkflowTask extends WorkflowTask {
                 SegmentFingerprintsResponse result = response.getResult();
                 if (result.getReturnCode() == SegmentFingerprintsResponse.SuccessCodes.SUCCESS) {
                     List<DMFingerData> fingerData = result.getFingerData();
-//                    List<FingerCoordinate> fingerCoordinates = new ArrayList<>();
+                    //                    List<FingerCoordinate> fingerCoordinates = new ArrayList<>();
 
                     fingerData.forEach(dmFingerData ->
                     {
