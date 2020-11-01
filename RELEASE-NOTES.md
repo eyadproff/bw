@@ -11,7 +11,7 @@ VERSION SCHEMA: vYYYY.MM.#SEQ
 
 ---
 
-## v2020.10.1
+## v2020.11.1
 
 - NEW: Citizen Enrollment Workflow.
 - NEW: Biometrics Exception Workflow.
