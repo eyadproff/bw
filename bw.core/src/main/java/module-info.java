@@ -16,6 +16,7 @@ module bw.core
 	requires transitive bw.commons.resources;
 	requires transitive org.controlsfx.controls;
 	requires transitive retrofit2;
+	requires thumbnailator;
 	requires retrofit2.converter.gson;
 	requires org.apache.commons.lang3;
 	requires com.google.gson;

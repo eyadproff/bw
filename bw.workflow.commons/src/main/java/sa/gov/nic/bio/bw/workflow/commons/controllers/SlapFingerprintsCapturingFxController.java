@@ -82,6 +82,8 @@ public class SlapFingerprintsCapturingFxController extends WizardStepFxControlle
 	@Input private Boolean allow9MissingWithNoRole;
 	@Input private Boolean acceptBadQualityFingerprint;
 	@Input private Integer acceptBadQualityFingerprintMinRetires;
+	@Input private Boolean hideCheckBoxOfMissing;
+	@Input private List<Integer> exceptionOfFingerprints;
 	@Output private Map<Integer, Fingerprint> capturedFingerprints;
 	@Output private List<Finger> segmentedFingerprints;
 	@Output private List<Finger> slapFingerprints;
@@ -307,7 +309,8 @@ public class SlapFingerprintsCapturingFxController extends WizardStepFxControlle
                                                    svgLeftLittle, tpLeftLittle, cbLeftLittle,
                                                    resources.getString("label.fingers.little"),
                                                    resources.getString("label.leftHand")));
-		
+
+
 		// disable the finger's titledPane whenever its checkbox is unselected
 		fingerprintUiComponentsMap.forEach((position, components) ->
                components.getTitledPane().disableProperty().bind(components.getCheckBox().selectedProperty().not()));
@@ -622,6 +625,21 @@ public class SlapFingerprintsCapturingFxController extends WizardStepFxControlle
 		}
 		
 		workflowUserTaskLoaded = true;
+
+
+		// disable all the checkboxes if We do not have the choice to select MissingFingerPrint from the scene
+		// make Missing finger unselected
+		if (hideCheckBoxOfMissing != null && hideCheckBoxOfMissing) {
+
+			if (exceptionOfFingerprints != null) {
+				if (exceptionOfFingerprints.size() >= 10) { showWarningNotification(resources.getString("AllFingerMissingWarning")); }
+				else if (exceptionOfFingerprints.size() > 0) { showWarningNotification(resources.getString("ExceptionsWarning")); }
+			}
+			fingerprintUiComponentsMap.forEach((position, components) -> {
+				components.getCheckBox().setVisible(false);
+				components.getCheckBox().setSelected(exceptionOfFingerprints == null || !exceptionOfFingerprints.contains(position));
+			});
+		}
 	}
 	
 	@Override
@@ -1686,7 +1704,8 @@ public class SlapFingerprintsCapturingFxController extends WizardStepFxControlle
 			{
 				components.getImageView().setImage(null);
 				components.getCheckBox().setDisable(false);
-				components.getCheckBox().setSelected(true);
+//				components.getCheckBox().setSelected(true);
+				components.getCheckBox().setSelected(exceptionOfFingerprints == null || !exceptionOfFingerprints.contains(position));
 				components.getTitledPane().setActive(false);
 				components.getTitledPane().setCaptured(false);
 				components.getTitledPane().setValid(false);
