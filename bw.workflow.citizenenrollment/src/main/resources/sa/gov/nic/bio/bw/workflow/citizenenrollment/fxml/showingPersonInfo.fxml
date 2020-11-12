@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import sa.gov.nic.bio.bw.workflow.commons.ui.*?>
+
+<BorderPane fx:id="rootPane" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sa.gov.nic.bio.bw.workflow.citizenenrollment.controllers.ShowingPersonInfoFxController">
+    <center>
+        <VBox alignment="TOP_CENTER">
+            <padding>
+                <Insets bottom="10.0" top="10.0" />
+            </padding>
+            <HBox alignment="TOP_CENTER" VBox.vgrow="ALWAYS">
+                <ImageViewPaneWithAlignment minHeight="0.0" minWidth="0.0" styleClass="image-border" />
+                <ScrollPane fx:id="infoPane" minWidth="300.0" HBox.hgrow="ALWAYS">
+                    <GridPane alignment="CENTER" hgap="10.0" vgap="3.0" HBox.hgrow="ALWAYS">
+                        <padding>
+                            <Insets topRightBottomLeft="5.0" />
+                        </padding>
+                        <Label styleClass="bold-label" text="%label.firstName" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                        <CopiableLabel fx:id="lblFirstName" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="0" />
+                        <Label styleClass="bold-label" text="%label.fatherName" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                        <CopiableLabel fx:id="lblFatherName" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" />
+                        <Label styleClass="bold-label" text="%label.grandfatherName" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                        <CopiableLabel fx:id="lblGrandfatherName" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2" />
+                        <Label styleClass="bold-label" text="%label.familyName" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+                        <CopiableLabel fx:id="lblFamilyName" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="3" />
+                        <Label styleClass="bold-label" text="%label.gender" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+                        <CopiableLabel fx:id="lblGender" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="4" />
+                        <Label styleClass="bold-label" text="%label.nationality" GridPane.columnIndex="0" GridPane.rowIndex="5" />
+                        <HBox spacing="5.0" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="5">
+                            <CopiableLabel fx:id="lblNationality" />
+                            <Label fx:id="lblNaturalizedSaudi" managed="false" styleClass="bold-label, blue-label" text="%label.naturalizedSaudi" visible="false" />
+                        </HBox>
+                        <Label styleClass="bold-label" text="%label.occupation" GridPane.columnIndex="0" GridPane.rowIndex="6" />
+                        <CopiableLabel fx:id="lblOccupation" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="6" />
+                        <Label styleClass="bold-label" text="%label.birthPlace" GridPane.columnIndex="0" GridPane.rowIndex="7" />
+                        <CopiableLabel fx:id="lblBirthPlace" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="7" />
+                        <Label styleClass="bold-label" text="%label.birthDate" GridPane.columnIndex="0" GridPane.rowIndex="8" />
+                        <CopiableLabel fx:id="lblBirthDate" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="8" />
+                        <Label styleClass="bold-label" text="%label.personId" GridPane.columnIndex="0" GridPane.rowIndex="9" />
+                        <CopiableLabel fx:id="lblPersonId" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="9" />
+                        <Label styleClass="bold-label" text="%label.personType" GridPane.columnIndex="0" GridPane.rowIndex="10" />
+                        <CopiableLabel fx:id="lblPersonType" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="10" />
+                        <CopiableLabel fx:id="lblDocumentId" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="11" />
+                        <CopiableLabel fx:id="lblDocumentType" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="12" />
+                        <CopiableLabel fx:id="lblDocumentIssuanceDate" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="13" />
+                        <CopiableLabel fx:id="lblDocumentExpiryDate" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="14" />
+                  <columnConstraints>
+                     <ColumnConstraints />
+                     <ColumnConstraints />
+                  </columnConstraints>
+                  <rowConstraints>
+                     <RowConstraints />
+                     <RowConstraints />
+                     <RowConstraints />
+                     <RowConstraints />
+                     <RowConstraints />
+                     <RowConstraints />
+                     <RowConstraints />
+                     <RowConstraints />
+                     <RowConstraints />
+                     <RowConstraints />
+                     <RowConstraints />
+                     <RowConstraints />
+                     <RowConstraints />
+                     <RowConstraints />
+                     <RowConstraints />
+                  </rowConstraints>
+                    </GridPane>
+                </ScrollPane>
+            </HBox>
+            <ProgressIndicator fx:id="piProgress" maxWidth="25.0" maxHeight="25.0" visible="false"/>
+        </VBox>
+    </center>
+    <bottom>
+        <HBox alignment="CENTER" spacing="10">
+            <padding>
+                <Insets bottom="10" />
+            </padding>
+            <Button fx:id="btnStartOver" onAction="#onStartOverButtonClicked" text="%button.startOver" />
+            <Button fx:id="btnConfirmPersonInfo" onAction="#onNextButtonClicked" text="%button.confirm" />
+        </HBox>
+    </bottom>
+</BorderPane>

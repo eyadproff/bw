@@ -1,0 +1,7 @@
+.text-field,
+.password-field,
+.combo-box,
+.combo-box .list-view {
+    -fx-min-width: 200;
+    -fx-pref-width: 200;
+}

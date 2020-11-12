@@ -68,7 +68,7 @@ public class ShowingFingerprintsPaneFxController extends WizardStepFxControllerB
 		btnInquiry.setDisable(disableInquiry);
 		if(!disableInquiry) btnInquiry.requestFocus();
 
-		if (hideGenerateNistFileButton != null && hideGenerateNistFileButton) {
+		if(hideGenerateNistFileButton!=null&& hideGenerateNistFileButton){
 			btnGenerateNistFile.setVisible(false);
 			btnGenerateNistFile.setManaged(false);
 		}

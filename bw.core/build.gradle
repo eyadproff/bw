@@ -27,6 +27,8 @@ dependencies {
     implementation name: "javafx.web-14.0.0"
     implementation name: "javafx.media-14.0.0"
 
+    implementation name: "thumbnailator-0.4.8"
+
     api project(':bw.commons.resources')
     runtimeOnly project(':bw.login')
     runtimeOnly project(':bw.home')

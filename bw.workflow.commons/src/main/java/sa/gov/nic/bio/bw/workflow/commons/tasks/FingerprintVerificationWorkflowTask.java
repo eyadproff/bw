@@ -21,11 +21,11 @@ public class FingerprintVerificationWorkflowTask extends WorkflowTask
 	@Override
 	public void execute() throws Signal
 	{
-		String fingerprintAsJson = new Gson().toJson(fingerprint, Finger.class);
+		//String fingerprintAsJson = new Gson().toJson(fingerprint, Finger.class);
 		
 		var api = Context.getWebserviceManager().getApi(FingerprintVerificationAPI.class);
 		Call<Boolean> apiCall = api.verifyFingerprint(workflowId, workflowTcn, personId,
-		                                              fingerprintAsJson, fingerPosition);
+		                                              fingerprint.getImage(), fingerPosition);
 		TaskResponse<Boolean> taskResponse = Context.getWebserviceManager().executeApi(apiCall);
 		
 		resetWorkflowStepIfNegativeOrNullTaskResponse(taskResponse);

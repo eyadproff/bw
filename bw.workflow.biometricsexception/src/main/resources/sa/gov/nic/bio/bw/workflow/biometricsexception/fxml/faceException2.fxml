@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<BorderPane prefHeight="400.0" prefWidth="803.0" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sa.gov.nic.bio.bw.workflow.biometricsexception.controllers.FaceExceptionFXController">
+   <top>
+       <Label fx:id="lblExcpiredExc" prefHeight="17.0" prefWidth="817.0" text="%Label.expiredExceptions" textFill="#FF0E07" visible="false" wrapText="true">
+       </Label>
+   </top>
+
+    <bottom>
+        <HBox alignment="CENTER" spacing="10">
+            <padding>
+                <Insets bottom="10" />
+            </padding>
+            <Button fx:id="btnPrevious" onAction="#onPreviousButtonClicked" text="%button.previous" />
+
+        </HBox>
+    </bottom>
+
+    <center>
+
+<!--        <fx:define>-->
+<!--            <ToggleGroup fx:id="RBStatus"/>-->
+<!--        </fx:define>-->
+
+        <TabPane maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="212.0" prefWidth="373.0" styleClass="floating" BorderPane.alignment="CENTER">
+            <tabs>
+                <Tab closable="false" text="%AddFaceException">
+                    <content>
+                        <GridPane alignment="CENTER" hgap="5.0" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="182.0" prefWidth="369.0">
+                            <columnConstraints>
+                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="142.0" minWidth="10.0" prefWidth="106.0" />
+                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="252.0" minWidth="10.0" prefWidth="248.0" />
+                            </columnConstraints>
+                            <rowConstraints>
+                                <RowConstraints maxHeight="94.0" minHeight="10.0" prefHeight="66.0" vgrow="SOMETIMES" />
+                                <RowConstraints maxHeight="71.0" minHeight="10.0" prefHeight="71.0" vgrow="SOMETIMES" />
+                                <RowConstraints maxHeight="58.0" minHeight="10.0" prefHeight="25.0" vgrow="SOMETIMES" />
+                            </rowConstraints>
+                            <children>
+                                <Label alignment="CENTER_RIGHT" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="16.0" prefWidth="114.0" text="%label.reason">
+                                    <font>
+                                        <Font name="System Bold" size="12.0" />
+                                    </font>
+                                    <GridPane.margin>
+                                        <Insets top="20.0" />
+                                    </GridPane.margin>
+                                </Label>
+                                <!-- <MenuButton fx:id="SelectCause" mnemonicParsing="false" prefHeight="22.0" prefWidth="220.0" text="%Cause" GridPane.columnIndex="1">
+
+                                     <GridPane.margin>
+                                               <Insets top="20.0" />
+                                           </GridPane.margin>
+                                           <font>
+                                               <Font size="12.0" />
+                                           </font>
+                                       </MenuButton>-->
+                                <ComboBox fx:id="ComboMenu" prefHeight="22.0" prefWidth="190.0" promptText="%Cause" GridPane.columnIndex="1">
+                                    <GridPane.margin>
+                                        <Insets top="20.0" />
+                                    </GridPane.margin>
+                                </ComboBox>
+                        <VBox alignment="CENTER_LEFT" prefHeight="71.0" prefWidth="234.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                           <children>
+                              <HBox fx:id="RBStatusFaceEx" prefHeight="23.0" prefWidth="248.0" visible="false">
+                                 <children>
+                                    <RadioButton mnemonicParsing="false" prefHeight="16.0" prefWidth="80.0" text="%3months">
+                                       <padding>
+                                          <Insets right="5.0" />
+                                       </padding>
+                                       <toggleGroup>
+                                          <ToggleGroup fx:id="RBStatus" />
+                                       </toggleGroup>
+                                    </RadioButton>
+                                    <RadioButton layoutX="10.0" layoutY="10.0" mnemonicParsing="false" prefHeight="16.0" prefWidth="80.0" text="%6months" toggleGroup="$RBStatus">
+                                       <padding>
+                                          <Insets right="5.0" />
+                                       </padding>
+                                    </RadioButton>
+                                    <RadioButton layoutX="91.0" layoutY="10.0" mnemonicParsing="false" prefHeight="16.0" prefWidth="90.0" text="%oneYear" toggleGroup="$RBStatus" />
+                                 </children>
+                                 <VBox.margin>
+                                    <Insets top="8.0" />
+                                 </VBox.margin>
+                              </HBox>
+                                      <TextField fx:id="TxtfaceExcReason" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="28.0" prefWidth="215.0" promptText="%Cause" visible="false">
+                                          <font>
+                                              <Font size="12.0" />
+                                          </font>
+                                 <VBox.margin>
+                                    <Insets top="3.0" />
+                                 </VBox.margin>
+                                      </TextField>
+                           </children>
+                        </VBox>
+                                <Button mnemonicParsing="false" onAction="#onAddButtonClicked" text="%AddFaceException" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                           <GridPane.margin>
+                              <Insets left="5.0" />
+                           </GridPane.margin></Button>
+                        <Label fx:id="StatusLabel" alignment="BOTTOM_RIGHT" prefHeight="16.0" prefWidth="114.0" text="%StatusText" GridPane.rowIndex="1">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                           <GridPane.margin>
+                              <Insets bottom="22.0" />
+                           </GridPane.margin>
+                        </Label>
+
+                            </children>
+                            <padding>
+                                <Insets left="5.0" right="5.0" />
+                            </padding>
+                        </GridPane>
+                    </content>
+                </Tab>
+                <Tab closable="false" text="%DeleteFaceException">
+                    <content>
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                            <children>
+                                <Label fx:id="LblDelfaceExcCouse" layoutX="23.0" layoutY="47.0" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="16.0" prefWidth="90.0" text="%CauseText">
+                                    <font>
+                                        <Font name="System Bold" size="12.0" />
+                                    </font>
+                                </Label>
+                                <Label fx:id="LblfaceExcReason" layoutX="137.0" layoutY="46.0" prefHeight="18.0" prefWidth="183.0" />
+                                <Button fx:id="DeleteButton" disable="true" layoutX="117.0" layoutY="150.0" mnemonicParsing="false" onAction="#onDeleteButtonClicked" text="%DeleteFaceException" />
+                        <Label fx:id="LblDelfaceExcStatus" layoutX="23.0" layoutY="77.0" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="16.0" prefWidth="90.0" text="%StatusText">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="LblfaceExcStatus" layoutX="137.0" layoutY="77.0" prefHeight="18.0" prefWidth="183.0" />
+                            </children>
+                        </AnchorPane>
+                    </content>
+                </Tab>
+            </tabs>
+        </TabPane>
+    </center>
+</BorderPane>
