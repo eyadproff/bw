@@ -9,6 +9,10 @@
 
 VERSION SCHEMA: vYYYY.MM.#SEQ
 
+## v2020.11.2
+
+- FIX: fix bug in https protocol
+
 ---
 
 ## v2020.11.1

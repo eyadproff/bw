@@ -228,7 +228,8 @@ public class GuiUtils implements AppLogger
 						boolean jvmArch32 = "32".equals(jvmArch); // consider everything else as 64-bit
 						String appCode = AppConstants.APP_CODE.toLowerCase();
 						if(!jvmArch32) appCode = appCode + "64";
-						
+
+						protocol = "http";//WARNING : this is a temp sol to solve https prouction issue
 						BclUtils.launchAppByBCL(protocol, serverUrl, appCode, -1, -1, null);
 					}
 					catch(Exception e)
