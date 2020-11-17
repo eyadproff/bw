@@ -134,7 +134,7 @@ public class PhotoQualityCheckDialogFxController extends ContentFxControllerBase
 			catch(IOException e)
 			{
 				dialog.close();
-				String errorCode = CriminalClearanceReportAnonymousPersonErrorCodes.C019_00005.getCode();
+				String errorCode = CriminalClearanceReportAnonymousPersonErrorCodes.C021_00005.getCode();
 				String[] errorDetails = {"failed to convert inputPhotoImage to base64"};
 				Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails, getTabIndex());
 				return;
@@ -296,14 +296,14 @@ public class PhotoQualityCheckDialogFxController extends ContentFxControllerBase
 						}
 					}
 					
-					String errorCode = CriminalClearanceReportAnonymousPersonErrorCodes.C019_00006.getCode();
+					String errorCode = CriminalClearanceReportAnonymousPersonErrorCodes.C021_00006.getCode();
 					String[] errorDetails = {"failed to execute the task PhotoQualityCheckWorkflowTask! signal = " +
 											signal};
 					Context.getCoreFxController().showErrorDialog(errorCode, throwable, errorDetails, getTabIndex());
 				}
 				else
 				{
-					String errorCode = CriminalClearanceReportAnonymousPersonErrorCodes.C019_00007.getCode();
+					String errorCode = CriminalClearanceReportAnonymousPersonErrorCodes.C021_00007.getCode();
 					String[] errorDetails = {"failed to execute the task PhotoQualityCheckWorkflowTask!"};
 					Context.getCoreFxController().showErrorDialog(errorCode, throwable, errorDetails, getTabIndex());
 				}

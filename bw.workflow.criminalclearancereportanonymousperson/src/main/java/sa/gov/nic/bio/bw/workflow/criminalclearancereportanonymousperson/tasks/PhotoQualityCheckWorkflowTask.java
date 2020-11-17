@@ -39,7 +39,7 @@ public class PhotoQualityCheckWorkflowTask extends WorkflowTask
 				return;
 			}
 			
-			String errorCode = CriminalClearanceReportAnonymousPersonErrorCodes.C019_00001.getCode();
+			String errorCode = CriminalClearanceReportAnonymousPersonErrorCodes.C021_00001.getCode();
 			String[] errorDetails = {"Failed to call the service for photo quality check!"};
 			resetWorkflowStepIfNegativeOrNullTaskResponse(TaskResponse.failure(errorCode, e, errorDetails));
 			return;

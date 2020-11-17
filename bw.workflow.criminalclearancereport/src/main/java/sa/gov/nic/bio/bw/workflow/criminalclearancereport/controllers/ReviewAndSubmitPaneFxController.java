@@ -14,11 +14,13 @@ import sa.gov.nic.bio.bw.core.controllers.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.core.utils.FxmlFile;
 import sa.gov.nic.bio.bw.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.core.workflow.Input;
+import sa.gov.nic.bio.bw.core.workflow.Output;
 import sa.gov.nic.bio.bw.workflow.commons.beans.Country;
 import sa.gov.nic.bio.bw.workflow.commons.beans.DocumentType;
 import sa.gov.nic.bio.bw.workflow.commons.beans.NormalizedPersonInfo;
 import sa.gov.nic.bio.bw.workflow.commons.beans.PersonType;
 import sa.gov.nic.bio.bw.workflow.commons.ui.ImageViewPane;
+import sa.gov.nic.bio.bw.workflow.criminalclearancereport.beans.CriminalClearanceReport;
 
 import java.time.LocalDate;
 import java.util.Map;
@@ -54,6 +56,8 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase 
     @Input private Boolean documentIssuanceDateUseHijri;
     @Input private LocalDate documentExpiryDate;
     @Input private Boolean documentExpiryDateUseHijri;
+
+    @Output private CriminalClearanceReport criminalClearanceReport;
 
     //    @Output
     //    private CitizenEnrollmentInfo citizenEnrollmentInfo;
@@ -96,6 +100,8 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase 
 
     @Override
     protected void onAttachedToScene() {
+
+        criminalClearanceReport = new CriminalClearanceReport(normalizedPersonInfo.getPersonId(), whoRequestedTheReport, purposeOfTheReport);
         paneImageView.maxWidthProperty().bind(paneImage.widthProperty());
 
         //        citizenEnrollmentInfo = new CitizenEnrollmentInfo(personInfo.getSamisId(),
@@ -127,7 +133,7 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase 
             GuiUtils.setLabelText(lblFamilyName, normalizedPersonInfo.getFamilyNameLabel()).orElse(consumer);
             GuiUtils.setLabelText(lblGender, normalizedPersonInfo.getGender()).orElse(consumer);
             GuiUtils.setLabelText(lblNationality, normalizedPersonInfo.getNationality()).orElse(consumer);
-//            GuiUtils.setLabelText(lblOccupation, normalizedPersonInfo.getOccupation()).orElse(consumer);
+            //            GuiUtils.setLabelText(lblOccupation, normalizedPersonInfo.getOccupation()).orElse(consumer);
             GuiUtils.setLabelText(lblBirthPlace, normalizedPersonInfo.getBirthPlace()).orElse(consumer);
             GuiUtils.setLabelText(lblBirthDate, normalizedPersonInfo.getBirthDate()).orElse(consumer);
             GuiUtils.setLabelText(lblPersonId, normalizedPersonInfo.getPersonId()).orElse(consumer);
@@ -148,7 +154,7 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase 
             GuiUtils.setLabelText(lblFirstName, firstName).orElse(consumer);
             GuiUtils.setLabelText(lblSecondName, fatherName).orElse(consumer);
             GuiUtils.setLabelText(lblOtherName, grandfatherName).orElse(consumer);
-            GuiUtils.setLabelText(lblFamilyName,familyName).orElse(consumer);
+            GuiUtils.setLabelText(lblFamilyName, familyName).orElse(consumer);
             GuiUtils.setLabelText(lblGender, gender).orElse(consumer);
             GuiUtils.setLabelText(lblNationality, nationality).orElse(consumer);
             //            GuiUtils.setLabelText(lblOccupation, normalizedPersonInfo.getOccupation()).orElse(consumer);

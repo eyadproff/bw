@@ -2,7 +2,7 @@ package sa.gov.nic.bio.bw.workflow.criminalclearancereportanonymousperson.utils;
 
 public enum CriminalClearanceReportAnonymousPersonErrorCodes
 {
-	C019_00001, C019_00002, C019_00003, C019_00004,C019_00005, C019_00006, C019_00007, C019_00008;
+	C021_00001, C021_00002, C021_00003, C021_00004,C021_00005, C021_00006, C021_00007, C021_00008;
 	
 	public final String getCode()
 	{

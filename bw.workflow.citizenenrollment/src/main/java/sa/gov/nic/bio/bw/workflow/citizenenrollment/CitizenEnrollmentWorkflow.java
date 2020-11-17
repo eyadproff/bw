@@ -47,17 +47,17 @@ public class CitizenEnrollmentWorkflow extends WizardWorkflowBase {
                 executeWorkflowTask(GetPersonInfoByIdWorkflowTask.class);
 
 
-                //check enroll or not
-                passData(GetPersonInfoByIdWorkflowTask.class, IsEnrolledWorkflowTask.class, "personInfo");
-                executeWorkflowTask(IsEnrolledWorkflowTask.class);
-
-                //death
-                passData(GetPersonInfoByIdWorkflowTask.class, DeathIndicatorWorkflowTask.class, "personInfo");
-                executeWorkflowTask(DeathIndicatorWorkflowTask.class);
-
-                //different gender
-                passData(GetPersonInfoByIdWorkflowTask.class, IsSameGenderWorkflowTask.class, "personInfo");
-                executeWorkflowTask(IsSameGenderWorkflowTask.class);
+//                //check enroll or not
+//                passData(GetPersonInfoByIdWorkflowTask.class, IsEnrolledWorkflowTask.class, "personInfo");
+//                executeWorkflowTask(IsEnrolledWorkflowTask.class);
+//
+//                //death
+//                passData(GetPersonInfoByIdWorkflowTask.class, DeathIndicatorWorkflowTask.class, "personInfo");
+//                executeWorkflowTask(DeathIndicatorWorkflowTask.class);
+//
+//                //different gender
+//                passData(GetPersonInfoByIdWorkflowTask.class, IsSameGenderWorkflowTask.class, "personInfo");
+//                executeWorkflowTask(IsSameGenderWorkflowTask.class);
 
 
                 break;
