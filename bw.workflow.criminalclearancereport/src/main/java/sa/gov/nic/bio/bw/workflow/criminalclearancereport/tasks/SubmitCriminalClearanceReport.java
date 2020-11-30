@@ -9,19 +9,26 @@ import sa.gov.nic.bio.bw.core.workflow.WorkflowTask;
 import sa.gov.nic.bio.bw.workflow.criminalclearancereport.beans.CriminalClearanceReport;
 import sa.gov.nic.bio.bw.workflow.criminalclearancereport.webservice.CriminalClearanceAPI;
 
+import java.time.LocalDate;
+import java.util.HashMap;
+
 public class SubmitCriminalClearanceReport extends WorkflowTask {
     @Input(alwaysRequired = true) private CriminalClearanceReport criminalClearanceReport;
-    @Output private Long reportNumber;
+    @Output private HashMap<String, Object> criminalClearanceResponse;
 
     @Override
     public void execute() throws Signal {
         var criminalClearanceAPI = Context.getWebserviceManager().getApi(CriminalClearanceAPI.class);
         var apiCall = criminalClearanceAPI.submitNonCriminalRecord(workflowId, workflowTcn, AppUtils.toJson(criminalClearanceReport));
-        var taskResponse = Context.getWebserviceManager().executeApi(apiCall);
+//        var taskResponse = Context.getWebserviceManager().executeApi(apiCall);
         //no fingers found for this id
         //        if(!taskResponse.isSuccess() && "B003-0007".equals(taskResponse.getErrorCode())) return;
 
-        resetWorkflowStepIfNegativeOrNullTaskResponse(taskResponse);
-        //        fingerprints = taskResponse.getResult();
+//        resetWorkflowStepIfNegativeOrNullTaskResponse(taskResponse);
+//        criminalClearanceResponse = taskResponse.getResult();
+        criminalClearanceResponse=new HashMap<>();
+        criminalClearanceResponse.put("reportNumber",1111);
+        criminalClearanceResponse.put("expireDate", LocalDate.now());
+
     }
 }

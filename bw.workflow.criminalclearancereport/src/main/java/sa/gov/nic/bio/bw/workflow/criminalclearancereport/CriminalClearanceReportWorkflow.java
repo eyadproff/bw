@@ -4,16 +4,19 @@ package sa.gov.nic.bio.bw.workflow.criminalclearancereport;
 import sa.gov.nic.bio.bw.core.utils.Device;
 import sa.gov.nic.bio.bw.core.wizard.Step;
 import sa.gov.nic.bio.bw.core.wizard.Wizard;
-import sa.gov.nic.bio.bw.core.workflow.*;
+import sa.gov.nic.bio.bw.core.workflow.AssociatedMenu;
+import sa.gov.nic.bio.bw.core.workflow.Signal;
+import sa.gov.nic.bio.bw.core.workflow.WithLookups;
+import sa.gov.nic.bio.bw.core.workflow.WizardWorkflowBase;
 import sa.gov.nic.bio.bw.workflow.commons.beans.PersonInfo;
-import sa.gov.nic.bio.bw.workflow.criminalclearancereport.controllers.*;
-import sa.gov.nic.bio.bw.workflow.criminalclearancereport.controllers.ShowingFingerprintsQualityPaneFxController.ServiceType;
 import sa.gov.nic.bio.bw.workflow.commons.controllers.ShowingFingerprintsPaneFxController;
 import sa.gov.nic.bio.bw.workflow.commons.controllers.SlapFingerprintsCapturingFxController;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.CountriesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.DocumentTypesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.PersonTypesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.*;
+import sa.gov.nic.bio.bw.workflow.criminalclearancereport.controllers.*;
+import sa.gov.nic.bio.bw.workflow.criminalclearancereport.controllers.ShowingFingerprintsQualityPaneFxController.ServiceType;
 import sa.gov.nic.bio.bw.workflow.criminalclearancereport.tasks.FingerprintInquiryCriminalStatusCheckerWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.criminalclearancereport.tasks.FingerprintInquiryCriminalWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.criminalclearancereport.tasks.SegmentWsqFingerprintsWorkflowTask;
@@ -40,9 +43,16 @@ public class CriminalClearanceReportWorkflow extends WizardWorkflowBase {
 
         switch (step) {
             case 0: {
+
+                //                CriminalClearanceReport c=new CriminalClearanceReport(1111L,"test","test2");
+                //                setData(SubmitCriminalClearanceReport.class,"criminalClearanceReport",c);
+                //                executeWorkflowTask(SubmitCriminalClearanceReport.class);
+                //                System.out.println(((HashMap<String,Object>)getData(SubmitCriminalClearanceReport.class,"criminalClearanceResponse")).values());
+
                 renderUiAndWaitForUserInput(PersonIdPaneFxController.class);
                 passData(PersonIdPaneFxController.class, GetPersonInfoByIdWorkflowTask.class, "personId");
                 executeWorkflowTask(GetPersonInfoByIdWorkflowTask.class);
+
 
                 break;
             }
@@ -216,16 +226,26 @@ public class CriminalClearanceReportWorkflow extends WizardWorkflowBase {
             case 9: {
 
                 InquiryByFingerprintsPaneFxController.ServiceType serviceType = getData(InquiryByFingerprintsPaneFxController.class, "serviceType");
-                if (serviceType == InquiryByFingerprintsPaneFxController.ServiceType.TAKEFINGERPRINTS) {
+                ShowingFingerprintsQualityPaneFxController.ServiceType serviceType1 = getData(ShowingFingerprintsQualityPaneFxController.class, "serviceType");
+                if (serviceType == InquiryByFingerprintsPaneFxController.ServiceType.TAKEFINGERPRINTS || serviceType1 == ServiceType.RETAKE_FINGERPRINT) {
                     passData(SlapFingerprintsCapturingFxController.class, ReviewAndSubmitPaneFxController.class,
                             "fingerprintBase64Images");
+
+                    passData(SlapFingerprintsCapturingFxController.class, ReviewAndSubmitPaneFxController.class,
+                            "combinedFingerprints");
                 }
                 else {
                     passData(ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask.class,
                             ReviewAndSubmitPaneFxController.class,
                             "fingerprintBase64Images");
+
+                    passData(ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask.class,
+                            ReviewAndSubmitPaneFxController.class,
+                            "combinedFingerprints");
                 }
 
+                passData(GetPersonInfoByIdWorkflowTask.class, ReviewAndSubmitPaneFxController.class,
+                        "personInfo");
                 passData(ShowingPersonInfoFxController.class, ReviewAndSubmitPaneFxController.class,
                         "normalizedPersonInfo");
 
@@ -236,7 +256,7 @@ public class CriminalClearanceReportWorkflow extends WizardWorkflowBase {
             }
             case 10: {
 
-                passData(ReviewAndSubmitPaneFxController.class, SubmitCriminalClearanceReport.class,"criminalClearanceReport");
+                passData(ReviewAndSubmitPaneFxController.class, SubmitCriminalClearanceReport.class, "criminalClearanceReport");
 
                 renderUiAndWaitForUserInput(RegisteringCriminalClearanceReportPaneFxController.class);
 
@@ -244,10 +264,11 @@ public class CriminalClearanceReportWorkflow extends WizardWorkflowBase {
 
                 break;
             }
-            case 11:{
+            case 11: {
 
                 InquiryByFingerprintsPaneFxController.ServiceType serviceType = getData(InquiryByFingerprintsPaneFxController.class, "serviceType");
-                if (serviceType == InquiryByFingerprintsPaneFxController.ServiceType.TAKEFINGERPRINTS) {
+                ShowingFingerprintsQualityPaneFxController.ServiceType serviceType1 = getData(ShowingFingerprintsQualityPaneFxController.class, "serviceType");
+                if (serviceType == InquiryByFingerprintsPaneFxController.ServiceType.TAKEFINGERPRINTS || serviceType1 == ServiceType.RETAKE_FINGERPRINT) {
                     passData(SlapFingerprintsCapturingFxController.class, ShowReportPaneFxController.class,
                             "fingerprintBase64Images");
                 }
@@ -257,16 +278,18 @@ public class CriminalClearanceReportWorkflow extends WizardWorkflowBase {
                             "fingerprintBase64Images");
                 }
 
+                passData(GetPersonInfoByIdWorkflowTask.class, ShowReportPaneFxController.class,
+                        "personInfo");
                 passData(ReviewAndSubmitPaneFxController.class, ShowReportPaneFxController.class,
                         "criminalClearanceReport");
                 passData(SubmitCriminalClearanceReport.class, ShowReportPaneFxController.class,
-                        "reportNumber");
+                        "criminalClearanceResponse");
 
                 renderUiAndWaitForUserInput(ShowReportPaneFxController.class);
                 break;
             }
 
-            default:{
+            default: {
                 break;
             }
         }

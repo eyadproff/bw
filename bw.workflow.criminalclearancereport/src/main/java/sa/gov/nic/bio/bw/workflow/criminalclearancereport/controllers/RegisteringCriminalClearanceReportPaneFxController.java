@@ -11,16 +11,6 @@ import sa.gov.nic.bio.bw.core.utils.FxmlFile;
 
 @FxmlFile("registeringCriminalClearanceReport.fxml")
 public class RegisteringCriminalClearanceReportPaneFxController extends WizardStepFxControllerBase {
-//    public enum Request {
-//        SUBMIT_Criminal_Clearance_Report_REGISTRATION,
-//        CHECK_Criminal_Clearance_Report_REGISTRATION,
-//    }
-
-//    @Input protected Long personId;
-    //	@Input protected String rightIrisBase64;
-    //	@Input protected String leftIrisBase64;
-    //	@Input private Status irisRegistrationStatus;
-//    @Output private Request request;
 
     @FXML private ProgressIndicator piProgress;
     @FXML private ImageView ivSuccess;
@@ -33,18 +23,17 @@ public class RegisteringCriminalClearanceReportPaneFxController extends WizardSt
 
     @Override
     protected void onAttachedToScene() {
-//        request = Request.SUBMIT_Criminal_Clearance_Report_REGISTRATION;
+
+        lblStatus.setText(resources.getString("label.waitingCriminalClearanceReport"));
         continueWorkflow();
     }
 
     @Override
     public void onReturnFromWorkflow(boolean successfulResponse) {
-        //		if(request == Request.SUBMIT_Criminal_Clearance_Report_REGISTRATION)
-        //		{
+
         if (successfulResponse) {
-            lblStatus.setText(resources.getString("label.waitingCriminalClearanceReport"));
-//            request = Request.CHECK_Criminal_Clearance_Report_REGISTRATION;
-            continueWorkflow();
+            lblStatus.setText(resources.getString("label.successCriminalClearanceReportRegistration"));
+            goNext();
         }
         else {
             lblStatus.setText(resources.getString("label.failedToSendCriminalClearanceReport"));
@@ -53,47 +42,6 @@ public class RegisteringCriminalClearanceReportPaneFxController extends WizardSt
             btnStartOver.setVisible(true);
             btnRetry.setVisible(!disableRetryButtonForever);
         }
-        //		}
-        //		else if(request == Request.CHECK_Criminal_Clearance_Report_REGISTRATION)
-        //		{
-        //			if(successfulResponse)
-        //			{
-        //				if(irisRegistrationStatus == Status.PENDING)
-        //				{
-        //					Context.getExecutorService().submit(() ->
-        //					{
-        //						try
-        //						{
-        //							int seconds = Integer.parseInt(Context.getConfigManager().getProperty(
-        //																	"registerIris.inquiry.checkEverySeconds"));
-        //							Thread.sleep(seconds * 1000);
-        //						}
-        //						catch(InterruptedException e)
-        //						{
-        //							e.printStackTrace();
-        //						}
-        //
-        //						Platform.runLater(this::continueWorkflow);
-        //					});
-        //
-        //				}
-        //				else if(irisRegistrationStatus == Status.SUCCESS)
-        //				{
-        //					lblStatus.setText(resources.getString("label.successIrisRegistration"));
-        //					piProgress.setVisible(false);
-        //					ivSuccess.setVisible(true);
-        //					btnStartOver.setVisible(true);
-        //				}
-        //			}
-        //			else
-        //			{
-        //				lblStatus.setText(resources.getString("label.failedToRegisterIris"));
-        //				piProgress.setVisible(false);
-        //				ivFailure.setVisible(true);
-        //				btnStartOver.setVisible(true);
-        //				btnRetry.setVisible(!disableRetryButtonForever);
-        //			}
-        //		}
     }
 
     //	@Override
@@ -112,14 +60,8 @@ public class RegisteringCriminalClearanceReportPaneFxController extends WizardSt
         ivFailure.setVisible(false);
         piProgress.setVisible(true);
 
-        //		if(request == Request.SUBMIT_Criminal_Clearance_Report_REGISTRATION)
-        //		{
         lblStatus.setText(resources.getString("label.submitCriminalClearanceReport"));
-        //		}
-        //		else if(request == Request.CHECK_Criminal_Clearance_Report_REGISTRATION)
-        //		{
-        //			lblStatus.setText(resources.getString("label.waitingCriminalClearanceReport"));
-        //		}
+
 
         continueWorkflow();
     }

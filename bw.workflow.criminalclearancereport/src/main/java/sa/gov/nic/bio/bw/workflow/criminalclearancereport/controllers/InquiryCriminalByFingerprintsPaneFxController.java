@@ -73,6 +73,8 @@ public class InquiryCriminalByFingerprintsPaneFxController extends WizardStepFxC
             showProgress(true);
             continueWorkflow();
         }
+
+      if(!btnRegister.isDisable())btnRegister.requestFocus();
     }
 
     @Override

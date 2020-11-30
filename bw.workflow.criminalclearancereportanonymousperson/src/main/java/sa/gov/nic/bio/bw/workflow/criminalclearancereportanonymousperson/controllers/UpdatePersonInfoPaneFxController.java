@@ -155,11 +155,11 @@ public class UpdatePersonInfoPaneFxController extends WizardStepFxControllerBase
 		
 		BooleanBinding txtFirstNameBinding = GuiUtils.textFieldBlankBinding(txtFirstName);
 		BooleanBinding txtFamilyNameBinding = GuiUtils.textFieldBlankBinding(txtFamilyName);
-		BooleanBinding cboGenderBinding = cboGender.valueProperty().isNull();
-		BooleanBinding cboNationalityBinding = cboNationality.valueProperty().isNull();
+		BooleanBinding txtFatherNameBinding = GuiUtils.textFieldBlankBinding(txtFatherName);
+//		BooleanBinding cboGenderBinding = cboGender.valueProperty().isNull();
+//		BooleanBinding cboNationalityBinding = cboNationality.valueProperty().isNull();
 		
-		btnNext.disableProperty().bind(txtFirstNameBinding.or(txtFamilyNameBinding).or(cboGenderBinding)
-				                                                                   .or(cboNationalityBinding));
+		btnNext.disableProperty().bind(txtFirstNameBinding.or(txtFatherNameBinding).or(txtFamilyNameBinding));
 		
 		cboNationality.setConverter(new StringConverter<>()
 		{

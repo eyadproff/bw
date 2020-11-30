@@ -24,8 +24,8 @@ public class CriminalClearanceDetailsPaneFxController extends WizardStepFxContro
     @Override
     protected void onAttachedToScene() {
 
-        btnNext.disableProperty().bind((txtWhoRequestedTheReport.textProperty().isEmpty().or(txtWhoRequestedTheReport.disabledProperty())).or
-                (txtPurposeOfTheReport.textProperty().isEmpty().or(txtPurposeOfTheReport.disabledProperty())));
+        btnNext.disableProperty().bind((GuiUtils.textFieldBlankBinding(txtWhoRequestedTheReport).or(txtWhoRequestedTheReport.disabledProperty())).or
+                (GuiUtils.textFieldBlankBinding(txtPurposeOfTheReport).or(txtPurposeOfTheReport.disabledProperty())));
 
         GuiUtils.applyValidatorToTextField(txtWhoRequestedTheReport, 100);
         GuiUtils.applyValidatorToTextField(txtPurposeOfTheReport, 100);
@@ -33,6 +33,7 @@ public class CriminalClearanceDetailsPaneFxController extends WizardStepFxContro
         if(whoRequestedTheReport != null) txtWhoRequestedTheReport.setText(whoRequestedTheReport);
         if(purposeOfTheReport != null) txtPurposeOfTheReport.setText(purposeOfTheReport);
 
+       if(!btnNext.isDisable())btnNext.requestFocus();
     }
 
     @FXML

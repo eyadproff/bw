@@ -10,19 +10,19 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import sa.gov.nic.bio.bw.core.Context;
 import sa.gov.nic.bio.bw.core.beans.Gender;
+import sa.gov.nic.bio.bw.core.beans.Name;
 import sa.gov.nic.bio.bw.core.controllers.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.core.utils.FxmlFile;
 import sa.gov.nic.bio.bw.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.core.workflow.Input;
 import sa.gov.nic.bio.bw.core.workflow.Output;
-import sa.gov.nic.bio.bw.workflow.commons.beans.Country;
-import sa.gov.nic.bio.bw.workflow.commons.beans.DocumentType;
-import sa.gov.nic.bio.bw.workflow.commons.beans.NormalizedPersonInfo;
-import sa.gov.nic.bio.bw.workflow.commons.beans.PersonType;
+import sa.gov.nic.bio.bw.workflow.commons.beans.*;
 import sa.gov.nic.bio.bw.workflow.commons.ui.ImageViewPane;
 import sa.gov.nic.bio.bw.workflow.criminalclearancereport.beans.CriminalClearanceReport;
 
 import java.time.LocalDate;
+import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
@@ -35,13 +35,20 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase 
     private String whoRequestedTheReport;
     @Input(alwaysRequired = true)
     private String purposeOfTheReport;
+    @Input (alwaysRequired = true)
+    private List<Finger> combinedFingerprints; // segmented + unsegmented
 
     @Input private NormalizedPersonInfo normalizedPersonInfo;
+    @Input private PersonInfo personInfo;
     @Input private String facePhotoBase64;
     @Input private String firstName;
     @Input private String fatherName;
     @Input private String grandfatherName;
     @Input private String familyName;
+    @Input private String englishFirstName;
+    @Input private String englishFatherName;
+    @Input private String englishGrandfatherName;
+    @Input private String englishFamilyName;
     @Input private Gender gender;
     @Input private Country nationality;
     @Input private String occupation;
@@ -58,9 +65,7 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase 
     @Input private Boolean documentExpiryDateUseHijri;
 
     @Output private CriminalClearanceReport criminalClearanceReport;
-
-    //    @Output
-    //    private CitizenEnrollmentInfo citizenEnrollmentInfo;
+    @Output private PersonInfo generatedPersonInfo;
 
     @FXML private VBox paneImage;
     @FXML private ImageViewPane paneImageView;
@@ -69,6 +74,10 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase 
     @FXML private Label lblSecondName;
     @FXML private Label lblOtherName;
     @FXML private Label lblFamilyName;
+    @FXML private Label lblEnglishFirstName;
+    @FXML private Label lblEnglishSecondName;
+    @FXML private Label lblEnglishOtherName;
+    @FXML private Label lblEnglishFamilyName;
     @FXML private Label lblNationality;
     @FXML private Label lblGender;
     @FXML private Label lblBirthPlace;
@@ -101,14 +110,7 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase 
     @Override
     protected void onAttachedToScene() {
 
-        criminalClearanceReport = new CriminalClearanceReport(normalizedPersonInfo.getPersonId(), whoRequestedTheReport, purposeOfTheReport);
         paneImageView.maxWidthProperty().bind(paneImage.widthProperty());
-
-        //        citizenEnrollmentInfo = new CitizenEnrollmentInfo(personInfo.getSamisId(),
-        //                normalizedPersonInfo.getPersonType().getCode(),
-        //                combinedFingerprints, missingFingerprints, facePhotoBase64,
-        //                personInfo.getBirthDate(), personInfo.getGender(),
-        //                capturedRightIrisBase64, capturedLeftIrisBase64);
 
         String notAvailable = resources.getString("label.notAvailable");
         Consumer<Label> consumer = label ->
@@ -119,18 +121,24 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase 
 
         if (normalizedPersonInfo != null) {
 
-            String facePhotoBase64 = normalizedPersonInfo.getFacePhotoBase64();
-            Gender gender = normalizedPersonInfo.getGender();
-            GuiUtils.attachFacePhotoBase64(ivPersonPhoto, facePhotoBase64, true, gender);
+            criminalClearanceReport = new CriminalClearanceReport(personInfo.getSamisId(), whoRequestedTheReport, purposeOfTheReport,normalizedPersonInfo.getFacePhotoBase64(),combinedFingerprints);
+
+            String facePhoto= normalizedPersonInfo.getFacePhotoBase64();
+            GuiUtils.attachFacePhotoBase64(ivPersonPhoto, facePhoto, true, normalizedPersonInfo.getGender());
 
             GuiUtils.attachImageDialog(Context.getCoreFxController(), ivPersonPhoto,
                     resources.getString("label.personPhoto"),
                     resources.getString("label.contextMenu.showImage"), false);
 
-            GuiUtils.setLabelText(lblFirstName, normalizedPersonInfo.getFirstNameLabel()).orElse(consumer);
-            GuiUtils.setLabelText(lblSecondName, normalizedPersonInfo.getFatherNameLabel()).orElse(consumer);
-            GuiUtils.setLabelText(lblOtherName, normalizedPersonInfo.getGrandfatherNameLabel()).orElse(consumer);
-            GuiUtils.setLabelText(lblFamilyName, normalizedPersonInfo.getFamilyNameLabel()).orElse(consumer);
+            Name name=personInfo.getName();
+            GuiUtils.setLabelText(lblFirstName, name.getFirstName()).orElse(consumer);
+            GuiUtils.setLabelText(lblSecondName, name.getFatherName()).orElse(consumer);
+            GuiUtils.setLabelText(lblOtherName, name.getGrandfatherName()).orElse(consumer);
+            GuiUtils.setLabelText(lblFamilyName, name.getFamilyName()).orElse(consumer);
+            GuiUtils.setLabelText(true,lblEnglishFirstName, name.getTranslatedFirstName()).orElse(consumer);
+            GuiUtils.setLabelText(true,lblEnglishSecondName, name.getTranslatedFatherName()).orElse(consumer);
+            GuiUtils.setLabelText(true,lblEnglishOtherName, name.getTranslatedGrandFatherName()).orElse(consumer);
+            GuiUtils.setLabelText(true,lblEnglishFamilyName, name.getTranslatedFamilyName()).orElse(consumer);
             GuiUtils.setLabelText(lblGender, normalizedPersonInfo.getGender()).orElse(consumer);
             GuiUtils.setLabelText(lblNationality, normalizedPersonInfo.getNationality()).orElse(consumer);
             //            GuiUtils.setLabelText(lblOccupation, normalizedPersonInfo.getOccupation()).orElse(consumer);
@@ -145,7 +153,11 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase 
 
         }
         else {
-            GuiUtils.attachFacePhotoBase64(ivPersonPhoto, facePhotoBase64, true, gender);
+
+            criminalClearanceReport = new CriminalClearanceReport(personId, whoRequestedTheReport, purposeOfTheReport,facePhotoBase64 ,combinedFingerprints);
+
+            String facePhoto = facePhotoBase64;
+            GuiUtils.attachFacePhotoBase64(ivPersonPhoto, facePhoto, true, gender);
 
             GuiUtils.attachImageDialog(Context.getCoreFxController(), ivPersonPhoto,
                     resources.getString("label.personPhoto"),
@@ -155,6 +167,10 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase 
             GuiUtils.setLabelText(lblSecondName, fatherName).orElse(consumer);
             GuiUtils.setLabelText(lblOtherName, grandfatherName).orElse(consumer);
             GuiUtils.setLabelText(lblFamilyName, familyName).orElse(consumer);
+            GuiUtils.setLabelText(lblEnglishFirstName, englishFirstName).orElse(consumer);
+            GuiUtils.setLabelText(lblEnglishSecondName, englishFatherName).orElse(consumer);
+            GuiUtils.setLabelText(lblEnglishOtherName, englishGrandfatherName).orElse(consumer);
+            GuiUtils.setLabelText(lblEnglishFamilyName, englishFamilyName).orElse(consumer);
             GuiUtils.setLabelText(lblGender, gender).orElse(consumer);
             GuiUtils.setLabelText(lblNationality, nationality).orElse(consumer);
             //            GuiUtils.setLabelText(lblOccupation, normalizedPersonInfo.getOccupation()).orElse(consumer);
@@ -166,6 +182,38 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase 
             GuiUtils.setLabelText(lblDocumentType, documentType).orElse(consumer);
             GuiUtils.setLabelText(lblDocumentIssuanceDate, documentIssuanceDate).orElse(consumer);
             GuiUtils.setLabelText(lblDocumentExpiryDate, documentExpiryDate).orElse(consumer);
+
+            Date birthOfDate=new Date(birthDate.getYear(),birthDate.getMonth().getValue(),birthDate.getDayOfMonth());
+
+            generatedPersonInfo=new PersonInfo();
+            generatedPersonInfo.setBirthDate(birthOfDate);
+            generatedPersonInfo.setFace(facePhoto);
+
+            Integer genderInt ;
+            if(gender != null ) {
+                genderInt = gender.toString().equals("MALE") ? 0 : 1;
+                generatedPersonInfo.setGender(genderInt);
+            }
+
+
+            StringBuilder sb = new StringBuilder();
+
+            String firstArabicName = firstName;
+            String fatherArabicName = fatherName;
+            String grandfatherArabicName = grandfatherName;
+            String familyArabicName = familyName;
+
+            if (firstArabicName != null) { sb.append(firstArabicName).append(" "); }
+            if (fatherArabicName != null) { sb.append(fatherArabicName).append(" "); }
+            if (grandfatherArabicName != null) { sb.append(grandfatherArabicName).append(" "); }
+            if (familyArabicName != null) { sb.append(familyArabicName); }
+            String fullArabicName = sb.toString().stripTrailing();
+
+            Name name =new Name(firstArabicName,fatherArabicName,grandfatherArabicName,familyArabicName,englishFirstName,englishFatherName,englishGrandfatherName,englishFamilyName);
+            generatedPersonInfo.setName(name);
+            generatedPersonInfo.setNationality(nationality.getCode());
+            generatedPersonInfo.setSamisId(personId);
+//            personInfo.setPersonType();
         }
 
         lblWhoRequestedTheReport.setText(whoRequestedTheReport);
@@ -175,6 +223,7 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase 
                 ivRightRing, ivRightLittle, ivLeftThumb, ivLeftIndex, ivLeftMiddle, ivLeftRing,
                 ivLeftLittle, null, null, null, null, null, null);
 
+        btnSubmit.requestFocus();
     }
 
     @Override

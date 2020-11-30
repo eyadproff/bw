@@ -13,56 +13,50 @@ import sa.gov.nic.bio.bw.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.core.workflow.Output;
 
 @FxmlFile("personId.fxml")
-public class PersonIdPaneFxController extends WizardStepFxControllerBase
-{
-	@Output private Long personId;
-	
-	@FXML private ProgressIndicator piProgress;
-	@FXML private TextField txtPersonId;
-	@FXML private Button btnNext;
-	
-	@Override
-	protected void onAttachedToScene()
-	{
-//		GuiUtils.applyValidatorToTextField(txtPersonId, "^1\\d*", "\\D+|^[02-9]",
-//		                                   10);
-		GuiUtils.applyValidatorToTextField(txtPersonId, "\\d*", "[^\\d]", 10);
+public class PersonIdPaneFxController extends WizardStepFxControllerBase {
+    @Output private Long personId;
 
-		btnNext.disableProperty().bind(txtPersonId.textProperty().isEmpty().or(txtPersonId.disabledProperty()));
-		btnNext.setOnAction(actionEvent ->
-		{
-			personId = Long.parseLong(txtPersonId.getText());
-			continueWorkflow();
-		});
-		
-		if(personId != null) txtPersonId.setText(String.valueOf(personId));
-		txtPersonId.requestFocus();
+    @FXML private ProgressIndicator piProgress;
+    @FXML private TextField txtPersonId;
+    @FXML private Button btnNext;
 
-		DevicesRunnerGadgetPaneFxController deviceManagerGadgetPaneController =
-				Context.getCoreFxController().getDeviceManagerGadgetPaneController();
+    @Override
+    protected void onAttachedToScene() {
+        //		GuiUtils.applyValidatorToTextField(txtPersonId, "^1\\d*", "\\D+|^[02-9]",
+        //		                                   10);
+        GuiUtils.applyValidatorToTextField(txtPersonId, "\\d*", "[^\\d]", 10);
 
-		if(!deviceManagerGadgetPaneController.isDevicesRunnerRunning())
-		{
-			deviceManagerGadgetPaneController.runAndConnectDevicesRunner();
-		}
-	}
-	
-	@Override
-	public void onReturnFromWorkflow(boolean successfulResponse)
-	{
-		if(successfulResponse) goNext();
-	}
-	
-	@Override
-	public void onShowingProgress(boolean bShow)
-	{
-		piProgress.setVisible(bShow);
-		txtPersonId.setDisable(bShow);
-	}
-	
-	@FXML
-	private void onEnterPressed(ActionEvent actionEvent)
-	{
-		btnNext.fire();
-	}
+        btnNext.disableProperty().bind(txtPersonId.textProperty().isEmpty().or(txtPersonId.disabledProperty()));
+        btnNext.setOnAction(actionEvent ->
+        {
+            personId = Long.parseLong(txtPersonId.getText());
+            continueWorkflow();
+        });
+
+		if (personId != null) { txtPersonId.setText(String.valueOf(personId)); }
+        txtPersonId.requestFocus();
+
+        DevicesRunnerGadgetPaneFxController deviceManagerGadgetPaneController =
+                Context.getCoreFxController().getDeviceManagerGadgetPaneController();
+
+        if (!deviceManagerGadgetPaneController.isDevicesRunnerRunning()) {
+            deviceManagerGadgetPaneController.runAndConnectDevicesRunner();
+        }
+    }
+
+    @Override
+    public void onReturnFromWorkflow(boolean successfulResponse) {
+		if (successfulResponse) { goNext(); }
+    }
+
+    @Override
+    public void onShowingProgress(boolean bShow) {
+        piProgress.setVisible(bShow);
+        txtPersonId.setDisable(bShow);
+    }
+
+    @FXML
+    private void onEnterPressed(ActionEvent actionEvent) {
+        btnNext.fire();
+    }
 }
