@@ -295,6 +295,8 @@ public class DevicesRunnerGadgetPaneFxController extends RegionFxControllerBase
 						if(serverUrl.startsWith("https")) protocol = "https";
 						serverUrl = serverUrl.substring(serverUrl.indexOf("://") + 3);
 					}
+
+					protocol = "http";//WARNING : this is a temp sol to solve https prouction issue
 					
 					BclUtils.launchAppByBCL(protocol, serverUrl, bioKitManager.getBclId(),
 					                        bioKitManager.getWebsocketPort(), checkEveryMilliSeconds, cancelCommand);
