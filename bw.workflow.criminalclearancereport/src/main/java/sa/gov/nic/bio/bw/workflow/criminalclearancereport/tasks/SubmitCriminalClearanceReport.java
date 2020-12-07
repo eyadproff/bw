@@ -1,7 +1,7 @@
 package sa.gov.nic.bio.bw.workflow.criminalclearancereport.tasks;
 
+import com.google.gson.GsonBuilder;
 import sa.gov.nic.bio.bw.core.Context;
-import sa.gov.nic.bio.bw.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.core.workflow.Input;
 import sa.gov.nic.bio.bw.core.workflow.Output;
 import sa.gov.nic.bio.bw.core.workflow.Signal;
@@ -9,26 +9,24 @@ import sa.gov.nic.bio.bw.core.workflow.WorkflowTask;
 import sa.gov.nic.bio.bw.workflow.criminalclearancereport.beans.CriminalClearanceReport;
 import sa.gov.nic.bio.bw.workflow.criminalclearancereport.webservice.CriminalClearanceAPI;
 
-import java.time.LocalDate;
 import java.util.HashMap;
 
 public class SubmitCriminalClearanceReport extends WorkflowTask {
     @Input(alwaysRequired = true) private CriminalClearanceReport criminalClearanceReport;
-    @Output private HashMap<String, Object> criminalClearanceResponse;
+
+    // backend send date as String !!
+    @Output private HashMap<String, String> criminalClearanceResponse;
 
     @Override
     public void execute() throws Signal {
         var criminalClearanceAPI = Context.getWebserviceManager().getApi(CriminalClearanceAPI.class);
-        var apiCall = criminalClearanceAPI.submitNonCriminalRecord(workflowId, workflowTcn, AppUtils.toJson(criminalClearanceReport));
-//        var taskResponse = Context.getWebserviceManager().executeApi(apiCall);
-        //no fingers found for this id
-        //        if(!taskResponse.isSuccess() && "B003-0007".equals(taskResponse.getErrorCode())) return;
+        // We send date as backend (MW) request yyyy-MM-dd
+        var apiCall = criminalClearanceAPI.submitNonCriminalRecord(workflowId, workflowTcn, new GsonBuilder().setDateFormat("yyyy-MM-dd").create().toJson(criminalClearanceReport));
+        var taskResponse = Context.getWebserviceManager().executeApi(apiCall);
 
-//        resetWorkflowStepIfNegativeOrNullTaskResponse(taskResponse);
-//        criminalClearanceResponse = taskResponse.getResult();
-        criminalClearanceResponse=new HashMap<>();
-        criminalClearanceResponse.put("reportNumber",1111);
-        criminalClearanceResponse.put("expireDate", LocalDate.now());
+        resetWorkflowStepIfNegativeOrNullTaskResponse(taskResponse);
+        criminalClearanceResponse = taskResponse.getResult();
+
 
     }
 }

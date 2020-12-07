@@ -17,6 +17,7 @@ module bw.workflow.criminalclearancereport {
     opens sa.gov.nic.bio.bw.workflow.criminalclearancereport.controllers to javafx.fxml, bw.core;
     exports sa.gov.nic.bio.bw.workflow.criminalclearancereport.tasks;
     exports sa.gov.nic.bio.bw.workflow.criminalclearancereport.controllers;
+    exports sa.gov.nic.bio.bw.workflow.criminalclearancereport.beans;
 
 
 }

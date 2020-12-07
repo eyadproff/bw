@@ -1,6 +1,7 @@
 package sa.gov.nic.bio.bw.workflow.criminalclearancereport.tasks;
 
 import sa.gov.nic.bio.biokit.exceptions.NotConnectedException;
+import sa.gov.nic.bio.biokit.fingerprint.beans.ConvertedFingerprintImagesResponse;
 import sa.gov.nic.bio.biokit.fingerprint.beans.SegmentFingerprintsResponse;
 import sa.gov.nic.bio.biokit.websocket.beans.DMFingerData;
 import sa.gov.nic.bio.bw.core.Context;
@@ -11,11 +12,13 @@ import sa.gov.nic.bio.bw.core.workflow.Output;
 import sa.gov.nic.bio.bw.core.workflow.Signal;
 import sa.gov.nic.bio.bw.core.workflow.WorkflowTask;
 import sa.gov.nic.bio.bw.workflow.commons.beans.Finger;
-import sa.gov.nic.bio.bw.workflow.commons.utils.CommonsErrorCodes;
+import sa.gov.nic.bio.bw.workflow.criminalclearancereport.utils.RegisterCriminalClearanceErrorCodes;
 import sa.gov.nic.bio.commons.TaskResponse;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
@@ -25,6 +28,7 @@ public class SegmentWsqFingerprintsWorkflowTask extends WorkflowTask {
     @Input(alwaysRequired = true) private List<Finger> fingerprints;
     @Input(alwaysRequired = true) private List<Integer> missingFingerprints;
     @Output private List<Fingerprint> segmentedFingerPrints;
+    @Output private Map<Integer, String> fingerprintBase64Images;
 
     @Override
     public void execute() throws Signal {
@@ -32,6 +36,8 @@ public class SegmentWsqFingerprintsWorkflowTask extends WorkflowTask {
         availableFingerprints.removeAll(missingFingerprints);
 
         segmentedFingerPrints = new ArrayList<>();
+        Map<Integer, String> fingerprintWsqToBeConvertedMap = new HashMap<>();
+        Map<Integer, String> fingerprintImages = new HashMap<>();
 
         for (Finger finger : fingerprints) {
             int position = finger.getType();
@@ -141,12 +147,12 @@ public class SegmentWsqFingerprintsWorkflowTask extends WorkflowTask {
                     response = serviceResponseFuture.get();
                 } catch (Exception e) {
                     if (e instanceof ExecutionException && e.getCause() instanceof NotConnectedException) {
-                        String errorCode = CommonsErrorCodes.N008_00001.getCode();
+                        String errorCode = RegisterCriminalClearanceErrorCodes.N020_00001.getCode();
                         resetWorkflowStepIfNegativeOrNullTaskResponse(TaskResponse.failure(errorCode));
                         return;
                     }
 
-                    String errorCode = CommonsErrorCodes.C008_00019.getCode();
+                    String errorCode = RegisterCriminalClearanceErrorCodes.C020_00007.getCode();
                     String[] errorDetails = {"Failed to call the service for segmenting the fingerprints!"};
                     resetWorkflowStepIfNegativeOrNullTaskResponse(TaskResponse.failure(errorCode, e, errorDetails));
                     return;
@@ -161,27 +167,29 @@ public class SegmentWsqFingerprintsWorkflowTask extends WorkflowTask {
 
                     fingerData.forEach(dmFingerData ->
                     {
+                        fingerprintWsqToBeConvertedMap.put(dmFingerData.getPosition(),
+                                dmFingerData.getFingerWsqImage());
                         Fingerprint fingerprint = new Fingerprint(dmFingerData,
                                 slapImageBase64, dmFingerData.getFinger());
                         segmentedFingerPrints.add(fingerprint);
                     });
                 }
                 else if (result.getReturnCode() == SegmentFingerprintsResponse.FailureCodes.SEGMENTATION_FAILED) {
-                    String errorCode = CommonsErrorCodes.C008_00020.getCode();
+                    String errorCode = RegisterCriminalClearanceErrorCodes.C020_00008.getCode();
                     String[] errorDetails = {"SegmentFingerprintsResponse.FailureCodes.SEGMENTATION_FAILED (" +
                                              result.getReturnCode() + ")"};
                     resetWorkflowStepIfNegativeOrNullTaskResponse(TaskResponse.failure(errorCode, errorDetails));
                     return;
                 }
                 else if (result.getReturnCode() == SegmentFingerprintsResponse.FailureCodes.WRONG_NO_OF_EXPECTED_FINGERS) {
-                    String errorCode = CommonsErrorCodes.C008_00021.getCode();
+                    String errorCode = RegisterCriminalClearanceErrorCodes.C020_00009.getCode();
                     String[] errorDetails = {"SegmentFingerprintsResponse.FailureCodes.WRONG_NO_OF_EXPECTED_FINGERS (" +
                                              result.getReturnCode() + ")"};
                     resetWorkflowStepIfNegativeOrNullTaskResponse(TaskResponse.failure(errorCode, errorDetails));
                     return;
                 }
                 else {
-                    String errorCode = CommonsErrorCodes.C008_00022.getCode();
+                    String errorCode = RegisterCriminalClearanceErrorCodes.C020_00010.getCode();
                     String[] errorDetails = {"SegmentFingerprintsResponse.FailureCodes.UNKNOWN (" +
                                              result.getReturnCode() + ")"};
                     resetWorkflowStepIfNegativeOrNullTaskResponse(TaskResponse.failure(errorCode, errorDetails));
@@ -190,5 +198,53 @@ public class SegmentWsqFingerprintsWorkflowTask extends WorkflowTask {
             }
         }
 
+        if(!fingerprintWsqToBeConvertedMap.isEmpty())
+        {
+            Future<TaskResponse<ConvertedFingerprintImagesResponse>>
+                    serviceResponseFuture = Context.getBioKitManager()
+                    .getFingerprintUtilitiesService()
+                    .convertWsqToImages(fingerprintWsqToBeConvertedMap);
+
+            TaskResponse<ConvertedFingerprintImagesResponse> response;
+            try
+            {
+                response = serviceResponseFuture.get();
+            }
+            catch(Exception e)
+            {
+                String errorCode = RegisterCriminalClearanceErrorCodes.C020_00011.getCode();
+                String[] errorDetails = {"Failed to call the service for converting the WSQ!"};
+                resetWorkflowStepIfNegativeOrNullTaskResponse(TaskResponse.failure(errorCode, e, errorDetails));
+                return;
+            }
+
+            resetWorkflowStepIfNegativeOrNullTaskResponse(response);
+            ConvertedFingerprintImagesResponse result = response.getResult();
+
+            if(result.getReturnCode() == ConvertedFingerprintImagesResponse.SuccessCodes.SUCCESS)
+            {
+                fingerprintImages.putAll(result.getFingerprintImagesMap());
+            }
+            else if(result.getReturnCode() ==
+                    ConvertedFingerprintImagesResponse.FailureCodes.FAILED_TO_CONVERT_WSQ_TO_IMAGE)
+            {
+                String errorCode = RegisterCriminalClearanceErrorCodes.C020_00012.getCode();
+                String[] errorDetails =
+                        {"ConvertedFingerprintImagesResponse.FailureCodes.FAILED_TO_CONVERT_WSQ_TO_IMAGE (" +
+                         result.getReturnCode() + ")"};
+                resetWorkflowStepIfNegativeOrNullTaskResponse(TaskResponse.failure(errorCode, errorDetails));
+                return;
+            }
+            else
+            {
+                String errorCode = RegisterCriminalClearanceErrorCodes.C020_00013.getCode();
+                String[] errorDetails = {"ConvertedFingerprintImagesResponse.FailureCodes.UNKNOWN (" +
+                                         result.getReturnCode() + ")"};
+                resetWorkflowStepIfNegativeOrNullTaskResponse(TaskResponse.failure(errorCode, errorDetails));
+                return;
+            }
+        }
+
+        this.fingerprintBase64Images = fingerprintImages;
     }
 }

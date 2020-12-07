@@ -13,7 +13,6 @@ import sa.gov.nic.bio.bw.core.utils.AppConstants;
 import sa.gov.nic.bio.bw.core.utils.AppConstants.Locales;
 import sa.gov.nic.bio.bw.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.workflow.commons.beans.Country;
-import sa.gov.nic.bio.bw.workflow.commons.beans.PersonInfo;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.CountriesLookup;
 import sa.gov.nic.bio.bw.workflow.criminalclearancereport.beans.CriminalClearanceReport;
 
@@ -47,13 +46,11 @@ public class BuildCriminalClearanceReportTask extends Task<JasperPrint> {
                                                        "criminal_clearance_certificate.jrxml";
     private CriminalClearanceReport criminalClearanceReport;
     private Map<Integer, String> fingerprintBase64Images;
-    private PersonInfo personInfo;
-    private LocalDate expireDate;
+    private Date expireDate;
 
-    public BuildCriminalClearanceReportTask(CriminalClearanceReport criminalClearanceReport, Map<Integer, String> fingerprintBase64Images, PersonInfo personInfo, LocalDate expireDate) {
+    public BuildCriminalClearanceReportTask(CriminalClearanceReport criminalClearanceReport, Map<Integer, String> fingerprintBase64Images, Date expireDate) {
         this.criminalClearanceReport = criminalClearanceReport;
         this.fingerprintBase64Images = fingerprintBase64Images;
-        this.personInfo = personInfo;
         this.expireDate = expireDate;
     }
 
@@ -67,7 +64,7 @@ public class BuildCriminalClearanceReportTask extends Task<JasperPrint> {
         String notAvailableArabic = "غير متوفر ";
         String notAvailableEnglish = " Not Available";
 
-        String facePhotoBase64 = personInfo.getFace();
+        String facePhotoBase64 = criminalClearanceReport.getFace();
 
         if (facePhotoBase64 != null) {
             byte[] bytes = Base64.getDecoder().decode(facePhotoBase64);
@@ -91,7 +88,7 @@ public class BuildCriminalClearanceReportTask extends Task<JasperPrint> {
         //        params.put(PARAMETER_REPORT_DATE,
         //                AppUtils.formatHijriGregorianDateTime(convictedReport.getReportDate()));
 
-        Name Name = personInfo.getName();
+        Name Name = criminalClearanceReport.getFullName();
         StringBuilder sb = new StringBuilder();
 
         String firstArabicName = Name.getFirstName();
@@ -114,11 +111,11 @@ public class BuildCriminalClearanceReportTask extends Task<JasperPrint> {
         String grandfatherEnglishName = Name.getTranslatedGrandFatherName();
         String familyEnglishName = Name.getTranslatedFamilyName();
 
-        if (firstEnglishName != null) { sb.append(firstEnglishName).append(" "); }
-        if (fatherEnglishName != null) { sb.append(fatherEnglishName).append(" "); }
-        if (grandfatherEnglishName != null) { sb.append(grandfatherEnglishName).append(" "); }
-        if (familyEnglishName != null) { sb.append(familyEnglishName); }
-        String fullEnglishName = sb.toString().stripTrailing();
+        if (firstEnglishName != null) { sb2.append(firstEnglishName).append(" "); }
+        if (fatherEnglishName != null) { sb2.append(fatherEnglishName).append(" "); }
+        if (grandfatherEnglishName != null) { sb2.append(grandfatherEnglishName).append(" "); }
+        if (familyEnglishName != null) { sb2.append(familyEnglishName); }
+        String fullEnglishName = sb2.toString().stripTrailing();
 
         params.put(PARAMETER_ENGLISH_NAME, fullEnglishName);
 
@@ -128,7 +125,7 @@ public class BuildCriminalClearanceReportTask extends Task<JasperPrint> {
         Country countryBean = null;
 
         for (Country country : countries) {
-            if (country.getCode() == personInfo.getNationality()) {
+            if (country.getCode() == criminalClearanceReport.getNationality()) {
                 countryBean = country;
                 break;
             }
@@ -139,22 +136,18 @@ public class BuildCriminalClearanceReportTask extends Task<JasperPrint> {
             String englishNationalityText = countryBean.getEnglishText();
 
             if (countryBean.getCode() > 0 && !"SAU".equalsIgnoreCase(countryBean.getMofaNationalityCode()) &&
-                String.valueOf(personInfo.getSamisId()).startsWith("1")) {
+                String.valueOf(criminalClearanceReport.getSamisId()).startsWith("1")) {
                 // \u202B is used to render the brackets correctly
-                arabicNationalityText += " \u202B" + AppUtils.getCoreStringsResourceBundle(Locales.SAUDI_AR_LOCALE)
-                        .getString("label.naturalizedSaudi");
-                englishNationalityText += " \u202B" + AppUtils.getCoreStringsResourceBundle()
-                        .getString("label.naturalizedSaudi");
+                arabicNationalityText += " \u202B" + "(سعودي مجنس)";
+                englishNationalityText += " \u202B" + "(Naturalized Saudi)";
             }
 
             params.put(PARAMETER_ARABIC_NATIONALITY, arabicNationalityText);
             params.put(PARAMETER_ENGLISH_NATIONALITY, englishNationalityText);
         }
         else {
-            params.put(PARAMETER_ARABIC_NATIONALITY, AppUtils.getCoreStringsResourceBundle(Locales.SAUDI_AR_LOCALE)
-                    .getString("combobox.unknownNationality"));
-            params.put(PARAMETER_ENGLISH_NATIONALITY, AppUtils.getCoreStringsResourceBundle()
-                    .getString("combobox.unknownNationality"));
+            params.put(PARAMETER_ARABIC_NATIONALITY, "جنسية مجهولة");
+            params.put(PARAMETER_ENGLISH_NATIONALITY, "Unknown Nationality");
         }
 
         Long subjSamisId = criminalClearanceReport.getSamisId();
@@ -167,9 +160,10 @@ public class BuildCriminalClearanceReportTask extends Task<JasperPrint> {
             params.put(PARAMETER_SAMIS_ID, notAvailableArabic);
         }
 
-        Long subjPassportId = criminalClearanceReport.getSamisId();
-        if (subjSamisId != null) {
-            params.put(PARAMETER_PASSPORT_ID, AppUtils.localizeNumbers(String.valueOf(subjSamisId),
+
+        String subjPassportId = criminalClearanceReport.getPassportNumber();
+        if (subjPassportId != null) {
+            params.put(PARAMETER_PASSPORT_ID, AppUtils.localizeNumbers(subjPassportId,
                     Locale.getDefault(),
                     true));
         }
@@ -178,35 +172,42 @@ public class BuildCriminalClearanceReportTask extends Task<JasperPrint> {
         }
 
 
-        LocalDate subjIssDate = expireDate.minusMonths(1);
-        long secondsIssDate = AppUtils.gregorianDateToSeconds(subjIssDate);
-        if (subjIssDate != null) {
+        if (expireDate != null) {
+            LocalDate subjIssDate = expireDate.toInstant().atZone(AppConstants.SAUDI_ZONE).toLocalDate().minusMonths(1);
+            long secondsIssDate = AppUtils.gregorianDateToSeconds(subjIssDate);
+
             params.put(PARAMETER_ISSUE_DATE_H,
                     AppUtils.formatDate(AppUtils.secondsToHijriDate(secondsIssDate), Locales.SAUDI_AR_LOCALE));
             params.put(PARAMETER_ISSUE_DATE_G,
                     AppUtils.formatDate(AppUtils.secondsToGregorianDate(secondsIssDate), Locales.SAUDI_EN_LOCALE));
         }
+//params.put(PARAMETER_EXPIRY_DATE_G,expireDate);
+//        params.put(PARAMETER_EXPIRY_DATE_H,expireDate);
 
+        if (expireDate != null) {
+            LocalDate subjExpDate = expireDate.toInstant().atZone(AppConstants.SAUDI_ZONE).toLocalDate();
+            long secondsExpDate = AppUtils.gregorianDateToSeconds(subjExpDate);
 
-        LocalDate subjExpDate = expireDate;
-        long secondsExpDate = AppUtils.gregorianDateToSeconds(subjExpDate);
-        if (subjExpDate != null) {
             params.put(PARAMETER_EXPIRY_DATE_H,
                     AppUtils.formatDate(AppUtils.secondsToHijriDate(secondsExpDate), Locales.SAUDI_AR_LOCALE));
             params.put(PARAMETER_EXPIRY_DATE_G,
                     AppUtils.formatDate(AppUtils.secondsToGregorianDate(secondsExpDate), Locales.SAUDI_EN_LOCALE));
         }
 
-        LocalDate birthDate;
-        Date date = personInfo.getBirthDate();
 
-        if (date != null && date.getTime() > AppConstants.SAMIS_DB_DATE_EPOCH_MS_NOT_SET_VALUE) {
-            birthDate = date.toInstant().atZone(AppConstants.SAUDI_ZONE).toLocalDate();
-            long secondsBirthDate = AppUtils.gregorianDateToSeconds(birthDate);
-            params.put(PARAMETER_BIRTH_DATE_H,
-                    AppUtils.formatDate(AppUtils.secondsToHijriDate(secondsBirthDate), Locales.SAUDI_AR_LOCALE));
-            params.put(PARAMETER_BIRTH_DATE_G,
-                    AppUtils.formatDate(AppUtils.secondsToGregorianDate(secondsBirthDate), Locales.SAUDI_EN_LOCALE));
+        if (criminalClearanceReport.getDateOfBirth() != null) {
+            LocalDate birthDate = criminalClearanceReport.getDateOfBirth().toInstant().atZone(AppConstants.SAUDI_ZONE).toLocalDate();
+            //        Date date = personInfo.getBirthDate();
+
+            if (birthDate != null && birthDate.atStartOfDay(AppConstants.SAUDI_ZONE).toInstant().toEpochMilli() > AppConstants.SAMIS_DB_DATE_EPOCH_MS_NOT_SET_VALUE) {
+                long secondsBirthDate = AppUtils.gregorianDateToSeconds(birthDate);
+                if (secondsBirthDate > AppConstants.SAMIS_DB_DATE_EPOCH_MS_NOT_SET_VALUE) {
+                    //            birthDate = date.toInstant().atZone(AppConstants.SAUDI_ZONE).toLocalDate();
+                    params.put(PARAMETER_BIRTH_DATE_H, AppUtils.formatDate(AppUtils.secondsToHijriDate(secondsBirthDate), Locales.SAUDI_AR_LOCALE));
+                    params.put(PARAMETER_BIRTH_DATE_G,
+                            AppUtils.formatDate(AppUtils.secondsToGregorianDate(secondsBirthDate), Locales.SAUDI_EN_LOCALE));
+                }
+            }
         }
         else {
             params.put(PARAMETER_BIRTH_DATE_H,
@@ -220,15 +221,10 @@ public class BuildCriminalClearanceReportTask extends Task<JasperPrint> {
 
 
         UserInfo userInfo = (UserInfo) Context.getUserSession().getAttribute("userInfo");
-        Long subjOperatorId = userInfo.getOperatorId();
-        if (subjOperatorId != null) {
-            params.put(PARAMETER_OPERATOR_ID, AppUtils.localizeNumbers(String.valueOf(subjOperatorId),
-                    Locale.getDefault(),
-                    true));
-        }
-        else {
-            params.put(PARAMETER_OPERATOR_ID, notAvailableArabic);
-        }
+        long subjOperatorId = userInfo.getOperatorId();
+        params.put(PARAMETER_OPERATOR_ID, AppUtils.localizeNumbers(String.valueOf(subjOperatorId),
+                Locale.getDefault(),
+                true));
 
         String subjLocationId = userInfo.getLocationId();
         if (subjLocationId != null) {

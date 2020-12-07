@@ -33,7 +33,7 @@ public class CriminalClearanceDetailsPaneFxController extends WizardStepFxContro
         if(whoRequestedTheReport != null) txtWhoRequestedTheReport.setText(whoRequestedTheReport);
         if(purposeOfTheReport != null) txtPurposeOfTheReport.setText(purposeOfTheReport);
 
-       if(!btnNext.isDisable())btnNext.requestFocus();
+       btnNext.requestFocus();
     }
 
     @FXML

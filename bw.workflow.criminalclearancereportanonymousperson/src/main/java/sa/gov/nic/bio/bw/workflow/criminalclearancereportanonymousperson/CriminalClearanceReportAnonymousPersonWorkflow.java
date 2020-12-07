@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.Map;
 
 @AssociatedMenu(workflowId = 1032, menuId = "menu.query.criminalclearancereportanonymousperson",
-                menuTitle = "menu.title", menuOrder = 9, devices = {Device.FINGERPRINT_SCANNER, Device.CAMERA})
+                menuTitle = "menu.title", menuOrder = 14, devices = {Device.FINGERPRINT_SCANNER, Device.CAMERA})
 @WithLookups({PersonTypesLookup.class, DocumentTypesLookup.class, CountriesLookup.class})
 @Wizard({@Step(iconId = "\\uf256", title = "wizard.fingerprintCapturing"),
                 @Step(iconId = "camera", title = "wizard.facePhotoCapturing"),
@@ -39,13 +39,13 @@ import java.util.Map;
                 @Step(iconId = "\\uf022", title = "wizard.addCriminalClearanceDetails"),
                 @Step(iconId = "th_list", title = "wizard.reviewAndSubmit"),
                 @Step(iconId = "save", title = "wizard.registerReport"),
-                @Step(iconId = "file_pdf_alt", title = "wizard.showReport")})
+                //                @Step(iconId = "file_pdf_alt", title = "wizard.showReport")
+        })
 public class CriminalClearanceReportAnonymousPersonWorkflow extends WizardWorkflowBase {
 
     private static final String FIELD_CIVIL_HIT = "CIVIL_HIT";
     private static final String FIELD_CIVIL_PERSON_INFO_MAP = "CIVIL_PERSON_INFO_MAP";
-    //    private static final String FIELD_OLD_CRIMINAL_PERSON_INFO_MAP = "OLD_CRIMINAL_PERSON_INFO_MAP";
-    //    private static final String FIELD_NEW_CRIMINAL_PERSON_INFO_MAP = "NEW_CRIMINAL_PERSON_INFO_MAP";
+    private static final String FIELD_CIVIL_PASSPORT_IDs_MAP = "FIELD_CIVIL_PASSPORT_IDs_MAP";
 
     @Override
     public void onStep(int step) throws InterruptedException, Signal {
@@ -57,17 +57,19 @@ public class CriminalClearanceReportAnonymousPersonWorkflow extends WizardWorkfl
                         Boolean.TRUE);
                 setData(SlapFingerprintsCapturingFxController.class, "acceptBadQualityFingerprintMinRetires",
                         0);
-
+                setData(SlapFingerprintsCapturingFxController.class, "hidePreviousButton",
+                        Boolean.TRUE);
                 renderUiAndWaitForUserInput(SlapFingerprintsCapturingFxController.class);
+
 
                 break;
             }
-            //            case 1: {
+            //                        case 1: {
             //
-            //              //  renderUiAndWaitForUserInput(FaceCapturingFxController.class);
+            //                          //  renderUiAndWaitForUserInput(FaceCapturingFxController.class);
             //
-            //                break;
-            //            }
+            //                            break;
+            //                        }
             case 1: {
                 FingerprintInquiryStatusCheckerWorkflowTask.Status status = getData(FingerprintInquiryStatusCheckerWorkflowTask.class, "status");
 
@@ -104,12 +106,13 @@ public class CriminalClearanceReportAnonymousPersonWorkflow extends WizardWorkfl
                         if (!civilPersonIds.isEmpty()) {
                             // LinkedHashMap is ordered
                             Map<Long, PersonInfo> civilPersonInfoMap = new LinkedHashMap<>();
+                            Map<Long, Long> civilPassportMap = new LinkedHashMap<>();
 
                             for (Long civilPersonId : civilPersonIds) {
                                 if (civilPersonId == null) { continue; }
 
                                 PersonInfo personInfo;
-
+                                Long passportId;
                                 String sCivilPersonId = String.valueOf(civilPersonId);
                                 if (sCivilPersonId.length() == 10 && sCivilPersonId.startsWith("9")) {
                                     setData(GetDeporteeInfoByIdWorkflowTask.class, "deporteeId",
@@ -120,6 +123,16 @@ public class CriminalClearanceReportAnonymousPersonWorkflow extends WizardWorkfl
                                     DeporteeInfo deporteeInfo = getData(GetDeporteeInfoByIdWorkflowTask.class,
                                             "deporteeInfo");
                                     personInfo = new DeporteeInfoToPersonInfoConverter().convert(deporteeInfo);
+
+//                                    setData(GetPassportIdByIdWorkflowTask.class, "personId",
+//                                            civilPersonId);
+//                                    setData(GetPassportIdByIdWorkflowTask.class,
+//                                            "returnNullResultInCaseNotFound", Boolean.TRUE);
+//                                    executeWorkflowTask(GetPassportIdByIdWorkflowTask.class);
+//                                    passportId = getData(GetPassportIdByIdWorkflowTask.class,
+//                                            "passportId");
+                                    ;
+
                                 }
                                 else {
                                     setData(GetPersonInfoByIdWorkflowTask.class, "personId", civilPersonId);
@@ -127,49 +140,27 @@ public class CriminalClearanceReportAnonymousPersonWorkflow extends WizardWorkfl
                                             "returnNullResultInCaseNotFound", Boolean.TRUE);
                                     executeWorkflowTask(GetPersonInfoByIdWorkflowTask.class);
                                     personInfo = getData(GetPersonInfoByIdWorkflowTask.class, "personInfo");
+
+//                                    setData(GetPassportIdByIdWorkflowTask.class, "personId",
+//                                            civilPersonId);
+//                                    setData(GetPassportIdByIdWorkflowTask.class,
+//                                            "returnNullResultInCaseNotFound", Boolean.TRUE);
+//                                    executeWorkflowTask(GetPassportIdByIdWorkflowTask.class);
+//                                    passportId = getData(GetPassportIdByIdWorkflowTask.class,
+//                                            "passportId");
+                                    ;
                                 }
 
                                 civilPersonInfoMap.put(civilPersonId, personInfo);
+//                                civilPassportMap.put(civilPersonId, passportId);
                             }
 
                             setData(getClass(), FIELD_CIVIL_PERSON_INFO_MAP, civilPersonInfoMap);
+                            setData(getClass(), FIELD_CIVIL_PASSPORT_IDs_MAP, civilPassportMap);
+
                         }
                     }
 
-                    //                    if(criminalBiometricsId != null)
-                    //                    {
-                    //                        setData(ConvictedReportInquiryFromDisWorkflowTask.class,
-                    //                                "criminalBiometricsId", criminalBiometricsId);
-                    //                        setData(ConvictedReportInquiryFromDisWorkflowTask.class,
-                    //                                "returnNullResultInCaseNotFound", Boolean.TRUE);
-                    //                        executeWorkflowTask(ConvictedReportInquiryFromDisWorkflowTask.class);
-                    //                        List<DisCriminalReport> disCriminalReports =
-                    //                                getData(ConvictedReportInquiryFromDisWorkflowTask.class,
-                    //                                        "disCriminalReports");
-                    //                        DisCriminalReportToPersonInfoConverter converter = new DisCriminalReportToPersonInfoConverter();
-                    //                        Map<Integer, PersonInfo> oldCriminalPersonInfoMap;
-                    //                        if(disCriminalReports != null) oldCriminalPersonInfoMap = disCriminalReports.stream().collect(
-                    //                                Collectors.toMap(DisCriminalReport::getSequenceNumber, converter::convert,
-                    //                                        (k1, k2) -> k1, LinkedHashMap::new));
-                    //                        else oldCriminalPersonInfoMap = new LinkedHashMap<>();
-                    //                        setData(getClass(), FIELD_OLD_CRIMINAL_PERSON_INFO_MAP, oldCriminalPersonInfoMap);
-                    //
-                    //                        setData(BasicConvictedReportInquiryByGeneralFileNumberWorkflowTask.class,
-                    //                                "criminalBiometricsId", criminalBiometricsId);
-                    //                        setData(BasicConvictedReportInquiryByGeneralFileNumberWorkflowTask.class,
-                    //                                "returnNullResultInCaseNotFound", Boolean.TRUE);
-                    //                        executeWorkflowTask(BasicConvictedReportInquiryByGeneralFileNumberWorkflowTask.class);
-                    //                        List<ConvictedReport> convictedReports =
-                    //                                getData(BasicConvictedReportInquiryByGeneralFileNumberWorkflowTask.class,
-                    //                                        "convictedReports");
-                    //                        ConvictedReportToPersonInfoConverter converter2 = new ConvictedReportToPersonInfoConverter();
-                    //                        Map<Long, PersonInfo> newCriminalPersonInfoMap;
-                    //                        if(convictedReports != null) newCriminalPersonInfoMap = convictedReports.stream().collect(
-                    //                                Collectors.toMap(ConvictedReport::getReportNumber, converter2::convert,
-                    //                                        (k1, k2) -> k1, LinkedHashMap::new));
-                    //                        else newCriminalPersonInfoMap = new LinkedHashMap<>();
-                    //                        setData(getClass(), FIELD_NEW_CRIMINAL_PERSON_INFO_MAP, newCriminalPersonInfoMap);
-                    //                    }
                 }
 
 
@@ -195,6 +186,9 @@ public class CriminalClearanceReportAnonymousPersonWorkflow extends WizardWorkfl
             }
             case 3: {
 
+                passData(getClass(), FIELD_CIVIL_PERSON_INFO_MAP, UpdatePersonInfoPaneFxController.class,
+                        "civilPersonInfoMap");
+                passData(getClass(), FIELD_CIVIL_PASSPORT_IDs_MAP, UpdatePersonInfoPaneFxController.class, "civilPassportMap");
                 passData(getClass(), FIELD_CIVIL_HIT, UpdatePersonInfoPaneFxController.class, "civilHit");
                 passData(InquiryByFingerprintsResultPaneFxController.class, UpdatePersonInfoPaneFxController.class,
                         "normalizedPersonInfo");
@@ -242,12 +236,15 @@ public class CriminalClearanceReportAnonymousPersonWorkflow extends WizardWorkfl
 
                 passData(SlapFingerprintsCapturingFxController.class, ReviewAndSubmitPaneFxController.class,
                         "fingerprintBase64Images");
+                passData(SlapFingerprintsCapturingFxController.class, ReviewAndSubmitPaneFxController.class,
+                        "combinedFingerprints");
 
+                //                passData(FaceCapturingFxController.class,ReviewAndSubmitPaneFxController.class,"facePhotoBase64");
                 passData(UpdatePersonInfoPaneFxController.class, ReviewAndSubmitPaneFxController.class,
-                        "facePhotoBase64", "firstName", "fatherName", "grandfatherName",
-                        "familyName", "gender", "nationality", "occupation", "birthPlace", "birthDate",
-                        "birthDateUseHijri", "personId", "personType", "documentId", "documentType",
-                        "documentIssuanceDate", "documentExpiryDate");
+                        "firstName", "fatherName", "grandfatherName",
+                        "familyName", "englishFirstName", "englishFatherName", "englishGrandfatherName", "englishFamilyName",
+                        "nationality", "birthDate",
+                        "birthDateUseHijri", "personId", "passportId");
 
                 passData(CriminalClearanceDetailsPaneFxController.class, ReviewAndSubmitPaneFxController.class, "whoRequestedTheReport");
                 passData(CriminalClearanceDetailsPaneFxController.class, ReviewAndSubmitPaneFxController.class, "purposeOfTheReport");
@@ -266,20 +263,9 @@ public class CriminalClearanceReportAnonymousPersonWorkflow extends WizardWorkfl
             }
             case 8: {
 
-                sa.gov.nic.bio.bw.workflow.criminalclearancereport.controllers.InquiryByFingerprintsPaneFxController.ServiceType serviceType = getData(
-                        sa.gov.nic.bio.bw.workflow.criminalclearancereport.controllers.InquiryByFingerprintsPaneFxController.class, "serviceType");
-                if (serviceType == sa.gov.nic.bio.bw.workflow.criminalclearancereport.controllers.InquiryByFingerprintsPaneFxController.ServiceType.TAKEFINGERPRINTS) {
-                    passData(SlapFingerprintsCapturingFxController.class, ShowReportPaneFxController.class,
-                            "fingerprintBase64Images");
-                }
-                else {
-                    passData(ConvertWsqFingerprintsToSegmentedFingerprintBase64ImagesWorkflowTask.class,
-                            ShowReportPaneFxController.class,
-                            "fingerprintBase64Images");
-                }
+                passData(SlapFingerprintsCapturingFxController.class, ShowReportPaneFxController.class,
+                        "fingerprintBase64Images");
 
-                passData(GetPersonInfoByIdWorkflowTask.class, ShowReportPaneFxController.class,
-                        "personInfo");
                 passData(ReviewAndSubmitPaneFxController.class, ShowReportPaneFxController.class,
                         "criminalClearanceReport");
                 passData(SubmitCriminalClearanceReport.class, ShowReportPaneFxController.class,

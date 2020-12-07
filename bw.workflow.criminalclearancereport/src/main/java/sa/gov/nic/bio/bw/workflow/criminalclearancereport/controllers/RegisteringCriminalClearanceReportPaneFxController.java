@@ -24,7 +24,7 @@ public class RegisteringCriminalClearanceReportPaneFxController extends WizardSt
     @Override
     protected void onAttachedToScene() {
 
-        lblStatus.setText(resources.getString("label.waitingCriminalClearanceReport"));
+//        lblStatus.setText(resources.getString("label.waitingCriminalClearanceReport"));
         continueWorkflow();
     }
 

@@ -9,18 +9,24 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import sa.gov.nic.bio.bw.core.Context;
-import sa.gov.nic.bio.bw.core.beans.Gender;
 import sa.gov.nic.bio.bw.core.beans.Name;
 import sa.gov.nic.bio.bw.core.controllers.WizardStepFxControllerBase;
+import sa.gov.nic.bio.bw.core.utils.AppConstants;
+import sa.gov.nic.bio.bw.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.core.utils.FxmlFile;
 import sa.gov.nic.bio.bw.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.core.workflow.Input;
 import sa.gov.nic.bio.bw.core.workflow.Output;
-import sa.gov.nic.bio.bw.workflow.commons.beans.*;
+import sa.gov.nic.bio.bw.workflow.commons.beans.Country;
+import sa.gov.nic.bio.bw.workflow.commons.beans.Finger;
+import sa.gov.nic.bio.bw.workflow.commons.beans.NormalizedPersonInfo;
+import sa.gov.nic.bio.bw.workflow.commons.beans.PersonInfo;
 import sa.gov.nic.bio.bw.workflow.commons.ui.ImageViewPane;
 import sa.gov.nic.bio.bw.workflow.criminalclearancereport.beans.CriminalClearanceReport;
 
 import java.time.LocalDate;
+import java.time.chrono.HijrahDate;
+import java.time.temporal.ChronoField;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -35,11 +41,12 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase 
     private String whoRequestedTheReport;
     @Input(alwaysRequired = true)
     private String purposeOfTheReport;
-    @Input (alwaysRequired = true)
+    @Input(alwaysRequired = true)
     private List<Finger> combinedFingerprints; // segmented + unsegmented
 
     @Input private NormalizedPersonInfo normalizedPersonInfo;
     @Input private PersonInfo personInfo;
+
     @Input private String facePhotoBase64;
     @Input private String firstName;
     @Input private String fatherName;
@@ -49,23 +56,14 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase 
     @Input private String englishFatherName;
     @Input private String englishGrandfatherName;
     @Input private String englishFamilyName;
-    @Input private Gender gender;
     @Input private Country nationality;
-    @Input private String occupation;
-    @Input private String birthPlace;
     @Input private LocalDate birthDate;
-    @Input private Boolean birthDateUseHijri;
     @Input private Long personId;
-    @Input private PersonType personType;
-    @Input private String documentId;
-    @Input private DocumentType documentType;
-    @Input private LocalDate documentIssuanceDate;
-    @Input private Boolean documentIssuanceDateUseHijri;
-    @Input private LocalDate documentExpiryDate;
-    @Input private Boolean documentExpiryDateUseHijri;
+
+    @Input private Long passportId;
+
 
     @Output private CriminalClearanceReport criminalClearanceReport;
-    @Output private PersonInfo generatedPersonInfo;
 
     @FXML private VBox paneImage;
     @FXML private ImageViewPane paneImageView;
@@ -79,15 +77,9 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase 
     @FXML private Label lblEnglishOtherName;
     @FXML private Label lblEnglishFamilyName;
     @FXML private Label lblNationality;
-    @FXML private Label lblGender;
-    @FXML private Label lblBirthPlace;
     @FXML private Label lblBirthDate;
     @FXML private Label lblPersonId;
-    @FXML private Label lblPersonType;
-    @FXML private Label lblDocumentId;
-    @FXML private Label lblDocumentType;
-    @FXML private Label lblDocumentIssuanceDate;
-    @FXML private Label lblDocumentExpiryDate;
+    @FXML private Label lblPassportId;
     @FXML private Label lblWhoRequestedTheReport;
     @FXML private Label lblPurposeOfTheReport;
 
@@ -101,7 +93,6 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase 
     @FXML private ImageView ivLeftMiddle;
     @FXML private ImageView ivLeftIndex;
     @FXML private ImageView ivLeftThumb;
-
     @FXML private ProgressIndicator piProgress;
     @FXML private Button btnPrevious;
     @FXML private Button btnSubmit;
@@ -121,107 +112,79 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase 
 
         if (normalizedPersonInfo != null) {
 
-            criminalClearanceReport = new CriminalClearanceReport(personInfo.getSamisId(), whoRequestedTheReport, purposeOfTheReport,normalizedPersonInfo.getFacePhotoBase64(),combinedFingerprints);
+            facePhotoBase64 = normalizedPersonInfo.getFacePhotoBase64();
 
-            String facePhoto= normalizedPersonInfo.getFacePhotoBase64();
-            GuiUtils.attachFacePhotoBase64(ivPersonPhoto, facePhoto, true, normalizedPersonInfo.getGender());
+            Name name = personInfo.getName();
+            firstName = name.getFirstName();
+            fatherName = name.getFatherName();
+            grandfatherName = name.getGrandfatherName();
+            familyName = name.getFamilyName();
+            englishFirstName = name.getTranslatedFirstName();
+            englishFatherName = name.getTranslatedFatherName();
+            englishGrandfatherName = name.getTranslatedGrandFatherName();
+            englishFamilyName = name.getTranslatedFamilyName();
 
-            GuiUtils.attachImageDialog(Context.getCoreFxController(), ivPersonPhoto,
-                    resources.getString("label.personPhoto"),
-                    resources.getString("label.contextMenu.showImage"), false);
-
-            Name name=personInfo.getName();
-            GuiUtils.setLabelText(lblFirstName, name.getFirstName()).orElse(consumer);
-            GuiUtils.setLabelText(lblSecondName, name.getFatherName()).orElse(consumer);
-            GuiUtils.setLabelText(lblOtherName, name.getGrandfatherName()).orElse(consumer);
-            GuiUtils.setLabelText(lblFamilyName, name.getFamilyName()).orElse(consumer);
-            GuiUtils.setLabelText(true,lblEnglishFirstName, name.getTranslatedFirstName()).orElse(consumer);
-            GuiUtils.setLabelText(true,lblEnglishSecondName, name.getTranslatedFatherName()).orElse(consumer);
-            GuiUtils.setLabelText(true,lblEnglishOtherName, name.getTranslatedGrandFatherName()).orElse(consumer);
-            GuiUtils.setLabelText(true,lblEnglishFamilyName, name.getTranslatedFamilyName()).orElse(consumer);
-            GuiUtils.setLabelText(lblGender, normalizedPersonInfo.getGender()).orElse(consumer);
-            GuiUtils.setLabelText(lblNationality, normalizedPersonInfo.getNationality()).orElse(consumer);
-            //            GuiUtils.setLabelText(lblOccupation, normalizedPersonInfo.getOccupation()).orElse(consumer);
-            GuiUtils.setLabelText(lblBirthPlace, normalizedPersonInfo.getBirthPlace()).orElse(consumer);
-            GuiUtils.setLabelText(lblBirthDate, normalizedPersonInfo.getBirthDate()).orElse(consumer);
-            GuiUtils.setLabelText(lblPersonId, normalizedPersonInfo.getPersonId()).orElse(consumer);
-            GuiUtils.setLabelText(lblPersonType, normalizedPersonInfo.getPersonType()).orElse(consumer);
-            GuiUtils.setLabelText(lblDocumentId, normalizedPersonInfo.getDocumentId()).orElse(consumer);
-            GuiUtils.setLabelText(lblDocumentType, normalizedPersonInfo.getDocumentType()).orElse(consumer);
-            GuiUtils.setLabelText(lblDocumentIssuanceDate, normalizedPersonInfo.getDocumentIssuanceDate()).orElse(consumer);
-            GuiUtils.setLabelText(lblDocumentExpiryDate, normalizedPersonInfo.getDocumentExpiryDate()).orElse(consumer);
+            nationality = normalizedPersonInfo.getNationality();
+            birthDate = normalizedPersonInfo.getBirthDate();
+            personId = normalizedPersonInfo.getPersonId();
 
         }
-        else {
 
-            criminalClearanceReport = new CriminalClearanceReport(personId, whoRequestedTheReport, purposeOfTheReport,facePhotoBase64 ,combinedFingerprints);
+        GuiUtils.attachFacePhotoBase64(ivPersonPhoto, facePhotoBase64);
 
-            String facePhoto = facePhotoBase64;
-            GuiUtils.attachFacePhotoBase64(ivPersonPhoto, facePhoto, true, gender);
+        GuiUtils.attachImageDialog(Context.getCoreFxController(), ivPersonPhoto,
+                resources.getString("label.personPhoto"),
+                resources.getString("label.contextMenu.showImage"), false);
 
-            GuiUtils.attachImageDialog(Context.getCoreFxController(), ivPersonPhoto,
-                    resources.getString("label.personPhoto"),
-                    resources.getString("label.contextMenu.showImage"), false);
+        GuiUtils.setLabelText(lblFirstName, firstName).orElse(consumer);
+        GuiUtils.setLabelText(lblSecondName, fatherName).orElse(consumer);
+        GuiUtils.setLabelText(lblOtherName, grandfatherName).orElse(consumer);
+        GuiUtils.setLabelText(lblFamilyName, familyName).orElse(consumer);
 
-            GuiUtils.setLabelText(lblFirstName, firstName).orElse(consumer);
-            GuiUtils.setLabelText(lblSecondName, fatherName).orElse(consumer);
-            GuiUtils.setLabelText(lblOtherName, grandfatherName).orElse(consumer);
-            GuiUtils.setLabelText(lblFamilyName, familyName).orElse(consumer);
-            GuiUtils.setLabelText(lblEnglishFirstName, englishFirstName).orElse(consumer);
-            GuiUtils.setLabelText(lblEnglishSecondName, englishFatherName).orElse(consumer);
-            GuiUtils.setLabelText(lblEnglishOtherName, englishGrandfatherName).orElse(consumer);
-            GuiUtils.setLabelText(lblEnglishFamilyName, englishFamilyName).orElse(consumer);
-            GuiUtils.setLabelText(lblGender, gender).orElse(consumer);
-            GuiUtils.setLabelText(lblNationality, nationality).orElse(consumer);
-            //            GuiUtils.setLabelText(lblOccupation, normalizedPersonInfo.getOccupation()).orElse(consumer);
-            GuiUtils.setLabelText(lblBirthPlace, birthPlace).orElse(consumer);
-            GuiUtils.setLabelText(lblBirthDate, birthDate).orElse(consumer);
-            GuiUtils.setLabelText(lblPersonId, personId).orElse(consumer);
-            GuiUtils.setLabelText(lblPersonType, personType).orElse(consumer);
-            GuiUtils.setLabelText(lblDocumentId, documentId).orElse(consumer);
-            GuiUtils.setLabelText(lblDocumentType, documentType).orElse(consumer);
-            GuiUtils.setLabelText(lblDocumentIssuanceDate, documentIssuanceDate).orElse(consumer);
-            GuiUtils.setLabelText(lblDocumentExpiryDate, documentExpiryDate).orElse(consumer);
+        GuiUtils.setLabelText(true,lblEnglishFirstName, englishFirstName).orElse(consumer);
+        GuiUtils.setLabelText(true,lblEnglishSecondName, englishFatherName).orElse(consumer);
+        GuiUtils.setLabelText(true,lblEnglishOtherName, englishGrandfatherName).orElse(consumer);
+        GuiUtils.setLabelText(true,lblEnglishFamilyName, englishFamilyName).orElse(consumer);
+        GuiUtils.setLabelText(lblNationality, nationality).orElse(consumer);
+        GuiUtils.setLabelText(lblBirthDate, birthDate).orElse(consumer);
+        GuiUtils.setLabelText(lblPersonId, personId).orElse(consumer);
+        GuiUtils.setLabelText(lblPassportId, passportId).orElse(consumer);
 
-            Date birthOfDate=new Date(birthDate.getYear(),birthDate.getMonth().getValue(),birthDate.getDayOfMonth());
+        GuiUtils.setLabelText(lblWhoRequestedTheReport, whoRequestedTheReport).orElse(consumer);
+        GuiUtils.setLabelText(lblPurposeOfTheReport, purposeOfTheReport).orElse(consumer);
 
-            generatedPersonInfo=new PersonInfo();
-            generatedPersonInfo.setBirthDate(birthOfDate);
-            generatedPersonInfo.setFace(facePhoto);
-
-            Integer genderInt ;
-            if(gender != null ) {
-                genderInt = gender.toString().equals("MALE") ? 0 : 1;
-                generatedPersonInfo.setGender(genderInt);
-            }
-
-
-            StringBuilder sb = new StringBuilder();
-
-            String firstArabicName = firstName;
-            String fatherArabicName = fatherName;
-            String grandfatherArabicName = grandfatherName;
-            String familyArabicName = familyName;
-
-            if (firstArabicName != null) { sb.append(firstArabicName).append(" "); }
-            if (fatherArabicName != null) { sb.append(fatherArabicName).append(" "); }
-            if (grandfatherArabicName != null) { sb.append(grandfatherArabicName).append(" "); }
-            if (familyArabicName != null) { sb.append(familyArabicName); }
-            String fullArabicName = sb.toString().stripTrailing();
-
-            Name name =new Name(firstArabicName,fatherArabicName,grandfatherArabicName,familyArabicName,englishFirstName,englishFatherName,englishGrandfatherName,englishFamilyName);
-            generatedPersonInfo.setName(name);
-            generatedPersonInfo.setNationality(nationality.getCode());
-            generatedPersonInfo.setSamisId(personId);
-//            personInfo.setPersonType();
-        }
-
-        lblWhoRequestedTheReport.setText(whoRequestedTheReport);
-        lblPurposeOfTheReport.setText(purposeOfTheReport);
 
         GuiUtils.attachFingerprintImages(fingerprintBase64Images, null, ivRightThumb, ivRightIndex, ivRightMiddle,
                 ivRightRing, ivRightLittle, ivLeftThumb, ivLeftIndex, ivLeftMiddle, ivLeftRing,
                 ivLeftLittle, null, null, null, null, null, null);
+
+
+        Name name = new Name(firstName, fatherName, grandfatherName, familyName,
+                englishFirstName, englishFatherName, englishGrandfatherName, englishFamilyName);
+
+        //backend need Hijri date as String!!
+        Date dateOfBirth = null;
+        HijrahDate dateOfBirthHijri;
+        String dateOfBirthHijriString = null;
+        if (birthDate != null) {
+            dateOfBirth = Date.from(birthDate.atStartOfDay(AppConstants.SAUDI_ZONE).toInstant());
+            dateOfBirthHijri = AppUtils.secondsToHijriDate(AppUtils.gregorianDateToSeconds(birthDate));
+            dateOfBirthHijriString = dateOfBirthHijri.getLong(ChronoField.YEAR) + "-"
+                                     + dateOfBirthHijri.getLong(ChronoField.MONTH_OF_YEAR) + "-" + dateOfBirthHijri.getLong(ChronoField.DAY_OF_MONTH);
+        }
+
+        Integer nationalityInteger = null;
+        if (nationality != null) {
+            nationalityInteger = nationality.getCode();
+        }
+
+        criminalClearanceReport = new CriminalClearanceReport(personId, name, nationalityInteger, facePhotoBase64, combinedFingerprints,
+                dateOfBirth, dateOfBirthHijriString, whoRequestedTheReport, purposeOfTheReport);
+
+        System.out.println(birthDate);
+        System.out.println(criminalClearanceReport.getDateOfBirth());
+
+        if (passportId != null) { criminalClearanceReport.setPassportNumber(String.valueOf(passportId)); }
 
         btnSubmit.requestFocus();
     }

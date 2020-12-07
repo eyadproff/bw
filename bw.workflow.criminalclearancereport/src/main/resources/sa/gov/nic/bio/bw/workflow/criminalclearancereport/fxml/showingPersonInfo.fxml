@@ -59,16 +59,18 @@
                         <CopiableLabel fx:id="lblBirthDate" GridPane.rowIndex="8" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
                         <Label text="%label.personId" GridPane.rowIndex="9" GridPane.columnIndex="0" styleClass="bold-label"/>
                         <CopiableLabel fx:id="lblPersonId" GridPane.rowIndex="9" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
-                        <Label text="%label.personType" GridPane.rowIndex="10" GridPane.columnIndex="0" styleClass="bold-label"/>
-                        <CopiableLabel fx:id="lblPersonType" GridPane.rowIndex="10" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
-                        <Label text="%label.documentId" GridPane.rowIndex="11" GridPane.columnIndex="0" styleClass="bold-label"/>
-                        <CopiableLabel fx:id="lblDocumentId" GridPane.rowIndex="11" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
-                        <Label text="%label.documentType" GridPane.rowIndex="12" GridPane.columnIndex="0" styleClass="bold-label"/>
-                        <CopiableLabel fx:id="lblDocumentType" GridPane.rowIndex="12" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
-                        <Label text="%label.documentIssuanceDate" GridPane.rowIndex="13" GridPane.columnIndex="0" styleClass="bold-label"/>
-                        <CopiableLabel fx:id="lblDocumentIssuanceDate" GridPane.rowIndex="13" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
-                        <Label text="%label.documentExpiryDate" GridPane.rowIndex="14" GridPane.columnIndex="0" styleClass="bold-label"/>
-                        <CopiableLabel fx:id="lblDocumentExpiryDate" GridPane.rowIndex="14" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
+                        <Label text="%label.passportNumber" GridPane.rowIndex="10" GridPane.columnIndex="0" styleClass="bold-label"/>
+                        <CopiableLabel fx:id="lblPassportId" GridPane.rowIndex="10" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
+                        <Label text="%label.personType" GridPane.rowIndex="11" GridPane.columnIndex="0" styleClass="bold-label"/>
+                        <CopiableLabel fx:id="lblPersonType" GridPane.rowIndex="11" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
+                        <Label text="%label.documentId" GridPane.rowIndex="12" GridPane.columnIndex="0" styleClass="bold-label"/>
+                        <CopiableLabel fx:id="lblDocumentId" GridPane.rowIndex="12" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
+                        <Label text="%label.documentType" GridPane.rowIndex="13" GridPane.columnIndex="0" styleClass="bold-label"/>
+                        <CopiableLabel fx:id="lblDocumentType" GridPane.rowIndex="13" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
+                        <Label text="%label.documentIssuanceDate" GridPane.rowIndex="14" GridPane.columnIndex="0" styleClass="bold-label"/>
+                        <CopiableLabel fx:id="lblDocumentIssuanceDate" GridPane.rowIndex="14" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
+                        <Label text="%label.documentExpiryDate" GridPane.rowIndex="15" GridPane.columnIndex="0" styleClass="bold-label"/>
+                        <CopiableLabel fx:id="lblDocumentExpiryDate" GridPane.rowIndex="15" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
                     </GridPane>
                 </ScrollPane>
             </HBox>

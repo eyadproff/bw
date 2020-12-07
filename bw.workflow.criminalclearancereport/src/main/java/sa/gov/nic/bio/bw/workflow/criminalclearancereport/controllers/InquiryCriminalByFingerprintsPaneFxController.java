@@ -16,6 +16,9 @@ import sa.gov.nic.bio.bw.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.core.workflow.Input;
 import sa.gov.nic.bio.bw.workflow.criminalclearancereport.tasks.FingerprintInquiryCriminalStatusCheckerWorkflowTask.Status;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @FxmlFile("inquiryCriminalByFingerprints.fxml")
 public class InquiryCriminalByFingerprintsPaneFxController extends WizardStepFxControllerBase {
     @Input(requiredOnReturn = true) private Status status;
@@ -37,6 +40,17 @@ public class InquiryCriminalByFingerprintsPaneFxController extends WizardStepFxC
     @FXML private Button btnRegister;
 
     private boolean fingerprintInquiryCancelled = false;
+
+    // TODO: temp
+    private static final Map<String, String> WantedActionsMap = new HashMap<>();
+    static
+    {
+        WantedActionsMap.put("1", "يقبض عليه");
+        WantedActionsMap.put("2", "إيقاف خدمات");
+        WantedActionsMap.put("3", "يبلغ بالمراجعة");
+        WantedActionsMap.put("4", "منع سفر");
+    }
+
 
     @Override
     protected void onAttachedToScene() {
@@ -119,6 +133,8 @@ public class InquiryCriminalByFingerprintsPaneFxController extends WizardStepFxC
 //            }
         }
         else { showProgress(false); }
+
+        if(!btnRegister.isDisable())btnRegister.requestFocus();
     }
 
     private void showProgress(boolean bShow) {
@@ -141,7 +157,7 @@ public class InquiryCriminalByFingerprintsPaneFxController extends WizardStepFxC
         GuiUtils.showNode(piProgress, false);
         GuiUtils.showNode(lblProgress, false);
         GuiUtils.showNode(btnCancel, false);
-        GuiUtils.showNode(btnRetry, bShow);
+        GuiUtils.showNode(btnRetry, false);
         GuiUtils.showNode(btnRegister, true);
         GuiUtils.showNode(btnStartOver, true);
         GuiUtils.showNode(paneError, false);

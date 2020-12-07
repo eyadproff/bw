@@ -959,9 +959,10 @@ public class GuiUtils implements AppLogger
 
 	public static <T> OrElse<Label> setLabelText(boolean withStrip,Label label, T value)
 	{
-		if(!value.toString().strip().isBlank())
-		return setLabelText(label, value, true);
-		else return new OrElse<>(label, true);
+		if (value != null && !value.toString().strip().isBlank()) {
+			return setLabelText(label, value, true);
+		}
+		else { return new OrElse<>(label, true); }
 
 	}
 	public static <T> OrElse<Label> setLabelText(Label label, T value, boolean localizedNumbers)

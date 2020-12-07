@@ -10,8 +10,8 @@ import java.util.List;
 public interface CriminalClearanceAPI {
 
     @FormUrlEncoded
-    @POST("services-gateway-demographic/api/non-criminal/record/submit/v1")
-    Call<HashMap<String, Object>> submitNonCriminalRecord(@Header("Workflow-Code") Integer workflowId,
+    @POST("services-gateway-biooperation/api/non-criminal/record/submit/v1")
+    Call<HashMap<String, String>> submitNonCriminalRecord(@Header("Workflow-Code") Integer workflowId,
             @Header("Workflow-Tcn") Long workflowTcn, @Field("noncriminal-record") String strNonCriminalRecord);
 
 

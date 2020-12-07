@@ -9,10 +9,11 @@ import javafx.stage.FileChooser;
 import net.sf.jasperreports.engine.JasperPrint;
 import sa.gov.nic.bio.bw.core.Context;
 import sa.gov.nic.bio.bw.core.controllers.WizardStepFxControllerBase;
+import sa.gov.nic.bio.bw.core.utils.AppConstants;
+import sa.gov.nic.bio.bw.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.core.utils.FxmlFile;
 import sa.gov.nic.bio.bw.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.core.workflow.Input;
-import sa.gov.nic.bio.bw.workflow.commons.beans.PersonInfo;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.PrintReportTask;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.SaveReportAsPdfTask;
 import sa.gov.nic.bio.bw.workflow.criminalclearancereport.beans.CriminalClearanceReport;
@@ -24,6 +25,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
@@ -32,8 +34,7 @@ import java.util.concurrent.atomic.AtomicReference;
 public class ShowReportPaneFxController extends WizardStepFxControllerBase {
     @Input(alwaysRequired = true) private Map<Integer, String> fingerprintBase64Images;
     @Input(alwaysRequired = true) private CriminalClearanceReport criminalClearanceReport;
-    @Input(alwaysRequired = true) private PersonInfo personInfo;
-    @Input(alwaysRequired = true) private HashMap<String, Object> criminalClearanceResponse;
+    @Input(alwaysRequired = true) private HashMap<String, String> criminalClearanceResponse;
 
     @FXML private TextField txtReportNumber;
     @FXML private ProgressIndicator piProgress;
@@ -51,9 +52,9 @@ public class ShowReportPaneFxController extends WizardStepFxControllerBase {
                 resources.getString("fileChooser.saveReportAsPDF.types"), "*.pdf");
         fileChooser.getExtensionFilters().addAll(extFilterPDF);
 
-        txtReportNumber.setText(String.valueOf(((Number) criminalClearanceResponse.get("reportNumber")).longValue()));
+        txtReportNumber.setText(AppUtils.localizeNumbers(criminalClearanceResponse.get("reportNumber")));
 
-        criminalClearanceReport.setReportNumber(((Number) criminalClearanceResponse.get("reportNumber")).longValue());
+        criminalClearanceReport.setReportNumber(Long.parseLong(criminalClearanceResponse.get("reportNumber")));
 
     }
 
@@ -65,32 +66,50 @@ public class ShowReportPaneFxController extends WizardStepFxControllerBase {
         GuiUtils.showNode(btnSaveReportAsPDF, false);
         GuiUtils.showNode(piProgress, true);
 
-		if (jasperPrint.get() == null) {
-			LocalDate expireDate = (LocalDate) criminalClearanceResponse.get("expireDate");
-			var buildCriminalClearanceReportTask = new BuildCriminalClearanceReportTask(criminalClearanceReport,
-					fingerprintBase64Images, personInfo, expireDate);
-			buildCriminalClearanceReportTask.setOnSucceeded(event ->
-			{
-				JasperPrint value = buildCriminalClearanceReportTask.getValue();
-				jasperPrint.set(value);
-				printCriminalClearanceReport(value);
-			});
-			buildCriminalClearanceReportTask.setOnFailed(event ->
-			{
-				GuiUtils.showNode(piProgress, false);
-				GuiUtils.showNode(btnStartOver, true);
-				GuiUtils.showNode(btnPrintReport, true);
-				GuiUtils.showNode(btnSaveReportAsPDF, true);
+        if (jasperPrint.get() == null) {
 
-				Throwable exception = buildCriminalClearanceReportTask.getException();
+            //return from backend as String !!
 
-				String errorCode = RegisterCriminalClearanceErrorCodes.C020_00001.getCode();
-				String[] errorDetails = {"failed while building the criminal clearance report!"};
-				Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails, getTabIndex());
-			});
-			Context.getExecutorService().submit(buildCriminalClearanceReportTask);
-		}
-		else { printCriminalClearanceReport(jasperPrint.get()); }
+            String expireDateString = criminalClearanceResponse.get("expireDate");
+            Date expireDate=null;
+            //            String strDateRegEx = "\\d{4}-\\d{2}-\\d{2}";
+            //
+            //            if (expireDateString.matches(strDateRegEx)) {
+            try {
+                int year = Integer.parseInt(expireDateString.substring(0, 4));
+                int month = Integer.parseInt(expireDateString.substring(5, 7));
+                int day = Integer.parseInt(expireDateString.substring(8));
+                expireDate = Date.from(LocalDate.of(year, month, day).atStartOfDay(AppConstants.SAUDI_ZONE).toInstant());
+            } catch (Exception e) {
+                String errorCode = RegisterCriminalClearanceErrorCodes.C020_00014.getCode();
+                String[] errorDetails = {"failed while building the criminal clearance report!"};
+                Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails, getTabIndex());
+            }
+
+            var buildCriminalClearanceReportTask = new BuildCriminalClearanceReportTask(criminalClearanceReport,
+                    fingerprintBase64Images, expireDate);
+            buildCriminalClearanceReportTask.setOnSucceeded(event ->
+            {
+                JasperPrint value = buildCriminalClearanceReportTask.getValue();
+                jasperPrint.set(value);
+                printCriminalClearanceReport(value);
+            });
+            buildCriminalClearanceReportTask.setOnFailed(event ->
+            {
+                GuiUtils.showNode(piProgress, false);
+                GuiUtils.showNode(btnStartOver, true);
+                GuiUtils.showNode(btnPrintReport, true);
+                GuiUtils.showNode(btnSaveReportAsPDF, true);
+
+                Throwable exception = buildCriminalClearanceReportTask.getException();
+
+                String errorCode = RegisterCriminalClearanceErrorCodes.C020_00001.getCode();
+                String[] errorDetails = {"failed while building the criminal clearance report!"};
+                Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails, getTabIndex());
+            });
+            Context.getExecutorService().submit(buildCriminalClearanceReportTask);
+        }
+        else { printCriminalClearanceReport(jasperPrint.get()); }
     }
 
     @FXML
@@ -105,9 +124,27 @@ public class ShowReportPaneFxController extends WizardStepFxControllerBase {
             GuiUtils.showNode(piProgress, true);
 
             if (jasperPrint.get() == null) {
-                LocalDate expireDate = (LocalDate) criminalClearanceResponse.get("expireDate");
+
+                //return from backend as String !!
+
+                String expireDateString = criminalClearanceResponse.get("expireDate");
+                Date expireDate=null;
+                //            String strDateRegEx = "\\d{4}-\\d{2}-\\d{2}";
+                //
+                //            if (expireDateString.matches(strDateRegEx)) {
+                try {
+                    int year = Integer.parseInt(expireDateString.substring(0, 4));
+                    int month = Integer.parseInt(expireDateString.substring(5, 7));
+                    int day = Integer.parseInt(expireDateString.substring(8));
+                    expireDate = Date.from(LocalDate.of(year, month, day).atStartOfDay(AppConstants.SAUDI_ZONE).toInstant());
+                } catch (Exception e) {
+                    String errorCode = RegisterCriminalClearanceErrorCodes.C020_00014.getCode();
+                    String[] errorDetails = {"failed while building the criminal clearance report!"};
+                    Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails, getTabIndex());
+                }
+
                 var buildCriminalClearanceReportTask = new BuildCriminalClearanceReportTask(criminalClearanceReport,
-                        fingerprintBase64Images, personInfo, expireDate);
+                        fingerprintBase64Images, expireDate);
                 buildCriminalClearanceReportTask.setOnSucceeded(event ->
                 {
                     JasperPrint value = buildCriminalClearanceReportTask.getValue();

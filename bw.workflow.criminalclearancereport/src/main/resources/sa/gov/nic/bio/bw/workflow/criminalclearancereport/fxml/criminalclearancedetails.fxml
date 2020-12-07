@@ -38,7 +38,7 @@
                 <Insets bottom="10"/>
             </padding>
             <Button fx:id="btnStartOver" text="%button.startOver" onAction="#onStartOverButtonClicked"/>
-            <Button fx:id="btnNext" text="%button.next" onAction="#onNextButtonClicked"/>
+            <Button fx:id="btnNext"  text="%button.next" onAction="#onNextButtonClicked"/>
         </HBox>
     </bottom>
 </BorderPane>

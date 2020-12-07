@@ -12,21 +12,24 @@ import sa.gov.nic.bio.commons.TaskResponse;
 
 import java.util.List;
 
-public class FetchingFingerprintsWorkflowTask extends WorkflowTask
-{
-	@Input(alwaysRequired = true) private long personId;
-	@Output private List<Finger> fingerprints;
-	
-	@Override
-	public void execute() throws Signal
-	{
-		FingerprintsByIdAPI fingerprintsByIdAPI = Context.getWebserviceManager().getApi(FingerprintsByIdAPI.class);
-		Call<List<Finger>> apiCall = fingerprintsByIdAPI.getFingerprintsById(workflowId, workflowTcn, personId);
-		TaskResponse<List<Finger>> taskResponse = Context.getWebserviceManager().executeApi(apiCall);
-		//no fingers found for this id
-		if(!taskResponse.isSuccess() && "B003-0007".equals(taskResponse.getErrorCode())) return;
+public class FetchingFingerprintsWorkflowTask extends WorkflowTask {
+    @Input(alwaysRequired = true) private long personId;
+    @Output private List<Finger> fingerprints;
+    @Output private Boolean fingerprintsExist;
 
-		resetWorkflowStepIfNegativeOrNullTaskResponse(taskResponse);
-		fingerprints = taskResponse.getResult();
-	}
+    @Override
+    public void execute() throws Signal {
+        FingerprintsByIdAPI fingerprintsByIdAPI = Context.getWebserviceManager().getApi(FingerprintsByIdAPI.class);
+        Call<List<Finger>> apiCall = fingerprintsByIdAPI.getFingerprintsById(workflowId, workflowTcn, personId);
+        TaskResponse<List<Finger>> taskResponse = Context.getWebserviceManager().executeApi(apiCall);
+        //no fingers found for this id
+        if (!taskResponse.isSuccess() && "B003-0007".equals(taskResponse.getErrorCode())) {
+            fingerprintsExist = false;
+            return;
+        }
+
+        resetWorkflowStepIfNegativeOrNullTaskResponse(taskResponse);
+        fingerprints = taskResponse.getResult();
+        fingerprintsExist = true;
+    }
 }
