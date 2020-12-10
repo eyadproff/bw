@@ -986,6 +986,19 @@ public class GuiUtils implements AppLogger
 		else return new OrElse<>(label, true);
 	}
 	
+	public static OrElse<Label> setLabelText(Label label, boolean monthNameAndNum ,LocalDate localDate)
+	{
+		if(localDate != null)
+		{
+			if (monthNameAndNum) {
+				label.setText(AppUtils.formatHijriGregorianDate(localDate,true));
+			}
+			else { label.setText(AppUtils.formatHijriGregorianDate(localDate)); }
+			return new OrElse<>(null, false);
+		}
+		else return new OrElse<>(label, true);
+	}
+
 	public static OrElse<Label> setLabelText(Label label, LocalDate localDate)
 	{
 		if(localDate != null)

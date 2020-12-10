@@ -15,12 +15,12 @@ public interface CriminalClearanceAPI {
             @Header("Workflow-Tcn") Long workflowTcn, @Field("noncriminal-record") String strNonCriminalRecord);
 
 
-    @GET("services-gateway-demographic/api/non-criminal/record/retrieve/v1")
+    @GET("services-gateway-biooperation/api/non-criminal/record/retrieve/v1")
     Call<List<CriminalClearanceReport>> getNonCriminalRecordBySamisId(@Header("Workflow-Code") Integer workflowId,
             @Header("Workflow-Tcn") Long workflowTcn, @Query("samis-id") Long samisId);
 
 
-    @GET("services-gateway-demographic/api/non-criminal/record/retrieve/v2")
+    @GET("services-gateway-biooperation/api/non-criminal/record/retrieve/v2")
     Call<CriminalClearanceReport> getNonCriminalRecordByReportNumber(@Header("Workflow-Code") Integer workflowId,
             @Header("Workflow-Tcn") Long workflowTcn, @Query("report-number") Long reportNumber);
 }

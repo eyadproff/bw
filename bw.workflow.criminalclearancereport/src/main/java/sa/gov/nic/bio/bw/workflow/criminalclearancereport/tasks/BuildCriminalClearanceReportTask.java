@@ -46,12 +46,10 @@ public class BuildCriminalClearanceReportTask extends Task<JasperPrint> {
                                                        "criminal_clearance_certificate.jrxml";
     private CriminalClearanceReport criminalClearanceReport;
     private Map<Integer, String> fingerprintBase64Images;
-    private Date expireDate;
 
-    public BuildCriminalClearanceReportTask(CriminalClearanceReport criminalClearanceReport, Map<Integer, String> fingerprintBase64Images, Date expireDate) {
+    public BuildCriminalClearanceReportTask(CriminalClearanceReport criminalClearanceReport, Map<Integer, String> fingerprintBase64Images) {
         this.criminalClearanceReport = criminalClearanceReport;
         this.fingerprintBase64Images = fingerprintBase64Images;
-        this.expireDate = expireDate;
     }
 
     @Override
@@ -85,8 +83,6 @@ public class BuildCriminalClearanceReportTask extends Task<JasperPrint> {
                         true));
         params.put(PARAMETER_REQUESTED_BY, criminalClearanceReport.getRequestedName());
         params.put(PARAMETER_PURPOSE_OF_CERTIFICATE, criminalClearanceReport.getReason());
-        //        params.put(PARAMETER_REPORT_DATE,
-        //                AppUtils.formatHijriGregorianDateTime(convictedReport.getReportDate()));
 
         Name Name = criminalClearanceReport.getFullName();
         StringBuilder sb = new StringBuilder();
@@ -172,40 +168,41 @@ public class BuildCriminalClearanceReportTask extends Task<JasperPrint> {
         }
 
 
-        if (expireDate != null) {
-            LocalDate subjIssDate = expireDate.toInstant().atZone(AppConstants.SAUDI_ZONE).toLocalDate().minusMonths(1);
-            long secondsIssDate = AppUtils.gregorianDateToSeconds(subjIssDate);
+        Long subjIssueDate = criminalClearanceReport.getCreateDate();
+        if (subjIssueDate != null) {
+//            ChronoZonedDateTime<HijrahDate> subjIssHijriDate=AppUtils.secondsToHijriDateTime(subjIssueDate).minus(1, ChronoUnit.MONTHS);
+//            LocalDate subjIssDate = expireDate.toInstant().atZone(AppConstants.SAUDI_ZONE).toLocalDate().minusMonths(1);
+//            LocalDate subjIssGregorianDate=AppUtils.secondsToGregorianDate(subjIssHijriDate.toEpochSecond());
 
             params.put(PARAMETER_ISSUE_DATE_H,
-                    AppUtils.formatDate(AppUtils.secondsToHijriDate(secondsIssDate), Locales.SAUDI_AR_LOCALE));
+                    AppUtils.formatDate(AppUtils.secondsToHijriDate(subjIssueDate), Locales.SAUDI_AR_LOCALE));
             params.put(PARAMETER_ISSUE_DATE_G,
-                    AppUtils.formatDate(AppUtils.secondsToGregorianDate(secondsIssDate), Locales.SAUDI_EN_LOCALE));
+                    AppUtils.formatDate(AppUtils.secondsToGregorianDate(subjIssueDate), Locales.SAUDI_EN_LOCALE));
         }
-//params.put(PARAMETER_EXPIRY_DATE_G,expireDate);
-//        params.put(PARAMETER_EXPIRY_DATE_H,expireDate);
 
-        if (expireDate != null) {
-            LocalDate subjExpDate = expireDate.toInstant().atZone(AppConstants.SAUDI_ZONE).toLocalDate();
-            long secondsExpDate = AppUtils.gregorianDateToSeconds(subjExpDate);
+
+        Long subjExpireDate = criminalClearanceReport.getExpireDate();
+        if (subjExpireDate != null) {
+//            LocalDate subjExpDate = expireDate.toInstant().atZone(AppConstants.SAUDI_ZONE).toLocalDate();
+//            long secondsExpDate = AppUtils.gregorianDateToSeconds(subjExpDate);
 
             params.put(PARAMETER_EXPIRY_DATE_H,
-                    AppUtils.formatDate(AppUtils.secondsToHijriDate(secondsExpDate), Locales.SAUDI_AR_LOCALE));
+                    AppUtils.formatDate(AppUtils.secondsToHijriDate(subjExpireDate), Locales.SAUDI_AR_LOCALE));
             params.put(PARAMETER_EXPIRY_DATE_G,
-                    AppUtils.formatDate(AppUtils.secondsToGregorianDate(secondsExpDate), Locales.SAUDI_EN_LOCALE));
+                    AppUtils.formatDate(AppUtils.secondsToGregorianDate(subjExpireDate), Locales.SAUDI_EN_LOCALE));
         }
 
 
-        if (criminalClearanceReport.getDateOfBirth() != null) {
-            LocalDate birthDate = criminalClearanceReport.getDateOfBirth().toInstant().atZone(AppConstants.SAUDI_ZONE).toLocalDate();
-            //        Date date = personInfo.getBirthDate();
-
+        Long subjBirthDate= criminalClearanceReport.getDateOfBirth();
+        if (subjBirthDate != null) {
+            LocalDate birthDate = AppUtils.secondsToGregorianDate(subjBirthDate);
             if (birthDate != null && birthDate.atStartOfDay(AppConstants.SAUDI_ZONE).toInstant().toEpochMilli() > AppConstants.SAMIS_DB_DATE_EPOCH_MS_NOT_SET_VALUE) {
-                long secondsBirthDate = AppUtils.gregorianDateToSeconds(birthDate);
-                if (secondsBirthDate > AppConstants.SAMIS_DB_DATE_EPOCH_MS_NOT_SET_VALUE) {
+//                long secondsBirthDate = AppUtils.gregorianDateToSeconds(birthDate);
+                if (subjBirthDate > AppConstants.SAMIS_DB_DATE_EPOCH_MS_NOT_SET_VALUE) {
                     //            birthDate = date.toInstant().atZone(AppConstants.SAUDI_ZONE).toLocalDate();
-                    params.put(PARAMETER_BIRTH_DATE_H, AppUtils.formatDate(AppUtils.secondsToHijriDate(secondsBirthDate), Locales.SAUDI_AR_LOCALE));
+                    params.put(PARAMETER_BIRTH_DATE_H, AppUtils.formatDate(AppUtils.secondsToHijriDate(subjBirthDate), Locales.SAUDI_AR_LOCALE));
                     params.put(PARAMETER_BIRTH_DATE_G,
-                            AppUtils.formatDate(AppUtils.secondsToGregorianDate(secondsBirthDate), Locales.SAUDI_EN_LOCALE));
+                            AppUtils.formatDate(birthDate, Locales.SAUDI_EN_LOCALE));
                 }
             }
         }

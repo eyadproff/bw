@@ -36,7 +36,7 @@ public class UpdatePersonInfoPaneFxController extends WizardStepFxControllerBase
     @Input private Boolean civilHit;
     @Input private NormalizedPersonInfo normalizedPersonInfo;
     @Input private PersonInfo personInfo;
-    @Input protected Map<Long, Long> civilPassportMap;
+    @Input protected Map<Long, String> civilPassportMap;
     @Input protected Map<Long, PersonInfo> civilPersonInfoMap;
 
     @Output private String firstName;
@@ -51,7 +51,7 @@ public class UpdatePersonInfoPaneFxController extends WizardStepFxControllerBase
     @Output private LocalDate birthDate;
     @Output private Boolean birthDateUseHijri;
     @Output private Long personId;
-    @Output private Long passportId;
+    @Output private String passportId;
 
     @FXML private TextField txtFirstName;
     @FXML private TextField txtFatherName;
@@ -161,7 +161,7 @@ public class UpdatePersonInfoPaneFxController extends WizardStepFxControllerBase
         Country nationality = null;
         LocalDate birthDate = null;
         Long personId = null;
-        Long passportId = null;
+        String passportId = null;
 
         if (normalizedPersonInfo != null) {
 
@@ -278,9 +278,9 @@ public class UpdatePersonInfoPaneFxController extends WizardStepFxControllerBase
         if (disable && !txtPersonId.getText().isEmpty()) { txtPersonId.setDisable(true); }
 
         if (isFirstLoad()) {
-            if (passportId != null) { txtPassportId.setText(String.valueOf(passportId)); }
+            if (passportId != null) { txtPassportId.setText(passportId); }
         }
-        else if (this.passportId != null) { txtPassportId.setText(String.valueOf(this.passportId)); }
+        else if (this.passportId != null) { txtPassportId.setText(this.passportId); }
 
         if (disable && !txtPassportId.getText().isEmpty()) { txtPassportId.setDisable(true); }
 
@@ -341,7 +341,7 @@ public class UpdatePersonInfoPaneFxController extends WizardStepFxControllerBase
         else { this.personId = null; }
 
         var sPassportId = txtPassportId.getText().strip();
-        if (!sPassportId.isBlank()) { this.passportId = Long.parseLong(sPassportId); }
+        if (!sPassportId.isBlank()) { this.passportId = sPassportId; }
         else { this.passportId = null; }
 
     }

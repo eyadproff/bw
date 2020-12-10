@@ -172,9 +172,9 @@ public class ShowResultFxController extends WizardStepFxControllerBase {
         if (jasperPrint.get() == null) {
             String verificationMethodToString="";
             if (verificationMethod.equals(VerificationMethod.FACE_PHOTO))
-                verificationMethodToString=resources.getString("%label.byFacePhoto");
+                verificationMethodToString=resources.getString("label.FacePhoto");
             if (verificationMethod.equals(VerificationMethod.FINGERPRINT))
-                verificationMethodToString=resources.getString("%label.byFingerprint");
+                verificationMethodToString=resources.getString("label.Fingerprint");
 
                 BuildVerificationReportTask buildVerificationReportTask =
                         new BuildVerificationReportTask(normalizedPersonInfo, verificationMethodToString, facePhotoBase64);

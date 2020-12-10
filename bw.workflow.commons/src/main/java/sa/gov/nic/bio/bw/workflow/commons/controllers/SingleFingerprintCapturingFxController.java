@@ -73,6 +73,7 @@ public class SingleFingerprintCapturingFxController extends WizardStepFxControll
 	@FXML private ProgressIndicator piProgress;
 	@FXML private Label lblStatus;
 	@FXML private Label lblCapturedFingerprint;
+	@FXML private Label lblFingerprintPotion;
 	@FXML private FourStateTitledPane tpCapturedFingerprint;
 	@FXML private ImageView ivSuccess;
 	@FXML private ImageView ivCapturedFingerprintPlaceholder;
@@ -785,17 +786,75 @@ public class SingleFingerprintCapturingFxController extends WizardStepFxControll
 	private void activateFingerprint(FingerPosition fingerPosition)
 	{
 		selectedFingerprintPosition = fingerPosition;
-		
-		GuiUtils.showNode(svgLeftLittle, fingerPosition == FingerPosition.LEFT_LITTLE);
-		GuiUtils.showNode(svgLeftRing, fingerPosition == FingerPosition.LEFT_RING);
-		GuiUtils.showNode(svgLeftMiddle, fingerPosition == FingerPosition.LEFT_MIDDLE);
-		GuiUtils.showNode(svgLeftIndex, fingerPosition == FingerPosition.LEFT_INDEX);
-		GuiUtils.showNode(svgLeftThumb, fingerPosition == FingerPosition.LEFT_THUMB);
-		GuiUtils.showNode(svgRightLittle, fingerPosition == FingerPosition.RIGHT_LITTLE);
-		GuiUtils.showNode(svgRightRing, fingerPosition == FingerPosition.RIGHT_RING);
-		GuiUtils.showNode(svgRightMiddle, fingerPosition == FingerPosition.RIGHT_MIDDLE);
-		GuiUtils.showNode(svgRightIndex, fingerPosition == FingerPosition.RIGHT_INDEX);
-		GuiUtils.showNode(svgRightThumb, fingerPosition == FingerPosition.RIGHT_THUMB);
+		String fingerPotionName=""
+;
+		if(fingerPosition == FingerPosition.LEFT_LITTLE) {
+			GuiUtils.showNode(svgLeftLittle, true);
+			fingerPotionName=resources.getString("label.left.fingers.little");
+		}
+		else GuiUtils.showNode(svgLeftLittle,false );
 
+		if(fingerPosition == FingerPosition.LEFT_RING) {
+			GuiUtils.showNode(svgLeftRing, true);
+			fingerPotionName=resources.getString("label.left.fingers.ring");
+		}
+		else GuiUtils.showNode(svgLeftRing, false);
+
+		if(fingerPosition == FingerPosition.LEFT_MIDDLE) {
+			GuiUtils.showNode(svgLeftMiddle, true);
+			fingerPotionName=resources.getString("label.left.fingers.middle");
+		}
+		else GuiUtils.showNode(svgLeftMiddle,false );
+
+		if(fingerPosition == FingerPosition.LEFT_INDEX) {
+			GuiUtils.showNode(svgLeftIndex, true);
+			fingerPotionName=resources.getString("label.left.fingers.index");
+		}
+		else
+			GuiUtils.showNode(svgLeftIndex, false);
+
+		if(fingerPosition == FingerPosition.LEFT_THUMB) {
+			GuiUtils.showNode(svgLeftThumb, true);
+			fingerPotionName=resources.getString("label.left.fingers.thumb");
+		}
+		else
+			GuiUtils.showNode(svgLeftThumb, false);
+
+		if(fingerPosition == FingerPosition.RIGHT_LITTLE) {
+			GuiUtils.showNode(svgRightLittle, true);
+			fingerPotionName=resources.getString("label.right.fingers.little");
+		}
+		else
+			GuiUtils.showNode(svgRightLittle, false);
+
+		if(fingerPosition == FingerPosition.RIGHT_RING) {
+			GuiUtils.showNode(svgRightRing, true);
+			fingerPotionName=resources.getString("label.right.fingers.ring");
+		}
+		else
+			GuiUtils.showNode(svgRightRing, false);
+
+		if(fingerPosition == FingerPosition.RIGHT_MIDDLE) {
+			GuiUtils.showNode(svgRightMiddle, true);
+			fingerPotionName=resources.getString("label.right.fingers.middle");
+		}
+		else
+			GuiUtils.showNode(svgRightMiddle, false);
+
+		if(fingerPosition == FingerPosition.RIGHT_INDEX) {
+			GuiUtils.showNode(svgRightIndex, true);
+			fingerPotionName=resources.getString("label.right.fingers.index");
+		}
+		else
+			GuiUtils.showNode(svgRightIndex, false);
+
+		if(fingerPosition == FingerPosition.RIGHT_THUMB) {
+			GuiUtils.showNode(svgRightThumb, true);
+			fingerPotionName=resources.getString("label.right.fingers.thumb");
+		}
+		else
+			GuiUtils.showNode(svgRightThumb, false);
+
+		GuiUtils.setLabelText(lblFingerprintPotion,fingerPotionName);
 	}
 }

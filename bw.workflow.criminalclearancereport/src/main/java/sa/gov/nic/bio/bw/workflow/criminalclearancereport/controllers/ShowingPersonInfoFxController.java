@@ -24,7 +24,7 @@ import java.util.function.Consumer;
 @FxmlFile("showingPersonInfo.fxml")
 public class ShowingPersonInfoFxController extends WizardStepFxControllerBase {
     @Input private PersonInfo personInfo;
-    @Input private Long passportId;
+    @Input private String passportId;
     @Input private Boolean fingerprintsExist;
     @Output private NormalizedPersonInfo normalizedPersonInfo;
 

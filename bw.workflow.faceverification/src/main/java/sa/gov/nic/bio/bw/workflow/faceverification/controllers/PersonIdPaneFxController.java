@@ -5,6 +5,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TextField;
+import sa.gov.nic.bio.bw.core.Context;
+import sa.gov.nic.bio.bw.core.controllers.DevicesRunnerGadgetPaneFxController;
 import sa.gov.nic.bio.bw.core.controllers.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.core.utils.FxmlFile;
 import sa.gov.nic.bio.bw.core.utils.GuiUtils;
@@ -31,6 +33,15 @@ public class PersonIdPaneFxController extends WizardStepFxControllerBase
 		if(personId != null) txtPersonId.setText(String.valueOf(personId));
 		
 		txtPersonId.requestFocus();
+
+		DevicesRunnerGadgetPaneFxController deviceManagerGadgetPaneController =
+				Context.getCoreFxController().getDeviceManagerGadgetPaneController();
+
+		if(!deviceManagerGadgetPaneController.isDevicesRunnerRunning())
+		{
+			deviceManagerGadgetPaneController.runAndConnectDevicesRunner();
+		}
+
 	}
 	
 	@Override

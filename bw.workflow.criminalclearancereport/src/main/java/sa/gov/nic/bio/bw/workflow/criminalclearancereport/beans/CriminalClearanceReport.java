@@ -4,7 +4,6 @@ import sa.gov.nic.bio.bw.core.beans.JavaBean;
 import sa.gov.nic.bio.bw.core.beans.Name;
 import sa.gov.nic.bio.bw.workflow.commons.beans.Finger;
 
-import java.util.Date;
 import java.util.List;
 
 public class CriminalClearanceReport extends JavaBean {
@@ -19,15 +18,15 @@ public class CriminalClearanceReport extends JavaBean {
     private String reason;
     private String face;
     private List<Finger> fingers;
-    private Date createDate;
-    private Date expireDate;
+    private Long createDate;
+    private Long expireDate;
     private String issueDateH;
     private String expireDateH;
-    private Date dateOfBirth;
+    private Long dateOfBirth;
     private String dateOfBirthHijri;
 
     public CriminalClearanceReport(Long reportNumber, Long samisId, String passportNumber, Name fullName, Integer nationality, String requestedName, String reason, String face,
-            List<Finger> fingers, Date createDate, Date expireDate, String issueDateH, String expireDateH, Date dateOfBirth, String dateOfBirthHijri) {
+            List<Finger> fingers, Long createDate, Long expireDate, String issueDateH, String expireDateH, Long dateOfBirth, String dateOfBirthHijri) {
         this.reportNumber = reportNumber;
         this.samisId = samisId;
         this.passportNumber = passportNumber;
@@ -52,7 +51,7 @@ public class CriminalClearanceReport extends JavaBean {
     }
 
     public CriminalClearanceReport(Long samisId, Name fullName, Integer nationality, String face,
-            List<Finger> fingers, Date dateOfBirth, String dateOfBirthHijri, String requestedName, String reason) {
+            List<Finger> fingers, Long dateOfBirth, String dateOfBirthHijri, String requestedName, String reason) {
         this.samisId = samisId;
         this.fullName = fullName;
         this.nationality = nationality;
@@ -136,19 +135,19 @@ public class CriminalClearanceReport extends JavaBean {
         this.fingers = fingers;
     }
 
-    public Date getCreateDate() {
+    public Long getCreateDate() {
         return createDate;
     }
 
-    public void setCreateDate(Date createDate) {
+    public void setCreateDate(Long createDate) {
         this.createDate = createDate;
     }
 
-    public Date getExpireDate() {
+    public Long getExpireDate() {
         return expireDate;
     }
 
-    public void setExpireDate(Date expireDate) {
+    public void setExpireDate(Long expireDate) {
         this.expireDate = expireDate;
     }
 
@@ -168,11 +167,11 @@ public class CriminalClearanceReport extends JavaBean {
         this.expireDateH = expireDateH;
     }
 
-    public Date getDateOfBirth() {
+    public Long getDateOfBirth() {
         return dateOfBirth;
     }
 
-    public void setDateOfBirth(Date dateOfBirth) {
+    public void setDateOfBirth(Long dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
     }
 

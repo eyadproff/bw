@@ -106,13 +106,13 @@ public class CriminalClearanceReportAnonymousPersonWorkflow extends WizardWorkfl
                         if (!civilPersonIds.isEmpty()) {
                             // LinkedHashMap is ordered
                             Map<Long, PersonInfo> civilPersonInfoMap = new LinkedHashMap<>();
-                            Map<Long, Long> civilPassportMap = new LinkedHashMap<>();
+                            Map<Long, String> civilPassportMap = new LinkedHashMap<>();
 
                             for (Long civilPersonId : civilPersonIds) {
                                 if (civilPersonId == null) { continue; }
 
                                 PersonInfo personInfo;
-                                Long passportId;
+                                String passportId;
                                 String sCivilPersonId = String.valueOf(civilPersonId);
                                 if (sCivilPersonId.length() == 10 && sCivilPersonId.startsWith("9")) {
                                     setData(GetDeporteeInfoByIdWorkflowTask.class, "deporteeId",
@@ -124,14 +124,14 @@ public class CriminalClearanceReportAnonymousPersonWorkflow extends WizardWorkfl
                                             "deporteeInfo");
                                     personInfo = new DeporteeInfoToPersonInfoConverter().convert(deporteeInfo);
 
-//                                    setData(GetPassportIdByIdWorkflowTask.class, "personId",
-//                                            civilPersonId);
-//                                    setData(GetPassportIdByIdWorkflowTask.class,
-//                                            "returnNullResultInCaseNotFound", Boolean.TRUE);
-//                                    executeWorkflowTask(GetPassportIdByIdWorkflowTask.class);
-//                                    passportId = getData(GetPassportIdByIdWorkflowTask.class,
-//                                            "passportId");
-                                    ;
+                                    setData(GetPassportIdByIdWorkflowTask.class, "personId",
+                                            civilPersonId);
+                                    setData(GetPassportIdByIdWorkflowTask.class,
+                                            "returnNullResultInCaseNotFound", Boolean.TRUE);
+                                    executeWorkflowTask(GetPassportIdByIdWorkflowTask.class);
+                                    passportId = getData(GetPassportIdByIdWorkflowTask.class,
+                                            "passportId");
+
 
                                 }
                                 else {
@@ -141,18 +141,17 @@ public class CriminalClearanceReportAnonymousPersonWorkflow extends WizardWorkfl
                                     executeWorkflowTask(GetPersonInfoByIdWorkflowTask.class);
                                     personInfo = getData(GetPersonInfoByIdWorkflowTask.class, "personInfo");
 
-//                                    setData(GetPassportIdByIdWorkflowTask.class, "personId",
-//                                            civilPersonId);
-//                                    setData(GetPassportIdByIdWorkflowTask.class,
-//                                            "returnNullResultInCaseNotFound", Boolean.TRUE);
-//                                    executeWorkflowTask(GetPassportIdByIdWorkflowTask.class);
-//                                    passportId = getData(GetPassportIdByIdWorkflowTask.class,
-//                                            "passportId");
-                                    ;
+                                    setData(GetPassportIdByIdWorkflowTask.class, "personId",
+                                            civilPersonId);
+                                    setData(GetPassportIdByIdWorkflowTask.class,
+                                            "returnNullResultInCaseNotFound", Boolean.TRUE);
+                                    executeWorkflowTask(GetPassportIdByIdWorkflowTask.class);
+                                    passportId = getData(GetPassportIdByIdWorkflowTask.class,
+                                            "passportId");
                                 }
 
                                 civilPersonInfoMap.put(civilPersonId, personInfo);
-//                                civilPassportMap.put(civilPersonId, passportId);
+                                civilPassportMap.put(civilPersonId, passportId);
                             }
 
                             setData(getClass(), FIELD_CIVIL_PERSON_INFO_MAP, civilPersonInfoMap);

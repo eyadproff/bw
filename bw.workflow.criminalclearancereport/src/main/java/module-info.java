@@ -18,6 +18,7 @@ module bw.workflow.criminalclearancereport {
     exports sa.gov.nic.bio.bw.workflow.criminalclearancereport.tasks;
     exports sa.gov.nic.bio.bw.workflow.criminalclearancereport.controllers;
     exports sa.gov.nic.bio.bw.workflow.criminalclearancereport.beans;
+    exports sa.gov.nic.bio.bw.workflow.criminalclearancereport.webservice;
 
 
 }

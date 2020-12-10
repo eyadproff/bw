@@ -42,10 +42,16 @@ public class CriminalClearanceReportWorkflow extends WizardWorkflowBase {
                 passData(PersonIdPaneFxController.class, GetPersonInfoByIdWorkflowTask.class, "personId");
                 executeWorkflowTask(GetPersonInfoByIdWorkflowTask.class);
 
-//                setData(GetPassportIdByIdWorkflowTask.class,
-//                        "returnNullResultInCaseNotFound", Boolean.TRUE);
-//                passData(PersonIdPaneFxController.class, GetPassportIdByIdWorkflowTask.class, "personId");
-//                executeWorkflowTask(GetPassportIdByIdWorkflowTask.class);
+
+//                setData(CheckCWLByBioIdWorkflowTask.class, "civilBiometricsId", 686098644L);
+//                executeWorkflowTask(CheckCWLByBioIdWorkflowTask.class);
+//                System.out.println(getData(CheckCWLByBioIdWorkflowTask.class,"watchListRecordList").toString());
+
+
+                setData(GetPassportIdByIdWorkflowTask.class,
+                        "returnNullResultInCaseNotFound", Boolean.TRUE);
+                passData(PersonIdPaneFxController.class, GetPassportIdByIdWorkflowTask.class, "personId");
+                executeWorkflowTask(GetPassportIdByIdWorkflowTask.class);
 
 
                 break;
@@ -56,6 +62,7 @@ public class CriminalClearanceReportWorkflow extends WizardWorkflowBase {
                 if (fingerprintsExist != null && !fingerprintsExist) { incrementNSteps(1); }
 
                 passData(GetPersonInfoByIdWorkflowTask.class, ShowingPersonInfoFxController.class, "personInfo");
+
                 passData(GetPassportIdByIdWorkflowTask.class, ShowingPersonInfoFxController.class, "passportId");
                 renderUiAndWaitForUserInput(ShowingPersonInfoFxController.class);
 
@@ -183,7 +190,7 @@ public class CriminalClearanceReportWorkflow extends WizardWorkflowBase {
 
                     if (civilBiometricsId != null) {
                         setData(CheckCWLByBioIdWorkflowTask.class, "civilBiometricsId", civilBiometricsId);
-                        executeWorkflowTask(CheckCWLByBioIdWorkflowTask.class);
+//                        executeWorkflowTask(CheckCWLByBioIdWorkflowTask.class);
                     }
                 }
                 break;

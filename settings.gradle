@@ -34,4 +34,5 @@ include 'bw.workflow.biometricsverification'
 include 'bw.workflow.biometricsinquiry'
 include 'bw.workflow.criminalclearancereport'
 include 'bw.workflow.criminalclearancereportanonymousperson'
+include 'bw.workflow.criminalclearancereportinquiry'
 
