@@ -64,6 +64,7 @@ public class InquiryByFingerprintsResultPaneFxController extends WizardStepFxCon
 	@Input protected Boolean hideConfirmationButton;
 	@Input protected Boolean ignoreCriminalFingerprintsInquiryResult;
 	@Input protected Status status;
+	@Input protected Integer inquiryId;
 	@Input protected Long civilBiometricsId;
 	@Input protected Long criminalBiometricsId;
 	@Input protected Map<Long, PersonInfo> civilPersonInfoMap;
@@ -474,13 +475,13 @@ public class InquiryByFingerprintsResultPaneFxController extends WizardStepFxCon
 		GuiUtils.setLabelText(lblNationality, normalizedPersonInfo.getNationality()).orElse(consumer);
 		GuiUtils.setLabelText(lblOccupation, normalizedPersonInfo.getOccupation()).orElse(consumer);
 		GuiUtils.setLabelText(lblBirthPlace, normalizedPersonInfo.getBirthPlace()).orElse(consumer);
-		GuiUtils.setLabelText(lblBirthDate, normalizedPersonInfo.getBirthDate()).orElse(consumer);
+		GuiUtils.setLabelText(lblBirthDate,true, normalizedPersonInfo.getBirthDate()).orElse(consumer);
 		GuiUtils.setLabelText(lblPersonId, normalizedPersonInfo.getPersonId()).orElse(consumer);
 		GuiUtils.setLabelText(lblPersonType, normalizedPersonInfo.getPersonType()).orElse(consumer);
 		GuiUtils.setLabelText(lblDocumentId, normalizedPersonInfo.getDocumentId()).orElse(consumer);
 		GuiUtils.setLabelText(lblDocumentType, normalizedPersonInfo.getDocumentType()).orElse(consumer);
-		GuiUtils.setLabelText(lblDocumentIssuanceDate, normalizedPersonInfo.getDocumentIssuanceDate()).orElse(consumer);
-		GuiUtils.setLabelText(lblDocumentExpiryDate, normalizedPersonInfo.getDocumentExpiryDate()).orElse(consumer);
+		GuiUtils.setLabelText(lblDocumentIssuanceDate, true, normalizedPersonInfo.getDocumentIssuanceDate()).orElse(consumer);
+		GuiUtils.setLabelText(lblDocumentExpiryDate, true, normalizedPersonInfo.getDocumentExpiryDate()).orElse(consumer);
 		
 		infoPane.autosize();
 		if(btnConfirmPersonInformation != null) btnConfirmPersonInformation.requestFocus();
@@ -667,7 +668,7 @@ public class InquiryByFingerprintsResultPaneFxController extends WizardStepFxCon
 		UserInfo userInfo = (UserInfo) Context.getUserSession().getAttribute("userInfo");
 		String inquirerId = AppUtils.localizeNumbers(String.valueOf(userInfo.getOperatorId()));
 
-		return new BuildFingerprintInquiryReportTask(inquirerId, civilHit, criminalHit, civilBiometricsId,
+		return new BuildFingerprintInquiryReportTask(inquirerId, inquiryId, civilHit, criminalHit, civilBiometricsId,
 													 criminalBiometricsId, civilPersonInfoMap,
 													 oldCriminalPersonInfoMap, newCriminalPersonInfoMap,
 													 fingerprintBase64Images);

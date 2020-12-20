@@ -229,13 +229,13 @@ public class ShowRecordPaneFxController extends WizardStepFxControllerBase
 		GuiUtils.setLabelText(lblNationality, normalizedPersonInfo.getNationality());
 		GuiUtils.setLabelText(lblOccupation, normalizedPersonInfo.getOccupation());
 		GuiUtils.setLabelText(lblBirthPlace, normalizedPersonInfo.getBirthPlace());
-		GuiUtils.setLabelText(lblBirthDate, normalizedPersonInfo.getBirthDate());
+		GuiUtils.setLabelText(lblBirthDate, true, normalizedPersonInfo.getBirthDate());
 		GuiUtils.setLabelText(lblPersonId, normalizedPersonInfo.getPersonId());
 		GuiUtils.setLabelText(lblPersonType, normalizedPersonInfo.getPersonType());
 		GuiUtils.setLabelText(lblDocumentId, normalizedPersonInfo.getDocumentId());
 		GuiUtils.setLabelText(lblDocumentType, normalizedPersonInfo.getDocumentType());
-		GuiUtils.setLabelText(lblDocumentIssuanceDate, normalizedPersonInfo.getDocumentIssuanceDate());
-		GuiUtils.setLabelText(lblDocumentExpiryDate, normalizedPersonInfo.getDocumentExpiryDate());
+		GuiUtils.setLabelText(lblDocumentIssuanceDate, true, normalizedPersonInfo.getDocumentIssuanceDate());
+		GuiUtils.setLabelText(lblDocumentExpiryDate, true, normalizedPersonInfo.getDocumentExpiryDate());
 		
 		String sRecordId = null;
 		String enrollerId = null;

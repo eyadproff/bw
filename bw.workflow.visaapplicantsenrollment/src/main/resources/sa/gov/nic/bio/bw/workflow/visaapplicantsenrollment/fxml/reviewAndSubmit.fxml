@@ -69,7 +69,7 @@
                                         <CopiableLabel fx:id="lblBirthDate" GridPane.rowIndex="3" GridPane.columnIndex="3" GridPane.hgrow="ALWAYS"/>
                                         <Label text="%label.visaType" GridPane.rowIndex="4" GridPane.columnIndex="0" styleClass="bold-label"/>
                                         <CopiableLabel fx:id="lblVisaType" GridPane.rowIndex="4" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
-                                        <Label text="%label.passportNumber" GridPane.rowIndex="4" GridPane.columnIndex="2" styleClass="bold-label"/>
+                                        <Label text="%label.passportId" GridPane.rowIndex="4" GridPane.columnIndex="2" styleClass="bold-label"/>
                                         <CopiableLabel fx:id="lblPassportNumber" GridPane.rowIndex="4" GridPane.columnIndex="3" GridPane.hgrow="ALWAYS"/>
                                         <Label text="%label.issueDate" GridPane.rowIndex="5" GridPane.columnIndex="0" styleClass="bold-label"/>
                                         <CopiableLabel fx:id="lblIssueDate" GridPane.rowIndex="5" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>

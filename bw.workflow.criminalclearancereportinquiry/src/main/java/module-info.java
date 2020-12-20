@@ -5,7 +5,7 @@ module bw.workflow.criminalclearancereportinquiry {
     requires bw.lib.jasperreports;
     requires bio.commons;
     requires com.google.gson;
-    requires bw.workflow.criminalclearancereport;
+    requires bw.workflow.registercriminalclearancereport;
 
     opens sa.gov.nic.bio.bw.workflow.criminalclearancereportinquiry.bundles;
     opens sa.gov.nic.bio.bw.workflow.criminalclearancereportinquiry to bw.core;

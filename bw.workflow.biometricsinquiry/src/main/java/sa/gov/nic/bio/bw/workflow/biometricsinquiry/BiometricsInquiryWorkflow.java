@@ -1,6 +1,5 @@
 package sa.gov.nic.bio.bw.workflow.biometricsinquiry;
 
-import sa.gov.nic.bio.bw.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.core.utils.Device;
 import sa.gov.nic.bio.bw.core.wizard.Step;
 import sa.gov.nic.bio.bw.core.wizard.Wizard;
@@ -8,7 +7,6 @@ import sa.gov.nic.bio.bw.core.workflow.AssociatedMenu;
 import sa.gov.nic.bio.bw.core.workflow.Signal;
 import sa.gov.nic.bio.bw.core.workflow.WithLookups;
 import sa.gov.nic.bio.bw.core.workflow.WizardWorkflowBase;
-import sa.gov.nic.bio.bw.workflow.biometricsinquiry.controllers.ShowResultFxController;
 import sa.gov.nic.bio.bw.workflow.biometricsinquiry.controllers.inquiryMethodSelectionFxController;
 import sa.gov.nic.bio.bw.workflow.biometricsinquiry.controllers.inquiryMethodSelectionFxController.InquiryMethod;
 import sa.gov.nic.bio.bw.workflow.commons.beans.DeporteeInfo;
@@ -23,8 +21,8 @@ import sa.gov.nic.bio.bw.workflow.irisinquiry.controllers.InquiryByIrisResultPan
 import sa.gov.nic.bio.bw.workflow.irisinquiry.tasks.IrisInquiryStatusCheckerWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.irisinquiry.tasks.IrisInquiryWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.searchbyfaceimage.controllers.*;
-import sa.gov.nic.bio.bw.workflow.searchbyfaceimage.tasks.SearchByFacePhotoWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.searchbyfaceimage.controllers.ImageSourceFxController.Source;
+import sa.gov.nic.bio.bw.workflow.searchbyfaceimage.tasks.SearchByFacePhotoWorkflowTask;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -273,6 +271,8 @@ public class BiometricsInquiryWorkflow extends WizardWorkflowBase {
 
                     passData(getClass(), FIELD_CIVIL_PERSON_INFO_MAP, InquiryByFingerprintsResultPaneFxController.class,
                             "civilPersonInfoMap");
+                    passData(FingerprintInquiryWorkflowTask.class, InquiryByFingerprintsResultPaneFxController.class,
+                            "inquiryId");
                     setData(InquiryByFingerprintsResultPaneFxController.class, "hideRegisterUnknownButton",
                             Boolean.TRUE);
                     setData(InquiryByFingerprintsResultPaneFxController.class, "hideConfirmationButton",

@@ -5,8 +5,8 @@ import sa.gov.nic.bio.bw.core.workflow.Input;
 import sa.gov.nic.bio.bw.core.workflow.Output;
 import sa.gov.nic.bio.bw.core.workflow.Signal;
 import sa.gov.nic.bio.bw.core.workflow.WorkflowTask;
-import sa.gov.nic.bio.bw.workflow.criminalclearancereport.beans.CriminalClearanceReport;
-import sa.gov.nic.bio.bw.workflow.criminalclearancereport.webservice.CriminalClearanceAPI;
+import sa.gov.nic.bio.bw.workflow.registercriminalclearancereport.beans.CriminalClearanceReport;
+import sa.gov.nic.bio.bw.workflow.registercriminalclearancereport.webservice.CriminalClearanceAPI;
 
 public class RetrieveCriminalClearanceReportByReportNumber extends WorkflowTask {
     @Input(alwaysRequired = true) private Long reportNumber;

@@ -9,7 +9,7 @@ import sa.gov.nic.bio.bw.core.workflow.WizardWorkflowBase;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.CountriesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.DocumentTypesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.PersonTypesLookup;
-import sa.gov.nic.bio.bw.workflow.criminalclearancereport.beans.CriminalClearanceReport;
+import sa.gov.nic.bio.bw.workflow.registercriminalclearancereport.beans.CriminalClearanceReport;
 import sa.gov.nic.bio.bw.workflow.criminalclearancereportinquiry.controllers.CriminalClearanceReportInquiryPaneFxController;
 import sa.gov.nic.bio.bw.workflow.criminalclearancereportinquiry.tasks.RetrieveCriminalClearanceReportByReportNumber;
 import sa.gov.nic.bio.bw.workflow.criminalclearancereportinquiry.tasks.RetrieveCriminalClearanceReportBySamisId;
@@ -30,6 +30,7 @@ public class CriminalClearanceReportInquiryWorkflow extends WizardWorkflowBase {
         renderUiAndWaitForUserInput(CriminalClearanceReportInquiryPaneFxController.class);
 
         ServiceType serviceType = getData(CriminalClearanceReportInquiryPaneFxController.class, "serviceType");
+
         if (serviceType == ServiceType.BY_ID_NUMBER) {
 
             passData(CriminalClearanceReportInquiryPaneFxController.class, RetrieveCriminalClearanceReportBySamisId.class, "personId");
@@ -41,11 +42,13 @@ public class CriminalClearanceReportInquiryWorkflow extends WizardWorkflowBase {
             passData(CriminalClearanceReportInquiryPaneFxController.class, RetrieveCriminalClearanceReportByReportNumber.class, "reportNumber");
             executeWorkflowTask(RetrieveCriminalClearanceReportByReportNumber.class);
 
-            CriminalClearanceReport criminalClearanceReport = getData(RetrieveCriminalClearanceReportByReportNumber.class, "criminalClearanceReport");
-            List<CriminalClearanceReport> criminalClearanceReports = new ArrayList<>();
-            criminalClearanceReports.add(criminalClearanceReport);
 
-            setData(CriminalClearanceReportInquiryPaneFxController.class, "criminalClearanceReports", criminalClearanceReports);
+            CriminalClearanceReport criminalClearanceReport = getData(RetrieveCriminalClearanceReportByReportNumber.class, "criminalClearanceReport");
+            if(criminalClearanceReport != null){
+                List<CriminalClearanceReport> criminalClearanceReports = new ArrayList<>();
+                criminalClearanceReports.add(criminalClearanceReport);
+                setData(CriminalClearanceReportInquiryPaneFxController.class, "criminalClearanceReports", criminalClearanceReports);
+            }
 
         }
 

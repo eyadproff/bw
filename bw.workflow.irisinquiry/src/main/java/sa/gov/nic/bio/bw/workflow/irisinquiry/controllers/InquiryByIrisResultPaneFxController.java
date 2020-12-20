@@ -167,13 +167,13 @@ public class InquiryByIrisResultPaneFxController extends WizardStepFxControllerB
 		GuiUtils.setLabelText(lblNationality, normalizedPersonInfo.getNationality()).orElse(consumer);
 		GuiUtils.setLabelText(lblOccupation, normalizedPersonInfo.getOccupation()).orElse(consumer);
 		GuiUtils.setLabelText(lblBirthPlace, normalizedPersonInfo.getBirthPlace()).orElse(consumer);
-		GuiUtils.setLabelText(lblBirthDate, normalizedPersonInfo.getBirthDate()).orElse(consumer);
+		GuiUtils.setLabelText(lblBirthDate,true, normalizedPersonInfo.getBirthDate()).orElse(consumer);
 		GuiUtils.setLabelText(lblPersonId, normalizedPersonInfo.getPersonId()).orElse(consumer);
 		GuiUtils.setLabelText(lblPersonType, normalizedPersonInfo.getPersonType()).orElse(consumer);
 		GuiUtils.setLabelText(lblDocumentId, normalizedPersonInfo.getDocumentId()).orElse(consumer);
 		GuiUtils.setLabelText(lblDocumentType, normalizedPersonInfo.getDocumentType()).orElse(consumer);
-		GuiUtils.setLabelText(lblDocumentIssuanceDate, normalizedPersonInfo.getDocumentIssuanceDate()).orElse(consumer);
-		GuiUtils.setLabelText(lblDocumentExpiryDate, normalizedPersonInfo.getDocumentExpiryDate()).orElse(consumer);
+		GuiUtils.setLabelText(lblDocumentIssuanceDate,true, normalizedPersonInfo.getDocumentIssuanceDate()).orElse(consumer);
+		GuiUtils.setLabelText(lblDocumentExpiryDate,true, normalizedPersonInfo.getDocumentExpiryDate()).orElse(consumer);
 		
 		infoPane.autosize();
 	}

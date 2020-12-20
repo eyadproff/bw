@@ -1,0 +1,9 @@
+project.ext.moduleName = 'bw.workflow.registercriminalclearancereportbyfingerprints'
+
+dependencies {
+    implementation project(':bw.workflow.commons')
+    implementation project(':bw.lib.jasperreports')
+    implementation project(':bw.workflow.registercriminalclearancereport')
+    implementation name: "gson-2.8.6"
+
+}

@@ -17,3 +17,10 @@
     -fx-min-width: 10px;
     -fx-min-height: 10px;
 }
+
+.watermark {
+    -fx-font-size: 75px;
+    -fx-font-weight: bolder;
+    -fx-text-fill: #00000033;
+    -fx-rotate: 30;
+}

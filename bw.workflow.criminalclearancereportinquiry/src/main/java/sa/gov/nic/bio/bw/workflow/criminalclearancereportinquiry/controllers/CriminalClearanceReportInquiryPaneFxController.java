@@ -26,7 +26,8 @@ import sa.gov.nic.bio.bw.core.workflow.Input;
 import sa.gov.nic.bio.bw.core.workflow.Output;
 import sa.gov.nic.bio.bw.workflow.commons.beans.Country;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.CountriesLookup;
-import sa.gov.nic.bio.bw.workflow.criminalclearancereport.beans.CriminalClearanceReport;
+import sa.gov.nic.bio.bw.workflow.registercriminalclearancereport.beans.CriminalClearanceReport;
+import sa.gov.nic.bio.bw.workflow.criminalclearancereportinquiry.utils.CriminalClearanceReportInquiryErrorCodes;
 
 import java.time.Instant;
 import java.util.List;
@@ -91,8 +92,7 @@ public class CriminalClearanceReportInquiryPaneFxController extends ContentFxCon
                       .or(rdoPersonId.selectedProperty().and(personIdBinding)));
 
 
-		tpSearchResults.setText(resources.getString("label.searchResults") + " (" +
-				                                                            AppUtils.localizeNumbers("0") + ")");
+		tpSearchResults.setText(resources.getString("label.searchResults") + " (" + AppUtils.localizeNumbers("0") + ")");
 
 		pagination.setMaxPageIndicatorCount(AppConstants.TABLE_PAGINATION_PAGES_PER_ITERATION);
 		GuiUtils.localizePagination(pagination);
@@ -356,8 +356,7 @@ public class CriminalClearanceReportInquiryPaneFxController extends ContentFxCon
 		pageIndex = 0;
 		resultsTotalCount = null;
 		criminalClearanceReports = null;
-		tpSearchResults.setText(resources.getString("label.searchResults") + " (" +
-				                                                            AppUtils.localizeNumbers("0") + ")");
+		tpSearchResults.setText(resources.getString("label.searchResults") + " (" + AppUtils.localizeNumbers("0") + ")");
 
 		newQuery = true;
 		continueWorkflow();
@@ -375,25 +374,25 @@ public class CriminalClearanceReportInquiryPaneFxController extends ContentFxCon
 	private void onShowReportButtonClicked(ActionEvent actionEvent)
 	{
 		hideNotification();
-//
-//		try
-//		{
-//			ShowReportDialogFxController controller = DialogUtils.buildCustomDialogByFxml(
-//					Context.getCoreFxController().getStage(), ShowReportDialogFxController.class, true);
-//
-//			if(controller != null)
-//			{
-//				CriminalClearanceReport selectedItem = tvCriminalClearanceReports.getSelectionModel().getSelectedItem();
-//				controller.setReportNumber(selectedItem.getReportNumber());
-//				controller.show();
-//			}
-//		}
-//		catch(Exception e)
-//		{
-//			String errorCode = ConvictedReportInquiryErrorCodes.C011_00001.getCode();
-//			String[] errorDetails = {"Failed to load (" + ShowReportDialogFxController.class.getName() + ")!"};
-//			Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails, getTabIndex());
-//		}
+
+		try
+		{
+			ShowReportDialogFxController controller = DialogUtils.buildCustomDialogByFxml(
+					Context.getCoreFxController().getStage(), ShowReportDialogFxController.class, true);
+
+			if(controller != null)
+			{
+				CriminalClearanceReport selectedItem = tvCriminalClearanceReports.getSelectionModel().getSelectedItem();
+				controller.setCriminalClearanceReport(selectedItem);
+				controller.show();
+			}
+		}
+		catch(Exception e)
+		{
+			String errorCode = CriminalClearanceReportInquiryErrorCodes.C022_00008.getCode();
+			String[] errorDetails = {"Failed to load (" + ShowReportDialogFxController.class.getName() + ")!"};
+			Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails, getTabIndex());
+		}
 	}
 
 	private Node createPage(int pageIndex)

@@ -10,11 +10,11 @@ import sa.gov.nic.bio.bw.core.beans.Name;
 import sa.gov.nic.bio.bw.core.utils.AppConstants;
 import sa.gov.nic.bio.bw.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.core.utils.GuiUtils;
-import sa.gov.nic.bio.bw.workflow.commons.beans.*;
+import sa.gov.nic.bio.bw.workflow.commons.beans.FingerprintInquiryRecord;
+import sa.gov.nic.bio.bw.workflow.commons.beans.NormalizedPersonInfo;
+import sa.gov.nic.bio.bw.workflow.commons.beans.PersonInfo;
 
 import java.io.ByteArrayInputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -26,6 +26,7 @@ public class BuildFingerprintInquiryReportTask extends Task<JasperPrint>
 	private static final String PARAMETER_LOGO = "LOGO";
 	private static final String PARAMETER_INQUIRY_TIMESTAMP = "INQUIRY_TIMESTAMP";
 	private static final String PARAMETER_INQUIRER_ID = "INQUIRER_ID";
+	private static final String PARAMETER_INQUIRY_ID = "INQUIRY_ID";
 	private static final String PARAMETER_CIVIL_HIT = "CIVIL_HIT";
 	private static final String PARAMETER_CRIMINAL_HIT = "CRIMINAL_HIT";
 	private static final String PARAMETER_CIVIL_BIOMETRICS_ID = "CIVIL_BIOMETRICS_ID";
@@ -39,6 +40,7 @@ public class BuildFingerprintInquiryReportTask extends Task<JasperPrint>
 													   "fingerprint_inquiry_report.jrxml";
 
 	private String inquirerId;
+	private Integer inquiryId;
 	private boolean civilHit;
 	private boolean criminalHit;
 	private Long civilBiometricsId;
@@ -48,7 +50,7 @@ public class BuildFingerprintInquiryReportTask extends Task<JasperPrint>
 	private Map<Long, PersonInfo> newCriminalPersonInfoMap;
 	private Map<Integer, String> fingerprintBase64Images;
 
-	public BuildFingerprintInquiryReportTask(String inquirerId, boolean civilHit, boolean criminalHit,
+	public BuildFingerprintInquiryReportTask(String inquirerId, Integer inquiryId, boolean civilHit, boolean criminalHit,
 											 Long civilBiometricsId, Long criminalBiometricsId,
 											 Map<Long, PersonInfo> civilPersonInfoMap,
 											 Map<Integer, PersonInfo> oldCriminalPersonInfoMap,
@@ -56,6 +58,7 @@ public class BuildFingerprintInquiryReportTask extends Task<JasperPrint>
 											 Map<Integer, String> fingerprintBase64Images)
 	{
 		this.inquirerId = inquirerId;
+		this.inquiryId = inquiryId;
 		this.civilHit = civilHit;
 		this.criminalHit = criminalHit;
 		this.civilBiometricsId = civilBiometricsId;
@@ -118,6 +121,8 @@ public class BuildFingerprintInquiryReportTask extends Task<JasperPrint>
 		params.put(PARAMETER_NEW_CRIMINAL_SYSTEM_RECORDS_COUNT, newCriminalSystemRecordsCount);
 		params.put(PARAMETER_FIRST_PAGE_COUNTER, GuiUtils.getPageCounterFooterInArabic(1,
 																					 records.size() + 1));
+
+		if (inquiryId != null) { params.put(PARAMETER_INQUIRY_ID, AppUtils.localizeNumbers(String.valueOf(inquiryId))); }
 
 		if(fingerprintBase64Images != null) fingerprintBase64Images.forEach((position, fingerprintImage) ->
 		{
