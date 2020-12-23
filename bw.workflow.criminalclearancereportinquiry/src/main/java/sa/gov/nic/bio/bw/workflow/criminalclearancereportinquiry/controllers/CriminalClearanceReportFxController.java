@@ -29,6 +29,8 @@ public class CriminalClearanceReportFxController extends ContentFxControllerBase
     @FXML private Label lblReportNumber;
     @FXML private Label lblCreationDate;
     @FXML private Label lblExpireDate;
+    @FXML private Label lblWhoRequestedTheReport;
+    @FXML private Label lblPurposeOfTheReport;
     @FXML private Label lblFirstName;
     @FXML private Label lblFatherName;
     @FXML private Label lblGrandfatherName;
@@ -86,6 +88,8 @@ public class CriminalClearanceReportFxController extends ContentFxControllerBase
                     AppUtils.formatHijriGregorianDate(expireDateLong));
         }
 
+        lblWhoRequestedTheReport.setText(criminalClearanceReport.getRequestedName());
+        lblPurposeOfTheReport.setText(criminalClearanceReport.getReason());
 
         if (reportNumber != null || enrollmentTimeLong != null) {
             GuiUtils.showNode(tpEnrollmentDetails, true);

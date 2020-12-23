@@ -101,7 +101,7 @@ public class UpdatePersonInfoPaneFxController extends WizardStepFxControllerBase
         GuiUtils.applyValidatorToTextField(txtEnglishGrandfatherName, null, null, 15);
         GuiUtils.applyValidatorToTextField(txtEnglishFamilyName, null, null, 15);
         GuiUtils.applyValidatorToTextField(txtPersonId, "\\d*", "[^\\d]", 10);
-        GuiUtils.applyValidatorToTextField(txtPassportId, "\\d*", "[^\\d]", 10);
+        GuiUtils.applyValidatorToTextField(txtPassportId, null, null, 10);
 
         BooleanBinding txtFirstNameBinding = GuiUtils.textFieldBlankBinding(txtFirstName);
         BooleanBinding txtFamilyNameBinding = GuiUtils.textFieldBlankBinding(txtFamilyName);

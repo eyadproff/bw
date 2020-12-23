@@ -63,15 +63,13 @@ public final class AppUtils implements AppLogger
 	private static final String FONT_AWESOME_FILE = "/sa/gov/nic/bio/bw/core/fonts/fontawesome-webfont-4.7.0.2016.ttf";
 	private static final DateTimeFormatter DATE_TIME_FORMATTER =
 													DateTimeFormatter.ofPattern("hh:mm:ss a (Z) - EEEE dd MMMM yyyy G");
-	private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd MMMM yyyy G");
+	private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd/ MM (MMMM)/ yyyy G");
 	private static final DateTimeFormatter DATE_FORMATTER_SIMPLE = DateTimeFormatter.ofPattern("dd/MM/yyyy G");
 	private static final DateTimeFormatter DATE_FORMATTER_SIMPLE_RTL = DateTimeFormatter.ofPattern("yyyy/MM/dd G");
 	private static final DateTimeFormatter DATE_TIME_FORMATTER_SIMPLE = DateTimeFormatter.ofPattern("hh:mm:ss a - EEEE dd/MM/yyyy G");
 	private static final DateTimeFormatter DATE_TIME_FORMATTER_SIMPLE_RTL = DateTimeFormatter.ofPattern("hh:mm:ss a - EEEE yyyy/MM/dd G");
 	private static final DateTimeFormatter DATE_WTH_WEEK_DAY_FORMATTER =
-																	DateTimeFormatter.ofPattern("EEEE dd MMMM yyyy G");
-	private static final DateTimeFormatter DATE_WTH_WEEK_DAY_NUM_MONTH_FORMATTER = DateTimeFormatter.ofPattern("EEEE dd/ MM (MMMM)/ yyyy G");
-	private static final DateTimeFormatter DATE_MONTH_NAME_AND_NUM_FORMATTER = DateTimeFormatter.ofPattern("dd/ MM (MMMM)/ yyyy G");
+																	DateTimeFormatter.ofPattern("EEEE dd/ MM (MMMM)/ yyyy G");
 	private static final DateTimeFormatter FORMAL_DATE_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 	private static final DateTimeFormatter DATE_SIMPLE_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy G");
 	private static final DateTimeFormatter DATE_SIMPLE_WTH_WEEK_DAY_FORMATTER =
@@ -205,11 +203,6 @@ public final class AppUtils implements AppLogger
 		                       false);
 	}
 
-	public static String formatDate(TemporalAccessor temporal,DateTimeFormatter dateTimeFormatter)
-	{
-		return localizeNumbers(dateTimeFormatter.withLocale(Locale.getDefault()).format(temporal), Locale.getDefault(),
-				false);
-	}
     public static String formatDate(TemporalAccessor temporal ,Locale locale)
     {
         return localizeNumbers(DATE_FORMATTER.withLocale(locale).format(temporal), locale,
@@ -220,12 +213,6 @@ public final class AppUtils implements AppLogger
 	{
 		return localizeNumbers(DATE_WTH_WEEK_DAY_FORMATTER.withLocale(Locale.getDefault()).format(temporal),
 		                       Locale.getDefault(), false);
-	}
-
-	public static String formatFullDate(TemporalAccessor temporal, DateTimeFormatter dateTimeFormatter)
-	{
-		return localizeNumbers(dateTimeFormatter.withLocale(Locale.getDefault()).format(temporal),
-				Locale.getDefault(), false);
 	}
 
 	public static String formatDateSimple(TemporalAccessor temporal, boolean rtl)
@@ -447,12 +434,6 @@ public final class AppUtils implements AppLogger
 		return formatHijriGregorianDate(seconds);
 	}
 
-	public static String formatHijriGregorianDate(LocalDate localDate,boolean monthNameAndNum)
-	{
-		long seconds = gregorianDateToSeconds(localDate);
-		return formatHijriGregorianDate(seconds,AppUtils.DATE_WTH_WEEK_DAY_NUM_MONTH_FORMATTER,AppUtils.DATE_MONTH_NAME_AND_NUM_FORMATTER);
-	}
-
 	public static String formatHijriDate(LocalDate localDate)
 	{
 		long seconds = gregorianDateToSeconds(localDate);
@@ -486,28 +467,6 @@ public final class AppUtils implements AppLogger
 		else return AppUtils.formatFullDate(gregorianDate);
 	}
 
-	public static String formatHijriGregorianDate(long seconds,DateTimeFormatter dateTimeFormatterWTHWeekDay,DateTimeFormatter dateTimeFormatter)
-	{
-		HijrahDate hijriDate = null;
-
-		try
-		{
-			hijriDate = AppUtils.secondsToHijriDate(seconds);
-		}
-		catch(DateTimeException e)
-		{
-			// thrown in case of "Hijrah date out of range"
-		}
-
-		LocalDate gregorianDate = AppUtils.secondsToGregorianDate(seconds);
-
-		if(hijriDate != null)
-		{
-			return AppUtils.formatFullDate(hijriDate ,dateTimeFormatterWTHWeekDay) + " - " + AppUtils.formatDate(gregorianDate,dateTimeFormatter);
-		}
-		else return AppUtils.formatFullDate(gregorianDate,dateTimeFormatter);
-	}
-	
 	public static String formatGregorianDate(long seconds)
 	{
 		LocalDate localDate = AppUtils.secondsToGregorianDate(seconds);

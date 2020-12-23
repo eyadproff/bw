@@ -231,4 +231,20 @@ public class RegisteringCitizenPaneFxController extends WizardStepFxControllerBa
 
         continueWorkflow();
     }
+
+    @FXML
+    public void onStartOverButtonClicked(ActionEvent actionEvent)
+    {
+        if (citizenRegistrationStatus != null && citizenRegistrationStatus == CheckCitizenRegistrationWorkflowTask.Status.SUCCESS)
+        {
+            startOver();
+        }
+        String headerText = Context.getCoreFxController().getResourceBundle()
+                .getString("startingOver.confirmation.header");
+        String contentText = Context.getCoreFxController().getResourceBundle()
+                .getString("startingOver.confirmation.message");
+        boolean confirmed = Context.getCoreFxController().showConfirmationDialogAndWait(headerText, contentText);
+
+        if(confirmed) startOver();
+    }
 }

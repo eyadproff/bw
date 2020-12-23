@@ -28,6 +28,11 @@
                 <CopiableLabel fx:id="lblCreationDate" GridPane.rowIndex="2" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
                 <Label text="%label.expireDate" GridPane.rowIndex="3" GridPane.columnIndex="0" styleClass="bold-label"/>
                 <CopiableLabel fx:id="lblExpireDate" GridPane.rowIndex="3" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
+                <Label text="%label.whoRequestedTheReport" GridPane.rowIndex="4" GridPane.columnIndex="0" styleClass="bold-label"/>
+                <CopiableLabel fx:id="lblWhoRequestedTheReport" GridPane.rowIndex="4" GridPane.hgrow="ALWAYS" GridPane.columnIndex="1" />
+                <Label text="%label.purposeOfTheReport" GridPane.rowIndex="5" GridPane.columnIndex="0" styleClass="bold-label"/>
+                <CopiableLabel fx:id="lblPurposeOfTheReport" GridPane.rowIndex="5" GridPane.hgrow="ALWAYS" GridPane.columnIndex="1" />
+
             </GridPane>
         </VBox>
     </TitledPane>

@@ -4,7 +4,6 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ProgressIndicator;
-import javafx.scene.control.TextField;
 import javafx.stage.FileChooser;
 import net.sf.jasperreports.engine.JasperPrint;
 import sa.gov.nic.bio.bw.core.Context;
@@ -15,6 +14,7 @@ import sa.gov.nic.bio.bw.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.core.workflow.Input;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.PrintReportTask;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.SaveReportAsPdfTask;
+import sa.gov.nic.bio.bw.workflow.commons.ui.CopiableLabel;
 import sa.gov.nic.bio.bw.workflow.registercriminalclearancereport.beans.CriminalClearanceReport;
 import sa.gov.nic.bio.bw.workflow.registercriminalclearancereport.tasks.BuildCriminalClearanceReportTask;
 import sa.gov.nic.bio.bw.workflow.registercriminalclearancereport.utils.RegisterCriminalClearanceReportErrorCodes;
@@ -33,7 +33,7 @@ public class ShowReportPaneFxController extends WizardStepFxControllerBase {
     @Input(alwaysRequired = true) private CriminalClearanceReport criminalClearanceReport;
     @Input(alwaysRequired = true) private HashMap<String, String> criminalClearanceResponse;
 
-    @FXML private TextField txtReportNumber;
+    @FXML private CopiableLabel txtReportNumber;
     @FXML private ProgressIndicator piProgress;
     @FXML private Button btnStartOver;
     @FXML private Button btnPrintReport;

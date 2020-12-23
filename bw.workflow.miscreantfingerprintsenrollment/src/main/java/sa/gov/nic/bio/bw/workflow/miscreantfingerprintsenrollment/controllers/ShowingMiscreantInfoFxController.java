@@ -54,7 +54,7 @@ public class ShowingMiscreantInfoFxController extends WizardStepFxControllerBase
 		GuiUtils.setLabelText(lblNationality, normalizedMiscreantInfo.getNationality()).orElse(consumer);
 		GuiUtils.setLabelText(lblOccupation, normalizedMiscreantInfo.getOccupation()).orElse(consumer);
 		GuiUtils.setLabelText(lblBirthPlace, normalizedMiscreantInfo.getBirthPlace()).orElse(consumer);
-		GuiUtils.setLabelText(lblBirthDate, true, normalizedMiscreantInfo.getBirthDate()).orElse(consumer);
+		GuiUtils.setLabelText(lblBirthDate, normalizedMiscreantInfo.getBirthDate()).orElse(consumer);
 		
 		infoPane.autosize();
 		btnConfirmMiscreantInfo.requestFocus();

@@ -1,16 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ProgressIndicator?>
-<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.*?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.*?>
+<?import sa.gov.nic.bio.bw.workflow.commons.ui.CopiableLabel?>
 <BorderPane xmlns="http://javafx.com/javafx/11" xmlns:fx="http://javafx.com/fxml/1"
             fx:id="rootPane" stylesheets="@../css/style.css"
             fx:controller="sa.gov.nic.bio.bw.workflow.registercriminalclearancereport.controllers.ShowReportPaneFxController">
@@ -23,8 +18,8 @@
                 <Label text="%label.successCriminalClearanceReportRegistration"/>
             </VBox>
             <GridPane alignment="CENTER" vgap="5.0" hgap="5.0">
-                <Label text="%label.reportNumber" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
-                <TextField fx:id="txtReportNumber" editable="false" prefColumnCount="10" focusTraversable="false" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+                <Label text="%label.reportNumber" GridPane.rowIndex="0" GridPane.columnIndex="0" styleClass="bold-label"/>
+                <CopiableLabel fx:id="txtReportNumber" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
             </GridPane>
         </VBox>
     </center>

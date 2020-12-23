@@ -55,10 +55,8 @@ public class ShowReportDialogFxController extends ContentFxControllerBase {
     private FileChooser fileChooser = new FileChooser();
     private AtomicReference<JasperPrint> jasperPrint = new AtomicReference<>();
 
-    //	private Long reportNumber;
     private CriminalClearanceReport criminalClearanceReport;
     private Map<Integer, String> fingerprintBase64Images;
-    //    private Map<Integer, String> palmBase64Images;
 
     @Override
     protected void initialize() {

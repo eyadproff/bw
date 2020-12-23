@@ -169,13 +169,16 @@ public class InquiryByFingerprintsResultPaneFxController extends WizardStepFxCon
 		
 		civilHit = status == Status.HIT && civilBiometricsId != null;
 		criminalHit = status == Status.HIT && criminalBiometricsId != null;
-		
+
+		// Never select Id start with 800
 		if(civilPersonInfoMap != null)
-		{
+		{	// Ignore deportee Id (Id start with 9) unless there is no other
+			boolean ignoreDeporteeId = civilPersonInfoMap.keySet().stream().anyMatch(x -> (!String.valueOf(x).startsWith("800") && !String.valueOf(x).startsWith("9")));
 			for(Long personId : civilPersonInfoMap.keySet())
 			{
 				selectedCivilPersonIdIndex++;
-				if(String.valueOf(personId).startsWith("800")) continue;
+				if(String.valueOf(personId).startsWith("800") ) continue;
+				if(String.valueOf(personId).startsWith("9") && ignoreDeporteeId) continue;
 				selectedCivilPersonId = personId;
 				break;
 			}
@@ -475,13 +478,13 @@ public class InquiryByFingerprintsResultPaneFxController extends WizardStepFxCon
 		GuiUtils.setLabelText(lblNationality, normalizedPersonInfo.getNationality()).orElse(consumer);
 		GuiUtils.setLabelText(lblOccupation, normalizedPersonInfo.getOccupation()).orElse(consumer);
 		GuiUtils.setLabelText(lblBirthPlace, normalizedPersonInfo.getBirthPlace()).orElse(consumer);
-		GuiUtils.setLabelText(lblBirthDate,true, normalizedPersonInfo.getBirthDate()).orElse(consumer);
+		GuiUtils.setLabelText(lblBirthDate, normalizedPersonInfo.getBirthDate()).orElse(consumer);
 		GuiUtils.setLabelText(lblPersonId, normalizedPersonInfo.getPersonId()).orElse(consumer);
 		GuiUtils.setLabelText(lblPersonType, normalizedPersonInfo.getPersonType()).orElse(consumer);
 		GuiUtils.setLabelText(lblDocumentId, normalizedPersonInfo.getDocumentId()).orElse(consumer);
 		GuiUtils.setLabelText(lblDocumentType, normalizedPersonInfo.getDocumentType()).orElse(consumer);
-		GuiUtils.setLabelText(lblDocumentIssuanceDate, true, normalizedPersonInfo.getDocumentIssuanceDate()).orElse(consumer);
-		GuiUtils.setLabelText(lblDocumentExpiryDate, true, normalizedPersonInfo.getDocumentExpiryDate()).orElse(consumer);
+		GuiUtils.setLabelText(lblDocumentIssuanceDate, normalizedPersonInfo.getDocumentIssuanceDate()).orElse(consumer);
+		GuiUtils.setLabelText(lblDocumentExpiryDate, normalizedPersonInfo.getDocumentExpiryDate()).orElse(consumer);
 		
 		infoPane.autosize();
 		if(btnConfirmPersonInformation != null) btnConfirmPersonInformation.requestFocus();

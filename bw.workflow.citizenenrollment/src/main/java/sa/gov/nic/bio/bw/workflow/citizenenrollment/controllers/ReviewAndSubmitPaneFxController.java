@@ -46,7 +46,7 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase 
     @Input(alwaysRequired = true)
     private List<Integer> missingFingerprints;
     @Input
-    private List<Finger> combinedFingerprints;
+    private List<Finger> segmentedFingerprints;
     @Input
     private String capturedRightIrisBase64;
     @Input
@@ -119,7 +119,7 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase 
 
         citizenEnrollmentInfo = new CitizenEnrollmentInfo(personInfo.getSamisId(),
                 normalizedPersonInfo.getPersonType().getCode(),
-                combinedFingerprints, missingFingerprints, facePhotoBase64,
+                segmentedFingerprints, missingFingerprints, facePhotoBase64,
                 personInfo.getBirthDate(), personInfo.getGender(),
                 capturedRightIrisBase64, capturedLeftIrisBase64);
 

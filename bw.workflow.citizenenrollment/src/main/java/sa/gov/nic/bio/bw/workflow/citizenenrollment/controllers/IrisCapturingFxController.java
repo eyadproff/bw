@@ -291,7 +291,7 @@ public class IrisCapturingFxController extends WizardStepFxControllerBase {
             GuiUtils.showNode(btnCaptureIris, false);
             GuiUtils.showNode(lblStatus, true);
             lblStatus.setText(resources.getString("label.status.irisScannerNotInitialized"));
-            deviceManagerGadgetPaneController.initializeIrisScanner();
+//            deviceManagerGadgetPaneController.initializeIrisScanner();
         }
         else {
             GuiUtils.showNode(btnCaptureIris, false);

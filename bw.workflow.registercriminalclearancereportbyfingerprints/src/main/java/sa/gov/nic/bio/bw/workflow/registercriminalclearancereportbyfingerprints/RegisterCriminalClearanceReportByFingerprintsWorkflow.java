@@ -241,12 +241,12 @@ public class RegisterCriminalClearanceReportByFingerprintsWorkflow extends Wizar
 
                 passData(SlapFingerprintsCapturingFxController.class, ReviewAndSubmitPaneFxController.class,
                         "fingerprintBase64Images");
-                passData(SlapFingerprintsCapturingFxController.class, ReviewAndSubmitPaneFxController.class,
-                        "combinedFingerprints");
+                passData(SlapFingerprintsCapturingFxController.class, "segmentedFingerprints", ReviewAndSubmitPaneFxController.class,
+                        "fingerprints");
                 passData(SlapFingerprintsCapturingFxController.class, ReviewAndSubmitPaneFxController.class,
                         "missingFingerprints");
 
-                //                passData(FaceCapturingFxController.class,ReviewAndSubmitPaneFxController.class,"facePhotoBase64");
+                passData(FaceCapturingFxController.class, ReviewAndSubmitPaneFxController.class, "facePhotoBase64");
                 passData(UpdatePersonInfoPaneFxController.class, ReviewAndSubmitPaneFxController.class,
                         "firstName", "fatherName", "grandfatherName",
                         "familyName", "englishFirstName", "englishFatherName", "englishGrandfatherName", "englishFamilyName",

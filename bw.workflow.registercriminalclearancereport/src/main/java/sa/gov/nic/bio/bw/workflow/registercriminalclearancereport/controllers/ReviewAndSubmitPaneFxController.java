@@ -40,7 +40,7 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase 
     @Input(alwaysRequired = true)
     private String purposeOfTheReport;
     @Input(alwaysRequired = true)
-    private List<Finger> combinedFingerprints; // segmented + unsegmented
+    private List<Finger> fingerprints;
     @Input(alwaysRequired = true)
     private List<Integer> missingFingerprints;
 
@@ -146,7 +146,7 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase 
         GuiUtils.setLabelText(true, lblEnglishOtherName, englishGrandfatherName).orElse(consumer);
         GuiUtils.setLabelText(true, lblEnglishFamilyName, englishFamilyName).orElse(consumer);
         GuiUtils.setLabelText(lblNationality, nationality).orElse(consumer);
-        GuiUtils.setLabelText(lblBirthDate, true, birthDate).orElse(consumer);
+        GuiUtils.setLabelText(lblBirthDate, birthDate).orElse(consumer);
         GuiUtils.setLabelText(lblPersonId, personId).orElse(consumer);
         GuiUtils.setLabelText(lblPassportId, passportId).orElse(consumer);
 
@@ -178,7 +178,7 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase 
             nationalityInteger = nationality.getCode();
         }
 
-        criminalClearanceReport = new CriminalClearanceReport(personId, name, nationalityInteger, facePhotoBase64, combinedFingerprints, missingFingerprints,
+        criminalClearanceReport = new CriminalClearanceReport(personId, name, nationalityInteger, facePhotoBase64, fingerprints, missingFingerprints,
                 dateOfBirth, dateOfBirthHijriString, whoRequestedTheReport, purposeOfTheReport);
 
         if (passportId != null) { criminalClearanceReport.setPassportNumber(passportId); }

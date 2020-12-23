@@ -165,7 +165,7 @@ public class RegisterCriminalClearanceReportWorkflow extends WizardWorkflowBase 
                                 "missingFingerprints");
                     }
                     else {
-                        passData(SlapFingerprintsCapturingFxController.class, "combinedFingerprints", FingerprintInquiryCriminalWorkflowTask.class,
+                        passData(SlapFingerprintsCapturingFxController.class, "segmentedFingerprints", FingerprintInquiryCriminalWorkflowTask.class,
                                 "fingerprints");
 
                         passData(SlapFingerprintsCapturingFxController.class, FingerprintInquiryCriminalWorkflowTask.class,
@@ -212,8 +212,8 @@ public class RegisterCriminalClearanceReportWorkflow extends WizardWorkflowBase 
                     passData(SlapFingerprintsCapturingFxController.class, ReviewAndSubmitPaneFxController.class,
                             "fingerprintBase64Images");
 
-                    passData(SlapFingerprintsCapturingFxController.class, ReviewAndSubmitPaneFxController.class,
-                            "combinedFingerprints");
+                    passData(SlapFingerprintsCapturingFxController.class,"segmentedFingerprints", ReviewAndSubmitPaneFxController.class,
+                            "fingerprints");
 
                     passData(SlapFingerprintsCapturingFxController.class, ReviewAndSubmitPaneFxController.class,
                             "missingFingerprints");
@@ -225,7 +225,7 @@ public class RegisterCriminalClearanceReportWorkflow extends WizardWorkflowBase 
 
                     passData(FetchingFingerprintsWorkflowTask.class, "fingerprints",
                             ReviewAndSubmitPaneFxController.class,
-                            "combinedFingerprints");
+                            "fingerprints");
 
                     passData(FetchingMissingFingerprintsWorkflowTask.class, ReviewAndSubmitPaneFxController.class,
                             "missingFingerprints");
