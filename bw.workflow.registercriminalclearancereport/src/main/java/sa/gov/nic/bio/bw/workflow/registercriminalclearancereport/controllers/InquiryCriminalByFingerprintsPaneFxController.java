@@ -15,7 +15,6 @@ import sa.gov.nic.bio.bw.core.utils.FxmlFile;
 import sa.gov.nic.bio.bw.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.core.workflow.Input;
 import sa.gov.nic.bio.bw.workflow.commons.beans.WatchListRecord;
-import sa.gov.nic.bio.bw.workflow.commons.ui.CopiableLabel;
 import sa.gov.nic.bio.bw.workflow.registercriminalclearancereport.tasks.FingerprintInquiryCriminalStatusCheckerWorkflowTask.Status;
 
 import java.util.List;
@@ -41,7 +40,7 @@ public class InquiryCriminalByFingerprintsPaneFxController extends WizardStepFxC
     @FXML private Label lblProgress;
     @FXML private Label lblCanceling;
     @FXML private Label lblCancelled;
-    @FXML private CopiableLabel txtCriminalBiometricsId;
+    @FXML private Label txtCriminalBiometricsId;
     @FXML private Button btnCancel;
     @FXML private Button btnRetry;
     @FXML private Button btnStartOver;

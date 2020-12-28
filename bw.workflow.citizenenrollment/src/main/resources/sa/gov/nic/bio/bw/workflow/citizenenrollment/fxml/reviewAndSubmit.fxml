@@ -40,21 +40,21 @@
                                             <ColumnConstraints />
                                         </columnConstraints>
                                         <Label styleClass="bold-label" text="%label.firstName" GridPane.columnIndex="0" GridPane.rowIndex="0" />
-                                        <CopiableLabel fx:id="lblFirstName" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="0" />
+                                        <Label fx:id="lblFirstName" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="0" />
                                         <Label styleClass="bold-label" text="%label.secondName" GridPane.columnIndex="2" GridPane.rowIndex="0" />
-                                        <CopiableLabel fx:id="lblSecondName" GridPane.columnIndex="3" GridPane.hgrow="ALWAYS" GridPane.rowIndex="0" />
+                                        <Label fx:id="lblSecondName" GridPane.columnIndex="3" GridPane.hgrow="ALWAYS" GridPane.rowIndex="0" />
                                         <Label styleClass="bold-label" text="%label.otherName" GridPane.columnIndex="0" GridPane.rowIndex="1" />
-                                        <CopiableLabel fx:id="lblOtherName" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" />
+                                        <Label fx:id="lblOtherName" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" />
                                         <Label styleClass="bold-label" text="%label.familyName" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-                                        <CopiableLabel fx:id="lblFamilyName" GridPane.columnIndex="3" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" />
+                                        <Label fx:id="lblFamilyName" GridPane.columnIndex="3" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" />
                                         <Label styleClass="bold-label" text="%label.nationality" GridPane.columnIndex="0" GridPane.rowIndex="2" />
-                                        <CopiableLabel fx:id="lblNationality" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2" />
+                                        <Label fx:id="lblNationality" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2" />
                                         <Label styleClass="bold-label" text="%label.gender" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-                                        <CopiableLabel fx:id="lblGender" GridPane.columnIndex="3" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2" />
+                                        <Label fx:id="lblGender" GridPane.columnIndex="3" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2" />
                                         <Label styleClass="bold-label" text="%label.birthPlace" GridPane.columnIndex="0" GridPane.rowIndex="3" />
-                                        <CopiableLabel fx:id="lblBirthPlace" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="3" />
+                                        <Label fx:id="lblBirthPlace" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="3" />
                                         <Label styleClass="bold-label" text="%label.birthDate" GridPane.columnIndex="2" GridPane.rowIndex="3" />
-                                        <CopiableLabel fx:id="lblBirthDate" GridPane.columnIndex="3" GridPane.hgrow="ALWAYS" GridPane.rowIndex="3" />
+                                        <Label fx:id="lblBirthDate" GridPane.columnIndex="3" GridPane.hgrow="ALWAYS" GridPane.rowIndex="3" />
                               <rowConstraints>
                                  <RowConstraints />
                                  <RowConstraints />

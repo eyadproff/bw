@@ -1467,14 +1467,15 @@ public class SlapFingerprintsCapturingFxController extends WizardStepFxControlle
 		GuiUtils.showNode(btnAcceptBestAttemptFingerprints, false);
 		
 		List<Fingerprint> bestAttemptFingerprints = findBestAttemptFingerprints();
-		currentSlapAttempts.clear();
+//		currentSlapAttempts.clear();
 		
 		List<Integer> nonSkippedFingerprintPositions = new ArrayList<>(); // TODO: ???
 		bestAttemptFingerprints.forEach(fp -> nonSkippedFingerprintPositions.add(fp.getDmFingerData().getPosition()));
 		
 		showSlapFingerprints(bestAttemptFingerprints, null, null, null,
 		                    true);
-		
+		currentSlapAttempts.clear();
+
 		acceptFingerprintsAndGoNext();
 	}
 	
@@ -1857,7 +1858,7 @@ public class SlapFingerprintsCapturingFxController extends WizardStepFxControlle
 		attachFingerprintResultTooltip(titleRegion, titledPane,
 		                               fingerprint.getDmFingerData().getNfiqQuality(),
 		                               fingerprint.getDmFingerData().getMinutiaeCount(),
-		                               fingerprint.getDmFingerData().getIntensity(),
+		                               fingerprint.getDmFingerData().getIntensity(),currentSlapAttempts.size()+1,
 		                               fingerprint.isAcceptableFingerprintNfiq(),
 		                               fingerprint.isAcceptableFingerprintMinutiaeCount(),
 		                               fingerprint.isAcceptableFingerprintImageIntensity(),
@@ -1906,7 +1907,7 @@ public class SlapFingerprintsCapturingFxController extends WizardStepFxControlle
 	}
 	
 	private void attachFingerprintResultTooltip(Node sourceNode, Node targetNode, int nfiq, int minutiaeCount,
-	                                            int imageIntensity, boolean acceptableNfiq,
+	                                            int imageIntensity, int NumberOfTries, boolean acceptableNfiq,
 	                                            boolean acceptableMinutiaeCount, boolean acceptableImageIntensity,
 	                                            boolean duplicated)
 	{
@@ -1919,6 +1920,7 @@ public class SlapFingerprintsCapturingFxController extends WizardStepFxControlle
 		Label lblMinutiaeCount = new Label(resources.getString("label.tooltip.minutiaeCount"));
 		Label lblIntensity = new Label(resources.getString("label.tooltip.imageIntensity"));
 		Label lblDuplicatedFingerprint = new Label(resources.getString("label.tooltip.duplicatedFinger"));
+		Label lblNTry = new Label(resources.getString("label.tooltip.ntry"));
 		
 		Image successImage = new Image(CommonImages.ICON_SUCCESS_16PX.getAsInputStream());
 		Image warningImage = new Image(CommonImages.ICON_WARNING_16PX.getAsInputStream());
@@ -1933,34 +1935,41 @@ public class SlapFingerprintsCapturingFxController extends WizardStepFxControlle
 		gridPane.add(lblMinutiaeCount, 0, 1);
 		gridPane.add(lblIntensity, 0, 2);
 		gridPane.add(lblDuplicatedFingerprint, 0, 3);
+		gridPane.add(lblNTry, 0, 4);
 		
 		String sNfiq = AppUtils.localizeNumbers(String.valueOf(nfiq));
 		String sMinutiaeCount = AppUtils.localizeNumbers(String.valueOf(minutiaeCount));
 		String sIntensity = AppUtils.localizeNumbers(String.valueOf(imageIntensity)) + "%";
 		String sDuplicatedFingerprint = resources.getString(duplicated ? "label.tooltip.yes" : "label.tooltip.no");
-		
+		String sNTry = AppUtils.localizeNumbers(String.valueOf(NumberOfTries));
+
 		TextField txtNfiq = new TextField(sNfiq);
 		TextField txtMinutiaeCount = new TextField(sMinutiaeCount);
 		TextField txtIntensity = new TextField(sIntensity);
 		TextField txtDuplicatedFingerprint = new TextField(sDuplicatedFingerprint);
+		TextField txtNTry = new TextField(sNTry);
 		
 		txtNfiq.setFocusTraversable(false);
 		txtMinutiaeCount.setFocusTraversable(false);
 		txtIntensity.setFocusTraversable(false);
 		txtDuplicatedFingerprint.setFocusTraversable(false);
+		txtNTry.setFocusTraversable(false);
 		txtNfiq.setEditable(false);
 		txtMinutiaeCount.setEditable(false);
 		txtIntensity.setEditable(false);
 		txtDuplicatedFingerprint.setEditable(false);
+		txtNTry.setEditable(false);
 		txtNfiq.setPrefColumnCount(3);
 		txtMinutiaeCount.setPrefColumnCount(3);
 		txtIntensity.setPrefColumnCount(3);
 		txtDuplicatedFingerprint.setPrefColumnCount(3);
+		txtNTry.setPrefColumnCount(3);
 		
 		gridPane.add(txtNfiq, 1, 0);
 		gridPane.add(txtMinutiaeCount, 1, 1);
 		gridPane.add(txtIntensity, 1, 2);
 		gridPane.add(txtDuplicatedFingerprint, 1, 3);
+		gridPane.add(txtNTry, 1, 4);
 		
 		PopOver popOver = new PopOver(gridPane);
 		popOver.setDetachable(false);

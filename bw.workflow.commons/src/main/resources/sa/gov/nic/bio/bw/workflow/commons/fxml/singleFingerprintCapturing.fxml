@@ -88,7 +88,7 @@
                                 </imageView>
                             </ImageViewPane>
                         </StackPane>
-                        <Label fx:id="lblCapturedFingerprint" alignment="CENTER" maxWidth="Infinity" managed="false" visible="false"/>
+<!--                        <Label fx:id="lblCapturedFingerprint" alignment="CENTER" maxWidth="Infinity" managed="false" visible="false"/>-->
                     </VBox>
                 </FourStateTitledPane>
             </SplitPane>

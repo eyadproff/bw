@@ -45,72 +45,41 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase 
     private List<Finger> slapFingerprints;
     @Input(alwaysRequired = true)
     private List<Integer> missingFingerprints;
-    @Input
-    private List<Finger> segmentedFingerprints;
-    @Input
-    private String capturedRightIrisBase64;
-    @Input
-    private String capturedLeftIrisBase64;
-    @Input
-    private Boolean IsPossibleFaceImageExists;
+    @Input private List<Finger> combinedFingerprints;
+    @Input private String capturedRightIrisBase64;
+    @Input private String capturedLeftIrisBase64;
+    @Input private Boolean IsPossibleFaceImageExists;
 
-    @Output
-    private CitizenEnrollmentInfo citizenEnrollmentInfo;
+    @Output private CitizenEnrollmentInfo citizenEnrollmentInfo;
 
-    @FXML
-    private VBox paneImage;
-    @FXML
-    private ImageViewPane paneImageView;
-    @FXML
-    private ImageView ivPersonPhoto;
-    @FXML
-    private Label lblFirstName;
-    @FXML
-    private Label lblSecondName;
-    @FXML
-    private Label lblOtherName;
-    @FXML
-    private Label lblFamilyName;
-    @FXML
-    private Label lblNationality;
-    @FXML
-    private Label lblGender;
-    @FXML
-    private Label lblBirthPlace;
-    @FXML
-    private Label lblBirthDate;
-    @FXML
-    private ImageView ivRightThumb;
-    @FXML
-    private ImageView ivRightIndex;
-    @FXML
-    private ImageView ivRightMiddle;
-    @FXML
-    private ImageView ivRightRing;
-    @FXML
-    private ImageView ivRightLittle;
-    @FXML
-    private ImageView ivLeftLittle;
-    @FXML
-    private ImageView ivLeftRing;
-    @FXML
-    private ImageView ivLeftMiddle;
-    @FXML
-    private ImageView ivLeftIndex;
-    @FXML
-    private ImageView ivLeftThumb;
+    @FXML private VBox paneImage;
+    @FXML private ImageViewPane paneImageView;
+    @FXML private ImageView ivPersonPhoto;
+    @FXML private Label lblFirstName;
+    @FXML private Label lblSecondName;
+    @FXML private Label lblOtherName;
+    @FXML private Label lblFamilyName;
+    @FXML private Label lblNationality;
+    @FXML private Label lblGender;
+    @FXML private Label lblBirthPlace;
+    @FXML private Label lblBirthDate;
+    @FXML private ImageView ivRightThumb;
+    @FXML private ImageView ivRightIndex;
+    @FXML private ImageView ivRightMiddle;
+    @FXML private ImageView ivRightRing;
+    @FXML private ImageView ivRightLittle;
+    @FXML private ImageView ivLeftLittle;
+    @FXML private ImageView ivLeftRing;
+    @FXML private ImageView ivLeftMiddle;
+    @FXML private ImageView ivLeftIndex;
+    @FXML private ImageView ivLeftThumb;
 
-    @FXML
-    private ImageView ivRightIris;
-    @FXML
-    private ImageView ivLeftIris;
+    @FXML private ImageView ivRightIris;
+    @FXML private ImageView ivLeftIris;
 
-    @FXML
-    private ProgressIndicator piProgress;
-    @FXML
-    private Button btnPrevious;
-    @FXML
-    private Button btnSubmit;
+    @FXML private ProgressIndicator piProgress;
+    @FXML private Button btnPrevious;
+    @FXML private Button btnSubmit;
 
 
     @Override
@@ -119,7 +88,7 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase 
 
         citizenEnrollmentInfo = new CitizenEnrollmentInfo(personInfo.getSamisId(),
                 normalizedPersonInfo.getPersonType().getCode(),
-                segmentedFingerprints, missingFingerprints, facePhotoBase64,
+                combinedFingerprints, missingFingerprints, facePhotoBase64,
                 personInfo.getBirthDate(), personInfo.getGender(),
                 capturedRightIrisBase64, capturedLeftIrisBase64);
 

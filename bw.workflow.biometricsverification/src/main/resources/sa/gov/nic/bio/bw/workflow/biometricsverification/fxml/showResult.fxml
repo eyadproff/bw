@@ -37,31 +37,31 @@
                     </HBox>
                     <HBox spacing="5">
                         <Label styleClass="bold-text" text="%label.firstName" />
-                              <CopiableLabel fx:id="lblFirstName" text="%label.notAvailable"/>
+                              <Label fx:id="lblFirstName" text="%label.notAvailable"/>
                     </HBox>
                     <HBox spacing="5">
                         <Label styleClass="bold-text" text="%label.fatherName" />
-                              <CopiableLabel fx:id="lblFatherName" text="%label.notAvailable"/>
+                              <Label fx:id="lblFatherName" text="%label.notAvailable"/>
                     </HBox>
                     <HBox spacing="5">
                         <Label styleClass="bold-text" text="%label.grandfatherName" />
-                              <CopiableLabel fx:id="lblGrandfatherName" text="%label.notAvailable"/>
+                              <Label fx:id="lblGrandfatherName" text="%label.notAvailable"/>
                     </HBox>
                     <HBox spacing="5">
                         <Label styleClass="bold-text" text="%label.familyName" />
-                              <CopiableLabel fx:id="lblFamilyName" text="%label.notAvailable"/>
+                              <Label fx:id="lblFamilyName" text="%label.notAvailable"/>
                     </HBox>
                     <HBox spacing="5">
                         <Label styleClass="bold-text" text="%label.gender" />
-                              <CopiableLabel fx:id="lblGender" text="%label.notAvailable"/>
+                              <Label fx:id="lblGender" text="%label.notAvailable"/>
                     </HBox>
                     <HBox spacing="5">
                         <Label styleClass="bold-text" text="%label.nationality" />
-                              <CopiableLabel fx:id="lblNationality" text="%label.notAvailable"/>
+                              <Label fx:id="lblNationality" text="%label.notAvailable"/>
                     </HBox>
                     <HBox spacing="5">
                         <Label styleClass="bold-text" text="%label.outOfKingdom" />
-                              <CopiableLabel fx:id="lblOutOfKingdom" text="%label.notAvailable"/>
+                              <Label fx:id="lblOutOfKingdom" text="%label.notAvailable"/>
                     </HBox>
                 </VBox>
 

@@ -83,7 +83,7 @@ public class BuildVerificationReportTask extends Task<JasperPrint>
 			params.put(CAPTURED_FACE_IMAGE, new ByteArrayInputStream(bytes));
 		}
 
-		params.put(DATE, AppUtils.formatHijriGregorianDateTime(Instant.now().getEpochSecond()));
+		params.put(DATE, AppUtils.formatHijriDateSimple(Instant.now().getEpochSecond(), false));
 
 		StringBuilder sb = new StringBuilder();
 
@@ -136,19 +136,19 @@ public class BuildVerificationReportTask extends Task<JasperPrint>
 
 		LocalDate issDate =normalizedPersonInfo.getDocumentIssuanceDate();
 		if(issDate!=null) {
-			Long subjDocIssDate = AppUtils.gregorianDateToSeconds(issDate);
+			long subjDocIssDate = AppUtils.gregorianDateToSeconds(issDate);
 			params.put(PARAMETER_DOCUMENT_ISSUANCE_DATE,
 					AppUtils.formatHijriGregorianDate(subjDocIssDate));
 		}
 
 		LocalDate expDate=normalizedPersonInfo.getDocumentExpiryDate();
 		if(expDate!=null) {
-			Long subjDocExpDate = AppUtils.gregorianDateToSeconds(expDate);
+			long subjDocExpDate = AppUtils.gregorianDateToSeconds(expDate);
 			params.put(PARAMETER_DOCUMENT_EXPIRY_DATE,
 					AppUtils.formatHijriGregorianDate(subjDocExpDate));
 		}
 
-		Long subjBirthDate = AppUtils.gregorianDateToSeconds(normalizedPersonInfo.getBirthDate());
+		long subjBirthDate = AppUtils.gregorianDateToSeconds(normalizedPersonInfo.getBirthDate());
 		params.put(PARAMETER_BIRTH_OF_DATE, AppUtils.formatHijriGregorianDate(subjBirthDate));
 
 		params.put(PARAMETER_BIRTH_PLACE, AppUtils.localizeNumbers(normalizedPersonInfo.getBirthPlace(),

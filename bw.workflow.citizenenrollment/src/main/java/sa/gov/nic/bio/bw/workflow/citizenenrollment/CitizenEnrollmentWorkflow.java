@@ -155,7 +155,7 @@ public class CitizenEnrollmentWorkflow extends WizardWorkflowBase {
                 passData(SlapFingerprintsCapturingFxController.class, ReviewAndSubmitPaneFxController.class,
                         "slapFingerprints");
                 passData(SlapFingerprintsCapturingFxController.class, ReviewAndSubmitPaneFxController.class,
-                        "segmentedFingerprints");
+                        "combinedFingerprints");
                 //change
                 passData(SlapFingerprintsCapturingFxController.class, ReviewAndSubmitPaneFxController.class,
                         "missingFingerprints");
