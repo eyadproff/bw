@@ -1,25 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.CheckBox?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ProgressIndicator?>
-<?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.control.SplitPane?>
-<?import javafx.scene.control.TitledPane?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.StackPane?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.shape.SVGPath?>
-<?import sa.gov.nic.bio.bw.workflow.commons.ui.AutoScalingStackPane?>
-<?import sa.gov.nic.bio.bw.workflow.commons.ui.FourStateTitledPane?>
-<?import sa.gov.nic.bio.bw.workflow.commons.ui.ImageViewPane?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
+<?import org.controlsfx.glyphfont.Glyph?>
+<?import sa.gov.nic.bio.bw.workflow.commons.ui.*?>
 <BorderPane xmlns="http://javafx.com/javafx/11" xmlns:fx="http://javafx.com/fxml/1"
             fx:id="rootPane" fx:controller="sa.gov.nic.bio.bw.workflow.commons.controllers.SlapFingerprintsCapturingFxController"
             stylesheets="@../css/style.css">
@@ -408,13 +395,40 @@
         </VBox>
     </center>
     <bottom>
-        <HBox alignment="CENTER" spacing="10">
-            <padding>
-                <Insets bottom="10"/>
-            </padding>
-            <Button fx:id="btnStartOver" text="%button.startOver" visible="false" managed="false" onAction="#onStartOverButtonClicked"/>
-            <Button fx:id="btnPrevious" text="%button.previous" onAction="#onPreviousButtonClicked"/>
-            <Button fx:id="btnNext" text="%button.next" onAction="#onNextButtonClicked"/>
-        </HBox>
+        <BorderPane>
+            <center>
+                <HBox alignment="CENTER" spacing="10">
+                    <padding>
+                        <Insets bottom="10"/>
+                    </padding>
+                    <Button fx:id="btnStartOver" text="%button.startOver" visible="false" managed="false" onAction="#onStartOverButtonClicked"/>
+                    <Button fx:id="btnPrevious" text="%button.previous" onAction="#onPreviousButtonClicked"/>
+                    <Button fx:id="btnNext" text="%button.next" onAction="#onNextButtonClicked"/>
+                </HBox>
+            </center>
+            <right>
+                <HBox alignment="CENTER" spacing="10">
+                    <padding>
+                        <Insets bottom="10" right="10" left="10"/>
+                    </padding>
+                    <Button fx:id="btnPrintRecord" onAction="#onPrintRecordButtonClicked" visible="false" managed="false">
+                        <tooltip>
+                            <Tooltip showDuration="0.9s" text="%button.printFingerprintNumOfTries"/>
+                        </tooltip>
+                        <graphic>
+                            <Glyph fontFamily="FontAwesome" icon="print"/>
+                        </graphic>
+                    </Button>
+                    <Button fx:id="btnSaveRecordAsPDF" onAction="#onSaveRecordAsPdfButtonClicked" visible="false" managed="false">
+                        <tooltip>
+                            <Tooltip showDuration="0.9s" text="%button.saveFingerprintNumOfTriesAsPDF"/>
+                        </tooltip>
+                        <graphic>
+                            <Glyph fontFamily="FontAwesome" icon="save"/>
+                        </graphic>
+                    </Button>
+                </HBox>
+            </right>
+        </BorderPane>
     </bottom>
 </BorderPane>

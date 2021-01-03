@@ -124,7 +124,7 @@ public class RegisteringCitizenPaneFxController extends WizardStepFxControllerBa
                     CPiProgress.setVisible(false);
                     CitizenIvFailure.setVisible(true);
                     btnStartOver.setVisible(true);
-                    btnRetry.setVisible(false);
+                    btnRetry.setVisible(!disableRetryButtonForever);
                 }
                 else if (citizenRegistrationStatus == CheckCitizenRegistrationWorkflowTask.Status.ERROR) {
                     CitizenLblStatus.setText(resources.getString("label.failedToRegisterCitizen"));
@@ -235,16 +235,17 @@ public class RegisteringCitizenPaneFxController extends WizardStepFxControllerBa
     @FXML
     public void onStartOverButtonClicked(ActionEvent actionEvent)
     {
-        if (citizenRegistrationStatus != null && citizenRegistrationStatus == CheckCitizenRegistrationWorkflowTask.Status.SUCCESS)
-        {
+        if (citizenRegistrationStatus != null && citizenRegistrationStatus == CheckCitizenRegistrationWorkflowTask.Status.SUCCESS) {
             startOver();
         }
-        String headerText = Context.getCoreFxController().getResourceBundle()
-                .getString("startingOver.confirmation.header");
-        String contentText = Context.getCoreFxController().getResourceBundle()
-                .getString("startingOver.confirmation.message");
-        boolean confirmed = Context.getCoreFxController().showConfirmationDialogAndWait(headerText, contentText);
+        else {
+            String headerText = Context.getCoreFxController().getResourceBundle()
+                    .getString("startingOver.confirmation.header");
+            String contentText = Context.getCoreFxController().getResourceBundle()
+                    .getString("startingOver.confirmation.message");
+            boolean confirmed = Context.getCoreFxController().showConfirmationDialogAndWait(headerText, contentText);
 
-        if(confirmed) startOver();
+            if (confirmed) { startOver(); }
+        }
     }
 }

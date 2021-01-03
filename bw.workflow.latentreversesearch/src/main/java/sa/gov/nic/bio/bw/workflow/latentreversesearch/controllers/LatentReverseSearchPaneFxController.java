@@ -158,10 +158,10 @@ public class LatentReverseSearchPaneFxController extends ContentFxControllerBase
 		
 		BooleanBinding transactionNumberBinding = createTextFieldNotCompleteBooleanBinding(txtTransactionNumber);
 		BooleanBinding civilBiometricsIdBinding = createTextFieldNotCompleteBooleanBinding(txtCivilBiometricsId);
-		BooleanBinding personIdBinding = createTextFieldNotCompleteBooleanBinding(txtPersonId);
+		BooleanBinding personIdBinding = createTextFieldNotCompleteBooleanBinding(txtPersonId, 10);
 		BooleanBinding referenceNumberBinding = createTextFieldNotCompleteBooleanBinding(txtReferenceNumber);
 		BooleanBinding locationIdBinding = createTextFieldNotCompleteBooleanBinding(txtLocationId);
-		BooleanBinding operatorIdBinding = createTextFieldNotCompleteBooleanBinding(txtOperatorId);
+		BooleanBinding operatorIdBinding = createTextFieldNotCompleteBooleanBinding(txtOperatorId, 10);
 		BooleanBinding statusBinding = createComboBoxNotCompleteBooleanBinding(cboStatus);
 		BooleanBinding entryDateFromBinding = createDatePickerNotCompleteBooleanBinding(dpCreateDateFrom);
 		BooleanBinding entryDateToBinding = createDatePickerNotCompleteBooleanBinding(dpCreateDateTo);
@@ -510,6 +510,12 @@ public class LatentReverseSearchPaneFxController extends ContentFxControllerBase
 	{
 		return textField.disabledProperty().not().and(
 				Bindings.createBooleanBinding(() -> textField.getText().isBlank(), textField.textProperty()));
+	}
+
+	private static BooleanBinding createTextFieldNotCompleteBooleanBinding(TextField textField , int minCharCount)
+	{
+		return textField.disabledProperty().not().and(
+				Bindings.createBooleanBinding(() -> textField.getText().isBlank() || textField.getText().length() < minCharCount, textField.textProperty()));
 	}
 	
 	private static <T> BooleanBinding createComboBoxNotCompleteBooleanBinding(ComboBox<T> comboBox)

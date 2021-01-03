@@ -107,3 +107,8 @@
     -fx-text-fill: rgba(213, 0, 4, 0.2);
     -fx-rotate: 30;
 }
+
+.tooltip {
+    -fx-show-delay: 0ms ;
+    -fx-hide-delay: 0ms ;
+}

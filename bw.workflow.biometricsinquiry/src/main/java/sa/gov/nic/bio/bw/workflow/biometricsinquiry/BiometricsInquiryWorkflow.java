@@ -292,6 +292,7 @@ public class BiometricsInquiryWorkflow extends WizardWorkflowBase {
                             "facePhotoBase64");
                     passData(SearchByFacePhotoWorkflowTask.class, ShowResultsFxController.class,
                             "candidates");
+                    setData(ShowResultsFxController.class, "showReportWithAlahwalLogo", true);
                     renderUiAndWaitForUserInput(
                             sa.gov.nic.bio.bw.workflow.searchbyfaceimage.controllers.ShowResultsFxController.class);
                 }

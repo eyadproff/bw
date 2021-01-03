@@ -195,7 +195,7 @@ public class ConvictedReportInquiryPaneFxController extends ContentFxControllerB
 		BooleanBinding familyNameBinding = createTextFieldNotCompleteBooleanBinding(txtFamilyName);
 		BooleanBinding judgmentNumberBinding = createTextFieldNotCompleteBooleanBinding(txtJudgmentNumber);
 		BooleanBinding prisonerNumberBinding = createTextFieldNotCompleteBooleanBinding(txtPrisonerNumber);
-		BooleanBinding operatorIdBinding = createTextFieldNotCompleteBooleanBinding(txtOperatorId);
+		BooleanBinding operatorIdBinding = createTextFieldNotCompleteBooleanBinding(txtOperatorId, 10);
 		BooleanBinding judgmentDateFromBinding = createDatePickerNotCompleteBooleanBinding(dpJudgmentDateFrom);
 		BooleanBinding judgmentDateToBinding = createDatePickerNotCompleteBooleanBinding(dpJudgmentDateTo);
 		BooleanBinding allDisabled = txtCriminalBiometricsId.disableProperty().and(txtLocation.disableProperty())

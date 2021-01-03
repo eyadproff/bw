@@ -219,7 +219,7 @@
                                             <ImageViewPane minHeight="48.0">
                                                 <imageView>
                                                     <ImageView fx:id="ivRightIris" preserveRatio="true">
-                                                        <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/placeholder_skip.png" />
+                                                        <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/placeholder_skipped_iris_image.png" />
                                                     </ImageView>
                                                 </imageView>
                                             </ImageViewPane>
@@ -231,7 +231,7 @@
                                             <ImageViewPane minHeight="48.0">
                                                 <imageView>
                                                     <ImageView fx:id="ivLeftIris" preserveRatio="true">
-                                                        <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/placeholder_skip.png" />
+                                                        <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/placeholder_skipped_iris_image.png" />
                                                     </ImageView>
                                                 </imageView>
                                             </ImageViewPane>

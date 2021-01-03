@@ -4,18 +4,21 @@ import sa.gov.nic.bio.bw.core.Context;
 import sa.gov.nic.bio.bw.core.utils.Device;
 import sa.gov.nic.bio.bw.core.wizard.Step;
 import sa.gov.nic.bio.bw.core.wizard.Wizard;
-import sa.gov.nic.bio.bw.core.workflow.*;
-import sa.gov.nic.bio.bw.workflow.commons.beans.BioExclusion;
-import sa.gov.nic.bio.bw.workflow.commons.tasks.RetrieveBioExclusionsWorkflowTask;
+import sa.gov.nic.bio.bw.core.workflow.AssociatedMenu;
+import sa.gov.nic.bio.bw.core.workflow.Signal;
+import sa.gov.nic.bio.bw.core.workflow.WithLookups;
+import sa.gov.nic.bio.bw.core.workflow.WizardWorkflowBase;
 import sa.gov.nic.bio.bw.workflow.citizenenrollment.beans.NormalizedPersonInfo;
+import sa.gov.nic.bio.bw.workflow.citizenenrollment.beans.PersonInfo;
 import sa.gov.nic.bio.bw.workflow.citizenenrollment.controllers.*;
 import sa.gov.nic.bio.bw.workflow.citizenenrollment.tasks.*;
+import sa.gov.nic.bio.bw.workflow.commons.beans.BioExclusion;
 import sa.gov.nic.bio.bw.workflow.commons.controllers.FaceCapturingFxController;
 import sa.gov.nic.bio.bw.workflow.commons.controllers.SlapFingerprintsCapturingFxController;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.CountriesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.DocumentTypesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.PersonTypesLookup;
-import sa.gov.nic.bio.bw.workflow.citizenenrollment.tasks.SearchByFacePhotoWorkflowTask;
+import sa.gov.nic.bio.bw.workflow.commons.tasks.RetrieveBioExclusionsWorkflowTask;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -105,6 +108,20 @@ public class CitizenEnrollmentWorkflow extends WizardWorkflowBase {
                         acceptBadQualityFingerprintMinRetries);
                 setData(SlapFingerprintsCapturingFxController.class, "acceptBadQualityFingerprint",
                         acceptBadQualityFingerprint);
+
+                setData(SlapFingerprintsCapturingFxController.class, "hideFingerprintQualityFromTooltip",
+                        true);
+                setData(SlapFingerprintsCapturingFxController.class, "showPrintAndSaveNumOfTriesReportButton",
+                        true);
+
+                // We do this because the personInfo Object we used here is different from the Common
+                PersonInfo personInfo = getData(GetPersonInfoByIdWorkflowTask.class, "personInfo");
+                sa.gov.nic.bio.bw.workflow.commons.beans.PersonInfo personInfo1 = new sa.gov.nic.bio.bw.workflow.commons.beans.PersonInfo();
+                // We just need the name and id so far
+                personInfo1.setName(personInfo.getName());
+                personInfo1.setSamisId(personInfo.getSamisId());
+
+                setData(SlapFingerprintsCapturingFxController.class, "personInfo", personInfo1);
 
                 renderUiAndWaitForUserInput(SlapFingerprintsCapturingFxController.class);
 

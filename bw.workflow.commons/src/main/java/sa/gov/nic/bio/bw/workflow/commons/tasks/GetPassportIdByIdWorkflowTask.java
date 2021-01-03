@@ -23,7 +23,7 @@ public class GetPassportIdByIdWorkflowTask extends WorkflowTask {
         Call<Map<String, Object>> apiCall = passportInfoAPI.retrievePassportNumberAndNationalityBySamisId(workflowId, workflowTcn, personId);
         TaskResponse<Map<String, Object>> taskResponse = Context.getWebserviceManager().executeApi(apiCall);
 
-        boolean notFound = !taskResponse.isSuccess() && "B004-0037".equals(taskResponse.getErrorCode());
+        boolean notFound = !taskResponse.isSuccess() && "B004-0034".equals(taskResponse.getErrorCode());
 
         if (returnNullResultInCaseNotFound != null && returnNullResultInCaseNotFound && notFound) { return; }
 

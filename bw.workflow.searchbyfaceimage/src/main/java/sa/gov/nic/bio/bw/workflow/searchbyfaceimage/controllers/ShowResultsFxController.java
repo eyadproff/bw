@@ -51,6 +51,7 @@ import java.util.concurrent.atomic.AtomicReference;
 public class ShowResultsFxController extends WizardStepFxControllerBase {
 	@Input(alwaysRequired = true) private String facePhotoBase64;
 	@Input(alwaysRequired = true) private List<Candidate> candidates;
+	@Input private Boolean showReportWithAlahwalLogo;
 
 	@FXML private SplitPane splitPane;
 	@FXML private HBox imagePane;
@@ -83,6 +84,11 @@ public class ShowResultsFxController extends WizardStepFxControllerBase {
 		FileChooser.ExtensionFilter extFilterPDF = new FileChooser.ExtensionFilter(
 				resources.getString("fileChooser.saveReportAsPDF.types"), "*.pdf");
 		fileChooser.getExtensionFilters().addAll(extFilterPDF);
+
+		if(showReportWithAlahwalLogo != null && showReportWithAlahwalLogo){
+			GuiUtils.showNode(btnPrintRecord, true);
+			GuiUtils.showNode(btnSaveRecordAsPDF, true);
+		}
 
 		imagePane.maxWidthProperty().bind(Context.getCoreFxController().getBodyPane(getTabIndex()).widthProperty());
 		imagePane.maxHeightProperty().bind(Context.getCoreFxController().getBodyPane(getTabIndex()).heightProperty());

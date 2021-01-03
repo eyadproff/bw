@@ -112,6 +112,7 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase 
 
         if (normalizedPersonInfo != null) {
 
+
             facePhotoBase64 = normalizedPersonInfo.getFacePhotoBase64();
 
             Name name = personInfo.getName();

@@ -78,8 +78,8 @@
                 <Insets bottom="10"/>
             </padding>
             <Button fx:id="btnStartOver" text="%button.startOver" onAction="#onStartOverButtonClicked"/>
-            <Button fx:id="btnPrintRecord" text="%button.printRecord" onAction="#onPrintRecordButtonClicked"/>
-            <Button fx:id="btnSaveRecordAsPDF" text="%button.saveRecordAsPDF" onAction="#onSaveRecordAsPdfButtonClicked"/>
+            <Button fx:id="btnPrintRecord" text="%button.printRecord" onAction="#onPrintRecordButtonClicked" managed="false" visible="false"/>
+            <Button fx:id="btnSaveRecordAsPDF" text="%button.saveRecordAsPDF" onAction="#onSaveRecordAsPdfButtonClicked"  managed="false" visible="false"/>
         </HBox>
     </bottom>
 </BorderPane>
