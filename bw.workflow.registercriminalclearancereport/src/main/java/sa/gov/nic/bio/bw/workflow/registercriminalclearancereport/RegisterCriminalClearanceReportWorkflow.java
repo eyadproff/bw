@@ -15,13 +15,12 @@ import sa.gov.nic.bio.bw.workflow.commons.controllers.SlapFingerprintsCapturingF
 import sa.gov.nic.bio.bw.workflow.commons.lookups.CountriesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.DocumentTypesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.PersonTypesLookup;
-import sa.gov.nic.bio.bw.workflow.commons.tasks.CheckCWLByBioIdWorkflowTask;
-import sa.gov.nic.bio.bw.workflow.commons.tasks.FetchingMissingFingerprintsWorkflowTask;
-import sa.gov.nic.bio.bw.workflow.commons.tasks.GetPassportIdByIdWorkflowTask;
-import sa.gov.nic.bio.bw.workflow.commons.tasks.GetPersonInfoByIdWorkflowTask;
+import sa.gov.nic.bio.bw.workflow.commons.tasks.*;
 import sa.gov.nic.bio.bw.workflow.registercriminalclearancereport.controllers.*;
 import sa.gov.nic.bio.bw.workflow.registercriminalclearancereport.controllers.ShowingFingerprintsQualityPaneFxController.ServiceType;
 import sa.gov.nic.bio.bw.workflow.registercriminalclearancereport.tasks.*;
+import sa.gov.nic.bio.bw.workflow.registercriminalclearancereport.tasks.FetchingFingerprintsWorkflowTask;
+import sa.gov.nic.bio.bw.workflow.registercriminalclearancereport.tasks.SegmentWsqFingerprintsWorkflowTask;
 
 import java.util.List;
 
@@ -223,7 +222,7 @@ public class RegisterCriminalClearanceReportWorkflow extends WizardWorkflowBase 
                             ReviewAndSubmitPaneFxController.class,
                             "fingerprintBase64Images");
 
-                    passData(FetchingFingerprintsWorkflowTask.class, "fingerprints",
+                    passData(SegmentWsqFingerprintsWorkflowTask.class, "segmentedFingers",
                             ReviewAndSubmitPaneFxController.class,
                             "fingerprints");
 

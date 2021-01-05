@@ -28,7 +28,9 @@ public class SegmentWsqFingerprintsWorkflowTask extends WorkflowTask {
     @Input(alwaysRequired = true) private List<Finger> fingerprints;
     @Input(alwaysRequired = true) private List<Integer> missingFingerprints;
     @Output private List<Fingerprint> segmentedFingerPrints;
+    @Output private List<Finger> segmentedFingers;
     @Output private Map<Integer, String> fingerprintBase64Images;
+
 
     @Override
     public void execute() throws Signal {
@@ -36,6 +38,7 @@ public class SegmentWsqFingerprintsWorkflowTask extends WorkflowTask {
         availableFingerprints.removeAll(missingFingerprints);
 
         segmentedFingerPrints = new ArrayList<>();
+        segmentedFingers = new ArrayList<>();
         Map<Integer, String> fingerprintWsqToBeConvertedMap = new HashMap<>();
         Map<Integer, String> fingerprintImages = new HashMap<>();
 
@@ -166,9 +169,13 @@ public class SegmentWsqFingerprintsWorkflowTask extends WorkflowTask {
                     {
                         fingerprintWsqToBeConvertedMap.put(dmFingerData.getPosition(),
                                 dmFingerData.getFingerWsqImage());
-                        Fingerprint fingerprint = new Fingerprint(dmFingerData,
+                        Fingerprint segmentedFingerprint = new Fingerprint(dmFingerData,
                                 slapImageBase64, dmFingerData.getFinger());
-                        segmentedFingerPrints.add(fingerprint);
+                        segmentedFingerPrints.add(segmentedFingerprint); // segmented Fingerprint Object
+
+                        Finger segmentedFinger = new Finger(dmFingerData.getPosition(),
+                                dmFingerData.getFingerWsqImage(), null);
+                        segmentedFingers.add(segmentedFinger); // segmented Finger Object
                     });
                 }
                 else if (result.getReturnCode() == SegmentFingerprintsResponse.FailureCodes.SEGMENTATION_FAILED) {

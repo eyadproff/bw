@@ -354,7 +354,7 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 						return;
 					}
 					facePhotoBase64ForEnrollment = facePhotoBase64AfterValidation;
-				}
+				}else { facePhotoBase64ForEnrollment = null; }
 
 			} catch (IOException e) {
 				String errorCode = CommonsErrorCodes.C008_00018.getCode();

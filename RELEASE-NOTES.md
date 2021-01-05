@@ -9,6 +9,15 @@
 
 VERSION SCHEMA: vYYYY.MM.#SEQ
 
+## v2021.01.1
+
+- NEW: Register Criminal Clearance Report by ID.
+- NEW: Register Criminal Clearance Report by Fingerprints.
+- NEW: Inquiry Criminal Clearance Report.
+- NEW: Add live Preview to SingleFingerprintCapturing.
+
+---
+
 ## v2020.11.2
 
 - FIX: fix bug in https protocol

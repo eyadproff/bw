@@ -285,7 +285,7 @@
          - services-gateway-lookups/api/application/nationality/all/v1
          - services-gateway-demographic/api/person/info/v1
          - services-gateway-demographic/api/person/deportee/info/v1
-         - services-gateway-demographic/api/person/passport-number/v2
+         - services-gateway-demographic/api/person/passport/info/v2
          - services-gateway-biooperation/api/fingerprint/images/v1
          - services-gateway-biooperation/api/fingerprint/available/v1
          - services-gateway-biooperation/api/fingerprint/inquiry/v1
@@ -300,7 +300,7 @@
          - services-gateway-lookups/api/application/nationality/all/v1
          - services-gateway-demographic/api/person/info/v1
          - services-gateway-demographic/api/person/deportee/info/v1
-         - services-gateway-demographic/api/person/passport-number/v2
+         - services-gateway-demographic/api/person/passport/info/v2
          - services-gateway-biooperation/api/fingerprint/images/v1
          - services-gateway-biooperation/api/fingerprint/available/v1
          - services-gateway-biooperation/api/fingerprint/inquiry/v1
