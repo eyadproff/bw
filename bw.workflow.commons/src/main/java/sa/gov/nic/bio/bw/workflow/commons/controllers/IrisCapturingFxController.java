@@ -7,12 +7,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.NodeOrientation;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.ProgressIndicator;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TitledPane;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
@@ -30,11 +25,14 @@ import sa.gov.nic.bio.bw.workflow.commons.utils.CommonsErrorCodes;
 import sa.gov.nic.bio.commons.TaskResponse;
 
 import java.io.ByteArrayInputStream;
+import java.util.Arrays;
 import java.util.Base64;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.stream.Collectors;
 
 @FxmlFile("irisCapturing.fxml")
 public class IrisCapturingFxController extends WizardStepFxControllerBase
@@ -164,9 +162,13 @@ public class IrisCapturingFxController extends WizardStepFxControllerBase
 				@SuppressWarnings("unchecked")
 				List<String> userRoles = (List<String>) Context.getUserSession().getAttribute("userRoles");
 				
-				String skipIrisRole = Context.getConfigManager().getProperty("iris.roles.skipOneEye");
-				
-				if(userRoles.contains(skipIrisRole)) // has permission
+				String skipIrisRoles = Context.getConfigManager().getProperty("iris.roles.skipOneEye");
+
+				List<String> skipIrisRolesList = Arrays.stream(skipIrisRoles.split(",")).map(String::strip).collect(Collectors.toList());
+
+				skipIrisRolesList.forEach(System.out::println);
+
+				if(!Collections.disjoint(userRoles,skipIrisRolesList)) // has permission
 				{
 					String headerText = resources.getString("iris.skippingOneEye.confirmation.header");
 					String contentText = String.format(resources.getString("iris.skippingOneEye.confirmation.message"),

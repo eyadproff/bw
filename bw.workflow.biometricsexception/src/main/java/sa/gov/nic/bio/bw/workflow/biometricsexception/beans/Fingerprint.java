@@ -4,8 +4,8 @@ public class Fingerprint {
 
     private boolean missOrNot = false;
     private Cause cause;
-    private Integer Status;
-    private int Position;
+    private Integer months;
+    private int position;
     private Integer seqNum;
     private Boolean alreadyAdded = false;
     private String description;
@@ -27,20 +27,20 @@ public class Fingerprint {
         this.cause = cause;
     }
 
-    public Integer getStatus() {
-        return Status;
+    public Integer getMonths() {
+        return months;
     }
 
-    public void setStatus(Integer status) {
-        Status = status;
+    public void setMonths(Integer months) {
+        this.months = months;
     }
 
     public int getPosition() {
-        return Position;
+        return position;
     }
 
     public void setPosition(int position) {
-        Position = position;
+        this.position = position;
     }
 
     public Integer getSeqNum() {

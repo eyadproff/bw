@@ -25,11 +25,14 @@ import sa.gov.nic.bio.bw.workflow.commons.utils.CommonsErrorCodes;
 import sa.gov.nic.bio.commons.TaskResponse;
 
 import java.io.ByteArrayInputStream;
+import java.util.Arrays;
 import java.util.Base64;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.stream.Collectors;
 
 @FxmlFile("irisCapturing.fxml")
 public class IrisCapturingFxController extends WizardStepFxControllerBase {
@@ -185,9 +188,13 @@ public class IrisCapturingFxController extends WizardStepFxControllerBase {
                 @SuppressWarnings("unchecked")
                 List<String> userRoles = (List<String>) Context.getUserSession().getAttribute("userRoles");
 
-                String skipIrisRole = Context.getConfigManager().getProperty("iris.roles.skipOneEye");
+                String skipIrisRoles = Context.getConfigManager().getProperty("iris.roles.skipOneEye");
 
-                if (userRoles.contains(skipIrisRole)) // has permission
+                List<String> skipIrisRolesList = Arrays.stream(skipIrisRoles.split(",")).map(String::strip).collect(Collectors.toList());
+
+                skipIrisRolesList.forEach(System.out::println);
+
+                if(!Collections.disjoint(userRoles,skipIrisRolesList)) // has permission
                 {
                     String headerText = resources.getString("iris.skippingOneEye.confirmation.header");
                     String contentText = String.format(resources.getString("iris.skippingOneEye.confirmation.message"),

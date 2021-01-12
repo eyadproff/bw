@@ -120,7 +120,7 @@ public class RegisteringCitizenPaneFxController extends WizardStepFxControllerBa
                 }
 
                 else if (citizenRegistrationStatus == CheckCitizenRegistrationWorkflowTask.Status.HIT) {
-                    CitizenLblStatus.setText(resources.getString("label.failedToRegisterCitizenHitResponse"));
+                    CitizenLblStatus.setText(resources.getString("label.successCitizenRegistrationWithHitResponse"));
                     CPiProgress.setVisible(false);
                     CitizenIvFailure.setVisible(true);
                     btnStartOver.setVisible(true);

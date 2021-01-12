@@ -304,10 +304,10 @@ public class EditMissingFingerprintFXController extends WizardStepFxControllerBa
                 if (bioEx.getCasueId() == 1) {
                     fingerprint.setDescription(bioEx.getDescription());
                 }
-                if (bioEx.getMonth() == 0) { fingerprint.setStatus(0); }
-                else if (bioEx.getMonth() == 3) { fingerprint.setStatus(3); }
-                else if (bioEx.getMonth() == 6) { fingerprint.setStatus(6); }
-                else { fingerprint.setStatus(12); }
+                if (bioEx.getMonth() == 0) { fingerprint.setMonths(0); }
+                else if (bioEx.getMonth() == 3) { fingerprint.setMonths(3); }
+                else if (bioEx.getMonth() == 6) { fingerprint.setMonths(6); }
+                else { fingerprint.setMonths(12); }
 
                 fingerprint.setPosition(position);
                 fingerprint.setSeqNum(bioEx.getSeqNum());
@@ -529,21 +529,21 @@ public class EditMissingFingerprintFXController extends WizardStepFxControllerBa
         if (Couse.getValue().getItem().getCauseId() != 2) {
 
             if (((RadioButton) TG.getSelectedToggle()).getText().equals(resources.getString("3months"))) {
-                finger.setStatus(3);
+                finger.setMonths(3);
             }
             else if (((RadioButton) TG.getSelectedToggle()).getText().equals(resources.getString("6months"))) {
-                finger.setStatus(6);
+                finger.setMonths(6);
             }
             else if (((RadioButton) TG.getSelectedToggle()).getText().equals(resources.getString("oneYear"))) {
-                finger.setStatus(12);
+                finger.setMonths(12);
             }
-            else { finger.setStatus(0); }
+            else { finger.setMonths(0); }
 
             if (Couse.getValue().getItem().getCauseId() == 1) { finger.setDescription(CouseOther.getText()); }
 
         }
         else {
-            finger.setStatus(0);
+            finger.setMonths(0);
 
         }
 
@@ -626,9 +626,9 @@ public class EditMissingFingerprintFXController extends WizardStepFxControllerBa
             Fingerprint Little) {
         if (Thumb.isMissOrNot() && Index.isMissOrNot() && Middle.isMissOrNot() && Ring.isMissOrNot() &&
             Little.isMissOrNot()) {
-            int status = Thumb.getStatus();
-            if (Index.getStatus() == status && Middle.getStatus() == status && Ring.getStatus() == status &&
-                Little.getStatus() == status) {
+            int status = Thumb.getMonths();
+            if (Index.getMonths() == status && Middle.getMonths() == status && Ring.getMonths() == status &&
+                Little.getMonths() == status) {
                 int causeId = Thumb.getCause().getCauseId();
                 if (Index.getCause().getCauseId() == causeId && Middle.getCause().getCauseId() == causeId &&
                     Ring.getCause().getCauseId() == causeId && Little.getCause().getCauseId() == causeId) {
@@ -661,9 +661,9 @@ public class EditMissingFingerprintFXController extends WizardStepFxControllerBa
         if (finger.getCause().getCauseId() != 2) {
             VOther.setVisible(true);
 
-            if (finger.getStatus() == 0) { TG.getToggles().get(3).setSelected(true); }
-            else if (finger.getStatus() == 12) { TG.getToggles().get(2).setSelected(true); }
-            else if (finger.getStatus() == 6) { TG.getToggles().get(1).setSelected(true); }
+            if (finger.getMonths() == 0) { TG.getToggles().get(3).setSelected(true); }
+            else if (finger.getMonths() == 12) { TG.getToggles().get(2).setSelected(true); }
+            else if (finger.getMonths() == 6) { TG.getToggles().get(1).setSelected(true); }
             else { TG.getToggles().get(0).setSelected(true); }
 
 
@@ -706,12 +706,12 @@ public class EditMissingFingerprintFXController extends WizardStepFxControllerBa
                 if (finger.getCause().getCauseId() == 1) {
                     if (finger.getDescription()
                             .equals((getLast(personMissinfingerprints, position)).getDescription())) {
-                        if ((getLast(personMissinfingerprints, position)).getStatus().equals(finger.getStatus())) {
+                        if ((getLast(personMissinfingerprints, position)).getMonths().equals(finger.getMonths())) {
                             return false;
                         }
                     }
                 }
-                else if ((getLast(personMissinfingerprints, position)).getStatus().equals(finger.getStatus())) {
+                else if ((getLast(personMissinfingerprints, position)).getMonths().equals(finger.getMonths())) {
                     return false;
                 }
             }
@@ -728,16 +728,16 @@ public class EditMissingFingerprintFXController extends WizardStepFxControllerBa
         bioEx.setBioType(1);
         bioEx.setPosition(position);
         // -- epoch time by Second
-        if (finger.getStatus() == 0) {
+        if (finger.getMonths() == 0) {
             //expiredDate null
             bioEx.setCreateDate(Instant.now().getEpochSecond());
         }
-        else if (finger.getStatus() == 3) {
+        else if (finger.getMonths() == 3) {
             bioEx.setExpireDate(Instant.now().getEpochSecond() + 7889238);
             bioEx.setCreateDate(Instant.now().getEpochSecond());
             bioEx.setMonth(3);
         }
-        else if (finger.getStatus() == 6) {
+        else if (finger.getMonths() == 6) {
             bioEx.setExpireDate(Instant.now().getEpochSecond() + 15778476);
             bioEx.setCreateDate(Instant.now().getEpochSecond());
             bioEx.setMonth(6);

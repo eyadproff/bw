@@ -51,7 +51,7 @@ public class CitizenEnrollmentWorkflow extends WizardWorkflowBase {
 
 
                 //check enroll or not
-                passData(GetPersonInfoByIdWorkflowTask.class, IsEnrolledWorkflowTask.class, "personInfo");
+                passData(PersonIdPaneFxController.class, IsEnrolledWorkflowTask.class, "personId");
                 executeWorkflowTask(IsEnrolledWorkflowTask.class);
 
                 //death

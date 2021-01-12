@@ -119,6 +119,10 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase 
                 ivLeftLittle, null, null, null, null, null, null);
 
 
+        var contextMenuLabel = resources.getString("label.contextMenu.showImage");
+        var rightIrisLabel = resources.getString("label.rightIris");
+        var leftIrisLabel = resources.getString("label.leftIris");
+
         Image capturedRightIrisImage = null;
         Image capturedLeftIrisImage = null;
 
@@ -133,11 +137,23 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase 
 
         if (capturedRightIrisImage != null) {
             ivRightIris.setImage(capturedRightIrisImage);
-
+            GuiUtils.attachImageDialog(Context.getCoreFxController(), ivRightIris, rightIrisLabel,
+                    contextMenuLabel, false);
         }
         if (capturedLeftIrisImage != null) {
             ivLeftIris.setImage(capturedLeftIrisImage);
+            GuiUtils.attachImageDialog(Context.getCoreFxController(), ivLeftIris, leftIrisLabel,
+                    contextMenuLabel, false);
         }
+
+        //        if (capturedRightIrisImage != null) {
+        //            ivRightIris.setImage(capturedRightIrisImage);
+        //
+        //        }
+        //        if (capturedLeftIrisImage != null) {
+        //            ivLeftIris.setImage(capturedLeftIrisImage);
+        //        }
+
     }
 
     @Override
