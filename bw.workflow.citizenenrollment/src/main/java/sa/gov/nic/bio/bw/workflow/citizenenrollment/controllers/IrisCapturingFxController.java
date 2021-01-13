@@ -187,8 +187,6 @@ public class IrisCapturingFxController extends WizardStepFxControllerBase {
 
                 List<String> skipIrisRolesList = Arrays.stream(skipIrisRoles.split(",")).map(String::strip).collect(Collectors.toList());
 
-                skipIrisRolesList.forEach(System.out::println);
-
                 if(!Collections.disjoint(userRoles,skipIrisRolesList)) // has permission
                 {
                     String headerText = resources.getString("iris.skippingOneEye.confirmation.header");

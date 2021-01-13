@@ -168,6 +168,14 @@ public class CitizenEnrollmentWorkflow extends WizardWorkflowBase {
             case 5: {
                 //Review
 
+                List<Integer> missingFingerprints = getData(SlapFingerprintsCapturingFxController.class,
+                        "missingFingerprints");
+                if (missingFingerprints != null && !missingFingerprints.isEmpty()) {
+                    // the last one added Exceptions
+                    List<BioExclusion> bioExclusion = getData(RetrieveBioExclusionsWorkflowTask.class, "bioExclusionList");
+                    bioExclusion.sort((o1, o2) -> o2.getCreateDate().compareTo(o1.getCreateDate()));
+                    setData(ReviewAndSubmitPaneFxController.class, "supervisorId", bioExclusion.get(0).getOperatorId());
+                }
                 passData(ShowingPersonInfoFxController.class, ReviewAndSubmitPaneFxController.class,
                         "normalizedPersonInfo");
                 passData(GetPersonInfoByIdWorkflowTask.class, ReviewAndSubmitPaneFxController.class, "personInfo");
@@ -196,7 +204,6 @@ public class CitizenEnrollmentWorkflow extends WizardWorkflowBase {
                 renderUiAndWaitForUserInput(ReviewAndSubmitPaneFxController.class);
 
                 //Search for face if there is no fingerprints
-                List<Integer> missingFingerprints = getData(SlapFingerprintsCapturingFxController.class, "missingFingerprints");
                 if (missingFingerprints.size() >= 10) {
                     passData(FaceCapturingFxController.class, SearchByFacePhotoWorkflowTask.class,
                             "facePhotoBase64");

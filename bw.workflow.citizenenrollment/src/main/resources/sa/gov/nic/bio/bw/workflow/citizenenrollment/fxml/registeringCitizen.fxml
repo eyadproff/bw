@@ -13,10 +13,13 @@
                   <VBox alignment="CENTER" spacing="5.0">
                       <StackPane>
                           <ProgressIndicator fx:id="CPiProgress" maxHeight="20.0" maxWidth="20.0" />
-                          <ImageView fx:id="CitizenIvSuccess" visible="false">
+                          <ImageView fx:id="CitizenIvSuccess" visible="false" managed="false">
                               <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/icon_success_32px.png" />
                           </ImageView>
-                          <ImageView fx:id="CitizenIvFailure" visible="false">
+                          <ImageView fx:id="CitizenIvSuccessWithHit" visible="false" managed="false">
+                              <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/icon_warning_32px.png" />
+                          </ImageView>
+                          <ImageView fx:id="CitizenIvFailure" visible="false" managed="false">
                               <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/icon_error_32px.png" />
                           </ImageView>
                       </StackPane>

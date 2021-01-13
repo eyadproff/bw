@@ -10,15 +10,16 @@ import sa.gov.nic.bio.bw.workflow.citizenenrollment.beans.CitizenEnrollmentInfo;
 import sa.gov.nic.bio.bw.workflow.citizenenrollment.webservice.CitizenEnrollmentAPI;
 
 public class CitizenRegistrationWorkflowTask extends WorkflowTask {
+
     @Input(alwaysRequired = true)
     private CitizenEnrollmentInfo citizenEnrollmentInfo;
-
 
     @Output
     private Boolean isEnrollmentProcessStart;
 
     @Override
     public void execute() throws Signal {
+
         var api = Context.getWebserviceManager().getApi(CitizenEnrollmentAPI.class);
         var apiCall = api.enrollPerson(workflowId, workflowTcn, citizenEnrollmentInfo.getPersonId(),
                                        citizenEnrollmentInfo.getPersonType(),
@@ -28,7 +29,7 @@ public class CitizenRegistrationWorkflowTask extends WorkflowTask {
                                        citizenEnrollmentInfo.getCapturedLeftIrisBase64(),
                                        citizenEnrollmentInfo.getCapturedRightIrisBase64(),
                                        AppUtils.toJson(citizenEnrollmentInfo.getBirthDate()),
-                                       citizenEnrollmentInfo.getGender(), null);
+                                       citizenEnrollmentInfo.getGender(), citizenEnrollmentInfo.getSupervisorId());
         var taskResponse = Context.getWebserviceManager().executeApi(apiCall);
         resetWorkflowStepIfNegativeOrNullTaskResponse(taskResponse);
         isEnrollmentProcessStart = taskResponse.getResult();

@@ -147,8 +147,6 @@ public class FaceExceptionFXController extends WizardStepFxControllerBase {
 
         //  continueWorkflow();
 
-//        if (FaceException != null) { System.out.println("face" + FaceException.getCasueId()); }
-//        if (EditFaceException != null) { System.out.println("Editface" + EditFaceException.getCasueId()); }
     }
 
     private void AddItemsToMenu() {

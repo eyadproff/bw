@@ -16,11 +16,13 @@ public class CitizenEnrollmentInfo {
     private Integer gender;
     private String capturedRightIrisBase64;
     private String capturedLeftIrisBase64;
+    // the last one added Exceptions if there is missing
+    private Long supervisorId;
 
 
     public CitizenEnrollmentInfo(Long personId, Integer personType, List<Finger> fingers, List<Integer> missing,
                                  String faceImage, Date birthDate, Integer gender, String capturedRightIrisBase64,
-                                 String capturedLeftIrisBase64) {
+                                 String capturedLeftIrisBase64, Long supervisorId) {
         this.personId = personId;
         this.personType = personType;
         this.fingers = fingers;
@@ -30,6 +32,7 @@ public class CitizenEnrollmentInfo {
         this.gender = gender;
         this.capturedRightIrisBase64 = capturedRightIrisBase64;
         this.capturedLeftIrisBase64 = capturedLeftIrisBase64;
+        this.supervisorId = supervisorId;
     }
 
 
@@ -104,5 +107,13 @@ public class CitizenEnrollmentInfo {
 
     public void setCapturedLeftIrisBase64(String capturedLeftIrisBase64) {
         this.capturedLeftIrisBase64 = capturedLeftIrisBase64;
+    }
+
+    public Long getSupervisorId() {
+        return supervisorId;
+    }
+
+    public void setSupervisorId(Long supervisorId) {
+        this.supervisorId = supervisorId;
     }
 }

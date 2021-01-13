@@ -45,6 +45,7 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase 
     private List<Finger> slapFingerprints;
     @Input(alwaysRequired = true)
     private List<Integer> missingFingerprints;
+    @Input private Long supervisorId;
     @Input private List<Finger> combinedFingerprints;
     @Input private String capturedRightIrisBase64;
     @Input private String capturedLeftIrisBase64;
@@ -92,7 +93,7 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase 
                 normalizedPersonInfo.getPersonType().getCode(),
                 combinedFingerprints, missingFingerprints, facePhotoBase64,
                 personInfo.getBirthDate(), personInfo.getGender(),
-                capturedRightIrisCompressedBase64, capturedLeftIrisCompressedBase64);
+                capturedRightIrisCompressedBase64, capturedLeftIrisCompressedBase64, supervisorId);
 
         ivPersonPhoto.setImage(facePhoto);
         GuiUtils.attachImageDialog(Context.getCoreFxController(), ivPersonPhoto,

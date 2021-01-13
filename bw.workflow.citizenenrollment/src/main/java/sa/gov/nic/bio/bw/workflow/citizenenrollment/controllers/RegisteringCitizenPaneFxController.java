@@ -26,19 +26,15 @@ public class RegisteringCitizenPaneFxController extends WizardStepFxControllerBa
     @Input private Boolean isEnrollmentProcessStart;
     @Output private Request request;
 
-    @FXML
-    private ProgressIndicator CPiProgress;
-    @FXML
-    private ImageView CitizenIvSuccess;
-    @FXML
-    private ImageView CitizenIvFailure;
-    @FXML
-    private Label CitizenLblStatus;
+    @FXML private ProgressIndicator CPiProgress;
+    @FXML private ImageView CitizenIvSuccess;
+    @FXML private ImageView CitizenIvFailure;
+    @FXML private ImageView CitizenIvSuccessWithHit;
 
-    @FXML
-    private Button btnRetry;
-    @FXML
-    private Button btnStartOver;
+    @FXML private Label CitizenLblStatus;
+
+    @FXML private Button btnRetry;
+    @FXML private Button btnStartOver;
 
 
     private boolean disableRetryButtonForever = false;
@@ -93,7 +89,7 @@ public class RegisteringCitizenPaneFxController extends WizardStepFxControllerBa
                 else if (citizenRegistrationStatus == Status.HIT) {
                     CitizenLblStatus.setText(resources.getString("label.successCitizenRegistrationWithHitResponse"));
                     GuiUtils.showNode(CPiProgress, false);
-                    GuiUtils.showNode(CitizenIvSuccess, true);
+                    GuiUtils.showNode(CitizenIvSuccessWithHit, true);
                     GuiUtils.showNode(btnStartOver, true);
                 }
                 else if (citizenRegistrationStatus == Status.ERROR) {
