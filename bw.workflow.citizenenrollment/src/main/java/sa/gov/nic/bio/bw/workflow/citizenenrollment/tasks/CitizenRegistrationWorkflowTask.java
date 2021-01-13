@@ -25,6 +25,8 @@ public class CitizenRegistrationWorkflowTask extends WorkflowTask {
                                        AppUtils.toJson(citizenEnrollmentInfo.getFingers()),
                                        AppUtils.toJson(citizenEnrollmentInfo.getMissing()),
                                        citizenEnrollmentInfo.getFaceImage(),
+                                       citizenEnrollmentInfo.getCapturedLeftIrisBase64(),
+                                       citizenEnrollmentInfo.getCapturedRightIrisBase64(),
                                        AppUtils.toJson(citizenEnrollmentInfo.getBirthDate()),
                                        citizenEnrollmentInfo.getGender(), null);
         var taskResponse = Context.getWebserviceManager().executeApi(apiCall);

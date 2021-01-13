@@ -48,6 +48,8 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase 
     @Input private List<Finger> combinedFingerprints;
     @Input private String capturedRightIrisBase64;
     @Input private String capturedLeftIrisBase64;
+    @Input private String capturedRightIrisCompressedBase64;
+    @Input private String capturedLeftIrisCompressedBase64;
     @Input private Boolean IsPossibleFaceImageExists;
 
     @Output private CitizenEnrollmentInfo citizenEnrollmentInfo;
@@ -90,7 +92,7 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase 
                 normalizedPersonInfo.getPersonType().getCode(),
                 combinedFingerprints, missingFingerprints, facePhotoBase64,
                 personInfo.getBirthDate(), personInfo.getGender(),
-                capturedRightIrisBase64, capturedLeftIrisBase64);
+                capturedRightIrisCompressedBase64, capturedLeftIrisCompressedBase64);
 
         ivPersonPhoto.setImage(facePhoto);
         GuiUtils.attachImageDialog(Context.getCoreFxController(), ivPersonPhoto,
@@ -145,15 +147,6 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase 
             GuiUtils.attachImageDialog(Context.getCoreFxController(), ivLeftIris, leftIrisLabel,
                     contextMenuLabel, false);
         }
-
-        //        if (capturedRightIrisImage != null) {
-        //            ivRightIris.setImage(capturedRightIrisImage);
-        //
-        //        }
-        //        if (capturedLeftIrisImage != null) {
-        //            ivLeftIris.setImage(capturedLeftIrisImage);
-        //        }
-
     }
 
     @Override

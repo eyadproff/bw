@@ -42,11 +42,10 @@ public class CitizenEnrollmentWorkflow extends WizardWorkflowBase {
     public void onStep(int step) throws InterruptedException, Signal {
         switch (step) {
             case 0: {
+
                 renderUiAndWaitForUserInput(PersonIdPaneFxController.class);
 
-
                 passData(PersonIdPaneFxController.class, GetPersonInfoByIdWorkflowTask.class, "personId");
-                //              setData(GetPersonInfoByIdWorkflowTask.class, "returnNullResultInCaseNotFound", true);
                 executeWorkflowTask(GetPersonInfoByIdWorkflowTask.class);
 
 
@@ -178,16 +177,16 @@ public class CitizenEnrollmentWorkflow extends WizardWorkflowBase {
                         "missingFingerprints");
 
                 passData(FaceCapturingFxController.class, ReviewAndSubmitPaneFxController.class, "facePhoto");
-                passData(FaceCapturingFxController.class,"facePhotoBase64ForEnrollment", ReviewAndSubmitPaneFxController.class, "facePhotoBase64");
+                passData(FaceCapturingFxController.class, "facePhotoBase64ForEnrollment", ReviewAndSubmitPaneFxController.class, "facePhotoBase64");
 
-
-                Boolean SkipIris = getData(IrisCapturingFxController.class, "Skip");
-                if (!SkipIris) {
-                    passData(IrisCapturingFxController.class, ReviewAndSubmitPaneFxController.class,
-                            "capturedRightIrisBase64");
-                    passData(IrisCapturingFxController.class, ReviewAndSubmitPaneFxController.class,
-                            "capturedLeftIrisBase64");
-                }
+                passData(IrisCapturingFxController.class, ReviewAndSubmitPaneFxController.class,
+                        "capturedRightIrisBase64");
+                passData(IrisCapturingFxController.class, ReviewAndSubmitPaneFxController.class,
+                        "capturedLeftIrisBase64");
+                passData(IrisCapturingFxController.class, ReviewAndSubmitPaneFxController.class,
+                        "capturedRightIrisCompressedBase64");
+                passData(IrisCapturingFxController.class, ReviewAndSubmitPaneFxController.class,
+                        "capturedLeftIrisCompressedBase64");
                 renderUiAndWaitForUserInput(ReviewAndSubmitPaneFxController.class);
 
                 //Search for face if there is no fingerprints
@@ -206,9 +205,7 @@ public class CitizenEnrollmentWorkflow extends WizardWorkflowBase {
 
             case 6: {
 
-                //submit
-                Boolean skipIris = getData(IrisCapturingFxController.class, "Skip");
-                setData(RegisteringCitizenPaneFxController.class, "skipIris", skipIris);
+
                 renderUiAndWaitForUserInput(RegisteringCitizenPaneFxController.class);
 
                 RegisteringCitizenPaneFxController.Request request = getData(RegisteringCitizenPaneFxController.class,
@@ -228,19 +225,9 @@ public class CitizenEnrollmentWorkflow extends WizardWorkflowBase {
                     passData(CheckCitizenRegistrationWorkflowTask.class, "status",
                             RegisteringCitizenPaneFxController.class, "citizenRegistrationStatus");
                 }
-                else if (request == RegisteringCitizenPaneFxController.Request.SUBMIT_IRIS_REGISTRATION) {
-                    passData(ReviewAndSubmitPaneFxController.class, SubmitIrisRegistrationWorkflowTask.class,
-                            "citizenEnrollmentInfo");
-                    executeWorkflowTask(SubmitIrisRegistrationWorkflowTask.class);
-                }
-                else if (request == RegisteringCitizenPaneFxController.Request.CHECK_IRIS_REGISTRATION) {
-                    passData(SubmitIrisRegistrationWorkflowTask.class, CheckIrisRegistrationWorkflowTask.class, "tcn");
-                    executeWorkflowTask(CheckIrisRegistrationWorkflowTask.class);
-                    passData(CheckIrisRegistrationWorkflowTask.class, "status",
-                            RegisteringCitizenPaneFxController.class, "irisRegistrationStatus");
-                }
 
                 break;
+
             }
 
 

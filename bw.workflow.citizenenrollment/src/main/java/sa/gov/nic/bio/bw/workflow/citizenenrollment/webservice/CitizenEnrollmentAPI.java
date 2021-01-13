@@ -17,6 +17,8 @@ public interface CitizenEnrollmentAPI {
                             @Field("fingers") String fingers,
                             @Field("missing") String missing,
                             @Field("face-image") String faceImage,
+                            @Field("left-iris") String leftIris,
+                            @Field("right-iris") String rightIris,
                             @Field("birth-date") String birthDate,
                             @Field("gender") Integer gender,
                             @Field("supervisor-id") Long supervisorId);

@@ -9,8 +9,8 @@ import sa.gov.nic.bio.bw.workflow.irisinquiry.webservice.IrisInquiryAPI;
 
 public class IrisInquiryWorkflowTask extends WorkflowTask
 {
-	@Input(alwaysRequired = true) protected String rightIrisBase64;
-	@Input(alwaysRequired = true) protected String leftIrisBase64;
+	@Input protected String rightIrisBase64;
+	@Input protected String leftIrisBase64;
 	@Output private Long tcn;
 	
 	@Override

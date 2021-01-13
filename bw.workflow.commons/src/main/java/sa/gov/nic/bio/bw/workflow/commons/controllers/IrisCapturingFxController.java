@@ -45,6 +45,8 @@ public class IrisCapturingFxController extends WizardStepFxControllerBase
 	@Input private Boolean hideStartOverButton;
 	@Output private String capturedRightIrisBase64;
 	@Output private String capturedLeftIrisBase64;
+	@Output private String capturedRightIrisCompressedBase64;
+	@Output private String capturedLeftIrisCompressedBase64;
 	
 	@FXML private VBox paneControlsInnerContainer;
 	@FXML private ScrollPane paneControlsOuterContainer;
@@ -349,8 +351,14 @@ public class IrisCapturingFxController extends WizardStepFxControllerBase
 	        	
 		        if(result.getReturnCode() == CaptureIrisResponse.SuccessCodes.SUCCESS)
 		        {
-			        if(cbSkippedRightIris.isSelected()) capturedRightIrisBase64 = result.getRightIrisImageBase64();
-			        if(cbSkippedLeftIris.isSelected()) capturedLeftIrisBase64 = result.getLeftIrisImageBase64();
+			        if(cbSkippedRightIris.isSelected()) {
+			        	capturedRightIrisBase64 = result.getRightIrisImageBase64();
+			        	capturedRightIrisCompressedBase64 = result.getRightIrisCompressedImageBase64();
+			        }
+			        if(cbSkippedLeftIris.isSelected()) {
+			        	capturedLeftIrisBase64 = result.getLeftIrisImageBase64();
+			        	capturedLeftIrisCompressedBase64 = result.getLeftIrisCompressedImageBase64();
+			        }
 			        showIris();
 		        }
 		        else

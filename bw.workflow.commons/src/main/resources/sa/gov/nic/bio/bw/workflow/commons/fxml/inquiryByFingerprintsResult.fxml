@@ -25,7 +25,7 @@
     <center>
         <BorderPane>
             <left>
-                <VBox fx:id="paneFingerprintsHitResults" maxWidth="220.0" managed="false" visible="false">
+                <VBox fx:id="paneFingerprintsHitResults" maxWidth="225.0" managed="false" visible="false">
                     <padding>
                         <Insets top="10.0" bottom="10.0"/>
                     </padding>
@@ -53,7 +53,7 @@
                                 <columns>
                                     <PTableColumn fx:id="tcCivilSelection" text="✓" reorderable="false" sortable="false" resizable="false" percentageWidth="0.15"/>
                                     <PTableColumn fx:id="tcPersonIdSequence" text="#" reorderable="false" sortable="false" resizable="false" percentageWidth="0.15"/>
-                                    <PTableColumn fx:id="tcPersonId" text="%table.column.personId" reorderable="false" sortable="false" resizable="false" percentageWidth="0.6"/>
+                                    <PTableColumn fx:id="tcPersonId" text="%table.column.personId" reorderable="false" sortable="false" resizable="false" percentageWidth="0.65"/>
                                 </columns>
                             </TableView>
                         </VBox>
