@@ -103,10 +103,16 @@ public class CitizenEnrollmentWorkflow extends WizardWorkflowBase {
                         exceptionOfFingerprints);
                 setData(SlapFingerprintsCapturingFxController.class, "hideCheckBoxOfMissing", Boolean.TRUE);
                 //  setData(SlapFingerprintsCapturingFxController.class, "allow9MissingWithNoRole", Boolean.TRUE);
-                setData(SlapFingerprintsCapturingFxController.class, "acceptBadQualityFingerprintMinRetires",
-                        acceptBadQualityFingerprintMinRetries);
-                setData(SlapFingerprintsCapturingFxController.class, "acceptBadQualityFingerprint",
-                        acceptBadQualityFingerprint);
+
+                // user without permission can not accept Bad Quality Fingerprint
+                @SuppressWarnings("unchecked")
+                List<String> userRoles = (List<String>) Context.getUserSession().getAttribute("userRoles");
+                if(userRoles.contains("TEAuthorizer")) {
+                    setData(SlapFingerprintsCapturingFxController.class, "acceptBadQualityFingerprintMinRetires",
+                            acceptBadQualityFingerprintMinRetries);
+                    setData(SlapFingerprintsCapturingFxController.class, "acceptBadQualityFingerprint",
+                            acceptBadQualityFingerprint);
+                }
 
                 setData(SlapFingerprintsCapturingFxController.class, "hideFingerprintQualityFromTooltip",
                         true);

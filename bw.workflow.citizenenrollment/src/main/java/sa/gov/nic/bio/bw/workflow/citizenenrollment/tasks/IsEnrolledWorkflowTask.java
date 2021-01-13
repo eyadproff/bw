@@ -24,11 +24,14 @@ public class IsEnrolledWorkflowTask extends WorkflowTask {
         var apiCall = api.checkCitizenRegistration(workflowId, workflowTcn, personId);
         var taskResponse = Context.getWebserviceManager().executeApi(apiCall);
         resetWorkflowStepIfNegativeTaskResponse(taskResponse);
-        //Enrollee must has status ‘0’ or ‘4’
-        Integer Code = taskResponse.getResult();
-        if (Code != 0 && Code != 4) {
+
+        Integer code = taskResponse.getResult();
+        if (code == 1 || code == 3 || code == 5 || code == 7 || code == 8) {
             isEnrolled = true;
             resetWorkflowStepIfNegativeOrNullTaskResponse(TaskResponse.failure(CitizenEnrollmentErrorCodes.B018_00001.getCode()));
+        }
+        else if (code == 2 || code == 22) {
+            resetWorkflowStepIfNegativeOrNullTaskResponse(TaskResponse.failure(CitizenEnrollmentErrorCodes.B018_00004.getCode()));
         }
         else { isEnrolled = false; }
 
