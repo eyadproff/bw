@@ -1,0 +1,71 @@
+.titled-pane > .title {
+    -fx-alignment: center;
+}
+
+.required {
+    -fx-control-inner-background: #ffffc6;
+}
+.titled-pane > .title {
+    -fx-alignment: center;
+}
+
+.hidden-divider *.split-pane-divider {
+    -fx-padding: 1 0 1 0;
+}
+
+.four-state-titled-pane:active > .title {
+    -fx-background-color: linear-gradient(to bottom, derive(-fx-color,-15%) 95%, derive(-fx-color,-25%) 100%), #f7fac0;
+    -fx-font-weight: bolder;
+}
+
+.four-state-titled-pane:active {
+    -fx-text-fill: #877d00;
+}
+
+.four-state-titled-pane:active:valid > .title {
+    -fx-background-color: linear-gradient(to bottom, derive(-fx-color,-15%) 95%, derive(-fx-color,-25%) 100%), #c7fad6;
+    -fx-font-weight: bolder;
+}
+
+.four-state-titled-pane:active:valid {
+    -fx-text-fill: #398755;
+}
+
+
+.four-state-titled-pane:disabled > .title {
+    -fx-background-color: linear-gradient(to bottom, derive(-fx-color,-15%) 95%, derive(-fx-color,-25%) 100%), -fx-inner-border, -fx-body-color;
+    -fx-font-weight: normal;
+}
+
+.four-state-titled-pane:disabled {
+    -fx-background-color: linear-gradient(to bottom, derive(-fx-color,-15%) 95%, derive(-fx-color,-25%) 100%), -fx-inner-border, -fx-body-color;
+    -fx-text-fill: fx-text-base-color;
+}
+
+.legend-blue {
+    -fx-background-color: linear-gradient(to bottom, derive(-fx-color,-15%) 95%, derive(-fx-color,-25%) 100%), #d6e9fa;
+    -fx-font-weight: bolder;
+    -fx-text-fill: #1c5f87;
+}
+
+.legend-yellow {
+    -fx-background-color: linear-gradient(to bottom, derive(-fx-color,-15%) 95%, derive(-fx-color,-25%) 100%), #f7fac0;
+    -fx-font-weight: bolder;
+    -fx-text-fill: #877d00;
+}
+
+.legend-green {
+    -fx-background-color: linear-gradient(to bottom, derive(-fx-color,-15%) 95%, derive(-fx-color,-25%) 100%), #c7fad6;
+    -fx-font-weight: bolder;
+    -fx-text-fill: #398755;
+}
+
+.legend-red {
+    -fx-background-color: linear-gradient(to bottom, derive(-fx-color,-15%) 95%, derive(-fx-color,-25%) 100%), #fab4ae;
+    -fx-font-weight: bolder;
+    -fx-text-fill: #b30002;
+}
+
+.legend-gray {
+    -fx-background-color: linear-gradient(to bottom, derive(-fx-color,-15%) 95%, derive(-fx-color,-25%) 100%), -fx-inner-border, -fx-body-color;
+}

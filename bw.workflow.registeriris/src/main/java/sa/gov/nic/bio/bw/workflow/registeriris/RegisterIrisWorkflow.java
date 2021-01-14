@@ -143,9 +143,9 @@ public class RegisterIrisWorkflow extends WizardWorkflowBase
 				{
 					passData(PersonIdPaneFxController.class, SubmitIrisRegistrationWorkflowTask.class,
 					         "personId");
-					passData(IrisCapturingFxController.class, "capturedRightIrisBase64",
+					passData(IrisCapturingFxController.class, "capturedRightIrisCompressedBase64",
 					         SubmitIrisRegistrationWorkflowTask.class, "rightIrisBase64");
-					passData(IrisCapturingFxController.class, "capturedLeftIrisBase64",
+					passData(IrisCapturingFxController.class, "capturedLeftIrisCompressedBase64",
 					         SubmitIrisRegistrationWorkflowTask.class, "leftIrisBase64");
 					executeWorkflowTask(SubmitIrisRegistrationWorkflowTask.class);
 				}

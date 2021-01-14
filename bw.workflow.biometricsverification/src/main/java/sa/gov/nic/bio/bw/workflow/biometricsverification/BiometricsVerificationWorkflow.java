@@ -1,7 +1,6 @@
 package sa.gov.nic.bio.bw.workflow.biometricsverification;
 
 import sa.gov.nic.bio.bw.core.biokit.FingerPosition;
-import sa.gov.nic.bio.bw.core.utils.AppUtils;
 import sa.gov.nic.bio.bw.core.utils.Device;
 import sa.gov.nic.bio.bw.core.wizard.Step;
 import sa.gov.nic.bio.bw.core.wizard.Wizard;
@@ -9,24 +8,23 @@ import sa.gov.nic.bio.bw.core.workflow.AssociatedMenu;
 import sa.gov.nic.bio.bw.core.workflow.Signal;
 import sa.gov.nic.bio.bw.core.workflow.WithLookups;
 import sa.gov.nic.bio.bw.core.workflow.WizardWorkflowBase;
-import sa.gov.nic.bio.bw.workflow.commons.beans.BioExclusion;
-import sa.gov.nic.bio.bw.workflow.commons.tasks.RetrieveBioExclusionsWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.biometricsverification.beans.MatchingResponse;
+import sa.gov.nic.bio.bw.workflow.biometricsverification.controllers.ShowResultFxController;
 import sa.gov.nic.bio.bw.workflow.biometricsverification.controllers.VerificationMethodSelectionFxController;
 import sa.gov.nic.bio.bw.workflow.biometricsverification.controllers.VerificationMethodSelectionFxController.VerificationMethod;
 import sa.gov.nic.bio.bw.workflow.biometricsverification.controllers.VerificationProgressPaneFxController;
+import sa.gov.nic.bio.bw.workflow.biometricsverification.tasks.FingerprintVerificationWorkflowTask;
+import sa.gov.nic.bio.bw.workflow.commons.beans.BioExclusion;
 import sa.gov.nic.bio.bw.workflow.commons.controllers.FaceCapturingFxController;
 import sa.gov.nic.bio.bw.workflow.commons.controllers.SingleFingerprintCapturingFxController;
-import sa.gov.nic.bio.bw.workflow.biometricsverification.tasks.FingerprintVerificationWorkflowTask;
-import sa.gov.nic.bio.bw.workflow.commons.controllers.SlapFingerprintsCapturingFxController;
+import sa.gov.nic.bio.bw.workflow.commons.lookups.CountriesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.DocumentTypesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.PersonTypesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.tasks.GetPersonInfoByIdWorkflowTask;
+import sa.gov.nic.bio.bw.workflow.commons.tasks.RetrieveBioExclusionsWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.faceverification.beans.FaceMatchingResponse;
 import sa.gov.nic.bio.bw.workflow.faceverification.controllers.PersonIdPaneFxController;
-import sa.gov.nic.bio.bw.workflow.biometricsverification.controllers.ShowResultFxController;
 import sa.gov.nic.bio.bw.workflow.faceverification.tasks.FaceVerificationWorkflowTask;
-import sa.gov.nic.bio.bw.workflow.commons.lookups.CountriesLookup;
 import sa.gov.nic.bio.bw.workflow.searchbyfaceimage.controllers.ConfirmImageFxController;
 import sa.gov.nic.bio.bw.workflow.searchbyfaceimage.controllers.ImageSourceFxController;
 import sa.gov.nic.bio.bw.workflow.searchbyfaceimage.controllers.ImageSourceFxController.Source;
@@ -213,6 +211,9 @@ public class BiometricsVerificationWorkflow extends WizardWorkflowBase {
                 renderUiAndWaitForUserInput(ShowResultFxController.class);
                 break;
             }
+
+            default:
+                break;
         }
 
     }

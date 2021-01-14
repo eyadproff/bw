@@ -25,11 +25,14 @@ import sa.gov.nic.bio.bw.workflow.commons.utils.CommonsErrorCodes;
 import sa.gov.nic.bio.commons.TaskResponse;
 
 import java.io.ByteArrayInputStream;
+import java.util.Arrays;
 import java.util.Base64;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.stream.Collectors;
 
 @FxmlFile("irisCapturing.fxml")
 public class IrisCapturingFxController extends WizardStepFxControllerBase {
@@ -37,18 +40,13 @@ public class IrisCapturingFxController extends WizardStepFxControllerBase {
     private static final int RIGHT_IRIS_ONLY = 1;
     private static final int LEFT_AND_RIGHT_IRIS = 2;
 
-    @Input
-    private Boolean hidePreviousButton;
-    @Input
-    private Boolean hideStartOverButton;
-    @Input
-    private Boolean hideSkipButton;
-    @Output
-    private String capturedRightIrisBase64;
-    @Output
-    private String capturedLeftIrisBase64;
-    @Output
-    private Boolean Skip;
+    @Input private Boolean hidePreviousButton;
+    @Input private Boolean hideStartOverButton;
+    @Input private Boolean hideSkipButton;
+    @Output private String capturedRightIrisBase64;
+    @Output private String capturedLeftIrisBase64;
+    @Output private String capturedRightIrisCompressedBase64;
+    @Output private String capturedLeftIrisCompressedBase64;
 
     @FXML
     private VBox paneControlsInnerContainer;
@@ -185,9 +183,11 @@ public class IrisCapturingFxController extends WizardStepFxControllerBase {
                 @SuppressWarnings("unchecked")
                 List<String> userRoles = (List<String>) Context.getUserSession().getAttribute("userRoles");
 
-                String skipIrisRole = Context.getConfigManager().getProperty("iris.roles.skipOneEye");
+                String skipIrisRoles = Context.getConfigManager().getProperty("iris.roles.skipOneEye");
 
-                if (userRoles.contains(skipIrisRole)) // has permission
+                List<String> skipIrisRolesList = Arrays.stream(skipIrisRoles.split(",")).map(String::strip).collect(Collectors.toList());
+
+                if(!Collections.disjoint(userRoles,skipIrisRolesList)) // has permission
                 {
                     String headerText = resources.getString("iris.skippingOneEye.confirmation.header");
                     String contentText = String.format(resources.getString("iris.skippingOneEye.confirmation.message"),
@@ -291,7 +291,7 @@ public class IrisCapturingFxController extends WizardStepFxControllerBase {
             GuiUtils.showNode(btnCaptureIris, false);
             GuiUtils.showNode(lblStatus, true);
             lblStatus.setText(resources.getString("label.status.irisScannerNotInitialized"));
-            deviceManagerGadgetPaneController.initializeIrisScanner();
+//            deviceManagerGadgetPaneController.initializeIrisScanner();
         }
         else {
             GuiUtils.showNode(btnCaptureIris, false);
@@ -309,8 +309,6 @@ public class IrisCapturingFxController extends WizardStepFxControllerBase {
 
     @FXML
     private void onCaptureIrisButtonClicked(ActionEvent event) {
-
-        Skip = false;
 
         capturedRightIrisBase64 = null;
         capturedLeftIrisBase64 = null;
@@ -353,8 +351,14 @@ public class IrisCapturingFxController extends WizardStepFxControllerBase {
                 CaptureIrisResponse result = taskResponse.getResult();
 
                 if (result.getReturnCode() == CaptureIrisResponse.SuccessCodes.SUCCESS) {
-                    if (cbSkippedRightIris.isSelected()) { capturedRightIrisBase64 = result.getRightIrisImageBase64(); }
-                    if (cbSkippedLeftIris.isSelected()) { capturedLeftIrisBase64 = result.getLeftIrisImageBase64(); }
+                    if(cbSkippedRightIris.isSelected()) {
+                        capturedRightIrisBase64 = result.getRightIrisImageBase64();
+                        capturedRightIrisCompressedBase64 = result.getRightIrisCompressedImageBase64();
+                    }
+                    if(cbSkippedLeftIris.isSelected()) {
+                        capturedLeftIrisBase64 = result.getLeftIrisImageBase64();
+                        capturedLeftIrisCompressedBase64 = result.getLeftIrisCompressedImageBase64();
+                    }
                     showIris();
                 }
                 else {
@@ -457,7 +461,10 @@ public class IrisCapturingFxController extends WizardStepFxControllerBase {
 
     @FXML
     private void onSkipButtonClicked() {
-        Skip = true;
+        capturedRightIrisBase64 = null;
+        capturedLeftIrisBase64 = null;
+        capturedRightIrisCompressedBase64 = null;
+        capturedLeftIrisCompressedBase64 = null;
         goNext();
 
     }

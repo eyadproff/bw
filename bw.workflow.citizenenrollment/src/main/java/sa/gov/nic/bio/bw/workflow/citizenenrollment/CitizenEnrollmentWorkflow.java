@@ -4,18 +4,21 @@ import sa.gov.nic.bio.bw.core.Context;
 import sa.gov.nic.bio.bw.core.utils.Device;
 import sa.gov.nic.bio.bw.core.wizard.Step;
 import sa.gov.nic.bio.bw.core.wizard.Wizard;
-import sa.gov.nic.bio.bw.core.workflow.*;
-import sa.gov.nic.bio.bw.workflow.commons.beans.BioExclusion;
-import sa.gov.nic.bio.bw.workflow.commons.tasks.RetrieveBioExclusionsWorkflowTask;
+import sa.gov.nic.bio.bw.core.workflow.AssociatedMenu;
+import sa.gov.nic.bio.bw.core.workflow.Signal;
+import sa.gov.nic.bio.bw.core.workflow.WithLookups;
+import sa.gov.nic.bio.bw.core.workflow.WizardWorkflowBase;
 import sa.gov.nic.bio.bw.workflow.citizenenrollment.beans.NormalizedPersonInfo;
+import sa.gov.nic.bio.bw.workflow.citizenenrollment.beans.PersonInfo;
 import sa.gov.nic.bio.bw.workflow.citizenenrollment.controllers.*;
 import sa.gov.nic.bio.bw.workflow.citizenenrollment.tasks.*;
+import sa.gov.nic.bio.bw.workflow.commons.beans.BioExclusion;
 import sa.gov.nic.bio.bw.workflow.commons.controllers.FaceCapturingFxController;
 import sa.gov.nic.bio.bw.workflow.commons.controllers.SlapFingerprintsCapturingFxController;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.CountriesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.DocumentTypesLookup;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.PersonTypesLookup;
-import sa.gov.nic.bio.bw.workflow.citizenenrollment.tasks.SearchByFacePhotoWorkflowTask;
+import sa.gov.nic.bio.bw.workflow.commons.tasks.RetrieveBioExclusionsWorkflowTask;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -39,16 +42,15 @@ public class CitizenEnrollmentWorkflow extends WizardWorkflowBase {
     public void onStep(int step) throws InterruptedException, Signal {
         switch (step) {
             case 0: {
+
                 renderUiAndWaitForUserInput(PersonIdPaneFxController.class);
 
-
                 passData(PersonIdPaneFxController.class, GetPersonInfoByIdWorkflowTask.class, "personId");
-                //              setData(GetPersonInfoByIdWorkflowTask.class, "returnNullResultInCaseNotFound", true);
                 executeWorkflowTask(GetPersonInfoByIdWorkflowTask.class);
 
 
                 //check enroll or not
-                passData(GetPersonInfoByIdWorkflowTask.class, IsEnrolledWorkflowTask.class, "personInfo");
+                passData(PersonIdPaneFxController.class, IsEnrolledWorkflowTask.class, "personId");
                 executeWorkflowTask(IsEnrolledWorkflowTask.class);
 
                 //death
@@ -101,10 +103,30 @@ public class CitizenEnrollmentWorkflow extends WizardWorkflowBase {
                         exceptionOfFingerprints);
                 setData(SlapFingerprintsCapturingFxController.class, "hideCheckBoxOfMissing", Boolean.TRUE);
                 //  setData(SlapFingerprintsCapturingFxController.class, "allow9MissingWithNoRole", Boolean.TRUE);
-                setData(SlapFingerprintsCapturingFxController.class, "acceptBadQualityFingerprintMinRetires",
-                        acceptBadQualityFingerprintMinRetries);
-                setData(SlapFingerprintsCapturingFxController.class, "acceptBadQualityFingerprint",
-                        acceptBadQualityFingerprint);
+
+                // user without permission can not accept Bad Quality Fingerprint
+                @SuppressWarnings("unchecked")
+                List<String> userRoles = (List<String>) Context.getUserSession().getAttribute("userRoles");
+                if(userRoles.contains("TEAuthorizer")) {
+                    setData(SlapFingerprintsCapturingFxController.class, "acceptBadQualityFingerprintMinRetires",
+                            acceptBadQualityFingerprintMinRetries);
+                    setData(SlapFingerprintsCapturingFxController.class, "acceptBadQualityFingerprint",
+                            acceptBadQualityFingerprint);
+                }
+
+                setData(SlapFingerprintsCapturingFxController.class, "hideFingerprintQualityFromTooltip",
+                        true);
+                setData(SlapFingerprintsCapturingFxController.class, "showPrintAndSaveNumOfTriesReportButton",
+                        true);
+
+                // We do this because the personInfo Object we used here is different from the Common
+                PersonInfo personInfo = getData(GetPersonInfoByIdWorkflowTask.class, "personInfo");
+                sa.gov.nic.bio.bw.workflow.commons.beans.PersonInfo personInfo1 = new sa.gov.nic.bio.bw.workflow.commons.beans.PersonInfo();
+                // We just need the name and id so far
+                personInfo1.setName(personInfo.getName());
+                personInfo1.setSamisId(personInfo.getSamisId());
+
+                setData(SlapFingerprintsCapturingFxController.class, "personInfo", personInfo1);
 
                 renderUiAndWaitForUserInput(SlapFingerprintsCapturingFxController.class);
 
@@ -146,6 +168,14 @@ public class CitizenEnrollmentWorkflow extends WizardWorkflowBase {
             case 5: {
                 //Review
 
+                List<Integer> missingFingerprints = getData(SlapFingerprintsCapturingFxController.class,
+                        "missingFingerprints");
+                if (missingFingerprints != null && !missingFingerprints.isEmpty()) {
+                    // the last one added Exceptions
+                    List<BioExclusion> bioExclusion = getData(RetrieveBioExclusionsWorkflowTask.class, "bioExclusionList");
+                    bioExclusion.sort((o1, o2) -> o2.getCreateDate().compareTo(o1.getCreateDate()));
+                    setData(ReviewAndSubmitPaneFxController.class, "supervisorId", bioExclusion.get(0).getOperatorId());
+                }
                 passData(ShowingPersonInfoFxController.class, ReviewAndSubmitPaneFxController.class,
                         "normalizedPersonInfo");
                 passData(GetPersonInfoByIdWorkflowTask.class, ReviewAndSubmitPaneFxController.class, "personInfo");
@@ -161,20 +191,19 @@ public class CitizenEnrollmentWorkflow extends WizardWorkflowBase {
                         "missingFingerprints");
 
                 passData(FaceCapturingFxController.class, ReviewAndSubmitPaneFxController.class, "facePhoto");
-                passData(FaceCapturingFxController.class,"facePhotoBase64ForEnrollment", ReviewAndSubmitPaneFxController.class, "facePhotoBase64");
+                passData(FaceCapturingFxController.class, "facePhotoBase64ForEnrollment", ReviewAndSubmitPaneFxController.class, "facePhotoBase64");
 
-
-                Boolean SkipIris = getData(IrisCapturingFxController.class, "Skip");
-                if (!SkipIris) {
-                    passData(IrisCapturingFxController.class, ReviewAndSubmitPaneFxController.class,
-                            "capturedRightIrisBase64");
-                    passData(IrisCapturingFxController.class, ReviewAndSubmitPaneFxController.class,
-                            "capturedLeftIrisBase64");
-                }
+                passData(IrisCapturingFxController.class, ReviewAndSubmitPaneFxController.class,
+                        "capturedRightIrisBase64");
+                passData(IrisCapturingFxController.class, ReviewAndSubmitPaneFxController.class,
+                        "capturedLeftIrisBase64");
+                passData(IrisCapturingFxController.class, ReviewAndSubmitPaneFxController.class,
+                        "capturedRightIrisCompressedBase64");
+                passData(IrisCapturingFxController.class, ReviewAndSubmitPaneFxController.class,
+                        "capturedLeftIrisCompressedBase64");
                 renderUiAndWaitForUserInput(ReviewAndSubmitPaneFxController.class);
 
                 //Search for face if there is no fingerprints
-                List<Integer> missingFingerprints = getData(SlapFingerprintsCapturingFxController.class, "missingFingerprints");
                 if (missingFingerprints.size() >= 10) {
                     passData(FaceCapturingFxController.class, SearchByFacePhotoWorkflowTask.class,
                             "facePhotoBase64");
@@ -189,9 +218,7 @@ public class CitizenEnrollmentWorkflow extends WizardWorkflowBase {
 
             case 6: {
 
-                //submit
-                Boolean skipIris = getData(IrisCapturingFxController.class, "Skip");
-                setData(RegisteringCitizenPaneFxController.class, "skipIris", skipIris);
+
                 renderUiAndWaitForUserInput(RegisteringCitizenPaneFxController.class);
 
                 RegisteringCitizenPaneFxController.Request request = getData(RegisteringCitizenPaneFxController.class,
@@ -211,19 +238,9 @@ public class CitizenEnrollmentWorkflow extends WizardWorkflowBase {
                     passData(CheckCitizenRegistrationWorkflowTask.class, "status",
                             RegisteringCitizenPaneFxController.class, "citizenRegistrationStatus");
                 }
-                else if (request == RegisteringCitizenPaneFxController.Request.SUBMIT_IRIS_REGISTRATION) {
-                    passData(ReviewAndSubmitPaneFxController.class, SubmitIrisRegistrationWorkflowTask.class,
-                            "citizenEnrollmentInfo");
-                    executeWorkflowTask(SubmitIrisRegistrationWorkflowTask.class);
-                }
-                else if (request == RegisteringCitizenPaneFxController.Request.CHECK_IRIS_REGISTRATION) {
-                    passData(SubmitIrisRegistrationWorkflowTask.class, CheckIrisRegistrationWorkflowTask.class, "tcn");
-                    executeWorkflowTask(CheckIrisRegistrationWorkflowTask.class);
-                    passData(CheckIrisRegistrationWorkflowTask.class, "status",
-                            RegisteringCitizenPaneFxController.class, "irisRegistrationStatus");
-                }
 
                 break;
+
             }
 
 

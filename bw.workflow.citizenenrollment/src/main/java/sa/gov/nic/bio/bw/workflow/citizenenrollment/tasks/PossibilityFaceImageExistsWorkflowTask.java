@@ -1,15 +1,11 @@
 package sa.gov.nic.bio.bw.workflow.citizenenrollment.tasks;
 
 import sa.gov.nic.bio.bw.core.Context;
-import sa.gov.nic.bio.bw.core.utils.GuiLanguage;
 import sa.gov.nic.bio.bw.core.workflow.Input;
 import sa.gov.nic.bio.bw.core.workflow.Output;
 import sa.gov.nic.bio.bw.core.workflow.Signal;
 import sa.gov.nic.bio.bw.core.workflow.WorkflowTask;
-import sa.gov.nic.bio.bw.workflow.citizenenrollment.beans.PersonInfo;
-import sa.gov.nic.bio.bw.workflow.citizenenrollment.utils.CitizenEnrollmentErrorCodes;
 import sa.gov.nic.bio.bw.workflow.searchbyfaceimage.beans.Candidate;
-import sa.gov.nic.bio.commons.TaskResponse;
 
 import java.util.List;
 
@@ -27,8 +23,10 @@ public class PossibilityFaceImageExistsWorkflowTask extends WorkflowTask {
                 Context.getConfigManager().getProperty("citizenEnrollment.faceSearch.score"));
         if (candidates != null) {
             for (Candidate candidate : candidates) {
-                if (score < candidate.getScore()) { IsPossibleFaceImageExists = true; }
-                break;
+                if (score < candidate.getScore()) {
+                    IsPossibleFaceImageExists = true;
+                    break;
+                }
             }
         }
     }

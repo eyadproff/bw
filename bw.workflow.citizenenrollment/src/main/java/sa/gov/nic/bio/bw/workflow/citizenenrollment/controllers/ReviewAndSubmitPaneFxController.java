@@ -45,72 +45,44 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase 
     private List<Finger> slapFingerprints;
     @Input(alwaysRequired = true)
     private List<Integer> missingFingerprints;
-    @Input
-    private List<Finger> combinedFingerprints;
-    @Input
-    private String capturedRightIrisBase64;
-    @Input
-    private String capturedLeftIrisBase64;
-    @Input
-    private Boolean IsPossibleFaceImageExists;
+    @Input private Long supervisorId;
+    @Input private List<Finger> combinedFingerprints;
+    @Input private String capturedRightIrisBase64;
+    @Input private String capturedLeftIrisBase64;
+    @Input private String capturedRightIrisCompressedBase64;
+    @Input private String capturedLeftIrisCompressedBase64;
+    @Input private Boolean IsPossibleFaceImageExists;
 
-    @Output
-    private CitizenEnrollmentInfo citizenEnrollmentInfo;
+    @Output private CitizenEnrollmentInfo citizenEnrollmentInfo;
 
-    @FXML
-    private VBox paneImage;
-    @FXML
-    private ImageViewPane paneImageView;
-    @FXML
-    private ImageView ivPersonPhoto;
-    @FXML
-    private Label lblFirstName;
-    @FXML
-    private Label lblSecondName;
-    @FXML
-    private Label lblOtherName;
-    @FXML
-    private Label lblFamilyName;
-    @FXML
-    private Label lblNationality;
-    @FXML
-    private Label lblGender;
-    @FXML
-    private Label lblBirthPlace;
-    @FXML
-    private Label lblBirthDate;
-    @FXML
-    private ImageView ivRightThumb;
-    @FXML
-    private ImageView ivRightIndex;
-    @FXML
-    private ImageView ivRightMiddle;
-    @FXML
-    private ImageView ivRightRing;
-    @FXML
-    private ImageView ivRightLittle;
-    @FXML
-    private ImageView ivLeftLittle;
-    @FXML
-    private ImageView ivLeftRing;
-    @FXML
-    private ImageView ivLeftMiddle;
-    @FXML
-    private ImageView ivLeftIndex;
-    @FXML
-    private ImageView ivLeftThumb;
+    @FXML private VBox paneImage;
+    @FXML private ImageViewPane paneImageView;
+    @FXML private ImageView ivPersonPhoto;
+    @FXML private Label lblFirstName;
+    @FXML private Label lblSecondName;
+    @FXML private Label lblOtherName;
+    @FXML private Label lblFamilyName;
+    @FXML private Label lblNationality;
+    @FXML private Label lblGender;
+    @FXML private Label lblBirthPlace;
+    @FXML private Label lblBirthDate;
+    @FXML private ImageView ivRightThumb;
+    @FXML private ImageView ivRightIndex;
+    @FXML private ImageView ivRightMiddle;
+    @FXML private ImageView ivRightRing;
+    @FXML private ImageView ivRightLittle;
+    @FXML private ImageView ivLeftLittle;
+    @FXML private ImageView ivLeftRing;
+    @FXML private ImageView ivLeftMiddle;
+    @FXML private ImageView ivLeftIndex;
+    @FXML private ImageView ivLeftThumb;
 
-    @FXML
-    private ImageView ivRightIris;
-    @FXML
-    private ImageView ivLeftIris;
+    @FXML private ImageView ivRightIris;
+    @FXML private ImageView ivLeftIris;
 
-    @FXML
-    private ProgressIndicator piProgress;
-    @FXML
-    private Button btnPrevious;
-    @FXML
-    private Button btnSubmit;
+    @FXML private ProgressIndicator piProgress;
+    @FXML private Button btnPrevious;
+    @FXML private Button btnSubmit;
 
 
     @Override
@@ -121,7 +93,7 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase 
                 normalizedPersonInfo.getPersonType().getCode(),
                 combinedFingerprints, missingFingerprints, facePhotoBase64,
                 personInfo.getBirthDate(), personInfo.getGender(),
-                capturedRightIrisBase64, capturedLeftIrisBase64);
+                capturedRightIrisCompressedBase64, capturedLeftIrisCompressedBase64, supervisorId);
 
         ivPersonPhoto.setImage(facePhoto);
         GuiUtils.attachImageDialog(Context.getCoreFxController(), ivPersonPhoto,
@@ -150,6 +122,10 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase 
                 ivLeftLittle, null, null, null, null, null, null);
 
 
+        var contextMenuLabel = resources.getString("label.contextMenu.showImage");
+        var rightIrisLabel = resources.getString("label.rightIris");
+        var leftIrisLabel = resources.getString("label.leftIris");
+
         Image capturedRightIrisImage = null;
         Image capturedLeftIrisImage = null;
 
@@ -164,10 +140,13 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase 
 
         if (capturedRightIrisImage != null) {
             ivRightIris.setImage(capturedRightIrisImage);
-
+            GuiUtils.attachImageDialog(Context.getCoreFxController(), ivRightIris, rightIrisLabel,
+                    contextMenuLabel, false);
         }
         if (capturedLeftIrisImage != null) {
             ivLeftIris.setImage(capturedLeftIrisImage);
+            GuiUtils.attachImageDialog(Context.getCoreFxController(), ivLeftIris, leftIrisLabel,
+                    contextMenuLabel, false);
         }
     }
 

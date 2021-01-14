@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import sa.gov.nic.bio.bw.core.beans.Gender?>
+<BorderPane fx:id="rootPane" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sa.gov.nic.bio.bw.workflow.registercriminalclearancereportbyfingerprints.controllers.UpdatePersonInfoPaneFxController">
+    <fx:define>
+        <Gender fx:id="maleGender" fx:value="MALE"/>
+        <Gender fx:id="femaleGender" fx:value="FEMALE"/>
+        <ToggleGroup fx:id="toggleGroup1" />
+        <ToggleGroup fx:id="toggleGroup2" />
+        <ToggleGroup fx:id="toggleGroup3" />
+    </fx:define>
+    <center>
+        <BorderPane>
+            <center>
+                <VBox>
+                    <padding>
+                        <Insets bottom="10.0" top="10.0" />
+                    </padding>
+                    <ScrollPane fitToHeight="true" fitToWidth="true" VBox.vgrow="ALWAYS">
+                        <BorderPane>
+                            <left>
+                                <GridPane hgap="20.0" vgap="10.0">
+                                    <padding>
+                                        <Insets topRightBottomLeft="10.0"/>
+                                    </padding>
+                                    <Label text="%label.firstName" GridPane.rowIndex="0" GridPane.columnIndex="0">
+                                        <GridPane.margin>
+                                            <Insets bottom="5.0"/>
+                                        </GridPane.margin>
+                                    </Label>
+                                    <TextField fx:id="txtFirstName" styleClass="required" GridPane.rowIndex="0" GridPane.columnIndex="1">
+                                        <GridPane.margin>
+                                            <Insets bottom="5.0"/>
+                                        </GridPane.margin>
+                                    </TextField>
+                                    <Label text="%label.fatherName" GridPane.rowIndex="1" GridPane.columnIndex="0">
+                                        <GridPane.margin>
+                                            <Insets bottom="5.0"/>
+                                        </GridPane.margin>
+                                    </Label>
+                                    <TextField fx:id="txtFatherName"  styleClass="required" GridPane.rowIndex="1" GridPane.columnIndex="1">
+                                        <GridPane.margin>
+                                            <Insets bottom="5.0"/>
+                                        </GridPane.margin>
+                                    </TextField>
+                                    <Label text="%label.grandfatherName" GridPane.rowIndex="2" GridPane.columnIndex="0">
+                                        <GridPane.margin>
+                                            <Insets bottom="5.0"/>
+                                        </GridPane.margin>
+                                    </Label>
+                                    <TextField fx:id="txtGrandfatherName" styleClass="required" GridPane.rowIndex="2" GridPane.columnIndex="1">
+                                        <GridPane.margin>
+                                            <Insets bottom="5.0"/>
+                                        </GridPane.margin>
+                                    </TextField>
+                                    <Label text="%label.familyName" GridPane.rowIndex="3" GridPane.columnIndex="0">
+                                        <GridPane.margin>
+                                            <Insets bottom="5.0"/>
+                                        </GridPane.margin>
+                                    </Label>
+                                    <TextField fx:id="txtFamilyName" styleClass="required" GridPane.rowIndex="3" GridPane.columnIndex="1">
+                                        <GridPane.margin>
+                                            <Insets bottom="5.0"/>
+                                        </GridPane.margin>
+                                    </TextField>
+
+                                    <Label text="%label.englishFirstName" GridPane.rowIndex="0" GridPane.columnIndex="2">
+                                        <GridPane.margin>
+                                            <Insets bottom="5.0"/>
+                                        </GridPane.margin>
+                                    </Label>
+                                    <TextField fx:id="txtEnglishFirstName" GridPane.rowIndex="0" GridPane.columnIndex="3">
+                                        <GridPane.margin>
+                                            <Insets bottom="5.0"/>
+                                        </GridPane.margin>
+                                    </TextField>
+                                    <Label text="%label.englishFatherName" GridPane.rowIndex="1" GridPane.columnIndex="2">
+                                        <GridPane.margin>
+                                            <Insets bottom="5.0"/>
+                                        </GridPane.margin>
+                                    </Label>
+                                    <TextField fx:id="txtEnglishFatherName" GridPane.rowIndex="1" GridPane.columnIndex="3">
+                                        <GridPane.margin>
+                                            <Insets bottom="5.0"/>
+                                        </GridPane.margin>
+                                    </TextField>
+                                    <Label text="%label.englishGrandFatherName" GridPane.rowIndex="2" GridPane.columnIndex="2">
+                                        <GridPane.margin>
+                                            <Insets bottom="5.0"/>
+                                        </GridPane.margin>
+                                    </Label>
+                                    <TextField fx:id="txtEnglishGrandfatherName" GridPane.rowIndex="2" GridPane.columnIndex="3">
+                                        <GridPane.margin>
+                                            <Insets bottom="5.0"/>
+                                        </GridPane.margin>
+                                    </TextField>
+                                    <Label text="%label.englishFamilyName" GridPane.rowIndex="3" GridPane.columnIndex="2">
+                                        <GridPane.margin>
+                                            <Insets bottom="5.0"/>
+                                        </GridPane.margin>
+                                    </Label>
+                                    <TextField fx:id="txtEnglishFamilyName" GridPane.rowIndex="3" GridPane.columnIndex="3">
+                                        <GridPane.margin>
+                                            <Insets bottom="5.0"/>
+                                        </GridPane.margin>
+                                    </TextField>
+                                    <Label text="%label.nationality" GridPane.rowIndex="5" GridPane.columnIndex="0">
+                                        <GridPane.margin>
+                                            <Insets bottom="5.0"/>
+                                        </GridPane.margin>
+                                    </Label>
+                                    <ComboBox fx:id="cboNationality" styleClass="required" GridPane.rowIndex="5" GridPane.columnIndex="1">
+                                        <GridPane.margin>
+                                            <Insets bottom="5.0"/>
+                                        </GridPane.margin>
+                                    </ComboBox>
+                                    <Label text="%label.birthDate" GridPane.rowIndex="6" GridPane.columnIndex="0">
+                                        <GridPane.margin>
+                                            <Insets bottom="5.0"/>
+                                        </GridPane.margin>
+                                    </Label>
+                                    <DatePicker fx:id="dpBirthDate" promptText="dd/MM/yyyy" GridPane.rowIndex="6" GridPane.columnIndex="1"/>
+                                    <HBox GridPane.rowIndex="7" GridPane.columnIndex="1" spacing="5.0">
+                                        <GridPane.margin>
+                                            <Insets bottom="5.0"/>
+                                        </GridPane.margin>
+                                        <Label text="%label.input" styleClass="small-font"/>
+                                        <RadioButton fx:id="rdoBirthDateUseHijri" toggleGroup="$toggleGroup1" text="%radio.hijri" styleClass="small-font, small-radio-button" focusTraversable="false"/>
+                                        <RadioButton fx:id="rdoBirthDateUseGregorian" toggleGroup="$toggleGroup1" text="%radio.gregorian" styleClass="small-font, small-radio-button" focusTraversable="false"/>
+                                    </HBox>
+                                    <Label text="%label.personId" GridPane.rowIndex="8" GridPane.columnIndex="0">
+                                        <GridPane.margin>
+                                            <Insets bottom="5.0"/>
+                                        </GridPane.margin>
+                                    </Label>
+                                    <TextField fx:id="txtPersonId" GridPane.rowIndex="8" GridPane.columnIndex="1">
+                                        <GridPane.margin>
+                                            <Insets bottom="5.0"/>
+                                        </GridPane.margin>
+                                    </TextField>
+
+                                    <Label text="%label.passportId" GridPane.rowIndex="9" GridPane.columnIndex="0">
+                                        <GridPane.margin>
+                                            <Insets bottom="5.0"/>
+                                        </GridPane.margin>
+                                    </Label>
+                                    <TextField fx:id="txtPassportId" GridPane.rowIndex="9" GridPane.columnIndex="1">
+                                        <GridPane.margin>
+                                            <Insets bottom="5.0"/>
+                                        </GridPane.margin>
+                                    </TextField>
+                                </GridPane>
+                            </left>
+                        </BorderPane>
+                    </ScrollPane>
+                </VBox>
+            </center>
+        </BorderPane>
+    </center>
+    <bottom>
+        <HBox alignment="CENTER" spacing="10">
+            <padding>
+                <Insets bottom="10" />
+            </padding>
+            <Button fx:id="btnStartOver" onAction="#onStartOverButtonClicked" text="%button.startOver" />
+            <Button fx:id="btnNext" onAction="#onNextButtonClicked" text="%button.next" />
+        </HBox>
+    </bottom>
+</BorderPane>

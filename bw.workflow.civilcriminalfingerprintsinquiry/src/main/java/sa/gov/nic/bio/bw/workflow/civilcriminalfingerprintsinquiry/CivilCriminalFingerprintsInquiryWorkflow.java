@@ -448,6 +448,9 @@ public class CivilCriminalFingerprintsInquiryWorkflow extends WizardWorkflowBase
 				         InquiryByFingerprintsResultPaneFxController.class, "oldCriminalPersonInfoMap");
 				passData(getClass(), FIELD_NEW_CRIMINAL_PERSON_INFO_MAP,
 				         InquiryByFingerprintsResultPaneFxController.class, "newCriminalPersonInfoMap");
+
+				passData(FingerprintInquiryWorkflowTask.class, InquiryByFingerprintsResultPaneFxController.class,
+						"inquiryId");
 				setData(InquiryByFingerprintsResultPaneFxController.class, "hideRegisterUnknownButton",
 				        Boolean.TRUE);
 				setData(InquiryByFingerprintsResultPaneFxController.class, "hideConfirmationButton",

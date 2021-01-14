@@ -187,7 +187,7 @@ public class ConvictedReportInquiryPaneFxController extends ContentFxControllerB
 		BooleanBinding reportNumberBinding = createTextFieldNotCompleteBooleanBinding(txtReportNumber);
 		BooleanBinding criminalBiometricsIdBinding = createTextFieldNotCompleteBooleanBinding(txtCriminalBiometricsId);
 		BooleanBinding locationBinding = createTextFieldNotCompleteBooleanBinding(txtLocation);
-		BooleanBinding personIdBinding = createTextFieldNotCompleteBooleanBinding(txtPersonId);
+		BooleanBinding personIdBinding = createTextFieldNotCompleteBooleanBinding(txtPersonId,10);
 		BooleanBinding documentIdBinding = createTextFieldNotCompleteBooleanBinding(txtDocumentId);
 		BooleanBinding firstNameBinding = createTextFieldNotCompleteBooleanBinding(txtFirstName);
 		BooleanBinding fatherNameBinding = createTextFieldNotCompleteBooleanBinding(txtFatherName);
@@ -195,7 +195,7 @@ public class ConvictedReportInquiryPaneFxController extends ContentFxControllerB
 		BooleanBinding familyNameBinding = createTextFieldNotCompleteBooleanBinding(txtFamilyName);
 		BooleanBinding judgmentNumberBinding = createTextFieldNotCompleteBooleanBinding(txtJudgmentNumber);
 		BooleanBinding prisonerNumberBinding = createTextFieldNotCompleteBooleanBinding(txtPrisonerNumber);
-		BooleanBinding operatorIdBinding = createTextFieldNotCompleteBooleanBinding(txtOperatorId);
+		BooleanBinding operatorIdBinding = createTextFieldNotCompleteBooleanBinding(txtOperatorId, 10);
 		BooleanBinding judgmentDateFromBinding = createDatePickerNotCompleteBooleanBinding(dpJudgmentDateFrom);
 		BooleanBinding judgmentDateToBinding = createDatePickerNotCompleteBooleanBinding(dpJudgmentDateTo);
 		BooleanBinding allDisabled = txtCriminalBiometricsId.disableProperty().and(txtLocation.disableProperty())
@@ -577,7 +577,11 @@ public class ConvictedReportInquiryPaneFxController extends ContentFxControllerB
 		return textField.disabledProperty().not().and(
 						Bindings.createBooleanBinding(() -> textField.getText().isBlank(), textField.textProperty()));
 	}
-	
+	private static BooleanBinding createTextFieldNotCompleteBooleanBinding(TextField textField , int minCharCount)
+	{
+		return textField.disabledProperty().not().and(
+				Bindings.createBooleanBinding(() -> textField.getText().isBlank() || textField.getText().length() < minCharCount, textField.textProperty()));
+	}
 	private static BooleanBinding createDatePickerNotCompleteBooleanBinding(DatePicker datePicker)
 	{
 		return datePicker.disabledProperty().not().and(datePicker.valueProperty().isNull());

@@ -278,3 +278,42 @@
         - services-gateway-biooperation/api/fingerprint/available/v2
         - services-gateway-biooperation/api/fingerprint/inquiry/v1
         - services-gateway-biooperation/api/fingerprint/inquiry/status/v3
+
+    menu.query.registercriminalclearancereport:
+         - services-gateway-lookups/api/application/person-type/v1
+         - services-gateway-lookups/api/application/id-types/v1
+         - services-gateway-lookups/api/application/nationality/all/v1
+         - services-gateway-demographic/api/person/info/v1
+         - services-gateway-demographic/api/person/deportee/info/v1
+         - services-gateway-demographic/api/person/passport/info/v2
+         - services-gateway-biooperation/api/fingerprint/images/v1
+         - services-gateway-biooperation/api/fingerprint/available/v1
+         - services-gateway-biooperation/api/fingerprint/inquiry/v1
+         - services-gateway-biooperation/api/fingerprint/inquiry/status/v2
+         - services-gateway-biooperation/api/fingerprint/inquiry/status/v3
+         - services-gateway-demographic/api/person/cwl/v1
+         - services-gateway-biooperation/api/non-criminal/record/submit/v1
+         
+    menu.query.registercriminalclearancereportbyfingerprints:
+         - services-gateway-lookups/api/application/person-type/v1
+         - services-gateway-lookups/api/application/id-types/v1
+         - services-gateway-lookups/api/application/nationality/all/v1
+         - services-gateway-demographic/api/person/info/v1
+         - services-gateway-demographic/api/person/deportee/info/v1
+         - services-gateway-demographic/api/person/passport/info/v2
+         - services-gateway-biooperation/api/fingerprint/images/v1
+         - services-gateway-biooperation/api/fingerprint/available/v1
+         - services-gateway-biooperation/api/fingerprint/inquiry/v1
+         - services-gateway-biooperation/api/fingerprint/inquiry/status/v2
+         - services-gateway-biooperation/api/fingerprint/inquiry/status/v3
+         - services-gateway-demographic/api/person/cwl/v1
+         - services-gateway-biooperation/api/non-criminal/record/submit/v1
+        
+    menu.query.criminalclearancereportinquiry:
+         - services-gateway-lookups/api/application/person-type/v1
+         - services-gateway-lookups/api/application/id-types/v1
+         - services-gateway-lookups/api/application/nationality/all/v1
+         - services-gateway-biooperation/api/non-criminal/record/retrieve/v1
+         - services-gateway-biooperation/api/non-criminal/record/retrieve/v2
+        
+    

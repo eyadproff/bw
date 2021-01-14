@@ -14,12 +14,10 @@ import javafx.geometry.Insets;
 import javafx.geometry.NodeOrientation;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
-import javafx.scene.control.TitledPane;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
@@ -27,6 +25,8 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.SVGPath;
+import javafx.stage.FileChooser;
+import net.sf.jasperreports.engine.JasperPrint;
 import org.controlsfx.control.PopOver;
 import org.controlsfx.control.PopOver.ArrowLocation;
 import org.controlsfx.glyphfont.FontAwesome;
@@ -48,48 +48,55 @@ import sa.gov.nic.bio.bw.core.beans.UserSession;
 import sa.gov.nic.bio.bw.core.biokit.FingerPosition;
 import sa.gov.nic.bio.bw.core.controllers.DevicesRunnerGadgetPaneFxController;
 import sa.gov.nic.bio.bw.core.controllers.WizardStepFxControllerBase;
-import sa.gov.nic.bio.bw.core.utils.AppConstants;
-import sa.gov.nic.bio.bw.core.utils.AppUtils;
-import sa.gov.nic.bio.bw.core.utils.FingerprintDeviceType;
-import sa.gov.nic.bio.bw.core.utils.FxmlFile;
-import sa.gov.nic.bio.bw.core.utils.GuiUtils;
+import sa.gov.nic.bio.bw.core.utils.*;
 import sa.gov.nic.bio.bw.core.workflow.Input;
 import sa.gov.nic.bio.bw.core.workflow.Output;
 import sa.gov.nic.bio.bw.workflow.commons.beans.Finger;
 import sa.gov.nic.bio.bw.workflow.commons.beans.FingerprintUiComponents;
+import sa.gov.nic.bio.bw.workflow.commons.beans.PersonInfo;
+import sa.gov.nic.bio.bw.workflow.commons.tasks.BuildNumberOfCaptureAttemptsReportTask;
+import sa.gov.nic.bio.bw.workflow.commons.tasks.PrintReportTask;
+import sa.gov.nic.bio.bw.workflow.commons.tasks.SaveReportAsPdfTask;
 import sa.gov.nic.bio.bw.workflow.commons.ui.FourStateTitledPane;
 import sa.gov.nic.bio.bw.workflow.commons.utils.CommonsErrorCodes;
 import sa.gov.nic.bio.commons.TaskResponse;
 
+import java.awt.*;
 import java.io.ByteArrayInputStream;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.Comparator;
-import java.util.HashMap;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @FxmlFile("slapFingerprintsCapturing.fxml")
 public class SlapFingerprintsCapturingFxController extends WizardStepFxControllerBase
 {
 	@Input private Boolean hidePreviousButton;
+	@Input private Boolean hideFingerprintQualityFromTooltip;
+	@Input private Boolean showPrintAndSaveNumOfTriesReportButton;
+	@Input private Boolean showStartOverButton;
 	@Input private Boolean allow9MissingWithNoRole;
 	@Input private Boolean acceptBadQualityFingerprint;
 	@Input private Integer acceptBadQualityFingerprintMinRetires;
 	@Input private Boolean hideCheckBoxOfMissing;
 	@Input private List<Integer> exceptionOfFingerprints;
+	@Input private PersonInfo personInfo;
 	@Output private Map<Integer, Fingerprint> capturedFingerprints;
 	@Output private List<Finger> segmentedFingerprints;
 	@Output private List<Finger> slapFingerprints;
 	@Output private List<Finger> combinedFingerprints; // segmented and unsegmented
 	@Output private Map<Integer, String> fingerprintBase64Images;
 	@Output private List<Integer> missingFingerprints;
+	@Output private Map<Integer, Integer> fingerprintNumOfTriesMapOutput;
 	
 	@FXML private VBox paneControlsInnerContainer;
 	@FXML private ScrollPane paneControlsOuterContainer;
@@ -173,10 +180,14 @@ public class SlapFingerprintsCapturingFxController extends WizardStepFxControlle
 	@FXML private Button btnLeftHandLegend;
 	@FXML private Button btnPrevious;
 	@FXML private Button btnNext;
+	@FXML private Button btnStartOver;
+	@FXML private Button btnPrintRecord;
+	@FXML private Button btnSaveRecordAsPDF;
 	
 	private int currentSlapPosition = FingerPosition.RIGHT_SLAP.getPosition();
 	private Map<Integer, FingerprintQualityThreshold> fingerprintQualityThresholdMap;
 	private Map<Integer, FingerprintUiComponents> fingerprintUiComponentsMap = new HashMap<>();
+	private Map<Integer, Integer> fingerprintNumOfTriesMap = new HashMap<>();
 	private List<List<Fingerprint>> currentSlapAttempts = new ArrayList<>();
 	private CaptureFingerprintResponse wrongSlapCapturedFingerprints;
 	private boolean fingerprintDeviceInitializedAtLeastOnce = false;
@@ -186,10 +197,18 @@ public class SlapFingerprintsCapturingFxController extends WizardStepFxControlle
 	private boolean workflowStarted = false;
 	private boolean workflowUserTaskLoaded = false;
 	private AtomicBoolean stopCapturingIsInProgress = new AtomicBoolean();
+
+	private AtomicReference<JasperPrint> jasperPrint = new AtomicReference<>();
+	private FileChooser fileChooser = new FileChooser();
 	
 	@Override
 	protected void onAttachedToScene()
 	{
+		fileChooser.setTitle(resources.getString("fileChooser.saveReportAsPDF.title"));
+		FileChooser.ExtensionFilter extFilterPDF = new FileChooser.ExtensionFilter(
+				resources.getString("fileChooser.saveReportAsPDF.types"), "*.pdf");
+		fileChooser.getExtensionFilters().addAll(extFilterPDF);
+
 		DevicesRunnerGadgetPaneFxController deviceManagerGadgetPaneController =
 												Context.getCoreFxController().getDeviceManagerGadgetPaneController();
 		deviceManagerGadgetPaneController.setNextFingerprintDeviceType(FingerprintDeviceType.SLAP);
@@ -310,6 +329,18 @@ public class SlapFingerprintsCapturingFxController extends WizardStepFxControlle
                                                    resources.getString("label.fingers.little"),
                                                    resources.getString("label.leftHand")));
 
+
+		if (showPrintAndSaveNumOfTriesReportButton != null && showPrintAndSaveNumOfTriesReportButton) {
+			GuiUtils.showNode(btnPrintRecord, true);
+			GuiUtils.showNode(btnSaveRecordAsPDF, true);
+//			btnPrintRecord.disableProperty().bind(btnNext.disableProperty());
+//			btnSaveRecordAsPDF.disableProperty().bind(btnNext.disableProperty());
+
+		}
+		if (fingerprintNumOfTriesMapOutput != null) { fingerprintNumOfTriesMap.putAll(fingerprintNumOfTriesMapOutput); }
+		else {
+			IntStream.rangeClosed(1, 10).boxed().forEach(x -> fingerprintNumOfTriesMap.put(x, 0));
+		}
 
 		// disable the finger's titledPane whenever its checkbox is unselected
 		fingerprintUiComponentsMap.forEach((position, components) ->
@@ -497,6 +528,7 @@ public class SlapFingerprintsCapturingFxController extends WizardStepFxControlle
 		});
 		
 		if(hidePreviousButton != null) GuiUtils.showNode(btnPrevious, !hidePreviousButton);
+		if(showStartOverButton != null) GuiUtils.showNode(btnStartOver, showStartOverButton);
 		
 		// load the persisted captured fingerprints, if any
 		if(capturedFingerprints != null && !capturedFingerprints.isEmpty())
@@ -518,7 +550,6 @@ public class SlapFingerprintsCapturingFxController extends WizardStepFxControlle
 			        components.getCheckBox().setSelected(false);
 			        return;
 			    }
-			
 			    // show fingerprint
 			    showFingerprint(fingerprint, components.getImageView(), components.getTitledPane(),
 			                    components.getHandLabel(), components.getFingerLabel());
@@ -745,7 +776,7 @@ public class SlapFingerprintsCapturingFxController extends WizardStepFxControlle
 			capturedFingerprints.remove(FingerPosition.RIGHT_THUMB.getPosition());
 			capturedFingerprints.remove(FingerPosition.LEFT_THUMB.getPosition());
 		}
-		
+		fingerprintNumOfTriesMapOutput = fingerprintNumOfTriesMap;
 		prepareFingerprintsForBackend(uiDataMap);
 	}
 	
@@ -1471,7 +1502,7 @@ public class SlapFingerprintsCapturingFxController extends WizardStepFxControlle
 		
 		showSlapFingerprints(bestAttemptFingerprints, null, null, null,
 		                    true);
-		
+
 		acceptFingerprintsAndGoNext();
 	}
 	
@@ -1714,6 +1745,8 @@ public class SlapFingerprintsCapturingFxController extends WizardStepFxControlle
 			
 			capturedFingerprints.clear();
 			currentSlapAttempts.clear();
+			fingerprintNumOfTriesMap.clear();
+			IntStream.rangeClosed(1, 10).boxed().forEach(x -> fingerprintNumOfTriesMap.put(x, 0));
 			currentSlapPosition = FingerPosition.RIGHT_SLAP.getPosition();
 			activateFingerIndicatorsForNextCapturing(currentSlapPosition);
 			renameCaptureFingerprintsButton(false);
@@ -1722,12 +1755,19 @@ public class SlapFingerprintsCapturingFxController extends WizardStepFxControlle
 	
 	private void processSlapFingerprints(List<Fingerprint> fingerprints, Map<Integer, Boolean> duplicatedFingers)
 	{
+		// To save Number of Tries for each Finger
+		fingerprints.forEach( fingerprint ->
+		{
+			Integer numOfTries = fingerprintNumOfTriesMap.get(fingerprint.getDmFingerData().getPosition());
+			fingerprintNumOfTriesMap.put(fingerprint.getDmFingerData().getPosition(), ++numOfTries);
+		});
+
 		boolean[] allAcceptableQuality = {true};
 		boolean[] noDuplicates = {true};
 		showSlapFingerprints(fingerprints, duplicatedFingers, allAcceptableQuality, noDuplicates,
 		                    false);
 		GuiUtils.showNode(btnStartOverFingerprintCapturing, true);
-		
+
 		if(allAcceptableQuality[0])
 		{
 			if(currentSlapPosition == FingerPosition.RIGHT_SLAP.getPosition())
@@ -1854,7 +1894,7 @@ public class SlapFingerprintsCapturingFxController extends WizardStepFxControlle
 		attachFingerprintResultTooltip(titleRegion, titledPane,
 		                               fingerprint.getDmFingerData().getNfiqQuality(),
 		                               fingerprint.getDmFingerData().getMinutiaeCount(),
-		                               fingerprint.getDmFingerData().getIntensity(),
+		                               fingerprint.getDmFingerData().getIntensity(),fingerprintNumOfTriesMap.get(fingerprint.getDmFingerData().getPosition()),
 		                               fingerprint.isAcceptableFingerprintNfiq(),
 		                               fingerprint.isAcceptableFingerprintMinutiaeCount(),
 		                               fingerprint.isAcceptableFingerprintImageIntensity(),
@@ -1903,7 +1943,7 @@ public class SlapFingerprintsCapturingFxController extends WizardStepFxControlle
 	}
 	
 	private void attachFingerprintResultTooltip(Node sourceNode, Node targetNode, int nfiq, int minutiaeCount,
-	                                            int imageIntensity, boolean acceptableNfiq,
+	                                            int imageIntensity, Integer numOfTries, boolean acceptableNfiq,
 	                                            boolean acceptableMinutiaeCount, boolean acceptableImageIntensity,
 	                                            boolean duplicated)
 	{
@@ -1911,53 +1951,94 @@ public class SlapFingerprintsCapturingFxController extends WizardStepFxControlle
 		gridPane.setPadding(new Insets(10.0));
 		gridPane.setVgap(5.0);
 		gridPane.setHgap(5.0);
-		
-		Label lblNfiq = new Label(resources.getString("label.tooltip.nfiq"));
-		Label lblMinutiaeCount = new Label(resources.getString("label.tooltip.minutiaeCount"));
-		Label lblIntensity = new Label(resources.getString("label.tooltip.imageIntensity"));
-		Label lblDuplicatedFingerprint = new Label(resources.getString("label.tooltip.duplicatedFinger"));
-		
+
 		Image successImage = new Image(CommonImages.ICON_SUCCESS_16PX.getAsInputStream());
 		Image warningImage = new Image(CommonImages.ICON_WARNING_16PX.getAsInputStream());
 		Image errorImage = new Image(CommonImages.ICON_ERROR_16PX.getAsInputStream());
-		
-		lblNfiq.setGraphic(new ImageView(acceptableNfiq ? successImage : warningImage));
-		lblMinutiaeCount.setGraphic(new ImageView(acceptableMinutiaeCount ? successImage : warningImage));
-		lblIntensity.setGraphic(new ImageView(acceptableImageIntensity ? successImage : warningImage));
-		lblDuplicatedFingerprint.setGraphic(new ImageView(duplicated ? errorImage : successImage));
-		
-		gridPane.add(lblNfiq, 0, 0);
-		gridPane.add(lblMinutiaeCount, 0, 1);
-		gridPane.add(lblIntensity, 0, 2);
-		gridPane.add(lblDuplicatedFingerprint, 0, 3);
-		
-		String sNfiq = AppUtils.localizeNumbers(String.valueOf(nfiq));
-		String sMinutiaeCount = AppUtils.localizeNumbers(String.valueOf(minutiaeCount));
-		String sIntensity = AppUtils.localizeNumbers(String.valueOf(imageIntensity)) + "%";
-		String sDuplicatedFingerprint = resources.getString(duplicated ? "label.tooltip.yes" : "label.tooltip.no");
-		
-		TextField txtNfiq = new TextField(sNfiq);
-		TextField txtMinutiaeCount = new TextField(sMinutiaeCount);
-		TextField txtIntensity = new TextField(sIntensity);
-		TextField txtDuplicatedFingerprint = new TextField(sDuplicatedFingerprint);
-		
-		txtNfiq.setFocusTraversable(false);
-		txtMinutiaeCount.setFocusTraversable(false);
-		txtIntensity.setFocusTraversable(false);
-		txtDuplicatedFingerprint.setFocusTraversable(false);
-		txtNfiq.setEditable(false);
-		txtMinutiaeCount.setEditable(false);
-		txtIntensity.setEditable(false);
-		txtDuplicatedFingerprint.setEditable(false);
-		txtNfiq.setPrefColumnCount(3);
-		txtMinutiaeCount.setPrefColumnCount(3);
-		txtIntensity.setPrefColumnCount(3);
-		txtDuplicatedFingerprint.setPrefColumnCount(3);
-		
-		gridPane.add(txtNfiq, 1, 0);
-		gridPane.add(txtMinutiaeCount, 1, 1);
-		gridPane.add(txtIntensity, 1, 2);
-		gridPane.add(txtDuplicatedFingerprint, 1, 3);
+		FontAwesome.Glyph slackGlyph = FontAwesome.Glyph.REPEAT;
+		Glyph slackIcon = AppUtils.createFontAwesomeIcon(slackGlyph);
+
+		if(hideFingerprintQualityFromTooltip != null && hideFingerprintQualityFromTooltip)
+		{
+			Label lblDuplicatedFingerprint = new Label(resources.getString("label.tooltip.duplicatedFinger"));
+			Label lblNTry = new Label(resources.getString("label.tooltip.ntry"));
+
+			lblDuplicatedFingerprint.setGraphic(new ImageView(duplicated ? errorImage : successImage));
+			lblNTry.setGraphic(slackIcon);
+
+			gridPane.add(lblDuplicatedFingerprint, 0, 0);
+			gridPane.add(lblNTry, 0, 1);
+
+			String sDuplicatedFingerprint = resources.getString(duplicated ? "label.tooltip.yes" : "label.tooltip.no");
+			String sNTry = AppUtils.localizeNumbers(String.valueOf(numOfTries));
+
+			TextField txtDuplicatedFingerprint = new TextField(sDuplicatedFingerprint);
+			TextField txtNTry = new TextField(sNTry);
+
+			txtDuplicatedFingerprint.setFocusTraversable(false);
+			txtNTry.setFocusTraversable(false);
+			txtDuplicatedFingerprint.setEditable(false);
+			txtNTry.setEditable(false);
+			txtDuplicatedFingerprint.setPrefColumnCount(3);
+			txtNTry.setPrefColumnCount(3);
+
+			gridPane.add(txtDuplicatedFingerprint, 1, 0);
+			gridPane.add(txtNTry, 1, 1);
+
+		} else
+		{
+			Label lblNfiq = new Label(resources.getString("label.tooltip.nfiq"));
+			Label lblMinutiaeCount = new Label(resources.getString("label.tooltip.minutiaeCount"));
+			Label lblIntensity = new Label(resources.getString("label.tooltip.imageIntensity"));
+			Label lblDuplicatedFingerprint = new Label(resources.getString("label.tooltip.duplicatedFinger"));
+			Label lblNTry = new Label(resources.getString("label.tooltip.ntry"));
+
+			lblNfiq.setGraphic(new ImageView(acceptableNfiq ? successImage : warningImage));
+			lblMinutiaeCount.setGraphic(new ImageView(acceptableMinutiaeCount ? successImage : warningImage));
+			lblIntensity.setGraphic(new ImageView(acceptableImageIntensity ? successImage : warningImage));
+			lblDuplicatedFingerprint.setGraphic(new ImageView(duplicated ? errorImage : successImage));
+			lblNTry.setGraphic(slackIcon);
+
+			gridPane.add(lblNfiq, 0, 0);
+			gridPane.add(lblMinutiaeCount, 0, 1);
+			gridPane.add(lblIntensity, 0, 2);
+			gridPane.add(lblDuplicatedFingerprint, 0, 3);
+			gridPane.add(lblNTry, 0, 4);
+
+			String sNfiq = AppUtils.localizeNumbers(String.valueOf(nfiq));
+			String sMinutiaeCount = AppUtils.localizeNumbers(String.valueOf(minutiaeCount));
+			String sIntensity = AppUtils.localizeNumbers(String.valueOf(imageIntensity)) + "%";
+			String sDuplicatedFingerprint = resources.getString(duplicated ? "label.tooltip.yes" : "label.tooltip.no");
+			String sNTry = AppUtils.localizeNumbers(String.valueOf(numOfTries));
+
+			TextField txtNfiq = new TextField(sNfiq);
+			TextField txtMinutiaeCount = new TextField(sMinutiaeCount);
+			TextField txtIntensity = new TextField(sIntensity);
+			TextField txtDuplicatedFingerprint = new TextField(sDuplicatedFingerprint);
+			TextField txtNTry = new TextField(sNTry);
+
+			txtNfiq.setFocusTraversable(false);
+			txtMinutiaeCount.setFocusTraversable(false);
+			txtIntensity.setFocusTraversable(false);
+			txtDuplicatedFingerprint.setFocusTraversable(false);
+			txtNTry.setFocusTraversable(false);
+			txtNfiq.setEditable(false);
+			txtMinutiaeCount.setEditable(false);
+			txtIntensity.setEditable(false);
+			txtDuplicatedFingerprint.setEditable(false);
+			txtNTry.setEditable(false);
+			txtNfiq.setPrefColumnCount(3);
+			txtMinutiaeCount.setPrefColumnCount(3);
+			txtIntensity.setPrefColumnCount(3);
+			txtDuplicatedFingerprint.setPrefColumnCount(3);
+			txtNTry.setPrefColumnCount(3);
+
+			gridPane.add(txtNfiq, 1, 0);
+			gridPane.add(txtMinutiaeCount, 1, 1);
+			gridPane.add(txtIntensity, 1, 2);
+			gridPane.add(txtDuplicatedFingerprint, 1, 3);
+			gridPane.add(txtNTry, 1, 4);
+		}
 		
 		PopOver popOver = new PopOver(gridPane);
 		popOver.setDetachable(false);
@@ -2066,5 +2147,133 @@ public class SlapFingerprintsCapturingFxController extends WizardStepFxControlle
 	        if(popOver.isShowing()) popOver.hide();
 	        else popOver.show(targetNode);
         });
+	}
+
+	@FXML
+	private void onPrintRecordButtonClicked(ActionEvent actionEvent) {
+
+		hideNotification();
+		GuiUtils.showNode(btnPrintRecord, false);
+		GuiUtils.showNode(btnSaveRecordAsPDF, false);
+
+		BuildNumberOfCaptureAttemptsReportTask buildNumberOfCaptureAttemptsReportTask =
+				new BuildNumberOfCaptureAttemptsReportTask(fingerprintNumOfTriesMap, personInfo);
+
+
+		buildNumberOfCaptureAttemptsReportTask.setOnSucceeded(event ->
+		{
+			JasperPrint value = buildNumberOfCaptureAttemptsReportTask.getValue();
+			jasperPrint.set(value);
+			printReport(value);
+		});
+		buildNumberOfCaptureAttemptsReportTask.setOnFailed(event ->
+		{
+			GuiUtils.showNode(btnPrintRecord, true);
+			GuiUtils.showNode(btnSaveRecordAsPDF, true);
+
+			Throwable exception = buildNumberOfCaptureAttemptsReportTask.getException();
+
+			String errorCode = CommonsErrorCodes.C008_00061.getCode();
+			String[] errorDetails = {"failed while building the number of capture attempts report!"};
+			Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails, getTabIndex());
+		});
+		Context.getExecutorService().submit(buildNumberOfCaptureAttemptsReportTask);
+
+	}
+
+	@FXML
+	private void onSaveRecordAsPdfButtonClicked(ActionEvent actionEvent) {
+		hideNotification();
+		File selectedFile = fileChooser.showSaveDialog(Context.getCoreFxController().getStage());
+
+		if (selectedFile != null) {
+			GuiUtils.showNode(btnPrintRecord, false);
+			GuiUtils.showNode(btnSaveRecordAsPDF, false);
+
+			BuildNumberOfCaptureAttemptsReportTask buildNumberOfCaptureAttemptsReportTask =
+					new BuildNumberOfCaptureAttemptsReportTask(fingerprintNumOfTriesMap, personInfo);
+
+			buildNumberOfCaptureAttemptsReportTask.setOnSucceeded(event ->
+			{
+				JasperPrint value = buildNumberOfCaptureAttemptsReportTask.getValue();
+				jasperPrint.set(value);
+				try {
+					saveReportAsPDF(value, selectedFile);
+				} catch (Exception e) {
+					GuiUtils.showNode(btnStartOver, true);
+					GuiUtils.showNode(btnPrintRecord, true);
+					GuiUtils.showNode(btnSaveRecordAsPDF, true);
+
+					String errorCode = CommonsErrorCodes.C008_00062.getCode();
+					String[] errorDetails = {"failed while saving the number of capture attempts report as PDF!"};
+					Context.getCoreFxController().showErrorDialog(errorCode, e, errorDetails, getTabIndex());
+				}
+			});
+			buildNumberOfCaptureAttemptsReportTask.setOnFailed(event ->
+			{
+				GuiUtils.showNode(btnPrintRecord, true);
+				GuiUtils.showNode(btnSaveRecordAsPDF, true);
+
+				Throwable exception = buildNumberOfCaptureAttemptsReportTask.getException();
+
+				String errorCode = CommonsErrorCodes.C008_00063.getCode();
+				String[] errorDetails = {"failed while building the number of capture attempts report!"};
+				Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails, getTabIndex());
+			});
+			Context.getExecutorService().submit(buildNumberOfCaptureAttemptsReportTask);
+		}
+	}
+
+
+	private void printReport(JasperPrint jasperPrint) {
+
+		PrintReportTask printReportTask = new PrintReportTask(jasperPrint);
+		printReportTask.setOnSucceeded(event ->
+		{
+			GuiUtils.showNode(btnPrintRecord, true);
+			GuiUtils.showNode(btnSaveRecordAsPDF, true);
+		});
+		printReportTask.setOnFailed(event ->
+		{
+			GuiUtils.showNode(btnPrintRecord, true);
+			GuiUtils.showNode(btnSaveRecordAsPDF, true);
+
+			Throwable exception = printReportTask.getException();
+
+			String errorCode = CommonsErrorCodes.C008_00064.getCode();
+			String[] errorDetails = {"failed while printing the number of capture attempts report!"};
+			Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails, getTabIndex());
+		});
+		Context.getExecutorService().submit(printReportTask);
+	}
+
+	private void saveReportAsPDF(JasperPrint jasperPrint, File selectedFile)
+			throws FileNotFoundException {
+		SaveReportAsPdfTask printReportTaskAsPdfTask = new SaveReportAsPdfTask(jasperPrint,
+				new FileOutputStream(selectedFile));
+		printReportTaskAsPdfTask.setOnSucceeded(event ->
+		{
+			GuiUtils.showNode(btnPrintRecord, true);
+			GuiUtils.showNode(btnSaveRecordAsPDF, true);
+
+			showSuccessNotification(resources.getString("fingerprintNumberOfCaptureAttempts.savingAsPDF.success.message"));
+			try {
+				Desktop.getDesktop().open(selectedFile);
+			} catch (Exception e) {
+				LOGGER.warning("Failed to open the PDF file (" + selectedFile.getAbsolutePath() + ")!");
+			}
+		});
+		printReportTaskAsPdfTask.setOnFailed(event ->
+		{
+			GuiUtils.showNode(btnPrintRecord, true);
+			GuiUtils.showNode(btnSaveRecordAsPDF, true);
+
+			Throwable exception = printReportTaskAsPdfTask.getException();
+
+			String errorCode = CommonsErrorCodes.C008_00065.getCode();
+			String[] errorDetails = {"failed while saving the number of capture attempts report as PDF!"};
+			Context.getCoreFxController().showErrorDialog(errorCode, exception, errorDetails, getTabIndex());
+		});
+		Context.getExecutorService().submit(printReportTaskAsPdfTask);
 	}
 }

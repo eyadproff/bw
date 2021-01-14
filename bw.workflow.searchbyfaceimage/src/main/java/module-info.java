@@ -3,6 +3,7 @@ module bw.workflow.searchbyfaceimage
 	requires bw.core;
 	requires bw.workflow.commons;
 	requires bio.commons;
+	requires bw.lib.jasperreports;
 	
 	opens sa.gov.nic.bio.bw.workflow.searchbyfaceimage.bundles;
 	opens sa.gov.nic.bio.bw.workflow.searchbyfaceimage to bw.core;
@@ -14,4 +15,5 @@ module bw.workflow.searchbyfaceimage
 	exports sa.gov.nic.bio.bw.workflow.searchbyfaceimage.controllers;
 	exports sa.gov.nic.bio.bw.workflow.searchbyfaceimage.tasks ;
 	exports sa.gov.nic.bio.bw.workflow.searchbyfaceimage.beans;
+
 }

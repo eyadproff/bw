@@ -13,30 +13,19 @@
                   <VBox alignment="CENTER" spacing="5.0">
                       <StackPane>
                           <ProgressIndicator fx:id="CPiProgress" maxHeight="20.0" maxWidth="20.0" />
-                          <ImageView fx:id="CitizenIvSuccess" visible="false">
+                          <ImageView fx:id="CitizenIvSuccess" visible="false" managed="false">
                               <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/icon_success_32px.png" />
                           </ImageView>
-                          <ImageView fx:id="CitizenIvFailure" visible="false">
+                          <ImageView fx:id="CitizenIvSuccessWithHit" visible="false" managed="false">
+                              <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/icon_warning_32px.png" />
+                          </ImageView>
+                          <ImageView fx:id="CitizenIvFailure" visible="false" managed="false">
                               <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/icon_error_32px.png" />
                           </ImageView>
                       </StackPane>
                       <Label fx:id="CitizenLblStatus" alignment="CENTER" text="%label.submitting" />
                   </VBox>
               </HBox>
-             <HBox alignment="CENTER">
-                 <VBox alignment="CENTER" spacing="5.0">
-                     <StackPane>
-                         <ProgressIndicator fx:id="IPiProgress" maxHeight="20.0" maxWidth="20.0" visible="false" />
-                         <ImageView fx:id="IrisIvSuccess" visible="false">
-                             <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/icon_success_32px.png" />
-                         </ImageView>
-                         <ImageView fx:id="IrisIvFailure" visible="false">
-                             <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/icon_error_32px.png" />
-                         </ImageView>
-                     </StackPane>
-                     <Label fx:id="IrisLblStatus" alignment="CENTER" text="%label.submittingIris" visible="false" />
-                 </VBox>
-             </HBox>
          </children>
       </VBox>
     </center>
@@ -45,8 +34,8 @@
             <padding>
                 <Insets bottom="10" />
             </padding>
-            <Button fx:id="btnStartOver" onAction="#onStartOverButtonClicked" text="%button.startOver" visible="false" />
-            <Button fx:id="btnRetry" onAction="#onRetryButtonClicked" text="%button.retry" visible="false" />
+            <Button fx:id="btnStartOver" onAction="#onStartOverButtonClicked" text="%button.startOver" visible="false" managed="false"/>
+            <Button fx:id="btnRetry" onAction="#onRetryButtonClicked" text="%button.retry" visible="false" managed="false"/>
         </HBox>
     </bottom>
 </BorderPane>

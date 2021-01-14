@@ -272,10 +272,10 @@ public class DeleteMissingFingerprintFXController extends WizardStepFxController
                 //                    fingerprint.setStatus(0);
 
 
-                if (bioEx.getMonth() == null || bioEx.getMonth() == 0) { fingerprint.setStatus(0); }
-                else if (bioEx.getMonth() == 3) { fingerprint.setStatus(3); }
-                else if (bioEx.getMonth() == 6) { fingerprint.setStatus(6); }
-                else { fingerprint.setStatus(12); }
+                if (bioEx.getMonth() == null || bioEx.getMonth() == 0) { fingerprint.setMonths(0); }
+                else if (bioEx.getMonth() == 3) { fingerprint.setMonths(3); }
+                else if (bioEx.getMonth() == 6) { fingerprint.setMonths(6); }
+                else { fingerprint.setMonths(12); }
 
                 fingerprint.setPosition(position);
                 fingerprint.setSeqNum(bioEx.getSeqNum());
@@ -388,9 +388,9 @@ public class DeleteMissingFingerprintFXController extends WizardStepFxController
             else { Couse.setText(finger.getCause().getEnglishText()); }
         }
 
-        if (finger.getStatus() == 0) { Status.setText(resources.getString("Permanent")); }
-        else if (finger.getStatus() == 3) { Status.setText(resources.getString("3months")); }
-        else if (finger.getStatus() == 6) { Status.setText(resources.getString("6months")); }
+        if (finger.getMonths() == 0) { Status.setText(resources.getString("Permanent")); }
+        else if (finger.getMonths() == 3) { Status.setText(resources.getString("3months")); }
+        else if (finger.getMonths() == 6) { Status.setText(resources.getString("6months")); }
         else { Status.setText(resources.getString("oneYear")); }
 
     }

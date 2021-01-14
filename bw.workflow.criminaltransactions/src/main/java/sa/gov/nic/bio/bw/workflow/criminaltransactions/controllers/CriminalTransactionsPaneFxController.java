@@ -109,7 +109,7 @@ public class CriminalTransactionsPaneFxController extends ContentFxControllerBas
 		BooleanBinding criminalBiometricsIdBinding = createTextFieldNotCompleteBooleanBinding(txtCriminalBiometricsId);
 		BooleanBinding reportNumberBinding = createTextFieldNotCompleteBooleanBinding(txtReportNumber);
 		BooleanBinding locationBinding = createTextFieldNotCompleteBooleanBinding(txtLocation);
-		BooleanBinding operatorIdBinding = createTextFieldNotCompleteBooleanBinding(txtOperatorId);
+		BooleanBinding operatorIdBinding = createTextFieldNotCompleteBooleanBinding(txtOperatorId, 10);
 		BooleanBinding criminalDelinkIdBinding = createTextFieldNotCompleteBooleanBinding(txtCriminalDelinkId);
 		BooleanBinding transactionTypeBinding = createComboBoxNotCompleteBooleanBinding(cboTransactionType);
 		BooleanBinding allDisabled = txtCriminalBiometricsId.disableProperty().and(txtReportNumber.disableProperty())
@@ -400,6 +400,12 @@ public class CriminalTransactionsPaneFxController extends ContentFxControllerBas
 	{
 		return textField.disabledProperty().not().and(
 						Bindings.createBooleanBinding(() -> textField.getText().isBlank(), textField.textProperty()));
+	}
+
+	private static BooleanBinding createTextFieldNotCompleteBooleanBinding(TextField textField , int minCharCount)
+	{
+		return textField.disabledProperty().not().and(
+				Bindings.createBooleanBinding(() -> textField.getText().isBlank() || textField.getText().length() < minCharCount, textField.textProperty()));
 	}
 	
 	private static <T> BooleanBinding createComboBoxNotCompleteBooleanBinding(ComboBox<T> comboBox)

@@ -1,0 +1,26 @@
+.titled-pane > .title {
+    -fx-alignment: center;
+}
+
+.active-record {
+    -fx-control-inner-background: white;
+}
+
+.old-record {
+    -fx-control-inner-background: #f3c4a7;
+}
+
+.old-record-legend {
+    -fx-background-color: #f3c4a7;
+    -fx-border-color: black;
+    -fx-border-width: 1px;
+    -fx-min-width: 10px;
+    -fx-min-height: 10px;
+}
+
+.watermark {
+    -fx-font-size: 75px;
+    -fx-font-weight: bolder;
+    -fx-text-fill: #00000033;
+    -fx-rotate: 30;
+}

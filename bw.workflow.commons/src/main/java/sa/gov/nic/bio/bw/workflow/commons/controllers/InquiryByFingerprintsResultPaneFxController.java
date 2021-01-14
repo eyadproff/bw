@@ -64,6 +64,7 @@ public class InquiryByFingerprintsResultPaneFxController extends WizardStepFxCon
 	@Input protected Boolean hideConfirmationButton;
 	@Input protected Boolean ignoreCriminalFingerprintsInquiryResult;
 	@Input protected Status status;
+	@Input protected Integer inquiryId;
 	@Input protected Long civilBiometricsId;
 	@Input protected Long criminalBiometricsId;
 	@Input protected Map<Long, PersonInfo> civilPersonInfoMap;
@@ -168,13 +169,16 @@ public class InquiryByFingerprintsResultPaneFxController extends WizardStepFxCon
 		
 		civilHit = status == Status.HIT && civilBiometricsId != null;
 		criminalHit = status == Status.HIT && criminalBiometricsId != null;
-		
+
+		// Never select Id start with 800
 		if(civilPersonInfoMap != null)
-		{
+		{	// Ignore deportee Id (Id start with 9) unless there is no other
+			boolean ignoreDeporteeId = civilPersonInfoMap.keySet().stream().anyMatch(x -> (!String.valueOf(x).startsWith("800") && !String.valueOf(x).startsWith("9")));
 			for(Long personId : civilPersonInfoMap.keySet())
 			{
 				selectedCivilPersonIdIndex++;
-				if(String.valueOf(personId).startsWith("800")) continue;
+				if(String.valueOf(personId).startsWith("800") ) continue;
+				if(String.valueOf(personId).startsWith("9") && ignoreDeporteeId) continue;
 				selectedCivilPersonId = personId;
 				break;
 			}
@@ -667,7 +671,7 @@ public class InquiryByFingerprintsResultPaneFxController extends WizardStepFxCon
 		UserInfo userInfo = (UserInfo) Context.getUserSession().getAttribute("userInfo");
 		String inquirerId = AppUtils.localizeNumbers(String.valueOf(userInfo.getOperatorId()));
 
-		return new BuildFingerprintInquiryReportTask(inquirerId, civilHit, criminalHit, civilBiometricsId,
+		return new BuildFingerprintInquiryReportTask(inquirerId, inquiryId, civilHit, criminalHit, civilBiometricsId,
 													 criminalBiometricsId, civilPersonInfoMap,
 													 oldCriminalPersonInfoMap, newCriminalPersonInfoMap,
 													 fingerprintBase64Images);

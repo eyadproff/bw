@@ -33,5 +33,8 @@ public class RetrieveBioExclusionsWorkflowTask extends WorkflowTask {
 
         bioExclusionList = taskResponse.getResult();
 
+        //remove all deleted exceptions
+        bioExclusionList.removeIf(bioExclusion -> bioExclusion.getStatus() != 0);
+
     }
 }

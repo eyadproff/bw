@@ -10,6 +10,7 @@ import sa.gov.nic.bio.bw.workflow.commons.beans.BioExclusion;
 import sa.gov.nic.bio.bw.workflow.commons.webservice.BioExclusionAPI;
 import sa.gov.nic.bio.commons.TaskResponse;
 
+import java.time.Instant;
 import java.util.List;
 
 public class RetrieveBioExclusionsWorkflowTask extends WorkflowTask {
@@ -32,6 +33,9 @@ public class RetrieveBioExclusionsWorkflowTask extends WorkflowTask {
 
 
         bioExclusionList = taskResponse.getResult();
-
+        //remove all deleted and expired Exceptions
+        bioExclusionList.removeIf(bioExclusion -> bioExclusion.getStatus() != 0 || (bioExclusion.getExpireDate() != null &&
+                                                                                    bioExclusion.getExpireDate() <
+                                                                                    Instant.now().getEpochSecond()));
     }
 }
