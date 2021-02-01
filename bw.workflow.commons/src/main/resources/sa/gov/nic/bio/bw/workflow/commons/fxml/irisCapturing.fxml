@@ -1,20 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ProgressIndicator?>
-<?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.control.SplitPane?>
-<?import javafx.scene.control.TitledPane?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.StackPane?>
-<?import javafx.scene.layout.VBox?>
-<?import sa.gov.nic.bio.bw.workflow.commons.ui.ImageViewPane?>
-<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import sa.gov.nic.bio.bw.workflow.commons.ui.*?>
 <BorderPane xmlns="http://javafx.com/javafx/11" xmlns:fx="http://javafx.com/fxml/1"
             fx:id="rootPane" fx:controller="sa.gov.nic.bio.bw.workflow.commons.controllers.IrisCapturingFxController"
             stylesheets="@../css/style.css">
@@ -23,6 +13,14 @@
             <padding>
                 <Insets top="10" bottom="10"/>
             </padding>
+            <TitledPane fx:id="tpPersonInfo" collapsible="false" focusTraversable="false" managed="false" text="%label.personInfo" visible="false">
+                <HBox alignment="CENTER_LEFT" prefHeight="24.0" prefWidth="919.0" spacing="10.0">
+                    <Label styleClass="bold-label" text="%label.Name" />
+                    <Label fx:id="lblName" />
+                    <Label styleClass="bold-label" text="%label.personId" />
+                    <Label fx:id="lblPersonId" />
+                </HBox>
+            </TitledPane>
             <SplitPane styleClass="white-background" dividerPositions="0.3,0.65">
                 <TitledPane text="%label.irisDeviceControlPanel" maxHeight="Infinity" collapsible="false" focusTraversable="false">
                     <ScrollPane fx:id="paneControlsOuterContainer" fitToWidth="true" VBox.vgrow="ALWAYS" maxHeight="Infinity">
@@ -42,7 +40,7 @@
                         </VBox>
                     </ScrollPane>
                 </TitledPane>
-                <TitledPane fx:id="tpCapturedFirstIris" maxHeight="Infinity" collapsible="false" focusTraversable="false">
+                <FourStateTitledPane fx:id="tpCapturedFirstIris" maxHeight="Infinity" collapsible="false" focusTraversable="false" wrapText="true" HBox.hgrow="ALWAYS">
                     <VBox spacing="10.0">
                         <StackPane VBox.vgrow="ALWAYS">
                             <ImageViewPane>
@@ -67,8 +65,8 @@
                         </StackPane>
                         <CheckBox fx:id="cbSkippedFirstIris" alignment="CENTER" maxWidth="Infinity" selected="true"/>
                     </VBox>
-                </TitledPane>
-                <TitledPane fx:id="tpCapturedSecondIris" maxHeight="Infinity" collapsible="false" focusTraversable="false">
+                </FourStateTitledPane>
+                <FourStateTitledPane fx:id="tpCapturedSecondIris" maxHeight="Infinity" collapsible="false" focusTraversable="false" wrapText="true" HBox.hgrow="ALWAYS">
                     <VBox spacing="10.0">
                         <StackPane VBox.vgrow="ALWAYS">
                             <ImageViewPane>
@@ -93,7 +91,7 @@
                         </StackPane>
                         <CheckBox fx:id="cbSkippedSecondIris" alignment="CENTER" maxWidth="Infinity" selected="true"/>
                     </VBox>
-                </TitledPane>
+                </FourStateTitledPane>
             </SplitPane>
         </VBox>
     </center>
@@ -105,6 +103,7 @@
             <Button fx:id="btnPrevious" text="%button.previous" onAction="#onPreviousButtonClicked"/>
             <Button fx:id="btnStartOver" text="%button.startOver" onAction="#onStartOverButtonClicked"/>
             <Button fx:id="btnNext" text="%button.next" onAction="#onNextButtonClicked"/>
+            <Button fx:id="btnSkip" layoutX="438.0" layoutY="10.0" onAction="#onSkipButtonClicked" text="%button.skip" visible="false" managed="false"/>
         </HBox>
     </bottom>
 </BorderPane>

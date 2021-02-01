@@ -43,7 +43,7 @@ public class RegisterCriminalFingerprintsPresentWorkflow extends WizardWorkflowB
 										"registerConvictedReport.fingerprint.acceptBadQualityFingerprintMinRetries"));
 				
 				setData(SlapFingerprintsCapturingFxController.class, "hidePreviousButton", Boolean.TRUE);
-				setData(SlapFingerprintsCapturingFxController.class, "allow9MissingWithNoRole", Boolean.TRUE);
+//				setData(SlapFingerprintsCapturingFxController.class, "allow9MissingWithNoRole", Boolean.TRUE);
 				setData(SlapFingerprintsCapturingFxController.class, "acceptBadQualityFingerprint",
 				        acceptBadQualityFingerprint);
 				setData(SlapFingerprintsCapturingFxController.class, "acceptBadQualityFingerprintMinRetires",

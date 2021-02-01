@@ -20,10 +20,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.shape.SVGPath;
 import javafx.stage.FileChooser;
 import net.sf.jasperreports.engine.JasperPrint;
@@ -41,10 +38,7 @@ import sa.gov.nic.bio.biokit.fingerprint.beans.FingerprintStopPreviewResponse;
 import sa.gov.nic.bio.biokit.websocket.beans.DMFingerData;
 import sa.gov.nic.bio.bw.commons.resources.images.CommonImages;
 import sa.gov.nic.bio.bw.core.Context;
-import sa.gov.nic.bio.bw.core.beans.FingerCoordinate;
-import sa.gov.nic.bio.bw.core.beans.Fingerprint;
-import sa.gov.nic.bio.bw.core.beans.FingerprintQualityThreshold;
-import sa.gov.nic.bio.bw.core.beans.UserSession;
+import sa.gov.nic.bio.bw.core.beans.*;
 import sa.gov.nic.bio.bw.core.biokit.FingerPosition;
 import sa.gov.nic.bio.bw.core.controllers.DevicesRunnerGadgetPaneFxController;
 import sa.gov.nic.bio.bw.core.controllers.WizardStepFxControllerBase;
@@ -80,6 +74,7 @@ import java.util.stream.IntStream;
 @FxmlFile("slapFingerprintsCapturing.fxml")
 public class SlapFingerprintsCapturingFxController extends WizardStepFxControllerBase
 {
+	@Input private Boolean showPersonInfo;
 	@Input private Boolean hidePreviousButton;
 	@Input private Boolean hideFingerprintQualityFromTooltip;
 	@Input private Boolean showPrintAndSaveNumOfTriesReportButton;
@@ -97,7 +92,10 @@ public class SlapFingerprintsCapturingFxController extends WizardStepFxControlle
 	@Output private Map<Integer, String> fingerprintBase64Images;
 	@Output private List<Integer> missingFingerprints;
 	@Output private Map<Integer, Integer> fingerprintNumOfTriesMapOutput;
-	
+
+	@FXML private TitledPane tpPersonInfo;
+	@FXML private Label lblPersonId;
+	@FXML private Label lblName;
 	@FXML private VBox paneControlsInnerContainer;
 	@FXML private ScrollPane paneControlsOuterContainer;
 	@FXML private ProgressIndicator piProgress;
@@ -529,7 +527,31 @@ public class SlapFingerprintsCapturingFxController extends WizardStepFxControlle
 		
 		if(hidePreviousButton != null) GuiUtils.showNode(btnPrevious, !hidePreviousButton);
 		if(showStartOverButton != null) GuiUtils.showNode(btnStartOver, showStartOverButton);
-		
+		if(showPersonInfo != null) {
+			GuiUtils.showNode(tpPersonInfo, showPersonInfo);
+
+			if(personInfo != null && showPersonInfo) {
+				Name name = personInfo.getName();
+				StringBuilder sb = new StringBuilder();
+
+				String firstName = name.getFirstName();
+				String fatherName = name.getFatherName();
+				String grandFatherName = name.getGrandfatherName();
+				String familyName = name.getFamilyName();
+
+				if (firstName != null) { sb.append(firstName).append(" "); }
+				if (fatherName != null) { sb.append(fatherName).append(" "); }
+				if (grandFatherName != null) { sb.append(grandFatherName).append(" "); }
+				if (familyName != null) { sb.append(familyName); }
+
+				String fullName = sb.toString().stripTrailing();
+
+				lblName.setText(fullName);
+				lblPersonId.setText(AppUtils.localizeNumbers(personInfo.getSamisId().toString()));
+			}
+
+		}
+
 		// load the persisted captured fingerprints, if any
 		if(capturedFingerprints != null && !capturedFingerprints.isEmpty())
 		{

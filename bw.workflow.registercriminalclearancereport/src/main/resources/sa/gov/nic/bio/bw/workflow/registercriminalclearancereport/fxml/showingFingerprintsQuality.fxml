@@ -191,7 +191,7 @@
             <ProgressIndicator fx:id="piProgress" prefHeight="25.0" prefWidth="25.0" managed="false" visible="false"/>
             <Button fx:id="btnStartOver" text="%button.startOver" onAction="#onStartOverButtonClicked"/>
             <Button fx:id="btnInquiry" text="%button.inquiry" onAction="#onNextButtonClicked"/>
-            <Button fx:id="btnReTakeFingerprints" text="%button.reTakeFingerprints" onAction="#onReTakeFingerprintsClicked"/>
+            <Button fx:id="btnReTakeFingerprints" visible="false"  managed="false" text="%button.reTakeFingerprints" onAction="#onReTakeFingerprintsClicked"/>
 
         </HBox>
     </bottom>

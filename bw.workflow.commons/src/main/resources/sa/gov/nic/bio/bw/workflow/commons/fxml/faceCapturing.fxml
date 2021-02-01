@@ -1,18 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ProgressIndicator?>
-<?import javafx.scene.control.SplitPane?>
-<?import javafx.scene.control.TitledPane?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.StackPane?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+
 <?import sa.gov.nic.bio.bw.workflow.commons.ui.AutoScalingStackPane?>
 <?import sa.gov.nic.bio.bw.workflow.commons.ui.FourStateTitledPane?>
 <?import sa.gov.nic.bio.bw.workflow.commons.ui.ImageViewPane?>
@@ -20,119 +12,138 @@
             fx:id="rootPane" fx:controller="sa.gov.nic.bio.bw.workflow.commons.controllers.FaceCapturingFxController"
             stylesheets="@../css/style.css">
     <center>
-        <SplitPane styleClass="white-background" orientation="VERTICAL" dividerPositions="0.5" VBox.vgrow="ALWAYS">
-            <padding>
-                <Insets top="10.0" bottom="10.0"/>
-            </padding>
-            <SplitPane dividerPositions="0.5">
-                <TitledPane text="%label.cameraControlPanel" maxHeight="Infinity" collapsible="false" HBox.hgrow="ALWAYS" focusTraversable="false">
-                    <VBox alignment="CENTER" spacing="10" VBox.vgrow="NEVER">
-                        <padding>
-                            <Insets topRightBottomLeft="10"/>
-                        </padding>
-                        <ProgressIndicator fx:id="piProgress" prefHeight="25.0" prefWidth="25.0" managed="false" visible="false"/>
-                        <Label fx:id="lblStatus" wrapText="true" textAlignment="CENTER" managed="false" visible="false"/>
-                        <VBox alignment="CENTER" spacing="5">
-                            <Button fx:id="btnStartCameraLivePreview" text="%button.startCameraLivePreview" managed="false" visible="false" wrapText="true" textAlignment="CENTER" onAction="#onStartCameraLivePreviewButtonClicked"/>
-                            <Button fx:id="btnCaptureFace" text="%button.captureFace" managed="false" visible="false" wrapText="true" textAlignment="CENTER" onAction="#onCaptureFaceButtonClicked"/>
-                            <Button fx:id="btnStopCameraLivePreview" text="%button.stopCameraLivePreview" managed="false" visible="false" wrapText="true" textAlignment="CENTER" onAction="#onStopCameraLivePreviewButtonClicked"/>
-                        </VBox>
-                    </VBox>
-                </TitledPane>
-                <TitledPane text="%label.icaoStandardChecklist" maxHeight="Infinity" collapsible="false" HBox.hgrow="ALWAYS" focusTraversable="false">
-                    <GridPane>
-                        <VBox GridPane.rowIndex="0" GridPane.columnIndex="0" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS">
-                            <padding>
-                                <Insets topRightBottomLeft="10"/>
-                            </padding>
-                            <TitledPane text="%label.checklistResult" maxHeight="Infinity" minWidth="170.0" minHeight="90.0" collapsible="false" VBox.vgrow="ALWAYS" focusTraversable="false">
-                                <padding>
-                                    <Insets topRightBottomLeft="0.0"/>
-                                </padding>
-                                <VBox alignment="CENTER" spacing="5.0">
-                                    <padding>
-                                        <Insets topRightBottomLeft="5.0"/>
-                                    </padding>
-                                    <ProgressIndicator fx:id="piIcao" maxHeight="25.0" maxWidth="25.0" visible="false" managed="false"/>
-                                    <ImageView fx:id="ivSuccessIcao" visible="false" managed="false">
-                                        <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/icon_success_16px.png"/>
-                                    </ImageView>
-                                    <ImageView fx:id="ivWarningIcao" visible="false" managed="false">
-                                        <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/icon_warning_16px.png"/>
-                                    </ImageView>
-                                    <ImageView fx:id="ivErrorIcao" visible="false" managed="false">
-                                        <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/icon_error_16px.png"/>
-                                    </ImageView>
-                                    <Label fx:id="lblIcaoMessage" wrapText="true" alignment="CENTER" textAlignment="CENTER" visible="false" managed="false"/>
-                                </VBox>
-                            </TitledPane>
-                        </VBox>
-                        <AutoScalingStackPane fx:id="subScenePane" GridPane.rowIndex="0" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS" visible="false" managed="false"/>
-                    </GridPane>
-                </TitledPane>
-            </SplitPane>
-            <SplitPane dividerPositions="0.35,0.7">
-                <FourStateTitledPane fx:id="tpCameraLivePreview" text="%label.cameraLivePreview" HBox.hgrow="ALWAYS" maxHeight="Infinity" collapsible="false" focusTraversable="false">
-                    <StackPane>
-                        <ImageViewPane>
-                            <imageView>
-                                <ImageView fx:id="ivCameraLivePreviewPlaceholder" preserveRatio="true">
-                                    <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/placeholder_image.png"/>
-                                </ImageView>
-                            </imageView>
-                        </ImageViewPane>
-                        <ImageViewPane>
-                            <imageView>
-                                <ImageView fx:id="ivCameraLivePreview" preserveRatio="true"/>
-                            </imageView>
-                        </ImageViewPane>
-                        <ProgressIndicator fx:id="piCameraLivePreview" maxHeight="25.0" maxWidth="25.0" managed="false" visible="false"/>
-                    </StackPane>
-                </FourStateTitledPane>
-                <FourStateTitledPane fx:id="tpCapturedImage" text="%label.capturedImage" maxHeight="Infinity" collapsible="false" HBox.hgrow="ALWAYS" focusTraversable="false">
-                    <StackPane>
-                        <ImageViewPane>
-                            <imageView>
-                                <ImageView fx:id="ivCapturedImagePlaceholder" preserveRatio="true">
-                                    <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/placeholder_image.png"/>
-                                </ImageView>
-                            </imageView>
-                        </ImageViewPane>
-                        <ImageViewPane>
-                            <imageView>
-                                <ImageView fx:id="ivCapturedImage" preserveRatio="true"/>
-                            </imageView>
-                        </ImageViewPane>
-                        <ProgressIndicator fx:id="piCapturedImage" maxHeight="25.0" maxWidth="25.0" managed="false" visible="false"/>
-                    </StackPane>
-                </FourStateTitledPane>
-                <FourStateTitledPane fx:id="tpCroppedImage" text="%label.croppedImage" maxHeight="Infinity" collapsible="false" HBox.hgrow="ALWAYS" focusTraversable="false">
-                    <StackPane>
-                        <ImageViewPane>
-                            <imageView>
-                                <ImageView fx:id="ivCroppedImagePlaceholder" preserveRatio="true">
-                                    <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/placeholder_image.png"/>
-                                </ImageView>
-                            </imageView>
-                        </ImageViewPane>
-                        <ImageViewPane>
-                            <imageView>
-                                <ImageView fx:id="ivCroppedImage" preserveRatio="true"/>
-                            </imageView>
-                        </ImageViewPane>
-                        <ProgressIndicator fx:id="piCroppedImage" maxHeight="25.0" maxWidth="25.0" managed="false" visible="false"/>
-                    </StackPane>
-                </FourStateTitledPane>
-            </SplitPane>
-        </SplitPane>
+      <VBox>
+          <padding>
+              <Insets bottom="10" top="10" />
+          </padding>
+          <TitledPane fx:id="tpPersonInfo" collapsible="false" focusTraversable="false" managed="false" text="%label.personInfo" visible="false">
+              <HBox alignment="CENTER_LEFT" prefHeight="24.0" prefWidth="919.0" spacing="10.0">
+                  <Label styleClass="bold-label" text="%label.Name" />
+                  <Label fx:id="lblName" />
+                  <Label styleClass="bold-label" text="%label.personId" />
+                  <Label fx:id="lblPersonId" />
+              </HBox>
+          </TitledPane>
+              <SplitPane dividerPositions="0.5" orientation="VERTICAL" styleClass="white-background" VBox.vgrow="ALWAYS">
+                  <padding>
+                      <Insets bottom="10.0" />
+                  </padding>
+                  <SplitPane dividerPositions="0.5">
+                      <TitledPane collapsible="false" focusTraversable="false" maxHeight="Infinity" text="%label.cameraControlPanel" HBox.hgrow="ALWAYS">
+                          <VBox alignment="CENTER" spacing="10" VBox.vgrow="NEVER">
+                              <padding>
+                                  <Insets topRightBottomLeft="10" />
+                              </padding>
+                              <ProgressIndicator fx:id="piProgress" managed="false" prefHeight="25.0" prefWidth="25.0" visible="false" />
+                              <Label fx:id="lblStatus" managed="false" textAlignment="CENTER" visible="false" wrapText="true" />
+                              <VBox alignment="CENTER" spacing="5">
+                                  <Button fx:id="btnStartCameraLivePreview" managed="false" onAction="#onStartCameraLivePreviewButtonClicked" text="%button.startCameraLivePreview" textAlignment="CENTER" visible="false" wrapText="true" />
+                                  <Button fx:id="btnCaptureFace" managed="false" onAction="#onCaptureFaceButtonClicked" text="%button.captureFace" textAlignment="CENTER" visible="false" wrapText="true" />
+                                  <Button fx:id="btnStopCameraLivePreview" managed="false" onAction="#onStopCameraLivePreviewButtonClicked" text="%button.stopCameraLivePreview" textAlignment="CENTER" visible="false" wrapText="true" />
+                              </VBox>
+                          </VBox>
+                      </TitledPane>
+                      <TitledPane collapsible="false" focusTraversable="false" maxHeight="Infinity" text="%label.icaoStandardChecklist" HBox.hgrow="ALWAYS">
+                          <GridPane>
+                              <VBox GridPane.columnIndex="0" GridPane.hgrow="ALWAYS" GridPane.rowIndex="0" GridPane.vgrow="ALWAYS">
+                                  <padding>
+                                      <Insets topRightBottomLeft="10" />
+                                  </padding>
+                                  <TitledPane collapsible="false" focusTraversable="false" maxHeight="Infinity" minHeight="90.0" minWidth="170.0" text="%label.checklistResult" VBox.vgrow="ALWAYS">
+                                      <padding>
+                                          <Insets topRightBottomLeft="0.0" />
+                                      </padding>
+                                      <VBox alignment="CENTER" spacing="5.0">
+                                          <padding>
+                                              <Insets topRightBottomLeft="5.0" />
+                                          </padding>
+                                          <ProgressIndicator fx:id="piIcao" managed="false" maxHeight="25.0" maxWidth="25.0" visible="false" />
+                                          <ImageView fx:id="ivSuccessIcao" managed="false" visible="false">
+                                              <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/icon_success_16px.png" />
+                                          </ImageView>
+                                          <ImageView fx:id="ivWarningIcao" managed="false" visible="false">
+                                              <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/icon_warning_16px.png" />
+                                          </ImageView>
+                                          <ImageView fx:id="ivErrorIcao" managed="false" visible="false">
+                                              <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/icon_error_16px.png" />
+                                          </ImageView>
+                                          <Label fx:id="lblIcaoMessage" alignment="CENTER" managed="false" textAlignment="CENTER" visible="false" wrapText="true" />
+                                      </VBox>
+                                  </TitledPane>
+                              </VBox>
+                              <AutoScalingStackPane fx:id="subScenePane" managed="false" visible="false" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="0" GridPane.vgrow="ALWAYS" />
+                        <columnConstraints>
+                           <ColumnConstraints />
+                        </columnConstraints>
+                        <rowConstraints>
+                           <RowConstraints />
+                        </rowConstraints>
+                          </GridPane>
+                      </TitledPane>
+                  </SplitPane>
+                  <SplitPane>
+                      <FourStateTitledPane fx:id="tpCameraLivePreview" collapsible="false" focusTraversable="false" maxHeight="Infinity" text="%label.cameraLivePreview" HBox.hgrow="ALWAYS">
+                          <StackPane>
+                              <ImageViewPane>
+                                  <imageView>
+                                      <ImageView fx:id="ivCameraLivePreviewPlaceholder" preserveRatio="true">
+                                          <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/placeholder_image.png" />
+                                      </ImageView>
+                                  </imageView>
+                              </ImageViewPane>
+                              <ImageViewPane>
+                                  <imageView>
+                                      <ImageView fx:id="ivCameraLivePreview" preserveRatio="true" />
+                                  </imageView>
+                              </ImageViewPane>
+                              <ProgressIndicator fx:id="piCameraLivePreview" managed="false" maxHeight="25.0" maxWidth="25.0" visible="false" />
+                          </StackPane>
+                      </FourStateTitledPane>
+                      <FourStateTitledPane fx:id="tpCapturedImage" collapsible="false" focusTraversable="false" maxHeight="Infinity" text="%label.capturedImage" HBox.hgrow="ALWAYS">
+                          <StackPane>
+                              <ImageViewPane>
+                                  <imageView>
+                                      <ImageView fx:id="ivCapturedImagePlaceholder" preserveRatio="true">
+                                          <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/placeholder_image.png" />
+                                      </ImageView>
+                                  </imageView>
+                              </ImageViewPane>
+                              <ImageViewPane>
+                                  <imageView>
+                                      <ImageView fx:id="ivCapturedImage" preserveRatio="true" />
+                                  </imageView>
+                              </ImageViewPane>
+                              <ProgressIndicator fx:id="piCapturedImage" managed="false" maxHeight="25.0" maxWidth="25.0" visible="false" />
+                          </StackPane>
+                      </FourStateTitledPane>
+                      <FourStateTitledPane fx:id="tpCroppedImage" collapsible="false" focusTraversable="false" maxHeight="Infinity" text="%label.croppedImage" HBox.hgrow="ALWAYS">
+                          <StackPane>
+                              <ImageViewPane>
+                                  <imageView>
+                                      <ImageView fx:id="ivCroppedImagePlaceholder" preserveRatio="true">
+                                          <Image url="@/sa/gov/nic/bio/bw/commons/resources/images/placeholder_image.png" />
+                                      </ImageView>
+                                  </imageView>
+                              </ImageViewPane>
+                              <ImageViewPane>
+                                  <imageView>
+                                      <ImageView fx:id="ivCroppedImage" preserveRatio="true" />
+                                  </imageView>
+                              </ImageViewPane>
+                              <ProgressIndicator fx:id="piCroppedImage" managed="false" maxHeight="25.0" maxWidth="25.0" visible="false" />
+                          </StackPane>
+                      </FourStateTitledPane>
+                  </SplitPane>
+              </SplitPane>
+      </VBox>
     </center>
     <bottom>
         <HBox alignment="CENTER" spacing="10">
             <padding>
-                <Insets bottom="10"/>
+                <Insets bottom="10" />
             </padding>
-            <Button fx:id="btnPrevious" text="%button.previous" onAction="#onPreviousButtonClicked"/>
-            <Button fx:id="btnNext" text="%button.next" onAction="#onNextButtonClicked"/>
+            <Button fx:id="btnPrevious" onAction="#onPreviousButtonClicked" text="%button.previous" />
+            <Button fx:id="btnNext" onAction="#onNextButtonClicked" text="%button.next" />
         </HBox>
     </bottom>
 </BorderPane>

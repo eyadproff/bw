@@ -131,6 +131,8 @@ public class RegisterIrisWorkflow extends WizardWorkflowBase
 			case 5:
 			{
 				setData(IrisCapturingFxController.class, "hidePreviousButton", Boolean.TRUE);
+				IrisCapturingFxController.Request irisCapturingRequest = IrisCapturingFxController.Request.ENROLLMENT;
+				setData(IrisCapturingFxController.class, "irisCapturingRequest", irisCapturingRequest);
 				renderUiAndWaitForUserInput(IrisCapturingFxController.class);
 				break;
 			}

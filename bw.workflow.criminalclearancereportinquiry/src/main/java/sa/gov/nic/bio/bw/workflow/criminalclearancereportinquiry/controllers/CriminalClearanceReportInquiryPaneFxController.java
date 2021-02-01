@@ -16,7 +16,6 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Pane;
 import sa.gov.nic.bio.bw.core.Context;
 import sa.gov.nic.bio.bw.core.beans.Name;
 import sa.gov.nic.bio.bw.core.controllers.ContentFxControllerBase;
@@ -26,8 +25,8 @@ import sa.gov.nic.bio.bw.core.workflow.Input;
 import sa.gov.nic.bio.bw.core.workflow.Output;
 import sa.gov.nic.bio.bw.workflow.commons.beans.Country;
 import sa.gov.nic.bio.bw.workflow.commons.lookups.CountriesLookup;
-import sa.gov.nic.bio.bw.workflow.registercriminalclearancereport.beans.CriminalClearanceReport;
 import sa.gov.nic.bio.bw.workflow.criminalclearancereportinquiry.utils.CriminalClearanceReportInquiryErrorCodes;
+import sa.gov.nic.bio.bw.workflow.registercriminalclearancereport.beans.CriminalClearanceReport;
 
 import java.time.Instant;
 import java.util.List;
@@ -40,17 +39,17 @@ public class CriminalClearanceReportInquiryPaneFxController extends ContentFxCon
 
 	@Output private Long reportNumber;
 	@Output private Long personId;
-	@Output private Integer pageIndex;
+//	@Output private Integer pageIndex;
 	@Output private ServiceType serviceType;
 
 	@FXML private TitledPane tpSearchResults;
-	@FXML private Pane paneTable;
+//	@FXML private Pane paneTable;
 	@FXML private CheckBox cbShowExpiredReports;
 	@FXML private TextField txtReportNumber;
 	@FXML private TextField txtPersonId;
 	@FXML private RadioButton rdoReportNumber;
 	@FXML private RadioButton rdoPersonId;
-	@FXML private Pagination pagination;
+//	@FXML private Pagination pagination;
 	@FXML private TableView<CriminalClearanceReport> tvCriminalClearanceReports;
 	@FXML private TableColumn<CriminalClearanceReport, String> tcSequence;
 	@FXML private TableColumn<CriminalClearanceReport, String> tcName;
@@ -94,15 +93,15 @@ public class CriminalClearanceReportInquiryPaneFxController extends ContentFxCon
 
 		tpSearchResults.setText(resources.getString("label.searchResults") + " (" + AppUtils.localizeNumbers("0") + ")");
 
-		pagination.setMaxPageIndicatorCount(AppConstants.TABLE_PAGINATION_PAGES_PER_ITERATION);
-		GuiUtils.localizePagination(pagination);
-		pagination.setPageFactory(this::createPage);
-		paginationControlBox = pagination.lookup(".control-box");
-		pagination.addEventFilter(KeyEvent.KEY_PRESSED, event ->
-		{
-			// disable controlling the pagination by keyboard
-			if(event.getCode() == KeyCode.RIGHT || event.getCode() == KeyCode.LEFT) event.consume();
-		});
+//		pagination.setMaxPageIndicatorCount(AppConstants.TABLE_PAGINATION_PAGES_PER_ITERATION);
+//		GuiUtils.localizePagination(pagination);
+//		pagination.setPageFactory(this::createPage);
+//		paginationControlBox = pagination.lookup(".control-box");
+//		pagination.addEventFilter(KeyEvent.KEY_PRESSED, event ->
+//		{
+//			// disable controlling the pagination by keyboard
+//			if(event.getCode() == KeyCode.RIGHT || event.getCode() == KeyCode.LEFT) event.consume();
+//		});
 
 		GuiUtils.applyValidatorToTextField(txtReportNumber, "\\d*", "[^\\d]",
 		                                   18);
@@ -294,13 +293,13 @@ public class CriminalClearanceReportInquiryPaneFxController extends ContentFxCon
 						                            AppUtils.localizeNumbers(String.valueOf(resultsTotalCount)) + ")");
 
 				int pageCount = (resultsTotalCount - 1) / AppConstants.TABLE_PAGINATION_RECORDS_PER_PAGE + 1;
-				if(pageIndex > pageCount) pageIndex = pageCount;
+//				if(pageIndex > pageCount) pageIndex = pageCount;
 				Platform.runLater(() ->
 				{
-					pagination.setPageCount(pageCount);
-					pagination.setCurrentPageIndex(pageIndex);
+//					pagination.setPageCount(pageCount);
+//					pagination.setCurrentPageIndex(pageIndex);
 
-					if(newQuery) newQuery = false;
+//					if(newQuery) newQuery = false;
 				});
 			}
 
@@ -311,7 +310,7 @@ public class CriminalClearanceReportInquiryPaneFxController extends ContentFxCon
 
 				for(int i = 0; i < criminalClearanceReports.size(); i++)
 				{
-					int sequence = AppConstants.TABLE_PAGINATION_RECORDS_PER_PAGE * pageIndex + i + 1;
+					int sequence = i + 1;
 					CriminalClearanceReport criminalClearanceReport = criminalClearanceReports.get(i);
 					criminalClearanceReport.setSequence(sequence);
 				}
@@ -350,10 +349,10 @@ public class CriminalClearanceReportInquiryPaneFxController extends ContentFxCon
 			serviceType= ServiceType.BY_ID_NUMBER;
 		}
 
-		pagination.setPageCount(1);
+//		pagination.setPageCount(1);
 		tvCriminalClearanceReports.getItems().clear();
 //		recordsPerPage = AppConstants.TABLE_PAGINATION_RECORDS_PER_PAGE;
-		pageIndex = 0;
+//		pageIndex = 0;
 		resultsTotalCount = null;
 		criminalClearanceReports = null;
 		tpSearchResults.setText(resources.getString("label.searchResults") + " (" + AppUtils.localizeNumbers("0") + ")");
@@ -395,26 +394,26 @@ public class CriminalClearanceReportInquiryPaneFxController extends ContentFxCon
 		}
 	}
 
-	private Node createPage(int pageIndex)
-	{
-		if(tableInitialized)
-		{
-			if(!newQuery)
-			{
-				tvCriminalClearanceReports.getItems().clear();
-//				recordsPerPage = AppConstants.TABLE_PAGINATION_RECORDS_PER_PAGE;
-				this.pageIndex = pageIndex;
-				resultsTotalCount = null;
-				criminalClearanceReports = null;
-				tpSearchResults.setText(resources.getString("label.searchResults") + " (" +
-					                                                        AppUtils.localizeNumbers("0") + ")");
-				continueWorkflow();
-			}
-		}
-		else tableInitialized = true;
-
-		return paneTable;
-	}
+//	private Node createPage(int pageIndex)
+//	{
+//		if(tableInitialized)
+//		{
+//			if(!newQuery)
+//			{
+//				tvCriminalClearanceReports.getItems().clear();
+////				recordsPerPage = AppConstants.TABLE_PAGINATION_RECORDS_PER_PAGE;
+//				this.pageIndex = pageIndex;
+//				resultsTotalCount = null;
+//				criminalClearanceReports = null;
+//				tpSearchResults.setText(resources.getString("label.searchResults") + " (" +
+//					                                                        AppUtils.localizeNumbers("0") + ")");
+//				continueWorkflow();
+//			}
+//		}
+//		else tableInitialized = true;
+//
+//		return paneTable;
+//	}
 
 	private static BooleanBinding createTextFieldNotCompleteBooleanBinding(TextField textField)
 	{

@@ -17,6 +17,7 @@ import javafx.scene.SubScene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
+import javafx.scene.control.TitledPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
@@ -32,6 +33,7 @@ import sa.gov.nic.bio.biokit.face.beans.CaptureFaceResponse;
 import sa.gov.nic.bio.biokit.face.beans.FaceStartPreviewResponse;
 import sa.gov.nic.bio.bw.commons.resources.fxml.CommonFXML;
 import sa.gov.nic.bio.bw.core.Context;
+import sa.gov.nic.bio.bw.core.beans.Name;
 import sa.gov.nic.bio.bw.core.controllers.DevicesRunnerGadgetPaneFxController;
 import sa.gov.nic.bio.bw.core.controllers.WizardStepFxControllerBase;
 import sa.gov.nic.bio.bw.core.utils.AppUtils;
@@ -39,6 +41,7 @@ import sa.gov.nic.bio.bw.core.utils.FxmlFile;
 import sa.gov.nic.bio.bw.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.core.workflow.Input;
 import sa.gov.nic.bio.bw.core.workflow.Output;
+import sa.gov.nic.bio.bw.workflow.commons.beans.PersonInfo;
 import sa.gov.nic.bio.bw.workflow.commons.ui.AutoScalingStackPane;
 import sa.gov.nic.bio.bw.workflow.commons.ui.FourStateTitledPane;
 import sa.gov.nic.bio.bw.workflow.commons.utils.CommonsErrorCodes;
@@ -56,10 +59,12 @@ import java.util.concurrent.Future;
 @FxmlFile("faceCapturing.fxml")
 public class FaceCapturingFxController extends WizardStepFxControllerBase
 {
+	@Input private Boolean showPersonInfo;
 	@Input private Boolean acceptAnyCapturedImage;
 	@Input private Boolean acceptBadQualityFace;
 	@Input private Integer acceptBadQualityFaceMinRetries;
 	@Input private Boolean isImageForEnrollment;
+	@Input private PersonInfo personInfo;
 	@Output private Image capturedFacePhoto;
 	@Output private Image croppedFacePhoto;
 	@Output private Image facePhoto;
@@ -78,7 +83,10 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 	@Output private Boolean croppedImageTitledPaneCaptured;
 	@Output private Boolean croppedImageTitledPaneDuplicated;
 	@Output private Boolean croppedImageTitledPaneValid;
-	
+
+	@FXML private TitledPane tpPersonInfo;
+	@FXML private Label lblPersonId;
+	@FXML private Label lblName;
 	@FXML private FourStateTitledPane tpCameraLivePreview;
 	@FXML private FourStateTitledPane tpCapturedImage;
 	@FXML private FourStateTitledPane tpCroppedImage;
@@ -126,7 +134,31 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 				piCapturedImage.visibleProperty().not()));
 		ivCroppedImagePlaceholder.visibleProperty().bind(ivCroppedImage.imageProperty().isNull().and(
 				piCroppedImage.visibleProperty().not()));
-		
+
+		if(showPersonInfo != null) {
+			GuiUtils.showNode(tpPersonInfo, showPersonInfo);
+
+			if(personInfo != null && showPersonInfo) {
+				Name name = personInfo.getName();
+				StringBuilder sb = new StringBuilder();
+
+				String firstName = name.getFirstName();
+				String fatherName = name.getFatherName();
+				String grandFatherName = name.getGrandfatherName();
+				String familyName = name.getFamilyName();
+
+				if (firstName != null) { sb.append(firstName).append(" "); }
+				if (fatherName != null) { sb.append(fatherName).append(" "); }
+				if (grandFatherName != null) { sb.append(grandFatherName).append(" "); }
+				if (familyName != null) { sb.append(familyName); }
+
+				String fullName = sb.toString().stripTrailing();
+
+				lblName.setText(fullName);
+				lblPersonId.setText(AppUtils.localizeNumbers(personInfo.getSamisId().toString()));
+			}
+
+		}
 		btnNext.disabledProperty().addListener((observable, oldValue, newValue) ->
 		{
 		    if(!newValue) btnNext.requestFocus();

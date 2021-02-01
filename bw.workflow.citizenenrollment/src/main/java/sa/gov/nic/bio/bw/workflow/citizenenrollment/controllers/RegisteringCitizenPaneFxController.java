@@ -85,6 +85,12 @@ public class RegisteringCitizenPaneFxController extends WizardStepFxControllerBa
                     GuiUtils.showNode(CitizenIvSuccess, true);
                     GuiUtils.showNode(btnStartOver, true);
                 }
+                else if (citizenRegistrationStatus == Status.ENROLLED_HIT) {
+                    CitizenLblStatus.setText(resources.getString("label.successCitizenRegistrationWithHitResponse"));
+                    GuiUtils.showNode(CPiProgress, false);
+                    GuiUtils.showNode(CitizenIvSuccess, true);
+                    GuiUtils.showNode(btnStartOver, true);
+                }
 
                 else if (citizenRegistrationStatus == Status.HIT) {
                     CitizenLblStatus.setText(resources.getString("label.successCitizenRegistrationWithHitResponse"));
@@ -142,7 +148,7 @@ public class RegisteringCitizenPaneFxController extends WizardStepFxControllerBa
     @FXML
     public void onStartOverButtonClicked(ActionEvent actionEvent)
     {
-        if (citizenRegistrationStatus != null && (citizenRegistrationStatus == Status.SUCCESS || citizenRegistrationStatus == Status.HIT)) {
+        if (citizenRegistrationStatus != null && (citizenRegistrationStatus == Status.SUCCESS || citizenRegistrationStatus == Status.HIT || citizenRegistrationStatus == Status.ENROLLED_HIT)) {
             startOver();
         }
         else {
