@@ -9,6 +9,16 @@
 
 VERSION SCHEMA: vYYYY.MM.#SEQ
 
+## v2021.02.1
+
+- ENH: Add quality check for irisCapturing.
+- ENH: Updated biokit library to add iris score.
+- CHN: Enable updating personId when editing convicted report (fullUpdating role).
+- CHN: Enable to register unknown person when id start's with (0,8 or 9) when register convicted report.
+- FIX: Change SAUDI_ZONE from GMT+3 to Asia/Riyadh.
+
+---
+
 ## v2021.01.1
 
 - NEW: Register Criminal Clearance Report by ID.

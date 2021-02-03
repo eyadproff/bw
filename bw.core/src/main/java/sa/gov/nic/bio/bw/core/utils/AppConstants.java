@@ -25,7 +25,7 @@ public interface AppConstants
 	String APP_BASE_PACKAGE = "sa.gov.nic.bio.bw";
 	String UI_LANGUAGE_PREF_NAME = "sa.gov.nic.bio.bw.ui.language";
 	String LOGIN_FINGERPRINT_POSITION_PREF_NAME = "sa.gov.nic.bio.bw.login.fingerprint";
-	ZoneId SAUDI_ZONE = ZoneId.of("GMT+3");
+	ZoneId SAUDI_ZONE = ZoneId.of("Asia/Riyadh");
 	String APP_FOLDER_PATH = "C:/bio/user-apps/" + System.getProperty("user.name") + "/bw";
 	String LOGS_FOLDER_PATH = APP_FOLDER_PATH + "/logs";
 	String TEMP_FOLDER_PATH = APP_FOLDER_PATH + "/temp";

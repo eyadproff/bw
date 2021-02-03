@@ -186,7 +186,8 @@ public class InquiryByFingerprintsResultPaneFxController extends WizardStepFxCon
 		if (selectedCivilPersonId != null) {
 			String selectedCivilPersonIdAsString = String.valueOf(selectedCivilPersonId);
 			if (selectedCivilPersonIdAsString.startsWith("0") || selectedCivilPersonIdAsString.startsWith("8") || selectedCivilPersonIdAsString.startsWith("9")) {
-				GuiUtils.showNode(btnRegisterUnknownPerson, true);
+				GuiUtils.showNode(btnRegisterUnknownPerson, hideRegisterUnknownButton == null
+															|| !hideRegisterUnknownButton);
 			}
 		}
 		
