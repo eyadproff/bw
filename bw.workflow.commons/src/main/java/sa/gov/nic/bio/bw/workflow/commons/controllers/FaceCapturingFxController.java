@@ -59,6 +59,8 @@ import java.util.concurrent.Future;
 @FxmlFile("faceCapturing.fxml")
 public class FaceCapturingFxController extends WizardStepFxControllerBase
 {
+	@Input private Boolean hidePreviousButton;
+	@Input private Boolean showStartOverButton;
 	@Input private Boolean showPersonInfo;
 	@Input private Boolean acceptAnyCapturedImage;
 	@Input private Boolean acceptBadQualityFace;
@@ -111,6 +113,7 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 	@FXML private Button btnStopCameraLivePreview;
 	@FXML private Button btnCaptureFace;
 	@FXML private Button btnPrevious;
+	@FXML private Button btnStartOver;
 	@FXML private Button btnNext;
 	
 	private Group face3D;
@@ -224,6 +227,9 @@ public class FaceCapturingFxController extends WizardStepFxControllerBase
 					ivCroppedImage.imageProperty().isNull()).or(
 					ivSuccessIcao.visibleProperty().not()));
 		}
+
+		if(hidePreviousButton != null) GuiUtils.showNode(btnPrevious, !hidePreviousButton);
+		if(showStartOverButton != null) GuiUtils.showNode(btnStartOver, showStartOverButton);
 		
 		if(icaoSuccessIconVisible != null) GuiUtils.showNode(ivSuccessIcao, icaoSuccessIconVisible);
 		if(icaoWarningIconVisible != null) GuiUtils.showNode(ivWarningIcao, icaoWarningIconVisible);

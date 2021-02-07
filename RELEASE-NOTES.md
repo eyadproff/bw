@@ -13,9 +13,8 @@ VERSION SCHEMA: vYYYY.MM.#SEQ
 
 - ENH: Add quality check for irisCapturing.
 - ENH: Updated biokit library to add iris score.
-- CHN: Enable updating personId when editing convicted report (fullUpdating role).
 - CHN: Enable to register unknown person when id start's with (0,8 or 9) when register convicted report.
-- FIX: Change SAUDI_ZONE from GMT+3 to Asia/Riyadh.
+- FIX: Change SAUDI_ZONE from GMT+3 to Asia/Riyadh to fix issue with date before 1947.
 
 ---
 
@@ -54,7 +53,8 @@ VERSION SCHEMA: vYYYY.MM.#SEQ
 
 ## v2020.04.3
 
-- FIX: NPE in InquiryByFingerprintsResultPaneFxController.
+- FIX: 
+ in InquiryByFingerprintsResultPaneFxController.
 
 ---
 

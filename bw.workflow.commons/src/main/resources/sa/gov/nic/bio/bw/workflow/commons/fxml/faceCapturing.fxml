@@ -142,6 +142,7 @@
             <padding>
                 <Insets bottom="10" />
             </padding>
+            <Button fx:id="btnStartOver"  onAction="#onStartOverButtonClicked" text="%button.startOver" visible="false" managed="false" />
             <Button fx:id="btnPrevious" onAction="#onPreviousButtonClicked" text="%button.previous" />
             <Button fx:id="btnNext" onAction="#onNextButtonClicked" text="%button.next" />
         </HBox>

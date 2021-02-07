@@ -1,6 +1,7 @@
 package sa.gov.nic.bio.bw.workflow.registercriminalclearancereportbyfingerprints;
 
 
+import sa.gov.nic.bio.bw.core.Context;
 import sa.gov.nic.bio.bw.core.utils.Device;
 import sa.gov.nic.bio.bw.core.wizard.Step;
 import sa.gov.nic.bio.bw.core.wizard.Wizard;
@@ -54,10 +55,16 @@ public class RegisterCriminalClearanceReportByFingerprintsWorkflow extends Wizar
         switch (step) {
             case 0: {
 
+                boolean acceptBadQualityFingerprint = "true".equals(Context.getConfigManager().getProperty(
+                        "registerCriminalClearance.fingerprint.acceptBadQualityFingerprint"));
+                int acceptBadQualityFingerprintMinRetries = Integer.parseInt(Context.getConfigManager().getProperty(
+                        "registerCriminalClearance.fingerprint.acceptBadQualityFingerprintMinRetries"));
+
                 setData(SlapFingerprintsCapturingFxController.class, "acceptBadQualityFingerprint",
-                        Boolean.TRUE);
+                        acceptBadQualityFingerprint);
                 setData(SlapFingerprintsCapturingFxController.class, "acceptBadQualityFingerprintMinRetires",
-                        0);
+                        acceptBadQualityFingerprintMinRetries);
+
                 setData(SlapFingerprintsCapturingFxController.class, "hidePreviousButton",
                         Boolean.TRUE);
                 renderUiAndWaitForUserInput(SlapFingerprintsCapturingFxController.class);
@@ -66,6 +73,15 @@ public class RegisterCriminalClearanceReportByFingerprintsWorkflow extends Wizar
                 break;
             }
             case 1: {
+
+                boolean acceptBadQualityFace = "true".equals(Context.getConfigManager().getProperty(
+                        "registerCriminalClearance.face.acceptBadQualityFace"));
+                int acceptBadQualityFaceMinRetries = Integer.parseInt(Context.getConfigManager().getProperty(
+                        "registerCriminalClearance.face.acceptBadQualityFaceMinRetries"));
+
+                setData(FaceCapturingFxController.class, "acceptBadQualityFace", acceptBadQualityFace);
+                setData(FaceCapturingFxController.class, "acceptBadQualityFaceMinRetries",
+                        acceptBadQualityFaceMinRetries);
 
                 renderUiAndWaitForUserInput(FaceCapturingFxController.class);
 

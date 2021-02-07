@@ -52,7 +52,7 @@ public class ShowingPersonInfoFxController extends WizardStepFxControllerBase {
     @FXML private Button btnStartOver;
     @FXML private Button btnConfirmPersonInfo;
 
-    private boolean incrementOneStep = false;
+    private boolean incrementTwoSteps = false;
 
     @Override
     protected void onAttachedToScene() {
@@ -101,25 +101,26 @@ public class ShowingPersonInfoFxController extends WizardStepFxControllerBase {
         String showingQualityFingerprintsView = resources.getString("wizard.showQualityFingerprintsView");
         String showingFingerprintsView = resources.getString("wizard.showFingerprintsView");
         String fingerprintCapturing = resources.getString("wizard.fingerprintCapturing");
+        String faceCapturing = resources.getString("wizard.facePhotoCapturing");
 
         int stepIndex = Context.getCoreFxController().getWizardPane(getTabIndex()).getStepIndexByTitle(showingQualityFingerprintsView);
 
         if (stepIndex < 0) {
             stepIndex = Context.getCoreFxController().getWizardPane(getTabIndex())
-                    .getStepIndexByTitle(fingerprintCapturing);
+                    .getStepIndexByTitle(faceCapturing);
         }
         final int finalStepIndex = stepIndex;
 
 
         if (successfulResponse) {
             if (fingerprintsExist != null && fingerprintsExist) {
-                if (incrementOneStep) {
+                if (incrementTwoSteps) {
+                    Context.getCoreFxController().getWizardPane(getTabIndex()).removeStep(finalStepIndex);
                     Context.getCoreFxController().getWizardPane(getTabIndex()).removeStep(finalStepIndex);
                     Context.getCoreFxController().getWizardPane(getTabIndex()).updateStep(finalStepIndex, showingQualityFingerprintsView, "\\uf256");
-                    incrementOneStep = false;
+                    incrementTwoSteps = false;
                 }
                 else {
-
                     Context.getCoreFxController().getWizardPane(getTabIndex()).updateStep(finalStepIndex, showingQualityFingerprintsView, "\\uf256");
                 }
 
@@ -132,12 +133,16 @@ public class ShowingPersonInfoFxController extends WizardStepFxControllerBase {
                 boolean confirmed = Context.getCoreFxController().showConfirmationDialogAndWait(headerText, contentText);
 
                 if (confirmed) {
-                    if (!incrementOneStep) {
-                        Context.getCoreFxController().getWizardPane(getTabIndex()).updateStep(finalStepIndex, fingerprintCapturing, "\\uf256");
+                    if (!incrementTwoSteps) {
+                        Context.getCoreFxController().getWizardPane(getTabIndex()).removeStep(finalStepIndex);
+                        Context.getCoreFxController().getWizardPane(getTabIndex()).addStep(finalStepIndex, faceCapturing, "camera");
                         Context.getCoreFxController().getWizardPane(getTabIndex()).addStep(finalStepIndex + 1,
+                                fingerprintCapturing,
+                                "\\uf256");
+                        Context.getCoreFxController().getWizardPane(getTabIndex()).addStep(finalStepIndex + 2,
                                 showingFingerprintsView,
                                 "\\uf256");
-                        incrementOneStep = true;
+                        incrementTwoSteps = true;
                     }
                     goNext();
                 }

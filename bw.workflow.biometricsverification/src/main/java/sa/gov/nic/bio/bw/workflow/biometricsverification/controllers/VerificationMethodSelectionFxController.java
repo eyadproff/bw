@@ -76,8 +76,9 @@ public class VerificationMethodSelectionFxController extends WizardStepFxControl
         {
             if (newValue) {
 
+                Context.getCoreFxController().getWizardPane(getTabIndex()).removeStep(finalStepIndex);
                 Context.getCoreFxController()
-                        .getWizardPane(getTabIndex()).updateStep(finalStepIndex,
+                        .getWizardPane(getTabIndex()).addStep(finalStepIndex,
                         fingerprintCapturingTitle,
                         "\\uf25a");
 
