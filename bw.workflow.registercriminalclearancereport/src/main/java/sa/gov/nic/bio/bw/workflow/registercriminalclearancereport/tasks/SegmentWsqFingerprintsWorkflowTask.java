@@ -31,6 +31,9 @@ public class SegmentWsqFingerprintsWorkflowTask extends WorkflowTask {
     @Output private List<Finger> segmentedFingers;
     @Output private Map<Integer, String> fingerprintBase64Images;
 
+    /*
+    We need DMFingerData for all fingers segmented and unsegmented
+     */
 
     @Override
     public void execute() throws Signal {
@@ -41,6 +44,25 @@ public class SegmentWsqFingerprintsWorkflowTask extends WorkflowTask {
         segmentedFingers = new ArrayList<>();
         Map<Integer, String> fingerprintWsqToBeConvertedMap = new HashMap<>();
         Map<Integer, String> fingerprintImages = new HashMap<>();
+
+        boolean segmentRightSlap = false;
+        boolean segmentLeftSlap = false;
+        boolean segmentTwoThumpsSlap = false;
+        boolean segmentRightThumbSlap = false;
+        boolean segmentLeftThumbSlap = false;
+
+        for (Finger finger : fingerprints) {
+            int position = finger.getType();
+
+            if (position >= FingerPosition.RIGHT_SLAP.getPosition()) { segmentRightSlap = true; }
+
+            else if (position >= FingerPosition.LEFT_SLAP.getPosition()) { segmentLeftSlap = true; }
+
+            else if (position == FingerPosition.TWO_THUMBS.getPosition()) { segmentTwoThumpsSlap = true; }
+
+            if (position == FingerPosition.RIGHT_THUMB_SLAP.getPosition()) { segmentRightThumbSlap = true; }
+            if (position == FingerPosition.LEFT_THUMB_SLAP.getPosition()) { segmentLeftThumbSlap = true; }
+        }
 
         for (Finger finger : fingerprints) {
             int position = finger.getType();
@@ -93,6 +115,9 @@ public class SegmentWsqFingerprintsWorkflowTask extends WorkflowTask {
                 }
                 else if (position == FingerPosition.RIGHT_THUMB_SLAP.getPosition() || position == FingerPosition.RIGHT_THUMB.getPosition()) {
 
+                    if (segmentTwoThumpsSlap) { continue; }
+                    if( position == FingerPosition.RIGHT_THUMB.getPosition() && segmentRightThumbSlap){ continue; }
+
                     if (availableFingerprints.contains(FingerPosition.RIGHT_THUMB.getPosition())) { expectedFingersCount++; }
                     else { slapMissingFingers.add(FingerPosition.RIGHT_THUMB.getPosition()); }
 
@@ -101,6 +126,9 @@ public class SegmentWsqFingerprintsWorkflowTask extends WorkflowTask {
 
                 }
                 else if (position == FingerPosition.LEFT_THUMB_SLAP.getPosition() || position == FingerPosition.LEFT_THUMB.getPosition()) {
+
+                    if (segmentTwoThumpsSlap) { continue; }
+                    if( position == FingerPosition.LEFT_THUMB.getPosition() && segmentLeftThumbSlap){ continue; }
 
                     if (availableFingerprints.contains(FingerPosition.LEFT_THUMB.getPosition())) { expectedFingersCount++; }
                     else { slapMissingFingers.add(FingerPosition.LEFT_THUMB.getPosition()); }
@@ -112,6 +140,7 @@ public class SegmentWsqFingerprintsWorkflowTask extends WorkflowTask {
                 else if (position == FingerPosition.LEFT_LITTLE.getPosition() || position == FingerPosition.LEFT_RING.getPosition() ||
                          position == FingerPosition.LEFT_MIDDLE.getPosition() || position == FingerPosition.LEFT_INDEX.getPosition()) {
 
+                    if (segmentLeftSlap) { continue; }
                     if (availableFingerprints.contains(position)) { expectedFingersCount++; }
                     else { slapMissingFingers.add(position); }
 
@@ -125,6 +154,7 @@ public class SegmentWsqFingerprintsWorkflowTask extends WorkflowTask {
                 else if (position == FingerPosition.RIGHT_LITTLE.getPosition() || position == FingerPosition.RIGHT_RING.getPosition() ||
                          position == FingerPosition.RIGHT_MIDDLE.getPosition() || position == FingerPosition.RIGHT_INDEX.getPosition()) {
 
+                    if (segmentRightSlap) { continue; }
                     if (availableFingerprints.contains(position)) { expectedFingersCount++; }
                     else { slapMissingFingers.add(position); }
 

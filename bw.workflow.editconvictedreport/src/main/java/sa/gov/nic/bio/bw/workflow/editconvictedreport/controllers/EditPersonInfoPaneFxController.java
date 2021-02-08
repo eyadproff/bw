@@ -383,7 +383,7 @@ public class EditPersonInfoPaneFxController extends WizardStepFxControllerBase
 		if(this.birthDateUseHijri != null && !this.birthDateUseHijri) rdoBirthDateUseGregorian.setSelected(true);
 		
 		txtPersonId.setDisable(true);
-//		txtPersonId.setDisable(disable);
+		//txtPersonId.setDisable(disable);
 		if(personId != null) txtPersonId.setText(String.valueOf(personId));
 		else if(this.personIdNewValue != null) txtPersonId.setText(String.valueOf(this.personIdNewValue));
 		
