@@ -109,7 +109,7 @@ public class CitizenEnrollmentWorkflow extends WizardWorkflowBase {
                 @SuppressWarnings("unchecked")
                 List<String> userRoles = (List<String>) Context.getUserSession().getAttribute("userRoles");
                 String acceptBadQualityRole = Context.getConfigManager().getProperty("citizenEnrollment.roles.fingerprint.acceptBadQualityFingerprint");
-                if(userRoles.contains(acceptBadQualityRole)) {
+                if (userRoles.contains(acceptBadQualityRole)) {
                     setData(SlapFingerprintsCapturingFxController.class, "acceptBadQualityFingerprintMinRetires",
                             acceptBadQualityFingerprintMinRetries);
                     setData(SlapFingerprintsCapturingFxController.class, "acceptBadQualityFingerprint",
@@ -221,7 +221,7 @@ public class CitizenEnrollmentWorkflow extends WizardWorkflowBase {
                 passData(SlapFingerprintsCapturingFxController.class, ReviewAndSubmitPaneFxController.class,
                         "missingFingerprints");
 
-                passData(FaceCapturingFxController.class, ReviewAndSubmitPaneFxController.class, "facePhoto");
+//                passData(FaceCapturingFxController.class, ReviewAndSubmitPaneFxController.class, "facePhoto");
                 passData(FaceCapturingFxController.class, "facePhotoBase64ForEnrollment", ReviewAndSubmitPaneFxController.class, "facePhotoBase64");
 
                 passData(IrisCapturingFxController.class, ReviewAndSubmitPaneFxController.class,

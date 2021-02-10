@@ -36,8 +36,6 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase 
     @Input(alwaysRequired = true)
     private PersonInfo personInfo;
     @Input(alwaysRequired = true)
-    private Image facePhoto;
-    @Input(alwaysRequired = true)
     private String facePhotoBase64;
     @Input(alwaysRequired = true)
     private Map<Integer, String> fingerprintBase64Images;
@@ -95,7 +93,8 @@ public class ReviewAndSubmitPaneFxController extends WizardStepFxControllerBase 
                 personInfo.getBirthDate(), personInfo.getGender(),
                 capturedRightIrisCompressedBase64, capturedLeftIrisCompressedBase64, supervisorId);
 
-        ivPersonPhoto.setImage(facePhoto);
+//        ivPersonPhoto.setImage(facePhoto);
+        GuiUtils.attachFacePhotoBase64(ivPersonPhoto,facePhotoBase64);
         GuiUtils.attachImageDialog(Context.getCoreFxController(), ivPersonPhoto,
                 resources.getString("label.personPhoto"),
                 resources.getString("label.contextMenu.showImage"), false);

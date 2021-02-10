@@ -156,6 +156,7 @@ public class CriminalClearanceReportFxController extends ContentFxControllerBase
         GuiUtils.setLabelText(lblBirthDate, birthDate).orElse(consumer);
 
         Long samisId = criminalClearanceReport.getSamisId();
+        if (samisId != null && samisId == 0) { samisId = null; }
         GuiUtils.setLabelText(lblPersonId, samisId).orElse(consumer);
 
         String passportId = criminalClearanceReport.getPassportNumber();

@@ -11,6 +11,7 @@ public class ConvictedReport extends JavaBean
 	{
 		String LIVE_SCAN = "LIVE_SCAN";
 		String ARCHIVE_DB = "ARCHIVE_DB";
+		String BIOMETRICS_DB = "BIOMETRICS_DB";
 		String CARD_SCAN = "CARD_SCAN";
 		String NIST_FILE = "NIST_FILE";
 	}

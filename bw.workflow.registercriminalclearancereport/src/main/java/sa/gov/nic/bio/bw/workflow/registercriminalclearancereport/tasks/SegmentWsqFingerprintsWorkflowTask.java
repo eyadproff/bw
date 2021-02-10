@@ -32,7 +32,7 @@ public class SegmentWsqFingerprintsWorkflowTask extends WorkflowTask {
     @Output private Map<Integer, String> fingerprintBase64Images;
 
     /*
-    We need DMFingerData for all fingers segmented and unsegmented
+    We need DMFingerData for all fingers (segmented or unsegmented)
      */
 
     @Override
@@ -47,7 +47,7 @@ public class SegmentWsqFingerprintsWorkflowTask extends WorkflowTask {
 
         boolean segmentRightSlap = false;
         boolean segmentLeftSlap = false;
-        boolean segmentTwoThumpsSlap = false;
+        boolean segmentTwoThumps = false;
         boolean segmentRightThumbSlap = false;
         boolean segmentLeftThumbSlap = false;
 
@@ -58,7 +58,7 @@ public class SegmentWsqFingerprintsWorkflowTask extends WorkflowTask {
 
             else if (position >= FingerPosition.LEFT_SLAP.getPosition()) { segmentLeftSlap = true; }
 
-            else if (position == FingerPosition.TWO_THUMBS.getPosition()) { segmentTwoThumpsSlap = true; }
+            else if (position == FingerPosition.TWO_THUMBS.getPosition()) { segmentTwoThumps = true; }
 
             if (position == FingerPosition.RIGHT_THUMB_SLAP.getPosition()) { segmentRightThumbSlap = true; }
             if (position == FingerPosition.LEFT_THUMB_SLAP.getPosition()) { segmentLeftThumbSlap = true; }
@@ -115,7 +115,7 @@ public class SegmentWsqFingerprintsWorkflowTask extends WorkflowTask {
                 }
                 else if (position == FingerPosition.RIGHT_THUMB_SLAP.getPosition() || position == FingerPosition.RIGHT_THUMB.getPosition()) {
 
-                    if (segmentTwoThumpsSlap) { continue; }
+                    if (segmentTwoThumps) { continue; }
                     if( position == FingerPosition.RIGHT_THUMB.getPosition() && segmentRightThumbSlap){ continue; }
 
                     if (availableFingerprints.contains(FingerPosition.RIGHT_THUMB.getPosition())) { expectedFingersCount++; }
@@ -127,7 +127,7 @@ public class SegmentWsqFingerprintsWorkflowTask extends WorkflowTask {
                 }
                 else if (position == FingerPosition.LEFT_THUMB_SLAP.getPosition() || position == FingerPosition.LEFT_THUMB.getPosition()) {
 
-                    if (segmentTwoThumpsSlap) { continue; }
+                    if (segmentTwoThumps) { continue; }
                     if( position == FingerPosition.LEFT_THUMB.getPosition() && segmentLeftThumbSlap){ continue; }
 
                     if (availableFingerprints.contains(FingerPosition.LEFT_THUMB.getPosition())) { expectedFingersCount++; }

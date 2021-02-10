@@ -250,7 +250,7 @@ public class RegisterCriminalClearanceReportWorkflow extends WizardWorkflowBase 
                     passData(SlapFingerprintsCapturingFxController.class, ReviewAndSubmitPaneFxController.class,
                             "fingerprintBase64Images");
 
-                    passData(SlapFingerprintsCapturingFxController.class, "segmentedFingerprints", ReviewAndSubmitPaneFxController.class,
+                    passData(SlapFingerprintsCapturingFxController.class,"segmentedFingerprints", ReviewAndSubmitPaneFxController.class,
                             "fingerprints");
 
                     passData(SlapFingerprintsCapturingFxController.class, ReviewAndSubmitPaneFxController.class,

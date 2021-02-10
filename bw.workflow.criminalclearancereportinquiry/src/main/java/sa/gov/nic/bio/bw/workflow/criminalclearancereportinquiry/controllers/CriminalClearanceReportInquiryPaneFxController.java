@@ -180,7 +180,7 @@ public class CriminalClearanceReportInquiryPaneFxController extends ContentFxCon
 		{
 		    CriminalClearanceReport criminalClearanceReport = param.getValue();
 		    Long subjSamisId = criminalClearanceReport.getSamisId();
-		    if(subjSamisId == null) return null;
+		    if(subjSamisId == null || subjSamisId == 0) return null;
 		    return new SimpleStringProperty(AppUtils.localizeNumbers(String.valueOf(subjSamisId)));
 		});
 

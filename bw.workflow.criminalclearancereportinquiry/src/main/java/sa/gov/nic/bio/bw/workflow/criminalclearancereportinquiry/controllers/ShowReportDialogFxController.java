@@ -272,7 +272,7 @@ public class ShowReportDialogFxController extends ContentFxControllerBase {
             GuiUtils.showNode(btnSaveReportAsPDF, true);
 
             String title = resources.getString("showConvictedReport.savingAsPDF.success.title");
-            String contentText = resources.getString("showConvictedReport.savingAsPDF.success.message");
+            String contentText = resources.getString("showCriminalClearanceReport.savingAsPDF.success.message");
             String buttonText = resources.getString("showConvictedReport.savingAsPDF.success.button");
             boolean rtl = Context.getGuiLanguage().getNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT;
             Stage stage = (Stage) dialog.getDialogPane().getScene().getWindow();

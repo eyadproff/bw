@@ -81,7 +81,7 @@
                           </GridPane>
                       </TitledPane>
                   </SplitPane>
-                  <SplitPane>
+                  <SplitPane dividerPositions="0.4, 0.7">
                       <FourStateTitledPane fx:id="tpCameraLivePreview" collapsible="false" focusTraversable="false" maxHeight="Infinity" text="%label.cameraLivePreview" HBox.hgrow="ALWAYS">
                           <StackPane>
                               <ImageViewPane>

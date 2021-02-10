@@ -24,7 +24,7 @@
                   </HBox>
          </TitledPane>
             <SplitPane dividerPositions="0.5" orientation="VERTICAL" VBox.vgrow="ALWAYS">
-                <SplitPane dividerPositions="0.6" styleClass="white-background">
+                <SplitPane dividerPositions="0.4, 0.7" styleClass="white-background">
                     <TitledPane collapsible="false" focusTraversable="false" maxHeight="Infinity" text="%label.fingerprintDeviceControlPanel">
                         <ScrollPane fx:id="paneControlsOuterContainer" fitToWidth="true" maxHeight="Infinity" VBox.vgrow="ALWAYS">
                             <VBox fx:id="paneControlsInnerContainer" alignment="CENTER" spacing="10.0">

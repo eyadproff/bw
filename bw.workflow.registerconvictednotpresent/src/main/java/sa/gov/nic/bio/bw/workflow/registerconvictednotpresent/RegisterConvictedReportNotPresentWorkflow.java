@@ -606,7 +606,7 @@ public class RegisterConvictedReportNotPresentWorkflow extends WizardWorkflowBas
 					         ReviewAndSubmitPaneFxController.class,
 					         "missingFingerprints");
 					setData(ReviewAndSubmitPaneFxController.class, "fingerprintsSourceSystem",
-					        ConvictedReport.FingerprintsSource.ARCHIVE_DB);
+					        ConvictedReport.FingerprintsSource.BIOMETRICS_DB);
 				}
 				else if(fingerprintsSource == Source.SCANNING_FINGERPRINTS_CARD)
 				{
