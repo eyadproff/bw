@@ -20,11 +20,9 @@ import sa.gov.nic.bio.bw.workflow.commons.tasks.FingerprintVerificationWorkflowT
 import sa.gov.nic.bio.bw.workflow.commons.tasks.GetPersonInfoByIdWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.registeriris.controllers.PersonIdPaneFxController;
 import sa.gov.nic.bio.bw.workflow.registeriris.controllers.RegisteringIrisPaneFxController;
-import sa.gov.nic.bio.bw.workflow.registeriris.controllers.RegisteringIrisPaneFxController.Request;
 import sa.gov.nic.bio.bw.workflow.registeriris.controllers.VerificationMethodSelectionFxController;
 import sa.gov.nic.bio.bw.workflow.registeriris.controllers.VerificationMethodSelectionFxController.VerificationMethod;
 import sa.gov.nic.bio.bw.workflow.registeriris.controllers.VerificationProgressPaneFxController;
-import sa.gov.nic.bio.bw.workflow.registeriris.tasks.CheckIrisRegistrationWorkflowTask;
 import sa.gov.nic.bio.bw.workflow.registeriris.tasks.SubmitIrisRegistrationWorkflowTask;
 
 @AssociatedMenu(workflowId = 1021, menuId = "menu.register.registerIris",
@@ -139,26 +137,14 @@ public class RegisterIrisWorkflow extends WizardWorkflowBase
 			case 6:
 			{
 				renderUiAndWaitForUserInput(RegisteringIrisPaneFxController.class);
-				
-				Request request = getData(RegisteringIrisPaneFxController.class, "request");
-				if(request == Request.SUBMIT_IRIS_REGISTRATION)
-				{
-					passData(PersonIdPaneFxController.class, SubmitIrisRegistrationWorkflowTask.class,
-					         "personId");
-					passData(IrisCapturingFxController.class, "capturedRightIrisCompressedBase64",
-					         SubmitIrisRegistrationWorkflowTask.class, "rightIrisBase64");
-					passData(IrisCapturingFxController.class, "capturedLeftIrisCompressedBase64",
-					         SubmitIrisRegistrationWorkflowTask.class, "leftIrisBase64");
-					executeWorkflowTask(SubmitIrisRegistrationWorkflowTask.class);
-				}
-				else if(request == Request.CHECK_IRIS_REGISTRATION)
-				{
-					passData(SubmitIrisRegistrationWorkflowTask.class,
-					         CheckIrisRegistrationWorkflowTask.class, "tcn");
-					executeWorkflowTask(CheckIrisRegistrationWorkflowTask.class);
-					passData(CheckIrisRegistrationWorkflowTask.class, "status",
-					         RegisteringIrisPaneFxController.class, "irisRegistrationStatus");
-				}
+
+				passData(PersonIdPaneFxController.class, SubmitIrisRegistrationWorkflowTask.class,
+						"personId");
+				passData(IrisCapturingFxController.class, "capturedRightIrisCompressedBase64",
+						SubmitIrisRegistrationWorkflowTask.class, "rightIrisBase64");
+				passData(IrisCapturingFxController.class, "capturedLeftIrisCompressedBase64",
+						SubmitIrisRegistrationWorkflowTask.class, "leftIrisBase64");
+				executeWorkflowTask(SubmitIrisRegistrationWorkflowTask.class);
 				
 				break;
 			}

@@ -37,9 +37,6 @@ public class RegisteringCitizenPaneFxController extends WizardStepFxControllerBa
     @FXML private Button btnStartOver;
 
 
-    private boolean disableRetryButtonForever = false;
-
-
     @Override
     protected void onAttachedToScene() {
         request = Request.SUBMIT_CITIZEN_REGISTRATION;
@@ -59,7 +56,7 @@ public class RegisteringCitizenPaneFxController extends WizardStepFxControllerBa
                 GuiUtils.showNode(CPiProgress, false);
                 GuiUtils.showNode(CitizenIvFailure, true);
                 GuiUtils.showNode(btnStartOver, true);
-                GuiUtils.showNode(btnRetry, !disableRetryButtonForever);
+                GuiUtils.showNode(btnRetry, true);
 
             }
         }
@@ -103,29 +100,17 @@ public class RegisteringCitizenPaneFxController extends WizardStepFxControllerBa
                     GuiUtils.showNode(CPiProgress, false);
                     GuiUtils.showNode(CitizenIvFailure, true);
                     GuiUtils.showNode(btnStartOver, true);
-                    GuiUtils.showNode(btnRetry, !disableRetryButtonForever);
+                    GuiUtils.showNode(btnRetry, true);
                 }
-
-
             }
             else {
                 CitizenLblStatus.setText(resources.getString("label.failedToRegisterCitizen"));
                 GuiUtils.showNode(CPiProgress, false);
                 GuiUtils.showNode(CitizenIvFailure, true);
                 GuiUtils.showNode(btnStartOver, true);
-                GuiUtils.showNode(btnRetry, !disableRetryButtonForever);
+                GuiUtils.showNode(btnRetry, true);
             }
         }
-    }
-
-    @Override
-    public void reportNegativeTaskResponse(String errorCode, Throwable exception, String[] errorDetails) {
-        //Failed to register the iris! The request cannot be resent.
-        if ("B003-0066".equals(errorCode)) {
-            disableRetryButtonForever = true;
-        }
-
-        super.reportNegativeTaskResponse(errorCode, exception, errorDetails);
     }
 
     @FXML
