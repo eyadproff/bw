@@ -179,8 +179,6 @@ public class CitizenEnrollmentWorkflow extends WizardWorkflowBase {
                 setData(IrisCapturingFxController.class,"showSkipButton", Boolean.TRUE);
                 setData(IrisCapturingFxController.class, "hideStartOverButton", Boolean.TRUE);
 
-                IrisCapturingFxController.Request irisCapturingRequest = IrisCapturingFxController.Request.ENROLLMENT;
-                setData(IrisCapturingFxController.class, "irisCapturingRequest", irisCapturingRequest);
                 setData(IrisCapturingFxController.class, "showPersonInfo",
                         Boolean.TRUE);
 

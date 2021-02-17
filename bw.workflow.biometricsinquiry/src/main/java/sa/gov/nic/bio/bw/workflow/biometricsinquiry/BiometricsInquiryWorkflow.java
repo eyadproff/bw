@@ -71,8 +71,7 @@ public class BiometricsInquiryWorkflow extends WizardWorkflowBase {
                 else {
                     incrementNSteps(2); // to skip step #2,#3
                     setData(IrisCapturingFxController.class, "hideStartOverButton", Boolean.TRUE);
-                    IrisCapturingFxController.Request irisCapturingRequest = IrisCapturingFxController.Request.IDENTIFICATION;
-                    setData(IrisCapturingFxController.class, "irisCapturingRequest", irisCapturingRequest);
+
                     renderUiAndWaitForUserInput(IrisCapturingFxController.class);
                 }
                 break;

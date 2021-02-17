@@ -47,8 +47,6 @@ public class IrisInquiryWorkflow extends WizardWorkflowBase
 			{
 				setData(IrisCapturingFxController.class, "hidePreviousButton", Boolean.TRUE);
 				setData(IrisCapturingFxController.class, "hideStartOverButton", Boolean.TRUE);
-				IrisCapturingFxController.Request irisCapturingRequest = IrisCapturingFxController.Request.IDENTIFICATION;
-				setData(IrisCapturingFxController.class, "irisCapturingRequest", irisCapturingRequest);
 				renderUiAndWaitForUserInput(IrisCapturingFxController.class);
 				break;
 			}

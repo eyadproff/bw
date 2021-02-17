@@ -11,12 +11,11 @@ VERSION SCHEMA: vYYYY.MM.#SEQ
 
 ## v2021.02.1
 
-- ENH: Add quality check for irisCapturing.
-- ENH: Updated biokit library to add iris score.
 - ENH: Disable recapturing fingerprints when register criminal clearance report by ID without role.
 - CHN: Enable to register unknown person when id start's with (0,8 or 9) when register convicted report.
 - FIX: Change SAUDI_ZONE from GMT+3 to Asia/Riyadh to fix issue with date before 1947.
 - CHN: Change iris registration service.
+- ENH: Updated biokit library to add iris score.
 
 ---
 

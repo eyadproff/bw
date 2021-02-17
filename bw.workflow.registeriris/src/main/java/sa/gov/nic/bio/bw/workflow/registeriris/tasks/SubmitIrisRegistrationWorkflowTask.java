@@ -11,15 +11,16 @@ public class SubmitIrisRegistrationWorkflowTask extends WorkflowTask
 	@Input(alwaysRequired = true) private Long personId;
 	@Input(alwaysRequired = true) private String rightIrisBase64;
 	@Input(alwaysRequired = true) private String leftIrisBase64;
-//	@Output private Long tcn;
 	
 	@Override
 	public void execute() throws Signal
 	{
 		var api = Context.getWebserviceManager().getApi(IrisRegistrationAPI.class);
-		var apiCall = api.replaceIris(workflowId, workflowTcn, personId, rightIrisBase64, leftIrisBase64, null);
+		var apiCall = api.submitIrisRegistration(workflowId, workflowTcn, personId, rightIrisBase64, leftIrisBase64, null);
 		var taskResponse = Context.getWebserviceManager().executeApi(apiCall);
-		resetWorkflowStepIfNegativeOrNullTaskResponse(taskResponse);
-//		tcn = taskResponse.getResult();
+//		if (!taskResponse.isSuccess() && "B003-0091".equals(taskResponse.getErrorCode())) return;
+
+		resetWorkflowStepIfNegativeTaskResponse(taskResponse);
+
 	}
 }

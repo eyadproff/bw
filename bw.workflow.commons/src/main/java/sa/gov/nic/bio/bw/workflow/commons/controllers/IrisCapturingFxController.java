@@ -6,20 +6,19 @@ import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.geometry.Insets;
 import javafx.geometry.NodeOrientation;
-import javafx.scene.Node;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.ProgressIndicator;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TitledPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import org.controlsfx.control.PopOver;
 import sa.gov.nic.bio.biokit.exceptions.NotConnectedException;
 import sa.gov.nic.bio.biokit.exceptions.TimeoutException;
 import sa.gov.nic.bio.biokit.iris.beans.CaptureIrisResponse;
-import sa.gov.nic.bio.bw.commons.resources.images.CommonImages;
 import sa.gov.nic.bio.bw.core.Context;
 import sa.gov.nic.bio.bw.core.beans.Name;
 import sa.gov.nic.bio.bw.core.controllers.DevicesRunnerGadgetPaneFxController;
@@ -30,7 +29,6 @@ import sa.gov.nic.bio.bw.core.utils.GuiUtils;
 import sa.gov.nic.bio.bw.core.workflow.Input;
 import sa.gov.nic.bio.bw.core.workflow.Output;
 import sa.gov.nic.bio.bw.workflow.commons.beans.PersonInfo;
-import sa.gov.nic.bio.bw.workflow.commons.ui.FourStateTitledPane;
 import sa.gov.nic.bio.bw.workflow.commons.utils.CommonsErrorCodes;
 import sa.gov.nic.bio.commons.TaskResponse;
 
@@ -51,8 +49,6 @@ public class IrisCapturingFxController extends WizardStepFxControllerBase
 	private static final int RIGHT_IRIS_ONLY = 1;
 	private static final int LEFT_AND_RIGHT_IRIS = 2;
 
-	@Input (alwaysRequired = true)
-	private Request irisCapturingRequest;
 	@Input private Boolean hidePreviousButton;
 	@Input private Boolean hideStartOverButton;
 	@Input private Boolean showSkipButton;
@@ -71,8 +67,8 @@ public class IrisCapturingFxController extends WizardStepFxControllerBase
 	@FXML private ScrollPane paneControlsOuterContainer;
 	@FXML private ProgressIndicator piProgress;
 	@FXML private Label lblStatus;
-	@FXML private FourStateTitledPane tpCapturedFirstIris;
-	@FXML private FourStateTitledPane tpCapturedSecondIris;
+	@FXML private TitledPane tpCapturedFirstIris;
+	@FXML private TitledPane tpCapturedSecondIris;
 	@FXML private ImageView ivSuccess;
 	@FXML private ImageView ivSkippedFirstIris;
 	@FXML private ImageView ivSkippedSecondIris;
@@ -90,40 +86,40 @@ public class IrisCapturingFxController extends WizardStepFxControllerBase
 	@FXML private Button btnSkip;
 
 	private boolean irisDeviceInitializedAtLeastOnce = false;
-	private FourStateTitledPane tpCapturedRightIris;
-	private FourStateTitledPane tpCapturedLeftIris;
+//	private FourStateTitledPane tpCapturedRightIris;
+//	private FourStateTitledPane tpCapturedLeftIris;
 	private ImageView ivRightIris;
 	private ImageView ivLeftIris;
 	private ImageView ivSkippedRightIris;
 	private ImageView ivSkippedLeftIris;
 	private CheckBox cbSkippedRightIris;
 	private CheckBox cbSkippedLeftIris;
-	private Integer rightIrisMinScore;
-	private Integer leftIrisMinScore;
-	private int rightIrisScore;
-	private int leftIrisScore;
+//	private Integer rightIrisMinScore;
+//	private Integer leftIrisMinScore;
+//	private int rightIrisScore;
+//	private int leftIrisScore;
 
-	public enum Request{
-		ENROLLMENT,
-		IDENTIFICATION
-
-	}
+//	public enum Request{
+//		ENROLLMENT,
+//		IDENTIFICATION
+//
+//	}
 	@Override
 	protected void onAttachedToScene()
 	{
 		DevicesRunnerGadgetPaneFxController deviceManagerGadgetPaneController =
-												Context.getCoreFxController().getDeviceManagerGadgetPaneController();
+				Context.getCoreFxController().getDeviceManagerGadgetPaneController();
 
 		btnNext.disableProperty().bind(ivSuccess.visibleProperty().not());
 
-		if( irisCapturingRequest == Request.ENROLLMENT) {
-			rightIrisMinScore = Integer.parseInt(Context.getConfigManager().getProperty("enrollment.rightIris.minimumScore"));
-			leftIrisMinScore = Integer.parseInt(Context.getConfigManager().getProperty("enrollment.leftIris.minimumScore"));
-		}
-		else {
-			rightIrisMinScore = Integer.parseInt(Context.getConfigManager().getProperty("identification.rightIris.minimumScore"));
-			leftIrisMinScore = Integer.parseInt(Context.getConfigManager().getProperty("identification.leftIris.minimumScore"));
-		}
+//		if( irisCapturingRequest == Request.ENROLLMENT) {
+//			rightIrisMinScore = Integer.parseInt(Context.getConfigManager().getProperty("enrollment.rightIris.minimumScore"));
+//			leftIrisMinScore = Integer.parseInt(Context.getConfigManager().getProperty("enrollment.leftIris.minimumScore"));
+//		}
+//		else {
+//			rightIrisMinScore = Integer.parseInt(Context.getConfigManager().getProperty("identification.rightIris.minimumScore"));
+//			leftIrisMinScore = Integer.parseInt(Context.getConfigManager().getProperty("identification.leftIris.minimumScore"));
+//		}
 
 		if(showPersonInfo != null) {
 			GuiUtils.showNode(tpPersonInfo, showPersonInfo);
@@ -181,14 +177,14 @@ public class IrisCapturingFxController extends WizardStepFxControllerBase
 //		attachIrisLegendTooltip(tpCapturedFirstIris);
 //		attachIrisLegendTooltip(tpCapturedSecondIris);
 
-		tpCapturedRightIris = rtl ? tpCapturedSecondIris : tpCapturedFirstIris;
-		tpCapturedLeftIris = rtl ? tpCapturedFirstIris : tpCapturedSecondIris ;
+//		tpCapturedRightIris = rtl ? tpCapturedSecondIris : tpCapturedFirstIris;
+//		tpCapturedLeftIris = rtl ? tpCapturedFirstIris : tpCapturedSecondIris ;
+//
+//		tpCapturedRightIris.setText(rightIrisLabel);
+//		tpCapturedLeftIris.setText(leftIrisLabel);
 
-		tpCapturedRightIris.setText(rightIrisLabel);
-		tpCapturedLeftIris.setText(leftIrisLabel);
-
-//		tpCapturedFirstIris.setText(rtl ? leftIrisLabel : rightIrisLabel);
-//		tpCapturedSecondIris.setText(rtl ? rightIrisLabel : leftIrisLabel);
+		tpCapturedFirstIris.setText(rtl ? leftIrisLabel : rightIrisLabel);
+		tpCapturedSecondIris.setText(rtl ? rightIrisLabel : leftIrisLabel);
 
 		cbSkippedRightIris.disableProperty().bind(btnCaptureIris.visibleProperty().not());
 		cbSkippedLeftIris.disableProperty().bind(btnCaptureIris.visibleProperty().not());
@@ -384,14 +380,14 @@ public class IrisCapturingFxController extends WizardStepFxControllerBase
 		capturedLeftIrisCompressedBase64 = null;
 		ivCapturedFirstIris.setImage(null);
 		ivCapturedSecondIris.setImage(null);
-		tpCapturedRightIris.setActive(cbSkippedRightIris.isSelected());
-		tpCapturedLeftIris.setActive(cbSkippedLeftIris.isSelected());
-		tpCapturedRightIris.setCaptured(false);
-		tpCapturedLeftIris.setCaptured(false);
-		tpCapturedRightIris.setValid(false);
-		tpCapturedLeftIris.setValid(false);
-		tpCapturedRightIris.setMissing(false);
-		tpCapturedLeftIris.setMissing(false);
+//		tpCapturedRightIris.setActive(cbSkippedRightIris.isSelected());
+//		tpCapturedLeftIris.setActive(cbSkippedLeftIris.isSelected());
+//		tpCapturedRightIris.setCaptured(false);
+//		tpCapturedLeftIris.setCaptured(false);
+//		tpCapturedRightIris.setValid(false);
+//		tpCapturedLeftIris.setValid(false);
+//		tpCapturedRightIris.setMissing(false);
+//		tpCapturedLeftIris.setMissing(false);
 		GuiUtils.showNode(ivSuccess, false);
 		GuiUtils.showNode(piProgress, false);
 		GuiUtils.showNode(btnCaptureIris, false);
@@ -436,16 +432,16 @@ public class IrisCapturingFxController extends WizardStepFxControllerBase
 			        if(cbSkippedRightIris.isSelected()) {
 			        	capturedRightIrisBase64 = result.getRightIrisImageBase64();
 			        	capturedRightIrisCompressedBase64 = result.getRightIrisCompressedImageBase64();
-			        	String rightIrisScore = result.getRightIrisScore();
-						if (rightIrisScore != null) { this.rightIrisScore = Integer.parseInt(rightIrisScore); }
-						else { this.rightIrisScore = 0; }
+//			        	String rightIrisScore = result.getRightIrisScore();
+//						if (rightIrisScore != null) { this.rightIrisScore = Integer.parseInt(rightIrisScore); }
+//						else { this.rightIrisScore = 0; }
 			        }
 			        if(cbSkippedLeftIris.isSelected()) {
 			        	capturedLeftIrisBase64 = result.getLeftIrisImageBase64();
 			        	capturedLeftIrisCompressedBase64 = result.getLeftIrisCompressedImageBase64();
-			        	String leftIrisScore = result.getLeftIrisScore();
-						if (leftIrisScore != null) { this.leftIrisScore = Integer.parseInt(leftIrisScore); }
-						else { this.leftIrisScore = 0; }
+//			        	String leftIrisScore = result.getLeftIrisScore();
+//						if (leftIrisScore != null) { this.leftIrisScore = Integer.parseInt(leftIrisScore); }
+//						else { this.leftIrisScore = 0; }
 			        }
 			        showIris();
 		        }
@@ -535,8 +531,8 @@ public class IrisCapturingFxController extends WizardStepFxControllerBase
 		var rightIrisLabel = resources.getString("label.rightIris");
 		var leftIrisLabel = resources.getString("label.leftIris");
 
-		Boolean isRightIrisAcceptable = null;
-		Boolean isLeftIrisAcceptable = null;
+//		Boolean isRightIrisAcceptable = null;
+//		Boolean isLeftIrisAcceptable = null;
 
 		if(capturedRightIrisImage != null)
 		{
@@ -544,53 +540,51 @@ public class IrisCapturingFxController extends WizardStepFxControllerBase
 			GuiUtils.attachImageDialog(Context.getCoreFxController(), ivRightIris, rightIrisLabel,
 			                           contextMenuLabel, false);
 
-			isRightIrisAcceptable = rightIrisScore >= rightIrisMinScore;
-			checkIrisValidation(tpCapturedRightIris, rightIrisScore, isRightIrisAcceptable);
-
-		}else {
-			isRightIrisAcceptable = !cbSkippedRightIris.isSelected();
-			if(!isRightIrisAcceptable)
-				irisMissing(tpCapturedRightIris, rightIrisScore);
+//			isRightIrisAcceptable = rightIrisScore >= rightIrisMinScore;
+//			checkIrisValidation(tpCapturedRightIris, rightIrisScore, isRightIrisAcceptable);
+//
+//		}else {
+//			isRightIrisAcceptable = !cbSkippedRightIris.isSelected();
+//			if(!isRightIrisAcceptable)
+//				irisMissing(tpCapturedRightIris, rightIrisScore);
 		}
-
 		if(capturedLeftIrisImage != null)
 		{
 			ivLeftIris.setImage(capturedLeftIrisImage);
 			GuiUtils.attachImageDialog(Context.getCoreFxController(), ivLeftIris, leftIrisLabel,
 			                           contextMenuLabel, false);
-			isLeftIrisAcceptable = leftIrisScore > leftIrisMinScore ;
-			checkIrisValidation(tpCapturedLeftIris, leftIrisScore, isLeftIrisAcceptable);
-
-		}else {
-			isLeftIrisAcceptable = !cbSkippedLeftIris.isSelected();
-			if(!isLeftIrisAcceptable)
-				irisMissing(tpCapturedLeftIris, leftIrisScore);
+//			isLeftIrisAcceptable = leftIrisScore > leftIrisMinScore ;
+//			checkIrisValidation(tpCapturedLeftIris, leftIrisScore, isLeftIrisAcceptable);
+//
+//		}else {
+//			isLeftIrisAcceptable = !cbSkippedLeftIris.isSelected();
+//			if(!isLeftIrisAcceptable)
+//				irisMissing(tpCapturedLeftIris, leftIrisScore);
 		}
 
-		GuiUtils.showNode(ivSuccess, isRightIrisAcceptable && isLeftIrisAcceptable);
 		GuiUtils.showNode(lblStatus, true);
-		lblStatus.setText(isRightIrisAcceptable && isLeftIrisAcceptable ? resources.getString("label.status.successfullyCapturedTheIris") :
-                          resources.getString("label.status.theCapturedIrisHasBadQuality") );
+		GuiUtils.showNode(ivSuccess, true);
+		lblStatus.setText(resources.getString("label.status.successfullyCapturedTheIris"));
 		btnCaptureIris.setText(resources.getString("button.recaptureIris"));
 	}
 
-	private void checkIrisValidation(FourStateTitledPane titledPane, int score , boolean isAcceptable){
-
-		titledPane.setCaptured(true);
-		titledPane.setValid(isAcceptable);
-		StackPane titleRegion = (StackPane) titledPane.lookup(".title");
-		attachIrisResultTooltip(titleRegion,titledPane,score, isAcceptable);
-
-	}
-
-	// missing iris mean it's not skipped but the device can't see it ..
-	private void irisMissing(FourStateTitledPane titledPane, int score){
-		titledPane.setCaptured(true);
-		titledPane.setMissing(true);
-		StackPane titleRegion = (StackPane) titledPane.lookup(".title");
-		attachIrisResultTooltip(titleRegion,titledPane,score, false);
-
-	}
+//	private void checkIrisValidation(FourStateTitledPane titledPane, int score , boolean isAcceptable){
+//
+//		titledPane.setCaptured(true);
+//		titledPane.setValid(isAcceptable);
+//		StackPane titleRegion = (StackPane) titledPane.lookup(".title");
+//		attachIrisResultTooltip(titleRegion,titledPane,score, isAcceptable);
+//
+//	}
+//
+//	// missing iris mean it's not skipped but the device can't see it ..
+//	private void irisMissing(FourStateTitledPane titledPane, int score){
+//		titledPane.setCaptured(true);
+//		titledPane.setMissing(true);
+//		StackPane titleRegion = (StackPane) titledPane.lookup(".title");
+//		attachIrisResultTooltip(titleRegion,titledPane,score, false);
+//
+//	}
 
 
 //	private void attachIrisLegendTooltip(Node targetNode)
@@ -649,45 +643,45 @@ public class IrisCapturingFxController extends WizardStepFxControllerBase
 //		});
 //	}
 
-	private void attachIrisResultTooltip(Node sourceNode, Node targetNode, int score , boolean isAcceptable){
-
-		GridPane gridPane = new GridPane();
-		gridPane.setPadding(new Insets(10.0));
-		gridPane.setVgap(5.0);
-		gridPane.setHgap(5.0);
-
-		Label lblScore = new Label(resources.getString("label.tooltip.score"));
-
-		Image successImage = new Image(CommonImages.ICON_SUCCESS_16PX.getAsInputStream());
-		Image warningImage = new Image(CommonImages.ICON_WARNING_16PX.getAsInputStream());
-//		Image errorImage = new Image(CommonImages.ICON_ERROR_16PX.getAsInputStream());
-
-		lblScore.setGraphic(new ImageView(isAcceptable ? successImage : warningImage));
-
-		gridPane.add(lblScore, 0, 0);
-
-		String sScore = AppUtils.localizeNumbers(String.valueOf(score))+ "%";
-
-		TextField txtScore = new TextField(sScore);
-
-		txtScore.setFocusTraversable(false);
-		txtScore.setEditable(false);
-		txtScore.setPrefColumnCount(3);
-
-		gridPane.add(txtScore, 1, 0);
-
-		PopOver popOver = new PopOver(gridPane);
-		popOver.setDetachable(false);
-		popOver.setConsumeAutoHidingEvents(false);
-		popOver.setArrowLocation(PopOver.ArrowLocation.BOTTOM_CENTER);
-
-		sourceNode.setOnMouseClicked(mouseEvent ->
-		{
-			if(popOver.isShowing()) popOver.hide();
-			else popOver.show(targetNode);
-		});
-
-	}
+//	private void attachIrisResultTooltip(Node sourceNode, Node targetNode, int score , boolean isAcceptable){
+//
+//		GridPane gridPane = new GridPane();
+//		gridPane.setPadding(new Insets(10.0));
+//		gridPane.setVgap(5.0);
+//		gridPane.setHgap(5.0);
+//
+//		Label lblScore = new Label(resources.getString("label.tooltip.score"));
+//
+//		Image successImage = new Image(CommonImages.ICON_SUCCESS_16PX.getAsInputStream());
+//		Image warningImage = new Image(CommonImages.ICON_WARNING_16PX.getAsInputStream());
+////		Image errorImage = new Image(CommonImages.ICON_ERROR_16PX.getAsInputStream());
+//
+//		lblScore.setGraphic(new ImageView(isAcceptable ? successImage : warningImage));
+//
+//		gridPane.add(lblScore, 0, 0);
+//
+//		String sScore = AppUtils.localizeNumbers(String.valueOf(score))+ "%";
+//
+//		TextField txtScore = new TextField(sScore);
+//
+//		txtScore.setFocusTraversable(false);
+//		txtScore.setEditable(false);
+//		txtScore.setPrefColumnCount(3);
+//
+//		gridPane.add(txtScore, 1, 0);
+//
+//		PopOver popOver = new PopOver(gridPane);
+//		popOver.setDetachable(false);
+//		popOver.setConsumeAutoHidingEvents(false);
+//		popOver.setArrowLocation(PopOver.ArrowLocation.BOTTOM_CENTER);
+//
+//		sourceNode.setOnMouseClicked(mouseEvent ->
+//		{
+//			if(popOver.isShowing()) popOver.hide();
+//			else popOver.show(targetNode);
+//		});
+//
+//	}
 
 	@FXML
 	private void onSkipButtonClicked() {
