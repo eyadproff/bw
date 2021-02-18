@@ -5,16 +5,15 @@ import sa.gov.nic.bio.bw.core.workflow.Input;
 import sa.gov.nic.bio.bw.core.workflow.Output;
 import sa.gov.nic.bio.bw.core.workflow.Signal;
 import sa.gov.nic.bio.bw.core.workflow.WorkflowTask;
-import sa.gov.nic.bio.bw.workflow.citizenenrollment.utils.CitizenEnrollmentErrorCodes;
 import sa.gov.nic.bio.bw.workflow.citizenenrollment.webservice.CitizenEnrollmentAPI;
-import sa.gov.nic.bio.commons.TaskResponse;
 
 public class CheckCitizenRegistrationWorkflowTask extends WorkflowTask {
     public enum Status {
         PENDING,
         SUCCESS,
         HIT,
-        ERROR
+        ERROR,
+        ENROLLED_HIT
     }
 
     @Input(alwaysRequired = true)
@@ -36,11 +35,15 @@ public class CheckCitizenRegistrationWorkflowTask extends WorkflowTask {
         }
         else if (Code == 2) {
             status = Status.PENDING;
-        } else if (Code == 3) {
+        } // Illegal Hit
+        else if (Code == 3) {
             status = Status.HIT;
         }
         else if (Code == 4) {
             status = Status.ERROR;
+        } // legal Hit
+        else if (Code == 7) {
+            status = Status.ENROLLED_HIT;
         }
 
 

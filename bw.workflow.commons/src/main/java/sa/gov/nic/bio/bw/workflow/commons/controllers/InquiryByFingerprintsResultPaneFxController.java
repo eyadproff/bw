@@ -170,17 +170,24 @@ public class InquiryByFingerprintsResultPaneFxController extends WizardStepFxCon
 		civilHit = status == Status.HIT && civilBiometricsId != null;
 		criminalHit = status == Status.HIT && criminalBiometricsId != null;
 
-		// Never select Id start with 800
-		if(civilPersonInfoMap != null)
-		{	// Ignore deportee Id (Id start with 9) unless there is no other
-			boolean ignoreDeporteeId = civilPersonInfoMap.keySet().stream().anyMatch(x -> (!String.valueOf(x).startsWith("800") && !String.valueOf(x).startsWith("9")));
-			for(Long personId : civilPersonInfoMap.keySet())
-			{
+//		 Never select Id start with 800
+		if (civilPersonInfoMap != null) {
+			//			 Ignore deportee Id (Id start with 9) unless there is no other
+			//			boolean ignoreDeporteeId = civilPersonInfoMap.keySet().stream().anyMatch(x -> (!String.valueOf(x).startsWith("800") && !String.valueOf(x).startsWith("9")));
+			for (Long personId : civilPersonInfoMap.keySet()) {
 				selectedCivilPersonIdIndex++;
-				if(String.valueOf(personId).startsWith("800") ) continue;
-				if(String.valueOf(personId).startsWith("9") && ignoreDeporteeId) continue;
+				//				if(String.valueOf(personId).startsWith("800") ) continue;
+				//				if(String.valueOf(personId).startsWith("9") && ignoreDeporteeId) continue;
 				selectedCivilPersonId = personId;
 				break;
+			}
+		}
+
+		if (selectedCivilPersonId != null) {
+			String selectedCivilPersonIdAsString = String.valueOf(selectedCivilPersonId);
+			if (selectedCivilPersonIdAsString.startsWith("0") || selectedCivilPersonIdAsString.startsWith("8") || selectedCivilPersonIdAsString.startsWith("9")) {
+				GuiUtils.showNode(btnRegisterUnknownPerson, hideRegisterUnknownButton == null
+															|| !hideRegisterUnknownButton);
 			}
 		}
 		
@@ -429,10 +436,11 @@ public class InquiryByFingerprintsResultPaneFxController extends WizardStepFxCon
 	protected void onGoingNext(Map<String, Object> uiDataMap)
 	{
 		boolean civilHit = paneCivilFingerprintsHit.isVisible();
-		
-		if(civilHit)
-		{
+
+		if (civilHit && selectedCivilPersonId != null) {
 			normalizedPersonInfo = new NormalizedPersonInfo(civilPersonInfoMap.get((selectedCivilPersonId)));
+		}else {
+			normalizedPersonInfo = null;
 		}
 	}
 	
@@ -442,8 +450,11 @@ public class InquiryByFingerprintsResultPaneFxController extends WizardStepFxCon
 		String headerText = resources.getString("inquiry.registerUnknown.confirmation.header");
 		String contentText = resources.getString("inquiry.registerUnknown.confirmation.message");
 		boolean confirmed = Context.getCoreFxController().showConfirmationDialogAndWait(headerText, contentText);
-		
-		if(confirmed) goNext();
+
+		if (confirmed) {
+			selectedCivilPersonId = null;
+			goNext();
+		}
 	}
 	
 	private void populatePersonInfo(PersonInfo personInfo)

@@ -12,6 +12,7 @@ public class FourStateTitledPane extends TitledPane
 	private static final PseudoClass CAPTURED_PSEUDO_CLASS = PseudoClass.getPseudoClass("captured");
 	private static final PseudoClass VALID_PSEUDO_CLASS = PseudoClass.getPseudoClass("valid");
 	private static final PseudoClass DUPLICATED_PSEUDO_CLASS = PseudoClass.getPseudoClass("duplicated");
+	private static final PseudoClass MISSING_IRIS_PSEUDO_CLASS = PseudoClass.getPseudoClass("missing");
 	
 	private BooleanProperty active = new BooleanPropertyBase(false)
 	{
@@ -93,7 +94,26 @@ public class FourStateTitledPane extends TitledPane
 			return DUPLICATED_PSEUDO_CLASS.getPseudoClassName();
 		}
 	};
-	
+	private BooleanProperty missing = new BooleanPropertyBase(false)
+	{
+		@Override
+		protected void invalidated()
+		{
+			pseudoClassStateChanged(MISSING_IRIS_PSEUDO_CLASS, get());
+		}
+
+		@Override
+		public Object getBean()
+		{
+			return FourStateTitledPane.this;
+		}
+
+		@Override
+		public String getName()
+		{
+			return MISSING_IRIS_PSEUDO_CLASS.getPseudoClassName();
+		}
+	};
 	public FourStateTitledPane()
 	{
 		this(null, null);
@@ -120,4 +140,8 @@ public class FourStateTitledPane extends TitledPane
 	public boolean isDuplicated(){return duplicated.get();}
 	public BooleanProperty duplicatedProperty(){return duplicated;}
 	public void setDuplicated(boolean duplicated){this.duplicated.set(duplicated);}
+
+	public boolean isMissing(){return missing.get();}
+	public BooleanProperty missingProperty(){return missing;}
+	public void setMissing(boolean missing){this.missing.set(missing);}
 }

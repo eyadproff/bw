@@ -89,6 +89,12 @@ public class ShowingFingerprintsQualityPaneFxController extends WizardStepFxCont
 
         if (serviceType == ServiceType.RETAKE_FINGERPRINT) { addTwoSteps = true; }
 
+        @SuppressWarnings("unchecked")
+        List<String> userRoles = (List<String>) Context.getUserSession().getAttribute("userRoles");
+        String recaptureRole = Context.getConfigManager().getProperty("criminalClearance.roles.fingerprints.recapture");
+        boolean authorized = userRoles.contains(recaptureRole);
+        GuiUtils.showNode(btnReTakeFingerprints, authorized);
+
         Glyph glyph = AppUtils.createFontAwesomeIcon(FontAwesome.Glyph.INFO_CIRCLE);
         btnRightHandLegend.setGraphic(glyph);
         glyph = AppUtils.createFontAwesomeIcon(FontAwesome.Glyph.INFO_CIRCLE);

@@ -61,9 +61,9 @@ public class IrisInquiryWorkflow extends WizardWorkflowBase
 				
 				if(tcn == null)
 				{
-					passData(IrisCapturingFxController.class, "capturedRightIrisBase64",
+					passData(IrisCapturingFxController.class, "capturedRightIrisCompressedBase64",
 					         IrisInquiryWorkflowTask.class, "rightIrisBase64");
-					passData(IrisCapturingFxController.class, "capturedLeftIrisBase64",
+					passData(IrisCapturingFxController.class, "capturedLeftIrisCompressedBase64",
 					         IrisInquiryWorkflowTask.class, "leftIrisBase64");
 					
 					executeWorkflowTask(IrisInquiryWorkflowTask.class);

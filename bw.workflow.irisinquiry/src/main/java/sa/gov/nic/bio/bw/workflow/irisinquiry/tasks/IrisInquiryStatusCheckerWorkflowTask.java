@@ -29,7 +29,7 @@ public class IrisInquiryStatusCheckerWorkflowTask extends WorkflowTask
 		var api = Context.getWebserviceManager().getApi(IrisInquiryAPI.class);
 		var apiCall = api.checkIrisInquiryStatus(workflowId, workflowTcn, tcn);
 		var taskResponse = Context.getWebserviceManager().executeApi(apiCall);
-		if("B003-00068".equals(taskResponse.getErrorCode()))
+		if("B003-00069".equals(taskResponse.getErrorCode()))
 		{
 			status = Status.NOT_HIT;
 			return;

@@ -33,7 +33,7 @@ public class InquiryCriminalByFingerprintsPaneFxController extends WizardStepFxC
     @FXML private TableView<WatchListRecord> tvCWLActions;
     @FXML private TableColumn<WatchListRecord, WatchListRecord> tcSequence;
     @FXML private TableColumn<WatchListRecord, String> tcSamisId;
-//    @FXML private TableColumn<WatchListRecord, String> tcIssuer;
+    @FXML private TableColumn<WatchListRecord, String> tcIssuer;
     @FXML private TableColumn<WatchListRecord, String> tcAction;
     @FXML private VBox paneDevicesRunnerNotRunning;
     @FXML private ProgressIndicator piProgress;
@@ -179,6 +179,7 @@ public class InquiryCriminalByFingerprintsPaneFxController extends WizardStepFxC
         GuiUtils.showNode(lblCancelled, false);
 
         if (bShow && watchListRecordList != null && !watchListRecordList.isEmpty()) {
+
             GuiUtils.initSequenceTableColumn(tcSequence);
             tcSequence.setCellValueFactory(p -> new ReadOnlyObjectWrapper<>(p.getValue()));
 
@@ -188,11 +189,11 @@ public class InquiryCriminalByFingerprintsPaneFxController extends WizardStepFxC
                 return new SimpleStringProperty(AppUtils.localizeNumbers(String.valueOf(samisId)));
             });
 
-            //            tcIssuer.setCellValueFactory(param ->
-            //            {
-            //                String issuer = param.getValue().();
-            //                return new SimpleStringProperty(issuer);
-            //            });
+            tcIssuer.setCellValueFactory(param ->
+            {
+                String issuer = param.getValue().getSourceMessage();
+                return new SimpleStringProperty(issuer);
+            });
 
 
             tcAction.setCellValueFactory(param ->

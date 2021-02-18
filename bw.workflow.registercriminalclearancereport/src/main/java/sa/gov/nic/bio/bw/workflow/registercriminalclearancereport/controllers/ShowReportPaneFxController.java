@@ -196,7 +196,7 @@ public class ShowReportPaneFxController extends WizardStepFxControllerBase {
             GuiUtils.showNode(btnPrintReport, true);
             GuiUtils.showNode(btnSaveReportAsPDF, true);
 
-            showSuccessNotification(resources.getString("printCriminalClearanceReport.savingAsPDF.success.message"));
+            showSuccessNotification(resources.getString("showCriminalClearanceReport.savingAsPDF.success.message"));
 
             try {
                 Desktop.getDesktop().open(selectedFile);

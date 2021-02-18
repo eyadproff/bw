@@ -37,9 +37,6 @@ public class RegisteringCitizenPaneFxController extends WizardStepFxControllerBa
     @FXML private Button btnStartOver;
 
 
-    private boolean disableRetryButtonForever = false;
-
-
     @Override
     protected void onAttachedToScene() {
         request = Request.SUBMIT_CITIZEN_REGISTRATION;
@@ -59,7 +56,7 @@ public class RegisteringCitizenPaneFxController extends WizardStepFxControllerBa
                 GuiUtils.showNode(CPiProgress, false);
                 GuiUtils.showNode(CitizenIvFailure, true);
                 GuiUtils.showNode(btnStartOver, true);
-                GuiUtils.showNode(btnRetry, !disableRetryButtonForever);
+                GuiUtils.showNode(btnRetry, true);
 
             }
         }
@@ -85,6 +82,12 @@ public class RegisteringCitizenPaneFxController extends WizardStepFxControllerBa
                     GuiUtils.showNode(CitizenIvSuccess, true);
                     GuiUtils.showNode(btnStartOver, true);
                 }
+                else if (citizenRegistrationStatus == Status.ENROLLED_HIT) {
+                    CitizenLblStatus.setText(resources.getString("label.successCitizenRegistrationWithHitResponse"));
+                    GuiUtils.showNode(CPiProgress, false);
+                    GuiUtils.showNode(CitizenIvSuccess, true);
+                    GuiUtils.showNode(btnStartOver, true);
+                }
 
                 else if (citizenRegistrationStatus == Status.HIT) {
                     CitizenLblStatus.setText(resources.getString("label.successCitizenRegistrationWithHitResponse"));
@@ -97,29 +100,17 @@ public class RegisteringCitizenPaneFxController extends WizardStepFxControllerBa
                     GuiUtils.showNode(CPiProgress, false);
                     GuiUtils.showNode(CitizenIvFailure, true);
                     GuiUtils.showNode(btnStartOver, true);
-                    GuiUtils.showNode(btnRetry, !disableRetryButtonForever);
+                    GuiUtils.showNode(btnRetry, true);
                 }
-
-
             }
             else {
                 CitizenLblStatus.setText(resources.getString("label.failedToRegisterCitizen"));
                 GuiUtils.showNode(CPiProgress, false);
                 GuiUtils.showNode(CitizenIvFailure, true);
                 GuiUtils.showNode(btnStartOver, true);
-                GuiUtils.showNode(btnRetry, !disableRetryButtonForever);
+                GuiUtils.showNode(btnRetry, true);
             }
         }
-    }
-
-    @Override
-    public void reportNegativeTaskResponse(String errorCode, Throwable exception, String[] errorDetails) {
-        //Failed to register the iris! The request cannot be resent.
-        if ("B003-0066".equals(errorCode)) {
-            disableRetryButtonForever = true;
-        }
-
-        super.reportNegativeTaskResponse(errorCode, exception, errorDetails);
     }
 
     @FXML
@@ -142,7 +133,7 @@ public class RegisteringCitizenPaneFxController extends WizardStepFxControllerBa
     @FXML
     public void onStartOverButtonClicked(ActionEvent actionEvent)
     {
-        if (citizenRegistrationStatus != null && (citizenRegistrationStatus == Status.SUCCESS || citizenRegistrationStatus == Status.HIT)) {
+        if (citizenRegistrationStatus != null && (citizenRegistrationStatus == Status.SUCCESS || citizenRegistrationStatus == Status.HIT || citizenRegistrationStatus == Status.ENROLLED_HIT)) {
             startOver();
         }
         else {

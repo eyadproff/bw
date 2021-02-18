@@ -144,7 +144,7 @@ public class BuildCriminalClearanceReportTask extends Task<JasperPrint> {
         }
 
         Long subjSamisId = criminalClearanceReport.getSamisId();
-        if (subjSamisId != null) {
+        if (subjSamisId != null && subjSamisId != 0) {
             params.put(PARAMETER_SAMIS_ID, AppUtils.localizeNumbers(String.valueOf(subjSamisId),
                     Locale.getDefault(),
                     true));
@@ -152,9 +152,7 @@ public class BuildCriminalClearanceReportTask extends Task<JasperPrint> {
 
         String subjPassportId = criminalClearanceReport.getPassportNumber();
         if (subjPassportId != null) {
-            params.put(PARAMETER_PASSPORT_ID, AppUtils.localizeNumbers(subjPassportId,
-                    Locale.getDefault(),
-                    true));
+            params.put(PARAMETER_PASSPORT_ID, subjPassportId);
         }
 
 

@@ -217,8 +217,7 @@
         - services-gateway-demographic/api/person/info/v1
         - services-gateway-biooperation/api/fingerprint/verify/basic/v1
         - services-gateway-biooperation/api/face/verify/basic/v1
-        - services-gateway-biooperation/api/iris/registration/v1
-        - services-gateway-biooperation/api/iris/registration/status/v1
+        - services-gateway-biooperation/api/iris/addition/v1
     
     menu.securityClearance.faceVerification:
         - services-gateway-lookups/api/application/nationality/all/v1
